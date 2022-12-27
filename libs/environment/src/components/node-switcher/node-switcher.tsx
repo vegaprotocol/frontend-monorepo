@@ -97,7 +97,7 @@ export const NodeSwitcher = ({
               <div />
               <span className="text-right">{t('Response time')}</span>
               <span className="text-right">{t('Block')}</span>
-              <span className="text-right">{t('SSL')}</span>
+              <span className="text-right">{t('Subscription')}</span>
             </LayoutRow>
           </div>
           <RadioGroup
