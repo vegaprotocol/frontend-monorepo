@@ -30,10 +30,10 @@ html [data-theme='dark'] {
   --pennant-color-sell-fill: theme('colors.vega.pink');
   --pennant-color-sell-stroke: theme('colors.vega.pink');
 
-  --pennant-color-depth-buy-fill: theme('colors.vega.green');
-  --pennant-color-depth-buy-stroke: theme('colors.vega.green');
-  --pennant-color-depth-sell-fill: theme('colors.vega.pink');
-  --pennant-color-depth-sell-stroke: theme('colors.vega.pink');
+  --pennant-color-depth-buy-fill: theme('colors.vega.green-dark');
+  --pennant-color-depth-buy-stroke: theme('colors.vega.green-dark');
+  --pennant-color-depth-sell-fill: theme('colors.vega.pink-dark');
+  --pennant-color-depth-sell-stroke: theme('colors.vega.pink-dark');
 }
 
 html [data-theme='light'] {
@@ -42,8 +42,8 @@ html [data-theme='light'] {
   --pennant-color-sell-fill: theme('colors.vega.pink');
   --pennant-color-sell-stroke: theme('colors.vega.pink');
 
-  --pennant-color-depth-buy-fill: theme('colors.vega.green');
-  --pennant-color-depth-buy-stroke: theme('colors.vega.green');
-  --pennant-color-depth-sell-fill: theme('colors.vega.pink');
-  --pennant-color-depth-sell-stroke: theme('colors.vega.pink');
+  --pennant-color-depth-buy-fill: theme('colors.vega.green-dark');
+  --pennant-color-depth-buy-stroke: theme('colors.vega.green-dark');
+  --pennant-color-depth-sell-fill: theme('colors.vega.pink-dark');
+  --pennant-color-depth-sell-stroke: theme('colors.vega.pink-dark');
 }
