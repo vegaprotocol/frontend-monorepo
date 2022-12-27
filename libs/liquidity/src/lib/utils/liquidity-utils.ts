@@ -117,3 +117,45 @@ export const getTargetStake = (
 ) => {
   return markets.find((m) => m.id === marketId)?.data?.targetStake || '0';
 };
+
+export const useCheckLiquidityStatus = ({
+  suppliedStake,
+  targetStake,
+  triggeringRatio,
+}: {
+  suppliedStake: string | number;
+  targetStake: string | number;
+  triggeringRatio: string | number;
+}): { status: 'green' | 'amber' | 'red' | undefined; percentage: number } => {
+  // percentage supplied
+  const percentage = new BigNumber(suppliedStake)
+    .dividedBy(targetStake)
+    .multipliedBy(100)
+    .toNumber();
+  // IF supplied_stake >= target_stake THEN
+  if (new BigNumber(suppliedStake).gte(new BigNumber(targetStake))) {
+    // show a green status, e.g. "🟢 $13,666,999 liquidity supplied"
+    return {
+      status: 'green',
+      percentage,
+    };
+  } else if (
+    new BigNumber(suppliedStake).gte(
+      new BigNumber(targetStake).multipliedBy(triggeringRatio)
+    )
+  ) {
+    // ELSE IF supplied_stake > NETPARAM[market.liquidity.targetstake.triggering.ratio] * target_stake THEN
+    // show an amber status, e.g. "🟠 $3,456,123 liquidity supplied"
+    return {
+      status: 'amber',
+      percentage,
+    };
+  } else {
+    // ELSE
+    // show a red status, e.g. "🔴 $600,002 liquidity supplied"
+    return {
+      status: 'red',
+      percentage,
+    };
+  }
+};

@@ -16,6 +16,7 @@ import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
+import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 
 interface Props {
   marketId?: string;
@@ -32,19 +33,22 @@ export const MarketLiquiditySupplied = ({
   isHeader = false,
   noUpdate = false,
 }: Props) => {
-  const [liquiditySupplied, setLiquiditySupplied] = useState<string>();
   const [market, setMarket] = useState<MarketDealTicket>();
   const { param: stakeToCcyVolume } = useNetworkParam(
     NetworkParams.market_liquidity_stakeToCcySiskas
   );
+
+  const { param: triggeringRatio } = useNetworkParam(
+    NetworkParams.market_liquidity_targetstake_triggering_ratio
+  );
+
+  console.log({ stakeToCcyVolume, triggeringRatio });
   const variables = useMemo(
     () => ({
       marketId: marketId,
     }),
     [marketId]
   );
-
-  console.log({ stakeToCcyVolume });
 
   const { data } = useDataProvider<SingleMarketFieldsFragment, never>({
     dataProvider: marketProvider,
@@ -55,7 +59,6 @@ export const MarketLiquiditySupplied = ({
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {
       if (!noUpdate && marketData) {
-        setLiquiditySupplied(marketData.suppliedStake || '');
         setMarket({
           ...data,
           data: marketData,
@@ -73,48 +76,52 @@ export const MarketLiquiditySupplied = ({
     skip: noUpdate || !marketId || !data,
   });
 
-  const content = liquiditySupplied
+  const suppliedStake = market?.data.suppliedStake
     ? addDecimalsFormatNumber(
-        new BigNumber(liquiditySupplied)
+        new BigNumber(market?.data.suppliedStake)
+
           .multipliedBy(stakeToCcyVolume || 1)
           .toString(),
         assetDecimals
       )
     : '';
 
+  const targetStake = market?.data.targetStake
+    ? addDecimalsFormatNumber(
+        new BigNumber(market?.data.targetStake)
+          .multipliedBy(stakeToCcyVolume || 1)
+          .toString(),
+        assetDecimals
+      )
+    : '';
+
+  const { status, percentage } = useCheckLiquidityStatus({
+    suppliedStake,
+    targetStake,
+    triggeringRatio: (triggeringRatio && Number(triggeringRatio)) || 1,
+  });
+
+  const description = (
+    <>
+      <p>{status}</p>
+      <p>{percentage}</p>
+      <p>{suppliedStake}</p>
+      <p>{targetStake}</p>
+      <p>{stakeToCcyVolume}</p>
+    </>
+  );
+
   return isHeader ? (
     <HeaderStat
       heading={t('Liquidity supplied')}
-      description={
-        <>
-          <span>{content}</span>
-          <span>{stakeToCcyVolume}</span>
-        </>
-      }
+      description={description}
       testId="liquidity-supplied"
     >
-      <div>{content}</div>
+      <div>{suppliedStake}</div>
     </HeaderStat>
   ) : (
-    <Tooltip
-      description={
-        <>
-          <span>{content}</span>
-          <span>{stakeToCcyVolume}</span>
-        </>
-      }
-    >
-      <span>{content}</span>
+    <Tooltip description={description}>
+      <span>{suppliedStake}</span>
     </Tooltip>
   );
-};
-
-export const checkLP = async () => {
-  // IF supplied_stake >= target_stake THEN
-  //     show a green status, e.g. "🟢 $13,666,999 liquidity supplied"
-  // ELSE IF supplied_stake > NETPARAM[market.liquidity.targetstake.triggering.ratio] * target_stake THEN
-  //     show an amber status, e.g. "🟠 $3,456,123 liquidity supplied"
-  // ELSE
-  //     show a red status, e.g. "🔴 $600,002 liquidity supplied"
-  // END
 };
