@@ -26,6 +26,6 @@ export const ExternalLinks = {
 };
 
 export const TokenLinks = {
-  PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
-  UPDATE_PROPOSAL_PAGE: ':tokenUrl/governance/propose/update-market',
+  PROPOSAL_PAGE: ':tokenUrl/proposals/:proposalId',
+  UPDATE_PROPOSAL_PAGE: ':tokenUrl/proposals/propose/update-market',
 };
