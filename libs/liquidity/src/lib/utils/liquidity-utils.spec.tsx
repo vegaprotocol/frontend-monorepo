@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import BigNumber from 'bignumber.js';
 import {
   formatWithAsset,
   sumLiquidityCommitted,
@@ -133,7 +134,7 @@ describe('useCheckLiquidityStatus', () => {
 
     expect(result.current).toEqual({
       status: 'amber',
-      percentage: 60,
+      percentage: new BigNumber('60'),
     });
   });
 
@@ -148,7 +149,7 @@ describe('useCheckLiquidityStatus', () => {
 
     expect(result.current).toEqual({
       status: 'red',
-      percentage: 60,
+      percentage: new BigNumber('60'),
     });
   });
 
@@ -163,7 +164,7 @@ describe('useCheckLiquidityStatus', () => {
 
     expect(result.current).toEqual({
       status: 'green',
-      percentage: 101,
+      percentage: new BigNumber('101'),
     });
   });
 });
