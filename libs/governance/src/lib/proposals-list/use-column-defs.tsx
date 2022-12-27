@@ -55,7 +55,7 @@ export const useColumnDefs = () => {
           const { change } = data?.terms || {};
           if (instrumentGuard(change) && VEGA_TOKEN_URL) {
             if (data?.id) {
-              const link = `${VEGA_TOKEN_URL}/governance/${data.id}`;
+              const link = `${VEGA_TOKEN_URL}/proposals/${data.id}`;
               return (
                 <ExternalLink href={link}>
                   {change.instrument.code}
