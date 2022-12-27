@@ -19,6 +19,7 @@ import { Link, Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { MarketDataGrid } from '@vegaprotocol/deal-ticket';
+import classNames from 'classnames';
 
 interface Props {
   marketId?: string;
@@ -88,7 +89,7 @@ export const MarketLiquiditySupplied = ({
       )
     : '-';
 
-  const { percentage } = useCheckLiquidityStatus({
+  const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: market?.data.suppliedStake || 0,
     targetStake: market?.data.targetStake || 0,
     triggeringRatio,
@@ -131,8 +132,16 @@ export const MarketLiquiditySupplied = ({
       description={description}
       testId="liquidity-supplied"
     >
-      <div>
-        ({formatNumberPercentage(percentage, 2)}) {supplied}
+      <div className="flex flex-inline gap-1">
+        <span
+          className={classNames('rounded-full h-2 w-2 mt-1 mr-1', {
+            'bg-danger': status === 'red',
+            'bg-warning': status === 'amber',
+            'bg-success': status === 'green',
+          })}
+        ></span>
+        <span>({formatNumberPercentage(percentage, 2)})</span>
+        <span>{supplied}</span>
       </div>
     </HeaderStat>
   ) : (
