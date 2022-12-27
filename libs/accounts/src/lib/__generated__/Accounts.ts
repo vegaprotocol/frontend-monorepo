@@ -17,7 +17,7 @@ export type AccountEventsSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: Array<{ __typename?: 'AccountUpdate', type: Types.AccountType, balance: string, assetId: string, marketId?: string | null }> };
+export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: Array<{ __typename?: 'AccountUpdate', type: Types.AccountType, balance: string, assetId: string, marketId?: string | null, partyId: string }> };
 
 export const AccountFieldsFragmentDoc = gql`
     fragment AccountFields on AccountBalance {
@@ -83,6 +83,7 @@ export const AccountEventsDocument = gql`
     balance
     assetId
     marketId
+    partyId
   }
 }
     `;

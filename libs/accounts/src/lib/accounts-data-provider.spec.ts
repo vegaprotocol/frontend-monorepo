@@ -26,6 +26,7 @@ describe('getId', () => {
         balance: '1',
         assetId: 'assetId',
         marketId: '',
+        partyId: '',
       })
     );
     expect(
@@ -41,6 +42,7 @@ describe('getId', () => {
         balance: '1',
         assetId: 'assetId',
         marketId: 'testId',
+        partyId: 'partyId',
       })
     );
   });
