@@ -23,7 +23,7 @@ import {
 } from '@vegaprotocol/environment';
 import { AppLoader, Web3Provider } from '../components/app-loader';
 import './styles.css';
-import './styles.scss';
+import './gen-styles.scss';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
