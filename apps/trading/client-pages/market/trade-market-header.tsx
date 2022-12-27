@@ -100,7 +100,6 @@ export const TradeMarketHeader = ({
       <MarketLiquiditySupplied
         marketId={market?.id}
         assetDecimals={asset?.decimals || 0}
-        isHeader
       />
     </Header>
   );

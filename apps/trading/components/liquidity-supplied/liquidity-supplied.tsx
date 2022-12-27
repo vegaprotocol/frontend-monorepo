@@ -15,15 +15,13 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
-import { Link, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { MarketDataGrid } from '@vegaprotocol/deal-ticket';
 
 interface Props {
   marketId?: string;
-  onSelect?: (marketId: string) => void;
-  isHeader?: boolean;
   noUpdate?: boolean;
   assetDecimals: number;
 }
@@ -31,8 +29,6 @@ interface Props {
 export const MarketLiquiditySupplied = ({
   marketId,
   assetDecimals,
-  onSelect,
-  isHeader = false,
   noUpdate = false,
 }: Props) => {
   const [market, setMarket] = useState<MarketDealTicket>();
@@ -125,7 +121,7 @@ export const MarketLiquiditySupplied = ({
     </section>
   );
 
-  return isHeader ? (
+  return (
     <HeaderStat
       heading={t('Liquidity supplied')}
       description={description}
@@ -135,9 +131,5 @@ export const MarketLiquiditySupplied = ({
         ({formatNumberPercentage(percentage, 2)}) {supplied}
       </div>
     </HeaderStat>
-  ) : (
-    <Tooltip description={description}>
-      <span>{supplied}</span>
-    </Tooltip>
   );
 };
