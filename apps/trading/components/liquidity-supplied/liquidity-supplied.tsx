@@ -7,7 +7,6 @@ import {
   useDataProvider,
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
@@ -31,7 +30,7 @@ export const MarketLiquiditySupplied = ({
   assetDecimals,
   noUpdate = false,
 }: Props) => {
-  const [market, setMarket] = useState<MarketDealTicket>();
+  const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcySiskas,
     NetworkParams.market_liquidity_targetstake_triggering_ratio,
@@ -58,14 +57,11 @@ export const MarketLiquiditySupplied = ({
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {
       if (!noUpdate && marketData) {
-        setMarket({
-          ...data,
-          data: marketData,
-        } as MarketDealTicket);
+        setMarket(marketData);
       }
       return true;
     },
-    [noUpdate, data]
+    [noUpdate]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
@@ -75,36 +71,36 @@ export const MarketLiquiditySupplied = ({
     skip: noUpdate || !marketId || !data,
   });
 
-  const supplied = market?.data.suppliedStake
+  const supplied = market?.suppliedStake
     ? addDecimalsFormatNumber(
-        new BigNumber(market?.data.suppliedStake)
+        new BigNumber(market?.suppliedStake)
           .multipliedBy(stakeToCcyVolume || 1)
           .toString(),
         assetDecimals
       )
     : '-';
 
-  const { percentage, status } = useCheckLiquidityStatus({
-    suppliedStake: market?.data.suppliedStake || 0,
-    targetStake: market?.data.targetStake || 0,
+  const { percentage } = useCheckLiquidityStatus({
+    suppliedStake: market?.suppliedStake || 0,
+    targetStake: market?.targetStake || 0,
     triggeringRatio,
   });
 
   const compiledGrid = [
     {
       label: t('Supplied stake'),
-      value: market?.data.suppliedStake
+      value: market?.suppliedStake
         ? addDecimalsFormatNumber(
-            new BigNumber(market?.data.suppliedStake).toString(),
+            new BigNumber(market?.suppliedStake).toString(),
             assetDecimals
           )
         : '-',
     },
     {
       label: t('Target stake'),
-      value: market?.data.targetStake
+      value: market?.targetStake
         ? addDecimalsFormatNumber(
-            new BigNumber(market?.data.targetStake).toString(),
+            new BigNumber(market?.targetStake).toString(),
             assetDecimals
           )
         : '-',
