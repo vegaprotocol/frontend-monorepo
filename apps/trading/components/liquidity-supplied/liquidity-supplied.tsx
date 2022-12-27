@@ -15,11 +15,10 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
-import { Link, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Indicator, Link, Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { MarketDataGrid } from '@vegaprotocol/deal-ticket';
-import classNames from 'classnames';
 
 interface Props {
   marketId?: string;
@@ -133,13 +132,7 @@ export const MarketLiquiditySupplied = ({
       testId="liquidity-supplied"
     >
       <div className="flex flex-inline gap-1">
-        <span
-          className={classNames('rounded-full h-2 w-2 mt-1 mr-1', {
-            'bg-danger': status === 'red',
-            'bg-warning': status === 'amber',
-            'bg-success': status === 'green',
-          })}
-        ></span>
+        <Indicator variant={status} />
         <span>({formatNumberPercentage(percentage, 2)})</span>
         <span>{supplied}</span>
       </div>
