@@ -8,7 +8,7 @@ export const getIsNodeLoading = (node?: NodeData): boolean => {
     node.chain.isLoading ||
     node.responseTime.isLoading ||
     node.block.isLoading ||
-    node.ssl.isLoading
+    node.subscription.isLoading
   );
 };
 
@@ -29,7 +29,7 @@ export const getIsNodeDisabled = (env: Networks, data?: NodeData) => {
       data.chain.hasError ||
       data.responseTime.hasError ||
       data.block.hasError ||
-      data.ssl.hasError)
+      data.subscription.hasError)
   );
 };
 
@@ -57,12 +57,12 @@ export const getErrorByType = (
         headline: t('Error: invalid url'),
         message: t(url ? `${url} is not a valid url.` : ''),
       };
-    case ErrorType.SSL_ERROR:
+    case ErrorType.SUBSCRIPTION_ERROR:
       return {
-        headline: t(`Error: the node you are reading from does not have SSL`),
+        headline: t(`Error: the node you are reading from does not emit data`),
         message: t(
           url
-            ? `${url} does not have SSL. SSL is required to subscribe to data.`
+            ? `${url} is required to have subscriptions working to enable data updates on the page.`
             : ''
         ),
       };
@@ -112,8 +112,8 @@ export const getErrorType = (env: Networks, data?: NodeData) => {
       return ErrorType.CONNECTION_ERROR;
     }
 
-    if (data.ssl.hasError) {
-      return ErrorType.SSL_ERROR;
+    if (data.subscription.hasError) {
+      return ErrorType.SUBSCRIPTION_ERROR;
     }
   }
 
