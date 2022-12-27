@@ -26,7 +26,7 @@ export const VoteProgress = ({
           }}
         />
         <div
-          className="absolute right-0 bg-vega-red h-1"
+          className="absolute right-0 bg-vega-pink h-1"
           data-testid="vote-progress-bar-against"
           style={{
             width: `${100 - progress.toNumber()}%`,

@@ -15,7 +15,7 @@ import type { Trade } from './trades-data-provider';
 import BigNumber from 'bignumber.js';
 
 export const UP_CLASS = 'text-vega-green-dark dark:text-vega-green';
-export const DOWN_CLASS = 'text-vega-red-dark dark:text-vega-red';
+export const DOWN_CLASS = 'text-vega-pink-dark dark:text-vega-pink';
 
 const changeCellClass =
   (dataKey: string) =>

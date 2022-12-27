@@ -18,7 +18,8 @@ export const Size = ({
       className={classNames('text-right', {
         'text-vega-green-dark dark:text-vega-green':
           side === Schema.Side.SIDE_BUY,
-        'text-vega-red-dark dark:text-vega-red': side === Schema.Side.SIDE_SELL,
+        'text-vega-pink-dark dark:text-vega-pink':
+          side === Schema.Side.SIDE_SELL,
       })}
     >
       {side === Schema.Side.SIDE_BUY

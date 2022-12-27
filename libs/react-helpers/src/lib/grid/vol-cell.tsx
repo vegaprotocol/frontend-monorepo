@@ -19,8 +19,8 @@ export interface IVolCellProps extends ICellRendererParams {
   valueFormatted: Omit<VolProps, 'value'>;
 }
 
-export const BID_COLOR = 'darkgreen';
-export const ASK_COLOR = 'maroon';
+export const BID_COLOR = '#00F780'; // vega-green with 30% opacity
+export const ASK_COLOR = '#FF077F'; //vega-pink with 60% opacity
 
 export const Vol = React.memo(
   ({ value, valueFormatted, relativeValue, type, testId }: VolProps) => {
@@ -40,6 +40,7 @@ export const Vol = React.memo(
           style={{
             width: relativeValue ? `${relativeValue}%` : '0%',
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
+            opacity: type === VolumeType.bid ? 0.6 : 0.6,
           }}
         ></div>
         <PriceCell value={value} valueFormatted={valueFormatted} />

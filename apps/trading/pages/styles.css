@@ -22,3 +22,17 @@ html.dark {
 .border-default {
   @apply border-neutral-300 dark:border-neutral-600;
 }
+
+.container [data-theme="dark"] {
+  --pennant-color-buy-fill: theme('colors.vega.green');
+  --pennant-color-buy-stroke: theme('colors.vega.green');;
+  --pennant-color-sell-fill: theme('colors.vega.pink');
+  --pennant-color-sell-stroke: theme('colors.vega.pink');
+}
+
+.container {
+  --pennant-color-buy-fill: theme('colors.vega.green');;
+  --pennant-color-buy-stroke: theme('colors.vega.green');;
+  --pennant-color-sell-fill: theme('colors.vega.pink');
+  --pennant-color-sell-stroke: theme('colors.vega.pink');
+}
