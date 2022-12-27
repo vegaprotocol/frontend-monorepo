@@ -61,7 +61,7 @@ const getNodeData = (url?: string): NodeData => ({
   initialized: false,
   responseTime: withData(),
   block: withData(),
-  ssl: withData(),
+  subscription: withData(),
   chain: withData(),
 });
 
@@ -141,18 +141,18 @@ const reducer = (state: Record<string, NodeData>, action: Action) => {
           state[action.node] = getNodeData(action.payload?.url);
         }
         state[action.node].url = action.payload?.url ?? '';
-        state[action.node].ssl.isLoading = true;
+        state[action.node].subscription.isLoading = true;
         state[action.node].initialized = true;
       });
     case ACTIONS.CHECK_SUBSCRIPTION_SUCCESS:
       return produce(state, (state) => {
         if (!state[action.node]) return;
-        state[action.node].ssl = withData(true);
+        state[action.node].subscription = withData(true);
       });
     case ACTIONS.CHECK_SUBSCRIPTION_FAILURE:
       return produce(state, (state) => {
         if (!state[action.node]) return;
-        state[action.node].ssl = withError();
+        state[action.node].subscription = withError();
       });
     case ACTIONS.ADD_NODE:
       return produce(state, (state) => {

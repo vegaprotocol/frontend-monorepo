@@ -503,7 +503,7 @@ describe('node selection', () => {
     });
   });
 
-  it('has a network error when the selected node has not ssl available', async () => {
+  it('has a network error when the selected node has not subscription available', async () => {
     act(async () => {
       // @ts-ignore allow adding a mock return value to mocked module
       createClient.mockImplementation(() => {
@@ -517,7 +517,7 @@ describe('node selection', () => {
       await waitFor(() => {
         expect(result.current).toEqual({
           ...mockEnvironmentState,
-          networkError: ErrorType.SSL_ERROR,
+          networkError: ErrorType.SUBSCRIPTION_ERROR,
           setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
         });
       });

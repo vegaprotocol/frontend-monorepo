@@ -10,7 +10,7 @@ export const CUSTOM_NODE_KEY = 'custom';
 
 export enum ErrorType {
   INVALID_URL,
-  SSL_ERROR,
+  SUBSCRIPTION_ERROR,
   CONNECTION_ERROR,
   CONNECTION_ERROR_ALL,
   CONFIG_LOAD_ERROR,
@@ -37,7 +37,7 @@ type NodeCheck<T> = {
 export type NodeData = {
   url: string;
   initialized: boolean;
-  ssl: NodeCheck<boolean>;
+  subscription: NodeCheck<boolean>;
   block: NodeCheck<number>;
   responseTime: NodeCheck<number>;
   chain: NodeCheck<string>;
