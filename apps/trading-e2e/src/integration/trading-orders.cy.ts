@@ -224,16 +224,18 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
   });
 
-    it('must see the size of the order and direction/side -', () => {
+  it('must see the size of the order and direction/side -', () => {
     // 7003-MORD-003
     // 7003-MORD-004
     updateOrder({
       id: orderId,
       size: '15',
       side: Schema.Side.SIDE_SELL,
-      status: Schema.OrderStatus.STATUS_ACTIVE
+      status: Schema.OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[row-id=${orderId}]`).find('[col-id="size"]').should('have.text', '-15');
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="size"]')
+      .should('have.text', '-15');
   });
 
   it('must see the size of the order and direction/side +', () => {
@@ -243,18 +245,22 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       size: '5',
       side: Schema.Side.SIDE_BUY,
-      status: Schema.OrderStatus.STATUS_ACTIVE
+      status: Schema.OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[row-id=${orderId}]`).find('[col-id="size"]').should('have.text', '+5');
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="size"]')
+      .should('have.text', '+5');
   });
 
   it('for limit typy must see the Limit price that was set on the order', () => {
     // 7003-MORD-005
     updateOrder({
       id: orderId,
-      status: Schema.OrderStatus.STATUS_ACTIVE
+      status: Schema.OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[row-id=${orderId}]`).find('[col-id="price"]').should('have.text', '200.00');
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="price"]')
+      .should('have.text', '200.00');
   });
 
   it('for market typy must not see a price for active or parked orders', () => {
@@ -262,9 +268,11 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       type: Schema.OrderType.TYPE_MARKET,
-      status: Schema.OrderStatus.STATUS_PARKED
+      status: Schema.OrderStatus.STATUS_PARKED,
     });
-    cy.get(`[row-id=${orderId}]`).find('[col-id="price"]').should('have.text', '200.00');
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="price"]')
+      .should('have.text', '200.00');
   });
 
   it('must see the time in force applied to the order', () => {
@@ -275,7 +283,9 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_ACTIVE,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
     });
-    cy.get(`[row-id=${orderId}]`).find(`[col-id='${orderTimeInForce}']`).should('have.text', 'Good \'til Cancelled (GTC)');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[col-id='${orderTimeInForce}']`)
+      .should('have.text', "Good 'til Cancelled (GTC)");
   });
 
   it('for Active order when is part of a liquidity or peg shape, must not see an option to amend the individual order ', () => {
