@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
   addDecimalsFormatNumber,
+  formatNumberPercentage,
   NetworkParams,
   t,
   useDataProvider,
-  useNetworkParam,
+  useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import type {
@@ -17,6 +18,7 @@ import { HeaderStat } from '../header';
 import { Link, Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
+import { MarketDataGrid } from '@vegaprotocol/deal-ticket';
 
 interface Props {
   marketId?: string;
@@ -34,15 +36,16 @@ export const MarketLiquiditySupplied = ({
   noUpdate = false,
 }: Props) => {
   const [market, setMarket] = useState<MarketDealTicket>();
-  const { param: stakeToCcyVolume } = useNetworkParam(
-    NetworkParams.market_liquidity_stakeToCcySiskas
+  const { params } = useNetworkParams([
+    NetworkParams.market_liquidity_stakeToCcySiskas,
+    NetworkParams.market_liquidity_targetstake_triggering_ratio,
+  ]);
+
+  const stakeToCcyVolume = Number(params.market_liquidity_stakeToCcySiskas);
+  const triggeringRatio = Number(
+    params.market_liquidity_targetstake_triggering_ratio
   );
 
-  const { param: triggeringRatio } = useNetworkParam(
-    NetworkParams.market_liquidity_targetstake_triggering_ratio
-  );
-
-  console.log({ stakeToCcyVolume, triggeringRatio });
   const variables = useMemo(
     () => ({
       marketId: marketId,
@@ -76,17 +79,16 @@ export const MarketLiquiditySupplied = ({
     skip: noUpdate || !marketId || !data,
   });
 
-  const suppliedStake = market?.data.suppliedStake
+  const supplied = market?.data.suppliedStake
     ? addDecimalsFormatNumber(
         new BigNumber(market?.data.suppliedStake)
-
           .multipliedBy(stakeToCcyVolume || 1)
           .toString(),
         assetDecimals
       )
     : '';
 
-  const targetStake = market?.data.targetStake
+  const target = market?.data.targetStake
     ? addDecimalsFormatNumber(
         new BigNumber(market?.data.targetStake)
           .multipliedBy(stakeToCcyVolume || 1)
@@ -95,23 +97,37 @@ export const MarketLiquiditySupplied = ({
       )
     : '';
 
-  const { status, percentage } = useCheckLiquidityStatus({
-    suppliedStake,
-    targetStake,
-    triggeringRatio: (triggeringRatio && Number(triggeringRatio)) || 1,
+  const { percentage } = useCheckLiquidityStatus({
+    suppliedStake: market?.data.suppliedStake || 0,
+    targetStake: market?.data.targetStake || 0,
+    triggeringRatio,
   });
 
+  const compiledGrid = [
+    {
+      label: t('Supplied stake'),
+      value: addDecimalsFormatNumber(
+        new BigNumber(market?.data.suppliedStake || 0).toString(),
+        assetDecimals
+      ),
+    },
+    {
+      label: t('Target stake'),
+      value: addDecimalsFormatNumber(
+        new BigNumber(market?.data.targetStake || 0).toString(),
+        assetDecimals
+      ),
+    },
+  ];
+
   const description = (
-    <>
-      <p>{status}</p>
-      <p>{percentage}</p>
-      <p>{suppliedStake}</p>
-      <p>{targetStake}</p>
-      <p>{stakeToCcyVolume}</p>
+    <section>
+      {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
+      <br />
       <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
       </Link>
-    </>
+    </section>
   );
 
   return isHeader ? (
@@ -120,11 +136,13 @@ export const MarketLiquiditySupplied = ({
       description={description}
       testId="liquidity-supplied"
     >
-      <div>{suppliedStake}</div>
+      <div>
+        ({formatNumberPercentage(percentage, 2)}) {supplied}
+      </div>
     </HeaderStat>
   ) : (
     <Tooltip description={description}>
-      <span>{suppliedStake}</span>
+      <span>{supplied}</span>
     </Tooltip>
   );
 };
