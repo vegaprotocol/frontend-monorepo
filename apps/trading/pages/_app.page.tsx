@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t } from '@vegaprotocol/react-helpers';
@@ -22,6 +23,7 @@ import {
 } from '@vegaprotocol/environment';
 import { AppLoader, Web3Provider } from '../components/app-loader';
 import './styles.css';
+import './gen-styles.scss';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
@@ -67,7 +69,7 @@ function AppBody({ Component }: AppProps) {
   const { VEGA_ENV } = useEnvironment();
 
   return (
-    <>
+    <div className="h-full dark:bg-black dark:text-white">
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -76,7 +78,7 @@ function AppBody({ Component }: AppProps) {
       <VegaWalletProvider>
         <AppLoader>
           <Web3Provider>
-            <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
+            <div className="h-full relative z-0 grid grid-rows-[min-content,1fr,min-content]">
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
@@ -92,9 +94,16 @@ function AppBody({ Component }: AppProps) {
           </Web3Provider>
         </AppLoader>
       </VegaWalletProvider>
-    </>
+    </div>
   );
 }
+
+const DynamicLoader = dynamic(
+  () => import('../components/preloader/preloader'),
+  {
+    loading: () => <>Loading...</>,
+  }
+);
 
 function VegaTradingApp(props: AppProps) {
   const [mounted, setMounted] = useState(false);
@@ -106,7 +115,9 @@ function VegaTradingApp(props: AppProps) {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return <DynamicLoader />;
+  }
 
   return (
     <HashRouter>
