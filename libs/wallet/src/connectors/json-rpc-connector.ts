@@ -45,7 +45,7 @@ export class JsonRpcConnector implements VegaConnector {
       this.token = cfg.token;
       this.url = cfg.url;
       this.client = new WalletClient({
-        hostname: cfg.url,
+        address: cfg.url,
         token: cfg.token ?? undefined,
       });
     }
@@ -77,6 +77,7 @@ export class JsonRpcConnector implements VegaConnector {
       });
       return result;
     } catch (err) {
+
       throw ClientErrors.INVALID_RESPONSE;
     }
   }
