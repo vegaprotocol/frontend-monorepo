@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 
 import type { MarketNodeFragment } from './../__generated__/MarketsLiquidity';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
 export type LiquidityProvisionMarket = MarketNodeFragment;
 
@@ -127,7 +128,7 @@ export const useCheckLiquidityStatus = ({
   targetStake: string | number;
   triggeringRatio: string | number;
 }): {
-  status: 'green' | 'amber' | 'red' | undefined;
+  status: Intent;
   percentage: BigNumber;
 } => {
   // percentage supplied
@@ -138,7 +139,7 @@ export const useCheckLiquidityStatus = ({
   if (new BigNumber(suppliedStake).gte(new BigNumber(targetStake))) {
     // show a green status, e.g. "🟢 $13,666,999 liquidity supplied"
     return {
-      status: 'green',
+      status: Intent.Success,
       percentage,
     };
     // ELSE IF supplied_stake > NETPARAM[market.liquidity.targetstake.triggering.ratio] * target_stake THEN
@@ -149,13 +150,13 @@ export const useCheckLiquidityStatus = ({
   ) {
     // show an amber status, e.g. "🟠 $3,456,123 liquidity supplied"
     return {
-      status: 'amber',
+      status: Intent.Warning,
       percentage,
     };
     // ELSE show a red status, e.g. "🔴 $600,002 liquidity supplied"
   } else {
     return {
-      status: 'red',
+      status: Intent.Danger,
       percentage,
     };
   }

@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import {
   formatWithAsset,
@@ -133,7 +134,7 @@ describe('useCheckLiquidityStatus', () => {
     );
 
     expect(result.current).toEqual({
-      status: 'amber',
+      status: Intent.Warning,
       percentage: new BigNumber('60'),
     });
   });
@@ -148,7 +149,7 @@ describe('useCheckLiquidityStatus', () => {
     );
 
     expect(result.current).toEqual({
-      status: 'red',
+      status: Intent.Danger,
       percentage: new BigNumber('60'),
     });
   });
@@ -163,7 +164,7 @@ describe('useCheckLiquidityStatus', () => {
     );
 
     expect(result.current).toEqual({
-      status: 'green',
+      status: Intent.Success,
       percentage: new BigNumber('101'),
     });
   });

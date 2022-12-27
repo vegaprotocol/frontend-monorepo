@@ -84,7 +84,7 @@ export const MarketLiquiditySupplied = ({
       )
     : '-';
 
-  const { percentage } = useCheckLiquidityStatus({
+  const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: market?.data.suppliedStake || 0,
     targetStake: market?.data.targetStake || 0,
     triggeringRatio,
@@ -127,8 +127,9 @@ export const MarketLiquiditySupplied = ({
       description={description}
       testId="liquidity-supplied"
     >
-      <div>
-        ({formatNumberPercentage(percentage, 2)}) {supplied}
+      <div className="flex flex-inline gap-1">
+        <span>({formatNumberPercentage(percentage, 2)})</span>
+        <span>{supplied}</span>
       </div>
     </HeaderStat>
   );
