@@ -77,7 +77,6 @@ export class JsonRpcConnector implements VegaConnector {
       });
       return result;
     } catch (err) {
-
       throw ClientErrors.INVALID_RESPONSE;
     }
   }
