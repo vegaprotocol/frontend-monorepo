@@ -108,7 +108,7 @@ export const MarketLiquiditySupplied = ({
       <p>{suppliedStake}</p>
       <p>{targetStake}</p>
       <p>{stakeToCcyVolume}</p>
-      <Link href={`/liquidity/${marketId}`} data-testid="view-liquidity-link">
+      <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
       </Link>
     </>
