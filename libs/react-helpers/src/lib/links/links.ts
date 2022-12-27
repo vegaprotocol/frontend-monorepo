@@ -17,7 +17,7 @@ export const ExternalLinks = {
   FEEDBACK: 'https://github.com/vegaprotocol/feedback/discussions',
   GITHUB: 'https://github.com/vegaprotocol/token-frontend',
   DISCORD: 'https://vega.xyz/discord',
-  GOVERNANCE_PAGE: 'https://vega.xyz/proposals',
+  GOVERNANCE_PAGE: 'https://vega.xyz/governance',
   VALIDATOR_FORUM: 'https://community.vega.xyz/c/mainnet-validator-candidates',
   MARGIN_CREDIT_RISK:
     'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
