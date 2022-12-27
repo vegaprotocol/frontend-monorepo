@@ -33,7 +33,7 @@ class NoClientError extends Error {
 
 export class JsonRpcConnector implements VegaConnector {
   version = VERSION;
-  url: string | null = null;
+  private _url: string | null = null;
   token: string | null = null;
   reqId = 0;
   client?: WalletClient;
@@ -41,14 +41,23 @@ export class JsonRpcConnector implements VegaConnector {
   constructor() {
     const cfg = getConfig();
 
+    this.token = cfg?.token ?? null;
+
     if (cfg && cfg.url) {
-      this.token = cfg.token;
       this.url = cfg.url;
       this.client = new WalletClient({
         address: cfg.url,
         token: cfg.token ?? undefined,
       });
     }
+  }
+
+  set url(url: string) {
+    this._url = url;
+    this.client = new WalletClient({
+      address: url,
+      token: this.token ?? undefined,
+    });
   }
 
   async getChainId() {
@@ -130,11 +139,11 @@ export class JsonRpcConnector implements VegaConnector {
 
   async checkCompat() {
     try {
-      const result = await fetch(`${this.url}/api/${this.version}/methods`);
+      const result = await fetch(`${this._url}/api/${this.version}/methods`);
       if (!result.ok) {
         const err = ClientErrors.INVALID_WALLET;
         err.data = t(
-          `The wallet running at ${this.url} is not supported. Required version is ${this.version}`
+          `The wallet running at ${this._url} is not supported. Required version is ${this.version}`
         );
         throw err;
       }
