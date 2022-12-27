@@ -3,8 +3,11 @@ import type { OrderAmendment, OrderCancellation } from '@vegaprotocol/wallet';
 import {
   updateOrder,
   getSubscriptionMocks,
-} from '../support/mocks/generate-ws-order-update';
-import { cancelOrder, editOrder } from '../support/order-list';
+} from '../support/order-update-subscription';
+import {
+  testOrderCancellation,
+  testOrderAmendment,
+} from '../support/order-validation';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
 const orderSize = 'size';
@@ -17,14 +20,13 @@ const orderCreatedAt = 'createdAt';
 const cancelOrderBtn = 'cancel';
 const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
-const closePopUpBtn = 'dialog-close';
 
 describe('orders list', { tags: '@smoke' }, () => {
   before(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
-    cy.mockGQLSubscription(subscriptionMocks);
+    cy.mockSubscription(subscriptionMocks);
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.connectVegaWallet();
@@ -122,7 +124,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
-    cy.mockGQLSubscription(subscriptionMocks);
+    cy.mockSubscription(subscriptionMocks);
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.connectVegaWallet();
@@ -221,6 +223,52 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
   });
+
+  it('for Active order when is part of a liquidity or peg shape, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
+      liquidityProvisionId: '6536',
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
+
+  it('for Active order when is part of a liquidity, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      liquidityProvisionId: '6536',
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
+
+  it('for Active order when is part of a peg shape, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
 });
 
 describe('amend and cancel order', { tags: '@smoke' }, () => {
@@ -228,7 +276,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
-    cy.mockGQLSubscription(subscriptionMocks);
+    cy.mockSubscription(subscriptionMocks);
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.connectVegaWallet();
@@ -246,6 +294,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
       .find('[data-testid="edit"]')
@@ -262,8 +312,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
           sizeDelta: 0,
         };
-        editOrder(order);
-        cy.getByTestId(closePopUpBtn).click();
+        testOrderAmendment(order);
       });
   });
   it('must be able to cancel an individual order', () => {
@@ -273,6 +322,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
       .find(`[data-testid="cancel"]`)
@@ -283,14 +334,18 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           orderId: orderId,
           marketId: 'market-0',
         };
-        cancelOrder(order);
-        cy.getByTestId(closePopUpBtn).click();
+        testOrderCancellation(order);
       });
   });
   it('must be able to cancel all orders on a market', () => {
+    // 7003-MORD-009
+    // 7003-MORD-010
+    // 7003-MORD-011
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[data-testid="cancelAll"]`)
       .should('have.text', 'Cancel all')
@@ -299,8 +354,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
         const order: OrderCancellation = {
           marketId: 'market-0',
         };
-        cancelOrder(order);
-        cy.getByTestId(closePopUpBtn).click();
+        testOrderCancellation(order);
       });
   });
 });

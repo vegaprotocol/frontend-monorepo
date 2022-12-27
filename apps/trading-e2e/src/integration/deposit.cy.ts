@@ -8,7 +8,7 @@ const formFieldError = 'input-error-text';
 describe('deposit form validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.mockTradingPage();
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');

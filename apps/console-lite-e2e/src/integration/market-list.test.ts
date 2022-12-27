@@ -1,18 +1,11 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import type { MarketsQuery } from '@vegaprotocol/market-list';
-import {
-  generateLongListMarkets,
-  generateSimpleMarkets,
-  generateMarketsCandles,
-} from '../support/mocks/generate-markets';
+import { marketCandlesQuery, marketsQuery } from '@vegaprotocol/mock';
 
 describe('market list', { tags: '@smoke' }, () => {
   describe('simple url', () => {
     beforeEach(() => {
-      cy.mockGQL((req) => {
-        aliasQuery(req, 'Markets', generateSimpleMarkets());
-        aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
-      });
+      cy.mockConsole();
       cy.visit('/markets');
     });
 
@@ -64,10 +57,7 @@ describe('market list', { tags: '@smoke' }, () => {
 
   describe('url params should select filters', () => {
     beforeEach(() => {
-      cy.mockGQL((req) => {
-        aliasQuery(req, 'Markets', generateSimpleMarkets());
-        aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
-      });
+      cy.mockConsole();
     });
 
     it('suspended status', () => {
@@ -100,14 +90,26 @@ describe('market list', { tags: '@smoke' }, () => {
   });
 
   describe('long list of results should be handled properly', () => {
-    it('handles 1000 markets', () => {
+    beforeEach(() => {
+      cy.mockConsole();
       cy.viewport(1440, 900);
+      const market = marketsQuery().marketsConnection?.edges[0];
+      const edges = new Array(1000)
+        .fill('')
+        .map(() => Object.assign({}, market));
       cy.mockGQL((req) => {
-        aliasQuery(req, 'Markets', generateLongListMarkets(1000));
-        aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
+        aliasGQLQuery(
+          req,
+          'Markets',
+          marketsQuery({ marketsConnection: { edges } })
+        );
+        aliasGQLQuery(req, 'MarketsCandles', marketCandlesQuery());
       });
       performance.mark('start-1k');
       cy.visit('/markets');
+      cy.wait('@Markets');
+    });
+    it('handles 1000 markets', () => {
       cy.get('.ag-center-cols-container', { timeout: 50000 }).then(() => {
         performance.mark('end-1k');
         performance.measure('load-1k', 'start-1k', 'end-1k');

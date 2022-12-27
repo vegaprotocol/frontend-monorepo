@@ -1,9 +1,8 @@
 import * as Schema from '@vegaprotocol/types';
-import { generateEstimateOrder } from '../support/mocks/generate-fees';
-import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
-import { testOrder } from '../support/deal-ticket-transaction';
+import { aliasGQLQuery, mockConnectWallet } from '@vegaprotocol/cypress';
+import { testOrderSubmission } from '../support/order-validation';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import { generateAccounts } from '../support/mocks/generate-accounts';
+import { accountsQuery, estimateOrderQuery } from '@vegaprotocol/mock';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
@@ -32,7 +31,7 @@ const displayTomorrow = () => {
 describe('time in force default values', () => {
   before(() => {
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.connectVegaWallet();
@@ -61,7 +60,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
   // 7002-SORD-039
   before(() => {
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.connectVegaWallet();
@@ -86,7 +85,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
       size: '100',
     };
-    testOrder(order);
+    createOrder(order);
+    testOrderSubmission(order);
   });
 
   it('successfully places market sell order', () => {
@@ -98,7 +98,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
       size: '100',
     };
-    testOrder(order);
+    createOrder(order);
+    testOrderSubmission(order);
   });
 
   it('successfully places limit buy order', () => {
@@ -112,7 +113,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       size: '100',
       price: '200',
     };
-    testOrder(order, { price: '20000000' });
+    createOrder(order);
+    testOrderSubmission(order, { price: '20000000' });
   });
 
   it('successfully places limit sell order', () => {
@@ -125,7 +127,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       size: '100',
       price: '50000',
     };
-    testOrder(order, { price: '5000000000' });
+    createOrder(order);
+    testOrderSubmission(order, { price: '5000000000' });
   });
 
   it('successfully places GTT limit buy order', () => {
@@ -140,7 +143,9 @@ describe('must submit order', { tags: '@smoke' }, () => {
       price: '1.00',
       expiresAt: expiresAt.toISOString().substring(0, 16),
     };
-    testOrder(order, {
+
+    createOrder(order);
+    testOrderSubmission(order, {
       price: '100000',
       expiresAt:
         new Date(order.expiresAt as string).getTime().toString() + '000000',
@@ -158,7 +163,7 @@ describe(
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
-      cy.mockGQLSubscription();
+      cy.mockSubscription();
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
       cy.connectVegaWallet();
@@ -183,7 +188,8 @@ describe(
         size: '100',
         price: '200',
       };
-      testOrder(order, { price: '20000000' });
+      createOrder(order);
+      testOrderSubmission(order, { price: '20000000' });
     });
 
     it('successfully places limit sell order', () => {
@@ -196,7 +202,8 @@ describe(
         size: '100',
         price: '50000',
       };
-      testOrder(order, { price: '5000000000' });
+      createOrder(order);
+      testOrderSubmission(order, { price: '5000000000' });
     });
 
     it('successfully places GTT limit buy order', () => {
@@ -210,7 +217,8 @@ describe(
         price: '1.00',
         expiresAt: displayTomorrow(),
       };
-      testOrder(order, {
+      createOrder(order);
+      testOrderSubmission(order, {
         price: '100000',
         expiresAt:
           new Date(order.expiresAt as string).getTime().toString() + '000000',
@@ -229,7 +237,7 @@ describe(
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
-      cy.mockGQLSubscription();
+      cy.mockSubscription();
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
       cy.connectVegaWallet();
@@ -254,7 +262,8 @@ describe(
         size: '100',
         price: '200',
       };
-      testOrder(order, { price: '20000000' });
+      createOrder(order);
+      testOrderSubmission(order, { price: '20000000' });
     });
 
     it('successfully places limit sell order', () => {
@@ -267,7 +276,8 @@ describe(
         size: '100',
         price: '50000',
       };
-      testOrder(order, { price: '5000000000' });
+      createOrder(order);
+      testOrderSubmission(order, { price: '5000000000' });
     });
 
     it('successfully places GTT limit buy order', () => {
@@ -281,7 +291,8 @@ describe(
         price: '1.00',
         expiresAt: displayTomorrow(),
       };
-      testOrder(order, {
+      createOrder(order);
+      testOrderSubmission(order, {
         price: '100000',
         expiresAt:
           new Date(order.expiresAt as string).getTime().toString() + '000000',
@@ -300,7 +311,7 @@ describe(
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
-      cy.mockGQLSubscription();
+      cy.mockSubscription();
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
       cy.connectVegaWallet();
@@ -325,7 +336,8 @@ describe(
         size: '100',
         price: '200',
       };
-      testOrder(order, { price: '20000000' });
+      createOrder(order);
+      testOrderSubmission(order, { price: '20000000' });
     });
 
     it('successfully places limit sell order', () => {
@@ -338,7 +350,8 @@ describe(
         size: '100',
         price: '50000',
       };
-      testOrder(order, { price: '5000000000' });
+      createOrder(order);
+      testOrderSubmission(order, { price: '5000000000' });
     });
 
     it('successfully places GTT limit buy order', () => {
@@ -352,7 +365,8 @@ describe(
         price: '1.00',
         expiresAt: displayTomorrow(),
       };
-      testOrder(order, {
+      createOrder(order);
+      testOrderSubmission(order, {
         price: '100000',
         expiresAt:
           new Date(order.expiresAt as string).getTime().toString() + '000000',
@@ -398,7 +412,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
-    cy.wait('@walletGQL');
+    cy.wait('@walletReq');
     cy.getByTestId(placeOrderBtn).should('be.visible');
     cy.getByTestId(toggleLimit).children('input').should('be.checked');
     cy.getByTestId(orderPriceField).should('have.value', '101');
@@ -442,7 +456,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 describe('limit order validations', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.connectVegaWallet();
     cy.wait('@Market');
@@ -578,7 +592,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.connectVegaWallet();
@@ -623,10 +637,10 @@ describe('account validation', { tags: '@regression' }, () => {
     beforeEach(() => {
       cy.mockTradingPage();
       cy.mockGQL((req) => {
-        aliasQuery(
+        aliasGQLQuery(
           req,
           'Accounts',
-          generateAccounts({
+          accountsQuery({
             party: {
               accountsConnection: {
                 edges: [
@@ -647,7 +661,7 @@ describe('account validation', { tags: '@regression' }, () => {
           })
         );
       });
-      cy.mockGQLSubscription();
+      cy.mockSubscription();
       cy.visit('/#/markets/market-0');
       cy.connectVegaWallet();
       cy.wait('@Market');
@@ -670,10 +684,10 @@ describe('account validation', { tags: '@regression' }, () => {
     beforeEach(() => {
       cy.mockTradingPage();
       cy.mockGQL((req) => {
-        aliasQuery(
+        aliasGQLQuery(
           req,
           'EstimateOrder',
-          generateEstimateOrder({
+          estimateOrderQuery({
             estimateOrder: {
               marginLevels: {
                 __typename: 'MarginLevels',
@@ -683,7 +697,7 @@ describe('account validation', { tags: '@regression' }, () => {
           })
         );
       });
-      cy.mockGQLSubscription();
+      cy.mockSubscription();
       cy.visit('/#/markets/market-0');
       cy.connectVegaWallet();
       cy.wait('@Market');
@@ -707,3 +721,22 @@ describe('account validation', { tags: '@regression' }, () => {
     });
   });
 });
+
+const createOrder = (order: OrderSubmission): void => {
+  const { type, side, size, price, timeInForce, expiresAt } = order;
+
+  cy.getByTestId(`order-type-${type}`).click();
+  cy.getByTestId(`order-side-${side}`).click();
+  cy.getByTestId(orderSizeField).clear().type(size);
+  if (price) {
+    cy.getByTestId(orderPriceField).clear().type(price);
+  }
+  cy.getByTestId(orderTIFDropDown).select(timeInForce);
+  if (timeInForce === 'TIME_IN_FORCE_GTT') {
+    if (!expiresAt) {
+      throw new Error('Specify expiresAt if using GTT');
+    }
+    cy.getByTestId('date-picker-field').type(expiresAt);
+  }
+  cy.getByTestId(placeOrderBtn).click();
+};

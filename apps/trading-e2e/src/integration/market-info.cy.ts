@@ -8,7 +8,7 @@ const externalLink = 'external-link';
 describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();

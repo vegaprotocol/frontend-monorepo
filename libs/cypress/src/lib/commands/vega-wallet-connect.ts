@@ -1,4 +1,4 @@
-import { aliasWalletQuery } from '../graphql-test-utils';
+import { aliasWalletQuery } from '../mock-rest';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,7 +15,7 @@ export const mockConnectWallet = () => {
     token: Cypress.env('VEGA_WALLET_API_TOKEN'),
   };
   console.log('mockConnectWallet', data);
-  cy.mockWalletGQL((req) => {
+  cy.mockWallet((req) => {
     aliasWalletQuery(req, 'client.connect_wallet', data);
   });
 };
@@ -29,7 +29,7 @@ export function addVegaWalletConnect() {
     cy.get('[data-testid=connectors-list]')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
-    cy.wait('@walletGQL');
+    cy.wait('@walletReq');
     cy.get('[data-testid=dialog-content]').should(
       'contain.text',
       'Successfully connected'
