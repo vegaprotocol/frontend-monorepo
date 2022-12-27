@@ -84,7 +84,7 @@ export const WithdrawalProgress = ({ id, txStatus }: TxsStatsInfoProps) => {
 
 const classes = {
   indicatorFailed:
-    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-red-600 bg-vega-pink-600 text-center text-white font-bold leading-5',
+    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-pink-600 bg-vega-pink-600 text-center text-white font-bold leading-5',
   textFailed:
     'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-pink',
   indicatorComplete:
