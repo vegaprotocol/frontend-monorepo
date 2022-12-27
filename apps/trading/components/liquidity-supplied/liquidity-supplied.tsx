@@ -86,16 +86,7 @@ export const MarketLiquiditySupplied = ({
           .toString(),
         assetDecimals
       )
-    : '';
-
-  const target = market?.data.targetStake
-    ? addDecimalsFormatNumber(
-        new BigNumber(market?.data.targetStake)
-          .multipliedBy(stakeToCcyVolume || 1)
-          .toString(),
-        assetDecimals
-      )
-    : '';
+    : '-';
 
   const { percentage } = useCheckLiquidityStatus({
     suppliedStake: market?.data.suppliedStake || 0,
@@ -106,17 +97,21 @@ export const MarketLiquiditySupplied = ({
   const compiledGrid = [
     {
       label: t('Supplied stake'),
-      value: addDecimalsFormatNumber(
-        new BigNumber(market?.data.suppliedStake || 0).toString(),
-        assetDecimals
-      ),
+      value: market?.data.suppliedStake
+        ? addDecimalsFormatNumber(
+            new BigNumber(market?.data.suppliedStake).toString(),
+            assetDecimals
+          )
+        : '-',
     },
     {
       label: t('Target stake'),
-      value: addDecimalsFormatNumber(
-        new BigNumber(market?.data.targetStake || 0).toString(),
-        assetDecimals
-      ),
+      value: market?.data.targetStake
+        ? addDecimalsFormatNumber(
+            new BigNumber(market?.data.targetStake).toString(),
+            assetDecimals
+          )
+        : '-',
     },
   ];
 
