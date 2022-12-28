@@ -11,3 +11,4 @@ export * from './remove-0x';
 export * from './time';
 export * from './links';
 export * from './remove-pagination-wrapper';
+export * from './data-grid';
