@@ -122,6 +122,7 @@ export const accountEventsSubscription = (
         balance: '100000000',
         assetId: 'asset-id',
         marketId: null,
+        partyId: 'vega-0',
       },
     ],
   };
