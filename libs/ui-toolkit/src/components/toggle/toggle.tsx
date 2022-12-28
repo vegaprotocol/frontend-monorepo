@@ -39,9 +39,9 @@ export const Toggle = ({
     {
       'peer-checked:bg-neutral-400 dark:peer-checked:bg-white':
         type === 'primary',
-      'peer-checked:bg-green-500 dark:peer-checked:bg-green-400 dark:text-white':
+      'peer-checked:bg-vega-green-dark dark:peer-checked:bg-vega-green-dark dark:peer-checked:text-white':
         type === 'buy',
-      'peer-checked:bg-vega-pink/80 dark:peer-checked:bg-vega-pink/80 dark:text-white':
+      'peer-checked:bg-vega-pink-dark dark:peer-checked:bg-vega-pink-dark dark:peer-checked:text-white':
         type === 'sell',
     },
     'peer-checked:text-white dark:peer-checked:text-black',

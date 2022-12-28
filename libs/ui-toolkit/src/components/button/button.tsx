@@ -33,14 +33,14 @@ const primary = [
 const secondary = [
   'text-white',
   'border-vega-pink',
-  'bg-vega-pink',
+  'bg-vega-pink-dark',
   'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
   'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark',
 ];
 const ternary = [
   'text-white',
-  'border-vega-green',
-  'bg-vega-green',
+  'border-vega-green-dark',
+  'bg-vega-green-dark',
   'enabled:hover:bg-vega-green-dark enabled:hover:border-vega-green-dark',
   'enabled:active:bg-vega-green-dark enabled:active:border-vega-green-dark',
 ];
