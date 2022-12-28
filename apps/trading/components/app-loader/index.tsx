@@ -8,8 +8,7 @@ import {
   Web3Provider as Web3ProviderInternal,
   useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -21,10 +20,7 @@ interface AppLoaderProps {
  */
 export function AppLoader({ children }: AppLoaderProps) {
   return (
-    <NetworkLoader
-      skeleton={<Splash>{t('Loading...')}</Splash>}
-      cache={cacheConfig}
-    >
+    <NetworkLoader skeleton={<Loader />} cache={cacheConfig}>
       {children}
     </NetworkLoader>
   );

@@ -10,7 +10,7 @@ import { getErrorByType } from '../../utils/validate-node';
 import type { Configuration, NodeData } from '../../types';
 import { Networks, ErrorType, CUSTOM_NODE_KEY } from '../../types';
 
-type NodeDataProp = 'responseTime' | 'block' | 'chain' | 'ssl';
+type NodeDataProp = 'responseTime' | 'block' | 'chain' | 'subscription';
 
 jest.mock('../../hooks/use-environment');
 jest.mock('../../hooks/use-nodes');
@@ -99,7 +99,7 @@ const getValidNodeState = (env: Networks, url: string) => ({
     hasError: false,
     value: 123,
   },
-  ssl: {
+  subscription: {
     isLoading: false,
     hasError: false,
     value: true,
@@ -203,8 +203,8 @@ describe('Node switcher', () => {
     ${'block'}        | ${STATES.HAS_ERROR}
     ${'chain'}        | ${STATES.LOADING}
     ${'chain'}        | ${STATES.HAS_ERROR}
-    ${'ssl'}          | ${STATES.LOADING}
-    ${'ssl'}          | ${STATES.HAS_ERROR}
+    ${'subscription'} | ${STATES.LOADING}
+    ${'subscription'} | ${STATES.HAS_ERROR}
   `(
     'disables selecting a node when the $dataProp $state',
     ({ dataProp, state }: { dataProp: NodeDataProp; state: STATES }) => {
@@ -409,8 +409,8 @@ describe('Node switcher', () => {
     ${'block'}        | ${STATES.HAS_ERROR}
     ${'chain'}        | ${STATES.LOADING}
     ${'chain'}        | ${STATES.HAS_ERROR}
-    ${'ssl'}          | ${STATES.LOADING}
-    ${'ssl'}          | ${STATES.HAS_ERROR}
+    ${'subscription'} | ${STATES.LOADING}
+    ${'subscription'} | ${STATES.HAS_ERROR}
   `(
     'disables selecting a custom node when the $dataProp $state',
     ({ dataProp, state }: { dataProp: NodeDataProp; state: STATES }) => {
@@ -494,7 +494,9 @@ describe('Node switcher', () => {
 
       if (state === STATES.HAS_ERROR) {
         const expectedErrorType =
-          dataProp === 'ssl' ? ErrorType.SSL_ERROR : ErrorType.CONNECTION_ERROR;
+          dataProp === 'subscription'
+            ? ErrorType.SUBSCRIPTION_ERROR
+            : ErrorType.CONNECTION_ERROR;
         const error = getErrorByType(
           expectedErrorType,
           Networks.TESTNET,
@@ -547,7 +549,7 @@ describe('Node switcher', () => {
   it.each`
     description                                       | errorType
     ${'the node has an invalid url'}                  | ${ErrorType.INVALID_URL}
-    ${'the node has an ssl issue'}                    | ${ErrorType.SSL_ERROR}
+    ${'the node has a subscription issue'}            | ${ErrorType.SUBSCRIPTION_ERROR}
     ${'the node cannot be reached'}                   | ${ErrorType.CONNECTION_ERROR}
     ${'none of the config nodes can be connected to'} | ${ErrorType.CONNECTION_ERROR_ALL}
     ${'the config cannot be loaded'}                  | ${ErrorType.CONFIG_LOAD_ERROR}

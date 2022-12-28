@@ -43,10 +43,10 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
-    const stakeToCcySiskasFormatter = ({ value }: ValueFormatterParams) => {
+    const stakeToCcyVolumeFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       const newValue = new BigNumber(value)
-        .times(stakeToCcySiskas ?? 1)
+        .times(Number(stakeToCcySiskas) || 1)
         .toString();
       return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
     };
@@ -121,7 +121,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           headerTooltip={t(
             `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_siskas network parameter to convert into units of liquidity volume. The obligation can be met by a combination of LP orders and limit orders on the order book.`
           )}
-          valueFormatter={stakeToCcySiskasFormatter}
+          valueFormatter={stakeToCcyVolumeFormatter}
         />
         <AgGridColumn
           headerName={t('Supplied')}
@@ -130,7 +130,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           )}
           field="balance"
           type="rightAligned"
-          valueFormatter={stakeToCcySiskasFormatter}
+          valueFormatter={stakeToCcyVolumeFormatter}
         />
         <AgGridColumn
           headerName={t('Status')}
