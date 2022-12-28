@@ -423,4 +423,9 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
         testOrderCancellation(order);
       });
   });
+  it.skip('tbd for 7003-MORD', () => {
+    // NOT COVERED: must see the reference, offset and direction for each part pegged order - waiting for clarification 
+    // NOT COVERED: must see the reference, offset and direction for each part liquidity order order - waiting for clarification
+    // NOT COVERED: must be warned (pre-submit) if the input price has too many digits after the decimal place for the market - issues/2486
+  });
 });
