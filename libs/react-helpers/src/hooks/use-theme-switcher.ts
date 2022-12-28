@@ -26,6 +26,13 @@ const setThemeClassName = (theme: Theme) => {
 };
 
 const getCurrentTheme = () => {
+  // If an app is only dark theme then the page will be rendered with
+  // the dark class already applied. In this case return early with state
+  // set to dark
+  if (document.documentElement.classList.contains(Themes.DARK)) {
+    return Themes.DARK;
+  }
+
   const storedTheme = LocalStorage.getItem(THEME_STORAGE_KEY);
 
   if (storedTheme && validateTheme(storedTheme)) {
