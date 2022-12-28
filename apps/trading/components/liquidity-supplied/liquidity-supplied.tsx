@@ -123,11 +123,8 @@ export const MarketLiquiditySupplied = ({
       description={description}
       testId="liquidity-supplied"
     >
-      <div className="flex flex-inline gap-1">
-        {/* <Indicator variant={status} /> */}
-        <span>({formatNumberPercentage(percentage, 2)})</span>
-        <span>{supplied}</span>
-      </div>
+      {/* <Indicator variant={status} /> */}
+      {supplied} ({formatNumberPercentage(percentage, 2)})
     </HeaderStat>
   );
 };
