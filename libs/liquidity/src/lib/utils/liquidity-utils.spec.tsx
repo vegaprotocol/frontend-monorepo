@@ -139,7 +139,7 @@ describe('useCheckLiquidityStatus', () => {
     });
   });
 
-  it('should return red if liquidity is enough', () => {
+  it('should return red if liquidity is not enough', () => {
     const { result } = renderHook(() =>
       useCheckLiquidityStatus({
         suppliedStake: '60',
