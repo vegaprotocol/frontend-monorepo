@@ -1,3 +1,5 @@
+import { useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import {
   marketProvider,
@@ -10,8 +12,6 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Links, Routes } from '../../pages/client-router';
-import { useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 
 export const Home = () => {
