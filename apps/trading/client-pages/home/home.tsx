@@ -1,4 +1,8 @@
-import { marketsWithDataProvider } from '@vegaprotocol/market-list';
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import {
+  marketProvider,
+  marketsWithDataProvider,
+} from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   titlefy,
@@ -6,7 +10,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Links, Routes } from '../../pages/client-router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 
@@ -17,18 +21,37 @@ export const Home = () => {
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithDataProvider,
   });
-  const { update } = useGlobalStore((store) => ({
+  const { update, marketId } = useGlobalStore((store) => ({
     update: store.update,
+    marketId: store.marketId,
   }));
-
+  const variables = useMemo(
+    () => ({
+      marketId: marketId || '',
+    }),
+    [marketId]
+  );
+  const { data: singleMarketData, loading: singleMarketLoading } =
+    useDataProvider<SingleMarketFieldsFragment, never>({
+      dataProvider: marketProvider,
+      variables,
+      skip: !marketId,
+    });
+  const marketExists = Boolean(singleMarketData);
+  const marketNotExists = !marketExists && !singleMarketLoading;
   const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
     updateTitle: store.updateTitle,
   }));
 
   useEffect(() => {
-    if (data) {
-      const marketId = data[0]?.id;
+    if (marketExists) {
+      navigate(Links[Routes.MARKET](marketId as string), {
+        replace: true,
+      });
+      update({ shouldDisplayWelcomeDialog: false });
+    } else if (data && marketNotExists) {
+      const marketDataId = data[0]?.id;
       const marketName = data[0]?.tradableInstrument.instrument.name;
       const marketPrice = data[0]?.data?.markPrice
         ? addDecimalsFormatNumber(
@@ -38,11 +61,11 @@ export const Home = () => {
         : null;
       const newPageTitle = titlefy([marketName, marketPrice]);
 
-      if (marketId) {
-        navigate(Links[Routes.MARKET](marketId), {
+      if (marketDataId) {
+        navigate(Links[Routes.MARKET](marketDataId), {
           replace: true,
         });
-        update({ marketId });
+        update({ marketId: marketDataId, shouldDisplayWelcomeDialog: true });
         if (pageTitle !== newPageTitle) {
           updateTitle(newPageTitle);
         }
@@ -50,7 +73,16 @@ export const Home = () => {
         navigate(Links[Routes.MARKET]());
       }
     }
-  }, [data, navigate, update, pageTitle, updateTitle]);
+  }, [
+    marketExists,
+    marketNotExists,
+    marketId,
+    data,
+    navigate,
+    update,
+    pageTitle,
+    updateTitle,
+  ]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>

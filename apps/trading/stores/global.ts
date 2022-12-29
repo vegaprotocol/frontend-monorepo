@@ -5,6 +5,7 @@ interface GlobalStore {
   networkSwitcherDialog: boolean;
   marketId: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
+  shouldDisplayWelcomeDialog: boolean;
 }
 
 interface PageTitleStore {
@@ -15,6 +16,7 @@ interface PageTitleStore {
 export const useGlobalStore = create<GlobalStore>((set) => ({
   networkSwitcherDialog: false,
   marketId: LocalStorage.getItem('marketId') || null,
+  shouldDisplayWelcomeDialog: false,
   update: (state) => {
     set(state);
     if (state.marketId) {

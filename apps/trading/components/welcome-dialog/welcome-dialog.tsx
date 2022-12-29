@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import {
@@ -12,6 +12,7 @@ import * as constants from '../constants';
 import { RiskNoticeDialog } from './risk-notice-dialog';
 import { WelcomeNoticeDialog } from './welcome-notice-dialog';
 import { WelcomeLandingDialog } from './welcome-landing-dialog';
+import { useGlobalStore } from '../../stores';
 
 interface DialogConfig {
   open?: boolean;
@@ -24,18 +25,31 @@ export const WelcomeDialog = () => {
   const { pathname } = useLocation();
   const { VEGA_ENV } = useEnvironment();
   const [dialog, setDialog] = useState<DialogConfig | null>(null);
-  const onClose = useCallback(() => {
-    setDialog(null);
-  }, [setDialog]);
   const [riskAccepted] = useLocalStorage(constants.RISK_ACCEPTED_KEY);
-
   const { data } = useDataProvider({
     dataProvider: activeMarketsProvider,
   });
 
-  useMemo(() => {
+  const { update, marketId, shouldDisplayWelcomeDialog } = useGlobalStore(
+    (store) => ({
+      update: store.update,
+      marketId: store.marketId,
+      shouldDisplayWelcomeDialog: store.shouldDisplayWelcomeDialog,
+    })
+  );
+
+  const isRiskDialogNeeded =
+    riskAccepted !== 'true' && VEGA_ENV === Networks.MAINNET;
+  const isWelcomeDialogNeeded =
+    (pathname === '/' && !marketId) || shouldDisplayWelcomeDialog;
+  const onClose = useCallback(() => {
+    update({ shouldDisplayWelcomeDialog: isRiskDialogNeeded });
+    setDialog(null);
+  }, [setDialog, update, isRiskDialogNeeded]);
+
+  useEffect(() => {
     switch (true) {
-      case riskAccepted !== 'true' && VEGA_ENV === Networks.MAINNET:
+      case isRiskDialogNeeded:
         setDialog({
           content: <RiskNoticeDialog onClose={onClose} />,
           title: t('WARNING'),
@@ -43,20 +57,26 @@ export const WelcomeDialog = () => {
           onClose,
         });
         break;
-      case pathname === '/' && data?.length === 0:
+      case isWelcomeDialogNeeded && data?.length === 0:
         setDialog({
           content: <WelcomeNoticeDialog />,
           onClose,
         });
         break;
-      case pathname === '/' && (data?.length || 0) > 0:
+      case isWelcomeDialogNeeded && (data?.length || 0) > 0:
         setDialog({
           content: <WelcomeLandingDialog onClose={onClose} />,
           onClose,
         });
         break;
     }
-  }, [onClose, data?.length, riskAccepted, pathname, VEGA_ENV, setDialog]);
+  }, [
+    onClose,
+    data?.length,
+    setDialog,
+    isRiskDialogNeeded,
+    isWelcomeDialogNeeded,
+  ]);
   return dialog ? (
     <Dialog
       open={Boolean(dialog.content)}
