@@ -6,7 +6,7 @@ To run the UI automation tests with Vega Capsule, run:
 yarn nx run token-e2e:e2e
 ```
 
-To open Cypress and run in interative mode, run:
+To open Cypress and run in interactive mode, run:
 
 ```bash
 yarn nx run token-e2e:e2e --watch
