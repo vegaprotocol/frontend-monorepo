@@ -1,5 +1,3 @@
-import { t } from '@vegaprotocol/react-helpers';
-
 export type EmptyListProps = {
   heading?: string;
   label?: string;
