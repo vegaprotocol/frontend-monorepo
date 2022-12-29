@@ -174,11 +174,11 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
       title: t('Uptime'),
       formatter: (t: string) => {
         if (!t) {
-          return;
+          return '-';
         }
         const date = new Date(t);
         if (!isValidDate(date)) {
-          return;
+          return '-';
         }
         const secSinceStart = (new Date().getTime() - date.getTime()) / 1000;
         const days = Math.floor(secSinceStart / 60 / 60 / 24);
@@ -194,13 +194,13 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
       title: t('Up since'),
       formatter: (t: string) => {
         if (!t) {
-          return;
+          return '-';
         }
         const date = new Date(t);
         if (!isValidDate(date)) {
-          return;
+          return '-';
         }
-        return getDateTimeFormat().format(date);
+        return getDateTimeFormat().format(date) || '-';
       },
       description: t('Genesis'),
     },

@@ -31,7 +31,7 @@ const compileData = (data?: StatsQuery) => {
       value.forEach((x) => {
         const stat = {
           ...x,
-          value: statData,
+          value: statData || '-',
         };
 
         stat.promoted ? acc.promoted.push(stat) : acc.table.push(stat);
@@ -92,7 +92,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
               return (
                 <TableRow
                   title={stat.title}
-                  value={stat.value}
+                  value={stat.value || '-'}
                   formatter={stat.formatter}
                   goodThreshold={stat.goodThreshold}
                   description={stat.description}
