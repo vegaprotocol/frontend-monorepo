@@ -48,13 +48,7 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
       description: t('The total number of nodes registered on the network'),
     },
   ],
-  inactiveNodes: [
-    {
-      title: t('Inactive nodes'),
-      goodThreshold: (totalInactive: number) => totalInactive < 1,
-      description: t('Nodes that are registered but not validating'),
-    },
-  ],
+  inactiveNodes: [],
   stakedTotal: [
     {
       title: t('Total staked'),
