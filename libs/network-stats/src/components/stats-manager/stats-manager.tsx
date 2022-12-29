@@ -75,7 +75,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
             return (
               <PromotedStatsItem
                 title={stat.title}
-                value={stat.value}
+                value={stat.value || '-'}
                 formatter={stat.formatter}
                 goodThreshold={stat.goodThreshold}
                 description={stat.description}
