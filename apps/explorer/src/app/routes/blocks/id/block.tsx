@@ -113,7 +113,12 @@ const Block = () => {
                   blockHeight={blockData.result.block.header.height}
                   txCount={blockData.result.block.data.txs.length}
                 />
-              ) : <EmptyList heading={t('This block is empty')} label={t('0 transactions')} />} 
+              ) : (
+                <EmptyList
+                  heading={t('This block is empty')}
+                  label={t('0 transactions')}
+                />
+              )}
             </>
           )}
         </>
