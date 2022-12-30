@@ -94,10 +94,6 @@ describe('must submit order', { tags: '@smoke' }, () => {
   });
 
   it('successfully places market sell order', () => {
-    cy.window().then((win) => {
-      const res = win.localStorage.getItem('vega_wallet_config');
-      cy.log(res);
-    });
     cy.mockVegaWalletTransaction();
     const order: OrderSubmission = {
       marketId: 'market-0',
