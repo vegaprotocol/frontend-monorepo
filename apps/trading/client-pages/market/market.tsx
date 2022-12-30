@@ -32,14 +32,13 @@ export interface SingleMarketData extends SingleMarketFieldsFragment {
 }
 
 export const Market = () => {
-  const params = useParams();
+  const { marketId } = useParams();
   const navigate = useNavigate();
 
-  const marketId = params.marketId;
-
   const { w } = useWindowSize();
-  const { update } = useGlobalStore((store) => ({
+  const { update, marketId: lastMarketId } = useGlobalStore((store) => ({
     update: store.update,
+    marketId: store.marketId,
   }));
 
   const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
@@ -50,11 +49,10 @@ export const Market = () => {
   const onSelect = useCallback(
     (id: string) => {
       if (id && id !== marketId) {
-        update({ marketId: id });
         navigate(Links[Routes.MARKET](id));
       }
     },
-    [marketId, update, navigate]
+    [marketId, navigate]
   );
 
   const variables = useMemo(
@@ -64,12 +62,22 @@ export const Market = () => {
     [marketId]
   );
 
+  const updateMarketId = useCallback(
+    ({ data }: { data: { id?: string } | null }) => {
+      if (data?.id && data.id !== lastMarketId) {
+        update({ marketId: data.id });
+      }
+      return true;
+    },
+    [update, lastMarketId]
+  );
   const { data, error, loading } = useDataProvider<
     SingleMarketFieldsFragment,
     never
   >({
     dataProvider: marketProvider,
     variables,
+    update: updateMarketId,
     skip: !marketId,
   });
 
@@ -104,11 +112,10 @@ export const Market = () => {
     }
     return <TradePanels market={data} onSelect={onSelect} />;
   }, [w, data, onSelect]);
-
   if (!data && marketId) {
     return (
       <Splash>
-        <p>{t('Not found')}</p>
+        <p>{t('Market not found')}</p>
       </Splash>
     );
   }
@@ -119,13 +126,9 @@ export const Market = () => {
       error={error}
       data={data || undefined}
       noDataCondition={(data) => false}
-      render={(data) => {
-        if (!data && marketId) {
-          return <Splash>{t('Market not found')}</Splash>;
-        }
-        return <>{tradeView}</>;
-      }}
-    />
+    >
+      {tradeView}
+    </AsyncRenderer>
   );
 };
 
