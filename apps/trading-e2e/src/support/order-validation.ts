@@ -7,7 +7,6 @@ import type {
   OrderSubmissionBody,
   Transaction,
 } from '@vegaprotocol/wallet';
-import { encodeTransaction } from './encode-transaction';
 
 export const testOrderSubmission = (
   order: OrderSubmission,
@@ -17,9 +16,6 @@ export const testOrderSubmission = (
     ...order,
     ...expected,
   };
-
-  expectedOrder.expiresAt = expectedOrder.expiresAt || undefined;
-  expectedOrder.price = expectedOrder.price || undefined;
 
   const transaction: OrderSubmissionBody = {
     orderSubmission: expectedOrder,
@@ -70,7 +66,7 @@ const vegaWalletTransaction = (transaction: Transaction) => {
         ?.token,
       publicKey: Cypress.env('VEGA_PUBLIC_KEY2'),
       sendingMode: 'TYPE_SYNC',
-      encodedTransaction: encodeTransaction(transaction),
+      transaction,
     });
   cy.getByTestId(dialogTitle).should(
     'have.text',
