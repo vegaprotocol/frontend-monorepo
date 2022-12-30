@@ -5,6 +5,7 @@ import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import EmptyList from '../empty-list/empty-list';
+import { Loader } from '@vegaprotocol/ui-toolkit';
 
 interface TxsInfiniteListProps {
   hasMoreTxs: boolean;
@@ -30,7 +31,7 @@ const Item = ({ index, style, isLoading, error }: ItemProps) => {
   if (error) {
     content = t(`Cannot fetch transaction: ${error}`);
   } else if (isLoading) {
-    content = t('Loading...');
+    content = <Loader />;
   } else {
     const {
       hash,
@@ -70,11 +71,14 @@ export const TxsInfiniteList = ({
 
   if (!txs) {
     if (!areTxsLoading) {
-      return (<EmptyList
-        heading={t('This chain has 0 transactions')}
-        label={t('Check back soon')} />)
+      return (
+        <EmptyList
+          heading={t('This chain has 0 transactions')}
+          label={t('Check back soon')}
+        />
+      );
     } else {
-      return (<span>{t('Loading')}</span>)
+      return <Loader />;
     }
   }
 

@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { Loader, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { useExplorerProposalsQuery } from './__generated__/Proposals';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import EmptyList from '../../components/empty-list/empty-list';
@@ -16,12 +16,15 @@ const Governance = () => {
 
   if (!data || !data.proposalsConnection || !data.proposalsConnection.edges) {
     if (!loading) {
-      return (<EmptyList
-        heading={t('This chain has no proposals')}
-        label={t('0 proposals')} />)
+      return (
+        <EmptyList
+          heading={t('This chain has no proposals')}
+          label={t('0 proposals')}
+        />
+      );
     } else {
-      return (<span>{t('Loading')}</span>)
-    } 
+      return <Loader />;
+    }
   }
 
   const proposals = data?.proposalsConnection?.edges.map((e) => {

@@ -2,7 +2,7 @@ import { getNodes, t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { Loader, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { useExplorerAssetsQuery } from './__generated__/Assets';
 import type { AssetsFieldsFragment } from './__generated__/Assets';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
@@ -19,11 +19,14 @@ const Assets = () => {
 
   if (!assets || assets.length === 0) {
     if (!loading) {
-      return (<EmptyList
-        heading={t('This chain has no assets')}
-        label={t('0 assets')} />)
+      return (
+        <EmptyList
+          heading={t('This chain has no assets')}
+          label={t('0 assets')}
+        />
+      );
     } else {
-      return (<span>{t('Loading')}</span>)
+      return <Loader />;
     }
   }
 

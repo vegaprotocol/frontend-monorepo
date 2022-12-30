@@ -5,6 +5,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from './block-data';
 import EmptyList from '../empty-list/empty-list';
+import { Loader } from '@vegaprotocol/ui-toolkit';
 
 interface BlocksInfiniteListProps {
   hasMoreBlocks: boolean;
@@ -33,11 +34,14 @@ export const BlocksInfiniteList = ({
 }: BlocksInfiniteListProps) => {
   if (!blocks) {
     if (!areBlocksLoading) {
-      return (<EmptyList
-        heading={t('This chain has 0 blocks')}
-        label={t('Check back soon')} />)
+      return (
+        <EmptyList
+          heading={t('This chain has 0 blocks')}
+          label={t('Check back soon')}
+        />
+      );
     } else {
-      return (<span>{t('Loading')}</span>)
+      return <Loader />;
     }
   }
 
@@ -57,7 +61,7 @@ export const BlocksInfiniteList = ({
     if (error) {
       content = t(`${error}`);
     } else if (!isItemLoaded(index)) {
-      content = t('Loading...');
+      content = <Loader />;
     } else {
       content = <BlockData block={blocks[index]} />;
     }
