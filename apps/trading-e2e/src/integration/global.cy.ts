@@ -133,10 +133,11 @@ describe('Navbar', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
+    cy.wait('@Market');
     cy.getByTestId('dialog-close').click();
   });
 
-  it('should be properly rendered', () => {
+  it.only('should be properly rendered', () => {
     const links = ['Markets', 'Trading', 'Portfolio'];
     const hashes = ['#/markets/all', '#/markets/market-0', '#/portfolio'];
     let i = 0;
