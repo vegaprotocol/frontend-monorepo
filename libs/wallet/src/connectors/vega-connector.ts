@@ -261,12 +261,6 @@ interface Trigger {
   auctionExtension: string;
 }
 
-interface Buy {
-  offset: string;
-  proportion: number;
-  reference: string;
-}
-
 export interface ProposalSubmission {
   rationale: {
     description: string;
