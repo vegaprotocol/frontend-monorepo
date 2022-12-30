@@ -39,7 +39,7 @@ context('Home Page', function () {
           cy.wrap($list).should('have.text', statTitles[index]);
         })
         .then(($list) => {
-          cy.wrap($list).should('have.length', 17);
+          cy.wrap($list).should('have.length', 16);
         });
 
       cy.get(statsValue).eq(0).should('have.text', 'CONNECTED');
