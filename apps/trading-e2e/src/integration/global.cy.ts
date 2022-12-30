@@ -137,7 +137,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
     cy.getByTestId('dialog-close').click();
   });
 
-  it.only('should be properly rendered', () => {
+  it('should be properly rendered', () => {
     const links = ['Markets', 'Trading', 'Portfolio'];
     const hashes = ['#/markets/all', '#/markets/market-0', '#/portfolio'];
     let i = 0;
