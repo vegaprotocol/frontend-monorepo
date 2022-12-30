@@ -1,11 +1,10 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
+import { DataGrid, t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/react-helpers';
-import { MarketDataGrid } from './market-data-grid';
 
 type TradingModeTooltipProps = {
   tradingMode: Schema.MarketTradingMode | null;
@@ -46,7 +45,7 @@ export const TradingModeTooltip = ({
               </ExternalLink>
             )}
           </p>
-          {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
+          {compiledGrid && <DataGrid grid={compiledGrid} />}
         </section>
       );
     }
@@ -72,7 +71,7 @@ export const TradingModeTooltip = ({
                   </ExternalLink>
                 )}
               </p>
-              {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
+              {compiledGrid && <DataGrid grid={compiledGrid} />}
             </section>
           );
         }
@@ -94,7 +93,7 @@ export const TradingModeTooltip = ({
                   </ExternalLink>
                 )}
               </p>
-              {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
+              {compiledGrid && <DataGrid grid={compiledGrid} />}
             </section>
           );
         }

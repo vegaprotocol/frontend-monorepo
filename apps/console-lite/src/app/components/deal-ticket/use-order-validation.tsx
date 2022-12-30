@@ -1,13 +1,12 @@
 import type { ReactNode } from 'react';
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
-import { t, toDecimal } from '@vegaprotocol/react-helpers';
+import { DataGrid, t, toDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import {
-  MarketDataGrid,
   compileGridData,
   MarginWarning,
   isMarketInAuction,
@@ -216,9 +215,7 @@ export const useOrderValidation = ({
               <span>
                 {t('This market is in auction until it reaches')}{' '}
                 <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
+                  description={<DataGrid grid={compileGridData(market)} />}
                 >
                   <span>{t('sufficient liquidity')}</span>
                 </Tooltip>
@@ -240,9 +237,7 @@ export const useOrderValidation = ({
               <span>
                 {t('This market is in auction due to')}{' '}
                 <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
+                  description={<DataGrid grid={compileGridData(market)} />}
                 >
                   <span>{t('high price volatility')}</span>
                 </Tooltip>
@@ -281,9 +276,7 @@ export const useOrderValidation = ({
               <span>
                 {t('This market is in auction until it reaches')}{' '}
                 <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
+                  description={<DataGrid grid={compileGridData(market)} />}
                 >
                   <span>{t('sufficient liquidity')}</span>
                 </Tooltip>
@@ -307,9 +300,7 @@ export const useOrderValidation = ({
               <span>
                 {t('This market is in auction due to')}{' '}
                 <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
+                  description={<DataGrid grid={compileGridData(market)} />}
                 >
                   <span>{t('high price volatility')}</span>
                 </Tooltip>

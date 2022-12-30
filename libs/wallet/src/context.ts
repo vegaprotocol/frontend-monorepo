@@ -17,7 +17,7 @@ export interface VegaWalletContextShape {
   connect: (connector: VegaConnector) => Promise<PubKey[] | null>;
 
   /** Disconnects from the connector and clears public key state */
-  disconnect: () => Promise<boolean>;
+  disconnect: () => Promise<void>;
 
   /** Sets the current selected public key */
   selectPubKey: (pubKey: string) => void;

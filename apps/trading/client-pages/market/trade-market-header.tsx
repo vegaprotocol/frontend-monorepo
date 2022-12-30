@@ -17,6 +17,7 @@ import { Last24hPriceChange } from '../../components/last-24h-price-change';
 import { Last24hVolume } from '../../components/last-24h-volume';
 import { MarketState } from '../../components/market-state';
 import { MarketTradingMode } from '../../components/market-trading-mode';
+import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 
 interface TradeMarketHeaderProps {
   market: SingleMarketFieldsFragment | null;
@@ -96,6 +97,10 @@ export const TradeMarketHeader = ({
         </HeaderStat>
       ) : null}
       <MarketProposalNotification marketId={market?.id} />
+      <MarketLiquiditySupplied
+        marketId={market?.id}
+        assetDecimals={asset?.decimals || 0}
+      />
     </Header>
   );
 };
