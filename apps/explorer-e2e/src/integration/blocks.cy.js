@@ -52,7 +52,8 @@ context('Blocks page', { tags: '@regression' }, function () {
         });
     });
 
-    it('Previous button disabled on first block', function () {
+    // Skipping - see https://github.com/vegaprotocol/frontend-monorepo/issues/2494
+    it.skip('Previous button disabled on first block', function () {
       cy.get('[data-testid="block-input"]').type('1');
       cy.get('[data-testid="go-submit"]').click();
       cy.get(previousBlockBtn).find('button').should('be.disabled');
