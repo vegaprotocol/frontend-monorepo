@@ -20,10 +20,13 @@ const Assets = () => {
   if (!assets || assets.length === 0) {
     if (!loading) {
       return (
-        <EmptyList
-          heading={t('This chain has no assets')}
-          label={t('0 assets')}
-        />
+        <section>
+          <RouteTitle data-testid="assets-header">{t('Assets')}</RouteTitle>
+          <EmptyList
+            heading={t('This chain has no assets')}
+            label={t('0 assets')}
+          />
+        </section>
       );
     } else {
       return <Loader />;

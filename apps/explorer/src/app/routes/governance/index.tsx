@@ -17,10 +17,16 @@ const Governance = () => {
   if (!data || !data.proposalsConnection || !data.proposalsConnection.edges) {
     if (!loading) {
       return (
-        <EmptyList
-          heading={t('This chain has no proposals')}
-          label={t('0 proposals')}
-        />
+        <section>
+          <RouteTitle data-testid="governance-header">
+            {t('Governance Proposals')}
+          </RouteTitle>
+
+          <EmptyList
+            heading={t('This chain has no proposals')}
+            label={t('0 proposals')}
+          />
+        </section>
       );
     } else {
       return <Loader />;
