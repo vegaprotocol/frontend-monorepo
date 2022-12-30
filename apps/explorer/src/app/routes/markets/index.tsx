@@ -6,9 +6,10 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useExplorerMarketsQuery } from './__generated__/Markets';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
+import EmptyList from '../../components/empty-list/empty-list';
 
 const Markets = () => {
-  const { data } = useExplorerMarketsQuery();
+  const { data, loading } = useExplorerMarketsQuery();
 
   useScrollToLocation();
   useDocumentTitle(['Markets']);
@@ -28,7 +29,10 @@ const Markets = () => {
               <SyntaxHighlighter data={e.node} />
             </React.Fragment>
           ))
-        : null}
+        : loading ? null : <EmptyList 
+          heading={t('This chain has no markets')}
+          label={t('0 markets')}
+        />}
     </section>
   );
 };

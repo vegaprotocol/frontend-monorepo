@@ -7,9 +7,10 @@ import { useExplorerAssetsQuery } from './__generated__/Assets';
 import type { AssetsFieldsFragment } from './__generated__/Assets';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
+import EmptyList from '../../components/empty-list/empty-list';
 
 const Assets = () => {
-  const { data } = useExplorerAssetsQuery();
+  const { data, loading } = useExplorerAssetsQuery();
   useDocumentTitle(['Assets']);
 
   useScrollToLocation();
@@ -17,17 +18,19 @@ const Assets = () => {
   const assets = getNodes<AssetsFieldsFragment>(data?.assetsConnection);
 
   if (!assets || assets.length === 0) {
-    return <section></section>;
+    if (!loading) {
+      return (<EmptyList
+        heading={t('This chain has no assets')}
+        label={t('0 assets')} />)
+    } else {
+      return (<span>{t('Loading')}</span>)
+    }
   }
 
   return (
     <section>
       <RouteTitle data-testid="assets-header">{t('Assets')}</RouteTitle>
       {assets.map((a) => {
-        if (!a) {
-          return null;
-        }
-
         return (
           <React.Fragment key={a.id}>
             <SubHeading data-testid="asset-header" id={a.id}>

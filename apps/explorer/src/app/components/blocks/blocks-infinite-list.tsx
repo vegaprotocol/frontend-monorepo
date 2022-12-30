@@ -4,6 +4,7 @@ import InfiniteLoader from 'react-window-infinite-loader';
 import { t } from '@vegaprotocol/react-helpers';
 import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from './block-data';
+import EmptyList from '../empty-list/empty-list';
 
 interface BlocksInfiniteListProps {
   hasMoreBlocks: boolean;
@@ -31,7 +32,13 @@ export const BlocksInfiniteList = ({
   className,
 }: BlocksInfiniteListProps) => {
   if (!blocks) {
-    return <div>No items</div>;
+    if (!areBlocksLoading) {
+      return (<EmptyList
+        heading={t('This chain has 0 blocks')}
+        label={t('Check back soon')} />)
+    } else {
+      return (<span>{t('Loading')}</span>)
+    }
   }
 
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
