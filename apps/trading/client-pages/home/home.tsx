@@ -29,10 +29,10 @@ export const Home = () => {
         navigate(Links[Routes.MARKET](marketDataId), {
           replace: true,
         });
-        update({ shouldDisplayWelcomeDialog: true });
       } else {
         navigate(Links[Routes.MARKET]());
       }
+      update({ shouldDisplayWelcomeDialog: true });
     }
   }, [marketId, data, navigate, update]);
 
