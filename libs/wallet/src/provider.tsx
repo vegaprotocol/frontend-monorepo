@@ -59,23 +59,19 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   }, []);
 
   const disconnect = useCallback(async () => {
+    // always clear state after attempted disconnection.. this
+    // is because long lived token sessions (used in tests)
+    // cannot be cleared. Clearing state will force user to reconnect
+    // again as expected
+    setPubKeys(null);
+    setPubKey(null);
+    LocalStorage.removeItem(WALLET_KEY);
     try {
       await connector.current?.disconnect();
-      setPubKeys(null);
-      setPubKey(null);
       connector.current = null;
-      LocalStorage.removeItem(WALLET_KEY);
-      return true;
     } catch (err) {
       console.error(err);
-      if (err instanceof WalletError && err.code === 100) {
-        setPubKeys(null);
-        setPubKey(null);
-        connector.current = null;
-        LocalStorage.removeItem(WALLET_KEY);
-        return true;
-      }
-      return false;
+      connector.current = null;
     }
   }, []);
 

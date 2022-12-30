@@ -32,9 +32,6 @@ export const testOrderAmendment = (
     ...expected,
   };
 
-  expectedOrder.expiresAt = expectedOrder.expiresAt || undefined;
-  expectedOrder.price = expectedOrder.price || undefined;
-
   const transaction: OrderAmendmentBody = {
     orderAmendment: expectedOrder,
   };
