@@ -49,6 +49,7 @@ const schemaObject = {
     message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
   }),
   HOSTED_WALLET_URL: z.optional(z.string()),
+  MAINTANCE_PAGE: z.optional(z.boolean()),
 };
 
 export const ENV_KEYS = Object.keys(schemaObject) as Array<
