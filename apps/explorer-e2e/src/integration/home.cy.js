@@ -20,7 +20,6 @@ context('Home Page', function () {
         1: 'Height',
         2: 'Uptime',
         3: 'Total nodes',
-        4: 'Inactive nodes',
         5: 'Total staked',
         6: 'Backlog',
         7: 'Trades / second',
@@ -50,7 +49,6 @@ context('Home Page', function () {
         .invoke('text')
         .should('match', /\d+d \d+h \d+m \d+s/i);
       cy.get(statsValue).eq(3).should('have.text', '2');
-      cy.get(statsValue).eq(4).should('have.text', '2');
       cy.get(statsValue)
         .eq(5)
         .invoke('text')
