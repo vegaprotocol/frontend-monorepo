@@ -76,13 +76,13 @@ interface ProposalNewMarketTerms {
     changes: {
       decimalPlaces: string;
       positionDecimalPlaces: string;
+      lpPriceRange: string;
       instrument: {
         name: string;
         code: string;
         future: {
           settlementAsset: string;
           quoteName: string;
-          settlementPriceDecimals: number;
           dataSourceSpecForSettlementData: DataSourceSpec;
           dataSourceSpecForTradingTermination: DataSourceSpec;
           dataSourceSpecBinding: DataSourceSpecBinding;
@@ -99,12 +99,6 @@ interface ProposalNewMarketTerms {
         auctionExtension: string;
       };
       logNormal: LogNormal;
-    };
-    liquidityCommitment: {
-      commitmentAmount: string;
-      fee: string;
-      buys: Buy[];
-      sells: Buy[];
     };
   };
   closingTimestamp: number;
@@ -184,35 +178,66 @@ interface ProposalUpdateAssetTerms {
 }
 
 interface DataSourceSpecBinding {
-  settlementPriceProperty: string;
+  settlementDataProperty: string;
   tradingTerminationProperty: string;
 }
 
-interface DataSourceSpec {
-  config: {
-    signers: Signer[];
-    filters: Filter[];
+interface InternalDataSourceSpec {
+  internal: {
+    time: {
+      conditions: Condition[];
+    };
   };
 }
+
+interface ExternalDataSourceSpec {
+  external: {
+    oracle: {
+      signers: Signer[];
+      filters: Filter[];
+    };
+  };
+}
+
+type DataSourceSpec = InternalDataSourceSpec | ExternalDataSourceSpec;
 
 type Signer =
   | {
-      address: string;
+      ethAddress: {
+        address: string;
+      };
     }
   | {
-      key: string;
+      pubKey: {
+        key: string;
+      };
     };
 
 interface Filter {
-  key: {
-    name: string;
-    type: string;
-  };
+  key: DefaultFilterKey | IntegerFilterKey;
   conditions?: Condition[];
 }
 
+interface DefaultFilterKey {
+  name: string;
+  type: 'TYPE_DECIMAL' | 'TYPE_BOOLEAN' | 'TYPE_TIMESTAMP' | 'TYPE_STRING';
+}
+
+interface IntegerFilterKey {
+  name: string;
+  type: 'TYPE_INTEGER';
+  numberDecimalPlaces: string;
+}
+
+type ConditionOperator =
+  | 'OPERATOR_EQUALS'
+  | 'OPERATOR_GREATER_THAN'
+  | 'OPERATOR_GREATER_THAN_OR_EQUAL'
+  | 'OPERATOR_LESS_THAN'
+  | 'OPERATOR_LESS_THAN_OR_EQUAL';
+
 interface Condition {
-  operator: string;
+  operator: ConditionOperator;
   value: string;
 }
 
