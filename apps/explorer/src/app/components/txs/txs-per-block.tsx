@@ -1,5 +1,4 @@
 import { Routes } from '../../routes/route-names';
-import { DATA_SOURCES } from '../../config';
 import { RenderFetched } from '../render-fetched';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { TxOrderType } from './tx-order-type';
@@ -8,6 +7,7 @@ import { t, useFetch } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
 import isNumber from 'lodash/isNumber';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
+import { getTxsDataUrl } from '../../hooks/use-txs-data';
 
 interface TxsPerBlockProps {
   blockHeight: string;
@@ -17,15 +17,11 @@ interface TxsPerBlockProps {
 const truncateLength = 5;
 
 export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
-  // TODO after https://github.com/vegaprotocol/vega/pull/6958/files is merged and deployed, use filter
-  // by block height instead
+  const filters = `filters[block.height]=${blockHeight}`;
+  const url = getTxsDataUrl({ limit: txCount.toString(), filters });
   const {
     state: { data, loading, error },
-  } = useFetch<BlockExplorerTransactions>(
-    `${
-      DATA_SOURCES.blockExplorerUrl
-    }/transactions?before=${blockHeight.toString()}.0&limit=${txCount}`
-  );
+  } = useFetch<BlockExplorerTransactions>(url);
 
   return (
     <RenderFetched error={error} loading={loading} className="text-body-large">
