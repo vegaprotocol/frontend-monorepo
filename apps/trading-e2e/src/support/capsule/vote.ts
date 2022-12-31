@@ -1,6 +1,6 @@
 import { request } from './request';
 import type * as Schema from '@vegaprotocol/types';
-import { encodeTransaction } from '@vegaprotocol/wallet';
+import { encodeTransaction } from '../utils';
 
 export async function vote(
   proposalId: string,

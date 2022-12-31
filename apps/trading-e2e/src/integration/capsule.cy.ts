@@ -1,4 +1,3 @@
-import { prepareDealTicket } from '../support/deal-ticket-transaction';
 import { createMarket } from '../support/capsule/create-market';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -9,9 +8,9 @@ import {
 } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { isBefore, isAfter, addSeconds, subSeconds } from 'date-fns';
+import { createOrder } from '../support/create-order';
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 
-const placeOrderBtn = 'place-order';
-const orderSymbol = 'market.tradableInstrument.instrument.code';
 const orderSize = 'size';
 const orderType = 'type';
 const orderStatus = 'status';
@@ -21,7 +20,7 @@ const orderTimeInForce = 'timeInForce';
 const orderCreatedAt = 'createdAt';
 
 describe('capsule', { tags: '@smoke' }, () => {
-  let marketId: string;
+  let market: SingleMarketFieldsFragment;
   before(() => {
     const vegaPubKey =
       '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680';
@@ -61,33 +60,32 @@ describe('capsule', { tags: '@smoke' }, () => {
   });
 
   it('can view market', () => {
-    cy.visit('/#/markets');
+    cy.visit('/#/markets/all');
     cy.get('@markets').then((markets) => {
-      marketId = markets[0].id;
-      cy.getByTestId(`market-${marketId}`).click();
+      market = markets[0] as unknown as SingleMarketFieldsFragment;
+      cy.getByTestId(`market-${market.id}`).click();
     });
   });
 
   it('can place and receive an order', () => {
-    if (!marketId) {
+    if (!market) {
       throw new Error('no marketId');
     }
-    cy.log('marketId: ', marketId);
+    cy.log('marketId: ', market.id);
 
     const order = {
-      marketId,
+      marketId: market.id,
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_BUY,
       size: '0.0005',
       price: '390',
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
     };
-    const rawPrice = removeDecimal(order.price, 5);
-    const rawSize = removeDecimal(order.size, 5);
+    const rawPrice = removeDecimal(order.price, market.decimalPlaces);
+    const rawSize = removeDecimal(order.size, market.positionDecimalPlaces);
 
-    prepareDealTicket(order);
+    createOrder(order);
 
-    cy.getByTestId(placeOrderBtn).click({ force: true });
     cy.getByTestId('dialog-title').should(
       'contain.text',
       'Awaiting network confirmation'
