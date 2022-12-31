@@ -3,6 +3,7 @@ import { aliasGQLQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { testOrderSubmission } from '../support/order-validation';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { accountsQuery, estimateOrderQuery } from '@vegaprotocol/mock';
+import { createOrder } from '../support/create-order';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
@@ -717,22 +718,3 @@ describe('account validation', { tags: '@regression' }, () => {
     });
   });
 });
-
-const createOrder = (order: OrderSubmission): void => {
-  const { type, side, size, price, timeInForce, expiresAt } = order;
-
-  cy.getByTestId(`order-type-${type}`).click();
-  cy.getByTestId(`order-side-${side}`).click();
-  cy.getByTestId(orderSizeField).clear().type(size);
-  if (price) {
-    cy.getByTestId(orderPriceField).clear().type(price);
-  }
-  cy.getByTestId(orderTIFDropDown).select(timeInForce);
-  if (timeInForce === 'TIME_IN_FORCE_GTT') {
-    if (!expiresAt) {
-      throw new Error('Specify expiresAt if using GTT');
-    }
-    cy.getByTestId('date-picker-field').type(expiresAt);
-  }
-  cy.getByTestId(placeOrderBtn).click();
-};
