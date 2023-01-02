@@ -20,7 +20,7 @@ export async function createMarket(vegaPubKey: string, token: string) {
   try {
     await setupEthereumAccount(vegaPubKey);
   } catch (err) {
-    console.error(err);
+    throw new Error('failed to set up all things ethereum');
     return false;
   }
 
