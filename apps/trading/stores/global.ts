@@ -1,5 +1,6 @@
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import create from 'zustand';
+import produce from 'immer';
 
 interface GlobalStore {
   networkSwitcherDialog: boolean;
@@ -17,10 +18,14 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   networkSwitcherDialog: false,
   marketId: LocalStorage.getItem('marketId') || null,
   shouldDisplayWelcomeDialog: false,
-  update: (state) => {
-    set(state);
-    if (state.marketId) {
-      LocalStorage.setItem('marketId', state.marketId);
+  update: (newState) => {
+    set(
+      produce((state: GlobalStore) => {
+        Object.assign(state, newState);
+      })
+    );
+    if (newState.marketId) {
+      LocalStorage.setItem('marketId', newState.marketId);
     }
   },
 }));
