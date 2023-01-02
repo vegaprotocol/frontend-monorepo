@@ -3,7 +3,7 @@ import type { RouteObject } from 'react-router-dom';
 import { useRoutes } from 'react-router-dom';
 import dynamic from 'next/dynamic';
 import { t } from '@vegaprotocol/react-helpers';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
@@ -91,7 +91,7 @@ export const ClientRouter = () => {
     <Suspense
       fallback={
         <div className="w-full h-full flex justify-center items-center">
-          {t('Loading...')}
+          <Loader />
         </div>
       }
     >
