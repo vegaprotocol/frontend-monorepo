@@ -13,10 +13,8 @@ export const Home = () => {
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithDataProvider,
   });
-  const { update, marketId } = useGlobalStore((store) => ({
-    update: store.update,
-    marketId: store.marketId,
-  }));
+  const update = useGlobalStore((store) => store.update);
+  const marketId = useGlobalStore((store) => store.marketId);
 
   useEffect(() => {
     if (marketId) {

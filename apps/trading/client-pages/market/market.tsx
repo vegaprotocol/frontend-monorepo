@@ -36,15 +36,11 @@ export const Market = () => {
   const navigate = useNavigate();
 
   const { w } = useWindowSize();
-  const { update, marketId: lastMarketId } = useGlobalStore((store) => ({
-    update: store.update,
-    marketId: store.marketId,
-  }));
+  const update = useGlobalStore((store) => store.update);
+  const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
-    pageTitle: store.pageTitle,
-    updateTitle: store.updateTitle,
-  }));
+  const pageTitle = usePageTitleStore((store) => store.pageTitle);
+  const updateTitle = usePageTitleStore((store) => store.updateTitle);
 
   const onSelect = useCallback(
     (id: string) => {
