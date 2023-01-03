@@ -20,7 +20,6 @@ const defaultProps: OrderListTableProps = {
   rowData: [],
   setEditOrder: jest.fn(),
   cancel: jest.fn(),
-  cancelAll: jest.fn(),
 };
 
 const generateJsx = (

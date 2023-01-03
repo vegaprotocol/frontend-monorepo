@@ -62,12 +62,11 @@ it('Render correct columns', async () => {
   ]);
 });
 
-it('Splits market name', async () => {
+it('renders market name', async () => {
   await act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
-  expect(screen.getByText('ETH/BTC')).toBeTruthy();
-  expect(screen.getByText('31 july 2022')).toBeTruthy();
+  expect(screen.getByText('ETH/BTC (31 july 2022)')).toBeTruthy();
 });
 
 it('Does not fail if the market name does not match the split pattern', async () => {

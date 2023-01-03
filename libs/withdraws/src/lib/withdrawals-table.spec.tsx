@@ -31,7 +31,7 @@ describe('renders the correct columns', () => {
       'Asset',
       'Amount',
       'Recipient',
-      'Completed',
+      'Completed/Created',
       'Status',
       'Transaction',
     ]);
@@ -41,9 +41,9 @@ describe('renders the correct columns', () => {
       'asset-symbol',
       '1.00',
       '123456…123456',
-      '-',
+      getTimeFormat().format(new Date(withdrawal.createdTimestamp as string)),
       'Pending',
-      '-',
+      'Complete withdrawal',
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);

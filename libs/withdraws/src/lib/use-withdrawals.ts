@@ -1,8 +1,7 @@
-import orderBy from 'lodash/orderBy';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import uniqBy from 'lodash/uniqBy';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import {
   useWithdrawalsQuery,
   WithdrawalEventDocument,
@@ -27,7 +26,7 @@ export const useWithdrawals = () => {
   useEffect(() => {
     if (!pubKey) return;
 
-    const unsub = subscribeToMore<
+    const unsubscribe = subscribeToMore<
       WithdrawalEventSubscription,
       WithdrawalEventSubscriptionVariables
     >({
@@ -37,49 +36,23 @@ export const useWithdrawals = () => {
     });
 
     return () => {
-      unsub();
+      unsubscribe();
     };
   }, [pubKey, subscribeToMore]);
 
-  const withdrawals = useMemo(() => {
-    if (!data?.party?.withdrawalsConnection?.edges) {
-      return [];
-    }
-
-    return orderBy(
-      removePaginationWrapper(data.party.withdrawalsConnection.edges),
-      'createdTimestamp',
-      'desc'
-    );
-  }, [data]);
-
-  /**
-   * withdrawals that have to be completed by a user.
-   */
-  const pending = useMemo(() => {
-    return withdrawals.filter((w) => !w.txHash);
-  }, [withdrawals]);
-
-  /**
-   * withdrawals that are completed or being completed
-   */
-  const completed = useMemo(() => {
-    return withdrawals
-      .filter((w) => w.txHash)
-      .sort((a, b) =>
-        (b.withdrawnTimestamp || b.createdTimestamp).localeCompare(
-          a.withdrawnTimestamp || a.createdTimestamp
-        )
-      );
-  }, [withdrawals]);
-
   return {
-    data,
+    data: removePaginationWrapper(
+      data?.party?.withdrawalsConnection?.edges ?? []
+    ).sort((a, b) => {
+      if (!b.txHash !== !a.txHash) {
+        return b.txHash ? -1 : 1;
+      }
+      return (
+        b.txHash ? b.withdrawnTimestamp : b.createdTimestamp
+      ).localeCompare(a.txHash ? a.withdrawnTimestamp : a.createdTimestamp);
+    }),
     loading,
     error,
-    withdrawals,
-    pending,
-    completed,
   };
 };
 

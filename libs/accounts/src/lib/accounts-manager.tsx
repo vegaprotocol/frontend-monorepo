@@ -43,7 +43,7 @@ export const AccountManager = ({
       const rowsThisBlock = dataRef.current
         ? dataRef.current.slice(startRow, endRow)
         : [];
-      const lastRow = dataRef.current?.length ?? undefined;
+      const lastRow = dataRef.current ? dataRef.current.length : 0;
       successCallback(rowsThisBlock, lastRow);
     },
     []
@@ -58,9 +58,10 @@ export const AccountManager = ({
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
       />
-      <div className="pointer-events-none absolute inset-0 top-5">
+      <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
-          data={data?.length ? data : null}
+          data={data}
+          noDataCondition={(data) => !(data && data.length)}
           error={error}
           loading={loading}
           noDataMessage={t('No accounts')}

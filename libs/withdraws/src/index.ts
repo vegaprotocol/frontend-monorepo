@@ -4,7 +4,6 @@ export * from './lib/withdraw-form';
 export * from './lib/withdraw-form-container';
 export * from './lib/withdraw-manager';
 export * from './lib/withdrawals-table';
-export * from './lib/pending-withdrawals-table';
 export * from './lib/withdrawal-feedback';
 export * from './lib/use-complete-withdraw';
 export * from './lib/use-create-withdraw';
