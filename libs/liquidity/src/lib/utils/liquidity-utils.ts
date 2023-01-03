@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 
 import type { MarketNodeFragment } from './../__generated__/MarketsLiquidity';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
 export type LiquidityProvisionMarket = MarketNodeFragment;
 
@@ -116,4 +117,47 @@ export const getTargetStake = (
   markets: LiquidityProvisionMarket[]
 ) => {
   return markets.find((m) => m.id === marketId)?.data?.targetStake || '0';
+};
+
+export const useCheckLiquidityStatus = ({
+  suppliedStake,
+  targetStake,
+  triggeringRatio,
+}: {
+  suppliedStake: string | number;
+  targetStake: string | number;
+  triggeringRatio: string | number;
+}): {
+  status: Intent;
+  percentage: BigNumber;
+} => {
+  // percentage supplied
+  const percentage = new BigNumber(suppliedStake)
+    .dividedBy(targetStake)
+    .multipliedBy(100);
+  // IF supplied_stake >= target_stake THEN
+  if (new BigNumber(suppliedStake).gte(new BigNumber(targetStake))) {
+    // show a green status, e.g. "🟢 $13,666,999 liquidity supplied"
+    return {
+      status: Intent.Success,
+      percentage,
+    };
+    // ELSE IF supplied_stake > NETPARAM[market.liquidity.targetstake.triggering.ratio] * target_stake THEN
+  } else if (
+    new BigNumber(suppliedStake).gte(
+      new BigNumber(targetStake).multipliedBy(triggeringRatio)
+    )
+  ) {
+    // show an amber status, e.g. "🟠 $3,456,123 liquidity supplied"
+    return {
+      status: Intent.Warning,
+      percentage,
+    };
+    // ELSE show a red status, e.g. "🔴 $600,002 liquidity supplied"
+  } else {
+    return {
+      status: Intent.Danger,
+      percentage,
+    };
+  }
 };

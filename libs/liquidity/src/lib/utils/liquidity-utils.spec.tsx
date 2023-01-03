@@ -1,3 +1,6 @@
+import { renderHook } from '@testing-library/react';
+import { Intent } from '@vegaprotocol/ui-toolkit';
+import BigNumber from 'bignumber.js';
 import {
   formatWithAsset,
   sumLiquidityCommitted,
@@ -6,6 +9,7 @@ import {
   getCandle24hAgo,
   getChange,
   EMPTY_VALUE,
+  useCheckLiquidityStatus,
 } from './liquidity-utils';
 
 const CANDLES_1 = [
@@ -116,5 +120,52 @@ describe('getChange', () => {
     const result = getChange([null]);
 
     expect(result).toEqual(EMPTY_VALUE);
+  });
+});
+
+describe('useCheckLiquidityStatus', () => {
+  it('should return amber if liquidity is enough', () => {
+    const { result } = renderHook(() =>
+      useCheckLiquidityStatus({
+        suppliedStake: '60',
+        targetStake: '100',
+        triggeringRatio: '0.5',
+      })
+    );
+
+    expect(result.current).toEqual({
+      status: Intent.Warning,
+      percentage: new BigNumber('60'),
+    });
+  });
+
+  it('should return red if liquidity is not enough', () => {
+    const { result } = renderHook(() =>
+      useCheckLiquidityStatus({
+        suppliedStake: '60',
+        targetStake: '100',
+        triggeringRatio: '1',
+      })
+    );
+
+    expect(result.current).toEqual({
+      status: Intent.Danger,
+      percentage: new BigNumber('60'),
+    });
+  });
+
+  it('should return green if liquidity is enough', () => {
+    const { result } = renderHook(() =>
+      useCheckLiquidityStatus({
+        suppliedStake: '101',
+        targetStake: '100',
+        triggeringRatio: '1',
+      })
+    );
+
+    expect(result.current).toEqual({
+      status: Intent.Success,
+      percentage: new BigNumber('101'),
+    });
   });
 });
