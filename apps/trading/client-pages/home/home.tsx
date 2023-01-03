@@ -1,14 +1,10 @@
-import { marketsWithDataProvider } from '@vegaprotocol/market-list';
-import {
-  addDecimalsFormatNumber,
-  titlefy,
-  useDataProvider,
-} from '@vegaprotocol/react-helpers';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { Links, Routes } from '../../pages/client-router';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGlobalStore, usePageTitleStore } from '../../stores';
+import { marketsWithDataProvider } from '@vegaprotocol/market-list';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { Links, Routes } from '../../pages/client-router';
+import { useGlobalStore } from '../../stores';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -17,40 +13,26 @@ export const Home = () => {
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithDataProvider,
   });
-  const { update } = useGlobalStore((store) => ({
-    update: store.update,
-  }));
-
-  const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
-    pageTitle: store.pageTitle,
-    updateTitle: store.updateTitle,
-  }));
+  const update = useGlobalStore((store) => store.update);
+  const marketId = useGlobalStore((store) => store.marketId);
 
   useEffect(() => {
-    if (data) {
-      const marketId = data[0]?.id;
-      const marketName = data[0]?.tradableInstrument.instrument.name;
-      const marketPrice = data[0]?.data?.markPrice
-        ? addDecimalsFormatNumber(
-            data[0]?.data?.markPrice,
-            data[0]?.decimalPlaces
-          )
-        : null;
-      const newPageTitle = titlefy([marketName, marketPrice]);
-
-      if (marketId) {
-        navigate(Links[Routes.MARKET](marketId), {
+    if (marketId) {
+      navigate(Links[Routes.MARKET](marketId), {
+        replace: true,
+      });
+    } else if (data) {
+      const marketDataId = data[0]?.id;
+      if (marketDataId) {
+        navigate(Links[Routes.MARKET](marketDataId), {
           replace: true,
         });
-        update({ marketId });
-        if (pageTitle !== newPageTitle) {
-          updateTitle(newPageTitle);
-        }
       } else {
         navigate(Links[Routes.MARKET]());
       }
+      update({ shouldDisplayWelcomeDialog: true });
     }
-  }, [data, navigate, update, pageTitle, updateTitle]);
+  }, [marketId, data, navigate, update]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>

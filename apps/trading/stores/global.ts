@@ -1,10 +1,12 @@
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import create from 'zustand';
+import produce from 'immer';
 
 interface GlobalStore {
   networkSwitcherDialog: boolean;
   marketId: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
+  shouldDisplayWelcomeDialog: boolean;
 }
 
 interface PageTitleStore {
@@ -15,10 +17,15 @@ interface PageTitleStore {
 export const useGlobalStore = create<GlobalStore>((set) => ({
   networkSwitcherDialog: false,
   marketId: LocalStorage.getItem('marketId') || null,
-  update: (state) => {
-    set(state);
-    if (state.marketId) {
-      LocalStorage.setItem('marketId', state.marketId);
+  shouldDisplayWelcomeDialog: false,
+  update: (newState) => {
+    set(
+      produce((state: GlobalStore) => {
+        Object.assign(state, newState);
+      })
+    );
+    if (newState.marketId) {
+      LocalStorage.setItem('marketId', newState.marketId);
     }
   },
 }));

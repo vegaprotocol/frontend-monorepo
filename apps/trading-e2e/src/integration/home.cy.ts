@@ -224,4 +224,34 @@ describe('home', { tags: '@regression' }, () => {
         .should('exist');
     });
   });
+
+  describe('redirect should take last visited market into consideration', () => {
+    beforeEach(() => {
+      cy.window().then((window) => {
+        window.localStorage.removeItem('marketId');
+      });
+    });
+    it('marketId comes from existing market', () => {
+      cy.window().then((window) => {
+        window.localStorage.setItem('marketId', 'market-1');
+        cy.visit('/');
+        cy.wait('@Market');
+        cy.location('hash').should('equal', '#/markets/market-1');
+        cy.get('[role="dialog"]').should('not.exist');
+      });
+    });
+
+    it('marketId comes from not-existing market', () => {
+      cy.window().then((window) => {
+        window.localStorage.setItem('marketId', 'market-not-existing');
+        cy.mockGQL((req) => {
+          aliasGQLQuery(req, 'Market', null);
+        });
+        cy.visit('/');
+        cy.wait('@Market');
+        cy.location('hash').should('equal', '#/markets/market-not-existing');
+        cy.get('[role="dialog"]').should('not.exist');
+      });
+    });
+  });
 });
