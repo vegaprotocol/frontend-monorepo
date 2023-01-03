@@ -1,8 +1,8 @@
-import { addSeconds, millisecondsToSeconds } from 'date-fns';
-import { request, requestGQL } from './request';
-import { encodeTransaction } from '../utils';
-import { gql } from 'graphql-request';
 import * as Schema from '@vegaprotocol/types';
+import { addSeconds, millisecondsToSeconds } from 'date-fns';
+import { gql } from 'graphql-request';
+import { encodeTransaction } from '../utils';
+import { request, requestGQL } from './request';
 import { createLog } from './logging';
 
 const log = createLog('propose-market');

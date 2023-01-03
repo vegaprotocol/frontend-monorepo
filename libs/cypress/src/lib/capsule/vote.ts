@@ -1,6 +1,6 @@
-import { request } from './request';
 import type * as Schema from '@vegaprotocol/types';
 import { encodeTransaction } from '../utils';
+import { request } from './request';
 import { createLog } from './logging';
 
 const log = createLog('vote');

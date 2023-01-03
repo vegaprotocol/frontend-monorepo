@@ -1,10 +1,10 @@
+import * as Schema from '@vegaprotocol/types';
+import { gql } from 'graphql-request';
+import { determineId } from '../utils';
 import { requestGQL } from './request';
 import { vote } from './vote';
-import { gql } from 'graphql-request';
-import * as Schema from '@vegaprotocol/types';
 import { setupEthereumAccount } from './ethereum-setup';
 import { faucetAsset } from './faucet-asset';
-import { determineId } from '../utils';
 import {
   proposeMarket,
   waitForEnactment,

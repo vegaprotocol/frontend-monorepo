@@ -1,4 +1,4 @@
-import { createMarket } from './create-market';
+import { createMarket } from '../capsule/create-market';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -6,15 +6,15 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
       createMarket(): void;
-      setVegaWalletConfig(): void;
     }
   }
 }
-export const registerCapsuleCommands = () => {
+export const addCreateMarket = () => {
   Cypress.Commands.add('createMarket', () => {
-    const vegaPubKey = Cypress.env('VEGA_PUBLIC_KEY');
-    const token = Cypress.env('VEGA_WALLET_API_TOKEN');
+    const vegaPubKey = Cypress.env('CAPSULE_VEGA_PUBLIC_KEY');
+    const token = Cypress.env('CAPSULE_VEGA_WALLET_API_TOKEN');
     const ethWalletMnemonic = Cypress.env('ETH_WALLET_MNEMONIC');
+    console.log(vegaPubKey);
 
     cy.log('creating market on capsule environment');
 
@@ -27,21 +27,5 @@ export const registerCapsuleCommands = () => {
     // make sure we have a market to test against, createMarket will
     // return an array of markets or false if setup failed
     cy.get('@markets').should('not.equal', false);
-  });
-
-  Cypress.Commands.add('setVegaWalletConfig', () => {
-    // store the vega wallet config so that the app can
-    // connect eagerly and we don't need to connect for every test
-    // note: cypress will clear localstorage after every test
-    cy.window().then((win) => {
-      win.localStorage.setItem(
-        'vega_wallet_config',
-        JSON.stringify({
-          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
-          connector: 'jsonRpc',
-          url: 'http://localhost:1789',
-        })
-      );
-    });
   });
 };
