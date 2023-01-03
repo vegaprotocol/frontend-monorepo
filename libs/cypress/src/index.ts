@@ -10,7 +10,10 @@ import { addVegaWalletReceiveFaucetedAsset } from './lib/commands/vega-wallet-re
 import { addContainsExactly } from './lib/commands/contains-exactly';
 import { addGetNetworkParameters } from './lib/commands/get-network-parameters';
 import { addUpdateCapsuleMultiSig } from './lib/commands/add-validators-to-multisig';
-import { addVegaWalletConnect } from './lib/commands/vega-wallet-connect';
+import {
+  addVegaWalletConnect,
+  addSetVegaWallet,
+} from './lib/commands/vega-wallet-connect';
 import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
 
 addGetTestIdcommand();
@@ -26,6 +29,7 @@ addContainsExactly();
 addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
 addVegaWalletConnect();
+addSetVegaWallet();
 addMockTransactionResponse();
 
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';

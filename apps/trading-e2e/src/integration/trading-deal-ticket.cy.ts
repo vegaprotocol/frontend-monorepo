@@ -30,16 +30,7 @@ const displayTomorrow = () => {
 
 describe('time in force default values', () => {
   before(() => {
-    cy.window().then((win) => {
-      win.localStorage.setItem(
-        'vega_wallet_config',
-        JSON.stringify({
-          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
-          connector: 'jsonRpc',
-          url: 'http://localhost:1789',
-        })
-      );
-    });
+    cy.setVegaWallet();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
@@ -68,7 +59,7 @@ describe('time in force default values', () => {
 describe('must submit order', { tags: '@smoke' }, () => {
   // 7002-SORD-039
   before(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
@@ -76,7 +67,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
   });
 
   beforeEach(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
   });
 
   it('successfully places market buy order', () => {
@@ -162,7 +153,7 @@ describe(
   { tags: '@regression' },
   () => {
     before(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
@@ -174,7 +165,7 @@ describe(
     });
 
     beforeEach(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
     });
 
     it('successfully places limit buy order', () => {
@@ -231,7 +222,7 @@ describe(
   { tags: '@regression' },
   () => {
     before(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
@@ -243,7 +234,7 @@ describe(
     });
 
     beforeEach(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
     });
 
     it('successfully places limit buy order', () => {
@@ -300,7 +291,7 @@ describe(
   { tags: '@regression' },
   () => {
     before(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -312,7 +303,7 @@ describe(
     });
 
     beforeEach(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
     });
 
     it('successfully places limit buy order', () => {
@@ -410,7 +401,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 
 describe('deal ticket size validation', { tags: '@smoke' }, function () {
   beforeEach(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
@@ -444,7 +435,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 
 describe('limit order validations', { tags: '@smoke' }, () => {
   before(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
@@ -453,7 +444,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
   });
 
   beforeEach(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
   });
 
   it('must see the price unit', function () {
@@ -537,7 +528,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
 
 describe('market order validations', { tags: '@smoke' }, () => {
   before(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
@@ -545,7 +536,7 @@ describe('market order validations', { tags: '@smoke' }, () => {
   });
 
   beforeEach(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
   });
 
   it('must not see the price unit', function () {
@@ -586,7 +577,7 @@ describe('market order validations', { tags: '@smoke' }, () => {
 
 describe('suspended market validation', { tags: '@regression' }, () => {
   before(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
     cy.mockTradingPage(
       Schema.MarketState.STATE_SUSPENDED,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -598,7 +589,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
   });
 
   beforeEach(() => {
-    setVegaConfig();
+    cy.setVegaWallet();
   });
 
   it('should show warning for market order', function () {
@@ -639,7 +630,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
 describe('account validation', { tags: '@regression' }, () => {
   describe('zero balance error', () => {
     beforeEach(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
       cy.mockTradingPage();
       cy.mockGQL((req) => {
         aliasGQLQuery(
@@ -686,7 +677,7 @@ describe('account validation', { tags: '@regression' }, () => {
 
   describe('not enough balance warning', () => {
     beforeEach(() => {
-      setVegaConfig();
+      cy.setVegaWallet();
       cy.mockTradingPage();
       cy.mockGQL((req) => {
         aliasGQLQuery(
@@ -744,17 +735,4 @@ const createOrder = (order: OrderSubmission): void => {
     cy.getByTestId('date-picker-field').type(expiresAt);
   }
   cy.getByTestId(placeOrderBtn).click();
-};
-
-const setVegaConfig = () => {
-  cy.window().then((win) => {
-    win.localStorage.setItem(
-      'vega_wallet_config',
-      JSON.stringify({
-        token: Cypress.env('VEGA_WALLET_API_TOKEN'),
-        connector: 'jsonRpc',
-        url: 'http://localhost:1789',
-      })
-    );
-  });
 };

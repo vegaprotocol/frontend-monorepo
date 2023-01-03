@@ -51,8 +51,8 @@ describe('Market trade', { tags: '@regression' }, () => {
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'Market', marketQuery(marketOverride));
     });
+    cy.setVegaWallet();
     cy.visit(`/trading/${marketId}`);
-    cy.connectVegaWallet();
     cy.wait('@Market');
   });
 

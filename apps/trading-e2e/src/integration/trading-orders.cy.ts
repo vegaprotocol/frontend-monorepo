@@ -27,9 +27,9 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
     cy.mockSubscription(subscriptionMocks);
+    cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.connectVegaWallet();
     cy.wait('@Orders').then(() => {
       expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
@@ -125,9 +125,9 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
     cy.mockSubscription(subscriptionMocks);
+    cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.connectVegaWallet();
     cy.wait('@Orders').then(() => {
       expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
@@ -341,9 +341,9 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
     cy.mockSubscription(subscriptionMocks);
+    cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.connectVegaWallet();
     cy.wait('@Orders').then(() => {
       expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
