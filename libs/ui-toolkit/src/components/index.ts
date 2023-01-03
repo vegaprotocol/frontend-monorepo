@@ -41,3 +41,4 @@ export * from './traffic-light';
 export * from './toast';
 export * from './notification';
 export * from './rounded-wrapper';
+export * from './maintenance-page';

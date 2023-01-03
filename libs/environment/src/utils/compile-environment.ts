@@ -38,7 +38,7 @@ const transformValue = (key: EnvKey, value?: string) => {
       }
       return {};
     }
-    case 'MAINTANCE_PAGE':
+    case 'MAINTENANCE_PAGE':
       return ['true', '1', 'yes'].includes(value?.toLowerCase() || '');
     default:
       return value;
@@ -78,8 +78,10 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_VEGA_DOCS_URL'];
     case 'HOSTED_WALLET_URL':
       return process.env['NX_HOSTED_WALLET_URL'];
-    case 'MAINTANCE_PAGE':
-      return process.env['MAINTANCE_PAGE'] || process.env['NX_MAINTANCE_PAGE'];
+    case 'MAINTENANCE_PAGE':
+      return (
+        process.env['MAINTENANCE_PAGE'] || process.env['NX_MAINTENANCE_PAGE']
+      );
   }
 };
 

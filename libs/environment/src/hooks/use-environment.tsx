@@ -6,7 +6,7 @@ import {
   useContext,
   useCallback,
 } from 'react';
-import { MaintancePage } from '@vegaprotocol/react-helpers';
+import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 import { NodeSwitcherDialog } from '../components/node-switcher-dialog';
 import { useConfig } from './use-config';
 import { useNodes } from './use-nodes';
@@ -128,8 +128,8 @@ export const EnvironmentProvider = ({
     throw new Error(errorMessage);
   }
 
-  if (environment.MAINTANCE_PAGE) {
-    return <MaintancePage />;
+  if (environment.MAINTENANCE_PAGE) {
+    return <MaintenancePage />;
   }
 
   return (
