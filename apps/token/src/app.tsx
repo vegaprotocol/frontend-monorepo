@@ -21,7 +21,6 @@ import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
 import {
   useEnvironment,
   EnvironmentProvider,
@@ -168,11 +167,9 @@ const AppContainer = () => {
 function App() {
   return (
     <EnvironmentProvider>
-      <ThemeContext.Provider value={'dark'}>
         <NetworkLoader cache={cache}>
           <AppContainer />
         </NetworkLoader>
-      </ThemeContext.Provider>
     </EnvironmentProvider>
   );
 }
