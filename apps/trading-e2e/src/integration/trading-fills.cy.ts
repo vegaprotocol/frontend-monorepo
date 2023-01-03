@@ -12,6 +12,7 @@ describe('fills', { tags: '@regression' }, () => {
         )
       );
     });
+    cy.setVegaWallet();
     cy.mockTradingPage();
     cy.mockGQL((req) => {
       aliasGQLQuery(
@@ -27,20 +28,12 @@ describe('fills', { tags: '@regression' }, () => {
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Fills').click();
-    cy.getByTestId('tab-fills').contains('Connect your Vega wallet');
-    cy.connectVegaWallet();
     validateFillsDisplayed();
   });
 
   it('renders fills on trading tab', () => {
-    cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Fills').click();
-    cy.getByTestId('tab-fills').should(
-      'contain.text',
-      'Connect your Vega wallet'
-    );
-    cy.connectVegaWallet();
     validateFillsDisplayed();
   });
 
