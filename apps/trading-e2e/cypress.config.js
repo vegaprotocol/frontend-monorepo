@@ -29,6 +29,8 @@ module.exports = defineConfig({
       '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
     CAPSULE_VEGA_WALLET_API_TOKEN:
       '1MRzTpKL7vDgHctjUN3bwWYsOUcLwTbKzTwVW7oEGcALd4s2KqU1RDgGlPg9GhnB',
+    CAPSULE_ETH_WALLET_MNEMONIC:
+      'ozone access unlock valid olympic save include omit supply green clown session',
     // pubkeys for UI_Trading_Test
     VEGA_PUBLIC_KEY:
       '47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278',
