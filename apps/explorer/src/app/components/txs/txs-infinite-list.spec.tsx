@@ -46,6 +46,7 @@ describe('Txs infinite list', () => {
         error={undefined}
       />
     );
+    expect(screen.getByTestId('emptylist')).toBeInTheDocument();
     expect(
       screen.getByText('This chain has 0 transactions')
     ).toBeInTheDocument();
