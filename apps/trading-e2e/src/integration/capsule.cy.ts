@@ -1,3 +1,4 @@
+import { removeDecimal } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import {
   OrderStatusMapping,
@@ -5,10 +6,9 @@ import {
   OrderTypeMapping,
   Side,
 } from '@vegaprotocol/types';
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import { isBefore, isAfter, addSeconds, subSeconds } from 'date-fns';
 import { createOrder } from '../support/create-order';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
-import { removeDecimal } from '../support/utils';
 
 const orderSize = 'size';
 const orderType = 'type';
