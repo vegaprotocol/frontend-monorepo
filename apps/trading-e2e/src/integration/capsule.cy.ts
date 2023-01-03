@@ -18,7 +18,8 @@ const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
 const orderCreatedAt = 'createdAt';
 
-describe('capsule', { tags: '@smoke' }, () => {
+// TODO: ensure this test runs only if capsule is running via workflow
+describe('capsule', { tags: '@slow' }, () => {
   let market: SingleMarketFieldsFragment;
 
   before(() => {
