@@ -15,8 +15,8 @@ export function request(method: string, params: object) {
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
-      Origin: 'my script',
-      Referer: 'my script',
+      Origin: 'market-setup',
+      Referer: 'market-setup',
     },
   }).then((res) => {
     return res.json();

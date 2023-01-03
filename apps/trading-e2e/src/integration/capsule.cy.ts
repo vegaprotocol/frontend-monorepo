@@ -1,4 +1,3 @@
-import { createMarket } from '../support/capsule/create-market';
 import * as Schema from '@vegaprotocol/types';
 import {
   OrderStatusMapping,
@@ -6,10 +5,10 @@ import {
   OrderTypeMapping,
   Side,
 } from '@vegaprotocol/types';
-import BigNumber from 'bignumber.js';
 import { isBefore, isAfter, addSeconds, subSeconds } from 'date-fns';
 import { createOrder } from '../support/create-order';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import { removeDecimal } from '../support/utils';
 
 const orderSize = 'size';
 const orderType = 'type';
@@ -21,42 +20,13 @@ const orderCreatedAt = 'createdAt';
 
 describe('capsule', { tags: '@smoke' }, () => {
   let market: SingleMarketFieldsFragment;
+
   before(() => {
-    const vegaPubKey =
-      '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680';
-    const token =
-      'iRjOdw8j4tKQEPBbQfpOtFQpDdGj1TAgRCWWKswCfROuKpWevHomU8NiiNKIOqdy';
-    Cypress.env('VEGA_WALLET_API_TOKEN', token);
-
-    Cypress.env('VEGA_PUBLIC_KEY', vegaPubKey);
-
-    cy.wrap(createMarket(vegaPubKey, token), { timeout: 30000 }).as('markets');
-    cy.get('@markets').should('not.equal', false);
-
-    // store the vega wallet config so that we connect eagerly
-    cy.window().then((win) => {
-      win.localStorage.setItem(
-        'vega_wallet_config',
-        JSON.stringify({
-          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
-          connector: 'jsonRpc',
-          url: 'http://localhost:1789',
-        })
-      );
-    });
+    cy.createMarket();
   });
 
   beforeEach(() => {
-    cy.window().then((win) => {
-      win.localStorage.setItem(
-        'vega_wallet_config',
-        JSON.stringify({
-          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
-          connector: 'jsonRpc',
-          url: 'http://localhost:1789',
-        })
-      );
-    });
+    cy.setVegaWalletConfig();
   });
 
   it('can view market', () => {
@@ -64,14 +34,14 @@ describe('capsule', { tags: '@smoke' }, () => {
     cy.get('@markets').then((markets) => {
       market = markets[0] as unknown as SingleMarketFieldsFragment;
       cy.getByTestId(`market-${market.id}`).click();
+      cy.url().should('contain', `markets/${market.id}`);
     });
   });
 
   it('can place and receive an order', () => {
     if (!market) {
-      throw new Error('no marketId');
+      throw new Error('no market found');
     }
-    cy.log('marketId: ', market.id);
 
     const order = {
       marketId: market.id,
@@ -169,8 +139,3 @@ describe('capsule', { tags: '@smoke' }, () => {
       .should('contain.text', OrderStatusMapping.STATUS_CANCELLED);
   });
 });
-
-function removeDecimal(value: string, decimals: number): string {
-  if (!decimals) return value;
-  return new BigNumber(value || 0).times(Math.pow(10, decimals)).toFixed(0);
-}
