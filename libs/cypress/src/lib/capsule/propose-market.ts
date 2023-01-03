@@ -155,7 +155,7 @@ export function waitForProposal(id: string): Promise<{ id: string }> {
   return new Promise((resolve, reject) => {
     let tick = 0;
     const interval = setInterval(async () => {
-      if (tick >= 4) {
+      if (tick >= 60) {
         clearInterval(interval);
         reject(new Error('proposal never seen'));
       }

@@ -13,8 +13,7 @@ export const addCreateMarket = () => {
   Cypress.Commands.add('createMarket', () => {
     const vegaPubKey = Cypress.env('CAPSULE_VEGA_PUBLIC_KEY');
     const token = Cypress.env('CAPSULE_VEGA_WALLET_API_TOKEN');
-    const ethWalletMnemonic = Cypress.env('ETH_WALLET_MNEMONIC');
-    console.log(vegaPubKey);
+    const ethWalletMnemonic = Cypress.env('CAPSULE_ETH_WALLET_MNEMONIC');
 
     cy.log('creating market on capsule environment');
 
