@@ -30,39 +30,19 @@ export async function createMarket(
     return markets;
   }
 
-  try {
-    await setupEthereumAccount(vegaPubKey, ethWalletMnemonic);
-  } catch (err) {
-    throw new Error('failed to set up all things ethereum');
-    return false;
-  }
+  await setupEthereumAccount(vegaPubKey, ethWalletMnemonic);
 
-  // set up vega pubkey with assets
-  try {
-    const result = await faucetAsset('fUSDC', vegaPubKey);
-
-    if (!result.success) {
-      return false;
-    }
-  } catch (err) {
-    console.error(err);
-    return false;
+  const result = await faucetAsset('fUSDC', vegaPubKey);
+  if (!result.success) {
+    throw new Error('faucet failed');
   }
 
   // propose and vote on a market
-  try {
-    const proposalTxResult = await proposeMarket(vegaPubKey, token);
-    const proposalId = determineId(
-      proposalTxResult.transaction.signature.value
-    );
-    log(`proposal created (id: ${proposalId})`);
-    const proposal = await waitForProposal(proposalId);
-    await vote(proposal.id, Schema.VoteValue.VALUE_YES, vegaPubKey, token);
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-
+  const proposalTxResult = await proposeMarket(vegaPubKey, token);
+  const proposalId = determineId(proposalTxResult.transaction.signature.value);
+  log(`proposal created (id: ${proposalId})`);
+  const proposal = await waitForProposal(proposalId);
+  await vote(proposal.id, Schema.VoteValue.VALUE_YES, vegaPubKey, token);
   await waitForEnactment();
 
   // fetch and return created market
