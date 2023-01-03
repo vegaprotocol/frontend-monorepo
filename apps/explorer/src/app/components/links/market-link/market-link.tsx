@@ -18,6 +18,7 @@ export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
 const MarketLink = ({ id, ...props }: MarketLinkProps) => {
   const { data, error, loading } = useExplorerMarketQuery({
     variables: { id },
+    fetchPolicy: 'cache-first',
   });
 
   let label = <span>{id}</span>;
