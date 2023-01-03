@@ -5,6 +5,7 @@ import {
   getDateTimeFormat,
   addDecimal,
   addDecimalsFormatNumber,
+  validateAmount,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -50,6 +51,7 @@ export const OrderEditDialog = ({
 
   const step = toDecimal(order.market?.decimalPlaces ?? 0);
   const stepSize = toDecimal(order.market?.positionDecimalPlaces ?? 0);
+
   return (
     <Dialog
       open={isOpen}
@@ -97,6 +99,7 @@ export const OrderEditDialog = ({
         onSubmit={handleSubmit(onSubmit)}
         data-testid="edit-order"
         className="w-full mt-4"
+        noValidate
       >
         <div className="flex flex-col md:flex-row gap-4">
           <FormGroup label={t('Price')} labelFor="limitPrice" className="grow">
@@ -110,6 +113,7 @@ export const OrderEditDialog = ({
                     Number(value) > 0
                       ? true
                       : t('The price cannot be negative'),
+                  validate: validateAmount(step, t('Price')),
                 },
               })}
               id="limitPrice"
@@ -129,6 +133,7 @@ export const OrderEditDialog = ({
                 validate: {
                   min: (value) =>
                     Number(value) > 0 ? true : t('The size cannot be negative'),
+                  validate: validateAmount(stepSize, t('Size')),
                 },
               })}
               id="size"
