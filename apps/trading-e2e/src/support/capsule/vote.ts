@@ -1,6 +1,9 @@
 import { request } from './request';
 import type * as Schema from '@vegaprotocol/types';
 import { encodeTransaction } from '../utils';
+import { createLog } from './logging';
+
+const log = createLog('vote');
 
 export async function vote(
   proposalId: string,
@@ -8,7 +11,7 @@ export async function vote(
   publicKey: string,
   token: string
 ) {
-  console.log(`voting ${voteValue} on ${proposalId}`);
+  log(`voting ${voteValue} on ${proposalId}`);
 
   const voteTx = createVote(proposalId, voteValue);
   const voteResult = await request('client.send_transaction', {

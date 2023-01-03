@@ -2,17 +2,23 @@ import { ethers, Wallet } from 'ethers';
 import { StakingBridge, Token } from '@vegaprotocol/smart-contracts';
 import { gql } from 'graphql-request';
 import { requestGQL } from './request';
+import { createLog } from './logging';
 
-const MNEMONIC =
-  'ozone access unlock valid olympic save include omit supply green clown session';
+const log = createLog('ethereum-setup');
 
-export async function setupEthereumAccount(vegaPublicKey: string) {
+export async function setupEthereumAccount(
+  vegaPublicKey: string,
+  ethWalletMnemonic: string
+) {
   // create provider/wallet
   const provider = new ethers.providers.JsonRpcProvider({
     url: 'http://localhost:8545',
   });
 
-  const privateKey = Wallet.fromMnemonic(MNEMONIC, getAccount()).privateKey;
+  const privateKey = Wallet.fromMnemonic(
+    ethWalletMnemonic,
+    getAccount()
+  ).privateKey;
 
   // this wallet (ozone access etc) is already set up with 6 million vega (eth)
   const wallet = new Wallet(privateKey, provider);
@@ -43,14 +49,11 @@ export async function setupEthereumAccount(vegaPublicKey: string) {
   );
 
   const amount = '10000' + '0'.repeat(18);
-  log(`staking ${amount}`);
+  log(`sending stake tx of ${amount} to ${vegaPublicKey}`);
   const stakeTx = await stakingContract.stake(amount, vegaPublicKey);
   await stakeTx.wait(3);
-  log(`staking ${amount}: success`);
-
-  log('waiting for stake');
   await waitForStake(vegaPublicKey);
-  log('waiting for stake: success');
+  log(`sending stake tx: success`);
 }
 
 async function getVegaAsset() {
@@ -119,9 +122,10 @@ function waitForStake(vegaPublicKey: string) {
     }
   `;
   return new Promise((resolve, reject) => {
-    let tick = 0;
+    let tick = 1;
     const interval = setInterval(async () => {
-      if (tick >= 10) {
+      log(`confirming stake (attempt: ${tick})`);
+      if (tick >= 60) {
         clearInterval(interval);
         reject(new Error('stake link never seen'));
       }
@@ -139,20 +143,20 @@ function waitForStake(vegaPublicKey: string) {
           res.party?.stakingSummary?.currentStakeAvailable !== null &&
           parseInt(res.party.stakingSummary.currentStakeAvailable) > 0
         ) {
+          log(
+            `stake confirmed (amount: ${res.party.stakingSummary.currentStakeAvailable})`
+          );
           clearInterval(interval);
           resolve(res.party.stakingSummary.currentStakeAvailable);
         }
       } catch (err) {
-        console.log(err);
+        // no op, query will error until party is created
       }
 
       tick++;
     }, 1000);
   });
 }
+
 // derivation path
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
-
-const log = (message: string) => {
-  console.log(`[ethereum-setup]: ${message}`);
-};
