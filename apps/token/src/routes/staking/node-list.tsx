@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../components/epoch-countdown';
 import { BigNumber } from '../../lib/bignumber';
-import { formatNumber } from '@vegaprotocol/react-helpers';
+import { formatNumber, formatNumberPercentage } from '@vegaprotocol/react-helpers';
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
 import type { ColDef } from 'ag-grid-community';
@@ -127,15 +127,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         },
         pendingStakeFormatted,
       }) => {
-        const stakedTotal = new BigNumber(
-          data?.nodeData?.stakedTotalFormatted || 0
-        );
         const stakedOnNode = new BigNumber(stakedTotalFormatted);
-        const stakedTotalPercentage =
-          stakedTotal.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-            ? '-'
-            : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
-              '%';
         const statusTranslated = t(`status-${status}`);
 
         return {
@@ -146,11 +138,10 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           },
           [STATUS]: statusTranslated,
           [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
-          [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
           [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
           [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
-          [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
+          [STAKE_SCORE]: formatNumberPercentage(new BigNumber(stakeScore).times(100), 2),
           [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
           [VOTING_POWER]: votingPower,
         };
@@ -187,9 +178,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           width: 160,
         },
         {
-          field: SHARE,
-          headerName: t('share').toString(),
-          width: 80,
+          field: STAKE_SCORE,
+          headerName: t('stakeScore').toString(),
+          width: 100,
         },
         {
           field: VALIDATOR_STAKE,
@@ -206,11 +197,6 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           headerName: t('rankingScore').toString(),
           width: 120,
           sort: 'desc',
-        },
-        {
-          field: STAKE_SCORE,
-          headerName: t('stakeScore').toString(),
-          width: 100,
         },
         {
           field: PERFORMANCE_SCORE,
