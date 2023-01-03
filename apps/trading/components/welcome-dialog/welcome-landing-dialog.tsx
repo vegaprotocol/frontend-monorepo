@@ -12,7 +12,6 @@ import {
 } from '../select-market';
 import { WelcomeDialogHeader } from './welcome-dialog-header';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useGlobalStore } from '../../stores';
 import { ProposedMarkets } from './proposed-markets';
 import { Links, Routes } from '../../pages/client-router';
 
@@ -27,18 +26,13 @@ export const SelectMarketLandingTable = ({
   const navigate = useNavigate();
   const marketId = params.marketId;
 
-  const { update } = useGlobalStore((store) => ({
-    update: store.update,
-  }));
-
   const onSelect = useCallback(
     (id: string) => {
       if (id && id !== marketId) {
-        update({ marketId: id });
         navigate(Links[Routes.MARKET](id));
       }
     },
-    [marketId, update, navigate]
+    [marketId, navigate]
   );
 
   const onSelectMarket = useCallback(
