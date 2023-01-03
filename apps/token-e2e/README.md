@@ -23,6 +23,7 @@ The e2e tests run against a locally running instance of the Vega network, manage
 
 1. Refer to the [Vega Capsule readme](https://github.com/vegaprotocol/vegacapsule#readme) for setting up and running Capsule - follow by Pre-start and Quick Start (points 1-2)
 2. Bootstrap with auto-installed dependencies including wallet
+
 ```bash
 vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
 ```
