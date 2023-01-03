@@ -21,7 +21,11 @@ The e2e tests run against a locally running instance of the Vega network, manage
 - Install the required Vega smart contracts
 - Set up DataNodes with a running GraphQL and REST APIs.
 
-Refer to the [Vega Capsule readme](https://github.com/vegaprotocol/vegacapsule#readme) for setting up and running Capsule. You will need [Go 1.19 or later](https://go.dev/doc/install) and [Docker](https://docs.docker.com/get-docker/) installed.
+1. Refer to the [Vega Capsule readme](https://github.com/vegaprotocol/vegacapsule#readme) for setting up and running Capsule - follow by Pre-start and Quick Start (points 1-2)
+2. Bootstrap with auto-installed dependencies including wallet
+```bash
+vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
+```
 
 ### Troubleshooting
 
@@ -29,6 +33,6 @@ Refer to the [Vega Capsule readme](https://github.com/vegaprotocol/vegacapsule#r
 
 ## Vega Wallet Setup
 
-Start by [downloading the Vega wallet software here](https://github.com/vegaprotocol/vega/releases).
+You can then refer to (or run) `frontend-monorepo/vegacapsule/setup-vegawallet.sh`. This will initialise and configure your wallet to have the correct public keys and network config to run against capsule.
 
-You can then refer to (or run) `vegacapsule/setup-vegawallet.sh`. This will initialise and configure your wallet to have the correct public keys and network config to run against capsule.
+Go to .env file in token-e2e folder and paste there public key for CYPRESS_VEGA_WALLET_API_TOKEN
