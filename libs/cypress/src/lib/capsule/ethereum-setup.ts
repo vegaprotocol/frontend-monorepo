@@ -8,11 +8,12 @@ const log = createLog('ethereum-setup');
 
 export async function setupEthereumAccount(
   vegaPublicKey: string,
-  ethWalletMnemonic: string
+  ethWalletMnemonic: string,
+  ethereumProviderUrl: string
 ) {
   // create provider/wallet
   const provider = new ethers.providers.JsonRpcProvider({
-    url: 'http://localhost:8545',
+    url: ethereumProviderUrl,
   });
 
   const privateKey = Wallet.fromMnemonic(

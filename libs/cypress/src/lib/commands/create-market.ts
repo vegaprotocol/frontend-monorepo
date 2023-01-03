@@ -11,13 +11,20 @@ declare global {
 }
 export const addCreateMarket = () => {
   Cypress.Commands.add('createMarket', () => {
-    const vegaPubKey = Cypress.env('CAPSULE_VEGA_PUBLIC_KEY');
-    const token = Cypress.env('CAPSULE_VEGA_WALLET_API_TOKEN');
-    const ethWalletMnemonic = Cypress.env('CAPSULE_ETH_WALLET_MNEMONIC');
+    const config = {
+      vegaPubKey: Cypress.env('CAPSULE_VEGA_PUBLIC_KEY'),
+      token: Cypress.env('CAPSULE_VEGA_WALLET_API_TOKEN'),
+      ethWalletMnemonic: Cypress.env('CAPSULE_ETH_WALLET_MNEMONIC'),
+      ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
+      vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
+      vegaUrl: Cypress.env('VEGA_URL'),
+      faucetUrl: Cypress.env('FAUCET_URL'),
+    };
+    console.log(JSON.stringify(config, null, 2));
 
     cy.log('creating market on capsule environment');
 
-    cy.wrap(createMarket(vegaPubKey, token, ethWalletMnemonic), {
+    cy.wrap(createMarket(config), {
       timeout: 60000,
     })
       // register market list result so it can be retrieved in tests later
