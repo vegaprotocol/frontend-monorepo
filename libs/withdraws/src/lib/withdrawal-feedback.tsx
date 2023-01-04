@@ -10,7 +10,7 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
-import { ChainIdMap, useWeb3ConnectStore } from '@vegaprotocol/web3';
+import { getChainName, useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
@@ -114,7 +114,7 @@ const ActionButton = ({
   }
 
   if (chainId !== desiredChainId) {
-    const chainName = desiredChainId ? ChainIdMap[desiredChainId] : 'Unknown';
+    const chainName = getChainName(chainId);
     return (
       <>
         <p className="text-danger mb-2">

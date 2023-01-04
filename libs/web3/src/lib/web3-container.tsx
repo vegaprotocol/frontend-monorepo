@@ -8,6 +8,7 @@ import { Web3Provider } from './web3-provider';
 import { useEthereumConfig } from './use-ethereum-config';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { createConnectors } from './web3-connectors';
+import { getChainName } from './constants';
 
 interface Web3ContainerProps {
   children: ReactNode;
@@ -109,7 +110,7 @@ export const Web3Content = ({
     return (
       <SplashWrapper>
         <p className="mb-4">
-          {t(`This app only works on chain ID: ${appChainId}`)}
+          {t(`This app only works on ${getChainName(appChainId)}`)}
         </p>
         <Button onClick={() => connector.deactivate()}>
           {t('Disconnect')}
