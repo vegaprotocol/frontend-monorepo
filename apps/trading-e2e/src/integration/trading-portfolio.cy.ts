@@ -13,11 +13,11 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       aliasGQLQuery(req, 'Markets', marketsQuery());
     });
     cy.mockSubscription();
+    cy.setVegaWallet();
   });
   describe('Ledger entries', () => {
     it('List should be properly rendered', () => {
       cy.visit('/#/portfolio');
-      cy.connectVegaWallet();
       cy.getByTestId('"Ledger entries"').click();
       const headers = [
         'Sender',

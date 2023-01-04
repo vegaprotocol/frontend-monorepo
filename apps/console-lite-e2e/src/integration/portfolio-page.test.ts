@@ -34,11 +34,11 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
       aliasGQLQuery(req, 'Accounts', accountsQuery());
       aliasGQLQuery(req, 'Assets', assetsQuery());
     });
+    cy.setVegaWallet();
   });
 
   it('certain tabs should exist', () => {
     cy.visit('/portfolio');
-    cy.connectVegaWallet();
 
     cy.getByTestId('assets').click();
     cy.location('pathname').should('eq', '/portfolio/assets');
@@ -68,17 +68,13 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
         aliasGQLQuery(req, 'Accounts', accountsQuery());
         aliasGQLQuery(req, 'Assets', assetsQuery());
       });
+      cy.setVegaWallet();
       cy.visit('/portfolio/assets');
-      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
       cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
-      cy.get(
-        '.ag-center-cols-container [row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]'
-      )
-        .find('button')
-        .click();
+      cy.get('[title="tEURO"] button').click();
       cy.getByTestId('dialog-title').should(
         'have.text',
         'Asset details - tEURO'
@@ -99,8 +95,8 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
         aliasGQLQuery(req, 'Accounts', accountsQuery());
         aliasGQLQuery(req, 'Assets', assetsQuery());
       });
+      cy.setVegaWallet();
       cy.visit('/portfolio/positions');
-      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
@@ -116,8 +112,8 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
         aliasGQLQuery(req, 'Orders', ordersQuery());
         aliasGQLQuery(req, 'Markets', marketsQuery());
       });
+      cy.setVegaWallet();
       cy.visit('/portfolio/orders');
-      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
@@ -134,8 +130,8 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
         aliasGQLQuery(req, 'Markets', marketsQuery());
         aliasGQLQuery(req, 'Fills', fillsQuery());
       });
+      cy.setVegaWallet();
       cy.visit('/portfolio/fills');
-      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
@@ -161,8 +157,8 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
         aliasGQLQuery(req, 'Margins', marginsQuery());
         aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
       });
+      cy.setVegaWallet();
       cy.visit('/portfolio');
-      cy.connectVegaWallet();
     });
 
     it('"No data to display" should be always displayed', () => {

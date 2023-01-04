@@ -15,12 +15,10 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
     cy.mockWeb3Provider();
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setVegaWallet();
 
     cy.visit('/#/portfolio');
     cy.getByTestId('Withdrawals').click();
-
-    // Withdraw page requires vega wallet connection
-    cy.connectVegaWallet();
 
     cy.getByTestId('withdraw-dialog-button').click();
 
@@ -72,13 +70,10 @@ describe('withdraw actions', { tags: '@regression' }, () => {
     cy.mockWeb3Provider();
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setVegaWallet();
 
     cy.visit('/#/portfolio');
     cy.getByTestId('Withdrawals').click();
-
-    // Withdraw page requires vega wallet connection
-    cy.connectVegaWallet();
-
     cy.getByTestId('withdraw-dialog-button').click();
 
     connectEthereumWallet();
