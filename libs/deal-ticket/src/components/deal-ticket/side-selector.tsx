@@ -2,6 +2,7 @@ import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
+import { useState } from 'react';
 
 interface SideSelectorProps {
   value: Schema.Side;
@@ -14,6 +15,18 @@ export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
     { label: t('Short'), value: Schema.Side.SIDE_SELL },
   ];
 
+  const [side, setSide] = useState(value);
+  const toggleType = (e: Schema.Side) => {
+    switch (e) {
+      case Schema.Side.SIDE_BUY:
+        return 'buy';
+      case Schema.Side.SIDE_SELL:
+        return 'sell';
+      default:
+        return 'primary';
+    }
+  };
+
   return (
     <FormGroup label={t('Direction')} labelFor="order-side-toggle">
       <Toggle
@@ -21,7 +34,11 @@ export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
         name="order-side"
         toggles={toggles}
         checkedValue={value}
-        onChange={(e) => onSelect(e.target.value as Schema.Side)}
+        type={toggleType(side)}
+        onChange={(e) => {
+          onSelect(e.target.value as Schema.Side);
+          setSide(e.target.value as Schema.Side);
+        }}
       />
     </FormGroup>
   );

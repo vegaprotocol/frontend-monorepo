@@ -210,6 +210,7 @@ export const DealTicket = ({
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1}
         transactionStatus={transactionStatus}
+        variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <SummaryMessage
         errorMessage={errors.summary?.message}
@@ -275,7 +276,7 @@ const SummaryMessage = memo(
     ) {
       return (
         <div
-          className="text-sm text-vega-orange mb-4"
+          className="text-sm text-warning mb-4"
           data-testid="dealticket-warning-auction"
         >
           <p>
