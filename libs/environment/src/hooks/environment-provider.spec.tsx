@@ -1,5 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
-import { Networks } from '@vegaprotocol/environment';
+import { Networks } from '../types';
 import { EnvironmentProvider } from './use-environment';
 
 describe('EnvironmentProvider', () => {
