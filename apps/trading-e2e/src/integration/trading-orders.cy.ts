@@ -439,7 +439,10 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');
         cy.get('#limitPrice').focus().clear().type('0.111111');
         cy.getByTestId('edit-order').find('[type="submit"]').click();
-        cy.getByTestId('input-error-text').should('have.text', 'Price accepts up to 5 decimal places')
+        cy.getByTestId('input-error-text').should(
+          'have.text',
+          'Price accepts up to 5 decimal places'
+        );
       });
   });
   it.skip('tbd for 7003-MORD', () => {
