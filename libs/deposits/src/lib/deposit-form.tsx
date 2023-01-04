@@ -29,7 +29,7 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectStore,
-  ChainIdMap,
+  getChainName,
 } from '@vegaprotocol/web3';
 
 interface FormFields {
@@ -323,7 +323,7 @@ const FormButton = ({
     );
   } else if (chainId !== desiredChainId) {
     console.log(chainId, desiredChainId);
-    const chainName = desiredChainId ? ChainIdMap[desiredChainId] : 'Unknown';
+    const chainName = getChainName(desiredChainId);
     message = t(`This app only works on ${chainName}.`);
     button = (
       <Button

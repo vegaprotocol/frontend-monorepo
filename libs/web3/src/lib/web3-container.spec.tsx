@@ -12,13 +12,13 @@ const defaultHookValue = {
   isActive: false,
   error: undefined,
   connector: null,
-  chainId: 3,
+  chainId: 11155111,
 } as unknown as ReturnType<typeof useWeb3React>;
 let mockHookValue: ReturnType<typeof useWeb3React>;
 
 const mockEthereumConfig = {
-  network_id: '3',
-  chain_id: '3',
+  network_id: '11155111',
+  chain_id: '11155111',
   confirmations: 3,
   collateral_bridge_contract: {
     address: 'bridge address',
@@ -118,7 +118,7 @@ it('Checks that chain ID matches app ID', async () => {
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
   expect(
-    await screen.findByText(`This app only works on chain ID: 3`)
+    await screen.findByText(`This app only works on Sepolia`)
   ).toBeInTheDocument();
   expect(screen.queryByText('Child')).not.toBeInTheDocument();
 });

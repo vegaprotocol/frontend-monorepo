@@ -1,25 +1,19 @@
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockSubscription();
+  cy.setVegaWallet();
 });
 
 describe('positions', { tags: '@smoke' }, () => {
   it('renders positions on trading page', () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Positions').click();
-    cy.getByTestId('tab-positions').should(
-      'contain.text',
-      'Connect your Vega wallet'
-    );
-
-    cy.connectVegaWallet();
     validatePositionsDisplayed();
   });
 
   it('renders positions on portfolio page', () => {
     cy.visit('/#/portfolio');
     cy.getByTestId('Positions').click();
-    cy.connectVegaWallet();
     validatePositionsDisplayed();
   });
 

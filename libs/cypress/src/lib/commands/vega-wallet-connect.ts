@@ -7,6 +7,10 @@ declare global {
     interface Chainable<Subject> {
       connectVegaWallet(): void;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Chainable<Subject> {
+      setVegaWallet(): void;
+    }
   }
 }
 
@@ -21,7 +25,6 @@ export const mockConnectWallet = () => {
 };
 
 export function addVegaWalletConnect() {
-  // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
   Cypress.Commands.add('connectVegaWallet', () => {
     mockConnectWallet();
     cy.highlight(`Connecting Vega Wallet`);
@@ -36,5 +39,20 @@ export function addVegaWalletConnect() {
     );
     cy.getByTestId('dialog-close').click();
     cy.get('[data-testid=dialog-content]').should('not.exist');
+  });
+}
+
+export function addSetVegaWallet() {
+  Cypress.Commands.add('setVegaWallet', () => {
+    cy.window().then((win) => {
+      win.localStorage.setItem(
+        'vega_wallet_config',
+        JSON.stringify({
+          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
+          connector: 'jsonRpc',
+          url: 'http://localhost:1789',
+        })
+      );
+    });
   });
 }

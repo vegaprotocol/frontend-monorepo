@@ -4,8 +4,8 @@ const marketName = 'ACTIVE MARKET';
 describe('market selector', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockConsole();
+    cy.setVegaWallet();
     cy.visit(`/trading/${marketId}`);
-    cy.connectVegaWallet();
     cy.wait('@Markets');
   });
 
