@@ -6,7 +6,10 @@ const BLOG_URL = 'https://blog.vega.xyz/';
 
 export const MaintenancePage = () => {
   return (
-    <div className="flex flex-col w-full min-h-full justify-center items-center dark:bg-black dark:text-white">
+    <div
+      className="flex flex-col w-full min-h-full justify-center items-center dark:bg-black dark:text-white"
+      data-testid="maintenance-page"
+    >
       <div className="max-w-[540px] w-[80%]">
         <div className="pb-[24.6944444%] relative w-full mb-6">
           <div className="absolute inset-px">
