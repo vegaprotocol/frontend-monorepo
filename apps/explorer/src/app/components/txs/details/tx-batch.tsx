@@ -9,6 +9,8 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody, TableRow, TableCell, Table } from '../../table';
 import { TxOrderType } from '../tx-order-type';
 import { TruncateInline } from '../../truncate/truncate';
+import { MarketLink } from '../../links';
+import OrderSummary from '../../order-summary/order-summary';
 
 interface TxDetailsBatchProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -93,21 +95,23 @@ export const TxDetailsBatch = ({
       <Table className="max-w-5xl min-w-fit">
         <thead>
           <TableRow modifier="bordered" className="font-mono">
-            <th>{t('Type')}</th>
-            <th>{t('Market')}</th>
-            <th>{t('Order')}</th>
+            <th align="left">{t('Type Index')}</th>
+            <th align="left">{t('Type')}</th>
+            <th align="left">{t('Market')}</th>
+            <th align="left">{t('Order')}</th>
           </TableRow>
         </thead>
         <tbody>
           {cancellations.length > 0
-            ? cancellations.map((c) => {
+            ? cancellations.map((c, i) => {
                 return (
                   <tr>
+                    <td>{i}</td>
                     <td>
                       <TxOrderType orderType={'OrderCancellation'} />
                     </td>
                     <td>
-                      <TruncateInline text={c.marketId} />
+                      <MarketLink id={c.marketId} />
                     </td>
                     <td>
                       <TruncateInline text={c.orderId} />
@@ -117,14 +121,15 @@ export const TxDetailsBatch = ({
               })
             : null}
           {amendments.length > 0
-            ? amendments.map((a) => {
+            ? amendments.map((a, i) => {
                 return (
                   <tr>
+                    <td>{i}</td>
                     <td>
                       <TxOrderType orderType={'OrderAmendment'} />
                     </td>
                     <td>
-                      <TruncateInline text={a.marketId} />
+                      <MarketLink id={a.marketId} />
                     </td>
                     <td>
                       <TruncateInline text={a.orderId} />
@@ -134,14 +139,18 @@ export const TxDetailsBatch = ({
               })
             : null}
           {submissions.length > 0
-            ? submissions.map((s) => {
+            ? submissions.map((s, i) => {
                 return (
                   <tr>
+                    <td>{i}</td>
                     <td>
                       <TxOrderType orderType={'OrderSubmission'} />
                     </td>
                     <td>
-                      <TruncateInline text={s.marketId} />
+                      <MarketLink id={s.marketId} />
+                    </td>
+                    <td>
+                      <OrderSummary order={s} />
                     </td>
                   </tr>
                 );

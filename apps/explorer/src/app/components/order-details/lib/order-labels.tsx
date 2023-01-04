@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
+import type { components } from '../../../../types/explorer';
 
 export interface DeterministicOrderDetailsProps {
   id: string;
@@ -19,7 +20,8 @@ export const statusText: Record<Schema.OrderStatus, string> = {
   STATUS_STOPPED: t('Stopped'),
 };
 
-export const sideText: Record<Schema.Side, string> = {
+export const sideText: Record<components['schemas']['vegaSide'], string> = {
+  SIDE_UNSPECIFIED: t('Buy'),
   SIDE_BUY: t('Buy'),
   SIDE_SELL: t('Sell'),
 };
