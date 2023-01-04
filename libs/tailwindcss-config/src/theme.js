@@ -83,8 +83,8 @@ module.exports = {
     },
   },
   animation: {
-    rotate: 'rotate 2s linear reverse infinite',
-    'rotate-back': 'rotate 2s linear alternate infinite',
+    rotate: 'rotate 2s linear alternate infinite',
+    'rotate-back': 'rotate 2s linear reverse infinite',
     wave: 'wave 2s linear infinite',
   },
 };

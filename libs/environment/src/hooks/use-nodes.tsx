@@ -178,7 +178,7 @@ const reducer = (state: Record<string, NodeData>, action: Action) => {
   }
 };
 
-export const useNodes = (config?: Configuration) => {
+export const useNodes = (config?: Configuration, skip?: boolean) => {
   const [clients, setClients] = useState<ClientCollection>({});
   const [state, dispatch] = useReducer(reducer, getInitialState(config));
   const configCacheKey = config?.hosts.join(';');
@@ -193,10 +193,8 @@ export const useNodes = (config?: Configuration) => {
   }, []);
 
   useEffect(() => {
-    const nodeUrlMap = (config?.hosts || []).reduce(
-      (acc, url) => ({ ...acc, [url]: url }),
-      {}
-    );
+    const hosts = skip ? [] : config?.hosts || [];
+    const nodeUrlMap = hosts.reduce((acc, url) => ({ ...acc, [url]: url }), {});
     const { clients: newClients, subscriptions } = initializeNodes(
       dispatch,
       nodeUrlMap
@@ -208,7 +206,7 @@ export const useNodes = (config?: Configuration) => {
     };
     // use primitive cache key to prevent infinite rerender loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [configCacheKey]);
+  }, [configCacheKey, skip]);
 
   useEffect(() => {
     const allNodes = Object.keys(state);

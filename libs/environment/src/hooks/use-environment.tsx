@@ -76,7 +76,10 @@ export const EnvironmentProvider = ({
       }
     }
   );
-  const { state: nodes, clients } = useNodes(config);
+  const { state: nodes, clients } = useNodes(
+    config,
+    environment.MAINTENANCE_PAGE
+  );
   const nodeKeys = Object.keys(nodes);
 
   useEffect(() => {
