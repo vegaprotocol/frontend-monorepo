@@ -82,7 +82,7 @@ export class JsonRpcConnector implements VegaConnector {
       setConfig({
         token: result.token,
         connector: 'jsonRpc',
-        url: this.url,
+        url: this._url,
       });
       return result;
     } catch (err) {
