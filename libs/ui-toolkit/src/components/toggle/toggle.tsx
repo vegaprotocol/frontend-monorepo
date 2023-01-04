@@ -37,14 +37,12 @@ export const Toggle = ({
     'peer-checked:rounded-full',
     'px-10 py-2',
     {
-      'peer-checked:bg-neutral-400 dark:peer-checked:bg-white':
+      'peer-checked:bg-neutral-400 dark:peer-checked:bg-white dark:peer-checked:text-black':
         type === 'primary',
-      'peer-checked:bg-vega-green-dark dark:peer-checked:bg-vega-green-dark dark:peer-checked:text-white':
-        type === 'buy',
-      'peer-checked:bg-vega-pink-dark dark:peer-checked:bg-vega-pink-dark dark:peer-checked:text-white':
-        type === 'sell',
+      'peer-checked:bg-vega-green-dark': type === 'buy',
+      'peer-checked:bg-vega-pink-dark': type === 'sell',
     },
-    'peer-checked:text-white dark:peer-checked:text-black',
+    'peer-checked:text-white ',
     'cursor-pointer peer-checked:cursor-auto select-none'
   );
 
