@@ -123,7 +123,7 @@ jobs:
         uses: nrwl/nx-set-shas@v3
         with:
           working-directory: frontend-monorepo
-          main-branch-name: master
+          main-branch-name: main
 
       - name: Install root dependencies
         run: yarn install
