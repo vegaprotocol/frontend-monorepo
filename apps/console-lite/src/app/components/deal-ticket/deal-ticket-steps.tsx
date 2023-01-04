@@ -8,7 +8,6 @@ import {
   useOrderMargin,
   useMaximumPositionSize,
   useCalculateSlippage,
-  validateAmount,
 } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
@@ -23,6 +22,7 @@ import {
   addDecimalsFormatNumber,
   addDecimal,
   formatNumber,
+  validateAmount,
 } from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,
