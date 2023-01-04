@@ -12,6 +12,7 @@ import {
   ProposalFormSubmit,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
+  ProposalFormViewJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
@@ -24,6 +25,7 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import { ProposalUserAction } from '../../components/shared';
+import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
 
 export interface FreeformProposalFormFields {
   proposalVoteDeadline: string;
@@ -50,10 +52,11 @@ export const ProposeFreeform = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
+    watch,
   } = useForm<FreeformProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
-  const onSubmit = async (fields: FreeformProposalFormFields) => {
+  const assembleProposal = (fields: FreeformProposalFormFields) => {
     const isVoteDeadlineAtMinimum =
       fields.proposalVoteDeadline ===
       deadlineToRoundedHours(
@@ -66,7 +69,7 @@ export const ProposeFreeform = () => {
         params.governance_proposal_freeform_maxClose
       ).toString();
 
-    await submit({
+    return {
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
@@ -79,7 +82,16 @@ export const ProposeFreeform = () => {
           isVoteDeadlineAtMaximum
         ),
       },
-    });
+    };
+  };
+
+  const onSubmit = async (fields: FreeformProposalFormFields) => {
+    await submit(assembleProposal(fields));
+  };
+
+  const viewJson = () => {
+    const formData = watch();
+    viewJsonStringInNewWindow(JSON.stringify(assembleProposal(formData)));
   };
 
   return (
@@ -150,6 +162,7 @@ export const ProposeFreeform = () => {
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
+                <ProposalFormViewJson viewJson={viewJson} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
                   TransactionDialog={Dialog}

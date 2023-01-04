@@ -21,6 +21,7 @@ import {
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
+  ProposalFormViewJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
@@ -28,6 +29,7 @@ import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { ProposalUserAction } from '../../components/shared';
+import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
 
 export interface NewAssetProposalFormFields {
   proposalVoteDeadline: string;
@@ -62,10 +64,11 @@ export const ProposeNewAsset = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
+    watch,
   } = useForm<NewAssetProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
-  const onSubmit = async (fields: NewAssetProposalFormFields) => {
+  const assembleProposal = (fields: NewAssetProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
       fields.proposalVoteDeadline,
       params.governance_proposal_asset_minClose
@@ -87,7 +90,7 @@ export const ProposeNewAsset = () => {
       params.governance_proposal_asset_maxClose
     );
 
-    await submit({
+    return {
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
@@ -111,7 +114,16 @@ export const ProposeNewAsset = () => {
           isValidationDeadlineAtMaximum
         ),
       },
-    });
+    };
+  };
+
+  const onSubmit = async (fields: NewAssetProposalFormFields) => {
+    await submit(assembleProposal(fields));
+  };
+
+  const viewJson = () => {
+    const formData = watch();
+    viewJsonStringInNewWindow(JSON.stringify(assembleProposal(formData)));
   };
 
   return (
@@ -216,6 +228,7 @@ export const ProposeNewAsset = () => {
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
+                <ProposalFormViewJson viewJson={viewJson} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
                   TransactionDialog={Dialog}

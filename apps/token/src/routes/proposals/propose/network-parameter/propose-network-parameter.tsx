@@ -20,6 +20,7 @@ import {
   ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
+  ProposalFormViewJson,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
 import {
@@ -35,6 +36,7 @@ import {
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { ProposalUserAction } from '../../components/shared';
+import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;
@@ -92,6 +94,7 @@ export const ProposeNetworkParameter = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
+    watch,
   } = useForm<NetworkParameterProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
@@ -99,8 +102,8 @@ export const ProposeNetworkParameter = () => {
     ? Object.entries(params).find(([key]) => key === selectedNetworkParam)
     : null;
 
-  const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
-    const acutalNetworkParamKey = fields.proposalNetworkParameterKey
+  const assembleProposal = (fields: NetworkParameterProposalFormFields) => {
+    const actualNetworkParamKey = fields.proposalNetworkParameterKey
       .split('_')
       .join('.');
 
@@ -121,7 +124,7 @@ export const ProposeNetworkParameter = () => {
       params.governance_proposal_updateNetParam_maxEnact
     );
 
-    await submit({
+    return {
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
@@ -129,7 +132,7 @@ export const ProposeNetworkParameter = () => {
       terms: {
         updateNetworkParameter: {
           changes: {
-            key: acutalNetworkParamKey,
+            key: actualNetworkParamKey,
             value: fields.proposalNetworkParameterValue,
           },
         },
@@ -144,7 +147,16 @@ export const ProposeNetworkParameter = () => {
           isEnactmentDeadlineAtMaximum
         ),
       },
-    });
+    };
+  };
+
+  const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
+    await submit(assembleProposal(fields));
+  };
+
+  const viewJson = () => {
+    const formData = watch();
+    viewJsonStringInNewWindow(JSON.stringify(assembleProposal(formData)));
   };
 
   return (
@@ -300,6 +312,7 @@ export const ProposeNetworkParameter = () => {
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
+                <ProposalFormViewJson viewJson={viewJson} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
                   TransactionDialog={Dialog}

@@ -159,8 +159,10 @@
   "Tokens are held in different <trancheLink>Tranches</trancheLink>. Each tranche has its own schedule for how the tokens are unlocked.": "Tokens are held in different <trancheLink>Tranches</trancheLink>. Each tranche has its own schedule for how the tokens are unlocked.",
   "proposals": "Proposals",
   "proposal": "Proposal",
-  "submitting": "Submitting",
+  "submittingProposal": "Submitting proposal",
   "submit": "Submit",
+  "submitProposal": "Submit proposal",
+  "connectWalletToSubmitProposal": "Connect your wallet to submit a proposal",
   "proposedEnactment": "Proposed enactment",
   "Enacted": "Enacted",
   "enactedOn": "Enacted on",
@@ -729,5 +731,6 @@
   "homeRewardsIntro": "Track rewards you've earned for trading, liquidity provision, market creation, and staking.",
   "homeRewardsButtonText": "See rewards",
   "homeVegaTokenIntro": "VEGA Token is a governance asset used to make and vote on proposals, and nominate validators.",
-  "homeVegaTokenButtonText": "Manage tokens"
+  "homeVegaTokenButtonText": "Manage tokens",
+  "viewProposalJson": "View proposal as JSON"
 }
