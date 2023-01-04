@@ -423,7 +423,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
         testOrderCancellation(order);
       });
   });
-  it(' must be warned (pre-submit) if the input price has too many digits after the decimal place for the market', () => {
+  it('must be warned (pre-submit) if the input price has too many digits after the decimal place for the market', () => {
     // 7003-MORD-016
     updateOrder({
       id: orderId,
