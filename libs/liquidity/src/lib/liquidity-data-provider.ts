@@ -1,4 +1,4 @@
-import { accountsDataProvider } from '@vegaprotocol/accounts';
+import compact from 'lodash/compact';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -24,7 +24,6 @@ import type {
   LiquidityProvisionsQuery,
   LiquidityProvisionsUpdateSubscription,
 } from './__generated__/MarketLiquidity';
-import type { Account } from '@vegaprotocol/accounts';
 import type { IterableElement } from 'type-fest';
 
 export const liquidityProvisionsDataProvider = makeDataProvider<
@@ -157,22 +156,16 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider(
       liquidityProvisionsDataProvider(callback, client, {
         marketId: variables?.marketId,
       }),
-    (callback, client, variables) =>
-      accountsDataProvider(callback, client, {
-        partyId: variables?.partyId || '', // party Id can not be null
-      }),
     marketLiquidityDataProvider,
     liquidityFeeShareDataProvider,
   ],
   ([
     liquidityProvisions,
-    accounts,
     marketLiquidity,
     liquidityFeeShare,
   ]): LiquidityProvisionData[] => {
     return getLiquidityProvision(
       liquidityProvisions,
-      accounts,
       marketLiquidity,
       liquidityFeeShare
     );
@@ -181,7 +174,6 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider(
 
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
-  accounts: Account[],
   marketLiquidity: MarketLpQuery,
   liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
 ): LiquidityProvisionData[] => {
@@ -189,10 +181,11 @@ export const getLiquidityProvision = (
     const market = marketLiquidity?.market;
     const feeShare = liquidityFeeShare.find((f) => f.party.id === lp.party.id);
     if (!feeShare) return lp;
+    const accounts = compact(lp.party.accountsConnection?.edges).map(
+      (e) => e.node
+    );
     const bondAccounts = accounts?.filter(
-      (a) =>
-        a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND &&
-        (!a.party?.id || a.party?.id === lp.party.id)
+      (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND
     );
     const lpData: LiquidityProvisionData = {
       ...lp,
