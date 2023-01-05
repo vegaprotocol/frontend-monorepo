@@ -121,7 +121,21 @@ describe('capsule', { tags: '@slow' }, () => {
         });
     });
 
-    // TODO: We should edit an order here first, before cancellation
+    cy.getByTestId('edit').first().click();
+    cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
+    cy.get('#limitPrice').focus().clear().type('200');
+    cy.getByTestId('edit-order').find('[type="submit"]').click();
+    cy.getByTestId('dialog-title').should('contain.text', 'Order updated');
+    cy.getByTestId('dialog-close').click();
+
+    cy.get('.ag-center-cols-container')
+      .children()
+      .first()
+      .within(() => {
+        cy.get(`[col-id='${orderPrice}']`).then(($price) => {
+          expect(parseFloat($price.text())).to.equal(parseFloat('200'));
+        });
+      });
 
     cy.getByTestId('cancel').first().click();
 
