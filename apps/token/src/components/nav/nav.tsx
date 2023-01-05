@@ -40,8 +40,7 @@ export const DropdownMenuTrigger = forwardRef<
 >(({ className, children, ...props }, forwardedRef) => {
   const triggerClasses = classNames(
     className,
-    'text-sm py-1 pl-2 bg-transparent whitespace-nowrap',
-    'hover:bg-neutral-500/20 dark:hover:bg-neutral-500/40'
+    'bg-transparent whitespace-nowrap'
   );
   return (
     <DropdownMenuPrimitive.Trigger
@@ -50,9 +49,9 @@ export const DropdownMenuTrigger = forwardRef<
       className={triggerClasses}
       {...props}
     >
-      <button>
+      <span className='h-full'>
         {children} <Icon name="arrow-down" className="ml-2" />
-      </button>
+      </span>
     </DropdownMenuPrimitive.Trigger>
   );
 });
@@ -72,7 +71,7 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className="min-w-[290px] bg-neutral-200 dark:bg-neutral-900 mt-2 p-2 rounded"
+    className="min-w-[290px] bg-neutral-200 dark:bg-neutral-900 mt-4 p-2 rounded"
     align="start"
     sideOffset={10}
   />
@@ -205,7 +204,7 @@ const TokenDropDown = () => {
       <AppNavLink
         name={
           <DropdownMenuTrigger
-            className="mr-2 w-auto text-capMenu text-black dark:text-white"
+            className="w-auto text-capMenu"
             data-testid="state-trigger"
             onClick={() => setOpen(!isOpen)}
           >
