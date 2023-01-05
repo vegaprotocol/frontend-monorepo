@@ -187,21 +187,21 @@ export const getLiquidityProvision = (
     const bondAccounts = accounts?.filter(
       (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND
     );
-    const lpData: LiquidityProvisionData = {
+    const balance =
+      bondAccounts
+        ?.reduce(
+          (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
+          new BigNumber(0)
+        )
+        .toString() || '0';
+    return {
       ...lp,
       averageEntryValuation: feeShare?.averageEntryValuation,
       equityLikeShare: feeShare?.equityLikeShare,
       assetDecimalPlaces:
         market?.tradableInstrument.instrument.product.settlementAsset.decimals,
-      balance:
-        bondAccounts
-          ?.reduce(
-            (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
-            new BigNumber(0)
-          )
-          .toString() ?? '0',
+      balance,
     };
-    return lpData;
   });
 };
 
