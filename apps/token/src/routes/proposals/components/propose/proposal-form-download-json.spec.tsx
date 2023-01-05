@@ -6,12 +6,6 @@ describe('ProposalFormDownloadJson', () => {
     const downloadJson = jest.fn();
     render(<ProposalFormDownloadJson downloadJson={downloadJson} />);
     const button = screen.getByTestId('proposal-download-json');
-
-    jest.spyOn(button, 'click').mockImplementation(() => {
-      fireEvent.click(button);
-    });
-
-    expect(downloadJson).toHaveBeenCalledTimes(0);
     fireEvent.click(button);
     expect(downloadJson).toHaveBeenCalledTimes(1);
   });
