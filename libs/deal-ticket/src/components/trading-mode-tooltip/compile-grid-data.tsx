@@ -8,15 +8,15 @@ import * as Schema from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { MarketX } from '@vegaprotocol/market-list';
 
 export const compileGridData = (
-  market: MarketDealTicket,
+  market: MarketX,
   onSelect?: (id: string) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: DataGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    market.data.marketTradingMode ===
+    market.data?.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
     market.data.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 

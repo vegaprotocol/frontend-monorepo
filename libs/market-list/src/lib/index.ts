@@ -13,3 +13,6 @@ export * from './__generated__/market';
 export * from './__generated__/markets';
 export * from './__generated__/markets-candles';
 export * from './__generated__/markets-data';
+export * from './__generated__/MarketsHooks';
+export * from './use-markets';
+export * from './use-market';

@@ -1,9 +1,6 @@
+import compact from 'lodash/compact';
 import { FeesCell } from '@vegaprotocol/market-info';
-import {
-  calcCandleHigh,
-  calcCandleLow,
-  calcCandleVolume,
-} from '@vegaprotocol/market-list';
+import { calcCandleHigh, calcCandleLow } from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   PriceCell,
@@ -13,18 +10,13 @@ import {
 import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
 import type { CandleClose } from '@vegaprotocol/types';
-import type {
-  MarketWithData,
-  MarketWithCandles,
-} from '@vegaprotocol/market-list';
+import type { MarketX } from '@vegaprotocol/market-list';
 import { Link } from 'react-router-dom';
 import { MarketMarkPrice } from '../market-mark-price';
 import { Last24hPriceChange } from '../last-24h-price-change';
 import { MarketTradingMode } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
 import { Links, Routes } from '../../pages/client-router';
-
-type Market = MarketWithData & MarketWithCandles;
 
 const ellipsisClasses = 'whitespace-nowrap overflow-hidden text-ellipsis';
 export const cellClassNames = `py-1 first:text-left text-right ${ellipsisClasses}`;
@@ -170,17 +162,18 @@ export type OnCellClickHandler = (
 ) => void;
 
 export const columns = (
-  market: Market,
+  market: MarketX,
   onSelect: (id: string) => void,
   onCellClick: OnCellClickHandler,
   activeMarketId?: string | null
 ) => {
-  const candlesClose = market.candles
+  const candles = compact(market.candlesConnection?.edges).map((e) => e.node);
+  const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-  const candleLow = market.candles && calcCandleLow(market.candles);
-  const candleHigh = market.candles && calcCandleHigh(market.candles);
-  const candleVolume = market.candles && calcCandleVolume(market.candles);
+  const candleLow = candles && calcCandleLow(candles);
+  const candleHigh = candles && calcCandleHigh(candles);
+  // const candleVolume = candles && calcCandleVolume(candles);
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
     id: string
@@ -189,7 +182,6 @@ export const columns = (
       return onSelect(id);
     }
   };
-  const noUpdate = !activeMarketId || market.id !== activeMarketId;
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -219,10 +211,8 @@ export const columns = (
       kind: ColumnKind.LastPrice,
       value: (
         <MarketMarkPrice
-          marketId={market.id}
+          marketPrice={market.data?.markPrice}
           decimalPlaces={market?.decimalPlaces}
-          initialValue={market.data?.markPrice.toString()}
-          noUpdate={noUpdate}
         />
       ),
       className: `${cellClassNames} max-w-[100px]`,
@@ -232,10 +222,8 @@ export const columns = (
       kind: ColumnKind.Change24,
       value: (
         <Last24hPriceChange
-          marketId={market.id}
+          candles={compact(market.candlesConnection?.edges).map((e) => e.node)}
           decimalPlaces={market?.decimalPlaces}
-          noUpdate={noUpdate}
-          initialValue={candlesClose}
         />
       ),
       className: `${cellClassNames} max-w-[150px]`,
@@ -243,7 +231,7 @@ export const columns = (
     },
     {
       kind: ColumnKind.Sparkline,
-      value: market.candles && (
+      value: candles && (
         <Sparkline
           width={100}
           height={20}
@@ -314,10 +302,8 @@ export const columns = (
       kind: ColumnKind.Volume,
       value: (
         <Last24hVolume
-          marketId={market.id}
+          candles={compact(market.candlesConnection?.edges).map((e) => e.node)}
           positionDecimalPlaces={market.positionDecimalPlaces}
-          initialValue={candleVolume}
-          noUpdate={noUpdate}
         />
       ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
@@ -326,14 +312,7 @@ export const columns = (
     },
     {
       kind: ColumnKind.TradingMode,
-      value: (
-        <MarketTradingMode
-          marketId={market?.id}
-          noUpdate={noUpdate}
-          initialMode={market.tradingMode}
-          initialTrigger={market.data?.trigger}
-        />
-      ),
+      value: <MarketTradingMode market={market} />,
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
@@ -357,17 +336,18 @@ export const columns = (
 };
 
 export const columnsPositionMarkets = (
-  market: Market,
+  market: MarketX,
   onSelect: (id: string) => void,
   openVolume?: string,
   onCellClick?: OnCellClickHandler,
   activeMarketId?: string | null
 ) => {
-  const candlesClose = market.candles
+  const candles = compact(market.candlesConnection?.edges).map((e) => e.node);
+  const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-  const candleLow = market.candles && calcCandleLow(market.candles);
-  const candleHigh = market.candles && calcCandleHigh(market.candles);
+  const candleLow = candles && calcCandleLow(candles);
+  const candleHigh = candles && calcCandleHigh(candles);
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLSpanElement>,
     id: string
@@ -376,8 +356,7 @@ export const columnsPositionMarkets = (
       return onSelect(id);
     }
   };
-  const candleVolume = market.candles && calcCandleVolume(market.candles);
-  const noUpdate = !activeMarketId || market.id !== activeMarketId;
+  // const candleVolume = candles && calcCandleVolume(candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -407,10 +386,8 @@ export const columnsPositionMarkets = (
       kind: ColumnKind.LastPrice,
       value: (
         <MarketMarkPrice
-          marketId={market.id}
+          marketPrice={market.data?.markPrice}
           decimalPlaces={market?.decimalPlaces}
-          initialValue={market.data?.markPrice.toString()}
-          noUpdate={noUpdate}
         />
       ),
       className: cellClassNames,
@@ -420,10 +397,8 @@ export const columnsPositionMarkets = (
       kind: ColumnKind.Change24,
       value: (
         <Last24hPriceChange
-          marketId={market.id}
+          candles={compact(market.candlesConnection?.edges).map((e) => e.node)}
           decimalPlaces={market?.decimalPlaces}
-          noUpdate={noUpdate}
-          initialValue={candlesClose}
         />
       ),
       className: cellClassNames,
@@ -502,10 +477,8 @@ export const columnsPositionMarkets = (
       kind: ColumnKind.Volume,
       value: (
         <Last24hVolume
-          marketId={market.id}
+          candles={compact(market.candlesConnection?.edges).map((e) => e.node)}
           positionDecimalPlaces={market.positionDecimalPlaces}
-          initialValue={candleVolume}
-          noUpdate={noUpdate}
         />
       ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
@@ -514,14 +487,7 @@ export const columnsPositionMarkets = (
     },
     {
       kind: ColumnKind.TradingMode,
-      value: (
-        <MarketTradingMode
-          marketId={market?.id}
-          noUpdate={noUpdate}
-          initialMode={market.tradingMode}
-          initialTrigger={market.data?.trigger}
-        />
-      ),
+      value: <MarketTradingMode market={market} />,
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',

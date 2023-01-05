@@ -1,7 +1,7 @@
 import { getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
 import { isValid, parseISO } from 'date-fns';
 
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import type { MarketX } from '@vegaprotocol/market-list';
 
 export const getMarketExpiryDate = (
   tags?: ReadonlyArray<string> | null
@@ -35,7 +35,7 @@ export const getMarketExpiryDateFormatted = (
   return null;
 };
 
-export const getExpiryDate = (market: SingleMarketFieldsFragment): string => {
+export const getExpiryDate = (market: MarketX): string => {
   const closeDate = getMarketExpiryDate(
     market.tradableInstrument.instrument.metadata.tags
   );

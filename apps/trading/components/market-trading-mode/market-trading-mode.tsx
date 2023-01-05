@@ -1,74 +1,25 @@
-import { useCallback, useMemo, useState } from 'react';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import { t } from '@vegaprotocol/react-helpers';
 import { compileGridData, TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import * as Schema from '@vegaprotocol/types';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-  SingleMarketFieldsFragment,
-} from '@vegaprotocol/market-list';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import type { MarketX } from '@vegaprotocol/market-list';
 
 interface Props {
-  marketId?: string;
+  market: MarketX;
   onSelect?: (marketId: string) => void;
   isHeader?: boolean;
-  noUpdate?: boolean;
-  initialMode?: Schema.MarketTradingMode;
-  initialTrigger?: Schema.AuctionTrigger;
 }
 
 export const MarketTradingMode = ({
-  marketId,
+  market,
   onSelect,
   isHeader = false,
-  noUpdate = false,
-  initialMode,
-  initialTrigger,
 }: Props) => {
-  const [tradingMode, setTradingMode] =
-    useState<Schema.MarketTradingMode | null>(initialMode || null);
-  const [trigger, setTrigger] = useState<Schema.AuctionTrigger | null>(
-    initialTrigger || null
-  );
-  const [market, setMarket] = useState<MarketDealTicket | null>(null);
-  const variables = useMemo(
-    () => ({
-      marketId: marketId,
-    }),
-    [marketId]
-  );
+  if (!market.data) return null;
 
-  const { data } = useDataProvider<SingleMarketFieldsFragment, never>({
-    dataProvider: marketProvider,
-    variables,
-    skip: !marketId,
-  });
-
-  const update = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      if (!noUpdate && marketData) {
-        setTradingMode(marketData.marketTradingMode);
-        setTrigger(marketData.trigger);
-        setMarket({
-          ...data,
-          data: marketData,
-        } as MarketDealTicket);
-      }
-      return true;
-    },
-    [noUpdate, data]
-  );
-
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
-    dataProvider: marketDataProvider,
-    update,
-    variables,
-    skip: noUpdate || !marketId || !data,
-  });
+  const trigger = market.data.trigger;
+  const tradingMode = market.data.marketTradingMode;
 
   const content =
     (tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&

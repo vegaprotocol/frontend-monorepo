@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { useMarketList, useMarkets } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { ExternalLink, Icon, Loader, Popover } from '@vegaprotocol/ui-toolkit';
@@ -19,6 +19,7 @@ import type { ReactNode } from 'react';
 import type {
   MarketWithCandles,
   MarketWithData,
+  MarketX,
 } from '@vegaprotocol/market-list';
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
@@ -28,8 +29,6 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
-
-export type Market = MarketWithCandles & MarketWithData;
 
 export const SelectAllMarketsTableBody = ({
   markets,
@@ -41,14 +40,14 @@ export const SelectAllMarketsTableBody = ({
   tableColumns = (market) =>
     columns(market, onSelect, onCellClick, activeMarketId),
 }: {
-  markets?: Market[] | null;
+  markets?: MarketX[] | null;
   positions?: PositionFieldsFragment[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
   activeMarketId?: string | null;
   headers?: Column[];
-  tableColumns?: (market: Market, openVolume?: string) => Column[];
+  tableColumns?: (market: MarketX, openVolume?: string) => Column[];
 }) => {
   const tokenLink = useLinks(DApp.Token);
   if (!markets) return null;
@@ -102,21 +101,6 @@ export const SelectMarketPopover = ({
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 mt-1';
   const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
-  const {
-    data,
-    loading: marketsLoading,
-    reload: marketListReload,
-  } = useMarketList();
-  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
-  const {
-    data: party,
-    loading: positionsLoading,
-    reload,
-  } = useDataProvider({
-    dataProvider: positionsDataProvider,
-    variables,
-    skip: !pubKey,
-  });
   const onSelectMarket = useCallback(
     (marketId: string) => {
       onSelect(marketId);
@@ -124,24 +108,16 @@ export const SelectMarketPopover = ({
     },
     [onSelect]
   );
-
   const iconClass = open ? 'rotate-180' : '';
-  const markets = useMemo(
-    () =>
-      data?.filter((market) =>
-        party?.positionsConnection?.edges?.find(
-          (edge) => edge.node.market.id === market.id
-        )
-      ),
-    [data, party]
-  );
 
-  useEffect(() => {
-    if (open) {
-      reload();
-      marketListReload();
-    }
-  }, [open, marketListReload, reload]);
+  // useEffect(() => {
+  //   if (open) {
+  //     reload();
+  //     marketListReload();
+  //   }
+  // }, [open, marketListReload, reload]);
+
+  const { markets, loading } = useMarkets();
 
   return (
     <Popover
@@ -158,14 +134,14 @@ export const SelectMarketPopover = ({
         className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
       >
-        {marketsLoading || (pubKey && positionsLoading) ? (
+        {loading ? (
           <div className="flex items-center gap-4">
             <Loader size="small" />
             {t('Loading market data')}
           </div>
         ) : (
           <table className="relative text-sm w-full whitespace-nowrap">
-            {pubKey && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
+            {/* {pubKey && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
               <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
@@ -187,10 +163,10 @@ export const SelectMarketPopover = ({
                   }
                 />
               </>
-            ) : null}
+            ) : null} */}
             <TableTitle>{t('All markets')}</TableTitle>
             <SelectAllMarketsTableBody
-              markets={data}
+              markets={markets}
               onSelect={onSelectMarket}
               onCellClick={onCellClick}
               activeMarketId={activeMarketId}

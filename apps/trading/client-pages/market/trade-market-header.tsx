@@ -1,10 +1,11 @@
+import compact from 'lodash/compact';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
 import { getExpiryDate } from '@vegaprotocol/market-info';
 import { t } from '@vegaprotocol/react-helpers';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import type { MarketX } from '@vegaprotocol/market-list';
 import {
   ColumnKind,
   SelectMarketPopover,
@@ -20,7 +21,7 @@ import { MarketTradingMode } from '../../components/market-trading-mode';
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 
 interface TradeMarketHeaderProps {
-  market: SingleMarketFieldsFragment | null;
+  market: MarketX;
   onSelect: (marketId: string) => void;
 }
 
@@ -66,20 +67,22 @@ export const TradeMarketHeader = ({
       <MarketMarkPrice
         marketId={market?.id}
         decimalPlaces={market?.decimalPlaces}
+        marketPrice={market.data?.markPrice}
         isHeader
       />
       <Last24hPriceChange
-        marketId={market?.id}
+        candles={compact(market.candlesConnection?.edges).map((e) => e.node)}
         decimalPlaces={market?.decimalPlaces}
         isHeader
       />
       <Last24hVolume
+        candles={compact(market.candlesConnection?.edges).map((e) => e.node)}
         marketId={market?.id}
         positionDecimalPlaces={market?.positionDecimalPlaces}
         isHeader
       />
-      <MarketTradingMode marketId={market?.id} onSelect={onSelect} isHeader />
-      <MarketState market={market} />
+      <MarketTradingMode market={market} onSelect={onSelect} isHeader />
+      <MarketState marketState={market.data?.marketState} />
       {asset ? (
         <HeaderStat
           heading={t('Settlement asset')}
@@ -98,7 +101,7 @@ export const TradeMarketHeader = ({
       ) : null}
       <MarketProposalNotification marketId={market?.id} />
       <MarketLiquiditySupplied
-        marketId={market?.id}
+        market={market}
         assetDecimals={asset?.decimals || 0}
       />
     </Header>
@@ -106,7 +109,7 @@ export const TradeMarketHeader = ({
 };
 
 type ExpiryLabelProps = {
-  market: SingleMarketFieldsFragment | null;
+  market: MarketX;
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
@@ -115,7 +118,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
 };
 
 type ExpiryTooltipContentProps = {
-  market: SingleMarketFieldsFragment;
+  market: MarketX;
   explorerUrl?: string;
 };
 

@@ -21,7 +21,10 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '../../components/accounts-container';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import type {
+  MarketX,
+  SingleMarketFieldsFragment,
+} from '@vegaprotocol/market-list';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { TradeMarketHeader } from './trade-market-header';
 import { NO_MARKET } from './constants';
@@ -61,7 +64,7 @@ const TradingViews = {
 type TradingView = keyof typeof TradingViews;
 
 interface TradeGridProps {
-  market: SingleMarketFieldsFragment | null;
+  market: MarketX;
   onSelect: (marketId: string) => void;
 }
 
@@ -193,7 +196,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 };
 
 interface TradePanelsProps {
-  market: SingleMarketFieldsFragment | null;
+  market: MarketX;
   onSelect: (marketId: string) => void;
 }
 

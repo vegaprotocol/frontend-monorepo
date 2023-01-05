@@ -473,6 +473,35 @@ export type ContinuousTrading = {
   tickSize: Scalars['String'];
 };
 
+/** Connection type for retrieving cursor-based paginated core snapshot data */
+export type CoreSnapshotConnection = {
+  __typename?: 'CoreSnapshotConnection';
+  /** The positions in this connection */
+  edges?: Maybe<Array<CoreSnapshotEdge>>;
+  /** The pagination information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
+/** A snapshot taken by the core */
+export type CoreSnapshotData = {
+  __typename?: 'CoreSnapshotData';
+  /** The block hash at the snapshot block height */
+  blockHash: Scalars['String'];
+  /** At which block the snapshot was taken */
+  blockHeight: Scalars['String'];
+  /** The current version of vega core */
+  vegaCoreVersion: Scalars['String'];
+};
+
+/** Edge type containing the core snapshot cursor information */
+export type CoreSnapshotEdge = {
+  __typename?: 'CoreSnapshotEdge';
+  /** Cursor identifying the core snapashot data */
+  cursor: Scalars['String'];
+  /** The core snapshot data */
+  node: CoreSnapshotData;
+};
+
 /** A data source contains the data sent by a data source */
 export type Data = {
   __typename?: 'Data';
@@ -861,6 +890,33 @@ export type EpochParticipation = {
   totalRewards?: Maybe<Scalars['Float']>;
 };
 
+/** an aggregated reward summary for a combination of epoch/asset/market/reward type */
+export type EpochRewardSummary = {
+  __typename?: 'EpochRewardSummary';
+  /** Total quantity of rewards awarded in this asset/market/reward type in this epoch */
+  amount: Scalars['String'];
+  /** ID of the Asset */
+  assetId: Scalars['ID'];
+  /** The epoch for which summary is generated */
+  epoch: Scalars['Int'];
+  /** ID of the market */
+  marketId?: Maybe<Scalars['ID']>;
+  /** Type of the reward */
+  rewardType: AccountType;
+};
+
+export type EpochRewardSummaryConnection = {
+  __typename?: 'EpochRewardSummaryConnection';
+  edges?: Maybe<Array<Maybe<EpochRewardSummaryEdge>>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type EpochRewardSummaryEdge = {
+  __typename?: 'EpochRewardSummaryEdge';
+  cursor: Scalars['String'];
+  node: EpochRewardSummary;
+};
+
 /** Describes in both human readable and block time when an epoch spans. */
 export type EpochTimestamps = {
   __typename?: 'EpochTimestamps';
@@ -868,6 +924,10 @@ export type EpochTimestamps = {
   end?: Maybe<Scalars['Timestamp']>;
   /** RFC3339 timestamp - Vega time of epoch expiry */
   expiry?: Maybe<Scalars['Timestamp']>;
+  /** Height of first block in the epoch, null if not started */
+  firstBlock: Scalars['String'];
+  /** Height of last block in the epoch, null if not ended */
+  lastBlock?: Maybe<Scalars['String']>;
   /** RFC3339 timestamp - Vega time of epoch start, null if not started */
   start?: Maybe<Scalars['Timestamp']>;
 };
@@ -1020,8 +1080,6 @@ export type Future = {
   quoteName: Scalars['String'];
   /** The name of the asset (string) */
   settlementAsset: Asset;
-  /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement data source */
-  settlementDataDecimals: Scalars['Int'];
 };
 
 export type FutureProduct = {
@@ -1039,8 +1097,6 @@ export type FutureProduct = {
   quoteName: Scalars['String'];
   /** Product asset */
   settlementAsset: Asset;
-  /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle */
-  settlementDataDecimals: Scalars['Int'];
 };
 
 /** A segment of datanode history */
@@ -1196,6 +1252,8 @@ export type LiquidityProviderFeeShare = {
   __typename?: 'LiquidityProviderFeeShare';
   /** The average entry valuation of the liquidity provider for the market */
   averageEntryValuation: Scalars['String'];
+  /** The average liquidity score */
+  averageScore: Scalars['String'];
   /** The share owned by this liquidity provider (float) */
   equityLikeShare: Scalars['String'];
   /** The liquidity provider party ID */
@@ -1432,6 +1490,8 @@ export type Market = {
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** The list of the liquidity provision commitments for this market */
   liquidityProvisionsConnection?: Maybe<LiquidityProvisionsConnection>;
+  /** Liquidity Provision order price range */
+  lpPriceRange: Scalars['String'];
   /** Timestamps for state changes in the market */
   marketTimestamps: MarketTimestamps;
   /**
@@ -1811,6 +1871,8 @@ export type NewMarket = {
   decimalPlaces: Scalars['Int'];
   /** New market instrument configuration */
   instrument: InstrumentConfiguration;
+  /** Liquidity Provision order price range */
+  lpPriceRange: Scalars['String'];
   /** Metadata for this instrument, tags */
   metadata?: Maybe<Array<Scalars['String']>>;
   /** New market risk configuration */
@@ -1969,6 +2031,8 @@ export type ObservableLiquidityProviderFeeShare = {
   __typename?: 'ObservableLiquidityProviderFeeShare';
   /** The average entry valuation of the liquidity provider for the market */
   averageEntryValuation: Scalars['String'];
+  /** The average liquidity score */
+  averageScore: Scalars['String'];
   /** The share owned by this liquidity provider (float) */
   equityLikeShare: Scalars['String'];
   /** The liquidity provider party ID */
@@ -2517,6 +2581,7 @@ export type PartymarginsConnectionArgs = {
 export type PartyordersConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
   filter?: InputMaybe<OrderFilter>;
+  marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -2792,6 +2857,11 @@ export type PropertyKey = {
   __typename?: 'PropertyKey';
   /** The name of the property. */
   name?: Maybe<Scalars['String']>;
+  /**
+   * An optional decimal place to be applied on the provided value.
+   * Valid only for PropertyType of type DECIMAL, INTEGER.
+   */
+  numberDecimalPlaces?: Maybe<Scalars['Int']>;
   /** The type of the property. */
   type: PropertyKeyType;
 };
@@ -3136,12 +3206,16 @@ export type Query = {
   assetsConnection?: Maybe<AssetsConnection>;
   /** Get historical balances for an account within the given date range */
   balanceChanges: AggregatedBalanceConnection;
+  /** List core snapshots */
+  coreSnapshots?: Maybe<CoreSnapshotConnection>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
   deposits?: Maybe<DepositsConnection>;
   /** Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch */
   epoch: Epoch;
+  /** List reward summary per epoch by asset, market, reward type */
+  epochRewardSummaries?: Maybe<EpochRewardSummaryConnection>;
   /** Get the signatures bundle to allowlist an ERC20 token in the collateral bridge */
   erc20ListAssetBundle?: Maybe<Erc20ListAssetBundle>;
   /** Get the signature bundle to add a particular validator to the signer list of the multisig contract */
@@ -3248,6 +3322,12 @@ export type QuerybalanceChangesArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerycoreSnapshotsArgs = {
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerydepositArgs = {
   id: Scalars['ID'];
 };
@@ -3263,6 +3343,14 @@ export type QuerydepositsArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryepochArgs = {
   id?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryepochRewardSummariesArgs = {
+  fromEpoch?: InputMaybe<Scalars['Int']>;
+  pagination?: InputMaybe<Pagination>;
+  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -4265,8 +4353,8 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
   /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
-  /** Staking reward received */
-  TRANSFER_TYPE_STAKE_REWARD = 'TRANSFER_TYPE_STAKE_REWARD',
+  /** Reward payout received */
+  TRANSFER_TYPE_REWARD_PAYOUT = 'TRANSFER_TYPE_REWARD_PAYOUT',
   /** A network internal instruction for the collateral engine to move funds from the pending transfers pool account into the destination account */
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
   /** A network internal instruction for the collateral engine to move funds from a user's general account into the pending transfers pool */

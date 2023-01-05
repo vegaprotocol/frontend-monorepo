@@ -1,23 +1,19 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { RowClickedEvent } from 'ag-grid-community';
-import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
 import type { MarketWithData } from '../../markets-provider';
+import { useMarkets } from '../../use-markets';
 interface MarketsContainerProps {
   onSelect: (marketId: string) => void;
 }
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
-  const { data, error, loading } = useDataProvider<MarketWithData[], never>({
-    dataProvider,
-    skipUpdates: true,
-  });
+  const { markets, loading, error } = useMarkets();
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={markets}>
       <MarketListTable
-        rowData={data}
+        rowData={markets}
         onRowClicked={(rowEvent: RowClickedEvent) => {
           const { data, event } = rowEvent;
           // filters out clicks on the symbol column because it should display asset details

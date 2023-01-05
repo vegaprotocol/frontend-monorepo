@@ -1,52 +1,12 @@
-import throttle from 'lodash/throttle';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-  SingleMarketFieldsFragment,
-} from '@vegaprotocol/market-list';
-import { marketDataProvider } from '@vegaprotocol/market-list';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import * as constants from '../constants';
 
 export const MarketState = ({
-  market,
+  marketState,
 }: {
-  market: SingleMarketFieldsFragment | null;
+  marketState?: Schema.MarketState;
 }) => {
-  const [marketState, setMarketState] = useState<Schema.MarketState | null>(
-    null
-  );
-
-  const throttledSetMarketState = useRef(
-    throttle((state: Schema.MarketState) => {
-      setMarketState(state);
-    }, constants.DEBOUNCE_UPDATE_TIME)
-  ).current;
-
-  const update = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      if (marketData) {
-        throttledSetMarketState(marketData.marketState);
-      }
-      return true;
-    },
-    [throttledSetMarketState]
-  );
-
-  const variables = useMemo(
-    () => ({ marketId: market?.id || '' }),
-    [market?.id]
-  );
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
-    dataProvider: marketDataProvider,
-    update,
-    variables,
-    skip: !market?.id,
-  });
-
   return (
     <HeaderStat
       heading={t('Status')}
@@ -58,7 +18,7 @@ export const MarketState = ({
   );
 };
 
-const getMarketStateTooltip = (state: Schema.MarketState | null) => {
+const getMarketStateTooltip = (state?: Schema.MarketState) => {
   if (state === Schema.MarketState.STATE_ACTIVE) {
     return t('Enactment date reached and usual auction exit checks pass');
   }

@@ -11,10 +11,9 @@ import type {
   SingleMarketFieldsFragment,
   MarketData,
   Candle,
-  MarketDataUpdateFieldsFragment,
 } from '@vegaprotocol/market-list';
 
-import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
+import { useMarket } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -51,63 +50,19 @@ export const Market = () => {
     [marketId, navigate]
   );
 
-  const variables = useMemo(
-    () => ({
-      marketId: marketId || '',
-    }),
-    [marketId]
-  );
-
-  const updateMarketId = useCallback(
-    ({ data }: { data: { id?: string } | null }) => {
-      if (data?.id && data.id !== lastMarketId) {
-        update({ marketId: data.id });
-      }
-      return true;
-    },
-    [update, lastMarketId]
-  );
-  const { data, error, loading } = useDataProvider<
-    SingleMarketFieldsFragment,
-    never
-  >({
-    dataProvider: marketProvider,
-    variables,
-    update: updateMarketId,
-    skip: !marketId,
-  });
-
-  const marketName = data?.tradableInstrument.instrument.name;
-  const updateProvider = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      const marketPrice = calculatePrice(
-        marketData?.markPrice,
-        data?.decimalPlaces
-      );
-      if (marketName) {
-        const newPageTitle = titlefy([marketName, marketPrice]);
-        if (pageTitle !== newPageTitle) {
-          updateTitle(newPageTitle);
-        }
-      }
-      return true;
-    },
-    [updateTitle, pageTitle, marketName, data?.decimalPlaces]
-  );
-
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
-    dataProvider: marketDataProvider,
-    update: updateProvider,
-    variables,
-    skip: !marketId || !data,
-  });
+  const { data, loading, error } = useMarket(marketId);
 
   const tradeView = useMemo(() => {
-    if (w > 960) {
-      return <TradeGrid market={data} onSelect={onSelect} />;
+    if (!data?.market) {
+      return null;
     }
-    return <TradePanels market={data} onSelect={onSelect} />;
+
+    if (w > 960) {
+      return <TradeGrid market={data.market} onSelect={onSelect} />;
+    }
+    return <TradePanels market={data.market} onSelect={onSelect} />;
   }, [w, data, onSelect]);
+
   if (!data && marketId) {
     return (
       <Splash>
@@ -120,7 +75,7 @@ export const Market = () => {
     <AsyncRenderer<SingleMarketFieldsFragment>
       loading={loading}
       error={error}
-      data={data || undefined}
+      data={data}
       noDataCondition={(data) => false}
     >
       {tradeView}

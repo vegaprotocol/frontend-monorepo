@@ -71,6 +71,8 @@ export const calcCandleHigh = (candles: Candle[]): string | undefined => {
     .toString();
 };
 
-export const calcCandleVolume = (candles: Candle[]): string | undefined =>
+export const calcCandleVolume = (
+  candles: { volume: string }[]
+): string | undefined =>
   candles &&
   candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');

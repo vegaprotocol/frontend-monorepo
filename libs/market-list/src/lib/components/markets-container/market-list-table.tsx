@@ -15,7 +15,7 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketWithData } from '../../';
+import type { MarketX } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
@@ -24,7 +24,7 @@ export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
 export const MarketListTable = forwardRef<
   AgGridReact,
-  TypedDataAgGrid<MarketWithData>
+  TypedDataAgGrid<MarketX>
 >((props, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
@@ -48,13 +48,14 @@ export const MarketListTable = forwardRef<
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
       />
+      <AgGridColumn headerName={t('Timestamp')} field="data.timestamp" />
       <AgGridColumn
         headerName={t('Settlement asset')}
         field="tradableInstrument.instrument.product.settlementAsset"
         cellRenderer={({
           value,
         }: VegaICellRendererParams<
-          MarketWithData,
+          MarketX,
           'tradableInstrument.instrument.product.settlementAsset'
         >) =>
           value ? (
@@ -75,9 +76,7 @@ export const MarketListTable = forwardRef<
         headerName={t('Trading mode')}
         field="data"
         minWidth={170}
-        valueGetter={({
-          data,
-        }: VegaValueGetterParams<MarketWithData, 'data'>) => {
+        valueGetter={({ data }: VegaValueGetterParams<MarketX, 'data'>) => {
           if (!data?.data) return undefined;
           const { trigger } = data.data;
           const { tradingMode } = data;
@@ -98,14 +97,14 @@ export const MarketListTable = forwardRef<
         filter="agNumberColumnFilter"
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketWithData, 'data.bestBidPrice'>) => {
+        }: VegaValueGetterParams<MarketX, 'data.bestBidPrice'>) => {
           return data?.data?.bestBidPrice === undefined
             ? undefined
             : toBigNum(data?.data?.bestBidPrice, data.decimalPlaces).toNumber();
         }}
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<MarketWithData, 'data.bestBidPrice'>) =>
+        }: VegaValueFormatterParams<MarketX, 'data.bestBidPrice'>) =>
           data?.data?.bestBidPrice === undefined
             ? undefined
             : addDecimalsFormatNumber(
@@ -122,7 +121,7 @@ export const MarketListTable = forwardRef<
         filter="agNumberColumnFilter"
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketWithData, 'data.bestOfferPrice'>) => {
+        }: VegaValueGetterParams<MarketX, 'data.bestOfferPrice'>) => {
           return data?.data?.bestOfferPrice === undefined
             ? undefined
             : toBigNum(
@@ -132,7 +131,7 @@ export const MarketListTable = forwardRef<
         }}
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<MarketWithData, 'data.bestOfferPrice'>) =>
+        }: VegaValueFormatterParams<MarketX, 'data.bestOfferPrice'>) =>
           data?.data?.bestOfferPrice === undefined
             ? undefined
             : addDecimalsFormatNumber(
@@ -149,20 +148,23 @@ export const MarketListTable = forwardRef<
         filter="agNumberColumnFilter"
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketWithData, 'data.markPrice'>) => {
+        }: VegaValueGetterParams<MarketX, 'data.markPrice'>) => {
           return data?.data?.markPrice === undefined
             ? undefined
             : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();
         }}
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<MarketWithData, 'data.markPrice'>) =>
+        }: VegaValueFormatterParams<MarketX, 'data.markPrice'>) =>
           data?.data?.bestOfferPrice === undefined
             ? undefined
             : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)
         }
       />
-      <AgGridColumn headerName={t('Description')} field="name" />
+      <AgGridColumn
+        headerName={t('Description')}
+        field="tradableInstrument.instrument.name"
+      />
     </AgGrid>
   );
 });

@@ -1,0 +1,128 @@
+fragment MarketHookData on MarketData {
+  market {
+    id
+  }
+  bestBidPrice
+  bestOfferPrice
+  markPrice
+  trigger
+  staticMidPrice
+  marketTradingMode
+  marketState
+  indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
+  targetStake
+  suppliedStake
+  auctionStart
+  auctionEnd
+  timestamp
+}
+
+fragment CandleField on Candle {
+  high
+  low
+  open
+  close
+  volume
+  periodStart
+}
+
+fragment MarketHook on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  data {
+    ...MarketHookData
+  }
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          settlementAsset {
+            id
+            symbol
+            decimals
+          }
+          dataSourceSpecForTradingTermination {
+            id
+          }
+          quoteName
+        }
+      }
+    }
+  }
+  candlesConnection(interval: $interval, since: $since) {
+    edges {
+      node {
+        ...MarketCandlesFields
+      }
+    }
+  }
+  marketTimestamps {
+    open
+    close
+  }
+}
+
+query MarketsHook($interval: Interval!, $since: String!) {
+  marketsConnection {
+    edges {
+      node {
+        ...MarketHook
+      }
+    }
+  }
+}
+
+query MarketHook($marketId: ID!, $interval: Interval!, $since: String!) {
+  market(id: $marketId) {
+    ...MarketHook
+  }
+}
+
+#
+# Subscription
+#
+
+fragment ObservableMarketDataFields on ObservableMarketData {
+  marketId
+  bestBidPrice
+  bestOfferPrice
+  markPrice
+  trigger
+  staticMidPrice
+  marketTradingMode
+  marketState
+  indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
+  targetStake
+  suppliedStake
+  auctionStart
+  auctionEnd
+  timestamp
+}
+
+subscription MarketsDataHook($marketIds: [ID!]!) {
+  marketsData(marketIds: $marketIds) {
+    ...ObservableMarketDataFields
+  }
+}
