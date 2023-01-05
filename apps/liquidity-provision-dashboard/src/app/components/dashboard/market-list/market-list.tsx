@@ -10,6 +10,7 @@ import {
   formatNumberPercentage,
   t,
   toBigNum,
+  getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import type * as Schema from '@vegaprotocol/types';
@@ -294,6 +295,21 @@ export const MarketList = () => {
               value,
             }: VegaValueFormatterParams<Market, 'marketTimestamps.open'>) => {
               return value ? formatDistanceToNow(new Date(value)) : '-';
+            }}
+          />
+          <AgGridColumn
+            headerName={t('Closing Time')}
+            field="proposal.terms.closingDatetime"
+            headerTooltip={t('Closing time of the market')}
+            valueFormatter={({
+              value,
+            }: VegaValueFormatterParams<
+              Market,
+              'proposal.terms.closingDatetime'
+            >) => {
+              return value
+                ? getDateTimeFormat().format(new Date(value).getTime())
+                : '-';
             }}
           />
         </Grid>
