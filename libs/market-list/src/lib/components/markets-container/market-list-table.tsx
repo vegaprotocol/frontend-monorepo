@@ -48,7 +48,6 @@ export const MarketListTable = forwardRef<
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
       />
-      <AgGridColumn headerName={t('Timestamp')} field="data.timestamp" />
       <AgGridColumn
         headerName={t('Settlement asset')}
         field="tradableInstrument.instrument.product.settlementAsset"

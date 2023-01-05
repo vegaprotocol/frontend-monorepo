@@ -3,6 +3,9 @@ import { MarketListTable } from './market-list-table';
 import type { RowClickedEvent } from 'ag-grid-community';
 import type { MarketWithData } from '../../markets-provider';
 import { useMarkets } from '../../use-markets';
+import { useEffect, useRef, useState } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
+import type { MarketX } from '../../use-market';
 interface MarketsContainerProps {
   onSelect: (marketId: string) => void;
 }

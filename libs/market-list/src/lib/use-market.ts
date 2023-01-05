@@ -24,6 +24,7 @@ export const useMarket = (marketId?: string) => {
       interval: Schema.Interval.INTERVAL_I1H,
     },
     skip: !marketId,
+    pollInterval: 1 * 60 * 60 * 1000, // poll once an hour so sparkline is up to date
   });
 
   useEffect(() => {
@@ -62,7 +63,6 @@ export const useMarket = (marketId?: string) => {
           suppliedStake: data.suppliedStake,
           auctionStart: data.auctionStart,
           auctionEnd: data.auctionEnd,
-          timestamp: data.timestamp,
         };
 
         if (isEqual(incomingData, prev.market.data)) {

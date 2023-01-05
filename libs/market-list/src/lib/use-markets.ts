@@ -69,7 +69,6 @@ export const useMarkets = () => {
             suppliedStake: data.suppliedStake,
             auctionStart: data.auctionStart,
             auctionEnd: data.auctionEnd,
-            timestamp: data.timestamp,
           };
 
           if (isEqual(incomingData, edge.node.data)) {
