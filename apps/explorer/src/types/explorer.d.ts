@@ -14,9 +14,17 @@ type OneOf<T extends any[]> = T extends [infer Only]
   : T extends [infer A, infer B, ...infer Rest]
   ? OneOf<[XOR<A, B>, ...Rest]>
   : never;
-/* typescript-eslint:enable no-explicit-any */
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export interface paths {
+  '/info': {
+    /**
+     * Info
+     * @description Retrieves information about the block explorer.
+     * Response contains a semver formatted version of the data node and the commit hash, from which the block explorer was built,
+     */
+    get: operations['BlockExplorer_Info'];
+  };
   '/transactions': {
     /**
      * List transactions
@@ -100,8 +108,7 @@ export interface components {
     readonly UndelegateSubmissionMethod:
       | 'METHOD_UNSPECIFIED'
       | 'METHOD_NOW'
-      | 'METHOD_AT_END_OF_EPOCH'
-      | 'METHOD_IN_ANGER';
+      | 'METHOD_AT_END_OF_EPOCH';
     readonly blockexplorerapiv1Transaction: {
       /**
        * The height of the block the transaction was found in
@@ -117,6 +124,11 @@ export interface components {
       readonly command?: components['schemas']['v1InputData'];
       /** The cursor for this transaction (in the page, used for paginated results) */
       readonly cursor?: string;
+      /**
+       * An optional error happening when processing / checking the transaction
+       * Should be set if error code is not 0
+       */
+      readonly error?: string;
       /** The hash of the transaction */
       readonly hash?: string;
       /**
@@ -124,6 +136,8 @@ export interface components {
        * Format: int64
        */
       readonly index?: number;
+      /** Submitter's signature of transaction */
+      readonly signature?: components['schemas']['v1Signature'];
       /** The submitter of the transaction (Vega public key) */
       readonly submitter?: string;
       /** The type of transaction */
@@ -159,7 +173,7 @@ export interface components {
       readonly '@type'?: string;
       [key: string]: unknown | undefined;
     };
-    /** Used announce a node as a new potential validator */
+    /** Used announce a node as a new pending validator */
     readonly v1AnnounceNode: {
       /** AvatarURL of the validator */
       readonly avatarUrl?: string;
@@ -192,7 +206,7 @@ export interface components {
        * Format: int64
        */
       readonly vegaPubKeyIndex?: number;
-      /** Signature from the validator made using the vega wallet */
+      /** Signature from the validator made using the Vega wallet */
       readonly vegaSignature?: components['schemas']['v1Signature'];
     };
     /**
@@ -287,6 +301,12 @@ export interface components {
       /** The transaction corresponding to the hash */
       readonly transaction?: components['schemas']['blockexplorerapiv1Transaction'];
     };
+    readonly v1InfoResponse: {
+      /** The commit hash from which the data-node was built */
+      readonly commitHash?: string;
+      /** A semver formatted version of the data node */
+      readonly version?: string;
+    };
     readonly v1InputData: {
       readonly announceNode?: components['schemas']['v1AnnounceNode'];
       readonly batchMarketInstructions?: components['schemas']['v1BatchMarketInstructions'];
@@ -351,7 +371,7 @@ export interface components {
       /** The ID of the node that will be signed in or out of the smartcontract */
       readonly validatorNodeId?: string;
     };
-    /** A transaction to allow validator to rotate their vega keys */
+    /** A transaction to allow validator to rotate their Vega keys */
     readonly v1KeyRotateSubmission: {
       /** Hash of currently used public key */
       readonly currentPubKeyHash?: string;
@@ -414,7 +434,7 @@ export interface components {
       readonly sig?: string;
     };
     /**
-     * The kind of the signature created by a node, for example, allow-listing a new asset, withdrawal etc
+     * The kind of signature created by a node, for example, allow-listing a new asset, withdrawal etc
      * @description - NODE_SIGNATURE_KIND_UNSPECIFIED: Represents an unspecified or missing value from the input
      *  - NODE_SIGNATURE_KIND_ASSET_NEW: Represents a signature for a new asset allow-listing
      *  - NODE_SIGNATURE_KIND_ASSET_WITHDRAWAL: Represents a signature for an asset withdrawal
@@ -432,7 +452,7 @@ export interface components {
       | 'NODE_SIGNATURE_KIND_ERC20_MULTISIG_SIGNER_REMOVED'
       | 'NODE_SIGNATURE_KIND_ASSET_UPDATE';
     /**
-     * Used when a node votes for validating a given resource exists or is valid,
+     * Used when a node votes for validating that a given resource exists or is valid,
      * for example, an ERC20 deposit is valid and exists on ethereum
      */
     readonly v1NodeVote: {
@@ -553,6 +573,12 @@ export interface components {
     readonly v1PropertyKey: {
       /** @description name is the name of the property. */
       readonly name?: string;
+      /**
+       * An optional decimal place to be be applied on the provided value
+       * valid only for PropertyType of type DECIMAL and INTEGER
+       * Format: uint64
+       */
+      readonly numberDecimalPlaces?: string;
       /** @description type is the type of the property. */
       readonly type?: components['schemas']['v1PropertyKeyType'];
     };
@@ -596,7 +622,7 @@ export interface components {
        * Format: uint64
        */
       readonly upgradeBlockHeight?: string;
-      /** the release tag for the vega binary */
+      /** the release tag for the Vega binary */
       readonly vegaReleaseTag?: string;
     };
     /**
@@ -659,8 +685,8 @@ export interface components {
       readonly nodeId?: string;
     };
     /**
-     * A message from a validator signaling they are still online and validating blocks
-     * or ready to validate block when they are till a potential validator
+     * A message from a validator signalling they are still online and validating blocks
+     * or ready to validate blocks when they are still a pending validator
      */
     readonly v1ValidatorHeartbeat: {
       /** Signature from the validator made using the ethereum wallet */
@@ -1061,11 +1087,6 @@ export interface components {
       readonly quoteName?: string;
       /** Asset ID for the product's settlement asset */
       readonly settlementAsset?: string;
-      /**
-       * The number of decimal places implied by the settlement data (such as price) emitted by the settlement data source
-       * Format: int64
-       */
-      readonly settlementDataDecimals?: number;
     };
     /** Instrument configuration */
     readonly vegaInstrumentConfiguration: {
@@ -1111,17 +1132,17 @@ export interface components {
     /** Risk model parameters for log normal */
     readonly vegaLogNormalModelParams: {
       /**
-       * Mu param
+       * Mu parameter, annualised growth rate of the underlying asset
        * Format: double
        */
       readonly mu?: number;
       /**
-       * R param
+       * R parameter, annualised growth rate of the risk-free asset, used for discounting of future cash flows, can be any real number
        * Format: double
        */
       readonly r?: number;
       /**
-       * Sigma param
+       * Sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
        * Format: double
        */
       readonly sigma?: number;
@@ -1136,7 +1157,7 @@ export interface components {
        */
       readonly riskAversionParameter?: number;
       /**
-       * Tau
+       * Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall calculation to obtain the maintenance margin, must be a strictly non-negative real number
        * Format: double
        */
       readonly tau?: number;
@@ -1180,6 +1201,11 @@ export interface components {
       readonly liquidityMonitoringParameters?: components['schemas']['vegaLiquidityMonitoringParameters'];
       /** Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected */
       readonly logNormal?: components['schemas']['vegaLogNormalRiskModel'];
+      /**
+       * Percentage move up and down from the mid price which specifies the range of
+       * price levels over which automated liquidity provision orders will be deployed
+       */
+      readonly lpPriceRange?: string;
       /** Optional new market meta data, tags */
       readonly metadata?: readonly string[];
       /**
@@ -1239,7 +1265,7 @@ export interface components {
     readonly vegaPriceMonitoringTrigger: {
       /**
        * Price monitoring auction extension duration in seconds should the price
-       * breach it's theoretical level over the specified horizon at the specified
+       * breach its theoretical level over the specified horizon at the specified
        * probability level
        * Format: int64
        */
@@ -1436,11 +1462,6 @@ export interface components {
       readonly dataSourceSpecForTradingTermination?: components['schemas']['vegaDataSourceDefinition'];
       /** Human-readable name/abbreviation of the quote name */
       readonly quoteName?: string;
-      /**
-       * The number of decimal places implied by the settlement data (such as price) emitted by the settlement external data source
-       * Format: int64
-       */
-      readonly settlementDataDecimals?: number;
     };
     /** Instrument configuration */
     readonly vegaUpdateInstrumentConfiguration: {
@@ -1464,6 +1485,11 @@ export interface components {
       readonly liquidityMonitoringParameters?: components['schemas']['vegaLiquidityMonitoringParameters'];
       /** Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected */
       readonly logNormal?: components['schemas']['vegaLogNormalRiskModel'];
+      /**
+       * Percentage move up and down from the mid price which specifies the range of
+       * price levels over which automated liquidity provision orders will be deployed
+       */
+      readonly lpPriceRange?: string;
       /** Optional market metadata, tags */
       readonly metadata?: readonly string[];
       /** Price monitoring parameters */
@@ -1504,6 +1530,27 @@ export interface components {
 export type external = Record<string, never>;
 
 export interface operations {
+  BlockExplorer_Info: {
+    /**
+     * Info
+     * @description Retrieves information about the block explorer.
+     * Response contains a semver formatted version of the data node and the commit hash, from which the block explorer was built,
+     */
+    responses: {
+      /** @description A successful response. */
+      200: {
+        content: {
+          readonly 'application/json': components['schemas']['v1InfoResponse'];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        content: {
+          readonly 'application/json': components['schemas']['googlerpcStatus'];
+        };
+      };
+    };
+  };
   BlockExplorer_ListTransactions: {
     /**
      * List transactions

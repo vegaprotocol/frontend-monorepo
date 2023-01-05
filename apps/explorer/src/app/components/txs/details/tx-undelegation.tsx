@@ -14,8 +14,6 @@ export const methodText: Record<
   METHOD_NOW: 'Immediate',
   METHOD_UNSPECIFIED: 'Unspecified',
   METHOD_AT_END_OF_EPOCH: 'End of epoch',
-  // This will be removed in a future release
-  METHOD_IN_ANGER: 'Immediate',
 };
 
 interface TxDetailsUndelegateProps {
