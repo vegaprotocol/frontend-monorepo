@@ -17,6 +17,7 @@ const Template: Story = (args) => {
   return (
     <div style={{ height: 1000 }}>
       <OrderListTable
+        hasActiveOrder
         rowData={args.data}
         cancel={cancel}
         cancelAll={cancel}
@@ -46,6 +47,7 @@ const Template2: Story = (args) => {
     <>
       <div style={{ height: 1000 }}>
         <OrderListTable
+          hasActiveOrder
           rowData={args.data}
           cancel={cancel}
           cancelAll={cancel}
