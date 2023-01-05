@@ -28,7 +28,7 @@ import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
-import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/download-json';
 
 export interface NewAssetProposalFormFields {
   proposalVoteDeadline: string;

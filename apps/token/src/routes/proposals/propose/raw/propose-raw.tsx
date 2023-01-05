@@ -22,7 +22,7 @@ import {
   ProposalFormDownloadJson,
 } from '../../components/propose';
 import { ProposalRawMinRequirements } from './proposal-raw-min-requirements';
-import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/download-json';
 
 export interface RawProposalFormFields {
   rawProposalData: string;

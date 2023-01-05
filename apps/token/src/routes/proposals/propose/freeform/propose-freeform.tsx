@@ -24,7 +24,7 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import { ProposalUserAction } from '../../components/shared';
-import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/download-json';
 
 export interface FreeformProposalFormFields {
   proposalVoteDeadline: string;

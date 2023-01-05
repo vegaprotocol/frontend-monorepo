@@ -37,7 +37,7 @@ import {
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
 import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
-import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/download-json';
 
 export interface UpdateMarketProposalFormFields {
   proposalVoteDeadline: string;
