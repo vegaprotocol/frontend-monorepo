@@ -117,7 +117,7 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
   const { data, loading, error } = useNetworkParamsQuery();
 
   const paramsObj = useMemo(() => {
-    if (!data?.networkParametersConnection.edges) return null;
+    if (!data?.networkParametersConnection.edges) return {};
     return compact(data.networkParametersConnection.edges)
       .map((p) => ({
         ...p.node,

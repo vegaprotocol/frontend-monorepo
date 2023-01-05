@@ -35,7 +35,6 @@ import {
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
-import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { ProposalUserAction } from '../../components/shared';
 import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
 import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
@@ -164,170 +163,163 @@ export const ProposeUpdateMarket = () => {
     <AsyncRenderer
       loading={networkParamsLoading && marketsLoading}
       error={networkParamsError && marketsError}
-      data={params && marketsData}
-    >
-      <Heading title={t('UpdateMarketProposal')} />
-      <VegaWalletContainer>
-        {() => (
-          <>
-            <ProposalMinRequirements
-              minProposalBalance={
-                params.governance_proposal_updateMarket_minProposerBalance
-              }
-              spamProtectionMin={params.spam_protection_proposal_min_tokens}
-              userAction={ProposalUserAction.CREATE}
-            />
+      data={{ ...params, ...marketsData }}
+      render={(data) => (
+        <>
+          <Heading title={t('UpdateMarketProposal')} />
+          <ProposalMinRequirements
+            minProposalBalance={
+              data.governance_proposal_updateMarket_minProposerBalance
+            }
+            spamProtectionMin={data.spam_protection_proposal_min_tokens}
+            userAction={ProposalUserAction.CREATE}
+          />
 
-            {VEGA_DOCS_URL && (
-              <p className="text-sm" data-testid="proposal-docs-link">
-                <span className="mr-1">{t('ProposalTermsText')}</span>
-                <ExternalLink
-                  href={`${
-                    createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                  }${DOCS_LINK}`}
-                  target="_blank"
-                >{`${
+          {VEGA_DOCS_URL && (
+            <p className="text-sm" data-testid="proposal-docs-link">
+              <span className="mr-1">{t('ProposalTermsText')}</span>
+              <ExternalLink
+                href={`${
                   createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                }${DOCS_LINK}`}</ExternalLink>
-              </p>
-            )}
+                }${DOCS_LINK}`}
+                target="_blank"
+              >{`${
+                createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+              }${DOCS_LINK}`}</ExternalLink>
+            </p>
+          )}
 
-            {VEGA_EXPLORER_URL && (
-              <p className="text-sm">
-                {t('MoreMarketsInfo')}{' '}
-                <ExternalLink
-                  href={`${VEGA_EXPLORER_URL}/markets`}
-                  target="_blank"
-                >{`${VEGA_EXPLORER_URL}/markets`}</ExternalLink>
-              </p>
-            )}
+          {VEGA_EXPLORER_URL && (
+            <p className="text-sm">
+              {t('MoreMarketsInfo')}{' '}
+              <ExternalLink
+                href={`${VEGA_EXPLORER_URL}/markets`}
+                target="_blank"
+              >{`${VEGA_EXPLORER_URL}/markets`}</ExternalLink>
+            </p>
+          )}
 
-            <div data-testid="update-market-proposal-form">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <ProposalFormSubheader>
-                  {t('ProposalRationale')}
-                </ProposalFormSubheader>
+          <div data-testid="update-market-proposal-form">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ProposalFormSubheader>
+                {t('ProposalRationale')}
+              </ProposalFormSubheader>
 
-                <ProposalFormTitle
-                  registerField={register('proposalTitle', {
+              <ProposalFormTitle
+                registerField={register('proposalTitle', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalTitle?.message}
+              />
+
+              <ProposalFormDescription
+                registerField={register('proposalDescription', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalDescription?.message}
+              />
+
+              <ProposalFormSubheader>
+                {t('SelectAMarketToChange')}
+              </ProposalFormSubheader>
+
+              <FormGroup
+                label={t('SelectAMarketToChange')}
+                labelFor="proposal-market"
+                hideLabel={true}
+              >
+                <Select
+                  data-testid="proposal-market-select"
+                  id="proposal-market"
+                  {...register('proposalMarketId', {
                     required: t('Required'),
                   })}
-                  errorMessage={errors?.proposalTitle?.message}
-                />
-
-                <ProposalFormDescription
-                  registerField={register('proposalDescription', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalDescription?.message}
-                />
-
-                <ProposalFormSubheader>
-                  {t('SelectAMarketToChange')}
-                </ProposalFormSubheader>
-
-                <FormGroup
-                  label={t('SelectAMarketToChange')}
-                  labelFor="proposal-market"
-                  hideLabel={true}
+                  onChange={(e) => setSelectedMarket(e.target.value)}
                 >
-                  <Select
-                    data-testid="proposal-market-select"
-                    id="proposal-market"
-                    {...register('proposalMarketId', {
-                      required: t('Required'),
-                    })}
-                    onChange={(e) => setSelectedMarket(e.target.value)}
-                  >
-                    <option value="">{t('SelectMarket')}</option>
-                    {sortedMarkets.map((market) => (
-                      <option value={market.id} key={market.id}>
-                        {market.tradableInstrument.instrument.name}
-                      </option>
-                    ))}
-                  </Select>
-                  {errors?.proposalMarketId?.message && (
-                    <InputError intent="danger">
-                      {errors?.proposalMarketId?.message}
-                    </InputError>
-                  )}
-                </FormGroup>
-
-                {selectedMarket && (
-                  <div className="mt-[-20px] mb-6">
-                    <KeyValueTable data-testid="update-market-details">
-                      <KeyValueTableRow>
-                        {t('MarketName')}
-                        {
-                          marketsData?.marketsConnection?.edges?.find(
-                            ({ node: market }) => market.id === selectedMarket
-                          )?.node.tradableInstrument.instrument.name
-                        }
-                      </KeyValueTableRow>
-                      <KeyValueTableRow>
-                        {t('MarketCode')}
-                        {
-                          marketsData?.marketsConnection?.edges?.find(
-                            ({ node: market }) => market.id === selectedMarket
-                          )?.node.tradableInstrument.instrument.code
-                        }
-                      </KeyValueTableRow>
-                      <KeyValueTableRow>
-                        {t('MarketId')}
-                        {selectedMarket}
-                      </KeyValueTableRow>
-                    </KeyValueTable>
-                  </div>
+                  <option value="">{t('SelectMarket')}</option>
+                  {sortedMarkets.map((market) => (
+                    <option value={market.id} key={market.id}>
+                      {market.tradableInstrument.instrument.name}
+                    </option>
+                  ))}
+                </Select>
+                {errors?.proposalMarketId?.message && (
+                  <InputError intent="danger">
+                    {errors?.proposalMarketId?.message}
+                  </InputError>
                 )}
+              </FormGroup>
 
-                <ProposalFormTerms
-                  registerField={register('proposalTerms', {
-                    required: t('Required'),
-                    validate: (value) => validateJson(value),
-                  })}
-                  labelOverride={t('ProposeUpdateMarketTerms')}
-                  errorMessage={errors?.proposalTerms?.message}
-                  docsLink={DOCS_LINK}
-                />
+              {selectedMarket && (
+                <div className="mt-[-20px] mb-6">
+                  <KeyValueTable data-testid="update-market-details">
+                    <KeyValueTableRow>
+                      {t('MarketName')}
+                      {
+                        data.marketsConnection?.edges?.find(
+                          ({ node: market }) => market.id === selectedMarket
+                        )?.node.tradableInstrument.instrument.name
+                      }
+                    </KeyValueTableRow>
+                    <KeyValueTableRow>
+                      {t('MarketCode')}
+                      {
+                        data.marketsConnection?.edges?.find(
+                          ({ node: market }) => market.id === selectedMarket
+                        )?.node.tradableInstrument.instrument.code
+                      }
+                    </KeyValueTableRow>
+                    <KeyValueTableRow>
+                      {t('MarketId')}
+                      {selectedMarket}
+                    </KeyValueTableRow>
+                  </KeyValueTable>
+                </div>
+              )}
 
-                <ProposalFormVoteAndEnactmentDeadline
-                  onVoteMinMax={setValue}
-                  voteRegister={register('proposalVoteDeadline', {
-                    required: t('Required'),
-                  })}
-                  voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={
-                    params.governance_proposal_updateMarket_minClose
-                  }
-                  voteMaxClose={
-                    params.governance_proposal_updateMarket_maxClose
-                  }
-                  onEnactMinMax={setValue}
-                  enactmentRegister={register('proposalEnactmentDeadline', {
-                    required: t('Required'),
-                  })}
-                  enactmentErrorMessage={
-                    errors?.proposalEnactmentDeadline?.message
-                  }
-                  enactmentMinClose={
-                    params.governance_proposal_updateMarket_minEnact
-                  }
-                  enactmentMaxClose={
-                    params.governance_proposal_updateMarket_maxEnact
-                  }
-                />
+              <ProposalFormTerms
+                registerField={register('proposalTerms', {
+                  required: t('Required'),
+                  validate: (value) => validateJson(value),
+                })}
+                labelOverride={t('ProposeUpdateMarketTerms')}
+                errorMessage={errors?.proposalTerms?.message}
+                docsLink={DOCS_LINK}
+              />
 
-                <ProposalFormSubmit isSubmitting={isSubmitting} />
-                <ProposalFormViewJson viewJson={viewJson} />
-                <ProposalFormTransactionDialog
-                  finalizedProposal={finalizedProposal}
-                  TransactionDialog={Dialog}
-                />
-              </form>
-            </div>
-          </>
-        )}
-      </VegaWalletContainer>
-    </AsyncRenderer>
+              <ProposalFormVoteAndEnactmentDeadline
+                onVoteMinMax={setValue}
+                voteRegister={register('proposalVoteDeadline', {
+                  required: t('Required'),
+                })}
+                voteErrorMessage={errors?.proposalVoteDeadline?.message}
+                voteMinClose={data.governance_proposal_updateMarket_minClose}
+                voteMaxClose={data.governance_proposal_updateMarket_maxClose}
+                onEnactMinMax={setValue}
+                enactmentRegister={register('proposalEnactmentDeadline', {
+                  required: t('Required'),
+                })}
+                enactmentErrorMessage={
+                  errors?.proposalEnactmentDeadline?.message
+                }
+                enactmentMinClose={
+                  data.governance_proposal_updateMarket_minEnact
+                }
+                enactmentMaxClose={
+                  data.governance_proposal_updateMarket_maxEnact
+                }
+              />
+
+              <ProposalFormSubmit isSubmitting={isSubmitting} />
+              <ProposalFormViewJson viewJson={viewJson} />
+              <ProposalFormTransactionDialog
+                finalizedProposal={finalizedProposal}
+                TransactionDialog={Dialog}
+              />
+            </form>
+          </div>
+        </>
+      )}
+    />
   );
 };
