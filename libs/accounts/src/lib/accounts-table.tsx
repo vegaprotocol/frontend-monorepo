@@ -128,36 +128,26 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             maxWidth={300}
           />
           <AgGridColumn
-            headerName=""
-            field="breakdown"
-            minWidth={150}
-            cellRenderer={({
-              value,
-            }: VegaICellRendererParams<AccountFields, 'breakdown'>) => {
-              return (
-                <ButtonLink
-                  data-testid="breakdown"
-                  onClick={() => {
-                    setOpenBreakdown(!openBreakdown);
-                    setBreakdown(value || null);
-                  }}
-                >
-                  {t('Breakdown')}
-                </ButtonLink>
-              );
-            }}
-          />
-          <AgGridColumn
-            colId="transact"
+            colId="breakdown"
             headerName=""
             sortable={false}
-            minWidth={250}
+            minWidth={200}
             type="rightAligned"
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {
               return data ? (
                 <>
+                  <ButtonLink
+                    data-testid="breakdown"
+                    onClick={() => {
+                      setOpenBreakdown(!openBreakdown);
+                      setBreakdown(data.breakdown || null);
+                    }}
+                  >
+                    {t('Breakdown')}
+                  </ButtonLink>
+                  <span className="mx-1" />
                   <ButtonLink
                     data-testid="deposit"
                     onClick={() => {

@@ -26,12 +26,13 @@ describe('renders the correct columns', () => {
     });
 
     const headers = screen.getAllByRole('columnheader');
-    expect(headers).toHaveLength(6);
+    expect(headers).toHaveLength(7);
     expect(headers.map((h) => h.textContent?.trim())).toEqual([
       'Asset',
       'Amount',
       'Recipient',
-      'Completed/Created',
+      'Created',
+      'Completed',
       'Status',
       'Transaction',
     ]);
@@ -42,6 +43,7 @@ describe('renders the correct columns', () => {
       '1.00',
       '123456…123456',
       getTimeFormat().format(new Date(withdrawal.createdTimestamp as string)),
+      '-',
       'Pending',
       'Complete withdrawal',
     ];
@@ -66,6 +68,7 @@ describe('renders the correct columns', () => {
       'asset-symbol',
       '1.00',
       '123456…123456',
+      getTimeFormat().format(new Date(withdrawal.createdTimestamp as string)),
       getTimeFormat().format(new Date(withdrawal.withdrawnTimestamp as string)),
       'Completed',
       '0x1234…121314',

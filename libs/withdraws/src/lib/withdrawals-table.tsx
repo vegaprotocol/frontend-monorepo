@@ -78,18 +78,24 @@ export const WithdrawalsTable = (
         }}
       />
       <AgGridColumn
-        headerName={t('Completed/Created')}
+        headerName={t('Created')}
+        field="createdTimestamp"
+        valueFormatter={({
+          value,
+        }: VegaValueFormatterParams<
+          WithdrawalFieldsFragment,
+          'createdTimestamp'
+        >) => (value ? getDateTimeFormat().format(new Date(value)) : '-')}
+      />
+      <AgGridColumn
+        headerName={t('Completed')}
         field="withdrawnTimestamp"
         valueFormatter={({
-          data,
+          value,
         }: VegaValueFormatterParams<
           WithdrawalFieldsFragment,
           'withdrawnTimestamp'
-        >) => {
-          const timestamp = data?.withdrawnTimestamp || data?.createdTimestamp;
-          if (!timestamp) return '-';
-          return getDateTimeFormat().format(new Date(timestamp));
-        }}
+        >) => (value ? getDateTimeFormat().format(new Date(value)) : '-')}
       />
       <AgGridColumn
         headerName={t('Status')}

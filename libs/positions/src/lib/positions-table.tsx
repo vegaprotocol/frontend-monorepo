@@ -362,10 +362,8 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         {onClose ? (
           <AgGridColumn
-            cellRenderer={({
-              data,
-              node,
-            }: VegaICellRendererParams<Position>) => (
+            type="rightAligned"
+            cellRenderer={({ data }: VegaICellRendererParams<Position>) => (
               <ButtonLink
                 data-testid="close-position"
                 onClick={() => data && onClose(data)}

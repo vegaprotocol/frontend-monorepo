@@ -155,10 +155,11 @@ export const useOrderListData = ({
           ).length;
         }
       }
-      dataRef.current = filterOrders(data, variables);
+      const filteredData = filterOrders(data, variables);
+      dataRef.current = filteredData;
       const avoidRerender = !!(
-        (dataRef.current?.length && data?.length) ||
-        (!dataRef.current?.length && !data?.length)
+        (dataRef.current?.length && filteredData?.length) ||
+        (!dataRef.current?.length && !filteredData?.length)
       );
       gridRef.current?.api?.refreshInfiniteCache();
       return avoidRerender;

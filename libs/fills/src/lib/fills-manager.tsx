@@ -36,8 +36,7 @@ export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
       <FillsTable
         ref={gridRef}
         partyId={partyId}
-        rowModelType={data?.length ? 'infinite' : 'clientSide'}
-        rowData={data?.length ? undefined : []}
+        rowModelType="infinite"
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
