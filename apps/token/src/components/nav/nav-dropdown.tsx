@@ -1,16 +1,8 @@
 import classNames from 'classnames';
-import { NavLink, Link } from 'react-router-dom';
-import { NetworkSwitcher } from '@vegaprotocol/environment';
-import type { HTMLAttributeAnchorTarget, ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Routes from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
-import vegaWhite from '../../images/vega_white.png';
-import debounce from 'lodash/debounce';
-import { NavDrawer } from './nav-draw';
 import {
-  getNavLinkClassNames,
-  Nav as ToolkitNav,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
