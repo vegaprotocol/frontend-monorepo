@@ -71,7 +71,7 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className="min-w-[290px] bg-neutral-200 dark:bg-neutral-900 mt-4 p-2 rounded"
+    className="min-w-[290px] bg-neutral-200 dark:bg-neutral-900 mt-4 p-2 rounded-xl border border-neutral-700"
     align="start"
     sideOffset={10}
   />
