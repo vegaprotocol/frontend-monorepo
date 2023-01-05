@@ -2,9 +2,10 @@ import {
   addDecimalsFormatNumber,
   t,
   toDecimal,
+  validateAmount,
 } from '@vegaprotocol/react-helpers';
 import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { isMarketInAuction, validateAmount } from '../../utils';
+import { isMarketInAuction } from '../../utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { getMarketPrice } from '../../utils/get-price';
 
