@@ -28,11 +28,13 @@ html.dark {
 html [data-theme='dark'] {
   --pennant-color-danger: theme('colors.vega.pink');
 
+  /* candles */
   --pennant-color-buy-fill: theme('colors.vega.green-data-dark');
   --pennant-color-buy-stroke: theme('colors.vega.green');
-  --pennant-color-sell-fill: theme('colors.vega.pink-data-dark');
+  /* sell candles only use stroke as the candle is solid (without border) */
   --pennant-color-sell-stroke: theme('colors.vega.pink');
 
+  /* depth chart */
   --pennant-color-depth-buy-fill: theme('colors.vega.green-data-dark');
   --pennant-color-depth-buy-stroke: theme('colors.vega.green');
   --pennant-color-depth-sell-fill: theme('colors.vega.pink-data-dark');
@@ -42,11 +44,13 @@ html [data-theme='dark'] {
 html [data-theme='light'] {
   --pennant-color-danger: theme('colors.vega.pink');
 
+  /* candles */
   --pennant-color-buy-fill: theme('colors.vega.green-data-light');
   --pennant-color-buy-stroke: theme('colors.vega.green-dark');
-  --pennant-color-sell-fill: theme('colors.vega.pink-data-light');
-  --pennant-color-sell-stroke: theme('colors.vega.pink-dark');
+  /* sell candles only use stroke as the candle is solid (without border) */
+  --pennant-color-sell-stroke: theme('colors.vega.pink-data-light');
 
+  /* depth chart */
   --pennant-color-depth-buy-fill: theme('colors.vega.green-data-light');
   --pennant-color-depth-buy-stroke: theme('colors.vega.green-dark');
   --pennant-color-depth-sell-fill: theme('colors.vega.pink-data-light');
