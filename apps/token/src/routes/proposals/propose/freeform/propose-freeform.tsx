@@ -12,7 +12,7 @@ import {
   ProposalFormSubmit,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
-  ProposalFormViewJson,
+  ProposalFormDownloadJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
@@ -24,7 +24,7 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import { ProposalUserAction } from '../../components/shared';
-import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
 
 export interface FreeformProposalFormFields {
   proposalVoteDeadline: string;
@@ -90,7 +90,10 @@ export const ProposeFreeform = () => {
 
   const viewJson = () => {
     const formData = watch();
-    viewJsonStringInNewWindow(JSON.stringify(assembleProposal(formData)));
+    downloadJson(
+      JSON.stringify(assembleProposal(formData)),
+      'vega-freeform-proposal'
+    );
   };
 
   return (
@@ -164,7 +167,7 @@ export const ProposeFreeform = () => {
               />
 
               <ProposalFormSubmit isSubmitting={isSubmitting} />
-              <ProposalFormViewJson viewJson={viewJson} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
                 TransactionDialog={Dialog}

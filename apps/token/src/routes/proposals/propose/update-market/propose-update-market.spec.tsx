@@ -187,7 +187,7 @@ describe('Propose Update Market', () => {
     expect(screen.getByTestId('proposal-vote-deadline')).toBeTruthy();
     expect(screen.getByTestId('proposal-enactment-deadline')).toBeTruthy();
     expect(screen.getByTestId('proposal-submit')).toBeTruthy();
-    expect(screen.getByTestId('proposal-view-json')).toBeTruthy();
+    expect(screen.getByTestId('proposal-download-json')).toBeTruthy();
     expect(screen.getByTestId('proposal-transaction-dialog')).toBeTruthy();
   });
 

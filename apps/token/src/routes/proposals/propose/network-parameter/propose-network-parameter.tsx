@@ -20,7 +20,7 @@ import {
   ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
-  ProposalFormViewJson,
+  ProposalFormDownloadJson,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
 import {
@@ -35,7 +35,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
-import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;
@@ -155,7 +155,10 @@ export const ProposeNetworkParameter = () => {
 
   const viewJson = () => {
     const formData = watch();
-    viewJsonStringInNewWindow(JSON.stringify(assembleProposal(formData)));
+    downloadJson(
+      JSON.stringify(assembleProposal(formData)),
+      'vega-network-param-proposal'
+    );
   };
 
   return (
@@ -309,7 +312,7 @@ export const ProposeNetworkParameter = () => {
               />
 
               <ProposalFormSubmit isSubmitting={isSubmitting} />
-              <ProposalFormViewJson viewJson={viewJson} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
                 TransactionDialog={Dialog}

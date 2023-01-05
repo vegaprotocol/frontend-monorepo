@@ -19,10 +19,10 @@ import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
-  ProposalFormViewJson,
+  ProposalFormDownloadJson,
 } from '../../components/propose';
 import { ProposalRawMinRequirements } from './proposal-raw-min-requirements';
-import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
 
 export interface RawProposalFormFields {
   rawProposalData: string;
@@ -61,7 +61,7 @@ export const ProposeRaw = () => {
 
   const viewJson = () => {
     const formData = watch();
-    viewJsonStringInNewWindow(JSON.stringify(formData));
+    downloadJson(JSON.stringify(formData), 'vega-raw-proposal');
   };
 
   return (
@@ -134,7 +134,7 @@ export const ProposeRaw = () => {
                 )}
               </FormGroup>
               <ProposalFormSubmit isSubmitting={isSubmitting} />
-              <ProposalFormViewJson viewJson={viewJson} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
                 TransactionDialog={Dialog}

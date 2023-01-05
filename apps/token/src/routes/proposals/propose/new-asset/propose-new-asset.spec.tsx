@@ -110,7 +110,7 @@ describe('Propose New Asset', () => {
     expect(screen.getByTestId('proposal-validation-deadline')).toBeTruthy();
     expect(screen.getByTestId('proposal-enactment-deadline')).toBeTruthy();
     expect(screen.getByTestId('proposal-submit')).toBeTruthy();
-    expect(screen.getByTestId('proposal-view-json')).toBeTruthy();
+    expect(screen.getByTestId('proposal-download-json')).toBeTruthy();
     expect(screen.getByTestId('proposal-transaction-dialog')).toBeTruthy();
   });
 });

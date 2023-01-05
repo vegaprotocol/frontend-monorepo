@@ -21,7 +21,7 @@ import {
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
-  ProposalFormViewJson,
+  ProposalFormDownloadJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
@@ -37,7 +37,7 @@ import {
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
 import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
-import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
 
 export interface UpdateMarketProposalFormFields {
   proposalVoteDeadline: string;
@@ -156,7 +156,10 @@ export const ProposeUpdateMarket = () => {
 
   const viewJson = () => {
     const formData = watch();
-    viewJsonStringInNewWindow(JSON.stringify(assembleProposal(formData)));
+    downloadJson(
+      JSON.stringify(assembleProposal(formData)),
+      'vega-update-market-proposal'
+    );
   };
 
   return (
@@ -311,7 +314,7 @@ export const ProposeUpdateMarket = () => {
               />
 
               <ProposalFormSubmit isSubmitting={isSubmitting} />
-              <ProposalFormViewJson viewJson={viewJson} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
                 TransactionDialog={Dialog}

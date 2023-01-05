@@ -20,14 +20,14 @@ import {
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
-  ProposalFormViewJson,
+  ProposalFormDownloadJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
-import { viewJsonStringInNewWindow } from '../../../../lib/view-form-as-json-new-window';
+import { downloadJson } from '../../../../lib/view-form-as-json-new-window';
 
 export interface UpdateAssetProposalFormFields {
   proposalVoteDeadline: string;
@@ -112,7 +112,10 @@ export const ProposeUpdateAsset = () => {
 
   const viewJson = () => {
     const formData = watch();
-    viewJsonStringInNewWindow(JSON.stringify(assembleProposal(formData)));
+    downloadJson(
+      JSON.stringify(assembleProposal(formData)),
+      'vega-update-asset-proposal'
+    );
   };
 
   return (
@@ -212,7 +215,7 @@ export const ProposeUpdateAsset = () => {
               />
 
               <ProposalFormSubmit isSubmitting={isSubmitting} />
-              <ProposalFormViewJson viewJson={viewJson} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
                 TransactionDialog={Dialog}
