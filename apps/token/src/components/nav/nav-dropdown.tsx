@@ -192,9 +192,8 @@ export const NavDropDown = () => {
 
       <DropdownMenuContent>
         {subRoutes.map((r) => (
-          <DropdownMenuItem>
+          <DropdownMenuItem key={r.name}>
             <AppNavLink
-              key={r.name}
               {...r}
               navbarTheme={'inherit'}
               end={true}

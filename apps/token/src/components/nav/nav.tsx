@@ -64,7 +64,7 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
     <ToolkitNav
       navbarTheme={navbarTheme}
       icon={
-        <Link to="/">
+        <Link to="/" data-testid="logo-link">
           <img alt="Vega" src={vegaWhite} height={30} width={30} />
         </Link>
       }
@@ -74,7 +74,7 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
       {isDesktop ? (
         <nav className="flex items-center flex-1 px-2">
           {routes.map((r) => (
-            <AppNavLink {...r} navbarTheme={navbarTheme} />
+            <AppNavLink key={r.path} {...r} navbarTheme={navbarTheme} />
           ))}
           <NavDropDown />
         </nav>
