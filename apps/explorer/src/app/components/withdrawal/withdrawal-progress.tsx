@@ -88,9 +88,9 @@ const classes = {
   textFailed:
     'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-pink',
   indicatorComplete:
-    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-vega-green-dark bg-vega-green-dark text-center text-white leading-5',
+    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-vega-green bg-vega-green text-center text-white leading-5',
   textComplete:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-green-dark',
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-green',
   indicatorIncomplete:
     'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300 text-center leading-5',
   textIncomplete:
@@ -140,7 +140,7 @@ export function WithdrawalProgressSeparator({
   return (
     <div
       className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-        isComplete ? 'border-vega-green-dark' : 'border-gray-300'
+        isComplete ? 'border-vega-green' : 'border-gray-300'
       }`}
     ></div>
   );
