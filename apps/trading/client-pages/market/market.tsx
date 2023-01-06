@@ -4,14 +4,9 @@ import {
   addDecimalsFormatNumber,
   t,
   titlefy,
-  useDataProvider,
+  usePrevious,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
-import type {
-  SingleMarketFieldsFragment,
-  MarketData,
-  Candle,
-} from '@vegaprotocol/market-list';
 
 import { useMarket } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
@@ -25,21 +20,35 @@ const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
     : '-';
 };
 
-export interface SingleMarketData extends SingleMarketFieldsFragment {
-  candles: Candle[];
-  data: MarketData;
-}
-
 export const Market = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
-
   const { w } = useWindowSize();
+  const { data, loading, error } = useMarket(marketId);
   const update = useGlobalStore((store) => store.update);
-  const lastMarketId = useGlobalStore((store) => store.marketId);
-
-  const pageTitle = usePageTitleStore((store) => store.pageTitle);
   const updateTitle = usePageTitleStore((store) => store.updateTitle);
+  const prevMarkPrice = usePrevious(data?.market?.data?.markPrice);
+
+  // Store last market id for easier so we can load
+  // previous last market when visiting index page
+  useEffect(() => {
+    update({ marketId });
+  }, [marketId, update]);
+
+  // set page title, _app.page.tsx will pick this up and
+  // update it via the <Title /> component
+  useEffect(() => {
+    if (!data?.market?.data) return;
+    if (prevMarkPrice !== data.market.data.markPrice) {
+      const marketName = data.market.tradableInstrument.instrument.name;
+      const marketPrice = calculatePrice(
+        data.market.data?.markPrice,
+        data.market.decimalPlaces
+      );
+      const newPageTitle = titlefy([marketName, marketPrice]);
+      updateTitle(newPageTitle);
+    }
+  }, [data?.market, prevMarkPrice, updateTitle]);
 
   const onSelect = useCallback(
     (id: string) => {
@@ -49,8 +58,6 @@ export const Market = () => {
     },
     [marketId, navigate]
   );
-
-  const { data, loading, error } = useMarket(marketId);
 
   const tradeView = useMemo(() => {
     if (!data?.market) {
@@ -72,10 +79,10 @@ export const Market = () => {
   }
 
   return (
-    <AsyncRenderer<SingleMarketFieldsFragment>
+    <AsyncRenderer
       loading={loading}
       error={error}
-      data={data}
+      data={data?.market}
       noDataCondition={(data) => false}
     >
       {tradeView}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePrevious } from './use-previous';
+import { usePrevious } from '@vegaprotocol/react-helpers';
 import type { BigNumber } from '../lib/bignumber';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import colors from 'tailwindcss/colors';

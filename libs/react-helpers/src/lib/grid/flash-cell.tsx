@@ -8,9 +8,10 @@
  * @author John <john.walley@mulberryhousesoftware.com>
  */
 
-import { memo, useRef, useEffect } from 'react';
+import { memo, useRef } from 'react';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import { splitAt } from '../format';
+import { usePrevious } from '../../hooks';
 
 const FLASH_DURATION = 800; // Duration of flash animation in milliseconds
 
@@ -41,19 +42,6 @@ export function findFirstDiffPos(a: string, b: string): number {
 
   while (a[i] === b[i]) i++;
   return i;
-}
-
-/**
- * Get value from previous render
- */
-function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T | undefined>();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
 }
 
 export const FlashCell = memo(({ children, value }: FlashCellProps) => {
