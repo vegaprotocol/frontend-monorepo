@@ -33,11 +33,11 @@ export const MarketLiquiditySupplied = ({
 }: Props) => {
   const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
-    NetworkParams.market_liquidity_stakeToCcySiskas,
+    NetworkParams.market_liquidity_stakeToCcyVolume,
     NetworkParams.market_liquidity_targetstake_triggering_ratio,
   ]);
 
-  const stakeToCcyVolume = Number(params.market_liquidity_stakeToCcySiskas);
+  const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
   const triggeringRatio = Number(
     params.market_liquidity_targetstake_triggering_ratio
   );

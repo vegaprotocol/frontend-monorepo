@@ -10,7 +10,7 @@ import {
   NetworkParams,
   t,
   useDataProvider,
-  useNetworkParam,
+  useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -91,11 +91,10 @@ export const LiquidityContainer = ({
     marketProvision?.market?.tradableInstrument.instrument.product
       .settlementAsset.symbol;
 
-  const { param: stakeToCcySiskas } = useNetworkParam(
-    NetworkParams.market_liquidity_stakeToCcySiskas
-  );
-  const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
-
+  const { params } = useNetworkParams([
+    NetworkParams.market_liquidity_stakeToCcyVolume,
+  ]);
+  const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
   const filteredEdges = useMemo(
     () =>
       liquidityProviders?.filter((e) =>
@@ -115,7 +114,7 @@ export const LiquidityContainer = ({
         data={filteredEdges}
         symbol={symbol}
         assetDecimalPlaces={assetDecimalPlaces}
-        stakeToCcySiskas={stakeToCcySiska}
+        stakeToCcyVolume={stakeToCcyVolume}
       />
     </AsyncRenderer>
   );
@@ -180,11 +179,10 @@ export const LiquidityViewContainer = ({
     marketProvision?.market?.tradableInstrument.instrument.product
       .settlementAsset.symbol;
 
-  const { param: stakeToCcySiskas } = useNetworkParam(
-    NetworkParams.market_liquidity_stakeToCcySiskas
-  );
-  const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
-
+  const { params } = useNetworkParams([
+    NetworkParams.market_liquidity_stakeToCcyVolume,
+  ]);
+  const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
   const myLpEdges = useMemo(
     () => liquidityProviders?.filter((e) => e.party.id === pubKey),
     [liquidityProviders, pubKey]
@@ -279,7 +277,7 @@ export const LiquidityViewContainer = ({
                 ref={gridRef}
                 data={myLpEdges}
                 symbol={symbol}
-                stakeToCcySiskas={stakeToCcySiska}
+                stakeToCcyVolume={stakeToCcyVolume}
                 assetDecimalPlaces={assetDecimalPlaces}
               />
             )}
@@ -291,7 +289,7 @@ export const LiquidityViewContainer = ({
                 data={activeEdges}
                 symbol={symbol}
                 assetDecimalPlaces={assetDecimalPlaces}
-                stakeToCcySiskas={stakeToCcySiska}
+                stakeToCcyVolume={stakeToCcyVolume}
               />
             )}
           </Tab>
@@ -303,7 +301,7 @@ export const LiquidityViewContainer = ({
                   data={inactiveEdges}
                   symbol={symbol}
                   assetDecimalPlaces={assetDecimalPlaces}
-                  stakeToCcySiskas={stakeToCcySiska}
+                  stakeToCcyVolume={stakeToCcyVolume}
                 />
               )}
             </Tab>

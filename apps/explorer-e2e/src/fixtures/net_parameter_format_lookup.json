@@ -29,7 +29,7 @@
     "market.liquidity.maximumLiquidityFeeFactorLevel",
     "market.liquidity.minimum.probabilityOfTrading.lpOrders",
     "market.liquidity.probabilityOfTrading.tau.scaling",
-    "market.liquidity.stakeToCcySiskas",
+    "market.liquidity.stakeToCcyVolume",
     "market.liquidity.targetstake.triggering.ratio",
     "market.liquidityProvision.minLpStakeQuantumMultiple",
     "market.liquidityProvision.shapes.maxSize",
