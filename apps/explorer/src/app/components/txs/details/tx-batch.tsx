@@ -51,7 +51,7 @@ export const TxDetailsBatch = ({
     txData.command.batchMarketInstructions.cancellations;
   const countCancellations = cancellations.length || 0;
   const countTotal = countSubmissions + countAmendments + countCancellations;
-
+  let index = 0;
   return (
     <div>
       <TableWithTbody className="mb-8">
@@ -95,10 +95,10 @@ export const TxDetailsBatch = ({
       <Table className="max-w-5xl min-w-fit">
         <thead>
           <TableRow modifier="bordered" className="font-mono">
-            <th align="left">{t('Type Index')}</th>
+            <th align="left">{t('#')}</th>
             <th align="left">{t('Type')}</th>
-            <th align="left">{t('Market')}</th>
             <th align="left">{t('Order')}</th>
+            <th align="left">{t('Market')}</th>
           </TableRow>
         </thead>
         <tbody>
@@ -106,15 +106,15 @@ export const TxDetailsBatch = ({
             ? cancellations.map((c, i) => {
                 return (
                   <tr>
-                    <td>{i}</td>
+                    <td>{index++}</td>
                     <td>
                       <TxOrderType orderType={'OrderCancellation'} />
                     </td>
                     <td>
-                      <MarketLink id={c.marketId} />
+                      <TruncateInline text={c.orderId} />
                     </td>
                     <td>
-                      <TruncateInline text={c.orderId} />
+                      <MarketLink id={c.marketId} />
                     </td>
                   </tr>
                 );
@@ -124,15 +124,15 @@ export const TxDetailsBatch = ({
             ? amendments.map((a, i) => {
                 return (
                   <tr>
-                    <td>{i}</td>
+                    <td>{index++}</td>
                     <td>
                       <TxOrderType orderType={'OrderAmendment'} />
                     </td>
                     <td>
-                      <MarketLink id={a.marketId} />
+                      <TruncateInline text={a.orderId} />
                     </td>
                     <td>
-                      <TruncateInline text={a.orderId} />
+                      <MarketLink id={a.marketId} />
                     </td>
                   </tr>
                 );
@@ -142,15 +142,15 @@ export const TxDetailsBatch = ({
             ? submissions.map((s, i) => {
                 return (
                   <tr>
-                    <td>{i}</td>
+                    <td>{index++}</td>
                     <td>
                       <TxOrderType orderType={'OrderSubmission'} />
                     </td>
                     <td>
-                      <MarketLink id={s.marketId} />
+                      <OrderSummary order={s} />
                     </td>
                     <td>
-                      <OrderSummary order={s} />
+                      <MarketLink id={s.marketId} />
                     </td>
                   </tr>
                 );

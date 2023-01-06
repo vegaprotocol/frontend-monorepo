@@ -14,6 +14,12 @@ interface TxDetailsSharedProps {
   blockData: TendermintBlocksResponse | undefined;
 }
 
+// Applied to all header cells
+const sharedHeaderProps = {
+  // Ensures that multi line contents still have the header aligned to the first line
+  className: 'align-top',
+};
+
 /**
  * These rows are shown for every transaction type, providing a consistent set of rows for the top
  * of a transaction details row. The order is relatively arbitrary but felt right - it might need to
@@ -34,27 +40,27 @@ export const TxDetailsShared = ({
   return (
     <>
       <TableRow modifier="bordered">
-        <TableCell>{t('Type')}</TableCell>
+        <TableCell {...sharedHeaderProps}>{t('Type')}</TableCell>
         <TableCell>{txData.type}</TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>{t('Hash')}</TableCell>
+        <TableCell {...sharedHeaderProps}>{t('Hash')}</TableCell>
         <TableCell>
           <code>{txData.hash}</code>
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>{t('Submitter')}</TableCell>
+        <TableCell {...sharedHeaderProps}>{t('Submitter')}</TableCell>
         <TableCell>{pubKey ? <PartyLink id={pubKey} /> : '-'}</TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>{t('Block')}</TableCell>
+        <TableCell {...sharedHeaderProps}>{t('Block')}</TableCell>
         <TableCell>
           <BlockLink height={height} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>{t('Time')}</TableCell>
+        <TableCell {...sharedHeaderProps}>{t('Time')}</TableCell>
         <TableCell>
           {time ? (
             <div>
@@ -71,7 +77,7 @@ export const TxDetailsShared = ({
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>{t('Response code')}</TableCell>
+        <TableCell {...sharedHeaderProps}>{t('Response code')}</TableCell>
         <TableCell>
           <ChainResponseCode code={txData.code} error={txData.error} />
         </TableCell>
