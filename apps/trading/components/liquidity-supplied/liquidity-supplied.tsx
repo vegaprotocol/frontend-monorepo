@@ -18,6 +18,7 @@ import { Link } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { DataGrid } from '@vegaprotocol/react-helpers';
+import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 
 interface Props {
   marketId?: string;
@@ -107,6 +108,12 @@ export const MarketLiquiditySupplied = ({
     },
   ];
 
+  const showMessage =
+    percentage.gte(100) &&
+    market?.marketTradingMode ===
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    market.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+
   const description = (
     <section>
       {compiledGrid && <DataGrid grid={compiledGrid} />}
@@ -114,6 +121,13 @@ export const MarketLiquiditySupplied = ({
       <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
       </Link>
+      {showMessage && (
+        <p className="mt-4">
+          {t(
+            'If it is sufficient liquidity, the market is in an auction because there are no priced limit orders, which are required to deploy liquidity provision pegged orders, so the orderbook is empty on one or both sides.'
+          )}
+        </p>
+      )}
     </section>
   );
 
