@@ -13,7 +13,7 @@ export const getActiveNavLinkClassNames = (
   isActive: boolean,
   navbarTheme: string
 ): string | undefined => {
-  return classNames('mx-2 py-3 self-end relative', {
+  return classNames('mx-2 py-3 self-start relative', {
     'cursor-default': isActive,
     'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
     'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':

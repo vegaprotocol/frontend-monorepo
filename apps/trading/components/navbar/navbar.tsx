@@ -18,13 +18,20 @@ import {
   getActiveNavLinkClassNames,
   Nav,
 } from '@vegaprotocol/ui-toolkit';
+import { useMemo, useState, useCallback } from 'react';
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 interface NavbarProps {
   navbarTheme?: NavbarTheme;
 }
 
-export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
+const LinkList = ({
+  navbarTheme,
+  className = 'flex',
+}: {
+  navbarTheme: NavbarTheme;
+  className?: string;
+}) => {
   const tokenLink = useLinks(DApp.Token);
   const { marketId } = useGlobalStore((store) => ({
     marketId: store.marketId,
@@ -33,16 +40,7 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
   return (
-    <Nav
-      navbarTheme={navbarTheme}
-      title={t('Console')}
-      titleContent={<NetworkSwitcher />}
-      icon={
-        <Link to="/">
-          <Vega className="w-13" />
-        </Link>
-      }
-    >
+    <div className={className}>
       <AppNavLink
         name={t('Markets')}
         path={Links[Routes.MARKETS]()}
@@ -71,9 +69,86 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
           <NewTab />
         </span>
       </a>
-      <div className="flex items-center gap-2 ml-auto">
+    </div>
+  );
+};
+
+const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const onOpen = useCallback(() => {
+    setDrawerOpen(!drawerOpen);
+  }, [drawerOpen]);
+
+  return (
+    <div className="flex overflow-hidden md:hidden">
+      <button
+        className="flex flex-col justify-around gap-3 p-2 relative z-40 h-[34px]"
+        onClick={onOpen}
+      >
+        <div
+          className={classNames('w-[26px] h-[1px] bg-white transition-all', {
+            'translate-y-0 rotate-0': !drawerOpen,
+            'translate-y-[7.5px] rotate-45': drawerOpen,
+          })}
+        />
+        <div
+          className={classNames('w-[26px] h-[1px] bg-white transition-all', {
+            'translate-y-0 rotate-0': !drawerOpen,
+            '-translate-y-[7.5px] -rotate-45': drawerOpen,
+          })}
+        />
+      </button>
+      <div
+        className={classNames(
+          'h-full max-w-[500px] -right-[90%] z-30 top-0 fixed w-[90vw] transition-all md:hidden',
+          {
+            'right-0': drawerOpen,
+          }
+        )}
+      >
+        <div className="border-l border-default px-4 py-2 gap-4 flex flex-col w-full h-full bg-white dark:bg-black dark:text-white justify-start">
+          <div className="flex h-5"></div>
+          <div className="px-2 pb-6 w-full flex flex-col items-stretch border-b border-default">
+            <NetworkSwitcher />
+          </div>
+          <LinkList
+            className="flex flex-col border-b border-default pb-6"
+            navbarTheme={navbarTheme}
+          />
+          <div className="flex justify-between">
+            <ThemeSwitcher withMobile />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
+  const titleContent = useMemo(
+    () => (
+      <div className="hidden md:block">
+        <NetworkSwitcher />
+      </div>
+    ),
+    []
+  );
+  return (
+    <Nav
+      navbarTheme={navbarTheme}
+      title={t('Console')}
+      titleContent={titleContent}
+      icon={
+        <Link to="/">
+          <Vega className="w-13" />
+        </Link>
+      }
+    >
+      <LinkList className="hidden md:flex" navbarTheme={navbarTheme} />
+      <div className="flex items-center gap-2 ml-auto overflow-hidden">
         <VegaWalletConnectButton />
-        <ThemeSwitcher />
+        <ThemeSwitcher className="hidden md:block" />
+        <MobileMenuBar navbarTheme={navbarTheme} />
       </div>
     </Nav>
   );
