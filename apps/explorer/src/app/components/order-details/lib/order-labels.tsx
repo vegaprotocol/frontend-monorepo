@@ -21,7 +21,7 @@ export const statusText: Record<Schema.OrderStatus, string> = {
 };
 
 export const sideText: Record<components['schemas']['vegaSide'], string> = {
-  SIDE_UNSPECIFIED: t('Buy'),
+  SIDE_UNSPECIFIED: t('Unspecified'),
   SIDE_BUY: t('Buy'),
   SIDE_SELL: t('Sell'),
 };

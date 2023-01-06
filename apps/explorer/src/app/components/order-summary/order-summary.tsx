@@ -8,24 +8,33 @@ export type OrderSummaryProps = {
 };
 
 /**
- * Given a market ID, it will fetch the market name and show that,
- * with a link to the markets list. If the name does not come back
- * it will use the ID instead
+ * Shows a brief, relatively plaintext summary of an order transaction
+ * showing the price, correctly formatted. Created for the Batch Submission
+ * list, should be kept compact.
+ *
+ * Market name is expected to be listed elsewhere, so is not included
  */
 const OrderSummary = ({ order }: OrderSummaryProps) => {
-  if (!order || !order.marketId || !order.price || !order.side) {
+  // Render nothing if the Order Submission doesn't look right
+  if (
+    !order ||
+    !order.marketId ||
+    !order.price ||
+    !order.side ||
+    order.side === 'SIDE_UNSPECIFIED'
+  ) {
     return null;
   }
 
   return (
-    <span>
-      {sideText[order.side]}&nbsp;
-      {order.size}&nbsp;<i className="text-xs">@</i>&nbsp;
+    <div data-testid="order-summary">
+      <span>{sideText[order.side]}</span>&nbsp;
+      <span>{order.size}</span>&nbsp;<i className="text-xs">@</i>&nbsp;
       <PriceInMarket
         marketId={order.marketId}
         price={order.price}
       ></PriceInMarket>
-    </span>
+    </div>
   );
 };
 
