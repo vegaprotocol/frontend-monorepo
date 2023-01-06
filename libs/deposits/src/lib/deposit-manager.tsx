@@ -43,7 +43,7 @@ export const DepositManager = ({
   const bridgeContract = useBridgeContract();
   const closeDepositDialog = useDepositDialog((state) => state.close);
 
-  const { balance, allowance, deposited, max } = useDepositBalances(
+  const { balance, allowance, deposited, max, refresh } = useDepositBalances(
     asset,
     isFaucetable
   );
@@ -93,9 +93,15 @@ export const DepositManager = ({
           selectedAsset={asset}
           onSelectAsset={setAssetId}
           assets={sortBy(assets, 'name')}
-          submitApprove={() => approve.perform()}
+          submitApprove={async () => {
+            await approve.perform();
+            refresh();
+          }}
           submitDeposit={submitDeposit}
-          requestFaucet={() => faucet.perform()}
+          requestFaucet={async () => {
+            await faucet.perform();
+            refresh();
+          }}
           deposited={deposited}
           max={max}
           allowance={allowance}

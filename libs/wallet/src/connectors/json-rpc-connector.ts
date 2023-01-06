@@ -21,15 +21,8 @@ export const ClientErrors = {
     105,
     t('Unknown error occurred')
   ),
+  NO_CLIENT: new WalletError(t('No client found.'), 106),
 } as const;
-
-class NoClientError extends Error {
-  constructor() {
-    super(
-      t('No client found. The connector needs to be initialized with a url.')
-    );
-  }
-}
 
 export class JsonRpcConnector implements VegaConnector {
   version = VERSION;
@@ -62,7 +55,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async getChainId() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
     try {
       const { result } = await this.client.GetChainId();
@@ -74,7 +67,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async connectWallet() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
     try {
@@ -94,7 +87,7 @@ export class JsonRpcConnector implements VegaConnector {
   // which retrieves the session token
   async connect() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
     try {
@@ -107,7 +100,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async disconnect() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
     await this.client.DisconnectWallet();
@@ -116,7 +109,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async sendTx(pubKey: string, transaction: Transaction) {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
     try {

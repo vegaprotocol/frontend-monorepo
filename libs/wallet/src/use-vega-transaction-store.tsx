@@ -140,7 +140,6 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
             }
             if (
               isOrderCancellationTransaction(transaction?.body) &&
-              // order.status === Schema.OrderStatus.STATUS_CANCELLED &&
               order.id === transaction.body.orderCancellation.orderId
             ) {
               return true;

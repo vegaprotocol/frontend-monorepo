@@ -1,13 +1,8 @@
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
-import type { Toast } from '@vegaprotocol/ui-toolkit';
-import {
-  ExternalLink,
-  Intent,
-  ProgressBar,
-  TransactionDetails,
-} from '@vegaprotocol/ui-toolkit';
+import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
+import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useMemo } from 'react';
 import compact from 'lodash/compact';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
@@ -44,9 +39,20 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
     const asset = data.find((a) => a.id === tx.assetId);
 
     if (asset) {
+      const num = formatNumber(
+        toBigNum(tx.args[1], asset.decimals),
+        asset.decimals
+      );
+      const details = (
+        <div className="mt-[5px]">
+          <span className="font-mono text-xs p-1 bg-gray-100 rounded">
+            {label} {num} {asset.symbol}
+          </span>
+        </div>
+      );
       return (
         <>
-          <TransactionDetails label={label} amount={tx.args[1]} asset={asset} />
+          {details}
           {tx.requiresConfirmation &&
             [EthTxStatus.Pending].includes(tx.status) && (
               <div className="mt-[10px]">
@@ -68,6 +74,83 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
   return null;
 };
 
+type EthTxToastContentProps = {
+  tx: EthStoredTxState;
+};
+
+const EthTxRequestedToastContent = ({ tx }: EthTxToastContentProps) => {
+  return (
+    <div>
+      <h3 className="font-bold">{t('Action required')}</h3>
+      <p>
+        {t(
+          'Please go to your wallet application and approve or reject the transaction.'
+        )}
+      </p>
+      <EthTransactionDetails tx={tx} />
+    </div>
+  );
+};
+
+const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
+  const etherscanLink = useEtherscanLink();
+  return (
+    <div>
+      <h3 className="font-bold">{t('Awaiting confirmation')}</h3>
+      <p>{t('Please wait for your transaction to be confirmed')}</p>
+      {tx.txHash && (
+        <p className="break-all">
+          <ExternalLink
+            href={etherscanLink(ETHERSCAN_TX.replace(':hash', tx.txHash))}
+            rel="noreferrer"
+          >
+            {t('View on Etherscan')}
+          </ExternalLink>
+        </p>
+      )}
+      <EthTransactionDetails tx={tx} />
+    </div>
+  );
+};
+
+const EthTxErrorToastContent = ({ tx }: EthTxToastContentProps) => {
+  let errorMessage = '';
+
+  if (isEthereumError(tx.error)) {
+    errorMessage = tx.error.reason;
+  } else if (tx.error instanceof Error) {
+    errorMessage = tx.error.message;
+  }
+  return (
+    <div>
+      <h3 className="font-bold">{t('Error occurred')}</h3>
+      <p>{errorMessage}</p>
+      <EthTransactionDetails tx={tx} />
+    </div>
+  );
+};
+
+const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
+  const etherscanLink = useEtherscanLink();
+  return (
+    <div>
+      <h3 className="font-bold">{t('Transaction completed')}</h3>
+      <p>{t('Your transaction has been completed')}</p>
+      {tx.txHash && (
+        <p className="break-all">
+          <ExternalLink
+            href={etherscanLink(ETHERSCAN_TX.replace(':hash', tx.txHash))}
+            rel="noreferrer"
+          >
+            {t('View on Etherscan')}
+          </ExternalLink>
+        </p>
+      )}
+      <EthTransactionDetails tx={tx} />
+    </div>
+  );
+};
+
 export const useEthereumTransactionToasts = () => {
   const ethTransactions = useEthTransactionStore((state) =>
     state.transactions.filter((transaction) => transaction?.dialogOpen)
@@ -75,115 +158,34 @@ export const useEthereumTransactionToasts = () => {
   const dismissEthTransaction = useEthTransactionStore(
     (state) => state.dismiss
   );
-  const etherscanLink = useEtherscanLink();
   const fromEthTransaction = useCallback(
     (tx: EthStoredTxState): Toast => {
-      let toast: Partial<Toast> = {};
-      const defaultValues = {
-        id: `eth-${tx.id}`,
-        intent: intentMap[tx.status],
-        render: () => {
-          return <TransactionContent {...tx} />;
-        },
-        onClose: () => dismissEthTransaction(tx.id),
-      };
+      let content: ToastContent = <TransactionContent {...tx} />;
       if (tx.status === EthTxStatus.Requested) {
-        toast = {
-          render: () => {
-            return (
-              <div>
-                <h3 className="font-bold">{t('Action required')}</h3>
-                <p>
-                  {t(
-                    'Please go to your wallet application and approve or reject the transaction.'
-                  )}
-                </p>
-                <EthTransactionDetails tx={tx} />
-              </div>
-            );
-          },
-        };
+        content = <EthTxRequestedToastContent tx={tx} />;
       }
       if (tx.status === EthTxStatus.Pending) {
-        toast = {
-          render: () => {
-            return (
-              <div>
-                <h3 className="font-bold">{t('Awaiting confirmation')}</h3>
-                <p>{t('Please wait for your transaction to be confirmed')}</p>
-                {tx.txHash && (
-                  <p className="break-all">
-                    <ExternalLink
-                      href={etherscanLink(
-                        ETHERSCAN_TX.replace(':hash', tx.txHash)
-                      )}
-                      rel="noreferrer"
-                    >
-                      {t('View on Etherscan')}
-                    </ExternalLink>
-                  </p>
-                )}
-                <EthTransactionDetails tx={tx} />
-              </div>
-            );
-          },
-          loader: true,
-        };
+        content = <EthTxPendingToastContent tx={tx} />;
       }
       if (
         tx.status === EthTxStatus.Confirmed ||
         tx.status === EthTxStatus.Complete
       ) {
-        toast = {
-          render: () => {
-            return (
-              <div>
-                <h3 className="font-bold">{t('Transaction completed')}</h3>
-                <p>{t('Your transaction has been completed')}</p>
-                {tx.txHash && (
-                  <p className="break-all">
-                    <ExternalLink
-                      href={etherscanLink(
-                        ETHERSCAN_TX.replace(':hash', tx.txHash)
-                      )}
-                      rel="noreferrer"
-                    >
-                      {t('View on Etherscan')}
-                    </ExternalLink>
-                  </p>
-                )}
-                <EthTransactionDetails tx={tx} />
-              </div>
-            );
-          },
-        };
+        content = <EthTxConfirmedToastContent tx={tx} />;
       }
       if (tx.status === EthTxStatus.Error) {
-        toast = {
-          render: () => {
-            let errorMessage = '';
-
-            if (isEthereumError(tx.error)) {
-              errorMessage = tx.error.reason;
-            } else if (tx.error instanceof Error) {
-              errorMessage = tx.error.message;
-            }
-            return (
-              <div>
-                <h3 className="font-bold">{t('Error occurred')}</h3>
-                <p>{errorMessage}</p>
-                <EthTransactionDetails tx={tx} />
-              </div>
-            );
-          },
-        };
+        content = <EthTxErrorToastContent tx={tx} />;
       }
+
       return {
-        ...defaultValues,
-        ...toast,
+        id: `eth-${tx.id}`,
+        intent: intentMap[tx.status],
+        onClose: () => dismissEthTransaction(tx.id),
+        loader: tx.status === EthTxStatus.Pending,
+        content,
       };
     },
-    [dismissEthTransaction, etherscanLink]
+    [dismissEthTransaction]
   );
 
   return useMemo(() => {

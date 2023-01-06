@@ -1,16 +1,26 @@
 import { useBridgeContract, useTokenContract } from '@vegaprotocol/web3';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import * as Sentry from '@sentry/react';
 import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
-import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import { isAssetTypeERC20, usePrevious } from '@vegaprotocol/react-helpers';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 
-const initialState = {
+type DepositBalances = {
+  balance: BigNumber;
+  allowance: BigNumber;
+  deposited: BigNumber;
+  max: BigNumber;
+  refresh: () => void;
+};
+
+type DepositBalancesState = Omit<DepositBalances, 'refresh'>;
+
+const initialState: DepositBalancesState = {
   balance: new BigNumber(0),
   allowance: new BigNumber(0),
   deposited: new BigNumber(0),
@@ -24,7 +34,7 @@ const initialState = {
 export const useDepositBalances = (
   asset: Asset | undefined,
   isFaucetable: boolean
-) => {
+): DepositBalances => {
   const tokenContract = useTokenContract(
     isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
     isFaucetable
@@ -34,48 +44,42 @@ export const useDepositBalances = (
   const getBalance = useGetBalanceOfERC20Token(tokenContract, asset);
   const getDepositMaximum = useGetDepositMaximum(bridgeContract, asset);
   const getDepositedAmount = useGetDepositedAmount(asset);
-  const assetRef = useRef(asset);
-  const [state, setState] = useState(initialState);
+  const prevAsset = usePrevious(asset);
+  const [state, setState] = useState<DepositBalancesState>(initialState);
 
-  if (asset !== assetRef.current) {
-    assetRef.current = asset;
-    setState(initialState);
-  }
+  useEffect(() => {
+    if (asset?.id !== prevAsset?.id) {
+      // reset values to initial state when asset changes
+      setState(initialState);
+    }
+  }, [asset?.id, prevAsset?.id]);
 
   const { accountBalance } = useAccountBalance(asset?.id);
 
-  useEffect(() => {
-    const getBalances = async () => {
-      try {
-        const [max, deposited, balance, allowance] = await Promise.all([
-          getDepositMaximum(),
-          getDepositedAmount(),
-          getBalance(),
-          getAllowance(),
-        ]);
+  const getBalances = useCallback(async () => {
+    if (!asset) return;
+    try {
+      const [max, deposited, balance, allowance] = await Promise.all([
+        getDepositMaximum(),
+        getDepositedAmount(),
+        getBalance(),
+        getAllowance(),
+      ]);
 
-        setState({
-          max: max ?? initialState.max,
-          deposited: deposited ?? initialState.deposited,
-          balance: balance ?? initialState.balance,
-          allowance: allowance ?? initialState.allowance,
-        });
-      } catch (err) {
-        Sentry.captureException(err);
-      }
-    };
-
-    if (asset) {
-      getBalances();
+      setState({
+        max: max ?? initialState.max,
+        deposited: deposited ?? initialState.deposited,
+        balance: balance ?? initialState.balance,
+        allowance: allowance ?? initialState.allowance,
+      });
+    } catch (err) {
+      Sentry.captureException(err);
     }
-  }, [
-    asset,
-    getDepositMaximum,
-    getDepositedAmount,
-    getAllowance,
-    getBalance,
-    accountBalance,
-  ]);
+  }, [asset, getAllowance, getBalance, getDepositMaximum, getDepositedAmount]);
 
-  return state;
+  useEffect(() => {
+    getBalances();
+  }, [asset, getBalances, accountBalance]);
+
+  return { ...state, refresh: getBalances };
 };
