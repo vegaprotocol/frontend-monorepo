@@ -133,8 +133,6 @@ const Container = ({ onSelect }: { onSelect: (marketId: string) => void }) => {
     skip: !pubKey,
   });
 
-  console.log(party);
-
   const onCellClick: OnCellClickHandler = (e, kind, value) => {
     if (value && kind === ColumnKind.Asset) {
       openAssetDetailsDialog(value, e.target as HTMLElement);
