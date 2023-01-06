@@ -8,9 +8,11 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody, TableRow, TableCell, Table } from '../../table';
 import { TxOrderType } from '../tx-order-type';
-import { TruncateInline } from '../../truncate/truncate';
 import { MarketLink } from '../../links';
 import OrderSummary from '../../order-summary/order-summary';
+import { BatchCancel } from './batch-submission/batch-cancel';
+import { BatchAmend } from './batch-submission/batch-amend';
+import { BatchOrder } from './batch-submission/batch-order';
 
 interface TxDetailsBatchProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -102,60 +104,15 @@ export const TxDetailsBatch = ({
           </TableRow>
         </thead>
         <tbody>
-          {cancellations.length > 0
-            ? cancellations.map((c, i) => {
-                return (
-                  <tr>
-                    <td>{index++}</td>
-                    <td>
-                      <TxOrderType orderType={'OrderCancellation'} />
-                    </td>
-                    <td>
-                      <TruncateInline text={c.orderId} />
-                    </td>
-                    <td>
-                      <MarketLink id={c.marketId} />
-                    </td>
-                  </tr>
-                );
-              })
-            : null}
-          {amendments.length > 0
-            ? amendments.map((a, i) => {
-                return (
-                  <tr>
-                    <td>{index++}</td>
-                    <td>
-                      <TxOrderType orderType={'OrderAmendment'} />
-                    </td>
-                    <td>
-                      <TruncateInline text={a.orderId} />
-                    </td>
-                    <td>
-                      <MarketLink id={a.marketId} />
-                    </td>
-                  </tr>
-                );
-              })
-            : null}
-          {submissions.length > 0
-            ? submissions.map((s, i) => {
-                return (
-                  <tr>
-                    <td>{index++}</td>
-                    <td>
-                      <TxOrderType orderType={'OrderSubmission'} />
-                    </td>
-                    <td>
-                      <OrderSummary order={s} />
-                    </td>
-                    <td>
-                      <MarketLink id={s.marketId} />
-                    </td>
-                  </tr>
-                );
-              })
-            : null}
+          {cancellations.map((c) => (
+            <BatchCancel submission={c} index={index++} />
+          ))}
+          {amendments.map((a) => (
+            <BatchAmend submission={a} index={index++} />
+          ))}
+          {submissions.map((s) => (
+            <BatchOrder submission={s} index={index++} />
+          ))}
         </tbody>
       </Table>
     </div>
