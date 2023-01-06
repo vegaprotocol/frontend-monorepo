@@ -8,7 +8,7 @@ import type { IconName } from '../icon';
 import { Icon } from '../icon';
 import classnames from 'classnames';
 
-type ButtonVariant = 'default' | 'primary' | 'secondary';
+export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'ternary';
 type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
 const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
@@ -31,11 +31,18 @@ const primary = [
   'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark',
 ];
 const secondary = [
-  'text-white',
+  'text-white dark:text-black',
   'border-vega-pink',
-  'bg-vega-pink',
-  'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
-  'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark',
+  'dark:bg-vega-pink bg-vega-pink-dark',
+  'enabled:hover:bg-vega-pink enabled:hover:border-vega-pink',
+  'enabled:active:bg-vega-pink enabled:active:border-vega-pink',
+];
+const ternary = [
+  'text-white dark:text-black',
+  'border-vega-green',
+  'dark:bg-vega-green bg-vega-green-dark',
+  'enabled:hover:bg-vega-green enabled:hover:border-vega-green',
+  'enabled:active:bg-vega-green enabled:active:border-vega-green',
 ];
 
 const getClassname = ({
@@ -53,6 +60,7 @@ const getClassname = ({
     [defaultClasses.join(' ')]: variant === 'default',
     [primary.join(' ')]: variant === 'primary',
     [secondary.join(' ')]: variant === 'secondary',
+    [ternary.join(' ')]: variant === 'ternary',
 
     [lg]: size === 'lg',
     [md]: size === 'md',

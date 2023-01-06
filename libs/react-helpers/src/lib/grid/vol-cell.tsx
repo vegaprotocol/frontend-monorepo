@@ -2,6 +2,7 @@ import React from 'react';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { PriceCell } from './price-cell';
 import classNames from 'classnames';
+import * as tailwind from '@vegaprotocol/tailwindcss-config';
 
 export enum VolumeType {
   bid,
@@ -19,8 +20,8 @@ export interface IVolCellProps extends ICellRendererParams {
   valueFormatted: Omit<VolProps, 'value'>;
 }
 
-export const BID_COLOR = 'darkgreen';
-export const ASK_COLOR = 'maroon';
+export const BID_COLOR = tailwind.theme.colors.vega['green'];
+export const ASK_COLOR = tailwind.theme.colors.vega['pink'];
 
 export const Vol = React.memo(
   ({ value, valueFormatted, relativeValue, type, testId }: VolProps) => {
@@ -40,6 +41,7 @@ export const Vol = React.memo(
           style={{
             width: relativeValue ? `${relativeValue}%` : '0%',
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
+            opacity: type === VolumeType.bid ? 0.6 : 0.6,
           }}
         ></div>
         <PriceCell value={value} valueFormatted={valueFormatted} />

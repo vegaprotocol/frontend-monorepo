@@ -30,7 +30,6 @@ describe('Market trade with wallet disconnected', { tags: '@smoke' }, () => {
     cy.mockConsole();
     cy.visit(`/trading/${marketId}`);
     cy.wait('@Market');
-    console.log('marketId', marketId);
   });
   it('should not display steps', () => {
     cy.getByTestId('trading-connect-wallet')
