@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useMarketList, useMarkets } from '@vegaprotocol/market-list';
+import { useCallback, useMemo, useState } from 'react';
+import { useMarkets } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { ExternalLink, Icon, Loader, Popover } from '@vegaprotocol/ui-toolkit';
@@ -7,6 +7,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   columnHeaders,
   columnHeadersPositionMarkets,
+  ColumnKind,
   columns,
   columnsPositionMarkets,
 } from './select-market-columns';
@@ -16,11 +17,7 @@ import {
   SelectMarketTableRowSplash,
 } from './select-market-table';
 import type { ReactNode } from 'react';
-import type {
-  MarketWithCandles,
-  MarketWithData,
-  MarketX,
-} from '@vegaprotocol/market-list';
+import type { MarketX } from '@vegaprotocol/market-list';
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
 import {
@@ -29,6 +26,7 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 export const SelectAllMarketsTableBody = ({
   markets,
@@ -88,18 +86,12 @@ export const SelectAllMarketsTableBody = ({
 export const SelectMarketPopover = ({
   marketName,
   onSelect,
-  onCellClick,
 }: {
   marketName: string;
   onSelect: (id: string) => void;
-  onCellClick: OnCellClickHandler;
 }) => {
-  const { activeMarketId } = useGlobalStore((store) => ({
-    activeMarketId: store.marketId,
-  }));
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 mt-1';
-  const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const onSelectMarket = useCallback(
     (marketId: string) => {
@@ -109,15 +101,6 @@ export const SelectMarketPopover = ({
     [onSelect]
   );
   const iconClass = open ? 'rotate-180' : '';
-
-  // useEffect(() => {
-  //   if (open) {
-  //     reload();
-  //     marketListReload();
-  //   }
-  // }, [open, marketListReload, reload]);
-
-  const { markets, loading } = useMarkets();
 
   return (
     <Popover
@@ -130,51 +113,79 @@ export const SelectMarketPopover = ({
         </span>
       }
     >
-      <div
-        className="w-[90vw] max-h-[80vh] overflow-y-auto"
-        data-testid="select-market-list"
-      >
-        {loading ? (
-          <div className="flex items-center gap-4">
-            <Loader size="small" />
-            {t('Loading market data')}
-          </div>
-        ) : (
-          <table className="relative text-sm w-full whitespace-nowrap">
-            {/* {pubKey && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
-              <>
-                <TableTitle>{t('My markets')}</TableTitle>
-                <SelectAllMarketsTableBody
-                  markets={markets}
-                  positions={party?.positionsConnection?.edges
-                    ?.filter((edge) => edge.node)
-                    .map((edge) => edge.node)}
-                  onSelect={onSelectMarket}
-                  onCellClick={onCellClick}
-                  headers={columnHeadersPositionMarkets}
-                  tableColumns={(market, openVolume) =>
-                    columnsPositionMarkets(
-                      market,
-                      onSelectMarket,
-                      openVolume,
-                      onCellClick,
-                      activeMarketId
-                    )
-                  }
-                />
-              </>
-            ) : null} */}
-            <TableTitle>{t('All markets')}</TableTitle>
-            <SelectAllMarketsTableBody
-              markets={markets}
-              onSelect={onSelectMarket}
-              onCellClick={onCellClick}
-              activeMarketId={activeMarketId}
-            />
-          </table>
-        )}
-      </div>
+      <Container onSelect={onSelectMarket} />
     </Popover>
+  );
+};
+
+const Container = ({ onSelect }: { onSelect: (marketId: string) => void }) => {
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const { activeMarketId } = useGlobalStore((store) => ({
+    activeMarketId: store.marketId,
+  }));
+  const { pubKey } = useVegaWallet();
+  const { markets, loading } = useMarkets();
+
+  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
+  const { data: party, loading: positionsLoading } = useDataProvider({
+    dataProvider: positionsDataProvider,
+    variables,
+    skip: !pubKey,
+  });
+
+  console.log(party);
+
+  const onCellClick: OnCellClickHandler = (e, kind, value) => {
+    if (value && kind === ColumnKind.Asset) {
+      openAssetDetailsDialog(value, e.target as HTMLElement);
+    }
+  };
+
+  return (
+    <div
+      className="w-[90vw] max-h-[80vh] overflow-y-auto"
+      data-testid="select-market-list"
+    >
+      {loading || (pubKey && positionsLoading) ? (
+        <div className="flex items-center gap-4">
+          <Loader size="small" />
+          {t('Loading market data')}
+        </div>
+      ) : (
+        <table className="relative text-sm w-full whitespace-nowrap">
+          {pubKey && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
+            <>
+              <TableTitle>{t('My markets')}</TableTitle>
+              <SelectAllMarketsTableBody
+                markets={markets}
+                positions={party?.positionsConnection?.edges
+                  ?.filter((edge) => edge.node)
+                  .map((edge) => edge.node)}
+                onSelect={onSelect}
+                onCellClick={onCellClick}
+                headers={columnHeadersPositionMarkets}
+                tableColumns={(market, openVolume) =>
+                  columnsPositionMarkets(
+                    market,
+                    onSelect,
+                    openVolume,
+                    onCellClick,
+                    activeMarketId
+                  )
+                }
+              />
+            </>
+          ) : null}
+          <TableTitle>{t('All markets')}</TableTitle>
+          <SelectAllMarketsTableBody
+            markets={markets}
+            onSelect={onSelect}
+            onCellClick={onCellClick}
+            activeMarketId={activeMarketId}
+          />
+        </table>
+      )}
+    </div>
   );
 };
 

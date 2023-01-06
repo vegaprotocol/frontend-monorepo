@@ -6,11 +6,7 @@ import { MarketProposalNotification } from '@vegaprotocol/governance';
 import { getExpiryDate } from '@vegaprotocol/market-info';
 import { t } from '@vegaprotocol/react-helpers';
 import type { MarketX } from '@vegaprotocol/market-list';
-import {
-  ColumnKind,
-  SelectMarketPopover,
-} from '../../components/select-market';
-import type { OnCellClickHandler } from '../../components/select-market';
+import { SelectMarketPopover } from '../../components/select-market';
 import { Header, HeaderStat } from '../../components/header';
 import { NO_MARKET } from './constants';
 import { MarketMarkPrice } from '../../components/market-mark-price';
@@ -34,19 +30,12 @@ export const TradeMarketHeader = ({
 
   const asset = market?.tradableInstrument.instrument.product?.settlementAsset;
 
-  const onCellClick: OnCellClickHandler = (e, kind, value) => {
-    if (value && kind === ColumnKind.Asset) {
-      openAssetDetailsDialog(value, e.target as HTMLElement);
-    }
-  };
-
   return (
     <Header
       title={
         <SelectMarketPopover
           marketName={market?.tradableInstrument.instrument.name || NO_MARKET}
           onSelect={onSelect}
-          onCellClick={onCellClick}
         />
       }
     >
@@ -65,7 +54,6 @@ export const TradeMarketHeader = ({
         <ExpiryLabel market={market} />
       </HeaderStat>
       <MarketMarkPrice
-        marketId={market?.id}
         decimalPlaces={market?.decimalPlaces}
         marketPrice={market.data?.markPrice}
         isHeader
@@ -77,7 +65,6 @@ export const TradeMarketHeader = ({
       />
       <Last24hVolume
         candles={compact(market.candlesConnection?.edges).map((e) => e.node)}
-        marketId={market?.id}
         positionDecimalPlaces={market?.positionDecimalPlaces}
         isHeader
       />
