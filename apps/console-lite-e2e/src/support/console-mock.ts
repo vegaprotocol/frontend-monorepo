@@ -13,6 +13,7 @@ import {
   marketsCandlesQuery,
   marketsDataQuery,
   marketsQuery,
+  networkParamsQuery,
   ordersQuery,
   positionsQuery,
   statisticsQuery,
@@ -47,6 +48,7 @@ const mockPage = (req: CyHttpMessages.IncomingHttpRequest) => {
   aliasGQLQuery(req, 'SimpleMarkets', marketsQuery());
   aliasGQLQuery(req, 'Orders', ordersQuery());
   aliasGQLQuery(req, 'Fills', fillsQuery());
+  aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
 };
 
 export const addMockConsole = () => {
