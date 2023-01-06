@@ -101,7 +101,6 @@ export const NetworkParams = {
   validators_delegation_minAmount: 'validators_delegation_minAmount',
   spam_protection_voting_min_tokens: 'spam_protection_voting_min_tokens',
   spam_protection_proposal_min_tokens: 'spam_protection_proposal_min_tokens',
-  market_liquidity_stakeToCcySiskas: 'market_liquidity_stakeToCcySiskas',
   market_liquidity_stakeToCcyVolume: 'market_liquidity_stakeToCcyVolume',
   market_liquidity_targetstake_triggering_ratio:
     'market_liquidity_targetstake_triggering_ratio',
