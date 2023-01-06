@@ -1,9 +1,8 @@
 import { useRef } from 'react';
-import { AsyncRenderer, Icon, Intent } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { usePositionsData, PositionsTable } from '../';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
-import type { TransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/react-helpers';
 
@@ -59,44 +58,4 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
       </div>
     </div>
   );
-};
-
-export const getDialogIntent = (transactionResult?: TransactionResult) => {
-  if (!transactionResult) {
-    return;
-  }
-
-  if (
-    transactionResult &&
-    'error' in transactionResult &&
-    transactionResult.error
-  ) {
-    return Intent.Danger;
-  }
-
-  return Intent.Success;
-};
-
-export const getDialogIcon = (transactionResult?: TransactionResult) => {
-  if (!transactionResult) {
-    return;
-  }
-
-  if (transactionResult.status) {
-    return <Icon name="tick" />;
-  }
-
-  return <Icon name="error" />;
-};
-
-export const getDialogTitle = (transactionResult?: TransactionResult) => {
-  if (!transactionResult) {
-    return;
-  }
-
-  if (transactionResult.status) {
-    return t('Position closed');
-  }
-
-  return t('Position not closed');
 };
