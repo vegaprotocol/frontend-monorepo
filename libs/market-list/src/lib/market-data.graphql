@@ -11,6 +11,8 @@ fragment MarketDataUpdateFields on ObservableMarketData {
   indicativePrice
   bestStaticBidPrice
   bestStaticOfferPrice
+  targetStake
+  suppliedStake
 }
 
 subscription MarketDataUpdate($marketId: ID!) {

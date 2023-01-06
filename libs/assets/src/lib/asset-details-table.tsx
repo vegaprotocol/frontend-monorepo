@@ -213,7 +213,7 @@ export const AssetDetailsTable = ({
 }: AssetDetailsTableProps) => {
   const longStringModifiers = (key: AssetDetail, value: string) =>
     (value && key === AssetDetail.CONTRACT_ADDRESS) || key === AssetDetail.ID
-      ? { className: 'truncate', title: value }
+      ? { className: 'break-all', title: value }
       : {};
 
   const details = rows.map((r) => ({

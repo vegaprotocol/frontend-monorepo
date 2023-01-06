@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
 
-export type MarketDataGridProps = {
+export type DataGridProps = {
   grid: {
     label: string | ReactNode;
     value?: ReactNode;
   }[];
 };
 
-export const MarketDataGrid = ({ grid }: MarketDataGridProps) => {
+export const DataGrid = ({ grid }: DataGridProps) => {
   return (
     <>
       {grid.map(

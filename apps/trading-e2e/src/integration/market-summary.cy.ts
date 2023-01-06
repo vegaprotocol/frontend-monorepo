@@ -49,7 +49,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
         cy.getByTestId('external-link').should(
           'have.attr',
           'href',
-          'https://stagnet3.token.vega.xyz/governance/123'
+          'https://stagnet3.token.vega.xyz/proposals/123'
         );
       });
     });
@@ -235,9 +235,9 @@ describe('market states not accepting orders', { tags: '@smoke' }, function () {
       beforeEach(function () {
         cy.mockTradingPage(marketState);
         cy.mockSubscription();
+        cy.setVegaWallet();
         cy.visit('/#/markets/market-0');
         cy.wait('@Market');
-        cy.connectVegaWallet();
       });
       it('must display that market is not accepting orders', function () {
         cy.getByTestId('place-order').click();

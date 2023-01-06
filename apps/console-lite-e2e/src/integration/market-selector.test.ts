@@ -4,8 +4,8 @@ const marketName = 'ACTIVE MARKET';
 describe('market selector', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockConsole();
+    cy.setVegaWallet();
     cy.visit(`/trading/${marketId}`);
-    cy.connectVegaWallet();
     cy.wait('@Markets');
   });
 
@@ -67,6 +67,7 @@ describe('market selector', { tags: '@smoke' }, () => {
   it('mobile view', () => {
     cy.viewport('iphone-xr');
     cy.visit(`/trading/${marketId}`);
+    cy.connectVegaWallet();
     cy.get('[role="dialog"]').should('not.exist');
     cy.getByTestId('arrow-button').click();
     cy.get('[role="dialog"]').should('be.visible');

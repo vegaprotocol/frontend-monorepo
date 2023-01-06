@@ -4,6 +4,8 @@ import InfiniteLoader from 'react-window-infinite-loader';
 import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
+import EmptyList from '../empty-list/empty-list';
+import { Loader } from '@vegaprotocol/ui-toolkit';
 
 interface TxsInfiniteListProps {
   hasMoreTxs: boolean;
@@ -29,7 +31,7 @@ const Item = ({ index, style, isLoading, error }: ItemProps) => {
   if (error) {
     content = t(`Cannot fetch transaction: ${error}`);
   } else if (isLoading) {
-    content = t('Loading...');
+    content = <Loader />;
   } else {
     const {
       hash,
@@ -68,7 +70,16 @@ export const TxsInfiniteList = ({
   const isStacked = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
 
   if (!txs) {
-    return <div>No items</div>;
+    if (!areTxsLoading) {
+      return (
+        <EmptyList
+          heading={t('This chain has 0 transactions')}
+          label={t('Check back soon')}
+        />
+      );
+    } else {
+      return <Loader />;
+    }
   }
 
   // If there are more items to be loaded then add an extra row to hold a loading indicator.

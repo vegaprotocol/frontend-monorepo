@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '../i18n';
 
 export const validateAmount = (step: number, field: string) => {
   const [, stepDecimals = ''] = String(step).split('.');

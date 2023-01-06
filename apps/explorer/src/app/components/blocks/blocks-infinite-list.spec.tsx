@@ -59,7 +59,8 @@ describe('Blocks infinite list', () => {
         error={undefined}
       />
     );
-    expect(screen.getByText('No items')).toBeInTheDocument();
+    expect(screen.getByTestId('emptylist')).toBeInTheDocument();
+    expect(screen.getByText('This chain has 0 blocks')).toBeInTheDocument();
   });
 
   it('error is displayed at item level', () => {

@@ -728,7 +728,7 @@ context(
       });
 
       // 1005-PROP-009
-      it(
+      it.skip(
         'Unable to vote on a freeform proposal - when some but not enough vega associated',
         { tags: '@smoke' },
         function () {

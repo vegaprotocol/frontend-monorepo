@@ -2,6 +2,7 @@ beforeEach(() => {
   cy.mockTradingPage();
   cy.mockWeb3Provider();
   cy.mockSubscription();
+  cy.setVegaWallet();
   cy.visit('/#/markets/market-0');
 });
 
@@ -9,8 +10,6 @@ describe('accounts', { tags: '@smoke' }, () => {
   it('renders accounts', () => {
     const tradingAccountRowId = '[row-id="asset-0"]';
     cy.getByTestId('Collateral').click();
-
-    cy.connectVegaWallet();
 
     cy.getByTestId('tab-accounts').should('be.visible');
 

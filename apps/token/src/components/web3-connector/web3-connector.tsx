@@ -1,5 +1,5 @@
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
-import { Web3ConnectDialog } from '@vegaprotocol/web3';
+import { getChainName, Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
 import { useCallback, useEffect } from 'react';
@@ -78,7 +78,7 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
       <Splash>
         <div className="flex flex-col items-center gap-12">
           <p className="text-white">
-            This app only works on chain ID: {appChainId}
+            This app only works on {getChainName(appChainId)}
           </p>
           <Button onClick={() => connector.deactivate()}>Disconnect</Button>
         </div>

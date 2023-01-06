@@ -9,6 +9,8 @@ const Themes = {
 
 type Theme = typeof Themes[keyof typeof Themes];
 
+const isBrowser = typeof window !== 'undefined';
+
 const validateTheme = (theme: string): theme is Theme => {
   if (Object.values(Themes).includes(theme as Theme)) return true;
   LocalStorage.removeItem(THEME_STORAGE_KEY);
@@ -16,7 +18,7 @@ const validateTheme = (theme: string): theme is Theme => {
 };
 
 const setThemeClassName = (theme: Theme) => {
-  if (typeof window !== 'undefined') {
+  if (isBrowser) {
     if (theme === Themes.DARK) {
       document.documentElement.classList.add(Themes.DARK);
     } else {
@@ -26,6 +28,13 @@ const setThemeClassName = (theme: Theme) => {
 };
 
 const getCurrentTheme = () => {
+  // If an app is only dark theme then the page will be rendered with
+  // the dark class already applied. In this case return early with state
+  // set to dark
+  if (isBrowser && document.documentElement.classList.contains(Themes.DARK)) {
+    return Themes.DARK;
+  }
+
   const storedTheme = LocalStorage.getItem(THEME_STORAGE_KEY);
 
   if (storedTheme && validateTheme(storedTheme)) {
@@ -34,7 +43,7 @@ const getCurrentTheme = () => {
   }
 
   const theme =
-    typeof window !== 'undefined' &&
+    isBrowser &&
     typeof window.matchMedia === 'function' && // jest test environment matchMedia is undefined
     window.matchMedia('(prefers-color-scheme: dark)').matches
       ? Themes.DARK

@@ -4,20 +4,27 @@ import { useEffect, useState } from 'react';
 export interface LoaderProps {
   size?: 'small' | 'large';
   forceTheme?: 'dark' | 'light';
+  preloader?: boolean;
 }
 
-export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
+export const Loader = ({
+  size = 'large',
+  forceTheme,
+  preloader,
+}: LoaderProps) => {
   const [, forceRender] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      forceRender((x) => !x);
-    }, 100);
+    const interval = preloader
+      ? undefined
+      : setInterval(() => {
+          forceRender((x) => !x);
+        }, 100);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [preloader]);
 
-  const itemClasses = classNames({
+  const itemClasses = classNames('loader-item', {
     'dark:bg-white bg-black': !forceTheme,
     'bg-white': forceTheme === 'dark',
     'bg-black': forceTheme === 'light',
@@ -29,8 +36,11 @@ export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
   const items = size === 'small' ? 9 : 16;
 
   return (
-    <div className="flex flex-col items-center" data-testid="loader">
-      <div className={`${wrapperClasses} flex flex-wrap`}>
+    <div
+      className="flex flex-col items-center pre-loader-center"
+      data-testid="loader"
+    >
+      <div className={`${wrapperClasses} flex flex-wrap pre-loader-wrapper`}>
         {new Array(items).fill(null).map((_, i) => {
           return (
             <div

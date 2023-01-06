@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { useEthereumConfig } from '@vegaprotocol/web3';
+import { getChainName, useEthereumConfig } from '@vegaprotocol/web3';
 import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
@@ -82,7 +82,7 @@ export const Web3Content = ({
       <Splash>
         <div className="flex flex-col items-center gap-12">
           <p className="text-white">
-            This app only works on chain ID: {appChainId}
+            This app only works on {getChainName(appChainId)}
           </p>
           <Button onClick={() => connector.deactivate()}>Disconnect</Button>
         </div>

@@ -18,6 +18,7 @@ import { RenderFetched } from '../../../components/render-fetched';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { NodeLink } from '../../../components/links';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
+import EmptyList from '../../../components/empty-list/empty-list';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -112,7 +113,12 @@ const Block = () => {
                   blockHeight={blockData.result.block.header.height}
                   txCount={blockData.result.block.data.txs.length}
                 />
-              ) : null}
+              ) : (
+                <EmptyList
+                  heading={t('This block is empty')}
+                  label={t('0 transactions')}
+                />
+              )}
             </>
           )}
         </>
