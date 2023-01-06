@@ -14,6 +14,7 @@ import {
 
 describe('Portfolio page - wallet', { tags: '@smoke' }, () => {
   it('button for wallet connect should work', () => {
+    cy.mockConsole();
     cy.visit('/');
     cy.get('[href="/portfolio"]').eq(0).click();
     cy.getByTestId('trading-connect-wallet').should('be.visible');
@@ -57,17 +58,8 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   });
 
   describe('Assets view', () => {
-    before(() => {
-      cy.mockGQL((req) => {
-        aliasGQLQuery(req, 'ChainId', chainIdQuery());
-        aliasGQLQuery(req, 'Statistics', statisticsQuery());
-        aliasGQLQuery(req, 'Positions', positionsQuery());
-        aliasGQLQuery(req, 'Margins', marginsQuery());
-        aliasGQLQuery(req, 'Markets', marketsQuery());
-        aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
-        aliasGQLQuery(req, 'Accounts', accountsQuery());
-        aliasGQLQuery(req, 'Assets', assetsQuery());
-      });
+    beforeEach(() => {
+      cy.mockConsole();
       cy.setVegaWallet();
       cy.visit('/portfolio/assets');
     });

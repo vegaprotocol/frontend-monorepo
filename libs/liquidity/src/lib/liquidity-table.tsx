@@ -34,11 +34,11 @@ export interface LiquidityTableProps {
   data?: LiquidityProvisionData[];
   symbol?: string;
   assetDecimalPlaces?: number;
-  stakeToCcySiskas: string | null;
+  stakeToCcyVolume: string | null;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
-  ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
+  ({ data, symbol = '', assetDecimalPlaces, stakeToCcyVolume }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
@@ -46,7 +46,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
     const stakeToCcyVolumeFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       const newValue = new BigNumber(value)
-        .times(Number(stakeToCcySiskas) || 1)
+        .times(Number(stakeToCcyVolume) || 1)
         .toString();
       return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
     };
