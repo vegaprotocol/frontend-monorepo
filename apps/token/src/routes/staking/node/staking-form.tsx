@@ -192,7 +192,7 @@ export const StakingForm = ({
         availableStakeToRemove.isEqualTo(0) && (
           <div className="mb-4">
             {lien.isGreaterThan(0) ? (
-              <span className="text-vega-red">
+              <span className="text-vega-pink">
                 {t('stakeNodeWrongVegaKey')}
               </span>
             ) : (

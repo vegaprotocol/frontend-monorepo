@@ -30,9 +30,9 @@ export function useAnimateValue(
   ) {
     elRef.current?.animate(
       [
-        { backgroundColor: customColors.vega.red, color: colors.white },
+        { backgroundColor: customColors.vega.pink, color: colors.white },
         {
-          backgroundColor: customColors.vega.red,
+          backgroundColor: customColors.vega.pink,
           color: colors.white,
           offset: 0.8,
         },

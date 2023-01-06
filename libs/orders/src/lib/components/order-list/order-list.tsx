@@ -53,7 +53,7 @@ export const TransactionComplete = ({
       {transactionResult.status ? (
         <p>{t('Transaction successful')}</p>
       ) : (
-        <p className="text-vega-red">
+        <p className="text-vega-pink">
           {t('Transaction failed')}: {transactionResult.error}
         </p>
       )}

@@ -13,7 +13,7 @@ export const DataGrid = ({ grid }: DataGridProps) => {
       {grid.map(
         ({ label, value }, index) =>
           value && (
-            <div key={index} className="grid grid-cols-2">
+            <div key={index} className="grid grid-cols-2 gap-2">
               <span data-testid="tooltip-label">{label}</span>
               <span data-testid="tooltip-value" className="text-right">
                 {value}

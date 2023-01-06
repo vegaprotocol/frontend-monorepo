@@ -14,7 +14,7 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { Indicator, Link } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { DataGrid } from '@vegaprotocol/react-helpers';
@@ -32,11 +32,11 @@ export const MarketLiquiditySupplied = ({
 }: Props) => {
   const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
-    NetworkParams.market_liquidity_stakeToCcySiskas,
+    NetworkParams.market_liquidity_stakeToCcyVolume,
     NetworkParams.market_liquidity_targetstake_triggering_ratio,
   ]);
 
-  const stakeToCcyVolume = Number(params.market_liquidity_stakeToCcySiskas);
+  const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
   const triggeringRatio = Number(
     params.market_liquidity_targetstake_triggering_ratio
   );
@@ -80,7 +80,7 @@ export const MarketLiquiditySupplied = ({
       )
     : '-';
 
-  const { percentage } = useCheckLiquidityStatus({
+  const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: market?.suppliedStake || 0,
     targetStake: market?.targetStake || 0,
     triggeringRatio,
@@ -123,7 +123,7 @@ export const MarketLiquiditySupplied = ({
       description={description}
       testId="liquidity-supplied"
     >
-      {/* <Indicator variant={status} /> */}
+      <Indicator variant={status} />
       {supplied} ({formatNumberPercentage(percentage, 2)})
     </HeaderStat>
   );
