@@ -190,7 +190,7 @@ export const NavDropDown = () => {
         navbarTheme={'inherit'}
       />
 
-      <DropdownMenuContent>
+      <DropdownMenuContent data-testid='token-dropdown'>
         {subRoutes.map((r) => (
           <DropdownMenuItem key={r.name}>
             <AppNavLink

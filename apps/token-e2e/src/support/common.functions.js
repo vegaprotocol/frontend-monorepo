@@ -14,13 +14,24 @@ const navigation = {
   withdraw: '[href="/token/withdraw"]',
   proposals: '[href="/proposals"]',
   pageSpinner: '[data-testid="splash-loader"]',
+  supply: '[href="/token/tranches"]',
   token: '[href="/token"]',
 };
 
 Cypress.Commands.add('navigate_to', (page) => {
-  return cy.get(navigation.section, { timeout: 10000 }).within(() => {
-    cy.get(navigation[page]).click({ force: true });
-  });
+  const tokenDropDown = 'state-trigger';
+
+  if (page != 'proposals' && page != 'validators' && page != 'rewards') {
+    cy.getByTestId(tokenDropDown , { timeout: 10000 }).click();
+    cy.getByTestId('token-dropdown').within(() => {
+      cy.get(navigation[page]).click();
+    });
+    cy.get('h1').first().click({ force: true });
+  } else {
+    return cy.get(navigation.section, { timeout: 10000 }).within(() => {
+      cy.get(navigation[page]).click();
+    });
+  }
 });
 
 Cypress.Commands.add('verify_tab_highlighted', (page) => {
