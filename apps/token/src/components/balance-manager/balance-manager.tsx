@@ -10,7 +10,8 @@ import { useGetAssociationBreakdown } from '../../hooks/use-get-association-brea
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
 import { useBalances } from '../../lib/balances/balances-store';
 import type { ReactElement } from 'react';
-import type { Contract, EventFilter } from 'ethers';
+import type { Contract, EventFilter, Event } from 'ethers';
+import uniqBy from 'lodash/uniqBy';
 
 interface BalanceManagerProps {
   children: ReactElement;
@@ -22,20 +23,26 @@ const useWaitForTransaction = (
   filter: EventFilter
 ) => {
   const { provider } = useWeb3React();
-  const [pendingBalances, setPendingBalances] = useState<any[]>([]);
-  console.log(pendingBalances);
+  const [pendingBalances, _setPendingBalances] = useState<Event[]>([]);
 
+  const setPendingBalances = (balances: Event[]) => {
+    _setPendingBalances(uniqBy(balances, 'transactionHash'));
+  };
   useEffect(() => {
     if (!contract) {
       return;
     }
 
     const listener = async (...args: any[]) => {
-      const receipt = args[3];
-      setPendingBalances([...pendingBalances, receipt]);
-      const tx = await receipt.getTransaction();
+      const event = args[3] as Event;
+      setPendingBalances([...pendingBalances, event]);
+      const tx = await event.getTransaction();
       await tx.wait(numberOfConfirmations);
-      setPendingBalances(pendingBalances.filter((p) => p !== receipt));
+      setPendingBalances(
+        pendingBalances.filter(
+          ({ transactionHash }) => transactionHash !== event.transactionHash
+        )
+      );
     };
 
     contract?.on(filter, listener);
@@ -54,37 +61,31 @@ const useWaitForTransaction = (
   }, [contract, filter, numberOfConfirmations, provider]);
 
   const processWaitForExistingTransactions = useCallback(
-    (addEvents: any[], numberOfConfirmations: number) => {
-      addEvents.map(async (receipt) => {
-        const tx = await receipt.getTransaction();
-        const currentBlockNumber = (await provider?.getBlockNumber()) || 0;
+    (events: Event[], numberOfConfirmations: number) => {
+      events.map(async (event) => {
+        const tx = await event.getTransaction();
 
-        console.log(
-          Math.max(
-            tx.blockNumber + numberOfConfirmations - currentBlockNumber,
-            0
+        await tx.wait(Math.max(numberOfConfirmations, 0));
+
+        setPendingBalances(
+          pendingBalances.filter(
+            ({ transactionHash }) => transactionHash !== event.transactionHash
           )
         );
-
-        await tx.wait(
-          Math.max(
-            tx.blockNumber + numberOfConfirmations - currentBlockNumber,
-            0
-          )
-        );
-
-        setPendingBalances(pendingBalances.filter((p) => p !== receipt));
       });
     },
-    [pendingBalances, provider]
+    [pendingBalances]
   );
 
   useEffect(() => {
     let cancelled = false;
-    getExistingTransactions().then((addEvents) => {
+    getExistingTransactions().then((events) => {
       if (!cancelled) {
-        setPendingBalances(addEvents);
-        processWaitForExistingTransactions(addEvents, numberOfConfirmations);
+        setPendingBalances([...events]);
+        processWaitForExistingTransactions(
+          [...events],
+          numberOfConfirmations
+        );
       }
     });
 
@@ -136,13 +137,14 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const { updateBalances: updateStoreBalances } = useBalances();
   const { config } = useEthereumConfig();
 
-  const numberOfConfirmations = 320;
+  const numberOfConfirmations = 427;
   const vegaPublicKey =
     '0x99abc3dc34cf578befc5ca121e9a0d786d0defb708f9734cf18e1fe15d3253a5';
 
-  // populate the initial state
   // process the transactions to know how much pending money we have
-  // address our race conditions
+  // remove hard coding
+  // contracts undefined
+  // breaks if no provider?
 
   useListenForStakingEvents(
     contracts?.staking.contract,
