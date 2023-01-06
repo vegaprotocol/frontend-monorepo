@@ -151,7 +151,11 @@ const AccountHistoryManager = ({
                 : t('Select account type')}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {Object.keys(Schema.AccountType).map((type) => (
+              {[
+                Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+                Schema.AccountType.ACCOUNT_TYPE_BOND,
+                Schema.AccountType.ACCOUNT_TYPE_MARGIN,
+              ].map((type) => (
                 <DropdownMenuItem
                   key={type}
                   onClick={() => setAccountType(type as Schema.AccountType)}
