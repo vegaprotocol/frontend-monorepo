@@ -24,6 +24,7 @@ import BigNumber from 'bignumber.js';
 import { forwardRef, useState } from 'react';
 import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
+import { useHasActiveOrder } from '../../order-hooks/use-has-active-order';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderFeedback } from '../order-feedback';
 import { OrderEditDialog } from './order-edit-dialog';
@@ -78,11 +79,13 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     const [editOrder, setEditOrder] = useState<Order | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
+    const hasActiveOrder = useHasActiveOrder(props.marketId);
 
     return (
       <>
         <OrderListTable
           {...props}
+          hasActiveOrder={hasActiveOrder}
           cancelAll={() => {
             orderCancel.cancel({
               marketId: props.marketId,
@@ -144,11 +147,12 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
 export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   cancelAll: () => void;
+  hasActiveOrder: boolean;
   setEditOrder: (order: Order) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, cancelAll, setEditOrder, ...props }, ref) => {
+  ({ cancel, cancelAll, setEditOrder, hasActiveOrder, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -365,15 +369,17 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
             if (node?.rowPinned) {
               return (
-                <div className="flex gap-2 items-center h-full justify-end">
-                  <Button
-                    size="xs"
-                    data-testid="cancelAll"
-                    onClick={() => cancelAll()}
-                  >
-                    {t('Cancel all')}
-                  </Button>
-                </div>
+                hasActiveOrder && (
+                  <div className="flex gap-2 items-center h-full justify-end">
+                    <Button
+                      size="xs"
+                      data-testid="cancelAll"
+                      onClick={() => cancelAll()}
+                    >
+                      {t('Cancel all')}
+                    </Button>
+                  </div>
+                )
               );
             }
             if (isOrderAmendable(data)) {

@@ -8,6 +8,8 @@ import type { BlockExplorerTransactions } from '../../routes/types/block-explore
 import isNumber from 'lodash/isNumber';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import { getTxsDataUrl } from '../../hooks/use-txs-data';
+import { Loader } from '@vegaprotocol/ui-toolkit';
+import EmptyList from '../empty-list/empty-list';
 
 interface TxsPerBlockProps {
   blockHeight: string;
@@ -84,10 +86,13 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
             </tbody>
           </Table>
         </div>
+      ) : loading ? (
+        <Loader />
       ) : (
-        <div className="sr-only">
-          {t(`No transactions in block ${blockHeight}`)}
-        </div>
+        <EmptyList
+          heading={t('No transactions in this block')}
+          label={t('0 transactions')}
+        />
       )}
     </RenderFetched>
   );

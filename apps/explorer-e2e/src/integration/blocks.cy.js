@@ -116,7 +116,7 @@ context('Blocks page', { tags: '@regression' }, function () {
     });
 
     function waitForBlocksResponse() {
-      cy.contains('Loading...').should('not.exist', { timeout: 18000 });
+      cy.get('[data-testid="loader"]').should('not.exist', { timeout: 18000 });
     }
 
     function validateBlocksDisplayed() {
