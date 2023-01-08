@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/wallet';
 
 const urlParams = new URLSearchParams(window.location.search);
-console.log(urlParams.get('address'))
+console.log(urlParams.get('address'));
 
 export const rest = new RestConnector();
 export const jsonRpc = new JsonRpcConnector();

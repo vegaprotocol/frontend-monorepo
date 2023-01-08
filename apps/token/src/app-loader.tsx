@@ -22,13 +22,11 @@ import { useSearchParams } from 'react-router-dom';
 const useUrlViewOnlyWalletConnect = () => {
   const { pubKey, connect } = useVegaWallet();
   const [searchParams] = useSearchParams();
-  const [query] = React.useState(
-    searchParams.get("address")
-  );
+  const [query] = React.useState(searchParams.get('address'));
   if (query && !pubKey) {
-    connect(Connectors['view'])
+    connect(Connectors['view']);
   }
-}
+};
 
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { t } = useTranslation();
@@ -40,7 +38,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const setAssociatedBalances = useRefreshAssociatedBalances();
   const [balancesLoaded, setBalancesLoaded] = React.useState(false);
   const vegaConnecting = useEagerConnect(Connectors);
-  useUrlViewOnlyWalletConnect()
+  useUrlViewOnlyWalletConnect();
 
   const loaded = balancesLoaded && !vegaConnecting;
 

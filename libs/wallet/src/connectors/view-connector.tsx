@@ -17,7 +17,7 @@ export class ViewConnector implements VegaConnector {
     const cfg = getConfig();
 
     if (pubkey || cfg?.token) {
-      this.pubkey = pubkey || cfg?.token
+      this.pubkey = pubkey || cfg?.token;
     }
   }
   setPubkey(pubkey: string) {
@@ -41,8 +41,8 @@ export class ViewConnector implements VegaConnector {
   }
   disconnect(): Promise<void> {
     clearConfig();
-    this.pubkey = null
-    return Promise.resolve()
+    this.pubkey = null;
+    return Promise.resolve();
   }
   sendTx(): Promise<TransactionResponse | null> {
     throw new Error('View only connector cannot be used to send transactions');
