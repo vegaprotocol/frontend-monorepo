@@ -17,7 +17,7 @@ export const MarginWarning = ({ margin, balance, asset }: Props) => {
   return (
     <>
       <div
-        className="text-xs text-vega-orange mb-4"
+        className="text-xs text-warning mb-4"
         data-testid="dealticket-warning-margin"
       >
         <p className="mb-2">

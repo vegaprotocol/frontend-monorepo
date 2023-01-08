@@ -1,13 +1,19 @@
 import { t } from '@vegaprotocol/react-helpers';
+import type { ButtonVariant } from '@vegaprotocol/ui-toolkit';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 
 interface Props {
   transactionStatus: 'default' | 'pending';
   disabled: boolean;
+  variant: ButtonVariant;
 }
 
-export const DealTicketButton = ({ transactionStatus, disabled }: Props) => {
+export const DealTicketButton = ({
+  transactionStatus,
+  disabled,
+  variant,
+}: Props) => {
   const { pubKey } = useVegaWallet();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
@@ -16,7 +22,7 @@ export const DealTicketButton = ({ transactionStatus, disabled }: Props) => {
   return pubKey ? (
     <div className="mb-4">
       <Button
-        variant="primary"
+        variant={variant}
         fill
         type="submit"
         disabled={disabled || isPending}

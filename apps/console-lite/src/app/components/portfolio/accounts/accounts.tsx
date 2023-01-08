@@ -45,7 +45,6 @@ const AccountsManager = () => {
     successCallback(rowsThisBlock, lastRow);
   };
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
-  console.log(data, loading);
   return (
     <>
       <AsyncRenderer

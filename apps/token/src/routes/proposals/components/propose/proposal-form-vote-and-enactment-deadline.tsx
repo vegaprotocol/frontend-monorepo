@@ -231,7 +231,7 @@ const EnactmentForm = ({
           {deadlines.enactment && deadlines.enactment < deadlines.vote && (
             <span
               data-testid="enactment-before-voting-deadline"
-              className="block mt-4 text-vega-red-dark"
+              className="block mt-4 text-vega-pink"
             >
               {t('ProposalWillFailIfEnactmentIsEarlierThanVotingDeadline')}
             </span>
