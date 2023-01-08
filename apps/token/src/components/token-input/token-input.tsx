@@ -86,7 +86,7 @@ export const TokenInput = ({
   minimum = new BigNumber('0'),
   approveTxState,
   approveTxDispatch,
-  disabled
+  disabled,
 }: {
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
@@ -121,7 +121,7 @@ export const TokenInput = ({
     !isApproved || new BigNumber(amount).isGreaterThan(allowance!);
 
   const isDisabled = React.useMemo<boolean>(() => {
-    if (disabled) return true
+    if (disabled) return true;
     if (requireApproval) {
       return (
         !isApproved ||

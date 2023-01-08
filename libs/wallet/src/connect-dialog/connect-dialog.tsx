@@ -314,9 +314,7 @@ const SelectedForm = ({
     return (
       <>
         <ConnectDialogContent>
-          <ViewConnectorForm
-            connector={connector} onConnect={onConnect}
-          />
+          <ViewConnectorForm connector={connector} onConnect={onConnect} />
         </ConnectDialogContent>
         <ConnectDialogFooter />
       </>

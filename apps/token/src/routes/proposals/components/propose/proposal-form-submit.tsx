@@ -10,7 +10,7 @@ interface ProposalFormSubmitProps {
 
 export const ProposalFormSubmit = ({
   isSubmitting,
-  disabled
+  disabled,
 }: ProposalFormSubmitProps) => {
   const { pubKey } = useVegaWallet();
   const { t } = useTranslation();

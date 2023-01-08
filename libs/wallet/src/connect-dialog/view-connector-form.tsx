@@ -25,7 +25,7 @@ export function ViewConnectorForm({
   } = useForm<FormFields>();
 
   async function onSubmit(fields: FormFields) {
-    await connector.setPubkey(fields.address)
+    await connector.setPubkey(fields.address);
     await connect(connector);
     onConnect(connector);
   }
