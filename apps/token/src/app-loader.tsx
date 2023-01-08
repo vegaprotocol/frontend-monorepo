@@ -17,17 +17,30 @@ import {
 import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
 import { Connectors } from './lib/vega-connectors';
+import { useSearchParams } from 'react-router-dom';
+
+const useUrlViewOnlyWalletConnect = () => {
+  const { pubKey, connect } = useVegaWallet();
+  const [searchParams] = useSearchParams();
+  const [query] = React.useState(
+    searchParams.get("address")
+  );
+  if (query && !pubKey) {
+    connect(Connectors['view'])
+  }
+}
 
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
   const { VEGA_URL } = useEnvironment();
-  const { pubKey } = useVegaWallet();
+  const { pubKey, connect } = useVegaWallet();
   const { appDispatch } = useAppState();
   const { token, staking, vesting } = useContracts();
   const setAssociatedBalances = useRefreshAssociatedBalances();
   const [balancesLoaded, setBalancesLoaded] = React.useState(false);
   const vegaConnecting = useEagerConnect(Connectors);
+  useUrlViewOnlyWalletConnect()
 
   const loaded = balancesLoaded && !vegaConnecting;
 
