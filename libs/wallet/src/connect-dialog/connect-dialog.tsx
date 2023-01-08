@@ -11,6 +11,7 @@ import {
 import { useCallback, useState } from 'react';
 import { ExternalLinks, t, useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector, WalletError } from '../connectors';
+import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
@@ -22,10 +23,11 @@ import {
 } from './connect-dialog-elements';
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
+import { ViewConnectorForm } from './view-connector-form';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'jsonRpc' | 'hosted';
+type WalletType = 'jsonRpc' | 'hosted' | 'view';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -216,6 +218,13 @@ const ConnectorList = ({
               onClick={() => onSelect('jsonRpc')}
             />
           </li>
+          <li className="mb-4 last:mb-0">
+            <ConnectionOption
+              type="view"
+              text={t('View as vega user')}
+              onClick={() => onSelect('view')}
+            />
+          </li>
           {!isMainnet && (
             <li className="mb-0 border-t pt-4">
               <ConnectionOption
@@ -294,6 +303,19 @@ const SelectedForm = ({
             onConnect={onConnect}
             appChainId={appChainId}
             reset={reset}
+          />
+        </ConnectDialogContent>
+        <ConnectDialogFooter />
+      </>
+    );
+  }
+
+  if (connector instanceof ViewConnector) {
+    return (
+      <>
+        <ConnectDialogContent>
+          <ViewConnectorForm
+            connector={connector} onConnect={onConnect}
           />
         </ConnectDialogContent>
         <ConnectDialogFooter />

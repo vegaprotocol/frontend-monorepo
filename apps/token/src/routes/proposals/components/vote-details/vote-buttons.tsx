@@ -65,7 +65,7 @@ export const VoteButtons = ({
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const { submit, Dialog } = useVoteSubmit();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
@@ -163,6 +163,7 @@ export const VoteButtons = ({
         <div className="flex gap-4" data-testid="vote-buttons">
           <div className="flex-1">
             <Button
+              disabled={isReadOnly}
               data-testid="vote-for"
               onClick={() => submitVote(VoteValue.VALUE_YES)}
             >
@@ -171,6 +172,7 @@ export const VoteButtons = ({
           </div>
           <div className="flex-1">
             <Button
+              disabled={isReadOnly}
               data-testid="vote-against"
               onClick={() => submitVote(VoteValue.VALUE_NO)}
             >
@@ -194,6 +196,7 @@ export const VoteButtons = ({
             ) : null}
             {proposalVotable ? (
               <ButtonLink
+                disabled={isReadOnly}
                 data-testid="change-vote-button"
                 onClick={() => {
                   setChangeVote(true);

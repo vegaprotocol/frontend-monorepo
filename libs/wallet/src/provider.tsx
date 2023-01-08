@@ -10,6 +10,7 @@ import type {
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage';
 import { WalletError } from './connectors/vega-connector';
+import { ViewConnector } from './connectors';
 
 interface VegaWalletProviderProps {
   children: ReactNode;
@@ -85,6 +86,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
+      isReadOnly: connector.current instanceof ViewConnector,
       pubKey,
       pubKeys,
       selectPubKey,

@@ -28,6 +28,7 @@ import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
 import { downloadJson } from '../../../../lib/download-json';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export interface UpdateAssetProposalFormFields {
   proposalVoteDeadline: string;
@@ -53,6 +54,7 @@ export const ProposeUpdateAsset = () => {
     NetworkParams.governance_proposal_updateAsset_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
+  const { isReadOnly } = useVegaWallet();
 
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();

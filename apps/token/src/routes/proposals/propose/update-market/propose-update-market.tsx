@@ -38,6 +38,7 @@ import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
 import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
 import { downloadJson } from '../../../../lib/download-json';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export interface UpdateMarketProposalFormFields {
   proposalVoteDeadline: string;
@@ -94,6 +95,7 @@ export const ProposeUpdateMarket = () => {
   const [selectedMarket, setSelectedMarket] = useState<string | undefined>(
     undefined
   );
+  const { isReadOnly } = useVegaWallet();
 
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();

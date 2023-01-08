@@ -7,6 +7,7 @@ import type {
 } from './connectors';
 
 export interface VegaWalletContextShape {
+  isReadOnly: boolean
   /** The current select public key */
   pubKey: string | null;
 

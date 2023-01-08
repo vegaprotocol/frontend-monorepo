@@ -22,6 +22,7 @@ import {
   ProposalFormDownloadJson,
 } from '../../components/propose';
 import { ProposalRawMinRequirements } from './proposal-raw-min-requirements';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { downloadJson } from '../../../../lib/download-json';
 
 export interface RawProposalFormFields {
@@ -42,6 +43,7 @@ export const ProposeRaw = () => {
     NetworkParams.governance_proposal_freeform_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
+  const { isReadOnly } = useVegaWallet();
 
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
