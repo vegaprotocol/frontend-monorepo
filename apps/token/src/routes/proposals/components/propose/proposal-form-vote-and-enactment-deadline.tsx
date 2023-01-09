@@ -437,7 +437,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
 
   const { t } = useTranslation();
   return (
-    <>
+    <div className="mb-10">
       <ProposalFormSubheader>
         {enactmentRegister && enactmentMinClose && enactmentMaxClose
           ? t('ProposalVoteAndEnactmentTitle')
@@ -535,6 +535,6 @@ export function ProposalFormVoteAndEnactmentDeadline({
           maxEnactmentHours={maxEnactmentHours}
         />
       )}
-    </>
+    </div>
   );
 }
