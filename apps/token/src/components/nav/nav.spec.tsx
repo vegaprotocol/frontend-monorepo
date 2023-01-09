@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, within } from "@testing-library/react"
 import { EnvironmentProvider, Networks } from "@vegaprotocol/environment"
 import { MemoryRouter } from "react-router-dom"
 import { Nav } from './nav'
@@ -8,11 +8,11 @@ jest.mock('@vegaprotocol/environment', () => ({
     NetworkSwitcher: () => <div data-testid="network-switcher" />
 }))
 
-const renderComponent = () => {
+const renderComponent = (initialEntries?: string[]) => {
     return render(<EnvironmentProvider
         definitions={{  VEGA_ENV: Networks.MAINNET }}
         config={{ hosts: [] }}
-      ><MemoryRouter><Nav /></MemoryRouter>
+      ><MemoryRouter initialEntries={initialEntries}><Nav /></MemoryRouter>
       </EnvironmentProvider>)
 }
 
@@ -26,25 +26,20 @@ describe('nav', () => {
         renderComponent()
         expect(screen.getByTestId('network-switcher')).toBeInTheDocument()
     })
-    // it('Renders environment name', () => {
-        
-    // })
-    // it('Renders all top level routes', () => {
-
-    // })
-    // it('Redirects to the appropriate page when clicking on a top level link', () => {
-
-    // })
-    // it('Renders dropdown', () => {
-
-    // })
-    // it('Redirects when clickin on route in dropdown', () => {
-
-    // })
-    // it('Shows active state on dropdown trigger when on home route', () => {
-
-    // })
-    // it('Shows active state on dropdown trigger when on sub route of dropdown', () => {
-
-    // })
+    it('Renders all top level routes', () => {
+        renderComponent()
+        expect(screen.getByTestId('Proposals')).toHaveProperty('href', 'http://localhost/proposals')
+        expect(screen.getByTestId('Validators')).toHaveProperty('href', 'http://localhost/validators')
+        expect(screen.getByTestId('Rewards')).toHaveProperty('href', 'http://localhost/rewards')
+    })
+    it('Shows active state on dropdown trigger when on home route for subroutes', () => {
+        const { getByTestId } =renderComponent(['/token'])
+        const dd = getByTestId('token-dd')
+        expect(within(dd).getByTestId('link-active')).toBeInTheDocument()
+    })
+    it('Shows active state on dropdown trigger when on sub route of dropdown', () => {
+        const { getByTestId } =renderComponent(['/token/withdraw'])
+        const dd = getByTestId('token-dd')
+        expect(within(dd).getByTestId('link-active')).toBeInTheDocument()
+    })
 })

@@ -43,7 +43,7 @@ export const AppNavLink = ({
         return (
           <>
             {name}
-            {isActive && <span className={borderClasses} />}
+            {isActive && <span data-testid='link-active' className={borderClasses} />}
           </>
         );
       }}
