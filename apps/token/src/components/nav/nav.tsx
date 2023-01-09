@@ -76,7 +76,7 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
           {routes.map((r) => (
             <AppNavLink key={r.path} {...r} navbarTheme={navbarTheme} />
           ))}
-          <NavDropDown />
+          <NavDropDown navbarTheme={navbarTheme} />
         </nav>
       ) : (
         <nav className="flex items-center flex-1 px-2 justify-end">

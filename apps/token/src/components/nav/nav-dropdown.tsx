@@ -7,7 +7,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { forwardRef } from 'react';
-import { AppNavLink } from './nav-link';
+import { AppNavLink, NavbarTheme } from './nav-link';
 
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
@@ -148,7 +148,7 @@ export const DropdownMenuSeparator = forwardRef<
   />
 ));
 
-export const NavDropDown = () => {
+export const NavDropDown = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
   const subRoutes = [
@@ -187,12 +187,12 @@ export const NavDropDown = () => {
         }
         testId="token-dd"
         path={Routes.TOKEN}
-        navbarTheme={'inherit'}
+        navbarTheme={navbarTheme}
       />
 
       <DropdownMenuContent data-testid='token-dropdown'>
         {subRoutes.map((r) => (
-          <DropdownMenuItem key={r.name}>
+          <DropdownMenuItem key={r.name} onClick={() => setOpen(false)}>
             <AppNavLink
               {...r}
               navbarTheme={'inherit'}
