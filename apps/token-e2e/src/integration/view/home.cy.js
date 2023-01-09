@@ -50,33 +50,25 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           cy.get(navRewards).should('be.visible');
         });
       });
-      it('should have token dropdown', function () {
-        cy.get(navSection).within(() => {
-          cy.getByTestId('state-trigger').click();
+
+      describe('Token dropdown', function () {
+        before('click on token dropdown', function () {
+          cy.get(navSection).within(() => {
+            cy.getByTestId('state-trigger').click();
+          });
         });
-        cy.get(navToken).should('be.visible');
-        cy.get('h1').first().click({ force: true });
-      });
-      it('should have supply & vesting dropdown', function () {
-        cy.get(navSection).within(() => {
-          cy.getByTestId('state-trigger').click();
+        it('should have token dropdown', function () {
+          cy.get(navToken).should('be.visible');
         });
-        cy.get(navSupply).should('be.visible');
-        cy.get('h1').first().click({ force: true });
-      });
-      it('should have withdraw dropdown', function () {
-        cy.get(navSection).within(() => {
-          cy.getByTestId('state-trigger').click();
+        it('should have supply & vesting dropdown', function () {
+          cy.get(navSupply).should('be.visible');
         });
-        cy.get(navWithdraw).should('be.visible');
-        cy.get('h1').first().click({ force: true });
-      });
-      it('should have redeem dropdown', function () {
-        cy.get(navSection).within(() => {
-          cy.getByTestId('state-trigger').click();
+        it('should have withdraw dropdown', function () {
+          cy.get(navWithdraw).should('be.visible');
         });
-        cy.get(navRedeem).should('be.visible');
-        cy.get('h1').first().click({ force: true });
+        it('should have redeem dropdown', function () {
+          cy.get(navRedeem).should('be.visible');
+        });
       });
     });
 

@@ -26,7 +26,6 @@ Cypress.Commands.add('navigate_to', (page) => {
     cy.getByTestId('token-dropdown').within(() => {
       cy.get(navigation[page]).click();
     });
-    cy.get('h1').first().click({ force: true });
   } else {
     return cy.get(navigation.section, { timeout: 10000 }).within(() => {
       cy.get(navigation[page]).click();
