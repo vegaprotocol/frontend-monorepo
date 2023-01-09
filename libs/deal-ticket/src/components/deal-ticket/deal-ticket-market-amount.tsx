@@ -40,7 +40,7 @@ export const DealTicketMarketAmount = ({
                 'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
               )}
             >
-              <div>{t(`Estimated uncrossing price`)}</div>
+              <div>{t(`Indicative price`)}</div>
             </Tooltip>
           )}
         </div>
