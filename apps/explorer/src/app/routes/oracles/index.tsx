@@ -5,11 +5,15 @@ import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../components/route-title';
 import { t } from '@vegaprotocol/react-helpers';
 import { SubHeading } from '../../components/sub-heading';
-import { useOracleSpecsQuery } from './__generated__/Oracles';
+import { useExplorerOracleSpecsQuery } from './__generated__/Oracles';
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import { OracleDetails } from './components/oracle';
 
 const Oracles = () => {
   const { hash } = useLocation();
-  const { data, loading } = useOracleSpecsQuery();
+  const { data, loading } = useExplorerOracleSpecsQuery();
+
+  useDocumentTitle(['Oracles']);
 
   useEffect(() => {
     if (data && !loading && hash) {
@@ -35,7 +39,15 @@ const Oracles = () => {
             return (
               <React.Fragment key={id}>
                 <SubHeading id={id.toString()}>{id}</SubHeading>
-                <SyntaxHighlighter data={o} />
+                <OracleDetails
+                  id={id}
+                  dataSource={o?.node}
+                  dataConnection={o?.node}
+                />
+                <details>
+                  <summary>JSON</summary>
+                  <SyntaxHighlighter data={o} />
+                </details>
               </React.Fragment>
             );
           })
