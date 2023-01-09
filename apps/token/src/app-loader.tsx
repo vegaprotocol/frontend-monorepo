@@ -27,7 +27,7 @@ const useVegaWalletEagerConnect = () => {
   if (query && !pubKey) {
     connect(Connectors['view']);
   }
-  return vegaConnecting
+  return vegaConnecting;
 };
 
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {

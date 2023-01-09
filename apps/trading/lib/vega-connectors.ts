@@ -4,7 +4,6 @@ import {
   ViewConnector,
 } from '@vegaprotocol/wallet';
 
-
 export const rest = new RestConnector();
 export const jsonRpc = new JsonRpcConnector();
 
