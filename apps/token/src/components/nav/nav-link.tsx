@@ -1,9 +1,7 @@
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import type { HTMLAttributeAnchorTarget, ReactNode } from 'react';
-import {
-  getNavLinkClassNames,
-} from '@vegaprotocol/ui-toolkit';
+import { getNavLinkClassNames } from '@vegaprotocol/ui-toolkit';
 
 export type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 
@@ -43,7 +41,9 @@ export const AppNavLink = ({
         return (
           <>
             {name}
-            {isActive && <span data-testid='link-active' className={borderClasses} />}
+            {isActive && (
+              <span data-testid="link-active" className={borderClasses} />
+            )}
           </>
         );
       }}
