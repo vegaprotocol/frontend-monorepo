@@ -87,13 +87,15 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
       >
         <div
           className={classNames('w-[26px] h-[2px] transition-all', {
-            'translate-y-0 rotate-0 bg-black': !drawerOpen,
+            'translate-y-0 rotate-0 bg-white': !drawerOpen,
+            'bg-black': !drawerOpen && navbarTheme === 'yellow',
             'translate-y-[7.5px] rotate-45 bg-black dark:bg-white': drawerOpen,
           })}
         />
         <div
           className={classNames('w-[26px] h-[2px] transition-all', {
-            'translate-y-0 rotate-0 bg-black': !drawerOpen,
+            'translate-y-0 rotate-0 bg-white': !drawerOpen,
+            'bg-black': !drawerOpen && navbarTheme === 'yellow',
             '-translate-y-[7.5px] -rotate-45 bg-black dark:bg-white':
               drawerOpen,
           })}
