@@ -2,7 +2,6 @@ import {
   liquidityProvisionsDataProvider,
   LiquidityTable,
   lpAggregatedDataProvider,
-  marketLiquidityDataProvider,
   useCheckLiquidityStatus,
 } from '@vegaprotocol/liquidity';
 import { tooltipMapping } from '@vegaprotocol/market-info';
