@@ -7,6 +7,7 @@ import type {
 } from './connectors';
 
 export interface VegaWalletContextShape {
+  /** If the current connector does not support signing transactions */
   isReadOnly: boolean;
   /** The current select public key */
   pubKey: string | null;

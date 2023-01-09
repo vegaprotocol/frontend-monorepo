@@ -115,9 +115,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
           </p>
         )}
         {transaction.error instanceof Error && (
-          <p>
-            {transaction.error.message}
-          </p>
+          <p>{transaction.error.message}</p>
         )}
       </div>
     );
