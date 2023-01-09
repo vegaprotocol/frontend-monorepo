@@ -22,7 +22,7 @@ Cypress.Commands.add('navigate_to', (page) => {
   const tokenDropDown = 'state-trigger';
 
   if (page != 'proposals' && page != 'validators' && page != 'rewards') {
-    cy.getByTestId(tokenDropDown , { timeout: 10000 }).click();
+    cy.getByTestId(tokenDropDown, { timeout: 10000 }).click();
     cy.getByTestId('token-dropdown').within(() => {
       cy.get(navigation[page]).click();
     });

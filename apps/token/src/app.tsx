@@ -167,9 +167,9 @@ const AppContainer = () => {
 function App() {
   return (
     <EnvironmentProvider>
-        <NetworkLoader cache={cache}>
-          <AppContainer />
-        </NetworkLoader>
+      <NetworkLoader cache={cache}>
+        <AppContainer />
+      </NetworkLoader>
     </EnvironmentProvider>
   );
 }

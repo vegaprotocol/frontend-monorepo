@@ -2,12 +2,11 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import Routes from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
-import {
-  Icon,
-} from '@vegaprotocol/ui-toolkit';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { forwardRef } from 'react';
-import { AppNavLink, NavbarTheme } from './nav-link';
+import type { NavbarTheme } from './nav-link';
+import { AppNavLink } from './nav-link';
 
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
@@ -42,7 +41,7 @@ export const DropdownMenuTrigger = forwardRef<
       className={triggerClasses}
       {...props}
     >
-      <span className='h-full'>
+      <span className="h-full">
         {children} <Icon name="arrow-down" className="ml-2" />
       </span>
     </DropdownMenuPrimitive.Trigger>
@@ -190,7 +189,7 @@ export const NavDropDown = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
         navbarTheme={navbarTheme}
       />
 
-      <DropdownMenuContent data-testid='token-dropdown'>
+      <DropdownMenuContent data-testid="token-dropdown">
         {subRoutes.map((r) => (
           <DropdownMenuItem key={r.name} onClick={() => setOpen(false)}>
             <AppNavLink

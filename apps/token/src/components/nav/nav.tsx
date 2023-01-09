@@ -6,9 +6,7 @@ import { useTranslation } from 'react-i18next';
 import vegaWhite from '../../images/vega_white.png';
 import debounce from 'lodash/debounce';
 import { NavDrawer } from './nav-draw';
-import {
-  Nav as ToolkitNav,
-} from '@vegaprotocol/ui-toolkit';
+import { Nav as ToolkitNav } from '@vegaprotocol/ui-toolkit';
 import { AppNavLink } from './nav-link';
 import { NavDropDown } from './nav-dropdown';
 

@@ -37,7 +37,7 @@ context(
       // 1005-VEST-001
       // 1005-VEST-002
       it('Able to view tranches', function () {
-        cy.navigate_to('supply')
+        cy.navigate_to('supply');
         cy.url().should('include', '/token/tranches');
         cy.get('h1').should('contain.text', 'Vesting tranches');
       });
