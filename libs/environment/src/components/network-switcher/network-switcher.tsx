@@ -1,4 +1,4 @@
-import {useState, useCallback, useRef} from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   Link,
@@ -97,8 +97,13 @@ export const NetworkSwitcher = () => {
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuTrigger ref={menuRef} className='w-full'>{envTriggerMapping[VEGA_ENV]}</DropdownMenuTrigger>
-      <DropdownMenuContent align="start" style={{minWidth: `${menuRef.current?.offsetWidth || 290}px`}}>
+      <DropdownMenuTrigger ref={menuRef} className="w-full">
+        {envTriggerMapping[VEGA_ENV]}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        style={{ minWidth: `${menuRef.current?.offsetWidth || 290}px` }}
+      >
         {!isAdvancedView && (
           <>
             {standardNetworkKeys.map((key) => (
@@ -122,7 +127,7 @@ export const NetworkSwitcher = () => {
                 e.stopPropagation();
                 setAdvancedView(true);
               }}
-              className='w-full flex flex-col items-stretch'
+              className="w-full flex flex-col items-stretch"
             >
               {t('Advanced')}
             </DropdownMenuItem>
@@ -139,7 +144,10 @@ export const NetworkSwitcher = () => {
                     isAvailable={!!VEGA_NETWORKS[key]}
                   />
                 </div>
-                <span className='hidden md:inline' data-testid="network-item-description">
+                <span
+                  className="hidden md:inline"
+                  data-testid="network-item-description"
+                >
                   {envDescriptionMapping[key]}
                 </span>
               </DropdownMenuItem>
