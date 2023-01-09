@@ -5,12 +5,10 @@ import { VegaWalletContainer } from '../../../../components/vega-wallet-containe
 
 interface ProposalFormSubmitProps {
   isSubmitting: boolean;
-  disabled: boolean;
 }
 
 export const ProposalFormSubmit = ({
   isSubmitting,
-  disabled,
 }: ProposalFormSubmitProps) => {
   const { pubKey } = useVegaWallet();
   const { t } = useTranslation();

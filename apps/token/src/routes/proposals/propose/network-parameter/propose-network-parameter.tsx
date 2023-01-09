@@ -86,8 +86,6 @@ export const ProposeNetworkParameter = () => {
     loading: networkParamsLoading,
     error: networkParamsError,
   } = useNetworkParams();
-  const { isReadOnly } = useVegaWallet();
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {

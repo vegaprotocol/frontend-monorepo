@@ -95,8 +95,6 @@ export const ProposeUpdateMarket = () => {
   const [selectedMarket, setSelectedMarket] = useState<string | undefined>(
     undefined
   );
-  const { isReadOnly } = useVegaWallet();
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {

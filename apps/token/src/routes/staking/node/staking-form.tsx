@@ -68,7 +68,7 @@ export const StakingForm = ({
   const navigate = useNavigate();
   const client = useApolloClient();
   const { appState } = useAppState();
-  const { sendTx, isReadOnly } = useVegaWallet();
+  const { sendTx } = useVegaWallet();
   const [formState, setFormState] = React.useState(FormState.Default);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const { t } = useTranslation();
@@ -245,7 +245,6 @@ export const StakingForm = ({
                 submitText={`Add ${amount ? amount : ''} ${t('vegaTokens')}`}
                 perform={onSubmit}
                 amount={amount}
-                disabled={isReadOnly}
                 setAmount={setAmount}
                 maximum={maxDelegation}
                 minimum={new BigNumber(minTokensWithDecimals)}
@@ -274,7 +273,6 @@ export const StakingForm = ({
                 amount={amount}
                 setAmount={setAmount}
                 maximum={maxDelegation}
-                disabled={isReadOnly}
                 currency={t('VEGA Tokens')}
               />
               {removeType === RemoveType.Now ? (

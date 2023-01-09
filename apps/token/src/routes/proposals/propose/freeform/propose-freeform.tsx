@@ -44,7 +44,6 @@ export const ProposeFreeform = () => {
     NetworkParams.governance_proposal_freeform_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-  const { isReadOnly } = useVegaWallet();
   const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {

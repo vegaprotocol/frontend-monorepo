@@ -338,7 +338,7 @@ const ConnectionOption = ({
       onClick={onClick}
       size="lg"
       fill={true}
-      variant={type === 'hosted' ? 'default' : 'primary'}
+      variant={['hosted', 'view'].includes(type) ? 'default' : 'primary'}
       data-testid={`connector-${type}`}
     >
       <span className="-mx-6 flex text-left justify-between items-center">
