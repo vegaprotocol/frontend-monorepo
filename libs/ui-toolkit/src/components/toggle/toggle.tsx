@@ -13,6 +13,7 @@ export interface ToggleProps {
   toggles: ToggleInput[];
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   checkedValue?: string | undefined | null;
+  type?: 'primary' | 'buy' | 'sell';
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -22,6 +23,7 @@ export const Toggle = ({
   toggles,
   onChange,
   checkedValue,
+  type = 'primary',
   size = 'lg',
   ...props
 }: ToggleProps) => {
@@ -35,7 +37,14 @@ export const Toggle = ({
   const buttonClasses = classnames(
     'relative inline-block w-full text-center',
     'peer-checked:rounded-full',
-    'peer-checked:bg-neutral-400 dark:peer-checked:bg-white',
+    {
+      'peer-checked:bg-neutral-400 dark:peer-checked:bg-white dark:peer-checked:text-black':
+        type === 'primary',
+      'dark:peer-checked:bg-vega-green peer-checked:bg-vega-green-dark':
+        type === 'buy',
+      'dark:peer-checked:bg-vega-pink peer-checked:bg-vega-pink-dark':
+        type === 'sell',
+    },
     'peer-checked:text-white dark:peer-checked:text-black',
     'cursor-pointer peer-checked:cursor-auto select-none',
     {

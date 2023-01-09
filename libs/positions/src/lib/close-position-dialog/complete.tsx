@@ -73,7 +73,7 @@ const Success = ({
 
   if (!order) {
     return (
-      <div className="text-vega-red">{t('Could retrieve closing order')}</div>
+      <div className="text-vega-pink">{t('Could retrieve closing order')}</div>
     );
   }
   return (
@@ -95,7 +95,7 @@ const Error = ({
     closingOrderResult.rejectionReason &&
     Schema.OrderRejectionReasonMapping[closingOrderResult.rejectionReason];
   return (
-    <div className="text-vega-red">
+    <div className="text-vega-pink">
       {reason ? (
         <p>{reason}</p>
       ) : (
