@@ -8,6 +8,7 @@ import {
   VegaWalletProvider,
   useVegaTransactionManager,
   useVegaTransactionUpdater,
+  useVegaWallet,
 } from '@vegaprotocol/wallet';
 import {
   useEagerConnect as useEthereumEagerConnect,
@@ -29,7 +30,7 @@ import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation } from 'react-router-dom';
+import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
@@ -133,5 +134,12 @@ export default VegaTradingApp;
 const MaybeConnectEagerly = () => {
   useVegaEagerConnect(Connectors);
   useEthereumEagerConnect();
+
+  const { pubKey, connect } = useVegaWallet();
+  const [searchParams] = useSearchParams();
+  const [query] = useState(searchParams.get('address'));
+  if (query && !pubKey) {
+    connect(Connectors['view']);
+  }
   return null;
 };
