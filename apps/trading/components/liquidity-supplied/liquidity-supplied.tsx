@@ -138,7 +138,8 @@ export const MarketLiquiditySupplied = ({
       testId="liquidity-supplied"
     >
       <Indicator variant={status} />
-      {supplied} ({formatNumberPercentage(percentage, 2)})
+      {supplied} (
+      {percentage.gt(100) ? '>100%' : formatNumberPercentage(percentage, 2)})
     </HeaderStat>
   );
 };
