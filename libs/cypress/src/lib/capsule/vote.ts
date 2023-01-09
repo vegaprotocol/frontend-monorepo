@@ -1,5 +1,4 @@
 import type * as Schema from '@vegaprotocol/types';
-import { encodeTransaction } from '../utils';
 import { request } from './request';
 import { createLog } from './logging';
 
@@ -18,7 +17,7 @@ export async function vote(
     token,
     publicKey,
     sendingMode: 'TYPE_SYNC',
-    encodedTransaction: encodeTransaction(voteTx),
+    transaction: voteTx,
   });
 
   return voteResult.result;

@@ -1,17 +1,6 @@
 import { ethers } from 'ethers';
 import sha3 from 'js-sha3';
-import type { Transaction } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
-
-/**
- * copy of encodeTransaction in libs/wallet/src/utils.ts
- * to avoid pulling in any jsx files which will cypress is not set up to compile
- */
-export const encodeTransaction = (tx: Transaction): string => {
-  return ethers.utils.base64.encode(
-    ethers.utils.toUtf8Bytes(JSON.stringify(tx))
-  );
-};
 
 /**
  * copy of determineId in libs/wallet/src/utils.ts

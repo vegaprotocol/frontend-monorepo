@@ -1,7 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { addSeconds, millisecondsToSeconds } from 'date-fns';
 import { gql } from 'graphql-request';
-import { encodeTransaction } from '../utils';
 import { request, requestGQL } from './request';
 import { createLog } from './logging';
 
@@ -17,7 +16,7 @@ export async function proposeMarket(publicKey: string, token: string) {
     token,
     publicKey,
     sendingMode: 'TYPE_SYNC',
-    encodedTransaction: encodeTransaction(proposalTx),
+    transaction: proposalTx,
   });
 
   return result.result;
@@ -122,7 +121,7 @@ function createNewMarketProposal() {
                 timeWindow: '3600',
                 scalingFactor: 10,
               },
-              triggeringRatio: 0.7,
+              triggeringRatio: '0.7',
               auctionExtension: '1',
             },
             logNormal: {
