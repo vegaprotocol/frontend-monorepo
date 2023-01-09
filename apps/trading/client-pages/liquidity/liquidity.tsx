@@ -2,11 +2,12 @@ import {
   liquidityProvisionsDataProvider,
   LiquidityTable,
   lpAggregatedDataProvider,
-  marketLiquidityDataProvider,
+  useCheckLiquidityStatus,
 } from '@vegaprotocol/liquidity';
 import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
+  formatNumberPercentage,
   NetworkParams,
   t,
   useDataProvider,
@@ -18,9 +19,10 @@ import {
   Tab,
   Tabs,
   Link as UiToolkitLink,
+  Indicator,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Header, HeaderStat } from '../../components/header';
 
@@ -28,6 +30,13 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
+import type {
+  MarketData,
+  MarketDataUpdateFieldsFragment,
+  MarketDealTicket,
+  SingleMarketFieldsFragment,
+} from '@vegaprotocol/market-list';
+import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 
 export const Liquidity = () => {
   const params = useParams();
@@ -41,16 +50,47 @@ export const LiquidityContainer = ({
   marketId: string | undefined;
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data: marketProvision } = useDataProvider({
-    dataProvider: marketLiquidityDataProvider,
-    skipUpdates: true,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+  const [market, setMarket] = useState<MarketDealTicket | null>(null);
+  const variables = useMemo(
+    () => ({
+      marketId: marketId,
+    }),
+    [marketId]
+  );
+
+  const { data: marketProvision } = useDataProvider<
+    SingleMarketFieldsFragment,
+    never
+  >({
+    dataProvider: marketProvider,
+    variables,
+    skip: !marketId,
+  });
+
+  const updateMarket = useCallback(
+    ({ data: marketData }: { data: MarketData | null }) => {
+      if (marketData) {
+        setMarket({
+          ...marketProvision,
+          data: marketData,
+        } as MarketDealTicket);
+      }
+      return true;
+    },
+    [marketProvision]
+  );
+
+  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+    dataProvider: marketDataProvider,
+    update: updateMarket,
+    variables,
+    skip: !marketId || !marketProvision,
   });
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
   const { reload } = useDataProvider({
     dataProvider: liquidityProvisionsDataProvider,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables,
   });
 
   const update = useCallback(
@@ -85,11 +125,9 @@ export const LiquidityContainer = ({
   }, [reload]);
 
   const assetDecimalPlaces =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.decimals || 0;
+    market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.symbol;
+    market?.tradableInstrument.instrument.product.settlementAsset.symbol;
 
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,
@@ -127,10 +165,41 @@ export const LiquidityViewContainer = ({
 }) => {
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data: marketProvision } = useDataProvider({
-    dataProvider: marketLiquidityDataProvider,
-    skipUpdates: true,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+  const [market, setMarket] = useState<MarketDealTicket | null>(null);
+  const variables = useMemo(
+    () => ({
+      marketId: marketId,
+    }),
+    [marketId]
+  );
+
+  const { data: marketProvision } = useDataProvider<
+    SingleMarketFieldsFragment,
+    never
+  >({
+    dataProvider: marketProvider,
+    variables,
+    skip: !marketId,
+  });
+
+  const updateMarket = useCallback(
+    ({ data: marketData }: { data: MarketData | null }) => {
+      if (marketData) {
+        setMarket({
+          ...marketProvision,
+          data: marketData,
+        } as MarketDealTicket);
+      }
+      return true;
+    },
+    [marketProvision]
+  );
+
+  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+    dataProvider: marketDataProvider,
+    update: updateMarket,
+    variables,
+    skip: !marketId || !marketProvision,
   });
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
@@ -170,19 +239,20 @@ export const LiquidityViewContainer = ({
     return () => clearInterval(interval);
   }, [reload]);
 
-  const targetStake = marketProvision?.market?.data?.targetStake;
-  const suppliedStake = marketProvision?.market?.data?.suppliedStake;
+  const targetStake = market?.data?.targetStake;
+  const suppliedStake = market?.data?.suppliedStake;
   const assetDecimalPlaces =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.decimals || 0;
+    market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.symbol;
+    market?.tradableInstrument.instrument.product.settlementAsset.symbol;
 
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,
+    NetworkParams.market_liquidity_targetstake_triggering_ratio,
   ]);
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
+  const triggeringRatio =
+    params.market_liquidity_targetstake_triggering_ratio || 1;
   const myLpEdges = useMemo(
     () => liquidityProviders?.filter((e) => e.party.id === pubKey),
     [liquidityProviders, pubKey]
@@ -219,18 +289,24 @@ export const LiquidityViewContainer = ({
     return LiquidityTabs.Active;
   };
 
+  const { percentage, status } = useCheckLiquidityStatus({
+    suppliedStake: suppliedStake || 0,
+    targetStake: targetStake || 0,
+    triggeringRatio,
+  });
+
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            marketProvision?.market?.tradableInstrument.instrument.name &&
+            market?.tradableInstrument.instrument.name &&
             marketId && (
               <Link to={Links[Routes.MARKET](marketId)}>
                 <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
-                  {`${
-                    marketProvision?.market?.tradableInstrument.instrument.name
-                  } ${t('liquidity provision')}`}
+                  {`${market?.tradableInstrument.instrument.name} ${t(
+                    'liquidity provision'
+                  )}`}
                 </UiToolkitLink>
               </Link>
             )
@@ -261,6 +337,14 @@ export const LiquidityViewContainer = ({
                   )} ${symbol}`
                 : '-'}
             </div>
+          </HeaderStat>
+          <HeaderStat
+            heading={t('Liquidity supplied')}
+            testId="liquidity-supplied"
+          >
+            <Indicator variant={status} />
+
+            {formatNumberPercentage(percentage, 2)}
           </HeaderStat>
           <HeaderStat heading={t('Market ID')}>
             <div className="break-word">{marketId}</div>
