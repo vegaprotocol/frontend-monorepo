@@ -28,9 +28,11 @@ interface NavbarProps {
 const LinkList = ({
   navbarTheme,
   className = 'flex',
+  dataTestId = 'navbar-links',
 }: {
   navbarTheme: NavbarTheme;
   className?: string;
+  dataTestId?: string;
 }) => {
   const tokenLink = useLinks(DApp.Token);
   const { marketId } = useGlobalStore((store) => ({
@@ -40,7 +42,7 @@ const LinkList = ({
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
   return (
-    <div className={className}>
+    <div className={className} data-testid={dataTestId}>
       <AppNavLink
         name={t('Markets')}
         path={Links[Routes.MARKETS]()}
@@ -84,6 +86,7 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
       <button
         className="flex flex-col justify-around gap-3 p-2 relative z-30 h-[34px]"
         onClick={onOpen}
+        data-testid="button-menu-drawer"
       >
         <div
           className={classNames('w-[26px] h-[2px] transition-all', {
@@ -102,6 +105,7 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
         />
       </button>
       <div
+        data-testid="menu-drawer"
         className={classNames(
           'h-full max-w-[500px] -right-[90%] z-20 top-0 fixed w-[90vw] transition-all md:hidden',
           {
@@ -117,6 +121,7 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
           <LinkList
             className="flex flex-col border-b border-default pb-6"
             navbarTheme={navbarTheme}
+            dataTestId="mobile-navbar-links"
           />
           <div className="flex justify-between">
             <ThemeSwitcher withMobile />
