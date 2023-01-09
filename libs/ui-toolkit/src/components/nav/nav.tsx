@@ -18,8 +18,9 @@ export const getActiveNavLinkClassNames = (
     'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
     'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
       !isActive && navbarTheme !== 'yellow',
-    'text-black': isActive && navbarTheme === 'yellow',
-    'text-black/60 hover:text-black': !isActive && navbarTheme === 'yellow',
+    'md:text-black': isActive && navbarTheme === 'yellow',
+    'md:text-black/60 md:hover:text-black':
+      !isActive && navbarTheme === 'yellow',
   });
 };
 

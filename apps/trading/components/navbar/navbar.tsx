@@ -82,25 +82,26 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
   return (
     <div className="flex overflow-hidden md:hidden">
       <button
-        className="flex flex-col justify-around gap-3 p-2 relative z-40 h-[34px]"
+        className="flex flex-col justify-around gap-3 p-2 relative z-30 h-[34px]"
         onClick={onOpen}
       >
         <div
-          className={classNames('w-[26px] h-[1px] bg-white transition-all', {
-            'translate-y-0 rotate-0': !drawerOpen,
-            'translate-y-[7.5px] rotate-45': drawerOpen,
+          className={classNames('w-[26px] h-[2px] transition-all', {
+            'translate-y-0 rotate-0 bg-black': !drawerOpen,
+            'translate-y-[7.5px] rotate-45 bg-black dark:bg-white': drawerOpen,
           })}
         />
         <div
-          className={classNames('w-[26px] h-[1px] bg-white transition-all', {
-            'translate-y-0 rotate-0': !drawerOpen,
-            '-translate-y-[7.5px] -rotate-45': drawerOpen,
+          className={classNames('w-[26px] h-[2px] transition-all', {
+            'translate-y-0 rotate-0 bg-black': !drawerOpen,
+            '-translate-y-[7.5px] -rotate-45 bg-black dark:bg-white':
+              drawerOpen,
           })}
         />
       </button>
       <div
         className={classNames(
-          'h-full max-w-[500px] -right-[90%] z-30 top-0 fixed w-[90vw] transition-all md:hidden',
+          'h-full max-w-[500px] -right-[90%] z-20 top-0 fixed w-[90vw] transition-all md:hidden',
           {
             'right-0': drawerOpen,
           }
@@ -173,7 +174,7 @@ const AppNavLink = ({
 }: AppNavLinkProps) => {
   const borderClasses = classNames('absolute h-1 w-full bottom-[-1px] left-0', {
     'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
-    'bg-black': navbarTheme === 'yellow',
+    'bg-black dark:bg-vega-yellow md:dark:bg-black': navbarTheme === 'yellow',
   });
   return (
     <NavLink
