@@ -47,6 +47,13 @@ export type Market = MarketWithData &
     liquidityCommitted: number;
     volumeChange: string;
     proposal?: Proposal;
+    tradableInstrument?: {
+      instrument?: {
+        metadata?: {
+          tags?: string[] | null;
+        };
+      };
+    };
   };
 
 export interface Markets {
