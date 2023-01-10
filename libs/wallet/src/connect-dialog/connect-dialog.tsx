@@ -218,15 +218,8 @@ const ConnectorList = ({
               onClick={() => onSelect('jsonRpc')}
             />
           </li>
-          <li className="mb-4 last:mb-0">
-            <ConnectionOption
-              type="view"
-              text={t('View as vega user')}
-              onClick={() => onSelect('view')}
-            />
-          </li>
           {!isMainnet && (
-            <li className="mb-0 border-t pt-4">
+            <li className="mb-4 last:mb-0">
               <ConnectionOption
                 type="hosted"
                 text={t('Hosted Fairground wallet')}
@@ -234,6 +227,13 @@ const ConnectorList = ({
               />
             </li>
           )}
+          <li className="mb-4 last:mb-0">
+            <ConnectionOption
+              type="view"
+              text={t('View as vega user')}
+              onClick={() => onSelect('view')}
+            />
+          </li>
         </ul>
       </ConnectDialogContent>
       <ConnectDialogFooter />
