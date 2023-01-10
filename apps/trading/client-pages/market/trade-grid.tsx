@@ -83,7 +83,7 @@ const MainGrid = ({
           >
             <TradeGridChild>
               <Tabs>
-                <Tab id="candles" name={t('Candles')}>
+                <Tab id="chart" name={t('Chart')}>
                   <TradingViews.Candles marketId={marketId} />
                 </Tab>
                 <Tab id="depth" name={t('Depth')}>
