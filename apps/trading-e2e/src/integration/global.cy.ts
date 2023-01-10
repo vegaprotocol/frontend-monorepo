@@ -158,11 +158,11 @@ describe('Navbar', { tags: '@smoke' }, () => {
     mockConnectWallet();
     cy.connectVegaWallet(true);
     cy.getByTestId('connect-vega-wallet-mobile').click();
-    cy.getByTestId('accounts-drawer').should('be.visible');
-    cy.getByTestId('accounts-drawer').within((el) => {
+    cy.getByTestId('wallets-drawer').should('be.visible');
+    cy.getByTestId('wallets-drawer').within((el) => {
       cy.wrap(el).get('button').contains('Disconnect').click();
     });
-    cy.getByTestId('accounts-drawer').should('not.be.visible');
+    cy.getByTestId('wallets-drawer').should('not.be.visible');
   });
 
   it('menu drawer should be correctly rendered', () => {

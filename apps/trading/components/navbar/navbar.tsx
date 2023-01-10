@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import classNames from 'classnames';
 import { NavLink, Link } from 'react-router-dom';
 import {
@@ -9,7 +10,7 @@ import {
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { NewTab, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { Drawer, NewTab, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
 import { Links, Routes } from '../../pages/client-router';
@@ -18,7 +19,6 @@ import {
   getActiveNavLinkClassNames,
   Nav,
 } from '@vegaprotocol/ui-toolkit';
-import { useMemo, useState, useCallback } from 'react';
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 interface NavbarProps {
@@ -77,44 +77,47 @@ const LinkList = ({
 
 const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const onOpen = useCallback(() => {
-    setDrawerOpen(!drawerOpen);
-  }, [drawerOpen]);
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
+  const menuButton = (
+    <button
+      className={classNames(
+        'flex flex-col justify-around gap-3 p-2 relative z-30 h-[34px]',
+        {
+          'z-50': drawerOpen,
+        }
+      )}
+      onClick={() => setDrawerOpen(!drawerOpen)}
+      data-testid="button-menu-drawer"
+    >
+      <div
+        className={classNames('w-[26px] h-[2px] transition-all', {
+          'translate-y-0 rotate-0 bg-white': !drawerOpen,
+          'bg-black': !drawerOpen && navbarTheme === 'yellow',
+          'translate-y-[7.5px] rotate-45 bg-black dark:bg-white': drawerOpen,
+        })}
+      />
+      <div
+        className={classNames('w-[26px] h-[2px] transition-all', {
+          'translate-y-0 rotate-0 bg-white': !drawerOpen,
+          'bg-black': !drawerOpen && navbarTheme === 'yellow',
+          '-translate-y-[7.5px] -rotate-45 bg-black dark:bg-white': drawerOpen,
+        })}
+      />
+    </button>
+  );
 
   return (
-    <div className="flex overflow-hidden md:hidden">
-      <button
-        className="flex flex-col justify-around gap-3 p-2 relative z-30 h-[34px]"
-        onClick={onOpen}
-        data-testid="button-menu-drawer"
-      >
-        <div
-          className={classNames('w-[26px] h-[2px] transition-all', {
-            'translate-y-0 rotate-0 bg-white': !drawerOpen,
-            'bg-black': !drawerOpen && navbarTheme === 'yellow',
-            'translate-y-[7.5px] rotate-45 bg-black dark:bg-white': drawerOpen,
-          })}
-        />
-        <div
-          className={classNames('w-[26px] h-[2px] transition-all', {
-            'translate-y-0 rotate-0 bg-white': !drawerOpen,
-            'bg-black': !drawerOpen && navbarTheme === 'yellow',
-            '-translate-y-[7.5px] -rotate-45 bg-black dark:bg-white':
-              drawerOpen,
-          })}
-        />
-      </button>
-      <div
+    <div className="flex overflow-hidden md:hidden" ref={setContainer}>
+      <Drawer
         data-testid="menu-drawer"
-        className={classNames(
-          'h-full max-w-[500px] -right-[90%] z-20 top-0 fixed w-[90vw] transition-all md:hidden',
-          {
-            'right-0': drawerOpen,
-          }
-        )}
+        open={drawerOpen}
+        onChange={setDrawerOpen}
+        container={container}
+        trigger={menuButton}
       >
         <div className="border-l border-default px-4 py-2 gap-4 flex flex-col w-full h-full bg-white dark:bg-black dark:text-white justify-start">
-          <div className="flex h-5"></div>
+          <div className="flex h-6"></div>
           <div className="px-2 pb-6 w-full flex flex-col items-stretch border-b border-default">
             <NetworkSwitcher />
           </div>
@@ -127,19 +130,16 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
             <ThemeSwitcher withMobile />
           </div>
         </div>
-      </div>
+      </Drawer>
     </div>
   );
 };
 
 export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
-  const titleContent = useMemo(
-    () => (
-      <div className="hidden md:block">
-        <NetworkSwitcher />
-      </div>
-    ),
-    []
+  const titleContent = (
+    <div className="hidden md:block">
+      <NetworkSwitcher />
+    </div>
   );
   return (
     <Nav

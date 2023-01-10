@@ -33,7 +33,7 @@ export const ThemeSwitcher = ({
   ];
   return withMobile ? (
     <>
-      <div className="flex grow gap-6 md:hidden whitespace-nowrap">
+      <div className="flex grow gap-6 md:hidden whitespace-nowrap justify-between">
         {button}{' '}
         <Toggle
           name="theme-switch"
