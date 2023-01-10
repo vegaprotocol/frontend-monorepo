@@ -216,7 +216,6 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
 
   it('must see a parked order', () => {
     // 7002-SORD-048
-    // NOT COVERED:   must see an explanation of why parked orders happen
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_PARKED,
