@@ -1,18 +1,21 @@
+import { useEnvironment } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import {
   KeyValueTable,
   KeyValueTableRow,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
+import type { ReactNode } from 'react';
 import type { Asset } from './asset-data-provider';
 
 type Rows = {
   key: AssetDetail;
   label: string;
   tooltip: string;
-  value: (asset: Asset) => string | null | undefined;
+  value: (asset: Asset) => ReactNode | undefined;
   valueTooltip?: (asset: Asset) => string | null | undefined;
 }[];
 
@@ -97,7 +100,13 @@ export const rows: Rows = [
     tooltip: t(
       'The address of the contract for the token, on the ethereum network'
     ),
-    value: (asset) => (asset.source as Schema.ERC20).contractAddress,
+    value: (asset) => {
+      if (asset.source.__typename !== 'ERC20') {
+        return;
+      }
+
+      return <ContractAddressLink address={asset.source.contractAddress} />;
+    },
   },
   {
     key: AssetDetail.WITHDRAWAL_THRESHOLD,
@@ -225,7 +234,7 @@ export const AssetDetailsTable = ({
   return (
     <KeyValueTable>
       {details
-        .filter(({ value }) => value && value.length > 0)
+        .filter(({ value }) => Boolean(value))
         .map(({ key, label, value, tooltip, valueTooltip }) => (
           <KeyValueTableRow key={key} {...props}>
             <div
@@ -255,5 +264,18 @@ export const AssetDetailsTable = ({
           </KeyValueTableRow>
         ))}
     </KeyValueTable>
+  );
+};
+
+// Separate component for the link as otherwise eslint will complain
+// about useEnvironment being used in a component
+// named with a lowercase 'value'
+const ContractAddressLink = ({ address }: { address: string }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
+  const href = `${ETHERSCAN_URL}/address/${address}`;
+  return (
+    <Link href={href} target="_blank">
+      {address}
+    </Link>
   );
 };
