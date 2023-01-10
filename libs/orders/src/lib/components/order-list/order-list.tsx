@@ -249,7 +249,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             data,
           }: VegaValueFormatterParams<Order, 'status'>) => {
-            if (value === Schema.OrderStatus.STATUS_REJECTED) {
+            if (data?.rejectionReason && value) {
               return `${Schema.OrderStatusMapping[value]}: ${
                 data?.rejectionReason &&
                 Schema.OrderRejectionReasonMapping[data.rejectionReason]
