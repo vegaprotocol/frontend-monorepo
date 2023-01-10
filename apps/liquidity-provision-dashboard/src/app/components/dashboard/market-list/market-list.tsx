@@ -31,6 +31,7 @@ import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
+import { getMarketExpiryDate } from '@vegaprotocol/market-info';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
@@ -299,16 +300,17 @@ export const MarketList = () => {
           />
           <AgGridColumn
             headerName={t('Closing Time')}
-            field="proposal.terms.closingDatetime"
+            field="tradableInstrument.instrument.metadata.tags"
             headerTooltip={t('Closing time of the market')}
             valueFormatter={({
               value,
             }: VegaValueFormatterParams<
               Market,
-              'proposal.terms.closingDatetime'
+              'tradableInstrument.instrument.metadata.tags'
             >) => {
-              return value
-                ? getDateTimeFormat().format(new Date(value).getTime())
+              const expiry = getMarketExpiryDate(value);
+              return expiry
+                ? getDateTimeFormat().format(expiry.getTime())
                 : '-';
             }}
           />
