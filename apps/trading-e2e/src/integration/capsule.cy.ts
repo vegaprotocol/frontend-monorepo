@@ -17,6 +17,7 @@ const orderRemaining = 'remaining';
 const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
 const orderCreatedAt = 'createdAt';
+const orderUpdatedAt = 'updatedAt';
 
 // TODO: ensure this test runs only if capsule is running via workflow
 describe('capsule', { tags: '@slow' }, () => {
@@ -106,18 +107,7 @@ describe('capsule', { tags: '@slow' }, () => {
             OrderTimeInForceMapping[order.timeInForce]
           );
 
-          cy.get(`[col-id='${orderCreatedAt}']`)
-            .should('not.be.empty')
-            .then(($dateTime) => {
-              // allow a date 5 seconds either side to allow for
-              // unexpected latency
-              const minBefore = subSeconds(new Date(), 5);
-              const maxAfter = addSeconds(new Date(), 5);
-              const date = new Date($dateTime.text());
-              expect(
-                isAfter(date, minBefore) && isBefore(date, maxAfter)
-              ).to.equal(true);
-            });
+          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderCreatedAt);
         });
     });
 
@@ -135,6 +125,7 @@ describe('capsule', { tags: '@slow' }, () => {
         cy.get(`[col-id='${orderPrice}']`).then(($price) => {
           expect(parseFloat($price.text())).to.equal(parseFloat('200'));
         });
+        checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
       });
 
     cy.getByTestId('cancel').first().click();
@@ -154,3 +145,20 @@ describe('capsule', { tags: '@slow' }, () => {
       .should('contain.text', OrderStatusMapping.STATUS_CANCELLED);
   });
 });
+function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string  ) {
+  cy.get(`[col-id='${date}']`)
+    .children('span')
+    .invoke('data', 'value')
+    .then(($dateTime) => {
+      // allow a date 5 seconds either side to allow for
+      // unexpected latency
+      const minBefore = subSeconds(new Date(), 5);
+      const maxAfter = addSeconds(new Date(), 5);
+      console.log(maxAfter);
+      const date = new Date($dateTime.toString());
+      expect(
+        isAfter(date, minBefore) && isBefore(date, maxAfter)
+      ).to.equal(true);
+    });
+}
+
