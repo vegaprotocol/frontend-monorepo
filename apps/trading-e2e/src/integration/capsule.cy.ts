@@ -145,7 +145,7 @@ describe('capsule', { tags: '@slow' }, () => {
       .should('contain.text', OrderStatusMapping.STATUS_CANCELLED);
   });
 });
-function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string  ) {
+function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string) {
   cy.get(`[col-id='${date}']`)
     .children('span')
     .invoke('data', 'value')
@@ -156,9 +156,8 @@ function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string  ) {
       const maxAfter = addSeconds(new Date(), 5);
       console.log(maxAfter);
       const date = new Date($dateTime.toString());
-      expect(
-        isAfter(date, minBefore) && isBefore(date, maxAfter)
-      ).to.equal(true);
+      expect(isAfter(date, minBefore) && isBefore(date, maxAfter)).to.equal(
+        true
+      );
     });
 }
-
