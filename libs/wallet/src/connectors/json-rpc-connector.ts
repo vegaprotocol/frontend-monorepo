@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { WalletClient } from '@vegaprotocol/wallet-client';
+import { WalletClient, WalletClientError } from '@vegaprotocol/wallet-client';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 import { WalletError } from './vega-connector';
@@ -22,6 +22,11 @@ export const ClientErrors = {
     t('Unknown error occurred')
   ),
   NO_CLIENT: new WalletError(t('No client found.'), 106),
+  REQUEST_REJECTED: new WalletError(
+    t('Request rejected'),
+    107,
+    t('The request has been rejected by the user')
+  ),
 } as const;
 
 export class JsonRpcConnector implements VegaConnector {
@@ -79,7 +84,11 @@ export class JsonRpcConnector implements VegaConnector {
       });
       return result;
     } catch (err) {
-      throw ClientErrors.INVALID_RESPONSE;
+      const clientErr =
+        err instanceof WalletClientError && err.code === 3001
+          ? ClientErrors.REQUEST_REJECTED
+          : ClientErrors.INVALID_RESPONSE;
+      throw clientErr;
     }
   }
 
@@ -112,22 +121,18 @@ export class JsonRpcConnector implements VegaConnector {
       throw ClientErrors.NO_CLIENT;
     }
 
-    try {
-      const { result } = await this.client.SendTransaction({
-        publicKey: pubKey,
-        sendingMode: 'TYPE_SYNC',
-        transaction,
-      });
+    const { result } = await this.client.SendTransaction({
+      publicKey: pubKey,
+      sendingMode: 'TYPE_SYNC',
+      transaction,
+    });
 
-      return {
-        transactionHash: result.transactionHash,
-        sentAt: result.sentAt,
-        receivedAt: result.receivedAt,
-        signature: result.transaction.signature.value,
-      };
-    } catch (err) {
-      throw ClientErrors.INVALID_RESPONSE;
-    }
+    return {
+      transactionHash: result.transactionHash,
+      sentAt: result.sentAt,
+      receivedAt: result.receivedAt,
+      signature: result.transaction.signature.value,
+    };
   }
 
   async checkCompat() {

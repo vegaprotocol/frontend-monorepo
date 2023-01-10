@@ -10,7 +10,7 @@ export const Size = ({
   forceTheme,
 }: {
   value: string;
-  side: Schema.Side;
+  side?: Schema.Side;
   positionDecimalPlaces?: number;
   forceTheme?: 'dark' | 'light';
 }) => {

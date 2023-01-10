@@ -88,7 +88,7 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.get(`[row-id="${partiallyFilledId}"]`).within(() => {
       cy.get(`[col-id='${orderStatus}']`).should(
         'have.text',
-        'PartiallyFilled'
+        'Partially Filled'
       );
       cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7/10');
       cy.getByTestId(cancelOrderBtn).should('not.exist');
@@ -190,7 +190,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.getByTestId(`order-status-${orderId}`).should(
       'have.text',
-      'PartiallyFilled'
+      'Partially Filled'
     );
     cy.getByTestId(`order-status-${orderId}`)
       .parentsUntil(`.ag-row`)

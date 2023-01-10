@@ -3,9 +3,11 @@ import { useCallback, useEffect, useMemo } from 'react';
 import compact from 'lodash/compact';
 import type {
   BatchMarketInstructionSubmissionBody,
+  OrderAmendment,
+  OrderBusEventFieldsFragment,
+  OrderSubmission,
   VegaStoredTxState,
   WithdrawalBusEventFieldsFragment,
-  WithdrawSubmissionBody,
 } from '@vegaprotocol/wallet';
 import { isBatchMarketInstructionsTransaction } from '@vegaprotocol/wallet';
 import {
@@ -34,9 +36,11 @@ import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import { prepend0x } from '@vegaprotocol/smart-contracts';
-import { getRejectionReason } from '@vegaprotocol/orders';
+import { getRejectionReason, useOrderByIdQuery } from '@vegaprotocol/orders';
 import { useMarketList } from '@vegaprotocol/market-list';
 import first from 'lodash/first';
+import type { Side } from '@vegaprotocol/types';
+import { OrderStatusMapping } from '@vegaprotocol/types';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
   Default: Intent.Primary,
@@ -44,28 +48,6 @@ const intentMap: { [s in VegaTxStatus]: Intent } = {
   Pending: Intent.Warning,
   Error: Intent.Danger,
   Complete: Intent.Success,
-};
-
-enum VegaTransactionType {
-  WITHDRAW,
-  SUBMIT_ORDER,
-  CANCEL_ORDER,
-  CANCEL_ALL,
-  EDIT_ORDER,
-  CLOSE_POSITION,
-  BATCH_MARKET_INSTRUCTIONS,
-}
-
-const transactionLabels: { [t in VegaTransactionType]: string } = {
-  [VegaTransactionType.WITHDRAW]: t('Withdraw'),
-  [VegaTransactionType.SUBMIT_ORDER]: t('Order'),
-  [VegaTransactionType.CANCEL_ORDER]: t('Cancel order'),
-  [VegaTransactionType.CANCEL_ALL]: t('Cancel all orders'),
-  [VegaTransactionType.EDIT_ORDER]: t('Edit order'),
-  [VegaTransactionType.CLOSE_POSITION]: t('Close position'),
-  [VegaTransactionType.BATCH_MARKET_INSTRUCTIONS]: t(
-    'Batch market instruction'
-  ),
 };
 
 const isClosePositionTransaction = (tx: VegaStoredTxState) => {
@@ -90,49 +72,227 @@ const isClosePositionTransaction = (tx: VegaStoredTxState) => {
   return false;
 };
 
-const determineVegaTransactionType = (
-  tx: VegaStoredTxState
-): VegaTransactionType | undefined => {
-  if (isWithdrawTransaction(tx.body)) {
-    return VegaTransactionType.WITHDRAW;
-  }
-  if (isOrderSubmissionTransaction(tx.body)) {
-    return VegaTransactionType.SUBMIT_ORDER;
-  }
-  if (isOrderCancellationTransaction(tx.body)) {
-    return tx.body.orderCancellation.marketId === undefined &&
-      tx.body.orderCancellation.orderId === undefined
-      ? VegaTransactionType.CANCEL_ALL
-      : VegaTransactionType.CANCEL_ORDER;
-  }
-  if (isOrderAmendmentTransaction(tx.body)) {
-    return VegaTransactionType.EDIT_ORDER;
-  }
-  if (isBatchMarketInstructionsTransaction(tx.body)) {
-    return isClosePositionTransaction(tx)
-      ? VegaTransactionType.CLOSE_POSITION
-      : VegaTransactionType.BATCH_MARKET_INSTRUCTIONS;
-  }
-  return;
+const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
+  const withdraw = isWithdrawTransaction(tx.body);
+  const submitOrder = isOrderSubmissionTransaction(tx.body);
+  const cancelOrder = isOrderCancellationTransaction(tx.body);
+  const editOrder = isOrderAmendmentTransaction(tx.body);
+  const batchMarketInstructions = isBatchMarketInstructionsTransaction(tx.body);
+  return (
+    withdraw ||
+    submitOrder ||
+    cancelOrder ||
+    editOrder ||
+    batchMarketInstructions
+  );
 };
 
-const Details = ({ children }: { children: ReactNode }) => (
-  <div className="mt-[5px]" data-testid="vega-tx-details">
-    <span className="font-mono text-xs p-1 bg-gray-100 rounded">
+const Details = ({
+  children,
+  title = '',
+}: {
+  children: ReactNode;
+  title?: string;
+}) => (
+  <div className="pt-[5px]" data-testid="vega-tx-details" title={title}>
+    <div className="font-mono text-xs p-2 bg-neutral-100 rounded">
       {children}
-    </span>
+    </div>
   </div>
 );
+
+type SizeAtPriceProps = {
+  side: Side;
+  size: string;
+  price: string | undefined;
+  meta: { positionDecimalPlaces: number; decimalPlaces: number; asset: string };
+};
+const SizeAtPrice = ({ side, size, price, meta }: SizeAtPriceProps) => {
+  return (
+    <>
+      <Size
+        side={side}
+        value={size}
+        positionDecimalPlaces={meta.positionDecimalPlaces}
+        forceTheme="light"
+      />{' '}
+      {price && meta.decimalPlaces
+        ? `@ ${addDecimalsFormatNumber(price, meta.decimalPlaces)} ${
+            meta.asset
+          }`
+        : `@ ~ ${meta.asset}`}
+    </>
+  );
+};
+
+const SubmitOrderDetails = ({
+  data,
+  order,
+}: {
+  data: OrderSubmission;
+  order?: OrderBusEventFieldsFragment;
+}) => {
+  const { data: markets } = useMarketList();
+  const market = order
+    ? order.market
+    : markets?.find((m) => m.id === data.marketId);
+  if (!market) return null;
+
+  const price = order ? order.price : data.price;
+  const size = order ? order.size : data.size;
+  const side = order ? order.side : data.side;
+
+  return (
+    <Details>
+      <h4 className="font-bold">
+        {order
+          ? t(
+              `Submit order - ${OrderStatusMapping[order.status].toLowerCase()}`
+            )
+          : t('Submit order')}
+      </h4>
+      <p>{market?.tradableInstrument.instrument.code}</p>
+      <p>
+        <SizeAtPrice
+          meta={{
+            positionDecimalPlaces: market.positionDecimalPlaces,
+            decimalPlaces: market.decimalPlaces,
+            asset:
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol,
+          }}
+          side={side}
+          size={size}
+          price={price}
+        />
+      </p>
+      {order && order.rejectionReason && (
+        <p className="italic">{getRejectionReason(order)}</p>
+      )}
+    </Details>
+  );
+};
+
+const EditOrderDetails = ({
+  data,
+  order,
+}: {
+  data: OrderAmendment;
+  order?: OrderBusEventFieldsFragment;
+}) => {
+  const { data: orderById } = useOrderByIdQuery({
+    variables: { orderId: data.orderId },
+  });
+  const { data: markets } = useMarketList();
+
+  const originalOrder = orderById?.orderByID;
+  if (!originalOrder) return null;
+  const market = markets?.find((m) => m.id === originalOrder.market.id);
+  if (!market) return null;
+
+  const original = (
+    <SizeAtPrice
+      side={originalOrder.side}
+      size={originalOrder.size}
+      price={originalOrder.price}
+      meta={{
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        decimalPlaces: market.decimalPlaces,
+        asset:
+          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      }}
+    />
+  );
+
+  const edited = (
+    <SizeAtPrice
+      side={originalOrder.side}
+      size={String(Number(originalOrder.size) + (data.sizeDelta || 0))}
+      price={data.price}
+      meta={{
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        decimalPlaces: market.decimalPlaces,
+        asset:
+          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      }}
+    />
+  );
+
+  return (
+    <Details title={data.orderId}>
+      <h4 className="font-bold">
+        {order
+          ? t(`Edit order - ${OrderStatusMapping[order.status].toLowerCase()}`)
+          : t('Edit order')}
+      </h4>
+      <p>{market?.tradableInstrument.instrument.code}</p>
+      <p>
+        <s>{original}</s>
+      </p>
+      <p>{edited}</p>
+      {order && order.rejectionReason && (
+        <p className="italic">{getRejectionReason(order)}</p>
+      )}
+    </Details>
+  );
+};
+
+const CancelOrderDetails = ({
+  orderId,
+  order,
+}: {
+  orderId: string;
+  order?: OrderBusEventFieldsFragment;
+}) => {
+  const { data: orderById } = useOrderByIdQuery({
+    variables: { orderId },
+  });
+  const { data: markets } = useMarketList();
+
+  const originalOrder = orderById?.orderByID;
+  if (!originalOrder) return null;
+  const market = markets?.find((m) => m.id === originalOrder.market.id);
+  if (!market) return null;
+
+  const original = (
+    <SizeAtPrice
+      side={originalOrder.side}
+      size={originalOrder.size}
+      price={originalOrder.price}
+      meta={{
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        decimalPlaces: market.decimalPlaces,
+        asset:
+          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      }}
+    />
+  );
+  return (
+    <Details title={orderId}>
+      <h4 className="font-bold">
+        {order
+          ? t(
+              `Cancel order - ${OrderStatusMapping[order.status].toLowerCase()}`
+            )
+          : t('Cancel order')}
+      </h4>
+      <p>{market?.tradableInstrument.instrument.code}</p>
+      <p>
+        <s>{original}</s>
+      </p>
+      {order && order.rejectionReason && (
+        <p className="italic">{getRejectionReason(order)}</p>
+      )}
+    </Details>
+  );
+};
 
 export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
   const { data: assets } = useAssetsDataProvider();
   const { data: markets } = useMarketList();
-  if (!assets) return null;
 
-  const transactionType = determineVegaTransactionType(tx);
-
-  if (transactionType === VegaTransactionType.WITHDRAW) {
-    const transactionDetails = tx.body as WithdrawSubmissionBody;
+  if (isWithdrawTransaction(tx.body)) {
+    const transactionDetails = tx.body;
     const asset = assets?.find(
       (a) => a.id === transactionDetails.withdrawSubmission.asset
     );
@@ -143,39 +303,44 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       );
       return (
         <Details>
-          {transactionLabels[VegaTransactionType.WITHDRAW]} {num} {asset.symbol}
+          {t('Withdraw')} {num} {asset.symbol}
         </Details>
       );
     }
   }
 
-  if (
-    tx.order &&
-    (transactionType === VegaTransactionType.SUBMIT_ORDER ||
-      transactionType === VegaTransactionType.CANCEL_ORDER ||
-      transactionType === VegaTransactionType.EDIT_ORDER)
-  ) {
-    const asset =
-      tx.order.market.tradableInstrument.instrument.product.settlementAsset;
-    const num = addDecimalsFormatNumber(
-      tx.order.price,
-      tx.order.market.decimalPlaces
-    );
+  if (isOrderSubmissionTransaction(tx.body)) {
     return (
-      <Details>
-        {transactionLabels[transactionType]}{' '}
-        <Size
-          side={tx.order.side}
-          value={tx.order.size}
-          positionDecimalPlaces={tx.order.market.positionDecimalPlaces}
-          forceTheme="light"
-        />{' '}
-        @ {num} {asset.symbol}
-      </Details>
+      <SubmitOrderDetails data={tx.body.orderSubmission} order={tx.order} />
     );
   }
 
-  if (tx.body && transactionType === VegaTransactionType.CLOSE_POSITION) {
+  if (isOrderCancellationTransaction(tx.body)) {
+    if (
+      tx.body.orderCancellation.marketId === undefined &&
+      tx.body.orderCancellation.orderId === undefined
+    ) {
+      return <Details>{t('Cancel all orders')}</Details>;
+    }
+
+    return (
+      <CancelOrderDetails
+        orderId={String(tx.body.orderCancellation.orderId)}
+        order={tx.order}
+      />
+    );
+  }
+
+  if (isOrderAmendmentTransaction(tx.body)) {
+    return (
+      <EditOrderDetails
+        data={tx.body.orderAmendment}
+        order={tx.order}
+      ></EditOrderDetails>
+    );
+  }
+
+  if (isClosePositionTransaction(tx)) {
     const transaction = tx.body as BatchMarketInstructionSubmissionBody;
     const marketId = first(
       transaction.batchMarketInstructions.cancellations
@@ -184,16 +349,17 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     if (market) {
       return (
         <Details>
-          {transactionLabels[transactionType]} {t('for')}{' '}
-          {market.tradableInstrument.instrument.code}
+          {t('Close position for')} {market.tradableInstrument.instrument.code}
         </Details>
       );
     }
   }
 
-  return tx.body && transactionType ? (
-    <Details>{transactionLabels[transactionType]}</Details>
-  ) : null;
+  if (isBatchMarketInstructionsTransaction(tx.body)) {
+    return <Details>{t('Batch market instruction')}</Details>;
+  }
+
+  return null;
 };
 
 type VegaTxToastContentProps = { tx: VegaStoredTxState };
@@ -376,7 +542,7 @@ export const useVegaTransactionToasts = () => {
   const toasts = useMemo(() => {
     return [
       ...compact(vegaTransactions)
-        .filter((tx) => determineVegaTransactionType(tx) !== undefined)
+        .filter((tx) => isTransactionTypeSupported(tx))
         .map(fromVegaTransaction),
     ];
   }, [fromVegaTransaction, vegaTransactions]);

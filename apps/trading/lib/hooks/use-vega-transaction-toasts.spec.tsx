@@ -50,6 +50,33 @@ jest.mock('@vegaprotocol/market-list', () => {
   };
 });
 
+jest.mock('@vegaprotocol/orders', () => {
+  return {
+    ...jest.requireActual('@vegaprotocol/orders'),
+    useOrderByIdQuery: jest.fn(({ variables: { orderId } }) => {
+      if (orderId === '0') {
+        return {
+          data: {
+            orderByID: {
+              id: '0',
+              side: 'SIDE_BUY',
+              size: '10',
+              timeInForce: 'TIME_IN_FORCE_FOK',
+              type: 'TYPE_MARKET',
+              price: '1234',
+              createdAt: new Date(),
+              status: 'STATUS_ACTIVE',
+              market: { id: 'market-1' },
+            },
+          },
+        };
+      } else {
+        return { data: undefined };
+      }
+    }),
+  };
+});
+
 const unsupportedTransaction: VegaStoredTxState = {
   id: 0,
   createdAt: new Date(),
@@ -135,8 +162,10 @@ const editOrder: VegaStoredTxState = {
   body: {
     orderAmendment: {
       marketId: 'market-1',
-      orderId: 'order-1',
+      orderId: '0',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      price: '1000',
+      sizeDelta: 1,
     },
   },
   status: VegaTxStatus.Default,
@@ -180,7 +209,7 @@ const cancelOrder: VegaStoredTxState = {
   body: {
     orderCancellation: {
       marketId: 'market-1',
-      orderId: 'order-1',
+      orderId: '0',
     },
   },
   status: VegaTxStatus.Default,
@@ -188,33 +217,6 @@ const cancelOrder: VegaStoredTxState = {
   txHash: null,
   signature: null,
   dialogOpen: false,
-  order: {
-    id: '0',
-    side: Side.SIDE_SELL,
-    size: '666',
-    timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-    type: OrderType.TYPE_MARKET,
-    price: '1234',
-    createdAt: new Date(),
-    market: {
-      id: 'market-1',
-      decimalPlaces: 2,
-      positionDecimalPlaces: 2,
-      tradableInstrument: {
-        instrument: {
-          code: 'M1',
-          name: 'M1',
-          product: {
-            settlementAsset: {
-              decimals: 2,
-              symbol: '$A',
-            },
-          },
-        },
-      },
-    },
-    status: OrderStatus.STATUS_ACTIVE,
-  },
 };
 
 const cancelAll: VegaStoredTxState = {
@@ -294,9 +296,12 @@ describe('VegaTransactionDetails', () => {
   });
   it.each([
     { tx: withdraw, details: 'Withdraw 12.34 $A' },
-    { tx: submitOrder, details: 'Order +0.10 @ 12.34 $A' },
-    { tx: editOrder, details: 'Edit order +0.10 @ 12.34 $A' },
-    { tx: cancelOrder, details: 'Cancel order -6.66 @ 12.34 $A' },
+    { tx: submitOrder, details: 'Submit order - activeM1+0.10 @ 12.34 $A' },
+    {
+      tx: editOrder,
+      details: 'Edit order - activeM1+0.10 @ 12.34 $A+0.11 @ 10.00 $A',
+    },
+    { tx: cancelOrder, details: 'Cancel orderM1+0.10 @ 12.34 $A' },
     { tx: cancelAll, details: 'Cancel all orders' },
     { tx: closePosition, details: 'Close position for M1' },
     { tx: batch, details: 'Batch market instruction' },
