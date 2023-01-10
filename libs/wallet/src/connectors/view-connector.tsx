@@ -45,6 +45,8 @@ export class ViewConnector implements VegaConnector {
     return Promise.resolve();
   }
   sendTx(): Promise<TransactionResponse | null> {
-    throw new Error(`You are connected in a view only state for public key: ${this.pubkey}. In order to send transactions you must connect to a real wallet.`);
+    throw new Error(
+      `You are connected in a view only state for public key: ${this.pubkey}. In order to send transactions you must connect to a real wallet.`
+    );
   }
 }
