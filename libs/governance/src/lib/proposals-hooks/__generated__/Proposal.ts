@@ -83,7 +83,7 @@ export type ProposalEventSubscriptionHookResult = ReturnType<typeof useProposalE
 export type ProposalEventSubscriptionResult = Apollo.SubscriptionResult<ProposalEventSubscription>;
 export const OnUpdateNetworkParametersDocument = gql`
     subscription OnUpdateNetworkParameters {
-  busEvents(types: [TimeUpdate], batchSize: 0) {
+  busEvents(types: [Proposal], batchSize: 0) {
     event {
       ... on Proposal {
         ...UpdateNetworkParameterFields

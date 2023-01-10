@@ -8,7 +8,7 @@ export type WithdrawalApprovalQueryVariables = Types.Exact<{
 }>;
 
 
-export type WithdrawalApprovalQuery = { __typename?: 'Query', erc20WithdrawalApproval?: { __typename?: 'Erc20WithdrawalApproval', assetSource: string, amount: string, nonce: string, signatures: string, targetAddress: string, expiry: any, creation: string } | null };
+export type WithdrawalApprovalQuery = { __typename?: 'Query', erc20WithdrawalApproval?: { __typename?: 'Erc20WithdrawalApproval', assetSource: string, amount: string, nonce: string, signatures: string, targetAddress: string, creation: string } | null };
 
 
 export const WithdrawalApprovalDocument = gql`
@@ -19,7 +19,6 @@ export const WithdrawalApprovalDocument = gql`
     nonce
     signatures
     targetAddress
-    expiry
     creation
   }
 }
