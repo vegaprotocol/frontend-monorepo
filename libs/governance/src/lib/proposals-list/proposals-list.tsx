@@ -8,7 +8,7 @@ import { proposalsListDataProvider } from '../proposals-data-provider';
 import { useCallback, useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
-import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated___/Proposals';
+import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
