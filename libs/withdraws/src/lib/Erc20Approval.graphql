@@ -5,7 +5,6 @@ query Erc20Approval($withdrawalId: ID!) {
     nonce
     signatures
     targetAddress
-    expiry
     creation
   }
 }
