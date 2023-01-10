@@ -95,7 +95,7 @@ interface ProposalNewMarketTerms {
           timeWindow: string;
           scalingFactor: number;
         };
-        triggeringRatio: number;
+        triggeringRatio: string;
         auctionExtension: string;
       };
       logNormal: LogNormal;
