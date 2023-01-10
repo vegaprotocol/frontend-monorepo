@@ -221,7 +221,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_PARKED,
     });
-    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
+    cy.getByTestId(`order-status-${orderId}`).should(
+      'have.text',
+      'Parked: Internal error'
+    );
   });
 
   it('must see the size of the order and direction/side -', () => {
