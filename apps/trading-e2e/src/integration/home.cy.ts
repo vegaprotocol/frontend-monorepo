@@ -237,7 +237,7 @@ describe('home', { tags: '@regression' }, () => {
         cy.visit('/');
         cy.wait('@Market');
         cy.location('hash').should('equal', '#/markets/market-1');
-        cy.get('[role="dialog"]').should('not.exist');
+        cy.getByTestId('dialog-content').should('not.exist');
       });
     });
 
@@ -250,7 +250,7 @@ describe('home', { tags: '@regression' }, () => {
         cy.visit('/');
         cy.wait('@Market');
         cy.location('hash').should('equal', '#/markets/market-not-existing');
-        cy.get('[role="dialog"]').should('not.exist');
+        cy.getByTestId('dialog-content').should('not.exist');
       });
     });
   });

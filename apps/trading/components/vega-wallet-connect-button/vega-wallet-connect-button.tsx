@@ -93,7 +93,7 @@ const MobileWalletButton = ({
   return (
     <div className="md:hidden overflow-hidden flex" ref={setContainer}>
       <Drawer
-        data-testid="wallets-drawer"
+        dataTestId="wallets-drawer"
         open={drawerOpen}
         onChange={setDrawerOpen}
         container={container}
@@ -262,7 +262,7 @@ const KeypairListItem = ({
   return (
     <div
       className="flex flex-col w-full ml-4 mr-2 mb-4"
-      data-testid={`key-${pk.publicKey}`}
+      data-testid={`key-${pk.publicKey}-mobile`}
     >
       <span className="mr-2">
         <button onClick={() => onSelectItem(pk.publicKey)}>

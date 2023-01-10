@@ -16,6 +16,7 @@ interface DialogProps {
   icon?: ReactNode;
   intent?: Intent;
   size?: 'small' | 'medium';
+  dataTestId?: string;
 }
 
 export function Dialog({
@@ -27,6 +28,7 @@ export function Dialog({
   icon,
   intent,
   size = 'small',
+  dataTestId = 'dialog-content',
 }: DialogProps) {
   const contentClasses = classNames(
     'fixed top-0 left-0 z-20 flex justify-center items-start overflow-auto',
@@ -64,6 +66,7 @@ export function Dialog({
         <DialogPrimitives.Content
           className={contentClasses}
           onCloseAutoFocus={onCloseAutoFocus}
+          data-testid={dataTestId}
         >
           <div className={wrapperClasses}>
             {onChange && (

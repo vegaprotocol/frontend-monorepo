@@ -110,7 +110,7 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
   return (
     <div className="flex overflow-hidden md:hidden" ref={setContainer}>
       <Drawer
-        data-testid="menu-drawer"
+        dataTestId="menu-drawer"
         open={drawerOpen}
         onChange={setDrawerOpen}
         container={container}
