@@ -18,7 +18,6 @@ export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
 const MarketLink = ({ id, ...props }: MarketLinkProps) => {
   const { data, error, loading } = useExplorerMarketQuery({
     variables: { id },
-    fetchPolicy: 'cache-first',
   });
 
   let label = <span>{id}</span>;
@@ -30,7 +29,7 @@ const MarketLink = ({ id, ...props }: MarketLinkProps) => {
       label = (
         <div title={t('Unknown market')}>
           <span role="img" aria-label="Unknown market" className="img">
-            ⚠️
+            ⚠️&nbsp;{t('Invalid market')}
           </span>
           &nbsp;{id}
         </div>

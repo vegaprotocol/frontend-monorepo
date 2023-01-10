@@ -1,39 +1,48 @@
-import type { components } from '../../../types/explorer';
-
+import { useExplorerDeterministicOrderQuery } from '../order-details/__generated__/Order';
 import PriceInMarket from '../price-in-market/price-in-market';
 import { sideText } from '../order-details/lib/order-labels';
 
-export type OrderSummaryProps = {
-  order: components['schemas']['v1OrderSubmission'];
-};
+// Note: Edited has no style currently
+export type OrderSummaryModifier = 'cancelled' | 'edited';
 
 /**
- * Shows a brief, relatively plaintext summary of an order transaction
- * showing the price, correctly formatted. Created for the Batch Submission
- * list, should be kept compact.
- *
- * Market name is expected to be listed elsewhere, so is not included
+ * Provides Tailwind classnames to apply to order
+ * @param modifier
+ * @returns string
  */
-const OrderSummary = ({ order }: OrderSummaryProps) => {
-  // Render nothing if the Order Submission doesn't look right
-  if (
-    !order ||
-    !order.marketId ||
-    !order.price ||
-    !order.side ||
-    order.side === 'SIDE_UNSPECIFIED'
-  ) {
-    return null;
+export function getClassName(modifier?: OrderSummaryModifier) {
+  if (modifier === 'cancelled') {
+    return 'line-through';
   }
 
+  return undefined;
+}
+
+export interface OrderSummaryProps {
+  id: string;
+  modifier?: OrderSummaryModifier;
+}
+
+/**
+ * This component renders the *current* details for an order, like OrderDetails but much
+ * more compact. It is equivalent to OrderTxSummary, but operates on an order rather than
+ * the transaction that creates an order
+ */
+const OrderSummary = ({ id, modifier }: OrderSummaryProps) => {
+  const { data, error } = useExplorerDeterministicOrderQuery({
+    variables: { orderId: id },
+  });
+
+  if (error || !data || (data && !data.orderByID)) {
+    return <div data-testid="order-summary">-</div>;
+  }
+
+  const order = data.orderByID;
   return (
-    <div data-testid="order-summary">
+    <div data-testid="order-summary" className={getClassName(modifier)}>
       <span>{sideText[order.side]}</span>&nbsp;
-      <span>{order.size}</span>&nbsp;<i className="text-xs">@</i>&nbsp;
-      <PriceInMarket
-        marketId={order.marketId}
-        price={order.price}
-      ></PriceInMarket>
+      <span>{order.size}</span>&nbsp;<i>@</i>&nbsp;
+      <PriceInMarket marketId={order.market.id} price={order.price} />
     </div>
   );
 };

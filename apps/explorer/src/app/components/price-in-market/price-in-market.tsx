@@ -15,6 +15,7 @@ export type PriceInMarketProps = {
 const PriceInMarket = ({ marketId, price }: PriceInMarketProps) => {
   const { data } = useExplorerMarketQuery({
     variables: { id: marketId },
+    fetchPolicy: 'cache-first',
   });
 
   let label = price;
@@ -37,9 +38,9 @@ const PriceInMarket = ({ marketId, price }: PriceInMarketProps) => {
     );
   } else {
     return (
-      <div className="inline-block">
+      <label>
         <span>{label}</span> <span>{suffix}</span>
-      </div>
+      </label>
     );
   }
 };

@@ -1,119 +1,80 @@
 import type { MockedResponse } from '@apollo/client/testing';
-import type { components } from '../../../types/explorer';
-import type { UnknownObject } from '../nested-data-list';
 
 import { MockedProvider } from '@apollo/client/testing';
 import OrderSummary from './order-summary';
+import type { OrderSummaryModifier } from './order-summary';
 import { render } from '@testing-library/react';
-import { ExplorerMarketDocument } from '../links/market-link/__generated__/Market';
+import { ExplorerDeterministicOrderDocument } from '../order-details/__generated__/Order';
 
-type Order = components['schemas']['v1OrderSubmission'];
-
-function renderComponent(order: Order, mocks?: MockedResponse[]) {
-  return render(
-    <MockedProvider mocks={mocks}>
-      <OrderSummary order={order} />
-    </MockedProvider>
-  );
-}
-describe('Order Summary component', () => {
-  it('Renders nothing if the order passed is somehow null', () => {
-    const res = renderComponent({} as UnknownObject as Order);
-    expect(res.queryByTestId('order-summary')).not.toBeInTheDocument();
-  });
-
-  it('Renders nothing if the order passed lacks a side', () => {
-    const o: Order = {
-      marketId: '123',
-      price: '100',
-      type: 'TYPE_LIMIT',
-      size: '10',
-    };
-    const res = renderComponent(o);
-    expect(res.queryByTestId('order-summary')).not.toBeInTheDocument();
-  });
-
-  it('Renders nothing if the order passed lacks a price', () => {
-    const o: Order = {
-      marketId: '123',
-      side: 'SIDE_BUY',
-      type: 'TYPE_LIMIT',
-      size: '10',
-    };
-    const res = renderComponent(o);
-    expect(res.queryByTestId('order-summary')).not.toBeInTheDocument();
-  });
-
-  it('Renders nothing if the order has an unspecified side', () => {
-    const o: Order = {
-      marketId: '123',
-      side: 'SIDE_UNSPECIFIED',
-      type: 'TYPE_LIMIT',
-      size: '10',
-      price: '10',
-    };
-
-    const res = renderComponent(o);
-    expect(res.queryByTestId('order-summary')).not.toBeInTheDocument();
-  });
-
-  it('Renders nothing if the order has an unspecified market', () => {
-    const o: Order = {
-      side: 'SIDE_BUY',
-      type: 'TYPE_LIMIT',
-      size: '10',
-      price: '10',
-    };
-
-    const res = renderComponent(o);
-    expect(res.queryByTestId('order-summary')).not.toBeInTheDocument();
-  });
-
-  it('side, size and price in market if all details are present', async () => {
-    const o: Order = {
-      marketId: '123',
-      side: 'SIDE_BUY',
-      type: 'TYPE_LIMIT',
-      size: '10',
-      price: '333',
-    };
-
-    const mock = {
-      request: {
-        query: ExplorerMarketDocument,
-        variables: {
-          id: '123',
+const mock = {
+  request: {
+    query: ExplorerDeterministicOrderDocument,
+    variables: {
+      orderId: '123',
+    },
+  },
+  result: {
+    data: {
+      orderByID: {
+        __typename: 'Order',
+        id: '123',
+        type: 'GTC',
+        status: 'OPEN',
+        version: '1',
+        createdAt: 'Tue, Jan 10, 2023 3:35',
+        expiresAt: 'Tue, Jan 10, 2023 3:35',
+        updatedAt: 'Tue, Jan 10, 2023 3:35',
+        rejectionReason: null,
+        reference: null,
+        timeInForce: 'GTC',
+        price: '333',
+        side: 'SIDE_BUY',
+        remaining: '100',
+        size: '100',
+        party: {
+          id: '456',
         },
-      },
-      result: {
-        data: {
-          market: {
-            id: '123',
-            decimalPlaces: 2,
-            state: 'irrelevant-test-data',
-            tradableInstrument: {
-              instrument: {
-                name: 'TEST',
-                product: {
-                  __typename: 'Future',
-                  quoteName: 'TEST',
-                },
-              },
+        market: {
+          __typename: 'Market',
+          id: '789',
+          decimalPlaces: 2,
+          tradableInstrument: {
+            instrument: {
+              name: 'TEST',
             },
           },
         },
       },
-    };
-    const res = renderComponent(o, [mock]);
-    expect(res.queryByTestId('order-summary')).toBeInTheDocument();
-    expect(res.getByText('Buy')).toBeInTheDocument();
-    expect(res.getByText('10')).toBeInTheDocument();
+    },
+  },
+};
+function renderComponent(
+  id: string,
+  mocks?: MockedResponse[],
+  modifier?: OrderSummaryModifier
+) {
+  return render(
+    <MockedProvider mocks={mocks}>
+      <OrderSummary id={id} modifier={modifier} />
+    </MockedProvider>
+  );
+}
 
-    // Initially renders price alone
-    expect(res.getByText('333')).toBeInTheDocument();
+describe('Order Summary component', () => {
+  it('side, size are present', async () => {
+    const res = renderComponent(mock.result.data.orderByID.id, [mock]);
+    expect(await res.findByText('Buy')).toBeInTheDocument();
+    expect(await res.findByText('100')).toBeInTheDocument();
+    // Note: Market is not mocked so the PriceInMarket component is not rendering in this test - hence no price formatting
+  });
 
-    // After fetch renders formatted price and asset quotename
-    expect(await res.findByText('3.33')).toBeInTheDocument();
-    expect(await res.findByText('TEST')).toBeInTheDocument();
+  it('Cancelled modifier add strikethrough', async () => {
+    const res = renderComponent(
+      mock.result.data.orderByID.id,
+      [mock],
+      'cancelled'
+    );
+    const buy = await res.findByText('Buy');
+    expect(buy.parentElement).toHaveClass('line-through');
   });
 });

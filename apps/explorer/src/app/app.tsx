@@ -36,11 +36,7 @@ function App() {
   }, [VEGA_ENV]);
 
   const cacheConfig: InMemoryCacheConfig = {
-    typePolicies: {
-      Node: {
-        keyFields: false,
-      },
-    },
+    canonizeResults: true,
   };
 
   const layoutClasses = classnames(

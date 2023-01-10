@@ -7,9 +7,6 @@ import type {
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody, TableRow, TableCell, Table } from '../../table';
-import { TxOrderType } from '../tx-order-type';
-import { MarketLink } from '../../links';
-import OrderSummary from '../../order-summary/order-summary';
 import { BatchCancel } from './batch-submission/batch-cancel';
 import { BatchAmend } from './batch-submission/batch-amend';
 import { BatchOrder } from './batch-submission/batch-order';

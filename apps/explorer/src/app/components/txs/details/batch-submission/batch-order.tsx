@@ -1,7 +1,7 @@
 import type { BatchInstruction } from '../../../../routes/types/block-explorer-response';
 import { TxOrderType } from '../../tx-order-type';
 import { MarketLink } from '../../../links';
-import OrderSummary from '../../../order-summary/order-summary';
+import OrderTxSummary from '../../../order-summary/order-tx-summary';
 
 interface BatchOrderProps {
   index: number;
@@ -16,10 +16,10 @@ export const BatchOrder = ({ index, submission }: BatchOrderProps) => {
     <tr>
       <td>{index}</td>
       <td>
-        <TxOrderType orderType={'OrderCancellation'} />
+        <TxOrderType orderType={'OrderSubmission'} />
       </td>
       <td>
-        <OrderSummary order={submission} />
+        <OrderTxSummary order={submission} />
       </td>
       <td>
         <MarketLink id={submission.marketId} />

@@ -1,7 +1,7 @@
 import type { BatchInstruction } from '../../../../routes/types/block-explorer-response';
 import { TxOrderType } from '../../tx-order-type';
-import { TruncateInline } from '../../../truncate/truncate';
 import { MarketLink } from '../../../links';
+import OrderSummary from '../../../order-summary/order-summary';
 
 interface BatchAmendProps {
   index: number;
@@ -16,10 +16,10 @@ export const BatchAmend = ({ index, submission }: BatchAmendProps) => {
     <tr>
       <td>{index}</td>
       <td>
-        <TxOrderType orderType={'OrderCancellation'} />
+        <TxOrderType orderType={'OrderAmendment'} />
       </td>
       <td>
-        <TruncateInline text={submission.orderId} />
+        <OrderSummary id={submission.orderId} modifier="edited" />
       </td>
       <td>
         <MarketLink id={submission.marketId} />
