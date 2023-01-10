@@ -384,7 +384,7 @@ type TransferTypeMap = {
 export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
   TRANSFER_TYPE_LOSS: 'Final settlement loss',
-  TRANSFER_TYPE_WIN: 'Final settlement win',
+  TRANSFER_TYPE_WIN: 'Final settlement gain',
   TRANSFER_TYPE_MTM_LOSS: 'Mark to market loss',
   TRANSFER_TYPE_MTM_WIN: 'Mark to market gain',
   TRANSFER_TYPE_MARGIN_LOW: 'Margin topped up',
