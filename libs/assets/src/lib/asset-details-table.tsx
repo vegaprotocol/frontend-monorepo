@@ -1,4 +1,4 @@
-import { useEnvironment, useEtherscanLink } from '@vegaprotocol/environment';
+import { useEtherscanLink } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
