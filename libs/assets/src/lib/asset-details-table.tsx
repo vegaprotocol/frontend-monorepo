@@ -1,4 +1,4 @@
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, useEtherscanLink } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
@@ -271,8 +271,8 @@ export const AssetDetailsTable = ({
 // about useEnvironment being used in a component
 // named with a lowercase 'value'
 const ContractAddressLink = ({ address }: { address: string }) => {
-  const { ETHERSCAN_URL } = useEnvironment();
-  const href = `${ETHERSCAN_URL}/address/${address}`;
+  const etherscanLink = useEtherscanLink();
+  const href = etherscanLink(`/address/${address}`);
   return (
     <Link href={href} target="_blank">
       {address}
