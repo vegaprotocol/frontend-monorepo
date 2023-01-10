@@ -13,7 +13,7 @@ import {
 import classNames from 'classnames';
 
 import {
-  addDecimalsFormatNumber,
+  addDecimalsFixedFormatNumber,
   t,
   useResizeObserver,
   formatNumberFixed,
@@ -227,25 +227,25 @@ const OrderbookDebugInfo = ({
             viewportHeight,
             lockOnMidPrice,
             priceInCenter: priceInCenter
-              ? addDecimalsFormatNumber(priceInCenter, decimalPlaces)
+              ? addDecimalsFixedFormatNumber(priceInCenter, decimalPlaces)
               : '-',
-            maxPriceLevel: addDecimalsFormatNumber(
+            maxPriceLevel: addDecimalsFixedFormatNumber(
               maxPriceLevel ?? '0',
               decimalPlaces
             ),
-            bestStaticBidPrice: addDecimalsFormatNumber(
+            bestStaticBidPrice: addDecimalsFixedFormatNumber(
               bestStaticBidPrice ?? '0',
               decimalPlaces
             ),
-            bestStaticOfferPrice: addDecimalsFormatNumber(
+            bestStaticOfferPrice: addDecimalsFixedFormatNumber(
               bestStaticOfferPrice ?? '0',
               decimalPlaces
             ),
-            minPriceLevel: addDecimalsFormatNumber(
+            minPriceLevel: addDecimalsFixedFormatNumber(
               minPriceLevel ?? '0',
               decimalPlaces
             ),
-            midPrice: addDecimalsFormatNumber(
+            midPrice: addDecimalsFixedFormatNumber(
               (bestStaticOfferPrice &&
                 bestStaticBidPrice &&
                 getPriceLevel(

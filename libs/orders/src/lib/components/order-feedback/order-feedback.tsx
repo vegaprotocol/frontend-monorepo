@@ -84,11 +84,9 @@ const getRejectionReason = (order: OrderEventFieldsFragment): string | null => {
           Schema.OrderTimeInForceMapping[order.timeInForce]
         } order was not filled and it has been stopped`
       );
-    case Schema.OrderStatus.STATUS_REJECTED:
+    default:
       return order.rejectionReason
         ? t(Schema.OrderRejectionReasonMapping[order.rejectionReason])
         : null;
-    default:
-      return null;
   }
 };
