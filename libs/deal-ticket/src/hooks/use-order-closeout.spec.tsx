@@ -71,7 +71,7 @@ describe('useOrderCloseOut', () => {
         wrapper: MockedProvider,
       }
     );
-    expect(result.current).toEqual('1.00');
+    expect(result.current).toEqual('1');
   });
 
   it('should return proper empty value', () => {
@@ -88,6 +88,6 @@ describe('useOrderCloseOut', () => {
         wrapper: MockedProvider,
       }
     );
-    expect(result.current).toEqual('0.00');
+    expect(result.current).toEqual('0');
   });
 });

@@ -130,7 +130,6 @@ const erc20WithdrawalApproval = {
   creation: '1',
   signatures: 'signatures',
   targetAddress: 'target-address',
-  expiry: 'expiry',
 };
 
 const mockedNetworkParams: MockedResponse<NetworkParamsQuery> = {

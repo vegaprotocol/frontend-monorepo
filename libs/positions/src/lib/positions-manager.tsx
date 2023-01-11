@@ -24,20 +24,22 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   } = useClosePosition();
 
   return (
-    <>
-      <AsyncRenderer
-        loading={loading}
-        error={error}
-        data={data}
-        noDataMessage={t('No positions')}
-        noDataCondition={(data) => !(data && data.length)}
-      >
-        <PositionsTable
-          ref={gridRef}
-          rowData={data}
-          onClose={(position) => submit(position)}
+    <div className="h-full relative">
+      <PositionsTable
+        ref={gridRef}
+        rowData={data}
+        onClose={(position) => submit(position)}
+        noRowsOverlayComponent={() => null}
+      />
+      <div className="pointer-events-none absolute inset-0">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={data}
+          noDataMessage={t('No positions')}
+          noDataCondition={(data) => !(data && data.length)}
         />
-      </AsyncRenderer>
+      </div>
       <Dialog
         intent={getDialogIntent(transactionResult)}
         icon={getDialogIcon(transactionResult)}
@@ -55,7 +57,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           ),
         }}
       />
-    </>
+    </div>
   );
 };
 

@@ -107,7 +107,6 @@ beforeEach(() => {
           nonce: '1',
           signatures: 'signatures',
           targetAddress: 'targetAddress',
-          expiry: 'expiry',
           creation: '1',
         },
       },
