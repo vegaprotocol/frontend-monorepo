@@ -18,7 +18,6 @@
     "ledger": "libs/ledger",
     "liquidity": "libs/liquidity",
     "liquidity-provision-dashboard": "apps/liquidity-provision-dashboard",
-    "liquidity-provision-dashboard-e2e": "apps/liquidity-provision-dashboard-e2e",
     "market-depth": "libs/market-depth",
     "market-info": "libs/market-info",
     "market-list": "libs/market-list",
