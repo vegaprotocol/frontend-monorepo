@@ -16,7 +16,6 @@ import {
 } from './lib/commands/vega-wallet-connect';
 import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
 import { addCreateMarket } from './lib/commands/create-market';
-import { addSetVegaWalletConfig } from './lib/commands/set-vega-wallet-config';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -34,7 +33,6 @@ addVegaWalletConnect();
 addSetVegaWallet();
 addMockTransactionResponse();
 addCreateMarket();
-addSetVegaWalletConfig();
 
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
 export type { onMessage } from './lib/mock-ws';

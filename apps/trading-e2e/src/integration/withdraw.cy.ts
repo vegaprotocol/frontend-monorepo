@@ -66,6 +66,9 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
 });
 
 describe('withdraw actions', { tags: '@regression' }, () => {
+  // this is extremely ugly hack, but setting it properly in contract is too much effort for such simple validation
+  const withdrawalThreshold =
+    Cypress.env('VEGA_ENV') === 'CUSTOM' ? '0.00' : '100.00';
   before(() => {
     cy.mockWeb3Provider();
     cy.mockTradingPage();
@@ -96,7 +99,7 @@ describe('withdraw actions', { tags: '@regression' }, () => {
     );
     cy.getByTestId('WITHDRAWAL_THRESHOLD_value').should(
       'contain.text',
-      '100.00'
+      withdrawalThreshold
     );
     cy.getByTestId('DELAY_TIME_label').should('contain.text', 'Delay time');
     cy.getByTestId('DELAY_TIME_value').should('have.text', 'None');

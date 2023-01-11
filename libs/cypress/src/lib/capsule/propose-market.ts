@@ -3,6 +3,7 @@ import { addSeconds, millisecondsToSeconds } from 'date-fns';
 import { gql } from 'graphql-request';
 import { request, requestGQL } from './request';
 import { createLog } from './logging';
+import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
 
 const log = createLog('propose-market');
 
@@ -22,7 +23,7 @@ export async function proposeMarket(publicKey: string, token: string) {
   return result.result;
 }
 
-function createNewMarketProposal() {
+function createNewMarketProposal(): ProposalSubmissionBody {
   const closingDate = addSeconds(new Date(), MIN_CLOSE_SEC);
   const enactmentDate = addSeconds(closingDate, MIN_ENACT_SEC);
   const closingTimestamp = millisecondsToSeconds(closingDate.getTime());

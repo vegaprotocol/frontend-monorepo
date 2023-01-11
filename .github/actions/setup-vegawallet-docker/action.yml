@@ -1,6 +1,3 @@
-inputs:
-  passphrase:
-    description: 'Wallet password'
 outputs:
   token:
     description: 'api-token of wallet'

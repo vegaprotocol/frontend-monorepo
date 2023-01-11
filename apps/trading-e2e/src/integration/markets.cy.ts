@@ -106,7 +106,7 @@ describe('markets table', { tags: '@smoke' }, () => {
       .and(
         'have.attr',
         'href',
-        'https://stagnet3.token.vega.xyz/proposals/propose/new-market'
+        `${Cypress.env('VEGA_TOKEN_URL')}/proposals/propose/new-market`
       );
   });
 });

@@ -48,12 +48,12 @@ jobs:
       ## Setup a Vega wallet for our user
       ######
 
-      - name: Set up Vegawallet
+      - name: Run Vegacapsule network
+        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
+
+      - name: Set up Vegawallet for capsule
         id: setup-vega
-        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
-        with:
-          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
-          passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+        uses: ./frontend-monorepo/.github/actions/setup-vegawallet-docker
 
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins
@@ -64,7 +64,6 @@ jobs:
         run: npx nx run trading-e2e:e2e ${{ inputs.skip-cache }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ inputs.tags }}
         working-directory: frontend-monorepo
         env:
-          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
