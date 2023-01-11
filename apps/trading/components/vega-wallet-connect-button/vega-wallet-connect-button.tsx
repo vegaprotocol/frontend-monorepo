@@ -83,7 +83,7 @@ const MobileWalletButton = ({
             <button
               className="transition-all flex flex-col justify-around gap-3 p-2 relative h-[34px]"
               onClick={() => setDrawerOpen(false)}
-              data-testid="connect-vega-wallet-mobile"
+              data-testid="connect-vega-wallet-mobile-close"
             >
               <>
                 <div

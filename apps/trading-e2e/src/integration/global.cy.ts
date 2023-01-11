@@ -146,7 +146,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
         .should('have.length', 3)
         .each((item) => {
           cy.wrap(item).click();
-          cy.wrap(item).get('span.absolute.h-1.w-full').should('exist');
+          cy.wrap(item).get('span.absolute.md\\:h-1.w-full').should('exist');
           cy.location('hash').should('equal', hashes[i]);
           cy.wrap(item).should('have.data', 'testid', links[i++]);
         });
