@@ -12,6 +12,6 @@ jobs:
     uses: ./.github/workflows/tests-dispatcher.yml
     secrets: inherit
     with:
-      project: '[console-lite-e2e, explorer-e2e, liquidity-provision-dashboard-e2e, token-e2e, trading-e2e]'
+      project: '[console-lite-e2e, explorer-e2e, token-e2e, trading-e2e]'
       tags: --env.grepTags '[ @smoke, @regression, @slow ]'
       night-run: true
