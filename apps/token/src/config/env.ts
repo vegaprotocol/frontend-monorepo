@@ -64,6 +64,7 @@ export const ENV = {
   docsUrl: windowOrDefault('NX_VEGA_DOCS_URL'),
   ethWalletMnemonic: windowOrDefault('NX_ETH_WALLET_MNEMONIC'),
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
+  delegationsMaxQueries: windowOrDefault('NX_DELEGATIONS_MAX_QUERIES'),
   flags: {
     NETWORK_DOWN: TRUTHY.includes(windowOrDefault('NX_NETWORK_DOWN')),
     MOCK: TRUTHY.includes(windowOrDefault('NX_MOCKED')),
