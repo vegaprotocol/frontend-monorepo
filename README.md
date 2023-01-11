@@ -22,10 +22,6 @@ The utility dApp for interacting with the Vega token and using its' utility. Thi
 
 The block explorer for the Vega network, showing details of raw chain states and the state of markets on the Vega network.
 
-### [Stats](./apps/stats)
-
-An application for the status of the Vega network. Showing block height and other network activity.
-
 ### [Static](./apps/static)
 
 Hosting for static content being shared across apps, for example fonts.

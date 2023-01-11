@@ -252,7 +252,7 @@ export const LiquidityViewContainer = ({
   ]);
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
   const triggeringRatio =
-    params.market_liquidity_targetstake_triggering_ratio || 1;
+    params.market_liquidity_targetstake_triggering_ratio || '1';
   const myLpEdges = useMemo(
     () => liquidityProviders?.filter((e) => e.party.id === pubKey),
     [liquidityProviders, pubKey]

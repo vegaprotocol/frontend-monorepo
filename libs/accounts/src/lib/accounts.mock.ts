@@ -28,7 +28,7 @@ export const accountsQuery = (
   return merge(defaultAccounts, override);
 };
 
-const accountFields: AccountFieldsFragment[] = [
+export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,

@@ -2,8 +2,8 @@ import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   ProposalsListQuery,
   ProposalListFieldsFragment,
-} from './__generated___/Proposals';
-import { ProposalsListDocument } from './__generated___/Proposals';
+} from './__generated__/Proposals';
+import { ProposalsListDocument } from './__generated__/Proposals';
 
 const getData = (responseData: ProposalsListQuery) =>
   responseData.proposalsConnection?.edges
