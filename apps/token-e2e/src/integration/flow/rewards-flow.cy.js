@@ -1,6 +1,6 @@
 const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
 const walletContainer = '[data-testid="ethereum-wallet"]';
-const vegaAssetAddress = '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0';
+const vegaAssetAddress = '0x67175Da1D5e966e40D11c4B2519392B2058373de';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const txTimeout = Cypress.env('txTimeout');
@@ -8,11 +8,11 @@ const txTimeout = Cypress.env('txTimeout');
 context('rewards - flow', { tags: '@slow' }, function () {
   before('set up', function () {
     cy.visit('/');
-    cy.verify_page_header('The $VEGA token');
+    cy.wait_for_spinner();
     cy.vega_wallet_set_specified_approval_amount('1000');
     // cy.updateCapsuleMultiSig();
     cy.deposit_asset(vegaAssetAddress);
-    cy.vega_wallet_connect();
+    cy.connectVegaWallet();
     cy.ethereum_wallet_connect();
     cy.get(walletContainer).within(() => {
       cy.get(vegaWalletCurrencyTitle)
@@ -23,11 +23,11 @@ context('rewards - flow', { tags: '@slow' }, function () {
 
   it('Stake tokens and wait for reward', function () {
     cy.exec(
-      `vega wallet command send --wallet ${Cypress.env(
+      `vega wallet transaction send --wallet ${Cypress.env(
         'vegaWalletName'
       )} --pubkey ${Cypress.env(
         'vegaWalletPublicKey'
-      )} --network DV '{"transfer":{"fromAccountType":4,"toAccountType":12,"to":"0000000000000000000000000000000000000000000000000000000000000000","asset":"993ed98f4f770d91a796faab1738551193ba45c62341d20597df70fea6704ede","amount":"100000","recurring":{"startEpoch":1, "endEpoch": 100000000, "factor":"1"}}}' --home ${Cypress.env(
+      )} -p "../../../../../vegacapsule/.passphrase" --network DV '{"transfer":{"fromAccountType":4,"toAccountType":12,"to":"0000000000000000000000000000000000000000000000000000000000000000","asset":"b4f2726571fbe8e33b442dc92ed2d7f0d810e21835b7371a7915a365f07ccd9b","amount":"100000","recurring":{"startEpoch":1, "endEpoch": 100000000, "factor":"1"}}}' --home ${Cypress.env(
         'vegaWalletLocation'
       )}`,
       { failOnNonZeroExit: false }
