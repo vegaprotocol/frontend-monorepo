@@ -7,6 +7,7 @@ export type StakingDelegationsFieldsFragment = { __typename?: 'Delegation', amou
 
 export type PartyDelegationsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
@@ -22,10 +23,10 @@ export const StakingDelegationsFieldsFragmentDoc = gql`
 }
     `;
 export const PartyDelegationsDocument = gql`
-    query PartyDelegations($partyId: ID!) {
+    query PartyDelegations($partyId: ID!, $pagination: Pagination) {
   party(id: $partyId) {
     id
-    delegationsConnection {
+    delegationsConnection(pagination: $pagination) {
       edges {
         node {
           ...StakingDelegationsFields
@@ -52,6 +53,7 @@ export const PartyDelegationsDocument = gql`
  * const { data, loading, error } = usePartyDelegationsQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      pagination: // value for 'pagination'
  *   },
  * });
  */

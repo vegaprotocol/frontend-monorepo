@@ -29,6 +29,7 @@ import type {
   DelegateSubmissionBody,
   UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export enum FormState {
   Default,
@@ -72,6 +73,7 @@ export const StakingForm = ({
   const [formState, setFormState] = React.useState(FormState.Default);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const { t } = useTranslation();
+  const { VEGA_ENV } = useEnvironment();
   const [action, setAction] = React.useState<StakeAction>(
     params.action as StakeAction
   );
