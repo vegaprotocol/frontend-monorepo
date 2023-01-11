@@ -38,12 +38,6 @@ jobs:
     with:
       trigger: ${{ contains(inputs.project, 'liquidity-provision-dashboard-e2e') || contains(inputs.project, 'liquidity-provision-dashboard') }}
 
-  run-stats-e2e:
-    uses: ./.github/workflows/cypress-stats-e2e.yml
-    secrets: inherit
-    with:
-      trigger: ${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }}
-
   run-token-e2e:
     uses: ./.github/workflows/cypress-token-e2e.yml
     secrets: inherit
