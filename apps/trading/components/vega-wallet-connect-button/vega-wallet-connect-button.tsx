@@ -55,32 +55,11 @@ const MobileWalletButton = ({
 
   const walletButton = (
     <button
-      className={classNames(
-        'my-2 transition-all flex flex-col justify-around gap-3 p-2 relative h-[34px]',
-        drawerOpen ? 'z-50' : 'z-20'
-      )}
+      className="my-2 transition-all flex flex-col justify-around gap-3 p-2 relative h-[34px]"
       onClick={openDrawer}
       data-testid="connect-vega-wallet-mobile"
     >
       <WalletIcon className={iconClass} />
-      <>
-        <div
-          className={classNames(
-            'w-[26px] h-[2px] bg-black dark:bg-white transition-all translate-y-[7.5px] rotate-45',
-            {
-              hidden: !drawerOpen,
-            }
-          )}
-        />
-        <div
-          className={classNames(
-            'w-[26px] h-[2px] bg-black dark:bg-white transition-all -translate-y-[7.5px] -rotate-45',
-            {
-              hidden: !drawerOpen,
-            }
-          )}
-        />
-      </>
     </button>
   );
   const onSelectItem = useCallback(
@@ -100,7 +79,32 @@ const MobileWalletButton = ({
         trigger={walletButton}
       >
         <div className="border-l border-default p-2 gap-4 flex flex-col w-full h-full bg-white dark:bg-black dark:text-white justify-between">
-          <div className="flex h-5"></div>
+          <div className="flex h-5 justify-end">
+            <button
+              className="transition-all flex flex-col justify-around gap-3 p-2 relative h-[34px]"
+              onClick={() => setDrawerOpen(false)}
+              data-testid="connect-vega-wallet-mobile"
+            >
+              <>
+                <div
+                  className={classNames(
+                    'w-[26px] h-[2px] bg-black dark:bg-white transition-all translate-y-[7.5px] rotate-45',
+                    {
+                      hidden: !drawerOpen,
+                    }
+                  )}
+                />
+                <div
+                  className={classNames(
+                    'w-[26px] h-[2px] bg-black dark:bg-white transition-all -translate-y-[7.5px] -rotate-45',
+                    {
+                      hidden: !drawerOpen,
+                    }
+                  )}
+                />
+              </>
+            </button>
+          </div>
           <div className="grow my-4" role="list">
             {(pubKeys || []).map((pk) => (
               <KeypairListItem

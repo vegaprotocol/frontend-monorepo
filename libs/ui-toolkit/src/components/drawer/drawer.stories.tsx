@@ -11,10 +11,16 @@ export default {
 const Template: ComponentStory<typeof Drawer> = (args) => {
   const [open, setOpen] = useState(args.open);
   const [container, setContainer] = useState<HTMLElement | null>(null);
+  const openButton = <Button onClick={() => setOpen(true)}>Open drawer</Button>;
   return (
     <div ref={setContainer}>
-      <Button onClick={() => setOpen(true)}>Open drawer</Button>
-      <Drawer {...args} open={open} onChange={setOpen} container={container}>
+      <Drawer
+        {...args}
+        open={open}
+        onChange={setOpen}
+        container={container}
+        trigger={openButton}
+      >
         {args.children}
       </Drawer>
     </div>
@@ -24,5 +30,9 @@ const Template: ComponentStory<typeof Drawer> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   open: false,
-  children: <p>Some content</p>,
+  children: (
+    <p className="h-full bg-black dark:bg-white text-white dark:text-black">
+      Some content
+    </p>
+  ),
 };
