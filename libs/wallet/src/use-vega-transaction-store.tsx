@@ -184,6 +184,14 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           );
           if (transaction) {
             transaction.transactionResult = transactionResult;
+            if (
+              isOrderCancellationTransaction(transaction.body) &&
+              !transaction.body.orderCancellation.orderId &&
+              !transactionResult.error &&
+              transactionResult.status
+            ) {
+              transaction.status = VegaTxStatus.Complete;
+            }
             transaction.dialogOpen = true;
             transaction.updatedAt = new Date();
           }

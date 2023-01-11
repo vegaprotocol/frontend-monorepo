@@ -5,6 +5,7 @@ import type {
   BatchMarketInstructionSubmissionBody,
   OrderAmendment,
   OrderBusEventFieldsFragment,
+  OrderCancellationBody,
   OrderSubmission,
   VegaStoredTxState,
   WithdrawalBusEventFieldsFragment,
@@ -116,7 +117,7 @@ const SizeAtPrice = ({ side, size, price, meta }: SizeAtPriceProps) => {
         positionDecimalPlaces={meta.positionDecimalPlaces}
         forceTheme="light"
       />{' '}
-      {price && meta.decimalPlaces
+      {price && price !== '0' && meta.decimalPlaces
         ? `@ ${addDecimalsFormatNumber(price, meta.decimalPlaces)} ${
             meta.asset
           }`
@@ -316,6 +317,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
   }
 
   if (isOrderCancellationTransaction(tx.body)) {
+    // CANCEL ALL (from Portfolio)
     if (
       tx.body.orderCancellation.marketId === undefined &&
       tx.body.orderCancellation.orderId === undefined
@@ -323,12 +325,33 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       return <Details>{t('Cancel all orders')}</Details>;
     }
 
-    return (
-      <CancelOrderDetails
-        orderId={String(tx.body.orderCancellation.orderId)}
-        order={tx.order}
-      />
-    );
+    // CANCEL
+    if (
+      tx.body.orderCancellation.orderId &&
+      tx.body.orderCancellation.marketId
+    ) {
+      return (
+        <CancelOrderDetails
+          orderId={String(tx.body.orderCancellation.orderId)}
+          order={tx.order}
+        />
+      );
+    }
+
+    // CANCEL ALL (from Trading)
+    if (tx.body.orderCancellation.marketId) {
+      const marketName = markets?.find(
+        (m) =>
+          m.id === (tx.body as OrderCancellationBody).orderCancellation.marketId
+      )?.tradableInstrument.instrument.code;
+      return (
+        <Details>
+          {marketName
+            ? `${t('Cancel all orders for')} ${marketName}`
+            : t('Cancel all orders')}
+        </Details>
+      );
+    }
   }
 
   if (isOrderAmendmentTransaction(tx.body)) {
@@ -510,8 +533,6 @@ export const useVegaTransactionToasts = () => {
   const dismissVegaTransaction = useVegaTransactionStore(
     (state) => state.dismiss
   );
-
-  useEffect(() => console.log(vegaTransactions), [vegaTransactions]);
 
   const fromVegaTransaction = useCallback(
     (tx: VegaStoredTxState): Toast => {
