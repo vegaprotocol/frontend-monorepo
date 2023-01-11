@@ -9,7 +9,7 @@ import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
@@ -24,14 +24,15 @@ import { getDerivedPrice } from '../utils/get-price';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
-  market: MarketDealTicket
+  market: Market,
+  marketData: MarketData
 ) => {
   const { pubKey } = useVegaWallet();
-  const slippage = useCalculateSlippage({ marketId: market.id, order });
+  const slippage = useCalculateSlippage({ market, order });
 
   const derivedPrice = useMemo(() => {
-    return getDerivedPrice(order, market);
-  }, [order, market]);
+    return getDerivedPrice(order, market, marketData);
+  }, [order, market, marketData]);
 
   // Note this isn't currently used anywhere
   const slippageAdjustedPrice = useMemo(() => {
@@ -51,6 +52,7 @@ export const useFeeDealTicketDetails = (
   const estMargin = useOrderMargin({
     order,
     market,
+    marketData,
     partyId: pubKey || '',
     derivedPrice,
   });
@@ -58,6 +60,7 @@ export const useFeeDealTicketDetails = (
   const estCloseOut = useOrderCloseOut({
     order,
     market,
+    marketData,
   });
 
   const notionalSize = useMemo(() => {
@@ -93,7 +96,7 @@ export const useFeeDealTicketDetails = (
 };
 
 export interface FeeDetails {
-  market: MarketDealTicket;
+  market: Market;
   quoteName: string;
   notionalSize: string | null;
   estMargin: OrderMargin | null;

@@ -3,7 +3,8 @@ import { useMarketList } from '@vegaprotocol/market-list';
 import { t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
-import type { Market, OnCellClickHandler } from '../select-market';
+import type { OnCellClickHandler } from '../select-market';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
 import {
   ColumnKind,
   columns,
@@ -19,7 +20,7 @@ export const SelectMarketLandingTable = ({
   markets,
   onClose,
 }: {
-  markets: Market[] | null;
+  markets: MarketMaybeWithDataAndCandles[] | null;
   onClose: () => void;
 }) => {
   const params = useParams();

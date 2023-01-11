@@ -15,7 +15,7 @@ import {
   marketDataQuery,
   marketDepthQuery,
   marketInfoQuery,
-  marketQuery,
+  marketLastTradeQuery,
   marketsCandlesQuery,
   marketsDataQuery,
   marketsQuery,
@@ -28,7 +28,7 @@ import {
   withdrawalsQuery,
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
-import type { MarketDataQuery, MarketQuery } from '@vegaprotocol/market-list';
+import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/market-list';
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';
 
 type MarketPageMockData = {
@@ -55,17 +55,18 @@ const marketDataOverride = (
   },
 });
 
-const marketQueryOverride = (
+const marketsDataOverride = (
   data: MarketPageMockData
-): PartialDeep<MarketQuery> => ({
-  market: {
-    tradableInstrument: {
-      instrument: {
-        name: `${data.state?.toUpperCase()} MARKET`,
+): PartialDeep<MarketsQuery> => ({
+  marketsConnection: {
+    edges: [
+      {
+        node: {
+          tradingMode: data.tradingMode,
+          state: data.state,
+        },
       },
-    },
-    state: data.state,
-    tradingMode: data.tradingMode,
+    ],
   },
 });
 
@@ -89,12 +90,12 @@ const mockTradingPage = (
 ) => {
   aliasGQLQuery(req, 'ChainId', chainIdQuery());
   aliasGQLQuery(req, 'Statistics', statisticsQuery());
+  aliasGQLQuery(req, 'MarketLastTrade', marketLastTradeQuery());
   aliasGQLQuery(
     req,
-    'Market',
-    marketQuery(marketQueryOverride({ state, tradingMode, trigger }))
+    'Markets',
+    marketsQuery(marketsDataOverride({ state, tradingMode, trigger }))
   );
-  aliasGQLQuery(req, 'Markets', marketsQuery());
   aliasGQLQuery(
     req,
     'MarketData',

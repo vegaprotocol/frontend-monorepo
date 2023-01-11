@@ -123,14 +123,15 @@ mockUseGetWithdrawThreshold.mockReturnValue(() =>
 
 let dateNowSpy: jest.SpyInstance<number, []>;
 
-const erc20WithdrawalApproval = {
-  assetSource: 'asset-source',
-  amount: '100',
-  nonce: '1',
-  creation: '1',
-  signatures: 'signatures',
-  targetAddress: 'target-address',
-};
+const erc20WithdrawalApproval: WithdrawalApprovalQuery['erc20WithdrawalApproval'] =
+  {
+    assetSource: 'asset-source',
+    amount: '100',
+    nonce: '1',
+    creation: '1',
+    signatures: 'signatures',
+    targetAddress: 'target-address',
+  };
 
 const mockedNetworkParams: MockedResponse<NetworkParamsQuery> = {
   request: {

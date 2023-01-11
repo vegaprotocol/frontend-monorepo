@@ -8,9 +8,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import type {
-  SingleMarketFieldsFragment,
   MarketData,
-  Candle,
   MarketDataUpdateFieldsFragment,
 } from '@vegaprotocol/market-list';
 
@@ -25,11 +23,6 @@ const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
     ? addDecimalsFormatNumber(markPrice, decimalPlaces)
     : '-';
 };
-
-export interface SingleMarketData extends SingleMarketFieldsFragment {
-  candles: Candle[];
-  data: MarketData;
-}
 
 export const Market = () => {
   const { marketId } = useParams();
@@ -67,10 +60,7 @@ export const Market = () => {
     },
     [update, lastMarketId]
   );
-  const { data, error, loading } = useDataProvider<
-    SingleMarketFieldsFragment,
-    never
-  >({
+  const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,
     variables,
     update: updateMarketId,
@@ -117,7 +107,7 @@ export const Market = () => {
   }
 
   return (
-    <AsyncRenderer<SingleMarketFieldsFragment>
+    <AsyncRenderer
       loading={loading}
       error={error}
       data={data || undefined}

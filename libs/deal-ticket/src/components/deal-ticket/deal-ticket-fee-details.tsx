@@ -1,7 +1,7 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {
   getFeeDetailsValues,
   useFeeDealTicketDetails,
@@ -9,7 +9,8 @@ import {
 
 interface DealTicketFeeDetailsProps {
   order: OrderSubmissionBody['orderSubmission'];
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
 }
 
 export interface DealTicketFeeDetails {
@@ -22,8 +23,9 @@ export interface DealTicketFeeDetails {
 export const DealTicketFeeDetails = ({
   order,
   market,
+  marketData,
 }: DealTicketFeeDetailsProps) => {
-  const feeDetails = useFeeDealTicketDetails(order, market);
+  const feeDetails = useFeeDealTicketDetails(order, market, marketData);
   const details = getFeeDetailsValues(feeDetails);
   return (
     <div>

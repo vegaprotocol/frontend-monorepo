@@ -59,7 +59,7 @@ export const LiquidityContainer = ({
   marketId: string | undefined;
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const market = useMarket(marketId);
+  const { data: market } = useMarket(marketId);
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
   // To be removed when liquidityProvision subscriptions are working
@@ -129,8 +129,8 @@ export const LiquidityViewContainer = ({
 }) => {
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
-  const market = useMarket(marketId);
-  const marketData = useStaticMarketData(marketId);
+  const { data: market } = useMarket(marketId);
+  const { data: marketData } = useStaticMarketData(marketId);
 
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 

@@ -8,16 +8,17 @@ import { HeaderStat } from '../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 const getTradingModeLabel = (
-  tradingMode?: Schema.MarketTradingMode,
+  marketTradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
   return (
-    (tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    (marketTradingMode ===
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
     trigger &&
     trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-      ? `${Schema.MarketTradingModeMapping[tradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`
+      ? `${Schema.MarketTradingModeMapping[marketTradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`
       : Schema.MarketTradingModeMapping[
-          tradingMode as Schema.MarketTradingMode
+          marketTradingMode as Schema.MarketTradingMode
         ]) || '-'
   );
 };
@@ -35,8 +36,8 @@ export const HeaderStatMarketTradingMode = ({
   initialTradingMode,
   initialTrigger,
 }: HeaderStatMarketTradingModeProps) => {
-  const data = useStaticMarketData(marketId);
-  const tradingMode = data?.marketTradingMode ?? initialTradingMode;
+  const { data } = useStaticMarketData(marketId);
+  const marketTradingMode = data?.marketTradingMode ?? initialTradingMode;
   const trigger = data?.trigger ?? initialTrigger;
 
   return (
@@ -47,7 +48,7 @@ export const HeaderStatMarketTradingMode = ({
       }
       testId="market-trading-mode"
     >
-      <div>{getTradingModeLabel(tradingMode, trigger)}</div>
+      <div>{getTradingModeLabel(marketTradingMode, trigger)}</div>
     </HeaderStat>
   );
 };
@@ -61,7 +62,7 @@ export const MarketTradingMode = ({
   inViewRoot?: RefObject<Element>;
 }) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });
-  const data = useStaticMarketData(marketId, !inView);
+  const { data } = useStaticMarketData(marketId, !inView);
 
   return (
     <Tooltip

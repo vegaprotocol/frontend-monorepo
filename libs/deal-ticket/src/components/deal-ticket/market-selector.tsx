@@ -24,11 +24,10 @@ import {
 import { IconNames } from '@blueprintjs/icons';
 import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: MarketDealTicket;
+  market: Market;
   setMarket: (marketId: string) => void;
   ItemRenderer?: React.FC<{
     market: Market;

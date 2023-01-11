@@ -39,10 +39,8 @@ export const MarketList = () => {
 
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
 
-  const localData = data?.markets;
-
   return (
-    <AsyncRenderer loading={loading} error={error} data={localData}>
+    <AsyncRenderer loading={loading} error={error} data={data}>
       <div
         className="grow w-full"
         style={{ minHeight: 500, overflow: 'hidden' }}
@@ -57,7 +55,7 @@ export const MarketList = () => {
               );
             },
           }}
-          rowData={localData}
+          rowData={data}
           defaultColDef={{
             resizable: true,
             sortable: true,

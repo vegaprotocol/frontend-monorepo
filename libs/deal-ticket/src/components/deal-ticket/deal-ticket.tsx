@@ -26,12 +26,13 @@ import {
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
 }
 
@@ -41,9 +42,9 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   summary: string;
 };
 
-export const DealTicket = ({ market, submit }: DealTicketProps) => {
+export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
-  const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
+  const [persistedOrder, setPersistedOrder] = usePersistedOrder(market.id);
   const {
     register,
     control,
@@ -57,12 +58,12 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
   });
 
   const order = watch();
-  const marketStateError = validateMarketState(market.data.marketState);
+  const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
   const marketTradingModeError = validateMarketTradingMode(
-    market.data.marketTradingMode
+    marketData.marketTradingMode
   );
   useEffect(() => {
     if (
@@ -144,13 +145,17 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         name="type"
         control={control}
         rules={{
-          validate: validateType(market),
+          validate: validateType(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
         }}
         render={({ field }) => (
           <TypeSelector
             value={field.value}
             onSelect={field.onChange}
             market={market}
+            marketData={marketData}
             errorMessage={errors.type?.message}
           />
         )}
@@ -165,6 +170,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
       <DealTicketAmount
         orderType={order.type}
         market={market}
+        marketData={marketData}
         register={register}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
@@ -173,7 +179,10 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         name="timeInForce"
         control={control}
         rules={{
-          validate: validateTimeInForce(market),
+          validate: validateTimeInForce(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
         }}
         render={({ field }) => (
           <TimeInForceSelector
@@ -181,6 +190,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
             orderType={order.type}
             onSelect={field.onChange}
             market={market}
+            marketData={marketData}
             errorMessage={errors.timeInForce?.message}
           />
         )}
@@ -207,9 +217,14 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
       <SummaryMessage
         errorMessage={errors.summary?.message}
         market={market}
+        marketData={marketData}
         order={order}
       />
-      <DealTicketFeeDetails order={order} market={market} />
+      <DealTicketFeeDetails
+        order={order}
+        market={market}
+        marketData={marketData}
+      />
     </form>
   );
 };
@@ -220,16 +235,18 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   order: OrderSubmissionBody['orderSubmission'];
 }
 const SummaryMessage = memo(
-  ({ errorMessage, market, order }: SummaryMessageProps) => {
+  ({ errorMessage, marketData, market, order }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     const asset = market.tradableInstrument.instrument.product.settlementAsset;
     const { balanceError, balance, margin } = useOrderMarginValidation({
       market,
+      marketData,
       order,
     });
     if (errorMessage === SummaryValidationType.NoCollateral) {
@@ -264,7 +281,7 @@ const SummaryMessage = memo(
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(market.data.marketTradingMode)
+      ].includes(marketData.marketTradingMode)
     ) {
       return (
         <div

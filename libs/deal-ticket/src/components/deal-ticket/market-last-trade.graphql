@@ -1,0 +1,13 @@
+fragment MarketLastTradeFields on Market {
+  depth {
+    lastTrade {
+      price
+    }
+  }
+}
+
+query MarketLastTrade($marketId: ID!) {
+  market(id: $marketId) {
+    ...MarketLastTradeFields
+  }
+}

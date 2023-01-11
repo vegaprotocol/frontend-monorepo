@@ -4,7 +4,7 @@ import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
 import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/market-info';
 import { t } from '@vegaprotocol/react-helpers';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
 import {
   ColumnKind,
   SelectMarketPopover,
@@ -21,7 +21,7 @@ import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { MarketState as State } from '@vegaprotocol/types';
 
 interface TradeMarketHeaderProps {
-  market: SingleMarketFieldsFragment | null;
+  market: Market | null;
   onSelect: (marketId: string) => void;
 }
 
@@ -121,7 +121,7 @@ export const TradeMarketHeader = ({
 };
 
 type ExpiryLabelProps = {
-  market: SingleMarketFieldsFragment | null;
+  market: Market | null;
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
@@ -130,7 +130,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
 };
 
 type ExpiryTooltipContentProps = {
-  market: SingleMarketFieldsFragment;
+  market: Market;
   explorerUrl?: string;
 };
 

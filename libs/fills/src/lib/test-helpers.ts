@@ -72,10 +72,14 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
             settlementAsset: {
               __typename: 'Asset',
               id: 'assset-id',
+              name: 'assset-id',
               symbol: 'SYM',
               decimals: 18,
             },
             quoteName: '',
+            dataSourceSpecForTradingTermination: {
+              id: '',
+            },
           },
         },
       },

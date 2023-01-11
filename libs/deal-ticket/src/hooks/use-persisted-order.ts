@@ -4,10 +4,10 @@ import { useCallback, useMemo } from 'react';
 
 type OrderData = OrderSubmissionBody['orderSubmission'] | null;
 
-export const usePersistedOrder = (market: {
-  id: string;
-}): [OrderData, (value: OrderData) => void] => {
-  const [value, setValue] = useLocalStorage(`deal-ticket-order-${market.id}`);
+export const usePersistedOrder = (
+  marketId: string
+): [OrderData, (value: OrderData) => void] => {
+  const [value, setValue] = useLocalStorage(`deal-ticket-order-${marketId}`);
   const order = value != null ? (JSON.parse(value) as OrderData) : null;
   const setOrder = useCallback(
     (order: OrderData) => setValue(JSON.stringify(order)),

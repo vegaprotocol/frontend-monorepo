@@ -56,8 +56,12 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
           settlementAsset: {
             id: 'asset-0',
             symbol: 'tDAI',
+            name: 'tDAI',
             decimals: 5,
             __typename: 'Asset',
+          },
+          dataSourceSpecForTradingTermination: {
+            id: '',
           },
           quoteName: 'DAI',
           __typename: 'Future',
@@ -101,8 +105,12 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
           settlementAsset: {
             id: 'asset-1',
             symbol: 'XYZalpha',
+            name: 'XYZalpha',
             decimals: 5,
             __typename: 'Asset',
+          },
+          dataSourceSpecForTradingTermination: {
+            id: '',
           },
           quoteName: 'USD',
           __typename: 'Future',
@@ -145,9 +153,13 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
         product: {
           settlementAsset: {
             id: 'asset-2',
+            name: '',
             symbol: 'tUSDC',
             decimals: 5,
             __typename: 'Asset',
+          },
+          dataSourceSpecForTradingTermination: {
+            id: '',
           },
           quoteName: 'USDC',
           __typename: 'Future',
@@ -191,8 +203,12 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
           settlementAsset: {
             id: 'asset-3',
             symbol: 'tBTC',
+            name: '',
             decimals: 5,
             __typename: 'Asset',
+          },
+          dataSourceSpecForTradingTermination: {
+            id: '',
           },
           quoteName: 'BTC',
           __typename: 'Future',

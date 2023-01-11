@@ -4,13 +4,13 @@ import * as Schema from '@vegaprotocol/types';
 import { SelectAllMarketsTableBody } from './select-market';
 
 import type {
-  MarketWithCandles,
-  MarketWithData,
+  MarketMaybeWithCandles,
+  MarketMaybeWithData,
   MarketData,
 } from '@vegaprotocol/market-list';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-type Market = MarketWithCandles & MarketWithData;
+type Market = MarketMaybeWithCandles & MarketMaybeWithData;
 
 type PartialMarket = Partial<
   Omit<Market, 'data'> & { data: Partial<MarketData> }
@@ -34,8 +34,12 @@ const MARKET_A: PartialMarket = {
         settlementAsset: {
           __typename: 'Asset',
           id: 'asset-ABC',
+          name: '',
           decimals: 2,
           symbol: 'ABC',
+        },
+        dataSourceSpecForTradingTermination: {
+          id: '',
         },
       },
       metadata: {
@@ -106,8 +110,12 @@ const MARKET_B: PartialMarket = {
         settlementAsset: {
           __typename: 'Asset',
           id: 'asset-XYZ',
+          name: 'asset-XYZ',
           decimals: 2,
           symbol: 'XYZ',
+        },
+        dataSourceSpecForTradingTermination: {
+          id: '',
         },
       },
       metadata: {

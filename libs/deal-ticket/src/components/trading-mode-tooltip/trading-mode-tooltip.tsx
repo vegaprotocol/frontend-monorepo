@@ -19,8 +19,8 @@ export const TradingModeTooltip = ({
   skip,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
-  const market = useMarket(marketId);
-  const marketData = useStaticMarketData(marketId, skip);
+  const { data: market } = useMarket(marketId);
+  const { data: marketData } = useStaticMarketData(marketId, skip);
 
   if (!market || !marketData) {
     return null;
@@ -28,9 +28,9 @@ export const TradingModeTooltip = ({
 
   const compiledGrid =
     onSelect && compileGridData(market, marketData, onSelect);
-  const { marketTradingMode: tradingMode, trigger } = marketData;
+  const { marketTradingMode, trigger } = marketData;
 
-  switch (tradingMode) {
+  switch (marketTradingMode) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
         <section data-testid="trading-mode-tooltip">
