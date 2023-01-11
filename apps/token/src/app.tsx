@@ -1,6 +1,6 @@
 import './i18n';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';

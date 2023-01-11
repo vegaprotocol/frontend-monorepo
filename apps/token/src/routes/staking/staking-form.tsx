@@ -1,6 +1,6 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,10 +10,6 @@ import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useSearchParams } from '../../hooks/use-search-params';
 import { BigNumber } from '../../lib/bignumber';
 import { addDecimal, removeDecimal } from '../../lib/decimals';
-import type {
-  PartyDelegations,
-  PartyDelegationsVariables,
-} from './__generated__/PartyDelegations';
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
@@ -157,6 +153,13 @@ export const StakingForm = ({
     }
   }, [formState, client, pubkey, nodeId, delegations, currentEpoch]);
 
+  const isLeavingNode = useMemo(() => {
+    return [
+      'efbdf943443bd7595e83b0d7e88f37b7932d487d1b94aab3d004997273bb43fc',
+      '5db9794f44c85b4b259907a00c8ea2383ad688dfef6ffb72c8743b6ae3eaefd4',
+    ].includes(nodeId);
+  }, [nodeId]);
+
   if (formState === FormState.Failure) {
     return <StakeFailure nodeName={nodeName} />;
   } else if (formState === FormState.Requested) {
@@ -195,6 +198,13 @@ export const StakingForm = ({
         labelFor="radio-stake-options"
         hideLabel={true}
       >
+        {isLeavingNode ? (
+          <div className="mb-4">
+            <Callout intent={Intent.Warning}>
+              {t('validatorLeavingWarning')}
+            </Callout>
+          </div>
+        ) : null}
         <RadioGroup
           name="radio-stake-options"
           onChange={(value) => {
@@ -207,7 +217,7 @@ export const StakingForm = ({
           value={action}
         >
           <Radio
-            disabled={availableStakeToAdd.isEqualTo(0)}
+            disabled={availableStakeToAdd.isEqualTo(0) || isLeavingNode}
             value={Actions.Add}
             label="Add"
             id="add-stake-radio"
