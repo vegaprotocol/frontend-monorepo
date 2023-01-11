@@ -23,18 +23,20 @@ import type {
   DelegationsQuery,
   DelegationsQueryVariables,
   WalletDelegationFieldsFragment,
-} from './__generated___/Delegations';
-import { DelegationsDocument } from './__generated___/Delegations';
+} from './__generated__/Delegations';
+import { DelegationsDocument } from './__generated__/Delegations';
+import { useEnvironment } from '@vegaprotocol/environment';
+import type { Pagination } from '@vegaprotocol/types';
 
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
   const {
     appState: { decimals },
   } = useAppState();
-
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const client = useApolloClient();
+  const { DELEGATIONS_PAGINATION } = useEnvironment();
   const [delegations, setDelegations] = React.useState<
     WalletDelegationFieldsFragment[]
   >([]);
@@ -62,7 +64,10 @@ export const usePollForDelegations = () => {
         client
           .query<DelegationsQuery, DelegationsQueryVariables>({
             query: DelegationsDocument,
-            variables: { partyId: pubKey },
+            variables: {
+              partyId: pubKey,
+              delegationsPagination: DELEGATIONS_PAGINATION as Pagination,
+            },
             fetchPolicy: 'network-only',
           })
           .then((res) => {

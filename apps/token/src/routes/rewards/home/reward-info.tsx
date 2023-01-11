@@ -9,7 +9,7 @@ import type {
   RewardsQuery,
   RewardFieldsFragment,
   DelegationFieldsFragment,
-} from './__generated___/Rewards';
+} from './__generated__/Rewards';
 import {
   formatNumber,
   removePaginationWrapper,

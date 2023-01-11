@@ -9,7 +9,7 @@ export type DelegationFieldsFragment = { __typename?: 'Delegation', amount: stri
 
 export type RewardsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
-  pagination?: Types.InputMaybe<Types.Pagination>;
+  delegationsPagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
@@ -40,7 +40,7 @@ export const DelegationFieldsFragmentDoc = gql`
 }
     `;
 export const RewardsDocument = gql`
-    query Rewards($partyId: ID!, $pagination: Pagination) {
+    query Rewards($partyId: ID!, $delegationsPagination: Pagination) {
   party(id: $partyId) {
     id
     rewardsConnection {
@@ -50,7 +50,7 @@ export const RewardsDocument = gql`
         }
       }
     }
-    delegationsConnection(pagination: $pagination) {
+    delegationsConnection(pagination: $delegationsPagination) {
       edges {
         node {
           ...DelegationFields
@@ -83,7 +83,7 @@ ${DelegationFieldsFragmentDoc}`;
  * const { data, loading, error } = useRewardsQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
- *      pagination: // value for 'pagination'
+ *      delegationsPagination: // value for 'delegationsPagination'
  *   },
  * });
  */

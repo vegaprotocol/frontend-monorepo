@@ -26,7 +26,7 @@ import {
   getUnnormalisedVotingPower,
 } from '../shared';
 import type { ReactNode } from 'react';
-import type { StakingNodeFieldsFragment } from './__generated___/Staking';
+import type { StakingNodeFieldsFragment } from './__generated__/Staking';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 
 const statuses = {
