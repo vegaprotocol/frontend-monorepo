@@ -212,7 +212,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, decimals, pubKey, t, vegaToken.address]);
+  }, [DELEGATIONS_PAGINATION, client, decimals, pubKey, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };
