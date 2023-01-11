@@ -631,5 +631,6 @@
   "MinProposalRequirements": "You must have at least 1 VEGA associated to make a proposal",
   "totalSupply": "Total Supply",
   "viaWallet": "via wallet",
-  "viaContract": "via vesting"
+  "viaContract": "via vesting",
+  "validatorLeavingWarning": "This validator has elected to leave the network and tokens staked to them will no longer earn rewards. You can remove your stake below."
 }
