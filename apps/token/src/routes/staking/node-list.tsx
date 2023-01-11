@@ -17,7 +17,6 @@ import type { ColDef } from 'ag-grid-community';
 const VALIDATOR = 'validator';
 const STATUS = 'status';
 const TOTAL_STAKE_THIS_EPOCH = 'totalStakeThisEpoch';
-const SHARE = 'share';
 const VALIDATOR_STAKE = 'validatorStake';
 const PENDING_STAKE = 'pendingStake';
 const RANKING_SCORE = 'rankingScore';

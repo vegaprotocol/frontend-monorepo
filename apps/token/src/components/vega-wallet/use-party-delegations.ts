@@ -1,5 +1,5 @@
 import { useFetch } from '@vegaprotocol/react-helpers';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export interface Delegation {
   party: string;
@@ -29,9 +29,11 @@ export interface Node {
   stakedTotal: string;
   maxIntendedStake: string;
   pendingStake: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   epochData?: any;
   status: string;
   delegations: Delegation[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rewardScore?: any;
   rankingScore: RankingScore;
   name: string;
