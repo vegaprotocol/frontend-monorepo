@@ -13,13 +13,14 @@ export const getActiveNavLinkClassNames = (
   isActive: boolean,
   navbarTheme: string
 ): string | undefined => {
-  return classNames('mx-2 py-3 self-start relative', {
+  return classNames('mx-2 my-4 md:my-0 md:py-3 self-start relative', {
     'cursor-default': isActive,
     'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
     'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
       !isActive && navbarTheme !== 'yellow',
-    'md:text-black': isActive && navbarTheme === 'yellow',
-    'md:text-black/60 md:hover:text-black':
+    'text-black dark:text-white md:dark:text-black':
+      isActive && navbarTheme === 'yellow',
+    'text-black/60 dark:text-neutral-400 md:dark:text-black/60 hover:text-black':
       !isActive && navbarTheme === 'yellow',
   });
 };

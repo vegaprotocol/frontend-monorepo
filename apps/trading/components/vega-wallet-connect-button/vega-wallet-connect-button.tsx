@@ -31,7 +31,7 @@ const MobileWalletButton = ({
     (store) => store.openVegaWalletDialog
   );
   const { VEGA_ENV } = useEnvironment();
-  const isYellow = VEGA_ENV === Networks.TESTNET && false;
+  const isYellow = VEGA_ENV === Networks.TESTNET;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const mobileDisconnect = useCallback(() => {
     setDrawerOpen(false);
@@ -101,7 +101,7 @@ const MobileWalletButton = ({
       >
         <div className="border-l border-default p-2 gap-4 flex flex-col w-full h-full bg-white dark:bg-black dark:text-white justify-between">
           <div className="flex h-5"></div>
-          <div className="grow" role="list">
+          <div className="grow my-4" role="list">
             {(pubKeys || []).map((pk) => (
               <KeypairListItem
                 key={pk.publicKey}

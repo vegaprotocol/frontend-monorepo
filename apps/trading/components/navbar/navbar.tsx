@@ -64,9 +64,12 @@ const LinkList = ({
         href={tokenLink(TOKEN_GOVERNANCE)}
         target="_blank"
         rel="noreferrer"
-        className={getActiveNavLinkClassNames(false, navbarTheme)}
+        className={classNames(
+          'w-full md:w-auto',
+          getActiveNavLinkClassNames(false, navbarTheme)
+        )}
       >
-        <span className="flex items-center gap-2">
+        <span className="flex items-center justify-between w-full gap-2 pr-3 md:pr-0">
           {t('Governance')}
           <NewTab />
         </span>
@@ -117,16 +120,18 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
         trigger={menuButton}
       >
         <div className="border-l border-default px-4 py-2 gap-4 flex flex-col w-full h-full bg-white dark:bg-black dark:text-white justify-start">
-          <div className="flex h-6"></div>
-          <div className="px-2 pb-6 w-full flex flex-col items-stretch border-b border-default">
+          <div className="w-full h-1"></div>
+          <div className="px-2 pt-10 w-full flex flex-col items-stretch">
             <NetworkSwitcher />
+            <div className="w-full pt-8 h-1 border-b border-default"></div>
           </div>
           <LinkList
-            className="flex flex-col border-b border-default pb-6"
+            className="flex flex-col"
             navbarTheme={navbarTheme}
             dataTestId="mobile-navbar-links"
           />
-          <div className="flex justify-between">
+          <div className="flex flex-col px-2 justify-between">
+            <div className="w-full h-1 border-t border-default py-5"></div>
             <ThemeSwitcher withMobile />
           </div>
         </div>
@@ -179,10 +184,13 @@ const AppNavLink = ({
   testId = name,
   end,
 }: AppNavLinkProps) => {
-  const borderClasses = classNames('absolute h-1 w-full bottom-[-1px] left-0', {
-    'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
-    'bg-black dark:bg-vega-yellow md:dark:bg-black': navbarTheme === 'yellow',
-  });
+  const borderClasses = classNames(
+    'absolute h-[2px] md:h-1 w-full bottom-[-1px] left-0',
+    {
+      'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
+      'bg-black dark:bg-vega-yellow md:dark:bg-black': navbarTheme === 'yellow',
+    }
+  );
   return (
     <NavLink
       data-testid={testId}
