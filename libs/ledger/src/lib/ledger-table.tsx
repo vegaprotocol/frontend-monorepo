@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/react-helpers';
 import type {
   VegaValueFormatterParams,
-  VegaICellRendererParams,
   TypedDataAgGrid,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
@@ -35,58 +34,6 @@ export const TransferTooltipCellComponent = ({
   );
 };
 
-type LedgerCellRendererProps = {
-  accountType?: Types.AccountType | null;
-  partyId?: string | null;
-  marketName?: string;
-};
-
-const LedgerCellRenderer = ({
-  accountType,
-  partyId,
-  marketName,
-}: LedgerCellRendererProps) => {
-  return (
-    <div className="flex flex-col justify-around leading-5 h-full">
-      <div
-        className="flex"
-        title={`${t('ID')}: ${truncateByChars(partyId || '-')}`}
-      >
-        {truncateByChars(partyId || '')}
-      </div>
-      <div
-        className="flex"
-        title={`${t('Account type')}: ${
-          accountType ? AccountTypeMapping[accountType] : '-'
-        }`}
-      >
-        {accountType && AccountTypeMapping[accountType]}
-      </div>
-      <div className="flex" title={`${t('Market')}: ${marketName || '-'}`}>
-        {marketName}
-      </div>
-    </div>
-  );
-};
-const SenderCellRenderer = ({ data }: VegaICellRendererParams<LedgerEntry>) => {
-  const props = {
-    accountType: data?.senderAccountType,
-    partyId: data?.senderPartyId,
-    marketName: data?.marketSender?.tradableInstrument?.instrument?.code,
-  };
-  return <LedgerCellRenderer {...props} />;
-};
-const ReceiverCellRenderer = ({
-  data,
-}: VegaICellRendererParams<LedgerEntry>) => {
-  const props = {
-    accountType: data?.receiverAccountType,
-    partyId: data?.receiverPartyId,
-    marketName: data?.marketReceiver?.tradableInstrument?.instrument?.code,
-  };
-  return <LedgerCellRenderer {...props} />;
-};
-
 type LedgerEntryProps = TypedDataAgGrid<LedgerEntry>;
 
 export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
@@ -95,7 +42,6 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No entries')}
-        rowHeight={70}
         ref={ref}
         getRowId={({ data }) => data.id}
         tooltipShowDelay={500}
@@ -109,13 +55,59 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
       >
         <AgGridColumn
           headerName={t('Sender')}
+          field="senderPartyId"
+          cellRenderer={({
+            value,
+          }: VegaValueFormatterParams<LedgerEntry, 'senderPartyId'>) =>
+            truncateByChars(value || '')
+          }
+        />
+        <AgGridColumn
+          headerName={t('Account type')}
           field="senderAccountType"
-          cellRenderer={SenderCellRenderer}
+          cellRenderer={({
+            value,
+          }: VegaValueFormatterParams<LedgerEntry, 'senderAccountType'>) =>
+            value ? AccountTypeMapping[value] : '-'
+          }
+        />
+        <AgGridColumn
+          headerName={t('Market')}
+          field="marketSender.tradableInstrument.instrument.code"
+          cellRenderer={({
+            value,
+          }: VegaValueFormatterParams<
+            LedgerEntry,
+            'marketSender.tradableInstrument.instrument.code'
+          >) => value || '-'}
         />
         <AgGridColumn
           headerName={t('Receiver')}
+          field="receiverPartyId"
+          cellRenderer={({
+            value,
+          }: VegaValueFormatterParams<LedgerEntry, 'receiverPartyId'>) =>
+            truncateByChars(value || '')
+          }
+        />
+        <AgGridColumn
+          headerName={t('Account type')}
           field="receiverAccountType"
-          cellRenderer={ReceiverCellRenderer}
+          cellRenderer={({
+            value,
+          }: VegaValueFormatterParams<LedgerEntry, 'receiverAccountType'>) =>
+            value ? AccountTypeMapping[value] : '-'
+          }
+        />
+        <AgGridColumn
+          headerName={t('Market')}
+          field="marketReceiver.tradableInstrument.instrument.code"
+          cellRenderer={({
+            value,
+          }: VegaValueFormatterParams<
+            LedgerEntry,
+            'marketReceiver.tradableInstrument.instrument.code'
+          >) => value || '-'}
         />
         <AgGridColumn
           headerName={t('Transfer Type')}

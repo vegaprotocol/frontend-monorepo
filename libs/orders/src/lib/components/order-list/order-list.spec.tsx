@@ -16,11 +16,9 @@ import {
 } from '../mocks/generate-orders';
 
 const defaultProps: OrderListTableProps = {
-  hasActiveOrder: true,
   rowData: [],
   setEditOrder: jest.fn(),
   cancel: jest.fn(),
-  cancelAll: jest.fn(),
 };
 
 const generateJsx = (

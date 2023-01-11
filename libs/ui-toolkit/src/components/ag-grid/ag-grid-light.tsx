@@ -20,12 +20,16 @@ const agGridLightVariables = `
 
   .ag-theme-balham .ag-row {
     border-width: 1px 0;
-    border-bottom: solid transparent;
+    border-bottom: 1px solid transparent;
   }
 
   .ag-theme-balham .ag-react-container {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .ag-theme-balham .ag-cell, .ag-theme-balham .ag-full-width-row .ag-cell-wrapper.ag-row-group {    
+    line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
   }
 `;
 

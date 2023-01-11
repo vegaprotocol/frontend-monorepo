@@ -132,10 +132,17 @@ export const useCheckLiquidityStatus = ({
   percentage: BigNumber;
 } => {
   // percentage supplied
-  const percentage = new BigNumber(suppliedStake)
-    .dividedBy(targetStake)
-    .multipliedBy(100);
+  const percentage =
+    targetStake && suppliedStake && new BigNumber(targetStake).gt(0)
+      ? new BigNumber(suppliedStake).dividedBy(targetStake).multipliedBy(100)
+      : new BigNumber(0);
   // IF supplied_stake >= target_stake THEN
+  if (percentage.eq(0)) {
+    return {
+      status: Intent.None,
+      percentage,
+    };
+  }
   if (new BigNumber(suppliedStake).gte(new BigNumber(targetStake))) {
     // show a green status, e.g. "🟢 $13,666,999 liquidity supplied"
     return {

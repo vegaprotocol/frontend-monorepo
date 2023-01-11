@@ -21,7 +21,9 @@ export const Requested = ({
 
   if (!order) {
     return (
-      <div className="text-vega-red">{t('Could not create closing order')}</div>
+      <div className="text-vega-pink">
+        {t('Could not create closing order')}
+      </div>
     );
   }
 

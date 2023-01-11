@@ -41,11 +41,10 @@ const AccountsManager = () => {
     const rowsThisBlock = dataRef.current
       ? dataRef.current.slice(startRow, endRow)
       : [];
-    const lastRow = dataRef.current?.length ?? -1;
+    const lastRow = dataRef.current ? dataRef.current.length : 0;
     successCallback(rowsThisBlock, lastRow);
   };
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
-  console.log(data, loading);
   return (
     <>
       <AsyncRenderer

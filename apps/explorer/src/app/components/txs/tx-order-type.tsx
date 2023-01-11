@@ -137,8 +137,7 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   // This will get unwieldy and should probably produce a different colour of tag
   if (type === 'Chain Event' && !!command?.chainEvent) {
     type = getLabelForChainEvent(command.chainEvent);
-    colours =
-      'text-white dark-text-white bg-vega-pink-dark dark:bg-vega-pink-dark';
+    colours = 'text-white dark-text-white bg-vega-pink dark:bg-vega-pink';
   } else if (type === 'Proposal' || type === 'Governance Proposal') {
     if (command && !!command.proposalSubmission) {
       type = getLabelForProposal(command.proposalSubmission);

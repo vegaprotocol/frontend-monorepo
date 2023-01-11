@@ -15,7 +15,6 @@ type OneOf<T extends any[]> = T extends [infer Only]
   ? OneOf<[XOR<A, B>, ...Rest]>
   : never;
 /* eslint-enable @typescript-eslint/no-explicit-any */
-
 export interface paths {
   '/info': {
     /**
@@ -40,6 +39,8 @@ export interface paths {
     get: operations['BlockExplorer_GetTransaction'];
   };
 }
+
+export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
@@ -458,7 +459,40 @@ export interface components {
     readonly v1NodeVote: {
       /** Reference, required field */
       readonly reference?: string;
+      /** type of NodeVote, also required */
+      readonly type?: components['schemas']['v1NodeVoteType'];
     };
+    /**
+     * - TYPE_UNSPECIFIED: Represents an unspecified or missing value from the input
+     *  - TYPE_STAKE_DEPOSITED: A node vote a new stake deposit
+     *  - TYPE_STAKE_REMOVED: A node vote for a new stake removed event
+     *  - TYPE_FUNDS_DEPOSITED: A node vote for new collateral deposited
+     *  - TYPE_SIGNER_ADDED: A node vote for a new signer added to the erc20 bridge
+     *  - TYPE_SIGNER_REMOVED: A node vote for a signer removed from the erc20 bridge
+     *  - TYPE_BRIDGE_STOPPED: A node vote for a bridge stopped event
+     *  - TYPE_BRIDGE_RESUMED: A node vote for a bridge resumed event
+     *  - TYPE_ASSET_LISTED: A node vote for a newly listed asset
+     *  - TYPE_LIMITS_UPDATED: A node vote for an asset limits update
+     *  - TYPE_STAKE_TOTAL_SUPPLY: A node vote to share the total supply of the staking token
+     *  - TYPE_SIGNER_THRESHOLD_SET: A node vote to update the threshold of the signer set for the multisig contract
+     *  - TYPE_GOVERNANCE_VALIDATE_ASSET: A node vote to validate a new assert governance proposal
+     * @default TYPE_UNSPECIFIED
+     * @enum {string}
+     */
+    readonly v1NodeVoteType:
+      | 'TYPE_UNSPECIFIED'
+      | 'TYPE_STAKE_DEPOSITED'
+      | 'TYPE_STAKE_REMOVED'
+      | 'TYPE_FUNDS_DEPOSITED'
+      | 'TYPE_SIGNER_ADDED'
+      | 'TYPE_SIGNER_REMOVED'
+      | 'TYPE_BRIDGE_STOPPED'
+      | 'TYPE_BRIDGE_RESUMED'
+      | 'TYPE_ASSET_LISTED'
+      | 'TYPE_LIMITS_UPDATED'
+      | 'TYPE_STAKE_TOTAL_SUPPLY'
+      | 'TYPE_SIGNER_THRESHOLD_SET'
+      | 'TYPE_GOVERNANCE_VALIDATE_ASSET';
     /** Specific details for a one off transfer */
     readonly v1OneOffTransfer: {
       /**
@@ -1111,11 +1145,8 @@ export interface components {
       readonly auctionExtension?: string;
       /** Specifies parameters related to target stake calculation */
       readonly targetStakeParameters?: components['schemas']['vegaTargetStakeParameters'];
-      /**
-       * Specifies the triggering ratio for entering liquidity auction
-       * Format: double
-       */
-      readonly triggeringRatio?: number;
+      /** Specifies the triggering ratio for entering liquidity auction */
+      readonly triggeringRatio?: string;
     };
     /** Represents a liquidity order */
     readonly vegaLiquidityOrder: {

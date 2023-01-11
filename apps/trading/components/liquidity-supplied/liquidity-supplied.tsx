@@ -14,10 +14,11 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { Indicator, Link } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { DataGrid } from '@vegaprotocol/react-helpers';
+import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 
 interface Props {
   marketId?: string;
@@ -80,7 +81,7 @@ export const MarketLiquiditySupplied = ({
       )
     : '-';
 
-  const { percentage } = useCheckLiquidityStatus({
+  const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: market?.suppliedStake || 0,
     targetStake: market?.targetStake || 0,
     triggeringRatio,
@@ -107,6 +108,12 @@ export const MarketLiquiditySupplied = ({
     },
   ];
 
+  const showMessage =
+    percentage.gte(100) &&
+    market?.marketTradingMode ===
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    market.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+
   const description = (
     <section>
       {compiledGrid && <DataGrid grid={compiledGrid} />}
@@ -114,6 +121,13 @@ export const MarketLiquiditySupplied = ({
       <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
       </Link>
+      {showMessage && (
+        <p className="mt-4">
+          {t(
+            'The market is in an auction because there are no priced limit orders, which are required to deploy liquidity commitment pegged orders. This means the order book is empty on one or both sides.'
+          )}
+        </p>
+      )}
     </section>
   );
 
@@ -123,8 +137,9 @@ export const MarketLiquiditySupplied = ({
       description={description}
       testId="liquidity-supplied"
     >
-      {/* <Indicator variant={status} /> */}
-      {supplied} ({formatNumberPercentage(percentage, 2)})
+      <Indicator variant={status} />
+      {supplied} (
+      {percentage.gt(100) ? '>100%' : formatNumberPercentage(percentage, 2)})
     </HeaderStat>
   );
 };

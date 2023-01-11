@@ -177,7 +177,7 @@ const generateUpdateMarketProposal = (
           __typename: liquidityMonitoring
             ? 'LiquidityMonitoringParameters'
             : undefined,
-          triggeringRatio: 0,
+          triggeringRatio: '0',
           targetStakeParameters: {
             __typename: undefined,
             scalingFactor: 0,

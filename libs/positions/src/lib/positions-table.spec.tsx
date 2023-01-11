@@ -62,12 +62,11 @@ it('Render correct columns', async () => {
   ]);
 });
 
-it('Splits market name', async () => {
+it('renders market name', async () => {
   await act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
-  expect(screen.getByText('ETH/BTC')).toBeTruthy();
-  expect(screen.getByText('31 july 2022')).toBeTruthy();
+  expect(screen.getByText('ETH/BTC (31 july 2022)')).toBeTruthy();
 });
 
 it('Does not fail if the market name does not match the split pattern', async () => {
@@ -89,8 +88,8 @@ it('add color and sign to amount, displays positive notional value', async () =>
   });
   let cells = screen.getAllByRole('gridcell');
 
-  expect(cells[2].classList.contains('text-vega-green-dark')).toBeTruthy();
-  expect(cells[2].classList.contains('text-vega-red-dark')).toBeFalsy();
+  expect(cells[2].classList.contains('text-vega-green')).toBeTruthy();
+  expect(cells[2].classList.contains('text-vega-pink')).toBeFalsy();
   expect(cells[2].textContent).toEqual('+100');
   expect(cells[1].textContent).toEqual('1,230.0');
   await act(async () => {
@@ -99,8 +98,8 @@ it('add color and sign to amount, displays positive notional value', async () =>
     );
   });
   cells = screen.getAllByRole('gridcell');
-  expect(cells[2].classList.contains('text-vega-green-dark')).toBeFalsy();
-  expect(cells[2].classList.contains('text-vega-red-dark')).toBeTruthy();
+  expect(cells[2].classList.contains('text-vega-green')).toBeFalsy();
+  expect(cells[2].classList.contains('text-vega-pink')).toBeTruthy();
   expect(cells[2].textContent?.startsWith('-100')).toBeTruthy();
   expect(cells[1].textContent).toEqual('1,230.0');
 });

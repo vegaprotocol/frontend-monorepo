@@ -38,6 +38,7 @@ export const CumulativeVol = React.memo(
           height: relativeBid && relativeAsk ? '50%' : '100%',
           width: `${relativeAsk}%`,
           backgroundColor: ASK_COLOR,
+          opacity: 0.6,
         }}
       ></div>
     ) : null;
@@ -50,6 +51,7 @@ export const CumulativeVol = React.memo(
           top: relativeBid && relativeAsk ? '50%' : '0',
           width: `${relativeBid}%`,
           backgroundColor: BID_COLOR,
+          opacity: 0.6,
         }}
       ></div>
     ) : null;
