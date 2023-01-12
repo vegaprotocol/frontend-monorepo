@@ -18,10 +18,12 @@ const navigation = {
   token: '[href="/token"]',
 };
 
+const topLevelRoutes = ['proposals', 'validators', 'rewards']
+
 Cypress.Commands.add('navigate_to', (page) => {
   const tokenDropDown = 'state-trigger';
 
-  if (page != 'proposals' && page != 'validators' && page != 'rewards') {
+  if (!topLevelRoutes.includes(page)) {
     cy.getByTestId(tokenDropDown, { timeout: 10000 }).click();
     cy.getByTestId('token-dropdown').within(() => {
       cy.get(navigation[page]).click();
