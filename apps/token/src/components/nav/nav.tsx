@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { useEffect, useState } from 'react';
-import Routes, { TOP_LEVEL_ROUTES } from '../../routes/routes';
+import { TOP_LEVEL_ROUTES } from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
 import vegaWhite from '../../images/vega_white.png';
 import debounce from 'lodash/debounce';
