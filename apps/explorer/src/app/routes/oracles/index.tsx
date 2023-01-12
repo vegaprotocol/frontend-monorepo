@@ -1,35 +1,22 @@
-import { useLocation } from 'react-router-dom';
-
-import React, { useEffect } from 'react';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { Loader, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../components/route-title';
 import { t } from '@vegaprotocol/react-helpers';
-import { SubHeading } from '../../components/sub-heading';
 import { useExplorerOracleSpecsQuery } from './__generated__/Oracles';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { OracleDetails } from './components/oracle';
+import { useScrollToLocation } from '../../hooks/scroll-to-location';
+import filter from 'recursive-key-filter';
 
 const Oracles = () => {
-  const { hash } = useLocation();
   const { data, loading } = useExplorerOracleSpecsQuery();
 
   useDocumentTitle(['Oracles']);
-
-  useEffect(() => {
-    if (data && !loading && hash) {
-      const element = document.getElementById(hash.substring(1));
-      if (element) {
-        window.scrollTo({
-          top: element.offsetTop,
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, loading, !!data]);
+  useScrollToLocation();
 
   return (
     <section>
       <RouteTitle data-testid="oracle-specs-heading">{t('Oracles')}</RouteTitle>
+      {loading ? <Loader /> : null}
       {data?.oracleSpecsConnection?.edges
         ? data.oracleSpecsConnection.edges.map((o) => {
             const id = o?.node.dataSourceSpec.spec.id;
@@ -37,7 +24,7 @@ const Oracles = () => {
               return null;
             }
             return (
-              <div key={id} className="mb-10 cursor-pointer">
+              <div id={id} key={id} className="mb-10 cursor-pointer">
                 <OracleDetails
                   id={id}
                   dataSource={o?.node}
@@ -45,7 +32,7 @@ const Oracles = () => {
                 />
                 <details>
                   <summary className="pointer">JSON</summary>
-                  <SyntaxHighlighter data={o} />
+                  <SyntaxHighlighter data={filter(o, ['__typename'])} />
                 </details>
               </div>
             );

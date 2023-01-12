@@ -1,5 +1,4 @@
 import { getNodes, t } from '@vegaprotocol/react-helpers';
-import { Loader } from '@vegaprotocol/ui-toolkit';
 import { MarketLink, PartyLink } from '../../../components/links';
 import {
   EthExplorerLink,
@@ -17,6 +16,8 @@ import type {
 } from '../__generated__/Oracles';
 import type { ExplorerOracleForMarketsMarketFragment } from '../__generated__/OraclesForMarkets';
 import { useExplorerOracleFormMarketsQuery } from '../__generated__/OraclesForMarkets';
+import { OracleData } from './oracle-data';
+import { OracleFilter } from './oracle-filter';
 
 type SourceType =
   ExplorerOracleDataSourceFragment['dataSourceSpec']['spec']['data']['sourceType'];
@@ -159,21 +160,25 @@ export const OracleDetails = ({
   const reportsCount: number = dataConnection.dataConnection.edges?.length || 0;
 
   return (
-    <TableWithTbody>
-      <TableRow modifier="bordered">
-        <TableHeader scope="row">{t('ID')}</TableHeader>
-        <TableCell modifier="bordered">{id}</TableCell>
-      </TableRow>
-      <OracleDetailsType type={sourceType.__typename} />
-      {
-        // Disabled until https://github.com/vegaprotocol/vega/issues/7286 is released
-        /*<OracleSigners sourceType={sourceType} />*/
-      }
-      <OracleMarkets id={id} />
-      <TableRow modifier="bordered">
-        <TableHeader scope="row">{t('Broadcasts')}</TableHeader>
-        <TableCell modifier="bordered">{reportsCount}</TableCell>
-      </TableRow>
-    </TableWithTbody>
+    <div>
+      <TableWithTbody>
+        <TableRow modifier="bordered">
+          <TableHeader scope="row">{t('ID')}</TableHeader>
+          <TableCell modifier="bordered">{id}</TableCell>
+        </TableRow>
+        <OracleDetailsType type={sourceType.__typename} />
+        {
+          // Disabled until https://github.com/vegaprotocol/vega/issues/7286 is released
+          /*<OracleSigners sourceType={sourceType} />*/
+        }
+        <OracleMarkets id={id} />
+        <TableRow modifier="bordered">
+          <TableHeader scope="row">{t('Broadcasts')}</TableHeader>
+          <TableCell modifier="bordered">{reportsCount}</TableCell>
+        </TableRow>
+      </TableWithTbody>
+      <OracleFilter data={dataSource} />
+      <OracleData data={dataConnection} />
+    </div>
   );
 };
