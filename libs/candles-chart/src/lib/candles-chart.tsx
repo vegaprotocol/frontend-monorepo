@@ -51,7 +51,7 @@ export const CandlesChartContainer = ({
   const [interval, setInterval] = useState<Interval>(Interval.I15M);
   const [chartType, setChartType] = useState<ChartType>(ChartType.CANDLE);
   const [overlays, setOverlays] = useState<Overlay[]>([]);
-  const [studies, setStudies] = useState<Study[]>([]);
+  const [studies, setStudies] = useState<Study[]>([Study.VOLUME]);
 
   const dataSource = useMemo(() => {
     return new VegaDataSource(client, marketId, pubKey);

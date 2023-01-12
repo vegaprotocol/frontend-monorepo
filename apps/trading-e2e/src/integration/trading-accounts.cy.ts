@@ -20,8 +20,18 @@ describe('accounts', { tags: '@smoke' }, () => {
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="breakdown"]')
+      .find('[col-id="breakdown"] [data-testid="breakdown"]')
       .should('have.text', 'Breakdown');
+
+    cy.getByTestId('tab-accounts')
+      .get(tradingAccountRowId)
+      .find('[col-id="breakdown"] [data-testid="deposit"]')
+      .should('have.text', 'Deposit');
+
+    cy.getByTestId('tab-accounts')
+      .get(tradingAccountRowId)
+      .find('[col-id="breakdown"] [data-testid="withdraw"]')
+      .should('have.text', 'Withdraw');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)

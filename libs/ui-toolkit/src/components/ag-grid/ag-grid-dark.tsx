@@ -20,12 +20,16 @@ const agGridDarkVariables = `
 
   .ag-theme-balham-dark .ag-row {
     border-width: 1px 0;
-    border-bottom: solid transparent;
+    border-bottom: 1px solid transparent;
   }
 
   .ag-theme-balham-dark .ag-react-container {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .ag-theme-balham-dark .ag-cell, .ag-theme-balham-dark .ag-full-width-row .ag-cell-wrapper.ag-row-group {    
+    line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
   }
 `;
 

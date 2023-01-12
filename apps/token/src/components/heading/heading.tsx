@@ -43,7 +43,7 @@ export const SubHeading = ({
 
   return (
     <h2
-      className={classNames('text-2xl font-alpha calt uppercase', {
+      className={classNames('text-2xl font-alpha calt uppercase break-words', {
         'mx-auto': centerContent,
         'mb-0': !marginBottom,
         'mb-4': marginBottom,

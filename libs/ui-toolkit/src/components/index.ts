@@ -20,6 +20,7 @@ export * from './link';
 export * from './loader';
 export * from './lozenge';
 export * from './nav';
+export * from './nav-dropdown';
 export * from './popover';
 export * from './price-change';
 export * from './progress-bar';

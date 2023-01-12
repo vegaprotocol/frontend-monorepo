@@ -13,7 +13,7 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
 
   return (
     <li id={proposal.id} data-testid="proposals-list-item">
-      <RoundedWrapper paddingBottom={true}>
+      <RoundedWrapper paddingBottom={true} heightFull={true}>
         <ProposalHeader proposal={proposal} />
         <ProposalsListItemDetails proposal={proposal} />
       </RoundedWrapper>

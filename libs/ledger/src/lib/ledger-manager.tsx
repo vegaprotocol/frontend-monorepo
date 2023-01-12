@@ -34,14 +34,14 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
   };
 
   return (
-    <>
+    <div className="h-full relative">
       <LedgerTable
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}
         onFilterChanged={onFilterChanged}
       />
-      <div className="pointer-events-none absolute inset-0 top-5">
+      <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
           loading={loading}
           error={error}
@@ -50,6 +50,6 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
           noDataCondition={(data) => !(data && data.length)}
         />
       </div>
-    </>
+    </div>
   );
 };

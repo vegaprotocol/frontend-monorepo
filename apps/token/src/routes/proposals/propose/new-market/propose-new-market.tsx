@@ -89,9 +89,9 @@ export const ProposeNewMarket = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        newMarket: {
-          ...JSON.parse(fields.proposalTerms),
-        },
+        newMarket: fields.proposalTerms
+          ? { ...JSON.parse(fields.proposalTerms) }
+          : {},
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
           isVoteDeadlineAtMinimum,
