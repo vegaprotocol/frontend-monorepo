@@ -24,7 +24,6 @@ module.exports = defineConfig({
     requestTimeout: 20000,
   },
   env: {
-    // pubkeys for UI_Trading_Test
     VEGA_PUBLIC_KEY:
       '47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278',
     VEGA_PUBLIC_KEY2:
@@ -36,9 +35,6 @@ module.exports = defineConfig({
     ETHEREUM_WALLET_ADDRESS: '0x265Cc6d39a1B53d0d92068443009eE7410807158',
     ETHERSCAN_URL: 'https://sepolia.etherscan.io',
     ETHEREUM_CHAIN_ID: 11155111,
-    tsConfig: 'tsconfig.json',
-    TAGS: 'not @todo and not @ignore and not @manual',
-    TRADING_TEST_VEGA_WALLET_PASSPHRASE: '123',
     ETH_WALLET_MNEMONIC:
       'ugly gallery notice network true range brave clarify flat logic someone chunk',
     TRADING_MODE_LINK:

@@ -28,7 +28,7 @@ describe('capsule', { tags: '@slow' }, () => {
   });
 
   beforeEach(() => {
-    cy.setVegaWalletConfig();
+    cy.setVegaWallet();
   });
 
   it('can view market', () => {

@@ -34,8 +34,7 @@ export function addVegaWalletConnect() {
     cy.get('[data-testid=connectors-list]')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
-    // cy.wait('@walletGQL');
-    cy.pause();
+    cy.wait('@walletReq');
     cy.get('[data-testid=dialog-content]').should(
       'contain.text',
       'Successfully connected'

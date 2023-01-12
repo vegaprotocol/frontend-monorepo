@@ -12,17 +12,16 @@ declare global {
 export const addCreateMarket = () => {
   Cypress.Commands.add('createMarket', () => {
     const config = {
-      vegaPubKey: Cypress.env('CAPSULE_VEGA_PUBLIC_KEY'),
-      token: Cypress.env('CAPSULE_VEGA_WALLET_API_TOKEN'),
-      ethWalletMnemonic: Cypress.env('CAPSULE_ETH_WALLET_MNEMONIC'),
+      vegaPubKey: Cypress.env('VEGA_PUBLIC_KEY'),
+      token: Cypress.env('VEGA_WALLET_API_TOKEN'),
+      ethWalletMnemonic: Cypress.env('ETH_WALLET_MNEMONIC'),
       ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
       vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
       vegaUrl: Cypress.env('VEGA_URL'),
       faucetUrl: Cypress.env('FAUCET_URL'),
     };
-    console.log(JSON.stringify(config, null, 2));
 
-    cy.log('creating market on capsule environment');
+    cy.highlight('creating market on capsule environment');
 
     cy.wrap(createMarket(config), {
       timeout: 60000,

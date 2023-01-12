@@ -96,11 +96,11 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
-    cy.visit('/#/portfolio');
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setVegaWallet();
+    cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
-    cy.connectVegaWallet();
     cy.getByTestId('Withdrawals').click();
   });
 

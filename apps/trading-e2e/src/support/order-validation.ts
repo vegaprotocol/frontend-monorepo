@@ -61,7 +61,7 @@ const vegaWalletTransaction = (transaction: Transaction) => {
     .should('deep.equal', {
       token: JSON.parse(localStorage.getItem('vega_wallet_config') || '{}')
         ?.token,
-      publicKey: Cypress.env('VEGA_PUBLIC_KEY2'),
+      publicKey: Cypress.env('VEGA_PUBLIC_KEY'),
       sendingMode: 'TYPE_SYNC',
       transaction,
     });
