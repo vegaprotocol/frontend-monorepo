@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { useEffect, useState } from 'react';
-import Routes from '../../routes/routes';
+import Routes, { TOP_LEVEL_ROUTES } from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
 import vegaWhite from '../../images/vega_white.png';
 import debounce from 'lodash/debounce';
@@ -40,23 +40,6 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
 
   const { t } = useTranslation();
   const isYellow = navbarTheme === 'yellow';
-  const routes = [
-    {
-      name: t('Proposals'),
-      testId: t('Proposals'),
-      path: Routes.PROPOSALS,
-    },
-    {
-      name: t('Validators'),
-      testId: t('Validators'),
-      path: Routes.VALIDATORS,
-    },
-    {
-      name: t('Rewards'),
-      testId: t('Rewards'),
-      path: Routes.REWARDS,
-    },
-  ];
 
   return (
     <ToolkitNav
@@ -71,14 +54,20 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
     >
       {isDesktop ? (
         <nav className="flex items-center flex-1 px-2">
-          {routes.map((r) => (
-            <AppNavLink key={r.path} {...r} navbarTheme={navbarTheme} />
+          {TOP_LEVEL_ROUTES.map((r) => (
+            <AppNavLink
+              key={r.path}
+              testId={r.name}
+              name={t(r.name)}
+              path={r.path}
+              navbarTheme={navbarTheme}
+            />
           ))}
           <NavDropDown navbarTheme={navbarTheme} />
         </nav>
       ) : (
         <nav className="flex items-center flex-1 px-2 justify-end">
-          <NavDrawer inverted={isYellow} routes={routes} />
+          <NavDrawer inverted={isYellow} routes={TOP_LEVEL_ROUTES} />
         </nav>
       )}
     </ToolkitNav>

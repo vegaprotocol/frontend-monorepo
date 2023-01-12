@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useState } from 'react';
-import Routes from '../../routes/routes';
+import Routes, { TOKEN_DROPDOWN_ROUTES } from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
@@ -150,28 +150,6 @@ export const DropdownMenuSeparator = forwardRef<
 export const NavDropDown = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
-  const subRoutes = [
-    {
-      name: t('Token'),
-      testId: t('Token'),
-      path: Routes.TOKEN,
-    },
-    {
-      name: t('Supply & Vesting'),
-      testId: t('Supply & Vesting'),
-      path: Routes.SUPPLY,
-    },
-    {
-      name: t('Withdraw'),
-      testId: t('Withdraw'),
-      path: Routes.WITHDRAWALS,
-    },
-    {
-      name: t('Redeem'),
-      testId: t('Redeem'),
-      path: Routes.REDEEM,
-    },
-  ];
   return (
     <DropdownMenu open={isOpen} onOpenChange={(open) => setOpen(open)}>
       <AppNavLink
@@ -190,10 +168,12 @@ export const NavDropDown = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
       />
 
       <DropdownMenuContent data-testid="token-dropdown">
-        {subRoutes.map((r) => (
+        {TOKEN_DROPDOWN_ROUTES.map((r) => (
           <DropdownMenuItem key={r.name} onClick={() => setOpen(false)}>
             <AppNavLink
-              {...r}
+              testId={r.name}
+              name={t(r.name)}
+              path={r.path}
               navbarTheme={'inherit'}
               end={true}
               fullWidth={true}
