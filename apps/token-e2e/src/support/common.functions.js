@@ -18,7 +18,7 @@ const navigation = {
   token: '[href="/token"]',
 };
 
-const topLevelRoutes = ['proposals', 'validators', 'rewards']
+const topLevelRoutes = ['proposals', 'validators', 'rewards'];
 
 Cypress.Commands.add('navigate_to', (page) => {
   const tokenDropDown = 'state-trigger';
