@@ -23,7 +23,7 @@ export const MarketState = ({
   const throttledSetMarketState = useRef(
     throttle((state: Schema.MarketState) => {
       setMarketState(state);
-    }, constants.DEBOUNCE_UPDATE_TIME)
+    }, constants.THROTTLE_UPDATE_TIME)
   ).current;
 
   const update = useCallback(

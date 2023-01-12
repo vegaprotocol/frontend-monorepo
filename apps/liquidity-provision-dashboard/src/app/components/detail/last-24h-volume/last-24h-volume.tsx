@@ -15,7 +15,7 @@ import {
 import type { Candle } from '@vegaprotocol/market-list';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';
 
-const DEBOUNCE_UPDATE_TIME = 500;
+const THROTTLE_UPDATE_TIME = 500;
 
 export const Last24hVolume = ({
   marketId,
@@ -54,7 +54,7 @@ export const Last24hVolume = ({
   const throttledSetCandles = useRef(
     throttle((data: Candle[]) => {
       setCandleVolume(calcDayVolume(data));
-    }, DEBOUNCE_UPDATE_TIME)
+    }, THROTTLE_UPDATE_TIME)
   ).current;
 
   const update = useCallback(
@@ -78,7 +78,7 @@ export const Last24hVolume = ({
     throttle((candles: Candle[]) => {
       const candle24hAgo = candles?.[0];
       setVolumeChange(getChange(data || [], candle24hAgo?.close));
-    }, DEBOUNCE_UPDATE_TIME)
+    }, THROTTLE_UPDATE_TIME)
   ).current;
 
   const updateCandle24hAgo = useCallback(

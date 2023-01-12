@@ -31,7 +31,7 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
   const throttledSetMarketVolume = useRef(
     throttle((volume: string) => {
       setMarketVolume(volume);
-    }, constants.DEBOUNCE_UPDATE_TIME)
+    }, constants.THROTTLE_UPDATE_TIME)
   ).current;
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {

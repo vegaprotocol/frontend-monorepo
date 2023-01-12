@@ -16,7 +16,7 @@ import { MarketMarkPrice } from '../../components/market-mark-price';
 import { Last24hPriceChange } from '../../components/last-24h-price-change';
 import { Last24hVolume } from '../../components/last-24h-volume';
 import { MarketState } from '../../components/market-state';
-import { MarketTradingMode } from '../../components/market-trading-mode';
+import { HeaderStatMarketTradingMode } from '../../components/market-trading-mode';
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 
 interface TradeMarketHeaderProps {
@@ -63,22 +63,35 @@ export const TradeMarketHeader = ({
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
-      <MarketMarkPrice
+      <HeaderStat heading={t('Price')} testId="market-price">
+        <MarketMarkPrice
+          marketId={market?.id}
+          decimalPlaces={market?.decimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStat heading={t('Change (24h)')} testId="market-change">
+        <Last24hPriceChange
+          marketId={market?.id}
+          decimalPlaces={market?.decimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStat
+        heading={t('Volume (24h)')}
+        testId="market-volume"
+        description={t(
+          'The total amount of assets traded in the last 24 hours.'
+        )}
+      >
+        <Last24hVolume
+          marketId={market?.id}
+          positionDecimalPlaces={market?.positionDecimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStatMarketTradingMode
         marketId={market?.id}
-        decimalPlaces={market?.decimalPlaces}
-        isHeader
+        onSelect={onSelect}
+        initialTradingMode={market?.tradingMode}
       />
-      <Last24hPriceChange
-        marketId={market?.id}
-        decimalPlaces={market?.decimalPlaces}
-        isHeader
-      />
-      <Last24hVolume
-        marketId={market?.id}
-        positionDecimalPlaces={market?.positionDecimalPlaces}
-        isHeader
-      />
-      <MarketTradingMode marketId={market?.id} onSelect={onSelect} isHeader />
       <MarketState market={market} />
       {asset ? (
         <HeaderStat

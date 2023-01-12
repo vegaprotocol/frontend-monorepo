@@ -35,6 +35,28 @@ export const marketsProvider = makeDataProvider<
   fetchPolicy: 'cache-first',
 });
 
+const marketProvider = makeDerivedDataProvider<
+  Market,
+  never,
+  { marketId: string }
+>(
+  [marketsProvider],
+  ([markets], variables) =>
+    ((markets as ReturnType<typeof getData>) || []).find(
+      (market) => market.id === variables?.marketId
+    ) || null
+);
+
+export const useMarket = (marketId?: string) => {
+  const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
+  const { data } = useDataProvider({
+    dataProvider: marketProvider,
+    variables,
+    skip: !marketId,
+  });
+  return data;
+};
+
 export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
   ([markets]) => filterAndSortMarkets(markets)

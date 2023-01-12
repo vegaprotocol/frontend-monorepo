@@ -3,7 +3,7 @@ import {
   formatNumberPercentage,
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
-import React from 'react';
+import { memo, forwardRef } from 'react';
 import { signedNumberCssClass } from '@vegaprotocol/react-helpers';
 import { Arrow } from '../arrows/arrow';
 
@@ -36,30 +36,33 @@ export const priceChange = (candles: string[]) => {
     : 0;
 };
 
-export const PriceCellChange = React.memo(
-  ({ candles, decimalPlaces }: PriceChangeCellProps) => {
-    const change = priceChange(candles);
-    const changePercentage = priceChangePercentage(candles);
-    return (
-      <span
-        className={`${signedNumberCssClass(
-          change
-        )} flex items-center gap-2 justify-end font-mono text-ui-small`}
-      >
-        <Arrow value={change} />
-        <span data-testid="price-change-percentage">
-          {formatNumberPercentage(
-            new BigNumber(changePercentage.toString()),
-            2
-          )}
-          &nbsp;
+export const PriceCellChange = memo(
+  forwardRef<HTMLSpanElement, PriceChangeCellProps>(
+    ({ candles, decimalPlaces }: PriceChangeCellProps, ref) => {
+      const change = priceChange(candles);
+      const changePercentage = priceChangePercentage(candles);
+      return (
+        <span
+          ref={ref}
+          className={`${signedNumberCssClass(
+            change
+          )} flex items-center gap-2 justify-end font-mono text-ui-small`}
+        >
+          <Arrow value={change} />
+          <span data-testid="price-change-percentage">
+            {formatNumberPercentage(
+              new BigNumber(changePercentage.toString()),
+              2
+            )}
+            &nbsp;
+          </span>
+          <span data-testid="price-change">
+            {addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
+          </span>
         </span>
-        <span data-testid="price-change">
-          {addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
-        </span>
-      </span>
-    );
-  }
+      );
+    }
+  )
 );
 
 PriceCellChange.displayName = 'PriceCellChange';
