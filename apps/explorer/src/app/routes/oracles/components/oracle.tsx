@@ -1,9 +1,4 @@
-import { getNodes, t } from '@vegaprotocol/react-helpers';
-import { MarketLink, PartyLink } from '../../../components/links';
-import {
-  EthExplorerLink,
-  EthExplorerLinkTypes,
-} from '../../../components/links/eth-explorer-link/eth-explorer-link';
+import { t } from '@vegaprotocol/react-helpers';
 import {
   TableRow,
   TableCell,
@@ -14,136 +9,13 @@ import type {
   ExplorerOracleDataConnectionFragment,
   ExplorerOracleDataSourceFragment,
 } from '../__generated__/Oracles';
-import type { ExplorerOracleForMarketsMarketFragment } from '../__generated__/OraclesForMarkets';
-import { useExplorerOracleFormMarketsQuery } from '../__generated__/OraclesForMarkets';
 import { OracleData } from './oracle-data';
 import { OracleFilter } from './oracle-filter';
+import { OracleDetailsType } from './oracle-details-type';
+import { OracleMarkets } from './oracle-markets';
 
-type SourceType =
+export type SourceType =
   ExplorerOracleDataSourceFragment['dataSourceSpec']['spec']['data']['sourceType'];
-type SourceTypeName = SourceType['__typename'] | undefined;
-
-interface OracleDetailsTypeProps {
-  type: SourceTypeName;
-}
-
-export function OracleDetailsType({ type }: OracleDetailsTypeProps) {
-  return (
-    <TableRow modifier="bordered">
-      <TableHeader scope="row">Type</TableHeader>
-      <TableCell modifier="bordered">
-        {type === 'DataSourceDefinitionInternal'
-          ? 'Internal time'
-          : 'External data'}
-      </TableCell>
-    </TableRow>
-  );
-}
-
-interface OracleDetailsSignersProps {
-  sourceType: SourceType;
-}
-
-export function OracleSigners({ sourceType }: OracleDetailsSignersProps) {
-  if (sourceType.__typename !== 'DataSourceDefinitionExternal') {
-    return null;
-  }
-  const signers = sourceType.sourceType.signers;
-
-  if (!signers || signers.length === 0) {
-    return null;
-  }
-
-  return (
-    <>
-      {signers.map((s) => {
-        let key;
-        switch (s.signer.__typename) {
-          case 'ETHAddress':
-            if (s.signer.address) {
-              key = (
-                <span>
-                  ETH:{' '}
-                  <EthExplorerLink
-                    id={s.signer.address}
-                    type={EthExplorerLinkTypes.address}
-                  />
-                </span>
-              );
-            }
-            break;
-          case 'PubKey':
-            if (s.signer.key) {
-              key = (
-                <span>
-                  Vega: <PartyLink id={s.signer.key} />
-                </span>
-              );
-            }
-            break;
-        }
-        return (
-          <TableRow modifier="bordered">
-            <TableHeader scope="row">Signer</TableHeader>
-            <TableCell modifier="bordered">{key}</TableCell>
-          </TableRow>
-        );
-      })}
-    </>
-  );
-}
-
-interface OracleMarketsProps {
-  id: string;
-}
-
-export function OracleMarkets({ id }: OracleMarketsProps) {
-  const { data, loading } = useExplorerOracleFormMarketsQuery({
-    fetchPolicy: 'cache-first',
-  });
-
-  const markets = getNodes<ExplorerOracleForMarketsMarketFragment>(
-    data?.marketsConnection
-  );
-
-  if (markets) {
-    const m = markets.find((m) => {
-      const p = m.tradableInstrument.instrument.product;
-      if (
-        p.dataSourceSpecForSettlementData.id === id ||
-        p.dataSourceSpecForTradingTermination.id === id
-      ) {
-        return true;
-      }
-      return false;
-    });
-
-    if (m && m.id) {
-      const type =
-        id ===
-        m.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
-          .id
-          ? 'Settlement for'
-          : 'Termination for';
-      return (
-        <TableRow modifier="bordered">
-          <TableHeader scope="row">{type}</TableHeader>
-          <TableCell modifier="bordered">
-            <MarketLink id={m.id} />
-          </TableCell>
-        </TableRow>
-      );
-    }
-  }
-  return (
-    <TableRow modifier="bordered">
-      <TableHeader scope="row">{t('Market')}</TableHeader>
-      <TableCell modifier="bordered">
-        <span>{id}</span>
-      </TableCell>
-    </TableRow>
-  );
-}
 
 interface OracleDetailsProps {
   id: string;
