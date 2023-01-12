@@ -37,18 +37,17 @@ const Oracles = () => {
               return null;
             }
             return (
-              <React.Fragment key={id}>
-                <SubHeading id={id.toString()}>{id}</SubHeading>
+              <div key={id} className="mb-10 cursor-pointer">
                 <OracleDetails
                   id={id}
                   dataSource={o?.node}
                   dataConnection={o?.node}
                 />
                 <details>
-                  <summary>JSON</summary>
+                  <summary className="pointer">JSON</summary>
                   <SyntaxHighlighter data={o} />
                 </details>
-              </React.Fragment>
+              </div>
             );
           })
         : null}

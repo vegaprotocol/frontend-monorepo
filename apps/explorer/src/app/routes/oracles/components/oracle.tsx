@@ -104,7 +104,6 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
   const markets = getNodes<ExplorerOracleForMarketsMarketFragment>(
     data?.marketsConnection
   );
-  let res = <span>'-'</span>;
 
   if (markets) {
     const m = markets.find((m) => {
@@ -123,23 +122,26 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
         id ===
         m.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
           .id
-          ? 'Settlement'
-          : 'Termination';
-      res = (
-        <div>
-          <MarketLink id={m.id} /> ({type}) ({m.id})
-        </div>
+          ? 'Settlement for'
+          : 'Termination for';
+      return (
+        <TableRow modifier="bordered">
+          <TableHeader scope="row">{type}</TableHeader>
+          <TableCell modifier="bordered">
+            <MarketLink id={m.id} />
+          </TableCell>
+        </TableRow>
       );
     }
   }
-
   return (
     <TableRow modifier="bordered">
-      <TableHeader scope="row">{t('Markets')}</TableHeader>
-      <TableCell modifier="bordered">{loading ? <Loader /> : res}</TableCell>
+      <TableHeader scope="row">{t('Market')}</TableHeader>
+      <TableCell modifier="bordered">
+        <span>{id}</span>
+      </TableCell>
     </TableRow>
   );
-  return null;
 }
 
 interface OracleDetailsProps {
@@ -158,8 +160,15 @@ export const OracleDetails = ({
 
   return (
     <TableWithTbody>
+      <TableRow modifier="bordered">
+        <TableHeader scope="row">{t('ID')}</TableHeader>
+        <TableCell modifier="bordered">{id}</TableCell>
+      </TableRow>
       <OracleDetailsType type={sourceType.__typename} />
-      <OracleSigners sourceType={sourceType} />
+      {
+        // Disabled until https://github.com/vegaprotocol/vega/issues/7286 is released
+        /*<OracleSigners sourceType={sourceType} />*/
+      }
       <OracleMarkets id={id} />
       <TableRow modifier="bordered">
         <TableHeader scope="row">{t('Broadcasts')}</TableHeader>
