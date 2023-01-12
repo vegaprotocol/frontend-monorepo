@@ -82,8 +82,6 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return (
         process.env['MAINTENANCE_PAGE'] || process.env['NX_MAINTENANCE_PAGE']
       );
-    case 'DELEGATIONS_PAGINATION':
-      return process.env['NX_DELEGATIONS_PAGINATION'];
   }
 };
 

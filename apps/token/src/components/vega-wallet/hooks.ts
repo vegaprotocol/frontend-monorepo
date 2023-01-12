@@ -4,6 +4,7 @@ import keyBy from 'lodash/keyBy';
 import uniq from 'lodash/uniq';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { ENV } from '../../config';
 
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
@@ -25,8 +26,6 @@ import type {
   WalletDelegationFieldsFragment,
 } from './__generated__/Delegations';
 import { DelegationsDocument } from './__generated__/Delegations';
-import { useEnvironment } from '@vegaprotocol/environment';
-import type { Pagination } from '@vegaprotocol/types';
 
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
@@ -36,7 +35,7 @@ export const usePollForDelegations = () => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const client = useApolloClient();
-  const { DELEGATIONS_PAGINATION } = useEnvironment();
+  const { delegationsPagination } = ENV;
   const [delegations, setDelegations] = React.useState<
     WalletDelegationFieldsFragment[]
   >([]);
@@ -66,7 +65,9 @@ export const usePollForDelegations = () => {
             query: DelegationsDocument,
             variables: {
               partyId: pubKey,
-              delegationsPagination: DELEGATIONS_PAGINATION as Pagination,
+              delegationsPagination: {
+                first: Number(delegationsPagination),
+              },
             },
             fetchPolicy: 'network-only',
           })
@@ -212,7 +213,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [DELEGATIONS_PAGINATION, client, decimals, pubKey, t, vegaToken.address]);
+  }, [delegationsPagination, client, decimals, pubKey, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };

@@ -4,6 +4,7 @@ import { formatDistance } from 'date-fns';
 import Duration from 'duration-js';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { ENV } from '../../../config';
 
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading } from '../../../components/heading';
@@ -16,8 +17,6 @@ import { RewardInfo } from './reward-info';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
 import { useRewardsQuery } from './__generated__/Rewards';
-import { useEnvironment } from '@vegaprotocol/environment';
-import type { Pagination } from '@vegaprotocol/types';
 
 export const RewardsPage = () => {
   const { t } = useTranslation();
@@ -26,11 +25,13 @@ export const RewardsPage = () => {
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const { appDispatch } = useAppState();
-  const { DELEGATIONS_PAGINATION } = useEnvironment();
+  const { delegationsPagination } = ENV;
   const { data, loading, error } = useRewardsQuery({
     variables: {
       partyId: pubKey || '',
-      delegationsPagination: DELEGATIONS_PAGINATION as Pagination,
+      delegationsPagination: {
+        first: Number(delegationsPagination),
+      },
     },
     skip: !pubKey,
   });

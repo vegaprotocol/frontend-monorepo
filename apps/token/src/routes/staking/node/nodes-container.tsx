@@ -1,6 +1,6 @@
+import { ENV } from '../../../config';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/environment';
 import { useTranslation } from 'react-i18next';
 import { useRefreshValidators } from '../../../hooks/use-refresh-validators';
 import { SplashLoader } from '../../../components/splash-loader';
@@ -9,7 +9,6 @@ import { usePreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import type { ReactElement } from 'react';
 import type { StakingQuery } from './__generated__/Staking';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
-import type { Pagination } from '@vegaprotocol/types';
 
 // TODO should only request a single node. When migrating from deprecated APIs we should address this.
 
@@ -28,11 +27,13 @@ export const NodeContainer = ({
 }) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { DELEGATIONS_PAGINATION } = useEnvironment();
+  const { delegationsPagination } = ENV;
   const { data, loading, error, refetch } = useStakingQuery({
     variables: {
       partyId: pubKey || '',
-      delegationsPagination: DELEGATIONS_PAGINATION as Pagination,
+      delegationsPagination: {
+        first: Number(delegationsPagination),
+      },
     },
   });
   const { data: previousEpochData } = usePreviousEpochQuery({

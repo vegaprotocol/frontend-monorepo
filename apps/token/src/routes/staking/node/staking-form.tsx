@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { ENV } from '../../../config';
 import { usePartyDelegationsLazyQuery } from './__generated__/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
@@ -29,8 +30,6 @@ import type {
   DelegateSubmissionBody,
   UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/environment';
-import type { Pagination } from '@vegaprotocol/types';
 
 export enum FormState {
   Default,
@@ -74,7 +73,7 @@ export const StakingForm = ({
   const [formState, setFormState] = React.useState(FormState.Default);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const { t } = useTranslation();
-  const { DELEGATIONS_PAGINATION } = useEnvironment();
+  const { delegationsPagination } = ENV;
   const [action, setAction] = React.useState<StakeAction>(
     params.action as StakeAction
   );
@@ -146,7 +145,9 @@ export const StakingForm = ({
   const [delegationSearch, { data, error }] = usePartyDelegationsLazyQuery({
     variables: {
       partyId: pubKey,
-      delegationsPagination: DELEGATIONS_PAGINATION as Pagination,
+      delegationsPagination: {
+        first: Number(delegationsPagination),
+      },
     },
     fetchPolicy: 'network-only',
   });
