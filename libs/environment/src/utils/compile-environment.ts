@@ -105,7 +105,8 @@ const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
 };
 
 export const compileEnvironment = (
-  definitions?: Partial<RawEnvironment>
+  definitions?: Partial<RawEnvironment>,
+  vegaUrl?: string | null
 ): Environment => {
   const environment = ENV_KEYS.reduce((acc, key) => {
     const value = getValue(key, definitions);
@@ -138,5 +139,6 @@ export const compileEnvironment = (
       ...networkOverride,
       ...environment.VEGA_NETWORKS,
     },
+    VEGA_URL: vegaUrl || undefined,
   };
 };

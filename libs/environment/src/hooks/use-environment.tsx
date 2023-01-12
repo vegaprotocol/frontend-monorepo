@@ -25,6 +25,7 @@ import type {
   NodeData,
   Configuration,
 } from '../types';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 
 type EnvironmentProviderProps = {
   config?: Configuration;
@@ -54,10 +55,11 @@ export const EnvironmentProvider = ({
   definitions,
   children,
 }: EnvironmentProviderProps) => {
+  const [vegaUrl, setVegaUrl] = useLocalStorage('vega_url');
   const [networkError, setNetworkError] = useState<undefined | ErrorType>();
   const [isNodeSwitcherOpen, setNodeSwitcherIsOpen] = useState(false);
   const [environment, updateEnvironment] = useState<Environment>(
-    compileEnvironment(definitions)
+    compileEnvironment(definitions, vegaUrl)
   );
   const setNodeSwitcherOpen = useCallback((isOpen: boolean) => {
     if (!('Cypress' in window)) {
@@ -76,9 +78,10 @@ export const EnvironmentProvider = ({
       }
     }
   );
+
   const { state: nodes, clients } = useNodes(
     config,
-    environment.MAINTENANCE_PAGE
+    Boolean(environment.VEGA_URL || environment.MAINTENANCE_PAGE)
   );
   const nodeKeys = Object.keys(nodes);
 
@@ -89,10 +92,12 @@ export const EnvironmentProvider = ({
       );
       if (successfulNodeKey && nodes[successfulNodeKey]) {
         Object.keys(clients).forEach((node) => clients[node]?.stop());
+        const url = nodes[successfulNodeKey].url;
         updateEnvironment((prevEnvironment) => ({
           ...prevEnvironment,
-          VEGA_URL: nodes[successfulNodeKey].url,
+          VEGA_URL: url,
         }));
+        setVegaUrl(url);
       }
     }
 
@@ -149,9 +154,10 @@ export const EnvironmentProvider = ({
         setDialogOpen={setNodeSwitcherOpen}
         loading={loading}
         config={config}
-        onConnect={(url) =>
-          updateEnvironment((env) => ({ ...env, VEGA_URL: url }))
-        }
+        onConnect={(url) => {
+          updateEnvironment((env) => ({ ...env, VEGA_URL: url }));
+          setVegaUrl(url);
+        }}
       />
       {children}
     </EnvironmentContext.Provider>
