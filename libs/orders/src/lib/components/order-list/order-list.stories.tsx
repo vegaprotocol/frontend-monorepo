@@ -1,5 +1,5 @@
 import type { Story, Meta } from '@storybook/react';
-import { OrderList, OrderListTable } from './order-list';
+import { OrderListTable } from './order-list';
 import { useState } from 'react';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
@@ -8,8 +8,8 @@ import { OrderEditDialog } from './order-edit-dialog';
 import type { Order } from '../order-data-provider';
 
 export default {
-  component: OrderList,
-  title: 'OrderList',
+  component: OrderListTable,
+  title: 'OrderListTable',
 } as Meta;
 
 const Template: Story = (args) => {
@@ -17,10 +17,8 @@ const Template: Story = (args) => {
   return (
     <div style={{ height: 1000 }}>
       <OrderListTable
-        hasActiveOrder
         rowData={args.data}
         cancel={cancel}
-        cancelAll={cancel}
         setEditOrder={() => {
           return;
         }}
@@ -47,10 +45,8 @@ const Template2: Story = (args) => {
     <>
       <div style={{ height: 1000 }}>
         <OrderListTable
-          hasActiveOrder
           rowData={args.data}
           cancel={cancel}
-          cancelAll={cancel}
           setEditOrder={setEditOrder}
         />
       </div>

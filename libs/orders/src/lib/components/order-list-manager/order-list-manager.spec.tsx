@@ -53,7 +53,7 @@ it('Renders an error state', () => {
 it('Renders the order list if orders provided', async () => {
   // @ts-ignore Orderlist is read only but we need to override with the forwardref to
   // avoid warnings about padding refs
-  orderListMock.OrderList = forwardRef(() => <div>OrderList</div>);
+  orderListMock.OrderListTable = forwardRef(() => <div>OrderList</div>);
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
     data: [{ id: '1' } as OrderFieldsFragment],
     loading: false,

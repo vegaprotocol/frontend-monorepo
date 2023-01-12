@@ -16,7 +16,11 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       cy.getByTestId('"Ledger entries"').click();
       const headers = [
         'Sender',
+        'Account type',
+        'Market',
         'Receiver',
+        'Account type',
+        'Market',
         'Transfer Type',
         'Quantity',
         'Asset',

@@ -5,7 +5,6 @@ import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
-  PendingWithdrawalsTable,
   useWithdrawals,
   useWithdrawalDialog,
   WithdrawalsTable,
@@ -30,7 +29,7 @@ const Withdrawals = ({ name }: RouteChildProps) => {
 const WithdrawPendingContainer = () => {
   const openWithdrawalDialog = useWithdrawalDialog((state) => state.open);
   const { t } = useTranslation();
-  const { pending, completed, loading, error } = useWithdrawals();
+  const { data, loading, error } = useWithdrawals();
 
   if (error) {
     return (
@@ -60,11 +59,7 @@ const WithdrawPendingContainer = () => {
       <p>{t('withdrawalsText')}</p>
       <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
       <div className="w-full h-[500px]">
-        {pending && pending.length > 0 && (
-          <PendingWithdrawalsTable rowData={pending} />
-        )}
-        <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
-        <WithdrawalsTable rowData={completed} />
+        <WithdrawalsTable rowData={data} />
       </div>
     </>
   );

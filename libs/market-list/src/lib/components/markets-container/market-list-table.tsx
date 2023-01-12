@@ -11,7 +11,7 @@ import type {
   VegaICellRendererParams,
   TypedDataAgGrid,
 } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
@@ -58,14 +58,13 @@ export const MarketListTable = forwardRef<
           'tradableInstrument.instrument.product.settlementAsset'
         >) =>
           value ? (
-            <button
-              className="hover:underline"
+            <ButtonLink
               onClick={(e) => {
                 openAssetDetailsDialog(value.id, e.target as HTMLElement);
               }}
             >
               {value.symbol}
-            </button>
+            </ButtonLink>
           ) : (
             ''
           )

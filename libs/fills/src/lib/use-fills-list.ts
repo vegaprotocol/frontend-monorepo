@@ -54,8 +54,12 @@ export const useFillsList = ({
           }
         }
         dataRef.current = data;
+        const avoidRerender = !!(
+          (dataRef.current?.length && data?.length) ||
+          (!dataRef.current?.length && !data?.length)
+        );
         gridRef.current?.api?.refreshInfiniteCache();
-        return true;
+        return avoidRerender;
       }
       dataRef.current = data;
       return false;
