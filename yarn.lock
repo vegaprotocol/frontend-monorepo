@@ -7114,10 +7114,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.32.tgz#8074f7106731f1a12ba993fe8bad86ee73905014"
   integrity sha512-Y6S38pFr04yb13qqHf8uk1nHE3lXgQ30WZbv1mLliV9pt0NjvqdWttLcrOYLnXbOafknVYRHZGoMSpR9UwfYow==
 
-"@types/node@^16.0.0":
-  version "16.18.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.8.tgz#ffb2a4efa4eb4384811081776c52b054481cca54"
-  integrity sha512-TrpoNiaPvBH5h8rQQenMtVsJXtGsVBRJrcp2Ik6oEt99jHfGvDLh20VTTq3ixTbjYujukYz1IlY4N8a8yfY0jA==
+"@types/node@^18.0.0":
+  version "18.11.18"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.18.tgz#8dfb97f0da23c2293e554c5a50d61ef134d7697f"
+  integrity sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -8340,10 +8340,10 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.17.0, allotment@^1.14.5:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.17.0.tgz#a664b349c48a16602f27022d6dd6599e4ed53757"
-  integrity sha512-Iab4GCVLb9/2R5D2PFlbhR2OWZrGLpYqF6YgmonLmwc9BrA+PEMt2BkltdYaySh7vfG73tuMdBB5R7AdTuMJEA==
+allotment@1.17.1, allotment@^1.17.1:
+  version "1.17.1"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.17.1.tgz#1a87fe911e520e6028df3740d9ba397c48f8e8d7"
+  integrity sha512-3/blHxKZfP441IZRwoOJaaNfDOx9XtvQQaeRYYrn7xjQWF7ZhYZCfR7oNxudwx2ga21tIskvfytbZF2P/ydE3A==
   dependencies:
     classnames "^2.3.0"
     eventemitter3 "^4.0.0"
@@ -12699,6 +12699,11 @@ eventemitter3@4.0.7, eventemitter3@^4.0.0, eventemitter3@^4.0.1, eventemitter3@^
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
+
+eventemitter3@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-5.0.0.tgz#084eb7f5b5388df1451e63f4c2aafd71b217ccb3"
+  integrity sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==
 
 events@^3.0.0, events@^3.2.0:
   version "3.3.0"
@@ -18339,10 +18344,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennant@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.0.0.tgz#27ed6d628c2f9175c99b5bf787e138aff096fcb5"
-  integrity sha512-qvN2kRN2j6uG/Rs4QHYvsIKDis8GMs7G496F527k8RqLgGZmXUfn3wDGwQ9Kxnz+IMo0c3dFhs9VJymXCMdkWg==
+pennant@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.5.0.tgz#621be2352f4fb48f73e568a2dd62e902919c1543"
+  integrity sha512-Ula8T0nMLhqNaUO4uiBOwDgNnhW0mOLt+Nw9JzWOEE+kpWj31H0hXq8aI9eXRAcXL0RSjtKQOos8MAgfauvsBQ==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
@@ -18359,11 +18364,11 @@ pennant@1.0.0:
     "@types/d3-zoom" "^2.0.0"
     "@types/jest" "^27.0.1"
     "@types/lodash" "^4.14.168"
-    "@types/node" "^16.0.0"
+    "@types/node" "^18.0.0"
     "@types/react" "^18.0.14"
     "@types/react-dom" "^18.0.5"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.17.0"
+    allotment "1.17.1"
     classnames "^2.2.6"
     d3-array "2.8.0"
     d3-axis "^3.0.0"
@@ -18379,7 +18384,7 @@ pennant@1.0.0:
     d3-transition "^2.0.0"
     d3-zoom "^2.0.0"
     date-fns "^2.17.0"
-    eventemitter3 "^4.0.7"
+    eventemitter3 "^5.0.0"
     internmap "^2.0.1"
     lodash "^4.17.20"
     react-virtualized-auto-sizer "^1.0.4"

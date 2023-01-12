@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import {
@@ -49,7 +49,7 @@ export const useOrderCloseOut = ({ order, market }: Props): string | null => {
     .minus(generalAccountBalance);
   const closeOut = marginDifference.div(volume).plus(markPrice);
   if (closeOut.isPositive()) {
-    return formatNumber(closeOut, market.decimalPlaces);
+    return closeOut.toString();
   }
   return null;
 };
