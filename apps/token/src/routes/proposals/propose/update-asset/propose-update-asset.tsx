@@ -89,9 +89,9 @@ export const ProposeUpdateAsset = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        updateAsset: {
-          ...JSON.parse(fields.proposalTerms),
-        },
+        updateAsset: fields.proposalTerms
+          ? { ...JSON.parse(fields.proposalTerms) }
+          : {},
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
           isVoteDeadlineAtMinimum,
