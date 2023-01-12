@@ -57,8 +57,8 @@ describe('FillsTable', () => {
     const expectedHeaders = [
       'Market',
       'Size',
-      'Value',
-      'Filled value',
+      'Price',
+      'Notional',
       'Role',
       'Fee',
       'Date',
