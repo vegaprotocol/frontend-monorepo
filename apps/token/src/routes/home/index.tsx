@@ -46,7 +46,10 @@ const HomeProposals = ({
           {t(`readMoreGovernance`)}
         </ExternalLink>
       </div>
-      <ul data-testid="home-proposal-list">
+      <ul
+        data-testid="home-proposal-list"
+        className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6"
+      >
         {proposals.map((proposal) => (
           <ProposalsListItem key={proposal.id} proposal={proposal} />
         ))}
