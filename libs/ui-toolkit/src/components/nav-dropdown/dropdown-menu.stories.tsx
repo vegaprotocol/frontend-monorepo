@@ -7,11 +7,9 @@ import {
   NavDropdownMenuTrigger,
 } from './dropdown-menu';
 
-
 export default {
   title: 'NavDropdownMenu',
 } as ComponentMeta<typeof NavDropdownMenu>;
-
 
 export const RadioItems = () => {
   return (

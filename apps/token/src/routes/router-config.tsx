@@ -202,7 +202,7 @@ const LazyWithdrawals = React.lazy(
 
 const redirects = [
   {
-    path: Routes.STAKING,
+    path: Routes.VALIDATORS,
     element: <Navigate to={Routes.VALIDATORS} replace />,
   },
   {

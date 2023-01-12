@@ -8,13 +8,12 @@ const Routes = {
   NOT_PERMITTED: '/not-permitted',
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
-  STAKING: '/staking',
   TOKEN: '/token',
   REDEEM: '/token/redeem',
   WITHDRAWALS: '/token/withdraw',
   SUPPLY: '/token/tranches',
-  ASSOCIATE: '/token/associate',
-  DISASSOCIATE: '/token/disassociate',
+  ASSOCIATE: '/validators/associate',
+  DISASSOCIATE: '/validators/disassociate',
 };
 
 export default Routes;

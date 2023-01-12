@@ -43,7 +43,6 @@ export const NavDropdownMenuTrigger = forwardRef<
   );
 });
 
-
 /**
  * The component that pops out when the dropdown menu is open.
  */
