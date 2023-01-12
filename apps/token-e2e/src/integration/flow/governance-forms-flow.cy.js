@@ -61,7 +61,7 @@ context(
       // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
-      cy.get(proposalParameterSelect).find('option').should('have.length', 114);
+      cy.get(proposalParameterSelect).find('option').should('have.length', 115);
       cy.get(proposalParameterSelect).select(
         // 3007-PNEC-002
         'governance_proposal_asset_minEnact'
@@ -97,7 +97,7 @@ context(
       );
     });
 
-    it.only('Able to download network param proposal json', function () {
+    it('Able to download network param proposal json', function () {
       const downloadFolder = './cypress/downloads/';
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
       cy.log('Download proposal file');
@@ -311,9 +311,8 @@ context(
       const year = now.getFullYear().toString();
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
-      const seconds = now.getSeconds().toString().padStart(2, '0');
-      // e.g. "2023-Jan-03-23-59-59"
-      return `${day}-${month}-${year}-${hours}-${minutes}-${seconds}`;
+
+      return `${day}-${month}-${year}-${hours}-${minutes}`;
     }
 
     function enterUpdateAssetProposalDetails() {
