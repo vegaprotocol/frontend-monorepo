@@ -78,7 +78,7 @@ const HomeNodes = ({
       <Heading title={t('Validators')} />
       <h3 className="mb-6">{t('homeValidatorsIntro')}</h3>
       <div className="flex items-center mb-8 gap-8">
-        <Link to={Routes.STAKING}>
+        <Link to={Routes.VALIDATORS}>
           <Button size="md">{t('homeValidatorsButtonText')}</Button>
         </Link>
 
@@ -123,7 +123,7 @@ const HomeNodes = ({
       </div>
 
       {activeNodes.length > nodesToShow && (
-        <Link to={Routes.STAKING}>
+        <Link to={Routes.VALIDATORS}>
           <span className="underline">
             And {activeNodes.length - nodesToShow} more...
           </span>

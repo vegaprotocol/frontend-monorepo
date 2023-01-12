@@ -33,6 +33,7 @@ context(
     beforeEach('Navigate to withdrawal page', function () {
       cy.reload();
       cy.visit('/');
+      cy.wait_for_spinner();
       cy.navigate_to('withdraw');
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
@@ -52,6 +53,7 @@ context(
     it('Unable to submit withdrawal with invalid fields', function () {
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset).select(usdtName);
+      cy.getByTestId(balanceAvailable, txTimeout).should('exist');
       cy.getByTestId(submitWithdrawalButton).click();
       cy.getByTestId(formValidationError).should('have.length', 1);
       cy.getByTestId(amountInput).clear().click().type('0.0000001');
@@ -74,7 +76,7 @@ context(
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset).select(usdtName);
       cy.getByTestId(balanceAvailable, txTimeout).should('exist');
-      cy.getByTestId(withdrawalThreshold).should('have.text', '100,000.00T');
+      cy.getByTestId(withdrawalThreshold).should('have.text', '100,000.00000T');
       cy.getByTestId(delayTime).should('have.text', 'None');
       cy.getByTestId(amountInput).click().type('100');
       cy.getByTestId(submitWithdrawalButton).click();

@@ -2,16 +2,18 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 export function getNavLinkClassNames(
-  navbarTheme: string
+  navbarTheme: string,
+  fullWidth = false
 ): (props: { isActive?: boolean }) => string | undefined {
   return ({ isActive = false }) => {
-    return getActiveNavLinkClassNames(isActive, navbarTheme);
+    return getActiveNavLinkClassNames(isActive, navbarTheme, fullWidth);
   };
 }
 
 export const getActiveNavLinkClassNames = (
   isActive: boolean,
-  navbarTheme: string
+  navbarTheme: string,
+  fullWidth = false
 ): string | undefined => {
   return classNames('mx-2 py-3 self-end relative', {
     'cursor-default': isActive,
@@ -20,6 +22,7 @@ export const getActiveNavLinkClassNames = (
       !isActive && navbarTheme !== 'yellow',
     'text-black': isActive && navbarTheme === 'yellow',
     'text-black/60 hover:text-black': !isActive && navbarTheme === 'yellow',
+    'flex-1': fullWidth,
   });
 };
 

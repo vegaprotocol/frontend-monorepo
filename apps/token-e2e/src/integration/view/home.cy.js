@@ -1,10 +1,11 @@
 const navSection = 'nav';
-const navVesting = '[href="/token/tranches"]';
+const navSupply = '[href="/token/tranches"]';
 const navToken = '[href="/token"]';
 const navStaking = '[href="/validators"]';
 const navRewards = '[href="/rewards"]';
 const navWithdraw = '[href="/token/withdraw"]';
 const navGovernance = '[href="/proposals"]';
+const navRedeem = '[href="/token/redeem"]';
 
 const tokenDetailsTable = '.token-details';
 const address = '[data-testid="token-address"]';
@@ -34,34 +35,39 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     describe('Navigation tabs', function () {
-      it('should have TOKEN tab', function () {
+      it('should have proposals tab', function () {
         cy.get(navSection).within(() => {
-          cy.get(navToken).should('be.visible');
+          cy.get(navGovernance).should('be.visible');
         });
       });
-      it('should have VESTING tab', function () {
-        cy.get(navSection).within(() => {
-          cy.get(navVesting).should('be.visible');
-        });
-      });
-      it('should have STAKING tab', function () {
+      it('should have validators tab', function () {
         cy.get(navSection).within(() => {
           cy.get(navStaking).should('be.visible');
         });
       });
-      it('should have REWARDS tab', function () {
+      it('should have rewards tab', function () {
         cy.get(navSection).within(() => {
           cy.get(navRewards).should('be.visible');
         });
       });
-      it('should have WITHDRAW tab', function () {
-        cy.get(navSection).within(() => {
+
+      describe('Token dropdown', function () {
+        before('click on token dropdown', function () {
+          cy.get(navSection).within(() => {
+            cy.getByTestId('state-trigger').click();
+          });
+        });
+        it('should have token dropdown', function () {
+          cy.get(navToken).should('be.visible');
+        });
+        it('should have supply & vesting dropdown', function () {
+          cy.get(navSupply).should('be.visible');
+        });
+        it('should have withdraw dropdown', function () {
           cy.get(navWithdraw).should('be.visible');
         });
-      });
-      it('should have GOVERNANCE tab', function () {
-        cy.get(navSection).within(() => {
-          cy.get(navGovernance).should('be.visible');
+        it('should have redeem dropdown', function () {
+          cy.get(navRedeem).should('be.visible');
         });
       });
     });
