@@ -110,7 +110,7 @@ export const TrancheTable = ({
   }
   return (
     <TrancheItem
-      link={`${Routes.TRANCHES}/${tranche.tranche_id}`}
+      link={`${Routes.SUPPLY}/${tranche.tranche_id}`}
       tranche={tranche}
       locked={locked}
       unlocked={vested}

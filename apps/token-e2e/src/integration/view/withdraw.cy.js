@@ -10,7 +10,7 @@ context(
 
     describe('with wallets disconnected', function () {
       it('should have withdraw tab highlighted', function () {
-        cy.verify_tab_highlighted('withdraw');
+        cy.verify_tab_highlighted('token');
       });
 
       it('should have WITHDRAW header visible', function () {
