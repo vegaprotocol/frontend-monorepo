@@ -20,6 +20,7 @@ const dialogCloseButton = '[data-testid="dialog-close"]';
 const inputError = '[data-testid="input-error-text"]';
 const enactmentDeadlineError =
   '[data-testid="enactment-before-voting-deadline"]';
+const proposalDownloadBtn = '[data-testid="proposal-download-json"]';
 const feedbackError = '[data-testid="Error"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
@@ -60,7 +61,7 @@ context(
       // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
-      cy.get(proposalParameterSelect).find('option').should('have.length', 114);
+      cy.get(proposalParameterSelect).find('option').should('have.length', 115);
       cy.get(proposalParameterSelect).select(
         // 3007-PNEC-002
         'governance_proposal_asset_minEnact'
@@ -94,6 +95,55 @@ context(
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'not.exist'
       );
+    });
+
+    it('Able to download network param proposal json', function () {
+      const downloadFolder = './cypress/downloads/';
+      cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
+      cy.log('Download proposal file');
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          const filename =
+            downloadFolder +
+            'vega-network-param-proposal-' +
+            getFormattedTime() +
+            '.json';
+          cy.readFile(filename, proposalTimeout)
+            .its('terms.updateNetworkParameter')
+            .should('exist');
+        });
+
+      cy.get(newProposalDescription).type('E2E test for downloading proposals');
+      cy.get(proposalParameterSelect).select(
+        'governance_proposal_asset_minClose'
+      );
+      cy.get(newProposedParameterValue).type('10s');
+
+      cy.log('Download updated proposal file');
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          const filename =
+            downloadFolder +
+            'vega-network-param-proposal-' +
+            getFormattedTime() +
+            '.json';
+          cy.get(proposalDownloadBtn).should('be.visible').click();
+          cy.readFile(filename, proposalTimeout).then((jsonFile) => {
+            cy.wrap(jsonFile)
+              .its('rationale.description')
+              .should('eq', 'E2E test for downloading proposals');
+            cy.wrap(jsonFile)
+              .its('terms.updateNetworkParameter.changes.key')
+              .should('eq', 'governance.proposal.asset.minClose');
+            cy.wrap(jsonFile)
+              .its('terms.updateNetworkParameter.changes.value')
+              .should('eq', '10s');
+          });
+        });
     });
 
     it('Unable to submit network parameter proposal with vote deadline above enactment deadline', function () {
@@ -253,6 +303,17 @@ context(
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.get(inputError).should('have.length', 3);
     });
+
+    function getFormattedTime() {
+      const now = new Date();
+      const day = now.getDate().toString().padStart(2, '0');
+      const month = now.toLocaleString('en-US', { month: 'short' });
+      const year = now.getFullYear().toString();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+
+      return `${day}-${month}-${year}-${hours}-${minutes}`;
+    }
 
     function enterUpdateAssetProposalDetails() {
       cy.get(newProposalTitle).type('Test update asset proposal');
