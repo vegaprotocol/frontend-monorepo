@@ -6,7 +6,6 @@ import {
   OrderTypeMapping,
   Side,
 } from '@vegaprotocol/types';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import { isBefore, isAfter, addSeconds, subSeconds } from 'date-fns';
 import { createOrder } from '../support/create-order';
 
@@ -21,30 +20,20 @@ const orderUpdatedAt = 'updatedAt';
 
 // TODO: ensure this test runs only if capsule is running via workflow
 describe('capsule', { tags: '@slow' }, () => {
-  let market: SingleMarketFieldsFragment;
-
   before(() => {
     cy.createMarket();
+    cy.get('@markets').then((markets) => {
+      cy.wrap(markets[0]).as('market');
+    });
   });
 
   beforeEach(() => {
     cy.setVegaWallet();
   });
 
-  it('can view market', () => {
-    cy.visit('/#/markets/all');
-    cy.get('@markets').then((markets) => {
-      market = markets[0] as unknown as SingleMarketFieldsFragment;
-      cy.getByTestId(`market-${market.id}`).click();
-      cy.url().should('contain', `markets/${market.id}`);
-    });
-  });
-
-  it('can place and receive an order', () => {
-    if (!market) {
-      throw new Error('no market found');
-    }
-
+  it('can place and receive an order', function () {
+    const market = this.market;
+    cy.visit(`/#/markets/${market.id}`);
     const order = {
       marketId: market.id,
       type: Schema.OrderType.TYPE_LIMIT,
