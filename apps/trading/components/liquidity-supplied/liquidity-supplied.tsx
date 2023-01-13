@@ -111,9 +111,14 @@ export const MarketLiquiditySupplied = ({
     <section>
       {compiledGrid && <DataGrid grid={compiledGrid} />}
       <br />
-      <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
-        {t('View liquidity provision table')}
-      </Link>
+      {marketId && (
+        <Link
+          href={`/#/liquidity/${marketId}`}
+          data-testid="view-liquidity-link"
+        >
+          {t('View liquidity provision table')}
+        </Link>
+      )}
     </section>
   );
 
