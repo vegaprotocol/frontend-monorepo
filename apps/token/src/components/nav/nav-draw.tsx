@@ -7,6 +7,7 @@ import {
 import * as Dialog from '@radix-ui/react-dialog';
 import { EthWallet } from '../eth-wallet';
 import { VegaWallet } from '../vega-wallet';
+import { useTranslation } from 'react-i18next';
 
 interface Route {
   name: string;
@@ -29,6 +30,7 @@ const DrawerNavLinks = ({
   routes: Route[];
 }) => {
   const { appDispatch } = useAppState();
+  const { t } = useTranslation();
   const linkProps = {
     end: true,
     onClick: () =>
@@ -55,7 +57,7 @@ const DrawerNavLinks = ({
               })
             }
           >
-            {name}
+            {t(name)}
           </NavLink>
         );
       })}
