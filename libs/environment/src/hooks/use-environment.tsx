@@ -33,8 +33,17 @@ type EnvironmentProviderProps = {
   children?: ReactNode;
 };
 
+const NodeHealth = {
+  Good: 'Good',
+  Bad: 'Bad',
+  Critical: 'Critical',
+} as const;
+type NodeHealthKeys = keyof typeof NodeHealth;
+type Health = typeof NodeHealth[NodeHealthKeys];
+
 export type EnvironmentState = Environment & {
   networkError?: ErrorType;
+  nodeHealth: keyof typeof NodeHealth;
   setNodeSwitcherOpen: () => void;
 };
 
@@ -57,6 +66,7 @@ export const EnvironmentProvider = ({
 }: EnvironmentProviderProps) => {
   const [vegaUrl, setVegaUrl] = useLocalStorage('vega_url');
   const [networkError, setNetworkError] = useState<undefined | ErrorType>();
+  const [nodeHealth, setNodeHealth] = useState<Health>(NodeHealth.Good);
   const [isNodeSwitcherOpen, setNodeSwitcherIsOpen] = useState(false);
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions, vegaUrl)
@@ -145,6 +155,7 @@ export const EnvironmentProvider = ({
       value={{
         ...environment,
         networkError,
+        nodeHealth,
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
     >
