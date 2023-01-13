@@ -1,4 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
@@ -82,7 +83,7 @@ describe('FillsTable', () => {
       },
     });
 
-    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
+    render(<FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />);
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -178,5 +179,39 @@ describe('FillsTable', () => {
         .getAllByRole('gridcell')
         .find((c) => c.getAttribute('col-id') === 'aggressor')
     ).toHaveTextContent('Maker');
+  });
+
+  it('should render tooltip over fees', async () => {
+    const partyId = 'party-id';
+    const takerFill = generateFill({
+      seller: {
+        id: partyId,
+      },
+      aggressor: Schema.Side.SIDE_SELL,
+    });
+    act(() => {
+      render(<FillsTable partyId={partyId} rowData={[takerFill]} />);
+    });
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
+
+    const feeCell = screen
+      .getAllByRole('gridcell')
+      .find(
+        (c) =>
+          c.getAttribute('col-id') ===
+          'market.tradableInstrument.instrument.product'
+      );
+
+    await waitFor(() => {
+      expect(feeCell).toBeInTheDocument();
+    });
+    act(() => {
+      userEvent.hover(feeCell as HTMLElement);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('fee-breakdown-tooltip')).toBeInTheDocument();
+    });
   });
 });

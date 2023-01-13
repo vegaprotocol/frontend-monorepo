@@ -239,7 +239,10 @@ const FeesBreakdownTooltip = ({
   }
 
   return (
-    <div className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white">
+    <div
+      data-testid="fee-breakdown-tooltip"
+      className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
+    >
       <dl className="grid grid-cols-2 gap-x-2">
         <dt>{t('Infrastructure fee')}</dt>
         <dd className="text-right">
