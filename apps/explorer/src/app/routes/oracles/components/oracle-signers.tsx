@@ -7,6 +7,35 @@ import { TableRow, TableCell, TableHeader } from '../../../components/table';
 
 import type { SourceType } from './oracle';
 
+export type Signer = {
+  __typename?: 'ETHAddress' | 'PubKey' | undefined;
+  address?: string | null;
+  key?: string | null;
+};
+
+export function getAddressTypeLabel(signer: Signer) {
+  return signer.__typename === 'ETHAddress' ? 'ETH' : 'Vega';
+}
+
+export function getAddress(signer: Signer) {
+  return signer.address ? signer.address : signer.key ? signer.key : null;
+}
+
+export function getAddressLink(signer: Signer) {
+  const address = getAddress(signer);
+  if (!address) {
+    return null;
+  }
+
+  if (signer.__typename === 'ETHAddress') {
+    return <EthExplorerLink id={address} type={EthExplorerLinkTypes.address} />;
+  } else if (signer.__typename === 'PubKey') {
+    return <PartyLink id={address} />;
+  }
+
+  return <span>{address}</span>;
+}
+
 interface OracleDetailsSignersProps {
   sourceType: SourceType;
 }
@@ -28,35 +57,17 @@ export function OracleSigners({ sourceType }: OracleDetailsSignersProps) {
   return (
     <>
       {signers.map((s) => {
-        let key;
-        switch (s.signer.__typename) {
-          case 'ETHAddress':
-            if (s.signer.address) {
-              key = (
-                <span>
-                  ETH:{' '}
-                  <EthExplorerLink
-                    id={s.signer.address}
-                    type={EthExplorerLinkTypes.address}
-                  />
-                </span>
-              );
-            }
-            break;
-          case 'PubKey':
-            if (s.signer.key) {
-              key = (
-                <span>
-                  Vega: <PartyLink id={s.signer.key} />
-                </span>
-              );
-            }
-            break;
-        }
         return (
-          <TableRow modifier="bordered">
+          <TableRow modifier="bordered" key={getAddress(s.signer)}>
             <TableHeader scope="row">Signer</TableHeader>
-            <TableCell modifier="bordered">{key}</TableCell>
+            <TableCell modifier="bordered">
+              <div>
+                <span data-testid="keytype">
+                  {getAddressTypeLabel(s.signer)}
+                </span>
+                : {getAddressLink(s.signer)}
+              </div>
+            </TableCell>
           </TableRow>
         );
       })}

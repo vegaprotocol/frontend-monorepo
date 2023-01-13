@@ -103,26 +103,30 @@ describe('Oracle Filter view', () => {
 
 describe('getConditionsOrFilter', () => {
   it('Returns null if the type is undetermined (not DataSourceSpecConfiguration or DataSourceSpecConfigurationTime', () => {
-    expect(getConditionsOrFilters({})).toBeNull()
-  })
+    expect(getConditionsOrFilters({})).toBeNull();
+  });
 
   it('Returns the conditions object for time specs', () => {
     const mock: Filter = {
       __typename: 'DataSourceSpecConfigurationTime',
-      conditions: [{
-        __typename: 'Condition',
-        value: '100',
-        operator: ConditionOperator.OPERATOR_GREATER_THAN 
-      }]
-    }
-    const res = getConditionsOrFilters(mock)
+      conditions: [
+        {
+          __typename: 'Condition',
+          value: '100',
+          operator: ConditionOperator.OPERATOR_GREATER_THAN,
+        },
+      ],
+    };
+    const res = getConditionsOrFilters(mock);
     // This ugly construction is due to lazy typing on getConditionsOrFilter
-    if (!res  || res.length !== 1 || !res[0] || "key" in res[0]) {
-        throw new Error('getConditionsOrFilter did not return conditions on a time spec')
+    if (!res || res.length !== 1 || !res[0] || 'key' in res[0]) {
+      throw new Error(
+        'getConditionsOrFilter did not return conditions on a time spec'
+      );
     }
 
-    expect(res[0].__typename).toEqual('Condition')
-  })
+    expect(res[0].__typename).toEqual('Condition');
+  });
 
   it('Returns the filters object for external specs', () => {
     const mock: Filter = {
@@ -141,15 +145,18 @@ describe('getConditionsOrFilter', () => {
               operator: ConditionOperator.OPERATOR_EQUALS,
             },
           ],
-        }]
-    }
+        },
+      ],
+    };
 
-    const res = getConditionsOrFilters(mock)
+    const res = getConditionsOrFilters(mock);
     // This ugly construction is due to lazy typing on getConditionsOrFilter
-    if (!res  || res.length !== 1 || !res[0] || "value" in res[0]) {
-        throw new Error('getConditionsOrFilter did not return filters on a external spec')
+    if (!res || res.length !== 1 || !res[0] || 'value' in res[0]) {
+      throw new Error(
+        'getConditionsOrFilter did not return filters on a external spec'
+      );
     }
 
-    expect(res[0].__typename).toEqual('Filter')
-  })
-})
+    expect(res[0].__typename).toEqual('Filter');
+  });
+});

@@ -33,7 +33,7 @@ export function OracleData({ data }: OracleDataTypeProps) {
           }
 
           return (
-            <li>
+            <li key={d.node.externalData.data.broadcastAt}>
               <SyntaxHighlighter data={filter(d, ['__typename'])} />
             </li>
           );

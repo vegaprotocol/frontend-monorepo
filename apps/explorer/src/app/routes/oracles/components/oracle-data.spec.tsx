@@ -52,7 +52,9 @@ describe('Oracle Data view', () => {
             {
               node: {
                 externalData: {
-                  data: {},
+                  data: {
+                    broadcastAt: '2022-01-01',
+                  },
                 },
               },
             },

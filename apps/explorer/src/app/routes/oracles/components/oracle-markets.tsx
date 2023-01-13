@@ -10,7 +10,7 @@ interface OracleMarketsProps {
 
 /**
  * Slightly misleadlingly names, OracleMarkets lists the market (almost always singular)
- * to which an oracle is attached. It also checks what it triggers, by checking on the 
+ * to which an oracle is attached. It also checks what it triggers, by checking on the
  * market whether it is attached to the dataSourceSpecForSettlementData or ..TradingTermination
  */
 export function OracleMarkets({ id }: OracleMarketsProps) {
