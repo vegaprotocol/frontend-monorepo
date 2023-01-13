@@ -8,6 +8,11 @@ interface OracleMarketsProps {
   id: string;
 }
 
+/**
+ * Slightly misleadlingly names, OracleMarkets lists the market (almost always singular)
+ * to which an oracle is attached. It also checks what it triggers, by checking on the 
+ * market whether it is attached to the dataSourceSpecForSettlementData or ..TradingTermination
+ */
 export function OracleMarkets({ id }: OracleMarketsProps) {
   const { data } = useExplorerOracleFormMarketsQuery({
     fetchPolicy: 'cache-first',
@@ -39,7 +44,7 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
       return (
         <TableRow modifier="bordered">
           <TableHeader scope="row">{type}</TableHeader>
-          <TableCell modifier="bordered">
+          <TableCell modifier="bordered" data-testid={`m-${m.id}`}>
             <MarketLink id={m.id} />
           </TableCell>
         </TableRow>

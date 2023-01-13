@@ -7,7 +7,7 @@ interface OracleFilterProps {
   data: ExplorerOracleDataSourceFragment;
 }
 
-type Filter =
+export type Filter =
   ExplorerOracleDataSourceFragment['dataSourceSpec']['spec']['data']['sourceType']['sourceType'];
 
 /**
