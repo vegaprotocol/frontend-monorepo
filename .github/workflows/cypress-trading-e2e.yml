@@ -67,3 +67,20 @@ jobs:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
+
+      ######
+      ## Upload logs
+      ######
+
+      - name: Rename files to allow archive
+        if: ${{ always() }}
+        run: |
+          while read -r file; do
+            mv "${file}" "$(echo ${file} | sed 's|:|-|g')"
+          done< <(find /home/runner/.vegacapsule/testnet/logs -type f)
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: logs
+          path: /home/runner/.vegacapsule/testnet/logs
