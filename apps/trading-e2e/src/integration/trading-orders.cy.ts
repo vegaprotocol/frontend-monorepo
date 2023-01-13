@@ -216,12 +216,14 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
 
   it('must see a parked order', () => {
     // 7002-SORD-048
-    // NOT COVERED:   must see an explanation of why parked orders happen
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_PARKED,
     });
-    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
+    cy.getByTestId(`order-status-${orderId}`).should(
+      'have.text',
+      'Parked: Internal error'
+    );
   });
 
   it('must see the size of the order and direction/side -', () => {
