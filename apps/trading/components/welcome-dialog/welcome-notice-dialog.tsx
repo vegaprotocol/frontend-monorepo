@@ -16,8 +16,6 @@ export const WelcomeNoticeDialog = () => {
   const tokenLink = useLinks(DApp.Token);
   const consoleFairgroundLink = useLinks(DApp.Console, Networks.TESTNET);
   const isMainnet = VEGA_ENV === Networks.MAINNET;
-  const networkName = isMainnet ? 'mainnet' : 'testnet';
-
   return (
     <>
       <h1
@@ -28,8 +26,7 @@ export const WelcomeNoticeDialog = () => {
       </h1>
       <p className="leading-6 mb-7">
         {t(
-          'Vega %s is now live, but markets need to be voted for before the can be traded on. In the meantime:',
-          [networkName]
+          'Trading on Vega is now live, but markets need to be voted for before they can be traded on. In the meantime:'
         )}
       </p>
       <ul className="list-[square] pl-7">
