@@ -19,28 +19,10 @@ function App() {
   }, [location]);
 
   const cacheConfig: InMemoryCacheConfig = {
-    // True is default
-    addTypename: true,
-    // These feel redundant
     typePolicies: {
       statistics: {
         keyFields: false,
       },
-      Asset: {
-        keyFields: ['id'],
-      },
-      Market: {
-        keyFields: ['id'],
-      },
-      Order: {
-        keyFields: ['id'],
-      },
-      Party: {
-        keyFields: ['id'],
-      },
-    },
-    possibleTypes: {
-      Order: ['Order', 'order', 'orderById', 'OrderById'],
     },
   };
 
