@@ -19,6 +19,7 @@ interface VegaWalletProviderProps {
 export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   // Current selected pubKey
   const [pubKey, setPubKey] = useState<string | null>(null);
+  const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
 
   // Arary of pubkeys retrieved from the connector
   const [pubKeys, setPubKeys] = useState<PubKey[] | null>(null);
@@ -38,7 +39,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
       if (keys?.length) {
         setPubKeys(keys);
-
+        setIsReadOnly(connector.current instanceof ViewConnector)
         const lastUsedPubKey = LocalStorage.getItem(WALLET_KEY);
         const foundKey = keys.find((key) => key.publicKey === lastUsedPubKey);
         if (foundKey) {
@@ -66,6 +67,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     // again as expected
     setPubKeys(null);
     setPubKey(null);
+    setIsReadOnly(false);
     LocalStorage.removeItem(WALLET_KEY);
     try {
       await connector.current?.disconnect();
@@ -86,7 +88,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
-      isReadOnly: connector.current instanceof ViewConnector,
+      isReadOnly,
       pubKey,
       pubKeys,
       selectPubKey,
@@ -94,7 +96,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       disconnect,
       sendTx,
     };
-  }, [pubKey, pubKeys, selectPubKey, connect, disconnect, sendTx]);
+  }, [isReadOnly, pubKey, pubKeys, selectPubKey, connect, disconnect, sendTx]);
 
   return (
     <VegaWalletContext.Provider value={contextValue}>
