@@ -19,7 +19,7 @@ it('Renders all data for table', () => {
   expect(screen.getByText(proposal?.id as string)).toBeInTheDocument();
 
   expect(screen.getByText('State')).toBeInTheDocument();
-  expect(screen.getByText('STATE_OPEN')).toBeInTheDocument();
+  expect(screen.getByText('Open')).toBeInTheDocument();
 
   expect(screen.getByText('Closes on')).toBeInTheDocument();
   expect(
@@ -47,9 +47,7 @@ it('Renders all data for table', () => {
   ).toBeInTheDocument();
 
   expect(screen.getByText('Type')).toBeInTheDocument();
-  expect(
-    screen.getByText(proposal?.terms.change.__typename ?? '')
-  ).toBeInTheDocument();
+  expect(screen.getByText('Network parameter')).toBeInTheDocument();
 });
 
 it('Changes data based on if data is in future or past', () => {
@@ -59,7 +57,7 @@ it('Changes data based on if data is in future or past', () => {
   render(<ProposalChangeTable proposal={proposal} />);
 
   expect(screen.getByText('State')).toBeInTheDocument();
-  expect(screen.getByText('STATE_ENACTED')).toBeInTheDocument();
+  expect(screen.getByText('Enacted')).toBeInTheDocument();
 
   expect(screen.getByText('Closed on')).toBeInTheDocument();
   expect(
