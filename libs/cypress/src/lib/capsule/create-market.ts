@@ -14,7 +14,7 @@ import { createLog } from './logging';
 
 const log = createLog('create-market');
 
-type Config = {
+export async function createMarket(cfg: {
   vegaPubKey: string;
   token: string;
   ethWalletMnemonic: string;
@@ -22,9 +22,7 @@ type Config = {
   vegaWalletUrl: string;
   vegaUrl: string;
   faucetUrl: string;
-};
-
-export async function createMarket(cfg: Config) {
+}) {
   // set and store request endpoints
   setEndpoints(cfg.vegaWalletUrl, cfg.vegaUrl);
 
@@ -50,14 +48,6 @@ export async function createMarket(cfg: Config) {
     throw new Error('faucet failed');
   }
 
-  await proposeAndVoteMarket(cfg);
-
-  // fetch and return created market
-  const newMarkets = await getMarkets();
-  return newMarkets;
-}
-
-export async function proposeAndVoteMarket(cfg: Config) {
   // propose and vote on a market
   const proposalTxResult = await proposeMarket(cfg.vegaPubKey, cfg.token);
   const proposalId = determineId(proposalTxResult.transaction.signature.value);
@@ -70,9 +60,13 @@ export async function proposeAndVoteMarket(cfg: Config) {
     cfg.token
   );
   await waitForEnactment();
+
+  // fetch and return created market
+  const newMarkets = await getMarkets();
+  return newMarkets;
 }
 
-export async function getMarkets() {
+async function getMarkets() {
   const query = gql`
     {
       marketsConnection {

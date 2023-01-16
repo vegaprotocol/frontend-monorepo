@@ -1,7 +1,4 @@
-import { getMarkets, proposeAndVoteMarket } from '../capsule/create-market';
-import { setupEthereumAccount } from '../capsule/ethereum-setup';
-import { faucetAsset } from '../capsule/faucet-asset';
-import { setEndpoints } from '../capsule/request';
+import { createMarket } from '../capsule/create-market';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -13,6 +10,7 @@ declare global {
   }
 }
 
+// suppress fetch and xhr logs
 const originalLog = Cypress.log;
 // @ts-ignore fuck with log to help with debug
 Cypress.log = function (options, ...rest) {
@@ -39,50 +37,14 @@ export const addCreateMarket = () => {
 
     cy.highlight('creating market on capsule environment');
 
-    cy.wrap(setEndpoints(config.vegaWalletUrl, config.vegaUrl))
-      .then(() => {
-        cy.log('fetching newly created markets');
-        return getMarkets();
-      })
-      // eslint-disable-next-line
-      .then((markets: any) => {
-        console.log(markets);
-        if (markets.length) return markets;
+    cy.wrap(createMarket(config), {
+      timeout: 300000,
+    })
+      // register market list result so it can be retrieved in tests later
+      .as('markets');
 
-        cy.log('setupEthereumAccount');
-        return cy.wrap(
-          setupEthereumAccount(
-            config.vegaPubKey,
-            config.ethWalletMnemonic,
-            config.ethereumProviderUrl
-          ),
-          {
-            timeout: 5 * 60 * 1000,
-          }
-        );
-      })
-      .then((markets) => {
-        if (markets.length) return markets;
-        cy.log('faucetAsset');
-        return cy.wrap(
-          faucetAsset(config.faucetUrl, 'fUSDC', config.vegaPubKey),
-          {
-            timeout: 120000,
-          }
-        );
-      })
-      .then((markets) => {
-        if (markets.length) return markets;
-        cy.log('proposeAndVote');
-        return cy.wrap(proposeAndVoteMarket(config), { timeout: 120000 });
-      })
-      .then((markets) => {
-        console.log('markets passed down', markets);
-        if (markets.length) {
-          return cy.wrap(markets).as('markets');
-        }
-        cy.log('fetching newly created markets');
-        return cy.wrap(getMarkets()).as('markets');
-      });
+    // make sure we have a market to test against, createMarket will
+    // return an array of markets or false if setup failed
+    cy.get('@markets').should('not.equal', false);
   });
 };
