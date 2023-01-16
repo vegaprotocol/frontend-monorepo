@@ -48,7 +48,7 @@ export const WelcomeNoticeDialog = () => {
             target="_blank"
             href={tokenLink(TOKEN_NEW_MARKET_PROPOSAL)}
           >
-            {t('Propose your own markets')}
+            {t('Propose a market')}
           </ExternalLink>
         </li>
         <li>
