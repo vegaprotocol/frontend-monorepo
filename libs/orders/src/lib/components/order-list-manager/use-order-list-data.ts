@@ -42,64 +42,6 @@ interface Props {
   scrolledToTop: RefObject<boolean>;
 }
 
-const filterOrders = (
-  orders: (OrderEdge | null)[] | null,
-  variables: OrdersQueryVariables & OrdersUpdateSubscriptionVariables
-) => {
-  if (!orders) {
-    return orders;
-  }
-  return orders.filter((order) => {
-    if (variables.marketId && order?.node.market?.id !== variables.marketId) {
-      return false;
-    }
-    if (
-      variables?.filter?.status &&
-      !(
-        order?.node?.status &&
-        variables.filter.status.includes(order.node.status)
-      )
-    ) {
-      return false;
-    }
-    if (
-      variables?.filter?.types &&
-      !(order?.node?.type && variables.filter.types.includes(order.node.type))
-    ) {
-      return false;
-    }
-    if (
-      variables?.filter?.timeInForce &&
-      !(
-        order?.node?.timeInForce &&
-        variables.filter.timeInForce.includes(order.node.timeInForce)
-      )
-    ) {
-      return false;
-    }
-    if (
-      variables?.dateRange?.start &&
-      !(
-        (order?.node?.updatedAt || order?.node?.createdAt) &&
-        variables.dateRange.start <
-          (order.node.updatedAt || order.node.createdAt)
-      )
-    ) {
-      return false;
-    }
-    if (
-      variables?.dateRange?.end &&
-      !(
-        (order?.node?.updatedAt || order?.node?.createdAt) &&
-        variables.dateRange.end > (order.node.updatedAt || order.node.createdAt)
-      )
-    ) {
-      return false;
-    }
-    return true;
-  });
-};
-
 export const useOrderListData = ({
   partyId,
   marketId,
@@ -143,9 +85,11 @@ export const useOrderListData = ({
     ({
       data,
       delta,
+      totalCount,
     }: {
       data: (OrderEdge | null)[] | null;
       delta?: Order[];
+      totalCount?: number;
     }) => {
       if (dataRef.current?.length && delta?.length && !scrolledToTop.current) {
         const createdAt = dataRef.current?.[0]?.node.createdAt;
@@ -155,16 +99,15 @@ export const useOrderListData = ({
           ).length;
         }
       }
-      const filteredData = filterOrders(data, variables);
-      dataRef.current = filteredData;
-      const avoidRerender = !!(
-        (dataRef.current?.length && filteredData?.length) ||
-        (!dataRef.current?.length && !filteredData?.length)
-      );
+      dataRef.current = data;
+      totalCountRef.current = totalCount;
+      const rerender =
+        (!dataRef.current?.length && data?.length) ||
+        (dataRef.current?.length && !data?.length);
       gridRef.current?.api?.refreshInfiniteCache();
-      return avoidRerender;
+      return !rerender;
     },
-    [gridRef, scrolledToTop, variables]
+    [gridRef, scrolledToTop]
   );
 
   const insert = useCallback(
@@ -175,11 +118,11 @@ export const useOrderListData = ({
       data: (OrderEdge | null)[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current = filterOrders(data, variables);
+      dataRef.current = data;
       totalCountRef.current = totalCount;
       return true;
     },
-    [variables]
+    []
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({

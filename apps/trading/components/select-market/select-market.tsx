@@ -95,9 +95,7 @@ export const SelectMarketPopover = ({
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
 }) => {
-  const { activeMarketId } = useGlobalStore((store) => ({
-    activeMarketId: store.marketId,
-  }));
+  const activeMarketId = useGlobalStore((store) => store.marketId);
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 mt-1';
   const { pubKey } = useVegaWallet();

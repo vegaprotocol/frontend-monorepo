@@ -153,13 +153,12 @@ export const useLedgerEntriesDataProvider = ({
 
   const update = useCallback(
     ({ data }: { data: (AggregatedLedgerEntriesEdge | null)[] | null }) => {
-      const avoidRerender = !!(
-        (dataRef.current?.length && data?.length) ||
-        (!dataRef.current?.length && !data?.length)
-      );
       dataRef.current = data;
+      const rerender =
+        (!dataRef.current?.length && data?.length) ||
+        (dataRef.current?.length && !data?.length);
       gridRef.current?.api?.refreshInfiniteCache();
-      return avoidRerender;
+      return !rerender;
     },
     [gridRef]
   );
