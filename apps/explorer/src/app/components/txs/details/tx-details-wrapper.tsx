@@ -17,6 +17,7 @@ import { TxDetailsOrderAmend } from './tx-order-amend';
 import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
 import { TxDetailsUndelegate } from './tx-undelegation';
+import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -93,6 +94,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsNodeVote;
     case 'Withdraw':
       return TxDetailsWithdrawSubmission;
+    case 'Liquidity Provision Order':
+      return TxDetailsLiquiditySubmission;
     case 'Delegate':
       return TxDetailsDelegate;
     case 'Undelegate':
