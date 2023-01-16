@@ -51,12 +51,12 @@ const Party = () => {
   const staking = (
     <section>
       {p?.stakingSummary?.currentStakeAvailable ? (
-        <p className="mt-4 leading-3">
+        <div className="mt-4 leading-3">
           <strong className="font-semibold">{t('Staking Balance: ')}</strong>
           <GovernanceAssetBalance
             price={p.stakingSummary.currentStakeAvailable}
           />
-        </p>
+        </div>
       ) : null}
     </section>
   );

@@ -13,7 +13,7 @@ interface BatchOrderProps {
  */
 export const BatchOrder = ({ index, submission }: BatchOrderProps) => {
   return (
-    <tr>
+    <tr key={`batch-${index}`}>
       <td>{index}</td>
       <td>
         <TxOrderType orderType={'OrderSubmission'} />

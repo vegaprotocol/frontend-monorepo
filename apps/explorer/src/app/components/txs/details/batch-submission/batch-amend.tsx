@@ -13,7 +13,7 @@ interface BatchAmendProps {
  */
 export const BatchAmend = ({ index, submission }: BatchAmendProps) => {
   return (
-    <tr>
+    <tr key={`amend-${index}`}>
       <td>{index}</td>
       <td>
         <TxOrderType orderType={'OrderAmendment'} />

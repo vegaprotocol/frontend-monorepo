@@ -52,7 +52,7 @@ export const TxDetailsBatch = ({
   const countTotal = countSubmissions + countAmendments + countCancellations;
   let index = 0;
   return (
-    <div>
+    <div key={`tx-${index}`}>
       <TableWithTbody className="mb-8">
         <TxDetailsShared
           txData={txData}
@@ -102,13 +102,13 @@ export const TxDetailsBatch = ({
         </thead>
         <tbody>
           {cancellations.map((c) => (
-            <BatchCancel submission={c} index={index++} />
+            <BatchCancel key={`bc-${index}`} submission={c} index={index++} />
           ))}
           {amendments.map((a) => (
-            <BatchAmend submission={a} index={index++} />
+            <BatchAmend key={`ba-${index}`} submission={a} index={index++} />
           ))}
           {submissions.map((s) => (
-            <BatchOrder submission={s} index={index++} />
+            <BatchOrder key={`bo-${index}`} submission={s} index={index++} />
           ))}
         </tbody>
       </Table>
