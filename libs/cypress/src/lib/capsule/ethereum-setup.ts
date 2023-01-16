@@ -126,7 +126,7 @@ function waitForStake(vegaPublicKey: string) {
     let tick = 1;
     const interval = setInterval(async () => {
       log(`confirming stake (attempt: ${tick})`);
-      if (tick >= 60) {
+      if (tick >= 5) {
         clearInterval(interval);
         reject(new Error('stake link never seen'));
       }
