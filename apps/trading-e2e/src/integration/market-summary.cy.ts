@@ -163,7 +163,7 @@ describe('Market trading page', () => {
             .realHover();
         });
       });
-      cy.getByTestId('expiry-tool-tip')
+      cy.getByTestId('expiry-tooltip')
         .should(
           'contain.text',
           'This market expires when triggered by its oracle, not on a set date.'
