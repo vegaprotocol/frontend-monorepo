@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
   t,
@@ -9,25 +10,27 @@ import {
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
+  TypedDataAgGrid,
 } from '@vegaprotocol/ui-toolkit';
+import type { AgGridReact } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import type { DepositFieldsFragment } from './__generated__/Deposit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
 
-export interface DepositsTableProps {
-  deposits: DepositFieldsFragment[];
-}
-
-export const DepositsTable = ({ deposits }: DepositsTableProps) => {
+export const DepositsTable = forwardRef<
+  AgGridReact,
+  TypedDataAgGrid<DepositFieldsFragment>
+>((props, ref) => {
   const { ETHERSCAN_URL } = useEnvironment();
   return (
     <AgGrid
-      rowData={deposits}
+      ref={ref}
       overlayNoRowsTemplate={t('No deposits')}
       defaultColDef={{ flex: 1, resizable: true }}
       style={{ width: '100%', height: '100%' }}
       suppressCellFocus={true}
+      {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />
       <AgGridColumn
@@ -84,4 +87,4 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
       />
     </AgGrid>
   );
-};
+});

@@ -4,7 +4,8 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import { positionsMetricsProvider } from './positions-data-providers';
 import type { PositionsMetricsProviderVariables } from './positions-data-providers';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
+import type { GetRowsParams } from '@vegaprotocol/ui-toolkit';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
@@ -18,49 +19,8 @@ export const usePositionsData = (
   );
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
-    ({
-      data,
-      delta,
-    }: {
-      data: Position[] | null;
-      delta?: Position[] | null;
-    }) => {
-      dataRef.current = data;
-
-      const update: Position[] = [];
-      const add: Position[] = [];
-      const remove: Position[] = [];
-      if (!gridRef.current?.api) {
-        return false;
-      }
-      (delta || []).forEach((position) => {
-        const rowNode = gridRef.current?.api.getRowNode(
-          getRowId({ data: position })
-        );
-        if (rowNode) {
-          if (position.openVolume === '0') {
-            remove.push(position);
-          } else {
-            update.push(position);
-          }
-        } else if (position.openVolume !== '0') {
-          add.push(position);
-        }
-      });
-      if (update.length || add.length || remove.length) {
-        const rowDataTransaction = {
-          update,
-          add,
-          remove,
-          addIndex: 0,
-        };
-        if (add.length || remove.length) {
-          gridRef.current.api.applyTransaction(rowDataTransaction);
-        } else {
-          gridRef.current.api.applyTransactionAsync(rowDataTransaction);
-        }
-      }
-      return true;
+    ({ data }: { data: Position[] | null }) => {
+      return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );
@@ -69,9 +29,20 @@ export const usePositionsData = (
     update,
     variables,
   });
+  const getRows = useCallback(
+    async ({ successCallback, startRow, endRow }: GetRowsParams<Position>) => {
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow)
+        : [];
+      const lastRow = dataRef.current ? dataRef.current.length : 0;
+      successCallback(rowsThisBlock, lastRow);
+    },
+    []
+  );
   return {
-    data: data?.filter((position) => position.openVolume !== '0'),
+    data,
     error,
     loading,
+    getRows,
   };
 };

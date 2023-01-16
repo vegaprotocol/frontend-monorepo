@@ -13,7 +13,7 @@ interface PositionsManagerProps {
 
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading } = usePositionsData(partyId, gridRef);
+  const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
   const {
     submit,
     closingOrder,
@@ -26,8 +26,9 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   return (
     <div className="h-full relative">
       <PositionsTable
+        rowModelType="infinite"
         ref={gridRef}
-        rowData={data}
+        datasource={{ getRows }}
         onClose={(position) => submit(position)}
         noRowsOverlayComponent={() => null}
       />

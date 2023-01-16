@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
@@ -15,7 +16,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   });
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <div className="h-full relative">
       <MarketListTable
         rowData={data}
         onRowClicked={(rowEvent: RowClickedEvent) => {
@@ -29,6 +30,14 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           onSelect((data as MarketWithData).id);
         }}
       />
-    </AsyncRenderer>
+      <div className="pointer-events-none absolute inset-0">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={data}
+          noDataMessage={t('No markets')}
+        />
+      </div>
+    </div>
   );
 };

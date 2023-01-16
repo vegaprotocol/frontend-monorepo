@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import {
   makeInfiniteScrollGetRows,
   useDataProvider,
+  updateGridData,
 } from '@vegaprotocol/react-helpers';
 import type { Trade, TradeEdge } from './fills-data-provider';
 import { fillsWithMarketProvider } from './fills-data-provider';
@@ -53,13 +54,7 @@ export const useFillsList = ({
             ).length;
           }
         }
-        dataRef.current = data;
-        const avoidRerender = !!(
-          (dataRef.current?.length && data?.length) ||
-          (!dataRef.current?.length && !data?.length)
-        );
-        gridRef.current?.api?.refreshInfiniteCache();
-        return avoidRerender;
+        return updateGridData(dataRef, data, gridRef);
       }
       dataRef.current = data;
       return false;
@@ -75,11 +70,10 @@ export const useFillsList = ({
       data: (TradeEdge | null)[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current = data;
       totalCountRef.current = totalCount;
-      return true;
+      return updateGridData(dataRef, data, gridRef);
     },
-    []
+    [gridRef]
   );
 
   const variables = useMemo(() => ({ partyId, marketId }), [partyId, marketId]);

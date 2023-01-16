@@ -53,22 +53,13 @@ describe('usePositionData Hook', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  const mockApplyTransactions = jest.fn();
-  const mockApplyTransactionsAsync = jest.fn();
+  const mockRefreshInfiniteCache = jest.fn();
   const mockGetRowNode = jest
     .fn()
     .mockImplementation((id: string) =>
       mockData.find((position) => position.marketId === id)
     );
   const partyId = 'partyId';
-  const aNewOne = {
-    marketId: 'market-5',
-    openVolume: '1',
-  };
-  const toRemoveOne = {
-    marketId: 'market-0',
-    openVolume: '0',
-  };
   const anUpdatedOne = {
     marketId: 'market-1',
     openVolume: '1',
@@ -76,8 +67,7 @@ describe('usePositionData Hook', () => {
   const gridRef = {
     current: {
       api: {
-        applyTransaction: mockApplyTransactions,
-        applyTransactionAsync: mockApplyTransactionsAsync,
+        refreshInfiniteCache: mockRefreshInfiniteCache,
         getRowNode: mockGetRowNode,
       },
     } as unknown as AgGridReact,
@@ -87,27 +77,10 @@ describe('usePositionData Hook', () => {
     const { result } = renderHook(() => usePositionsData(partyId, gridRef), {
       wrapper: MockedProvider,
     });
-    expect(result.current.data?.length ?? 0).toEqual(3);
+    expect(result.current.data?.length ?? 0).toEqual(5);
   });
 
-  it('should append by sync', async () => {
-    renderHook(() => usePositionsData(partyId, gridRef), {
-      wrapper: MockedProvider,
-    });
-
-    await waitFor(() => {
-      updateMock({ delta: [aNewOne, toRemoveOne, anUpdatedOne] as Position[] });
-    });
-
-    expect(mockApplyTransactions).toHaveBeenCalledWith({
-      update: [anUpdatedOne],
-      add: [aNewOne],
-      remove: [toRemoveOne],
-      addIndex: 0,
-    });
-  });
-
-  it('should append by async', async () => {
+  it('should call mockRefreshInfiniteCache', async () => {
     renderHook(() => usePositionsData(partyId, gridRef), {
       wrapper: MockedProvider,
     });
@@ -115,12 +88,7 @@ describe('usePositionData Hook', () => {
       updateMock({ delta: [anUpdatedOne] as Position[] });
     });
 
-    expect(mockApplyTransactionsAsync).toHaveBeenCalledWith({
-      update: [anUpdatedOne],
-      add: [],
-      remove: [],
-      addIndex: 0,
-    });
+    expect(mockRefreshInfiniteCache).toHaveBeenCalledWith();
   });
 
   it('no data should return null', () => {

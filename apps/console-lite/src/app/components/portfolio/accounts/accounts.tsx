@@ -33,17 +33,16 @@ const AccountsManager = () => {
     update,
     variables,
   });
-  const getRows = async ({
-    successCallback,
-    startRow,
-    endRow,
-  }: IGetRowsParams) => {
-    const rowsThisBlock = dataRef.current
-      ? dataRef.current.slice(startRow, endRow)
-      : [];
-    const lastRow = dataRef.current ? dataRef.current.length : 0;
-    successCallback(rowsThisBlock, lastRow);
-  };
+  const getRows = useCallback(
+    async ({ successCallback, startRow, endRow }: IGetRowsParams) => {
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow)
+        : [];
+      const lastRow = dataRef.current ? dataRef.current.length : 0;
+      successCallback(rowsThisBlock, lastRow);
+    },
+    []
+  );
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
   return (
     <>

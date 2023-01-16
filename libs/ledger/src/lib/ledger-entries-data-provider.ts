@@ -9,6 +9,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
+  updateGridData,
 } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
 import type { AgGridReact } from 'ag-grid-react';
@@ -158,12 +159,7 @@ export const useLedgerEntriesDataProvider = ({
 
   const update = useCallback(
     ({ data }: { data: (AggregatedLedgerEntriesEdge | null)[] | null }) => {
-      dataRef.current = data;
-      const rerender =
-        (!dataRef.current?.length && data?.length) ||
-        (dataRef.current?.length && !data?.length);
-      gridRef.current?.api?.refreshInfiniteCache();
-      return !rerender;
+      return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );
@@ -178,9 +174,9 @@ export const useLedgerEntriesDataProvider = ({
     }) => {
       dataRef.current = data;
       totalCountRef.current = totalCount;
-      return true;
+      return updateGridData(dataRef, data, gridRef);
     },
-    []
+    [gridRef]
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({
