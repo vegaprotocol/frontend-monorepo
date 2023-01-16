@@ -30,6 +30,7 @@ export const MarketListTable = forwardRef<
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
+      enableCellTextSelection={true}
       overlayNoRowsTemplate={t('No markets')}
       getRowId={getRowId}
       ref={ref}
@@ -47,6 +48,10 @@ export const MarketListTable = forwardRef<
       <AgGridColumn
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
+      />
+      <AgGridColumn
+        headerName={t('Description')}
+        field="tradableInstrument.instrument.name"
       />
       <AgGridColumn
         headerName={t('Settlement asset')}
@@ -161,7 +166,7 @@ export const MarketListTable = forwardRef<
             : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)
         }
       />
-      <AgGridColumn headerName={t('Description')} field="name" />
+      <AgGridColumn headerName={t('Market ID')} field="id" />
     </AgGrid>
   );
 });
