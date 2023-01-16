@@ -57,6 +57,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('Collateral not used')}
+        enableCellTextSelection={true}
         rowData={data}
         getRowId={({ data }: { data: AccountFields }) =>
           `${data.asset.id}-${data.type}-${data.market?.id}`

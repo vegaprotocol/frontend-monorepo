@@ -37,6 +37,7 @@ export const WithdrawalsTable = (
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
+      enableCellTextSelection={true}
       defaultColDef={{ flex: 1, resizable: true }}
       style={{ width: '100%', height: '100%' }}
       components={{

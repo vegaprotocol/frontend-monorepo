@@ -63,6 +63,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
     <AgGrid
       style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate={t('No trades')}
+      enableCellTextSelection={true}
       getRowId={({ data }) => data.id}
       ref={ref}
       defaultColDef={{

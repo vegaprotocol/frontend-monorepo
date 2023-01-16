@@ -56,6 +56,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No liquidity provisions')}
+        enableCellTextSelection={true}
         getRowId={({ data }) => getId(data)}
         ref={ref}
         tooltipShowDelay={500}
@@ -66,7 +67,6 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           tooltipComponent: TooltipCellComponent,
           sortable: true,
         }}
-        enableCellTextSelection={true}
         rowData={data}
       >
         <AgGridColumn

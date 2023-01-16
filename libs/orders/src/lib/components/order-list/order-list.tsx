@@ -39,6 +39,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
       <AgGrid
         ref={ref}
         overlayNoRowsTemplate="No orders"
+        enableCellTextSelection={true}
         defaultColDef={{
           flex: 1,
           resizable: true,

@@ -42,6 +42,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No entries')}
+        enableCellTextSelection={true}
         ref={ref}
         getRowId={({ data }) => data.id}
         tooltipShowDelay={500}

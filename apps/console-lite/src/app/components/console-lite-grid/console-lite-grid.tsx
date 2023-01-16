@@ -90,6 +90,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
       rowClassRules={constants.ROW_CLASS_RULES}
       ref={ref || gridRef}
       overlayNoRowsTemplate={NO_DATA_MESSAGE}
+      enableCellTextSelection={true}
       suppressContextMenu
       getRowId={getRowId || getRowIdLocal}
       suppressMovableColumns

@@ -71,6 +71,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No positions')}
+        enableCellTextSelection={true}
         getRowId={getRowId}
         ref={ref}
         tooltipShowDelay={500}
