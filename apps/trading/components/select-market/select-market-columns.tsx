@@ -1,3 +1,4 @@
+import type { RefObject } from 'react';
 import { FeesCell } from '@vegaprotocol/market-info';
 import {
   calcCandleHigh,
@@ -173,7 +174,7 @@ export const columns = (
   market: Market,
   onSelect: (id: string) => void,
   onCellClick: OnCellClickHandler,
-  activeMarketId?: string | null
+  inViewRoot?: RefObject<HTMLElement>
 ) => {
   const candlesClose = market.candles
     ?.map((candle) => candle?.close)
@@ -189,7 +190,6 @@ export const columns = (
       return onSelect(id);
     }
   };
-  const noUpdate = !activeMarketId || market.id !== activeMarketId;
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -221,8 +221,9 @@ export const columns = (
         <MarketMarkPrice
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
-          initialValue={market.data?.markPrice.toString()}
-          noUpdate={noUpdate}
+          initialValue={market.data?.markPrice}
+          inViewRoot={inViewRoot}
+          asPriceCell
         />
       ),
       className: `${cellClassNames} max-w-[100px]`,
@@ -234,7 +235,7 @@ export const columns = (
         <Last24hPriceChange
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
-          noUpdate={noUpdate}
+          inViewRoot={inViewRoot}
           initialValue={candlesClose}
         />
       ),
@@ -317,7 +318,8 @@ export const columns = (
           marketId={market.id}
           positionDecimalPlaces={market.positionDecimalPlaces}
           initialValue={candleVolume}
-          noUpdate={noUpdate}
+          inViewRoot={inViewRoot}
+          formatDecimals={2}
         />
       ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
@@ -329,8 +331,8 @@ export const columns = (
       value: (
         <MarketTradingMode
           marketId={market?.id}
-          noUpdate={noUpdate}
-          initialMode={market.tradingMode}
+          inViewRoot={inViewRoot}
+          initialTradingMode={market.tradingMode}
           initialTrigger={market.data?.trigger}
         />
       ),
@@ -359,9 +361,9 @@ export const columns = (
 export const columnsPositionMarkets = (
   market: Market,
   onSelect: (id: string) => void,
+  inViewRoot?: RefObject<HTMLElement>,
   openVolume?: string,
-  onCellClick?: OnCellClickHandler,
-  activeMarketId?: string | null
+  onCellClick?: OnCellClickHandler
 ) => {
   const candlesClose = market.candles
     ?.map((candle) => candle?.close)
@@ -377,7 +379,6 @@ export const columnsPositionMarkets = (
     }
   };
   const candleVolume = market.candles && calcCandleVolume(market.candles);
-  const noUpdate = !activeMarketId || market.id !== activeMarketId;
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -409,8 +410,9 @@ export const columnsPositionMarkets = (
         <MarketMarkPrice
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
-          initialValue={market.data?.markPrice.toString()}
-          noUpdate={noUpdate}
+          inViewRoot={inViewRoot}
+          initialValue={market.data?.markPrice}
+          asPriceCell
         />
       ),
       className: cellClassNames,
@@ -422,7 +424,7 @@ export const columnsPositionMarkets = (
         <Last24hPriceChange
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
-          noUpdate={noUpdate}
+          inViewRoot={inViewRoot}
           initialValue={candlesClose}
         />
       ),
@@ -503,9 +505,10 @@ export const columnsPositionMarkets = (
       value: (
         <Last24hVolume
           marketId={market.id}
+          inViewRoot={inViewRoot}
           positionDecimalPlaces={market.positionDecimalPlaces}
           initialValue={candleVolume}
-          noUpdate={noUpdate}
+          formatDecimals={2}
         />
       ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
@@ -517,8 +520,8 @@ export const columnsPositionMarkets = (
       value: (
         <MarketTradingMode
           marketId={market?.id}
-          noUpdate={noUpdate}
-          initialMode={market.tradingMode}
+          inViewRoot={inViewRoot}
+          initialTradingMode={market.tradingMode}
           initialTrigger={market.data?.trigger}
         />
       ),
