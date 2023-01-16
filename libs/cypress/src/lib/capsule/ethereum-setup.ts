@@ -37,11 +37,16 @@ export async function setupEthereumAccount(
   const tokenContract = new Token(vegaAsset.source.contractAddress, wallet);
 
   log('sending approve tx');
-  const approveTx = await tokenContract.approve(
-    ethereumConfig.staking_bridge_contract.address,
-    '100000' + '0'.repeat(18)
+  const approveTx = await sendTxWithTimeout(
+    tokenContract.approve(
+      ethereumConfig.staking_bridge_contract.address,
+      '100000' + '0'.repeat(18)
+    ),
+    1000,
+    'tokenContract.approve'
   );
-  await approveTx.wait(1);
+
+  await sendTxWithTimeout(approveTx.wait(1), 5000, 'approveTx.wait(1)');
   log('sending approve tx: success');
 
   const stakingContract = new StakingBridge(
@@ -51,10 +56,28 @@ export async function setupEthereumAccount(
 
   const amount = '10000' + '0'.repeat(18);
   log(`sending stake tx of ${amount} to ${vegaPublicKey}`);
-  const stakeTx = await stakingContract.stake(amount, vegaPublicKey);
-  await stakeTx.wait(3);
+  const stakeTx = await sendTxWithTimeout(
+    stakingContract.stake(amount, vegaPublicKey),
+    3000,
+    'stakingContract.stake(amount, vegaPublicKey)'
+  );
+  await sendTxWithTimeout(stakeTx.wait(3), 10000, 'stakeTx.wait(3)');
   await waitForStake(vegaPublicKey);
   log(`sending stake tx: success`);
+}
+
+function timeout(time = 0, id: string) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error(`${id}: timeout triggered`)), time);
+  });
+}
+
+async function sendTxWithTimeout(
+  promise: Promise<any>,
+  time: number,
+  id: string
+) {
+  return await Promise.race([promise, timeout(time, id)]);
 }
 
 async function getVegaAsset() {
@@ -126,7 +149,7 @@ function waitForStake(vegaPublicKey: string) {
     let tick = 1;
     const interval = setInterval(async () => {
       log(`confirming stake (attempt: ${tick})`);
-      if (tick >= 5) {
+      if (tick >= 10) {
         clearInterval(interval);
         reject(new Error('stake link never seen'));
       }
