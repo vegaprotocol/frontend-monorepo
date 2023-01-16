@@ -149,7 +149,7 @@ const ExpiryTooltipContent = ({
         {metadataExpiryDate && !isExpired && (
           <p className="mb-2">
             {t(
-              'This timestamp is user curated metadata and does not drive any on chain functionality.'
+              'This timestamp is user curated metadata and does not drive any on-chain functionality.'
             )}
           </p>
         )}
