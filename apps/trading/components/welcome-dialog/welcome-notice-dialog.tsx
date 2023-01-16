@@ -26,7 +26,7 @@ export const WelcomeNoticeDialog = () => {
       </h1>
       <p className="leading-6 mb-7">
         {t(
-          'Trading on Vega is now live, but markets need to be voted for before they can be traded on. In the meantime:'
+          'There are no markets to trade on right now. Trading on Vega is now live, but markets need to pass a governance vote before they can be traded on. In the meantime:'
         )}
       </p>
       <ul className="list-[square] pl-7">
