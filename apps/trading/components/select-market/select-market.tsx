@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import type { RefObject } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
@@ -27,7 +28,6 @@ import {
   TOKEN_NEW_MARKET_PROPOSAL,
   useLinks,
 } from '@vegaprotocol/environment';
-import { useGlobalStore } from '../../stores';
 
 export type Market = MarketWithCandles & MarketWithData;
 
@@ -36,19 +36,22 @@ export const SelectAllMarketsTableBody = ({
   positions,
   onSelect,
   onCellClick,
-  activeMarketId,
+  inViewRoot,
   headers = columnHeaders,
-  tableColumns = (market) =>
-    columns(market, onSelect, onCellClick, activeMarketId),
+  tableColumns = (market) => columns(market, onSelect, onCellClick, inViewRoot),
 }: {
   markets?: Market[] | null;
   positions?: PositionFieldsFragment[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
-  activeMarketId?: string | null;
   headers?: Column[];
-  tableColumns?: (market: Market, openVolume?: string) => Column[];
+  tableColumns?: (
+    market: Market,
+    inViewRoot?: RefObject<HTMLDivElement>,
+    openVolume?: string
+  ) => Column[];
+  inViewRoot?: RefObject<HTMLDivElement>;
 }) => {
   const tokenLink = useLinks(DApp.Token);
   if (!markets) return null;
@@ -68,6 +71,7 @@ export const SelectAllMarketsTableBody = ({
               onSelect={onSelect}
               columns={tableColumns(
                 market,
+                inViewRoot,
                 positions &&
                   positions.find((p) => p.market.id === market.id)?.openVolume
               )}
@@ -95,11 +99,11 @@ export const SelectMarketPopover = ({
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
 }) => {
-  const activeMarketId = useGlobalStore((store) => store.marketId);
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 mt-1';
   const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
+  const inViewRoot = useRef<HTMLDivElement>(null);
   const {
     data,
     loading: marketsLoading,
@@ -155,6 +159,7 @@ export const SelectMarketPopover = ({
       <div
         className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
+        ref={inViewRoot}
       >
         {marketsLoading || (pubKey && positionsLoading) ? (
           <div className="flex items-center gap-4">
@@ -167,6 +172,7 @@ export const SelectMarketPopover = ({
               <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
+                  inViewRoot={inViewRoot}
                   markets={markets}
                   positions={party?.positionsConnection?.edges
                     ?.filter((edge) => edge.node)
@@ -174,13 +180,13 @@ export const SelectMarketPopover = ({
                   onSelect={onSelectMarket}
                   onCellClick={onCellClick}
                   headers={columnHeadersPositionMarkets}
-                  tableColumns={(market, openVolume) =>
+                  tableColumns={(market, inViewRoot, openVolume) =>
                     columnsPositionMarkets(
                       market,
                       onSelectMarket,
+                      inViewRoot,
                       openVolume,
-                      onCellClick,
-                      activeMarketId
+                      onCellClick
                     )
                   }
                 />
@@ -188,10 +194,10 @@ export const SelectMarketPopover = ({
             ) : null}
             <TableTitle>{t('All markets')}</TableTitle>
             <SelectAllMarketsTableBody
+              inViewRoot={inViewRoot}
               markets={data}
               onSelect={onSelectMarket}
               onCellClick={onCellClick}
-              activeMarketId={activeMarketId}
             />
           </table>
         )}

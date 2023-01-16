@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
-import throttle from 'lodash/throttle';
+import type { RefObject } from 'react';
+import { useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 import {
   isNumeric,
-  t,
-  useDataProvider,
+  useThrottledDataProvider,
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
@@ -11,8 +11,7 @@ import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
 import type { Candle } from '@vegaprotocol/market-list';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';
-import { HeaderStat } from '../header';
-import * as constants from '../constants';
+import { THROTTLE_UPDATE_TIME } from '../constants';
 
 interface Props {
   marketId?: string;
@@ -20,75 +19,48 @@ interface Props {
   initialValue?: string[];
   isHeader?: boolean;
   noUpdate?: boolean;
+  inViewRoot?: RefObject<Element>;
 }
 
 export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   initialValue,
-  isHeader = false,
-  noUpdate = false,
+  inViewRoot,
 }: Props) => {
-  const [candlesClose, setCandlesClose] = useState<string[]>(
-    initialValue || []
-  );
+  const [ref, inView] = useInView({ root: inViewRoot?.current });
   const yesterday = useYesterday();
-  // Cache timestamp for yesterday to prevent full unmount of market page when
-  // a rerender occurs
-  const yTimestamp = useMemo(() => {
-    return new Date(yesterday).toISOString();
-  }, [yesterday]);
-
   const variables = useMemo(
     () => ({
       marketId: marketId,
       interval: Schema.Interval.INTERVAL_I1H,
-      since: yTimestamp,
+      since: new Date(yesterday).toISOString(),
     }),
-    [marketId, yTimestamp]
+    [marketId, yesterday]
   );
 
-  const throttledSetCandles = useRef(
-    throttle((data: Candle[]) => {
-      if (!noUpdate) {
-        const candlesClose: string[] = data
-          .map((candle) => candle?.close)
-          .filter((c): c is CandleClose => c !== null);
-        setCandlesClose(candlesClose);
-      }
-    }, constants.DEBOUNCE_UPDATE_TIME)
-  ).current;
-  const update = useCallback(
-    ({ data }: { data: Candle[] | null }) => {
-      if (data) {
-        throttledSetCandles(data);
-      }
-      return true;
+  const { data, error } = useThrottledDataProvider<Candle[], Candle>(
+    {
+      dataProvider: marketCandlesProvider,
+      variables,
+      skip: !marketId || !inView,
     },
-    [throttledSetCandles]
+    THROTTLE_UPDATE_TIME
   );
 
-  const { error } = useDataProvider<Candle[], Candle>({
-    dataProvider: marketCandlesProvider,
-    update,
-    variables,
-    skip: noUpdate || !marketId,
-  });
+  const candles =
+    data
+      ?.map((candle) => candle?.close)
+      .filter((c): c is CandleClose => c !== null) || initialValue;
 
-  const content = useMemo(() => {
-    if (error || !isNumeric(decimalPlaces)) {
-      return <>-</>;
-    }
-    return (
-      <PriceCellChange candles={candlesClose} decimalPlaces={decimalPlaces} />
-    );
-  }, [candlesClose, decimalPlaces, error]);
-
-  return isHeader ? (
-    <HeaderStat heading={t('Change (24h)')} testId="market-change">
-      {content}
-    </HeaderStat>
-  ) : (
-    content
+  if (error || !isNumeric(decimalPlaces)) {
+    return <span ref={ref}>-</span>;
+  }
+  return (
+    <PriceCellChange
+      candles={candles || []}
+      decimalPlaces={decimalPlaces}
+      ref={ref}
+    />
   );
 };
