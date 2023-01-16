@@ -46,7 +46,7 @@ export async function setupEthereumAccount(
     'tokenContract.approve'
   );
 
-  await sendTxWithTimeout(approveTx.wait(1), 5000, 'approveTx.wait(1)');
+  await sendTxWithTimeout(approveTx.wait(1), 14000, 'approveTx.wait(1)');
   log('sending approve tx: success');
 
   const stakingContract = new StakingBridge(
@@ -58,10 +58,10 @@ export async function setupEthereumAccount(
   log(`sending stake tx of ${amount} to ${vegaPublicKey}`);
   const stakeTx = await sendTxWithTimeout(
     stakingContract.stake(amount, vegaPublicKey),
-    3000,
+    14000,
     'stakingContract.stake(amount, vegaPublicKey)'
   );
-  await sendTxWithTimeout(stakeTx.wait(3), 10000, 'stakeTx.wait(3)');
+  await sendTxWithTimeout(stakeTx.wait(3), 14000, 'stakeTx.wait(3)');
   await waitForStake(vegaPublicKey);
   log(`sending stake tx: success`);
 }
