@@ -7,7 +7,7 @@ import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
 
 const log = createLog('propose-market');
 
-const MIN_CLOSE_SEC = 3;
+const MIN_CLOSE_SEC = 5;
 const MIN_ENACT_SEC = 3;
 
 export async function proposeMarket(publicKey: string, token: string) {
