@@ -20,7 +20,11 @@ const isBrowser = typeof window !== 'undefined';
 
 const NOT_FOUND = 'NotFound';
 
-export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
+export function createClient(
+  base?: string,
+  cacheConfig?: InMemoryCacheConfig,
+  connectToDevTools = true
+) {
   if (!base) {
     throw new Error('Base must be passed into createClient!');
   }
@@ -87,6 +91,7 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   return new ApolloClient({
     link: from([errorLink, composedTimeoutLink, retryLink, splitLink]),
     cache: new InMemoryCache(cacheConfig),
+    connectToDevTools,
   });
 }
 
