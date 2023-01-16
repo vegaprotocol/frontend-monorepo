@@ -44,7 +44,7 @@ export const addCreateMarket = () => {
             config.ethereumProviderUrl
           ),
           {
-            timeout: 120000,
+            timeout: 5 * 60 * 1000,
           }
         );
       })
