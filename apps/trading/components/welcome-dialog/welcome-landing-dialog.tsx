@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { Arrow, Link as UILink } from '@vegaprotocol/ui-toolkit';
+import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { Market, OnCellClickHandler } from '../select-market';
 import {
   ColumnKind,
