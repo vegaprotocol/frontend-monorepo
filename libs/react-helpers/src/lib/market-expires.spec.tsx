@@ -14,6 +14,11 @@ jest.mock('./format', () => ({
       second: 'numeric',
     }),
 }));
+
+jest.mock('./i18n', () => ({
+  t: jest.fn().mockImplementation((text) => text),
+}));
+
 describe('MarketExpires', () => {
   describe('should properly parse different tags', () => {
     it('settlement:date', () => {

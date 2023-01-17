@@ -1,5 +1,8 @@
+import { t } from './i18n';
 import { getDateTimeFormat } from './format';
 import { isValid, parseISO } from 'date-fns';
+
+import { MarketState } from '@vegaprotocol/types';
 
 export const getMarketExpiryDate = (
   tags?: ReadonlyArray<string> | null
@@ -31,6 +34,35 @@ export const getMarketExpiryDateFormatted = (
     return dateFound ? getDateTimeFormat().format(dateFound) : null;
   }
   return null;
+};
+
+export const getExpiryDate = (
+  //   market: SingleMarketFieldsFragment,
+  tags?: ReadonlyArray<string> | null,
+  close?: string | null,
+  state?: MarketState
+): string => {
+  const metadataExpiryDate = getMarketExpiryDate(tags);
+  const marketTimestampCloseDate = close && new Date(close);
+  let content = null;
+  if (!metadataExpiryDate) {
+    content = marketTimestampCloseDate
+      ? `Expired on ${getDateTimeFormat().format(marketTimestampCloseDate)}`
+      : t('Not time-based');
+  } else {
+    const isExpired =
+      Date.now() - metadataExpiryDate.valueOf() > 0 &&
+      (state === MarketState.STATE_TRADING_TERMINATED ||
+        state === MarketState.STATE_SETTLED);
+    if (isExpired) {
+      content = marketTimestampCloseDate
+        ? `Expired on ${getDateTimeFormat().format(marketTimestampCloseDate)}`
+        : t('Expired');
+    } else {
+      content = getDateTimeFormat().format(metadataExpiryDate);
+    }
+  }
+  return content;
 };
 
 export const MarketExpires = ({
