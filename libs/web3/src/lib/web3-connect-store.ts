@@ -1,6 +1,4 @@
 import create from 'zustand';
-import type { MetaMask } from '@web3-react/metamask';
-import type { WalletConnect } from '@web3-react/walletconnect';
 import type { Web3ReactHooks } from '@web3-react/core';
 import type { Connector } from '@web3-react/types';
 
@@ -10,10 +8,7 @@ interface State {
   desiredChainId?: number;
 }
 interface Actions {
-  initialize: (
-    connectors: [MetaMask | WalletConnect, Web3ReactHooks][],
-    desiredChainId: number
-  ) => void;
+  initialize: (connectors: State['connectors'], desiredChainId: number) => void;
   open: () => void;
   close: () => void;
 }
