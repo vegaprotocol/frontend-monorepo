@@ -29,10 +29,12 @@ const LinkList = ({
   navbarTheme,
   className = 'flex',
   dataTestId = 'navbar-links',
+  onNavigate,
 }: {
   navbarTheme: NavbarTheme;
   className?: string;
   dataTestId?: string;
+  onNavigate?: () => void;
 }) => {
   const tokenLink = useLinks(DApp.Token);
   const { marketId } = useGlobalStore((store) => ({
@@ -47,18 +49,21 @@ const LinkList = ({
         name={t('Markets')}
         path={Links[Routes.MARKETS]()}
         navbarTheme={navbarTheme}
+        onClick={onNavigate}
         end
       />
       <AppNavLink
         name={t('Trading')}
         path={tradingPath}
         navbarTheme={navbarTheme}
+        onClick={onNavigate}
         end
       />
       <AppNavLink
         name={t('Portfolio')}
         path={Links[Routes.PORTFOLIO]()}
         navbarTheme={navbarTheme}
+        onClick={onNavigate}
       />
       <a
         href={tokenLink(TOKEN_GOVERNANCE)}
@@ -129,6 +134,7 @@ const MobileMenuBar = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
             className="flex flex-col"
             navbarTheme={navbarTheme}
             dataTestId="mobile-navbar-links"
+            onNavigate={() => setDrawerOpen(false)}
           />
           <div className="flex flex-col px-2 justify-between">
             <div className="w-full h-1 border-t border-default py-5"></div>
@@ -174,6 +180,7 @@ interface AppNavLinkProps {
   testId?: string;
   target?: HTMLAttributeAnchorTarget;
   end?: boolean;
+  onClick?: () => void;
 }
 
 const AppNavLink = ({
@@ -183,6 +190,7 @@ const AppNavLink = ({
   target,
   testId = name,
   end,
+  onClick,
 }: AppNavLinkProps) => {
   const borderClasses = classNames(
     'absolute h-[2px] md:h-1 w-full bottom-[-1px] left-0',
@@ -196,6 +204,7 @@ const AppNavLink = ({
       data-testid={testId}
       to={{ pathname: path }}
       className={getNavLinkClassNames(navbarTheme)}
+      onClick={onClick}
       target={target}
       end={end}
     >
