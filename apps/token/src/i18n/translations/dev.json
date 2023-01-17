@@ -599,7 +599,7 @@
   "ersatzDescription": "To be promoted, a standby validator must have more than the lowest consensus stake, plus a bonus given to existing validators. This currently requires a minimum of {{stakeNeededForPromotion}} stake assuming no penalties. Only one validator per epoch can be promoted.",
   "pendingDescription1": "Anyone can",
   "pendingDescriptionLinkText": "set up and run a node on Vega",
-  "pendingDescription2": ". A node can move from Pending into Standby based on how much nomination it attracts, assuming it has proven reliability by sending heartbeats to the network.",
+  "pendingDescription2": ". A node can move from being a candidate into standby based on how much nomination it attracts, assuming it has proven reliability by sending heartbeats to the network.",
   "n/a": "N/A",
   "Set to": "Set to",
   "pass": "pass",
