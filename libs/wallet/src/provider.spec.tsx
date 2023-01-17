@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import type { Transaction} from './connectors';
+import type { Transaction } from './connectors';
 import { ViewConnector } from './connectors';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
