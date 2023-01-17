@@ -5,7 +5,10 @@ import {
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+import type {
+  VegaValueFormatterParams,
+  TypedDataAgGrid,
+} from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   TooltipCellComponent,
@@ -30,15 +33,15 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
   return getDateTimeFormat().format(new Date(value));
 };
 
-export interface LiquidityTableProps {
-  data?: LiquidityProvisionData[];
+export interface LiquidityTableProps
+  extends TypedDataAgGrid<LiquidityProvisionData> {
   symbol?: string;
   assetDecimalPlaces?: number;
   stakeToCcyVolume: string | null;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
-  ({ data, symbol = '', assetDecimalPlaces, stakeToCcyVolume }, ref) => {
+  ({ symbol = '', assetDecimalPlaces, stakeToCcyVolume, ...props }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
@@ -51,7 +54,6 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
     };
 
-    if (!data) return null;
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -66,7 +68,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           tooltipComponent: TooltipCellComponent,
           sortable: true,
         }}
-        rowData={data}
+        {...props}
       >
         <AgGridColumn
           headerName={t('Party')}

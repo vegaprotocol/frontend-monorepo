@@ -4,6 +4,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import {
   makeInfiniteScrollGetRows,
   useDataProvider,
+  updateGridData,
 } from '@vegaprotocol/react-helpers';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import type {
@@ -99,13 +100,7 @@ export const useOrderListData = ({
           ).length;
         }
       }
-      dataRef.current = data;
-      totalCountRef.current = totalCount;
-      const rerender =
-        (!dataRef.current?.length && data?.length) ||
-        (dataRef.current?.length && !data?.length);
-      gridRef.current?.api?.refreshInfiniteCache();
-      return !rerender;
+      return updateGridData(dataRef, data, gridRef);
     },
     [gridRef, scrolledToTop]
   );
@@ -118,11 +113,10 @@ export const useOrderListData = ({
       data: (OrderEdge | null)[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current = data;
       totalCountRef.current = totalCount;
-      return true;
+      return updateGridData(dataRef, data, gridRef);
     },
-    []
+    [gridRef]
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({

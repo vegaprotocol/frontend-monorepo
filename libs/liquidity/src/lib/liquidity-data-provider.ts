@@ -152,10 +152,7 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
 
 export const lpAggregatedDataProvider = makeDerivedDataProvider(
   [
-    (callback, client, variables) =>
-      liquidityProvisionsDataProvider(callback, client, {
-        marketId: variables?.marketId,
-      }),
+    liquidityProvisionsDataProvider,
     marketLiquidityDataProvider,
     liquidityFeeShareDataProvider,
   ],
@@ -177,32 +174,43 @@ export const getLiquidityProvision = (
   marketLiquidity: MarketLpQuery,
   liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
 ): LiquidityProvisionData[] => {
-  return liquidityProvisions.map((lp) => {
-    const market = marketLiquidity?.market;
-    const feeShare = liquidityFeeShare.find((f) => f.party.id === lp.party.id);
-    if (!feeShare) return lp;
-    const accounts = compact(lp.party.accountsConnection?.edges).map(
-      (e) => e.node
+  return liquidityProvisions
+    .map((lp) => {
+      const market = marketLiquidity?.market;
+      const feeShare = liquidityFeeShare.find(
+        (f) => f.party.id === lp.party.id
+      );
+      if (!feeShare) return lp;
+      const accounts = compact(lp.party.accountsConnection?.edges).map(
+        (e) => e.node
+      );
+      const bondAccounts = accounts?.filter(
+        (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND
+      );
+      const balance =
+        bondAccounts
+          ?.reduce(
+            (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
+            new BigNumber(0)
+          )
+          .toString() || '0';
+      return {
+        ...lp,
+        averageEntryValuation: feeShare?.averageEntryValuation,
+        equityLikeShare: feeShare?.equityLikeShare,
+        assetDecimalPlaces:
+          market?.tradableInstrument.instrument.product.settlementAsset
+            .decimals,
+        balance,
+      };
+    })
+    .filter((e) =>
+      [
+        Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
+        Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
+        Schema.LiquidityProvisionStatus.STATUS_PENDING,
+      ].includes(e.status)
     );
-    const bondAccounts = accounts?.filter(
-      (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND
-    );
-    const balance =
-      bondAccounts
-        ?.reduce(
-          (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
-          new BigNumber(0)
-        )
-        .toString() || '0';
-    return {
-      ...lp,
-      averageEntryValuation: feeShare?.averageEntryValuation,
-      equityLikeShare: feeShare?.equityLikeShare,
-      assetDecimalPlaces:
-        market?.tradableInstrument.instrument.product.settlementAsset.decimals,
-      balance,
-    };
-  });
 };
 
 export interface LiquidityProvisionData
