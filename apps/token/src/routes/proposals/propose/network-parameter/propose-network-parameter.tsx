@@ -35,7 +35,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { downloadJson } from '../../../../lib/download-json';
 
 interface SelectedNetworkParamCurrentValueProps {

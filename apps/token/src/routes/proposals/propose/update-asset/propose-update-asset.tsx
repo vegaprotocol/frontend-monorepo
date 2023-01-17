@@ -28,7 +28,6 @@ import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
 import { downloadJson } from '../../../../lib/download-json';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export interface UpdateAssetProposalFormFields {
   proposalVoteDeadline: string;

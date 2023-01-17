@@ -22,7 +22,6 @@ import {
   ProposalFormDownloadJson,
 } from '../../components/propose';
 import { ProposalRawMinRequirements } from './proposal-raw-min-requirements';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { downloadJson } from '../../../../lib/download-json';
 
 export interface RawProposalFormFields {

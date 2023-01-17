@@ -24,7 +24,6 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import { ProposalUserAction } from '../../components/shared';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { downloadJson } from '../../../../lib/download-json';
 
 export interface FreeformProposalFormFields {

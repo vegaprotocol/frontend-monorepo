@@ -38,7 +38,6 @@ import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
 import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
 import { downloadJson } from '../../../../lib/download-json';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export interface UpdateMarketProposalFormFields {
   proposalVoteDeadline: string;
