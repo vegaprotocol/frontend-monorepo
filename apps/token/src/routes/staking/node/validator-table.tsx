@@ -208,10 +208,6 @@ export const ValidatorTable = ({
       <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-penalties">
           <KeyValueTableRow>
-            <span>{t('OVERSTAKED AMOUNT')}</span>
-            <span>{overstakedAmount.toString()}</span>
-          </KeyValueTableRow>
-          <KeyValueTableRow>
             <span>{t('OVERSTAKED PENALTY')}</span>
             <span>
               {getOverstakingPenalty(overstakedAmount, node.stakedTotal)}
