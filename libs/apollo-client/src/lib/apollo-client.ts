@@ -78,7 +78,7 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   });
 
   const composedTimeoutLink = split(
-    ({ getContext }) => Boolean(getContext().isEnlargedTimeout),
+    ({ getContext }) => Boolean(getContext()['isEnlargedTimeout']),
     enlargedTimeoutLink,
     timeoutLink
   );

@@ -51,6 +51,7 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
 
 describe('home', { tags: '@regression' }, () => {
   beforeEach(() => {
+    cy.clearLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
   });
