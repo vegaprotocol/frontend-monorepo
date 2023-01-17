@@ -192,7 +192,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       'PartiallyFilled'
     );
     cy.getByTestId(`order-status-${orderId}`)
-      .parent()
+      .parentsUntil(`.ag-row`)
       .siblings(`[col-id=${orderRemaining}]`)
       .should('have.text', '4/5');
   });
