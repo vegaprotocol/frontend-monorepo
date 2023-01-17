@@ -132,9 +132,9 @@ export const ProposeUpdateMarket = () => {
       terms: {
         updateMarket: {
           marketId: fields.proposalMarketId,
-          changes: {
-            ...JSON.parse(fields.proposalTerms),
-          },
+          changes: fields.proposalTerms
+            ? { ...JSON.parse(fields.proposalTerms) }
+            : {},
         },
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,

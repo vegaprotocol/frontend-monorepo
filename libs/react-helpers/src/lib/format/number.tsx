@@ -138,7 +138,7 @@ export const useNumberParts = (
 };
 
 export const isNumeric = (
-  value?: string | number | BigNumber | null
+  value?: string | number | BigNumber | bigint | null
 ): value is NonNullable<number | string> => /^-?\d*\.?\d+$/.test(String(value));
 
 const INFINITY = '∞';

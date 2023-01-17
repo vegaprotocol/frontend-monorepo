@@ -16,6 +16,7 @@ const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
 const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
 const stakeValidatorListName = '[col-id="validator"]';
 const vegaKeySelector = '#vega-key-selector';
+const dialogCloseButton = '[data-testid="dialog-close"]';
 
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
@@ -39,6 +40,7 @@ Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
     .and('contain', `Add ${stake} $VEGA tokens`)
     .and('be.visible')
     .click();
+  cy.get(dialogCloseButton).click();
 });
 
 Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
@@ -51,6 +53,7 @@ Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
     .and('be.visible')
     .click();
+  cy.get(dialogCloseButton).click();
 });
 
 Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {

@@ -213,7 +213,7 @@ export const ValidatorTable = ({
             </span>
           </KeyValueTableRow>
           <KeyValueTableRow>
-            <span>{t('PERFORMANCE PENALITY')}</span>
+            <span>{t('PERFORMANCE PENALTY')}</span>
             <span>{getPerformancePenalty(performanceScore)}</span>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>

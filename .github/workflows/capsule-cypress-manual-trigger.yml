@@ -12,8 +12,6 @@ on:
         options:
           - console-lite-e2e
           - explorer-e2e
-          - liquidity-provision-dashboard-e2e
-          - stats-e2e
           - token-e2e
           - trading-e2e
       tags:

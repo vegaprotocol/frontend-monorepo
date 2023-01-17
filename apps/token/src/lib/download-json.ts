@@ -6,9 +6,8 @@ export const downloadJson = (jsonString: string, proposalTitle: string) => {
     const year = now.getFullYear().toString();
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
-    // e.g. "2023-Jan-03-23-59-59"
-    const formattedDateTime = `${day}-${month}-${year}-${hours}-${minutes}-${seconds}`;
+    // e.g. "2023-Jan-03-23-59"
+    const formattedDateTime = `${day}-${month}-${year}-${hours}-${minutes}`;
 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

@@ -5,7 +5,7 @@ declare global {
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      connectVegaWallet(): void;
+      connectVegaWallet(isMobile?: boolean): void;
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
@@ -25,10 +25,12 @@ export const mockConnectWallet = () => {
 };
 
 export function addVegaWalletConnect() {
-  Cypress.Commands.add('connectVegaWallet', () => {
+  Cypress.Commands.add('connectVegaWallet', (isMobile) => {
     mockConnectWallet();
     cy.highlight(`Connecting Vega Wallet`);
-    cy.get('[data-testid=connect-vega-wallet]').click();
+    cy.get(
+      `[data-testid=connect-vega-wallet${isMobile ? '-mobile' : ''}]`
+    ).click();
     cy.get('[data-testid=connectors-list]')
       .find('[data-testid="connector-jsonRpc"]')
       .click();

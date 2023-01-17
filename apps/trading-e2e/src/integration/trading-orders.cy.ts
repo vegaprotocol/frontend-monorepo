@@ -97,7 +97,13 @@ describe('orders list', { tags: '@smoke' }, () => {
 
   it('orders are sorted by most recent order', () => {
     // 7003-MORD-002
-    const expectedOrderList = ['BTCUSD.MF21', 'BTCUSD.MF21'];
+    const expectedOrderList = [
+      'BTCUSD.MF21',
+      'SOLUSD',
+      'AAPL.MF21',
+      'BTCUSD.MF21',
+      'BTCUSD.MF21',
+    ];
 
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
@@ -186,7 +192,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       'PartiallyFilled'
     );
     cy.getByTestId(`order-status-${orderId}`)
-      .parent()
+      .parentsUntil(`.ag-row`)
       .siblings(`[col-id=${orderRemaining}]`)
       .should('have.text', '4/5');
   });

@@ -106,6 +106,9 @@ const ledgerEntriesOnlyProvider = makeDataProvider({
     append,
     first: 100,
   },
+  additionalContext: {
+    isEnlargedTimeout: true,
+  },
 });
 
 export const ledgerEntriesProvider = makeDerivedDataProvider<
@@ -147,19 +150,20 @@ export const useLedgerEntriesDataProvider = ({
     () => ({
       partyId,
       dateRange: filter?.vegaTime?.value,
+      senderAccountType: filter?.senderAccountType?.value ?? null,
+      receiverAccountType: filter?.receiverAccountType?.value ?? null,
     }),
     [partyId, filter]
   );
 
   const update = useCallback(
     ({ data }: { data: (AggregatedLedgerEntriesEdge | null)[] | null }) => {
-      const avoidRerender = !!(
-        (dataRef.current?.length && data?.length) ||
-        (!dataRef.current?.length && !data?.length)
-      );
       dataRef.current = data;
+      const rerender =
+        (!dataRef.current?.length && data?.length) ||
+        (dataRef.current?.length && !data?.length);
       gridRef.current?.api?.refreshInfiniteCache();
-      return avoidRerender;
+      return !rerender;
     },
     [gridRef]
   );
