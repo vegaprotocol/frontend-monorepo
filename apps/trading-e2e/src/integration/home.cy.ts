@@ -227,9 +227,7 @@ describe('home', { tags: '@regression' }, () => {
 
   describe('redirect should take last visited market into consideration', () => {
     beforeEach(() => {
-      cy.window().then((window) => {
-        window.localStorage.removeItem('marketId');
-      });
+      cy.clearLocalStorage();
     });
     it('marketId comes from existing market', () => {
       cy.window().then((window) => {
@@ -237,7 +235,7 @@ describe('home', { tags: '@regression' }, () => {
         cy.visit('/');
         cy.wait('@Market');
         cy.location('hash').should('equal', '#/markets/market-1');
-        cy.get('[role="dialog"]').should('not.exist');
+        cy.getByTestId('dialog-content').should('not.exist');
       });
     });
 
@@ -250,7 +248,7 @@ describe('home', { tags: '@regression' }, () => {
         cy.visit('/');
         cy.wait('@Market');
         cy.location('hash').should('equal', '#/markets/market-not-existing');
-        cy.get('[role="dialog"]').should('not.exist');
+        cy.getByTestId('dialog-content').should('not.exist');
       });
     });
   });

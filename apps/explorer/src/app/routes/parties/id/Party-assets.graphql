@@ -15,9 +15,15 @@ fragment ExplorerPartyAssetsAccounts on AccountBalance {
   balance
   market {
     id
+    decimalPlaces
     tradableInstrument {
       instrument {
         name
+        product {
+          ... on Future {
+            quoteName
+          }
+        }
       }
     }
   }

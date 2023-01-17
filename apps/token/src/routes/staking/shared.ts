@@ -47,14 +47,13 @@ export const getOverstakedAmount = (
   totalStake: string,
   stakedOnNode: string
 ) => {
-  const amount = validatorScore
-    ? new BigNumber(validatorScore)
-        .times(new BigNumber(totalStake))
-        .minus(new BigNumber(stakedOnNode))
-        .dp(2)
+  const toReturn = validatorScore
+    ? new BigNumber(stakedOnNode).minus(
+        new BigNumber(validatorScore).times(new BigNumber(totalStake))
+      )
     : new BigNumber(0);
 
-  return amount.isNegative() ? new BigNumber(0) : amount;
+  return toReturn.isNegative() ? new BigNumber(0) : toReturn;
 };
 
 export const getOverstakingPenalty = (
