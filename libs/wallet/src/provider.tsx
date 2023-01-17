@@ -39,6 +39,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
       if (keys?.length) {
         setPubKeys(keys);
+        console.log(connector.current);
         setIsReadOnly(connector.current instanceof ViewConnector);
         const lastUsedPubKey = LocalStorage.getItem(WALLET_KEY);
         const foundKey = keys.find((key) => key.publicKey === lastUsedPubKey);
