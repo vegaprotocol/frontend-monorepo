@@ -32,6 +32,7 @@ import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
+import { ViewingBanner } from '../components/viewing-banner';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -79,10 +80,11 @@ function AppBody({ Component }: AppProps) {
       <VegaWalletProvider>
         <AppLoader>
           <Web3Provider>
-            <div className="h-full relative z-0 grid grid-rows-[min-content,1fr,min-content]">
+            <div className="h-full relative z-0 grid grid-rows-[min-content,min-content,1fr,min-content]">
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
+              <ViewingBanner />
               <main data-testid={location.pathname}>
                 <Component />
               </main>

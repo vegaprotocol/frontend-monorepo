@@ -21,7 +21,10 @@ export interface ViewingAsBannerProps {
   disconnect: () => Promise<void>;
 }
 
-export const ViewingAsBanner = ({ pubKey, disconnect }: ViewingAsBannerProps) => {
+export const ViewingAsBanner = ({
+  pubKey,
+  disconnect,
+}: ViewingAsBannerProps) => {
   return (
     <div className="w-full p-2 bg-neutral-800 flex justify-between text-neutral-400">
       <div className="text-base flex items-center justify-center">
