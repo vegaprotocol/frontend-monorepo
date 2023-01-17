@@ -20,7 +20,7 @@ import {
   DateRangeFilter,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
@@ -85,7 +85,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         components={{ AmountCell, PriceFlashCell, ProgressBarCell }}
         {...props}
       >
-        <AgGridColumn headerName={t('Market')} field="marketName" />
+        <AgGridColumn
+          headerName={t('Market')}
+          field="marketName"
+          cellRenderer={({
+            value,
+            data,
+          }: VegaICellRendererParams<Position, 'marketName'>) =>
+            value ? (
+              <Link href={`/#/markets/${data?.marketId}`}>{value}</Link>
+            ) : (
+              value
+            )
+          }
+        />
         <AgGridColumn
           headerName={t('Notional')}
           headerTooltip={t('Mark price x open volume.')}
