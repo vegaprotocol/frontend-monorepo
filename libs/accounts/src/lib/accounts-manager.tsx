@@ -1,4 +1,8 @@
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  useDataProvider,
+  updateGridData,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, useCallback, memo } from 'react';
@@ -25,10 +29,7 @@ export const AccountManager = ({
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
-      const isEmpty = !dataRef.current?.length;
-      dataRef.current = data;
-      gridRef.current?.api?.refreshInfiniteCache();
-      return Boolean((isEmpty && !data?.length) || (!isEmpty && data?.length));
+      return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );

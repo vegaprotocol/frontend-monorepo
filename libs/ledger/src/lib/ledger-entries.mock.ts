@@ -22,7 +22,7 @@ export const ledgerEntriesQuery = (
           'eyJ2ZWdhX3RpbWUiOiIyMDIyLTExLTIzVDE3OjI3OjU2LjczNDM2NFoifQ==',
         endCursor:
           'eyJ2ZWdhX3RpbWUiOiIyMDIyLTExLTIzVDEzOjExOjE2LjU0NjM2M1oifQ==',
-        hasNextPage: true,
+        hasNextPage: false,
         hasPreviousPage: false,
         __typename: 'PageInfo',
       },

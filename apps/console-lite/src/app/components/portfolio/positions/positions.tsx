@@ -13,7 +13,7 @@ import useColumnDefinitions from './use-column-definitions';
 const Positions = () => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { partyId } = useOutletContext<{ partyId: string }>();
-  const { data, error, loading } = usePositionsData(partyId, gridRef);
+  const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
   const { columnDefs, defaultColDef } = useColumnDefinitions();
   return (
     <AsyncRenderer
@@ -29,7 +29,8 @@ const Positions = () => {
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         getRowId={getRowId}
-        rowData={data || undefined}
+        rowModelType="infinite"
+        datasource={{ getRows }}
         components={{ PriceFlashCell }}
       />
     </AsyncRenderer>

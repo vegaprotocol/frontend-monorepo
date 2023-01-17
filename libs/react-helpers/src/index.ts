@@ -6,6 +6,7 @@ export * from './lib/get-events';
 export * from './lib/grid';
 export * from './lib/i18n';
 export * from './lib/pagination';
+export * from './lib/ag-grid-update';
 export * from './lib/remove-0x';
 export * from './lib/storage';
 export * from './lib/time';
