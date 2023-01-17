@@ -27,15 +27,14 @@ context('rewards - flow', { tags: '@slow' }, function () {
         'vegaWalletName'
       )} --pubkey ${Cypress.env(
         'vegaWalletPublicKey'
-      )} -p "../../../../../vegacapsule/.passphrase" --network DV '{"transfer":{"fromAccountType":4,"toAccountType":12,"to":"0000000000000000000000000000000000000000000000000000000000000000","asset":"b4f2726571fbe8e33b442dc92ed2d7f0d810e21835b7371a7915a365f07ccd9b","amount":"100000","recurring":{"startEpoch":1, "endEpoch": 100000000, "factor":"1"}}}' --home ${Cypress.env(
+      )} -p "./src/fixtures/wallet/passphrase" --network DV '{"transfer":{"fromAccountType":4,"toAccountType":12,"to":"0000000000000000000000000000000000000000000000000000000000000000","asset":"b4f2726571fbe8e33b442dc92ed2d7f0d810e21835b7371a7915a365f07ccd9b","amount":"1000000000000000000","recurring":{"startEpoch":20, "endEpoch": 40, "factor":"1"}}}' --home ${Cypress.env(
         'vegaWalletLocation'
       )}`,
       { failOnNonZeroExit: false }
     )
       .its('stderr')
       .should('contain', '');
-    cy.navigate_to('staking');
-    cy.wait_for_spinner();
+    cy.navigate_to('validators');
     cy.staking_page_associate_tokens('3');
     cy.get(vegaWalletUnstakedBalance, txTimeout).should(
       'contain',
