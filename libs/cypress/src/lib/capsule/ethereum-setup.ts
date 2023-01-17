@@ -77,6 +77,7 @@ function timeout(time = 0, id: string) {
 }
 
 async function promiseWithTimeout(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   promise: Promise<any>,
   time: number,
   id: string
@@ -145,7 +146,7 @@ function waitForStake(vegaPublicKey: string) {
       party(id:"${vegaPublicKey}") {
         stakingSummary {
           currentStakeAvailable
-        } 
+        }
       }
     }
   `;
