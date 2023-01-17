@@ -52,7 +52,7 @@ describe('useVegaTransaction', () => {
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
   });
 
-  it('handles a single error', () => {
+  it('handles a single wallet error', () => {
     const error = new WalletError('test error', 1, 'test data');
     const mockSendTx = jest.fn(() => {
       throw error;
@@ -68,6 +68,22 @@ describe('useVegaTransaction', () => {
     );
     expect(result.current.transaction.error).toHaveProperty('code', 1);
     expect(result.current.transaction.error).toHaveProperty('data', error.data);
+  });
+
+  it('handles a single error', () => {
+    const error = new Error('test error');
+    const mockSendTx = jest.fn(() => {
+      throw error;
+    });
+    const { result } = setup({ sendTx: mockSendTx });
+    act(() => {
+      result.current.send(mockPubKey, {} as Transaction);
+    });
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
+    expect(result.current.transaction.error).toHaveProperty(
+      'message',
+      error.message
+    );
   });
 
   it('handles an unkwown error', () => {
