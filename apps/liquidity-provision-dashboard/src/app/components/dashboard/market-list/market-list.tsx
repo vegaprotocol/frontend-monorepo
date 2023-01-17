@@ -215,7 +215,7 @@ export const MarketList = () => {
                   ) * 100;
                 const display = Number.isNaN(roundedPercentage)
                   ? 'N/A'
-                  : formatNumberPercentage(toBigNum(roundedPercentage, 2));
+                  : formatNumberPercentage(toBigNum(roundedPercentage, 0), 0);
                 return display;
               } else return '-';
             }}
