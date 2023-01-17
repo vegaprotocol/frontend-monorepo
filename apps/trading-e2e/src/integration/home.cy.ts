@@ -227,9 +227,7 @@ describe('home', { tags: '@regression' }, () => {
 
   describe('redirect should take last visited market into consideration', () => {
     beforeEach(() => {
-      cy.window().then((window) => {
-        window.localStorage.removeItem('marketId');
-      });
+      cy.clearLocalStorage();
     });
     it('marketId comes from existing market', () => {
       cy.window().then((window) => {
