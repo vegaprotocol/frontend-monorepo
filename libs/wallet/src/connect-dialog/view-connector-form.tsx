@@ -31,12 +31,12 @@ export function ViewConnectorForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
+    <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
       <FormGroup label={t('Vega Pubkey')} labelFor="address">
         <Input
           {...register('address', { required: t('Required') })}
           id="address"
-          data-testid="rest-wallet"
+          data-testid="address"
           type="text"
         />
         {errors.address?.message && (

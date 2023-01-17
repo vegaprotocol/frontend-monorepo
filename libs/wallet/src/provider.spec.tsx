@@ -43,6 +43,7 @@ describe('VegaWalletProvider', () => {
     expect(result.current).toEqual({
       pubKey: null,
       pubKeys: null,
+      isReadOnly: false,
       selectPubKey: expect.any(Function),
       connect: expect.any(Function),
       disconnect: expect.any(Function),
