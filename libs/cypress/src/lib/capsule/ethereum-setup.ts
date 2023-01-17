@@ -31,7 +31,7 @@ export async function setupEthereumAccount(
 
   const ethereumConfig = await getEthereumConfig();
   if (!ethereumConfig) {
-    throw new Error('coult not fetch ethereum config');
+    throw new Error('could not not fetch ethereum config');
   }
 
   const tokenContract = new Token(vegaAsset.source.contractAddress, wallet);
