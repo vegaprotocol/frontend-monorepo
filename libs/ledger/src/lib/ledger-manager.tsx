@@ -6,11 +6,14 @@ import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useState } from 'react';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
+import type * as Types from '@vegaprotocol/types';
 
 export interface Filter {
   vegaTime?: {
     value: Schema.DateRange;
   };
+  senderAccountType?: { value: Types.AccountType[] };
+  receiverAccountType?: { value: Types.AccountType[] };
 }
 
 type LedgerManagerProps = { partyId: string };
