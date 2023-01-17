@@ -3,6 +3,7 @@ import type { components } from '../../../../../types/explorer';
 import type { LiquiditySubmission } from '../tx-liquidity-submission';
 
 export type VegaPeggedReference = components['schemas']['vegaPeggedReference'];
+export type VegaSide = components['schemas']['vegaSide'];
 
 export type LiquidityProvisionOrder =
   components['schemas']['vegaLiquidityOrder'];
@@ -16,18 +17,24 @@ export const LiquidityReferenceLabel: Record<VegaPeggedReference, string> = {
 
 export type LiquidityProvisionDetailsRowProps = {
   order?: LiquidityProvisionOrder;
+  side: VegaSide;
 };
 
 export function LiquidityProvisionDetailsRow({
   order,
+  side,
 }: LiquidityProvisionDetailsRowProps) {
   if (!order) {
     return null;
   }
 
+  const label = side === 'SIDE_BUY' ? '+' : '-';
+
   return (
     <tr>
-      <td>{order.offset ? order.offset : '-'}</td>
+      <td>
+        {label} {order.offset ? order.offset : '-'}
+      </td>
       <td>
         {order.reference ? LiquidityReferenceLabel[order.reference] : '-'}
       </td>
@@ -54,11 +61,19 @@ export function LiquidityProvisionDetails({
       </thead>
       <tbody>
         {provision.buys?.map((b, i) => (
-          <LiquidityProvisionDetailsRow order={b} key={`SIDE_BUY-${i}`} />
+          <LiquidityProvisionDetailsRow
+            order={b}
+            side={'SIDE_BUY'}
+            key={`SIDE_BUY-${i}`}
+          />
         ))}
         <LiquidityPrivisionMid />
         {provision.sells?.map((s, i) => (
-          <LiquidityProvisionDetailsRow order={s} key={`SIDE_SELL-${i}`} />
+          <LiquidityProvisionDetailsRow
+            order={s}
+            side={'SIDE_SELL'}
+            key={`SIDE_SELL-${i}`}
+          />
         ))}
       </tbody>
     </table>

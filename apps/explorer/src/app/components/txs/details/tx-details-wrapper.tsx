@@ -5,7 +5,6 @@ import { TxDetailsOrder } from './tx-order';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsHeartbeat } from './tx-hearbeat';
-import { TxDetailsLPAmend } from './tx-lp-amend';
 import { TxDetailsGeneric } from './tx-generic';
 import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
@@ -18,6 +17,7 @@ import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
 import { TxDetailsUndelegate } from './tx-undelegation';
 import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
+import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -84,8 +84,6 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
-    case 'Amend LiquidityProvision Order':
-      return TxDetailsLPAmend;
     case 'Batch Market Instructions':
       return TxDetailsBatch;
     case 'Chain Event':
@@ -96,6 +94,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsWithdrawSubmission;
     case 'Liquidity Provision Order':
       return TxDetailsLiquiditySubmission;
+    case 'Amend LiquidityProvision Order':
+      return TxDetailsLiquidityAmendment;
     case 'Delegate':
       return TxDetailsDelegate;
     case 'Undelegate':
