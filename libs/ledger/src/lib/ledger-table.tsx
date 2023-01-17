@@ -3,6 +3,7 @@ import {
   DateRangeFilter,
   fromNanoSeconds,
   getDateTimeFormat,
+  SetFilter,
   t,
   truncateByChars,
 } from '@vegaprotocol/react-helpers';
@@ -50,6 +51,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           resizable: true,
           sortable: true,
           tooltipComponent: TransferTooltipCellComponent,
+          filterParams: { buttons: ['reset'] },
         }}
         {...props}
       >
@@ -64,6 +66,10 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
         />
         <AgGridColumn
           headerName={t('Account type')}
+          filter={SetFilter}
+          filterParams={{
+            set: AccountTypeMapping,
+          }}
           field="senderAccountType"
           cellRenderer={({
             value,
@@ -92,6 +98,10 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
         />
         <AgGridColumn
           headerName={t('Account type')}
+          filter={SetFilter}
+          filterParams={{
+            set: AccountTypeMapping,
+          }}
           field="receiverAccountType"
           cellRenderer={({
             value,

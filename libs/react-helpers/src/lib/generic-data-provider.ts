@@ -171,6 +171,7 @@ interface DataProviderParams<
   };
   fetchPolicy?: FetchPolicy;
   resetDelay?: number;
+  additionalContext?: Record<string, unknown>;
 }
 
 /**
@@ -196,6 +197,7 @@ function makeDataProviderInternal<
   pagination,
   fetchPolicy,
   resetDelay,
+  additionalContext,
 }: DataProviderParams<
   QueryData,
   Data,
@@ -275,6 +277,7 @@ function makeDataProviderInternal<
         pagination: paginationVariables,
       },
       fetchPolicy: fetchPolicy || 'no-cache',
+      context: additionalContext,
     });
     const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
@@ -311,6 +314,7 @@ function makeDataProviderInternal<
           ? { ...variables, pagination: { first: pagination.first } }
           : variables,
         fetchPolicy: fetchPolicy || 'no-cache',
+        context: additionalContext,
       });
       data = getData(res.data, variables);
       if (data && pagination) {
@@ -560,7 +564,8 @@ export type CombineDerivedData<
   Variables extends OperationVariables = OperationVariables
 > = (
   data: DerivedPart<Variables>['data'][],
-  variables?: Variables
+  variables: Variables | undefined,
+  prevData: Data | null
 ) => Data | null;
 
 export type CombineDerivedDelta<
@@ -641,7 +646,8 @@ function makeDerivedDataProviderInternal<
     const newData = newLoaded
       ? combineData(
           parts.map((part) => part.data),
-          variables
+          variables,
+          data
         )
       : data;
     if (
@@ -655,7 +661,7 @@ function makeDerivedDataProviderInternal<
       loaded = newLoaded;
       const previousData = data;
       data = newData;
-      if (newLoaded) {
+      if (loaded) {
         const updatedPart = parts[updatedPartIndex];
         if (updatedPart.isUpdate) {
           isUpdate = true;

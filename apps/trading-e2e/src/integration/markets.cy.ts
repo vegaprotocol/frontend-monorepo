@@ -2,17 +2,19 @@ import * as Schema from '@vegaprotocol/types';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
-    cy.mockTradingPage(
-      Schema.MarketState.STATE_ACTIVE,
-      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
-    );
-    cy.mockSubscription();
-    cy.visit('/');
-    cy.wait('@Market');
-    cy.wait('@Markets');
-    cy.wait('@MarketsData');
-    cy.wait('@MarketsCandles');
+    cy.clearLocalStorage().then(() => {
+      cy.mockTradingPage(
+        Schema.MarketState.STATE_ACTIVE,
+        Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockSubscription();
+      cy.visit('/');
+      cy.wait('@Market');
+      cy.wait('@Markets');
+      cy.wait('@MarketsData');
+      cy.wait('@MarketsCandles');
+    });
   });
 
   it('renders markets correctly', () => {

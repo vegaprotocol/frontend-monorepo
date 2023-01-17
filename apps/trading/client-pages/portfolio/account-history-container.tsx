@@ -9,7 +9,6 @@ import compact from 'lodash/compact';
 import type { ChangeEvent } from 'react';
 import { useMemo, useState } from 'react';
 import type { AccountHistoryQuery } from './__generated__/AccountHistory';
-import { useAccountsWithBalanceQuery } from './__generated__/AccountHistory';
 import { useAccountHistoryQuery } from './__generated__/AccountHistory';
 import * as Schema from '@vegaprotocol/types';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
@@ -26,6 +25,8 @@ import {
 import { AccountTypeMapping } from '@vegaprotocol/types';
 import { PriceChart } from 'pennant';
 import 'pennant/dist/style.css';
+import { accountsOnlyDataProvider } from '@vegaprotocol/accounts';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 const DateRange = {
   RANGE_1D: '1D',
@@ -95,25 +96,23 @@ const AccountHistoryManager = ({
     [pubKey]
   );
 
-  const assetsWithBalanceHistory = useAccountsWithBalanceQuery({
+  const { data: accounts } = useDataProvider({
+    dataProvider: accountsOnlyDataProvider,
     variables: variablesForOneTimeQuery,
     skip: !pubKey,
   });
 
-  const assetsWithBalance = useMemo(
-    () =>
-      assetsWithBalanceHistory.data?.balanceChanges.edges.map(
-        (e) => e?.node.assetId
-      ) || [],
-    [assetsWithBalanceHistory.data?.balanceChanges.edges]
+  const assetIds = useMemo(
+    () => accounts?.map((e) => e?.asset?.id) || [],
+    [accounts]
   );
 
   const assets = useMemo(
     () =>
       assetData
-        .filter((a) => assetsWithBalance.includes(a.id))
+        .filter((a) => assetIds.includes(a.id))
         .sort((a, b) => a.name.localeCompare(b.name)),
-    [assetData, assetsWithBalance]
+    [assetData, assetIds]
   );
   const [asset, setAsset] = useState<AssetFieldsFragment>(assets[0]);
   const [range, setRange] = useState<typeof DateRange[keyof typeof DateRange]>(

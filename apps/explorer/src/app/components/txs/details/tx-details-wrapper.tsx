@@ -45,7 +45,7 @@ export const TxDetailsWrapper = ({
   const raw = get(blockData, `result.block.data.txs[${txData.index}]`);
 
   return (
-    <>
+    <div key={`txd-${txData.hash}`}>
       <section>{child({ txData, pubKey, blockData })}</section>
 
       <details title={t('Decoded transaction')} className="mt-3">
@@ -59,7 +59,7 @@ export const TxDetailsWrapper = ({
           <code className="break-all font-mono text-xs">{raw}</code>
         </details>
       ) : null}
-    </>
+    </div>
   );
 };
 

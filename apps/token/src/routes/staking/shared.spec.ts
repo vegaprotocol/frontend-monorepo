@@ -91,19 +91,26 @@ describe('getOverstakingPenalty', () => {
 describe('getOverstakedAmount', () => {
   it('should return the overstaked amount', () => {
     expect(
-      getOverstakedAmount('0.21', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(1));
+      // If a validator score is 0, any amount staked on the node is considered overstaked
+      getOverstakedAmount('0', Number(100).toString(), Number(20).toString())
+    ).toEqual(new BigNumber(20));
     expect(
-      getOverstakedAmount('0.22', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(2));
+      getOverstakedAmount('0.05', Number(100).toString(), Number(20).toString())
+    ).toEqual(new BigNumber(15));
     expect(
-      getOverstakedAmount('0.30', Number(100).toString(), Number(20).toString())
+      getOverstakedAmount('0.1', Number(100).toString(), Number(20).toString())
     ).toEqual(new BigNumber(10));
+    expect(
+      getOverstakedAmount('0.15', Number(100).toString(), Number(20).toString())
+    ).toEqual(new BigNumber(5));
+    expect(
+      getOverstakedAmount('0.2', Number(100).toString(), Number(20).toString())
+    ).toEqual(new BigNumber(0));
   });
 
   it('should return 0 if the overstaked amount is negative', () => {
     expect(
-      getOverstakedAmount('0.19', Number(100).toString(), Number(20).toString())
+      getOverstakedAmount('0.8', Number(100).toString(), Number(20).toString())
     ).toEqual(new BigNumber(0));
   });
 });

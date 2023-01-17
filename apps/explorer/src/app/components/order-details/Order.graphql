@@ -22,8 +22,14 @@ fragment ExplorerDeterministicOrderFields on Order {
     tradableInstrument {
       instrument {
         name
+        product {
+          ... on Future {
+            quoteName
+          }
+        }
       }
     }
+    state
   }
 }
 

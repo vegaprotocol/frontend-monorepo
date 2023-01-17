@@ -49,6 +49,10 @@ export const MarketListTable = forwardRef<
         field="tradableInstrument.instrument.code"
       />
       <AgGridColumn
+        headerName={t('Description')}
+        field="tradableInstrument.instrument.name"
+      />
+      <AgGridColumn
         headerName={t('Settlement asset')}
         field="tradableInstrument.instrument.product.settlementAsset"
         cellRenderer={({
@@ -161,7 +165,7 @@ export const MarketListTable = forwardRef<
             : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)
         }
       />
-      <AgGridColumn headerName={t('Description')} field="name" />
+      <AgGridColumn headerName={t('Market ID')} field="id" />
     </AgGrid>
   );
 });

@@ -86,6 +86,8 @@ describe('isNumeric', () => {
     { i: '--123.01', o: false },
     { i: '123.', o: false },
     { i: '123.1.1', o: false },
+    { i: BigInt(123), o: true },
+    { i: BigInt(-1), o: true },
     { i: new BigNumber(123), o: true },
     { i: new BigNumber(123.123), o: true },
     { i: new BigNumber(123.123).toString(), o: true },
@@ -98,7 +100,7 @@ describe('isNumeric', () => {
       i,
       o,
     }: {
-      i: number | string | undefined | null | BigNumber;
+      i: number | string | undefined | null | BigNumber | bigint;
       o: boolean;
     }) => {
       expect(isNumeric(i)).toStrictEqual(o);
