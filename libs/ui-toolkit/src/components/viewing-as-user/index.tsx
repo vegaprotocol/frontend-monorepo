@@ -11,11 +11,6 @@ export function truncateMiddle(address: string) {
   );
 }
 
-export interface TemplateSidebarProps {
-  children: React.ReactNode;
-  sidebar: React.ReactNode[];
-}
-
 export interface ViewingAsBannerProps {
   pubKey: string | null;
   disconnect: () => Promise<void>;
