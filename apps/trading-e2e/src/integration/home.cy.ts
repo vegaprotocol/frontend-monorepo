@@ -136,7 +136,7 @@ describe('home', { tags: '@regression' }, () => {
   });
 
   describe('no markets found', () => {
-    before(() => {
+    beforeEach(() => {
       cy.mockGQL((req) => {
         const data = {
           marketsConnection: {
