@@ -171,7 +171,7 @@ interface DataProviderParams<
   };
   fetchPolicy?: FetchPolicy;
   resetDelay?: number;
-  additionalContext?: Record<string, any>;
+  additionalContext?: Record<string, unknown>;
 }
 
 /**

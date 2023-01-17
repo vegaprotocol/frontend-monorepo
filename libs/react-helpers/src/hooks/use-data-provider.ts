@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import throttle from 'lodash/throttle';
-import { useApolloClient, concat } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import ApolloLinkTimeout from 'apollo-link-timeout';
 import type {
   Subscribe,
   Load,
