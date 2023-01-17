@@ -10,7 +10,6 @@ import {
   formatNumberPercentage,
   t,
   toBigNum,
-  getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import type * as Schema from '@vegaprotocol/types';
@@ -31,7 +30,7 @@ import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
-import { getMarketExpiryDate } from '@vegaprotocol/react-helpers';
+import { getExpiryDate } from '@vegaprotocol/react-helpers';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
@@ -303,15 +302,14 @@ export const MarketList = () => {
             field="tradableInstrument.instrument.metadata.tags"
             headerTooltip={t('Closing time of the market')}
             valueFormatter={({
-              value,
-            }: VegaValueFormatterParams<
-              Market,
-              'tradableInstrument.instrument.metadata.tags'
-            >) => {
-              const expiry = getMarketExpiryDate(value);
-              return expiry
-                ? getDateTimeFormat().format(expiry.getTime())
-                : '-';
+              data,
+            }: VegaValueFormatterParams<Market, ''>) => {
+              const expiry = getExpiryDate(
+                data?.tradableInstrument.instrument.metadata.tags,
+                data?.marketTimestamps.close,
+                data?.state
+              );
+              return expiry ? expiry : '-';
             }}
           />
         </Grid>
