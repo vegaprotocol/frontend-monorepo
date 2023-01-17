@@ -82,5 +82,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: logs
+          name: logs-trading
           path: /home/runner/.vegacapsule/testnet/logs
