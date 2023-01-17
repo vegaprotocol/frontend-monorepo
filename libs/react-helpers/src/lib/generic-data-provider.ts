@@ -171,6 +171,7 @@ interface DataProviderParams<
   };
   fetchPolicy?: FetchPolicy;
   resetDelay?: number;
+  additionalContext?: Record<string, unknown>;
 }
 
 /**
@@ -196,6 +197,7 @@ function makeDataProviderInternal<
   pagination,
   fetchPolicy,
   resetDelay,
+  additionalContext,
 }: DataProviderParams<
   QueryData,
   Data,
@@ -275,6 +277,7 @@ function makeDataProviderInternal<
         pagination: paginationVariables,
       },
       fetchPolicy: fetchPolicy || 'no-cache',
+      context: additionalContext,
     });
     const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
@@ -311,6 +314,7 @@ function makeDataProviderInternal<
           ? { ...variables, pagination: { first: pagination.first } }
           : variables,
         fetchPolicy: fetchPolicy || 'no-cache',
+        context: additionalContext,
       });
       data = getData(res.data, variables);
       if (data && pagination) {

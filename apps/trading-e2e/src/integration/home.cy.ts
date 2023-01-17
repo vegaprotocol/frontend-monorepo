@@ -51,6 +51,7 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
 
 describe('home', { tags: '@regression' }, () => {
   beforeEach(() => {
+    cy.clearLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
   });
@@ -226,9 +227,6 @@ describe('home', { tags: '@regression' }, () => {
   });
 
   describe('redirect should take last visited market into consideration', () => {
-    beforeEach(() => {
-      cy.clearLocalStorage();
-    });
     it('marketId comes from existing market', () => {
       cy.window().then((window) => {
         window.localStorage.setItem('marketId', 'market-1');

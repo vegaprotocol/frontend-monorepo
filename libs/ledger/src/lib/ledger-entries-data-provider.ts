@@ -106,6 +106,9 @@ const ledgerEntriesOnlyProvider = makeDataProvider({
     append,
     first: 100,
   },
+  additionalContext: {
+    isEnlargedTimeout: true,
+  },
 });
 
 export const ledgerEntriesProvider = makeDerivedDataProvider<
@@ -147,6 +150,8 @@ export const useLedgerEntriesDataProvider = ({
     () => ({
       partyId,
       dateRange: filter?.vegaTime?.value,
+      senderAccountType: filter?.senderAccountType?.value ?? null,
+      receiverAccountType: filter?.receiverAccountType?.value ?? null,
     }),
     [partyId, filter]
   );

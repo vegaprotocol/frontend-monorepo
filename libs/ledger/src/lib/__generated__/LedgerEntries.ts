@@ -9,6 +9,8 @@ export type LedgerEntriesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
   dateRange?: Types.InputMaybe<Types.DateRange>;
+  senderAccountType?: Types.InputMaybe<Array<Types.AccountType> | Types.AccountType>;
+  receiverAccountType?: Types.InputMaybe<Array<Types.AccountType> | Types.AccountType>;
 }>;
 
 
@@ -29,9 +31,9 @@ export const LedgerEntryFragmentDoc = gql`
 }
     `;
 export const LedgerEntriesDocument = gql`
-    query LedgerEntries($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
+    query LedgerEntries($partyId: ID!, $pagination: Pagination, $dateRange: DateRange, $senderAccountType: [AccountType!], $receiverAccountType: [AccountType!]) {
   ledgerEntries(
-    filter: {SenderAccountFilter: {partyIds: [$partyId]}, ReceiverAccountFilter: {partyIds: [$partyId]}}
+    filter: {SenderAccountFilter: {partyIds: [$partyId], accountTypes: $senderAccountType}, ReceiverAccountFilter: {partyIds: [$partyId], accountTypes: $receiverAccountType}}
     pagination: $pagination
     dateRange: $dateRange
   ) {
@@ -65,6 +67,8 @@ export const LedgerEntriesDocument = gql`
  *      partyId: // value for 'partyId'
  *      pagination: // value for 'pagination'
  *      dateRange: // value for 'dateRange'
+ *      senderAccountType: // value for 'senderAccountType'
+ *      receiverAccountType: // value for 'receiverAccountType'
  *   },
  * });
  */

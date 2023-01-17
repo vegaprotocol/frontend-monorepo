@@ -37,5 +37,21 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         '[data-testid="tab-ledger-entries"] .ag-center-cols-container .ag-row'
       ).should('have.length', ledgerEntriesQuery().ledgerEntries.edges.length);
     });
+
+    it('account filters should be callable', () => {
+      cy.visit('/#/portfolio');
+      cy.getByTestId('"Ledger entries"').click();
+      cy.get('[role="columnheader"][col-id="senderAccountType"]').realHover();
+      cy.get(
+        '[role="columnheader"][col-id="senderAccountType"] .ag-header-cell-menu-button'
+      ).click();
+      cy.get('fieldset.ag-simple-filter-body-wrapper')
+        .should('be.visible')
+        .within((fields) => {
+          cy.wrap(fields).find('label').should('have.length', 16);
+        });
+      cy.getByTestId('"Ledger entries"').click();
+      cy.get('fieldset.ag-simple-filter-body-wrapper').should('not.exist');
+    });
   });
 });
