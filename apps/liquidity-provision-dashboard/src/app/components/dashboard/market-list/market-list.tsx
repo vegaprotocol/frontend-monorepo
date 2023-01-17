@@ -31,7 +31,7 @@ import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
-import { getMarketExpiryDate } from '@vegaprotocol/market-info';
+import { getMarketExpiryDate } from '@vegaprotocol/react-helpers';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
