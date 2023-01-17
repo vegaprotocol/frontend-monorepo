@@ -1,8 +1,7 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { ViewingAsBanner } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
-import { truncateMiddle } from '../../lib/truncate-middle';
 
 import { Nav } from '../nav';
 
@@ -10,22 +9,6 @@ export interface TemplateSidebarProps {
   children: React.ReactNode;
   sidebar: React.ReactNode[];
 }
-
-export interface ViewingAsBannerProps {
-  pubKey: string | null;
-  disconnect: () => Promise<void>;
-}
-
-const ViewingAsBanner = ({ pubKey, disconnect }: ViewingAsBannerProps) => {
-  return (
-    <div className="w-full p-2 bg-neutral-800 flex justify-between text-neutral-400">
-      <div className="text-base flex items-center justify-center">
-        Viewing as Vega user: {pubKey && truncateMiddle(pubKey)}
-      </div>
-      <Button onClick={disconnect}>Exit view as</Button>
-    </div>
-  );
-};
 
 export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
   const { VEGA_ENV } = useEnvironment();
