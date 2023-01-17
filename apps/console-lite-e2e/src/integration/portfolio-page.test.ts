@@ -66,7 +66,9 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
 
     it('data should be properly rendered', () => {
       cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
-      cy.contains('.ag-center-cols-container button', 'tEURO').click();
+      cy.get('[role="gridcell"][col-id="account-asset"] button')
+        .contains('tEURO')
+        .click();
       cy.getByTestId('dialog-title').should(
         'have.text',
         'Asset details - tEURO'

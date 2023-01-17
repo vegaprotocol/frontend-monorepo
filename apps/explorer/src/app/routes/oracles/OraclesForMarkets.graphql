@@ -1,0 +1,27 @@
+fragment ExplorerOracleForMarketsMarket on Market {
+  id
+  tradableInstrument {
+    instrument {
+      product {
+        ... on Future {
+          dataSourceSpecForSettlementData {
+            id
+          }
+          dataSourceSpecForTradingTermination {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+query ExplorerOracleFormMarkets {
+  marketsConnection {
+    edges {
+      node {
+        ...ExplorerOracleForMarketsMarket
+      }
+    }
+  }
+}

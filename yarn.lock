@@ -19690,6 +19690,11 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
+recursive-key-filter@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/recursive-key-filter/-/recursive-key-filter-1.0.2.tgz#78420279ec536e383c4437df367bc3da0cee8f12"
+  integrity sha512-glJv733zlpupnUlswNb7u0OEJaR0gojHWD00fDyISRJdXO9lVsllTJj6R4oJAYyRbIdadLffzsz28BU7nooXqA==
+
 redent@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/redent/-/redent-1.0.0.tgz#cf916ab1fd5f1f16dfb20822dd6ec7f730c2afde"

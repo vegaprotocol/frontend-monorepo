@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import * as Schema from '@vegaprotocol/types';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
@@ -7,6 +8,7 @@ export const CurrentProposalState = ({
 }: {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
+  const { t } = useTranslation();
   let className = 'text-white';
 
   if (
@@ -21,5 +23,5 @@ export const CurrentProposalState = ({
   ) {
     className = 'text-white';
   }
-  return <span className={className}>{proposal?.state}</span>;
+  return <span className={className}>{t(`${proposal?.state}`)}</span>;
 };

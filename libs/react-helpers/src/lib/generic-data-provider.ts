@@ -293,6 +293,13 @@ function makeDataProviderInternal<
     return insertionData;
   };
 
+  const setData = (updatedData: Data | null) => {
+    data = updatedData;
+    if (totalCount !== undefined && data instanceof Array) {
+      totalCount = data.length;
+    }
+  };
+
   const initialFetch = async () => {
     if (!client) {
       return;
@@ -329,7 +336,10 @@ function makeDataProviderInternal<
         while (updateQueue.length) {
           const delta = updateQueue.shift();
           if (delta) {
-            data = update(data, delta, reload, variables);
+            setData(update(data, delta, reload, variables));
+            if (totalCount !== undefined && data instanceof Array) {
+              totalCount = data.length;
+            }
           }
         }
       }
@@ -377,7 +387,7 @@ function makeDataProviderInternal<
       if (updatedData === data) {
         return;
       }
-      data = updatedData;
+      setData(updatedData);
       notifyAll({ delta, isUpdate: true });
     }
   };
@@ -550,7 +560,8 @@ export type CombineDerivedData<
   Variables extends OperationVariables = OperationVariables
 > = (
   data: DerivedPart<Variables>['data'][],
-  variables?: Variables
+  variables: Variables | undefined,
+  prevData: Data | null
 ) => Data | null;
 
 export type CombineDerivedDelta<
@@ -631,7 +642,8 @@ function makeDerivedDataProviderInternal<
     const newData = newLoaded
       ? combineData(
           parts.map((part) => part.data),
-          variables
+          variables,
+          data
         )
       : data;
     if (
@@ -645,7 +657,7 @@ function makeDerivedDataProviderInternal<
       loaded = newLoaded;
       const previousData = data;
       data = newData;
-      if (newLoaded) {
+      if (loaded) {
         const updatedPart = parts[updatedPartIndex];
         if (updatedPart.isUpdate) {
           isUpdate = true;

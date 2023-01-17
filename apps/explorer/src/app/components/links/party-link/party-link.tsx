@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes } from '../../../routes/route-names';
 import { Link } from 'react-router-dom';
 

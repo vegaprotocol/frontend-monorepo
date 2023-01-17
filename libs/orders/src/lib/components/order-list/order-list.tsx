@@ -51,7 +51,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
-          filter
           cellRenderer={({
             value,
             data,
