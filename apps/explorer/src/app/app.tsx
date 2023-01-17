@@ -1,23 +1,15 @@
 import classnames from 'classnames';
 import { useState, useEffect } from 'react';
-import * as Sentry from '@sentry/react';
-import { BrowserTracing } from '@sentry/tracing';
 import { useLocation } from 'react-router-dom';
-import {
-  EnvironmentProvider,
-  NetworkLoader,
-  useEnvironment,
-} from '@vegaprotocol/environment';
+import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 import { NetworkInfo } from '@vegaprotocol/network-info';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
-import { ENV } from './config/env';
 import type { InMemoryCacheConfig } from '@apollo/client';
 
 function App() {
-  const { VEGA_ENV } = useEnvironment();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const location = useLocation();
@@ -26,18 +18,9 @@ function App() {
     setMenuOpen(false);
   }, [location]);
 
-  useEffect(() => {
-    Sentry.init({
-      dsn: ENV.dsn,
-      integrations: [new BrowserTracing()],
-      tracesSampleRate: 1,
-      environment: VEGA_ENV,
-    });
-  }, [VEGA_ENV]);
-
   const cacheConfig: InMemoryCacheConfig = {
     typePolicies: {
-      Node: {
+      statistics: {
         keyFields: false,
       },
     },

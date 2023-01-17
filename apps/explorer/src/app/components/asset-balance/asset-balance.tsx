@@ -18,7 +18,6 @@ const AssetBalance = ({
   showAssetLink = true,
 }: AssetBalanceProps) => {
   const { data } = useExplorerAssetQuery({
-    fetchPolicy: 'cache-first',
     variables: { id: assetId },
   });
 

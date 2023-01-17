@@ -209,7 +209,9 @@ export const ValidatorTable = ({
         <KeyValueTable data-testid="validator-table-penalties">
           <KeyValueTableRow>
             <span>{t('OVERSTAKED AMOUNT')}</span>
-            <span>{overstakedAmount.toString()}</span>
+            <span>
+              {formatNumber(toBigNum(overstakedAmount.toNumber(), decimals))}
+            </span>
           </KeyValueTableRow>
           <KeyValueTableRow>
             <span>{t('OVERSTAKED PENALTY')}</span>
@@ -224,7 +226,7 @@ export const ValidatorTable = ({
             </span>
           </KeyValueTableRow>
           <KeyValueTableRow>
-            <span>{t('PERFORMANCE PENALITY')}</span>
+            <span>{t('PERFORMANCE PENALTY')}</span>
             <span>{getPerformancePenalty(performanceScore)}</span>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>

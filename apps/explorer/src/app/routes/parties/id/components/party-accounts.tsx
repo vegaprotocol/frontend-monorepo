@@ -51,6 +51,7 @@ export const PartyAccounts = ({ accounts }: PartyAccountsProps) => {
 
           return (
             <TableRow
+              key={`pa-${account.asset.id}-${account.type}`}
               title={account.asset.name}
               id={`${accountTypeString[account.type]} ${m ? ` - ${m}` : ''}`}
             >
