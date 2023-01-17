@@ -16,7 +16,6 @@ import { useAppState } from '../../../contexts/app-state/app-state-context';
 import * as Schema from '@vegaprotocol/types';
 import { SubHeading } from '../../../components/heading';
 import {
-  getFormattedPerformanceScore,
   getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
   getOverstakedAmount,
@@ -211,12 +210,6 @@ export const ValidatorTable = ({
             <span>{t('OVERSTAKED PENALTY')}</span>
             <span>
               {getOverstakingPenalty(overstakedAmount, node.stakedTotal)}
-            </span>
-          </KeyValueTableRow>
-          <KeyValueTableRow>
-            <span>{t('PERFORMANCE SCORE')}</span>
-            <span>
-              {getFormattedPerformanceScore(performanceScore).toString()}
             </span>
           </KeyValueTableRow>
           <KeyValueTableRow>
