@@ -66,13 +66,6 @@ export type AccountEvent = {
   type: AccountType;
 };
 
-export enum AccountField {
-  AccountType = 'AccountType',
-  AssetId = 'AssetId',
-  MarketId = 'MarketId',
-  PartyId = 'PartyId'
-}
-
 /** Filter input for historical balance queries */
 export type AccountFilter = {
   accountTypes?: InputMaybe<Array<AccountType>>;
@@ -193,20 +186,24 @@ export type AggregatedLedgerEntry = {
   __typename?: 'AggregatedLedgerEntry';
   /** Asset identifier, if query was grouped by asset - else null */
   assetId?: Maybe<Scalars['ID']>;
+  /** Sender account balance after the transfer */
+  fromAccountBalance: Scalars['String'];
+  /** Market identifier, if query was grouped by sender market - else null */
+  fromAccountMarketId?: Maybe<Scalars['ID']>;
+  /** Party identifier, if query was grouped by sender party - else null */
+  fromAccountPartyId?: Maybe<Scalars['ID']>;
+  /** Account type, if query was grouped by sender account type - else null */
+  fromAccountType?: Maybe<AccountType>;
   /** Net amount of ledger entries for the accounts specified in the filter at this time */
   quantity: Scalars['String'];
-  /** Account type, if query was grouped by receiver account type - else null */
-  receiverAccountType?: Maybe<AccountType>;
+  /** Receiver account balance after the transfer */
+  toAccountBalance: Scalars['String'];
   /** Market identifier, if query was grouped by receiver market - else null */
-  receiverMarketId?: Maybe<Scalars['ID']>;
+  toAccountMarketId?: Maybe<Scalars['ID']>;
   /** Party identifier, if query was grouped by receiver party - else null */
-  receiverPartyId?: Maybe<Scalars['ID']>;
-  /** Account type, if query was grouped by sender account type - else null */
-  senderAccountType?: Maybe<AccountType>;
-  /** Market identifier, if query was grouped by sender market - else null */
-  senderMarketId?: Maybe<Scalars['ID']>;
-  /** Party identifier, if query was grouped by sender party - else null */
-  senderPartyId?: Maybe<Scalars['ID']>;
+  toAccountPartyId?: Maybe<Scalars['ID']>;
+  /** Account type, if query was grouped by receiver account type - else null */
+  toAccountType?: Maybe<AccountType>;
   /** Type of the transfer for this ledger entry */
   transferType?: Maybe<TransferType>;
   /** RFC3339Nano time from at which this ledger entries records were relevant */
@@ -256,6 +253,7 @@ export type AssetEdge = {
 /** One of the possible asset sources */
 export type AssetSource = BuiltinAsset | ERC20;
 
+/** Status of an asset that has been proposed to be added to the network */
 export enum AssetStatus {
   /** Asset can be used on the Vega network */
   STATUS_ENABLED = 'STATUS_ENABLED',
@@ -311,6 +309,7 @@ export type AuctionEvent = {
   trigger: AuctionTrigger;
 };
 
+/** Describes the trigger for an auction */
 export enum AuctionTrigger {
   /** Auction because market has a frequent batch auction trading mode */
   AUCTION_TRIGGER_BATCH = 'AUCTION_TRIGGER_BATCH',
@@ -343,6 +342,7 @@ export type BusEvent = {
   type: BusEventType;
 };
 
+/** Event types */
 export enum BusEventType {
   /** An account has been updated */
   Account = 'Account',
@@ -594,13 +594,13 @@ export type DataSourceSpecConfigurationTime = {
   conditions: Array<Maybe<Condition>>;
 };
 
-/** Status describe the status of the data spec */
+/** Describes the status of the data spec */
 export enum DataSourceSpecStatus {
-  /** describes an active data spec. */
+  /** Describes an active data spec */
   STATUS_ACTIVE = 'STATUS_ACTIVE',
   /**
-   * describes a data spec that is not listening to data
-   * anymore.
+   * Describes a data spec that is not listening to data
+   * anymore
    */
   STATUS_DEACTIVATED = 'STATUS_DEACTIVATED'
 }
@@ -1097,7 +1097,7 @@ export type FutureProduct = {
   settlementAsset: Asset;
 };
 
-/** A segment of datanode history */
+/** A segment of data node history */
 export type HistorySegment = {
   __typename?: 'HistorySegment';
   /** Chain ID of the history segment */
@@ -1115,7 +1115,7 @@ export type Instrument = {
   __typename?: 'Instrument';
   /** A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string) */
   code: Scalars['String'];
-  /** Uniquely identify an instrument across all instruments available on Vega (string) */
+  /** Uniquely identifies an instrument across all instruments available on Vega (string) */
   id: Scalars['ID'];
   /** Metadata for this instrument */
   metadata: InstrumentMetadata;
@@ -1193,18 +1193,23 @@ export type KeyRotationEdge = {
 
 export type LedgerEntry = {
   __typename?: 'LedgerEntry';
-  /** Account from which the asset was taken */
-  accountFromId: AccountDetails;
-  /** Account to which the balance was transferred */
-  accountToId: AccountDetails;
   /** The amount transferred */
   amount: Scalars['String'];
+  /** Sender account balance after the transfer */
+  fromAccountBalance: Scalars['String'];
+  /** Account from which the asset was taken */
+  fromAccountId: AccountDetails;
   /** RFC3339Nano time at which the transfer was made */
   timestamp: Scalars['Timestamp'];
+  /** Receiver account balance after the transfer */
+  toAccountBalance: Scalars['String'];
+  /** Account to which the balance was transferred */
+  toAccountId: AccountDetails;
   /** Type of ledger entry */
   type: TransferType;
 };
 
+/** Type of transfer between accounts */
 export enum LedgerEntryField {
   TransferType = 'TransferType'
 }
@@ -1212,8 +1217,8 @@ export enum LedgerEntryField {
 /** Filter for historical entry ledger queries */
 export type LedgerEntryFilter = {
   CloseOnAccountFilters?: InputMaybe<Scalars['Boolean']>;
-  ReceiverAccountFilter?: InputMaybe<AccountFilter>;
-  SenderAccountFilter?: InputMaybe<AccountFilter>;
+  FromAccountFilter?: InputMaybe<AccountFilter>;
+  ToAccountFilter?: InputMaybe<AccountFilter>;
   TransferTypes?: InputMaybe<Array<InputMaybe<TransferType>>>;
 };
 
@@ -1788,7 +1793,7 @@ export enum MarketTradingMode {
   TRADING_MODE_OPENING_AUCTION = 'TRADING_MODE_OPENING_AUCTION'
 }
 
-/** Information about whether proposals are enabled, if the markets are still bootstrapping etc.. */
+/** Information about whether proposals are enabled, if the markets are still bootstrapping, etc.. */
 export type NetworkLimits = {
   __typename?: 'NetworkLimits';
   /** How many blocks before the chain comes out of bootstrap mode */
@@ -1984,7 +1989,7 @@ export type NodeSignatureEdge = {
   node: NodeSignature;
 };
 
-/** Represents the type signature provided by a node */
+/** Represents the type of signature provided by a node */
 export enum NodeSignatureKind {
   /** A signature for proposing a new asset into the network */
   NODE_SIGNATURE_KIND_ASSET_NEW = 'NODE_SIGNATURE_KIND_ASSET_NEW',
@@ -2179,7 +2184,7 @@ export type OracleDataEdge = {
 
 export type OracleSpec = {
   __typename?: 'OracleSpec';
-  /** Data list all the oracle data broadcast to this spec */
+  /** Data lists all the oracle data broadcast to this spec */
   dataConnection: OracleDataConnection;
   dataSourceSpec: ExternalDataSourceSpec;
 };
@@ -2423,6 +2428,7 @@ export enum OrderTimeInForce {
   TIME_IN_FORCE_IOC = 'TIME_IN_FORCE_IOC'
 }
 
+/** Types of orders */
 export enum OrderType {
   /** Order that uses a pre-specified price to buy or sell */
   TYPE_LIMIT = 'TYPE_LIMIT',
@@ -2430,7 +2436,7 @@ export enum OrderType {
   TYPE_MARKET = 'TYPE_MARKET',
   /**
    * Used for distressed parties, an order placed by the network to close out distressed parties
-   * similar to Market order, only no party is attached to the order.
+   * similar to market order, only no party is attached to the order.
    */
   TYPE_NETWORK = 'TYPE_NETWORK'
 }
@@ -4314,6 +4320,7 @@ export enum TransferStatus {
   STATUS_STOPPED = 'STATUS_STOPPED'
 }
 
+/** Types that describe why a transfer has been made */
 export enum TransferType {
   /** Bond returned to general account after liquidity commitment was reduced */
   TRANSFER_TYPE_BOND_HIGH = 'TRANSFER_TYPE_BOND_HIGH',
@@ -4446,10 +4453,11 @@ export type UpdateNetworkParameter = {
   networkParameter: NetworkParameter;
 };
 
+/** Status of a validator node */
 export enum ValidatorStatus {
   /** The node is a candidate to become a Tendermint validator if a slot is made available */
   VALIDATOR_NODE_STATUS_ERSATZ = 'VALIDATOR_NODE_STATUS_ERSATZ',
-  /** The node is pending to be promoted to Ersatz */
+  /** The node is pending promotion to ersatz (standby), if a slot is available and if the node fulfils the requirements */
   VALIDATOR_NODE_STATUS_PENDING = 'VALIDATOR_NODE_STATUS_PENDING',
   /** The node is taking part in Tendermint consensus */
   VALIDATOR_NODE_STATUS_TENDERMINT = 'VALIDATOR_NODE_STATUS_TENDERMINT'
@@ -4491,10 +4499,11 @@ export type VoteEdge = {
   node: Vote;
 };
 
+/** Whether a governance vote is yes or no */
 export enum VoteValue {
-  /** No reject a proposal */
+  /** No votes against a proposal */
   VALUE_NO = 'VALUE_NO',
-  /** Yes accept a proposal */
+  /** Yes votes for a proposal */
   VALUE_YES = 'VALUE_YES'
 }
 

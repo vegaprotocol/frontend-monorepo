@@ -57,10 +57,10 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
       >
         <AgGridColumn
           headerName={t('Sender')}
-          field="senderPartyId"
+          field="fromAccountPartyId"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'senderPartyId'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'fromAccountPartyId'>) =>
             truncateByChars(value || '')
           }
         />
@@ -70,10 +70,10 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           filterParams={{
             set: AccountTypeMapping,
           }}
-          field="senderAccountType"
+          field="fromAccountType"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'senderAccountType'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'fromAccountType'>) =>
             value ? AccountTypeMapping[value] : '-'
           }
         />
@@ -89,10 +89,10 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
         />
         <AgGridColumn
           headerName={t('Receiver')}
-          field="receiverPartyId"
+          field="toAccountPartyId"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'receiverPartyId'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'toAccountPartyId'>) =>
             truncateByChars(value || '')
           }
         />
@@ -102,10 +102,10 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           filterParams={{
             set: AccountTypeMapping,
           }}
-          field="receiverAccountType"
+          field="toAccountType"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'receiverAccountType'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'toAccountType'>) =>
             value ? AccountTypeMapping[value] : '-'
           }
         />
