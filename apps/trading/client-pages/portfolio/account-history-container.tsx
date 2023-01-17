@@ -96,23 +96,23 @@ const AccountHistoryManager = ({
     [pubKey]
   );
 
-  const { data: assetsWithBalanceHistory } = useDataProvider({
+  const { data: accounts } = useDataProvider({
     dataProvider: accountsOnlyDataProvider,
     variables: variablesForOneTimeQuery,
     skip: !pubKey,
   });
 
-  const assetsWithBalance = useMemo(
-    () => assetsWithBalanceHistory?.map((e) => e?.asset?.id) || [],
-    [assetsWithBalanceHistory]
+  const assetIds = useMemo(
+    () => accounts?.map((e) => e?.asset?.id) || [],
+    [accounts]
   );
 
   const assets = useMemo(
     () =>
       assetData
-        .filter((a) => assetsWithBalance.includes(a.id))
+        .filter((a) => assetIds.includes(a.id))
         .sort((a, b) => a.name.localeCompare(b.name)),
-    [assetData, assetsWithBalance]
+    [assetData, assetIds]
   );
   const [asset, setAsset] = useState<AssetFieldsFragment>(assets[0]);
   const [range, setRange] = useState<typeof DateRange[keyof typeof DateRange]>(

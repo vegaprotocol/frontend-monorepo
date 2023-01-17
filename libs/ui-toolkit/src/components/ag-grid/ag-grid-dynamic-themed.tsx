@@ -33,7 +33,11 @@ export const AgGridThemed = ({
   customThemeParams?: string;
 }) => {
   const { theme } = useThemeSwitcher();
-  const defaultProps = { rowHeight: 22, headerHeight: 22 };
+  const defaultProps = {
+    rowHeight: 22,
+    headerHeight: 22,
+    enableCellTextSelection: true,
+  };
   return (
     <div
       className={`${className ?? ''} ${

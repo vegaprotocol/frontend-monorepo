@@ -30,7 +30,6 @@ export const MarketListTable = forwardRef<
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
-      enableCellTextSelection={true}
       overlayNoRowsTemplate={t('No markets')}
       getRowId={getRowId}
       ref={ref}
