@@ -172,13 +172,18 @@ describe('Navbar', { tags: '@smoke' }, () => {
     cy.getByTestId('menu-drawer').within((el) => {
       cy.wrap(el).getByTestId('Markets').click();
       cy.location('hash').should('equal', '#/markets/all');
+    });
+    cy.getByTestId('button-menu-drawer').click();
+    cy.getByTestId('menu-drawer').within((el) => {
       cy.wrap(el).getByTestId('Trading').click();
       cy.location('hash').should('equal', '#/markets/market-0');
+    });
+    cy.getByTestId('button-menu-drawer').click();
+    cy.getByTestId('menu-drawer').within((el) => {
       cy.wrap(el).getByTestId('Portfolio').click();
       cy.location('hash').should('equal', '#/portfolio');
       cy.wrap(el).getByTestId('theme-switcher').should('be.visible');
     });
-    cy.getByTestId('button-menu-drawer').click();
     cy.getByTestId('menu-drawer').should('not.be.visible');
   });
 });
