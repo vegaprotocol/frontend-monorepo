@@ -21,7 +21,7 @@ const hasOperationName = (
 
 export function addMockGQLCommand() {
   Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {
-    cy.intercept('POST', '**/graphql', handler).as('GQL');
+    cy.intercept('POST', Cypress.env('VEGA_URL'), handler).as('GQL');
   });
 }
 

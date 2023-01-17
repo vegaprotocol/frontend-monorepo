@@ -136,7 +136,7 @@ describe('home', { tags: '@regression' }, () => {
   });
 
   describe('no markets found', () => {
-    it('redirects to a the empty market page and displays welcome notice', () => {
+    beforeEach(() => {
       cy.mockGQL((req) => {
         const data = {
           marketsConnection: {
@@ -159,6 +159,8 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
+    });
+    it('redirects to a the empty market page and displays welcome notice', () => {
       cy.url().should('eq', Cypress.config().baseUrl + `/#/markets`);
       cy.getByTestId('welcome-notice-title').should(
         'contain.text',

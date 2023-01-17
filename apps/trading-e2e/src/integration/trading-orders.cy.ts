@@ -35,6 +35,7 @@ describe('orders list', { tags: '@smoke' }, () => {
     });
     cy.wait('@Markets');
   });
+
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
     cy.getByTestId(cancelAllOrdersBtn).should('be.visible');

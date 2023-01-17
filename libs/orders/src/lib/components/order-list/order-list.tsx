@@ -209,20 +209,29 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="createdAt"
-          valueFormatter={({
+          cellRenderer={({
+            data,
             value,
-          }: VegaValueFormatterParams<Order, 'createdAt'>) => {
-            return value ? getDateTimeFormat().format(new Date(value)) : value;
+          }: VegaICellRendererParams<Order, 'createdAt'>) => {
+            return (
+              <span data-value={value}>
+                {value ? getDateTimeFormat().format(new Date(value)) : value}
+              </span>
+            );
           }}
         />
         <AgGridColumn
           field="updatedAt"
           filter={DateRangeFilter}
-          valueFormatter={({
+          cellRenderer={({
+            data,
             value,
-            node,
-          }: VegaValueFormatterParams<Order, 'updatedAt'>) => {
-            return value ? getDateTimeFormat().format(new Date(value)) : '-';
+          }: VegaICellRendererParams<Order, 'updatedAt'>) => {
+            return (
+              <span data-value={value}>
+                {value ? getDateTimeFormat().format(new Date(value)) : '-'}
+              </span>
+            );
           }}
         />
         <AgGridColumn
