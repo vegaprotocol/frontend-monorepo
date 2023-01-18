@@ -152,10 +152,10 @@ export const SelectMarketPopover = ({
       trigger={
         <span className="flex items-center gap-2">
           <span>
-            <span className="sm:text-sm md:text-md lg:text-lg flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
+            <span className="sm:text-sm md:text-md lg:text-lg flex items-center gap-2 whitespace-nowrap">
               {marketCode}
             </span>
-            <span className="sm:text-xs text-sm flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 pb-2">
+            <span className="sm:text-xs text-sm flex items-center gap-2 whitespace-nowrap text-neutral-500 dark:text-neutral-400 pb-2">
               {marketName}
             </span>
           </span>
