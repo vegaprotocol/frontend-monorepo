@@ -21,12 +21,12 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         'Receiver',
         'Account type',
         'Market',
-        'Transfer Type',
+        'Transfer type',
         'Quantity',
         'Asset',
         'Sender account balance',
         'Receiver account balance',
-        'Vega Time',
+        'Vega time',
       ];
       cy.getByTestId('tab-ledger-entries').within(($headers) => {
         cy.wrap($headers)

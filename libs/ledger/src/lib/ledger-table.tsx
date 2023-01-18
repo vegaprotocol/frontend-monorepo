@@ -120,7 +120,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           >) => value || '-'}
         />
         <AgGridColumn
-          headerName={t('Transfer Type')}
+          headerName={t('Transfer type')}
           field="transferType"
           tooltipField="transferType"
           valueFormatter={({
@@ -194,7 +194,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           }}
         />
         <AgGridColumn
-          headerName={t('Vega Time')}
+          headerName={t('Vega time')}
           field="vegaTime"
           valueFormatter={({
             value,
