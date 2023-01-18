@@ -74,6 +74,26 @@ describe('useOrderCloseOut', () => {
     expect(result.current).toEqual('1');
   });
 
+  it('should return proper sell value on limit order', () => {
+    mockMarketMargin = '0';
+    const { result } = renderHook(
+      () =>
+        useOrderCloseOut({
+          order: {
+            ...order,
+            price: '1000000',
+            type: 'TYPE_LIMIT',
+            side: 'SIDE_SELL',
+          } as OrderSubmissionBody['orderSubmission'],
+          market: market,
+        }),
+      {
+        wrapper: MockedProvider,
+      }
+    );
+    expect(result.current).toEqual('1000000');
+  });
+
   it('should return proper empty value', () => {
     const { result } = renderHook(
       () =>

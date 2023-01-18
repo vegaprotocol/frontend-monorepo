@@ -40,14 +40,17 @@ export const useOrderCloseOut = ({ order, market }: Props): string | null => {
   const volume = new BigNumber(
     addDecimal(openVolume || '0', market.positionDecimalPlaces)
   )[order.side === Schema.Side.SIDE_BUY ? 'plus' : 'minus'](order.size);
-  const markPrice = new BigNumber(
-    addDecimal(market.data.markPrice || 0, market.decimalPlaces || 0)
-  );
+  const price =
+    order.type === Schema.OrderType.TYPE_LIMIT && order.price
+      ? new BigNumber(order.price)
+      : new BigNumber(
+          addDecimal(market.data.markPrice || 0, market.decimalPlaces || 0)
+        );
   // regarding formula (marginMaintenanceLevel - positionAccountBalance - generalAccountBalance) / volume + markPrice
   const marginDifference = marginMaintenanceLevel
     .minus(positionAccountBalance)
     .minus(generalAccountBalance);
-  const closeOut = marginDifference.div(volume).plus(markPrice);
+  const closeOut = marginDifference.div(volume).plus(price);
   if (closeOut.isPositive()) {
     return closeOut.toString();
   }

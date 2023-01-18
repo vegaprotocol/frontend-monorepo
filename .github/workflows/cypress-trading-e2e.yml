@@ -37,7 +37,7 @@ jobs:
           path: |
             frontend-monorepo/node_modules
             /home/runner/.cache/Cypress
-          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
+          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock', 'frontend-monorepo/package.json') }}
 
       # Install frontend dependencies
       - name: Install root dependencies
@@ -82,5 +82,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: logs
+          name: logs-trading
           path: /home/runner/.vegacapsule/testnet/logs
