@@ -2,7 +2,7 @@
 export const ErrorCodes = new Map([
   [51, 'Transaction failed validation'],
   [60, 'Transaction could not be decoded'],
-  [70, 'Internal error'],
+  [70, 'Error'],
   [80, 'Unknown command'],
   [89, 'Rejected as spam'],
   [0, 'Success'],
