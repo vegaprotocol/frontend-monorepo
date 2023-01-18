@@ -226,7 +226,7 @@ export const LiquidityViewContainer = ({
             market?.tradableInstrument.instrument.name &&
             marketId && (
               <Link to={Links[Routes.MARKET](marketId)}>
-                <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
+                <UiToolkitLink className="sm:text-sm md:text-md lg:text-lg flex items-center gap-2 whitespace-nowrap">
                   {`${market?.tradableInstrument.instrument.name} ${t(
                     'liquidity provision'
                   )}`}
