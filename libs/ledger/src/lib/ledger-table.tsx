@@ -158,6 +158,42 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           }
         />
         <AgGridColumn
+          headerName={t('Sender account balance')}
+          field="fromAccountBalance"
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<LedgerEntry, 'fromAccountBalance'>) => {
+            const marketDecimalPlaces = data?.marketSender?.decimalPlaces;
+            const assetDecimalPlaces = data?.asset?.decimals || 0;
+            return value
+              ? addDecimalsFormatNumber(
+                  value,
+                  assetDecimalPlaces,
+                  marketDecimalPlaces
+                )
+              : value;
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Receiver account balance')}
+          field="toAccountBalance"
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<LedgerEntry, 'toAccountBalance'>) => {
+            const marketDecimalPlaces = data?.marketReceiver?.decimalPlaces;
+            const assetDecimalPlaces = data?.asset?.decimals || 0;
+            return value
+              ? addDecimalsFormatNumber(
+                  value,
+                  assetDecimalPlaces,
+                  marketDecimalPlaces
+                )
+              : value;
+          }}
+        />
+        <AgGridColumn
           headerName={t('Vega Time')}
           field="vegaTime"
           valueFormatter={({
