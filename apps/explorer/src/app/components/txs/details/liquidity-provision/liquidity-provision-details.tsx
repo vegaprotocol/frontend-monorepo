@@ -4,7 +4,7 @@ import type { components } from '../../../../../types/explorer';
 import type { LiquiditySubmission } from '../tx-liquidity-submission';
 import { TableRow } from '../../../table';
 import { LiquidityProvisionMid } from './components/liquidity-provision-mid';
-import { LiquidityProvisionDetailsRow } from './components/liquidity-provision-detaiils-row';
+import { LiquidityProvisionDetailsRow } from './components/liquidity-provision-details-row';
 
 export type VegaPeggedReference = components['schemas']['vegaPeggedReference'];
 export type VegaSide = components['schemas']['vegaSide'];
@@ -43,10 +43,18 @@ export type LiquidityProvisionDetailsProps = {
 /**
  * Renders a table displaying all buys and sells in this LP. It is valid for there
  * to be no buys or sells.
+ *
+ * It might seem logical to turn proportions in to values based on the total commitment
+ * but based on the current API structure it is awkward, and given that non-LP orders
+ * will change the amount that is actually deployed vs assigned to a level, we decided
+ * not to bother going down that route.
  */
 export function LiquidityProvisionDetails({
   provision,
 }: LiquidityProvisionDetailsProps) {
+  if (!provision.buys?.length && !provision.sells?.length) {
+    return null;
+  }
   // We need to do some additional calcs if these aren't both 100
   const buyTotal = sumProportions(provision.buys);
   const sellTotal = sumProportions(provision.sells);

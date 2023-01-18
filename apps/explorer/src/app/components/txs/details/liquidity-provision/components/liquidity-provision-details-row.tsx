@@ -49,8 +49,10 @@ export function LiquidityProvisionDetailsRow({
       ? order.proportion
       : Math.round((order.proportion / normaliseProportionsTo) * 100);
 
+  const key = `${side}-${proportion}-${order.offset ? order.offset : ''}`;
+
   return (
-    <TableRow modifier="bordered">
+    <TableRow modifier="bordered" key={key} data-testid={key}>
       <td className="text-right px-2">
         {order.offset && marketId ? (
           <LiquidityProvisionOffset

@@ -45,7 +45,7 @@ export function LiquidityProvisionOffset({
  * @param offset the unformatted offset
  * @returns string the offset of this lp order formatted with the settlement decimal places
  */
-function getFormattedOffset(
+export function getFormattedOffset(
   offset: string,
   data?: ExplorerSettlementAssetForMarketQuery
 ) {

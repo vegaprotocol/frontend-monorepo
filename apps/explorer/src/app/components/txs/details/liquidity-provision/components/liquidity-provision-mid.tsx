@@ -10,8 +10,8 @@ import { TableRow } from '../../../../table';
  */
 export function LiquidityProvisionMid() {
   return (
-    <TableRow modifier="bordered">
-      <td colSpan={4} className="text-center bg-white"></td>
+    <TableRow modifier="bordered" data-testid="mid">
+      <td data-testid="mid-display" colSpan={3} className="bg-white"></td>
     </TableRow>
   );
 }

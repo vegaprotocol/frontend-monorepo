@@ -60,10 +60,15 @@ function renderExistingAmend(id: string, version: number, amend: Amend) {
             market: {
               __typename: 'Market',
               id: '789',
+              state: 'STATUS_ACTIVE',
               decimalPlaces: '5',
               tradableInstrument: {
                 instrument: {
                   name: 'test',
+                  product: {
+                    __typename: 'Future',
+                    quoteName: '123',
+                  },
                 },
               },
             },
