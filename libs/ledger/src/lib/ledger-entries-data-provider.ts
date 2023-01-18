@@ -123,10 +123,10 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
       const entry = edge?.node;
       const asset = assets.find((asset: Asset) => asset.id === entry.assetId);
       const marketSender = markets.find(
-        (market: Market) => market.id === entry.senderMarketId
+        (market: Market) => market.id === entry.fromAccountMarketId
       );
       const marketReceiver = markets.find(
-        (market: Market) => market.id === entry.receiverMarketId
+        (market: Market) => market.id === entry.toAccountMarketId
       );
       return { node: { ...entry, asset, marketSender, marketReceiver } };
     });
@@ -151,8 +151,8 @@ export const useLedgerEntriesDataProvider = ({
     () => ({
       partyId,
       dateRange: filter?.vegaTime?.value,
-      senderAccountType: filter?.senderAccountType?.value ?? null,
-      receiverAccountType: filter?.receiverAccountType?.value ?? null,
+      fromAccountType: filter?.fromAccountType?.value ?? null,
+      toAccountType: filter?.toAccountType?.value ?? null,
     }),
     [partyId, filter]
   );
