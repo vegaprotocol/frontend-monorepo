@@ -67,7 +67,7 @@ Cypress.Commands.add('deposit_asset', function (assetEthAddress) {
           cy.wrap(
             bridge.deposit_asset(
               assetEthAddress,
-              '100000000000000000000',
+              amount,
               '0x' + vegaWalletPubKey
             ),
             { timeout: transactionTimeout, log: false }

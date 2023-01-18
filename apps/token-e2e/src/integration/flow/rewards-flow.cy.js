@@ -9,8 +9,8 @@ context('rewards - flow', { tags: '@slow' }, function () {
   before('set up', function () {
     cy.visit('/');
     cy.wait_for_spinner();
-    cy.vega_wallet_set_specified_approval_amount('1000');
-    // cy.updateCapsuleMultiSig();
+    cy.vega_wallet_set_specified_approval_amount('6000');
+    cy.updateCapsuleMultiSig();
     cy.deposit_asset(vegaAssetAddress, '100000000000000000000');
     cy.connectVegaWallet();
     cy.ethereum_wallet_connect();
@@ -25,20 +25,20 @@ context('rewards - flow', { tags: '@slow' }, function () {
     topUpRewardsPool();
     cy.navigate_to('validators');
     cy.vega_wallet_teardown();
-    cy.staking_page_associate_tokens('4');
+    cy.staking_page_associate_tokens('6000');
     cy.get(vegaWalletUnstakedBalance, txTimeout).should(
       'contain',
-      4.0,
+      '6,000.0',
       txTimeout
     );
     cy.get('button').contains('Select a validator to nominate').click();
 
     cy.click_on_validator_from_list(0);
-    cy.staking_validator_page_add_stake('2');
+    cy.staking_validator_page_add_stake('3000');
     cy.navigate_to('validators');
 
     cy.click_on_validator_from_list(1);
-    cy.staking_validator_page_add_stake('2');
+    cy.staking_validator_page_add_stake('3000');
 
     cy.navigate_to('rewards');
   });
