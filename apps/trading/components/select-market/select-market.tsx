@@ -91,16 +91,16 @@ export const SelectAllMarketsTableBody = ({
 };
 
 export const SelectMarketPopover = ({
+  marketCode,
   marketName,
   onSelect,
   onCellClick,
 }: {
+  marketCode: string;
   marketName: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
 }) => {
-  const triggerClasses =
-    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 mt-1';
   const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const inViewRoot = useRef<HTMLDivElement>(null);
@@ -150,8 +150,16 @@ export const SelectMarketPopover = ({
       open={open}
       onChange={setOpen}
       trigger={
-        <span className={triggerClasses}>
-          {marketName}
+        <span className="flex items-center gap-2">
+          <span>
+            <span className="sm:text-sm md:text-md lg:text-lg flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
+              {marketCode}
+            </span>
+            <span className="sm:text-xs text-sm flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 pb-2">
+              {marketName}
+            </span>
+          </span>
+
           <Icon name="chevron-down" className={iconClass} size={6} />
         </span>
       }
