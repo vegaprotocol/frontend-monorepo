@@ -14,6 +14,7 @@ const mockPubKey = '0x123';
 const defaultWalletContext = {
   pubKey: null,
   pubKeys: [],
+  isReadOnly: false,
   sendTx: jest.fn(),
   connect: jest.fn(),
   disconnect: jest.fn(),
