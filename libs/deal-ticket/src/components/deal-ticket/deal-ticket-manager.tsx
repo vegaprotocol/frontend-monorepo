@@ -54,7 +54,8 @@ const ErrorContent = ({ transaction, reset }: ErrorContentProps) => {
       }
       return (
         <p data-testid={transaction.status}>
-          {error.message}: {error.data}
+          {error.message}{' '}
+          {error instanceof WalletError ? `: ${error.data}` : null}
         </p>
       );
     }
