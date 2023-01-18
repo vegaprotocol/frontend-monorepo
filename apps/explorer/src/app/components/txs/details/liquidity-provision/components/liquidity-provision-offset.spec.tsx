@@ -43,12 +43,12 @@ describe('LiquidityProvisionOffset component', () => {
     );
   }
 
-  it('Renders a simple row before market data comes in', () => {
+  it('renders a simple row before market data comes in', () => {
     const res = renderComponent('1', 'SIDE_BUY', '123', []);
     expect(res.getByText('+1')).toBeInTheDocument();
   });
 
-  it('Replaces unformatted with formatted if the market data comes in', () => {
+  it('replaces unformatted with formatted if the market data comes in', () => {
     const mock = {
       request: {
         query: ExplorerSettlementAssetForMarketDocument,

@@ -1,7 +1,7 @@
 import { useExplorerSettlementAssetForMarketQuery } from '../__generated__/Explorer-settlement-asset';
 import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
-import type { VegaSide } from '../liquidity-provision-details';
 import type { ExplorerSettlementAssetForMarketQuery } from '../__generated__/Explorer-settlement-asset';
+import type { VegaSide } from './liquidity-provision-details-row';
 
 export type LiquidityProvisionOffsetProps = {
   side: VegaSide;

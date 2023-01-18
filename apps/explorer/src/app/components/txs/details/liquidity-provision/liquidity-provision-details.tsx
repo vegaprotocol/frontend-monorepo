@@ -5,9 +5,9 @@ import type { LiquiditySubmission } from '../tx-liquidity-submission';
 import { TableRow } from '../../../table';
 import { LiquidityProvisionMid } from './components/liquidity-provision-mid';
 import { LiquidityProvisionDetailsRow } from './components/liquidity-provision-details-row';
+import { Side } from '@vegaprotocol/types';
 
 export type VegaPeggedReference = components['schemas']['vegaPeggedReference'];
-export type VegaSide = components['schemas']['vegaSide'];
 
 export type LiquidityProvisionOrder =
   components['schemas']['vegaLiquidityOrder'];
@@ -73,7 +73,7 @@ export function LiquidityProvisionDetails({
           <LiquidityProvisionDetailsRow
             order={b}
             marketId={provision.marketId}
-            side={'SIDE_BUY'}
+            side={Side.SIDE_BUY}
             key={`SIDE_BUY-${i}`}
             normaliseProportionsTo={buyTotal}
           />
@@ -83,7 +83,7 @@ export function LiquidityProvisionDetails({
           <LiquidityProvisionDetailsRow
             order={s}
             marketId={provision.marketId}
-            side={'SIDE_SELL'}
+            side={Side.SIDE_SELL}
             key={`SIDE_SELL-${i}`}
             normaliseProportionsTo={sellTotal}
           />

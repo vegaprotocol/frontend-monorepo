@@ -1,11 +1,12 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render } from '@testing-library/react';
+import { Side } from '@vegaprotocol/types';
 import type { LiquidityOrder } from '@vegaprotocol/types';
 import { PeggedReference } from '@vegaprotocol/types';
 import { LiquidityProvisionDetailsRow } from './liquidity-provision-details-row';
 import type { VegaSide } from './liquidity-provision-details-row';
 
-describe('LiquidityProvisionDetails', () => {
+describe('LiquidityProvisionDetails component', () => {
   function renderComponent(
     order: LiquidityOrder,
     side: VegaSide,
@@ -28,7 +29,7 @@ describe('LiquidityProvisionDetails', () => {
     );
   }
 
-  it('Order with no proportion renders null', () => {
+  it('renders null for an order with no proportion', () => {
     const mockOrder = {
       offset: '1',
       reference: PeggedReference.PEGGED_REFERENCE_MID,
@@ -36,24 +37,24 @@ describe('LiquidityProvisionDetails', () => {
 
     const res = renderComponent(
       mockOrder as LiquidityOrder,
-      'SIDE_BUY',
+      Side.SIDE_BUY,
       100,
       '123'
     );
     expect(res.getByTestId('container')).toBeEmptyDOMElement();
   });
 
-  it('Null order renders null', () => {
+  it('renders null for a null order', () => {
     const res = renderComponent(
       null as unknown as LiquidityOrder,
-      'SIDE_BUY',
+      Side.SIDE_BUY,
       100,
       '123'
     );
     expect(res.getByTestId('container')).toBeEmptyDOMElement();
   });
 
-  it('Renders a row when there is an order', () => {
+  it('renders a row when the order is as expected', () => {
     const mockOrder = {
       offset: '1',
       proportion: 20,
@@ -62,7 +63,7 @@ describe('LiquidityProvisionDetails', () => {
 
     const res = renderComponent(
       mockOrder as LiquidityOrder,
-      'SIDE_BUY',
+      Side.SIDE_BUY,
       100,
       '123'
     );
@@ -73,7 +74,7 @@ describe('LiquidityProvisionDetails', () => {
     expect(res.getByText('20%')).toBeInTheDocument();
   });
 
-  it('Rows normalise offsets when normaliseToProportion is not 100', () => {
+  it('normalises offsets when normaliseToProportion is not 100', () => {
     const mockOrder = {
       offset: '1',
       proportion: 20,
@@ -82,7 +83,7 @@ describe('LiquidityProvisionDetails', () => {
 
     const res = renderComponent(
       mockOrder as LiquidityOrder,
-      'SIDE_SELL',
+      Side.SIDE_SELL,
       50,
       '123'
     );
@@ -93,7 +94,7 @@ describe('LiquidityProvisionDetails', () => {
     expect(res.getByText('40% (normalised from: 20%)')).toBeInTheDocument();
   });
 
-  it('Handles a missing offset gracefully (should not happen)', () => {
+  it('handles a missing offset gracefully (should not happen)', () => {
     const mockOrder = {
       proportion: 20,
       reference: PeggedReference.PEGGED_REFERENCE_BEST_BID,
@@ -101,7 +102,7 @@ describe('LiquidityProvisionDetails', () => {
 
     const res = renderComponent(
       mockOrder as LiquidityOrder,
-      'SIDE_SELL',
+      Side.SIDE_SELL,
       50,
       '123'
     );
@@ -110,7 +111,7 @@ describe('LiquidityProvisionDetails', () => {
     expect(res.getByText('-')).toBeInTheDocument();
   });
 
-  it('Handles a missing reference gracefully (should not happen)', () => {
+  it('handles a missing reference gracefully (should not happen)', () => {
     const mockOrder = {
       offset: '1',
       proportion: 20,
@@ -118,7 +119,7 @@ describe('LiquidityProvisionDetails', () => {
 
     const res = renderComponent(
       mockOrder as LiquidityOrder,
-      'SIDE_SELL',
+      Side.SIDE_SELL,
       50,
       '123'
     );

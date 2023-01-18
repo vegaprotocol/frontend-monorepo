@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { LiquidityProvisionMid } from './liquidity-provision-mid';
 
-describe('LiquidityProvisionMid', () => {
+describe('LiquidityProvisionMid component', () => {
   function renderComponent() {
     return render(
       <table>
@@ -12,7 +12,7 @@ describe('LiquidityProvisionMid', () => {
     );
   }
 
-  it('Renders a row', () => {
+  it('renders a basic row that spans the whole table', () => {
     const res = renderComponent();
     const display = res.getByTestId('mid-display');
     expect(res.getByTestId('mid')).toBeInTheDocument();
