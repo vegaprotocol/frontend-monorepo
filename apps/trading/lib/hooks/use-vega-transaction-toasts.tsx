@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import compact from 'lodash/compact';
 import type {
   BatchMarketInstructionSubmissionBody,
