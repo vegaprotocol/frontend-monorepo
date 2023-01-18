@@ -21,10 +21,12 @@ import pick from 'lodash/pick';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
-import { getMarketExpiryDateFormatted } from '../market-expires';
 import { MarketInfoTable } from './info-key-value-table';
 import { marketInfoDataProvider } from './market-info-data-provider';
-import { TokenLinks } from '@vegaprotocol/react-helpers';
+import {
+  TokenLinks,
+  getMarketExpiryDateFormatted,
+} from '@vegaprotocol/react-helpers';
 
 import type { MarketInfoQuery } from './__generated__/MarketInfo';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
