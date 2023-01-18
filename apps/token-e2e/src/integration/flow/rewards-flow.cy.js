@@ -11,7 +11,7 @@ context('rewards - flow', { tags: '@slow' }, function () {
     cy.wait_for_spinner();
     cy.vega_wallet_set_specified_approval_amount('1000');
     // cy.updateCapsuleMultiSig();
-    cy.deposit_asset(vegaAssetAddress);
+    cy.deposit_asset(vegaAssetAddress, '100000000000000000000');
     cy.connectVegaWallet();
     cy.ethereum_wallet_connect();
     cy.get(walletContainer).within(() => {
@@ -22,6 +22,29 @@ context('rewards - flow', { tags: '@slow' }, function () {
   });
 
   it('Stake tokens and wait for reward', function () {
+    topUpRewardsPool();
+    cy.navigate_to('validators');
+    cy.vega_wallet_teardown();
+    cy.staking_page_associate_tokens('4');
+    cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+      'contain',
+      4.0,
+      txTimeout
+    );
+    cy.get('button').contains('Select a validator to nominate').click();
+
+    cy.click_on_validator_from_list(0);
+    cy.staking_validator_page_add_stake('2');
+    cy.navigate_to('validators');
+
+    cy.click_on_validator_from_list(1);
+    cy.staking_validator_page_add_stake('2');
+
+    cy.navigate_to('rewards');
+  });
+
+  function topUpRewardsPool() {
+    // Must ensure that test wallet contains assets already and that the tests are within the start and end epochs
     cy.exec(
       `vega wallet transaction send --wallet ${Cypress.env(
         'vegaWalletName'
@@ -34,18 +57,5 @@ context('rewards - flow', { tags: '@slow' }, function () {
     )
       .its('stderr')
       .should('contain', '');
-    cy.navigate_to('validators');
-    cy.staking_page_associate_tokens('3');
-    cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-      'contain',
-      3.0,
-      txTimeout
-    );
-    cy.get('button').contains('Select a validator to nominate').click();
-
-    cy.click_on_validator_from_list(0);
-
-    cy.staking_validator_page_add_stake('2');
-    cy.navigate_to('rewards');
-  });
+  }
 });

@@ -26,8 +26,8 @@ context(
   { tags: '@slow' },
   function () {
     before('visit withdrawals and connect vega wallet', function () {
-      // cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
-      cy.deposit_asset(usdcEthAddress);
+      cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
+      cy.deposit_asset(usdcEthAddress, '100000000000000000000');
     });
 
     beforeEach('Navigate to withdrawal page', function () {
