@@ -94,7 +94,7 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsWithdrawSubmission;
     case 'Liquidity Provision Order':
       return TxDetailsLiquiditySubmission;
-    case 'Amend LiquidityProvision Order':
+    case 'Amend Liquidity Provision Order':
       return TxDetailsLiquidityAmendment;
     case 'Delegate':
       return TxDetailsDelegate;
