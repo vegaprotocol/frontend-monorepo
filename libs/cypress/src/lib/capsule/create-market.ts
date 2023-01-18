@@ -17,13 +17,6 @@ import { ASSET_ID_FOR_MARKET } from './contants';
 
 const log = createLog('create-market');
 
-const Foo = class {
-  bar;
-  constructor(bar: string) {
-    this.bar = bar;
-  }
-};
-
 export async function createMarket(cfg: {
   vegaPubKey: string;
   token: string;
