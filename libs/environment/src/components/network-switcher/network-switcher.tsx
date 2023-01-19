@@ -99,7 +99,7 @@ export const NetworkSwitcher = () => {
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
       <DropdownMenuTrigger
         ref={menuRef}
-        className="w-full flex justify-between items-center"
+        className="flex justify-between items-center"
       >
         {envTriggerMapping[VEGA_ENV]}
       </DropdownMenuTrigger>
