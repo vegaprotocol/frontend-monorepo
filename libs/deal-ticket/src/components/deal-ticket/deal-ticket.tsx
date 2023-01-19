@@ -26,7 +26,7 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
-import { usePersistedOrder } from '@vegaprotocol/market-depth';
+import { usePersistedOrderStore } from '../../hooks/use-persisted-order';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -43,7 +43,12 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
 
 export const DealTicket = ({ market, submit }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
-  const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
+  const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
+    (store) => ({
+      getPersistedOrder: store.getOrder,
+      setPersistedOrder: store.setOrder,
+    })
+  );
   const {
     register,
     control,
@@ -54,7 +59,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     formState: { errors },
     setValue,
   } = useForm<DealTicketFormFields>({
-    defaultValues: persistedOrder || getDefaultOrder(market),
+    defaultValues: getPersistedOrder(market.id) || getDefaultOrder(market),
   });
 
   const order = watch();
@@ -89,6 +94,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
   // useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
 
   // When persisted state changes update the order
+  const persistedOrder = getPersistedOrder(market.id);
   useEffect(() => {
     if (persistedOrder?.price) {
       setValue('price', persistedOrder?.price);
