@@ -18,6 +18,7 @@ import {
   isWithdrawTransaction,
   useVegaTransactionStore,
   VegaTxStatus,
+  WalletError,
 } from '@vegaprotocol/wallet';
 import { VegaTransaction } from '../components/vega-transaction';
 import { VerificationStatus } from '@vegaprotocol/withdraws';
@@ -284,13 +285,17 @@ export const ToastsManager = () => {
       if (tx.status === VegaTxStatus.Error) {
         toast = {
           render: () => {
-            const errorMessage = `${tx.error?.message}  ${
-              tx.error?.data ? `:  ${tx.error?.data}` : ''
+            const error = `${tx.error?.message} ${
+              tx.error instanceof WalletError
+                ? tx.error?.data
+                  ? `:  ${tx.error?.data}`
+                  : ''
+                : ''
             }`;
             return (
               <div>
                 <h3 className="font-bold">{t('Error occurred')}</h3>
-                <p>{errorMessage}</p>
+                <p>{error}</p>
                 <VegaTransactionDetails tx={tx} />
               </div>
             );

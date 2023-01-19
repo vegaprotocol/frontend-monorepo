@@ -39,6 +39,7 @@ export * from './toggle';
 export * from './tooltip';
 export * from './vega-icons';
 export * from './vega-logo';
+export * from './viewing-as-user';
 export * from './traffic-light';
 export * from './toast';
 export * from './notification';
