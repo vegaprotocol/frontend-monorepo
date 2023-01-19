@@ -1,0 +1,34 @@
+name: Cypress tests -- manual trigger
+
+# This workflow runs the frontend tests against chosen branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project'
+        required: true
+        type: choice
+        options:
+          - console-lite-e2e
+          - explorer-e2e
+          - token-e2e
+          - trading-e2e
+      tags:
+        description: 'Test tags to run'
+        required: true
+        type: string
+        default: '@smoke @regression @slow'
+      skip-nx-cache:
+        description: 'Skip NX cache'
+        required: false
+        type: boolean
+        default: false
+jobs:
+  manual:
+    uses: ./.github/workflows/cypress-run.yml
+    secrets: inherit
+    with:
+      projects: '["${{inputs.project}}"]'
+      skip-cache: ${{inputs.skip-nx-cache}}
+      tags: ${{inputs.tags}}
