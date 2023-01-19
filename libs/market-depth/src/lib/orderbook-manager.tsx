@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { addDecimal, useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
@@ -16,8 +16,6 @@ import {
   mapMarketData,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
-import { usePersistedOrder } from './use-persisted-order';
-import type { OrderSubmission } from '@vegaprotocol/wallet';
 
 interface OrderbookManagerProps {
   marketId: string;
@@ -124,7 +122,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   marketDataRef.current = marketData;
 
   useEffect(() => {
-    const throttleRunnner = updateOrderbookData.current;
+    const throttleRunner = updateOrderbookData.current;
     if (!marketDataRef.current) {
       return;
     }
@@ -141,7 +139,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     setOrderbookData(dataRef.current);
 
     return () => {
-      throttleRunnner.cancel();
+      throttleRunner.cancel();
     };
   }, [data, marketData, resolution]);
 
@@ -149,10 +147,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     resolutionRef.current = resolution;
     flush();
   }, [resolution, flush]);
-
-  const [persistedOrder, setPersistedOrder] = usePersistedOrder({
-    id: market?.id || '',
-  });
 
   return (
     <AsyncRenderer
@@ -168,7 +162,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         onResolutionChange={(resolution: number) => setResolution(resolution)}
         onClick={(price?: string | number) => {
           if (price) {
-            setPersistedOrder({ ...persistedOrder, price } as OrderSubmission);
+            dispatchEvent(
+              new CustomEvent('limitprice', {
+                detail: addDecimal(price, market?.decimalPlaces ?? 0),
+              })
+            );
           }
         }}
       />

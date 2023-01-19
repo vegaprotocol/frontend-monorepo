@@ -90,16 +90,17 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     errors.summary?.type,
   ]);
 
-  // When order state changes persist it in local storage
-  // useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
-
-  // When persisted state changes update the order
-  const persistedOrder = getPersistedOrder(market.id);
   useEffect(() => {
-    if (persistedOrder?.price) {
-      setValue('price', persistedOrder?.price);
-    }
-  }, [persistedOrder, setValue]);
+    const priceUpdater = (event: CustomEvent) => {
+      setValue('price', event.detail.price);
+    };
+    // TODO I need to fix this
+    document.addEventListener('limitprice', priceUpdater);
+    return () => document.removeEventListener('limitprice', priceUpdater);
+  }, [setValue]);
+
+  // When order state changes persist it in local storage
+  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
