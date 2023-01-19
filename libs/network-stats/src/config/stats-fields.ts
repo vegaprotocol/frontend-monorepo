@@ -39,6 +39,14 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
   totalNodes: [
     {
       title: t('Total nodes'),
+      formatter: (nodes: number) => {
+        // Hack: 0.53.0 misreports node count, included departed validators. This hack fixes that by changing the number
+        // Should be removed when anything later than 0.53.0
+        const hackReduceNodesBy = process.env.NX_HACK_53_TOTAL_NODES
+          ? parseInt(process.env.NX_HACK_53_TOTAL_NODES)
+          : 0;
+        return nodes - hackReduceNodesBy;
+      },
       promoted: true,
       description: t('The total number of nodes registered on the network'),
     },
