@@ -30,6 +30,7 @@ import type { Order } from '../order-data-provider';
 export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
+  onMarketClick?: (marketId: string) => void;
 }
 
 export const TransactionComplete = ({
@@ -70,6 +71,7 @@ export const TransactionComplete = ({
 export const OrderListManager = ({
   partyId,
   marketId,
+  onMarketClick,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
@@ -143,6 +145,7 @@ export const OrderListManager = ({
               });
             }}
             setEditOrder={setEditOrder}
+            onMarketClick={onMarketClick}
           />
           <div className="pointer-events-none absolute inset-0">
             <AsyncRenderer
