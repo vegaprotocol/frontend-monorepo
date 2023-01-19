@@ -44,6 +44,7 @@ export const TradeMarketHeader = ({
     <Header
       title={
         <SelectMarketPopover
+          marketCode={market?.tradableInstrument.instrument.code || NO_MARKET}
           marketName={market?.tradableInstrument.instrument.name || NO_MARKET}
           onSelect={onSelect}
           onCellClick={onCellClick}

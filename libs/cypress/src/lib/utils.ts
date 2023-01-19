@@ -18,3 +18,21 @@ export function removeDecimal(value: string, decimals: number): string {
   if (!decimals) return value;
   return new BigNumber(value || 0).times(Math.pow(10, decimals)).toFixed(0);
 }
+
+export async function promiseWithTimeout(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  promise: Promise<any>,
+  time: number,
+  name: string
+) {
+  const rejectAfterTimeout = (time = 0) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(
+        () => reject(new Error(`${name}: timed out after ${time}ms`)),
+        time
+      );
+    });
+  };
+
+  return await Promise.race([promise, rejectAfterTimeout(time)]);
+}

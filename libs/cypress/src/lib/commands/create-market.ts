@@ -10,19 +10,6 @@ declare global {
   }
 }
 
-// suppress fetch and xhr logs
-const originalLog = Cypress.log;
-// @ts-ignore fuck with log to help with debug
-Cypress.log = function (options, ...rest) {
-  // @ts-ignore fuck with log to help with debug
-  const isRequest = ['fetch', 'xhr'].includes(options.displayName);
-  if (isRequest) {
-    return;
-  }
-
-  return originalLog(options, ...rest);
-};
-
 export const addCreateMarket = () => {
   Cypress.Commands.add('createMarket', () => {
     const config = {
