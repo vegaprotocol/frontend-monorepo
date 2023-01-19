@@ -15,7 +15,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
-import { usePersistedOrder } from '../../hooks/use-persisted-order';
 import {
   getDefaultOrder,
   validateMarketState,
@@ -27,6 +26,7 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import { usePersistedOrder } from '@vegaprotocol/market-depth';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -52,6 +52,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     setError,
     clearErrors,
     formState: { errors },
+    setValue,
   } = useForm<DealTicketFormFields>({
     defaultValues: persistedOrder || getDefaultOrder(market),
   });
@@ -85,7 +86,14 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
   ]);
 
   // When order state changes persist it in local storage
-  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
+  // useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
+
+  // When persisted state changes update the order
+  useEffect(() => {
+    if (persistedOrder?.price) {
+      setValue('price', persistedOrder?.price);
+    }
+  }, [persistedOrder, setValue]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {

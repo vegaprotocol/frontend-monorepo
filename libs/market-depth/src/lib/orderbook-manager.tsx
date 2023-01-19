@@ -16,6 +16,8 @@ import {
   mapMarketData,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
+import { usePersistedOrder } from './use-persisted-order';
+import type { OrderSubmission } from '@vegaprotocol/wallet';
 
 interface OrderbookManagerProps {
   marketId: string;
@@ -148,6 +150,10 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     flush();
   }, [resolution, flush]);
 
+  const [persistedOrder, setPersistedOrder] = usePersistedOrder({
+    id: market?.id || '',
+  });
+
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
@@ -160,6 +166,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
         onResolutionChange={(resolution: number) => setResolution(resolution)}
+        onClick={(price?: string | number) => {
+          if (price) {
+            setPersistedOrder({ ...persistedOrder, price } as OrderSubmission);
+          }
+        }}
       />
     </AsyncRenderer>
   );
