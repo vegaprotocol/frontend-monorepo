@@ -10,5 +10,5 @@ jobs:
     uses: ./.github/workflows/cypress-pr.yml
     secrets: inherit
     with:
-      projects: '["console-lite-e2e","explorer-e2e","token-e2e","trading-e2e"]'
+      projects: '["explorer-e2e","token-e2e","trading-e2e"]'
       tags: '@smoke @regression @slow'
