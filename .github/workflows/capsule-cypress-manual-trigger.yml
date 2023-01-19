@@ -10,7 +10,6 @@ on:
         required: true
         type: choice
         options:
-          - console-lite-e2e
           - explorer-e2e
           - token-e2e
           - trading-e2e
