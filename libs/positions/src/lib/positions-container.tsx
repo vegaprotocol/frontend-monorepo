@@ -17,8 +17,5 @@ export const PositionsContainer = ({
       </Splash>
     );
   }
-
-  console.log('onMarketClick', onMarketClick);
-
   return <PositionsManager partyId={pubKey} onMarketClick={onMarketClick} />;
 };
