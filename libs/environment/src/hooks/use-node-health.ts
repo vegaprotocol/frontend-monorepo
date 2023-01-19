@@ -40,7 +40,7 @@ export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
         });
 
         if (!result) return null;
-        if (!result.error) return null;
+        if (result.error) return null;
         return result;
       } catch {
         return null;
@@ -48,12 +48,16 @@ export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
     };
 
     const getBlockHeights = async () => {
-      const nodes = randomSubset(Object.keys(clients), NODE_SUBSET_COUNT);
+      const nodes = Object.keys(clients).filter((key) => key !== vegaUrl);
+
+      // make sure that your current vega url is always included
+      // so we can compare later
+      const testNodes = [vegaUrl, ...randomSubset(nodes, NODE_SUBSET_COUNT)];
       const result = await Promise.all(
-        nodes.map((node) => fetchBlockHeight(clients[node]))
+        testNodes.map((node) => fetchBlockHeight(clients[node]))
       );
       const blockHeights: { [node: string]: number | null } = {};
-      nodes.forEach((node, i) => {
+      testNodes.forEach((node, i) => {
         const data = result[i];
         const blockHeight = data
           ? Number(data?.data.statistics.blockHeight)
