@@ -26,6 +26,9 @@ import type {
   Configuration,
 } from '../types';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import type { createClient } from '@vegaprotocol/apollo-client';
+import type { NodeHealth } from './use-node-health';
+import { useNodeHealth } from './use-node-health';
 
 type EnvironmentProviderProps = {
   config?: Configuration;
@@ -33,17 +36,9 @@ type EnvironmentProviderProps = {
   children?: ReactNode;
 };
 
-const NodeHealth = {
-  Good: 'Good',
-  Bad: 'Bad',
-  Critical: 'Critical',
-} as const;
-type NodeHealthKeys = keyof typeof NodeHealth;
-type Health = typeof NodeHealth[NodeHealthKeys];
-
 export type EnvironmentState = Environment & {
   networkError?: ErrorType;
-  nodeHealth: keyof typeof NodeHealth;
+  nodeHealth: NodeHealth;
   setNodeSwitcherOpen: () => void;
 };
 
@@ -66,7 +61,6 @@ export const EnvironmentProvider = ({
 }: EnvironmentProviderProps) => {
   const [vegaUrl, setVegaUrl] = useLocalStorage('vega_url');
   const [networkError, setNetworkError] = useState<undefined | ErrorType>();
-  const [nodeHealth, setNodeHealth] = useState<Health>(NodeHealth.Good);
   const [isNodeSwitcherOpen, setNodeSwitcherIsOpen] = useState(false);
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions, vegaUrl)
@@ -91,8 +85,11 @@ export const EnvironmentProvider = ({
 
   const { state: nodes, clients } = useNodes(
     config,
-    Boolean(environment.VEGA_URL || environment.MAINTENANCE_PAGE)
+    environment.MAINTENANCE_PAGE
   );
+
+  const nodeHealth = useNodeHealth(clients, environment.VEGA_URL);
+
   const nodeKeys = Object.keys(nodes);
 
   useEffect(() => {

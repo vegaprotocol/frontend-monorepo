@@ -74,7 +74,7 @@ const getInitialState = (config?: Configuration) =>
     {}
   );
 
-type ClientCollection = Record<
+export type ClientCollection = Record<
   string,
   undefined | ReturnType<typeof createClient>
 >;
