@@ -215,7 +215,7 @@ describe('VegaConnectDialog', () => {
         .mockImplementation(() => delayedResolve({ chainID: mockChainId }));
       spyOnConnectWallet = jest
         .spyOn(connectors.jsonRpc, 'connectWallet')
-        .mockImplementation(() => delayedResolve({ token: 'token' }));
+        .mockImplementation(() => delayedResolve(null));
       spyOnConnect = jest
         .spyOn(connectors.jsonRpc, 'connect')
         .mockImplementation(() =>
