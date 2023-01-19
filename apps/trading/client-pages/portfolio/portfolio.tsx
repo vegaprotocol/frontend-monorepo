@@ -28,6 +28,12 @@ export const Portfolio = () => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
 
+  const onMarketClick = (marketId: string) => {
+    navigate(Links[Routes.MARKET](marketId), {
+      replace: true,
+    });
+  };
+
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
@@ -42,35 +48,17 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <PositionsContainer
-                    onMarketClick={(marketId: string) => {
-                      navigate(Links[Routes.MARKET](marketId), {
-                        replace: true,
-                      });
-                    }}
-                  />
+                  <PositionsContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <OrderListContainer
-                    onMarketClick={(marketId: string) => {
-                      navigate(Links[Routes.MARKET](marketId), {
-                        replace: true,
-                      });
-                    }}
-                  />
+                  <OrderListContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <FillsContainer
-                    onMarketClick={(marketId: string) => {
-                      navigate(Links[Routes.MARKET](marketId), {
-                        replace: true,
-                      });
-                    }}
-                  />
+                  <FillsContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
