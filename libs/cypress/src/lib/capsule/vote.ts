@@ -1,24 +1,18 @@
 import type * as Schema from '@vegaprotocol/types';
-import { request } from './request';
 import { createLog } from './logging';
+import { sendVegaTx } from './wallet-client';
 
 const log = createLog('vote');
 
 export async function vote(
   proposalId: string,
   voteValue: Schema.VoteValue,
-  publicKey: string,
-  token: string
+  publicKey: string
 ) {
   log(`voting ${voteValue} on ${proposalId}`);
 
   const voteTx = createVote(proposalId, voteValue);
-  const voteResult = await request('client.send_transaction', {
-    token,
-    publicKey,
-    sendingMode: 'TYPE_SYNC',
-    transaction: voteTx,
-  });
+  const voteResult = await sendVegaTx(publicKey, voteTx);
 
   return voteResult.result;
 }

@@ -1,28 +1,17 @@
-import { ethers, Wallet } from 'ethers';
 import { StakingBridge, Token } from '@vegaprotocol/smart-contracts';
-import { gql } from 'graphql-request';
-import { requestGQL } from './request';
 import { createLog } from './logging';
+import { promiseWithTimeout } from '../utils';
+import { getVegaAsset } from './get-vega-asset';
+import { getEthereumConfig } from './get-ethereum-config';
+import { getPartyStake } from './get-party-stake';
+import { wallet } from './ethereum-wallet';
 
 const log = createLog('ethereum-setup');
 
-export async function setupEthereumAccount(
-  vegaPublicKey: string,
-  ethWalletMnemonic: string,
-  ethereumProviderUrl: string
-) {
-  // create provider/wallet
-  const provider = new ethers.providers.JsonRpcProvider({
-    url: ethereumProviderUrl,
-  });
-
-  const privateKey = Wallet.fromMnemonic(
-    ethWalletMnemonic,
-    getAccount()
-  ).privateKey;
-
-  // this wallet (ozone access etc) is already set up with 6 million vega (eth)
-  const wallet = new Wallet(privateKey, provider);
+export async function stakeForVegaPublicKey(vegaPublicKey: string) {
+  if (!wallet) {
+    throw new Error('ethereum wallet not initialized');
+  }
 
   const vegaAsset = await getVegaAsset();
   if (!vegaAsset) {
@@ -43,13 +32,13 @@ export async function setupEthereumAccount(
       '100000' + '0'.repeat(18)
     ),
     1000,
-    'tokenContract.approve'
+    'approve staking tx'
   );
 
   await promiseWithTimeout(
     approveTx.wait(1),
     10 * 60 * 1000,
-    'approveTx.wait(1)'
+    'waiting for 1 stake approval confirmations'
   );
   log('sending approve tx: success');
 
@@ -65,108 +54,27 @@ export async function setupEthereumAccount(
     14000,
     'stakingContract.stake(amount, vegaPublicKey)'
   );
-  await promiseWithTimeout(stakeTx.wait(3), 10 * 60 * 1000, 'stakeTx.wait(3)');
+  await promiseWithTimeout(
+    stakeTx.wait(3),
+    10 * 60 * 1000,
+    'waiting for 3 stake tx confirmations'
+  );
   await waitForStake(vegaPublicKey);
   log(`sending stake tx: success`);
 }
 
-function timeout(time = 0, id: string) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error(`${id}: timeout triggered`)), time);
-  });
-}
-
-async function promiseWithTimeout(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  promise: Promise<any>,
-  time: number,
-  id: string
-) {
-  return await Promise.race([promise, timeout(time, id)]);
-}
-
-async function getVegaAsset() {
-  const query = gql`
-    {
-      assetsConnection {
-        edges {
-          node {
-            id
-            symbol
-            source {
-              ... on ERC20 {
-                contractAddress
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  const res = await requestGQL<{
-    assetsConnection: {
-      edges: Array<{
-        node: {
-          id: string;
-          symbol: string;
-          source: {
-            contractAddress: string;
-          };
-        };
-      }>;
-    };
-  }>(query);
-  return res.assetsConnection.edges
-    .map((e) => e.node)
-    .find((a) => a.symbol === 'VEGA');
-}
-
-async function getEthereumConfig() {
-  const query = gql`
-    {
-      networkParameter(key: "blockchains.ethereumConfig") {
-        value
-      }
-    }
-  `;
-
-  const res = await requestGQL<{
-    networkParameter: {
-      key: string;
-      value: string;
-    };
-  }>(query);
-  return JSON.parse(res.networkParameter.value);
-}
-
 function waitForStake(vegaPublicKey: string) {
-  const query = gql`
-    {
-      party(id:"${vegaPublicKey}") {
-        stakingSummary {
-          currentStakeAvailable
-        }
-      }
-    }
-  `;
   return new Promise((resolve, reject) => {
     let tick = 1;
     const interval = setInterval(async () => {
       log(`confirming stake (attempt: ${tick})`);
-      if (tick >= 10) {
+      if (tick >= 30) {
         clearInterval(interval);
         reject(new Error('stake link never seen'));
       }
 
       try {
-        const res = await requestGQL<{
-          party: {
-            stakingSummary: {
-              currentStakeAvailable: string;
-            };
-          };
-        }>(query);
+        const res = await getPartyStake(vegaPublicKey);
 
         if (
           res.party?.stakingSummary?.currentStakeAvailable !== null &&
@@ -186,6 +94,3 @@ function waitForStake(vegaPublicKey: string) {
     }, 1000);
   });
 }
-
-// derivation path
-const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
