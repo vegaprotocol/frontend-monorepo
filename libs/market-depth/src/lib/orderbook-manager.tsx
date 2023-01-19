@@ -162,7 +162,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         onResolutionChange={(resolution: number) => setResolution(resolution)}
         onClick={(price?: string | number) => {
           if (price) {
-            dispatchEvent(
+            // console.log(
+            //   'limitprice',
+            //   addDecimal(price, market?.decimalPlaces ?? 0)
+            // );
+            document.dispatchEvent(
               new CustomEvent('limitprice', {
                 detail: addDecimal(price, market?.decimalPlaces ?? 0),
               })

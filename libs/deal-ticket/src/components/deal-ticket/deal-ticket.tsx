@@ -30,6 +30,12 @@ import { usePersistedOrderStore } from '../../hooks/use-persisted-order';
 
 export type TransactionStatus = 'default' | 'pending';
 
+declare global {
+  interface DocumentEventMap {
+    ['limitprice']: CustomEvent;
+  }
+}
+
 export interface DealTicketProps {
   market: MarketDealTicket;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
@@ -92,7 +98,9 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
 
   useEffect(() => {
     const priceUpdater = (event: CustomEvent) => {
-      setValue('price', event.detail.price);
+      console.log({ event });
+      console.log('set limitprice', event.detail);
+      setValue('price', event.detail);
     };
     // TODO I need to fix this
     document.addEventListener('limitprice', priceUpdater);
@@ -100,7 +108,10 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
   }, [setValue]);
 
   // When order state changes persist it in local storage
-  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
+  useEffect(() => {
+    console.log('setPersistedOrder', order);
+    setPersistedOrder(order);
+  }, [order, setPersistedOrder]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
