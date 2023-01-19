@@ -5,6 +5,13 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null };
 
+export type OrderByIdQueryVariables = Types.Exact<{
+  orderId: Types.Scalars['ID'];
+}>;
+
+
+export type OrderByIdQuery = { __typename?: 'Query', orderByID: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null } };
+
 export type OrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
@@ -72,6 +79,41 @@ export const OrderUpdateFieldsFragmentDoc = gql`
   }
 }
     `;
+export const OrderByIdDocument = gql`
+    query OrderById($orderId: ID!) {
+  orderByID(id: $orderId) {
+    ...OrderFields
+  }
+}
+    ${OrderFieldsFragmentDoc}`;
+
+/**
+ * __useOrderByIdQuery__
+ *
+ * To run a query within a React component, call `useOrderByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrderByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrderByIdQuery({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useOrderByIdQuery(baseOptions: Apollo.QueryHookOptions<OrderByIdQuery, OrderByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrderByIdQuery, OrderByIdQueryVariables>(OrderByIdDocument, options);
+      }
+export function useOrderByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrderByIdQuery, OrderByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrderByIdQuery, OrderByIdQueryVariables>(OrderByIdDocument, options);
+        }
+export type OrderByIdQueryHookResult = ReturnType<typeof useOrderByIdQuery>;
+export type OrderByIdLazyQueryHookResult = ReturnType<typeof useOrderByIdLazyQuery>;
+export type OrderByIdQueryResult = Apollo.QueryResult<OrderByIdQuery, OrderByIdQueryVariables>;
 export const OrdersDocument = gql`
     query Orders($partyId: ID!, $pagination: Pagination, $dateRange: DateRange, $filter: OrderFilter, $marketId: ID) {
   party(id: $partyId) {

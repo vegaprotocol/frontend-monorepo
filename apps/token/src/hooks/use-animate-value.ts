@@ -1,8 +1,8 @@
 import React from 'react';
-import { usePrevious } from './use-previous';
 import type { BigNumber } from '../lib/bignumber';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import colors from 'tailwindcss/colors';
+import { usePrevious } from '@vegaprotocol/react-helpers';
 const customColors = theme.colors;
 
 const FLASH_DURATION = 1200; // Duration of flash animation in milliseconds

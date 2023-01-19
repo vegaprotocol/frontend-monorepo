@@ -22,6 +22,12 @@ fragment OrderFields on Order {
   }
 }
 
+query OrderById($orderId: ID!) {
+  orderByID(id: $orderId) {
+    ...OrderFields
+  }
+}
+
 query Orders(
   $partyId: ID!
   $pagination: Pagination

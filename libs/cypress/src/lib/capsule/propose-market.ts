@@ -1,24 +1,20 @@
 import * as Schema from '@vegaprotocol/types';
 import { addSeconds, millisecondsToSeconds } from 'date-fns';
-import { gql } from 'graphql-request';
-import { request, requestGQL } from './request';
 import { createLog } from './logging';
 import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
+import { getProposal } from './get-proposal';
+import { sendVegaTx } from './wallet-client';
+import { ASSET_ID_FOR_MARKET } from './contants';
 
 const log = createLog('propose-market');
 
 const MIN_CLOSE_SEC = 5;
 const MIN_ENACT_SEC = 3;
 
-export async function proposeMarket(publicKey: string, token: string) {
+export async function proposeMarket(publicKey: string) {
   log('sending proposal tx');
   const proposalTx = createNewMarketProposal();
-  const result = await request('client.send_transaction', {
-    token,
-    publicKey,
-    sendingMode: 'TYPE_SYNC',
-    transaction: proposalTx,
-  });
+  const result = await sendVegaTx(publicKey, proposalTx);
 
   return result.result;
 }
@@ -44,8 +40,8 @@ function createNewMarketProposal(): ProposalSubmissionBody {
               name: 'Test market 1',
               code: 'TEST.24h',
               future: {
-                settlementAsset: 'fUSDC',
-                quoteName: 'fUSDC',
+                settlementAsset: ASSET_ID_FOR_MARKET,
+                quoteName: ASSET_ID_FOR_MARKET,
                 dataSourceSpecForSettlementData: {
                   external: {
                     oracle: {
@@ -144,14 +140,6 @@ function createNewMarketProposal(): ProposalSubmissionBody {
 }
 
 export function waitForProposal(id: string): Promise<{ id: string }> {
-  const query = gql`
-    {
-      proposal(id: "${id}") {
-        id
-        state
-      }
-    }
-  `;
   return new Promise((resolve, reject) => {
     let tick = 0;
     const interval = setInterval(async () => {
@@ -161,13 +149,7 @@ export function waitForProposal(id: string): Promise<{ id: string }> {
       }
 
       try {
-        const res = await requestGQL<{
-          proposal: {
-            id: string;
-            state: string;
-          };
-        }>(query);
-
+        const res = await getProposal(id);
         if (
           res.proposal !== null &&
           res.proposal.state === Schema.ProposalState.STATE_OPEN

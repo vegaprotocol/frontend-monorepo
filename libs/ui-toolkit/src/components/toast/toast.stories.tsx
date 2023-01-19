@@ -9,18 +9,14 @@ export default {
 } as ComponentMeta<typeof Toast>;
 
 const Template: ComponentStory<typeof Toast> = (args) => {
-  return (
-    <Toast
-      {...args}
-      render={() => (
-        <>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-          <p>Eaque exercitationem saepe cupiditate sunt impedit.</p>
-          <p>I really like 🥪🥪🥪!</p>
-        </>
-      )}
-    />
+  const toastContent = (
+    <>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+      <p>Eaque exercitationem saepe cupiditate sunt impedit.</p>
+      <p>I really like 🥪🥪🥪!</p>
+    </>
   );
+  return <Toast {...args} content={toastContent} />;
 };
 
 export const Default = Template.bind({});

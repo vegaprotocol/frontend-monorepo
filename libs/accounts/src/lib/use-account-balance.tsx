@@ -5,7 +5,7 @@ import { accountsDataProvider } from './accounts-data-provider';
 import type { Account } from './accounts-data-provider';
 import { getSettlementAccount } from './get-settlement-account';
 
-export const useAccountBalance = (assetId: string) => {
+export const useAccountBalance = (assetId?: string) => {
   const { pubKey } = useVegaWallet();
   const [accountBalance, setAccountBalance] = useState<string>('');
   const [accountDecimals, setAccountDecimals] = useState<number | null>(null);
@@ -14,7 +14,9 @@ export const useAccountBalance = (assetId: string) => {
   }, [pubKey]);
   const update = useCallback(
     ({ data }: { data: Account[] | null }) => {
-      const account = getSettlementAccount({ accounts: data, assetId });
+      const account = assetId
+        ? getSettlementAccount({ accounts: data, assetId })
+        : undefined;
       if (accountBalance !== account?.balance) {
         setAccountBalance(account?.balance || '');
       }

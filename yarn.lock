@@ -7559,10 +7559,10 @@
     "@typescript-eslint/types" "5.40.0"
     eslint-visitor-keys "^3.3.0"
 
-"@vegaprotocol/wallet-client@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/wallet-client/-/wallet-client-0.1.4.tgz#202fa1a84dbef57199810383f2887a7ee0afd64c"
-  integrity sha512-uGEbusoi3lwyl7Nn9ovBg9YHrfcH/Rl33KUcLfdMeTX8FZO+n7BVm3ejd00e5RsM/PJlqJ1oW4qkiq7kervxng==
+"@vegaprotocol/wallet-client@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/wallet-client/-/wallet-client-0.1.5.tgz#9d72a7fc9ceb9767f5119c9b7eebe29a2c30f682"
+  integrity sha512-7FmIBFxissr3h2QsEjvD+HXEXJ3u/oaVUg055IgZ08dmy1+4Nx22BOffFyidLBmaH1xJYjyiqxHnhLGnN5BfwA==
   dependencies:
     express "4.18.2"
     nanoid "3.3.4"

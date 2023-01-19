@@ -21,6 +21,7 @@ export const testOrderSubmission = (
     orderSubmission: expectedOrder,
   };
   vegaWalletTransaction(transaction);
+  verifyToast();
 };
 
 export const testOrderAmendment = (
@@ -36,6 +37,7 @@ export const testOrderAmendment = (
     orderAmendment: expectedOrder,
   };
   vegaWalletTransaction(transaction);
+  verifyToast();
 };
 
 export const testOrderCancellation = (
@@ -51,11 +53,10 @@ export const testOrderCancellation = (
     orderCancellation: expectedOrder,
   };
   vegaWalletTransaction(transaction);
+  verifyToast();
 };
 
 const vegaWalletTransaction = (transaction: Transaction) => {
-  const dialogTitle = 'dialog-title';
-  const orderTransactionHash = 'tx-block-explorer';
   cy.wait('@VegaWalletTransaction')
     .its('request.body.params')
     .should('deep.equal', {
@@ -65,12 +66,13 @@ const vegaWalletTransaction = (transaction: Transaction) => {
       sendingMode: 'TYPE_SYNC',
       transaction,
     });
-  cy.getByTestId(dialogTitle).should(
-    'have.text',
-    'Awaiting network confirmation'
-  );
-  cy.getByTestId(orderTransactionHash)
+};
+
+const verifyToast = () => {
+  cy.getByTestId('toast').should('contain.text', 'Awaiting confirmation');
+  cy.getByTestId('toast')
+    .find('a')
     .invoke('attr', 'href')
-    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/0xtest-tx-hash`);
-  cy.getByTestId('dialog-close').click();
+    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/test-tx-hash`);
+  cy.getByTestId('toast-close').click();
 };

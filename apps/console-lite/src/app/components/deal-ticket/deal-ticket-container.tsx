@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { DealTicketManager } from '@vegaprotocol/deal-ticket';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -50,10 +49,10 @@ export const DealTicketContainer = () => {
     );
 
     const container = (
-      <DealTicketManager market={data}>
+      <>
         {loading ? loader : balance}
         <DealTicketSteps market={data} />
-      </DealTicketManager>
+      </>
     );
 
     return (

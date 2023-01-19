@@ -7,17 +7,31 @@ export const Size = ({
   value,
   side,
   positionDecimalPlaces = 0,
+  forceTheme,
 }: {
   value: string;
-  side: Schema.Side;
+  side?: Schema.Side;
   positionDecimalPlaces?: number;
+  forceTheme?: 'dark' | 'light';
 }) => {
   return (
     <span
       data-testid="size"
       className={classNames('text-right', {
-        'text-vega-green dark:text-vega-green': side === Schema.Side.SIDE_BUY,
-        'text-vega-pink dark:text-vega-pink': side === Schema.Side.SIDE_SELL,
+        // BUY
+        'text-vega-green-dark dark:text-vega-green':
+          side === Schema.Side.SIDE_BUY && !forceTheme,
+        'text-vega-green-dark':
+          side === Schema.Side.SIDE_BUY && forceTheme === 'light',
+        'text-vega-green':
+          side === Schema.Side.SIDE_BUY && forceTheme === 'dark',
+        // SELL
+        'text-vega-pink-dark dark:text-vega-pink':
+          side === Schema.Side.SIDE_SELL && !forceTheme,
+        'text-vega-pink-dark':
+          side === Schema.Side.SIDE_SELL && forceTheme === 'light',
+        'text-vega-pink':
+          side === Schema.Side.SIDE_SELL && forceTheme === 'dark',
       })}
     >
       {side === Schema.Side.SIDE_BUY

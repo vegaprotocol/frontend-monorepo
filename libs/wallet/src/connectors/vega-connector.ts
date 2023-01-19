@@ -318,6 +318,11 @@ export const isOrderAmendmentTransaction = (
   transaction: Transaction
 ): transaction is OrderAmendmentBody => 'orderAmendment' in transaction;
 
+export const isBatchMarketInstructionsTransaction = (
+  transaction: Transaction
+): transaction is BatchMarketInstructionSubmissionBody =>
+  'batchMarketInstructions' in transaction;
+
 export interface TransactionResponse {
   transactionHash: string;
   signature: string; // still to be added by core

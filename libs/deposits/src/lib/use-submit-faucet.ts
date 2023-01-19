@@ -1,17 +1,14 @@
 import type { TokenFaucetable } from '@vegaprotocol/smart-contracts';
 import * as Sentry from '@sentry/react';
 import { useEthereumTransaction, useTokenContract } from '@vegaprotocol/web3';
-import { useDepositStore } from './deposit-store';
-import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 
-export const useSubmitFaucet = () => {
-  const { asset, update } = useDepositStore();
+export const useSubmitFaucet = (asset?: Asset) => {
   const contract = useTokenContract(
     isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
     true
   );
-  const getBalance = useGetBalanceOfERC20Token(contract, asset);
   const transaction = useEthereumTransaction<TokenFaucetable, 'faucet'>(
     contract,
     'faucet'
@@ -21,8 +18,6 @@ export const useSubmitFaucet = () => {
     perform: async () => {
       try {
         await transaction.perform();
-        const balance = await getBalance();
-        update({ balance });
       } catch (err) {
         Sentry.captureException(err);
       }

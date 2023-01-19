@@ -1,0 +1,17 @@
+query ExplorerSettlementAssetForMarket($id: ID!) {
+  market(id: $id) {
+    id
+    decimalPlaces
+    tradableInstrument {
+      instrument {
+        product {
+          ... on Future {
+            settlementAsset {
+              decimals
+            }
+          }
+        }
+      }
+    }
+  }
+}

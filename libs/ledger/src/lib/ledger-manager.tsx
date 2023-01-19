@@ -12,8 +12,8 @@ export interface Filter {
   vegaTime?: {
     value: Schema.DateRange;
   };
-  senderAccountType?: { value: Types.AccountType[] };
-  receiverAccountType?: { value: Types.AccountType[] };
+  fromAccountType?: { value: Types.AccountType[] };
+  toAccountType?: { value: Types.AccountType[] };
 }
 
 type LedgerManagerProps = { partyId: string };

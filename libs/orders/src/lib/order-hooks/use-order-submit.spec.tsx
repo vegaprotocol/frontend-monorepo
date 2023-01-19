@@ -9,7 +9,6 @@ import type { OrderEventSubscription } from './';
 import { OrderEventDocument } from './';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 
 const defaultMarket = {
   __typename: 'Market',
@@ -40,6 +39,7 @@ const defaultMarket = {
 const defaultWalletContext = {
   pubKey: null,
   pubKeys: [],
+  isReadOnly: false,
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),
@@ -179,7 +179,7 @@ describe('useOrderSubmit', () => {
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         price: '123456789',
-        expiresAt: toNanoSeconds(order.expiresAt),
+        expiresAt: new Date('2022-01-01').toISOString(),
       },
     });
   });
@@ -216,7 +216,7 @@ describe('useOrderSubmit', () => {
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         price: '123456789',
-        expiresAt: undefined,
+        expiresAt: new Date('2022-01-01').toISOString(),
       },
     });
   });

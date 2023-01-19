@@ -17,11 +17,11 @@ import type { Filter, Sort } from './use-order-list-data';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 import { Link } from '@vegaprotocol/ui-toolkit';
-import type { TransactionResult } from '@vegaprotocol/wallet';
-import type { VegaTxState } from '@vegaprotocol/wallet';
-import { useOrderCancel } from '../../order-hooks/use-order-cancel';
-import { useOrderEdit } from '../../order-hooks/use-order-edit';
-import { OrderFeedback } from '../order-feedback';
+import {
+  normalizeOrderAmendment,
+  useVegaTransactionStore,
+} from '@vegaprotocol/wallet';
+import type { VegaTxState, TransactionResult } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { OrderEventFieldsFragment } from '../../order-hooks';
 import * as Schema from '@vegaprotocol/types';
@@ -76,8 +76,7 @@ export const OrderListManager = ({
   const [sort, setSort] = useState<Sort[] | undefined>();
   const [filter, setFilter] = useState<Filter | undefined>();
   const [editOrder, setEditOrder] = useState<Order | null>(null);
-  const orderCancel = useOrderCancel();
-  const orderEdit = useOrderEdit(editOrder);
+  const create = useVegaTransactionStore((state) => state.create);
   const hasActiveOrder = useHasActiveOrder(marketId);
 
   const { data, error, loading, addNewRows, getRows } = useOrderListData({
@@ -136,9 +135,11 @@ export const OrderListManager = ({
             onSortChanged={onSortChange}
             cancel={(order: Order) => {
               if (!order.market) return;
-              orderCancel.cancel({
-                orderId: order.id,
-                marketId: order.market.id,
+              create({
+                orderCancellation: {
+                  orderId: order.id,
+                  marketId: order.market.id,
+                },
               });
             }}
             setEditOrder={setEditOrder}
@@ -157,7 +158,13 @@ export const OrderListManager = ({
           <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
             <Button
               size="sm"
-              onClick={() => orderCancel.cancel({ marketId })}
+              onClick={() => {
+                create({
+                  orderCancellation: {
+                    marketId,
+                  },
+                });
+              }}
               data-testid="cancelAll"
             >
               {t('Cancel all')}
@@ -165,31 +172,7 @@ export const OrderListManager = ({
           </div>
         )}
       </div>
-      <orderCancel.Dialog
-        title={getCancelDialogTitle(orderCancel)}
-        intent={getCancelDialogIntent(orderCancel)}
-        content={{
-          Complete: orderCancel.cancelledOrder ? (
-            <OrderFeedback
-              transaction={orderCancel.transaction}
-              order={orderCancel.cancelledOrder}
-            />
-          ) : (
-            <TransactionComplete {...orderCancel} />
-          ),
-        }}
-      />
-      <orderEdit.Dialog
-        title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
-        content={{
-          Complete: (
-            <OrderFeedback
-              transaction={orderEdit.transaction}
-              order={orderEdit.updatedOrder}
-            />
-          ),
-        }}
-      />
+
       {editOrder && (
         <OrderEditDialog
           isOpen={Boolean(editOrder)}
@@ -198,8 +181,17 @@ export const OrderListManager = ({
           }}
           order={editOrder}
           onSubmit={(fields) => {
+            if (!editOrder.market) {
+              return;
+            }
+            const orderAmendment = normalizeOrderAmendment(
+              editOrder,
+              editOrder.market,
+              fields.limitPrice,
+              fields.size
+            );
+            create({ orderAmendment });
             setEditOrder(null);
-            orderEdit.edit({ price: fields.limitPrice, size: fields.size });
           }}
         />
       )}

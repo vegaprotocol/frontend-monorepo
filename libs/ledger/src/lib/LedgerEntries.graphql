@@ -3,31 +3,30 @@ fragment LedgerEntry on AggregatedLedgerEntry {
   quantity
   assetId
   transferType
-  receiverAccountType
-  receiverMarketId
-  receiverPartyId
-  senderAccountType
-  senderMarketId
-  senderPartyId
+  toAccountType
+  toAccountMarketId
+  toAccountPartyId
+  toAccountBalance
+  fromAccountType
+  fromAccountMarketId
+  fromAccountPartyId
+  fromAccountBalance
 }
 
 query LedgerEntries(
   $partyId: ID!
   $pagination: Pagination
   $dateRange: DateRange
-  $senderAccountType: [AccountType!]
-  $receiverAccountType: [AccountType!]
+  $fromAccountType: [AccountType!]
+  $toAccountType: [AccountType!]
 ) {
   ledgerEntries(
     filter: {
-      SenderAccountFilter: {
+      FromAccountFilter: {
         partyIds: [$partyId]
-        accountTypes: $senderAccountType
+        accountTypes: $fromAccountType
       }
-      ReceiverAccountFilter: {
-        partyIds: [$partyId]
-        accountTypes: $receiverAccountType
-      }
+      ToAccountFilter: { partyIds: [$partyId], accountTypes: $toAccountType }
     }
     pagination: $pagination
     dateRange: $dateRange
