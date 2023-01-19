@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { VegaWalletContext } from '.';
+import { useCallback, useContext } from 'react';
+import { useVegaWalletDialogStore, VegaWalletContext } from '.';
 
 export function useVegaWallet() {
   const context = useContext(VegaWalletContext);
@@ -7,4 +7,17 @@ export function useVegaWallet() {
     throw new Error('useVegaWallet must be used within VegaWalletProvider');
   }
   return context;
+}
+
+export function useReconnectVegaWallet() {
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
+  const { disconnect } = useVegaWallet();
+  const reconnect = useCallback(async () => {
+    await disconnect();
+    openVegaWalletDialog();
+  }, [disconnect, openVegaWalletDialog]);
+
+  return reconnect;
 }

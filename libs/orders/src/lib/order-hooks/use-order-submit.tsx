@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { OrderEventFieldsFragment } from './__generated__/OrderEvent';
-import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 import {
   useVegaWallet,
   useVegaTransaction,
@@ -108,28 +107,15 @@ export const useOrderSubmit = () => {
   }, [resetTransaction]);
 
   const submit = useCallback(
-    async (order: OrderSubmissionBody['orderSubmission']) => {
-      if (!pubKey || !order.side) {
+    async (orderSubmission: OrderSubmissionBody['orderSubmission']) => {
+      if (!pubKey || !orderSubmission.side) {
         return;
       }
 
       setFinalizedOrder(null);
 
       try {
-        const res = await send(pubKey, {
-          orderSubmission: {
-            ...order,
-            price:
-              order.type === Schema.OrderType.TYPE_LIMIT && order.price
-                ? order.price
-                : undefined,
-            expiresAt:
-              order.expiresAt &&
-              order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-                ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
-                : undefined,
-          },
-        });
+        const res = await send(pubKey, { orderSubmission });
 
         if (res) {
           const orderId = determineId(res.signature);

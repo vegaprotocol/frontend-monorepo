@@ -4,6 +4,7 @@ import { ClientErrors } from './connectors';
 import { WalletError } from './connectors';
 import { VegaTxStatus } from './use-vega-transaction';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
+import { WalletClientError } from '@vegaprotocol/wallet-client';
 
 export const useVegaTransactionManager = () => {
   const { sendTx, pubKey } = useVegaWallet();
@@ -39,7 +40,10 @@ export const useVegaTransactionManager = () => {
       })
       .catch((err) => {
         update(transaction.id, {
-          error: err instanceof WalletError ? err : ClientErrors.UNKNOWN,
+          error:
+            err instanceof WalletError || err instanceof WalletClientError
+              ? err
+              : ClientErrors.UNKNOWN,
           status: VegaTxStatus.Error,
         });
       });

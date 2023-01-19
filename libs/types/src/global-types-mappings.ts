@@ -215,7 +215,7 @@ export const OrderStatusMapping: {
   STATUS_EXPIRED: 'Expired',
   STATUS_FILLED: 'Filled',
   STATUS_PARKED: 'Parked',
-  STATUS_PARTIALLY_FILLED: 'PartiallyFilled',
+  STATUS_PARTIALLY_FILLED: 'Partially Filled',
   STATUS_REJECTED: 'Rejected',
   STATUS_STOPPED: 'Stopped',
 };

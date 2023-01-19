@@ -55,7 +55,6 @@ export const ProposeNewAsset = () => {
     NetworkParams.governance_proposal_asset_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {

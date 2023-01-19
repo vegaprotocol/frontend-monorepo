@@ -26,7 +26,6 @@ jest.mock('../../hooks/use-has-no-balance', () => {
 
 const market = generateMarket();
 const submit = jest.fn();
-const transactionStatus = 'default';
 
 const mockChainId = 'chain-id';
 
@@ -46,12 +45,7 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
   return (
     <MockedProvider mocks={[chainIdMock]}>
       <VegaWalletContext.Provider value={{ pubKey: mockChainId } as any}>
-        <DealTicket
-          defaultOrder={order}
-          market={market}
-          submit={submit}
-          transactionStatus={transactionStatus}
-        />
+        <DealTicket market={market} submit={submit} />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
