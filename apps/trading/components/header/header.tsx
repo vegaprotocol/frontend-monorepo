@@ -11,8 +11,8 @@ interface TradeMarketHeaderProps {
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
     <header className="w-screen xl:px-4 pt-2 border-b border-default">
-      <div className="xl:flex xl:gap-4 items-center">
-        <div className="mb-4 xl:mb-0 px-4 xl:px-0">{title}</div>
+      <div className="xl:flex xl:gap-4 items-end">
+        <div className="mb-1 xl:mb-0 px-4 xl:px-0">{title}</div>
         <div
           data-testid="header-summary"
           className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs"

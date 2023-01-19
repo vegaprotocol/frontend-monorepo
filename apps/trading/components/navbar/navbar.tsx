@@ -10,15 +10,17 @@ import {
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { Drawer, NewTab, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
-import { Vega } from '../icons/vega';
-import type { HTMLAttributeAnchorTarget } from 'react';
-import { Links, Routes } from '../../pages/client-router';
 import {
+  Drawer,
   getNavLinkClassNames,
   getActiveNavLinkClassNames,
   Nav,
+  NewTab,
+  ThemeSwitcher,
 } from '@vegaprotocol/ui-toolkit';
+import { Vega } from '../icons/vega';
+import type { HTMLAttributeAnchorTarget } from 'react';
+import { Links, Routes } from '../../pages/client-router';
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 interface NavbarProps {
