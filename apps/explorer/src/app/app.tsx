@@ -2,7 +2,6 @@ import classnames from 'classnames';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
-import { NetworkInfo } from '@vegaprotocol/network-info';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
 import { Main } from './components/main';
