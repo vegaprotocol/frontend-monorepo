@@ -1,10 +1,9 @@
 import { useRef } from 'react';
-import { AsyncRenderer, Icon, Intent } from '@vegaprotocol/ui-toolkit';
-import { useClosePosition, usePositionsData, PositionsTable } from '../';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { usePositionsData, PositionsTable } from '../';
 import type { AgGridReact } from 'ag-grid-react';
-import { Requested } from './close-position-dialog/requested';
-import { Complete } from './close-position-dialog/complete';
-import type { TransactionResult } from '@vegaprotocol/wallet';
+import * as Schema from '@vegaprotocol/types';
+import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/react-helpers';
 
 interface PositionsManagerProps {
@@ -14,14 +13,7 @@ interface PositionsManagerProps {
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
-  const {
-    submit,
-    closingOrder,
-    closingOrderResult,
-    transaction,
-    transactionResult,
-    Dialog,
-  } = useClosePosition();
+  const create = useVegaTransactionStore((store) => store.create);
 
   return (
     <div className="h-full relative">
@@ -29,7 +21,30 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
         rowModelType="infinite"
         ref={gridRef}
         datasource={{ getRows }}
-        onClose={(position) => submit(position)}
+        onClose={({ marketId, openVolume }) =>
+          create({
+            batchMarketInstructions: {
+              cancellations: [
+                {
+                  marketId,
+                  orderId: '', // omit order id to cancel all active orders
+                },
+              ],
+              submissions: [
+                {
+                  marketId: marketId,
+                  type: Schema.OrderType.TYPE_MARKET as const,
+                  timeInForce: Schema.OrderTimeInForce
+                    .TIME_IN_FORCE_FOK as const,
+                  side: openVolume.startsWith('-')
+                    ? Schema.Side.SIDE_BUY
+                    : Schema.Side.SIDE_SELL,
+                  size: openVolume.replace('-', ''),
+                },
+              ],
+            },
+          })
+        }
         noRowsOverlayComponent={() => null}
       />
       <div className="pointer-events-none absolute inset-0">
@@ -41,63 +56,6 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           noDataCondition={(data) => !(data && data.length)}
         />
       </div>
-      <Dialog
-        intent={getDialogIntent(transactionResult)}
-        icon={getDialogIcon(transactionResult)}
-        title={getDialogTitle(transactionResult)}
-        content={{
-          Requested: <Requested partyId={partyId} order={closingOrder} />,
-          Complete: (
-            <Complete
-              partyId={partyId}
-              closingOrder={closingOrder}
-              closingOrderResult={closingOrderResult}
-              transaction={transaction}
-              transactionResult={transactionResult}
-            />
-          ),
-        }}
-      />
     </div>
   );
-};
-
-const getDialogIntent = (transactionResult?: TransactionResult) => {
-  if (!transactionResult) {
-    return;
-  }
-
-  if (
-    transactionResult &&
-    'error' in transactionResult &&
-    transactionResult.error
-  ) {
-    return Intent.Danger;
-  }
-
-  return Intent.Success;
-};
-
-const getDialogIcon = (transactionResult?: TransactionResult) => {
-  if (!transactionResult) {
-    return;
-  }
-
-  if (transactionResult.status) {
-    return <Icon name="tick" />;
-  }
-
-  return <Icon name="error" />;
-};
-
-const getDialogTitle = (transactionResult?: TransactionResult) => {
-  if (!transactionResult) {
-    return;
-  }
-
-  if (transactionResult.status) {
-    return t('Position closed');
-  }
-
-  return t('Position not closed');
 };

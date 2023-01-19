@@ -37,10 +37,15 @@ const mock = {
         market: {
           __typename: 'Market',
           id: '789',
+          state: 'STATE_ACTIVE',
           decimalPlaces: 2,
           tradableInstrument: {
             instrument: {
               name: 'TEST',
+              product: {
+                __typename: 'Future',
+                quoteName: '123',
+              },
             },
           },
         },

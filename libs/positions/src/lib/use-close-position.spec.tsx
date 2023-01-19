@@ -17,6 +17,7 @@ const pubKey = 'test-pubkey';
 const defaultWalletContext = {
   pubKey,
   pubKeys: [{ publicKey: pubKey, name: 'test pubkey' }],
+  isReadOnly: false,
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),

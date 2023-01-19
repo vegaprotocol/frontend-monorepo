@@ -1,9 +1,8 @@
 import * as Schema from '@vegaprotocol/types';
-import { gql } from 'graphql-request';
 import { determineId } from '../utils';
-import { requestGQL, setEndpoints } from './request';
+import { setGraphQLEndpoint } from './request';
 import { vote } from './vote';
-import { setupEthereumAccount } from './ethereum-setup';
+import { stakeForVegaPublicKey } from './ethereum-setup';
 import { faucetAsset } from './faucet-asset';
 import {
   proposeMarket,
@@ -11,6 +10,10 @@ import {
   waitForProposal,
 } from './propose-market';
 import { createLog } from './logging';
+import { getMarkets } from './get-markets';
+import { createWalletClient } from './wallet-client';
+import { createEthereumWallet } from './ethereum-wallet';
+import { ASSET_ID_FOR_MARKET } from './contants';
 
 const log = createLog('create-market');
 
@@ -23,8 +26,10 @@ export async function createMarket(cfg: {
   vegaUrl: string;
   faucetUrl: string;
 }) {
-  // set and store request endpoints
-  setEndpoints(cfg.vegaWalletUrl, cfg.vegaUrl);
+  // setup wallet client and graphql clients
+  setGraphQLEndpoint(cfg.vegaUrl);
+  createWalletClient(cfg.vegaWalletUrl, cfg.token);
+  createEthereumWallet(cfg.ethWalletMnemonic, cfg.ethereumProviderUrl);
 
   const markets = await getMarkets();
 
@@ -37,101 +42,33 @@ export async function createMarket(cfg: {
     return markets;
   }
 
-  await setupEthereumAccount(
-    cfg.vegaPubKey,
-    cfg.ethWalletMnemonic,
-    cfg.ethereumProviderUrl
-  );
+  // To participate in governance (in this case proposing and voting in a market)
+  // you need to have staked (associated) some Vega with a Vega public key
+  await stakeForVegaPublicKey(cfg.vegaPubKey);
 
-  const result = await faucetAsset(cfg.faucetUrl, 'fUSDC', cfg.vegaPubKey);
+  // Send some of the asset for the market to be proposed to the test pubkey
+  const result = await faucetAsset(
+    cfg.faucetUrl,
+    ASSET_ID_FOR_MARKET,
+    cfg.vegaPubKey
+  );
   if (!result.success) {
     throw new Error('faucet failed');
   }
 
-  // propose and vote on a market
-  const proposalTxResult = await proposeMarket(cfg.vegaPubKey, cfg.token);
+  // Propose a new market
+  const proposalTxResult = await proposeMarket(cfg.vegaPubKey);
   const proposalId = determineId(proposalTxResult.transaction.signature.value);
   log(`proposal created (id: ${proposalId})`);
   const proposal = await waitForProposal(proposalId);
-  await vote(
-    proposal.id,
-    Schema.VoteValue.VALUE_YES,
-    cfg.vegaPubKey,
-    cfg.token
-  );
+
+  // Vote on new market proposal
+  await vote(proposal.id, Schema.VoteValue.VALUE_YES, cfg.vegaPubKey);
+
+  // Wait for the market to be enacted and go into opening auction
   await waitForEnactment();
 
-  // fetch and return created market
+  // Fetch the newly created market
   const newMarkets = await getMarkets();
   return newMarkets;
-}
-
-async function getMarkets() {
-  const query = gql`
-    {
-      marketsConnection {
-        edges {
-          node {
-            id
-            decimalPlaces
-            positionDecimalPlaces
-            state
-            tradableInstrument {
-              instrument {
-                id
-                name
-                code
-                metadata {
-                  tags
-                }
-                product {
-                  ... on Future {
-                    settlementAsset {
-                      id
-                      symbol
-                      decimals
-                    }
-                    quoteName
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  const res = await requestGQL<{
-    marketsConnection: {
-      edges: Array<{
-        node: {
-          id: string;
-          decimalPlaces: number;
-          positionDecimalPlaces: number;
-          state: string;
-          tradableInstrument: {
-            instrument: {
-              id: string;
-              name: string;
-              code: string;
-              metadata: {
-                tags: string[];
-              };
-              product: {
-                settlementAssset: {
-                  id: string;
-                  symbol: string;
-                  decimals: number;
-                };
-                quoteName: string;
-              };
-            };
-          };
-        };
-      }>;
-    };
-  }>(query);
-
-  return res.marketsConnection.edges.map((e) => e.node);
 }

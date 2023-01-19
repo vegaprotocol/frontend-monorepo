@@ -70,7 +70,7 @@ const MobileWalletButton = ({
     [selectPubKey]
   );
   return (
-    <div className="md:hidden overflow-hidden flex" ref={setContainer}>
+    <div className="lg:hidden overflow-hidden flex" ref={setContainer}>
       <Drawer
         dataTestId="wallets-drawer"
         open={drawerOpen}
@@ -141,7 +141,7 @@ export const VegaWalletConnectButton = () => {
   if (isConnected && pubKeys) {
     return (
       <>
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <DropdownMenu open={dropdownOpen}>
             <DropdownMenuTrigger
               data-testid="manage-vega-wallet"
@@ -183,7 +183,7 @@ export const VegaWalletConnectButton = () => {
         data-testid="connect-vega-wallet"
         onClick={openVegaWalletDialog}
         size="sm"
-        className="hidden md:block"
+        className="hidden lg:block"
       >
         <span className="whitespace-nowrap">{t('Connect Vega wallet')}</span>
       </Button>

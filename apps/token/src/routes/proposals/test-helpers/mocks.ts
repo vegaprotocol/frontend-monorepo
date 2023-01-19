@@ -11,6 +11,7 @@ export const mockPubkey: PubKey = {
 export const mockWalletContext = {
   pubKey: mockPubkey.publicKey,
   pubKeys: [mockPubkey],
+  isReadOnly: false,
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),

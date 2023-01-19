@@ -76,7 +76,9 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   );
 };
 
-const getRejectionReason = (order: OrderEventFieldsFragment): string | null => {
+export const getRejectionReason = (
+  order: OrderEventFieldsFragment
+): string | null => {
   switch (order.status) {
     case Schema.OrderStatus.STATUS_STOPPED:
       return t(
