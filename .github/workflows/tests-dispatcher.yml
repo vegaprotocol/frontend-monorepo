@@ -15,14 +15,6 @@ on:
         type: boolean
 
 jobs:
-  run-console-lite-e2e:
-    uses: ./.github/workflows/cypress-console-lite-e2e.yml
-    secrets: inherit
-    with:
-      trigger: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
-      skip-cache: ${{ inputs.skip-cache }}
-      tags: ${{ inputs.tags }}
-
   run-explorer-e2e:
     uses: ./.github/workflows/cypress-explorer-e2e.yml
     secrets: inherit
