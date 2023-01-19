@@ -54,7 +54,7 @@ export class JsonRpcConnector implements VegaConnector {
             connector: 'jsonRpc',
             url: this._url,
           });
-        }
+        },
       });
     }
   }
