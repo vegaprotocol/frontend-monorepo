@@ -65,9 +65,7 @@ export const useUpdateNetworkParametersToasts = (): Toast[] => {
       return {
         id: `update-network-param-proposal-${proposal.id}`,
         intent: Intent.Warning,
-        render: () => (
-          <UpdateNetworkParameterToastContent proposal={proposal} />
-        ),
+        content: <UpdateNetworkParameterToastContent proposal={proposal} />,
         onClose: () => remove(id),
         closeAfter: CLOSE_AFTER,
       };

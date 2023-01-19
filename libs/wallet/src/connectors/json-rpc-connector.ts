@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { WalletClient } from '@vegaprotocol/wallet-client';
+import { WalletClient, WalletClientError } from '@vegaprotocol/wallet-client';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 import { WalletError } from './vega-connector';
@@ -21,15 +21,13 @@ export const ClientErrors = {
     105,
     t('Unknown error occurred')
   ),
+  NO_CLIENT: new WalletError(t('No client found.'), 106),
+  REQUEST_REJECTED: new WalletError(
+    t('Request rejected'),
+    107,
+    t('The request has been rejected by the user')
+  ),
 } as const;
-
-class NoClientError extends Error {
-  constructor() {
-    super(
-      t('No client found. The connector needs to be initialized with a url.')
-    );
-  }
-}
 
 export class JsonRpcConnector implements VegaConnector {
   version = VERSION;
@@ -62,7 +60,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async getChainId() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
     try {
       const { result } = await this.client.GetChainId();
@@ -74,7 +72,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async connectWallet() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
     try {
@@ -86,7 +84,11 @@ export class JsonRpcConnector implements VegaConnector {
       });
       return result;
     } catch (err) {
-      throw ClientErrors.INVALID_RESPONSE;
+      const clientErr =
+        err instanceof WalletClientError && err.code === 3001
+          ? ClientErrors.REQUEST_REJECTED
+          : ClientErrors.INVALID_RESPONSE;
+      throw clientErr;
     }
   }
 
@@ -94,7 +96,7 @@ export class JsonRpcConnector implements VegaConnector {
   // which retrieves the session token
   async connect() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
     try {
@@ -107,7 +109,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async disconnect() {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
     await this.client.DisconnectWallet();
@@ -116,25 +118,21 @@ export class JsonRpcConnector implements VegaConnector {
 
   async sendTx(pubKey: string, transaction: Transaction) {
     if (!this.client) {
-      throw new NoClientError();
+      throw ClientErrors.NO_CLIENT;
     }
 
-    try {
-      const { result } = await this.client.SendTransaction({
-        publicKey: pubKey,
-        sendingMode: 'TYPE_SYNC',
-        transaction,
-      });
+    const { result } = await this.client.SendTransaction({
+      publicKey: pubKey,
+      sendingMode: 'TYPE_SYNC',
+      transaction,
+    });
 
-      return {
-        transactionHash: result.transactionHash,
-        sentAt: result.sentAt,
-        receivedAt: result.receivedAt,
-        signature: result.transaction.signature.value,
-      };
-    } catch (err) {
-      throw ClientErrors.INVALID_RESPONSE;
-    }
+    return {
+      transactionHash: result.transactionHash,
+      sentAt: result.sentAt,
+      receivedAt: result.receivedAt,
+      signature: result.transaction.signature.value,
+    };
   }
 
   async checkCompat() {
