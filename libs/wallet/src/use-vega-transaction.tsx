@@ -7,6 +7,7 @@ import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
 import { ClientErrors } from './connectors';
 import { WalletError } from './connectors';
+import type { WalletClientError } from '@vegaprotocol/wallet-client';
 
 export interface DialogProps {
   intent?: Intent;
@@ -25,7 +26,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: WalletError | Error | null;
+  error: WalletError | WalletClientError | Error | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
