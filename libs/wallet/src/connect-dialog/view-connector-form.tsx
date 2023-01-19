@@ -24,6 +24,16 @@ export function ViewConnectorForm({
     formState: { errors },
   } = useForm<FormFields>();
 
+  const validatePubkey = (value: string) => {
+    const number = +`0x${value}`;
+    if (value.length !== 64) {
+      return t('Pubkey must be 64 characters in length');
+    } else if (Number.isNaN(number)) {
+      return t('Pubkey must be be valid hex');
+    }
+    return true;
+  };
+
   async function onSubmit(fields: FormFields) {
     await connector.setPubkey(fields.address);
     await connect(connector);
@@ -34,7 +44,10 @@ export function ViewConnectorForm({
     <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
       <FormGroup label={t('Vega Pubkey')} labelFor="address">
         <Input
-          {...register('address', { required: t('Required') })}
+          {...register('address', {
+            required: t('Required'),
+            validate: validatePubkey,
+          })}
           id="address"
           data-testid="address"
           type="text"

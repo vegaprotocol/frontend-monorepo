@@ -356,8 +356,7 @@ describe('VegaConnectDialog', () => {
   });
 
   describe('ViewOnlyConnector', () => {
-    const fillInForm = () => {
-      const address = 'test-wallet';
+    const fillInForm = (address = '0'.repeat(64)) => {
       fireEvent.change(screen.getByTestId('address'), {
         target: { value: address },
       });
@@ -388,6 +387,42 @@ describe('VegaConnectDialog', () => {
       expect(spy).toHaveBeenCalled();
 
       expect(mockCloseVegaDialog).toHaveBeenCalled();
+    });
+
+    it('ensures pubkey is of correct length', async () => {
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      fillInForm('123');
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+      await waitFor(() => {
+        expect(
+          screen.getAllByText('Pubkey must be 64 characters in length')
+        ).toHaveLength(1);
+      });
+    });
+
+    it('ensures pubkey is of valid hex', async () => {
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      fillInForm('q'.repeat(64));
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+      await waitFor(() => {
+        expect(screen.getAllByText('Pubkey must be be valid hex')).toHaveLength(
+          1
+        );
+      });
     });
   });
 });
