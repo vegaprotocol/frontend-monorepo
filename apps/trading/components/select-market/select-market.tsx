@@ -28,6 +28,7 @@ import {
   TOKEN_NEW_MARKET_PROPOSAL,
   useLinks,
 } from '@vegaprotocol/environment';
+import { HeaderTitle } from '../header';
 
 export type Market = MarketWithCandles & MarketWithData;
 
@@ -150,18 +151,13 @@ export const SelectMarketPopover = ({
       open={open}
       onChange={setOpen}
       trigger={
-        <span className="flex items-center gap-2">
-          <span>
-            <span className="sm:text-sm md:text-md lg:text-lg flex items-center gap-2 whitespace-nowrap">
-              {marketCode}
-            </span>
-            <span className="sm:text-xs text-sm flex items-center gap-2 whitespace-nowrap text-neutral-500 dark:text-neutral-400 pb-2">
-              {marketName}
-            </span>
-          </span>
-
+        <div className="flex items-center gap-2">
+          <HeaderTitle
+            primaryContent={marketCode}
+            secondaryContent={marketName}
+          />
           <Icon name="chevron-down" className={iconClass} size={6} />
-        </span>
+        </div>
       }
     >
       <div
