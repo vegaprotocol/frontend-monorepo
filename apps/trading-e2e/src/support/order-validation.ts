@@ -73,6 +73,6 @@ const verifyToast = () => {
   cy.getByTestId('toast')
     .find('a')
     .invoke('attr', 'href')
-    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/0xtest-tx-hash`);
+    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/test-tx-hash`);
   cy.getByTestId('toast-close').click();
 };

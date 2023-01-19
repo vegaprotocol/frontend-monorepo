@@ -1,10 +1,5 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import {
-  removeDecimal,
-  t,
-  toNanoSeconds,
-  truncateByChars,
-} from '@vegaprotocol/react-helpers';
+import { t, truncateByChars } from '@vegaprotocol/react-helpers';
 import { useRef, useState } from 'react';
 import type {
   BodyScrollEvent,
@@ -22,13 +17,15 @@ import type { Filter, Sort } from './use-order-list-data';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import {
+  normalizeOrderAmendment,
+  useVegaTransactionStore,
+} from '@vegaprotocol/wallet';
 import type { VegaTxState, TransactionResult } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { OrderEventFieldsFragment } from '../../order-hooks';
 import * as Schema from '@vegaprotocol/types';
 import type { Order } from '../order-data-provider';
-import BigNumber from 'bignumber.js';
 
 export interface OrderListManagerProps {
   partyId: string;
@@ -187,30 +184,13 @@ export const OrderListManager = ({
             if (!editOrder.market) {
               return;
             }
-            create({
-              orderAmendment: {
-                orderId: editOrder.id,
-                marketId: editOrder.market.id,
-                price: removeDecimal(
-                  fields.limitPrice,
-                  editOrder.market.decimalPlaces
-                ),
-                timeInForce: editOrder.timeInForce,
-                sizeDelta: fields.size
-                  ? new BigNumber(
-                      removeDecimal(
-                        fields.size,
-                        editOrder.market.positionDecimalPlaces
-                      )
-                    )
-                      .minus(editOrder.size)
-                      .toNumber()
-                  : 0,
-                expiresAt: editOrder.expiresAt
-                  ? toNanoSeconds(editOrder.expiresAt) // Wallet expects timestamp in nanoseconds
-                  : undefined,
-              },
-            });
+            const orderAmendment = normalizeOrderAmendment(
+              editOrder,
+              editOrder.market,
+              fields.limitPrice,
+              fields.size
+            );
+            create({ orderAmendment });
             setEditOrder(null);
           }}
         />

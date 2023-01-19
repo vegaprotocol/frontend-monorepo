@@ -1,8 +1,14 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
+import type { Market, Order } from '@vegaprotocol/types';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
-import type { OrderSubmissionBody, Transaction } from './connectors';
+import type {
+  OrderAmendmentBody,
+  OrderSubmissionBody,
+  Transaction,
+} from './connectors';
 
 /**
  * Creates an ID in the same way that core does on the backend. This way we
@@ -36,4 +42,24 @@ export const normalizeOrderSubmission = (
     order.expiresAt && order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
       ? toNanoSeconds(order.expiresAt)
       : undefined,
+});
+
+export const normalizeOrderAmendment = (
+  order: Pick<Order, 'id' | 'timeInForce' | 'size' | 'expiresAt'>,
+  market: Pick<Market, 'id' | 'decimalPlaces' | 'positionDecimalPlaces'>,
+  price: string,
+  size: string
+): OrderAmendmentBody['orderAmendment'] => ({
+  orderId: order.id,
+  marketId: market.id,
+  price: removeDecimal(price, market.decimalPlaces),
+  timeInForce: order.timeInForce,
+  sizeDelta: size
+    ? new BigNumber(removeDecimal(size, market.positionDecimalPlaces))
+        .minus(order.size)
+        .toNumber()
+    : 0,
+  expiresAt: order.expiresAt
+    ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
+    : undefined,
 });

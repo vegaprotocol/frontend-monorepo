@@ -36,7 +36,6 @@ import {
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
-import { prepend0x } from '@vegaprotocol/smart-contracts';
 import { getRejectionReason, useOrderByIdQuery } from '@vegaprotocol/orders';
 import { useMarketList } from '@vegaprotocol/market-list';
 import first from 'lodash/first';
@@ -408,9 +407,7 @@ const VegaTxPendingToastContentProps = ({ tx }: VegaTxToastContentProps) => {
       {tx.txHash && (
         <p className="break-all">
           <ExternalLink
-            href={explorerLink(
-              EXPLORER_TX.replace(':hash', prepend0x(tx.txHash))
-            )}
+            href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
             rel="noreferrer"
           >
             {t('View in block explorer')}
@@ -452,9 +449,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         {tx.txHash && (
           <p className="break-all">
             <ExternalLink
-              href={explorerLink(
-                EXPLORER_TX.replace(':hash', prepend0x(tx.txHash))
-              )}
+              href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
               rel="noreferrer"
             >
               {t('View in block explorer')}
@@ -474,9 +469,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
       {tx.txHash && (
         <p className="break-all">
           <ExternalLink
-            href={explorerLink(
-              EXPLORER_TX.replace(':hash', prepend0x(tx.txHash))
-            )}
+            href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
             rel="noreferrer"
           >
             {t('View in block explorer')}
