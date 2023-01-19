@@ -14,11 +14,15 @@ import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 import { AccountHistoryContainer } from './account-history-container';
+import { useNavigate } from 'react-router-dom';
+import { Links, Routes } from '../../pages/client-router';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
@@ -38,17 +42,35 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <PositionsContainer />
+                  <PositionsContainer
+                    onMarketClick={(marketId: string) => {
+                      navigate(Links[Routes.MARKET](marketId), {
+                        replace: true,
+                      });
+                    }}
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <OrderListContainer />
+                  <OrderListContainer
+                    onMarketClick={(marketId: string) => {
+                      navigate(Links[Routes.MARKET](marketId), {
+                        replace: true,
+                      });
+                    }}
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <FillsContainer />
+                  <FillsContainer
+                    onMarketClick={(marketId: string) => {
+                      navigate(Links[Routes.MARKET](marketId), {
+                        replace: true,
+                      });
+                    }}
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>

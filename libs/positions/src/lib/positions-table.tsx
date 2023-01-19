@@ -31,6 +31,7 @@ import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
+  onMarketClick?: (id: string) => void;
   style?: CSSProperties;
 }
 
@@ -66,7 +67,7 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
-  ({ onClose, ...props }, ref) => {
+  ({ onClose, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -92,8 +93,12 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             value,
             data,
           }: VegaICellRendererParams<Position, 'marketName'>) =>
-            value ? (
-              <Link href={`/#/markets/${data?.marketId}`}>{value}</Link>
+            onMarketClick ? (
+              <Link
+                onClick={() => data?.marketId && onMarketClick(data?.marketId)}
+              >
+                {value}
+              </Link>
             ) : (
               value
             )

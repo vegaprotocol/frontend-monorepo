@@ -9,9 +9,13 @@ import { t } from '@vegaprotocol/react-helpers';
 
 interface PositionsManagerProps {
   partyId: string;
+  onMarketClick?: (marketId: string) => void;
 }
 
-export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
+export const PositionsManager = ({
+  partyId,
+  onMarketClick,
+}: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
   const {
@@ -30,6 +34,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
         ref={gridRef}
         datasource={{ getRows }}
         onClose={(position) => submit(position)}
+        onMarketClick={onMarketClick}
         noRowsOverlayComponent={() => null}
       />
       <div className="pointer-events-none absolute inset-0">
