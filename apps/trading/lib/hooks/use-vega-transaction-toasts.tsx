@@ -95,7 +95,7 @@ const Details = ({
   title?: string;
 }) => (
   <div className="pt-[5px]" data-testid="vega-tx-details" title={title}>
-    <div className="font-mono text-xs p-2 bg-neutral-100 rounded">
+    <div className="font-mono text-xs p-2 bg-neutral-100 rounded dark:bg-neutral-700 dark:text-white">
       {children}
     </div>
   </div>

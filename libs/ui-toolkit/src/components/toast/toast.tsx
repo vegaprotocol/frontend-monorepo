@@ -133,7 +133,7 @@ export const Toast = ({
           )}
         </div>
         <div
-          className="flex-1 p-2 pr-6 text-sm overflow-auto"
+          className="flex-1 p-2 pr-6 text-sm overflow-auto dark:bg-black dark:text-white"
           data-testid="toast-content"
         >
           {content}
