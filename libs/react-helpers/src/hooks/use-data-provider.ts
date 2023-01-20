@@ -125,6 +125,9 @@ export const useDataProvider = <
     setData(null);
     setError(undefined);
     setTotalCount(undefined);
+    if (initialized.current && update) {
+      update({ data: null });
+    }
     initialized.current = false;
     if (skip) {
       setLoading(false);

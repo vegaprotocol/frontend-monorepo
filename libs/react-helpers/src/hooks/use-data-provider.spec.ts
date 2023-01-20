@@ -173,7 +173,7 @@ describe('useDataProvider hook', () => {
     await act(async () => {
       callback({ ...updateCallbackPayload });
     });
-    expect(update).toBeCalledTimes(2);
+    expect(update).toBeCalledTimes(3);
 
     // changing variables, apollo query will return error
     await act(async () => {
@@ -193,7 +193,7 @@ describe('useDataProvider hook', () => {
         pageInfo: null,
       });
     });
-    expect(update).toBeCalledTimes(3);
+    expect(update).toBeCalledTimes(5);
   });
 
   it('do not create data provider instance when skip is true', async () => {
