@@ -56,7 +56,7 @@ export function ViewConnectorForm({
           <InputError intent="danger">{errors.address.message}</InputError>
         )}
       </FormGroup>
-      <Button data-testid='connect' variant="primary" type="submit" fill={true}>
+      <Button data-testid="connect" variant="primary" type="submit" fill={true}>
         {t('Connect')}
       </Button>
     </form>
