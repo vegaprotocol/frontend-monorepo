@@ -45,6 +45,10 @@ export const TxProposalVote = ({
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
+        <TableCell>{t('Proposal')}</TableCell>
+        <TableCell>{txData.command.voteSubmission.proposalId}</TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
         <TableCell>{t('Vote')}</TableCell>
         <TableCell>{vote}</TableCell>
       </TableRow>
