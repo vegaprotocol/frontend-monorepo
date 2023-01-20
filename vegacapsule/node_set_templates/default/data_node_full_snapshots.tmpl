@@ -41,15 +41,15 @@ GatewayEnabled = true
   [Broker.SocketConfig]
     Port = {{add 300 .NodeNumber}}5
 
-[DeHistory]
+[NetworkHistory]
   Level = "Info"
   Enabled = true
   WipeOnStartup = true
   AddSnapshotsToStore = true
   AddSnapshotsInterval = "5s"
-  [DeHistory.Store]
-    PeerID = "{{.GetDehistoryPeerID .NodeNumber}}"
-    PrivKey = "{{.GetDehistoryPrivKey .NodeNumber}}"
+  [NetworkHistory.Store]
+    PeerID = "{{.GetNetworkHistoryPeerID .NodeNumber}}"
+    PrivKey = "{{.GetNetworkHistoryPrivKey .NodeNumber}}"
 
     BootstrapPeers = [{{- range $i, $peer := .IPSFPeers -}}
       {{- if ne $i 0 }},{{end -}}
@@ -60,6 +60,6 @@ GatewayEnabled = true
     SwarmPort = {{add 400 .NodeNumber}}5
     StartWebUI = false
     WebUIPort = {{add 500 .NodeNumber}}5
-  [DeHistory.Snapshot]
+  [NetworkHistory.Snapshot]
     PanicOnSnapshotCreationError = true
     WaitForCreationLockTimeout = "5s"

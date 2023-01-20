@@ -38,7 +38,6 @@ export function request(
     params: {
       ...params,
       sendingMode: 'TYPE_SYNC',
-      token,
     },
     id: (requestId++).toString(),
   };
@@ -47,6 +46,7 @@ export function request(
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `VWT ${token}`,
       Origin: 'market-setup',
       Referer: 'market-setup',
     },
