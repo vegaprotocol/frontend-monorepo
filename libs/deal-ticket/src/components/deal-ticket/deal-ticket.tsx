@@ -32,7 +32,7 @@ export type TransactionStatus = 'default' | 'pending';
 
 declare global {
   interface DocumentEventMap {
-    ['limitprice']: CustomEvent;
+    ['limit-price']: CustomEvent;
   }
 }
 
@@ -103,8 +103,8 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
       setValue('price', event.detail);
     };
     // TODO I need to fix this
-    document.addEventListener('limitprice', priceUpdater);
-    return () => document.removeEventListener('limitprice', priceUpdater);
+    document.addEventListener('limit-price', priceUpdater);
+    return () => document.removeEventListener('limit-price', priceUpdater);
   }, [setValue]);
 
   // When order state changes persist it in local storage

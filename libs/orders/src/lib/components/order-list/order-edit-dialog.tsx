@@ -106,7 +106,7 @@ export const OrderEditDialog = ({
             <Input
               type="number"
               step={step}
-              {...register('limitPrice', {
+              {...register('limit-price', {
                 required: t('You need to provide a price'),
                 validate: {
                   min: (value) =>
