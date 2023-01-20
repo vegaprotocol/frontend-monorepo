@@ -25,7 +25,7 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { Header, HeaderStat } from '../../components/header';
+import { Header, HeaderStat, HeaderTitle } from '../../components/header';
 
 import type { AgGridReact } from 'ag-grid-react';
 import type { IGetRowsParams } from 'ag-grid-community';
@@ -224,14 +224,18 @@ export const LiquidityViewContainer = ({
         <Header
           title={
             market?.tradableInstrument.instrument.name &&
+            market?.tradableInstrument.instrument.code &&
             marketId && (
-              <Link to={Links[Routes.MARKET](marketId)}>
-                <UiToolkitLink className="sm:text-sm md:text-md lg:text-lg flex items-center gap-2 whitespace-nowrap">
-                  {`${market?.tradableInstrument.instrument.name} ${t(
-                    'liquidity provision'
-                  )}`}
-                </UiToolkitLink>
-              </Link>
+              <HeaderTitle
+                primaryContent={`${
+                  market.tradableInstrument.instrument.code
+                } ${t('liquidity provision')}`}
+                secondaryContent={
+                  <Link to={Links[Routes.MARKET](marketId)}>
+                    <UiToolkitLink>{t('Go to trading')}</UiToolkitLink>
+                  </Link>
+                }
+              />
             )
           }
         >

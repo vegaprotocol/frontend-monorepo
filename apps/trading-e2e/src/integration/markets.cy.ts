@@ -80,7 +80,7 @@ describe('markets table', { tags: '@smoke' }, () => {
     cy.getByTestId('view-market-list-link')
       .should('have.attr', 'href', '#/markets/all')
       .click();
-    cy.get('[data-testid="Active markets"]').should(
+    cy.get('[data-testid="All markets"]').should(
       'have.attr',
       'data-state',
       'active'

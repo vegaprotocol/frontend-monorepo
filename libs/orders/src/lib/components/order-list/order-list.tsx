@@ -31,10 +31,11 @@ type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
+  onMarketClick?: (marketId: string) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, setEditOrder, ...props }, ref) => {
+  ({ cancel, setEditOrder, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -58,8 +59,14 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             Order,
             'market.tradableInstrument.instrument.code'
           >) =>
-            data?.market?.id ? (
-              <Link href={`/#/markets/${data?.market?.id}`}>{value}</Link>
+            onMarketClick ? (
+              <Link
+                onClick={() =>
+                  data?.market?.id && onMarketClick(data?.market?.id)
+                }
+              >
+                {value}
+              </Link>
             ) : (
               value
             )
