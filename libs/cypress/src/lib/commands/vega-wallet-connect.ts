@@ -46,7 +46,7 @@ export function addSetVegaWallet() {
       win.localStorage.setItem(
         'vega_wallet_config',
         JSON.stringify({
-          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
+          token: `VWT ${Cypress.env('VEGA_WALLET_API_TOKEN')}`,
           connector: 'jsonRpc',
           url: 'http://localhost:1789',
         })
