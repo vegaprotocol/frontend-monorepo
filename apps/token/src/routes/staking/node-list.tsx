@@ -9,7 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../components/epoch-countdown';
 import { BigNumber } from '../../lib/bignumber';
-import { formatNumber, formatNumberPercentage } from '@vegaprotocol/react-helpers';
+import {
+  formatNumber,
+  formatNumberPercentage,
+} from '@vegaprotocol/react-helpers';
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
 import type { ColDef } from 'ag-grid-community';
@@ -54,18 +57,29 @@ interface NodeListProps {
   epoch: Staking_epoch | undefined;
 }
 
+const VALIDATOR_LOGO_MAP: { [key: string]: string } = {
+  '55504e9bfd914a7bbefa342c82f59a2f4dee344e5b6863a14c02a812f4fbde32':
+    'https://pbs.twimg.com/profile_images/1586047492629712897/ZVMWBE94_400x400.jpg',
+};
+
 interface ValidatorRendererProps {
-  data: { validator: { avatarUrl: string; name: string } };
+  data: { validator: { avatarUrl: string; name: string }; id: string };
 }
 
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { avatarUrl, name } = data.validator;
+
+  const logo = avatarUrl
+    ? avatarUrl
+    : VALIDATOR_LOGO_MAP[data.id]
+    ? VALIDATOR_LOGO_MAP[data.id]
+    : null;
   return (
     <div className="flex items-center">
-      {avatarUrl && (
+      {logo && (
         <img
           className="h-6 w-6 rounded-full mr-2"
-          src={avatarUrl}
+          src={logo}
           alt={`Avatar icon for ${name}`}
           onError={(e) => (e.currentTarget.style.display = 'none')}
         />
@@ -140,7 +154,10 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
           [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
           [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
-          [STAKE_SCORE]: formatNumberPercentage(new BigNumber(stakeScore).times(100), 2),
+          [STAKE_SCORE]: formatNumberPercentage(
+            new BigNumber(stakeScore).times(100),
+            2
+          ),
           [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
           [VOTING_POWER]: votingPower,
         };
