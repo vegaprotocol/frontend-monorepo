@@ -133,7 +133,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
-    cy.wait('@Market');
+    cy.wait('@Markets');
     cy.getByTestId('dialog-close').click();
   });
 

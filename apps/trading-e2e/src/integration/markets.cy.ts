@@ -10,7 +10,6 @@ describe('markets table', { tags: '@smoke' }, () => {
       );
       cy.mockSubscription();
       cy.visit('/');
-      cy.wait('@Market');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
       cy.wait('@MarketsCandles');

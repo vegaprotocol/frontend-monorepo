@@ -31,8 +31,8 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
     state: Schema.MarketState.STATE_ACTIVE,
     marketTimestamps: {
       __typename: 'MarketTimestamps',
-      close: '',
-      open: '',
+      close: null,
+      open: null,
     },
     fees: {
       __typename: 'Fees',

@@ -59,11 +59,9 @@ describe('home', { tags: '@regression' }, () => {
   describe('default market found', () => {
     it('redirects to a default market with the landing dialog open', () => {
       cy.visit('/');
-      cy.wait('@Market');
+      cy.wait('@Markets');
 
-      cy.get('main', { timeout: 20000 }).then((el) => {
-        expect(el.attr('data-testid')?.startsWith('/market')).to.equal(true);
-      }); // Wait for page to be rendered to before checking url
+      cy.get('main[data-testid^="/markets/market-0"]');
 
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
@@ -125,7 +123,7 @@ describe('home', { tags: '@regression' }, () => {
         aliasGQLQuery(req, 'MarketsData', data);
       });
       cy.visit('/');
-      cy.wait('@Market');
+      cy.wait('@Markets');
       cy.getByTestId(selectMarketOverlay)
         .get('table')
         .invoke('outerWidth')
@@ -233,7 +231,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.window().then((window) => {
         window.localStorage.setItem('marketId', 'market-1');
         cy.visit('/');
-        cy.wait('@Market');
+        cy.wait('@Markets');
         cy.location('hash').should('equal', '#/markets/market-1');
         cy.getByTestId('dialog-content').should('not.exist');
       });
@@ -246,7 +244,7 @@ describe('home', { tags: '@regression' }, () => {
           aliasGQLQuery(req, 'Market', null);
         });
         cy.visit('/');
-        cy.wait('@Market');
+        cy.wait('@Markets');
         cy.location('hash').should('equal', '#/markets/market-not-existing');
         cy.getByTestId('dialog-content').should('not.exist');
       });
