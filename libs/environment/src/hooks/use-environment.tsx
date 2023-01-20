@@ -25,8 +25,6 @@ import type {
   NodeData,
   Configuration,
 } from '../types';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import type { createClient } from '@vegaprotocol/apollo-client';
 import type { NodeHealth } from './use-node-health';
 import { useNodeHealth } from './use-node-health';
 
@@ -59,11 +57,10 @@ export const EnvironmentProvider = ({
   definitions,
   children,
 }: EnvironmentProviderProps) => {
-  const [vegaUrl, setVegaUrl] = useLocalStorage('vega_url');
   const [networkError, setNetworkError] = useState<undefined | ErrorType>();
   const [isNodeSwitcherOpen, setNodeSwitcherIsOpen] = useState(false);
   const [environment, updateEnvironment] = useState<Environment>(
-    compileEnvironment(definitions, vegaUrl)
+    compileEnvironment(definitions)
   );
   const setNodeSwitcherOpen = useCallback((isOpen: boolean) => {
     if (!('Cypress' in window)) {
@@ -104,7 +101,6 @@ export const EnvironmentProvider = ({
           ...prevEnvironment,
           VEGA_URL: url,
         }));
-        setVegaUrl(url);
       }
     }
 
@@ -164,7 +160,6 @@ export const EnvironmentProvider = ({
         config={config}
         onConnect={(url) => {
           updateEnvironment((env) => ({ ...env, VEGA_URL: url }));
-          setVegaUrl(url);
         }}
       />
       {children}

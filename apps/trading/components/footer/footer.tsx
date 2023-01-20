@@ -1,6 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
-import { ButtonLink, Indicator, Intent, Link } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Footer = () => {
   const { VEGA_URL, setNodeSwitcherOpen } = useEnvironment();
@@ -8,27 +7,36 @@ export const Footer = () => {
     <footer className="px-4 py-1 text-xs border-t border-default">
       <div className="flex justify-between">
         <div className="flex gap-2">
-          <NodeHealth />
-          {VEGA_URL && <NodeUrl url={VEGA_URL} />}
-          <ButtonLink onClick={setNodeSwitcherOpen}>{t('Change')}</ButtonLink>
+          {VEGA_URL && (
+            <>
+              <NodeHealth openNodeSwitcher={setNodeSwitcherOpen} />
+              {' | '}
+              <NodeUrl url={VEGA_URL} openNodeSwitcher={setNodeSwitcherOpen} />
+            </>
+          )}
         </div>
       </div>
     </footer>
   );
 };
 
-const NodeUrl = ({ url }: { url: string }) => {
+interface NodeUrlProps {
+  url: string;
+  openNodeSwitcher: () => void;
+}
+
+const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
   // get base url from api url, api sub domain
   const urlObj = new URL(url);
   const nodeUrl = urlObj.origin.replace(/^[^.]+\./g, '');
-  return (
-    <Link href={'https://' + nodeUrl} target="_blank">
-      {nodeUrl}
-    </Link>
-  );
+  return <ButtonLink onClick={openNodeSwitcher}>{nodeUrl}</ButtonLink>;
 };
 
-const NodeHealth = () => {
+interface NodeHealthProps {
+  openNodeSwitcher: () => void;
+}
+
+const NodeHealth = ({ openNodeSwitcher }: NodeHealthProps) => {
   const { nodeHealth } = useEnvironment();
 
   let intent = Intent.Success;
@@ -38,5 +46,10 @@ const NodeHealth = () => {
     intent = Intent.Warning;
   }
 
-  return <Indicator variant={intent} />;
+  return (
+    <span>
+      <Indicator variant={intent} />
+      <ButtonLink onClick={openNodeSwitcher}>{nodeHealth}</ButtonLink>
+    </span>
+  );
 };
