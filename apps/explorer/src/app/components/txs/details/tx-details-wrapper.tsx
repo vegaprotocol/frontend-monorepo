@@ -20,6 +20,7 @@ import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
 import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
 import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
 import { TxDetailsDataSubmission } from './tx-data-submission';
+import { TxProposalVote } from './tx-proposal-vote';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -91,6 +92,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
+    case 'Vote on Proposal':
+      return TxProposalVote;
     case 'Batch Market Instructions':
       return TxDetailsBatch;
     case 'Chain Event':
