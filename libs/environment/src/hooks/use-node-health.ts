@@ -7,14 +7,14 @@ import { StatisticsDocument } from '../utils/__generated__/Node';
 import type { ClientCollection } from './use-nodes';
 
 // How often to query other nodes
-const INTERVAL_TIME = 15 * 1000;
+export const INTERVAL_TIME = 15 * 1000;
 // How many blocks behind the most advanced block that is
 // deemed acceptable for "Good" status
 const BLOCK_THRESHOLD = 3;
 // Number of nodes to query against
 const NODE_SUBSET_COUNT = 5;
 
-const Health = {
+export const Health = {
   Good: 'Good',
   Bad: 'Bad',
   Critical: 'Critical',
