@@ -237,7 +237,6 @@ describe('market states not accepting orders', { tags: '@smoke' }, function () {
         cy.mockSubscription();
         cy.setVegaWallet();
         cy.visit('/#/markets/market-0');
-        cy.wait('@Market');
       });
       it('must display that market is not accepting orders', function () {
         cy.getByTestId('place-order').click();

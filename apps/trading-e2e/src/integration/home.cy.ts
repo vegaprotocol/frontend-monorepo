@@ -61,7 +61,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
       cy.wait('@Markets');
 
-      cy.get('main[data-testid^="/markets/market-0"]');
+      cy.get('main[data-testid^="/markets/"]');
 
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
