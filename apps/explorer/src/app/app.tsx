@@ -2,12 +2,12 @@ import classnames from 'classnames';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
-import { NetworkInfo } from '@vegaprotocol/network-info';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 import type { InMemoryCacheConfig } from '@apollo/client';
+import { Footer } from './components/footer/footer';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,9 +44,7 @@ function App() {
           <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
           <Nav menuOpen={menuOpen} />
           <Main />
-          <footer className="grid grid-rows-2 grid-cols-[1fr_auto] text-sm md:text-md md:flex md:col-span-2 p-4 gap-4 border-t border-neutral-700 dark:border-neutral-300">
-            <NetworkInfo />
-          </footer>
+          <Footer />
         </div>
       </NetworkLoader>
     </TendermintWebsocketProvider>

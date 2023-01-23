@@ -58,13 +58,16 @@ export const testOrderCancellation = (
 
 const vegaWalletTransaction = (transaction: Transaction) => {
   cy.wait('@VegaWalletTransaction')
-    .its('request.body.params')
-    .should('deep.equal', {
-      token: JSON.parse(localStorage.getItem('vega_wallet_config') || '{}')
-        ?.token,
-      publicKey: Cypress.env('VEGA_PUBLIC_KEY'),
-      sendingMode: 'TYPE_SYNC',
-      transaction,
+    .its('request')
+    .then((req) => {
+      expect(req.body.params).to.deep.equal({
+        publicKey: Cypress.env('VEGA_PUBLIC_KEY'),
+        sendingMode: 'TYPE_SYNC',
+        transaction,
+      });
+      expect(req.headers.authorization).to.equal(
+        `VWT ${Cypress.env('VEGA_WALLET_API_TOKEN')}`
+      );
     });
 };
 

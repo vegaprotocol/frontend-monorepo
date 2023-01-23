@@ -1,4 +1,4 @@
-import { aliasWalletQuery } from '../mock-rest';
+import { aliasWalletConnectQuery } from '../mock-rest';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,12 +15,8 @@ declare global {
 }
 
 export const mockConnectWallet = () => {
-  const data = {
-    token: Cypress.env('VEGA_WALLET_API_TOKEN'),
-  };
-  console.log('mockConnectWallet', data);
   cy.mockWallet((req) => {
-    aliasWalletQuery(req, 'client.connect_wallet', data);
+    aliasWalletConnectQuery(req, Cypress.env('VEGA_WALLET_API_TOKEN'));
   });
 };
 
@@ -50,7 +46,7 @@ export function addSetVegaWallet() {
       win.localStorage.setItem(
         'vega_wallet_config',
         JSON.stringify({
-          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
+          token: `VWT ${Cypress.env('VEGA_WALLET_API_TOKEN')}`,
           connector: 'jsonRpc',
           url: 'http://localhost:1789',
         })

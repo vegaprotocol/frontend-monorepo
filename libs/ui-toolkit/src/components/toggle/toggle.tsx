@@ -51,7 +51,8 @@ export const Toggle = ({
       'px-10 py-2': size === 'lg',
       'px-8 py-2': size === 'md',
       'px-6 py-2': size === 'sm',
-    }
+    },
+    'peer-focus:outline peer-focus:outline-2 peer-focus:outline-blue-700 dark:peer-focus:outline-blue-300 peer-focus:outline-offset-2'
   );
 
   return (

@@ -8,9 +8,13 @@ import { t } from '@vegaprotocol/react-helpers';
 
 interface PositionsManagerProps {
   partyId: string;
+  onMarketClick?: (marketId: string) => void;
 }
 
-export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
+export const PositionsManager = ({
+  partyId,
+  onMarketClick,
+}: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
   const create = useVegaTransactionStore((store) => store.create);
@@ -21,6 +25,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
         rowModelType="infinite"
         ref={gridRef}
         datasource={{ getRows }}
+        onMarketClick={onMarketClick}
         onClose={({ marketId, openVolume }) =>
           create({
             batchMarketInstructions: {

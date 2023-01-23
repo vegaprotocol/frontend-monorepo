@@ -14,15 +14,25 @@ import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 import { AccountHistoryContainer } from './account-history-container';
+import { useNavigate } from 'react-router-dom';
+import { Links, Routes } from '../../pages/client-router';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
+
+  const onMarketClick = (marketId: string) => {
+    navigate(Links[Routes.MARKET](marketId), {
+      replace: true,
+    });
+  };
 
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
@@ -38,17 +48,17 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <PositionsContainer />
+                  <PositionsContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <OrderListContainer />
+                  <OrderListContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <FillsContainer />
+                  <FillsContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>

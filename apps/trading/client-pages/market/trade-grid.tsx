@@ -26,6 +26,8 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { TradeMarketHeader } from './trade-market-header';
 import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
+import { useNavigate } from 'react-router-dom';
+import { Links, Routes } from '../../pages/client-router';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -72,6 +74,12 @@ const MainGrid = ({
   marketId: string;
   onSelect?: (marketId: string) => void;
 }) => {
+  const navigate = useNavigate();
+  const onMarketClick = (marketId: string) => {
+    navigate(Links[Routes.MARKET](marketId), {
+      replace: true,
+    });
+  };
   return (
     <ResizableGrid vertical>
       <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
@@ -143,17 +151,23 @@ const MainGrid = ({
           <Tabs>
             <Tab id="positions" name={t('Positions')}>
               <VegaWalletContainer>
-                <TradingViews.Positions />
+                <TradingViews.Positions onMarketClick={onMarketClick} />
               </VegaWalletContainer>
             </Tab>
             <Tab id="orders" name={t('Orders')}>
               <VegaWalletContainer>
-                <TradingViews.Orders marketId={marketId} />
+                <TradingViews.Orders
+                  marketId={marketId}
+                  onMarketClick={onMarketClick}
+                />
               </VegaWalletContainer>
             </Tab>
             <Tab id="fills" name={t('Fills')}>
               <VegaWalletContainer>
-                <TradingViews.Fills marketId={marketId} />
+                <TradingViews.Fills
+                  marketId={marketId}
+                  onMarketClick={onMarketClick}
+                />
               </VegaWalletContainer>
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
@@ -195,15 +209,16 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 interface TradePanelsProps {
   market: SingleMarketFieldsFragment | null;
   onSelect: (marketId: string) => void;
+  onMarketClick?: (marketId: string) => void;
 }
 
 export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
-
   const renderView = () => {
     const Component = memo<{
       marketId: string;
       onSelect: (marketId: string) => void;
+      onMarketClick?: (marketId: string) => void;
     }>(TradingViews[view]);
 
     if (!Component) {
