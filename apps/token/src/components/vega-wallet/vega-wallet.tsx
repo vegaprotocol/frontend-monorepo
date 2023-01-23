@@ -149,8 +149,8 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
     [amountAdded, amountRemoved]
   );
   const pendingStakeAmount = React.useMemo(
-    () => currentStakeAvailable.plus(totalPending),
-    [currentStakeAvailable, totalPending]
+    () => currentStakeAvailable.plus(amountAdded).minus(amountRemoved),
+    [amountAdded, amountRemoved, currentStakeAvailable]
   );
 
   const unstaked = React.useMemo(() => {
@@ -187,22 +187,26 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         symbol="VEGA"
         balance={currentStakeAvailable}
       />
-      <WalletCardAsset
-        image={vegaWhite}
-        decimals={decimals}
-        name="VEGA"
-        subheading={t('Pending association')}
-        symbol="VEGA"
-        balance={totalPending}
-      />
-      <WalletCardAsset
-        image={vegaWhite}
-        decimals={decimals}
-        name="VEGA"
-        subheading={t('Total associated after pending')}
-        symbol="VEGA"
-        balance={pendingStakeAmount}
-      />
+      {totalPending.eq(0) ? null : (
+        <>
+          <WalletCardAsset
+            image={vegaWhite}
+            decimals={decimals}
+            name="VEGA"
+            subheading={t('Pending association')}
+            symbol="VEGA"
+            balance={totalPending}
+          />
+          <WalletCardAsset
+            image={vegaWhite}
+            decimals={decimals}
+            name="VEGA"
+            subheading={t('Total associated after pending')}
+            symbol="VEGA"
+            balance={pendingStakeAmount}
+          />
+        </>
+      )}
       <div data-testid="vega-wallet-balance-unstaked">
         <WalletCardRow label={t('unstaked')} value={unstaked} />
       </div>
