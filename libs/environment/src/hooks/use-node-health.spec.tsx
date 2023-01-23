@@ -1,6 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
 import { useNodeHealth, Health, INTERVAL_TIME } from './use-node-health';
-import type { StatisticsQuery } from '../utils/__generated__/Node';
 import type { createClient } from '@vegaprotocol/apollo-client';
 import type { ClientCollection } from './use-nodes';
 
@@ -37,7 +36,6 @@ function createErroringClient() {
   } as unknown as ReturnType<typeof createClient>;
 }
 
-const INTERVAL = 1000;
 const CURRENT_URL = 'https://n01.test.com';
 
 describe('useNodeHealth', () => {
