@@ -10,10 +10,7 @@ import { useGetAssociationBreakdown } from '../../hooks/use-get-association-brea
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
 import { useBalances } from '../../lib/balances/balances-store';
 import type { ReactElement } from 'react';
-import {
-  useListenForStakingEvents,
-  usePendingBalancesStore,
-} from '../../hooks/use-pending-balances-manager';
+import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-pending-balances-manager';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface BalanceManagerProps {
@@ -24,30 +21,26 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const contracts = useContracts();
   const { pubKey } = useVegaWallet();
   const { account } = useWeb3React();
-  const pendingBalances = usePendingBalancesStore(
-    (state) => state.pendingBalances
-  );
-  console.log(pendingBalances);
   const {
     appState: { decimals },
   } = useAppState();
   const { updateBalances: updateStoreBalances } = useBalances();
   const { config } = useEthereumConfig();
 
-  const numberOfConfirmations = useRef(1);
+  const numberOfConfirmations = useRef(500);
 
-  // process the transactions to know how much pending money we have
   // breaks if no provider?
+
   // fix as string
   // contracts undefined
 
-  useListenForStakingEvents(
+  useListenForAssociationEvents(
     contracts?.staking.contract,
     pubKey as string,
     numberOfConfirmations.current
   );
 
-  useListenForStakingEvents(
+  useListenForAssociationEvents(
     contracts?.vesting.contract,
     pubKey as string,
     numberOfConfirmations.current

@@ -25,6 +25,7 @@ import { usePollForDelegations } from './hooks';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { toBigNum } from '@vegaprotocol/react-helpers';
+import { usePendingBalancesStore } from '../../hooks/use-pending-balances-manager';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
@@ -119,6 +120,11 @@ interface VegaWalletConnectedProps {
 }
 
 const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
+  const pendingBalances = usePendingBalancesStore(
+    (state) => state.pendingBalances
+  );
+  console.log(pendingBalances);
+
   const { t } = useTranslation();
   const {
     appDispatch,
@@ -126,6 +132,28 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
   } = useAppState();
   const { delegations, currentStakeAvailable, delegatedNodes, accounts } =
     usePollForDelegations();
+  const amountRemoved = BigNumber.sum.apply(null, [
+    new BigNumber(0),
+    ...pendingBalances
+      .filter(({ event }) => event === 'Stake_Removed')
+      .map(({ args }) => toBigNum(args![1].toString(), decimals)),
+  ]);
+
+  const amountAdded = BigNumber.sum.apply(null, [
+    new BigNumber(0),
+    ...pendingBalances
+      .filter(({ event }) => event === 'Stake_Deposited')
+      .map(({ args }) => toBigNum(args![1].toString(), decimals)),
+  ]);
+  const totalPending = React.useMemo(
+    () => amountRemoved.plus(amountAdded),
+    [amountAdded, amountRemoved]
+  );
+  const pendingStakeAmount = React.useMemo(
+    () => currentStakeAvailable.plus(totalPending),
+    [currentStakeAvailable, totalPending]
+  );
+  console.log(pendingStakeAmount.toString());
 
   const unstaked = React.useMemo(() => {
     const totalDelegated = delegations.reduce<BigNumber>(
@@ -160,6 +188,22 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         subheading={t('Associated')}
         symbol="VEGA"
         balance={currentStakeAvailable}
+      />
+      <WalletCardAsset
+        image={vegaWhite}
+        decimals={decimals}
+        name="VEGA"
+        subheading={t('Pending association')}
+        symbol="VEGA"
+        balance={totalPending}
+      />
+      <WalletCardAsset
+        image={vegaWhite}
+        decimals={decimals}
+        name="VEGA"
+        subheading={t('Total associated after pending')}
+        symbol="VEGA"
+        balance={pendingStakeAmount}
       />
       <div data-testid="vega-wallet-balance-unstaked">
         <WalletCardRow label={t('unstaked')} value={unstaked} />
