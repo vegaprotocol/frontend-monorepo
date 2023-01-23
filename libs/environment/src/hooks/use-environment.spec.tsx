@@ -8,6 +8,7 @@ import { Networks, ErrorType } from '../types';
 import type { MockRequestConfig } from './mocks/apollo-client';
 import createMockClient from './mocks/apollo-client';
 import { getErrorByType } from '../utils/validate-node';
+import { Health } from './use-node-health';
 
 jest.mock('@vegaprotocol/apollo-client');
 
@@ -42,7 +43,9 @@ const mockEnvironmentState = {
   GIT_ORIGIN_URL: 'https://github.com/test/repo',
   GIT_COMMIT_HASH: 'abcde01234',
   GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
+  MAINTENANCE_PAGE: false,
   setNodeSwitcherOpen: noop,
+  nodeHealth: Health.Good,
   networkError: undefined,
 };
 
@@ -118,6 +121,7 @@ beforeEach(() => {
   process.env['NX_GIT_COMMIT_HASH'] = mockEnvironmentState.GIT_COMMIT_HASH;
   process.env['NX_GITHUB_FEEDBACK_URL'] =
     mockEnvironmentState.GITHUB_FEEDBACK_URL;
+  process.env['NX_MAINTENANCE_PAGE'] = 'false';
 });
 
 afterAll(() => {

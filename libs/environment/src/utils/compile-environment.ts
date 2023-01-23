@@ -83,9 +83,7 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
     case 'ETH_WALLET_MNEMONIC':
       return process.env['NX_ETH_WALLET_MNEMONIC'];
     case 'MAINTENANCE_PAGE':
-      return (
-        process.env['MAINTENANCE_PAGE'] || process.env['NX_MAINTENANCE_PAGE']
-      );
+      return process.env['NX_MAINTENANCE_PAGE'];
   }
 };
 
@@ -105,13 +103,12 @@ const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
 };
 
 export const compileEnvironment = (
-  definitions?: Partial<RawEnvironment>,
-  vegaUrl?: string | null
+  definitions?: Partial<RawEnvironment>
 ): Environment => {
   const environment = ENV_KEYS.reduce((acc, key) => {
     const value = getValue(key, definitions);
 
-    if (value) {
+    if (value !== undefined && value !== null) {
       return {
         ...acc,
         [key]: value,
@@ -139,6 +136,5 @@ export const compileEnvironment = (
       ...networkOverride,
       ...environment.VEGA_NETWORKS,
     },
-    VEGA_URL: vegaUrl || undefined,
   };
 };
