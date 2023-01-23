@@ -130,16 +130,17 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
 
 describe('Navbar', { tags: '@smoke' }, () => {
   beforeEach(() => {
+    cy.clearLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
-    cy.wait('@Markets');
+    cy.get('main[data-testid^="/markets/"]');
     cy.getByTestId('dialog-close').click();
   });
 
   it('should be properly rendered', () => {
     const links = ['Markets', 'Trading', 'Portfolio'];
-    const hashes = ['#/markets/all', '#/markets/market-0', '#/portfolio'];
+    const hashes = ['#/markets/all', '#/markets/market-1', '#/portfolio'];
     let i = 0;
     cy.getByTestId('navbar').within(() => {
       cy.get('[data-testid="navbar-links"] a[data-testid]', { log: true })
@@ -176,7 +177,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
     cy.getByTestId('button-menu-drawer').click();
     cy.getByTestId('menu-drawer').within((el) => {
       cy.wrap(el).getByTestId('Trading').click();
-      cy.location('hash').should('equal', '#/markets/market-0');
+      cy.location('hash').should('equal', '#/markets/market-1');
     });
     cy.getByTestId('button-menu-drawer').click();
     cy.getByTestId('menu-drawer').within((el) => {
