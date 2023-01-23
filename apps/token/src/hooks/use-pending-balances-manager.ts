@@ -34,7 +34,7 @@ export const usePendingBalancesStore = create<EthereumStore>((set, get) => ({
 
 export const useListenForStakingEvents = (
   contract: Contract,
-  vegaPublicKey: string,
+  vegaPublicKey: string | null,
   numberOfConfirmations: number
 ) => {
   const { addPendingTxs, removePendingTx } = usePendingBalancesStore(
@@ -44,10 +44,14 @@ export const useListenForStakingEvents = (
     })
   );
   const addFilter = useRef(
-    contract.filters.Stake_Deposited(null, null, `0x${vegaPublicKey}`)
+    vegaPublicKey
+      ? contract.filters.Stake_Deposited(null, null, `0x${vegaPublicKey}`)
+      : null
   );
   const removeFilter = useRef(
-    contract.filters.Stake_Removed(null, null, `0x${vegaPublicKey}`)
+    vegaPublicKey
+      ? contract.filters.Stake_Removed(null, null, `0x${vegaPublicKey}`)
+      : null
   );
 
   useListenForEthPendingBalances(
@@ -70,15 +74,14 @@ export const useListenForStakingEvents = (
 export const useListenForEthPendingBalances = (
   numberOfConfirmations: number,
   contract: Contract,
-  filter: EventFilter,
+  filter: EventFilter | null,
   addPendingTxs: (event: Event[]) => void,
   removePendingTx: (event: Event) => void
 ) => {
   const { provider } = useWeb3React();
 
   useEffect(() => {
-    console.log('add');
-    if (!contract) {
+    if (!contract || !filter) {
       return;
     }
 
@@ -99,6 +102,9 @@ export const useListenForEthPendingBalances = (
 
   const getExistingTransactions = useCallback(async () => {
     const blockNumber = (await provider?.getBlockNumber()) || 0;
+    if (!filter) {
+      return [];
+    }
     return await contract.queryFilter(
       filter,
       blockNumber - numberOfConfirmations
@@ -121,7 +127,7 @@ export const useListenForEthPendingBalances = (
   useEffect(() => {
     let cancelled = false;
     getExistingTransactions().then((events) => {
-      if (!cancelled) {
+      if (!cancelled || events.length > 0) {
         addPendingTxs([...events]);
         processWaitForExistingTransactions([...events], numberOfConfirmations);
       }

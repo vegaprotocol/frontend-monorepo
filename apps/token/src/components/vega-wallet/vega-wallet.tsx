@@ -123,7 +123,6 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
   const pendingBalances = usePendingBalancesStore(
     (state) => state.pendingBalances
   );
-  console.log(pendingBalances);
 
   const { t } = useTranslation();
   const {
@@ -153,7 +152,6 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
     () => currentStakeAvailable.plus(totalPending),
     [currentStakeAvailable, totalPending]
   );
-  console.log(pendingStakeAmount.toString());
 
   const unstaked = React.useMemo(() => {
     const totalDelegated = delegations.reduce<BigNumber>(

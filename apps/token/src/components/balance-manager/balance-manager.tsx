@@ -36,13 +36,13 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
 
   useListenForAssociationEvents(
     contracts?.staking.contract,
-    pubKey as string,
+    pubKey,
     numberOfConfirmations.current
   );
 
   useListenForAssociationEvents(
     contracts?.vesting.contract,
-    pubKey as string,
+    pubKey,
     numberOfConfirmations.current
   );
 
