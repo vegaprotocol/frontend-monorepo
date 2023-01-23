@@ -2,15 +2,17 @@ import {
   liquidityProvisionsDataProvider,
   LiquidityTable,
   lpAggregatedDataProvider,
-  marketLiquidityDataProvider,
+  useCheckLiquidityStatus,
 } from '@vegaprotocol/liquidity';
 import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
+  formatNumberPercentage,
   NetworkParams,
   t,
   useDataProvider,
-  useNetworkParam,
+  useNetworkParams,
+  updateGridData,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -18,21 +20,37 @@ import {
   Tab,
   Tabs,
   Link as UiToolkitLink,
+  Indicator,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { Header, HeaderStat } from '../../components/header';
+import { Header, HeaderStat, HeaderTitle } from '../../components/header';
 
 import type { AgGridReact } from 'ag-grid-react';
+import type { IGetRowsParams } from 'ag-grid-community';
+
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
+
+import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
 
 export const Liquidity = () => {
   const params = useParams();
   const marketId = params.marketId;
   return <LiquidityViewContainer marketId={marketId} />;
+};
+
+const useReloadLiquidityData = (marketId: string | undefined) => {
+  const { reload } = useDataProvider({
+    dataProvider: liquidityProvisionsDataProvider,
+    variables: useMemo(() => ({ marketId }), [marketId]),
+  });
+  useEffect(() => {
+    const interval = setInterval(reload, 10000);
+    return () => clearInterval(interval);
+  }, [reload]);
 };
 
 export const LiquidityContainer = ({
@@ -41,83 +59,66 @@ export const LiquidityContainer = ({
   marketId: string | undefined;
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data: marketProvision } = useDataProvider({
-    dataProvider: marketLiquidityDataProvider,
-    skipUpdates: true,
-    variables: useMemo(() => ({ marketId }), [marketId]),
-  });
+  const market = useMarket(marketId);
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
-  const { reload } = useDataProvider({
-    dataProvider: liquidityProvisionsDataProvider,
-    variables: useMemo(() => ({ marketId }), [marketId]),
-  });
+  // To be removed when liquidityProvision subscriptions are working
+  useReloadLiquidityData(marketId);
 
   const update = useCallback(
     ({ data }: { data: LiquidityProvisionData[] | null }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
-      if (dataRef.current?.length) {
-        dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
-        return true;
-      }
-      return false;
+      return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );
 
-  const {
-    data: liquidityProviders,
-    loading,
-    error,
-  } = useDataProvider({
+  const { data, loading, error } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
 
-  // To be removed when liquidityProvision subscriptions are working
-  useEffect(() => {
-    const interval = setInterval(reload, 10000);
-    return () => clearInterval(interval);
-  }, [reload]);
-
   const assetDecimalPlaces =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.decimals || 0;
+    market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.symbol;
+    market?.tradableInstrument.instrument.product.settlementAsset.symbol;
 
-  const { param: stakeToCcySiskas } = useNetworkParam(
-    NetworkParams.market_liquidity_stakeToCcySiskas
-  );
-  const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
+  const { params } = useNetworkParams([
+    NetworkParams.market_liquidity_stakeToCcyVolume,
+  ]);
+  const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
 
-  const filteredEdges = useMemo(
-    () =>
-      liquidityProviders?.filter((e) =>
-        [
-          Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
-          Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
-          Schema.LiquidityProvisionStatus.STATUS_PENDING,
-        ].includes(e.status)
-      ),
-    [liquidityProviders]
+  const getRows = useCallback(
+    async ({ successCallback, startRow, endRow }: IGetRowsParams) => {
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow)
+        : [];
+      const lastRow = dataRef.current ? dataRef.current.length : 0;
+      successCallback(rowsThisBlock, lastRow);
+    },
+    []
   );
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={filteredEdges}>
+    <div className="h-full relative">
       <LiquidityTable
         ref={gridRef}
-        data={filteredEdges}
+        datasource={{ getRows }}
+        rowModelType="infinite"
         symbol={symbol}
         assetDecimalPlaces={assetDecimalPlaces}
-        stakeToCcySiskas={stakeToCcySiska}
+        stakeToCcyVolume={stakeToCcyVolume}
       />
-    </AsyncRenderer>
+      <div className="pointer-events-none absolute inset-0">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={data}
+          noDataMessage={t('No liquidity provisions')}
+          noDataCondition={(data) => !data?.length}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -128,17 +129,13 @@ export const LiquidityViewContainer = ({
 }) => {
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data: marketProvision } = useDataProvider({
-    dataProvider: marketLiquidityDataProvider,
-    skipUpdates: true,
-    variables: useMemo(() => ({ marketId }), [marketId]),
-  });
+  const market = useMarket(marketId);
+  const marketData = useStaticMarketData(marketId);
+
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
-  const { reload } = useDataProvider({
-    dataProvider: liquidityProvisionsDataProvider,
-    variables: useMemo(() => ({ marketId }), [marketId]),
-  });
+  // To be removed when liquidityProvision subscriptions are working
+  useReloadLiquidityData(marketId);
 
   const update = useCallback(
     ({ data }: { data: LiquidityProvisionData[] | null }) => {
@@ -165,26 +162,20 @@ export const LiquidityViewContainer = ({
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
 
-  // To be removed when liquidityProvision subscriptions are working
-  useEffect(() => {
-    const interval = setInterval(reload, 10000);
-    return () => clearInterval(interval);
-  }, [reload]);
-
-  const targetStake = marketProvision?.market?.data?.targetStake;
-  const suppliedStake = marketProvision?.market?.data?.suppliedStake;
+  const targetStake = marketData?.targetStake;
+  const suppliedStake = marketData?.suppliedStake;
   const assetDecimalPlaces =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.decimals || 0;
+    market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
-    marketProvision?.market?.tradableInstrument.instrument.product
-      .settlementAsset.symbol;
+    market?.tradableInstrument.instrument.product.settlementAsset.symbol;
 
-  const { param: stakeToCcySiskas } = useNetworkParam(
-    NetworkParams.market_liquidity_stakeToCcySiskas
-  );
-  const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
-
+  const { params } = useNetworkParams([
+    NetworkParams.market_liquidity_stakeToCcyVolume,
+    NetworkParams.market_liquidity_targetstake_triggering_ratio,
+  ]);
+  const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
+  const triggeringRatio =
+    params.market_liquidity_targetstake_triggering_ratio || '1';
   const myLpEdges = useMemo(
     () => liquidityProviders?.filter((e) => e.party.id === pubKey),
     [liquidityProviders, pubKey]
@@ -221,20 +212,30 @@ export const LiquidityViewContainer = ({
     return LiquidityTabs.Active;
   };
 
+  const { percentage, status } = useCheckLiquidityStatus({
+    suppliedStake: suppliedStake || 0,
+    targetStake: targetStake || 0,
+    triggeringRatio,
+  });
+
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            marketProvision?.market?.tradableInstrument.instrument.name &&
+            market?.tradableInstrument.instrument.name &&
+            market?.tradableInstrument.instrument.code &&
             marketId && (
-              <Link to={Links[Routes.MARKET](marketId)}>
-                <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
-                  {`${
-                    marketProvision?.market?.tradableInstrument.instrument.name
-                  } ${t('liquidity provision')}`}
-                </UiToolkitLink>
-              </Link>
+              <HeaderTitle
+                primaryContent={`${
+                  market.tradableInstrument.instrument.code
+                } ${t('liquidity provision')}`}
+                secondaryContent={
+                  <Link to={Links[Routes.MARKET](marketId)}>
+                    <UiToolkitLink>{t('Go to trading')}</UiToolkitLink>
+                  </Link>
+                }
+              />
             )
           }
         >
@@ -264,6 +265,14 @@ export const LiquidityViewContainer = ({
                 : '-'}
             </div>
           </HeaderStat>
+          <HeaderStat
+            heading={t('Liquidity supplied')}
+            testId="liquidity-supplied"
+          >
+            <Indicator variant={status} />
+
+            {formatNumberPercentage(percentage, 2)}
+          </HeaderStat>
           <HeaderStat heading={t('Market ID')}>
             <div className="break-word">{marketId}</div>
           </HeaderStat>
@@ -277,9 +286,9 @@ export const LiquidityViewContainer = ({
             {myLpEdges && (
               <LiquidityTable
                 ref={gridRef}
-                data={myLpEdges}
+                rowData={myLpEdges}
                 symbol={symbol}
-                stakeToCcySiskas={stakeToCcySiska}
+                stakeToCcyVolume={stakeToCcyVolume}
                 assetDecimalPlaces={assetDecimalPlaces}
               />
             )}
@@ -288,10 +297,10 @@ export const LiquidityViewContainer = ({
             {activeEdges && (
               <LiquidityTable
                 ref={gridRef}
-                data={activeEdges}
+                rowData={activeEdges}
                 symbol={symbol}
                 assetDecimalPlaces={assetDecimalPlaces}
-                stakeToCcySiskas={stakeToCcySiska}
+                stakeToCcyVolume={stakeToCcyVolume}
               />
             )}
           </Tab>
@@ -300,10 +309,10 @@ export const LiquidityViewContainer = ({
               {inactiveEdges && (
                 <LiquidityTable
                   ref={gridRef}
-                  data={inactiveEdges}
+                  rowData={inactiveEdges}
                   symbol={symbol}
                   assetDecimalPlaces={assetDecimalPlaces}
-                  stakeToCcySiskas={stakeToCcySiska}
+                  stakeToCcyVolume={stakeToCcyVolume}
                 />
               )}
             </Tab>

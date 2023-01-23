@@ -88,7 +88,7 @@ const Web3Container = ({
             <AppLoader>
               <BalanceManager>
                 <>
-                  <div className="app w-full max-w-[1500px] mx-auto grid grid-rows-[min-content_1fr_min-content] min-h-full border-neutral-700 lg:border-l lg:border-r lg:text-body-large">
+                  <div className="app w-full max-w-[1500px] mx-auto grid grid-rows-[min-content_min-content_1fr_min-content] min-h-full border-neutral-700 lg:border-l lg:border-r lg:text-body-large">
                     <TemplateSidebar sidebar={sideBar}>
                       <AppRouter />
                     </TemplateSidebar>

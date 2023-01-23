@@ -4,6 +4,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import {
   makeInfiniteScrollGetRows,
   useDataProvider,
+  updateGridData,
 } from '@vegaprotocol/react-helpers';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import type {
@@ -41,64 +42,6 @@ interface Props {
   gridRef: RefObject<AgGridReact>;
   scrolledToTop: RefObject<boolean>;
 }
-
-const filterOrders = (
-  orders: (OrderEdge | null)[] | null,
-  variables: OrdersQueryVariables & OrdersUpdateSubscriptionVariables
-) => {
-  if (!orders) {
-    return orders;
-  }
-  return orders.filter((order) => {
-    if (variables.marketId && order?.node.market?.id !== variables.marketId) {
-      return false;
-    }
-    if (
-      variables?.filter?.status &&
-      !(
-        order?.node?.status &&
-        variables.filter.status.includes(order.node.status)
-      )
-    ) {
-      return false;
-    }
-    if (
-      variables?.filter?.types &&
-      !(order?.node?.type && variables.filter.types.includes(order.node.type))
-    ) {
-      return false;
-    }
-    if (
-      variables?.filter?.timeInForce &&
-      !(
-        order?.node?.timeInForce &&
-        variables.filter.timeInForce.includes(order.node.timeInForce)
-      )
-    ) {
-      return false;
-    }
-    if (
-      variables?.dateRange?.start &&
-      !(
-        (order?.node?.updatedAt || order?.node?.createdAt) &&
-        variables.dateRange.start <
-          (order.node.updatedAt || order.node.createdAt)
-      )
-    ) {
-      return false;
-    }
-    if (
-      variables?.dateRange?.end &&
-      !(
-        (order?.node?.updatedAt || order?.node?.createdAt) &&
-        variables.dateRange.end > (order.node.updatedAt || order.node.createdAt)
-      )
-    ) {
-      return false;
-    }
-    return true;
-  });
-};
 
 export const useOrderListData = ({
   partyId,
@@ -143,9 +86,11 @@ export const useOrderListData = ({
     ({
       data,
       delta,
+      totalCount,
     }: {
       data: (OrderEdge | null)[] | null;
       delta?: Order[];
+      totalCount?: number;
     }) => {
       if (dataRef.current?.length && delta?.length && !scrolledToTop.current) {
         const createdAt = dataRef.current?.[0]?.node.createdAt;
@@ -155,15 +100,9 @@ export const useOrderListData = ({
           ).length;
         }
       }
-      dataRef.current = filterOrders(data, variables);
-      const avoidRerender = !!(
-        (dataRef.current?.length && data?.length) ||
-        (!dataRef.current?.length && !data?.length)
-      );
-      gridRef.current?.api?.refreshInfiniteCache();
-      return avoidRerender;
+      return updateGridData(dataRef, data, gridRef);
     },
-    [gridRef, scrolledToTop, variables]
+    [gridRef, scrolledToTop]
   );
 
   const insert = useCallback(
@@ -174,11 +113,10 @@ export const useOrderListData = ({
       data: (OrderEdge | null)[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current = filterOrders(data, variables);
       totalCountRef.current = totalCount;
-      return true;
+      return updateGridData(dataRef, data, gridRef);
     },
-    [variables]
+    [gridRef]
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({

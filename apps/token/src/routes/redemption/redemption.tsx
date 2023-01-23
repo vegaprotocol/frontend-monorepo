@@ -81,7 +81,7 @@ const RedemptionRouter = () => {
         <Callout>
           <p>{t('You have no VEGA tokens currently vesting.')}</p>
         </Callout>
-        <Link to={RoutesConfig.TRANCHES}>{t('viewAllTranches')}</Link>
+        <Link to={RoutesConfig.SUPPLY}>{t('viewAllTranches')}</Link>
       </>
     );
   }

@@ -2,17 +2,19 @@ import * as Schema from '@vegaprotocol/types';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
-    cy.mockTradingPage(
-      Schema.MarketState.STATE_ACTIVE,
-      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
-    );
-    cy.mockSubscription();
-    cy.visit('/');
-    cy.wait('@Market');
-    cy.wait('@Markets');
-    cy.wait('@MarketsData');
-    cy.wait('@MarketsCandles');
+    cy.clearLocalStorage().then(() => {
+      cy.mockTradingPage(
+        Schema.MarketState.STATE_ACTIVE,
+        Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockSubscription();
+      cy.visit('/');
+      cy.wait('@Market');
+      cy.wait('@Markets');
+      cy.wait('@MarketsData');
+      cy.wait('@MarketsCandles');
+    });
   });
 
   it('renders markets correctly', () => {
@@ -78,7 +80,7 @@ describe('markets table', { tags: '@smoke' }, () => {
     cy.getByTestId('view-market-list-link')
       .should('have.attr', 'href', '#/markets/all')
       .click();
-    cy.get('[data-testid="Active markets"]').should(
+    cy.get('[data-testid="All markets"]').should(
       'have.attr',
       'data-state',
       'active'
@@ -106,7 +108,7 @@ describe('markets table', { tags: '@smoke' }, () => {
       .and(
         'have.attr',
         'href',
-        'https://stagnet3.token.vega.xyz/proposals/propose/new-market'
+        `${Cypress.env('VEGA_TOKEN_URL')}/proposals/propose/new-market`
       );
   });
 });

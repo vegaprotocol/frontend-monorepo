@@ -20,34 +20,20 @@ import {
   DateRangeFilter,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
-import { Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
+import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
+  onMarketClick?: (id: string) => void;
   style?: CSSProperties;
 }
-
-export interface MarketNameCellProps {
-  valueFormatted?: [string, string];
-}
-
-export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
-  if (valueFormatted && valueFormatted[1]) {
-    return (
-      <div className="leading-tight">
-        <div>{valueFormatted[0]}</div>
-        <div>{valueFormatted[1]}</div>
-      </div>
-    );
-  }
-  return (valueFormatted && valueFormatted[0]) || undefined;
-};
 
 export interface AmountCellProps {
   valueFormatted?: Pick<
@@ -80,32 +66,13 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 
 AmountCell.displayName = 'AmountCell';
 
-const ButtonCell = ({
-  onClick,
-  data,
-}: {
-  onClick: (position: Position) => void;
-  data: Position;
-}) => {
-  return (
-    <Button
-      data-testid="close-position"
-      onClick={() => onClick(data)}
-      size="xs"
-    >
-      {t('Close')}
-    </Button>
-  );
-};
-
 export const PositionsTable = forwardRef<AgGridReact, Props>(
-  ({ onClose, ...props }, ref) => {
+  ({ onClose, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No positions')}
         getRowId={getRowId}
-        rowHeight={34}
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
@@ -122,20 +89,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         <AgGridColumn
           headerName={t('Market')}
           field="marketName"
-          cellRenderer={MarketNameCell}
-          valueFormatter={({
+          cellRenderer={({
             value,
-          }: VegaValueFormatterParams<Position, 'marketName'>) => {
-            if (!value) {
-              return undefined;
-            }
-            // split market name into two parts, 'Part1 (Part2)' or 'Part1 - Part2'
-            const matches = value.match(/^(.*)(\((.*)\)| - (.*))\s*$/);
-            if (matches && matches[1] && matches[3]) {
-              return [matches[1].trim(), matches[3].trim()];
-            }
-            return [value];
-          }}
+            data,
+          }: VegaICellRendererParams<Position, 'marketName'>) =>
+            onMarketClick ? (
+              <Link
+                onClick={() => data?.marketId && onMarketClick(data?.marketId)}
+              >
+                {value}
+              </Link>
+            ) : (
+              value
+            )
+          }
         />
         <AgGridColumn
           headerName={t('Notional')}
@@ -413,12 +380,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         {onClose ? (
           <AgGridColumn
-            cellRendererSelector={(): CellRendererSelectorResult => {
-              return {
-                component: ButtonCell,
-              };
-            }}
-            cellRendererParams={{ onClick: onClose }}
+            type="rightAligned"
+            cellRenderer={({ data }: VegaICellRendererParams<Position>) => (
+              <ButtonLink
+                data-testid="close-position"
+                onClick={() => data && onClose(data)}
+              >
+                {t('Close')}
+              </ButtonLink>
+            )}
           />
         ) : null}
       </AgGrid>

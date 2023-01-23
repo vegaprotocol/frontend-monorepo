@@ -1,16 +1,11 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import {
-  assetsQuery,
-  ledgerEntriesQuery,
-  marketsQuery,
-} from '@vegaprotocol/mock';
+import { ledgerEntriesQuery } from '@vegaprotocol/mock';
 
 describe('Portfolio page', { tags: '@smoke' }, () => {
   beforeEach(() => {
+    cy.mockTradingPage();
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'LedgerEntries', ledgerEntriesQuery());
-      aliasGQLQuery(req, 'Assets', assetsQuery());
-      aliasGQLQuery(req, 'Markets', marketsQuery());
     });
     cy.mockSubscription();
     cy.setVegaWallet();
@@ -21,11 +16,17 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       cy.getByTestId('"Ledger entries"').click();
       const headers = [
         'Sender',
+        'Account type',
+        'Market',
         'Receiver',
-        'Transfer Type',
+        'Account type',
+        'Market',
+        'Transfer type',
         'Quantity',
         'Asset',
-        'Vega Time',
+        'Sender account balance',
+        'Receiver account balance',
+        'Vega time',
       ];
       cy.getByTestId('tab-ledger-entries').within(($headers) => {
         cy.wrap($headers)
@@ -37,6 +38,22 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       cy.get(
         '[data-testid="tab-ledger-entries"] .ag-center-cols-container .ag-row'
       ).should('have.length', ledgerEntriesQuery().ledgerEntries.edges.length);
+    });
+
+    it('account filters should be callable', () => {
+      cy.visit('/#/portfolio');
+      cy.getByTestId('"Ledger entries"').click();
+      cy.get('[role="columnheader"][col-id="fromAccountType"]').realHover();
+      cy.get(
+        '[role="columnheader"][col-id="fromAccountType"] .ag-header-cell-menu-button'
+      ).click();
+      cy.get('fieldset.ag-simple-filter-body-wrapper')
+        .should('be.visible')
+        .within((fields) => {
+          cy.wrap(fields).find('label').should('have.length', 16);
+        });
+      cy.getByTestId('"Ledger entries"').click();
+      cy.get('fieldset.ag-simple-filter-body-wrapper').should('not.exist');
     });
   });
 });

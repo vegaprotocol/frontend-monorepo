@@ -95,7 +95,7 @@ interface ProposalNewMarketTerms {
           timeWindow: string;
           scalingFactor: number;
         };
-        triggeringRatio: number;
+        triggeringRatio: string;
         auctionExtension: string;
       };
       logNormal: LogNormal;
@@ -317,6 +317,11 @@ export const isOrderCancellationTransaction = (
 export const isOrderAmendmentTransaction = (
   transaction: Transaction
 ): transaction is OrderAmendmentBody => 'orderAmendment' in transaction;
+
+export const isBatchMarketInstructionsTransaction = (
+  transaction: Transaction
+): transaction is BatchMarketInstructionSubmissionBody =>
+  'batchMarketInstructions' in transaction;
 
 export interface TransactionResponse {
   transactionHash: string;

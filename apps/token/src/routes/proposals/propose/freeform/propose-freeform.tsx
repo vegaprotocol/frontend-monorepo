@@ -12,18 +12,19 @@ import {
   ProposalFormSubmit,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
+  ProposalFormDownloadJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
-import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import {
   createDocsLinks,
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import { ProposalUserAction } from '../../components/shared';
+import { downloadJson } from '../../../../lib/download-json';
 
 export interface FreeformProposalFormFields {
   proposalVoteDeadline: string;
@@ -42,7 +43,6 @@ export const ProposeFreeform = () => {
     NetworkParams.governance_proposal_freeform_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-
   const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
@@ -50,10 +50,11 @@ export const ProposeFreeform = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
+    watch,
   } = useForm<FreeformProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
-  const onSubmit = async (fields: FreeformProposalFormFields) => {
+  const assembleProposal = (fields: FreeformProposalFormFields) => {
     const isVoteDeadlineAtMinimum =
       fields.proposalVoteDeadline ===
       deadlineToRoundedHours(
@@ -66,7 +67,7 @@ export const ProposeFreeform = () => {
         params.governance_proposal_freeform_maxClose
       ).toString();
 
-    await submit({
+    return {
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
@@ -79,86 +80,101 @@ export const ProposeFreeform = () => {
           isVoteDeadlineAtMaximum
         ),
       },
-    });
+    };
+  };
+
+  const onSubmit = async (fields: FreeformProposalFormFields) => {
+    await submit(assembleProposal(fields));
+  };
+
+  const viewJson = () => {
+    const formData = watch();
+    downloadJson(
+      JSON.stringify(assembleProposal(formData)),
+      'vega-freeform-proposal'
+    );
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={params}>
-      <Heading title={t('NewFreeformProposal')} />
-      <VegaWalletContainer>
-        {() => (
-          <>
-            <ProposalMinRequirements
-              minProposalBalance={
-                params.governance_proposal_freeform_minProposerBalance
-              }
-              spamProtectionMin={params.spam_protection_proposal_min_tokens}
-              userAction={ProposalUserAction.CREATE}
-            />
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={params}
+      render={(params) => (
+        <>
+          <Heading title={t('NewFreeformProposal')} />
 
-            {VEGA_DOCS_URL && (
-              <p className="text-sm" data-testid="proposal-docs-link">
-                <span className="mr-1">{t('ProposalTermsText')}</span>
-                <ExternalLink
-                  href={`${
-                    createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                  }${DOCS_LINK}`}
-                  target="_blank"
-                >{`${
+          <ProposalMinRequirements
+            minProposalBalance={
+              params.governance_proposal_freeform_minProposerBalance
+            }
+            spamProtectionMin={params.spam_protection_proposal_min_tokens}
+            userAction={ProposalUserAction.CREATE}
+          />
+
+          {VEGA_DOCS_URL && (
+            <p className="text-sm" data-testid="proposal-docs-link">
+              <span className="mr-1">{t('ProposalTermsText')}</span>
+              <ExternalLink
+                href={`${
                   createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                }${DOCS_LINK}`}</ExternalLink>
-              </p>
-            )}
+                }${DOCS_LINK}`}
+                target="_blank"
+              >{`${
+                createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+              }${DOCS_LINK}`}</ExternalLink>
+            </p>
+          )}
 
-            {VEGA_EXPLORER_URL && (
-              <p className="text-sm">
-                {t('MoreProposalsInfo')}{' '}
-                <ExternalLink
-                  href={`${VEGA_EXPLORER_URL}/governance`}
-                  target="_blank"
-                >{`${VEGA_EXPLORER_URL}/governance`}</ExternalLink>
-              </p>
-            )}
+          {VEGA_EXPLORER_URL && (
+            <p className="text-sm">
+              {t('MoreProposalsInfo')}{' '}
+              <ExternalLink
+                href={`${VEGA_EXPLORER_URL}/governance`}
+                target="_blank"
+              >{`${VEGA_EXPLORER_URL}/governance`}</ExternalLink>
+            </p>
+          )}
 
-            <div data-testid="freeform-proposal-form">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <ProposalFormSubheader>
-                  {t('ProposalRationale')}
-                </ProposalFormSubheader>
+          <div data-testid="freeform-proposal-form">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ProposalFormSubheader>
+                {t('ProposalRationale')}
+              </ProposalFormSubheader>
 
-                <ProposalFormTitle
-                  registerField={register('proposalTitle', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalTitle?.message}
-                />
-                <ProposalFormDescription
-                  registerField={register('proposalDescription', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalDescription?.message}
-                />
+              <ProposalFormTitle
+                registerField={register('proposalTitle', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalTitle?.message}
+              />
+              <ProposalFormDescription
+                registerField={register('proposalDescription', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalDescription?.message}
+              />
 
-                <ProposalFormVoteAndEnactmentDeadline
-                  onVoteMinMax={setValue}
-                  voteRegister={register('proposalVoteDeadline', {
-                    required: t('Required'),
-                  })}
-                  voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={params.governance_proposal_freeform_minClose}
-                  voteMaxClose={params.governance_proposal_freeform_maxClose}
-                />
+              <ProposalFormVoteAndEnactmentDeadline
+                onVoteMinMax={setValue}
+                voteRegister={register('proposalVoteDeadline', {
+                  required: t('Required'),
+                })}
+                voteErrorMessage={errors?.proposalVoteDeadline?.message}
+                voteMinClose={params.governance_proposal_freeform_minClose}
+                voteMaxClose={params.governance_proposal_freeform_maxClose}
+              />
 
-                <ProposalFormSubmit isSubmitting={isSubmitting} />
-                <ProposalFormTransactionDialog
-                  finalizedProposal={finalizedProposal}
-                  TransactionDialog={Dialog}
-                />
-              </form>
-            </div>
-          </>
-        )}
-      </VegaWalletContainer>
-    </AsyncRenderer>
+              <ProposalFormSubmit isSubmitting={isSubmitting} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
+              <ProposalFormTransactionDialog
+                finalizedProposal={finalizedProposal}
+                TransactionDialog={Dialog}
+              />
+            </form>
+          </div>
+        </>
+      )}
+    />
   );
 };

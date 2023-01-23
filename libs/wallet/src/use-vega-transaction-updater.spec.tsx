@@ -87,6 +87,15 @@ const orderBusEvent: OrderBusEventFieldsFragment = {
       __typename: 'TradableInstrument',
       instrument: {
         name: 'UNIDAI Monthly (30 Jun 2022)',
+        code: 'UNIDAI',
+        product: {
+          __typename: 'Future',
+          settlementAsset: {
+            __typename: 'Asset',
+            decimals: 8,
+            symbol: 'AAA',
+          },
+        },
         __typename: 'Instrument',
       },
     },

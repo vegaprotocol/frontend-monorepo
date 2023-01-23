@@ -28,6 +28,7 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   // Replace http with ws, preserving if its a secure connection eg. https => wss
   urlWS.protocol = urlWS.protocol.replace('http', 'ws');
   const timeoutLink = new ApolloLinkTimeout(10000);
+  const enlargedTimeoutLink = new ApolloLinkTimeout(100000);
   const retryLink = new RetryLink({
     delay: {
       initial: 300,
@@ -76,8 +77,14 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     }
   });
 
+  const composedTimeoutLink = split(
+    ({ getContext }) => Boolean(getContext()['isEnlargedTimeout']),
+    enlargedTimeoutLink,
+    timeoutLink
+  );
+
   return new ApolloClient({
-    link: from([errorLink, timeoutLink, retryLink, splitLink]),
+    link: from([errorLink, composedTimeoutLink, retryLink, splitLink]),
     cache: new InMemoryCache(cacheConfig),
   });
 }

@@ -13,7 +13,6 @@ const erc20WithdrawalApproval: WithdrawalApprovalQuery['erc20WithdrawalApproval'
     nonce: '1',
     signatures: 'signatures',
     targetAddress: 'targetAddress',
-    expiry: 'expiry',
     creation: '1',
   };
 

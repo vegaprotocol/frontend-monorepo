@@ -2,6 +2,7 @@ import { TxsInfiniteList } from './txs-infinite-list';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
+import { Side } from '@vegaprotocol/types';
 
 const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
   return Array.from(Array(number)).map((_) => ({
@@ -24,7 +25,7 @@ const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
           'b4d0a070f5cc73a7d53b23d6f63f8cb52e937ed65d2469a3af4cc1e80e155fcf',
         price: '14525946',
         size: '54',
-        side: 'SIDE_SELL',
+        side: Side.SIDE_SELL,
         timeInForce: 'TIME_IN_FORCE_GTT',
         expiresAt: '1664966445481288736',
         type: 'TYPE_LIMIT',

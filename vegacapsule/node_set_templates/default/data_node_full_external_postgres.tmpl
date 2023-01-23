@@ -42,11 +42,11 @@ GatewayEnabled = true
   [Broker.SocketConfig]
     Port = {{add 300 .NodeNumber}}5
 
-[DeHistory]
+[NetworkHistory]
   Enabled = true
-  [DeHistory.Store]
-    PeerID = "{{.GetDehistoryPeerID .NodeNumber}}"
-    PrivKey = "{{.GetDehistoryPrivKey .NodeNumber}}"
+  [NetworkHistory.Store]
+    PeerID = "{{.GetNetworkHistoryPeerID .NodeNumber}}"
+    PrivKey = "{{.GetNetworkHistoryPrivKey .NodeNumber}}"
 
     BootstrapPeers = [{{- range $i, $peer := .IPSFPeers -}}
       {{- if ne $i 0 }},{{end -}}

@@ -45,7 +45,7 @@ const Home = ({ name }: RouteChildProps) => {
               trancheLink: (
                 <Link
                   data-testid="tranches-link"
-                  to={Routes.TRANCHES}
+                  to={Routes.SUPPLY}
                   className="underline text-white"
                 />
               ),

@@ -21,13 +21,14 @@ import {
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
+  ProposalFormDownloadJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
-import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { ProposalUserAction } from '../../components/shared';
+import { downloadJson } from '../../../../lib/download-json';
 
 export interface NewAssetProposalFormFields {
   proposalVoteDeadline: string;
@@ -54,7 +55,6 @@ export const ProposeNewAsset = () => {
     NetworkParams.governance_proposal_asset_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
@@ -62,10 +62,11 @@ export const ProposeNewAsset = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
+    watch,
   } = useForm<NewAssetProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
-  const onSubmit = async (fields: NewAssetProposalFormFields) => {
+  const assembleProposal = (fields: NewAssetProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
       fields.proposalVoteDeadline,
       params.governance_proposal_asset_minClose
@@ -87,15 +88,15 @@ export const ProposeNewAsset = () => {
       params.governance_proposal_asset_maxClose
     );
 
-    await submit({
+    return {
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
       },
       terms: {
-        newAsset: {
-          ...JSON.parse(fields.proposalTerms),
-        },
+        newAsset: fields.proposalTerms
+          ? { ...JSON.parse(fields.proposalTerms) }
+          : {},
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
           isVoteDeadlineAtMinimum,
@@ -111,7 +112,19 @@ export const ProposeNewAsset = () => {
           isValidationDeadlineAtMaximum
         ),
       },
-    });
+    };
+  };
+
+  const onSubmit = async (fields: NewAssetProposalFormFields) => {
+    await submit(assembleProposal(fields));
+  };
+
+  const viewJson = () => {
+    const formData = watch();
+    downloadJson(
+      JSON.stringify(assembleProposal(formData)),
+      'vega-new-asset-proposal'
+    );
   };
 
   return (
@@ -119,112 +132,111 @@ export const ProposeNewAsset = () => {
       loading={networkParamsLoading}
       error={networkParamsError}
       data={params}
-    >
-      <Heading title={t('NewAssetProposal')} />
-      <VegaWalletContainer>
-        {() => (
-          <>
-            <ProposalMinRequirements
-              minProposalBalance={
-                params.governance_proposal_asset_minProposerBalance
-              }
-              spamProtectionMin={params.spam_protection_proposal_min_tokens}
-              userAction={ProposalUserAction.CREATE}
-            />
+      render={(params) => (
+        <>
+          <Heading title={t('NewAssetProposal')} />
 
-            {VEGA_DOCS_URL && (
-              <p className="text-sm" data-testid="proposal-docs-link">
-                <span className="mr-1">{t('ProposalTermsText')}</span>
-                <ExternalLink
-                  href={`${
-                    createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                  }${DOCS_LINK}`}
-                  target="_blank"
-                >{`${
+          <ProposalMinRequirements
+            minProposalBalance={
+              params.governance_proposal_asset_minProposerBalance
+            }
+            spamProtectionMin={params.spam_protection_proposal_min_tokens}
+            userAction={ProposalUserAction.CREATE}
+          />
+
+          {VEGA_DOCS_URL && (
+            <p className="text-sm" data-testid="proposal-docs-link">
+              <span className="mr-1">{t('ProposalTermsText')}</span>
+              <ExternalLink
+                href={`${
                   createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                }${DOCS_LINK}`}</ExternalLink>
-              </p>
-            )}
+                }${DOCS_LINK}`}
+                target="_blank"
+              >{`${
+                createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+              }${DOCS_LINK}`}</ExternalLink>
+            </p>
+          )}
 
-            {VEGA_EXPLORER_URL && (
-              <p className="text-sm">
-                {t('MoreAssetsInfo')}{' '}
-                <ExternalLink
-                  href={`${VEGA_EXPLORER_URL}/assets`}
-                  target="_blank"
-                >{`${VEGA_EXPLORER_URL}/assets`}</ExternalLink>
-              </p>
-            )}
+          {VEGA_EXPLORER_URL && (
+            <p className="text-sm">
+              {t('MoreAssetsInfo')}{' '}
+              <ExternalLink
+                href={`${VEGA_EXPLORER_URL}/assets`}
+                target="_blank"
+              >{`${VEGA_EXPLORER_URL}/assets`}</ExternalLink>
+            </p>
+          )}
 
-            <div data-testid="new-asset-proposal-form">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <ProposalFormSubheader>
-                  {t('ProposalRationale')}
-                </ProposalFormSubheader>
+          <div data-testid="new-asset-proposal-form">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ProposalFormSubheader>
+                {t('ProposalRationale')}
+              </ProposalFormSubheader>
 
-                <ProposalFormTitle
-                  registerField={register('proposalTitle', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalTitle?.message}
-                />
+              <ProposalFormTitle
+                registerField={register('proposalTitle', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalTitle?.message}
+              />
 
-                <ProposalFormDescription
-                  registerField={register('proposalDescription', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalDescription?.message}
-                />
+              <ProposalFormDescription
+                registerField={register('proposalDescription', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalDescription?.message}
+              />
 
-                <ProposalFormSubheader>{t('NewAsset')}</ProposalFormSubheader>
+              <ProposalFormSubheader>{t('NewAsset')}</ProposalFormSubheader>
 
-                <ProposalFormTerms
-                  registerField={register('proposalTerms', {
-                    required: t('Required'),
-                    validate: (value) => validateJson(value),
-                  })}
-                  labelOverride={'Terms.newAsset (JSON format)'}
-                  errorMessage={errors?.proposalTerms?.message}
-                  docsLink={DOCS_LINK}
-                />
+              <ProposalFormTerms
+                registerField={register('proposalTerms', {
+                  required: t('Required'),
+                  validate: (value) => validateJson(value),
+                })}
+                labelOverride={'Terms.newAsset (JSON format)'}
+                errorMessage={errors?.proposalTerms?.message}
+                docsLink={DOCS_LINK}
+              />
 
-                <ProposalFormVoteAndEnactmentDeadline
-                  onVoteMinMax={setValue}
-                  voteRegister={register('proposalVoteDeadline', {
-                    required: t('Required'),
-                  })}
-                  voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={params.governance_proposal_asset_minClose}
-                  voteMaxClose={params.governance_proposal_asset_maxClose}
-                  onEnactMinMax={setValue}
-                  enactmentRegister={register('proposalEnactmentDeadline', {
-                    required: t('Required'),
-                  })}
-                  enactmentErrorMessage={
-                    errors?.proposalEnactmentDeadline?.message
-                  }
-                  enactmentMinClose={params.governance_proposal_asset_minEnact}
-                  enactmentMaxClose={params.governance_proposal_asset_maxEnact}
-                  validationRequired={true}
-                  onValidationMinMax={setValue}
-                  validationRegister={register('proposalValidationDeadline', {
-                    required: t('Required'),
-                  })}
-                  validationErrorMessage={
-                    errors?.proposalValidationDeadline?.message
-                  }
-                />
+              <ProposalFormVoteAndEnactmentDeadline
+                onVoteMinMax={setValue}
+                voteRegister={register('proposalVoteDeadline', {
+                  required: t('Required'),
+                })}
+                voteErrorMessage={errors?.proposalVoteDeadline?.message}
+                voteMinClose={params.governance_proposal_asset_minClose}
+                voteMaxClose={params.governance_proposal_asset_maxClose}
+                onEnactMinMax={setValue}
+                enactmentRegister={register('proposalEnactmentDeadline', {
+                  required: t('Required'),
+                })}
+                enactmentErrorMessage={
+                  errors?.proposalEnactmentDeadline?.message
+                }
+                enactmentMinClose={params.governance_proposal_asset_minEnact}
+                enactmentMaxClose={params.governance_proposal_asset_maxEnact}
+                validationRequired={true}
+                onValidationMinMax={setValue}
+                validationRegister={register('proposalValidationDeadline', {
+                  required: t('Required'),
+                })}
+                validationErrorMessage={
+                  errors?.proposalValidationDeadline?.message
+                }
+              />
 
-                <ProposalFormSubmit isSubmitting={isSubmitting} />
-                <ProposalFormTransactionDialog
-                  finalizedProposal={finalizedProposal}
-                  TransactionDialog={Dialog}
-                />
-              </form>
-            </div>
-          </>
-        )}
-      </VegaWalletContainer>
-    </AsyncRenderer>
+              <ProposalFormSubmit isSubmitting={isSubmitting} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
+              <ProposalFormTransactionDialog
+                finalizedProposal={finalizedProposal}
+                TransactionDialog={Dialog}
+              />
+            </form>
+          </div>
+        </>
+      )}
+    />
   );
 };

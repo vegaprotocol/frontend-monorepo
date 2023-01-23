@@ -1,4 +1,9 @@
-import type { AgGridReact } from 'ag-grid-react';
+import type {
+  AgGridReact,
+  AgGridReactProps,
+  AgReactUiProps,
+} from 'ag-grid-react';
+import type { ITooltipParams } from 'ag-grid-community';
 import {
   addDecimal,
   addDecimalsFormatNumber,
@@ -11,19 +16,23 @@ import {
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
-import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { Trade } from './fills-data-provider';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
+  onMarketClick?: (marketId: string) => void;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
-  ({ partyId, ...props }, ref) => {
+  ({ partyId, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -31,11 +40,32 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data?.id}
+        tooltipShowDelay={0}
+        tooltipHideDelay={2000}
         {...props}
       >
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.name"
+          cellRenderer={({
+            value,
+            data,
+          }: VegaICellRendererParams<
+            Trade,
+            'market.tradableInstrument.instrument.name'
+          >) =>
+            onMarketClick ? (
+              <Link
+                onClick={() =>
+                  data?.market?.id && onMarketClick(data?.market?.id)
+                }
+              >
+                {value}
+              </Link>
+            ) : (
+              value
+            )
+          }
         />
         <AgGridColumn
           headerName={t('Size')}
@@ -54,13 +84,13 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={formatSize(partyId)}
         />
         <AgGridColumn
-          headerName={t('Value')}
+          headerName={t('Price')}
           field="price"
           valueFormatter={formatPrice}
           type="rightAligned"
         />
         <AgGridColumn
-          headerName={t('Filled value')}
+          headerName={t('Notional')}
           field="price"
           valueFormatter={formatTotal}
           type="rightAligned"
@@ -75,6 +105,9 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           field="market.tradableInstrument.instrument.product"
           valueFormatter={formatFee(partyId)}
           type="rightAligned"
+          tooltipField="market.tradableInstrument.instrument.product"
+          tooltipComponent={FeesBreakdownTooltip}
+          tooltipComponentParams={{ partyId }}
         />
         <AgGridColumn
           headerName={t('Date')}
@@ -148,16 +181,15 @@ const formatTotal = ({
   if (!data?.market || !isNumeric(value)) {
     return '-';
   }
-  const asset =
-    data?.market.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const { symbol: assetSymbol, decimals: assetDecimals } =
+    data?.market.tradableInstrument.instrument.product.settlementAsset ?? {};
   const size = new BigNumber(
     addDecimal(data?.size, data?.market.positionDecimalPlaces)
   );
   const price = new BigNumber(addDecimal(value, data?.market.decimalPlaces));
-
   const total = size.times(price).toString();
-  const valueFormatted = formatNumber(total, data?.market.decimalPlaces);
-  return `${valueFormatted} ${asset}`;
+  const valueFormatted = formatNumber(total, assetDecimals);
+  return `${valueFormatted} ${assetSymbol}`;
 };
 
 const formatRole = (partyId: string) => {
@@ -209,4 +241,51 @@ const formatFee = (partyId: string) => {
     const totalFees = addDecimalsFormatNumber(fee.toString(), asset.decimals);
     return `${totalFees} ${asset.symbol}`;
   };
+};
+
+const FeesBreakdownTooltip = ({
+  data,
+  value,
+  valueFormatted,
+  partyId,
+}: ITooltipParams & { partyId?: string }) => {
+  if (!value?.settlementAsset || !data) {
+    return null;
+  }
+  const asset = value.settlementAsset;
+  let feesObj;
+  if (data?.buyer.id === partyId) {
+    feesObj = data?.buyerFee;
+  } else if (data?.seller.id === partyId) {
+    feesObj = data?.sellerFee;
+  } else {
+    return null;
+  }
+
+  return (
+    <div
+      data-testid="fee-breakdown-tooltip"
+      className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
+    >
+      <dl className="grid grid-cols-2 gap-x-2">
+        <dt>{t('Infrastructure fee')}</dt>
+        <dd className="text-right">
+          {addDecimalsFormatNumber(feesObj.infrastructureFee, asset.decimals)}{' '}
+          {asset.symbol}
+        </dd>
+        <dt>{t('Liquidity fee')}</dt>
+        <dd className="text-right">
+          {addDecimalsFormatNumber(feesObj.liquidityFee, asset.decimals)}{' '}
+          {asset.symbol}
+        </dd>
+        <dt>{t('Maker fee')}</dt>
+        <dd className="text-right">
+          {addDecimalsFormatNumber(feesObj.makerFee, asset.decimals)}{' '}
+          {asset.symbol}
+        </dd>
+        <dt>{t('Total fees')}</dt>
+        <dd className="text-right">{valueFormatted}</dd>
+      </dl>
+    </div>
+  );
 };

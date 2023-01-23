@@ -5,7 +5,7 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
-import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -42,7 +42,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           overlayNoRowsTemplate={t('No accounts')}
           getRowId={({ data }: { data: AccountFields }) => data.asset.id}
           ref={ref}
-          rowHeight={34}
           tooltipShowDelay={500}
           defaultColDef={{
             flex: 1,
@@ -64,7 +63,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
               return value ? (
                 <ButtonLink
-                  data-testid="deposit"
+                  data-testid="asset"
                   onClick={() => {
                     if (data) {
                       onClickAsset(data.asset.id);
@@ -129,55 +128,44 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             maxWidth={300}
           />
           <AgGridColumn
-            headerName=""
-            field="breakdown"
-            minWidth={150}
-            cellRenderer={({
-              value,
-            }: VegaICellRendererParams<AccountFields, 'breakdown'>) => {
-              return (
-                <ButtonLink
-                  data-testid="breakdown"
-                  onClick={() => {
-                    setOpenBreakdown(!openBreakdown);
-                    setBreakdown(value || null);
-                  }}
-                >
-                  {t('Breakdown')}
-                </ButtonLink>
-              );
-            }}
-          />
-          <AgGridColumn
-            colId="transact"
+            colId="breakdown"
             headerName=""
             sortable={false}
-            minWidth={250}
+            minWidth={200}
+            type="rightAligned"
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {
               return data ? (
-                <div className="flex gap-2 justify-end">
-                  <Button
-                    size="xs"
+                <>
+                  <ButtonLink
+                    data-testid="breakdown"
+                    onClick={() => {
+                      setOpenBreakdown(!openBreakdown);
+                      setBreakdown(data.breakdown || null);
+                    }}
+                  >
+                    {t('Breakdown')}
+                  </ButtonLink>
+                  <span className="mx-1" />
+                  <ButtonLink
                     data-testid="deposit"
                     onClick={() => {
                       onClickDeposit && onClickDeposit(data.asset.id);
                     }}
                   >
                     {t('Deposit')}
-                  </Button>
-
-                  <Button
-                    size="xs"
+                  </ButtonLink>
+                  <span className="mx-1" />
+                  <ButtonLink
                     data-testid="withdraw"
                     onClick={() =>
                       onClickWithdraw && onClickWithdraw(data.asset.id)
                     }
                   >
                     {t('Withdraw')}
-                  </Button>
-                </div>
+                  </ButtonLink>
+                </>
               ) : null;
             }}
           />

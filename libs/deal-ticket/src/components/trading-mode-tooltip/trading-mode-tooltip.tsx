@@ -1,23 +1,35 @@
-import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { DataGrid, t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/react-helpers';
+import { compileGridData } from './compile-grid-data';
+import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
 
 type TradingModeTooltipProps = {
-  tradingMode: Schema.MarketTradingMode | null;
-  trigger: Schema.AuctionTrigger | null;
-  compiledGrid?: { label: ReactNode; value?: ReactNode }[];
+  marketId?: string;
+  onSelect?: (marketId: string) => void;
+  skip?: boolean;
 };
 
 export const TradingModeTooltip = ({
-  tradingMode,
-  trigger,
-  compiledGrid,
+  marketId,
+  onSelect,
+  skip,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
+  const market = useMarket(marketId);
+  const marketData = useStaticMarketData(marketId, skip);
+
+  if (!market || !marketData) {
+    return null;
+  }
+
+  const compiledGrid =
+    onSelect && compileGridData(market, marketData, onSelect);
+  const { marketTradingMode: tradingMode, trigger } = marketData;
+
   switch (tradingMode) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (

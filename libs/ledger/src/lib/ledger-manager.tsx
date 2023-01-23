@@ -3,14 +3,17 @@ import type * as Schema from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
+import type * as Types from '@vegaprotocol/types';
 
 export interface Filter {
   vegaTime?: {
     value: Schema.DateRange;
   };
+  fromAccountType?: { value: Types.AccountType[] };
+  toAccountType?: { value: Types.AccountType[] };
 }
 
 type LedgerManagerProps = { partyId: string };
@@ -24,24 +27,27 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
     gridRef,
   });
 
-  const onFilterChanged = (event: FilterChangedEvent) => {
-    const updatedFilter = event.api.getFilterModel();
-    if (Object.keys(updatedFilter).length) {
-      setFilter(updatedFilter);
-    } else if (filter) {
-      setFilter(undefined);
-    }
-  };
+  const onFilterChanged = useCallback(
+    (event: FilterChangedEvent) => {
+      const updatedFilter = event.api.getFilterModel();
+      if (Object.keys(updatedFilter).length) {
+        setFilter(updatedFilter);
+      } else if (filter) {
+        setFilter(undefined);
+      }
+    },
+    [filter]
+  );
 
   return (
-    <>
+    <div className="h-full relative">
       <LedgerTable
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}
         onFilterChanged={onFilterChanged}
       />
-      <div className="pointer-events-none absolute inset-0 top-5">
+      <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
           loading={loading}
           error={error}
@@ -50,6 +56,6 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
           noDataCondition={(data) => !(data && data.length)}
         />
       </div>
-    </>
+    </div>
   );
 };

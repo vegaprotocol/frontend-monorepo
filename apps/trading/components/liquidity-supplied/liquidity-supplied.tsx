@@ -14,10 +14,11 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { Indicator, Link } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { DataGrid } from '@vegaprotocol/react-helpers';
+import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 
 interface Props {
   marketId?: string;
@@ -32,11 +33,11 @@ export const MarketLiquiditySupplied = ({
 }: Props) => {
   const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
-    NetworkParams.market_liquidity_stakeToCcySiskas,
+    NetworkParams.market_liquidity_stakeToCcyVolume,
     NetworkParams.market_liquidity_targetstake_triggering_ratio,
   ]);
 
-  const stakeToCcyVolume = Number(params.market_liquidity_stakeToCcySiskas);
+  const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
   const triggeringRatio = Number(
     params.market_liquidity_targetstake_triggering_ratio
   );
@@ -80,7 +81,7 @@ export const MarketLiquiditySupplied = ({
       )
     : '-';
 
-  const { percentage } = useCheckLiquidityStatus({
+  const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: market?.suppliedStake || 0,
     targetStake: market?.targetStake || 0,
     triggeringRatio,
@@ -107,24 +108,44 @@ export const MarketLiquiditySupplied = ({
     },
   ];
 
-  const description = (
+  const showMessage =
+    percentage.gte(100) &&
+    market?.marketTradingMode ===
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    market.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+
+  const description = marketId ? (
     <section>
       {compiledGrid && <DataGrid grid={compiledGrid} />}
       <br />
       <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
       </Link>
+      {showMessage && (
+        <p className="mt-4">
+          {t(
+            'The market is in an auction because there are no priced limit orders, which are required to deploy liquidity commitment pegged orders. This means the order book is empty on one or both sides.'
+          )}
+        </p>
+      )}
     </section>
+  ) : (
+    '-'
   );
 
-  return (
+  return marketId ? (
     <HeaderStat
       heading={t('Liquidity supplied')}
       description={description}
       testId="liquidity-supplied"
     >
-      {/* <Indicator variant={status} /> */}
-      {supplied} ({formatNumberPercentage(percentage, 2)})
+      <Indicator variant={status} />
+      {supplied} (
+      {percentage.gt(100) ? '>100%' : formatNumberPercentage(percentage, 2)})
+    </HeaderStat>
+  ) : (
+    <HeaderStat heading={t('Liquidity supplied')} testId="liquidity-supplied">
+      {'-'}
     </HeaderStat>
   );
 };

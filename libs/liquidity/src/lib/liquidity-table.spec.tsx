@@ -22,7 +22,7 @@ describe('LiquidityTable', () => {
   it('should render successfully', async () => {
     await act(async () => {
       const { baseElement } = render(
-        <LiquidityTable data={[]} stakeToCcySiskas={'1'} />
+        <LiquidityTable rowData={[]} stakeToCcyVolume={'1'} />
       );
       expect(baseElement).toBeTruthy();
     });
@@ -30,7 +30,9 @@ describe('LiquidityTable', () => {
 
   it('should render correct columns', async () => {
     await act(async () => {
-      render(<LiquidityTable data={singleRowData} stakeToCcySiskas={'0.3'} />);
+      render(
+        <LiquidityTable rowData={singleRowData} stakeToCcyVolume={'0.3'} />
+      );
     });
 
     const headers = await screen.getAllByRole('columnheader');

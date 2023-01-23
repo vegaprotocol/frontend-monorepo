@@ -33,7 +33,11 @@ export const TypeSelector = ({
       return (
         <span>
           {t('This market is in auction until it reaches')}{' '}
-          <Tooltip description={<DataGrid grid={compileGridData(market)} />}>
+          <Tooltip
+            description={
+              <DataGrid grid={compileGridData(market, market.data)} />
+            }
+          >
             <span>{t('sufficient liquidity')}</span>
           </Tooltip>
           {'. '}
@@ -46,7 +50,11 @@ export const TypeSelector = ({
       return (
         <span>
           {t('This market is in auction due to')}{' '}
-          <Tooltip description={<DataGrid grid={compileGridData(market)} />}>
+          <Tooltip
+            description={
+              <DataGrid grid={compileGridData(market, market.data)} />
+            }
+          >
             <span>{t('high price volatility')}</span>
           </Tooltip>
           {'. '}

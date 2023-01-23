@@ -5,7 +5,10 @@ import {
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+import type {
+  VegaValueFormatterParams,
+  TypedDataAgGrid,
+} from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   TooltipCellComponent,
@@ -30,15 +33,15 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
   return getDateTimeFormat().format(new Date(value));
 };
 
-export interface LiquidityTableProps {
-  data?: LiquidityProvisionData[];
+export interface LiquidityTableProps
+  extends TypedDataAgGrid<LiquidityProvisionData> {
   symbol?: string;
   assetDecimalPlaces?: number;
-  stakeToCcySiskas: string | null;
+  stakeToCcyVolume: string | null;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
-  ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
+  ({ symbol = '', assetDecimalPlaces, stakeToCcyVolume, ...props }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
@@ -46,18 +49,16 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
     const stakeToCcyVolumeFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       const newValue = new BigNumber(value)
-        .times(Number(stakeToCcySiskas) || 1)
+        .times(Number(stakeToCcyVolume) || 1)
         .toString();
       return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
     };
 
-    if (!data) return null;
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No liquidity provisions')}
         getRowId={({ data }) => getId(data)}
-        rowHeight={34}
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
@@ -67,8 +68,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           tooltipComponent: TooltipCellComponent,
           sortable: true,
         }}
-        enableCellTextSelection={true}
-        rowData={data}
+        {...props}
       >
         <AgGridColumn
           headerName={t('Party')}

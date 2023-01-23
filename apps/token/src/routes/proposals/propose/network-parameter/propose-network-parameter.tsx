@@ -20,6 +20,7 @@ import {
   ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
+  ProposalFormDownloadJson,
 } from '../../components/propose';
 import { ProposalMinRequirements } from '../../components/shared';
 import {
@@ -33,8 +34,8 @@ import {
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
-import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { ProposalUserAction } from '../../components/shared';
+import { downloadJson } from '../../../../lib/download-json';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;
@@ -84,7 +85,6 @@ export const ProposeNetworkParameter = () => {
     loading: networkParamsLoading,
     error: networkParamsError,
   } = useNetworkParams();
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
@@ -92,6 +92,7 @@ export const ProposeNetworkParameter = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
+    watch,
   } = useForm<NetworkParameterProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
@@ -99,8 +100,8 @@ export const ProposeNetworkParameter = () => {
     ? Object.entries(params).find(([key]) => key === selectedNetworkParam)
     : null;
 
-  const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
-    const acutalNetworkParamKey = fields.proposalNetworkParameterKey
+  const assembleProposal = (fields: NetworkParameterProposalFormFields) => {
+    const actualNetworkParamKey = fields.proposalNetworkParameterKey
       .split('_')
       .join('.');
 
@@ -121,7 +122,7 @@ export const ProposeNetworkParameter = () => {
       params.governance_proposal_updateNetParam_maxEnact
     );
 
-    await submit({
+    return {
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
@@ -129,7 +130,7 @@ export const ProposeNetworkParameter = () => {
       terms: {
         updateNetworkParameter: {
           changes: {
-            key: acutalNetworkParamKey,
+            key: actualNetworkParamKey,
             value: fields.proposalNetworkParameterValue,
           },
         },
@@ -144,7 +145,19 @@ export const ProposeNetworkParameter = () => {
           isEnactmentDeadlineAtMaximum
         ),
       },
-    });
+    };
+  };
+
+  const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
+    await submit(assembleProposal(fields));
+  };
+
+  const viewJson = () => {
+    const formData = watch();
+    downloadJson(
+      JSON.stringify(assembleProposal(formData)),
+      'vega-network-param-proposal'
+    );
   };
 
   return (
@@ -152,163 +165,161 @@ export const ProposeNetworkParameter = () => {
       loading={networkParamsLoading}
       error={networkParamsError}
       data={params}
-    >
-      <Heading title={t('NetworkParameterProposal')} />
-      <VegaWalletContainer>
-        {() => (
-          <>
-            <ProposalMinRequirements
-              minProposalBalance={
-                params.governance_proposal_updateNetParam_minProposerBalance
-              }
-              spamProtectionMin={params.spam_protection_proposal_min_tokens}
-              userAction={ProposalUserAction.CREATE}
-            />
+      render={(params) => (
+        <>
+          <Heading title={t('NetworkParameterProposal')} />
+          <ProposalMinRequirements
+            minProposalBalance={
+              params.governance_proposal_updateNetParam_minProposerBalance
+            }
+            spamProtectionMin={params.spam_protection_proposal_min_tokens}
+            userAction={ProposalUserAction.CREATE}
+          />
 
-            {VEGA_DOCS_URL && (
-              <p className="text-sm" data-testid="proposal-docs-link">
-                <span className="mr-1">{t('ProposalTermsText')}</span>
-                <ExternalLink
-                  href={`${
-                    createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                  }${DOCS_LINK}`}
-                  target="_blank"
-                >{`${
+          {VEGA_DOCS_URL && (
+            <p className="text-sm" data-testid="proposal-docs-link">
+              <span className="mr-1">{t('ProposalTermsText')}</span>
+              <ExternalLink
+                href={`${
                   createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                }${DOCS_LINK}`}</ExternalLink>
-              </p>
-            )}
+                }${DOCS_LINK}`}
+                target="_blank"
+              >{`${
+                createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+              }${DOCS_LINK}`}</ExternalLink>
+            </p>
+          )}
 
-            {VEGA_EXPLORER_URL && (
-              <p className="text-sm">
-                {t('MoreNetParamsInfo')}{' '}
-                <ExternalLink
-                  href={`${VEGA_EXPLORER_URL}/network-parameters`}
-                  target="_blank"
-                >{`${VEGA_EXPLORER_URL}/network-parameters`}</ExternalLink>
-              </p>
-            )}
+          {VEGA_EXPLORER_URL && (
+            <p className="text-sm">
+              {t('MoreNetParamsInfo')}{' '}
+              <ExternalLink
+                href={`${VEGA_EXPLORER_URL}/network-parameters`}
+                target="_blank"
+              >{`${VEGA_EXPLORER_URL}/network-parameters`}</ExternalLink>
+            </p>
+          )}
 
-            <div data-testid="network-parameter-proposal-form">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <ProposalFormSubheader>
-                  {t('ProposalRationale')}
-                </ProposalFormSubheader>
+          <div data-testid="network-parameter-proposal-form">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ProposalFormSubheader>
+                {t('ProposalRationale')}
+              </ProposalFormSubheader>
 
-                <ProposalFormTitle
-                  registerField={register('proposalTitle', {
+              <ProposalFormTitle
+                registerField={register('proposalTitle', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalTitle?.message}
+              />
+
+              <ProposalFormDescription
+                registerField={register('proposalDescription', {
+                  required: t('Required'),
+                })}
+                errorMessage={errors?.proposalDescription?.message}
+              />
+
+              <ProposalFormSubheader>
+                {t('SelectAParameterToChange')}
+              </ProposalFormSubheader>
+
+              <FormGroup
+                label={t('SelectAParameterToChange')}
+                labelFor="proposal-parameter-key"
+                hideLabel={true}
+              >
+                <Select
+                  data-testid="proposal-parameter-select"
+                  id="proposal-parameter-key"
+                  {...register('proposalNetworkParameterKey', {
                     required: t('Required'),
                   })}
-                  errorMessage={errors?.proposalTitle?.message}
-                />
-
-                <ProposalFormDescription
-                  registerField={register('proposalDescription', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalDescription?.message}
-                />
-
-                <ProposalFormSubheader>
-                  {t('SelectAParameterToChange')}
-                </ProposalFormSubheader>
-
-                <FormGroup
-                  label={t('SelectAParameterToChange')}
-                  labelFor="proposal-parameter-key"
-                  hideLabel={true}
+                  onChange={(e) => setSelectedNetworkParam(e.target.value)}
+                  value={selectedNetworkParam}
                 >
-                  <Select
-                    data-testid="proposal-parameter-select"
-                    id="proposal-parameter-key"
-                    {...register('proposalNetworkParameterKey', {
-                      required: t('Required'),
-                    })}
-                    onChange={(e) => setSelectedNetworkParam(e.target.value)}
-                    value={selectedNetworkParam}
-                  >
-                    <option value="">{t('SelectParameter')}</option>
-                    {Object.keys(params).map((key) => {
-                      const actualKey = key.split('_').join('.');
-                      return (
-                        <option key={key} value={key}>
-                          {actualKey}
-                        </option>
-                      );
-                    })}
-                  </Select>
-                  {errors?.proposalNetworkParameterKey?.message && (
-                    <InputError intent="danger">
-                      {errors?.proposalNetworkParameterKey?.message}
-                    </InputError>
-                  )}
-                </FormGroup>
-
-                {selectedNetworkParam && (
-                  <div className="mt-[-10px]">
-                    {selectedParamEntry && (
-                      <SelectedNetworkParamCurrentValue
-                        value={selectedParamEntry[1]}
-                      />
-                    )}
-
-                    <FormGroup
-                      label={t('NewProposedValue')}
-                      labelFor="proposal-parameter-new-value"
-                    >
-                      <TextArea
-                        data-testid="selected-proposal-param-new-value"
-                        id="proposal-parameter-new-value"
-                        {...register('proposalNetworkParameterValue', {
-                          required: t('Required'),
-                        })}
-                      />
-                      {errors?.proposalNetworkParameterValue?.message && (
-                        <InputError intent="danger">
-                          {errors?.proposalNetworkParameterValue?.message}
-                        </InputError>
-                      )}
-                    </FormGroup>
-                  </div>
+                  <option value="">{t('SelectParameter')}</option>
+                  {Object.keys(params).map((key) => {
+                    const actualKey = key.split('_').join('.');
+                    return (
+                      <option key={key} value={key}>
+                        {actualKey}
+                      </option>
+                    );
+                  })}
+                </Select>
+                {errors?.proposalNetworkParameterKey?.message && (
+                  <InputError intent="danger">
+                    {errors?.proposalNetworkParameterKey?.message}
+                  </InputError>
                 )}
+              </FormGroup>
 
-                <ProposalFormVoteAndEnactmentDeadline
-                  onVoteMinMax={setValue}
-                  voteRegister={register('proposalVoteDeadline', {
-                    required: t('Required'),
-                  })}
-                  voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={
-                    params.governance_proposal_updateNetParam_minClose
-                  }
-                  voteMaxClose={
-                    params.governance_proposal_updateNetParam_maxClose
-                  }
-                  onEnactMinMax={setValue}
-                  enactmentRegister={register('proposalEnactmentDeadline', {
-                    required: t('Required'),
-                  })}
-                  enactmentErrorMessage={
-                    errors?.proposalEnactmentDeadline?.message
-                  }
-                  enactmentMinClose={
-                    params.governance_proposal_updateNetParam_minEnact
-                  }
-                  enactmentMaxClose={
-                    params.governance_proposal_updateNetParam_maxEnact
-                  }
-                />
+              {selectedNetworkParam && (
+                <div className="mt-[-10px]">
+                  {selectedParamEntry && (
+                    <SelectedNetworkParamCurrentValue
+                      value={selectedParamEntry[1]}
+                    />
+                  )}
 
-                <ProposalFormSubmit isSubmitting={isSubmitting} />
-                <ProposalFormTransactionDialog
-                  finalizedProposal={finalizedProposal}
-                  TransactionDialog={Dialog}
-                />
-              </form>
-            </div>
-          </>
-        )}
-      </VegaWalletContainer>
-    </AsyncRenderer>
+                  <FormGroup
+                    label={t('NewProposedValue')}
+                    labelFor="proposal-parameter-new-value"
+                  >
+                    <TextArea
+                      data-testid="selected-proposal-param-new-value"
+                      id="proposal-parameter-new-value"
+                      {...register('proposalNetworkParameterValue', {
+                        required: t('Required'),
+                      })}
+                    />
+                    {errors?.proposalNetworkParameterValue?.message && (
+                      <InputError intent="danger">
+                        {errors?.proposalNetworkParameterValue?.message}
+                      </InputError>
+                    )}
+                  </FormGroup>
+                </div>
+              )}
+
+              <ProposalFormVoteAndEnactmentDeadline
+                onVoteMinMax={setValue}
+                voteRegister={register('proposalVoteDeadline', {
+                  required: t('Required'),
+                })}
+                voteErrorMessage={errors?.proposalVoteDeadline?.message}
+                voteMinClose={
+                  params.governance_proposal_updateNetParam_minClose
+                }
+                voteMaxClose={
+                  params.governance_proposal_updateNetParam_maxClose
+                }
+                onEnactMinMax={setValue}
+                enactmentRegister={register('proposalEnactmentDeadline', {
+                  required: t('Required'),
+                })}
+                enactmentErrorMessage={
+                  errors?.proposalEnactmentDeadline?.message
+                }
+                enactmentMinClose={
+                  params.governance_proposal_updateNetParam_minEnact
+                }
+                enactmentMaxClose={
+                  params.governance_proposal_updateNetParam_maxEnact
+                }
+              />
+
+              <ProposalFormSubmit isSubmitting={isSubmitting} />
+              <ProposalFormDownloadJson downloadJson={viewJson} />
+              <ProposalFormTransactionDialog
+                finalizedProposal={finalizedProposal}
+                TransactionDialog={Dialog}
+              />
+            </form>
+          </div>
+        </>
+      )}
+    />
   );
 };

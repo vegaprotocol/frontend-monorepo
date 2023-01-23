@@ -14,7 +14,7 @@ export const MarketsPage = () => {
   }, [updateTitle]);
   return (
     <Tabs>
-      <Tab id="active-markets" name={t('Active markets')}>
+      <Tab id="all-markets" name={t('All markets')}>
         <Markets />
       </Tab>
       <Tab id="proposed-markets" name={t('Proposed markets')}>

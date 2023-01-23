@@ -1,6 +1,7 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { useFillsList } from './use-fills-list';
@@ -8,9 +9,14 @@ import { useFillsList } from './use-fills-list';
 interface FillsManagerProps {
   partyId: string;
   marketId?: string;
+  onMarketClick?: (marketId: string) => void;
 }
 
-export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
+export const FillsManager = ({
+  partyId,
+  marketId,
+  onMarketClick,
+}: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const { data, error, loading, addNewRows, getRows } = useFillsList({
@@ -31,21 +37,26 @@ export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
   };
 
   return (
-    <AsyncRenderer
-      loading={loading}
-      error={error}
-      data={data}
-      noDataCondition={() => false}
-    >
+    <div className="h-full relative">
       <FillsTable
         ref={gridRef}
         partyId={partyId}
-        rowModelType={data?.length ? 'infinite' : 'clientSide'}
-        rowData={data?.length ? undefined : []}
+        rowModelType="infinite"
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
+        noRowsOverlayComponent={() => null}
+        onMarketClick={onMarketClick}
       />
-    </AsyncRenderer>
+      <div className="pointer-events-none absolute inset-0">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={data}
+          noDataMessage={t('No fills')}
+          noDataCondition={(data) => !(data && data.length)}
+        />
+      </div>
+    </div>
   );
 };

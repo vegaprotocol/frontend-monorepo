@@ -8,6 +8,7 @@ import {
   VegaWalletProvider,
   useVegaTransactionManager,
   useVegaTransactionUpdater,
+  useVegaWallet,
 } from '@vegaprotocol/wallet';
 import {
   useEagerConnect as useEthereumEagerConnect,
@@ -29,8 +30,9 @@ import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation } from 'react-router-dom';
+import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
+import { ViewingBanner } from '../components/viewing-banner';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -78,10 +80,11 @@ function AppBody({ Component }: AppProps) {
       <VegaWalletProvider>
         <AppLoader>
           <Web3Provider>
-            <div className="h-full relative z-0 grid grid-rows-[min-content,1fr,min-content]">
+            <div className="h-full relative z-0 grid grid-rows-[min-content,min-content,1fr,min-content]">
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
+              <ViewingBanner />
               <main data-testid={location.pathname}>
                 <Component />
               </main>
@@ -133,5 +136,12 @@ export default VegaTradingApp;
 const MaybeConnectEagerly = () => {
   useVegaEagerConnect(Connectors);
   useEthereumEagerConnect();
+
+  const { pubKey, connect } = useVegaWallet();
+  const [searchParams] = useSearchParams();
+  const [query] = useState(searchParams.get('address'));
+  if (query && !pubKey) {
+    connect(Connectors['view']);
+  }
   return null;
 };

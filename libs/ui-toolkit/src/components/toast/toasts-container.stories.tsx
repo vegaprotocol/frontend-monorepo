@@ -69,7 +69,7 @@ const randomToast = (): Toast => {
       Intent.Danger,
       Intent.Success,
     ]) as Intent,
-    render: () => <p>{content}</p>,
+    content: <p>{content}</p>,
     closeAfter: sample([undefined, random(1000, 5000)]),
   };
 };
@@ -114,20 +114,20 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
     ];
     add({
       ...t,
-      render: ({ id }) => (
+      content: (
         <>
           <h1>{words[0]}</h1>
           <div>
             <button
               className="underline text-gray-600 mr-2"
-              onClick={() => setTimeout(() => close(id), 500)}
+              onClick={() => setTimeout(() => close(t.id), 500)}
             >
               {words[1]}
             </button>
             <button
               className="underline text-gray-600"
               onClick={() =>
-                update(id, {
+                update(t.id, {
                   intent: sample([
                     Intent.Danger,
                     Intent.Warning,
@@ -164,7 +164,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
     };
     add({
       ...t,
-      render: () => <ToastContent />,
+      content: <ToastContent />,
       onClose: () => remove(t.id),
     });
   };
@@ -190,7 +190,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
         📈 + 🥪
       </button>
       <button
-        className="bg-red-200 dark:bg-red-800 p-2 mr-2"
+        className="bg-vega-pink-200 dark:bg-vega-pink-800 p-2 mr-2"
         onClick={() => closeAll()}
       >
         🧽

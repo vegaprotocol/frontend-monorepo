@@ -17,7 +17,7 @@ import { ProposalStateMapping } from '@vegaprotocol/types';
 import type {
   ProposalListFieldsFragment,
   NewMarketFieldsFragment,
-} from '../proposals-data-provider/__generated___/Proposals';
+} from '../proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
 
 const instrumentGuard = (
