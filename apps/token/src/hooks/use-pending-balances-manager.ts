@@ -127,7 +127,7 @@ export const useListenForEthPendingBalances = (
   useEffect(() => {
     let cancelled = false;
     getExistingTransactions().then((events) => {
-      if (!cancelled || events.length > 0) {
+      if (!cancelled) {
         addPendingTxs([...events]);
         processWaitForExistingTransactions([...events], numberOfConfirmations);
       }
