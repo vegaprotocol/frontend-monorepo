@@ -7,7 +7,7 @@ import { StatisticsDocument } from '../utils/__generated__/Node';
 import type { ClientCollection } from './use-nodes';
 
 // How often to query other nodes
-export const INTERVAL_TIME = 15 * 1000;
+export const INTERVAL_TIME = 30 * 1000;
 // How many blocks behind the most advanced block that is
 // deemed acceptable for "Good" status
 const BLOCK_THRESHOLD = 3;
@@ -38,6 +38,7 @@ export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
           query: StatisticsDocument,
           fetchPolicy: 'no-cache', // always fetch and never cache
         });
+        console.log(result);
 
         if (!result) return null;
         if (result.error) return null;
