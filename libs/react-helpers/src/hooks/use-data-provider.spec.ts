@@ -161,6 +161,13 @@ describe('useDataProvider hook', () => {
     });
     expect(update).toBeCalledTimes(1);
 
+    // setting same variables, with different object reference
+    await act(async () => {
+      rerender({ dataProvider, update, variables: { ...variables } });
+    });
+    expect(unsubscribe).toBeCalledTimes(0);
+    expect(dataProvider).toBeCalledTimes(1);
+
     // changing variables after date was loaded
     await act(async () => {
       rerender({ dataProvider, update, variables: { partyId: '0x321' } });
