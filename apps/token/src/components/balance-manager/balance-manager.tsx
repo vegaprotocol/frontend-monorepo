@@ -30,6 +30,7 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const numberOfConfirmations = useRef(500);
 
   // breaks if no provider?
+  // number of confirmations from network provider
 
   // fix as string
   // contracts undefined

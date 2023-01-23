@@ -54,7 +54,10 @@ export const useListenForStakingEvents = (
       : null
   );
 
-  useListenForEthPendingBalances(
+  /**
+   * Listen for all add stake events
+   */
+  useListenForPendingEthEvents(
     numberOfConfirmations,
     contract,
     addFilter.current,
@@ -62,7 +65,10 @@ export const useListenForStakingEvents = (
     removePendingTx
   );
 
-  useListenForEthPendingBalances(
+  /**
+   * Listen for all remove stake events
+   */
+  useListenForPendingEthEvents(
     numberOfConfirmations,
     contract,
     removeFilter.current,
@@ -71,7 +77,7 @@ export const useListenForStakingEvents = (
   );
 };
 
-export const useListenForEthPendingBalances = (
+export const useListenForPendingEthEvents = (
   numberOfConfirmations: number,
   contract: Contract,
   filter: EventFilter | null,
@@ -80,6 +86,10 @@ export const useListenForEthPendingBalances = (
 ) => {
   const { provider } = useWeb3React();
 
+  /**
+   * Add listener for the ethereum events on the contract passed in for the filter passed in.
+   * Push the event into the store and wait for the correct number of confirmations before removing it.
+   */
   useEffect(() => {
     if (!contract || !filter) {
       return;
@@ -100,6 +110,9 @@ export const useListenForEthPendingBalances = (
     };
   }, [addPendingTxs, contract, filter, numberOfConfirmations, removePendingTx]);
 
+  /**
+   * Get all transactions that exist on the blockchain but have yet to reach the number of confirmations
+   */
   const getExistingTransactions = useCallback(async () => {
     const blockNumber = (await provider?.getBlockNumber()) || 0;
     if (!filter) {
@@ -111,7 +124,7 @@ export const useListenForEthPendingBalances = (
     );
   }, [contract, filter, numberOfConfirmations, provider]);
 
-  const processWaitForExistingTransactions = useCallback(
+  const waitForExistingTransactions = useCallback(
     (events: Event[], numberOfConfirmations: number) => {
       events.map(async (event) => {
         const tx = await event.getTransaction();
@@ -129,7 +142,7 @@ export const useListenForEthPendingBalances = (
     getExistingTransactions().then((events) => {
       if (!cancelled) {
         addPendingTxs([...events]);
-        processWaitForExistingTransactions([...events], numberOfConfirmations);
+        waitForExistingTransactions([...events], numberOfConfirmations);
       }
     });
 
@@ -140,6 +153,6 @@ export const useListenForEthPendingBalances = (
     addPendingTxs,
     getExistingTransactions,
     numberOfConfirmations,
-    processWaitForExistingTransactions,
+    waitForExistingTransactions,
   ]);
 };
