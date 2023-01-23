@@ -3,15 +3,15 @@ import { CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
 import { TableRow } from '../../../../table';
 import { TruncateInline } from '../../../../truncate/truncate';
 import { utils } from 'ethers';
-import { AbiCoder, hexDataLength } from 'ethers/lib/utils';
-type Price = {
+
+export type Price = {
   [key: string]: string;
 };
 
 interface OpenOraclePricesProps {
   prices: Price;
-  signatures: Price;
-  messages: Price;
+  signatures: string[];
+  messages: string[];
 }
 
 /**
@@ -22,14 +22,25 @@ export function OpenOraclePrices({
   messages,
   signatures,
 }: OpenOraclePricesProps) {
+  if (
+    !prices ||
+    !messages ||
+    !signatures ||
+    Object.keys(prices).length !== messages.length ||
+    signatures.length !== messages.length
+  ) {
+    return null;
+  }
+
   return (
-    <table>
+    <table data-testid="openoracleprices">
       <thead>
         <TableRow modifier="bordered">
           <th>{t('Asset')}</th>
           <th className="text-right">{t('Price')}</th>
           <th>{t('Signature')}</th>
           <th>{t('Message')}</th>
+          <th>{t('Signer')}</th>
         </TableRow>
       </thead>
       <tbody>
@@ -39,6 +50,7 @@ export function OpenOraclePrices({
             const signature = signatures[i];
             return (
               <OpenOraclePrice
+                key={`price-${i}`}
                 asset={k}
                 value={prices[k]}
                 message={message}
@@ -67,8 +79,9 @@ export function OpenOraclePrice({
   signature,
   message,
 }: OpenOraclePriceProps) {
+  const addr = getAddressFromMessageAndSignature(message, signature);
   return (
-    <TableRow modifier="bordered">
+    <TableRow modifier="bordered" key={`${asset}`}>
       <td className="px-4">{asset}</td>
       <td className="px-4 text-right">{value}</td>
       <td className="px-4">
@@ -85,6 +98,29 @@ export function OpenOraclePrice({
           </button>
         </CopyWithTooltip>
       </td>
+      <td className="px-4">
+        <CopyWithTooltip text={message}>
+          <button>
+            <TruncateInline text={addr} startChars={5} endChars={5} />
+          </button>
+        </CopyWithTooltip>
+      </td>
     </TableRow>
   );
+}
+
+export function getAddressFromMessageAndSignature(
+  message: string,
+  signature: string
+) {
+  try {
+    const m = utils.hashMessage(utils.arrayify(utils.keccak256(message)));
+    const s = utils.splitSignature(
+      signature.slice(0, 130) + signature.slice(-2)
+    );
+
+    return utils.recoverAddress(m, s);
+  } catch (e) {
+    return '-';
+  }
 }

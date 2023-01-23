@@ -7,14 +7,17 @@ interface OpenOracleDataProps {
 }
 
 /**
- * Someone cancelled an order
+ * Decodes Open Oracle data based on it's main parts:
+ * - messages
+ * - signatures
+ * - prices
  */
 export const OpenOracleData = ({ payload }: OpenOracleDataProps) => {
-  if (!payload) {
+  const decodedSubmission = parseData(payload);
+
+  if (!decodedSubmission) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
-
-  const decodedSubmission = JSON.parse(atob(payload));
 
   const date = decodedSubmission.timestamp;
   const formattedDate = new Date(date * 1000).toLocaleString();
@@ -29,10 +32,33 @@ export const OpenOracleData = ({ payload }: OpenOracleDataProps) => {
           signatures={decodedSubmission.signatures}
         />
       </code>
-      <details>
+      <details data-testid="decoded-payload">
         <summary>{t('Decoded payload')}</summary>
         <NestedDataList data={decodedSubmission} />
       </details>
     </section>
   );
 };
+
+/**
+ * Safely parses the Open Oracle payload
+ *
+ * @param payload base64 encoded JSON
+ * @returns Object or null
+ */
+export function parseData(payload: string) {
+  try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('Not a string');
+    }
+
+    const res = JSON.parse(atob(payload));
+    if (!res.prices || !res.messages || !res.signatures) {
+      throw new Error('Not an open oracle format message');
+    }
+
+    return res;
+  } catch (e) {
+    return null;
+  }
+}

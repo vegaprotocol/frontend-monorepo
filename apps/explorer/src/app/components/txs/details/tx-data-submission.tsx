@@ -5,6 +5,7 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
 import { OpenOracleData } from './oracle-data/data-submission-open-oracle';
+import { JSONOracleData } from './oracle-data/data-submission-json-oracle';
 
 export type OracleSubmissionSource =
   components['schemas']['OracleDataSubmissionOracleSource'];
@@ -47,7 +48,7 @@ export const TxDetailsDataSubmission = ({
       {type === 'ORACLE_SOURCE_OPEN_ORACLE' ? (
         <OpenOracleData payload={payload} />
       ) : (
-        'null'
+        <JSONOracleData payload={payload} />
       )}
     </>
   );
