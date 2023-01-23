@@ -38,7 +38,6 @@ export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
           query: StatisticsDocument,
           fetchPolicy: 'no-cache', // always fetch and never cache
         });
-        console.log(result);
 
         if (!result) return null;
         if (result.error) return null;

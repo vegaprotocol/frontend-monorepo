@@ -38,7 +38,11 @@ export const requestNode = (
 
   let subscriptionSucceeded = false;
 
-  const client = createClient(url, undefined, false);
+  const client = createClient({
+    url,
+    retry: false,
+    connectToDevTools: false,
+  });
 
   // make a query for block height
   client
