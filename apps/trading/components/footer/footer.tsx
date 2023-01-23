@@ -1,15 +1,19 @@
+import type { NodeHealthType } from '@vegaprotocol/environment';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Footer = () => {
-  const { VEGA_URL, setNodeSwitcherOpen } = useEnvironment();
+  const { VEGA_URL, nodeHealth, setNodeSwitcherOpen } = useEnvironment();
   return (
     <footer className="px-4 py-1 text-xs border-t border-default">
       <div className="flex justify-between">
         <div className="flex gap-2">
           {VEGA_URL && (
             <>
-              <NodeHealth openNodeSwitcher={setNodeSwitcherOpen} />
+              <NodeHealth
+                health={nodeHealth}
+                openNodeSwitcher={setNodeSwitcherOpen}
+              />
               {' | '}
               <NodeUrl url={VEGA_URL} openNodeSwitcher={setNodeSwitcherOpen} />
             </>
@@ -34,22 +38,21 @@ const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
 
 interface NodeHealthProps {
   openNodeSwitcher: () => void;
+  health: NodeHealthType;
 }
 
-const NodeHealth = ({ openNodeSwitcher }: NodeHealthProps) => {
-  const { nodeHealth } = useEnvironment();
-
+export const NodeHealth = ({ health, openNodeSwitcher }: NodeHealthProps) => {
   let intent = Intent.Success;
-  if (nodeHealth === 'Critical') {
+  if (health === 'Critical') {
     intent = Intent.Danger;
-  } else if (nodeHealth === 'Bad') {
+  } else if (health === 'Bad') {
     intent = Intent.Warning;
   }
 
   return (
     <span>
       <Indicator variant={intent} />
-      <ButtonLink onClick={openNodeSwitcher}>{nodeHealth}</ButtonLink>
+      <ButtonLink onClick={openNodeSwitcher}>{health}</ButtonLink>
     </span>
   );
 };
