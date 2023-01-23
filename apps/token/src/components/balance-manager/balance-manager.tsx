@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useContracts } from '../../contexts/contracts/contracts-context';
@@ -10,152 +10,47 @@ import { useGetAssociationBreakdown } from '../../hooks/use-get-association-brea
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
 import { useBalances } from '../../lib/balances/balances-store';
 import type { ReactElement } from 'react';
-import type { Contract, EventFilter, Event } from 'ethers';
-import uniqBy from 'lodash/uniqBy';
+import {
+  useListenForStakingEvents,
+  usePendingBalancesStore,
+} from '../../hooks/use-pending-balances-manager';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface BalanceManagerProps {
   children: ReactElement;
 }
 
-const useWaitForTransaction = (
-  numberOfConfirmations: number,
-  contract: Contract,
-  filter: EventFilter
-) => {
-  const { provider } = useWeb3React();
-  const [pendingBalances, _setPendingBalances] = useState<Event[]>([]);
-
-  const setPendingBalances = (balances: Event[]) => {
-    _setPendingBalances(uniqBy(balances, 'transactionHash'));
-  };
-  useEffect(() => {
-    if (!contract) {
-      return;
-    }
-
-    const listener = async (...args: any[]) => {
-      const event = args[3] as Event;
-      setPendingBalances([...pendingBalances, event]);
-      const tx = await event.getTransaction();
-      await tx.wait(numberOfConfirmations);
-      setPendingBalances(
-        pendingBalances.filter(
-          ({ transactionHash }) => transactionHash !== event.transactionHash
-        )
-      );
-    };
-
-    contract?.on(filter, listener);
-
-    return () => {
-      contract?.off(filter, listener);
-    };
-  });
-
-  const getExistingTransactions = useCallback(async () => {
-    const blockNumber = (await provider?.getBlockNumber()) || 0;
-    return await contract.queryFilter(
-      filter,
-      blockNumber - numberOfConfirmations
-    );
-  }, [contract, filter, numberOfConfirmations, provider]);
-
-  const processWaitForExistingTransactions = useCallback(
-    (events: Event[], numberOfConfirmations: number) => {
-      events.map(async (event) => {
-        const tx = await event.getTransaction();
-
-        await tx.wait(Math.max(numberOfConfirmations, 0));
-
-        setPendingBalances(
-          pendingBalances.filter(
-            ({ transactionHash }) => transactionHash !== event.transactionHash
-          )
-        );
-      });
-    },
-    [pendingBalances]
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-    getExistingTransactions().then((events) => {
-      if (!cancelled) {
-        setPendingBalances([...events]);
-        processWaitForExistingTransactions(
-          [...events],
-          numberOfConfirmations
-        );
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    getExistingTransactions,
-    numberOfConfirmations,
-    processWaitForExistingTransactions,
-  ]);
-
-  return pendingBalances;
-};
-
-const useListenForStakingEvents = (
-  contract: Contract,
-  vegaPublicKey: string,
-  numberOfConfirmations: number
-) => {
-  const addFilter = contract.filters.Stake_Deposited(null, null, vegaPublicKey);
-  const removeFilter = contract.filters.Stake_Removed(
-    null,
-    null,
-    vegaPublicKey
-  );
-
-  const pendingAdds = useWaitForTransaction(
-    numberOfConfirmations,
-    contract,
-    addFilter
-  );
-
-  const pendingRemoves = useWaitForTransaction(
-    numberOfConfirmations,
-    contract,
-    removeFilter
-  );
-
-  return { pendingAdds, pendingRemoves };
-};
-
 export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const contracts = useContracts();
+  const { pubKey } = useVegaWallet();
   const { account } = useWeb3React();
+  const pendingBalances = usePendingBalancesStore(
+    (state) => state.pendingBalances
+  );
+  console.log(pendingBalances);
   const {
     appState: { decimals },
   } = useAppState();
   const { updateBalances: updateStoreBalances } = useBalances();
   const { config } = useEthereumConfig();
 
-  const numberOfConfirmations = 427;
-  const vegaPublicKey =
-    '0x99abc3dc34cf578befc5ca121e9a0d786d0defb708f9734cf18e1fe15d3253a5';
+  const numberOfConfirmations = useRef(1);
 
   // process the transactions to know how much pending money we have
-  // remove hard coding
-  // contracts undefined
   // breaks if no provider?
+  // fix as string
+  // contracts undefined
 
   useListenForStakingEvents(
     contracts?.staking.contract,
-    vegaPublicKey,
-    numberOfConfirmations
+    pubKey as string,
+    numberOfConfirmations.current
   );
 
   useListenForStakingEvents(
     contracts?.vesting.contract,
-    vegaPublicKey,
-    numberOfConfirmations
+    pubKey as string,
+    numberOfConfirmations.current
   );
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
