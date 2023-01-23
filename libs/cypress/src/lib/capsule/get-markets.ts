@@ -3,7 +3,7 @@ import { requestGQL } from './request';
 
 export async function getMarkets() {
   const query = gql`
-    {
+    query {
       marketsConnection {
         edges {
           node {
