@@ -15,15 +15,3 @@ Cypress.Commands.add(
       });
   }
 );
-
-Cypress.Commands.add('connectPublicKey', function (pubKey) {
-  cy.getByTestId('connect-vega-wallet').then((connectWallet) => {
-    if (connectWallet.length) {
-      cy.getByTestId('connect-vega-wallet').click();
-      cy.getByTestId('connector-view').should('be.visible').click();
-      cy.getByTestId('address').click();
-      cy.getByTestId('address').type(pubKey);
-      cy.getByTestId('connect').click();
-    }
-  });
-});
