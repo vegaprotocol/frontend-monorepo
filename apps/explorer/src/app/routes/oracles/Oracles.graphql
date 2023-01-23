@@ -50,7 +50,10 @@ fragment ExplorerOracleDataSource on OracleSpec {
 }
 
 fragment ExplorerOracleDataConnection on OracleSpec {
-  dataConnection {
+  dataConnection(pagination: { first: 1 }) {
+    pageInfo {
+      hasNextPage
+    }
     edges {
       node {
         externalData {
@@ -79,7 +82,10 @@ fragment ExplorerOracleDataConnection on OracleSpec {
 }
 
 query ExplorerOracleSpecs {
-  oracleSpecsConnection {
+  oracleSpecsConnection(pagination: { first: 50 }) {
+    pageInfo {
+      hasNextPage
+    }
     edges {
       node {
         ...ExplorerOracleDataSource
