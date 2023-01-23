@@ -7,7 +7,8 @@ export type ProposalLinkProps = {
 
 /**
  * Given a proposal ID, generates an external link over to
- * the Governance page for more information
+ * the Governance page for more information. The name is
+ * rendered in place of the ID.
  */
 const ProposalLink = ({ id }: ProposalLinkProps) => {
   const { data } = useExplorerProposalQuery({
