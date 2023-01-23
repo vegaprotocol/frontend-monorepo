@@ -99,7 +99,7 @@ describe('home', { tags: '@regression' }, () => {
       // the choose market overlay is no longer showing
       cy.contains('Select a market to get started').should('not.exist');
       cy.contains('Loading...').should('not.exist');
-      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-0');
+      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-1');
     });
   });
 

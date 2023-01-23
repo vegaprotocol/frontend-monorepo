@@ -61,7 +61,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {
-            id: '',
+            id: 'oracleId',
           },
           quoteName: 'DAI',
           __typename: 'Future',
@@ -110,7 +110,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {
-            id: '',
+            id: 'oracleId',
           },
           quoteName: 'USD',
           __typename: 'Future',
@@ -159,7 +159,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {
-            id: '',
+            id: 'oracleId',
           },
           quoteName: 'USDC',
           __typename: 'Future',
@@ -208,7 +208,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {
-            id: '',
+            id: 'oracleId',
           },
           quoteName: 'BTC',
           __typename: 'Future',
