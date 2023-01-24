@@ -3,10 +3,17 @@ import type { SeverityLevel, Scope } from '@sentry/browser';
 import type { Severity, Breadcrumb, Primitive } from '@sentry/types';
 
 type ConsoleArg = string | number | boolean | bigint | symbol | object;
+type ConsoleMethod = {
+  [K in keyof Console]: Console[K] extends (...args: ConsoleArg[]) => any
+    ? K
+    : never;
+}[keyof Console] &
+  string;
 
 interface LoggerConf {
   application?: string;
   tags?: string[];
+  logLevel?: SeverityLevel;
 }
 
 const isPrimitive = (arg: ConsoleArg | undefined | null): arg is Primitive => {
@@ -16,6 +23,20 @@ const isPrimitive = (arg: ConsoleArg | undefined | null): arg is Primitive => {
 };
 
 export class LocalLogger {
+  static levelLogMap = {
+    debug: 10,
+    info: 20,
+    log: 30,
+    warning: 40,
+    error: 50,
+    critical: 60,
+    fatal: 70,
+    silent: 80,
+  };
+  private _logLevel: SeverityLevel = 'info';
+  private get numberLogLevel() {
+    return LocalLogger.levelLogMap[this._logLevel];
+  }
   private tags: string[] = [];
   private application = 'trading';
   constructor(conf: LoggerConf) {
@@ -23,37 +44,41 @@ export class LocalLogger {
       this.application = conf.application;
     }
     this.tags = [...(conf.tags || [])];
-  }
-  public silent(...args: ConsoleArg[]) {
-    console.log.apply(console, [`${this.application}:silent: `, ...args]);
+    this._logLevel = conf.logLevel || this._logLevel;
   }
   public debug(...args: ConsoleArg[]) {
-    console.debug.apply(console, [`${this.application}:debug: `, ...args]);
-    this._transmit('debug', args);
+    this._log('debug', 'debug', args);
   }
   public info(...args: ConsoleArg[]) {
-    console.info.apply(console, [`${this.application}:info: `, ...args]);
-    this._transmit('info', args);
+    this._log('info', 'info', args);
   }
   public log(...args: ConsoleArg[]) {
-    console.log.apply(console, [`${this.application}:log: `, ...args]);
-    this._transmit('log', args);
+    this._log('log', 'log', args);
   }
   public warn(...args: ConsoleArg[]) {
-    console.warn.apply(console, [`${this.application}:warning: `, ...args]);
-    this._transmit('warning', args);
+    this._log('warning', 'warn', args);
   }
   public error(...args: ConsoleArg[]) {
-    console.error.apply(console, [`${this.application}:error: `, ...args]);
-    this._transmit('error', args);
+    this._log('error', 'error', args);
   }
   public critical(...args: ConsoleArg[]) {
-    console.error.apply(console, [`${this.application}:critical: `, ...args]);
-    this._transmit('critical', args);
+    this._log('critical', 'error', args);
   }
   public fatal(...args: ConsoleArg[]) {
-    console.error.apply(console, [`${this.application}:fatal: `, ...args]);
-    this._transmit('fatal', args);
+    this._log('fatal', 'error', args);
+  }
+  private _log(
+    level: SeverityLevel,
+    logMethod: ConsoleMethod,
+    args: ConsoleArg[]
+  ) {
+    if (this.numberLogLevel <= LocalLogger.levelLogMap[level]) {
+      console[logMethod].apply(console, [
+        `${this.application}:${level}: `,
+        ...args,
+      ]);
+      this._transmit(level, args);
+    }
   }
   private _extractArgs(
     level: SeverityLevel,
@@ -106,6 +131,12 @@ export class LocalLogger {
   public addSentryBreadcrumb(breadcrumb: Breadcrumb) {
     Sentry.addBreadcrumb(breadcrumb);
   }
+  public setLogLevel(logLevel: SeverityLevel) {
+    this._logLevel = logLevel;
+  }
+  public get logLevel() {
+    return this._logLevel;
+  }
 }
 
 let singleLoggerInstance: LocalLogger;
@@ -113,6 +144,9 @@ let singleLoggerInstance: LocalLogger;
 export const localLoggerFactory = (conf: LoggerConf) => {
   if (!singleLoggerInstance) {
     singleLoggerInstance = new LocalLogger(conf);
+  }
+  if (conf.logLevel && singleLoggerInstance.logLevel !== conf.logLevel) {
+    singleLoggerInstance.setLogLevel(conf.logLevel);
   }
   return singleLoggerInstance;
 };

@@ -2,28 +2,29 @@ import * as Sentry from '@sentry/browser';
 import type { Severity } from '@sentry/types/types/severity';
 import { LocalLogger, localLoggerFactory } from './local-logger';
 
-type LoggerMethodsType =
-  | 'silent'
-  | 'debug'
-  | 'info'
-  | 'log'
-  | 'warn'
-  | 'error'
-  | 'critical'
-  | 'fatal';
-type ConsoleMethodType = jest.FunctionPropertyNames<Console>;
+const methods = [
+  'debug',
+  'info',
+  'log',
+  'warn',
+  'error',
+  'critical',
+  'fatal',
+] as const;
+const methodToConsoleMethod = [
+  'debug',
+  'info',
+  'log',
+  'warn',
+  'error',
+  'error',
+  'error',
+] as const;
 
 describe('LocalLogger', () => {
-  const methods = [
-    'silent',
-    'debug',
-    'info',
-    'log',
-    'warn',
-    'error',
-    'critical',
-    'fatal',
-  ] as LoggerMethodsType[];
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('logger should be properly instantiate', () => {
     const logger = localLoggerFactory({});
     expect(logger).toBeInstanceOf(LocalLogger);
@@ -33,18 +34,7 @@ describe('LocalLogger', () => {
   });
 
   it('each method should call console', () => {
-    const methodToConsoleMethod = [
-      'log',
-      'debug',
-      'info',
-      'log',
-      'warn',
-      'error',
-      'error',
-      'error',
-    ] as ConsoleMethodType[];
     const methodToLevel = [
-      'silent',
       'debug',
       'info',
       'log',
@@ -53,10 +43,10 @@ describe('LocalLogger', () => {
       'critical',
       'fatal',
     ];
-    const logger = localLoggerFactory({});
+    const logger = localLoggerFactory({ logLevel: 'debug' });
     methods.forEach((method, i) => {
       const consoleMethod = methodToConsoleMethod[i];
-      jest.spyOn(console, consoleMethod);
+      jest.spyOn(console, consoleMethod).mockImplementation();
       logger[method]('test', 'test2');
       expect(console[consoleMethod]).toHaveBeenCalledWith(
         `trading:${methodToLevel[i]}: `,
@@ -70,15 +60,12 @@ describe('LocalLogger', () => {
   it('each method should call sentry', () => {
     jest.spyOn(Sentry, 'captureMessage');
     jest.spyOn(Sentry, 'captureException');
-    const logger = localLoggerFactory({});
+    const logger = localLoggerFactory({ logLevel: 'debug' });
     methods.forEach((method, i) => {
+      jest.spyOn(console, methodToConsoleMethod[i]).mockImplementation();
       logger[method]('test', 'test2');
-
       /* eslint-disable jest/no-conditional-expect */
-      if (i === 0) {
-        expect(Sentry.captureMessage).not.toHaveBeenCalled();
-        expect(Sentry.captureException).not.toHaveBeenCalled();
-      } else if (i < 5) {
+      if (i < 4) {
         expect(Sentry.captureMessage).toHaveBeenCalled();
         expect(Sentry.captureException).not.toHaveBeenCalled();
       } else {
@@ -107,5 +94,20 @@ describe('LocalLogger', () => {
     };
     logger.addSentryBreadcrumb(breadCrumb);
     expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(breadCrumb);
+  });
+
+  it('setLogLevel should change log level', () => {
+    const logger = localLoggerFactory({ logLevel: 'info' });
+    jest.spyOn(console, 'debug').mockImplementation();
+    logger.debug('test', 'test1');
+    expect(console.debug).not.toHaveBeenCalled();
+
+    logger.setLogLevel('debug');
+    logger.debug('test', 'test1');
+    expect(console.debug).toHaveBeenCalledWith(
+      'trading:debug: ',
+      'test',
+      'test1'
+    );
   });
 });
