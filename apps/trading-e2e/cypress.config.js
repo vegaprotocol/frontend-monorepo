@@ -42,5 +42,6 @@ module.exports = defineConfig({
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
     grepOmitFiltered: true,
+    txTimeout: { timeout: 70000 },
   },
 });
