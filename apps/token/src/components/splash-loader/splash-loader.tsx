@@ -12,7 +12,7 @@ export const SplashLoader = ({ text = 'Loading' }: { text?: string }) => {
 
   return (
     <div className="flex flex-col items-center" data-testid="splash-loader">
-      <div className="flex flex-wrap w-[50px] h-[50px] mb-20">
+      <div className="flex flex-wrap w-[50px] h-[50px] mb-4">
         {new Array(25).fill(null).map((_, i) => {
           return (
             <div

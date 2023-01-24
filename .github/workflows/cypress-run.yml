@@ -14,9 +14,10 @@ on:
 jobs:
   e2e:
     strategy:
+      fail-fast: false
       matrix:
         project: ${{ fromJSON(inputs.projects) }}
-    runs-on: self-hosted
+    runs-on: self-hosted-runner
     timeout-minutes: 30
     steps:
       # Checks if skip cache was requested

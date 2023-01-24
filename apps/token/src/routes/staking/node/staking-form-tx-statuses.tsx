@@ -13,6 +13,7 @@ interface StakeFormTxStatusesProps {
   removeType: RemoveType;
   isDialogVisible: boolean;
   toggleDialog: () => void;
+  error: Error | null;
 }
 
 export const StakingFormTxStatuses = ({
@@ -23,6 +24,7 @@ export const StakingFormTxStatuses = ({
   removeType,
   isDialogVisible,
   toggleDialog,
+  error,
 }: StakeFormTxStatusesProps) => {
   switch (formState) {
     case FormState.Requested:
@@ -59,6 +61,7 @@ export const StakingFormTxStatuses = ({
           nodeName={nodeName}
           isDialogVisible={isDialogVisible}
           toggleDialog={toggleDialog}
+          error={error}
         />
       );
     default:
