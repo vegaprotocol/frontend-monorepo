@@ -1,4 +1,4 @@
-import type { NodeHealthType } from '@vegaprotocol/environment';
+import type { NodeHealth as NodeHealthType } from '@vegaprotocol/environment';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 
