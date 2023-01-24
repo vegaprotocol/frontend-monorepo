@@ -12,6 +12,13 @@ export type ExplorerOracleSpecsQueryVariables = Types.Exact<{ [key: string]: nev
 
 export type ExplorerOracleSpecsQuery = { __typename?: 'Query', oracleSpecsConnection?: { __typename?: 'OracleSpecsConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean }, edges?: Array<{ __typename?: 'OracleSpecEdge', node: { __typename?: 'OracleSpec', dataSourceSpec: { __typename?: 'ExternalDataSourceSpec', spec: { __typename?: 'DataSourceSpec', id: string, createdAt: any, updatedAt?: any | null, status: Types.DataSourceSpecStatus, data: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator }> | null }> | null } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator } | null> } } } } }, dataConnection: { __typename?: 'OracleDataConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean }, edges?: Array<{ __typename?: 'OracleDataEdge', node: { __typename?: 'OracleData', externalData: { __typename?: 'ExternalData', data: { __typename?: 'Data', matchedSpecIds?: Array<string> | null, broadcastAt: any, signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, data?: Array<{ __typename?: 'Property', name: string, value: string }> | null } } } } | null> | null } } } | null> | null } | null };
 
+export type ExplorerOracleSpecByIdQueryVariables = Types.Exact<{
+  id: Types.Scalars['ID'];
+}>;
+
+
+export type ExplorerOracleSpecByIdQuery = { __typename?: 'Query', oracleSpec?: { __typename?: 'OracleSpec', dataSourceSpec: { __typename?: 'ExternalDataSourceSpec', spec: { __typename?: 'DataSourceSpec', id: string, createdAt: any, updatedAt?: any | null, status: Types.DataSourceSpecStatus, data: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator }> | null }> | null } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator } | null> } } } } }, dataConnection: { __typename?: 'OracleDataConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean }, edges?: Array<{ __typename?: 'OracleDataEdge', node: { __typename?: 'OracleData', externalData: { __typename?: 'ExternalData', data: { __typename?: 'Data', matchedSpecIds?: Array<string> | null, broadcastAt: any, signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, data?: Array<{ __typename?: 'Property', name: string, value: string }> | null } } } } | null> | null } } | null };
+
 export const ExplorerOracleDataSourceFragmentDoc = gql`
     fragment ExplorerOracleDataSource on OracleSpec {
   dataSourceSpec {
@@ -140,3 +147,40 @@ export function useExplorerOracleSpecsLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type ExplorerOracleSpecsQueryHookResult = ReturnType<typeof useExplorerOracleSpecsQuery>;
 export type ExplorerOracleSpecsLazyQueryHookResult = ReturnType<typeof useExplorerOracleSpecsLazyQuery>;
 export type ExplorerOracleSpecsQueryResult = Apollo.QueryResult<ExplorerOracleSpecsQuery, ExplorerOracleSpecsQueryVariables>;
+export const ExplorerOracleSpecByIdDocument = gql`
+    query ExplorerOracleSpecById($id: ID!) {
+  oracleSpec(oracleSpecId: $id) {
+    ...ExplorerOracleDataSource
+    ...ExplorerOracleDataConnection
+  }
+}
+    ${ExplorerOracleDataSourceFragmentDoc}
+${ExplorerOracleDataConnectionFragmentDoc}`;
+
+/**
+ * __useExplorerOracleSpecByIdQuery__
+ *
+ * To run a query within a React component, call `useExplorerOracleSpecByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExplorerOracleSpecByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExplorerOracleSpecByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useExplorerOracleSpecByIdQuery(baseOptions: Apollo.QueryHookOptions<ExplorerOracleSpecByIdQuery, ExplorerOracleSpecByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExplorerOracleSpecByIdQuery, ExplorerOracleSpecByIdQueryVariables>(ExplorerOracleSpecByIdDocument, options);
+      }
+export function useExplorerOracleSpecByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExplorerOracleSpecByIdQuery, ExplorerOracleSpecByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExplorerOracleSpecByIdQuery, ExplorerOracleSpecByIdQueryVariables>(ExplorerOracleSpecByIdDocument, options);
+        }
+export type ExplorerOracleSpecByIdQueryHookResult = ReturnType<typeof useExplorerOracleSpecByIdQuery>;
+export type ExplorerOracleSpecByIdLazyQueryHookResult = ReturnType<typeof useExplorerOracleSpecByIdLazyQuery>;
+export type ExplorerOracleSpecByIdQueryResult = Apollo.QueryResult<ExplorerOracleSpecByIdQuery, ExplorerOracleSpecByIdQueryVariables>;

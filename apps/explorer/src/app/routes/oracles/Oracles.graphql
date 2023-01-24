@@ -50,7 +50,7 @@ fragment ExplorerOracleDataSource on OracleSpec {
 }
 
 fragment ExplorerOracleDataConnection on OracleSpec {
-  dataConnection(pagination: { first: 1 }) {
+  dataConnection {
     pageInfo {
       hasNextPage
     }
@@ -89,8 +89,14 @@ query ExplorerOracleSpecs {
     edges {
       node {
         ...ExplorerOracleDataSource
-        ...ExplorerOracleDataConnection
       }
     }
+  }
+}
+
+query ExplorerOracleSpecById($id: ID!) {
+  oracleSpec(oracleSpecId: $id) {
+    ...ExplorerOracleDataSource
+    ...ExplorerOracleDataConnection
   }
 }
