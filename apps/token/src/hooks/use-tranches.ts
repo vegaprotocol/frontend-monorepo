@@ -1,30 +1,18 @@
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { Tranche } from '@vegaprotocol/smart-contracts';
 import React, { useEffect } from 'react';
-import type { Networks } from '@vegaprotocol/environment';
-import { useEnvironment } from '@vegaprotocol/environment';
-
 import { BigNumber } from '../lib/bignumber';
-
-const TRANCHES_URLS: { [N in Networks]: string } = {
-  MAINNET: 'https://static.vega.xyz/assets/mainnet-tranches.json',
-  MIRROR: 'https://static.vega.xyz/assets/mirror-tranches.json',
-  TESTNET: 'https://static.vega.xyz/assets/testnet-tranches.json',
-  SANDBOX: 'https://static.vega.xyz/assets/sandbox-tranches.json',
-  STAGNET1: 'https://static.vega.xyz/assets/stagnet1-tranches.json',
-  STAGNET3: 'https://static.vega.xyz/assets/stagnet3-tranches.json',
-  DEVNET: 'https://static.vega.xyz/assets/devnet-tranches.json',
-  CUSTOM: 'https://static.vega.xyz/assets/testnet-tranches.json',
-};
+import { ENV } from '../config';
 
 export function useTranches() {
-  const { VEGA_ENV } = useEnvironment();
   const [tranches, setTranches] = React.useState<Tranche[] | null>(null);
-  const url = React.useMemo(() => TRANCHES_URLS[VEGA_ENV], [VEGA_ENV]);
+  const url = `${ENV.tranchesServiceUrl}/tranches/stats`;
+  console.log(url);
   const {
     state: { data, loading, error },
   } = useFetch<Tranche[] | null>(url);
   useEffect(() => {
+    console.log(data);
     const processedTrances = data
       ?.map((t) => ({
         ...t,
