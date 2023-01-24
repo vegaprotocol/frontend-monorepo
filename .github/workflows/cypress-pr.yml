@@ -45,6 +45,7 @@ jobs:
           if [[ $affected == *"token"* ]]; then projects+='"token-e2e" '; fi
           if [[ $affected == *"trading"* ]]; then projects+='"trading-e2e" '; fi
           if [[ $affected == *"explorer"* ]]; then projects+='"explorer-e2e" '; fi
+          if [[ -z "$projects" ]]; then projects+='"token-e2e" "trading-e2e" "explorer-e2e" '; fi
           projects=${projects%?}
           projects=[${projects// /,}]
           echo PROJECTS=$projects >> $GITHUB_ENV
