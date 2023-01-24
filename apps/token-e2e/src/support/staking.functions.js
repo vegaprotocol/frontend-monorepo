@@ -40,7 +40,6 @@ Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
     .and('contain', `Add ${stake} $VEGA tokens`)
     .and('be.visible')
     .click();
-  cy.get(dialogCloseButton).click();
 });
 
 Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
