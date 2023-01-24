@@ -92,7 +92,7 @@ export const marketInfoQuery = (
         short: '0.008571790367285281',
         long: '0.008508132993273576',
       },
-      lpPriceRange: '2000',
+      lpPriceRange: '0.02',
       data: {
         __typename: 'MarketData',
         market: {

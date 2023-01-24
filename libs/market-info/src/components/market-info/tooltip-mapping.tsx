@@ -99,6 +99,6 @@ export const tooltipMapping: Record<string, ReactNode> = {
   ),
   suppliedStake: t('The current amount of liquidity supplied for this market.'),
   liquidityPriceRange: t(
-    `The maximum distance from the mid price that a liquidity providers orders need to be to count towards their commitment.`
+    `Percentage move up and down from the mid price, which specifies the range of price levels over which automated liquidity provision orders will be deployed.`
   ),
 };
