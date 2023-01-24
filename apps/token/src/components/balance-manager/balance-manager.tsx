@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useContracts } from '../../contexts/contracts/contracts-context';
@@ -10,8 +10,8 @@ import { useGetAssociationBreakdown } from '../../hooks/use-get-association-brea
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
 import { useBalances } from '../../lib/balances/balances-store';
 import type { ReactElement } from 'react';
-import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-pending-balances-manager';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-listen-for-staking-events';
 
 interface BalanceManagerProps {
   children: ReactElement;
@@ -27,9 +27,7 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const { updateBalances: updateStoreBalances } = useBalances();
   const { config } = useEthereumConfig();
 
-  const numberOfConfirmations = 100;
-
-  // breaks if no provider?
+  const numberOfConfirmations = config?.confirmations || 0;
 
   useListenForAssociationEvents(
     contracts?.staking.contract,
