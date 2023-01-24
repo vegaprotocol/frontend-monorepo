@@ -829,7 +829,7 @@ context(
         cy.highlight(`Associating tokens for first time`);
         cy.ethereum_wallet_connect();
         cy.connectVegaWallet();
-        cy.get('[href="/validators/associate"]').first().click();
+        cy.get('[href="/token/associate"]').first().click();
         cy.getByTestId('associate-radio-wallet', { timeout: 30000 }).click();
         cy.getByTestId('token-amount-input', epochTimeout).type('1');
         cy.getByTestId('token-input-submit-button', txTimeout)

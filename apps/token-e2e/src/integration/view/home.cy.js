@@ -131,7 +131,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         cy.get(associateVegaLink)
           .should('be.visible')
           .and('have.attr', 'href')
-          .and('equal', '/validators/associate');
+          .and('equal', '/token/associate');
       });
       it('should have STAKING button', function () {
         cy.get(stakingBtn)

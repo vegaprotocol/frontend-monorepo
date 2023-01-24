@@ -12,8 +12,8 @@ const Routes = {
   REDEEM: '/token/redeem',
   WITHDRAWALS: '/token/withdraw',
   SUPPLY: '/token/tranches',
-  ASSOCIATE: '/validators/associate',
-  DISASSOCIATE: '/validators/disassociate',
+  ASSOCIATE: '/token/associate',
+  DISASSOCIATE: '/token/disassociate',
 };
 
 export default Routes;
