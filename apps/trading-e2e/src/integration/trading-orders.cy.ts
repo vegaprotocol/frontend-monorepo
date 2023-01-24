@@ -35,6 +35,7 @@ describe('orders list', { tags: '@smoke' }, () => {
     });
     cy.wait('@Markets');
   });
+
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
     cy.getByTestId(cancelAllOrdersBtn).should('be.visible');
@@ -87,7 +88,7 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.get(`[row-id="${partiallyFilledId}"]`).within(() => {
       cy.get(`[col-id='${orderStatus}']`).should(
         'have.text',
-        'PartiallyFilled'
+        'Partially Filled'
       );
       cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7/10');
       cy.getByTestId(cancelOrderBtn).should('not.exist');
@@ -97,7 +98,13 @@ describe('orders list', { tags: '@smoke' }, () => {
 
   it('orders are sorted by most recent order', () => {
     // 7003-MORD-002
-    const expectedOrderList = ['BTCUSD.MF21', 'BTCUSD.MF21'];
+    const expectedOrderList = [
+      'BTCUSD.MF21',
+      'SOLUSD',
+      'AAPL.MF21',
+      'BTCUSD.MF21',
+      'BTCUSD.MF21',
+    ];
 
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
@@ -183,10 +190,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.getByTestId(`order-status-${orderId}`).should(
       'have.text',
-      'PartiallyFilled'
+      'Partially Filled'
     );
     cy.getByTestId(`order-status-${orderId}`)
-      .parent()
+      .parentsUntil(`.ag-row`)
       .siblings(`[col-id=${orderRemaining}]`)
       .should('have.text', '4/5');
   });

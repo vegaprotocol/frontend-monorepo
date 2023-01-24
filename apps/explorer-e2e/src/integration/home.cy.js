@@ -60,12 +60,10 @@ context('Home Page', function () {
       cy.get(statsValue).eq(9).should('not.be.empty');
       cy.get(statsValue).eq(10).should('not.be.empty');
       cy.get(statsValue).eq(11).should('not.be.empty');
-      if (Cypress.env('NIGHTLY_RUN') != true) {
-        cy.get(statsValue)
-          .eq(12)
-          .invoke('text')
-          .should('match', /v\d+\.\d+\.\d+/i);
-      }
+      cy.get(statsValue)
+        .eq(12)
+        .invoke('text')
+        .should('match', /v\d+\.\d+\.\d+/i);
       cy.get(statsValue)
         .eq(13)
         .invoke('text')

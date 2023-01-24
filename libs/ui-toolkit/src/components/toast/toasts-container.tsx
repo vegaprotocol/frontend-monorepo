@@ -13,7 +13,7 @@ export const ToastsContainer = ({
   return (
     <ul
       className={classNames(
-        'absolute top-0 right-0 pt-2 pr-2 max-w-full z-20 max-h-full overflow-auto',
+        'absolute top-0 right-0 pt-2 pr-2 max-w-full z-20 max-h-full overflow-x-hidden overflow-y-auto',
         {
           'flex flex-col-reverse': order === 'desc',
         }

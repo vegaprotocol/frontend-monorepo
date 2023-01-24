@@ -2,7 +2,7 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
-import { getExpiryDate } from '@vegaprotocol/market-info';
+import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/market-info';
 import { t } from '@vegaprotocol/react-helpers';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import {
@@ -16,8 +16,9 @@ import { MarketMarkPrice } from '../../components/market-mark-price';
 import { Last24hPriceChange } from '../../components/last-24h-price-change';
 import { Last24hVolume } from '../../components/last-24h-volume';
 import { MarketState } from '../../components/market-state';
-import { MarketTradingMode } from '../../components/market-trading-mode';
+import { HeaderStatMarketTradingMode } from '../../components/market-trading-mode';
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
+import { MarketState as State } from '@vegaprotocol/types';
 
 interface TradeMarketHeaderProps {
   market: SingleMarketFieldsFragment | null;
@@ -43,6 +44,7 @@ export const TradeMarketHeader = ({
     <Header
       title={
         <SelectMarketPopover
+          marketCode={market?.tradableInstrument.instrument.code || NO_MARKET}
           marketName={market?.tradableInstrument.instrument.name || NO_MARKET}
           onSelect={onSelect}
           onCellClick={onCellClick}
@@ -63,22 +65,35 @@ export const TradeMarketHeader = ({
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
-      <MarketMarkPrice
+      <HeaderStat heading={t('Price')} testId="market-price">
+        <MarketMarkPrice
+          marketId={market?.id}
+          decimalPlaces={market?.decimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStat heading={t('Change (24h)')} testId="market-change">
+        <Last24hPriceChange
+          marketId={market?.id}
+          decimalPlaces={market?.decimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStat
+        heading={t('Volume (24h)')}
+        testId="market-volume"
+        description={t(
+          'The total amount of assets traded in the last 24 hours.'
+        )}
+      >
+        <Last24hVolume
+          marketId={market?.id}
+          positionDecimalPlaces={market?.positionDecimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStatMarketTradingMode
         marketId={market?.id}
-        decimalPlaces={market?.decimalPlaces}
-        isHeader
+        onSelect={onSelect}
+        initialTradingMode={market?.tradingMode}
       />
-      <Last24hPriceChange
-        marketId={market?.id}
-        decimalPlaces={market?.decimalPlaces}
-        isHeader
-      />
-      <Last24hVolume
-        marketId={market?.id}
-        positionDecimalPlaces={market?.positionDecimalPlaces}
-        isHeader
-      />
-      <MarketTradingMode marketId={market?.id} onSelect={onSelect} isHeader />
       <MarketState market={market} />
       {asset ? (
         <HeaderStat
@@ -128,13 +143,30 @@ const ExpiryTooltipContent = ({
       market.tradableInstrument.instrument.product
         .dataSourceSpecForTradingTermination?.id;
 
+    const metadataExpiryDate = getMarketExpiryDate(
+      market.tradableInstrument.instrument.metadata.tags
+    );
+
+    const isExpired =
+      metadataExpiryDate &&
+      Date.now() - metadataExpiryDate.valueOf() > 0 &&
+      (market.state === State.STATE_TRADING_TERMINATED ||
+        market.state === State.STATE_SETTLED);
+
     return (
-      <section data-testid="expiry-tool-tip">
+      <section data-testid="expiry-tooltip">
         <p className="mb-2">
           {t(
             'This market expires when triggered by its oracle, not on a set date.'
           )}
         </p>
+        {metadataExpiryDate && !isExpired && (
+          <p className="mb-2">
+            {t(
+              'This timestamp is user curated metadata and does not drive any on-chain functionality.'
+            )}
+          </p>
+        )}
         {explorerUrl && oracleId && (
           <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
             {t('View oracle specification')}

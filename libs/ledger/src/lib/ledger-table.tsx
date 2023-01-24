@@ -3,6 +3,7 @@ import {
   DateRangeFilter,
   fromNanoSeconds,
   getDateTimeFormat,
+  SetFilter,
   t,
   truncateByChars,
 } from '@vegaprotocol/react-helpers';
@@ -50,24 +51,29 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           resizable: true,
           sortable: true,
           tooltipComponent: TransferTooltipCellComponent,
+          filterParams: { buttons: ['reset'] },
         }}
         {...props}
       >
         <AgGridColumn
           headerName={t('Sender')}
-          field="senderPartyId"
+          field="fromAccountPartyId"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'senderPartyId'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'fromAccountPartyId'>) =>
             truncateByChars(value || '')
           }
         />
         <AgGridColumn
           headerName={t('Account type')}
-          field="senderAccountType"
+          filter={SetFilter}
+          filterParams={{
+            set: AccountTypeMapping,
+          }}
+          field="fromAccountType"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'senderAccountType'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'fromAccountType'>) =>
             value ? AccountTypeMapping[value] : '-'
           }
         />
@@ -83,19 +89,23 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
         />
         <AgGridColumn
           headerName={t('Receiver')}
-          field="receiverPartyId"
+          field="toAccountPartyId"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'receiverPartyId'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'toAccountPartyId'>) =>
             truncateByChars(value || '')
           }
         />
         <AgGridColumn
           headerName={t('Account type')}
-          field="receiverAccountType"
+          filter={SetFilter}
+          filterParams={{
+            set: AccountTypeMapping,
+          }}
+          field="toAccountType"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<LedgerEntry, 'receiverAccountType'>) =>
+          }: VegaValueFormatterParams<LedgerEntry, 'toAccountType'>) =>
             value ? AccountTypeMapping[value] : '-'
           }
         />
@@ -110,7 +120,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           >) => value || '-'}
         />
         <AgGridColumn
-          headerName={t('Transfer Type')}
+          headerName={t('Transfer type')}
           field="transferType"
           tooltipField="transferType"
           valueFormatter={({
@@ -148,7 +158,43 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           }
         />
         <AgGridColumn
-          headerName={t('Vega Time')}
+          headerName={t('Sender account balance')}
+          field="fromAccountBalance"
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<LedgerEntry, 'fromAccountBalance'>) => {
+            const marketDecimalPlaces = data?.marketSender?.decimalPlaces;
+            const assetDecimalPlaces = data?.asset?.decimals || 0;
+            return value
+              ? addDecimalsFormatNumber(
+                  value,
+                  assetDecimalPlaces,
+                  marketDecimalPlaces
+                )
+              : value;
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Receiver account balance')}
+          field="toAccountBalance"
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<LedgerEntry, 'toAccountBalance'>) => {
+            const marketDecimalPlaces = data?.marketReceiver?.decimalPlaces;
+            const assetDecimalPlaces = data?.asset?.decimals || 0;
+            return value
+              ? addDecimalsFormatNumber(
+                  value,
+                  assetDecimalPlaces,
+                  marketDecimalPlaces
+                )
+              : value;
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Vega time')}
           field="vegaTime"
           valueFormatter={({
             value,

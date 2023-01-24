@@ -14,6 +14,7 @@ import {
   ClientErrors,
   JsonRpcConnector,
   RestConnector,
+  ViewConnector,
   WalletError,
 } from '../connectors';
 import { EnvironmentProvider } from '@vegaprotocol/environment';
@@ -30,11 +31,15 @@ jest.mock('zustand', () => () => () => ({
 
 let defaultProps: VegaConnectDialogProps;
 
+const INITIAL_KEY = 'some-key';
+
 const rest = new RestConnector();
 const jsonRpc = new JsonRpcConnector();
+const view = new ViewConnector(INITIAL_KEY);
 const connectors = {
   rest,
   jsonRpc,
+  view,
 };
 beforeEach(() => {
   jest.clearAllMocks();
@@ -89,12 +94,15 @@ describe('VegaConnectDialog', () => {
     rerender(generateJSX());
     const list = await screen.findByTestId('connectors-list');
     expect(list).toBeInTheDocument();
-    expect(list.children).toHaveLength(2);
+    expect(list.children).toHaveLength(3);
     expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
       'Connect Vega wallet'
     );
     expect(screen.getByTestId('connector-hosted')).toHaveTextContent(
       'Hosted Fairground wallet'
+    );
+    expect(screen.getByTestId('connector-view')).toHaveTextContent(
+      'View as vega user'
     );
   });
 
@@ -215,7 +223,7 @@ describe('VegaConnectDialog', () => {
         .mockImplementation(() => delayedResolve({ chainID: mockChainId }));
       spyOnConnectWallet = jest
         .spyOn(connectors.jsonRpc, 'connectWallet')
-        .mockImplementation(() => delayedResolve({ token: 'token' }));
+        .mockImplementation(() => delayedResolve(null));
       spyOnConnect = jest
         .spyOn(connectors.jsonRpc, 'connect')
         .mockImplementation(() =>
@@ -345,5 +353,76 @@ describe('VegaConnectDialog', () => {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
       fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
     }
+  });
+
+  describe('ViewOnlyConnector', () => {
+    const fillInForm = (address = '0'.repeat(64)) => {
+      fireEvent.change(screen.getByTestId('address'), {
+        target: { value: address },
+      });
+      return { address };
+    };
+
+    it('connects', async () => {
+      const spy = jest.spyOn(connectors.view, 'connect');
+
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      // Client side validation
+      fireEvent.submit(screen.getByTestId('view-connector-form'));
+      expect(spy).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.getAllByText('Required')).toHaveLength(1);
+      });
+
+      fillInForm();
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+
+      expect(spy).toHaveBeenCalled();
+
+      expect(mockCloseVegaDialog).toHaveBeenCalled();
+    });
+
+    it('ensures pubkey is of correct length', async () => {
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      fillInForm('123');
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+      await waitFor(() => {
+        expect(
+          screen.getAllByText('Pubkey must be 64 characters in length')
+        ).toHaveLength(1);
+      });
+    });
+
+    it('ensures pubkey is of valid hex', async () => {
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      fillInForm('q'.repeat(64));
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+      await waitFor(() => {
+        expect(screen.getAllByText('Pubkey must be be valid hex')).toHaveLength(
+          1
+        );
+      });
+    });
   });
 });

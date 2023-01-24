@@ -33,11 +33,11 @@ export const AgGridThemed = React.forwardRef<
     >
       {theme === 'dark' ? (
         <AgGridDarkTheme>
-          <AgGridReact {...props} ref={ref} />
+          <AgGridReact {...props} ref={ref} enableCellTextSelection={true} />
         </AgGridDarkTheme>
       ) : (
         <AgGridLightTheme>
-          <AgGridReact {...props} ref={ref} />
+          <AgGridReact {...props} ref={ref} enableCellTextSelection={true} />
         </AgGridLightTheme>
       )}
     </div>

@@ -71,6 +71,7 @@ export const StakingForm = ({
   const { appState } = useAppState();
   const { sendTx } = useVegaWallet();
   const [formState, setFormState] = React.useState(FormState.Default);
+  const [error, setError] = useState<Error | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const { t } = useTranslation();
   const { delegationsPagination } = ENV;
@@ -137,12 +138,15 @@ export const StakingForm = ({
 
       // await success via poll
     } catch (err) {
+      if (err instanceof Error) {
+        setError(err);
+      }
       setFormState(FormState.Failure);
       Sentry.captureException(err);
     }
   }
 
-  const [delegationSearch, { data, error }] = usePartyDelegationsLazyQuery({
+  const [delegationSearch, { data }] = usePartyDelegationsLazyQuery({
     variables: {
       partyId: pubKey,
       delegationsPagination: {
@@ -174,10 +178,6 @@ export const StakingForm = ({
             setFormState(FormState.Success);
             clearInterval(interval);
           }
-        }
-
-        if (error) {
-          Sentry.captureException(error);
         }
       }, 1000);
     }
@@ -311,6 +311,7 @@ export const StakingForm = ({
         removeType={removeType}
         isDialogVisible={isDialogVisible}
         toggleDialog={toggleDialog}
+        error={error}
       />
     </>
   );

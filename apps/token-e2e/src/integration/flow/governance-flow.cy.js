@@ -289,10 +289,10 @@ context(
               .and('be.visible');
           });
           cy.get_proposal_information_from_table('State')
-            .contains('STATE_OPEN')
+            .contains('Open')
             .and('be.visible');
           cy.get_proposal_information_from_table('Type')
-            .contains('NewFreeform')
+            .contains('Freeform')
             .and('be.visible');
         });
       });
@@ -617,7 +617,7 @@ context(
           });
         });
         cy.get_proposal_information_from_table('State')
-          .contains('STATE_REJECTED')
+          .contains('Rejected')
           .and('be.visible');
         cy.get_proposal_information_from_table('Rejection reason')
           .contains('PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE')

@@ -5,7 +5,6 @@ import { TxDetailsOrder } from './tx-order';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsHeartbeat } from './tx-hearbeat';
-import { TxDetailsLPAmend } from './tx-lp-amend';
 import { TxDetailsGeneric } from './tx-generic';
 import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
@@ -17,6 +16,9 @@ import { TxDetailsOrderAmend } from './tx-order-amend';
 import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
 import { TxDetailsUndelegate } from './tx-undelegation';
+import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
+import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
+import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -45,7 +47,7 @@ export const TxDetailsWrapper = ({
   const raw = get(blockData, `result.block.data.txs[${txData.index}]`);
 
   return (
-    <>
+    <div key={`txd-${txData.hash}`}>
       <section>{child({ txData, pubKey, blockData })}</section>
 
       <details title={t('Decoded transaction')} className="mt-3">
@@ -59,12 +61,14 @@ export const TxDetailsWrapper = ({
           <code className="break-all font-mono text-xs">{raw}</code>
         </details>
       ) : null}
-    </>
+    </div>
   );
 };
 
 /**
- * Chooses the appropriate component to render the full details of a transaction
+ * Chooses the appropriate component to render the full details of a transaction.
+ * The generic view that is default here displays as much detail as it can in a
+ * detail table at the top of the page.
  *
  * @param txData
  * @returns JSX.Element
@@ -74,6 +78,7 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
     return TxDetailsGeneric;
   }
 
+  // These come from https://github.com/vegaprotocol/vega/blob/develop/core/txn/command.go#L72-L98
   switch (txData.type) {
     case 'Submit Order':
       return TxDetailsOrder;
@@ -83,8 +88,6 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
-    case 'Amend LiquidityProvision Order':
-      return TxDetailsLPAmend;
     case 'Batch Market Instructions':
       return TxDetailsBatch;
     case 'Chain Event':
@@ -93,6 +96,12 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsNodeVote;
     case 'Withdraw':
       return TxDetailsWithdrawSubmission;
+    case 'Liquidity Provision Order':
+      return TxDetailsLiquiditySubmission;
+    case 'Amend LiquidityProvision Order':
+      return TxDetailsLiquidityAmendment;
+    case 'Cancel LiquidityProvision Order':
+      return TxDetailsLiquidityCancellation;
     case 'Delegate':
       return TxDetailsDelegate;
     case 'Undelegate':

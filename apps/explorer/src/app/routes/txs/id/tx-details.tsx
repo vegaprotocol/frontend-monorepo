@@ -15,7 +15,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
   return (
-    <section className="mb-10">
+    <section className="mb-10" key={txData.hash}>
       <TxDetailsWrapper height={txData.block} txData={txData} pubKey={pubKey} />
     </section>
   );

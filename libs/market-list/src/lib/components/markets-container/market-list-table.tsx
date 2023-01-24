@@ -15,7 +15,7 @@ import { AgGridDynamic as AgGrid, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketWithData } from '../../';
+import type { MarketFieldsFragment, MarketWithData } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
@@ -47,28 +47,20 @@ export const MarketListTable = forwardRef<
       <AgGridColumn
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
-      />
-      <AgGridColumn
-        headerName={t('Settlement asset')}
-        field="tradableInstrument.instrument.product.settlementAsset"
         cellRenderer={({
           value,
+          data,
         }: VegaICellRendererParams<
           MarketWithData,
-          'tradableInstrument.instrument.product.settlementAsset'
-        >) =>
-          value ? (
-            <ButtonLink
-              onClick={(e) => {
-                openAssetDetailsDialog(value.id, e.target as HTMLElement);
-              }}
-            >
-              {value.symbol}
-            </ButtonLink>
-          ) : (
-            ''
-          )
-        }
+          'tradableInstrument.instrument.code'
+        >) => {
+          if (!data) return null;
+          return <span data-testid={`market-${data.id}`}>{value}</span>;
+        }}
+      />
+      <AgGridColumn
+        headerName={t('Description')}
+        field="tradableInstrument.instrument.name"
       />
       <AgGridColumn
         headerName={t('Trading mode')}
@@ -87,6 +79,15 @@ export const MarketListTable = forwardRef<
             ? `${Schema.MarketTradingModeMapping[tradingMode]}
             - ${Schema.AuctionTriggerMapping[trigger]}`
             : Schema.MarketTradingModeMapping[tradingMode];
+        }}
+      />
+      <AgGridColumn
+        headerName={t('Status')}
+        field="state"
+        valueGetter={({
+          data,
+        }: VegaValueGetterParams<MarketFieldsFragment, 'state'>) => {
+          return data?.state ? Schema.MarketStateMapping[data?.state] : '-';
         }}
       />
       <AgGridColumn
@@ -161,7 +162,29 @@ export const MarketListTable = forwardRef<
             : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)
         }
       />
-      <AgGridColumn headerName={t('Description')} field="name" />
+      <AgGridColumn
+        headerName={t('Settlement asset')}
+        field="tradableInstrument.instrument.product.settlementAsset"
+        cellRenderer={({
+          value,
+        }: VegaICellRendererParams<
+          MarketWithData,
+          'tradableInstrument.instrument.product.settlementAsset'
+        >) =>
+          value ? (
+            <ButtonLink
+              onClick={(e) => {
+                openAssetDetailsDialog(value.id, e.target as HTMLElement);
+              }}
+            >
+              {value.symbol}
+            </ButtonLink>
+          ) : (
+            ''
+          )
+        }
+      />
+      <AgGridColumn headerName={t('Market ID')} field="id" />
     </AgGrid>
   );
 });

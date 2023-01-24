@@ -21,19 +21,19 @@ export interface EthStoredTxState extends EthTxState {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-  contract: Contract;
+  contract: Contract | null;
   methodName: ContractMethod;
   args: string[];
   requiredConfirmations: number;
   requiresConfirmation: boolean;
-  asset?: string;
+  assetId?: string;
   deposit?: DepositBusEventFieldsFragment;
 }
 
 export interface EthTransactionStore {
   transactions: (EthStoredTxState | undefined)[];
   create: (
-    contract: Contract,
+    contract: Contract | null,
     methodName: ContractMethod,
     args: string[],
     assetId?: string,
@@ -58,10 +58,10 @@ export const useEthTransactionStore = create<EthTransactionStore>(
   (set, get) => ({
     transactions: [] as EthStoredTxState[],
     create: (
-      contract: Contract,
+      contract: Contract | null,
       methodName: ContractMethod,
       args: string[] = [],
-      asset,
+      assetId?: string,
       requiredConfirmations = 1,
       requiresConfirmation = false
     ) => {
@@ -82,7 +82,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         dialogOpen: true,
         requiredConfirmations,
         requiresConfirmation,
-        asset: asset,
+        assetId,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;

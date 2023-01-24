@@ -1,23 +1,15 @@
 import classnames from 'classnames';
 import { useState, useEffect } from 'react';
-import * as Sentry from '@sentry/react';
-import { BrowserTracing } from '@sentry/tracing';
 import { useLocation } from 'react-router-dom';
-import {
-  EnvironmentProvider,
-  NetworkLoader,
-  useEnvironment,
-} from '@vegaprotocol/environment';
-import { NetworkInfo } from '@vegaprotocol/network-info';
+import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
-import { ENV } from './config/env';
 import type { InMemoryCacheConfig } from '@apollo/client';
+import { Footer } from './components/footer/footer';
 
 function App() {
-  const { VEGA_ENV } = useEnvironment();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const location = useLocation();
@@ -26,18 +18,9 @@ function App() {
     setMenuOpen(false);
   }, [location]);
 
-  useEffect(() => {
-    Sentry.init({
-      dsn: ENV.dsn,
-      integrations: [new BrowserTracing()],
-      tracesSampleRate: 1,
-      environment: VEGA_ENV,
-    });
-  }, [VEGA_ENV]);
-
   const cacheConfig: InMemoryCacheConfig = {
     typePolicies: {
-      Node: {
+      statistics: {
         keyFields: false,
       },
     },
@@ -61,9 +44,7 @@ function App() {
           <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
           <Nav menuOpen={menuOpen} />
           <Main />
-          <footer className="grid grid-rows-2 grid-cols-[1fr_auto] text-sm md:text-md md:flex md:col-span-2 p-4 gap-4 border-t border-neutral-700 dark:border-neutral-300">
-            <NetworkInfo />
-          </footer>
+          <Footer />
         </div>
       </NetworkLoader>
     </TendermintWebsocketProvider>

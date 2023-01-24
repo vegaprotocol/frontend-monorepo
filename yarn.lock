@@ -7559,10 +7559,10 @@
     "@typescript-eslint/types" "5.40.0"
     eslint-visitor-keys "^3.3.0"
 
-"@vegaprotocol/wallet-client@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/wallet-client/-/wallet-client-0.1.4.tgz#202fa1a84dbef57199810383f2887a7ee0afd64c"
-  integrity sha512-uGEbusoi3lwyl7Nn9ovBg9YHrfcH/Rl33KUcLfdMeTX8FZO+n7BVm3ejd00e5RsM/PJlqJ1oW4qkiq7kervxng==
+"@vegaprotocol/wallet-client@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/wallet-client/-/wallet-client-0.1.8.tgz#38ca8566d78b9f6694b12ad9364bb34d6482935d"
+  integrity sha512-FVvDvvlccKyXn0ujhivPUCVnkZYQJxtI1q8OgipNnbmAjU1mLyeuRTBw0Isu330yPI1KppNbW6Qicd8OTHBmxw==
   dependencies:
     express "4.18.2"
     nanoid "3.3.4"
@@ -19689,6 +19689,11 @@ rechoir@^0.6.2:
   integrity sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw==
   dependencies:
     resolve "^1.1.6"
+
+recursive-key-filter@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/recursive-key-filter/-/recursive-key-filter-1.0.2.tgz#78420279ec536e383c4437df367bc3da0cee8f12"
+  integrity sha512-glJv733zlpupnUlswNb7u0OEJaR0gojHWD00fDyISRJdXO9lVsllTJj6R4oJAYyRbIdadLffzsz28BU7nooXqA==
 
 redent@^1.0.0:
   version "1.0.0"

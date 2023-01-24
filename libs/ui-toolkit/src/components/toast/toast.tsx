@@ -11,15 +11,14 @@ import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
 import { Loader } from '../loader';
 
-type ToastContentProps = { id: string };
-type ToastContent = (props: ToastContentProps) => JSX.Element;
+export type ToastContent = JSX.Element | undefined;
 
 type ToastState = 'initial' | 'showing' | 'expired';
 
 export type Toast = {
   id: string;
   intent: Intent;
-  render: ToastContent;
+  content: ToastContent;
   closeAfter?: number;
   onClose?: () => void;
   signal?: 'close';
@@ -52,7 +51,7 @@ export const CLOSE_DELAY = 750;
 export const Toast = ({
   id,
   intent,
-  render,
+  content,
   closeAfter,
   signal,
   state = 'initial',
@@ -137,7 +136,7 @@ export const Toast = ({
           className="flex-1 p-2 pr-6 text-sm overflow-auto"
           data-testid="toast-content"
         >
-          {render({ id })}
+          {content}
         </div>
       </div>
     </div>

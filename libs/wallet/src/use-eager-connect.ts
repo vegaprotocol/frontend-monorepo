@@ -12,7 +12,6 @@ export function useEagerConnect(Connectors: {
   useEffect(() => {
     const attemptConnect = async () => {
       const cfg = getConfig();
-
       // No stored config, or config was malformed
       if (!cfg || !cfg.connector) {
         setConnecting(false);
@@ -31,7 +30,6 @@ export function useEagerConnect(Connectors: {
         );
         return;
       }
-
       try {
         await connect(Connectors[cfg.connector]);
       } catch {

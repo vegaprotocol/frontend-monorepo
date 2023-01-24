@@ -14,7 +14,15 @@ export interface useDataProviderParams<
   Variables extends OperationVariables = OperationVariables
 > {
   dataProvider: Subscribe<Data, Delta, Variables>;
-  update?: ({ delta, data }: { delta?: Delta; data: Data | null }) => boolean;
+  update?: ({
+    delta,
+    data,
+    totalCount,
+  }: {
+    delta?: Delta;
+    data: Data | null;
+    totalCount?: number;
+  }) => boolean;
   insert?: ({
     insertionData,
     data,
@@ -90,7 +98,12 @@ export const useDataProvider = <
       // if update or insert function returns true it means that component handles updates
       // component can use flush() which will call callback without delta and cause data state update
       if (!loading) {
-        if (isUpdate && !skipUpdates && update && update({ delta, data })) {
+        if (
+          isUpdate &&
+          !skipUpdates &&
+          update &&
+          update({ delta, data, totalCount })
+        ) {
           return;
         }
         if (isInsert && insert && insert({ insertionData, data, totalCount })) {

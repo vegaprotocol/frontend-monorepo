@@ -49,7 +49,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
         cy.getByTestId('external-link').should(
           'have.attr',
           'href',
-          'https://stagnet3.token.vega.xyz/proposals/123'
+          `${Cypress.env('VEGA_TOKEN_URL')}/proposals/123`
         );
       });
     });
@@ -163,7 +163,7 @@ describe('Market trading page', () => {
             .realHover();
         });
       });
-      cy.getByTestId('expiry-tool-tip')
+      cy.getByTestId('expiry-tooltip')
         .should(
           'contain.text',
           'This market expires when triggered by its oracle, not on a set date.'

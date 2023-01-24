@@ -70,7 +70,7 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
         ) : null}
         <KeyValueTableRow>
           {t('type')}
-          {proposal?.terms.change.__typename}
+          {t(`${proposal?.terms.change.__typename}`)}
         </KeyValueTableRow>
       </KeyValueTable>
     </RoundedWrapper>

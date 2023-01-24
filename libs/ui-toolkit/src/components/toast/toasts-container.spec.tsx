@@ -23,17 +23,17 @@ describe('ToastsContainer', () => {
       add({
         id: 'toast-a',
         intent: Intent.None,
-        render: () => <p>A</p>,
+        content: <p>A</p>,
       });
       add({
         id: 'toast-b',
         intent: Intent.None,
-        render: () => <p>B</p>,
+        content: <p>B</p>,
       });
       add({
         id: 'toast-c',
         intent: Intent.None,
-        render: () => <p>C</p>,
+        content: <p>C</p>,
       });
     });
     const { baseElement } = render(
@@ -54,17 +54,17 @@ describe('ToastsContainer', () => {
       add({
         id: 'toast-a',
         intent: Intent.None,
-        render: () => <p>A</p>,
+        content: <p>A</p>,
       });
       add({
         id: 'toast-b',
         intent: Intent.None,
-        render: () => <p>B</p>,
+        content: <p>B</p>,
       });
       add({
         id: 'toast-c',
         intent: Intent.None,
-        render: () => <p>C</p>,
+        content: <p>C</p>,
       });
     });
     const { baseElement } = render(
@@ -90,13 +90,13 @@ describe('ToastsContainer', () => {
       add({
         id: 'toast-a',
         intent: Intent.None,
-        render: () => <p>A</p>,
+        content: <p>A</p>,
         onClose: () => remove('toast-a'),
       });
       add({
         id: 'toast-b',
         intent: Intent.None,
-        render: () => <p>B</p>,
+        content: <p>B</p>,
         onClose: () => remove('toast-b'),
       });
     });
