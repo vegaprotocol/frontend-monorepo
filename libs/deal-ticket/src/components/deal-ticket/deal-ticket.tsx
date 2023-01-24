@@ -98,18 +98,14 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
 
   useEffect(() => {
     const priceUpdater = (event: CustomEvent) => {
-      console.log({ event });
-      console.log('set limitprice', event.detail);
       setValue('price', event.detail);
     };
-    // TODO I need to fix this
     document.addEventListener('limit-price', priceUpdater);
     return () => document.removeEventListener('limit-price', priceUpdater);
   }, [setValue]);
 
   // When order state changes persist it in local storage
   useEffect(() => {
-    console.log('setPersistedOrder', order);
     setPersistedOrder(order);
   }, [order, setPersistedOrder]);
 
