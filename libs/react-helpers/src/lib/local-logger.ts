@@ -3,7 +3,6 @@ import type { SeverityLevel, Scope } from '@sentry/browser';
 import type { Severity, Breadcrumb, Primitive } from '@sentry/types';
 
 type ConsoleArg = string | number | boolean | bigint | symbol | object;
-type ConsoleArgs = ConsoleArg[];
 
 interface LoggerConf {
   application?: string;
@@ -17,48 +16,48 @@ const isPrimitive = (arg: ConsoleArg | undefined | null): arg is Primitive => {
 };
 
 export class LocalLogger {
-  tags: string[] = [];
-  application = 'trading';
+  private tags: string[] = [];
+  private application = 'trading';
   constructor(conf: LoggerConf) {
     if (conf.application) {
       this.application = conf.application;
     }
     this.tags = [...(conf.tags || [])];
   }
-  public silent(...args: ConsoleArgs) {
+  public silent(...args: ConsoleArg[]) {
     console.log.apply(console, [`${this.application}:silent: `, ...args]);
   }
-  public debug(...args: ConsoleArgs) {
+  public debug(...args: ConsoleArg[]) {
     console.debug.apply(console, [`${this.application}:debug: `, ...args]);
     this._transmit('debug', args);
   }
-  public info(...args: ConsoleArgs) {
+  public info(...args: ConsoleArg[]) {
     console.info.apply(console, [`${this.application}:info: `, ...args]);
     this._transmit('info', args);
   }
-  public log(...args: ConsoleArgs) {
+  public log(...args: ConsoleArg[]) {
     console.log.apply(console, [`${this.application}:log: `, ...args]);
     this._transmit('log', args);
   }
-  public warn(...args: ConsoleArgs) {
+  public warn(...args: ConsoleArg[]) {
     console.warn.apply(console, [`${this.application}:warning: `, ...args]);
     this._transmit('warning', args);
   }
-  public error(...args: ConsoleArgs) {
+  public error(...args: ConsoleArg[]) {
     console.error.apply(console, [`${this.application}:error: `, ...args]);
     this._transmit('error', args);
   }
-  public critical(...args: ConsoleArgs) {
+  public critical(...args: ConsoleArg[]) {
     console.error.apply(console, [`${this.application}:critical: `, ...args]);
     this._transmit('critical', args);
   }
-  public fatal(...args: ConsoleArgs) {
+  public fatal(...args: ConsoleArg[]) {
     console.error.apply(console, [`${this.application}:fatal: `, ...args]);
     this._transmit('fatal', args);
   }
   private _extractArgs(
     level: SeverityLevel,
-    args: ConsoleArgs
+    args: ConsoleArg[]
   ): [string, Error, Scope] {
     const arg = args.shift();
     const error = arg instanceof Error ? arg : null;
@@ -88,7 +87,7 @@ export class LocalLogger {
     }
     return [msg, error || new Error(msg), scope];
   }
-  private _transmit(level: SeverityLevel, args: ConsoleArgs) {
+  private _transmit(level: SeverityLevel, args: ConsoleArg[]) {
     const [msg, error, logEvent] = this._extractArgs(level, args);
     switch (level) {
       case 'debug':
