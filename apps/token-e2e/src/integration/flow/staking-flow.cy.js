@@ -93,6 +93,7 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         // 2002-SINC-007
@@ -145,6 +146,7 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share(
@@ -209,6 +211,7 @@ context(
           .contains(6.0, epochTimeout)
           .should('be.visible');
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share(
@@ -243,6 +246,7 @@ context(
           .parent()
           .should('contain', 2.0, txTimeout);
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         cy.click_on_validator_from_list(1);
@@ -264,6 +268,7 @@ context(
           .eq(1)
           .should('contain', 1.0, txTimeout);
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         cy.get(`[row-id="${0}"]`).within(() => {
@@ -323,6 +328,7 @@ context(
             txTimeout
           );
 
+          cy.close_staking_dialog();
           cy.navigate_to('validators');
           // 2001-STKE-040
           cy.click_on_validator_from_list(0);
@@ -388,6 +394,7 @@ context(
           txTimeout
         );
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         cy.click_on_validator_from_list('0');
@@ -447,6 +454,7 @@ context(
           txTimeout
         );
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         cy.click_on_validator_from_list(0);
@@ -488,6 +496,7 @@ context(
           txTimeout
         );
 
+        cy.close_staking_dialog();
         cy.navigate_to('validators');
 
         cy.click_on_validator_from_list(0);
