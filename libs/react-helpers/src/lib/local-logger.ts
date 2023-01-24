@@ -77,8 +77,8 @@ export class LocalLogger {
         `${this.application}:${level}: `,
         ...args,
       ]);
-      this._transmit(level, args);
     }
+    this._transmit(level, args);
   }
   private _extractArgs(
     level: SeverityLevel,
