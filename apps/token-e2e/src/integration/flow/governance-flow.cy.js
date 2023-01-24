@@ -91,6 +91,7 @@ context(
           )[0]
         ).as('maxCloseHours');
       });
+      cy.createMarket();
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
 
@@ -124,7 +125,7 @@ context(
             'Asserting that network parameter maxCloseDays is at least 1 day higher than minCloseDays'
           );
           // workaround for first eth tx hanging
-          associateTokenStartOfTests();
+          // associateTokenStartOfTests();
         }
       );
 
@@ -791,6 +792,11 @@ context(
         // 3001-VOTE-079
         cy.contains('You voted: Against').should('be.visible');
       });
+
+      it.only('Able to view enacted proposal', function () {
+        cy.createMarket();
+
+      })
 
       function createRawProposal(proposerBalance) {
         if (proposerBalance)
