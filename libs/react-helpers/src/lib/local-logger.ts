@@ -1,7 +1,18 @@
 import * as Sentry from '@sentry/browser';
-import type { SeverityLevel, Scope } from '@sentry/browser';
+import type { Scope } from '@sentry/browser';
 import type { Severity, Breadcrumb, Primitive } from '@sentry/types';
 
+const LogLevels = [
+  'fatal',
+  'error',
+  'warning',
+  'log',
+  'info',
+  'debug',
+  'critical',
+  'silent',
+];
+type LogLevelsType = typeof LogLevels[number];
 type ConsoleArg = string | number | boolean | bigint | symbol | object;
 type ConsoleMethod = {
   [K in keyof Console]: Console[K] extends (...args: ConsoleArg[]) => unknown
@@ -13,7 +24,7 @@ type ConsoleMethod = {
 interface LoggerConf {
   application?: string;
   tags?: string[];
-  logLevel?: SeverityLevel;
+  logLevel?: LogLevelsType;
 }
 
 const isPrimitive = (arg: ConsoleArg | undefined | null): arg is Primitive => {
@@ -23,7 +34,7 @@ const isPrimitive = (arg: ConsoleArg | undefined | null): arg is Primitive => {
 };
 
 export class LocalLogger {
-  static levelLogMap = {
+  static levelLogMap: Record<LogLevelsType, number> = {
     debug: 10,
     info: 20,
     log: 30,
@@ -33,7 +44,7 @@ export class LocalLogger {
     fatal: 70,
     silent: 80,
   };
-  private _logLevel: SeverityLevel = 'info';
+  private _logLevel: LogLevelsType = 'info';
   private get numberLogLevel() {
     return LocalLogger.levelLogMap[this._logLevel];
   }
@@ -68,7 +79,7 @@ export class LocalLogger {
     this._log('fatal', 'error', args);
   }
   private _log(
-    level: SeverityLevel,
+    level: LogLevelsType,
     logMethod: ConsoleMethod,
     args: ConsoleArg[]
   ) {
@@ -81,7 +92,7 @@ export class LocalLogger {
     this._transmit(level, args);
   }
   private _extractArgs(
-    level: SeverityLevel,
+    level: LogLevelsType,
     args: ConsoleArg[]
   ): [string, Error, Scope] {
     const arg = args.shift();
@@ -112,7 +123,7 @@ export class LocalLogger {
     }
     return [msg, error || new Error(msg), scope];
   }
-  private _transmit(level: SeverityLevel, args: ConsoleArg[]) {
+  private _transmit(level: LogLevelsType, args: ConsoleArg[]) {
     const [msg, error, logEvent] = this._extractArgs(level, args);
     switch (level) {
       case 'debug':
@@ -131,7 +142,7 @@ export class LocalLogger {
   public addSentryBreadcrumb(breadcrumb: Breadcrumb) {
     Sentry.addBreadcrumb(breadcrumb);
   }
-  public setLogLevel(logLevel: SeverityLevel) {
+  public setLogLevel(logLevel: LogLevelsType) {
     this._logLevel = logLevel;
   }
   public get logLevel() {
