@@ -3,7 +3,7 @@ import { requestGQL } from './request';
 
 export async function getProposal(id: string) {
   const query = gql`
-    {
+    query {
       proposal(id: "${id}") {
         id
         state

@@ -3,7 +3,7 @@ import { requestGQL } from './request';
 
 export async function getPartyStake(partyId: string) {
   const query = gql`
-    {
+    query {
       party(id:"${partyId}") {
         stakingSummary {
           currentStakeAvailable

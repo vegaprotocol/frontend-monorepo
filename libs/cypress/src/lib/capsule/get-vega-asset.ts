@@ -3,7 +3,7 @@ import { requestGQL } from './request';
 
 export async function getVegaAsset() {
   const query = gql`
-    {
+    query {
       assetsConnection {
         edges {
           node {
