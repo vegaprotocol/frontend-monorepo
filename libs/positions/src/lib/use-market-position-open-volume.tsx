@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { positionsDataProvider } from './positions-data-providers';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
@@ -22,18 +22,15 @@ const getMarketPosition = ({
 export const useMarketPositionOpenVolume = (marketId: string) => {
   const { pubKey } = useVegaWallet();
   const [openVolume, setOpenVolume] = useState<string>('');
-  const variables = useMemo(() => {
-    return { partyId: pubKey || '' };
-  }, [pubKey]);
   const update = useCallback(
     ({ data }: { data: PositionsQuery['party'] | undefined }) => {
       const position = getMarketPosition({ data, marketId });
-      if (openVolume !== position?.openVolume) {
+      if (position?.openVolume) {
         setOpenVolume(position?.openVolume || '');
       }
       return true;
     },
-    [openVolume, setOpenVolume, marketId]
+    [setOpenVolume, marketId]
   );
 
   useDataProvider<
@@ -41,7 +38,7 @@ export const useMarketPositionOpenVolume = (marketId: string) => {
     PositionsSubscriptionSubscription['positions']
   >({
     dataProvider: positionsDataProvider,
-    variables,
+    variables: { partyId: pubKey || '' },
     skip: !pubKey || !marketId,
     update,
   });

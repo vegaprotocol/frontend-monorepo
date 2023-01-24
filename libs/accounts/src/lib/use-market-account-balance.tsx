@@ -9,26 +9,23 @@ export const useMarketAccountBalance = (marketId: string) => {
   const { pubKey } = useVegaWallet();
   const [accountBalance, setAccountBalance] = useState<string>('');
   const [accountDecimals, setAccountDecimals] = useState<number | null>(null);
-  const variables = useMemo(() => {
-    return { partyId: pubKey || '' };
-  }, [pubKey]);
   const update = useCallback(
     ({ data }: { data: Account[] | null }) => {
       const account = getMarketAccount({ accounts: data, marketId });
-      if (accountBalance !== account?.balance) {
+      if (account?.balance) {
         setAccountBalance(account?.balance || '');
       }
-      if (accountDecimals !== account?.asset.decimals) {
+      if (account?.asset.decimals) {
         setAccountDecimals(account?.asset.decimals || null);
       }
       return true;
     },
-    [accountBalance, accountDecimals, marketId]
+    [marketId]
   );
 
   useDataProvider({
     dataProvider: accountsDataProvider,
-    variables,
+    variables: { partyId: pubKey || '' },
     skip: !pubKey || !marketId,
     update,
   });
