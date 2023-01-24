@@ -22,7 +22,10 @@ export const PriceCell = memo(
         ? valueFormatted.split(decimalSeparator).map((v) => `${v}`)
         : [`${value}`];
       return onClick ? (
-        <button onClick={() => onClick(value)}>
+        <button
+          onClick={() => onClick(value)}
+          className="hover:dark:bg-neutral-800 hover:bg-neutral-200"
+        >
           <span
             ref={ref}
             className="font-mono relative text-black dark:text-white whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir"

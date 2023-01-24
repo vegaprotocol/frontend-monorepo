@@ -113,6 +113,15 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
+        onClick={(price?: string | number) => {
+          if (price) {
+            document.dispatchEvent(
+              new CustomEvent('limit-price', {
+                detail: price,
+              })
+            );
+          }
+        }}
       />
     </AsyncRenderer>
   );
