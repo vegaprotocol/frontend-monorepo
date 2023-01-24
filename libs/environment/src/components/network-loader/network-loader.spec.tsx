@@ -46,7 +46,10 @@ describe('Network loader', () => {
     render(
       <NetworkLoader skeleton={SKELETON_TEXT}>{SUCCESS_TEXT}</NetworkLoader>
     );
-    expect(createClient).toHaveBeenCalledWith('http://vega.node', undefined);
+    expect(createClient).toHaveBeenCalledWith({
+      url: 'http://vega.node',
+      cacheConfig: undefined,
+    });
     expect(await screen.findByText(SUCCESS_TEXT)).toBeInTheDocument();
   });
 });
