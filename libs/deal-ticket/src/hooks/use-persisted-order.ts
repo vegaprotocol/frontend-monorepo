@@ -1,20 +1,43 @@
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useCallback, useMemo } from 'react';
+import produce from 'immer';
+import create from 'zustand';
+import { persist } from 'zustand/middleware';
 
 type OrderData = OrderSubmissionBody['orderSubmission'] | null;
 
-export const usePersistedOrder = (market: {
-  id: string;
-}): [OrderData, (value: OrderData) => void] => {
-  const [value, setValue] = useLocalStorage(`deal-ticket-order-${market.id}`);
-  const order = value != null ? (JSON.parse(value) as OrderData) : null;
-  const setOrder = useCallback(
-    (order: OrderData) => setValue(JSON.stringify(order)),
-    [setValue]
-  );
-  return useMemo<[OrderData, (value: OrderData) => void]>(
-    () => [order, setOrder],
-    [order, setOrder]
-  );
+type PersistedOrderStore = {
+  orders: OrderData[];
+  getOrder: (marketId: string) => OrderData | undefined;
+  setOrder: (order: OrderData) => void;
+  clear: () => void;
 };
+
+export const usePersistedOrderStore = create(
+  persist<PersistedOrderStore>(
+    (set, get) => ({
+      orders: [],
+      getOrder: (marketId) => {
+        const persisted = get().orders.find((o) => o?.marketId === marketId);
+        return persisted;
+      },
+      setOrder: (order) => {
+        set(
+          produce((store: PersistedOrderStore) => {
+            const persisted = store.orders.find(
+              (o) => o?.marketId === order?.marketId
+            );
+            if (persisted) {
+              Object.assign(persisted, order);
+            } else {
+              store.orders.push(order);
+            }
+          })
+        );
+      },
+      clear: () => set({ orders: [] }),
+    }),
+    {
+      name: 'VEGA_DEAL_TICKET_ORDER_STORE',
+    }
+  )
+);
