@@ -170,6 +170,27 @@ context(
         });
     });
 
+    it('Unable to withdraw asset on pub key view', function () {
+      const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
+      const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
+
+      // Disconnect vega wallet
+      cy.getByTestId('manage-vega-wallet').click();
+      cy.getByTestId('disconnect').click();
+
+      cy.connectPublicKey(vegaWalletPubKey);
+      cy.getByTestId(withdraw).should('be.visible').click();
+      cy.getByTestId(selectAsset).select(usdtName);
+      cy.getByTestId(balanceAvailable, txTimeout).should('exist');
+      cy.getByTestId(amountInput).click().type('100');
+      cy.getByTestId(submitWithdrawalButton).click();
+
+      cy.getByTestId('dialog-content').within(() => {
+        cy.get('h1').should('have.text', 'Transaction failed');
+        cy.getByTestId('Error').should('have.text', expectedErrorTxt);
+      });
+    });
+
     function waitForAssetsDisplayed(expectedAsset) {
       cy.contains(expectedAsset, txTimeout).should('be.visible');
     }

@@ -5,12 +5,14 @@ interface StakeFailureProps {
   nodeName: string;
   isDialogVisible: boolean;
   toggleDialog: () => void;
+  error: Error | null;
 }
 
 export const StakeFailure = ({
   nodeName,
   isDialogVisible,
   toggleDialog,
+  error,
 }: StakeFailureProps) => {
   const { t } = useTranslation();
   return (
@@ -20,11 +22,15 @@ export const StakeFailure = ({
       open={isDialogVisible}
       onChange={toggleDialog}
     >
-      <p>
-        {t('stakeFailed', {
-          node: nodeName,
-        })}
-      </p>
+      {error ? (
+        <p>{error.message}</p>
+      ) : (
+        <p>
+          {t('stakeFailed', {
+            node: nodeName,
+          })}
+        </p>
+      )}
     </Dialog>
   );
 };
