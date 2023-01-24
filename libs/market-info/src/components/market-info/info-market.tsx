@@ -323,6 +323,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             targetStake: market.data && market.data.targetStake,
             suppliedStake: market.data && market.data?.suppliedStake,
             marketValueProxy: market.data && market.data.marketValueProxy,
+            liquidityPriceRange: market.lpPriceRange,
           }}
           decimalPlaces={
             market.tradableInstrument.instrument.product.settlementAsset

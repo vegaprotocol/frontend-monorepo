@@ -154,6 +154,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(0, 'Target Stake', '0.56789 tBTC');
     validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');
     validateMarketDataRow(2, 'Market Value Proxy', '6.77678 tBTC');
+    validateMarketDataRow(3, 'Liquidity Price Range', '0.02 tBTC');
 
     cy.getByTestId('view-liquidity-link').should(
       'have.text',
