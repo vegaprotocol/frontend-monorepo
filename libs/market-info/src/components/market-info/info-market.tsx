@@ -2,7 +2,9 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
+  addDecimalsFormatNumber,
   formatNumber,
+  formatNumberPercentage,
   removePaginationWrapper,
   t,
   useDataProvider,
@@ -182,6 +184,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     state: Schema.MarketStateMapping[market.state],
   };
 
+  const assetDecimals =
+    market.tradableInstrument.instrument.product.settlementAsset.decimals;
+
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -195,9 +200,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
               Schema.MarketTradingModeMapping[keyDetails.tradingMode],
             marketDecimalPlaces: market.decimalPlaces,
             positionDecimalPlaces: market.positionDecimalPlaces,
-            settlementAssetDecimalPlaces:
-              market.tradableInstrument.instrument.product.settlementAsset
-                .decimals,
+            settlementAssetDecimalPlaces: assetDecimals,
           }}
         />
       ),
@@ -295,10 +298,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           />
           <MarketInfoTable
             data={{ referencePrice: trigger.referencePrice }}
-            decimalPlaces={
-              market?.tradableInstrument.instrument.product?.settlementAsset
-                .decimals
-            }
+            decimalPlaces={assetDecimals}
           />
         </>
       ),
@@ -323,12 +323,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             targetStake: market.data && market.data.targetStake,
             suppliedStake: market.data && market.data?.suppliedStake,
             marketValueProxy: market.data && market.data.marketValueProxy,
-            liquidityPriceRange: market.lpPriceRange,
           }}
-          decimalPlaces={
-            market.tradableInstrument.instrument.product.settlementAsset
-              .decimals
-          }
+          decimalPlaces={assetDecimals}
           assetSymbol={assetSymbol}
         >
           <Link
@@ -339,6 +335,36 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             <UILink>{t('View liquidity provision table')}</UILink>
           </Link>
         </MarketInfoTable>
+      ),
+    },
+    {
+      title: t('Liquidity price range'),
+      content: (
+        <MarketInfoTable
+          data={{
+            liquidityPriceRange: formatNumberPercentage(
+              new BigNumber(market.lpPriceRange).times(100)
+            ),
+            LPVolumeMin:
+              market.data?.midPrice &&
+              `${addDecimalsFormatNumber(
+                new BigNumber(1)
+                  .minus(market.lpPriceRange)
+                  .times(market.data.midPrice)
+                  .toString(),
+                market.decimalPlaces
+              )} ${assetSymbol}`,
+            LPVolumeMax:
+              market.data?.midPrice &&
+              `${addDecimalsFormatNumber(
+                new BigNumber(1)
+                  .plus(market.lpPriceRange)
+                  .times(market.data.midPrice)
+                  .toString(),
+                market.decimalPlaces
+              )} ${assetSymbol}`,
+          }}
+        ></MarketInfoTable>
       ),
     },
     {
@@ -370,7 +396,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <div className="">
           <ExternalLink
-            className="mb-2"
+            className="mb-2 w-full"
             href={generatePath(TokenLinks.PROPOSAL_PAGE, {
               tokenUrl: VEGA_TOKEN_URL,
               proposalId: market.proposal?.id || '',
@@ -384,7 +410,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             {t('View governance proposal')}
           </ExternalLink>
           <ExternalLink
-            className="mt-2"
+            className="w-full"
             href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
               tokenUrl: VEGA_TOKEN_URL,
             })}

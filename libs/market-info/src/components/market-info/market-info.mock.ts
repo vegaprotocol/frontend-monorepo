@@ -99,6 +99,7 @@ export const marketInfoQuery = (
           __typename: 'Market',
           id: '54b78c1b877e106842ae156332ccec740ad98d6bad43143ac6a029501dd7c6e0',
         },
+        midPrice: '5749',
         markPrice: '5749',
         suppliedStake: '56767',
         marketValueProxy: '677678',
