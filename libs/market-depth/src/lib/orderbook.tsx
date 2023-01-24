@@ -30,7 +30,7 @@ interface OrderbookProps extends OrderbookData {
   positionDecimalPlaces: number;
   resolution: number;
   onResolutionChange: (resolution: number) => void;
-  onClick: (price?: string | number) => void;
+  onClick?: (price?: string | number) => void;
   fillGaps?: boolean;
 }
 
