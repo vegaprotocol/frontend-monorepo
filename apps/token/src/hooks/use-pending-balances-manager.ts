@@ -33,7 +33,7 @@ export const usePendingBalancesStore = create<EthereumStore>((set, get) => ({
 }));
 
 export const useListenForStakingEvents = (
-  contract: Contract,
+  contract: Contract | undefined,
   vegaPublicKey: string | null,
   numberOfConfirmations: number
 ) => {
@@ -44,12 +44,12 @@ export const useListenForStakingEvents = (
     })
   );
   const addFilter = useRef(
-    vegaPublicKey
+    vegaPublicKey && contract
       ? contract.filters.Stake_Deposited(null, null, `0x${vegaPublicKey}`)
       : null
   );
   const removeFilter = useRef(
-    vegaPublicKey
+    vegaPublicKey && contract
       ? contract.filters.Stake_Removed(null, null, `0x${vegaPublicKey}`)
       : null
   );
@@ -79,7 +79,7 @@ export const useListenForStakingEvents = (
 
 export const useListenForPendingEthEvents = (
   numberOfConfirmations: number,
-  contract: Contract,
+  contract: Contract | undefined,
   filter: EventFilter | null,
   addPendingTxs: (event: Event[]) => void,
   removePendingTx: (event: Event) => void
@@ -115,7 +115,7 @@ export const useListenForPendingEthEvents = (
    */
   const getExistingTransactions = useCallback(async () => {
     const blockNumber = (await provider?.getBlockNumber()) || 0;
-    if (!filter) {
+    if (!filter || !contract) {
       return [];
     }
     return await contract.queryFilter(

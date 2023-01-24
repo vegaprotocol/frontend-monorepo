@@ -31,7 +31,6 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
 
   // breaks if no provider?
   // get number of confirmations from network params
-  // contracts undefined
 
   useListenForAssociationEvents(
     contracts?.staking.contract,
