@@ -7,7 +7,7 @@ on:
 
 jobs:
   nightly:
-    uses: ./.github/workflows/cypress-pr.yml
+    uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
       projects: '["explorer-e2e","token-e2e","trading-e2e"]'

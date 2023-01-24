@@ -28,7 +28,8 @@ export function AppLoader({ children }: AppLoaderProps) {
 
 export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const { config, loading, error } = useEthereumConfig();
-  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
+    useEnvironment();
   const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
     store.connectors,
     store.initialize,
@@ -37,11 +38,22 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (config?.chain_id) {
       return initializeConnectors(
-        createConnectors(ETHEREUM_PROVIDER_URL, Number(config?.chain_id)),
+        createConnectors(
+          ETHEREUM_PROVIDER_URL,
+          Number(config?.chain_id),
+          ETH_LOCAL_PROVIDER_URL,
+          ETH_WALLET_MNEMONIC
+        ),
         Number(config.chain_id)
       );
     }
-  }, [config?.chain_id, ETHEREUM_PROVIDER_URL, initializeConnectors]);
+  }, [
+    config?.chain_id,
+    ETHEREUM_PROVIDER_URL,
+    initializeConnectors,
+    ETH_LOCAL_PROVIDER_URL,
+    ETH_WALLET_MNEMONIC,
+  ]);
 
   return (
     <AsyncRenderer

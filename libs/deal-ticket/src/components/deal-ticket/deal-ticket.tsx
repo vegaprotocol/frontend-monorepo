@@ -15,7 +15,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
-import { usePersistedOrder } from '../../hooks/use-persisted-order';
+import { usePersistedOrderStore } from '../../hooks/use-persisted-order';
 import {
   getDefaultOrder,
   validateMarketState,
@@ -43,7 +43,13 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
 
 export const DealTicket = ({ market, submit }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
-  const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
+  // const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
+  const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
+    (store) => ({
+      getPersistedOrder: store.getOrder,
+      setPersistedOrder: store.setOrder,
+    })
+  );
   const {
     register,
     control,
@@ -53,7 +59,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     clearErrors,
     formState: { errors },
   } = useForm<DealTicketFormFields>({
-    defaultValues: persistedOrder || getDefaultOrder(market),
+    defaultValues: getPersistedOrder(market.id) || getDefaultOrder(market),
   });
 
   const order = watch();

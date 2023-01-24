@@ -55,6 +55,7 @@ jobs:
 
   run:
     needs: pr
+    if: ${{ needs.pr.outputs.projects != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:

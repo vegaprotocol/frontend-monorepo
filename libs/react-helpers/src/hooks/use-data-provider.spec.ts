@@ -161,6 +161,13 @@ describe('useDataProvider hook', () => {
     });
     expect(update).toBeCalledTimes(1);
 
+    // setting same variables, with different object reference
+    await act(async () => {
+      rerender({ dataProvider, update, variables: { ...variables } });
+    });
+    expect(unsubscribe).toBeCalledTimes(0);
+    expect(dataProvider).toBeCalledTimes(1);
+
     // changing variables after date was loaded
     await act(async () => {
       rerender({ dataProvider, update, variables: { partyId: '0x321' } });
@@ -173,7 +180,7 @@ describe('useDataProvider hook', () => {
     await act(async () => {
       callback({ ...updateCallbackPayload });
     });
-    expect(update).toBeCalledTimes(2);
+    expect(update).toBeCalledTimes(3);
 
     // changing variables, apollo query will return error
     await act(async () => {
@@ -193,7 +200,7 @@ describe('useDataProvider hook', () => {
         pageInfo: null,
       });
     });
-    expect(update).toBeCalledTimes(3);
+    expect(update).toBeCalledTimes(5);
   });
 
   it('do not create data provider instance when skip is true', async () => {
