@@ -4,7 +4,7 @@ import type { Severity, Breadcrumb, Primitive } from '@sentry/types';
 
 type ConsoleArg = string | number | boolean | bigint | symbol | object;
 type ConsoleMethod = {
-  [K in keyof Console]: Console[K] extends (...args: ConsoleArg[]) => any
+  [K in keyof Console]: Console[K] extends (...args: ConsoleArg[]) => unknown
     ? K
     : never;
 }[keyof Console] &
