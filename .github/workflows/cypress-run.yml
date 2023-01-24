@@ -23,7 +23,7 @@ jobs:
       # Checks if skip cache was requested
       - name: Set skip-nx-cache flag
         if: ${{ inputs.skip-cache == true }}
-        run: echo SKIP_CACHE="--skip-nx-cache" >> GITHUB_ENV
+        run: echo "SKIP_CACHE=--skip-nx-cache" >> $GITHUB_ENV
 
       # Checkout front ends
       - name: Checkout frontend mono repo
