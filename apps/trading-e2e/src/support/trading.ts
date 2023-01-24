@@ -15,7 +15,6 @@ import {
   marketDataQuery,
   marketDepthQuery,
   marketInfoQuery,
-  marketLastTradeQuery,
   marketsCandlesQuery,
   marketsDataQuery,
   marketsQuery,
@@ -90,7 +89,6 @@ const mockTradingPage = (
 ) => {
   aliasGQLQuery(req, 'ChainId', chainIdQuery());
   aliasGQLQuery(req, 'Statistics', statisticsQuery());
-  aliasGQLQuery(req, 'MarketLastTrade', marketLastTradeQuery());
   aliasGQLQuery(
     req,
     'Markets',

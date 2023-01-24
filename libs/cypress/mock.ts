@@ -14,7 +14,6 @@ export * from '../market-depth/src/lib/market-depth.mock';
 export * from '../market-info/src/components/market-info/market-info.mock';
 export * from '../market-list/src/lib/market-candles.mock';
 export * from '../market-list/src/lib/market-data.mock';
-export * from '../deal-ticket/src/components/deal-ticket/market-last-trade.mock';
 export * from '../market-list/src/lib/markets-candles.mock';
 export * from '../market-list/src/lib/markets-data.mock';
 export * from '../market-list/src/lib/markets.mock';

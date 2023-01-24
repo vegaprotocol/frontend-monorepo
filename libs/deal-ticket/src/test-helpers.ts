@@ -1,5 +1,4 @@
 import type { Market, MarketData } from '@vegaprotocol/market-list';
-import type { MarketLastTradeFieldsFragment } from './components/deal-ticket/__generated__/market-last-trade';
 import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
@@ -82,20 +81,4 @@ export function generateMarketData(
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_BATCH,
   };
   return merge(defaultMarketData, override);
-}
-
-export function generateMarketLastTrade(
-  override?: PartialDeep<MarketLastTradeFieldsFragment>
-): MarketLastTradeFieldsFragment {
-  const defaultMarketLastTrade: MarketLastTradeFieldsFragment = {
-    __typename: 'Market',
-    depth: {
-      __typename: 'MarketDepth',
-      lastTrade: {
-        __typename: 'Trade',
-        price: '100',
-      },
-    },
-  };
-  return merge(defaultMarketLastTrade, override);
 }

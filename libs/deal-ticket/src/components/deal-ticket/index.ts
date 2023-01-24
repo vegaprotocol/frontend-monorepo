@@ -8,4 +8,3 @@ export * from './market-selector';
 export * from './side-selector';
 export * from './time-in-force-selector';
 export * from './type-selector';
-export * from './__generated__/market-last-trade';

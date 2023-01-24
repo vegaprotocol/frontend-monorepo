@@ -10,31 +10,7 @@ import { OrderEventDocument } from './';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 
-const defaultMarket = {
-  __typename: 'Market',
-  id: 'market-id',
-  decimalPlaces: 2,
-  positionDecimalPlaces: 1,
-  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: Schema.MarketState.STATE_ACTIVE,
-  tradableInstrument: {
-    __typename: 'TradableInstrument',
-    instrument: {
-      __typename: 'Instrument',
-      product: {
-        __typename: 'Future',
-        quoteName: 'quote-name',
-      },
-    },
-  },
-  depth: {
-    __typename: 'MarketDepth',
-    lastTrade: {
-      __typename: 'Trade',
-      price: '100',
-    },
-  },
-};
+const marketId = 'market-id';
 
 const defaultWalletContext = {
   pubKey: null,
@@ -168,13 +144,13 @@ describe('useOrderSubmit', () => {
       expiresAt: new Date('2022-01-01').toISOString(),
     };
     await act(async () => {
-      result.current.submit({ ...order, marketId: defaultMarket.id });
+      result.current.submit({ ...order, marketId });
     });
 
     expect(mockSendTx).toHaveBeenCalledWith(pubKey, {
       orderSubmission: {
         type: Schema.OrderType.TYPE_LIMIT,
-        marketId: defaultMarket.id,
+        marketId,
         size: '10',
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
@@ -205,13 +181,13 @@ describe('useOrderSubmit', () => {
       expiresAt: new Date('2022-01-01').toISOString(),
     };
     await act(async () => {
-      result.current.submit({ ...order, marketId: defaultMarket.id });
+      result.current.submit({ ...order, marketId });
     });
 
     expect(mockSendTx).toHaveBeenCalledWith(publicKeyObj.publicKey, {
       orderSubmission: {
         type: Schema.OrderType.TYPE_LIMIT,
-        marketId: defaultMarket.id,
+        marketId,
         size: '10',
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
