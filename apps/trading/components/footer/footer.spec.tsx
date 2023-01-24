@@ -51,7 +51,8 @@ describe('NodeHealth', () => {
   };
   it.each(Object.keys(Health))(
     'renders an indicator color for %s health',
-    (health) => {
+    (h) => {
+      const health = h as HealthType;
       render(<NodeHealth health={health} openNodeSwitcher={jest.fn()} />);
       expect(screen.getByTestId('indicator')).toHaveClass(classmap[health]);
     }
