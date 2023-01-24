@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import type { Contract, EventFilter, Event } from 'ethers';
 import uniqBy from 'lodash/uniqBy';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import create from 'zustand';
 
@@ -9,6 +9,7 @@ export type EthereumStore = {
   pendingBalances: Event[];
   addPendingTxs: (event: Event[]) => void;
   removePendingTx: (event: Event) => void;
+  resetPendingTxs: () => void;
 };
 
 export const usePendingBalancesStore = create<EthereumStore>((set, get) => ({
@@ -30,6 +31,9 @@ export const usePendingBalancesStore = create<EthereumStore>((set, get) => ({
       ],
     });
   },
+  resetPendingTxs: () => {
+    set({ pendingBalances: [] });
+  },
 }));
 
 export const useListenForStakingEvents = (
@@ -37,21 +41,25 @@ export const useListenForStakingEvents = (
   vegaPublicKey: string | null,
   numberOfConfirmations: number
 ) => {
-  const { addPendingTxs, removePendingTx } = usePendingBalancesStore(
-    (state) => ({
+  const { addPendingTxs, removePendingTx, resetPendingTxs } =
+    usePendingBalancesStore((state) => ({
       addPendingTxs: state.addPendingTxs,
       removePendingTx: state.removePendingTx,
-    })
+      resetPendingTxs: state.resetPendingTxs,
+    }));
+  const addFilter = useMemo(
+    () =>
+      vegaPublicKey && contract
+        ? contract.filters.Stake_Deposited(null, null, `0x${vegaPublicKey}`)
+        : null,
+    [contract, vegaPublicKey]
   );
-  const addFilter = useRef(
-    vegaPublicKey && contract
-      ? contract.filters.Stake_Deposited(null, null, `0x${vegaPublicKey}`)
-      : null
-  );
-  const removeFilter = useRef(
-    vegaPublicKey && contract
-      ? contract.filters.Stake_Removed(null, null, `0x${vegaPublicKey}`)
-      : null
+  const removeFilter = useMemo(
+    () =>
+      vegaPublicKey && contract
+        ? contract.filters.Stake_Removed(null, null, `0x${vegaPublicKey}`)
+        : null,
+    [contract, vegaPublicKey]
   );
 
   /**
@@ -60,9 +68,10 @@ export const useListenForStakingEvents = (
   useListenForPendingEthEvents(
     numberOfConfirmations,
     contract,
-    addFilter.current,
+    addFilter,
     addPendingTxs,
-    removePendingTx
+    removePendingTx,
+    resetPendingTxs
   );
 
   /**
@@ -71,9 +80,10 @@ export const useListenForStakingEvents = (
   useListenForPendingEthEvents(
     numberOfConfirmations,
     contract,
-    removeFilter.current,
+    removeFilter,
     addPendingTxs,
-    removePendingTx
+    removePendingTx,
+    resetPendingTxs
   );
 };
 
@@ -82,7 +92,8 @@ export const useListenForPendingEthEvents = (
   contract: Contract | undefined,
   filter: EventFilter | null,
   addPendingTxs: (event: Event[]) => void,
-  removePendingTx: (event: Event) => void
+  removePendingTx: (event: Event) => void,
+  resetPendingTxs: () => void
 ) => {
   const { provider } = useWeb3React();
 
@@ -139,6 +150,7 @@ export const useListenForPendingEthEvents = (
 
   useEffect(() => {
     let cancelled = false;
+    resetPendingTxs();
     getExistingTransactions().then((events) => {
       if (!cancelled) {
         addPendingTxs([...events]);
@@ -153,6 +165,7 @@ export const useListenForPendingEthEvents = (
     addPendingTxs,
     getExistingTransactions,
     numberOfConfirmations,
+    resetPendingTxs,
     waitForExistingTransactions,
   ]);
 };

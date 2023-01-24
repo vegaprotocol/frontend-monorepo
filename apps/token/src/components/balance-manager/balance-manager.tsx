@@ -27,21 +27,20 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const { updateBalances: updateStoreBalances } = useBalances();
   const { config } = useEthereumConfig();
 
-  const numberOfConfirmations = useRef(50);
+  const numberOfConfirmations = 100;
 
   // breaks if no provider?
-  // get number of confirmations from network params
 
   useListenForAssociationEvents(
     contracts?.staking.contract,
     pubKey,
-    numberOfConfirmations.current
+    numberOfConfirmations
   );
 
   useListenForAssociationEvents(
     contracts?.vesting.contract,
     pubKey,
-    numberOfConfirmations.current
+    numberOfConfirmations
   );
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
