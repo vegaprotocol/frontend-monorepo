@@ -119,7 +119,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
-    connectEthereumWallet();
+    connectEthereumWallet('MetaMask');
     cy.get('#ethereum-address').should('have.value', ethWalletAddress);
     cy.getByTestId('disconnect-ethereum-wallet')
       .should('have.text', 'Disconnect')

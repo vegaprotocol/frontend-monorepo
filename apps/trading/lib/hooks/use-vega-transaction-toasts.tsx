@@ -430,6 +430,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     const completeWithdrawalButton = tx.withdrawal && (
       <div className="mt-[10px]">
         <Button
+          data-testid="toast-complete-withdrawal"
           size="xs"
           onClick={() => {
             createEthWithdrawalApproval(

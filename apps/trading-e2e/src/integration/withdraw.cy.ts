@@ -23,7 +23,7 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
     cy.getByTestId('withdraw-dialog-button').click();
 
     // It also requires connection Ethereum wallet
-    connectEthereumWallet();
+    connectEthereumWallet('MetaMask');
 
     cy.wait('@Accounts');
     cy.wait('@Assets');
@@ -79,7 +79,7 @@ describe('withdraw actions', { tags: '@regression' }, () => {
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
 
-    connectEthereumWallet();
+    connectEthereumWallet('MetaMask');
 
     cy.wait('@Accounts');
     cy.wait('@Assets');
