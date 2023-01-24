@@ -50,6 +50,8 @@ const schemaObject = {
   }),
   HOSTED_WALLET_URL: z.optional(z.string()),
   MAINTENANCE_PAGE: z.optional(z.boolean()),
+  ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
+  ETH_WALLET_MNEMONIC: z.optional(z.string()),
 };
 
 export const ENV_KEYS = Object.keys(schemaObject) as Array<
