@@ -31,9 +31,11 @@ export const NodeContainer = ({
   const { data, loading, error, refetch } = useStakingQuery({
     variables: {
       partyId: pubKey || '',
-      delegationsPagination: {
-        first: Number(delegationsPagination),
-      },
+      delegationsPagination: delegationsPagination
+        ? {
+            first: Number(delegationsPagination),
+          }
+        : undefined,
     },
   });
   const { data: previousEpochData } = usePreviousEpochQuery({

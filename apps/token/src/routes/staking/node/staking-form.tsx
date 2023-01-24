@@ -149,9 +149,11 @@ export const StakingForm = ({
   const [delegationSearch, { data }] = usePartyDelegationsLazyQuery({
     variables: {
       partyId: pubKey,
-      delegationsPagination: {
-        first: Number(delegationsPagination),
-      },
+      delegationsPagination: delegationsPagination
+        ? {
+            first: Number(delegationsPagination),
+          }
+        : undefined,
     },
     fetchPolicy: 'network-only',
   });

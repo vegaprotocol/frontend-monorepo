@@ -29,9 +29,11 @@ export const RewardsPage = () => {
   const { data, loading, error } = useRewardsQuery({
     variables: {
       partyId: pubKey || '',
-      delegationsPagination: {
-        first: Number(delegationsPagination),
-      },
+      delegationsPagination: delegationsPagination
+        ? {
+            first: Number(delegationsPagination),
+          }
+        : undefined,
     },
     skip: !pubKey,
   });

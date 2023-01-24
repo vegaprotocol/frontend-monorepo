@@ -65,9 +65,11 @@ export const usePollForDelegations = () => {
             query: DelegationsDocument,
             variables: {
               partyId: pubKey,
-              delegationsPagination: {
-                first: Number(delegationsPagination),
-              },
+              delegationsPagination: delegationsPagination
+                ? {
+                    first: Number(delegationsPagination),
+                  }
+                : undefined,
             },
             fetchPolicy: 'network-only',
           })
