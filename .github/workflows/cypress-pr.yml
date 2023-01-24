@@ -40,7 +40,7 @@ jobs:
       - name: See affected apps
         run: |
           affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
-          echo -n "$affected"
+          echo -n "Affected projects: $affected"
           projects=""
           if [[ $affected == *"token"* ]]; then projects+='"token-e2e" '; fi
           if [[ $affected == *"trading"* ]]; then projects+='"trading-e2e" '; fi
