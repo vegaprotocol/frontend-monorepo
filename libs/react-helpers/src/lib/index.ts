@@ -12,3 +12,4 @@ export * from './time';
 export * from './links';
 export * from './remove-pagination-wrapper';
 export * from './data-grid';
+export * from './local-logger';
