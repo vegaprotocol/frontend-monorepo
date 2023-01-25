@@ -208,9 +208,7 @@ const Error = ({
       );
     } else {
       title = error.message;
-      text = `${
-        errorData.length ? errorData.join(' ') : t('Unknown error occurred')
-      } (${error.code})`;
+      text = `${errorData.length ? errorData.join(' ') : text} (${error.code})`;
     }
   }
 

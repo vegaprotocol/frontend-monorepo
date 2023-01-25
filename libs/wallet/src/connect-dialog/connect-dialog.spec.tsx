@@ -9,6 +9,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
 import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
+import type { VegaWalletDialogStore } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
@@ -23,11 +24,17 @@ import { ChainIdDocument } from '@vegaprotocol/react-helpers';
 
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
-jest.mock('zustand', () => () => () => ({
+const mockStoreObj: Partial<VegaWalletDialogStore> = {
   updateVegaWalletDialog: mockUpdateDialogOpen,
   closeVegaWalletDialog: mockCloseVegaDialog,
   vegaWalletDialogOpen: true,
-}));
+};
+
+jest.mock(
+  'zustand',
+  () => () => (storeGetter: (store: VegaWalletDialogStore) => unknown) =>
+    storeGetter(mockStoreObj as VegaWalletDialogStore)
+);
 
 let defaultProps: VegaConnectDialogProps;
 

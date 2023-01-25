@@ -44,7 +44,7 @@ export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
   })
 );
 
-interface VegaWalletDialogStore {
+export interface VegaWalletDialogStore {
   vegaWalletDialogOpen: boolean;
   updateVegaWalletDialog: (open: boolean) => void;
   openVegaWalletDialog: () => void;
