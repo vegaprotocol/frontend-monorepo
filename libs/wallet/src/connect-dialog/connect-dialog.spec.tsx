@@ -23,10 +23,13 @@ import { ChainIdDocument } from '@vegaprotocol/react-helpers';
 
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
-jest.mock('zustand', () => () => () => ({
-  updateVegaWalletDialog: mockUpdateDialogOpen,
-  closeVegaWalletDialog: mockCloseVegaDialog,
-  vegaWalletDialogOpen: true,
+
+jest.mock('zustand', () => ({
+  create: () => () => ({
+    updateVegaWalletDialog: mockUpdateDialogOpen,
+    closeVegaWalletDialog: mockCloseVegaDialog,
+    vegaWalletDialogOpen: true,
+  }),
 }));
 
 let defaultProps: VegaConnectDialogProps;
