@@ -50,7 +50,7 @@ export interface Datasource extends IDatasource {
 interface Props extends AgGridReactProps {
   rowData?: Trade[] | null;
   datasource?: Datasource;
-  onClick?: (price?: string | number) => void;
+  onClick?: (price?: string) => void;
 }
 
 type TradesTableValueFormatterParams = Omit<

@@ -10,6 +10,7 @@ import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import type { Trade, TradeEdge } from './trades-data-provider';
 import type { TradesQueryVariables } from './__generated__/Trades';
+import { usePersistedOrderStore } from '@vegaprotocol/orders';
 
 interface TradesContainerProps {
   marketId: string;
@@ -21,6 +22,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
+  const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
 
   const variables = useMemo<TradesQueryVariables>(
     () => ({ marketId, maxTrades: MAX_TRADES }),
@@ -113,13 +115,9 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
-        onClick={(price?: string | number) => {
+        onClick={(price?: string) => {
           if (price) {
-            document.dispatchEvent(
-              new CustomEvent('limit-price', {
-                detail: price,
-              })
-            );
+            updatePrice(marketId, price);
           }
         }}
       />

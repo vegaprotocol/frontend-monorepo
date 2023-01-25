@@ -33,12 +33,6 @@ import {
 
 export type TransactionStatus = 'default' | 'pending';
 
-declare global {
-  interface DocumentEventMap {
-    ['limit-price']: CustomEvent;
-  }
-}
-
 export interface DealTicketProps {
   market: MarketDealTicket;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
