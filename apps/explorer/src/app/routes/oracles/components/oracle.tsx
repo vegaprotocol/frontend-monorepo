@@ -23,9 +23,17 @@ interface OracleDetailsProps {
   id: string;
   dataSource: ExplorerOracleDataSourceFragment;
   dataConnection: ExplorerOracleDataConnectionFragment;
+  // Defaults to false. Hides the count of 'broadcasts' this oracle has seen
   showBroadcasts?: boolean;
 }
 
+/**
+ * Notes:
+ * - Matched data is really 'Data that matched this oracle' and given oracles are unique
+ *   to each market, and each serves either as trading termination or settlement, really
+ *   they will only ever see 1 match (most likely). So it should be more like 'Has seen
+ *   data' vs 'Has not yet seen data'
+ */
 export const OracleDetails = ({
   id,
   dataSource,
@@ -47,15 +55,15 @@ export const OracleDetails = ({
         <OracleDetailsType type={sourceType.__typename} />
         <OracleSigners sourceType={sourceType} />
         <OracleMarkets id={id} />
-        {showBroadcasts ? (
-          <TableRow modifier="bordered">
-            <TableHeader scope="row">{t('Broadcasts')}</TableHeader>
-            <TableCell modifier="bordered">{reportsCount}</TableCell>
-          </TableRow>
-        ) : null}
+        <TableRow modifier="bordered">
+          <TableHeader scope="row">{t('Matched data')}</TableHeader>
+          <TableCell modifier="bordered">
+            {showBroadcasts ? reportsCount : reportsCount > 0 ? '✅' : '❌'}
+          </TableCell>
+        </TableRow>
       </TableWithTbody>
       <OracleFilter data={dataSource} />
-      <OracleData data={dataConnection} />
+      {showBroadcasts ? <OracleData data={dataConnection} /> : null}
     </div>
   );
 };

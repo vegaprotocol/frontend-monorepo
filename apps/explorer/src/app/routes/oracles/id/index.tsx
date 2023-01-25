@@ -28,7 +28,7 @@ export const Oracle = () => {
       </RouteTitle>
       <RenderFetched error={error} loading={loading}>
         {data?.oracleSpec ? (
-          <div id={id} key={id} className="mb-10 cursor-pointer">
+          <div id={id} key={id} className="mb-10">
             <OracleDetails
               id={id || ''}
               dataSource={data?.oracleSpec}
