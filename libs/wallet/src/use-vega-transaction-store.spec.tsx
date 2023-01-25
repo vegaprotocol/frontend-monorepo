@@ -1,4 +1,5 @@
-import { create as actualCreate, StateCreator } from 'zustand';
+import type { StateCreator } from 'zustand';
+import { create as actualCreate } from 'zustand';
 // const actualCreate = jest.requireActual('zustand') // if using jest
 import { act } from 'react-dom/test-utils';
 

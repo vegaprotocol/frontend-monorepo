@@ -29,9 +29,9 @@ export function useTranches() {
     const now = Math.round(Date.now() / 1000);
     const tranches = Object.values(data?.tranches || [])
       ?.map((t) => {
-        console.log(t, Math.max(now - t.cliff_start));
         const tranche_progress =
           t.duration !== 0 ? (now - t.cliff_start) / t.duration : 0;
+        const lockedDecimal = tranche_progress < 0 ? 1 : 1 - tranche_progress;
         return {
           tranche_id: t.tranche_id,
           tranche_start: secondsToDate(t.cliff_start),
@@ -41,7 +41,7 @@ export function useTranches() {
             toBigNum(t.current_balance, decimals)
           ),
           locked_amount: toBigNum(t.initial_balance, decimals).times(
-            tranche_progress < 0 ? 1 : 1 - tranche_progress
+            lockedDecimal
           ),
           users: t.users,
         };
