@@ -21,6 +21,7 @@ import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
 import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
 import { TxDetailsDataSubmission } from './tx-data-submission';
 import { TxProposalVote } from './tx-proposal-vote';
+import { TxDetailsDataSubmission } from './tx-data-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
