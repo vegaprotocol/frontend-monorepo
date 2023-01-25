@@ -60,6 +60,16 @@ interface NodeListProps {
 const VALIDATOR_LOGO_MAP: { [key: string]: string } = {
   '55504e9bfd914a7bbefa342c82f59a2f4dee344e5b6863a14c02a812f4fbde32':
     'https://pbs.twimg.com/profile_images/1586047492629712897/ZVMWBE94_400x400.jpg',
+  efbdf943443bd7595e83b0d7e88f37b7932d487d1b94aab3d004997273bb43fc:
+    'https://pbs.twimg.com/profile_images/1026823609979949057/3e-LCHHm_400x400.jpg',
+  '126751c5830b50d39eb85412fb2964f46338cce6946ff455b73f1b1be3f5e8cc':
+    'https://pbs.twimg.com/profile_images/1228627868542029824/9aoaLiIx_400x400.jpg',
+  '43697a3e911d8b70c0ce672adde17a5c38ca8f6a0486bf85ed0546e1b9a82887':
+    'https://pbs.twimg.com/profile_images/1352167987478843392/XzX82gIb_400x400.jpg',
+  ac735acc9ab11cf1d8c59c2df2107e00092b4ac96451cb137a1629af5b66242a:
+    'https://pbs.twimg.com/profile_images/1159254945885016064/vhhp1wL4_400x400.jpg',
+  '74023df02b8afc9eaf3e3e2e8b07eab1d2122ac3e74b1b0222daf4af565ad3dd':
+    'https://cdn4.telegram-cdn.org/file/jxqIz-Kupfs-ZRrkc79FzoCJPMUWXgvmDMf7vAKgleR7NDz1ceUqx_206Bh7cgNmX183P6BmTrim-bL_q7w97lbiia8SH2jCN3-MUWSk0cZgeD1FBaX7QrvPXowFkqKggMk1YHYbFa-nq-C5k1y6tsw6PFsH4fibEuSHFdFXvJ_4jKL325fTNMHlTlzBeSKHoGn2zKc-hS8R4AtQqOBy_oNQHtyk59V3B8he_rbabKIOdIlt6b44JPkWSjENXCXHjGzwVJuEbSIcUbehUyjMEP7CRSmxTmSwkEktw-R8aA0eTxFnRLMnkpb09i13Rkj051rUNHFa5kAi7ECv6cjsdg.jpg',
 };
 
 interface ValidatorRendererProps {
@@ -69,11 +79,12 @@ interface ValidatorRendererProps {
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { avatarUrl, name } = data.validator;
 
-  const logo = avatarUrl
-    ? avatarUrl
-    : VALIDATOR_LOGO_MAP[data.id]
+  const logo = VALIDATOR_LOGO_MAP[data.id]
     ? VALIDATOR_LOGO_MAP[data.id]
+    : avatarUrl
+    ? avatarUrl
     : null;
+  console.log(logo, data.id);
   return (
     <div className="flex items-center">
       {logo && (
