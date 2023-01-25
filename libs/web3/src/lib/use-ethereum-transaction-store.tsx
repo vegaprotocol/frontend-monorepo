@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import produce from 'immer';
 import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';

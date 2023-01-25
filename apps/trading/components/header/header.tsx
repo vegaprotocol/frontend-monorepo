@@ -43,8 +43,8 @@ export const HeaderStat = ({
   testId?: string;
 }) => {
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default';
-  const itemHeading = 'text-neutral-500 dark:text-neutral-400';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default text-neutral-500 dark:text-neutral-400';
+  const itemHeading = 'text-black dark:text-white';
 
   return (
     <div data-testid={testId} className={itemClass}>

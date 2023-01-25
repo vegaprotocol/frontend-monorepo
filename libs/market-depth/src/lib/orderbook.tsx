@@ -30,6 +30,7 @@ interface OrderbookProps extends OrderbookData {
   positionDecimalPlaces: number;
   resolution: number;
   onResolutionChange: (resolution: number) => void;
+  onClick?: (price?: string | number) => void;
   fillGaps?: boolean;
 }
 
@@ -279,6 +280,7 @@ export const Orderbook = ({
   resolution,
   fillGaps: initialFillGaps,
   onResolutionChange,
+  onClick,
 }: OrderbookProps) => {
   const { theme } = useThemeSwitcher();
   const scrollElement = useRef<HTMLDivElement>(null);
@@ -533,6 +535,7 @@ export const Orderbook = ({
           <OrderbookRow
             key={data.price}
             price={(BigInt(data.price) / BigInt(resolution)).toString()}
+            onClick={onClick}
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             positionDecimalPlaces={positionDecimalPlaces}
             bid={data.bid}

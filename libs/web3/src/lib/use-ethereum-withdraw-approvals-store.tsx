@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import produce from 'immer';
 import type BigNumber from 'bignumber.js';
 import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';

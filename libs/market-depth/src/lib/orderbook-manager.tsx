@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { addDecimal, useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
@@ -16,6 +16,7 @@ import {
   mapMarketData,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
+import { usePersistedOrderStore } from '@vegaprotocol/orders';
 
 interface OrderbookManagerProps {
   marketId: string;
@@ -122,7 +123,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   marketDataRef.current = marketData;
 
   useEffect(() => {
-    const throttleRunnner = updateOrderbookData.current;
+    const throttleRunner = updateOrderbookData.current;
     if (!marketDataRef.current) {
       return;
     }
@@ -139,7 +140,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     setOrderbookData(dataRef.current);
 
     return () => {
-      throttleRunnner.cancel();
+      throttleRunner.cancel();
     };
   }, [data, marketData, resolution]);
 
@@ -147,6 +148,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     resolutionRef.current = resolution;
     flush();
   }, [resolution, flush]);
+
+  const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
 
   return (
     <AsyncRenderer
@@ -160,6 +163,12 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
         onResolutionChange={(resolution: number) => setResolution(resolution)}
+        onClick={(price?: string | number) => {
+          if (price) {
+            const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
+            updatePrice(marketId, priceValue);
+          }
+        }}
       />
     </AsyncRenderer>
   );
