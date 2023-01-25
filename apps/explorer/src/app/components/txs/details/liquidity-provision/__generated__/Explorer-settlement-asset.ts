@@ -8,7 +8,7 @@ export type ExplorerSettlementAssetForMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerSettlementAssetForMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', decimals: number } } } } } | null };
+export type ExplorerSettlementAssetForMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number } | null };
 
 
 export const ExplorerSettlementAssetForMarketDocument = gql`
@@ -16,17 +16,6 @@ export const ExplorerSettlementAssetForMarketDocument = gql`
   market(id: $id) {
     id
     decimalPlaces
-    tradableInstrument {
-      instrument {
-        product {
-          ... on Future {
-            settlementAsset {
-              decimals
-            }
-          }
-        }
-      }
-    }
   }
 }
     `;
