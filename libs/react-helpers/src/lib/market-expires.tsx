@@ -37,7 +37,6 @@ export const getMarketExpiryDateFormatted = (
 };
 
 export const getExpiryDate = (
-  //   market: SingleMarketFieldsFragment,
   tags?: ReadonlyArray<string> | null,
   close?: string | null,
   state?: MarketState
