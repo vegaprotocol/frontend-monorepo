@@ -19,7 +19,7 @@ const mocks = [
   },
 ];
 
-// Disabled - see vegaprotocol/frontend-monorepo#/2726
+/* Disabled - see vegaprotocol/frontend-monorepo#/2726
 describe.skip('getAddressFromMessageAndSigner', () => {
   it('returns the known signer from message 1', () => {
     const { m, s } = mocks[0];
@@ -50,10 +50,9 @@ describe.skip('getAddressFromMessageAndSigner', () => {
 
     expect(res).toEqual('-');
   });
-});
+}); 
 
 describe('OpenOraclePrice', () => {
-  // Disabled - see vegaprotocol/frontend-monorepo#/2726
   it.skip('renders a basic table row with the correct signer', () => {
     const truncatedCoinbaseSigner =
       COINBASE_SIGNER.slice(0, 5) + '…' + COINBASE_SIGNER.slice(-5);
@@ -97,7 +96,7 @@ describe('OpenOraclePrice', () => {
 
     expect(screen.getByText('-')).toBeInTheDocument();
   });
-});
+}); */
 
 describe('OpenOraclePrices', () => {
   it('Will not render with no prices', () => {
