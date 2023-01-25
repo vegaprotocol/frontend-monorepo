@@ -332,7 +332,7 @@ export interface TransactionResponse {
 export class WalletError {
   message: string;
   code: number;
-  data?: string;
+  data?: string | string[];
 
   constructor(message: string, code: number, data?: string) {
     this.message = message;

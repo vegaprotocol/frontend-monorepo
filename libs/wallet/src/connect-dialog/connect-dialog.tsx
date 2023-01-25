@@ -55,25 +55,25 @@ export const VegaConnectDialog = ({
   connectors,
   onChangeOpen,
 }: VegaConnectDialogProps) => {
-  const {
-    vegaWalletDialogOpen,
-    closeVegaWalletDialog,
-    updateVegaWalletDialog,
-  } = useVegaWalletDialogStore((store) => ({
-    vegaWalletDialogOpen: store.vegaWalletDialogOpen,
-    updateVegaWalletDialog: onChangeOpen
+  const vegaWalletDialogOpen = useVegaWalletDialogStore(
+    (store) => store.vegaWalletDialogOpen
+  );
+  const updateVegaWalletDialog = useVegaWalletDialogStore((store) =>
+    onChangeOpen
       ? (open: boolean) => {
           store.updateVegaWalletDialog(open);
           onChangeOpen(open);
         }
-      : store.updateVegaWalletDialog,
-    closeVegaWalletDialog: onChangeOpen
+      : store.updateVegaWalletDialog
+  );
+  const closeVegaWalletDialog = useVegaWalletDialogStore((store) =>
+    onChangeOpen
       ? () => {
           store.closeVegaWalletDialog();
           onChangeOpen(false);
         }
-      : store.closeVegaWalletDialog,
-  }));
+      : store.closeVegaWalletDialog
+  );
 
   const { data, error, loading } = useChainIdQuery();
 

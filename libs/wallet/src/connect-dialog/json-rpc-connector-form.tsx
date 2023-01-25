@@ -156,6 +156,11 @@ const Error = ({
   const { VEGA_DOCS_URL } = useEnvironment();
 
   if (error) {
+    const errorData = Array.isArray(error.data)
+      ? error.data
+      : error.data
+      ? [error.data]
+      : [];
     if (error.code === ClientErrors.NO_SERVICE.code) {
       title = t('No wallet detected');
       text = t(`No wallet application running at ${connectorUrl}`);
@@ -169,7 +174,7 @@ const Error = ({
       title = error.message;
       text = (
         <>
-          {capitalize(error.data)}
+          {capitalize(errorData.join(' '))}
           {'. '}
           {VEGA_DOCS_URL && (
             <Link
@@ -192,9 +197,20 @@ const Error = ({
             app to ${appChainId}.`)}
         </>
       );
+    } else if (error.code === ClientErrors.INVALID_WALLET.code) {
+      title = error.message;
+      text = (
+        <>
+          {errorData.forEach((str) => (
+            <span>{str}</span>
+          ))}
+        </>
+      );
     } else {
       title = error.message;
-      text = `${error.data} (${error.code})`;
+      text = `${
+        errorData.length ? errorData.join(' ') : t('Unknown error occurred')
+      } (${error.code})`;
     }
   }
 
