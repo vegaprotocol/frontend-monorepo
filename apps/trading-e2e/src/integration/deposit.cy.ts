@@ -16,7 +16,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
     cy.wait('@Assets');
-    connectEthereumWallet();
+    connectEthereumWallet('MetaMask');
     cy.getByTestId('deposit-submit').click();
   });
 
