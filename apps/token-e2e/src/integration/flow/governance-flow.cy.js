@@ -11,6 +11,7 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const openProposals = '[data-testid="open-proposals"]';
+const closedProposals = '[data-testid="closed-proposals"]';
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
 const proposalVoteProgressAgainstPercentage =
@@ -22,7 +23,9 @@ const proposalVoteProgressAgainstTokens =
 const changeVoteButton = '[data-testid="change-vote-button"]';
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
+const proposalStatus = '[data-testid="proposal-status"]';
 const rawProposalData = '[data-testid="proposal-data"]';
+const votesTable = '[data-testid="votes-table"]';
 const minVoteButton = '[data-testid="min-vote"]';
 const maxVoteButton = '[data-testid="max-vote"]';
 const voteButtons = '[data-testid="vote-buttons"]';
@@ -793,10 +796,24 @@ context(
         cy.contains('You voted: Against').should('be.visible');
       });
 
-      it.only('Able to view enacted proposal', function () {
-        cy.createMarket();
-
-      })
+      it('Able to view enacted proposal', function () {
+        cy.get(closedProposals).within(() => {
+          cy.get(proposalDetailsTitle).should(
+            'have.text',
+            'Add Lorem Ipsum market'
+          );
+          cy.get(proposalStatus).should('have.text', 'Enacted ');
+          cy.get(viewProposalButton).click();
+        });
+        cy.getByTestId('proposal-type').should('have.text', 'New market');
+        cy.get_proposal_information_from_table('State')
+          .contains('Enacted')
+          .and('be.visible');
+        cy.get(votesTable).within(() => {
+          cy.contains('Vote passed.').should('be.visible');
+          cy.contains('Voting has ended.').should('be.visible');
+        });
+      });
 
       function createRawProposal(proposerBalance) {
         if (proposerBalance)

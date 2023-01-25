@@ -102,7 +102,7 @@ export const VoteDetails = ({
           </table>
         </section>
       )}
-      <section>
+      <section data-testid="votes-table">
         <SubHeading title={t('tokenVotes')} />
         <p>
           <span>
