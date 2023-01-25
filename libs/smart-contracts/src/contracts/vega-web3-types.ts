@@ -4,45 +4,15 @@ import type BigNumber from 'bignumber.js';
 
 export interface Tranche {
   tranche_id: number;
-  tranche_start: Date;
-  tranche_end: Date;
-  total_added: BigNumber;
-  total_removed: BigNumber;
-  locked_amount: BigNumber;
-  deposits: Array<TrancheDeposit>;
-  withdrawals: Array<TrancheWithdrawal>;
-  users: Array<TrancheUser>;
+  users: string[];
+  initial_balance: number;
+  current_balance: number;
+  cliff_start: number;
+  duration: number;
 }
 
-export interface TrancheDeposit {
-  amount: BigNumber;
-  user: string;
-  tx: string;
-}
-
-export interface TrancheWithdrawal {
-  amount: BigNumber;
-  user: string;
-  tx: string;
-}
-
-export interface TrancheUser {
-  address: string;
-  deposits: Array<{
-    amount: BigNumber;
-    user: string;
-    tx: string;
-    tranche_id: number;
-  }>;
-  withdrawals: Array<{
-    amount: BigNumber;
-    user: string;
-    tx: string;
-    tranche_id: number;
-  }>;
-  total_tokens: BigNumber;
-  withdrawn_tokens: BigNumber;
-  remaining_tokens: BigNumber;
+export interface TrancheServiceResponse {
+  tranches: Tranche[];
 }
 
 export enum TrancheEvents {
@@ -68,10 +38,4 @@ export interface IClaimTokenParams {
   claim: IVegaClaimData;
   signature: IVegaClaimSignature;
   country: string | null;
-}
-
-export interface EpochDetails {
-  id: string;
-  startSeconds: BigNumber;
-  endSeconds: BigNumber;
 }

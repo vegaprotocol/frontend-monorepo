@@ -33,10 +33,10 @@ export const TrancheItem = ({
 }: TrancheItemProps) => {
   const { t } = useTranslation();
   const labelClasses =
-    'inline-block uppercase bg-white text-black py-4 px-8 font-mono';
+    'inline-block uppercase bg-white text-black py-1 px-2 font-mono';
 
   return (
-    <section data-testid="tranche-item" className="mb-40">
+    <section data-testid="tranche-item" className="mb-8">
       <div className="flex border-b">
         {link ? (
           <Link to={link}>

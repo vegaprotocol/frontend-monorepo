@@ -1,5 +1,5 @@
-import type { Tranche } from '@vegaprotocol/smart-contracts';
 import React from 'react';
+import type { Tranche } from '../../hooks/use-tranches';
 
 import type { BigNumber } from '../../lib/bignumber';
 

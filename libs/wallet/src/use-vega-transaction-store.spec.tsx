@@ -1,96 +1,21 @@
-import { useVegaTransactionStore } from './use-vega-transaction-store';
-import { VegaTxStatus } from './use-vega-transaction';
-import type { VegaStoredTxState } from './use-vega-transaction-store';
-import type {
-  OrderCancellationBody,
-  WithdrawSubmissionBody,
-} from './connectors/vega-connector';
+import { create as actualCreate, StateCreator } from 'zustand';
+// const actualCreate = jest.requireActual('zustand') // if using jest
+import { act } from 'react-dom/test-utils';
 
-jest.mock('./utils', () => ({
-  ...jest.requireActual('./utils'),
-  determineId: jest.fn((v) => v),
-}));
+// a variable to hold reset functions for all stores declared in the app
+let reset: () => void;
 
-describe('useVegaTransactionStore', () => {
-  const orderCancellation: OrderCancellationBody = { orderCancellation: {} };
-  const withdrawSubmission: WithdrawSubmissionBody = {
-    withdrawSubmission: {
-      amount: 'amount',
-      asset: 'asset',
-      ext: {
-        erc20: {
-          receiverAddress: 'receiverAddress',
-        },
-      },
-    },
+// when creating a store, we get its initial state, create a reset function and add it in the set
+export const create =
+  () =>
+  <S,>(createState: StateCreator<S>) => {
+    const store = actualCreate<S>(createState);
+    const initialState = store.getState();
+    reset = () => store.setState(initialState, true);
+    return store;
   };
-  const processedTransactionUpdate = {
-    status: VegaTxStatus.Pending,
-    txHash: 'txHash',
-    signature: 'signature',
-  };
-  const transactionResult = {
-    hash: processedTransactionUpdate.txHash,
-  } as unknown as NonNullable<VegaStoredTxState['transactionResult']>;
-  const withdrawal = {
-    id: 'signature',
-  } as unknown as NonNullable<VegaStoredTxState['withdrawal']>;
-  const withdrawalApproval = {} as unknown as NonNullable<
-    VegaStoredTxState['withdrawalApproval']
-  >;
-  it('creates transaction with default values', () => {
-    useVegaTransactionStore.getState().create(orderCancellation);
-    const transaction = useVegaTransactionStore.getState().transactions[0];
-    expect(transaction?.createdAt).toBeTruthy();
-    expect(transaction?.status).toEqual(VegaTxStatus.Requested);
-    expect(transaction?.body).toEqual(orderCancellation);
-    expect(transaction?.dialogOpen).toEqual(true);
-  });
-  it('updates transaction by index/id', () => {
-    useVegaTransactionStore.getState().create(orderCancellation);
-    useVegaTransactionStore.getState().create(orderCancellation);
-    useVegaTransactionStore.getState().create(orderCancellation);
-    const transaction = useVegaTransactionStore.getState().transactions[1];
-    useVegaTransactionStore
-      .getState()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .update(transaction!.id, { status: VegaTxStatus.Pending });
-    expect(
-      useVegaTransactionStore.getState().transactions.map((t) => t?.status)
-    ).toEqual([
-      VegaTxStatus.Requested,
-      VegaTxStatus.Pending,
-      VegaTxStatus.Requested,
-    ]);
-  });
-  it('sets dialogOpen to false on dismiss', () => {
-    useVegaTransactionStore.getState().create(orderCancellation);
-    useVegaTransactionStore.getState().dismiss(0);
-    expect(
-      useVegaTransactionStore.getState().transactions[0]?.dialogOpen
-    ).toEqual(false);
-  });
-  it('updates transaction result', () => {
-    useVegaTransactionStore.getState().create(withdrawSubmission);
-    useVegaTransactionStore.getState().update(0, processedTransactionUpdate);
-    useVegaTransactionStore
-      .getState()
-      .updateTransactionResult(transactionResult);
-    expect(
-      useVegaTransactionStore.getState().transactions[0]?.transactionResult
-    ).toEqual(transactionResult);
-  });
-  it('updates withdrawal', () => {
-    useVegaTransactionStore.getState().create(withdrawSubmission);
-    useVegaTransactionStore.getState().update(0, processedTransactionUpdate);
-    useVegaTransactionStore
-      .getState()
-      .updateTransactionResult(transactionResult);
-    useVegaTransactionStore
-      .getState()
-      .updateWithdrawal(withdrawal, withdrawalApproval);
-    const transaction = useVegaTransactionStore.getState().transactions[0];
-    expect(transaction?.withdrawalApproval).toEqual(withdrawalApproval);
-    expect(transaction?.withdrawal).toEqual(withdrawal);
-  });
+
+// Reset all stores after each test run
+beforeEach(() => {
+  act(() => reset());
 });

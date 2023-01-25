@@ -1,6 +1,6 @@
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
-import type { Tranche } from '@vegaprotocol/smart-contracts';
+import type { Tranche } from '../../../hooks/use-tranches';
 
 /**
  * Add together the circulating tokens from all tranches
