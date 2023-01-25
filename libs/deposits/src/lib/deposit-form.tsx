@@ -16,7 +16,8 @@ import {
   Icon,
   Input,
   InputError,
-  Select,
+  RichSelect,
+  Option,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -171,22 +172,29 @@ export const DepositForm = ({
             },
           }}
           render={({ field }) => (
-            <Select
-              id="asset"
-              {...field}
-              onChange={(e) => {
-                field.onChange(e);
-                onSelectAsset(e.target.value);
+            <RichSelect
+              data-testid="select-asset"
+              id={field.name}
+              name={field.name}
+              onValueChange={(value) => {
+                onSelectAsset(value);
+                field.onChange(value);
               }}
-              value={selectedAsset?.id || ''}
+              placeholder={t('Please select an asset')}
+              value={selectedAsset?.id}
+              hasError={Boolean(errors.asset?.message)}
             >
-              <option value="">{t('Please select')}</option>
               {assets.filter(isAssetTypeERC20).map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
+                <Option key={a.id} value={a.id}>
+                  <div className="flex flex-col items-start">
+                    <span>{a.name}</span>
+                    <span className="text-[10px] font-mono">
+                      <span className="text-gray-500">{a.id} -</span> {a.symbol}
+                    </span>
+                  </div>
+                </Option>
               ))}
-            </Select>
+            </RichSelect>
           )}
         />
         {errors.asset?.message && (

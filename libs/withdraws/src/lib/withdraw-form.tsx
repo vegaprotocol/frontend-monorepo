@@ -13,11 +13,13 @@ import {
   FormGroup,
   Input,
   InputError,
-  Select,
+  RichSelect,
+  Option,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes } from 'react';
+import type { ControllerRenderProps } from 'react-hook-form';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
@@ -85,6 +87,42 @@ export const WithdrawForm = ({
     });
   };
 
+  const renderAssetsSelector = ({
+    field,
+  }: {
+    field: ControllerRenderProps<FormFields, 'asset'>;
+  }) => {
+    console.log('assets', assets.filter(isAssetTypeERC20));
+    console.log('selected asset', selectedAsset);
+
+    return (
+      <RichSelect
+        data-testid="select-asset"
+        id="asset"
+        name="asset"
+        required
+        onValueChange={(value) => {
+          onSelectAsset(value);
+          field.onChange(value);
+        }}
+        placeholder={t('Please select an asset')}
+        value={selectedAsset?.id}
+        hasError={Boolean(errors.asset?.message)}
+      >
+        {assets.filter(isAssetTypeERC20).map((a) => (
+          <Option key={a.id} value={a.id}>
+            <div className="flex flex-col items-start">
+              <span>{a.name}</span>
+              <span className="text-[10px] font-mono">
+                <span className="text-gray-500">{a.id} -</span> {a.symbol}
+              </span>
+            </div>
+          </Option>
+        ))}
+      </RichSelect>
+    );
+  };
+
   return (
     <>
       <div className="mb-4 text-sm">
@@ -108,27 +146,7 @@ export const WithdrawForm = ({
                 required: (value) => !!selectedAsset || required(value),
               },
             }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                onChange={(e) => {
-                  onSelectAsset(e.target.value);
-                  field.onChange(e.target.value);
-                }}
-                value={selectedAsset?.id || ''}
-                id="asset"
-                name="asset"
-                required
-                data-testid="select-asset"
-              >
-                <option value="">{t('Please select')}</option>
-                {assets.filter(isAssetTypeERC20).map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
-              </Select>
-            )}
+            render={renderAssetsSelector}
           />
           {errors.asset?.message && (
             <InputError intent="danger">{errors.asset.message}</InputError>
