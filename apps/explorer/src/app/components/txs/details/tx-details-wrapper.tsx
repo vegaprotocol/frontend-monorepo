@@ -23,6 +23,7 @@ import { TxDetailsDataSubmission } from './tx-data-submission';
 import { TxProposalVote } from './tx-proposal-vote';
 import { TxDetailsDataSubmission } from './tx-data-submission';
 import { TxProposalVote } from './tx-proposal-vote';
+import { TxDetailsDataSubmission } from './tx-data-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
