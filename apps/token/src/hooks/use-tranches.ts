@@ -1,54 +1,54 @@
-import { useFetch } from '@vegaprotocol/react-helpers';
-import type { Tranche } from '@vegaprotocol/smart-contracts';
-import React, { useEffect } from 'react';
-import { BigNumber } from '../lib/bignumber';
+import { toBigNum, useFetch } from '@vegaprotocol/react-helpers';
+import type { TrancheServiceResponse } from '@vegaprotocol/smart-contracts';
+import { useMemo } from 'react';
+import type { BigNumber } from '../lib/bignumber';
 import { ENV } from '../config';
+import { useAppState } from '../contexts/app-state/app-state-context';
+
+export interface Tranche {
+  tranche_id: number;
+  tranche_start: Date;
+  tranche_end: Date;
+  total_added: BigNumber;
+  total_removed: BigNumber;
+  locked_amount: BigNumber;
+  users: string[];
+}
+
+const secondsToDate = (seconds: number) => new Date(seconds * 1000);
 
 export function useTranches() {
-  const [tranches, setTranches] = React.useState<Tranche[] | null>(null);
+  const {
+    appState: { decimals },
+  } = useAppState();
   const url = `${ENV.tranchesServiceUrl}/tranches/stats`;
-  console.log(url);
   const {
     state: { data, loading, error },
-  } = useFetch<Tranche[] | null>(url);
-  useEffect(() => {
-    console.log(data);
-    const processedTrances = data
-      ?.map((t) => ({
-        ...t,
-        tranche_start: new Date(t.tranche_start),
-        tranche_end: new Date(t.tranche_end),
-        total_added: new BigNumber(t.total_added),
-        total_removed: new BigNumber(t.total_removed),
-        locked_amount: new BigNumber(t.locked_amount),
-        deposits: t.deposits.map((d) => ({
-          ...d,
-          amount: new BigNumber(d.amount),
-        })),
-        withdrawals: t.withdrawals.map((w) => ({
-          ...w,
-          amount: new BigNumber(w.amount),
-        })),
-        users: t.users.map((u) => ({
-          ...u,
-          // @ts-ignore - types are incorrect in the SDK lib
-          deposits: u.deposits.map((d) => ({
-            ...d,
-            amount: new BigNumber(d.amount),
-          })),
-          // @ts-ignore - types are incorrect in the SDK lib
-          withdrawals: u.withdrawals.map((w) => ({
-            ...w,
-            amount: new BigNumber(w.amount),
-          })),
-          total_tokens: new BigNumber(u.total_tokens),
-          withdrawn_tokens: new BigNumber(u.withdrawn_tokens),
-          remaining_tokens: new BigNumber(u.remaining_tokens),
-        })),
-      }))
-      .sort((a: Tranche, b: Tranche) => a.tranche_id - b.tranche_id);
-    setTranches(processedTrances ? processedTrances : null);
-  }, [data]);
+  } = useFetch<TrancheServiceResponse | null>(url);
+  const tranches = useMemo(() => {
+    const now = Math.round(Date.now() / 1000);
+    const tranches = Object.values(data?.tranches || [])
+      ?.map((t) => {
+        console.log(t, Math.max(now - t.cliff_start));
+        const tranche_progress =
+          t.duration !== 0 ? (now - t.cliff_start) / t.duration : 0;
+        return {
+          tranche_id: t.tranche_id,
+          tranche_start: secondsToDate(t.cliff_start),
+          tranche_end: secondsToDate(t.cliff_start + t.duration),
+          total_added: toBigNum(t.initial_balance, decimals),
+          total_removed: toBigNum(t.initial_balance, decimals).minus(
+            toBigNum(t.current_balance, decimals)
+          ),
+          locked_amount: toBigNum(t.initial_balance, decimals).times(
+            tranche_progress < 0 ? 1 : 1 - tranche_progress
+          ),
+          users: t.users,
+        };
+      })
+      .sort((a, b) => a.tranche_id - b.tranche_id);
+    return tranches;
+  }, [data, decimals]);
 
   return {
     tranches,

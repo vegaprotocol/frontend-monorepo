@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import type { Tranche } from '@vegaprotocol/smart-contracts';
 
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { useContracts } from '../../contexts/contracts/contracts-context';
@@ -22,6 +21,7 @@ import { TrancheNotFound } from './tranche-not-found';
 import { UntargetedClaim } from './untargeted-claim';
 import { Verifying } from './verifying';
 import type { ClaimAction, ClaimState } from './claim-reducer';
+import type { Tranche } from '../../hooks/use-tranches';
 
 interface ClaimFlowProps {
   state: ClaimState;

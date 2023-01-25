@@ -1,5 +1,4 @@
 import { useOutletContext } from 'react-router-dom';
-import type { Tranche } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +9,7 @@ import { TrancheLabel } from './tranche-label';
 import { VestingChart } from './vesting-chart';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
+import type { Tranche } from '../../hooks/use-tranches';
 
 const trancheMinimum = 10;
 
@@ -38,25 +38,24 @@ export const Tranches = () => {
         <ul role="list">
           {(showAll ? tranches : filteredTranches).map((tranche) => {
             return (
-              <React.Fragment key={tranche.tranche_id}>
-                <TrancheItem
-                  link={`${tranche.tranche_id}`}
-                  tranche={tranche}
-                  locked={tranche.locked_amount}
-                  unlocked={tranche.total_added.minus(tranche.locked_amount)}
-                  total={tranche.total_added}
-                  secondaryHeader={
-                    <TrancheLabel chainId={chainId} id={tranche.tranche_id} />
-                  }
-                />
-              </React.Fragment>
+              <TrancheItem
+                key={tranche.tranche_id}
+                link={`${tranche.tranche_id}`}
+                tranche={tranche}
+                locked={tranche.locked_amount}
+                unlocked={tranche.total_added.minus(tranche.locked_amount)}
+                total={tranche.total_added}
+                secondaryHeader={
+                  <TrancheLabel chainId={chainId} id={tranche.tranche_id} />
+                }
+              />
             );
           })}
         </ul>
       ) : (
         <p>{t('No tranches')}</p>
       )}
-      <section className="text-center mt-32">
+      <section className="text-center mt-4">
         <ButtonLink onClick={() => setShowAll(!showAll)}>
           {showAll
             ? t(
