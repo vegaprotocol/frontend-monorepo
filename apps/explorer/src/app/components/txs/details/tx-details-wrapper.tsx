@@ -19,6 +19,7 @@ import { TxDetailsUndelegate } from './tx-undelegation';
 import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
 import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
 import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
+import { TxDetailsDataSubmission } from './tx-data-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -82,6 +83,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
   switch (txData.type) {
     case 'Submit Order':
       return TxDetailsOrder;
+    case 'Submit Oracle Data':
+      return TxDetailsDataSubmission;
     case 'Cancel Order':
       return TxDetailsOrderCancel;
     case 'Amend Order':
