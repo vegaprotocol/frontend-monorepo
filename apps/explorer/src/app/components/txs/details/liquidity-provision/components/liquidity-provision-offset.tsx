@@ -36,7 +36,7 @@ export function LiquidityProvisionOffset({
 }
 
 /**
- * Does the work of formatting the number now we have the settlement decimal places.
+ * Does the work of formatting the number now we have the market decimal places.
  * If no market data is assigned (i.e. during loading, or if the market doesn't exist)
  * this function will return the unformatted number
  *
@@ -49,9 +49,7 @@ export function getFormattedOffset(
   offset: string,
   data?: ExplorerSettlementAssetForMarketQuery
 ) {
-  const decimals =
-    data?.market?.tradableInstrument.instrument.product.settlementAsset
-      .decimals;
+  const decimals = data?.market?.decimalPlaces;
 
   if (!decimals) {
     return offset;

@@ -91,7 +91,7 @@ describe('LiquidityProvisionDetails component', () => {
     expect(res.getByTestId('SIDE_SELL-40-1')).toBeInTheDocument();
     expect(res.getByText('-1')).toBeInTheDocument();
     expect(res.getByText('Best Bid')).toBeInTheDocument();
-    expect(res.getByText('40% (normalised from: 20%)')).toBeInTheDocument();
+    expect(res.getByText('40%')).toBeInTheDocument();
   });
 
   it('handles a missing offset gracefully (should not happen)', () => {
@@ -125,7 +125,7 @@ describe('LiquidityProvisionDetails component', () => {
     );
     // Row test ids and keys are based on the side, reference and proportion - and that proportion is scaled
     expect(res.getByTestId('SIDE_SELL-40-1')).toBeInTheDocument();
-    expect(res.getByText('40% (normalised from: 20%)')).toBeInTheDocument();
+    expect(res.getByText('40%')).toBeInTheDocument();
     expect(res.getByText('-')).toBeInTheDocument();
   });
 });
