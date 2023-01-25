@@ -186,13 +186,14 @@ describe('WithdrawFormContainer', () => {
         __typename: 'AccountBalance',
       },
     ];
-    render(
+    const { container } = render(
       <MockedProvider>
         <WithdrawFormContainer {...props} />
       </MockedProvider>
     );
     expect(screen.getByTestId('select-asset')).toBeInTheDocument();
-    expect(screen.getAllByRole('option')).toHaveLength(3);
+    const options = container.querySelectorAll('select[name="asset"] option');
+    expect(options).toHaveLength(3);
   });
 
   it('should display no data message', () => {
@@ -209,13 +210,14 @@ describe('WithdrawFormContainer', () => {
 
   it('should filter out zero balance account assets', () => {
     mockData = [{ ...account1 }, { ...account2, balance: '0' }];
-    render(
+    const { container } = render(
       <MockedProvider>
         <WithdrawFormContainer {...props} />
       </MockedProvider>
     );
     expect(screen.getByTestId('select-asset')).toBeInTheDocument();
-    expect(screen.getAllByRole('option')).toHaveLength(2);
+    const options = container.querySelectorAll('select[name="asset"] option');
+    expect(options).toHaveLength(2);
   });
 
   it('when no accounts have a balance should should display no data message', () => {
