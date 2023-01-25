@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import create from 'zustand';
+import { create } from 'zustand';
 import type { UserTrancheBalance } from '../../contexts/app-state/app-state-context';
 
 export interface AssociationBreakdown {

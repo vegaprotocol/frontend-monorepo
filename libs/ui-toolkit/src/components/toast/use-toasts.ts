@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import type { Toast } from './toast';
 
 type ToastsStore = {

@@ -16,6 +16,7 @@ import {
   mapMarketData,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
+import { usePersistedOrderStore } from '@vegaprotocol/orders';
 
 interface OrderbookManagerProps {
   marketId: string;
@@ -148,6 +149,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     flush();
   }, [resolution, flush]);
 
+  const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
+
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
@@ -162,11 +165,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         onResolutionChange={(resolution: number) => setResolution(resolution)}
         onClick={(price?: string | number) => {
           if (price) {
-            document.dispatchEvent(
-              new CustomEvent('limit-price', {
-                detail: addDecimal(price, market?.decimalPlaces ?? 0),
-              })
-            );
+            const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
+            updatePrice(marketId, priceValue);
           }
         }}
       />

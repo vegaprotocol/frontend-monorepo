@@ -7,7 +7,7 @@ import random from 'lodash/random';
 import sample from 'lodash/sample';
 import uniqueId from 'lodash/uniqueId';
 import { useToasts } from './use-toasts';
-import create from 'zustand';
+import { create } from 'zustand';
 import { useEffect } from '@storybook/addons';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 
