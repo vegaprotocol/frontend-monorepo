@@ -120,9 +120,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         produce((state: EthTransactionStore) => {
           const transaction = state.transactions.find(
             (transaction) =>
-              transaction &&
-              transaction.status === EthTxStatus.Pending &&
-              deposit.txHash === transaction.txHash
+              transaction && deposit.txHash === transaction.txHash
           );
           if (!transaction) {
             return;

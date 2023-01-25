@@ -115,6 +115,7 @@ export const Toast = ({
     >
       <div className="flex relative">
         <button
+          type="button"
           data-testid="toast-close"
           onClick={closeToast}
           className="absolute p-2 top-0 right-0"

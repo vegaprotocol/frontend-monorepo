@@ -70,6 +70,7 @@ const updateQuery: UpdateQueryFn<
     subscriptionData.data.busEvents
   );
 
+  console.log({ subscriptionData, time: new Date() });
   const deposits = uniqBy([...incoming, ...curr], 'id');
 
   if (!prev.party) {
