@@ -56,7 +56,6 @@ describe('market depth provider update', () => {
     ];
     expect(update(data, delta.slice(0, 1), reload)).toBe(data);
     expect(update(data, delta.slice(1, 2), reload)).toBe(data);
-    expect(mockCaptureException).toBeCalledTimes(2);
   });
 
   it('restarts and captureException when there is gap in updates', () => {

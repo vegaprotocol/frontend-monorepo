@@ -24,11 +24,6 @@ export const update: Update<
       continue;
     }
     if (BigInt(delta.sequenceNumber) <= BigInt(data.depth.sequenceNumber)) {
-      captureException(
-        new Error(
-          `Sequence number from delta is lower or equal to last sequenceNumber for ${data.id}, ${delta.sequenceNumber} <= ${data.depth.sequenceNumber}, update skipped`
-        )
-      );
       return data;
     }
     if (delta.previousSequenceNumber !== data.depth.sequenceNumber) {
