@@ -128,13 +128,14 @@ type ExpiryLabelProps = {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  const content = market
-    ? getExpiryDate(
-        market.tradableInstrument.instrument.metadata.tags,
-        market.marketTimestamps.close,
-        market.state
-      )
-    : '-';
+  const content =
+    market && market.tradableInstrument.instrument.metadata.tags
+      ? getExpiryDate(
+          market.tradableInstrument.instrument.metadata.tags,
+          market.marketTimestamps.close,
+          market.state
+        )
+      : '-';
   return <div data-testid="trading-expiry">{content}</div>;
 };
 

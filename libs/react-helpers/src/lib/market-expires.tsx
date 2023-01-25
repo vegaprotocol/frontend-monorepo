@@ -37,9 +37,9 @@ export const getMarketExpiryDateFormatted = (
 };
 
 export const getExpiryDate = (
-  tags?: ReadonlyArray<string> | null,
-  close?: string | null,
-  state?: MarketState
+  tags: ReadonlyArray<string> | null,
+  close: string | null,
+  state: MarketState
 ): string => {
   const metadataExpiryDate = getMarketExpiryDate(tags);
   const marketTimestampCloseDate = close && new Date(close);

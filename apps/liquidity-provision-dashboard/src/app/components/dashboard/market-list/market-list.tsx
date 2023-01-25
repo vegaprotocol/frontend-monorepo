@@ -304,11 +304,14 @@ export const MarketList = () => {
             valueFormatter={({
               data,
             }: VegaValueFormatterParams<Market, ''>) => {
-              const expiry = getExpiryDate(
-                data?.tradableInstrument.instrument.metadata.tags,
-                data?.marketTimestamps.close,
-                data?.state
-              );
+              let expiry;
+              if (data?.tradableInstrument.instrument.metadata.tags) {
+                expiry = getExpiryDate(
+                  data?.tradableInstrument.instrument.metadata.tags,
+                  data?.marketTimestamps.close,
+                  data?.state
+                );
+              }
               return expiry ? expiry : '-';
             }}
           />
