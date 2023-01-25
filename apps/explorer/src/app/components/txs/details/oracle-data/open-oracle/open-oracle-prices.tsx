@@ -15,7 +15,13 @@ interface OpenOraclePricesProps {
 }
 
 /**
- * Someone cancelled an order
+ * Open Oracle price table, showing the entries in this
+ * decoded message
+ *
+ * Notes:
+ * - Signer is derived by recovering the address from the
+ *   signature and the message. This is currently disabled
+ *   as the implementation is incorrect
  */
 export function OpenOraclePrices({
   prices,
@@ -40,7 +46,7 @@ export function OpenOraclePrices({
           <th className="text-right">{t('Price')}</th>
           <th>{t('Signature')}</th>
           <th>{t('Message')}</th>
-          <th>{t('Signer')}</th>
+          {/* <th>{t('Signer')}</th> */}
         </TableRow>
       </thead>
       <tbody>
@@ -79,7 +85,7 @@ export function OpenOraclePrice({
   signature,
   message,
 }: OpenOraclePriceProps) {
-  const addr = getAddressFromMessageAndSignature(message, signature);
+  //  const addr = getAddressFromMessageAndSignature(message, signature);
   return (
     <TableRow modifier="bordered" key={`${asset}`}>
       <td className="px-4">{asset}</td>
@@ -98,13 +104,13 @@ export function OpenOraclePrice({
           </button>
         </CopyWithTooltip>
       </td>
-      <td className="px-4">
+      {/*<td className="px-4">
         <CopyWithTooltip text={message}>
           <button>
             <TruncateInline text={addr} startChars={5} endChars={5} />
           </button>
-        </CopyWithTooltip>
-      </td>
+      </CopyWithTooltip>
+      </td> */}
     </TableRow>
   );
 }
