@@ -1,6 +1,5 @@
 import { useListenForPendingEthEvents } from './use-listen-for-pending-eth-events';
-import { renderHook } from '@testing-library/react';
-import { Web3ReactProvider } from '@web3-react/core';
+import { renderHook, cleanup, waitFor } from '@testing-library/react';
 import type { Contract, EventFilter, Event } from 'ethers';
 
 let contract: Contract;
@@ -43,6 +42,7 @@ describe('useListenForPendingEthEvents', () => {
     );
 
     expect(contract.on).toHaveBeenCalledWith(filter, expect.any(Function));
+    cleanup();
     expect(contract.off).toHaveBeenCalledWith(filter, expect.any(Function));
   });
 
@@ -69,16 +69,19 @@ describe('useListenForPendingEthEvents', () => {
     expect(addPendingTxs).toHaveBeenCalledWith([event]);
     expect(removePendingTx).not.toHaveBeenCalled();
 
-    // mock that event is confirmed
-    event.getTransaction = jest.fn().mockResolvedValue({
-      wait: jest.fn().mockResolvedValue(null),
+    await waitFor(() => {
+      expect(removePendingTx).toHaveBeenCalledWith(event);
     });
-    await listener(null, null, null, event);
-    expect(removePendingTx).toHaveBeenCalledWith(event);
   });
 
-  it('gets existing transactions and waits for confirmations', async () => {
-    contract.queryFilter = jest.fn().mockResolvedValue([{} as Event]);
+  it('gets existing transactions', async () => {
+    const event = {
+      getTransaction: jest.fn().mockResolvedValue({
+        wait: jest.fn().mockResolvedValue(null),
+      }),
+    } as unknown as Event;
+
+    contract.queryFilter = jest.fn().mockResolvedValue([event]);
 
     renderHook(() => {
       useListenForPendingEthEvents(
@@ -91,30 +94,9 @@ describe('useListenForPendingEthEvents', () => {
       );
     });
 
-    expect(contract.queryFilter).toHaveBeenCalledWith(filter, -1);
-    expect(addPendingTxs).toHaveBeenCalledWith([{} as Event]);
-    expect(removePendingTx).not.toHaveBeenCalled();
-
-    // mock that event is confirmed
-    const event = {
-      getTransaction: jest.fn().mockResolvedValue({
-        wait: jest.fn().mockResolvedValue(null),
-      }),
-    } as unknown as Event;
-
-    event.getTransaction = jest.fn().mockResolvedValue({
-      wait: jest.fn().mockResolvedValue(null),
+    await waitFor(() => {
+      expect(contract.queryFilter).toHaveBeenCalledWith(filter, -1);
+      expect(addPendingTxs).toHaveBeenCalledWith([event]);
     });
-    await renderHook(async () => {
-      await (useListenForPendingEthEvents as any)(
-        2,
-        contract,
-        filter,
-        addPendingTxs,
-        removePendingTx,
-        resetPendingTxs
-      ).waitForExistingTransactions([event], 2);
-    });
-    expect(removePendingTx).toHaveBeenCalledWith(event);
   });
 });

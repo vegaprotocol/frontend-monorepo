@@ -22,11 +22,15 @@ export const useListenForPendingEthEvents = (
     }
 
     const listener = async (...args: any[]) => {
-      const event = args[3] as Event;
-      addPendingTxs([event]);
-      const tx = await event.getTransaction();
-      await tx.wait(numberOfConfirmations);
-      removePendingTx(event);
+      try {
+        const event = args[3] as Event;
+        addPendingTxs([event]);
+        const tx = await event.getTransaction();
+        await tx.wait(numberOfConfirmations);
+        removePendingTx(event);
+      } catch (e) {
+        console.log('Error listening for pending eth events', e);
+      }
     };
 
     contract?.on(filter, listener);
@@ -44,20 +48,29 @@ export const useListenForPendingEthEvents = (
     if (!filter || !contract) {
       return [];
     }
-    return await contract.queryFilter(
-      filter,
-      blockNumber - numberOfConfirmations
-    );
+    try {
+      return await contract.queryFilter(
+        filter,
+        blockNumber - numberOfConfirmations
+      );
+    } catch (e) {
+      console.log('Error getting existing transactions', e);
+      return [];
+    }
   }, [contract, filter, numberOfConfirmations, provider]);
 
   const waitForExistingTransactions = useCallback(
     (events: Event[], numberOfConfirmations: number) => {
       events.map(async (event) => {
-        const tx = await event.getTransaction();
+        try {
+          const tx = await event.getTransaction();
 
-        await tx.wait(Math.max(numberOfConfirmations, 0));
+          await tx.wait(Math.max(numberOfConfirmations, 0));
 
-        removePendingTx(event);
+          removePendingTx(event);
+        } catch (e) {
+          console.log('Error waiting for existing transactions', e);
+        }
       });
     },
     [removePendingTx]
