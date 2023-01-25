@@ -9,7 +9,7 @@ import {
 } from './connectors';
 import { determineId } from './utils';
 
-import create from 'zustand';
+import { create } from 'zustand';
 import type { VegaTxState } from './use-vega-transaction';
 import { VegaTxStatus } from './use-vega-transaction';
 import type {
