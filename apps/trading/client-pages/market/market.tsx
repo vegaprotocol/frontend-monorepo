@@ -119,14 +119,17 @@ export const MarketPage = () => {
   if (!data && marketId) {
     return (
       <Splash>
-        <p className="text-sm justify-center">
-          {t(
-            `This market is not available anymore. Choose another market from the`
-          )}{' '}
-          <ExternalLink onClick={() => navigate(Links[Routes.MARKETS]())}>
-            market list
-          </ExternalLink>
-        </p>
+        <span className="flex flex-col items-center gap-2">
+          <p className="text-sm justify-center">
+            {t('This market URL is not available anymore.')}
+          </p>
+          <p className="text-sm justify-center">
+            {t(`Please choose another market from the`)}{' '}
+            <ExternalLink onClick={() => navigate(Links[Routes.MARKETS]())}>
+              market list
+            </ExternalLink>
+          </p>
+        </span>
       </Splash>
     );
   }
