@@ -8,14 +8,15 @@ import { toBigNum } from '@vegaprotocol/react-helpers';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
 import type {
   PositionsQuery,
+  PositionFieldsFragment,
   PositionsSubscriptionSubscription,
-  MarginsQuery,
   MarginFieldsFragment,
 } from './__generated__/Positions';
 import {
@@ -170,20 +171,17 @@ export const getMetrics = (
 };
 
 export const update = (
-  data: PositionsQuery['party'],
+  data: PositionFieldsFragment[],
   deltas: PositionsSubscriptionSubscription['positions']
 ) => {
   return produce(data, (draft) => {
     deltas.forEach((delta) => {
-      if (!draft?.positionsConnection?.edges || !delta) {
-        return;
-      }
-      const index = draft.positionsConnection.edges.findIndex(
-        (edge) => edge.node.market.id === delta.marketId
+      const index = draft.findIndex(
+        (node) => node.market.id === delta.marketId
       );
       if (index !== -1) {
-        const currNode = draft.positionsConnection.edges[index].node;
-        draft.positionsConnection.edges[index].node = {
+        const currNode = draft[index];
+        draft[index] = {
           ...currNode,
           realisedPNL: delta.realisedPNL,
           unrealisedPNL: delta.unrealisedPNL,
@@ -192,15 +190,12 @@ export const update = (
           updatedAt: delta.updatedAt,
         };
       } else {
-        draft.positionsConnection.edges.unshift({
-          __typename: 'PositionEdge',
-          node: {
-            ...delta,
-            __typename: 'Position',
-            market: {
-              __typename: 'Market',
-              id: delta.marketId,
-            },
+        draft.unshift({
+          ...delta,
+          __typename: 'Position',
+          market: {
+            __typename: 'Market',
+            id: delta.marketId,
           },
         });
       }
@@ -210,29 +205,29 @@ export const update = (
 
 export const positionsDataProvider = makeDataProvider<
   PositionsQuery,
-  PositionsQuery['party'],
+  PositionFieldsFragment[],
   PositionsSubscriptionSubscription,
   PositionsSubscriptionSubscription['positions']
 >({
   query: PositionsDocument,
   subscriptionQuery: PositionsSubscriptionDocument,
   update,
-  getData: (responseData: PositionsQuery) => responseData.party,
+  getData: (responseData: PositionsQuery) =>
+    removePaginationWrapper(responseData.party?.positionsConnection?.edges) ||
+    [],
   getDelta: (subscriptionData: PositionsSubscriptionSubscription) =>
     subscriptionData.positions,
 });
 
 const upgradeMarginsConnection = (
   marketId: string,
-  margins: MarginsQuery['party'] | null
+  margins: MarginFieldsFragment[] | null
 ) => {
-  if (marketId && margins?.marginsConnection?.edges) {
+  if (marketId && margins) {
     const index =
-      margins.marginsConnection.edges.findIndex(
-        (edge) => edge.node.market.id === marketId
-      ) ?? -1;
+      margins.findIndex((node) => node.market.id === marketId) ?? -1;
     if (index >= 0) {
-      const marginLevel = margins.marginsConnection.edges[index].node;
+      const marginLevel = margins[index];
       return {
         maintenanceLevel: marginLevel.maintenanceLevel,
         searchLevel: marginLevel.searchLevel,
@@ -244,12 +239,12 @@ const upgradeMarginsConnection = (
 };
 
 export const rejoinPositionData = (
-  positions: PositionsQuery['party'] | null,
+  positions: PositionFieldsFragment[] | null,
   marketsData: MarketWithData[] | null,
-  margins: MarginsQuery['party'] | null
+  margins: MarginFieldsFragment[] | null
 ): PositionRejoined[] | null => {
-  if (positions?.positionsConnection?.edges && marketsData && margins) {
-    return positions.positionsConnection.edges.map(({ node }) => {
+  if (positions && marketsData && margins) {
+    return positions.map((node) => {
       return {
         realisedPNL: node.realisedPNL,
         openVolume: node.openVolume,
