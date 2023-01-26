@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { LocalStorage } from '../lib/storage';
 
 const THEME_STORAGE_KEY = 'theme';

@@ -203,7 +203,7 @@ describe('LiquidityProvisionDetails component', () => {
     };
 
     const res = renderComponent(mock);
-    expect(res.getByText('45% (normalised from: 25%)')).toBeInTheDocument();
-    expect(res.getByText('55% (normalised from: 30%)')).toBeInTheDocument();
+    expect(res.getByText('45%')).toBeInTheDocument();
+    expect(res.getByText('55%')).toBeInTheDocument();
   });
 });

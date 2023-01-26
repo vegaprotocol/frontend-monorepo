@@ -15,7 +15,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
-import { usePersistedOrderStore } from '../../hooks/use-persisted-order';
 import {
   getDefaultOrder,
   validateMarketState,
@@ -27,6 +26,10 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import {
+  usePersistedOrderStore,
+  usePersistedOrderStoreSubscription,
+} from '@vegaprotocol/orders';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -43,13 +46,13 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
 
 export const DealTicket = ({ market, submit }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
-  // const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
   const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
     (store) => ({
       getPersistedOrder: store.getOrder,
       setPersistedOrder: store.setOrder,
     })
   );
+
   const {
     register,
     control,
@@ -58,11 +61,23 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     setError,
     clearErrors,
     formState: { errors },
+    setValue,
   } = useForm<DealTicketFormFields>({
     defaultValues: getPersistedOrder(market.id) || getDefaultOrder(market),
   });
 
   const order = watch();
+
+  watch((orderData) => {
+    setPersistedOrder(orderData as DealTicketFormFields);
+  });
+
+  usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
+    if (order.price !== storedOrder.price) {
+      setValue('price', storedOrder.price);
+    }
+  });
+
   const marketStateError = validateMarketState(market.data.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
@@ -89,9 +104,6 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     errors.summary?.message,
     errors.summary?.type,
   ]);
-
-  // When order state changes persist it in local storage
-  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {

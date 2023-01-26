@@ -27,7 +27,7 @@ export const TxDetailsLiquidityCancellation = ({
   pubKey,
   blockData,
 }: TxDetailsLiquidityCancellationProps) => {
-  if (!txData || !txData.command.liquidityProvisionAmendment) {
+  if (!txData || !txData.command.liquidityProvisionCancellation) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 

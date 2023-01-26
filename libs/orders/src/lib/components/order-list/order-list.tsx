@@ -245,7 +245,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           colId="amend"
           headerName=""
           field="status"
-          minWidth={150}
+          minWidth={100}
           type="rightAligned"
           cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
             return data && isOrderAmendable(data) ? (

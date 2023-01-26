@@ -67,11 +67,7 @@ export function LiquidityProvisionDetailsRow({
       <td className="text-center">
         {order.reference ? LiquidityReferenceLabel[order.reference] : '-'}
       </td>
-      <td className="text-center">
-        {proportion === order.proportion
-          ? `${proportion}%`
-          : `${proportion}% (normalised from: ${order.proportion}%)`}{' '}
-      </td>
+      <td className="text-center">{proportion}%</td>
     </TableRow>
   );
 }
