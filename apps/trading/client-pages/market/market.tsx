@@ -7,7 +7,13 @@ import {
   useDataProvider,
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  Button,
+  ButtonLink,
+  ExternalLink,
+  Splash,
+} from '@vegaprotocol/ui-toolkit';
 import type {
   SingleMarketFieldsFragment,
   MarketData,
@@ -113,7 +119,14 @@ export const MarketPage = () => {
   if (!data && marketId) {
     return (
       <Splash>
-        <p>{t('Market not found')}</p>
+        <p className="text-sm justify-center">
+          {t(
+            `This market is not available anymore. Choose another market from the`
+          )}{' '}
+          <ExternalLink onClick={() => navigate(Links[Routes.MARKETS]())}>
+            market list
+          </ExternalLink>
+        </p>
       </Splash>
     );
   }
