@@ -33,7 +33,6 @@ const RedemptionRouter = () => {
   const { t } = useTranslation();
   const validatePubkey = useCallback(
     (value: string) => {
-      console.log(value.length);
       if (!value.startsWith('0x')) {
         return t('Address must begin with 0x');
       } else if (value.length !== 42) {
@@ -66,7 +65,6 @@ const RedemptionRouter = () => {
           ({ address: a }) => a.toLowerCase() === address.toLowerCase()
         )
       );
-      console.log(userTranches);
 
       if (userTranches) {
         dispatch({
