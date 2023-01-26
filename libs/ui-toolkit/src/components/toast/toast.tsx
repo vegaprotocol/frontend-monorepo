@@ -120,7 +120,7 @@ export const Toast = ({
           onClick={closeToast}
           className="absolute p-2 top-0 right-0"
         >
-          <Icon name="cross" size={3} className="!block" />
+          <Icon name="cross" size={3} className="!block dark:text-white" />
         </button>
         <div
           className={classNames(getToastAccent(intent), 'p-2 pt-3 text-center')}
