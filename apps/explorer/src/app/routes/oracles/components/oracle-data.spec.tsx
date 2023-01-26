@@ -37,7 +37,7 @@ describe('Oracle Data view', () => {
         dataConnection: {
           edges: [],
         },
-      } as ExplorerOracleDataConnectionFragment)
+      } as unknown as ExplorerOracleDataConnectionFragment)
     );
     expect(res.container).toBeEmptyDOMElement();
   });
