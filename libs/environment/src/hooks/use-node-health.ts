@@ -15,7 +15,7 @@ export const NODE_SUBSET_COUNT = 5;
 // to calculate and return the difference between the most advanced block
 // and the block height of the current node
 export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
-  const [blockDiff, setBlockDiff] = useState(10);
+  const [blockDiff, setBlockDiff] = useState(0);
 
   useEffect(() => {
     if (!clients || !vegaUrl) return;
