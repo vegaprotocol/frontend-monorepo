@@ -4,8 +4,8 @@ import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
 import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
-import { toBigNum } from '@vegaprotocol/react-helpers';
 import {
+  toBigNum,
   makeDataProvider,
   makeDerivedDataProvider,
   removePaginationWrapper,
@@ -171,10 +171,10 @@ export const getMetrics = (
 };
 
 export const update = (
-  data: PositionFieldsFragment[],
+  data: PositionFieldsFragment[] | null,
   deltas: PositionsSubscriptionSubscription['positions']
 ) => {
-  return produce(data, (draft) => {
+  return produce(data || [], (draft) => {
     deltas.forEach((delta) => {
       const index = draft.findIndex(
         (node) => node.market.id === delta.marketId
@@ -212,8 +212,8 @@ export const positionsDataProvider = makeDataProvider<
   query: PositionsDocument,
   subscriptionQuery: PositionsSubscriptionDocument,
   update,
-  getData: (responseData: PositionsQuery) =>
-    removePaginationWrapper(responseData.party?.positionsConnection?.edges) ||
+  getData: (responseData: PositionsQuery | null) =>
+    removePaginationWrapper(responseData?.party?.positionsConnection?.edges) ||
     [],
   getDelta: (subscriptionData: PositionsSubscriptionSubscription) =>
     subscriptionData.positions,

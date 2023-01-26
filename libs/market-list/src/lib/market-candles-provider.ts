@@ -24,7 +24,7 @@ export const update = (data: Candle[] | null, delta: Candle) => {
   return [delta];
 };
 
-const getData = (responseData: MarketCandlesQuery): Candle[] | null =>
+const getData = (responseData: MarketCandlesQuery | null): Candle[] | null =>
   responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
     ?.filter((edge) => edge?.node)
     .map((edge) => edge?.node as Candle) || null;

@@ -16,14 +16,14 @@ export type BuiltinAsset = Omit<Asset, 'source'> & {
   source: BuiltinAssetSource;
 };
 
-const getData = (responseData: AssetsQuery) =>
-  responseData.assetsConnection?.edges
+const getData = (responseData: AssetsQuery | null) =>
+  responseData?.assetsConnection?.edges
     ?.filter((e) => Boolean(e?.node))
     .map((e) => e?.node as Asset) ?? [];
 
 export const assetsProvider = makeDataProvider<
   AssetsQuery,
-  Asset[] | null,
+  Asset[],
   never,
   never
 >({

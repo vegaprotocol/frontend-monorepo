@@ -53,7 +53,7 @@ export const update: Update<
   return data;
 };
 
-const getData = (responseData: MarketDepthQuery) => responseData.market;
+const getData = (responseData: MarketDepthQuery | null) => responseData?.market;
 
 const getDelta = (subscriptionData: MarketDepthUpdateSubscription) =>
   subscriptionData.marketsDepthUpdate;

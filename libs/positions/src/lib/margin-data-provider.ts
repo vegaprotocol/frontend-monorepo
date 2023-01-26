@@ -14,10 +14,10 @@ import type {
 } from './__generated__/Positions';
 
 const update = (
-  data: MarginFieldsFragment[],
+  data: MarginFieldsFragment[] | null,
   delta: MarginsSubscriptionSubscription['margins']
 ) => {
-  return produce(data, (draft) => {
+  return produce(data || [], (draft) => {
     const { marketId } = delta;
     const index = draft.findIndex((node) => node.market.id === marketId);
     if (index !== -1) {
@@ -49,8 +49,9 @@ const update = (
   });
 };
 
-const getData = (responseData: MarginsQuery) =>
-  removePaginationWrapper(responseData.party?.marginsConnection?.edges) || [];
+const getData = (responseData: MarginsQuery | null) =>
+  removePaginationWrapper(responseData?.party?.marginsConnection?.edges) || [];
+
 const getDelta = (subscriptionData: MarginsSubscriptionSubscription) =>
   subscriptionData.margins;
 

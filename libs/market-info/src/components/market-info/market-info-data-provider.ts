@@ -9,5 +9,5 @@ export const marketInfoDataProvider = makeDataProvider<
   never
 >({
   query: MarketInfoDocument,
-  getData: (responseData: MarketInfoQuery) => responseData,
+  getData: (responseData: MarketInfoQuery | null) => responseData,
 });

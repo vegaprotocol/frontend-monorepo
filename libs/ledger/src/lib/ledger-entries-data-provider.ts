@@ -35,12 +35,12 @@ export type LedgerEntry = LedgerEntryFragment & {
 
 export type AggregatedLedgerEntriesEdge = Schema.AggregatedLedgerEntriesEdge;
 
-const getData = (responseData: LedgerEntriesQuery) => {
-  return responseData.ledgerEntries?.edges || [];
+const getData = (responseData: LedgerEntriesQuery | null) => {
+  return responseData?.ledgerEntries?.edges || [];
 };
 
 export const update = (
-  data: ReturnType<typeof getData>,
+  data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getData>,
   reload: () => void,
   variables?: LedgerEntriesQueryVariables

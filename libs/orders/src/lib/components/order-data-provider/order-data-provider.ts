@@ -71,7 +71,7 @@ const orderMatchFilters = (
   return true;
 };
 
-const getData = (responseData: OrdersQuery) =>
+const getData = (responseData: OrdersQuery | null) =>
   responseData?.party?.ordersConnection?.edges || [];
 
 const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
@@ -81,7 +81,7 @@ const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
   responseData.party?.ordersConnection?.pageInfo || null;
 
 export const update = (
-  data: ReturnType<typeof getData>,
+  data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getDelta>,
   reload: () => void,
   variables?: OrdersQueryVariables

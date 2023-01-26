@@ -21,7 +21,7 @@ import type { Candle } from './market-candles-provider';
 
 export type Market = MarketFieldsFragment;
 
-const getData = (responseData: MarketsQuery): Market[] | null =>
+const getData = (responseData: MarketsQuery | null): Market[] | null =>
   responseData?.marketsConnection?.edges.map((edge) => edge.node) || null;
 
 export const marketsProvider = makeDataProvider<

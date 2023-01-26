@@ -8,7 +8,9 @@ export interface MarketCandles {
   candles: Candle[] | undefined;
 }
 
-const getData = (responseData: MarketsCandlesQuery): MarketCandles[] | null =>
+const getData = (
+  responseData: MarketsCandlesQuery | null
+): MarketCandles[] | null =>
   responseData?.marketsConnection?.edges.map((edge) => ({
     marketId: edge.node.id,
     candles: edge.node.candlesConnection?.edges

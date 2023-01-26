@@ -20,7 +20,7 @@ import produce from 'immer';
 export const MAX_TRADES = 50;
 
 const getData = (
-  responseData: TradesQuery
+  responseData: TradesQuery | null
 ): ({
   cursor: string;
   node: TradeFieldsFragment;
@@ -30,7 +30,7 @@ const getDelta = (subscriptionData: TradesUpdateSubscription) =>
   subscriptionData?.trades || [];
 
 const update = (
-  data: ReturnType<typeof getData>,
+  data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getDelta>
 ) => {
   return produce(data, (draft) => {

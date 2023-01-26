@@ -58,7 +58,7 @@ export interface Markets {
 }
 
 const getData = (
-  responseData: LiquidityProvisionMarketsQuery
+  responseData: LiquidityProvisionMarketsQuery | null
 ): LiquidityProvisionMarket[] | null => {
   return (
     responseData?.marketsConnection?.edges.map((edge) => {
