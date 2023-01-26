@@ -8,6 +8,9 @@ query ExplorerMarket($id: ID!) {
         product {
           ... on Future {
             quoteName
+            settlementAsset {
+              decimals
+            }
           }
         }
       }

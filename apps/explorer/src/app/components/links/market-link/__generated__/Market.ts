@@ -8,7 +8,7 @@ export type ExplorerMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, product: { __typename?: 'Future', quoteName: string } } } } | null };
+export type ExplorerMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, product: { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', decimals: number } } } } } | null };
 
 
 export const ExplorerMarketDocument = gql`
@@ -22,6 +22,9 @@ export const ExplorerMarketDocument = gql`
         product {
           ... on Future {
             quoteName
+            settlementAsset {
+              decimals
+            }
           }
         }
       }

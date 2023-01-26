@@ -68,7 +68,6 @@ jobs:
         working-directory: frontend-monorepo
         env:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
           CYPRESS_grepTags: ${{ inputs.tags }}
 
