@@ -1,0 +1,9 @@
+query ExplorerProposal($id: ID!) {
+  proposal(id: $id) {
+    id
+    rationale {
+      title
+      description
+    }
+  }
+}
