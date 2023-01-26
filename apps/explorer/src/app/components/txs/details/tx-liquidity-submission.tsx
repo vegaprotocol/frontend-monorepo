@@ -54,6 +54,7 @@ export const TxDetailsLiquiditySubmission = ({
               <PriceInMarket
                 price={submission.commitmentAmount}
                 marketId={marketId}
+                decimalSource="SETTLEMENT_ASSET"
               />
             </TableCell>
           </TableRow>
