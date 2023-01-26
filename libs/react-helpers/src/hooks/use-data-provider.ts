@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import throttle from 'lodash/throttle';
+import isEqual from 'lodash/isEqual';
 import { useApolloClient } from '@apollo/client';
+import { usePrevious } from './use-previous';
 import type { OperationVariables } from '@apollo/client';
 import type {
   Subscribe,
@@ -52,9 +54,9 @@ export const useDataProvider = <
   dataProvider,
   update,
   insert,
-  variables,
   skipUpdates,
   skip,
+  ...props
 }: useDataProviderParams<Data, Delta, Variables>) => {
   const client = useApolloClient();
   const [data, setData] = useState<Data | null>(null);
@@ -65,6 +67,13 @@ export const useDataProvider = <
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
   const loadRef = useRef<Load<Data> | undefined>(undefined);
   const initialized = useRef<boolean>(false);
+  const prevVariables = usePrevious(props.variables);
+  const [variables, setVariables] = useState(props.variables);
+  useEffect(() => {
+    if (!isEqual(prevVariables, props.variables)) {
+      setVariables(props.variables);
+    }
+  }, [props.variables, prevVariables]);
   const flush = useCallback(() => {
     if (flushRef.current) {
       flushRef.current();
@@ -125,6 +134,9 @@ export const useDataProvider = <
     setData(null);
     setError(undefined);
     setTotalCount(undefined);
+    if (initialized.current && update) {
+      update({ data: null });
+    }
     initialized.current = false;
     if (skip) {
       setLoading(false);

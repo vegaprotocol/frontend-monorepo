@@ -115,11 +115,12 @@ export const Toast = ({
     >
       <div className="flex relative">
         <button
+          type="button"
           data-testid="toast-close"
           onClick={closeToast}
           className="absolute p-2 top-0 right-0"
         >
-          <Icon name="cross" size={3} className="!block" />
+          <Icon name="cross" size={3} className="!block dark:text-white" />
         </button>
         <div
           className={classNames(getToastAccent(intent), 'p-2 pt-3 text-center')}
@@ -133,7 +134,7 @@ export const Toast = ({
           )}
         </div>
         <div
-          className="flex-1 p-2 pr-6 text-sm overflow-auto"
+          className="flex-1 p-2 pr-6 text-sm overflow-auto dark:bg-black dark:text-white"
           data-testid="toast-content"
         >
           {content}

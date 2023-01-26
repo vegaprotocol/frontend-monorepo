@@ -3,7 +3,9 @@ import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
 import Markets from './markets';
-import Oracles from './oracles';
+import OraclePage from './oracles';
+import Oracles from './oracles/home';
+import { Oracle } from './oracles/id';
 import Party from './parties';
 import { Parties } from './parties/home';
 import { Party as PartySingle } from './parties/id';
@@ -85,17 +87,6 @@ const marketsRoutes = flags.markets
     ]
   : [];
 
-const oraclesRoutes = flags.oracles
-  ? [
-      {
-        path: Routes.ORACLES,
-        name: 'Oracles',
-        text: t('Oracles'),
-        element: <Oracles />,
-      },
-    ]
-  : [];
-
 const networkParametersRoutes = flags.networkParameters
   ? [
       {
@@ -161,12 +152,27 @@ const routerConfig = [
       },
     ],
   },
+  {
+    path: Routes.ORACLES,
+    name: 'Oracles',
+    text: t('Oracles'),
+    element: <OraclePage />,
+    children: [
+      {
+        index: true,
+        element: <Oracles />,
+      },
+      {
+        path: ':id',
+        element: <Oracle />,
+      },
+    ],
+  },
   ...partiesRoutes,
   ...assetsRoutes,
   ...genesisRoutes,
   ...governanceRoutes,
   ...marketsRoutes,
-  ...oraclesRoutes,
   ...networkParametersRoutes,
   ...validators,
 ];

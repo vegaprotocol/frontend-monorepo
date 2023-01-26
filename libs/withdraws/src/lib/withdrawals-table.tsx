@@ -110,6 +110,7 @@ export const WithdrawalsTable = (
           complete: (withdrawal: WithdrawalFieldsFragment) => {
             createWithdrawApproval(withdrawal);
           },
+          ethUrl: ETHERSCAN_URL,
         }}
         cellRendererSelector={({
           data,

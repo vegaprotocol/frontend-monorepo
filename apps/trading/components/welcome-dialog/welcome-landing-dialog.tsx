@@ -84,7 +84,7 @@ export const SelectMarketLandingTable = ({
           data-testid="view-market-list-link"
           onClick={() => onClose()}
         >
-          <UILink className="uppercase underline">
+          <UILink className="text-sm underline">
             {'Or view full market list'}
           </UILink>
         </Link>

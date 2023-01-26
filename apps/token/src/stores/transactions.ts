@@ -1,6 +1,6 @@
 import type ethers from 'ethers';
 import type { GetState, SetState } from 'zustand';
-import create from 'zustand';
+import { create } from 'zustand';
 
 export interface TxData {
   tx: ethers.ContractTransaction;

@@ -14,6 +14,7 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
 import type { GraphQLErrors } from '@apollo/client/errors';
+import { localLoggerFactory } from '@vegaprotocol/react-helpers';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -68,12 +69,12 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     if (graphQLErrors) {
       graphQLErrors.forEach((e) => {
         if (e.extensions && e.extensions['type'] !== NOT_FOUND) {
-          console.log(e);
+          localLoggerFactory({ application: 'apollo-client' }).error(e);
         }
       });
     }
     if (networkError) {
-      console.log(networkError);
+      localLoggerFactory({ application: 'apollo-client' }).error(networkError);
     }
   });
 

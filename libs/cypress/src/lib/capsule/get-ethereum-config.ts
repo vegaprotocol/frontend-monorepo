@@ -3,7 +3,7 @@ import { requestGQL } from './request';
 
 export async function getEthereumConfig() {
   const query = gql`
-    {
+    query {
       networkParameter(key: "blockchains.ethereumConfig") {
         value
       }

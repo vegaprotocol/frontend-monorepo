@@ -1,6 +1,6 @@
 import type { Asset } from '@vegaprotocol/assets';
 import BigNumber from 'bignumber.js';
-import create from 'zustand';
+import { create } from 'zustand';
 
 export interface WithdrawStore {
   asset: Asset | undefined;

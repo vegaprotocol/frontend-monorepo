@@ -60,10 +60,13 @@ export const CandlesChartContainer = ({
   return (
     <div className="h-full flex flex-col">
       <div className="px-4 py-2 flex flex-row flex-wrap gap-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            {t(`Interval: ${intervalLabels[interval]}`)}
-          </DropdownMenuTrigger>
+        <DropdownMenu
+          trigger={
+            <DropdownMenuTrigger>
+              {t(`Interval: ${intervalLabels[interval]}`)}
+            </DropdownMenuTrigger>
+          }
+        >
           <DropdownMenuContent>
             <DropdownMenuRadioGroup
               value={interval}
@@ -84,10 +87,13 @@ export const CandlesChartContainer = ({
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Icon name={chartTypeIcon.get(chartType) as IconName} />
-          </DropdownMenuTrigger>
+        <DropdownMenu
+          trigger={
+            <DropdownMenuTrigger>
+              <Icon name={chartTypeIcon.get(chartType) as IconName} />
+            </DropdownMenuTrigger>
+          }
+        >
           <DropdownMenuContent>
             <DropdownMenuRadioGroup
               value={chartType}
@@ -104,8 +110,9 @@ export const CandlesChartContainer = ({
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger>{t('Overlays')}</DropdownMenuTrigger>
+        <DropdownMenu
+          trigger={<DropdownMenuTrigger>{t('Overlays')}</DropdownMenuTrigger>}
+        >
           <DropdownMenuContent>
             {Object.values(Overlay).map((overlay) => (
               <DropdownMenuCheckboxItem
@@ -128,8 +135,9 @@ export const CandlesChartContainer = ({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger>{t('Studies')}</DropdownMenuTrigger>
+        <DropdownMenu
+          trigger={<DropdownMenuTrigger>{t('Studies')}</DropdownMenuTrigger>}
+        >
           <DropdownMenuContent>
             {Object.values(Study).map((study) => (
               <DropdownMenuCheckboxItem

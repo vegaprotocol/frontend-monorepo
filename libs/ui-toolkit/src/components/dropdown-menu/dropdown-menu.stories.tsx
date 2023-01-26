@@ -29,16 +29,21 @@ export const CheckboxItems = () => {
   console.log(checkboxItems);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <span>Select many things</span>
-      </DropdownMenuTrigger>
+    <DropdownMenu
+      trigger={
+        <DropdownMenuTrigger>
+          <span>Select many things</span>
+        </DropdownMenuTrigger>
+      }
+    >
       <DropdownMenuContent>
         {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
           <DropdownMenuCheckboxItem
             key={label}
             checked={checked}
-            onCheckedChange={setChecked}
+            onCheckedChange={(checked) =>
+              setChecked(typeof checked === 'boolean' ? checked : false)
+            }
           >
             {label}
             <DropdownMenuItemIndicator />
@@ -55,10 +60,13 @@ export const RadioItems = () => {
 
   return (
     <div style={{ textAlign: 'center', padding: 50 }}>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <span>Open</span>
-        </DropdownMenuTrigger>
+      <DropdownMenu
+        trigger={
+          <DropdownMenuTrigger>
+            <span>Open</span>
+          </DropdownMenuTrigger>
+        }
+      >
         <DropdownMenuContent>
           <DropdownMenuItem onSelect={() => console.log('minimize')}>
             Minimize window
@@ -92,10 +100,13 @@ export const IconMenu = () => {
 
   return (
     <div style={{ textAlign: 'center', padding: 50 }}>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Icon name="cog" />
-        </DropdownMenuTrigger>
+      <DropdownMenu
+        trigger={
+          <DropdownMenuTrigger>
+            <Icon name="cog" />
+          </DropdownMenuTrigger>
+        }
+      >
         <DropdownMenuContent>
           {iconMenuItems.map(({ label }) => (
             <DropdownMenuItem key={label}>{label}</DropdownMenuItem>

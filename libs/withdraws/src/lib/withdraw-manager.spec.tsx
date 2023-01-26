@@ -50,9 +50,9 @@ describe('WithdrawManager', () => {
   );
 
   it('calls submit if valid form submission', async () => {
-    render(generateJsx(props));
+    const { container } = render(generateJsx(props));
     await act(async () => {
-      await submitValid();
+      await submitValid(container);
     });
     expect(props.submit).toHaveBeenCalledWith({
       amount: '1000',
@@ -98,11 +98,9 @@ describe('WithdrawManager', () => {
     expect(props.submit).not.toBeCalled();
   });
 
-  const submitValid = async () => {
-    await userEvent.selectOptions(
-      screen.getByLabelText('Asset'),
-      props.assets[0].id
-    );
+  const submitValid = async (container: HTMLElement) => {
+    const select = container.querySelector('select[name="asset"]') as Element;
+    await userEvent.selectOptions(select, props.assets[0].id);
     fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
       target: { value: ethereumAddress },
     });

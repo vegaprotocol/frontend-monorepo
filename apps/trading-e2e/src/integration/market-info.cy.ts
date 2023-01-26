@@ -161,6 +161,14 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     );
   });
 
+  it('liquidity price range displayed', () => {
+    cy.getByTestId(marketTitle).contains('Liquidity price range').click();
+
+    validateMarketDataRow(0, 'Liquidity Price Range', '2.00%');
+    validateMarketDataRow(1, 'LP Volume Min', '0.05634 tBTC');
+    validateMarketDataRow(2, 'LP Volume Max', '0.05864 tBTC');
+  });
+
   it('oracle displayed', () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
 

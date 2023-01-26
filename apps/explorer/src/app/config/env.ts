@@ -16,6 +16,7 @@ export const ENV = {
     tendermintUrl: windowOrDefault('NX_TENDERMINT_URL'),
     tendermintWebsocketUrl: windowOrDefault('NX_TENDERMINT_WEBSOCKET_URL'),
     ethExplorerUrl: windowOrDefault('NX_ETHERSCAN_URL'),
+    governanceUrl: windowOrDefault('NX_VEGA_GOVERNANCE_URL'),
   },
   flags: {
     assets: truthy.includes(windowOrDefault('NX_EXPLORER_ASSETS')),

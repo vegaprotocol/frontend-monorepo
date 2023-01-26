@@ -7,6 +7,7 @@ export type StakingNodeFieldsFragment = { __typename?: 'Node', id: string, name:
 
 export type StakingQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  delegationsPagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
@@ -39,13 +40,13 @@ export const StakingNodeFieldsFragmentDoc = gql`
 }
     `;
 export const StakingDocument = gql`
-    query Staking($partyId: ID!) {
+    query Staking($partyId: ID!, $delegationsPagination: Pagination) {
   party(id: $partyId) {
     id
     stakingSummary {
       currentStakeAvailable
     }
-    delegationsConnection {
+    delegationsConnection(pagination: $delegationsPagination) {
       edges {
         node {
           amount
@@ -94,6 +95,7 @@ export const StakingDocument = gql`
  * const { data, loading, error } = useStakingQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      delegationsPagination: // value for 'delegationsPagination'
  *   },
  * });
  */

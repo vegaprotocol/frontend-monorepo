@@ -1,6 +1,7 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef } from 'react';
+import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimal,
@@ -49,6 +50,7 @@ export interface Datasource extends IDatasource {
 interface Props extends AgGridReactProps {
   rowData?: Trade[] | null;
   datasource?: Datasource;
+  onClick?: (price?: string) => void;
 }
 
 type TradesTableValueFormatterParams = Omit<
@@ -86,6 +88,27 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
             return null;
           }
           return addDecimalsFormatNumber(value, data.market.decimalPlaces);
+        }}
+        cellRenderer={({
+          value,
+          data,
+        }: VegaICellRendererParams<Trade, 'price'>) => {
+          if (!data?.market || !value) {
+            return null;
+          }
+          return (
+            <button
+              onClick={() =>
+                props.onClick &&
+                props.onClick(
+                  addDecimal(value, data.market?.decimalPlaces || 0)
+                )
+              }
+              className="hover:dark:bg-neutral-800 hover:bg-neutral-200"
+            >
+              {addDecimalsFormatNumber(value, data.market.decimalPlaces)}
+            </button>
+          );
         }}
       />
       <AgGridColumn

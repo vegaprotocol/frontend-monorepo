@@ -21,11 +21,16 @@ export const ViewingAsBanner = ({
   disconnect,
 }: ViewingAsBannerProps) => {
   return (
-    <div className="w-full p-2 bg-neutral-800 flex justify-between text-neutral-400">
+    <div
+      data-testid="view-banner"
+      className="w-full p-2 bg-neutral-800 flex justify-between text-neutral-400"
+    >
       <div className="text-base flex items-center justify-center">
         {t('Viewing as Vega user:')} {pubKey && truncateMiddle(pubKey)}
       </div>
-      <Button onClick={disconnect}>{t('Exit view as')}</Button>
+      <Button data-testid="exit-view" onClick={disconnect}>
+        {t('Exit view as')}
+      </Button>
     </div>
   );
 };

@@ -51,6 +51,12 @@ export const TxDetailsOrder = ({
           </TableCell>
         </TableRow>
         <TableRow modifier="bordered">
+          <TableCell>{t('Market ID')}</TableCell>
+          <TableCell>
+            <MarketLink id={marketId} showMarketName={false} />
+          </TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
           <TableCell>{t('Market')}</TableCell>
           <TableCell>
             <MarketLink id={marketId} />

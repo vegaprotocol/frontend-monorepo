@@ -22,7 +22,7 @@ import {
 import * as Schema from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
-import { Icon, Splash } from '@vegaprotocol/ui-toolkit';
+import { Checkbox, Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
 
 interface OrderbookProps extends OrderbookData {
@@ -30,6 +30,7 @@ interface OrderbookProps extends OrderbookData {
   positionDecimalPlaces: number;
   resolution: number;
   onResolutionChange: (resolution: number) => void;
+  onClick?: (price?: string | number) => void;
   fillGaps?: boolean;
 }
 
@@ -279,6 +280,7 @@ export const Orderbook = ({
   resolution,
   fillGaps: initialFillGaps,
   onResolutionChange,
+  onClick,
 }: OrderbookProps) => {
   const { theme } = useThemeSwitcher();
   const scrollElement = useRef<HTMLDivElement>(null);
@@ -533,6 +535,7 @@ export const Orderbook = ({
           <OrderbookRow
             key={data.price}
             price={(BigInt(data.price) / BigInt(resolution)).toString()}
+            onClick={onClick}
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             positionDecimalPlaces={positionDecimalPlaces}
             bid={data.bid}
@@ -635,19 +638,18 @@ export const Orderbook = ({
       </div>
       <div
         className="absolute bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-default mt-2 z-10 bg-white dark:bg-black w-full"
-        style={{ gridAutoRows: '17px' }}
+        style={{ gridAutoRows: '20px' }}
         ref={footerElement}
       >
         <div className="col-span-2">
-          <label className="flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
-            <input
-              className="mr-1"
-              type="checkbox"
-              checked={fillGaps}
-              onChange={() => setFillGaps(!fillGaps)}
-            />
-            {t('Show prices with no orders')}
-          </label>
+          <Checkbox
+            name="empty-prices"
+            checked={fillGaps}
+            onCheckedChange={() => setFillGaps((curr) => !curr)}
+            label={
+              <span className="text-xs">{t('Show prices with no orders')}</span>
+            }
+          />
         </div>
         <div className="col-start-3">
           <select

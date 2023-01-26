@@ -496,7 +496,7 @@ export type CoreSnapshotData = {
 /** Edge type containing the core snapshot cursor information */
 export type CoreSnapshotEdge = {
   __typename?: 'CoreSnapshotEdge';
-  /** Cursor identifying the core snapashot data */
+  /** Cursor identifying the core snapshot data */
   cursor: Scalars['String'];
   /** The core snapshot data */
   node: CoreSnapshotData;
@@ -576,12 +576,12 @@ export type DataSourceSpec = {
 export type DataSourceSpecConfiguration = {
   __typename?: 'DataSourceSpecConfiguration';
   /**
-   * filters describes which source data are considered of interest or not for
+   * Filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
   filters?: Maybe<Array<Filter>>;
   /**
-   * signers is the list of authorized signatures that signed the data for this
+   * Signers is the list of authorized signatures that signed the data for this
    * data source. All the public keys in the data should be contained in this
    * list.
    */
@@ -1072,7 +1072,7 @@ export type Future = {
   dataSourceSpecBinding: DataSourceSpecToFutureBinding;
   /** The data source specification that describes the data of interest for settlement. */
   dataSourceSpecForSettlementData: DataSourceSpec;
-  /** The data source specification describing the data source data of interest for trading termination. */
+  /** The data source specification that describes the data-source data of interest for trading termination. */
   dataSourceSpecForTradingTermination: DataSourceSpec;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
   quoteName: Scalars['String'];
@@ -1796,10 +1796,6 @@ export enum MarketTradingMode {
 /** Information about whether proposals are enabled, if the markets are still bootstrapping, etc.. */
 export type NetworkLimits = {
   __typename?: 'NetworkLimits';
-  /** How many blocks before the chain comes out of bootstrap mode */
-  bootstrapBlockCount: Scalars['Int'];
-  /** True once block count > bootstrapBlockCount */
-  bootstrapFinished: Scalars['Boolean'];
   /** Are asset proposals allowed at this point in time */
   canProposeAsset: Scalars['Boolean'];
   /** Are market proposals allowed at this point in time */
@@ -2960,7 +2956,7 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_ENACT_TIME_TOO_LATE = 'PROPOSAL_ERROR_ENACT_TIME_TOO_LATE',
   /** The specified enactment time is too early based on network parameters */
   PROPOSAL_ERROR_ENACT_TIME_TOO_SOON = 'PROPOSAL_ERROR_ENACT_TIME_TOO_SOON',
-  /** The erc20 address specified by this proposal is alread in use by another asset */
+  /** The ERC-20 address specified by this proposal is already in use by another asset */
   PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE = 'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE',
   /** Proposal terms timestamps are not compatible (Validation < Closing < Enactment) */
   PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS = 'PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS',
@@ -3898,6 +3894,10 @@ export type Statistics = {
   chainVersion: Scalars['String'];
   /** RFC3339Nano current time (real) */
   currentTime: Scalars['Timestamp'];
+  /** Total number of events on the last block */
+  eventCount: Scalars['String'];
+  /** The number of events per second on the last block */
+  eventsPerSecond: Scalars['String'];
   /** RFC3339Nano genesis time of the chain */
   genesisTime: Scalars['Timestamp'];
   /** Number of orders per seconds */

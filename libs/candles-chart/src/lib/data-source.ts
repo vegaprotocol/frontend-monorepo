@@ -49,6 +49,7 @@ export class VegaDataSource implements DataSource {
   marketId: string;
   partyId: null | string;
   _decimalPlaces = 0;
+  _positionDecimalPlaces = 0;
 
   candlesSub: Subscription | null = null;
 
@@ -58,6 +59,14 @@ export class VegaDataSource implements DataSource {
    */
   get decimalPlaces(): number {
     return this._decimalPlaces;
+  }
+
+  /**
+   * Indicates the number of position decimal places that an integer must be shifted by in order to get a correct
+   * number denominated in the unit size of the Market.
+   */
+  get positionDecimalPlaces(): number {
+    return this._positionDecimalPlaces;
   }
 
   /**
@@ -145,11 +154,14 @@ export class VegaDataSource implements DataSource {
 
       if (data?.market?.candlesConnection?.edges) {
         const decimalPlaces = data.market.decimalPlaces;
+        const positionDecimalPlaces = data.market.positionDecimalPlaces;
 
         const candles = data.market.candlesConnection.edges
           .map((edge) => edge?.node)
           .filter((node): node is CandleFieldsFragment => !!node)
-          .map((node) => parseCandle(node, decimalPlaces));
+          .map((node) =>
+            parseCandle(node, decimalPlaces, positionDecimalPlaces)
+          );
 
         return candles;
       } else {
@@ -180,7 +192,11 @@ export class VegaDataSource implements DataSource {
 
     this.candlesSub = res.subscribe(({ data }) => {
       if (data) {
-        const candle = parseCandle(data.candles, this.decimalPlaces);
+        const candle = parseCandle(
+          data.candles,
+          this.decimalPlaces,
+          this.positionDecimalPlaces
+        );
 
         onSubscriptionData(candle);
       }
@@ -197,7 +213,8 @@ export class VegaDataSource implements DataSource {
 
 function parseCandle(
   candle: CandleFieldsFragment,
-  decimalPlaces: number
+  decimalPlaces: number,
+  positionDecimalPlaces: number
 ): Candle {
   return {
     date: new Date(candle.periodStart),
@@ -205,6 +222,6 @@ function parseCandle(
     low: Number(addDecimal(candle.low, decimalPlaces)),
     open: Number(addDecimal(candle.open, decimalPlaces)),
     close: Number(addDecimal(candle.close, decimalPlaces)),
-    volume: Number(candle.volume),
+    volume: Number(addDecimal(candle.volume, positionDecimalPlaces)),
   };
 }

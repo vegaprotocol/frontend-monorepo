@@ -264,8 +264,6 @@ const routerConfig = [
     path: Routes.VALIDATORS,
     element: <LazyStaking name="Staking" />,
     children: [
-      { path: 'associate', element: <LazyStakingAssociate /> },
-      { path: 'disassociate', element: <LazyStakingDisassociate /> },
       { path: ':node', element: <LazyStakingNode /> },
       {
         index: true,
@@ -311,6 +309,8 @@ const routerConfig = [
           },
         ],
       },
+      { path: 'associate', element: <LazyStakingAssociate /> },
+      { path: 'disassociate', element: <LazyStakingDisassociate /> },
     ],
   },
   {

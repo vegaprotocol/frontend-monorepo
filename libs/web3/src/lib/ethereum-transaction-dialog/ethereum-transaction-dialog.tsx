@@ -63,7 +63,12 @@ export const getTransactionContent = ({
         />
       )}
       {(status === EthTxStatus.Confirmed || status === EthTxStatus.Error) && (
-        <Button size="sm" className="mt-2" onClick={reset}>
+        <Button
+          size="sm"
+          className="mt-2"
+          data-testid={returnLabel}
+          onClick={reset}
+        >
           {returnLabel ? returnLabel : t('Return')}
         </Button>
       )}

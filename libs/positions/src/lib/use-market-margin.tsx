@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marginsDataProvider } from './margin-data-provider';
@@ -22,19 +22,16 @@ const getMarketMarginPosition = ({
 export const useMarketMargin = (marketId: string) => {
   const { pubKey } = useVegaWallet();
   const [marginLevel, setMarginLevel] = useState<string>('');
-  const variables = useMemo(() => {
-    return { partyId: pubKey || '' };
-  }, [pubKey]);
 
   const update = useCallback(
     ({ data }: { data: MarginsQuery['party'] | null }) => {
       const marginMarketPosition = getMarketMarginPosition({ data, marketId });
-      if (marginLevel !== marginMarketPosition?.maintenanceLevel) {
+      if (marginMarketPosition?.maintenanceLevel) {
         setMarginLevel(marginMarketPosition?.maintenanceLevel || '');
       }
       return true;
     },
-    [marginLevel, setMarginLevel, marketId]
+    [setMarginLevel, marketId]
   );
 
   useDataProvider<
@@ -42,7 +39,7 @@ export const useMarketMargin = (marketId: string) => {
     MarginsSubscriptionSubscription['margins']
   >({
     dataProvider: marginsDataProvider,
-    variables,
+    variables: { partyId: pubKey || '' },
     skip: !pubKey || !marketId,
     update,
   });

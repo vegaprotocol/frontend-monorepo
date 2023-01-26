@@ -97,6 +97,10 @@ describe('Order TX Summary component', () => {
                 product: {
                   __typename: 'Future',
                   quoteName: 'TEST',
+                  settlementAsset: {
+                    __typeName: 'SettlementAsset',
+                    decimals: 18,
+                  },
                 },
               },
             },

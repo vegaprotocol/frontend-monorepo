@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import produce from 'immer';
 import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
@@ -120,9 +120,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         produce((state: EthTransactionStore) => {
           const transaction = state.transactions.find(
             (transaction) =>
-              transaction &&
-              transaction.status === EthTxStatus.Pending &&
-              deposit.txHash === transaction.txHash
+              transaction && deposit.txHash === transaction.txHash
           );
           if (!transaction) {
             return;

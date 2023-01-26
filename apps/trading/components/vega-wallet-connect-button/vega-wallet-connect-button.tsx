@@ -142,15 +142,21 @@ export const VegaWalletConnectButton = () => {
     return (
       <>
         <div className="hidden lg:block">
-          <DropdownMenu open={dropdownOpen}>
-            <DropdownMenuTrigger
-              data-testid="manage-vega-wallet"
-              onClick={() => setDropdownOpen((curr) => !curr)}
-            >
-              {activeKey && <span className="uppercase">{activeKey.name}</span>}
-              {': '}
-              {truncateByChars(pubKey)}
-            </DropdownMenuTrigger>
+          <DropdownMenu
+            open={dropdownOpen}
+            trigger={
+              <DropdownMenuTrigger
+                data-testid="manage-vega-wallet"
+                onClick={() => setDropdownOpen((curr) => !curr)}
+              >
+                {activeKey && (
+                  <span className="uppercase">{activeKey.name}</span>
+                )}
+                {': '}
+                {truncateByChars(pubKey)}
+              </DropdownMenuTrigger>
+            }
+          >
             <DropdownMenuContent
               onInteractOutside={() => setDropdownOpen(false)}
             >

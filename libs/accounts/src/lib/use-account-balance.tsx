@@ -17,15 +17,11 @@ export const useAccountBalance = (assetId?: string) => {
       const account = assetId
         ? getSettlementAccount({ accounts: data, assetId })
         : undefined;
-      if (accountBalance !== account?.balance) {
-        setAccountBalance(account?.balance || '');
-      }
-      if (accountDecimals !== account?.asset.decimals) {
-        setAccountDecimals(account?.asset.decimals || null);
-      }
+      setAccountBalance(account?.balance || '');
+      setAccountDecimals(account?.asset.decimals || null);
       return true;
     },
-    [accountBalance, accountDecimals, assetId]
+    [assetId]
   );
 
   useDataProvider({
