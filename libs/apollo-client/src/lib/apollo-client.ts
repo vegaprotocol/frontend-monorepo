@@ -20,7 +20,7 @@ const isBrowser = typeof window !== 'undefined';
 
 const NOT_FOUND = 'NotFound';
 
-type ClientOptions = {
+export type ClientOptions = {
   url?: string;
   cacheConfig?: InMemoryCacheConfig;
   retry?: boolean;

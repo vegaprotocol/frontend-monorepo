@@ -37,6 +37,7 @@ export type EnvironmentState = Environment & {
   configLoading: boolean;
   networkError?: ErrorType;
   blockDifference: number;
+  nodeSwitcherOpen: boolean;
   setNodeSwitcherOpen: () => void;
 };
 
@@ -146,10 +147,11 @@ export const EnvironmentProvider = ({
   return (
     <EnvironmentContext.Provider
       value={{
-        configLoading: loading,
         ...environment,
+        configLoading: loading,
         networkError,
         blockDifference,
+        nodeSwitcherOpen: isNodeSwitcherOpen,
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
     >
