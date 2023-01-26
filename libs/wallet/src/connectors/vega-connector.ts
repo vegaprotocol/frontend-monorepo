@@ -1,3 +1,4 @@
+import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type * as Schema from '@vegaprotocol/types';
 
 export interface DelegateSubmissionBody {
@@ -329,12 +330,13 @@ export interface TransactionResponse {
   receivedAt: string;
   sentAt: string;
 }
-export class WalletError {
-  message: string;
-  code: number;
-  data?: string | string[];
+export class WalletError extends WalletClientError {
+  override message: string;
+  override code: number;
+  data?: string;
 
   constructor(message: string, code: number, data?: string) {
+    super({ code, message, data: data || '' });
     this.message = message;
     this.code = code;
     this.data = data;

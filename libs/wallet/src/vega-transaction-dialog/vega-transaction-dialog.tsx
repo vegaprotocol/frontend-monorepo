@@ -2,7 +2,8 @@ import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import { WalletError } from '../connectors';
+import { WalletClientError } from '@vegaprotocol/wallet-client';
+import type { WalletError } from '../connectors';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 
@@ -109,13 +110,11 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   if (transaction.status === VegaTxStatus.Error) {
     content = (
       <div data-testid={transaction.status}>
-        {transaction.error instanceof WalletError && (
+        {transaction.error instanceof WalletClientError && (
           <p>
-            {transaction.error.message}: {transaction.error.data}
+            {transaction.error.message}:{' '}
+            {(transaction.error as WalletError).data || ''}
           </p>
-        )}
-        {transaction.error instanceof Error && (
-          <p>{transaction.error.message}</p>
         )}
       </div>
     );

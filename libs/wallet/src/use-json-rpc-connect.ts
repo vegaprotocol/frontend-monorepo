@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
+import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { JsonRpcConnector } from './connectors';
 import { ClientErrors } from './connectors';
-import { WalletError } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 
 export enum Status {
@@ -18,7 +18,7 @@ export enum Status {
 export const useJsonRpcConnect = (onConnect: () => void) => {
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState(Status.Idle);
-  const [error, setError] = useState<WalletError | null>(null);
+  const [error, setError] = useState<WalletClientError | null>(null);
 
   const attemptConnect = useCallback(
     async (connector: JsonRpcConnector, appChainId: string) => {
@@ -56,7 +56,7 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         setStatus(Status.Connected);
         onConnect();
       } catch (err) {
-        if (err instanceof WalletError) {
+        if (err instanceof WalletClientError) {
           setError(err);
         }
         setStatus(Status.Error);

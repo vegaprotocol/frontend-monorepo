@@ -156,17 +156,18 @@ const Error = ({
   const { VEGA_DOCS_URL } = useEnvironment();
 
   if (error) {
-    const errorData = Array.isArray(error.data)
-      ? error.data
-      : error.data
-      ? [error.data]
-      : [];
     if (error.code === ClientErrors.NO_SERVICE.code) {
       title = t('No wallet detected');
-      text = t(`No wallet application running at ${connectorUrl}`);
+      text = t(
+        'No wallet application running at %s',
+        connectorUrl || 'unknown host'
+      );
     } else if (error.code === ClientErrors.WRONG_NETWORK.code) {
       title = t('Wrong network');
-      text = `To complete your wallet connection, set your wallet network in your app to "${appChainId}".`;
+      text = t(
+        'To complete your wallet connection, set your wallet network in your app to "%s".',
+        appChainId
+      );
     } else if (error.code === ServiceErrors.CONNECTION_DECLINED) {
       title = t('Connection declined');
       text = t('Your wallet connection was rejected');
@@ -174,7 +175,7 @@ const Error = ({
       title = error.message;
       text = (
         <>
-          {capitalize(errorData.join(' '))}
+          {capitalize(error.data)}
           {'. '}
           {VEGA_DOCS_URL && (
             <Link
@@ -199,6 +200,7 @@ const Error = ({
       );
     } else if (error.code === ClientErrors.INVALID_WALLET.code) {
       title = error.message;
+      const errorData = error.data?.split('\n ') || [];
       text = (
         <span className="flex flex-col">
           {errorData.map((str, i) => (
@@ -208,7 +210,7 @@ const Error = ({
       );
     } else {
       title = error.message;
-      text = `${errorData.length ? errorData.join(' ') : text} (${error.code})`;
+      text = `${error.data || text} (${error.code})`;
     }
   }
 
