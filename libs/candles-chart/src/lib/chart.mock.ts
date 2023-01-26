@@ -20,6 +20,7 @@ export const chartQuery = (override?: PartialDeep<ChartQuery>): ChartQuery => {
   const defaultResult: ChartQuery = {
     market: {
       decimalPlaces: 5,
+      positionDecimalPlaces: 0,
       data: {
         priceMonitoringBounds: [priceMonitoringBound],
         __typename: 'MarketData',

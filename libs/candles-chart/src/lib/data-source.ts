@@ -102,9 +102,11 @@ export class VegaDataSource implements DataSource {
 
       if (data && data.market && data.market.data) {
         this._decimalPlaces = data.market.decimalPlaces;
+        this._positionDecimalPlaces = data.market.positionDecimalPlaces;
 
         return {
           decimalPlaces: this._decimalPlaces,
+          positionDecimalPlaces: this._positionDecimalPlaces,
           supportedIntervals: [
             PennantInterval.I1D,
             PennantInterval.I6H,
