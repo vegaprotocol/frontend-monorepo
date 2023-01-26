@@ -30,11 +30,10 @@ const mockStoreObj: Partial<VegaWalletDialogStore> = {
   vegaWalletDialogOpen: true,
 };
 
-jest.mock(
-  'zustand',
-  () => () => (storeGetter: (store: VegaWalletDialogStore) => unknown) =>
-    storeGetter(mockStoreObj as VegaWalletDialogStore)
-);
+jest.mock('zustand', () => ({
+  create: () => (storeGetter: (store: VegaWalletDialogStore) => unknown) =>
+    storeGetter(mockStoreObj as VegaWalletDialogStore),
+}));
 
 let defaultProps: VegaConnectDialogProps;
 
