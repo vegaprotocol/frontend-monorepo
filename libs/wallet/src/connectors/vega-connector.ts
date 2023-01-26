@@ -331,14 +331,10 @@ export interface TransactionResponse {
   sentAt: string;
 }
 export class WalletError extends WalletClientError {
-  override message: string;
-  override code: number;
-  data?: string;
+  data: string;
 
-  constructor(message: string, code: number, data?: string) {
-    super({ code, message, data: data || '' });
-    this.message = message;
-    this.code = code;
+  constructor(message: string, code: number, data = 'Wallet error') {
+    super({ code, message, data });
     this.data = data;
   }
 }

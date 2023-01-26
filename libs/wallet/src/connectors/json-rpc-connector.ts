@@ -63,7 +63,9 @@ export class JsonRpcConnector implements VegaConnector {
         }),
     });
   }
-
+  get url() {
+    return this._url || '';
+  }
   async getChainId() {
     if (!this.client) {
       throw ClientErrors.NO_CLIENT;
@@ -75,8 +77,9 @@ export class JsonRpcConnector implements VegaConnector {
       const {
         code = ClientErrors.UNKNOWN.code,
         message = ClientErrors.UNKNOWN.message,
+        title,
       } = err as WalletClientError;
-      throw new WalletError(message, code);
+      throw new WalletError(title, code, message);
     }
   }
 
@@ -92,8 +95,9 @@ export class JsonRpcConnector implements VegaConnector {
       const {
         code = ClientErrors.UNKNOWN.code,
         message = ClientErrors.UNKNOWN.message,
+        title,
       } = err as WalletClientError;
-      throw new WalletError(message, code);
+      throw new WalletError(title, code, message);
     }
   }
 
@@ -111,8 +115,9 @@ export class JsonRpcConnector implements VegaConnector {
       const {
         code = ClientErrors.UNKNOWN.code,
         message = ClientErrors.UNKNOWN.message,
+        title,
       } = err as WalletClientError;
-      throw new WalletError(message, code);
+      throw new WalletError(title, code, message);
     }
   }
 
@@ -148,17 +153,17 @@ export class JsonRpcConnector implements VegaConnector {
     try {
       const result = await fetch(`${this._url}/api/${this.version}/methods`);
       if (!result.ok) {
-        const err = ClientErrors.INVALID_WALLET;
         const sent1 = t(
           'The version of the wallet service running at %s is not supported.',
           this._url as string
         );
         const sent2 = t(
-          'Update the wallet software to a version that expose the API version %s.',
+          'Update the wallet software to a version that expose the API %s.',
           this.version
         );
-        err.data = `${sent1}\n ${sent2}`;
-        throw err;
+        const data = `${sent1}\n ${sent2}`;
+        const title = t('Wallet version invalid');
+        throw new WalletError(title, ClientErrors.INVALID_WALLET.code, data);
       }
       return true;
     } catch (err) {

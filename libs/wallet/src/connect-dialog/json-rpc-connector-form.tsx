@@ -17,7 +17,6 @@ import { useEnvironment } from '@vegaprotocol/environment';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
-  CONNECTION_DECLINED: 3001,
   REQUEST_PROCESSING: -32000,
 };
 
@@ -158,19 +157,15 @@ const Error = ({
   if (error) {
     if (error.code === ClientErrors.NO_SERVICE.code) {
       title = t('No wallet detected');
-      text = t(
-        'No wallet application running at %s',
-        connectorUrl || 'unknown host'
-      );
+      text = connectorUrl
+        ? t('No wallet application running at %s', connectorUrl)
+        : t('No Vega Wallet application running');
     } else if (error.code === ClientErrors.WRONG_NETWORK.code) {
       title = t('Wrong network');
       text = t(
         'To complete your wallet connection, set your wallet network in your app to "%s".',
         appChainId
       );
-    } else if (error.code === ServiceErrors.CONNECTION_DECLINED) {
-      title = t('Connection declined');
-      text = t('Your wallet connection was rejected');
     } else if (error.code === ServiceErrors.NO_HEALTHY_NODE) {
       title = error.message;
       text = (
@@ -194,12 +189,15 @@ const Error = ({
       title = t('Wrong network');
       text = (
         <>
-          {t(`To complete your wallet connection, set your wallet network in your
-            app to ${appChainId}.`)}
+          {t(
+            `To complete your wallet connection, set your wallet network in your
+            app to %s.`,
+            appChainId
+          )}
         </>
       );
     } else if (error.code === ClientErrors.INVALID_WALLET.code) {
-      title = error.message;
+      title = error.title;
       const errorData = error.data?.split('\n ') || [];
       text = (
         <span className="flex flex-col">
@@ -209,15 +207,15 @@ const Error = ({
         </span>
       );
     } else {
-      title = error.message;
-      text = `${error.data || text} (${error.code})`;
+      title = t(error.title);
+      text = t(error.message);
     }
   }
 
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
-      <p className="text-center mb-2">{text}</p>
+      <p className="text-center mb-2 first-letter:uppercase">{text}</p>
       {tryAgain}
     </>
   );
