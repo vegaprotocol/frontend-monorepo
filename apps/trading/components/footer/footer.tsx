@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useNavigatorOnline } from '@vegaprotocol/react-helpers';
 import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Footer = () => {
@@ -49,10 +49,15 @@ export const NodeHealth = ({
   blockDiff,
   openNodeSwitcher,
 }: NodeHealthProps) => {
+  const online = useNavigatorOnline();
+
   let intent = Intent.Success;
   let text = 'Operational';
 
-  if (blockDiff < 0) {
+  if (!online) {
+    text = t('Offline');
+    intent = Intent.Danger;
+  } else if (blockDiff < 0) {
     // Block height query failed and null was returned
     text = t('Non operational');
     intent = Intent.Danger;

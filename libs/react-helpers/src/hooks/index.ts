@@ -4,6 +4,7 @@ export * from './use-data-provider';
 export * from './use-fetch';
 export * from './use-mutation-observer';
 export * from './use-network-params';
+export * from './use-navigator-online';
 export * from './use-outside-click';
 export * from './use-resize-observer';
 export * from './use-resize';
