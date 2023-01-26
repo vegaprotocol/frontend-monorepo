@@ -43,6 +43,7 @@ context(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       cy.vega_wallet_set_specified_approval_amount('1000');
+      cy.createMarket();
     });
 
     beforeEach('visit governance tab', function () {
@@ -209,18 +210,15 @@ context(
       );
     });
 
-    // skipped because no markets available to select in capsule
     it.skip('Able to submit update market proposal', function () {
-      const marketId =
-        '315a8e48db0a292c92b617264728048c82c20efc922c75fd292fc54e5c727c81';
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
-      cy.get(newProposalTitle).type('Test update asset proposal');
+      cy.get(newProposalTitle).type('Test update market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.get(proposalMarketSelect).select(marketId);
+      cy.get(proposalMarketSelect).select('Test market 1');
       cy.get('[data-testid="update-market-details"]').within(() => {
-        cy.get('dd').eq(0).should('have.text', 'Oranges Daily');
-        cy.get('dd').eq(1).should('have.text', 'ORANGES.24h');
-        cy.get('dd').eq(2).should('have.text', marketId);
+        cy.get('dd').eq(0).should('have.text', 'Test market 1');
+        cy.get('dd').eq(1).should('have.text', 'TEST.24h');
+        cy.get('dd').eq(2).should('not.be.empty');
       });
       cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
         let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);

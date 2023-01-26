@@ -94,7 +94,6 @@ context(
           )[0]
         ).as('maxCloseHours');
       });
-      cy.createMarket();
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
 
@@ -128,7 +127,7 @@ context(
             'Asserting that network parameter maxCloseDays is at least 1 day higher than minCloseDays'
           );
           // workaround for first eth tx hanging
-          // associateTokenStartOfTests();
+          associateTokenStartOfTests();
         }
       );
 
@@ -231,6 +230,7 @@ context(
         cy.navigate_to('validators');
         cy.click_on_validator_from_list(0);
         cy.staking_validator_page_add_stake('2');
+        cy.get(dialogCloseButton).click();
 
         cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
 
@@ -797,6 +797,9 @@ context(
       });
 
       it('Able to view enacted proposal', function () {
+        cy.createMarket();
+        cy.reload();
+        cy.wait_for_spinner();
         cy.get(closedProposals).within(() => {
           cy.get(proposalDetailsTitle).should(
             'have.text',
@@ -808,6 +811,34 @@ context(
         cy.getByTestId('proposal-type').should('have.text', 'New market');
         cy.get_proposal_information_from_table('State')
           .contains('Enacted')
+          .and('be.visible');
+        cy.get(votesTable).within(() => {
+          cy.contains('Vote passed.').should('be.visible');
+          cy.contains('Voting has ended.').should('be.visible');
+        });
+      });
+
+      it('Able to enact proposal by voting', function () {
+        const proposalTitle = 'Add New proposal with short enactment';
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.SubmitShortEnactmentProposal();
+        cy.navigate_to('proposals');
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.contains(proposalTitle)
+          .parentsUntil('[data-testid="proposals-list-item"]')
+          .within(() => cy.get(viewProposalButton).click());
+        cy.get_proposal_information_from_table('State')
+          .contains('Open')
+          .and('be.visible');
+        cy.vote_for_proposal('for');
+        cy.get_proposal_information_from_table('State')
+          .contains('Passed', txTimeout)
+          .and('be.visible');
+        cy.get_proposal_information_from_table('State')
+          .contains('Enacted', epochTimeout)
           .and('be.visible');
         cy.get(votesTable).within(() => {
           cy.contains('Vote passed.').should('be.visible');
