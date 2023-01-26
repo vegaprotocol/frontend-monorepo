@@ -34,6 +34,7 @@ type EnvironmentProviderProps = {
 };
 
 export type EnvironmentState = Environment & {
+  configLoading: boolean;
   networkError?: ErrorType;
   blockDifference: number;
   setNodeSwitcherOpen: () => void;
@@ -145,6 +146,7 @@ export const EnvironmentProvider = ({
   return (
     <EnvironmentContext.Provider
       value={{
+        configLoading: loading,
         ...environment,
         networkError,
         blockDifference,
