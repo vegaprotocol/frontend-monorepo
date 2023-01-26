@@ -45,7 +45,7 @@ export const OracleDetails = ({
 
   return (
     <div>
-      <TableWithTbody>
+      <TableWithTbody className="mb-2">
         <TableRow modifier="bordered">
           <TableHeader scope="row">{t('ID')}</TableHeader>
           <TableCell modifier="bordered">
