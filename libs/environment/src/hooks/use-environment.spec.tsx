@@ -8,7 +8,6 @@ import { Networks, ErrorType } from '../types';
 import type { MockRequestConfig } from './mocks/apollo-client';
 import createMockClient from './mocks/apollo-client';
 import { getErrorByType } from '../utils/validate-node';
-import { Health } from './use-node-health';
 
 jest.mock('@vegaprotocol/apollo-client');
 
@@ -45,7 +44,7 @@ const mockEnvironmentState = {
   GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
   MAINTENANCE_PAGE: false,
   setNodeSwitcherOpen: noop,
-  nodeHealth: Health.Good,
+  blockDifference: 0,
   networkError: undefined,
 };
 

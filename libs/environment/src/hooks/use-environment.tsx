@@ -25,7 +25,6 @@ import type {
   NodeData,
   Configuration,
 } from '../types';
-import type { NodeHealth } from './use-node-health';
 import { useNodeHealth } from './use-node-health';
 
 type EnvironmentProviderProps = {
@@ -36,7 +35,7 @@ type EnvironmentProviderProps = {
 
 export type EnvironmentState = Environment & {
   networkError?: ErrorType;
-  nodeHealth: NodeHealth;
+  blockDifference: number;
   setNodeSwitcherOpen: () => void;
 };
 
@@ -85,7 +84,7 @@ export const EnvironmentProvider = ({
     environment.MAINTENANCE_PAGE
   );
 
-  const nodeHealth = useNodeHealth(clients, environment.VEGA_URL);
+  const blockDifference = useNodeHealth(clients, environment.VEGA_URL);
 
   const nodeKeys = Object.keys(nodes);
 
@@ -148,7 +147,7 @@ export const EnvironmentProvider = ({
       value={{
         ...environment,
         networkError,
-        nodeHealth,
+        blockDifference,
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
     >

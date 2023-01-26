@@ -1,9 +1,9 @@
-import type { NodeHealth as NodeHealthType } from '@vegaprotocol/environment';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { t } from '@vegaprotocol/react-helpers';
 import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Footer = () => {
-  const { VEGA_URL, nodeHealth, setNodeSwitcherOpen } = useEnvironment();
+  const { VEGA_URL, blockDifference, setNodeSwitcherOpen } = useEnvironment();
   return (
     <footer className="px-4 py-1 text-xs border-t border-default">
       <div className="flex justify-between">
@@ -11,7 +11,7 @@ export const Footer = () => {
           {VEGA_URL && (
             <>
               <NodeHealth
-                health={nodeHealth}
+                blockDiff={blockDifference}
                 openNodeSwitcher={setNodeSwitcherOpen}
               />
               {' | '}
@@ -38,21 +38,33 @@ const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
 
 interface NodeHealthProps {
   openNodeSwitcher: () => void;
-  health: NodeHealthType;
+  blockDiff: number;
 }
 
-export const NodeHealth = ({ health, openNodeSwitcher }: NodeHealthProps) => {
+// How many blocks behind the most advanced block that is
+// deemed acceptable for "Good" status
+const BLOCK_THRESHOLD = 3;
+
+export const NodeHealth = ({
+  blockDiff,
+  openNodeSwitcher,
+}: NodeHealthProps) => {
   let intent = Intent.Success;
-  if (health === 'Critical') {
+  let text = 'Operational';
+
+  if (blockDiff < 0) {
+    // Block height query failed and null was returned
+    text = t('Non operational');
     intent = Intent.Danger;
-  } else if (health === 'Bad') {
+  } else if (blockDiff >= BLOCK_THRESHOLD) {
+    text = t(`${blockDiff} Blocks behind`);
     intent = Intent.Warning;
   }
 
   return (
     <span>
       <Indicator variant={intent} />
-      <ButtonLink onClick={openNodeSwitcher}>{health}</ButtonLink>
+      <ButtonLink onClick={openNodeSwitcher}>{text}</ButtonLink>
     </span>
   );
 };

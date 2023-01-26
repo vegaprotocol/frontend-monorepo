@@ -1,5 +1,9 @@
 import { act, renderHook } from '@testing-library/react';
-import { useNodeHealth, Health, INTERVAL_TIME } from './use-node-health';
+import {
+  useNodeHealth,
+  NODE_SUBSET_COUNT,
+  INTERVAL_TIME,
+} from './use-node-health';
 import type { createClient } from '@vegaprotocol/apollo-client';
 import type { ClientCollection } from './use-nodes';
 
@@ -7,17 +11,16 @@ function setup(...args: Parameters<typeof useNodeHealth>) {
   return renderHook(() => useNodeHealth(...args));
 }
 
-function createMockClient(blockHeight: string) {
+function createMockClient(blockHeight: number) {
   return {
-    query: () =>
-      Promise.resolve({
-        data: {
-          statistics: {
-            chainId: 'chain-id',
-            blockHeight,
-          },
+    query: jest.fn().mockResolvedValue({
+      data: {
+        statistics: {
+          chainId: 'chain-id',
+          blockHeight: blockHeight.toString(),
         },
-      }),
+      },
+    }),
   } as unknown as ReturnType<typeof createClient>;
 }
 
@@ -36,75 +39,79 @@ function createErroringClient() {
   } as unknown as ReturnType<typeof createClient>;
 }
 
-const CURRENT_URL = 'https://n01.test.com';
+const CURRENT_URL = 'https://current.test.com';
 
 describe('useNodeHealth', () => {
   beforeAll(() => {
     jest.useFakeTimers();
   });
 
-  it('health is good if block height is equal', async () => {
+  it('provides difference between the highest block and the current block', async () => {
+    const highest = 100;
+    const curr = 97;
     const clientCollection: ClientCollection = {
-      [CURRENT_URL]: createMockClient('100'),
-      'https://n02.test.com': createMockClient('100'),
-      'https://n03.test.com': createMockClient('100'),
+      [CURRENT_URL]: createMockClient(curr),
+      'https://n02.test.com': createMockClient(98),
+      'https://n03.test.com': createMockClient(highest),
     };
     const { result } = setup(clientCollection, CURRENT_URL);
     await act(async () => {
       jest.advanceTimersByTime(INTERVAL_TIME);
     });
-    expect(result.current).toBe(Health.Good);
+    expect(result.current).toBe(highest - curr);
   });
 
-  it('health is good if block height with three blocks', async () => {
-    const clientCollection: ClientCollection = {
-      [CURRENT_URL]: createMockClient('97'),
-      'https://n02.test.com': createMockClient('98'),
-      'https://n03.test.com': createMockClient('100'),
-    };
-    const { result } = setup(clientCollection, CURRENT_URL);
-    await act(async () => {
-      jest.advanceTimersByTime(INTERVAL_TIME);
-    });
-    expect(result.current).toBe(Health.Good);
-  });
-
-  it('health is bad if block height behind', async () => {
-    const clientCollection: ClientCollection = {
-      [CURRENT_URL]: createMockClient('100'),
-      'https://n02.test.com': createMockClient('200'),
-      'https://n03.test.com': createMockClient('300'),
-    };
-    const { result } = setup(clientCollection, CURRENT_URL);
-    await act(async () => {
-      jest.advanceTimersByTime(INTERVAL_TIME);
-    });
-    expect(result.current).toBe(Health.Bad);
-  });
-
-  it('health is critical if query rejects', async () => {
+  it('returns -1 if the current node query fails', async () => {
     const clientCollection: ClientCollection = {
       [CURRENT_URL]: createRejectingClient(),
-      'https://n02.test.com': createMockClient('200'),
-      'https://n03.test.com': createMockClient('102'),
+      'https://n02.test.com': createMockClient(200),
+      'https://n03.test.com': createMockClient(102),
     };
     const { result } = setup(clientCollection, CURRENT_URL);
     await act(async () => {
       jest.advanceTimersByTime(INTERVAL_TIME);
     });
-    expect(result.current).toBe(Health.Critical);
+    expect(result.current).toBe(-1);
   });
 
-  it('health is critical if query returns an error', async () => {
+  it('returns -1 if the current node query returns an error', async () => {
     const clientCollection: ClientCollection = {
       [CURRENT_URL]: createErroringClient(),
-      'https://n02.test.com': createMockClient('200'),
-      'https://n03.test.com': createMockClient('102'),
+      'https://n02.test.com': createMockClient(200),
+      'https://n03.test.com': createMockClient(102),
     };
     const { result } = setup(clientCollection, CURRENT_URL);
     await act(async () => {
       jest.advanceTimersByTime(INTERVAL_TIME);
     });
-    expect(result.current).toBe(Health.Critical);
+    expect(result.current).toBe(-1);
+  });
+
+  it('queries against 5 random nodes along with the current url', async () => {
+    const clientCollection: ClientCollection = new Array(20)
+      .fill(null)
+      .reduce((obj, x, i) => {
+        obj[`https://n${i}.test.com`] = createMockClient(100);
+        return obj;
+      }, {} as ClientCollection);
+    clientCollection[CURRENT_URL] = createMockClient(100);
+    const spyOnCurrent = jest.spyOn(clientCollection[CURRENT_URL], 'query');
+
+    const { result } = setup(clientCollection, CURRENT_URL);
+    await act(async () => {
+      jest.advanceTimersByTime(INTERVAL_TIME);
+    });
+
+    let count = 0;
+    Object.values(clientCollection).forEach((client) => {
+      // @ts-ignore jest.fn() in client setup means mock will be present
+      if (client?.query.mock.calls.length) {
+        count++;
+      }
+    });
+
+    expect(count).toBe(NODE_SUBSET_COUNT + 1);
+    expect(spyOnCurrent).toHaveBeenCalledTimes(1);
+    expect(result.current).toBe(0);
   });
 });

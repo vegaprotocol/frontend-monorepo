@@ -8,24 +8,14 @@ import type { ClientCollection } from './use-nodes';
 
 // How often to query other nodes
 export const INTERVAL_TIME = 30 * 1000;
-// How many blocks behind the most advanced block that is
-// deemed acceptable for "Good" status
-const BLOCK_THRESHOLD = 3;
 // Number of nodes to query against
-const NODE_SUBSET_COUNT = 5;
-
-export const Health = {
-  Good: 'Good',
-  Bad: 'Bad',
-  Critical: 'Critical',
-} as const;
-
-export type NodeHealth = keyof typeof Health;
+export const NODE_SUBSET_COUNT = 5;
 
 // Queries all nodes from the environment provider via an interval
-// to determine node health
+// to calculate and return the difference between the most advanced block
+// and the block height of the current node
 export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
-  const [nodeHealth, setNodeHealth] = useState<NodeHealth>(Health.Good);
+  const [blockDiff, setBlockDiff] = useState(10);
 
   useEffect(() => {
     if (!clients || !vegaUrl) return;
@@ -49,7 +39,6 @@ export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
 
     const getBlockHeights = async () => {
       const nodes = Object.keys(clients).filter((key) => key !== vegaUrl);
-
       // make sure that your current vega url is always included
       // so we can compare later
       const testNodes = [vegaUrl, ...randomSubset(nodes, NODE_SUBSET_COUNT)];
@@ -79,11 +68,9 @@ export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
 
       if (!currNodeBlock) {
         // Block height query failed and null was returned
-        setNodeHealth(Health.Critical);
-      } else if (currNodeBlock >= highestBlock - BLOCK_THRESHOLD) {
-        setNodeHealth(Health.Good);
+        setBlockDiff(-1);
       } else {
-        setNodeHealth(Health.Bad);
+        setBlockDiff(highestBlock - currNodeBlock);
       }
     }, INTERVAL_TIME);
 
@@ -92,7 +79,7 @@ export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
     };
   }, [clients, vegaUrl]);
 
-  return nodeHealth;
+  return blockDiff;
 };
 
 const randomSubset = (arr: string[], size: number) => {

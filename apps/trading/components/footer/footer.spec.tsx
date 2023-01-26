@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Footer, NodeHealth } from './footer';
-import type { NodeHealth as HealthType } from '@vegaprotocol/environment';
-import { Health, useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/environment');
 
@@ -13,7 +12,7 @@ describe('Footer', () => {
     // @ts-ignore mock env hook
     useEnvironment.mockImplementation(() => ({
       VEGA_URL: `https://api.${node}/graphql`,
-      nodeHealth: Health.Good,
+      blockDifference: 0,
       setNodeSwitcherOpen: mockOpenNodeSwitcher,
     }));
 
@@ -30,31 +29,30 @@ describe('Footer', () => {
     // @ts-ignore mock env hook
     useEnvironment.mockImplementation(() => ({
       VEGA_URL: `https://api.${node}/graphql`,
-      nodeHealth: Health.Good,
+      blockDifference: 0,
       setNodeSwitcherOpen: mockOpenNodeSwitcher,
     }));
 
     render(<Footer />);
 
-    fireEvent.click(screen.getByText(Health.Good));
+    fireEvent.click(screen.getByText('Operational'));
     expect(mockOpenNodeSwitcher).toHaveBeenCalled();
   });
 });
 
 describe('NodeHealth', () => {
-  const classmap: {
-    [H in HealthType]: string;
-  } = {
-    [Health.Good]: 'bg-success',
-    [Health.Bad]: 'bg-warning',
-    [Health.Critical]: 'bg-danger',
-  };
-  it.each(Object.keys(Health))(
-    'renders an indicator color for %s health',
-    (h) => {
-      const health = h as HealthType;
-      render(<NodeHealth health={health} openNodeSwitcher={jest.fn()} />);
-      expect(screen.getByTestId('indicator')).toHaveClass(classmap[health]);
+  const cases = [
+    { diff: 0, classname: 'bg-success', text: 'Operational' },
+    { diff: 5, classname: 'bg-warning', text: '5 Blocks behind' },
+    { diff: -1, classname: 'bg-danger', text: 'Non operational' },
+  ];
+  it.each(cases)(
+    'renders correct text and indicator color for $diff block difference',
+    (elem) => {
+      console.log(elem);
+      render(<NodeHealth blockDiff={elem.diff} openNodeSwitcher={jest.fn()} />);
+      expect(screen.getByTestId('indicator')).toHaveClass(elem.classname);
+      expect(screen.getByText(elem.text)).toBeInTheDocument();
     }
   );
 });
