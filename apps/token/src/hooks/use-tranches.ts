@@ -27,7 +27,10 @@ export function useTranches() {
   } = useFetch<TrancheServiceResponse | null>(url);
   const tranches = useMemo(() => {
     const now = Math.round(Date.now() / 1000);
-    const tranches = Object.values(data?.tranches || [])
+    if (!data?.tranches) {
+      return null;
+    }
+    const tranches = Object.values(data.tranches)
       ?.map((t) => {
         const tranche_progress =
           t.duration !== 0 ? (now - t.cliff_start) / t.duration : 0;

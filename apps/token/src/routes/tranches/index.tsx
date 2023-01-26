@@ -13,7 +13,7 @@ const TrancheRouter = ({ name }: RouteChildProps) => {
   const { t } = useTranslation();
   const { tranches, error, loading } = useTranches();
 
-  if (!tranches.length || loading) {
+  if (!tranches || loading) {
     return (
       <Splash>
         <SplashLoader />
