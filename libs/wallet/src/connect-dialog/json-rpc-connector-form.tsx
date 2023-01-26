@@ -200,11 +200,11 @@ const Error = ({
     } else if (error.code === ClientErrors.INVALID_WALLET.code) {
       title = error.message;
       text = (
-        <>
-          {errorData.forEach((str) => (
-            <span>{str}</span>
+        <span className="flex flex-col">
+          {errorData.map((str, i) => (
+            <span key={i}>{str}</span>
           ))}
-        </>
+        </span>
       );
     } else {
       title = error.message;
