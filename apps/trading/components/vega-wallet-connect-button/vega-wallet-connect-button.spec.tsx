@@ -3,6 +3,7 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import { truncateByChars } from '@vegaprotocol/react-helpers';
+import userEvent from '@testing-library/user-event';
 
 const mockUpdateDialogOpen = jest.fn();
 jest.mock('@vegaprotocol/wallet', () => ({
@@ -31,7 +32,7 @@ it('Not connected', () => {
   expect(mockUpdateDialogOpen).toHaveBeenCalled();
 });
 
-it('Connected', () => {
+it('Connected', async () => {
   const pubKey = { publicKey: '123456__123456', name: 'test' };
   render(
     generateJsx({
@@ -42,6 +43,6 @@ it('Connected', () => {
 
   const button = screen.getByTestId('manage-vega-wallet');
   expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
-  fireEvent.click(button);
+  userEvent.click(button);
   expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
 });
