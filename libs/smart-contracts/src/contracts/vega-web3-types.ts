@@ -1,10 +1,11 @@
-// TODO DELETE
-
 import type BigNumber from 'bignumber.js';
 
 export interface Tranche {
   tranche_id: number;
-  users: string[];
+  users: {
+    address: string;
+    balance: number;
+  }[];
   initial_balance: number;
   current_balance: number;
   cliff_start: number;
@@ -13,12 +14,6 @@ export interface Tranche {
 
 export interface TrancheServiceResponse {
   tranches: Tranche[];
-}
-
-export enum TrancheEvents {
-  Created = 'Tranche_Created',
-  BalanceAdded = 'Tranche_Balance_Added',
-  BalanceRemoved = 'Tranche_Balance_Removed',
 }
 
 export interface IVegaClaimData {
