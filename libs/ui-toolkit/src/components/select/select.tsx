@@ -86,17 +86,18 @@ export const RichSelect = forwardRef<
               'z-20',
               'bg-white dark:bg-black',
               'border border-neutral-500 focus:border-black dark:focus:border-white',
-              'overflow-hidden'
+              'overflow-hidden',
+              'shadow-lg'
             )}
-            position={'popper'}
+            position={'item-aligned'}
             side={'bottom'}
             align={'center'}
           >
-            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center p-1 bg-neutral-50 dark:bg-neutral-900">
+            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center p-1 absolute w-full h-6 z-20 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
               <Icon name="chevron-up" />
             </SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center p-1 bg-neutral-50 dark:bg-neutral-900">
+            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center p-1 absolute bottom-0 w-full h-6 z-20 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
               <Icon name="chevron-down" />
             </SelectPrimitive.ScrollDownButton>
           </SelectPrimitive.Content>
