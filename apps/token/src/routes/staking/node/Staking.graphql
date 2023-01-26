@@ -23,13 +23,13 @@ fragment StakingNodeFields on Node {
   }
 }
 
-query Staking($partyId: ID!) {
+query Staking($partyId: ID!, $delegationsPagination: Pagination) {
   party(id: $partyId) {
     id
     stakingSummary {
       currentStakeAvailable
     }
-    delegationsConnection {
+    delegationsConnection(pagination: $delegationsPagination) {
       edges {
         node {
           amount

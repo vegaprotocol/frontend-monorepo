@@ -3,7 +3,8 @@ import * as Sentry from '@sentry/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { usePartyDelegationsLazyQuery } from './__generated___/PartyDelegations';
+import { ENV } from '../../../config';
+import { usePartyDelegationsLazyQuery } from './__generated__/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useSearchParams } from '../../../hooks/use-search-params';
@@ -73,6 +74,7 @@ export const StakingForm = ({
   const [error, setError] = useState<Error | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const { t } = useTranslation();
+  const { delegationsPagination } = ENV;
   const [action, setAction] = React.useState<StakeAction>(
     params.action as StakeAction
   );
@@ -147,6 +149,11 @@ export const StakingForm = ({
   const [delegationSearch, { data }] = usePartyDelegationsLazyQuery({
     variables: {
       partyId: pubKey,
+      delegationsPagination: delegationsPagination
+        ? {
+            first: Number(delegationsPagination),
+          }
+        : undefined,
     },
     fetchPolicy: 'network-only',
   });

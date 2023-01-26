@@ -6,10 +6,10 @@ fragment StakingDelegationsFields on Delegation {
   epoch
 }
 
-query PartyDelegations($partyId: ID!) {
+query PartyDelegations($partyId: ID!, $delegationsPagination: Pagination) {
   party(id: $partyId) {
     id
-    delegationsConnection {
+    delegationsConnection(pagination: $delegationsPagination) {
       edges {
         node {
           ...StakingDelegationsFields

@@ -7,13 +7,13 @@ fragment WalletDelegationFields on Delegation {
   epoch
 }
 
-query Delegations($partyId: ID!) {
+query Delegations($partyId: ID!, $delegationsPagination: Pagination) {
   epoch {
     id
   }
   party(id: $partyId) {
     id
-    delegationsConnection {
+    delegationsConnection(pagination: $delegationsPagination) {
       edges {
         node {
           ...WalletDelegationFields
