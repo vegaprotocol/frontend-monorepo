@@ -7,13 +7,7 @@ import {
   useDataProvider,
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
-import {
-  AsyncRenderer,
-  Button,
-  ButtonLink,
-  ExternalLink,
-  Splash,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import type {
   SingleMarketFieldsFragment,
   MarketData,
