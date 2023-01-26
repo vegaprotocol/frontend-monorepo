@@ -2,8 +2,11 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
-import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/market-info';
-import { t } from '@vegaprotocol/react-helpers';
+import {
+  getExpiryDate,
+  getMarketExpiryDate,
+  t,
+} from '@vegaprotocol/react-helpers';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import {
   ColumnKind,
@@ -125,7 +128,14 @@ type ExpiryLabelProps = {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  const content = market ? getExpiryDate(market) : '-';
+  const content =
+    market && market.tradableInstrument.instrument.metadata.tags
+      ? getExpiryDate(
+          market.tradableInstrument.instrument.metadata.tags,
+          market.marketTimestamps.close,
+          market.state
+        )
+      : '-';
   return <div data-testid="trading-expiry">{content}</div>;
 };
 
