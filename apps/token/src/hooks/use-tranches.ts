@@ -12,7 +12,10 @@ export interface Tranche {
   total_added: BigNumber;
   total_removed: BigNumber;
   locked_amount: BigNumber;
-  users: string[];
+  users: {
+    address: string;
+    balance: BigNumber;
+  }[];
 }
 
 const secondsToDate = (seconds: number) => new Date(seconds * 1000);
@@ -46,7 +49,10 @@ export function useTranches() {
           locked_amount: toBigNum(t.initial_balance, decimals).times(
             lockedDecimal
           ),
-          users: t.users,
+          users: t.users.map((u) => ({
+            address: u.address,
+            balance: toBigNum(u.balance, decimals),
+          })),
         };
       })
       .sort((a, b) => a.tranche_id - b.tranche_id);

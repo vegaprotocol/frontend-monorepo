@@ -32,7 +32,8 @@ export const useGetUserTrancheBalances = (
       }
       const userTranches = tranches?.filter((t) =>
         t.users.some(
-          (a) => a && address && a.toLowerCase() === address.toLowerCase()
+          ({ address: a }) =>
+            a && address && a.toLowerCase() === address.toLowerCase()
         )
       );
       const trancheIds = [0, ...userTranches.map((t) => t.tranche_id)];

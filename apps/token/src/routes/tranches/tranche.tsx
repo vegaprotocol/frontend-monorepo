@@ -1,12 +1,17 @@
-import { Link } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Link,
+  RoundedWrapper,
+} from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
+import { formatNumber } from '@vegaprotocol/react-helpers';
 
 import { useOutletContext } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
@@ -46,21 +51,36 @@ export const Tranche = () => {
       </div>
       <h2>{t('Holders')}</h2>
       {tranche.users.length ? (
-        <ul role="list">
-          {tranche.users.map((user, i) => {
-            return (
-              <li className="pb-4" key={i}>
-                <Link
-                  title={t('View on Etherscan (opens in a new tab)')}
-                  href={`${ETHERSCAN_URL}/tx/${user}`}
-                  target="_blank"
-                >
-                  {user}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <RoundedWrapper>
+          <KeyValueTable>
+            <KeyValueTableRow>
+              {t('Ethereum Address')}
+              {t('Tranche balance')}
+            </KeyValueTableRow>
+            {tranche.users.map((user) => (
+              <KeyValueTableRow key={user.address}>
+                {
+                  <Link
+                    title={t('View on Etherscan (opens in a new tab)')}
+                    href={`${ETHERSCAN_URL}/tx/${user}`}
+                    target="_blank"
+                  >
+                    {user.address}
+                  </Link>
+                }
+                {
+                  <Link
+                    title={t('View on Etherscan (opens in a new tab)')}
+                    href={`${ETHERSCAN_URL}/tx/${user}`}
+                    target="_blank"
+                  >
+                    {formatNumber(user.balance, 18)}
+                  </Link>
+                }
+              </KeyValueTableRow>
+            ))}
+          </KeyValueTable>
+        </RoundedWrapper>
       ) : (
         <p>{t('No users')}</p>
       )}
