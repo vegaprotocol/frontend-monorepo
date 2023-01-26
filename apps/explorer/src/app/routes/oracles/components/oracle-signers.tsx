@@ -4,6 +4,7 @@ import {
   EthExplorerLinkTypes,
 } from '../../../components/links/eth-explorer-link/eth-explorer-link';
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
+import { remove0x } from '@vegaprotocol/react-helpers';
 
 import type { SourceType } from './oracle';
 
@@ -14,7 +15,15 @@ export type Signer = {
 };
 
 export function getAddressTypeLabel(signer: Signer) {
-  return signer.__typename === 'ETHAddress' ? 'ETH' : 'Vega';
+  const res = signer.__typename === 'ETHAddress' ? 'ETH' : 'Vega';
+
+  // This is a hack: some older oracles were submitted before proper checks stopped
+  // ETH addresses being returned as Vega addresses
+  if (res === 'Vega' && signer?.key?.length !== 64) {
+    return 'ETH';
+  } else {
+    return res;
+  }
 }
 
 export function getAddress(signer: Signer) {
@@ -29,6 +38,16 @@ export function getAddressLink(signer: Signer) {
 
   if (signer.__typename === 'ETHAddress') {
     return <EthExplorerLink id={address} type={EthExplorerLinkTypes.address} />;
+  } else if (signer.__typename === 'PubKey' && address.length !== 64) {
+    // This is a hack: some older oracles were submitted before proper checks stopped
+    // ETH addresses being returned as Vega addresses
+    // Hacky 0x prefixing as a bonus
+    return (
+      <EthExplorerLink
+        id={`0x${remove0x(address)}`}
+        type={EthExplorerLinkTypes.address}
+      />
+    );
   } else if (signer.__typename === 'PubKey') {
     return <PartyLink id={address} />;
   }

@@ -67,7 +67,7 @@ describe('Oracle Signers component', () => {
             __typename: 'Signer',
             signer: {
               __typename: 'PubKey',
-              key: '123',
+              key: '1234567891234567789123456789123456778912345678912345677891234567',
             },
           },
         ],
