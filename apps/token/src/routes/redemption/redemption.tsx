@@ -1,6 +1,15 @@
-import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Callout,
+  FormGroup,
+  Input,
+  InputError,
+  Intent,
+  Splash,
+} from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
-import React from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -16,23 +25,48 @@ import {
   redemptionReducer,
 } from './redemption-reducer';
 
+interface FormFields {
+  address: string;
+}
+
 const RedemptionRouter = () => {
   const { t } = useTranslation();
-  const [state, dispatch] = React.useReducer(
+  const validatePubkey = useCallback(
+    (value: string) => {
+      console.log(value.length);
+      if (!value.startsWith('0x')) {
+        return t('Address must begin with 0x');
+      } else if (value.length !== 42) {
+        return t('Pubkey must be 42 characters in length');
+      } else if (Number.isNaN(+value)) {
+        return t('Pubkey must be be valid hex');
+      }
+      return true;
+    },
+    [t]
+  );
+  const [state, dispatch] = useReducer(
     redemptionReducer,
     initialRedemptionState
   );
   const { trancheBalances } = useBalances();
   const { account } = useWeb3React();
+  const [address, setAddress] = useState<string | null | undefined>(account);
   const { tranches, error, loading } = useTranches();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormFields>();
 
-  React.useEffect(() => {
-    const run = (address: string) => {
+  useEffect(() => {
+    if (address) {
       const userTranches = tranches?.filter((t) =>
         t.users.some(
           ({ address: a }) => a.toLowerCase() === address.toLowerCase()
         )
       );
+      console.log(userTranches);
 
       if (userTranches) {
         dispatch({
@@ -40,12 +74,12 @@ const RedemptionRouter = () => {
           userTranches,
         });
       }
-    };
-
-    if (account) {
-      run(account);
     }
-  }, [account, tranches]);
+  }, [address, tranches]);
+
+  const onSubmit = useCallback((fields: FormFields) => {
+    setAddress(fields.address);
+  }, []);
 
   if (error) {
     return (
@@ -63,15 +97,40 @@ const RedemptionRouter = () => {
     );
   }
 
-  if (!account) {
+  if (!address) {
     return (
-      <EthConnectPrompt>
-        <p data-testid="eth-connect-prompt">
-          {t(
-            "Use the Ethereum wallet you want to send your tokens to. You'll also need enough Ethereum to pay gas."
-          )}
-        </p>
-      </EthConnectPrompt>
+      <div>
+        <EthConnectPrompt>
+          <p data-testid="eth-connect-prompt">
+            {t(
+              "Use the Ethereum wallet you want to send your tokens to. You'll also need enough Ethereum to pay gas."
+            )}
+          </p>
+        </EthConnectPrompt>
+        <p className="py-4">{t('OR')}</p>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          data-testid="view-connector-form"
+        >
+          <FormGroup label={t('View Ethereum user:')} labelFor="address">
+            <Input
+              {...register('address', {
+                required: t('Required'),
+                validate: validatePubkey,
+              })}
+              id="address"
+              data-testid="address"
+              type="text"
+            />
+            {errors.address?.message && (
+              <InputError intent="danger">{errors.address.message}</InputError>
+            )}
+          </FormGroup>
+          <Button data-testid="connect" type="submit" fill={true}>
+            {t('View Ethereum user')}
+          </Button>
+        </form>
+      </div>
     );
   }
 
@@ -86,7 +145,7 @@ const RedemptionRouter = () => {
     );
   }
 
-  return <Outlet context={{ state, account }} />;
+  return <Outlet context={{ state, account: address }} />;
 };
 
 export default RedemptionRouter;
