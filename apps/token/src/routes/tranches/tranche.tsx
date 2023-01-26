@@ -54,8 +54,8 @@ export const Tranche = () => {
         <RoundedWrapper>
           <KeyValueTable>
             <KeyValueTableRow>
-              {t('Ethereum Address')}
-              {t('Tranche balance')}
+              <h1>{t('Ethereum Address')}</h1>
+              <h1>{t('Tranche balance')}</h1>
             </KeyValueTableRow>
             {tranche.users.map((user) => (
               <KeyValueTableRow key={user.address}>

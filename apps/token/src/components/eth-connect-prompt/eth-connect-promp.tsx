@@ -17,6 +17,7 @@ export const EthConnectPrompt = ({ children }: EthConnectPrompProps) => {
     <>
       {children}
       <Button
+        variant="primary"
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
