@@ -139,16 +139,19 @@ const AccountHistoryManager = ({
     <div className="h-full w-full flex flex-col gap-8">
       <div className="w-full flex flex-col-reverse lg:flex-row items-start lg:items-center justify-between gap-4 px-2">
         <div className="flex items-center gap-4 shrink-0">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              {accountType
-                ? `${
-                    AccountTypeMapping[
-                      accountType as keyof typeof Schema.AccountType
-                    ]
-                  } Account`
-                : t('Select account type')}
-            </DropdownMenuTrigger>
+          <DropdownMenu
+            trigger={
+              <DropdownMenuTrigger>
+                {accountType
+                  ? `${
+                      AccountTypeMapping[
+                        accountType as keyof typeof Schema.AccountType
+                      ]
+                    } Account`
+                  : t('Select account type')}
+              </DropdownMenuTrigger>
+            }
+          >
             <DropdownMenuContent>
               {[
                 Schema.AccountType.ACCOUNT_TYPE_GENERAL,
@@ -164,10 +167,13 @@ const AccountHistoryManager = ({
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              {asset ? asset.symbol : t('Select asset')}
-            </DropdownMenuTrigger>
+          <DropdownMenu
+            trigger={
+              <DropdownMenuTrigger>
+                {asset ? asset.symbol : t('Select asset')}
+              </DropdownMenuTrigger>
+            }
+          >
             <DropdownMenuContent>
               {assets.map((a) => (
                 <DropdownMenuItem key={a.id} onClick={() => setAsset(a)}>

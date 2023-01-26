@@ -96,13 +96,18 @@ export const NetworkSwitcher = () => {
   const menuRef = useRef<HTMLButtonElement | null>(null);
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuTrigger
-        ref={menuRef}
-        className="flex justify-between items-center"
-      >
-        {envTriggerMapping[VEGA_ENV]}
-      </DropdownMenuTrigger>
+    <DropdownMenu
+      open={isOpen}
+      onOpenChange={handleOpen}
+      trigger={
+        <DropdownMenuTrigger
+          ref={menuRef}
+          className="flex justify-between items-center"
+        >
+          {envTriggerMapping[VEGA_ENV]}
+        </DropdownMenuTrigger>
+      }
+    >
       <DropdownMenuContent
         align="start"
         style={{ minWidth: `${menuRef.current?.offsetWidth || 290}px` }}
