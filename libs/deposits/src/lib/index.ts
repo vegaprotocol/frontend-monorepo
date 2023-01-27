@@ -5,7 +5,7 @@ export * from './deposit-limits';
 export * from './deposit-manager';
 export * from './deposits-table';
 export * from './use-deposit-balances';
-export * from './use-deposits';
+export * from './deposits-provider';
 export * from './use-get-allowance';
 export * from './use-get-balance-of-erc20-token';
 export * from './use-get-deposit-maximum';
