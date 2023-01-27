@@ -74,6 +74,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
 
   usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
     if (order.price !== storedOrder.price) {
+      clearErrors('price');
       setValue('price', storedOrder.price);
     }
   });

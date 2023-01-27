@@ -170,7 +170,7 @@ export const SelectMarketPopover = ({
           </div>
         ) : (
           <table className="relative text-sm w-full whitespace-nowrap">
-            {pubKey && (positions?.length ?? 0) > 0 ? (
+            {pubKey && (positions?.length ?? 0) && (markets?.length ?? 0) ? (
               <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
