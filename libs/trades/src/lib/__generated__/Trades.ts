@@ -3,7 +3,7 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, market: { __typename?: 'Market', id: string } };
+export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, market: { __typename?: 'Market', id: string } };
 
 export type TradesQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -11,14 +11,14 @@ export type TradesQueryVariables = Types.Exact<{
 }>;
 
 
-export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, market: { __typename?: 'Market', id: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
+export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, market: { __typename?: 'Market', id: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
 
 export type TradesUpdateSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type TradesUpdateSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string }> | null };
+export type TradesUpdateSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side }> | null };
 
 export const TradeFieldsFragmentDoc = gql`
     fragment TradeFields on Trade {
@@ -26,6 +26,7 @@ export const TradeFieldsFragmentDoc = gql`
   price
   size
   createdAt
+  aggressor
   market {
     id
   }
@@ -89,6 +90,7 @@ export const TradesUpdateDocument = gql`
     size
     createdAt
     marketId
+    aggressor
   }
 }
     `;

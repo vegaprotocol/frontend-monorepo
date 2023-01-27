@@ -13,31 +13,25 @@ import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { CellClassParams, ValueFormatterParams } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';
 import type { Trade } from './trades-data-provider';
-import BigNumber from 'bignumber.js';
+import { Side } from '@vegaprotocol/types';
 
-export const UP_CLASS = 'text-vega-green dark:text-vega-green';
-export const DOWN_CLASS = 'text-vega-pink dark:text-vega-pink';
+export const BUY_CLASS = 'text-vega-green dark:text-vega-green';
+export const SELL_CLASS = 'text-vega-pink dark:text-vega-pink';
 
-const changeCellClass =
-  (dataKey: string) =>
-  ({ api, value, node }: CellClassParams) => {
-    const rowIndex = node?.rowIndex;
-    let colorClass = '';
+const changeCellClass = ({ node }: CellClassParams) => {
+  const rowIndex = node?.rowIndex;
+  let colorClass = '';
 
-    if (typeof rowIndex === 'number') {
-      const prevRowNode = api.getModel().getRow(rowIndex + 1);
-      const prevValue = prevRowNode?.data && prevRowNode.data[dataKey];
-      const valueNum = new BigNumber(value);
-
-      if (valueNum.isGreaterThan(prevValue)) {
-        colorClass = UP_CLASS;
-      } else if (valueNum.isLessThan(prevValue)) {
-        colorClass = DOWN_CLASS;
-      }
+  if (typeof rowIndex === 'number') {
+    if (node.data?.aggressor === Side.SIDE_BUY) {
+      colorClass = BUY_CLASS;
+    } else if (node.data?.aggressor === Side.SIDE_SELL) {
+      colorClass = SELL_CLASS;
     }
+  }
 
-    return ['font-mono text-right', colorClass].join(' ');
-  };
+  return ['font-mono text-right', colorClass].join(' ');
+};
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: (Trade | null)[], lastRow?: number): void;
@@ -77,7 +71,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         field="price"
         type="rightAligned"
         width={130}
-        cellClass={changeCellClass('price')}
+        cellClass={changeCellClass}
         valueFormatter={({
           value,
           data,
@@ -127,7 +121,6 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
           }
           return addDecimal(value, data.market.positionDecimalPlaces);
         }}
-        cellClass={changeCellClass('size')}
       />
       <AgGridColumn
         headerName={t('Created at')}
