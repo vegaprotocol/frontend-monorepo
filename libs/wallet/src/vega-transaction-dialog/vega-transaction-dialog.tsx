@@ -107,15 +107,13 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   }
 
   if (transaction.status === VegaTxStatus.Error) {
-    content = (
-      <div data-testid={transaction.status}>
-        {transaction.error instanceof WalletClientError && (
-          <p>
-            {transaction.error.title}: {transaction.error.message}
-          </p>
-        )}
-      </div>
-    );
+    let messageText = '';
+    if (transaction.error instanceof WalletClientError) {
+      messageText = `${transaction.error.title}: ${transaction.error.message}`;
+    } else if (transaction.error instanceof Error) {
+      messageText = transaction.error.message;
+    }
+    content = <div data-testid={transaction.status}>{messageText}</div>;
   }
 
   if (transaction.status === VegaTxStatus.Pending) {
