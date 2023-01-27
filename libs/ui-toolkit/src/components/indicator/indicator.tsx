@@ -11,5 +11,5 @@ export const Indicator = ({ variant = Intent.None }: IndicatorProps) => {
     'inline-block w-2 h-2 mt-1 mr-2 rounded-full',
     getIntentTextAndBackground(variant)
   );
-  return <div className={names} />;
+  return <div className={names} data-testid="indicator" />;
 };
