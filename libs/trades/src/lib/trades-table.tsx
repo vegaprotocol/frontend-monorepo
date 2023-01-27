@@ -19,15 +19,12 @@ export const BUY_CLASS = 'text-vega-green dark:text-vega-green';
 export const SELL_CLASS = 'text-vega-pink dark:text-vega-pink';
 
 const changeCellClass = ({ node }: CellClassParams) => {
-  const rowIndex = node?.rowIndex;
   let colorClass = '';
 
-  if (typeof rowIndex === 'number') {
-    if (node.data?.aggressor === Side.SIDE_BUY) {
-      colorClass = BUY_CLASS;
-    } else if (node.data?.aggressor === Side.SIDE_SELL) {
-      colorClass = SELL_CLASS;
-    }
+  if (node.data?.aggressor === Side.SIDE_BUY) {
+    colorClass = BUY_CLASS;
+  } else if (node.data?.aggressor === Side.SIDE_SELL) {
+    colorClass = SELL_CLASS;
   }
 
   return ['font-mono text-right', colorClass].join(' ');
