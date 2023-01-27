@@ -3,6 +3,7 @@ import { Routes } from '../../../routes/route-names';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
+import Hash from '../hash';
 
 export type BlockLinkProps = Partial<ComponentProps<typeof Link>> & {
   height: string;
@@ -11,7 +12,7 @@ export type BlockLinkProps = Partial<ComponentProps<typeof Link>> & {
 const BlockLink = ({ height, ...props }: BlockLinkProps) => {
   return (
     <Link className="underline" {...props} to={`/${Routes.BLOCKS}/${height}`}>
-      {height}
+      <Hash text={height} />
     </Link>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { DATA_SOURCES } from '../../../config';
+import Hash from '../hash';
 
 export enum EthExplorerLinkTypes {
   block = 'block',
@@ -27,7 +28,7 @@ export const EthExplorerLink = ({
       {...props}
       href={link}
     >
-      {id}
+      <Hash text={id} />
     </a>
   );
 };

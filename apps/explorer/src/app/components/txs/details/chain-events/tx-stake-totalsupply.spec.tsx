@@ -66,7 +66,10 @@ describe('Chain Event: Stake total supply change', () => {
 
     expect(screen.getByText(t('Source'))).toBeInTheDocument();
     const ethLink = screen.getByText(`${fullMock.tokenAddress}`);
-    expect(ethLink.getAttribute('href')).toContain(
+    if (!ethLink.parentElement) {
+      throw new Error('ETH link does not exist');
+    }
+    expect(ethLink.parentElement.getAttribute('href')).toContain(
       `/address/${fullMock.tokenAddress}`
     );
   });

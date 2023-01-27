@@ -64,14 +64,20 @@ describe('Chain Event: Stake deposit', () => {
     expect(screen.getByText(t('Recipient'))).toBeInTheDocument();
     const partyLink = screen.getByText(`${fullMock.vegaPublicKey}`);
     expect(partyLink).toBeInTheDocument();
-    expect(partyLink.tagName).toEqual('A');
-    expect(partyLink.getAttribute('href')).toEqual(
+    if (!partyLink.parentElement) {
+      throw new Error('Party link does not exist');
+    }
+    expect(partyLink.parentElement.tagName).toEqual('A');
+    expect(partyLink.parentElement.getAttribute('href')).toEqual(
       `/parties/${fullMock.vegaPublicKey}`
     );
 
     expect(screen.getByText(t('Source'))).toBeInTheDocument();
     const ethLink = screen.getByText(`${fullMock.ethereumAddress}`);
-    expect(ethLink.getAttribute('href')).toContain(
+    if (!ethLink.parentElement) {
+      throw new Error('ETH link does not exist');
+    }
+    expect(ethLink.parentElement.getAttribute('href')).toContain(
       `/address/${fullMock.ethereumAddress}`
     );
   });

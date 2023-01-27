@@ -2,6 +2,7 @@ import { Routes } from '../../../routes/route-names';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
+import Hash from '../hash';
 
 export type OracleLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
@@ -14,7 +15,7 @@ const OracleLink = ({ id, ...props }: OracleLinkProps) => {
       {...props}
       to={`/${Routes.ORACLES}/${id}`}
     >
-      {id}
+      <Hash text={id} />
     </Link>
   );
 };
