@@ -19,59 +19,58 @@ const trade: Trade = {
   } as Trade['market'],
 };
 
-it('Correct columns are rendered', async () => {
-  await act(async () => {
-    render(<TradesTable rowData={[trade]} />);
-  });
-  const expectedHeaders = ['Price', 'Size', 'Created at'];
-  const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(expectedHeaders.length);
-  expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
-});
-
-it('Number and data columns are formatted', async () => {
-  await act(async () => {
-    render(<TradesTable rowData={[trade]} />);
+describe('TradesTable', () => {
+  it('should render correct columns', async () => {
+    await act(async () => {
+      render(<TradesTable rowData={[trade]} />);
+    });
+    const expectedHeaders = ['Price', 'Size', 'Created at'];
+    const headers = screen.getAllByRole('columnheader');
+    expect(headers).toHaveLength(expectedHeaders.length);
+    expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
   });
 
-  const cells = screen.getAllByRole('gridcell');
-  const expectedValues = [
-    '1,111,222.00',
-    '20.00',
-    getDateTimeFormat().format(new Date(trade.createdAt)),
-  ];
-  cells.forEach((cell, i) => {
-    expect(cell).toHaveTextContent(expectedValues[i]);
-  });
-});
+  it('should format number and data columns', async () => {
+    await act(async () => {
+      render(<TradesTable rowData={[trade]} />);
+    });
 
-it('Price and size columns are formatted', async () => {
-  const trade2 = {
-    ...trade,
-    id: 'trade-id-2',
-    price: (Number(trade.price) + 10).toString(),
-    size: (Number(trade.size) - 10).toString(),
-  };
-  await act(async () => {
-    render(<TradesTable rowData={[trade2, trade]} />);
+    const cells = screen.getAllByRole('gridcell');
+    const expectedValues = [
+      '1,111,222.00',
+      '20.00',
+      getDateTimeFormat().format(new Date(trade.createdAt)),
+    ];
+    cells.forEach((cell, i) => {
+      expect(cell).toHaveTextContent(expectedValues[i]);
+    });
   });
 
-  const cells = screen.getAllByRole('gridcell');
+  it('should format price and size columns', async () => {
+    const trade2 = {
+      ...trade,
+      id: 'trade-id-2',
+      price: (Number(trade.price) + 10).toString(),
+      size: (Number(trade.size) - 10).toString(),
+    };
+    await act(async () => {
+      render(<TradesTable rowData={[trade2, trade]} />);
+    });
 
-  const priceCells = cells.filter(
-    (cell) => cell.getAttribute('col-id') === 'price'
-  );
-  const sizeCells = cells.filter(
-    (cell) => cell.getAttribute('col-id') === 'size'
-  );
+    const cells = screen.getAllByRole('gridcell');
 
-  // For first trade price should have green class and size should have red class
-  // row 1
-  expect(priceCells[0]).toHaveClass(BUY_CLASS);
-  expect(priceCells[1]).not.toHaveClass(SELL_CLASS);
-  expect(priceCells[1]).not.toHaveClass(BUY_CLASS);
+    const priceCells = cells.filter(
+      (cell) => cell.getAttribute('col-id') === 'price'
+    );
+    const sizeCells = cells.filter(
+      (cell) => cell.getAttribute('col-id') === 'size'
+    );
 
-  expect(sizeCells[0]).toHaveClass(SELL_CLASS);
-  expect(sizeCells[1]).not.toHaveClass(SELL_CLASS);
-  expect(sizeCells[1]).not.toHaveClass(BUY_CLASS);
+    // For first trade price should have green class
+    // row 1
+    expect(priceCells[0]).toHaveClass(BUY_CLASS);
+    expect(priceCells[1]).not.toHaveClass(SELL_CLASS);
+    expect(sizeCells[1]).not.toHaveClass(SELL_CLASS);
+    expect(sizeCells[1]).not.toHaveClass(BUY_CLASS);
+  });
 });
