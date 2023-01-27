@@ -8,9 +8,9 @@ import {
   Tick,
 } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
+import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { JsonRpcConnector } from '../connectors';
 import { ClientErrors } from '../connectors';
-import type { WalletError } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -30,7 +30,7 @@ export const JsonRpcConnectorForm = ({
   connector: JsonRpcConnector;
   appChainId: string;
   status: Status;
-  error: WalletError | null;
+  error: WalletClientError | null;
   onConnect: () => void;
   reset: () => void;
 }) => {
@@ -57,7 +57,7 @@ const Connecting = ({
   reset,
 }: {
   status: Status;
-  error: WalletError | null;
+  error: WalletClientError | null;
   connector: JsonRpcConnector;
   appChainId: string;
   reset: () => void;
@@ -140,7 +140,7 @@ const Error = ({
   appChainId,
   onTryAgain,
 }: {
-  error: WalletError | null;
+  error: WalletClientError | null;
   connectorUrl: string | null;
   appChainId: string;
   onTryAgain: () => void;
@@ -167,10 +167,10 @@ const Error = ({
         appChainId
       );
     } else if (error.code === ServiceErrors.NO_HEALTHY_NODE) {
-      title = error.message;
+      title = error.title;
       text = (
         <>
-          {capitalize(error.data)}
+          {capitalize(error.message)}
           {'. '}
           {VEGA_DOCS_URL && (
             <Link
@@ -198,7 +198,7 @@ const Error = ({
       );
     } else if (error.code === ClientErrors.INVALID_WALLET.code) {
       title = error.title;
-      const errorData = error.data?.split('\n ') || [];
+      const errorData = error.message?.split('\n ') || [];
       text = (
         <span className="flex flex-col">
           {errorData.map((str, i) => (

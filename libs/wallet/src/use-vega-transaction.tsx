@@ -90,7 +90,7 @@ export const useVegaTransaction = () => {
       } catch (err) {
         const error = err instanceof Error ? err : ClientErrors.UNKNOWN;
         setTransaction({
-          error: error,
+          error,
           status: VegaTxStatus.Error,
         });
         return null;

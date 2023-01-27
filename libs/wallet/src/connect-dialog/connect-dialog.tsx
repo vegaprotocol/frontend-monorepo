@@ -9,8 +9,9 @@ import {
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
+import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { ExternalLinks, t, useChainIdQuery } from '@vegaprotocol/react-helpers';
-import type { VegaConnector, WalletError } from '../connectors';
+import type { VegaConnector } from '../connectors';
 import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
@@ -254,7 +255,7 @@ const SelectedForm = ({
   appChainId: string;
   jsonRpcState: {
     status: Status;
-    error: WalletError | null;
+    error: WalletClientError | null;
   };
   reset: () => void;
   onConnect: () => void;
