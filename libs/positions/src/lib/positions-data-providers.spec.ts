@@ -1,7 +1,10 @@
 import * as Schema from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
 import type { MarketWithData } from '@vegaprotocol/market-list';
-import type { PositionsQuery, MarginsQuery } from './__generated__/Positions';
+import type {
+  PositionFieldsFragment,
+  MarginFieldsFragment,
+} from './__generated__/Positions';
 import { getMetrics, rejoinPositionData } from './positions-data-providers';
 
 const accounts = [
@@ -63,47 +66,32 @@ const accounts = [
   },
 ] as Account[];
 
-const positions: PositionsQuery = {
-  party: {
-    __typename: 'Party',
-    id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
-    positionsConnection: {
-      __typename: 'PositionConnection',
-      edges: [
-        {
-          __typename: 'PositionEdge',
-          node: {
-            __typename: 'Position',
-            openVolume: '100',
-            averageEntryPrice: '8993727',
-            updatedAt: '2022-07-28T14:53:54.725477Z',
-            realisedPNL: '0',
-            unrealisedPNL: '43804770',
-            market: {
-              __typename: 'Market',
-              id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
-            },
-          },
-        },
-        {
-          __typename: 'PositionEdge',
-          node: {
-            __typename: 'Position',
-            openVolume: '-100',
-            realisedPNL: '0',
-            unrealisedPNL: '-9112700',
-            averageEntryPrice: '840158',
-            updatedAt: '2022-07-28T15:09:34.441143Z',
-            market: {
-              __typename: 'Market',
-              id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
-            },
-          },
-        },
-      ],
+const positions: PositionFieldsFragment[] = [
+  {
+    __typename: 'Position',
+    openVolume: '100',
+    averageEntryPrice: '8993727',
+    updatedAt: '2022-07-28T14:53:54.725477Z',
+    realisedPNL: '0',
+    unrealisedPNL: '43804770',
+    market: {
+      __typename: 'Market',
+      id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
     },
   },
-};
+  {
+    __typename: 'Position',
+    openVolume: '-100',
+    realisedPNL: '0',
+    unrealisedPNL: '-9112700',
+    averageEntryPrice: '840158',
+    updatedAt: '2022-07-28T15:09:34.441143Z',
+    market: {
+      __typename: 'Market',
+      id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
+    },
+  },
+];
 
 const marketsData = [
   {
@@ -162,60 +150,44 @@ const marketsData = [
   },
 ] as MarketWithData[];
 
-const margins: MarginsQuery = {
-  party: {
-    id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
-    marginsConnection: {
-      edges: [
-        {
-          __typename: 'MarginEdge',
-          node: {
-            __typename: 'MarginLevels',
-            maintenanceLevel: '0',
-            searchLevel: '0',
-            initialLevel: '0',
-            collateralReleaseLevel: '0',
-            market: {
-              __typename: 'Market',
-              id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
-            },
-            asset: {
-              __typename: 'Asset',
-              id: 'tDAI-id',
-            },
-          },
-        },
-        {
-          __typename: 'MarginEdge',
-          node: {
-            __typename: 'MarginLevels',
-            maintenanceLevel: '0',
-            searchLevel: '0',
-            initialLevel: '0',
-            collateralReleaseLevel: '0',
-            market: {
-              __typename: 'Market',
-              id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
-            },
-            asset: {
-              __typename: 'Asset',
-              id: 'tDAI-id',
-            },
-          },
-        },
-      ],
-      __typename: 'MarginConnection',
+const margins: MarginFieldsFragment[] = [
+  {
+    __typename: 'MarginLevels',
+    maintenanceLevel: '0',
+    searchLevel: '0',
+    initialLevel: '0',
+    collateralReleaseLevel: '0',
+    market: {
+      __typename: 'Market',
+      id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
     },
-    __typename: 'Party',
+    asset: {
+      __typename: 'Asset',
+      id: 'tDAI-id',
+    },
   },
-};
-
+  {
+    __typename: 'MarginLevels',
+    maintenanceLevel: '0',
+    searchLevel: '0',
+    initialLevel: '0',
+    collateralReleaseLevel: '0',
+    market: {
+      __typename: 'Market',
+      id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
+    },
+    asset: {
+      __typename: 'Asset',
+      id: 'tDAI-id',
+    },
+  },
+];
 describe('getMetrics && rejoinPositionData', () => {
   it('returns positions metrics', () => {
     const positionsRejoined = rejoinPositionData(
-      positions.party,
+      positions,
       marketsData,
-      margins.party
+      margins
     );
     const metrics = getMetrics(positionsRejoined, accounts || null);
     expect(metrics.length).toEqual(2);
@@ -223,9 +195,9 @@ describe('getMetrics && rejoinPositionData', () => {
 
   it('calculates metrics', () => {
     const positionsRejoined = rejoinPositionData(
-      positions.party,
+      positions,
       marketsData,
-      margins.party
+      margins
     );
     const metrics = getMetrics(positionsRejoined, accounts || null);
 
