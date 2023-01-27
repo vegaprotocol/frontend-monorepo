@@ -1,13 +1,15 @@
 import { act, render, screen } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { DOWN_CLASS, TradesTable, UP_CLASS } from './trades-table';
+import { SELL_CLASS, TradesTable, BUY_CLASS } from './trades-table';
 import type { Trade } from './trades-data-provider';
+import { Side } from '@vegaprotocol/types';
 
 const trade: Trade = {
   __typename: 'Trade',
   id: 'trade-id',
   price: '111122200',
   size: '2000',
+  aggressor: Side.SIDE_BUY,
   createdAt: new Date('2022-04-06T19:00:00').toISOString(),
   market: {
     __typename: 'Market',
@@ -65,11 +67,11 @@ it('Price and size columns are formatted', async () => {
 
   // For first trade price should have green class and size should have red class
   // row 1
-  expect(priceCells[0]).toHaveClass(UP_CLASS);
-  expect(priceCells[1]).not.toHaveClass(DOWN_CLASS);
-  expect(priceCells[1]).not.toHaveClass(UP_CLASS);
+  expect(priceCells[0]).toHaveClass(BUY_CLASS);
+  expect(priceCells[1]).not.toHaveClass(SELL_CLASS);
+  expect(priceCells[1]).not.toHaveClass(BUY_CLASS);
 
-  expect(sizeCells[0]).toHaveClass(DOWN_CLASS);
-  expect(sizeCells[1]).not.toHaveClass(DOWN_CLASS);
-  expect(sizeCells[1]).not.toHaveClass(UP_CLASS);
+  expect(sizeCells[0]).toHaveClass(SELL_CLASS);
+  expect(sizeCells[1]).not.toHaveClass(SELL_CLASS);
+  expect(sizeCells[1]).not.toHaveClass(BUY_CLASS);
 });
