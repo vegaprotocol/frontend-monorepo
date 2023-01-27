@@ -25,6 +25,7 @@ import type {
   NodeData,
   Configuration,
 } from '../types';
+import { useNodeHealth } from './use-node-health';
 
 type EnvironmentProviderProps = {
   config?: Configuration;
@@ -33,7 +34,10 @@ type EnvironmentProviderProps = {
 };
 
 export type EnvironmentState = Environment & {
+  configLoading: boolean;
   networkError?: ErrorType;
+  blockDifference: number;
+  nodeSwitcherOpen: boolean;
   setNodeSwitcherOpen: () => void;
 };
 
@@ -76,10 +80,14 @@ export const EnvironmentProvider = ({
       }
     }
   );
+
   const { state: nodes, clients } = useNodes(
     config,
     environment.MAINTENANCE_PAGE
   );
+
+  const blockDifference = useNodeHealth(clients, environment.VEGA_URL);
+
   const nodeKeys = Object.keys(nodes);
 
   useEffect(() => {
@@ -89,9 +97,10 @@ export const EnvironmentProvider = ({
       );
       if (successfulNodeKey && nodes[successfulNodeKey]) {
         Object.keys(clients).forEach((node) => clients[node]?.stop());
+        const url = nodes[successfulNodeKey].url;
         updateEnvironment((prevEnvironment) => ({
           ...prevEnvironment,
-          VEGA_URL: nodes[successfulNodeKey].url,
+          VEGA_URL: url,
         }));
       }
     }
@@ -139,7 +148,10 @@ export const EnvironmentProvider = ({
     <EnvironmentContext.Provider
       value={{
         ...environment,
+        configLoading: loading,
         networkError,
+        blockDifference,
+        nodeSwitcherOpen: isNodeSwitcherOpen,
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
     >
@@ -149,9 +161,9 @@ export const EnvironmentProvider = ({
         setDialogOpen={setNodeSwitcherOpen}
         loading={loading}
         config={config}
-        onConnect={(url) =>
-          updateEnvironment((env) => ({ ...env, VEGA_URL: url }))
-        }
+        onConnect={(url) => {
+          updateEnvironment((env) => ({ ...env, VEGA_URL: url }));
+        }}
       />
       {children}
     </EnvironmentContext.Provider>

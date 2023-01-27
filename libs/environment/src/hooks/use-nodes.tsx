@@ -74,7 +74,7 @@ const getInitialState = (config?: Configuration) =>
     {}
   );
 
-type ClientCollection = Record<
+export type ClientCollection = Record<
   string,
   undefined | ReturnType<typeof createClient>
 >;
@@ -178,6 +178,10 @@ const reducer = (state: Record<string, NodeData>, action: Action) => {
   }
 };
 
+/**
+ * Tests each node to see if its suitable for connecting to and returns that data
+ * as a map of node urls to an object of that data
+ */
 export const useNodes = (config?: Configuration, skip?: boolean) => {
   const [clients, setClients] = useState<ClientCollection>({});
   const [state, dispatch] = useReducer(reducer, getInitialState(config));
