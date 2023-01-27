@@ -8,16 +8,15 @@ import {
   Tick,
 } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
+import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { JsonRpcConnector } from '../connectors';
 import { ClientErrors } from '../connectors';
-import type { WalletError } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
-  CONNECTION_DECLINED: 3001,
   REQUEST_PROCESSING: -32000,
 };
 
@@ -31,7 +30,7 @@ export const JsonRpcConnectorForm = ({
   connector: JsonRpcConnector;
   appChainId: string;
   status: Status;
-  error: WalletError | null;
+  error: WalletClientError | null;
   onConnect: () => void;
   reset: () => void;
 }) => {
@@ -58,7 +57,7 @@ const Connecting = ({
   reset,
 }: {
   status: Status;
-  error: WalletError | null;
+  error: WalletClientError | null;
   connector: JsonRpcConnector;
   appChainId: string;
   reset: () => void;
@@ -141,7 +140,7 @@ const Error = ({
   appChainId,
   onTryAgain,
 }: {
-  error: WalletError | null;
+  error: WalletClientError | null;
   connectorUrl: string | null;
   appChainId: string;
   onTryAgain: () => void;
@@ -158,18 +157,20 @@ const Error = ({
   if (error) {
     if (error.code === ClientErrors.NO_SERVICE.code) {
       title = t('No wallet detected');
-      text = t(`No wallet application running at ${connectorUrl}`);
+      text = connectorUrl
+        ? t('No wallet application running at %s', connectorUrl)
+        : t('No Vega Wallet application running');
     } else if (error.code === ClientErrors.WRONG_NETWORK.code) {
       title = t('Wrong network');
-      text = `To complete your wallet connection, set your wallet network in your app to "${appChainId}".`;
-    } else if (error.code === ServiceErrors.CONNECTION_DECLINED) {
-      title = t('Connection declined');
-      text = t('Your wallet connection was rejected');
+      text = t(
+        'To complete your wallet connection, set your wallet network in your app to "%s".',
+        appChainId
+      );
     } else if (error.code === ServiceErrors.NO_HEALTHY_NODE) {
-      title = error.message;
+      title = error.title;
       text = (
         <>
-          {capitalize(error.data)}
+          {capitalize(error.message)}
           {'. '}
           {VEGA_DOCS_URL && (
             <Link
@@ -188,20 +189,33 @@ const Error = ({
       title = t('Wrong network');
       text = (
         <>
-          {t(`To complete your wallet connection, set your wallet network in your
-            app to ${appChainId}.`)}
+          {t(
+            `To complete your wallet connection, set your wallet network in your
+            app to %s.`,
+            appChainId
+          )}
         </>
       );
+    } else if (error.code === ClientErrors.INVALID_WALLET.code) {
+      title = error.title;
+      const errorData = error.message?.split('\n ') || [];
+      text = (
+        <span className="flex flex-col">
+          {errorData.map((str, i) => (
+            <span key={i}>{str}</span>
+          ))}
+        </span>
+      );
     } else {
-      title = error.message;
-      text = `${error.data} (${error.code})`;
+      title = t(error.title);
+      text = t(error.message);
     }
   }
 
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
-      <p className="text-center mb-2">{text}</p>
+      <p className="text-center mb-2 first-letter:uppercase">{text}</p>
       {tryAgain}
     </>
   );
