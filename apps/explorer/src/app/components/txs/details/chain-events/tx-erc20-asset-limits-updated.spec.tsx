@@ -76,14 +76,20 @@ describe('Chain Event: ERC20 Asset limits updated', () => {
     expect(screen.getByText(t('Vega asset'))).toBeInTheDocument();
     const assetLink = screen.getByText(`${fullMock.vegaAssetId}`);
     expect(assetLink).toBeInTheDocument();
-    expect(assetLink.tagName).toEqual('A');
-    expect(assetLink.getAttribute('href')).toEqual(
+    if (!assetLink.parentElement) {
+      throw new Error('Asset link does not exist');
+    }
+    expect(assetLink.parentElement.tagName).toEqual('A');
+    expect(assetLink.parentElement.getAttribute('href')).toEqual(
       `/assets#${fullMock.vegaAssetId}`
     );
 
     expect(screen.getByText(t('ERC20 asset'))).toBeInTheDocument();
     const ethLink = screen.getByText(`${fullMock.sourceEthereumAddress}`);
-    expect(ethLink.getAttribute('href')).toContain(
+    if (!ethLink.parentElement) {
+      throw new Error('ETH link does not exist');
+    }
+    expect(ethLink.parentElement.getAttribute('href')).toContain(
       `/address/${fullMock.sourceEthereumAddress}`
     );
   });

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
+import Hash from '../hash';
 
 export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
@@ -35,7 +36,8 @@ const MarketLink = ({
           <span role="img" aria-label="Unknown market" className="img">
             ⚠️&nbsp;{t('Invalid market')}
           </span>
-          &nbsp;{id}
+          &nbsp;
+          <Hash text={id} />
         </div>
       );
     }
@@ -55,7 +57,7 @@ const MarketLink = ({
   } else {
     return (
       <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
-        {id}
+        <Hash text={id} />
       </Link>
     );
   }

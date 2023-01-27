@@ -7,6 +7,8 @@ import type { BlockExplorerTransactionResult } from '../../../../routes/types/bl
 import type { TendermintBlocksResponse } from '../../../../routes/blocks/tendermint-blocks-response';
 import { Time } from '../../../time';
 import { ChainResponseCode } from '../chain-response-code/chain-reponse.code';
+import { TxDataView } from '../../tx-data-view';
+import Hash from '../../../links/hash';
 
 interface TxDetailsSharedProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -46,7 +48,7 @@ export const TxDetailsShared = ({
       <TableRow modifier="bordered">
         <TableCell {...sharedHeaderProps}>{t('Hash')}</TableCell>
         <TableCell>
-          <code>{txData.hash}</code>
+          <Hash text={txData.hash} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -80,6 +82,12 @@ export const TxDetailsShared = ({
         <TableCell {...sharedHeaderProps}>{t('Response code')}</TableCell>
         <TableCell>
           <ChainResponseCode code={txData.code} error={txData.error} />
+        </TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell {...sharedHeaderProps}>{t('Transaction')}</TableCell>
+        <TableCell>
+          <TxDataView blockData={blockData} txData={txData} />
         </TableCell>
       </TableRow>
     </>
