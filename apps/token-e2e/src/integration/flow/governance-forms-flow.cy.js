@@ -1,3 +1,7 @@
+const proposalListItem = '[data-testid="proposals-list-item"]';
+const openProposals = '[data-testid="open-proposals"]';
+const proposalType = '[data-testid="proposal-type"]';
+const proposalDetails = '[data-testid="proposal-details"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
@@ -43,7 +47,6 @@ context(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.createMarket();
     });
 
     beforeEach('visit governance tab', function () {
@@ -279,12 +282,28 @@ context(
     });
 
     it('Able to submit update asset proposal using min deadline', function () {
+      const assetId =
+        'ebcd94151ae1f0d39a4bde3b21a9c7ae81a80ea4352fb075a92e07608d9c953d';
+
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
       cy.get(minVoteDeadline).click();
       cy.get(minEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
+      cy.navigate_to('proposals');
+      cy.get(openProposals).within(() => {
+        cy.get(proposalType)
+          .contains('Update asset')
+          .parentsUntil(proposalListItem)
+          .within(() => {
+            cy.get(proposalDetails).should('contain.text', assetId); // 3001-VOTE-029
+            cy.getByTestId('view-proposal-btn').click();
+          });
+      });
+      cy.get_proposal_information_from_table('Proposed enactment') // 3001-VOTE-044
+        .invoke('text')
+        .should('not.be.empty');
     });
 
     it('Able to submit update asset proposal using max deadline', function () {

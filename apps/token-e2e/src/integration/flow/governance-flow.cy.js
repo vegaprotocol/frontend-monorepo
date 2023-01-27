@@ -40,6 +40,10 @@ const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
+const minCloseDays = 2;
+const maxCloseDays = 3;
+const requiredParticipation = 0.001;
+
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
   NEW_MARKET: 'New market',
@@ -69,21 +73,6 @@ context(
             100
         ).as('requiredMajority');
         cy.wrap(
-          network_parameters[
-            'governance.proposal.freeform.requiredParticipation'
-          ] * 100
-        ).as('requiredParticipation');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.minClose'].split(
-            'h'
-          )[0] / 24
-        ).as('minCloseDays');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.maxClose'].split(
-            'h'
-          )[0] / 24
-        ).as('maxCloseDays');
-        cy.wrap(
           network_parameters['governance.proposal.freeform.minClose'].split(
             'h'
           )[0]
@@ -110,21 +99,6 @@ context(
             parseInt(this.minVoterBalance),
             0.00001,
             'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
-          );
-          assert.isAtLeast(
-            parseFloat(this.requiredParticipation),
-            0.00001,
-            'Asserting that value is at least 0.00001 for network parameter requiredParticipation'
-          );
-          assert.isAtLeast(
-            parseInt(this.minCloseDays),
-            1,
-            'Asserting that value is at least 1 for network parameter minCloseDays'
-          );
-          assert.isAtLeast(
-            parseInt(this.maxCloseDays),
-            parseInt(this.minCloseDays + 1),
-            'Asserting that network parameter maxCloseDays is at least 1 day higher than minCloseDays'
           );
           // workaround for first eth tx hanging
           associateTokenStartOfTests();
@@ -185,10 +159,10 @@ context(
           this.minProposerBalance
         );
         let proposalDays = [
-          this.minCloseDays + 1,
-          this.maxCloseDays,
-          this.minCloseDays + 3,
-          this.minCloseDays + 2,
+          minCloseDays + 1,
+          maxCloseDays,
+          minCloseDays + 3,
+          minCloseDays + 2,
         ];
         for (var index = 0; index < proposalDays.length; index++) {
           cy.go_to_make_new_proposal(governanceProposalType.RAW);
@@ -316,7 +290,7 @@ context(
           .invoke('text')
           .then((totalSupply) => {
             let tokensRequiredToAchieveResult = parseFloat(
-              (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
+              (totalSupply.replace(/,/g, '') * requiredParticipation) / 100
             ).toFixed(2);
             cy.ensure_specified_unstaked_tokens_are_associated(
               tokensRequiredToAchieveResult
@@ -361,6 +335,7 @@ context(
           });
       });
 
+      // 3001-VOTE-043
       it('Newly created freeform proposal details - shows proposed and closing dates', function () {
         const closingVoteHrs = '72';
         const proposalTitle = generateProposalTitle();
@@ -470,7 +445,7 @@ context(
           .and('be.visible');
         // 3001-VOTE-061
         cy.get_proposal_information_from_table('Participation required')
-          .contains(`${this.requiredParticipation}%`)
+          .contains(`${requiredParticipation}%`)
           .should('be.visible');
         // 3001-VOTE-066
         cy.get_proposal_information_from_table('Majority Required')
@@ -516,7 +491,7 @@ context(
           .invoke('text')
           .then((totalSupply) => {
             let tokensRequiredToAchieveResult = parseFloat(
-              (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
+              (totalSupply.replace(/,/g, '') * requiredParticipation) / 100
             ).toFixed(2);
             cy.ensure_specified_unstaked_tokens_are_associated(
               tokensRequiredToAchieveResult
@@ -592,6 +567,7 @@ context(
         );
       });
 
+      // 3001-VOTE-006
       it('Creating a proposal - proposal rejected - able to access rejected proposals', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
@@ -796,6 +772,7 @@ context(
         cy.contains('You voted: Against').should('be.visible');
       });
 
+      // 3001-VOTE-006
       it('Able to view enacted proposal', function () {
         cy.createMarket();
         cy.reload();
@@ -818,12 +795,13 @@ context(
         });
       });
 
-      it('Able to enact proposal by voting', function () {
-        const proposalTitle = 'Add New proposal with short enactment';
+      // 3001-VOTE-047
+      it('Able to enact freeform proposal', function () {
+        const proposalTitle = 'Add New free form proposal with short enactment';
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.SubmitShortEnactmentProposal();
+        cy.sendWalletTxFreeFormProposal();
         cy.navigate_to('proposals');
         cy.reload();
         cy.wait_for_spinner();
@@ -835,6 +813,28 @@ context(
           .and('be.visible');
         cy.vote_for_proposal('for');
         cy.get_proposal_information_from_table('State')
+          .contains('Enacted', epochTimeout)
+          .and('be.visible');
+      });
+
+      // 3001-VOTE-046 3001-VOTE-044
+      it('Able to enact proposal by voting', function () {
+        const proposalTitle = 'Add New proposal with short enactment';
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.sendWalletTxUpdateNetworkProposal();
+        cy.navigate_to('proposals');
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.contains(proposalTitle)
+          .parentsUntil('[data-testid="proposals-list-item"]')
+          .within(() => cy.get(viewProposalButton).click());
+        cy.get_proposal_information_from_table('State')
+          .contains('Open')
+          .and('be.visible');
+        cy.vote_for_proposal('for');
+        cy.get_proposal_information_from_table('State') // 3001-VOTE-047
           .contains('Passed', txTimeout)
           .and('be.visible');
         cy.get_proposal_information_from_table('State')
@@ -844,6 +844,30 @@ context(
           cy.contains('Vote passed.').should('be.visible');
           cy.contains('Voting has ended.').should('be.visible');
         });
+      });
+
+      // 3001-VOTE-048 3001-VOTE-049
+      it('Able to fail proposal due to lack of participation', function () {
+        const proposalTitle = 'Add New free form proposal with short enactment';
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.sendWalletTxFreeFormProposal();
+        cy.navigate_to('proposals');
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.contains(proposalTitle)
+          .parentsUntil('[data-testid="proposals-list-item"]')
+          .within(() => cy.get(viewProposalButton).click());
+        cy.get_proposal_information_from_table('State')
+          .contains('Open')
+          .and('be.visible');
+        cy.get_proposal_information_from_table('State') // 3001-VOTE-047
+          .contains('Declined', txTimeout)
+          .and('be.visible');
+        cy.get_proposal_information_from_table('Rejection reason')
+          .contains('PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED')
+          .and('be.visible');
       });
 
       function createRawProposal(proposerBalance) {
