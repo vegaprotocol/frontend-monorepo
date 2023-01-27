@@ -355,7 +355,7 @@ function makeDataProviderInternal<
       }
       loaded = true;
     } catch (e) {
-      if (isNotFoundGraphQLError(e as Error)) {
+      if (isNotFoundGraphQLError(e as Error, 'party')) {
         data = getData(null, variables);
         loaded = true;
         return;
