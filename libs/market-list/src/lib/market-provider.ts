@@ -11,7 +11,7 @@ import type { MarketData } from './market-data-provider';
 import { marketDataProvider } from './market-data-provider';
 
 const getData = (
-  responseData: MarketQuery
+  responseData: MarketQuery | null
 ): SingleMarketFieldsFragment | null => responseData?.market || null;
 
 export const marketProvider = makeDataProvider<

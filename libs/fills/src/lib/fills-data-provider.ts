@@ -59,8 +59,8 @@ const update = (
 export type Trade = Omit<FillFieldsFragment, 'market'> & { market?: Market };
 export type TradeEdge = Edge<Trade>;
 
-const getData = (responseData: FillsQuery): FillEdgeFragment[] =>
-  responseData.party?.tradesConnection?.edges || [];
+const getData = (responseData: FillsQuery | null): FillEdgeFragment[] =>
+  responseData?.party?.tradesConnection?.edges || [];
 
 const getPageInfo = (responseData: FillsQuery): PageInfo | null =>
   responseData.party?.tradesConnection?.pageInfo || null;

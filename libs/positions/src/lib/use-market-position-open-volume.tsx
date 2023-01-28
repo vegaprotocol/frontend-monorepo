@@ -2,10 +2,7 @@ import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { positionsDataProvider } from './positions-data-providers';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import type {
-  PositionFieldsFragment,
-  PositionsSubscriptionSubscription,
-} from './__generated__/Positions';
+import type { PositionFieldsFragment } from './__generated__/Positions';
 
 export const useMarketPositionOpenVolume = (marketId: string) => {
   const { pubKey } = useVegaWallet();
@@ -21,10 +18,7 @@ export const useMarketPositionOpenVolume = (marketId: string) => {
     [setOpenVolume, marketId]
   );
 
-  useDataProvider<
-    PositionFieldsFragment[],
-    PositionsSubscriptionSubscription['positions']
-  >({
+  useDataProvider({
     dataProvider: positionsDataProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey || !marketId,

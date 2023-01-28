@@ -1,14 +1,20 @@
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import {
-  useWithdrawals,
+  withdrawalProvider,
   useWithdrawalDialog,
   WithdrawalsTable,
 } from '@vegaprotocol/withdraws';
-import { t } from '@vegaprotocol/react-helpers';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 
 export const WithdrawalsContainer = () => {
-  const { data, loading, error } = useWithdrawals();
+  const { pubKey } = useVegaWallet();
+  const { data, loading, error } = useDataProvider({
+    dataProvider: withdrawalProvider,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
   const openWithdrawDialog = useWithdrawalDialog((state) => state.open);
 
   return (
