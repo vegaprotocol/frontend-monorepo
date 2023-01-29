@@ -130,7 +130,7 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.getByTestId('edit-order').find('[type="submit"]').click();
     cy.getByTestId(toastContent).should(
       'contain.text',
-      `ConfirmedYour transaction has been confirmed View in block explorerEdit order - activeTEST.24h+${size} @ ${newPrice}.00 ${usdcSymbol}+${size} @ ${newPrice}.00 ${usdcSymbol}`,
+      `ConfirmedYour transaction has been confirmed View in block explorerEdit order - activeTEST.24h+${size} @ ${price}.00 ${usdcSymbol}+${size} @ ${newPrice}.00 ${usdcSymbol}`,
       { matchCase: false }
     );
     cy.getByTestId(ordersTab).click();
