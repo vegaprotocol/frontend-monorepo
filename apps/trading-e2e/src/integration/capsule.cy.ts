@@ -82,7 +82,7 @@ describe('capsule', { tags: '@slow' }, () => {
       .should('contain.text', rawSize);
 
     cy.getByTestId(ordersTab).click();
-    cy.getByTestId('edit').should('contain.text', 'Edit');
+    cy.getByTestId('edit', txTimeout).should('contain.text', 'Edit');
     cy.getByTestId('tab-orders').within(() => {
       cy.get('.ag-center-cols-container')
         .children()
@@ -134,7 +134,7 @@ describe('capsule', { tags: '@slow' }, () => {
       { matchCase: false }
     );
     cy.getByTestId(ordersTab).click();
-    cy.getByTestId(toastCloseBtn).click();
+    cy.getByTestId(toastCloseBtn).click({ multiple: true });
     cy.get('.ag-center-cols-container')
       .children()
       .first()
@@ -154,7 +154,7 @@ describe('capsule', { tags: '@slow' }, () => {
       `ConfirmedYour transaction has been confirmed View in block explorerCancel order - cancelledTEST.24h+${size} @ ${newPrice}.00 ${usdcSymbol}`,
       { matchCase: false }
     );
-    cy.getByTestId(toastCloseBtn).click();
+    cy.getByTestId(toastCloseBtn).click({ multiple: true });
 
     cy.getByTestId('tab-orders')
       .get('.ag-center-cols-container')
