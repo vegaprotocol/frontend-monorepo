@@ -135,14 +135,14 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
     new BigNumber(0),
     ...pendingBalances
       .filter(({ event }) => event === 'Stake_Removed')
-      .map(({ args }) => toBigNum(args![1].toString(), decimals)),
+      .map(({ args }) => toBigNum(args?.[1].toString(), decimals)),
   ]);
 
   const amountAdded = BigNumber.sum.apply(null, [
     new BigNumber(0),
     ...pendingBalances
       .filter(({ event }) => event === 'Stake_Deposited')
-      .map(({ args }) => toBigNum(args![1].toString(), decimals)),
+      .map(({ args }) => toBigNum(args?.[1].toString(), decimals)),
   ]);
   const totalPending = React.useMemo(
     () => amountRemoved.plus(amountAdded),
