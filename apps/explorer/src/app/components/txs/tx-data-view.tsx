@@ -63,7 +63,7 @@ export const TxDataView = ({ txData, blockData }: TxDataViewProps) => {
           <Select
             placeholder="View as..."
             onChange={(v) => setShowTxData(v.target.value as ShowTxDataType)}
-            value={'JSON'}
+            value={showTxData}
           >
             <option value={'JSON'}>JSON</option>
             <option value={'base64'}>Base64</option>
