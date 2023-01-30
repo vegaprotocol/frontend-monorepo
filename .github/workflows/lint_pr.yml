@@ -16,4 +16,4 @@ jobs:
       - name: Install commitlint cli and config
         run: npm install @commitlint/cli @commitlint/config-conventional @commitlint/config-nx-scopes
       - name: Check PR title
-        run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config ./commitlint.config-ci.js
+        run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config ../commitlint.config-ci.js
