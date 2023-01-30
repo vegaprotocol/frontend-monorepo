@@ -10,22 +10,113 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
+    black: '#000000',
+    white: '#FFFFFF',
     vega: {
-      yellow: '#DFFF0B',
-      'yellow-dark': '#B6DC26',
-      pink: '#FF077F',
-      'pink-data-light': '#FF6AB2',
-      'pink-dark': '#CF0064',
-      'pink-data-dark': '#7A033D',
-      green: '#00F780',
-      'green-data-light': '#85FBC2',
-      'green-dark': '#00D46E',
-      'green-data-dark': '#006333',
-      orange: '#FF7A1A',
-      blue: '#1DA2FB',
+      // YELLOW
+      yellow: {
+        700: '#23290E',
+        650: '#515E1E',
+        600: '#7E932F',
+        550: '#ABC840',
+        DEFAULT: '#D7FB50',
+        500: '#D7FB50',
+        450: '#E0FC75',
+        400: '#E8FD9A',
+        350: '#F0FDBE',
+        300: '#F9FEE3',
+      },
+
+      // GREEN
+      green: {
+        700: '#012915',
+        650: '#015D30',
+        600: '#01914B',
+        550: '#01C566',
+        DEFAULT: '#00F780',
+        500: '#00F780',
+        450: '#37F99B',
+        400: '#6CFAB6',
+        350: '#A1FCD0',
+        300: '#D6FEEB',
+      },
+
+      // BLUE
+      blue: {
+        700: '#01142A',
+        650: '#012C60',
+        600: '#014595',
+        550: '#015ECB',
+        DEFAULT: '#0075FF',
+        500: '#0075FF',
+        450: '#3793FF',
+        400: '#6CAFFF',
+        350: '#A1CCFF',
+        300: '#D6E9FF',
+      },
+
+      // PURPLE
+      purple: {
+        700: '#15072A',
+        650: '#301060',
+        600: '#4B1895',
+        550: '#6620CB',
+        DEFAULT: '#8028FF',
+        500: '#8028FF',
+        450: '#9B56FF',
+        400: '#B683FF',
+        350: '#D0B0FF',
+        300: '#EBDDFF',
+      },
+
+      // PINK
+      pink: {
+        700: '#210215',
+        650: '#600330',
+        600: '#95054B',
+        550: '#CB0666',
+        DEFAULT: '#FF077F',
+        500: '#FF077F',
+        450: '#FF3C9A',
+        400: '#FF70B5',
+        350: '#FFA3D0',
+        300: '#FFD7EA',
+      },
+
+      // ORANGE
+      orange: {
+        700: '#2A1701',
+        650: '#603301',
+        600: '#954F01',
+        550: '#CB6C01',
+        DEFAULT: '#FF8700',
+        500: '#FF8700',
+        450: '#FFA137',
+        400: '#FFBA6C',
+        350: '#FFD3A1',
+        300: '#FFECD6',
+      },
+
+      // DARK
+      dark: {
+        400: '#161616',
+        300: '#262626',
+        200: '#404040',
+        150: '#8B8B8B',
+        100: '#C0C0C0',
+      },
+
+      // LIGHT
+      light: {
+        400: '#F0F0F0',
+        300: '#E9E9E9',
+        200: '#D2D2D2',
+        150: '#939393',
+        100: '#626262',
+      },
     },
     danger: '#FF077F',
-    warning: '#FF7A1A',
+    warning: '#FF8700',
     success: '#00F780',
   },
   fontFamily: {
