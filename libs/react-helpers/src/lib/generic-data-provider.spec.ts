@@ -19,7 +19,10 @@ import type {
   OperationVariables,
   ApolloQueryResult,
   QueryOptions,
+  ApolloError,
 } from '@apollo/client';
+import { GraphQLError } from 'graphql';
+
 import type { Subscription, Observable } from 'zen-observable-ts';
 
 type Item = {
@@ -58,12 +61,16 @@ const query: Query<QueryData> = {
 };
 const subscriptionQuery: Query<SubscriptionData> = query;
 
+const getData = jest.fn((r: QueryData | null) => r?.data || null);
+
+const getDelta = jest.fn((r: SubscriptionData) => r.data);
+
 const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
   query,
   subscriptionQuery,
   update,
-  getData: (r) => r?.data || null,
-  getDelta: (r) => r.data,
+  getData,
+  getDelta,
 });
 
 const combineData = jest.fn<
@@ -91,8 +98,8 @@ const paginatedSubscribe = makeDataProvider<
   query,
   subscriptionQuery,
   update,
-  getData: (r) => r?.data || null,
-  getDelta: (r) => r.data,
+  getData,
+  getDelta,
   pagination: {
     first,
     append: defaultAppend,
@@ -210,6 +217,53 @@ describe('data provider', () => {
     subscription.unsubscribe();
   });
 
+  it('calls callback on error', async () => {
+    callback.mockClear();
+    getData.mockClear();
+    const subscription = subscribe(callback, client);
+    expect(callback.mock.calls.length).toBe(1);
+    expect(callback.mock.calls[0][0].data).toBe(null);
+    expect(callback.mock.calls[0][0].loading).toBe(true);
+    const error = new Error();
+    await rejectQuery(new Error());
+    expect(getData).not.toBeCalled();
+    expect(callback.mock.calls.length).toBe(2);
+    expect(callback.mock.calls[1][0].error).toEqual(error);
+    expect(callback.mock.calls[1][0].loading).toBe(false);
+    subscription.unsubscribe();
+  });
+
+  it('calls successful callback on NotFound error on party path', async () => {
+    callback.mockClear();
+    callback.mockClear();
+    const subscription = subscribe(callback, client);
+    expect(callback.mock.calls.length).toBe(1);
+    expect(callback.mock.calls[0][0].data).toBe(null);
+    expect(callback.mock.calls[0][0].loading).toBe(true);
+    const error = new Error() as ApolloError;
+    const graphQLError = new GraphQLError(
+      '',
+      undefined,
+      undefined,
+      undefined,
+      ['party'],
+      undefined,
+      {
+        type: 'NotFound',
+      }
+    );
+    error.graphQLErrors = [graphQLError];
+    const data: Data = [];
+    getData.mockReturnValueOnce(data);
+    await rejectQuery(error);
+    expect(getData).toHaveBeenCalledWith(null, undefined);
+    expect(callback.mock.calls.length).toBe(2);
+    expect(callback.mock.calls[1][0].data).toEqual(data);
+    expect(callback.mock.calls[1][0].error).toEqual(undefined);
+    expect(callback.mock.calls[1][0].loading).toBe(false);
+    subscription.unsubscribe();
+  });
+
   it('calls update and callback on each update', async () => {
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
@@ -228,7 +282,7 @@ describe('data provider', () => {
     subscription.unsubscribe();
   });
 
-  it("don't calls callback on update if data doesn't", async () => {
+  it("don't calls callback on update if data doesn't change", async () => {
     callback.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
