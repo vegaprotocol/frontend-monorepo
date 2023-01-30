@@ -61,9 +61,7 @@ const RedemptionRouter = () => {
   useEffect(() => {
     if (address) {
       const userTranches = tranches?.filter((t) =>
-        t.users.some(
-          ({ address: a }) => a.toLowerCase() === address.toLowerCase()
-        )
+        t.users.some((a) => a.toLowerCase() === address.toLowerCase())
       );
 
       if (userTranches) {

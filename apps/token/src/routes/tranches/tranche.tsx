@@ -55,26 +55,25 @@ export const Tranche = () => {
           <KeyValueTable>
             <KeyValueTableRow>
               <h1>{t('Ethereum Address')}</h1>
-              <h1>{t('Tranche balance')}</h1>
+              <h1>{t('Etherscan')}</h1>
             </KeyValueTableRow>
             {tranche.users.map((user) => (
-              <KeyValueTableRow key={user.address}>
+              <KeyValueTableRow key={user}>
                 {
                   <Link
                     title={t('View on Etherscan (opens in a new tab)')}
-                    href={`${ETHERSCAN_URL}/tx/${user}`}
-                    target="_blank"
+                    href={`${Routes.REDEEM}/${user}`}
                   >
-                    {user.address}
+                    {user}
                   </Link>
                 }
                 {
                   <Link
                     title={t('View on Etherscan (opens in a new tab)')}
-                    href={`${ETHERSCAN_URL}/tx/${user}`}
+                    href={`${ETHERSCAN_URL}/address/${user}`}
                     target="_blank"
                   >
-                    {formatNumber(user.balance, 18)}
+                    {t('View on Etherscan')}
                   </Link>
                 }
               </KeyValueTableRow>
