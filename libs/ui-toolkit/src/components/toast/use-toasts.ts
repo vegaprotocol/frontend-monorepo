@@ -1,11 +1,29 @@
 import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 import type { Toast } from './toast';
+import hash from 'stable-hash';
+import omit from 'lodash/omit';
 
-type ToastsStore = {
-  /**
-   * A list of active toasts
-   */
-  toasts: Toast[];
+export type Toasts = Record<string, Toast>;
+
+const isEqual = (a: Toast, b: Toast) => {
+  const h1 = hash(omit(a, 'onClose'));
+  const h2 = hash(omit(b, 'onClose'));
+  return h1 === h2;
+};
+
+const sameContent = (a: Toast, b: Toast) => {
+  const h1 = hash(omit(a, 'onClose', 'id'));
+  const h2 = hash(omit(b, 'onClose', 'id'));
+  return h1 === h2;
+};
+
+type State = {
+  toasts: Toasts;
+  count: number;
+};
+
+type Actions = {
   /**
    * Adds/displays a new toast
    */
@@ -36,44 +54,55 @@ type ToastsStore = {
   removeAll: () => void;
 };
 
-const add =
-  (toast: Toast) =>
-  (store: ToastsStore): Partial<ToastsStore> => ({
-    toasts: [...store.toasts, toast],
-  });
+type ToastsStore = State & Actions;
 
-const update =
-  (id: string, toastData: Partial<Toast>) =>
-  (store: ToastsStore): Partial<ToastsStore> => {
-    const toasts = [...store.toasts];
-    const toastIdx = toasts.findIndex((t) => t.id === id);
-    if (toastIdx > -1) toasts[toastIdx] = { ...toasts[toastIdx], ...toastData };
-    return { toasts };
-  };
-
-export const useToasts = create<ToastsStore>((set) => ({
-  toasts: [],
-  add: (toast) => set(add(toast)),
-  update: (id, toastData) => set(update(id, toastData)),
-  setToast: (toast: Toast) =>
-    set((store) => {
-      if (store.toasts.find((t) => t.id === toast.id)) {
-        return update(toast.id, toast)(store);
-      } else {
-        return add(toast)(store);
-      }
-    }),
-  close: (id) => set(update(id, { signal: 'close' })),
-  closeAll: () =>
-    set((store) => ({
-      toasts: [...store.toasts].map((t) => ({ ...t, signal: 'close' })),
-    })),
-  remove: (id) =>
-    set((store) => ({
-      toasts: [...store.toasts].filter((t) => t.id !== id),
-    })),
-  removeAll: () =>
-    set(() => ({
-      toasts: [],
-    })),
-}));
+export const useToasts = create(
+  immer<ToastsStore>((set, get) => ({
+    toasts: {},
+    count: 0,
+    add: (toast) =>
+      set((state) => {
+        state.toasts[toast.id] = toast;
+        ++state.count;
+      }),
+    update: (id, toastData) =>
+      set((state) => {
+        const found = state.toasts[id];
+        if (found) {
+          Object.assign(found, toastData);
+        }
+      }),
+    setToast: (toast: Toast) =>
+      set((state) => {
+        const found = state.toasts[toast.id];
+        if (found) {
+          if (!isEqual(found, toast)) {
+            console.log('updating', toast.id);
+            Object.assign(found, toast);
+          }
+        } else {
+          state.toasts[toast.id] = toast;
+          ++state.count;
+        }
+      }),
+    close: (id) =>
+      set((state) => {
+        const found = state.toasts[id];
+        if (found) {
+          found.signal = 'close';
+        }
+      }),
+    closeAll: () =>
+      set((state) => {
+        Object.values(state.toasts).forEach((t) => (t.signal = 'close'));
+      }),
+    remove: (id) =>
+      set((state) => {
+        if (state.toasts[id]) {
+          delete state.toasts[id];
+          --state.count;
+        }
+      }),
+    removeAll: () => set({ toasts: {}, count: 0 }),
+  }))
+);

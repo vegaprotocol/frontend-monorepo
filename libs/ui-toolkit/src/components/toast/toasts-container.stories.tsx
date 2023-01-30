@@ -59,7 +59,8 @@ const randomWords = [
 ];
 
 const randomToast = (): Toast => {
-  const content = sample(contents);
+  const now = new Date().toISOString();
+  const content = now + ' ' + sample(contents);
   return {
     id: String(uniqueId('toast_')),
     intent: sample<Intent>([

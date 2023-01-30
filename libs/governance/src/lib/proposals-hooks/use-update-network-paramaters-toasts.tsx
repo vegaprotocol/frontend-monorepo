@@ -52,9 +52,8 @@ const UpdateNetworkParameterToastContent = ({
   );
 };
 
-export const useUpdateNetworkParametersToasts = (): Toast[] => {
-  const { proposalToasts, setToast, remove } = useToasts((store) => ({
-    proposalToasts: store.toasts,
+export const useUpdateNetworkParametersToasts = () => {
+  const { setToast, remove } = useToasts((store) => ({
     setToast: store.setToast,
     remove: store.remove,
   }));
@@ -66,7 +65,9 @@ export const useUpdateNetworkParametersToasts = (): Toast[] => {
         id: `update-network-param-proposal-${proposal.id}`,
         intent: Intent.Warning,
         content: <UpdateNetworkParameterToastContent proposal={proposal} />,
-        onClose: () => remove(id),
+        onClose: () => {
+          remove(id);
+        },
         closeAfter: CLOSE_AFTER,
       };
     },
@@ -96,6 +97,4 @@ export const useUpdateNetworkParametersToasts = (): Toast[] => {
       }
     },
   });
-
-  return proposalToasts;
 };

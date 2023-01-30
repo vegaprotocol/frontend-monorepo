@@ -5,6 +5,7 @@ import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 
 import type { WithdrawalApprovalQuery } from '@vegaprotocol/wallet';
+import { subscribeWithSelector } from 'zustand/middleware';
 
 export enum ApprovalStatus {
   Idle = 'Idle',
@@ -47,8 +48,8 @@ export interface EthWithdrawApprovalStore {
   dismiss: (index: number) => void;
 }
 
-export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
-  (set, get) => ({
+export const useEthWithdrawApprovalsStore = create(
+  subscribeWithSelector<EthWithdrawApprovalStore>((set, get) => ({
     transactions: [] as EthWithdrawalApprovalState[],
     create: (
       withdrawal: EthWithdrawalApprovalState['withdrawal'],
@@ -107,5 +108,5 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
         })
       );
     },
-  })
+  }))
 );

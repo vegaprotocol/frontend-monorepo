@@ -174,11 +174,16 @@ module.exports = {
       '60%': { transform: 'rotate( 0.0deg)' },
       '100%': { transform: 'rotate( 0.0deg)' },
     },
+    'vertical-progress': {
+      from: { height: '0' },
+      to: { height: '100%' },
+    },
   },
   animation: {
     rotate: 'rotate 2s linear alternate infinite',
     'rotate-back': 'rotate 2s linear reverse infinite',
     wave: 'wave 2s linear infinite',
+    'vertical-progress': 'vertical-progress 5s linear 1',
   },
   data: {
     selected: 'state~="checked"',

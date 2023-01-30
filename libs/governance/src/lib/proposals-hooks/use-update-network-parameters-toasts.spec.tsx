@@ -92,11 +92,10 @@ const mockedEvent: MockedResponse<OnUpdateNetworkParametersSubscription> = {
   },
 };
 
+const INITIAL = useToasts.getState();
+
 const clear = () => {
-  const { result: clearer } = renderHook(() =>
-    useToasts((store) => store.removeAll)
-  );
-  act(() => clearer.current());
+  useToasts.setState(INITIAL);
 };
 
 describe('useUpdateNetworkParametersToasts', () => {
@@ -104,29 +103,29 @@ describe('useUpdateNetworkParametersToasts', () => {
   afterAll(clear);
 
   it('returns toast for update network parameters bus event', async () => {
-    const { waitForNextUpdate, result } = render([mockedEvent]);
+    const { waitForNextUpdate } = render([mockedEvent]);
     await act(async () => {
       waitForNextUpdate();
       await waitForNextTick();
     });
-    expect(result.current.length).toBe(1);
+    expect(useToasts.getState().count).toBe(1);
   });
 
   it('does not return toast for empty event', async () => {
-    const { waitForNextUpdate, result } = render([mockedEmptyEvent]);
+    const { waitForNextUpdate } = render([mockedEmptyEvent]);
     await act(async () => {
       waitForNextUpdate();
       await waitForNextTick();
     });
-    expect(result.current.length).toBe(0);
+    expect(useToasts.getState().count).toBe(0);
   });
 
   it('does not return toast for wrong event', async () => {
-    const { waitForNextUpdate, result } = render([mockedWrongEvent]);
+    const { waitForNextUpdate } = render([mockedWrongEvent]);
     await act(async () => {
       waitForNextUpdate();
       await waitForNextTick();
     });
-    expect(result.current.length).toBe(0);
+    expect(useToasts.getState().count).toBe(0);
   });
 });

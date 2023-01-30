@@ -1,8 +1,9 @@
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 import { ApprovalStatus, VerificationStatus } from '@vegaprotocol/withdraws';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import compact from 'lodash/compact';
 import type { EthWithdrawalApprovalState } from '@vegaprotocol/web3';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
@@ -51,28 +52,35 @@ const EthWithdrawalApprovalToastContent = ({
 };
 
 export const useEthereumWithdrawApprovalsToasts = () => {
-  const { withdrawApprovals, dismissWithdrawApproval } =
-    useEthWithdrawApprovalsStore((state) => ({
-      withdrawApprovals: state.transactions.filter(
-        (transaction) => transaction?.dialogOpen
-      ),
-      dismissWithdrawApproval: state.dismiss,
-    }));
+  const [setToast, remove] = useToasts((state) => [
+    state.setToast,
+    state.remove,
+  ]);
+  const dismissTx = useEthWithdrawApprovalsStore((state) => state.dismiss);
 
   const fromWithdrawalApproval = useCallback(
     (tx: EthWithdrawalApprovalState): Toast => ({
       id: `withdrawal-${tx.id}`,
       intent: intentMap[tx.status],
-      onClose: () => dismissWithdrawApproval(tx.id),
+      onClose: () => {
+        dismissTx(tx.id);
+        remove(`withdrawal-${tx.id}`);
+      },
       loader: tx.status === ApprovalStatus.Pending,
       content: <EthWithdrawalApprovalToastContent tx={tx} />,
     }),
-    [dismissWithdrawApproval]
+    [dismissTx, remove]
   );
 
-  const toasts = useMemo(() => {
-    return [...compact(withdrawApprovals).map(fromWithdrawalApproval)];
-  }, [fromWithdrawalApproval, withdrawApprovals]);
-
-  return toasts;
+  useEthWithdrawApprovalsStore.subscribe(
+    (state) =>
+      compact(
+        state.transactions.filter((transaction) => transaction?.dialogOpen)
+      ),
+    (txs) => {
+      txs.forEach((tx) => {
+        setToast(fromWithdrawalApproval(tx));
+      });
+    }
+  );
 };

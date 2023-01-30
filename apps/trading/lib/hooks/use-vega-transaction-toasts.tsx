@@ -25,6 +25,7 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Button, ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
@@ -583,46 +584,70 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
 };
 
 export const useVegaTransactionToasts = () => {
-  const vegaTransactions = useVegaTransactionStore((state) =>
-    state.transactions.filter((transaction) => transaction?.dialogOpen)
-  );
-  const dismissVegaTransaction = useVegaTransactionStore(
-    (state) => state.dismiss
-  );
+  const [setToast, removeToast] = useToasts((store) => [
+    store.setToast,
+    store.remove,
+  ]);
 
-  const fromVegaTransaction = useCallback(
-    (tx: VegaStoredTxState): Toast => {
-      let content: ToastContent;
-      if (tx.status === VegaTxStatus.Requested) {
-        content = <VegaTxRequestedToastContent tx={tx} />;
+  const [dismissTx, deleteTx] = useVegaTransactionStore((state) => [
+    state.dismiss,
+    state.delete,
+  ]);
+
+  const onClose = useCallback(
+    (tx: VegaStoredTxState) => () => {
+      // Final state of tx - safe to delete
+      const safeToDelete = [VegaTxStatus.Error, VegaTxStatus.Complete].includes(
+        tx.status
+      );
+      if (safeToDelete) {
+        deleteTx(tx.id);
+      } else {
+        dismissTx(tx.id);
       }
-      if (tx.status === VegaTxStatus.Pending) {
-        content = <VegaTxPendingToastContentProps tx={tx} />;
-      }
-      if (tx.status === VegaTxStatus.Complete) {
-        content = <VegaTxCompleteToastsContent tx={tx} />;
-      }
-      if (tx.status === VegaTxStatus.Error) {
-        content = <VegaTxErrorToastContent tx={tx} />;
-      }
-      return {
-        id: `vega-${tx.id}`,
-        intent: getIntent(tx),
-        onClose: () => dismissVegaTransaction(tx.id),
-        loader: tx.status === VegaTxStatus.Pending,
-        content,
-      };
+      removeToast(`vega-${tx.id}`);
     },
-    [dismissVegaTransaction]
+    [deleteTx, dismissTx, removeToast]
   );
 
-  const toasts = useMemo(() => {
-    return [
-      ...compact(vegaTransactions)
-        .filter((tx) => isTransactionTypeSupported(tx))
-        .map(fromVegaTransaction),
-    ];
-  }, [fromVegaTransaction, vegaTransactions]);
+  const fromVegaTransaction = (tx: VegaStoredTxState): Toast => {
+    let content: ToastContent;
+    const closeAfter = [VegaTxStatus.Error, VegaTxStatus.Complete].includes(
+      tx.status
+    )
+      ? 5000
+      : undefined;
+    if (tx.status === VegaTxStatus.Requested) {
+      content = <VegaTxRequestedToastContent tx={tx} />;
+    }
+    if (tx.status === VegaTxStatus.Pending) {
+      content = <VegaTxPendingToastContentProps tx={tx} />;
+    }
+    if (tx.status === VegaTxStatus.Complete) {
+      content = <VegaTxCompleteToastsContent tx={tx} />;
+    }
+    if (tx.status === VegaTxStatus.Error) {
+      content = <VegaTxErrorToastContent tx={tx} />;
+    }
+    return {
+      id: `vega-${tx.id}`,
+      intent: intentMap[tx.status],
+      onClose: onClose(tx),
+      loader: tx.status === VegaTxStatus.Pending,
+      content,
+      closeAfter,
+    };
+  };
 
-  return toasts;
+  useVegaTransactionStore.subscribe(
+    (state) =>
+      compact(
+        state.transactions.filter(
+          (tx) => tx?.dialogOpen && isTransactionTypeSupported(tx)
+        )
+      ),
+    (txs) => {
+      txs.forEach((tx) => setToast(fromVegaTransaction(tx)));
+    }
+  );
 };

@@ -47,6 +47,7 @@ const getToastAccent = (intent: Intent) => ({
 });
 
 export const CLOSE_DELAY = 750;
+export const TICKER = 100;
 
 export const Toast = ({
   id,
@@ -59,6 +60,9 @@ export const Toast = ({
   loader = false,
 }: ToastProps) => {
   const toastRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const ticker = useRef<number>(0);
+  const lock = useRef<boolean>(false);
 
   const closeToast = useCallback(() => {
     requestAnimationFrame(() => {
@@ -83,13 +87,18 @@ export const Toast = ({
   }, [id]);
 
   useEffect(() => {
-    let t: NodeJS.Timeout;
-    if (closeAfter && closeAfter > 0) {
-      t = setTimeout(() => {
+    const i = setInterval(() => {
+      if (!closeAfter || closeAfter === 0) return;
+      if (!lock.current) {
+        ticker.current += 100;
+      }
+      if (ticker.current >= closeAfter) {
         closeToast();
-      }, closeAfter);
-    }
-    return () => clearTimeout(t);
+      }
+    }, 100);
+    return () => {
+      clearInterval(i);
+    };
   }, [closeAfter, closeToast]);
 
   useEffect(() => {
@@ -98,11 +107,27 @@ export const Toast = ({
     }
   }, [closeToast, signal]);
 
+  const withProgress = Boolean(closeAfter && closeAfter > 0);
+
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       data-testid="toast"
       data-toast-id={id}
       ref={toastRef}
+      role="dialog"
+      onMouseLeave={() => {
+        lock.current = false;
+        if (progressRef.current) {
+          progressRef.current.style.animationPlayState = 'running';
+        }
+      }}
+      onMouseEnter={() => {
+        lock.current = true;
+        if (progressRef.current) {
+          progressRef.current.style.animationPlayState = 'paused';
+        }
+      }}
       className={classNames(
         'relative w-[300px] top-0 rounded-md border overflow-hidden mb-2',
         'text-black bg-white dark:border-zinc-700',
@@ -123,15 +148,38 @@ export const Toast = ({
           <Icon name="cross" size={3} className="!block dark:text-white" />
         </button>
         <div
-          className={classNames(getToastAccent(intent), 'p-2 pt-3 text-center')}
-        >
-          {loader ? (
-            <div className="w-4 h-4">
-              <Loader size="small" forceTheme="dark" />
-            </div>
-          ) : (
-            <Icon name={toastIconMapping[intent]} size={4} className="!block" />
+          className={classNames(
+            getToastAccent(intent),
+            'w-8',
+            'p-2 pt-3 text-center relative'
           )}
+        >
+          {withProgress && (
+            <div
+              ref={progressRef}
+              className={classNames(
+                'absolute top-0 left-0 w-full h-full',
+                'animate-vertical-progress',
+                'bg-white/30 backdrop-saturate-125'
+              )}
+              style={{
+                animationDuration: `${closeAfter}ms`,
+              }}
+            ></div>
+          )}
+          <div className="absolute">
+            {loader ? (
+              <div className="w-4 h-4">
+                <Loader size="small" forceTheme="dark" />
+              </div>
+            ) : (
+              <Icon
+                name={toastIconMapping[intent]}
+                size={4}
+                className="!block"
+              />
+            )}
+          </div>
         </div>
         <div
           className="flex-1 p-2 pr-6 text-sm overflow-auto dark:bg-black dark:text-white"

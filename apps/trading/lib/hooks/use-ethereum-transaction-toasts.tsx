@@ -3,8 +3,9 @@ import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import compact from 'lodash/compact';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
 import {
@@ -163,12 +164,31 @@ const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
 };
 
 export const useEthereumTransactionToasts = () => {
-  const ethTransactions = useEthTransactionStore((state) =>
-    state.transactions.filter((transaction) => transaction?.dialogOpen)
+  const [setToast, removeToast] = useToasts((store) => [
+    store.setToast,
+    store.remove,
+  ]);
+
+  const [dismissTx, deleteTx] = useEthTransactionStore((state) => [
+    state.dismiss,
+    state.delete,
+  ]);
+
+  const onClose = useCallback(
+    (tx: EthStoredTxState) => () => {
+      const safeToDelete = [EthTxStatus.Confirmed, EthTxStatus.Error].includes(
+        tx.status
+      );
+      if (safeToDelete) {
+        deleteTx(tx.id);
+      } else {
+        dismissTx(tx.id);
+      }
+      removeToast(`eth-${tx.id}`);
+    },
+    [deleteTx, dismissTx, removeToast]
   );
-  const dismissEthTransaction = useEthTransactionStore(
-    (state) => state.dismiss
-  );
+
   const fromEthTransaction = useCallback(
     (tx: EthStoredTxState): Toast => {
       let content: ToastContent = <TransactionContent {...tx} />;
@@ -191,15 +211,20 @@ export const useEthereumTransactionToasts = () => {
       return {
         id: `eth-${tx.id}`,
         intent: intentMap[tx.status],
-        onClose: () => dismissEthTransaction(tx.id),
+        onClose: onClose(tx),
         loader: [EthTxStatus.Pending, EthTxStatus.Complete].includes(tx.status),
         content,
       };
     },
-    [dismissEthTransaction]
+    [onClose]
   );
 
-  return useMemo(() => {
-    return [...compact(ethTransactions).map(fromEthTransaction)];
-  }, [ethTransactions, fromEthTransaction]);
+  useEthTransactionStore.subscribe(
+    (state) => compact(state.transactions.filter((tx) => tx?.dialogOpen)),
+    (txs) => {
+      txs.forEach((tx) => {
+        setToast(fromEthTransaction(tx));
+      });
+    }
+  );
 };
