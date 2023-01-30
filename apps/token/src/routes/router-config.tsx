@@ -304,8 +304,14 @@ const routerConfig = [
             element: <LazyRedemptionIndex />,
           },
           {
-            path: ':id',
+            path: ':address',
             element: <LazyRedemptionTranche />,
+            children: [
+              {
+                path: ':id',
+                element: <LazyRedemptionTranche />,
+              },
+            ],
           },
         ],
       },

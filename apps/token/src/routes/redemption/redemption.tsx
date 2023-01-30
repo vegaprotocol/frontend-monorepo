@@ -8,10 +8,10 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
@@ -30,6 +30,8 @@ interface FormFields {
 }
 
 const RedemptionRouter = () => {
+  const { address } = useParams<{ address: string }>();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const validatePubkey = useCallback(
     (value: string) => {
@@ -50,7 +52,6 @@ const RedemptionRouter = () => {
   );
   const { trancheBalances } = useBalances();
   const { account } = useWeb3React();
-  const [address, setAddress] = useState<string | null | undefined>(account);
   const { tranches, error, loading } = useTranches();
   const {
     register,
@@ -73,9 +74,12 @@ const RedemptionRouter = () => {
     }
   }, [address, tranches]);
 
-  const onSubmit = useCallback((fields: FormFields) => {
-    setAddress(fields.address);
-  }, []);
+  const onSubmit = useCallback(
+    (fields: FormFields) => {
+      navigate(`${RoutesConfig.REDEEM}/${fields.address}`);
+    },
+    [navigate]
+  );
 
   if (error) {
     return (
@@ -95,20 +99,24 @@ const RedemptionRouter = () => {
 
   if (!address) {
     return (
-      <div>
-        <EthConnectPrompt>
-          <p data-testid="eth-connect-prompt">
-            {t(
-              "Use the Ethereum wallet you want to send your tokens to. You'll also need enough Ethereum to pay gas."
-            )}
-          </p>
-        </EthConnectPrompt>
-        <p className="py-4">{t('OR')}</p>
+      <div className="max-w-md">
+        {!account ? (
+          <EthConnectPrompt />
+        ) : (
+          <Button
+            fill={true}
+            variant="primary"
+            onClick={() => navigate(`${RoutesConfig.REDEEM}/${account}`)}
+          >
+            {t('View connected Eth Wallet')}
+          </Button>
+        )}
+        <p className="py-4 flex justify-center">{t('OR')}</p>
         <form
           onSubmit={handleSubmit(onSubmit)}
           data-testid="view-connector-form"
         >
-          <FormGroup label={t('View Ethereum user:')} labelFor="address">
+          <FormGroup label={'View Ethereum as user:'} labelFor="address">
             <Input
               {...register('address', {
                 required: t('Required'),
@@ -136,7 +144,9 @@ const RedemptionRouter = () => {
         <Callout>
           <p>{t('You have no VEGA tokens currently vesting.')}</p>
         </Callout>
-        <Link to={RoutesConfig.SUPPLY}>{t('viewAllTranches')}</Link>
+        <Link className="underline" to={RoutesConfig.SUPPLY}>
+          {t('viewAllTranches')}
+        </Link>
       </>
     );
   }
