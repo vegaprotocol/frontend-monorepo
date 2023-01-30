@@ -32,7 +32,6 @@ export function useTranches() {
     }
     const tranches = Object.values(data.tranches)
       ?.map((t) => {
-        console.log(t);
         const tranche_progress =
           t.duration !== 0 ? (now - t.cliff_start) / t.duration : 0;
         const lockedDecimal = tranche_progress < 0 ? 1 : 1 - tranche_progress;

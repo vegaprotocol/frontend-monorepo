@@ -16,10 +16,11 @@ export const StakingWalletsContainer = ({
 
   if (!account) {
     return (
-      <EthConnectPrompt>
+      <>
         <p>{t('associateInfo1')}</p>
         <p>{t('associateInfo2')}</p>
-      </EthConnectPrompt>
+        <EthConnectPrompt />
+      </>
     );
   }
 
