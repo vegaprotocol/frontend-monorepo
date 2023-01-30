@@ -16,6 +16,7 @@ import {
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
 import type { ColDef } from 'ag-grid-community';
+import { LEAVING_VALIDATORS } from './leaving-validators';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
@@ -69,7 +70,7 @@ const VALIDATOR_LOGO_MAP: { [key: string]: string } = {
   ac735acc9ab11cf1d8c59c2df2107e00092b4ac96451cb137a1629af5b66242a:
     'https://pbs.twimg.com/profile_images/1159254945885016064/vhhp1wL4_400x400.jpg',
   '74023df02b8afc9eaf3e3e2e8b07eab1d2122ac3e74b1b0222daf4af565ad3dd':
-    'https://cdn4.telegram-cdn.org/file/jxqIz-Kupfs-ZRrkc79FzoCJPMUWXgvmDMf7vAKgleR7NDz1ceUqx_206Bh7cgNmX183P6BmTrim-bL_q7w97lbiia8SH2jCN3-MUWSk0cZgeD1FBaX7QrvPXowFkqKggMk1YHYbFa-nq-C5k1y6tsw6PFsH4fibEuSHFdFXvJ_4jKL325fTNMHlTlzBeSKHoGn2zKc-hS8R4AtQqOBy_oNQHtyk59V3B8he_rbabKIOdIlt6b44JPkWSjENXCXHjGzwVJuEbSIcUbehUyjMEP7CRSmxTmSwkEktw-R8aA0eTxFnRLMnkpb09i13Rkj051rUNHFa5kAi7ECv6cjsdg.jpg',
+    'https://cdn4.telegram-cdn.org/file/n_OJ6upnglNG95E7u5FyfLmqqBUhf25LqtyZD0UM27gMM_WWi8rywrp9JaAA83quP7vx-WU9Q86quvIRdk9wuUrC2tdD08cYxah4dXHa4OgphFg7Vm5UYFjuGxuHn916OIlzIuVOjJWK_nricGdlPcZQK_T4kBJ_5v4pp94j76_DQ1eSy8DjUxnchZxqpGFv-lGN8U4SjRMK0RC_6DusNaRYEn9Ni2ZQHig7nMiqud-nkK5RgUrClfXFwyhoMFVfhHpGUzwpSv1pSEVLXVh7E1mVmWYrW9hzdQGGrouWCGRqtf_hRa9enS2fv0P9mAB23BcURWuLOVtMdJTF4wfc-w.jpg',
 };
 
 interface ValidatorRendererProps {
@@ -84,7 +85,7 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
     : avatarUrl
     ? avatarUrl
     : null;
-  console.log(logo, data.id);
+
   return (
     <div className="flex items-center">
       {logo && (
@@ -136,44 +137,49 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
 
-    return data.nodes.map(
-      ({
-        id,
-        name,
-        avatarUrl,
-        stakedTotalFormatted,
-        rankingScore: {
-          rankingScore,
-          stakeScore,
-          status,
-          performanceScore,
-          votingPower,
-        },
-        pendingStakeFormatted,
-      }) => {
-        const stakedOnNode = new BigNumber(stakedTotalFormatted);
-        const statusTranslated = t(`status-${status}`);
-
-        return {
+    return data.nodes
+      .filter(({ id }) => !LEAVING_VALIDATORS.includes(id))
+      .map(
+        ({
           id,
-          [VALIDATOR]: {
-            avatarUrl,
-            name,
+          name,
+          avatarUrl,
+          stakedTotalFormatted,
+          rankingScore: {
+            rankingScore,
+            stakeScore,
+            status,
+            performanceScore,
+            votingPower,
           },
-          [STATUS]: statusTranslated,
-          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
-          [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
-          [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
-          [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
-          [STAKE_SCORE]: formatNumberPercentage(
-            new BigNumber(stakeScore).times(100),
-            2
-          ),
-          [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
-          [VOTING_POWER]: votingPower,
-        };
-      }
-    );
+          pendingStakeFormatted,
+        }) => {
+          const stakedOnNode = new BigNumber(stakedTotalFormatted);
+          const statusTranslated = t(`status-${status}`);
+
+          return {
+            id,
+            [VALIDATOR]: {
+              avatarUrl,
+              name,
+            },
+            [STATUS]: statusTranslated,
+            [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
+            [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
+            [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
+            [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
+            [STAKE_SCORE]: formatNumberPercentage(
+              new BigNumber(stakeScore).times(100),
+              2
+            ),
+            [PERFORMANCE_SCORE]: formatNumber(
+              new BigNumber(performanceScore),
+              5
+            ),
+            [VOTING_POWER]: votingPower,
+          };
+        }
+      );
   }, [data, t]);
 
   const gridRef = useRef<AgGridReact | null>(null);
