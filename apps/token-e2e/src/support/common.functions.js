@@ -46,6 +46,6 @@ Cypress.Commands.add('verify_page_header', (text) => {
 });
 
 Cypress.Commands.add('wait_for_spinner', () => {
-  cy.get(navigation.pageSpinner).should('exist');
+  cy.get(navigation.pageSpinner, Cypress.env('epochTimeout')).should('exist');
   cy.get(navigation.pageSpinner, { timeout: 20000 }).should('not.exist');
 });

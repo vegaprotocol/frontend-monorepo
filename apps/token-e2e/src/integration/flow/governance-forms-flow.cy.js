@@ -1,3 +1,7 @@
+const proposalListItem = '[data-testid="proposals-list-item"]';
+const openProposals = '[data-testid="open-proposals"]';
+const proposalType = '[data-testid="proposal-type"]';
+const proposalDetails = '[data-testid="proposal-details"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
@@ -209,18 +213,15 @@ context(
       );
     });
 
-    // skipped because no markets available to select in capsule
     it.skip('Able to submit update market proposal', function () {
-      const marketId =
-        '315a8e48db0a292c92b617264728048c82c20efc922c75fd292fc54e5c727c81';
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
-      cy.get(newProposalTitle).type('Test update asset proposal');
+      cy.get(newProposalTitle).type('Test update market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.get(proposalMarketSelect).select(marketId);
+      cy.get(proposalMarketSelect).select('Test market 1');
       cy.get('[data-testid="update-market-details"]').within(() => {
-        cy.get('dd').eq(0).should('have.text', 'Oranges Daily');
-        cy.get('dd').eq(1).should('have.text', 'ORANGES.24h');
-        cy.get('dd').eq(2).should('have.text', marketId);
+        cy.get('dd').eq(0).should('have.text', 'Test market 1');
+        cy.get('dd').eq(1).should('have.text', 'TEST.24h');
+        cy.get('dd').eq(2).should('not.be.empty');
       });
       cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
         let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
@@ -281,12 +282,28 @@ context(
     });
 
     it('Able to submit update asset proposal using min deadline', function () {
+      const assetId =
+        'ebcd94151ae1f0d39a4bde3b21a9c7ae81a80ea4352fb075a92e07608d9c953d';
+
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
       cy.get(minVoteDeadline).click();
       cy.get(minEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
+      cy.navigate_to('proposals');
+      cy.get(openProposals).within(() => {
+        cy.get(proposalType)
+          .contains('Update asset')
+          .parentsUntil(proposalListItem)
+          .within(() => {
+            cy.get(proposalDetails).should('contain.text', assetId); // 3001-VOTE-029
+            cy.getByTestId('view-proposal-btn').click();
+          });
+      });
+      cy.get_proposal_information_from_table('Proposed enactment') // 3001-VOTE-044
+        .invoke('text')
+        .should('not.be.empty');
     });
 
     it('Able to submit update asset proposal using max deadline', function () {
