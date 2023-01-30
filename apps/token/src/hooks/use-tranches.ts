@@ -12,10 +12,7 @@ export interface Tranche {
   total_added: BigNumber;
   total_removed: BigNumber;
   locked_amount: BigNumber;
-  users: {
-    address: string;
-    balance: BigNumber;
-  }[];
+  users: string[];
 }
 
 const secondsToDate = (seconds: number) => new Date(seconds * 1000);
@@ -35,6 +32,7 @@ export function useTranches() {
     }
     const tranches = Object.values(data.tranches)
       ?.map((t) => {
+        console.log(t);
         const tranche_progress =
           t.duration !== 0 ? (now - t.cliff_start) / t.duration : 0;
         const lockedDecimal = tranche_progress < 0 ? 1 : 1 - tranche_progress;
@@ -49,10 +47,7 @@ export function useTranches() {
           locked_amount: toBigNum(t.initial_balance, decimals).times(
             lockedDecimal
           ),
-          users: t.users.map((u) => ({
-            address: u.address,
-            balance: toBigNum(u.balance, decimals),
-          })),
+          users: t.users,
         };
       })
       .sort((a, b) => a.tranche_id - b.tranche_id);

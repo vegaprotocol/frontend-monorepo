@@ -2,10 +2,7 @@ import type BigNumber from 'bignumber.js';
 
 export interface Tranche {
   tranche_id: number;
-  users: {
-    address: string;
-    balance: number;
-  }[];
+  users: string[];
   initial_balance: number;
   current_balance: number;
   cliff_start: number;
