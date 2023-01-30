@@ -15,7 +15,5 @@ jobs:
           node-version: 16.14.0
       - name: Install commitlint cli and config
         run: npm install @commitlint/cli @commitlint/config-conventional
-      - name: Create config
-        run: echo "module.exports = {extends:['@commitlint/config-conventional']};" > commitlint.config.js
       - name: Check PR title
-        run: echo "${{ github.event.pull_request.title }}" | npx commitlint
+        run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config ./commitlint.config-ci.js
