@@ -12,12 +12,6 @@ const isEqual = (a: Toast, b: Toast) => {
   return h1 === h2;
 };
 
-const sameContent = (a: Toast, b: Toast) => {
-  const h1 = hash(omit(a, 'onClose', 'id'));
-  const h2 = hash(omit(b, 'onClose', 'id'));
-  return h1 === h2;
-};
-
 type State = {
   toasts: Toasts;
   count: number;

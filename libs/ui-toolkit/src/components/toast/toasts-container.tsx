@@ -1,6 +1,5 @@
 import { t, usePrevious } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
-import { tr } from 'date-fns/locale';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';
 import { Button } from '../button';
