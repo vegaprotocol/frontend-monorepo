@@ -62,7 +62,7 @@ export const WalletCardRow = ({
       ref={ref}
     >
       {link ? (
-        <Link to={link} className="max-w-[200px]">
+        <Link to={link} className="max-w-[200px] underline">
           {label}
         </Link>
       ) : (

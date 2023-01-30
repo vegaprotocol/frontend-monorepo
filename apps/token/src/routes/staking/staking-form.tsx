@@ -28,6 +28,7 @@ import type {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useNetworkParam } from '@vegaprotocol/react-helpers';
 import { usePartyDelegations } from '../../components/vega-wallet/use-party-delegations';
+import { LEAVING_VALIDATORS } from './leaving-validators';
 
 enum FormState {
   Default,
@@ -154,11 +155,7 @@ export const StakingForm = ({
   }, [formState, client, pubkey, nodeId, delegations, currentEpoch]);
 
   const isLeavingNode = useMemo(() => {
-    return [
-      'efbdf943443bd7595e83b0d7e88f37b7932d487d1b94aab3d004997273bb43fc',
-      '5db9794f44c85b4b259907a00c8ea2383ad688dfef6ffb72c8743b6ae3eaefd4',
-      'f3022974212780ea1196af08fd2e8a9c0d784d0be8e97637bd5e763ac4c219bd',
-    ].includes(nodeId);
+    return LEAVING_VALIDATORS.includes(nodeId);
   }, [nodeId]);
 
   if (formState === FormState.Failure) {
