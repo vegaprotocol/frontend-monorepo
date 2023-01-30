@@ -29,6 +29,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
+  isReadOnly: boolean;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
@@ -136,7 +137,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {
-              return data ? (
+              return data && !props.isReadOnly ? (
                 <>
                   <ButtonLink
                     data-testid="breakdown"

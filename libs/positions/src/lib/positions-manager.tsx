@@ -9,16 +9,45 @@ import { t } from '@vegaprotocol/react-helpers';
 interface PositionsManagerProps {
   partyId: string;
   onMarketClick?: (marketId: string) => void;
+  isReadOnly: boolean;
 }
 
 export const PositionsManager = ({
   partyId,
   onMarketClick,
+  isReadOnly,
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
   const create = useVegaTransactionStore((store) => store.create);
-
+  const onClose = ({
+    marketId,
+    openVolume,
+  }: {
+    marketId: string;
+    openVolume: string;
+  }) =>
+    create({
+      batchMarketInstructions: {
+        cancellations: [
+          {
+            marketId,
+            orderId: '', // omit order id to cancel all active orders
+          },
+        ],
+        submissions: [
+          {
+            marketId: marketId,
+            type: Schema.OrderType.TYPE_MARKET as const,
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK as const,
+            side: openVolume.startsWith('-')
+              ? Schema.Side.SIDE_BUY
+              : Schema.Side.SIDE_SELL,
+            size: openVolume.replace('-', ''),
+          },
+        ],
+      },
+    });
   return (
     <div className="h-full relative">
       <PositionsTable
@@ -26,31 +55,9 @@ export const PositionsManager = ({
         ref={gridRef}
         datasource={{ getRows }}
         onMarketClick={onMarketClick}
-        onClose={({ marketId, openVolume }) =>
-          create({
-            batchMarketInstructions: {
-              cancellations: [
-                {
-                  marketId,
-                  orderId: '', // omit order id to cancel all active orders
-                },
-              ],
-              submissions: [
-                {
-                  marketId: marketId,
-                  type: Schema.OrderType.TYPE_MARKET as const,
-                  timeInForce: Schema.OrderTimeInForce
-                    .TIME_IN_FORCE_FOK as const,
-                  side: openVolume.startsWith('-')
-                    ? Schema.Side.SIDE_BUY
-                    : Schema.Side.SIDE_SELL,
-                  size: openVolume.replace('-', ''),
-                },
-              ],
-            },
-          })
-        }
+        onClose={onClose}
         noRowsOverlayComponent={() => null}
+        isReadOnly={isReadOnly}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
