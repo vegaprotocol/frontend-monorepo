@@ -48,6 +48,7 @@ const getToastAccent = (intent: Intent) => ({
 
 export const CLOSE_DELAY = 750;
 export const TICKER = 100;
+export const CLOSE_AFTER = 5000;
 
 export const Toast = ({
   id,

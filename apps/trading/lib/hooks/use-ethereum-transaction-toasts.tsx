@@ -3,6 +3,7 @@ import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { useCallback } from 'react';
@@ -163,6 +164,9 @@ const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
   );
 };
 
+const isFinal = (tx: EthStoredTxState) =>
+  [EthTxStatus.Confirmed, EthTxStatus.Error].includes(tx.status);
+
 export const useEthereumTransactionToasts = () => {
   const [setToast, removeToast] = useToasts((store) => [
     store.setToast,
@@ -176,9 +180,7 @@ export const useEthereumTransactionToasts = () => {
 
   const onClose = useCallback(
     (tx: EthStoredTxState) => () => {
-      const safeToDelete = [EthTxStatus.Confirmed, EthTxStatus.Error].includes(
-        tx.status
-      );
+      const safeToDelete = isFinal(tx);
       if (safeToDelete) {
         deleteTx(tx.id);
       } else {
@@ -192,6 +194,7 @@ export const useEthereumTransactionToasts = () => {
   const fromEthTransaction = useCallback(
     (tx: EthStoredTxState): Toast => {
       let content: ToastContent = <TransactionContent {...tx} />;
+      const closeAfter = isFinal(tx) ? CLOSE_AFTER : undefined;
       if (tx.status === EthTxStatus.Requested) {
         content = <EthTxRequestedToastContent tx={tx} />;
       }
@@ -214,6 +217,7 @@ export const useEthereumTransactionToasts = () => {
         onClose: onClose(tx),
         loader: [EthTxStatus.Pending, EthTxStatus.Complete].includes(tx.status),
         content,
+        closeAfter,
       };
     },
     [onClose]

@@ -25,6 +25,7 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Button, ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
 import {
@@ -583,6 +584,9 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   );
 };
 
+const isFinal = (tx: VegaStoredTxState) =>
+  [VegaTxStatus.Error, VegaTxStatus.Complete].includes(tx.status);
+
 export const useVegaTransactionToasts = () => {
   const [setToast, removeToast] = useToasts((store) => [
     store.setToast,
@@ -596,10 +600,7 @@ export const useVegaTransactionToasts = () => {
 
   const onClose = useCallback(
     (tx: VegaStoredTxState) => () => {
-      // Final state of tx - safe to delete
-      const safeToDelete = [VegaTxStatus.Error, VegaTxStatus.Complete].includes(
-        tx.status
-      );
+      const safeToDelete = isFinal(tx);
       if (safeToDelete) {
         deleteTx(tx.id);
       } else {
@@ -612,11 +613,7 @@ export const useVegaTransactionToasts = () => {
 
   const fromVegaTransaction = (tx: VegaStoredTxState): Toast => {
     let content: ToastContent;
-    const closeAfter = [VegaTxStatus.Error, VegaTxStatus.Complete].includes(
-      tx.status
-    )
-      ? 5000
-      : undefined;
+    const closeAfter = isFinal(tx) ? CLOSE_AFTER : undefined;
     if (tx.status === VegaTxStatus.Requested) {
       content = <VegaTxRequestedToastContent tx={tx} />;
     }

@@ -1,5 +1,6 @@
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 import { ApprovalStatus, VerificationStatus } from '@vegaprotocol/withdraws';
@@ -51,6 +52,9 @@ const EthWithdrawalApprovalToastContent = ({
   );
 };
 
+const isFinal = (tx: EthWithdrawalApprovalState) =>
+  [ApprovalStatus.Ready, ApprovalStatus.Error].includes(tx.status);
+
 export const useEthereumWithdrawApprovalsToasts = () => {
   const [setToast, remove] = useToasts((state) => [
     state.setToast,
@@ -68,6 +72,7 @@ export const useEthereumWithdrawApprovalsToasts = () => {
       },
       loader: tx.status === ApprovalStatus.Pending,
       content: <EthWithdrawalApprovalToastContent tx={tx} />,
+      closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
     }),
     [dismissTx, remove]
   );
