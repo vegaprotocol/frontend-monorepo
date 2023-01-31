@@ -1,5 +1,7 @@
 import { Dialog, Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
+import { Link, useNavigate } from 'react-router-dom';
+import Routes from '../../routes';
 import type { StakeAction } from './staking-form';
 import { Actions, RemoveType } from './staking-form';
 
@@ -21,6 +23,7 @@ export const StakeSuccess = ({
   toggleDialog,
 }: StakeSuccessProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isAdd = action === Actions.Add;
   const title = isAdd
     ? t('stakeAddSuccessTitle', { amount })
@@ -41,6 +44,21 @@ export const StakeSuccess = ({
     >
       <div>
         <p>{message}</p>
+        <p>
+          <Link
+            className="underline"
+            to={Routes.VALIDATORS}
+            onClick={(event) => {
+              event.preventDefault();
+              // Because the dialog is not closed when the user clicks on the link,
+              // we need to remove the overflow-hidden class from the body.
+              document.body.classList.remove('overflow-hidden');
+              navigate(Routes.VALIDATORS);
+            }}
+          >
+            {t('backToStaking')}
+          </Link>
+        </p>
       </div>
     </Dialog>
   );
