@@ -292,6 +292,38 @@ export interface BatchMarketInstructionSubmissionBody {
   };
 }
 
+interface Transfer {
+  fromAccountType: Schema.AccountType;
+  to: string;
+  toAccountType: Schema.AccountType;
+  asset: string;
+  amount: string;
+  reference?: string;
+}
+
+interface OneOffTransfer extends Transfer {
+  oneOff: {
+    deliverOn?: number; // omit for immediate
+  };
+}
+
+interface RecurringTransfer extends Transfer {
+  recurring: {
+    factor: string;
+    startEpoch: number;
+    endEpoch?: number;
+    dispatchStrategy?: {
+      assetForMetric: string;
+      metric: Schema.DispatchMetric;
+      markets?: string[];
+    };
+  };
+}
+
+export interface TransferBody {
+  transfer: OneOffTransfer | RecurringTransfer;
+}
+
 export type Transaction =
   | OrderSubmissionBody
   | OrderCancellationBody
@@ -301,7 +333,8 @@ export type Transaction =
   | UndelegateSubmissionBody
   | OrderAmendmentBody
   | ProposalSubmissionBody
-  | BatchMarketInstructionSubmissionBody;
+  | BatchMarketInstructionSubmissionBody
+  | TransferBody;
 
 export const isWithdrawTransaction = (
   transaction: Transaction
