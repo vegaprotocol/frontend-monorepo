@@ -63,7 +63,8 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
                 signer || provider
               ),
               vesting: new TokenVesting(
-                config.token_vesting_contract.address,
+                config.token_vesting_contract?.address ||
+                  '0xadFcb7f93a24F8743a8e548d74d2ecB373c92866',
                 signer || provider
               ),
               claim: new Claim(ENV.addresses.claimAddress, signer || provider),

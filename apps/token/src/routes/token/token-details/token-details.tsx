@@ -67,10 +67,14 @@ export const TokenDetails = ({
               data-testid="token-contract"
               title={t('View on Etherscan (opens in a new tab)')}
               className="font-mono text-white text-right"
-              href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
+              href={`${ETHERSCAN_URL}/address/${
+                config.token_vesting_contract?.address ||
+                '0xadFcb7f93a24F8743a8e548d74d2ecB373c92866'
+              }`}
               target="_blank"
             >
-              {config.token_vesting_contract.address}
+              {config.token_vesting_contract?.address ||
+                '0xadFcb7f93a24F8743a8e548d74d2ecB373c92866'}
             </Link>
           </KeyValueTableRow>
           <KeyValueTableRow>
