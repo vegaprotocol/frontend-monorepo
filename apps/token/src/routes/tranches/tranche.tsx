@@ -4,6 +4,7 @@ import {
   Link,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
+import { Link as RouterLink } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -60,12 +61,12 @@ export const Tranche = () => {
             {tranche.users.map((user) => (
               <KeyValueTableRow key={user}>
                 {
-                  <Link
+                  <RouterLink
                     title={t('View on Etherscan (opens in a new tab)')}
-                    href={`${Routes.REDEEM}/${user}`}
+                    to={`${Routes.REDEEM}/${user}`}
                   >
                     {user}
-                  </Link>
+                  </RouterLink>
                 }
                 {
                   <Link
