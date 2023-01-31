@@ -39,9 +39,9 @@ it('should render successfully', async () => {
   });
 });
 
-it('Render correct columns', async () => {
+it('render correct columns', async () => {
   await act(async () => {
-    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
+    render(<PositionsTable rowData={singleRowData} isReadOnly={true} />);
   });
 
   const headers = screen.getAllByRole('columnheader');

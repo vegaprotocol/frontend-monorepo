@@ -157,6 +157,29 @@ describe('OrderListTable', () => {
       expect(mockCancel).toHaveBeenCalledWith(order);
     });
 
+    it('does not allow cancelling and editing for permitted orders if read only', async () => {
+      const mockEdit = jest.fn();
+      const mockCancel = jest.fn();
+      const order = generateOrder({
+        type: Schema.OrderType.TYPE_LIMIT,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+        liquidityProvision: null,
+        peggedOrder: null,
+      });
+      await act(async () => {
+        render(
+          generateJsx({
+            rowData: [order],
+            setEditOrder: mockEdit,
+            cancel: mockCancel,
+            isReadOnly: true,
+          })
+        );
+      });
+      const amendCell = getAmendCell();
+      expect(amendCell.queryAllByRole('button')).toHaveLength(0);
+    });
+
     it('shows if an order is a liquidity provision order and does not show order actions', async () => {
       const order = generateOrder({
         type: Schema.OrderType.TYPE_LIMIT,
