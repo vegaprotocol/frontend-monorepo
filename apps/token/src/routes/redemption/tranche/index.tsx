@@ -9,7 +9,6 @@ import {
   TransactionActionType,
   TxState,
 } from '../../../hooks/transaction-reducer';
-import { useGetUserTrancheBalances } from '../../../hooks/use-get-user-tranche-balances';
 import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
