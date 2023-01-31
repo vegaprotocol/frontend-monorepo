@@ -115,7 +115,7 @@ const RedemptionRouter = () => {
     );
   }
 
-  return <Outlet context={{ tranches, account: address }} />;
+  return <Outlet context={{ account: address }} />;
 };
 
 export default RedemptionRouter;
