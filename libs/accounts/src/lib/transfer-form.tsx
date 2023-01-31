@@ -16,6 +16,7 @@ import {
   Option,
   RichSelect,
   Select,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
@@ -218,7 +219,7 @@ export const TransferForm = ({
       </FormGroup>
       <TransferFee amount={amount} feeFactor={feeFactor} />
       <Button type="submit" variant="primary" fill={true}>
-        Confirm transfer
+        {t('Confirm transfer')}
       </Button>
     </form>
   );
@@ -234,5 +235,20 @@ const TransferFee = ({
   if (!feeFactor || !amount) return null;
   const value = new BigNumber(amount).times(feeFactor).toString();
 
-  return <div>Transfer fee: {value.toString()}</div>;
+  return (
+    <div className="text-xs mb-4 flex justify-between items-center gap-4 flex-wrap">
+      <div>
+        <Tooltip
+          description={t(
+            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to ${feeFactor}`
+          )}
+        >
+          <div>{t('Transfer fee')}</div>
+        </Tooltip>
+      </div>
+      <div className="text-neutral-500 dark:text-neutral-300">
+        {value.toString()}
+      </div>
+    </div>
+  );
 };

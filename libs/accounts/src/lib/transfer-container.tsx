@@ -10,9 +10,11 @@ import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
+import { useTransferDialog } from './transfer-dialog';
 
 export const TransferContainer = () => {
   const { pubKey, pubKeys } = useVegaWallet();
+  const open = useTransferDialog((store) => store.open);
   const { param } = useNetworkParam(NetworkParams.transfer_fee_factor);
   const { data } = useDataProvider({
     dataProvider: accountsDataProvider,
@@ -24,8 +26,9 @@ export const TransferContainer = () => {
   const transfer = useCallback(
     (transfer: Transfer) => {
       create({ transfer });
+      open(false);
     },
-    [create]
+    [create, open]
   );
 
   const assets = useMemo(() => {

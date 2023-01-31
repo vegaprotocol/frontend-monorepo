@@ -359,6 +359,10 @@ export const isBatchMarketInstructionsTransaction = (
 ): transaction is BatchMarketInstructionSubmissionBody =>
   'batchMarketInstructions' in transaction;
 
+export const isTransfer = (
+  transaction: Transaction
+): transaction is TransferBody => 'transfer' in transaction;
+
 export interface TransactionResponse {
   transactionHash: string;
   signature: string; // still to be added by core

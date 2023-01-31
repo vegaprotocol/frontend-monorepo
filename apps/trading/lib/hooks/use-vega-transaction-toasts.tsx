@@ -10,6 +10,7 @@ import type {
   VegaStoredTxState,
   WithdrawalBusEventFieldsFragment,
 } from '@vegaprotocol/wallet';
+import { isTransfer } from '@vegaprotocol/wallet';
 import { isBatchMarketInstructionsTransaction } from '@vegaprotocol/wallet';
 import {
   ClientErrors,
@@ -87,12 +88,14 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
   const cancelOrder = isOrderCancellationTransaction(tx.body);
   const editOrder = isOrderAmendmentTransaction(tx.body);
   const batchMarketInstructions = isBatchMarketInstructionsTransaction(tx.body);
+  const transfer = isTransfer(tx.body);
   return (
     withdraw ||
     submitOrder ||
     cancelOrder ||
     editOrder ||
-    batchMarketInstructions
+    batchMarketInstructions ||
+    transfer
   );
 };
 
