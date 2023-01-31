@@ -1,6 +1,9 @@
+import { useMemo } from 'react';
+import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
+import { useProposalOfMarketQuery } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { DataGrid, t } from '@vegaprotocol/react-helpers';
+import { DataGrid, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/react-helpers';
@@ -21,14 +24,24 @@ export const TradingModeTooltip = ({
   const { VEGA_DOCS_URL } = useEnvironment();
   const market = useMarket(marketId);
   const marketData = useStaticMarketData(marketId, skip);
+  const { marketTradingMode: tradingMode, trigger } = marketData || {};
+  const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
+  const { data: proposalData } = useProposalOfMarketQuery({
+    variables,
+    skip:
+      !tradingMode ||
+      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION !== tradingMode,
+  });
 
   if (!market || !marketData) {
     return null;
   }
+  const enactmentDate = parseISO(
+    proposalData?.proposal?.terms.enactmentDatetime
+  );
 
   const compiledGrid =
     onSelect && compileGridData(market, marketData, onSelect);
-  const { marketTradingMode: tradingMode, trigger } = marketData;
 
   switch (tradingMode) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
@@ -43,12 +56,41 @@ export const TradingModeTooltip = ({
     case Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
       return (
         <section data-testid="trading-mode-tooltip">
-          <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
-            <span>
-              {t(
-                'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
-              )}
-            </span>{' '}
+          <p
+            className={classNames('flex flex-col', {
+              'mb-4': Boolean(compiledGrid),
+            })}
+          >
+            {isValid(enactmentDate) && isAfter(new Date(), enactmentDate) ? (
+              <>
+                <span className="justify-center font-bold my-2">
+                  {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
+                    'Not enough liquidity to open'
+                  )}`}
+                </span>
+                <span>
+                  {t(
+                    'This market is in opening auction until it has reached enough liquidity to move into continuous trading.'
+                  )}
+                </span>
+              </>
+            ) : (
+              <>
+                {isValid(enactmentDate) && (
+                  <span className="justify-center font-bold my-2">
+                    {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
+                      'Closing on %s',
+                      getDateTimeFormat().format(enactmentDate)
+                    )}`}
+                  </span>
+                )}
+                <span>
+                  {t(
+                    'This is a new market in an opening auction to determine a fair mid-price before starting continuous trading.'
+                  )}
+                </span>
+              </>
+            )}
             {VEGA_DOCS_URL && (
               <ExternalLink
                 href={createDocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}
