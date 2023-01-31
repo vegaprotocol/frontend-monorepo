@@ -4,7 +4,7 @@ import type { TokenVesting } from '@vegaprotocol/smart-contracts';
 
 import { useAppState } from '../contexts/app-state/app-state-context';
 import { BigNumber } from '../lib/bignumber';
-import { useTranches } from './use-tranches';
+import { useTranches } from '../lib/tranches/tranches-store';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 
 export const useGetUserTrancheBalances = (
@@ -14,7 +14,7 @@ export const useGetUserTrancheBalances = (
   const {
     appState: { decimals },
   } = useAppState();
-  const { tranches } = useTranches();
+  const tranches = useTranches((state) => state.tranches);
   return React.useCallback(async () => {
     try {
       if (!tranches) {

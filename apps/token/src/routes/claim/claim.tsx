@@ -13,7 +13,7 @@ import {
   initialClaimState,
 } from './claim-reducer';
 
-import type { Tranche } from '../../hooks/use-tranches';
+import type { Tranche } from '../../lib/tranches/tranches-store';
 
 const Claim = ({
   address,

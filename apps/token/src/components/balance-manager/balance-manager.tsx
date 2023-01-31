@@ -7,11 +7,11 @@ import { useEffect } from 'react';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useGetAssociationBreakdown } from '../../hooks/use-get-association-breakdown';
-import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
 import { useBalances } from '../../lib/balances/balances-store';
 import type { ReactElement } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-listen-for-staking-events';
+import { useTranches } from '../../lib/tranches/tranches-store';
 
 interface BalanceManagerProps {
   children: ReactElement;
@@ -41,10 +41,11 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     numberOfConfirmations
   );
 
-  const getUserTrancheBalances = useGetUserTrancheBalances(
-    account || '',
-    contracts?.vesting
-  );
+  const getTranches = useTranches((state) => state.getTranches);
+  useEffect(() => {
+    console.log(decimals);
+    getTranches(decimals);
+  }, [decimals, getTranches]);
   const getAssociationBreakdown = useGetAssociationBreakdown(
     account || '',
     contracts?.staking,
@@ -91,13 +92,6 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     config,
     updateStoreBalances,
   ]);
-
-  // This use effect hook is very expensive and is kept separate to prevent expensive reloading of data.
-  useEffect(() => {
-    if (account) {
-      getUserTrancheBalances();
-    }
-  }, [account, getUserTrancheBalances]);
 
   useEffect(() => {
     if (account) {

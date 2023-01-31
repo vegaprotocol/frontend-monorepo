@@ -10,38 +10,40 @@ import { truncateMiddle } from '../../../lib/truncate-middle';
 import Routes from '../../routes';
 import { Tranche0Table, TrancheTable } from '../tranche-table';
 import { VestingTable } from './vesting-table';
-import type { Tranche } from '../../../hooks/use-tranches';
+import type { Tranche } from '../../../lib/tranches/tranches-store';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import { useGetUserTrancheBalances } from '../../../hooks/use-get-user-tranche-balances';
 
 export const RedemptionInformation = () => {
-  const { account, tranches } = useOutletContext<{
-    tranches: Tranche[];
-    account: string;
-  }>();
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const {
-    balanceFormatted,
-    lien,
-    totalVestedBalance,
-    totalLockedBalance,
-    trancheBalances,
-  } = useBalances();
-  const { vesting } = useContracts();
-  const getUserTrancheBalances = useGetUserTrancheBalances(account, vesting);
-  useEffect(() => {
-    getUserTrancheBalances().then(console.log);
-  }, [account, getUserTrancheBalances]);
+  return null;
 
-  const filteredTranches = useMemo(() => {
-    return (
-      tranches?.filter((t) =>
-        t.users.some((a) => a.toLowerCase() === account.toLowerCase())
-      ) || []
-    );
-  }, [account, tranches]);
-  console.log(filteredTranches);
+  // const { account, tranches } = useOutletContext<{
+  //   tranches: Tranche[];
+  //   account: string;
+  // }>();
+  // const navigate = useNavigate();
+  // const { t } = useTranslation();
+  // const {
+  //   balanceFormatted,
+  //   lien,
+  //   totalVestedBalance,
+  //   totalLockedBalance,
+  //   trancheBalances,
+  // } = useBalances();
+  // const { vesting } = useContracts();
+  // const getUserTrancheBalances = useGetUserTrancheBalances(account, vesting);
+  // useEffect(() => {
+  //   getUserTrancheBalances().then(console.log);
+  // }, [account, getUserTrancheBalances]);
+
+  // const filteredTranches = useMemo(() => {
+  //   return (
+  //     tranches?.filter((t) =>
+  //       t.users.some((a) => a.toLowerCase() === account.toLowerCase())
+  //     ) || []
+  //   );
+  // }, [account, tranches]);
+
   // const filteredTranches = React.useMemo(
   //   () =>
   //     userTranches.filter((tr) => {
@@ -55,14 +57,14 @@ export const RedemptionInformation = () => {
   //   [trancheBalances, userTranches]
   // );
 
-  const zeroTranche = React.useMemo(() => {
-    const zeroTranche = trancheBalances.find((t) => t.id === 0);
-    if (zeroTranche && zeroTranche.locked.isGreaterThan(0)) {
-      return zeroTranche;
-    }
-    return null;
-  }, [trancheBalances]);
-  return null;
+  // const zeroTranche = React.useMemo(() => {
+  //   const zeroTranche = trancheBalances.find((t) => t.id === 0);
+  //   if (zeroTranche && zeroTranche.locked.isGreaterThan(0)) {
+  //     return zeroTranche;
+  //   }
+  //   return null;
+  // }, [trancheBalances]);
+
   // if (!filteredTranches.length) {
   //   return (
   //     <section data-testid="redemption-page">

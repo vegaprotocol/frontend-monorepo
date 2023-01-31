@@ -15,7 +15,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
-import type { Tranche as TrancheType } from '../../hooks/use-tranches';
+import type { Tranche as TrancheType } from '../../lib/tranches/tranches-store';
 
 export const Tranche = () => {
   const tranches = useOutletContext<TrancheType[]>();

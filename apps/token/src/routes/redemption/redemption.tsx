@@ -15,7 +15,7 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
 import { SplashLoader } from '../../components/splash-loader';
-import { useTranches } from '../../hooks/use-tranches';
+import { useTranches } from '../../lib/tranches/tranches-store';
 import RoutesConfig from '../routes';
 
 interface FormFields {
@@ -40,7 +40,11 @@ const RedemptionRouter = () => {
     [t]
   );
   const { account } = useWeb3React();
-  const { tranches, error, loading } = useTranches();
+  const { tranches, error, loading } = useTranches((state) => ({
+    loading: state.loading,
+    error: state.error,
+    tranches: state.tranches,
+  }));
   const {
     register,
     handleSubmit,
