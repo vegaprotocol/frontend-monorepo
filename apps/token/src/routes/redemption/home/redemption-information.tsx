@@ -1,5 +1,4 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
-import { useBalances } from '../../../lib/balances/balances-store';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
@@ -10,12 +9,12 @@ import { truncateMiddle } from '../../../lib/truncate-middle';
 import Routes from '../../routes';
 import { Tranche0Table, TrancheTable } from '../tranche-table';
 import { VestingTable } from './vesting-table';
-import { Tranche, useTranches } from '../../../lib/tranches/tranches-store';
+import { useTranches } from '../../../lib/tranches/tranches-store';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import { useGetUserBalances } from '../../../hooks/use-get-user-balances';
 import BigNumber from 'bignumber.js';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import { useAppState } from 'apps/token/src/contexts/app-state/app-state-context';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 interface UserBalances {
   balanceFormatted: BigNumber;
@@ -24,6 +23,11 @@ interface UserBalances {
   allowance: BigNumber;
   balance: BigNumber;
 }
+
+// TODO
+// Error state, when bad ID
+// Empty state, when legit ID with nothing in it
+// Fix eth wallet state
 
 const useUserTrancheBalances = (address: string) => {
   const [userTrancheBalances, setUserTrancheBalances] = useState<
@@ -45,7 +49,7 @@ const useUserTrancheBalances = (address: string) => {
           (a) => a && address && a.toLowerCase() === address.toLowerCase()
         )
       ) || [];
-    const trancheIds = userTranches.map((t) => t.tranche_id);
+    const trancheIds = [0, ...userTranches.map((t) => t.tranche_id)];
     const promises = trancheIds.map(async (tId) => {
       const [t, v] = await Promise.all([
         vesting.get_tranche_balance(address, tId),
@@ -72,6 +76,8 @@ const useUserTrancheBalances = (address: string) => {
 };
 
 export const RedemptionInformation = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const tranches = useTranches((state) => state.tranches);
   const { account } = useOutletContext<{
     account: string;
@@ -94,8 +100,19 @@ export const RedemptionInformation = () => {
       }) || [],
     [userTrancheBalances, tranches]
   );
+  const { totalLocked, totalVested } = useMemo(() => {
+    return {
+      totalLocked: BigNumber.sum.apply(null, [
+        new BigNumber(0),
+        ...userTrancheBalances.map(({ locked }) => locked),
+      ]),
+      totalVested: BigNumber.sum.apply(null, [
+        new BigNumber(0),
+        ...userTrancheBalances.map(({ vested }) => vested),
+      ]),
+    };
+  }, [userTrancheBalances]);
 
-  // // TODO do I need this with new API?
   const zeroTranche = React.useMemo(() => {
     const zeroTranche = userTrancheBalances.find((t) => t.id === 0);
     if (zeroTranche && zeroTranche.locked.isGreaterThan(0)) {
@@ -142,8 +159,8 @@ export const RedemptionInformation = () => {
       <div className="mb-24">
         <VestingTable
           associated={userBalances.lien}
-          locked={userBalances.totalLockedBalance}
-          vested={userBalances.totalVestedBalance}
+          locked={totalLocked}
+          vested={totalVested}
         />
       </div>
       {filteredTranches.length ? <h2>{t('Tranche breakdown')}</h2> : null}
@@ -175,9 +192,11 @@ export const RedemptionInformation = () => {
               ({ id }) => id.toString() === tr.tranche_id.toString()
             )!.vested
           }
-          totalVested={userBalances.totalVestedBalance}
-          totalLocked={userBalances.totalLockedBalance}
-          onClick={() => navigate(`/vesting/${tr.tranche_id}`)}
+          totalVested={totalVested}
+          totalLocked={totalLocked}
+          onClick={() =>
+            navigate(`${Routes.REDEEM}/${account}/${tr.tranche_id}`)
+          }
         />
       ))}
       <Callout
@@ -186,7 +205,7 @@ export const RedemptionInformation = () => {
         intent={Intent.Warning}
       >
         <p>{t('Find out more about Staking.')}</p>
-        <Link to="/staking" className="underline text-white">
+        <Link to={Routes.VALIDATORS} className="underline text-white">
           {t('Stake VEGA tokens')}
         </Link>
       </Callout>

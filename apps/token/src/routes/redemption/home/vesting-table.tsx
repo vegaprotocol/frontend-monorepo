@@ -12,7 +12,7 @@ export interface VestingTableProps {
 }
 
 const VestingTableIndicatorSquare = ({ colour }: { colour: string }) => (
-  <span className={`bg-${colour} inline-block h-12 w-12 mr-4`} />
+  <span className={`bg-${colour} inline-block h-4 w-4 mr-1`} />
 );
 
 export const VestingTable = ({
@@ -65,17 +65,17 @@ export const VestingTable = ({
       </KeyValueTable>
       <div className="flex border-white border">
         <div
-          className="bg-vega-pink h-16"
+          className="bg-vega-pink h-4"
           style={{ flex: lockedPercentage.toNumber() }}
         />
         <div
-          className="bg-vega-green h-16"
+          className="bg-vega-green h-4"
           style={{ flex: vestedPercentage.toNumber() }}
         />
       </div>
-      <div className="flex h-4 mt-4">
+      <div className="flex h-1 mt-1">
         <div
-          className="bg-vega-yellow h-4"
+          className="bg-vega-yellow h-1"
           style={{ flex: stakedPercentage.toNumber() }}
         />
         <div
