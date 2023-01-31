@@ -197,6 +197,7 @@ export const RedemptionInformation = () => {
           onClick={() =>
             navigate(`${Routes.REDEEM}/${account}/${tr.tranche_id}`)
           }
+          address={account}
         />
       ))}
       <Callout

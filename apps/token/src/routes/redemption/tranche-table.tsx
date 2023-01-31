@@ -8,6 +8,7 @@ import { formatNumber } from '../../lib/format-number';
 import Routes from '../routes';
 import { TrancheItem } from './tranche-item';
 import { Button } from '@vegaprotocol/ui-toolkit';
+import { useWeb3React } from '@web3-react/core';
 
 export interface TrancheTableProps {
   tranche: {
@@ -22,6 +23,7 @@ export interface TrancheTableProps {
   totalLocked: BigNumber;
   onClick: () => void;
   disabled?: boolean;
+  address: string | null;
 }
 
 export const Tranche0Table = ({
@@ -65,9 +67,11 @@ export const TrancheTable = ({
   totalVested,
   totalLocked,
   disabled = false,
+  address,
 }: TrancheTableProps) => {
   const { t } = useTranslation();
   const total = vested.plus(locked);
+  const { account: connectedAddress } = useWeb3React();
   const trancheFullyLocked =
     tranche.tranche_start.getTime() > new Date().getTime();
   const totalAllTranches = totalVested.plus(totalLocked);
@@ -99,7 +103,12 @@ export const TrancheTable = ({
         />
       </div>
     );
-  } else if (!trancheFullyLocked && redeemable) {
+  } else if (
+    !trancheFullyLocked &&
+    redeemable &&
+    connectedAddress &&
+    address === connectedAddress
+  ) {
     message = (
       <Button onClick={onClick} disabled={disabled}>
         {t('Redeem unlocked VEGA from tranche {{id}}', {
