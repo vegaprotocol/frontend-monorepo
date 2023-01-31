@@ -21,10 +21,12 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         'Receiver',
         'Account type',
         'Market',
-        'Transfer Type',
+        'Transfer type',
         'Quantity',
         'Asset',
-        'Vega Time',
+        'Sender account balance',
+        'Receiver account balance',
+        'Vega time',
       ];
       cy.getByTestId('tab-ledger-entries').within(($headers) => {
         cy.wrap($headers)
@@ -36,6 +38,22 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       cy.get(
         '[data-testid="tab-ledger-entries"] .ag-center-cols-container .ag-row'
       ).should('have.length', ledgerEntriesQuery().ledgerEntries.edges.length);
+    });
+
+    it('account filters should be callable', () => {
+      cy.visit('/#/portfolio');
+      cy.getByTestId('"Ledger entries"').click();
+      cy.get('[role="columnheader"][col-id="fromAccountType"]').realHover();
+      cy.get(
+        '[role="columnheader"][col-id="fromAccountType"] .ag-header-cell-menu-button'
+      ).click();
+      cy.get('fieldset.ag-simple-filter-body-wrapper')
+        .should('be.visible')
+        .within((fields) => {
+          cy.wrap(fields).find('label').should('have.length', 16);
+        });
+      cy.getByTestId('"Ledger entries"').click();
+      cy.get('fieldset.ag-simple-filter-body-wrapper').should('not.exist');
     });
   });
 });

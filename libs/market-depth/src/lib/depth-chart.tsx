@@ -128,9 +128,10 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const marketDataUpdate = useCallback(
     ({ data }: { data: MarketData | null }) => {
       marketDataRef.current = data;
+      updateDepthData();
       return true;
     },
-    []
+    [updateDepthData]
   );
 
   const {

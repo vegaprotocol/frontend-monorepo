@@ -3,6 +3,9 @@ import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
 import Markets from './markets';
+import OraclePage from './oracles';
+import Oracles from './oracles/home';
+import { Oracle } from './oracles/id';
 import Party from './parties';
 import { Parties } from './parties/home';
 import { Party as PartySingle } from './parties/id';
@@ -146,6 +149,22 @@ const routerConfig = [
       {
         path: ':block',
         element: <Block />,
+      },
+    ],
+  },
+  {
+    path: Routes.ORACLES,
+    name: 'Oracles',
+    text: t('Oracles'),
+    element: <OraclePage />,
+    children: [
+      {
+        index: true,
+        element: <Oracles />,
+      },
+      {
+        path: ':id',
+        element: <Oracle />,
       },
     ],
   },

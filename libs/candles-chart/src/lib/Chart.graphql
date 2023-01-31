@@ -1,6 +1,7 @@
 query Chart($marketId: ID!) {
   market(id: $marketId) {
     decimalPlaces
+    positionDecimalPlaces
     data {
       priceMonitoringBounds {
         minValidPrice

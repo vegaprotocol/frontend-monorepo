@@ -1,11 +1,12 @@
 import { Icon } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';
 export interface CheckboxProps {
   checked?: CheckedState;
-  label?: string;
+  label?: ReactNode;
   name?: string;
   onCheckedChange?: (checked: CheckedState) => void;
   disabled?: boolean;
@@ -29,7 +30,7 @@ export const Checkbox = ({
   );
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-1 items-center">
       <CheckboxPrimitive.Root
         name={name}
         id={name}
@@ -47,7 +48,7 @@ export const Checkbox = ({
           ) : (
             <Icon
               name="tick"
-              className="relative w-[11px] h-[11px] text-white dark:text-black"
+              className="relative w-[10px] h-[10px] text-white dark:text-black"
             />
           )}
         </CheckboxPrimitive.CheckboxIndicator>

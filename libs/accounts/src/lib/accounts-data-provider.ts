@@ -50,10 +50,10 @@ export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
 };
 
 const update = (
-  data: AccountFieldsFragment[],
+  data: AccountFieldsFragment[] | null,
   deltas: AccountEventsSubscription['accounts']
 ) => {
-  return produce(data, (draft) => {
+  return produce(data || [], (draft) => {
     deltas.forEach((delta) => {
       const id = getId(delta);
       const index = draft.findIndex((a) => getId(a) === id);
@@ -73,15 +73,8 @@ const update = (
   });
 };
 
-const getData = (
-  responseData: AccountsQuery
-): AccountFieldsFragment[] | null => {
-  return (
-    removePaginationWrapper(responseData.party?.accountsConnection?.edges) ??
-    null
-  );
-};
-
+const getData = (responseData: AccountsQuery | null): AccountFieldsFragment[] =>
+  removePaginationWrapper(responseData?.party?.accountsConnection?.edges) || [];
 const getDelta = (
   subscriptionData: AccountEventsSubscription
 ): AccountEventsSubscription['accounts'] => {
@@ -125,12 +118,10 @@ const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
   accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
 export const getAccountData = (data: Account[]): AccountFields[] => {
-  return getAssetIds(data)
-    .map((assetId) => {
-      const accounts = data.filter((a) => a.asset.id === assetId);
-      return accounts && getAssetAccountAggregation(accounts, assetId);
-    })
-    .filter((a) => a.deposited !== '0'); // filter empty accounts
+  return getAssetIds(data).map((assetId) => {
+    const accounts = data.filter((a) => a.asset.id === assetId);
+    return accounts && getAssetAccountAggregation(accounts, assetId);
+  });
 };
 
 const getAssetAccountAggregation = (

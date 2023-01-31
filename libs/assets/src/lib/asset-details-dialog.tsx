@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { useAssetsDataProvider } from './assets-data-provider';
 import { Button, Dialog, Icon, Splash } from '@vegaprotocol/ui-toolkit';
-import create from 'zustand';
+import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
 import { AssetProposalNotification } from '@vegaprotocol/governance';
 

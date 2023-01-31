@@ -53,7 +53,6 @@ export const ProposeNewMarket = () => {
     NetworkParams.governance_proposal_market_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
@@ -89,9 +88,9 @@ export const ProposeNewMarket = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        newMarket: {
-          ...JSON.parse(fields.proposalTerms),
-        },
+        newMarket: fields.proposalTerms
+          ? { ...JSON.parse(fields.proposalTerms) }
+          : {},
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
           isVoteDeadlineAtMinimum,

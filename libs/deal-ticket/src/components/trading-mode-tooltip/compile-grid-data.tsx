@@ -8,17 +8,31 @@ import * as Schema from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 
 export const compileGridData = (
-  market: MarketDealTicket,
+  market: Pick<
+    Market,
+    'tradableInstrument' | 'id' | 'decimalPlaces' | 'positionDecimalPlaces'
+  >,
+  marketData: Pick<
+    MarketData,
+    | 'marketTradingMode'
+    | 'auctionStart'
+    | 'auctionEnd'
+    | 'indicativePrice'
+    | 'indicativeVolume'
+    | 'suppliedStake'
+    | 'targetStake'
+    | 'trigger'
+  >,
   onSelect?: (id: string) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: DataGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    market.data.marketTradingMode ===
+    marketData.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    market.data.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+    marketData.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
   const formatStake = (value: string) => {
     const formattedValue = addDecimalsFormatNumber(
@@ -30,19 +44,17 @@ export const compileGridData = (
     return `${formattedValue} ${asset}`;
   };
 
-  if (!market.data) return grid;
+  if (!marketData) return grid;
 
-  if (market.data.auctionStart) {
+  if (marketData.auctionStart) {
     grid.push({
       label: t('Auction start'),
-      value: getDateTimeFormat().format(new Date(market.data.auctionStart)),
+      value: getDateTimeFormat().format(new Date(marketData.auctionStart)),
     });
   }
 
-  if (market.data.auctionEnd) {
-    const endDate = getDateTimeFormat().format(
-      new Date(market.data.auctionEnd)
-    );
+  if (marketData.auctionEnd) {
+    const endDate = getDateTimeFormat().format(new Date(marketData.auctionEnd));
     grid.push({
       label: isLiquidityMonitoringAuction
         ? t('Est. auction end')
@@ -51,14 +63,14 @@ export const compileGridData = (
     });
   }
 
-  if (isLiquidityMonitoringAuction && market.data.targetStake) {
+  if (isLiquidityMonitoringAuction && marketData.targetStake) {
     grid.push({
       label: t('Target liquidity'),
-      value: formatStake(market.data.targetStake),
+      value: formatStake(marketData.targetStake),
     });
   }
 
-  if (isLiquidityMonitoringAuction && market.data.suppliedStake) {
+  if (isLiquidityMonitoringAuction && marketData.suppliedStake) {
     grid.push({
       label: (
         <Link
@@ -68,31 +80,31 @@ export const compileGridData = (
           <UILink>{t('Current liquidity')}</UILink>
         </Link>
       ),
-      value: formatStake(market.data.suppliedStake),
+      value: formatStake(marketData.suppliedStake),
     });
   }
-  if (market.data.indicativePrice) {
+  if (marketData.indicativePrice) {
     grid.push({
       label: t('Est. uncrossing price'),
       value:
-        market.data.indicativePrice && market.data.indicativePrice !== '0'
+        marketData.indicativePrice && marketData.indicativePrice !== '0'
           ? `~
             ${addDecimalsFormatNumber(
-              market.data.indicativePrice,
+              marketData.indicativePrice,
               market.decimalPlaces
             )}`
           : '-',
     });
   }
 
-  if (market.data.indicativeVolume) {
+  if (marketData.indicativeVolume) {
     grid.push({
       label: t('Est. uncrossing vol'),
       value:
-        market.data.indicativeVolume && market.data.indicativeVolume !== '0'
+        marketData.indicativeVolume && marketData.indicativeVolume !== '0'
           ? '~' +
             addDecimalsFormatNumber(
-              market.data.indicativeVolume,
+              marketData.indicativeVolume,
               market.positionDecimalPlaces
             )
           : '-',

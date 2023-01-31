@@ -26,7 +26,6 @@ jest.mock('../../hooks/use-has-no-balance', () => {
 
 const market = generateMarket();
 const submit = jest.fn();
-const transactionStatus = 'default';
 
 const mockChainId = 'chain-id';
 
@@ -46,19 +45,16 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
   return (
     <MockedProvider mocks={[chainIdMock]}>
       <VegaWalletContext.Provider value={{ pubKey: mockChainId } as any}>
-        <DealTicket
-          defaultOrder={order}
-          market={market}
-          submit={submit}
-          transactionStatus={transactionStatus}
-        />
+        <DealTicket market={market} submit={submit} />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
 }
 
 describe('DealTicket', () => {
-  beforeEach(() => window.localStorage.clear());
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
   afterEach(() => {
     window.localStorage.clear();
     jest.clearAllMocks();
@@ -90,38 +86,6 @@ describe('DealTicket', () => {
       `~${addDecimal(market!.data.markPrice, market.decimalPlaces)} ${
         market.tradableInstrument.instrument.product.settlementAsset.symbol
       }`
-    );
-  });
-
-  it('can edit deal ticket', async () => {
-    render(generateJsx());
-
-    // BUY is selected by default
-    expect(
-      screen.getByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).toBeChecked();
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId('order-size'), {
-        target: { value: '200' },
-      });
-    });
-
-    expect(screen.getByTestId('order-size')).toHaveDisplayValue('200');
-
-    fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC },
-    });
-    expect(screen.getByTestId('order-tif')).toHaveValue(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
-    );
-
-    // Switch to limit order
-    fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
-
-    // Check all TIF options shown
-    expect(screen.getByTestId('order-tif').children).toHaveLength(
-      Object.keys(Schema.OrderTimeInForce).length
     );
   });
 
@@ -226,5 +190,37 @@ describe('DealTicket', () => {
         await screen.getByTestId('dealticket-error-message-summary')
       ).toHaveTextContent('Wrong trading mode');
     });
+  });
+
+  it('can edit deal ticket', async () => {
+    render(generateJsx());
+
+    // BUY is selected by default
+    expect(
+      screen.getByTestId('order-side-SIDE_BUY')?.querySelector('input')
+    ).toBeChecked();
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('order-size'), {
+        target: { value: '200' },
+      });
+    });
+
+    expect(screen.getByTestId('order-size')).toHaveDisplayValue('200');
+
+    fireEvent.change(screen.getByTestId('order-tif'), {
+      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC },
+    });
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+    );
+
+    // Switch to limit order
+    fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+
+    // Check all TIF options shown
+    expect(screen.getByTestId('order-tif').children).toHaveLength(
+      Object.keys(Schema.OrderTimeInForce).length
+    );
   });
 });

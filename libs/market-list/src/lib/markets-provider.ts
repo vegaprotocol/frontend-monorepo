@@ -21,7 +21,7 @@ import type { Candle } from './market-candles-provider';
 
 export type Market = MarketFieldsFragment;
 
-const getData = (responseData: MarketsQuery): Market[] | null =>
+const getData = (responseData: MarketsQuery | null): Market[] | null =>
   responseData?.marketsConnection?.edges.map((edge) => edge.node) || null;
 
 export const marketsProvider = makeDataProvider<
@@ -34,6 +34,28 @@ export const marketsProvider = makeDataProvider<
   getData,
   fetchPolicy: 'cache-first',
 });
+
+const marketProvider = makeDerivedDataProvider<
+  Market,
+  never,
+  { marketId: string }
+>(
+  [marketsProvider],
+  ([markets], variables) =>
+    ((markets as ReturnType<typeof getData>) || []).find(
+      (market) => market.id === variables?.marketId
+    ) || null
+);
+
+export const useMarket = (marketId?: string) => {
+  const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
+  const { data } = useDataProvider({
+    dataProvider: marketProvider,
+    variables,
+    skip: !marketId,
+  });
+  return data;
+};
 
 export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],

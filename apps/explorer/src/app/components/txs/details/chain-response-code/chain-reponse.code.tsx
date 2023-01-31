@@ -2,7 +2,7 @@
 export const ErrorCodes = new Map([
   [51, 'Transaction failed validation'],
   [60, 'Transaction could not be decoded'],
-  [70, 'Internal error'],
+  [70, 'Error'],
   [80, 'Unknown command'],
   [89, 'Rejected as spam'],
   [0, 'Success'],
@@ -31,6 +31,10 @@ export const ChainResponseCode = ({
   const icon = isSuccess ? '✅' : '❌';
   const label = ErrorCodes.get(code) || 'Unknown response code';
 
+  // Hack for batches with many errors - see https://github.com/vegaprotocol/vega/issues/7245
+  const displayError =
+    error && error.length > 100 ? error.replace(/,/g, ',\r\n') : error;
+
   return (
     <div title={`Response code: ${code} - ${label}`}>
       <span
@@ -41,8 +45,8 @@ export const ChainResponseCode = ({
         {icon}
       </span>
       {hideLabel ? null : <span>{label}</span>}
-      {!hideLabel && !!error ? (
-        <span className="ml-1">&mdash;&nbsp;{error}</span>
+      {!hideLabel && !!displayError ? (
+        <span className="ml-1 whitespace-pre">&mdash;&nbsp;{displayError}</span>
       ) : null}
     </div>
   );

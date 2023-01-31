@@ -9,6 +9,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
+  updateGridData,
 } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
 import type { AgGridReact } from 'ag-grid-react';
@@ -34,12 +35,12 @@ export type LedgerEntry = LedgerEntryFragment & {
 
 export type AggregatedLedgerEntriesEdge = Schema.AggregatedLedgerEntriesEdge;
 
-const getData = (responseData: LedgerEntriesQuery) => {
-  return responseData.ledgerEntries?.edges || [];
+const getData = (responseData: LedgerEntriesQuery | null) => {
+  return responseData?.ledgerEntries?.edges || [];
 };
 
 export const update = (
-  data: ReturnType<typeof getData>,
+  data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getData>,
   reload: () => void,
   variables?: LedgerEntriesQueryVariables
@@ -106,6 +107,9 @@ const ledgerEntriesOnlyProvider = makeDataProvider({
     append,
     first: 100,
   },
+  additionalContext: {
+    isEnlargedTimeout: true,
+  },
 });
 
 export const ledgerEntriesProvider = makeDerivedDataProvider<
@@ -119,10 +123,10 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
       const entry = edge?.node;
       const asset = assets.find((asset: Asset) => asset.id === entry.assetId);
       const marketSender = markets.find(
-        (market: Market) => market.id === entry.senderMarketId
+        (market: Market) => market.id === entry.fromAccountMarketId
       );
       const marketReceiver = markets.find(
-        (market: Market) => market.id === entry.receiverMarketId
+        (market: Market) => market.id === entry.toAccountMarketId
       );
       return { node: { ...entry, asset, marketSender, marketReceiver } };
     });
@@ -147,19 +151,15 @@ export const useLedgerEntriesDataProvider = ({
     () => ({
       partyId,
       dateRange: filter?.vegaTime?.value,
+      fromAccountType: filter?.fromAccountType?.value ?? null,
+      toAccountType: filter?.toAccountType?.value ?? null,
     }),
     [partyId, filter]
   );
 
   const update = useCallback(
     ({ data }: { data: (AggregatedLedgerEntriesEdge | null)[] | null }) => {
-      const avoidRerender = !!(
-        (dataRef.current?.length && data?.length) ||
-        (!dataRef.current?.length && !data?.length)
-      );
-      dataRef.current = data;
-      gridRef.current?.api?.refreshInfiniteCache();
-      return avoidRerender;
+      return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );
@@ -174,9 +174,9 @@ export const useLedgerEntriesDataProvider = ({
     }) => {
       dataRef.current = data;
       totalCountRef.current = totalCount;
-      return true;
+      return updateGridData(dataRef, data, gridRef);
     },
-    []
+    [gridRef]
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({

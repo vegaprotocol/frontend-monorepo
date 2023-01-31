@@ -51,6 +51,7 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
 
 describe('home', { tags: '@regression' }, () => {
   beforeEach(() => {
+    cy.clearLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
   });
@@ -135,7 +136,7 @@ describe('home', { tags: '@regression' }, () => {
   });
 
   describe('no markets found', () => {
-    it('redirects to a the empty market page and displays welcome notice', () => {
+    beforeEach(() => {
       cy.mockGQL((req) => {
         const data = {
           marketsConnection: {
@@ -158,6 +159,8 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
+    });
+    it('redirects to a the empty market page and displays welcome notice', () => {
       cy.url().should('eq', Cypress.config().baseUrl + `/#/markets`);
       cy.getByTestId('welcome-notice-title').should(
         'contain.text',
@@ -226,18 +229,13 @@ describe('home', { tags: '@regression' }, () => {
   });
 
   describe('redirect should take last visited market into consideration', () => {
-    beforeEach(() => {
-      cy.window().then((window) => {
-        window.localStorage.removeItem('marketId');
-      });
-    });
     it('marketId comes from existing market', () => {
       cy.window().then((window) => {
         window.localStorage.setItem('marketId', 'market-1');
         cy.visit('/');
         cy.wait('@Market');
         cy.location('hash').should('equal', '#/markets/market-1');
-        cy.get('[role="dialog"]').should('not.exist');
+        cy.getByTestId('dialog-content').should('not.exist');
       });
     });
 
@@ -250,7 +248,7 @@ describe('home', { tags: '@regression' }, () => {
         cy.visit('/');
         cy.wait('@Market');
         cy.location('hash').should('equal', '#/markets/market-not-existing');
-        cy.get('[role="dialog"]').should('not.exist');
+        cy.getByTestId('dialog-content').should('not.exist');
       });
     });
   });

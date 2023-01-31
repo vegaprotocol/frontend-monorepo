@@ -3,8 +3,8 @@ const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
 const tokenInputApprove = '[data-testid="token-input-approve-button"]';
 const addStakeRadioButton = '[data-testid="add-stake-radio"]';
 const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
-const ethWalletAssociateButton = '[href="/validators/associate"]';
-const ethWalletDissociateButton = '[href="/validators/disassociate"]';
+const ethWalletAssociateButton = '[href="/token/associate"]';
+const ethWalletDissociateButton = '[href="/token/disassociate"]';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
@@ -16,6 +16,7 @@ const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
 const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
 const stakeValidatorListName = '[col-id="validator"]';
 const vegaKeySelector = '#vega-key-selector';
+const dialogCloseButton = '[data-testid="dialog-close"]';
 
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
@@ -51,6 +52,7 @@ Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
     .and('be.visible')
     .click();
+  cy.get(dialogCloseButton).click();
 });
 
 Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {

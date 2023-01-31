@@ -20,7 +20,7 @@ import {
   DateRangeFilter,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
@@ -31,6 +31,7 @@ import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
+  onMarketClick?: (id: string) => void;
   style?: CSSProperties;
 }
 
@@ -66,7 +67,7 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
-  ({ onClose, ...props }, ref) => {
+  ({ onClose, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -85,7 +86,24 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         components={{ AmountCell, PriceFlashCell, ProgressBarCell }}
         {...props}
       >
-        <AgGridColumn headerName={t('Market')} field="marketName" />
+        <AgGridColumn
+          headerName={t('Market')}
+          field="marketName"
+          cellRenderer={({
+            value,
+            data,
+          }: VegaICellRendererParams<Position, 'marketName'>) =>
+            onMarketClick ? (
+              <Link
+                onClick={() => data?.marketId && onMarketClick(data?.marketId)}
+              >
+                {value}
+              </Link>
+            ) : (
+              value
+            )
+          }
+        />
         <AgGridColumn
           headerName={t('Notional')}
           headerTooltip={t('Mark price x open volume.')}
@@ -363,14 +381,16 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         {onClose ? (
           <AgGridColumn
             type="rightAligned"
-            cellRenderer={({ data }: VegaICellRendererParams<Position>) => (
-              <ButtonLink
-                data-testid="close-position"
-                onClick={() => data && onClose(data)}
-              >
-                {t('Close')}
-              </ButtonLink>
-            )}
+            cellRenderer={({ data }: VegaICellRendererParams<Position>) =>
+              data?.openVolume && data?.openVolume !== '0' ? (
+                <ButtonLink
+                  data-testid="close-position"
+                  onClick={() => data && onClose(data)}
+                >
+                  {t('Close')}
+                </ButtonLink>
+              ) : null
+            }
           />
         ) : null}
       </AgGrid>

@@ -45,7 +45,7 @@ const Home = ({ name }: RouteChildProps) => {
               trancheLink: (
                 <Link
                   data-testid="tranches-link"
-                  to={Routes.TRANCHES}
+                  to={Routes.SUPPLY}
                   className="underline text-white"
                 />
               ),
@@ -93,7 +93,7 @@ const Home = ({ name }: RouteChildProps) => {
         <p>
           <Link
             data-testid="associate-vega-tokens-link-on-homepage"
-            to={`${Routes.VALIDATORS}/associate`}
+            to={Routes.ASSOCIATE}
             className="underline text-white"
           >
             {t('Associate VEGA tokens')}

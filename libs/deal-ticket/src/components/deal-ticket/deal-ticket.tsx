@@ -1,4 +1,4 @@
-import { removeDecimal, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -10,11 +10,11 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
-import { usePersistedOrder } from '../../hooks/use-persisted-order';
 import {
   getDefaultOrder,
   validateMarketState,
@@ -26,14 +26,16 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import {
+  usePersistedOrderStore,
+  usePersistedOrderStoreSubscription,
+} from '@vegaprotocol/orders';
 
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
   market: MarketDealTicket;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
-  transactionStatus: TransactionStatus;
-  defaultOrder?: OrderSubmissionBody['orderSubmission'];
 }
 
 export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
@@ -42,13 +44,15 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   summary: string;
 };
 
-export const DealTicket = ({
-  market,
-  submit,
-  transactionStatus,
-}: DealTicketProps) => {
+export const DealTicket = ({ market, submit }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
-  const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
+  const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
+    (store) => ({
+      getPersistedOrder: store.getOrder,
+      setPersistedOrder: store.setOrder,
+    })
+  );
+
   const {
     register,
     control,
@@ -57,11 +61,24 @@ export const DealTicket = ({
     setError,
     clearErrors,
     formState: { errors },
+    setValue,
   } = useForm<DealTicketFormFields>({
-    defaultValues: persistedOrder || getDefaultOrder(market),
+    defaultValues: getPersistedOrder(market.id) || getDefaultOrder(market),
   });
 
   const order = watch();
+
+  watch((orderData) => {
+    setPersistedOrder(orderData as DealTicketFormFields);
+  });
+
+  usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
+    if (order.price !== storedOrder.price) {
+      clearErrors('price');
+      setValue('price', storedOrder.price);
+    }
+  });
+
   const marketStateError = validateMarketState(market.data.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
@@ -88,9 +105,6 @@ export const DealTicket = ({
     errors.summary?.message,
     errors.summary?.type,
   ]);
-
-  // When order state changes persist it in local storage
-  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
@@ -123,15 +137,13 @@ export const DealTicket = ({
         return;
       }
 
-      submit({
-        ...order,
-        price: order.price && removeDecimal(order.price, market.decimalPlaces),
-        size: removeDecimal(order.size, market.positionDecimalPlaces),
-        expiresAt:
-          order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-            ? order.expiresAt
-            : undefined,
-      });
+      submit(
+        normalizeOrderSubmission(
+          order,
+          market.decimalPlaces,
+          market.positionDecimalPlaces
+        )
+      );
     },
     [
       submit,
@@ -209,7 +221,6 @@ export const DealTicket = ({
         )}
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1}
-        transactionStatus={transactionStatus}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <SummaryMessage

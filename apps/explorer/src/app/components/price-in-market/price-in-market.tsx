@@ -3,24 +3,43 @@ import isUndefined from 'lodash/isUndefined';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 import get from 'lodash/get';
 
+export type DecimalSource = 'MARKET' | 'SETTLEMENT_ASSET';
+
 export type PriceInMarketProps = {
   marketId: string;
   price: string;
+  decimalSource?: DecimalSource;
 };
 
 /**
  * Given a market ID and a price it will fetch the market
  * and format the price in that market's decimal places.
  */
-const PriceInMarket = ({ marketId, price }: PriceInMarketProps) => {
+const PriceInMarket = ({
+  marketId,
+  price,
+  decimalSource = 'MARKET',
+}: PriceInMarketProps) => {
   const { data } = useExplorerMarketQuery({
     variables: { id: marketId },
+    fetchPolicy: 'cache-first',
   });
 
   let label = price;
 
-  if (data && data.market?.decimalPlaces) {
-    label = addDecimalsFormatNumber(price, data.market.decimalPlaces);
+  if (data) {
+    if (decimalSource === 'MARKET' && data.market?.decimalPlaces) {
+      label = addDecimalsFormatNumber(price, data.market.decimalPlaces);
+    } else if (
+      decimalSource === 'SETTLEMENT_ASSET' &&
+      data.market?.tradableInstrument.instrument.product.settlementAsset
+    ) {
+      label = addDecimalsFormatNumber(
+        price,
+        data.market?.tradableInstrument.instrument.product.settlementAsset
+          .decimals
+      );
+    }
   }
 
   const suffix = get(
@@ -37,9 +56,9 @@ const PriceInMarket = ({ marketId, price }: PriceInMarketProps) => {
     );
   } else {
     return (
-      <div className="inline-block">
+      <label>
         <span>{label}</span> <span>{suffix}</span>
-      </div>
+      </label>
     );
   }
 };

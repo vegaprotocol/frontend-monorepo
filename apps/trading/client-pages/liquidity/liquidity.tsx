@@ -12,6 +12,7 @@ import {
   t,
   useDataProvider,
   useNetworkParams,
+  updateGridData,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -22,26 +23,34 @@ import {
   Indicator,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { Header, HeaderStat } from '../../components/header';
+import { Header, HeaderStat, HeaderTitle } from '../../components/header';
 
 import type { AgGridReact } from 'ag-grid-react';
+import type { IGetRowsParams } from 'ag-grid-community';
+
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-  MarketDealTicket,
-  SingleMarketFieldsFragment,
-} from '@vegaprotocol/market-list';
-import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
+
+import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
 
 export const Liquidity = () => {
   const params = useParams();
   const marketId = params.marketId;
   return <LiquidityViewContainer marketId={marketId} />;
+};
+
+const useReloadLiquidityData = (marketId: string | undefined) => {
+  const { reload } = useDataProvider({
+    dataProvider: liquidityProvisionsDataProvider,
+    variables: useMemo(() => ({ marketId }), [marketId]),
+  });
+  useEffect(() => {
+    const interval = setInterval(reload, 10000);
+    return () => clearInterval(interval);
+  }, [reload]);
 };
 
 export const LiquidityContainer = ({
@@ -50,79 +59,24 @@ export const LiquidityContainer = ({
   marketId: string | undefined;
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [market, setMarket] = useState<MarketDealTicket | null>(null);
-  const variables = useMemo(
-    () => ({
-      marketId: marketId,
-    }),
-    [marketId]
-  );
-
-  const { data: marketProvision } = useDataProvider<
-    SingleMarketFieldsFragment,
-    never
-  >({
-    dataProvider: marketProvider,
-    variables,
-    skip: !marketId,
-  });
-
-  const updateMarket = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      if (marketData) {
-        setMarket({
-          ...marketProvision,
-          data: marketData,
-        } as MarketDealTicket);
-      }
-      return true;
-    },
-    [marketProvision]
-  );
-
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
-    dataProvider: marketDataProvider,
-    update: updateMarket,
-    variables,
-    skip: !marketId || !marketProvision,
-  });
+  const market = useMarket(marketId);
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
-  const { reload } = useDataProvider({
-    dataProvider: liquidityProvisionsDataProvider,
-    variables,
-  });
+  // To be removed when liquidityProvision subscriptions are working
+  useReloadLiquidityData(marketId);
 
   const update = useCallback(
     ({ data }: { data: LiquidityProvisionData[] | null }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
-      if (dataRef.current?.length) {
-        dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
-        return true;
-      }
-      return false;
+      return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );
 
-  const {
-    data: liquidityProviders,
-    loading,
-    error,
-  } = useDataProvider({
+  const { data, loading, error } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
-
-  // To be removed when liquidityProvision subscriptions are working
-  useEffect(() => {
-    const interval = setInterval(reload, 10000);
-    return () => clearInterval(interval);
-  }, [reload]);
 
   const assetDecimalPlaces =
     market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
@@ -133,28 +87,38 @@ export const LiquidityContainer = ({
     NetworkParams.market_liquidity_stakeToCcyVolume,
   ]);
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
-  const filteredEdges = useMemo(
-    () =>
-      liquidityProviders?.filter((e) =>
-        [
-          Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
-          Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
-          Schema.LiquidityProvisionStatus.STATUS_PENDING,
-        ].includes(e.status)
-      ),
-    [liquidityProviders]
+
+  const getRows = useCallback(
+    async ({ successCallback, startRow, endRow }: IGetRowsParams) => {
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow)
+        : [];
+      const lastRow = dataRef.current ? dataRef.current.length : 0;
+      successCallback(rowsThisBlock, lastRow);
+    },
+    []
   );
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={filteredEdges}>
+    <div className="h-full relative">
       <LiquidityTable
         ref={gridRef}
-        data={filteredEdges}
+        datasource={{ getRows }}
+        rowModelType="infinite"
         symbol={symbol}
         assetDecimalPlaces={assetDecimalPlaces}
         stakeToCcyVolume={stakeToCcyVolume}
       />
-    </AsyncRenderer>
+      <div className="pointer-events-none absolute inset-0">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={data}
+          noDataMessage={t('No liquidity provisions')}
+          noDataCondition={(data) => !data?.length}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -165,48 +129,13 @@ export const LiquidityViewContainer = ({
 }) => {
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
-  const [market, setMarket] = useState<MarketDealTicket | null>(null);
-  const variables = useMemo(
-    () => ({
-      marketId: marketId,
-    }),
-    [marketId]
-  );
+  const market = useMarket(marketId);
+  const marketData = useStaticMarketData(marketId);
 
-  const { data: marketProvision } = useDataProvider<
-    SingleMarketFieldsFragment,
-    never
-  >({
-    dataProvider: marketProvider,
-    variables,
-    skip: !marketId,
-  });
-
-  const updateMarket = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      if (marketData) {
-        setMarket({
-          ...marketProvision,
-          data: marketData,
-        } as MarketDealTicket);
-      }
-      return true;
-    },
-    [marketProvision]
-  );
-
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
-    dataProvider: marketDataProvider,
-    update: updateMarket,
-    variables,
-    skip: !marketId || !marketProvision,
-  });
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
-  const { reload } = useDataProvider({
-    dataProvider: liquidityProvisionsDataProvider,
-    variables: useMemo(() => ({ marketId }), [marketId]),
-  });
+  // To be removed when liquidityProvision subscriptions are working
+  useReloadLiquidityData(marketId);
 
   const update = useCallback(
     ({ data }: { data: LiquidityProvisionData[] | null }) => {
@@ -233,14 +162,8 @@ export const LiquidityViewContainer = ({
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
 
-  // To be removed when liquidityProvision subscriptions are working
-  useEffect(() => {
-    const interval = setInterval(reload, 10000);
-    return () => clearInterval(interval);
-  }, [reload]);
-
-  const targetStake = market?.data?.targetStake;
-  const suppliedStake = market?.data?.suppliedStake;
+  const targetStake = marketData?.targetStake;
+  const suppliedStake = marketData?.suppliedStake;
   const assetDecimalPlaces =
     market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
@@ -301,14 +224,18 @@ export const LiquidityViewContainer = ({
         <Header
           title={
             market?.tradableInstrument.instrument.name &&
+            market?.tradableInstrument.instrument.code &&
             marketId && (
-              <Link to={Links[Routes.MARKET](marketId)}>
-                <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
-                  {`${market?.tradableInstrument.instrument.name} ${t(
-                    'liquidity provision'
-                  )}`}
-                </UiToolkitLink>
-              </Link>
+              <HeaderTitle
+                primaryContent={`${
+                  market.tradableInstrument.instrument.code
+                } ${t('liquidity provision')}`}
+                secondaryContent={
+                  <Link to={Links[Routes.MARKET](marketId)}>
+                    <UiToolkitLink>{t('Go to trading')}</UiToolkitLink>
+                  </Link>
+                }
+              />
             )
           }
         >
@@ -359,7 +286,7 @@ export const LiquidityViewContainer = ({
             {myLpEdges && (
               <LiquidityTable
                 ref={gridRef}
-                data={myLpEdges}
+                rowData={myLpEdges}
                 symbol={symbol}
                 stakeToCcyVolume={stakeToCcyVolume}
                 assetDecimalPlaces={assetDecimalPlaces}
@@ -370,7 +297,7 @@ export const LiquidityViewContainer = ({
             {activeEdges && (
               <LiquidityTable
                 ref={gridRef}
-                data={activeEdges}
+                rowData={activeEdges}
                 symbol={symbol}
                 assetDecimalPlaces={assetDecimalPlaces}
                 stakeToCcyVolume={stakeToCcyVolume}
@@ -382,7 +309,7 @@ export const LiquidityViewContainer = ({
               {inactiveEdges && (
                 <LiquidityTable
                   ref={gridRef}
-                  data={inactiveEdges}
+                  rowData={inactiveEdges}
                   symbol={symbol}
                   assetDecimalPlaces={assetDecimalPlaces}
                   stakeToCcyVolume={stakeToCcyVolume}

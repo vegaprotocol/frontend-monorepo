@@ -13,6 +13,7 @@ import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo, Edge } from '@vegaprotocol/react-helpers';
 import type {
   OrderFieldsFragment,
+  OrderUpdateFieldsFragment,
   OrdersQuery,
   OrdersUpdateSubscription,
   OrdersQueryVariables,
@@ -24,7 +25,53 @@ export type Order = Omit<OrderFieldsFragment, 'market'> & {
 };
 export type OrderEdge = Edge<Order>;
 
-const getData = (responseData: OrdersQuery) =>
+const orderMatchFilters = (
+  order: OrderUpdateFieldsFragment,
+  variables: OrdersQueryVariables
+) => {
+  if (!order) {
+    return true;
+  }
+  if (
+    variables?.filter?.status &&
+    !(order.status && variables.filter.status.includes(order.status))
+  ) {
+    return false;
+  }
+  if (
+    variables?.filter?.types &&
+    !(order.type && variables.filter.types.includes(order.type))
+  ) {
+    return false;
+  }
+  if (
+    variables?.filter?.timeInForce &&
+    !variables.filter.timeInForce.includes(order.timeInForce)
+  ) {
+    return false;
+  }
+  if (
+    variables?.dateRange?.start &&
+    !(
+      (order.updatedAt || order.createdAt) &&
+      variables.dateRange.start < (order.updatedAt || order.createdAt)
+    )
+  ) {
+    return false;
+  }
+  if (
+    variables?.dateRange?.end &&
+    !(
+      (order.updatedAt || order.createdAt) &&
+      variables.dateRange.end > (order.updatedAt || order.createdAt)
+    )
+  ) {
+    return false;
+  }
+  return true;
+};
+
+const getData = (responseData: OrdersQuery | null) =>
   responseData?.party?.ordersConnection?.edges || [];
 
 const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
@@ -34,7 +81,7 @@ const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
   responseData.party?.ordersConnection?.pageInfo || null;
 
 export const update = (
-  data: ReturnType<typeof getData>,
+  data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getDelta>,
   reload: () => void,
   variables?: OrdersQueryVariables
@@ -57,23 +104,7 @@ export const update = (
         draft.length === 0 ||
         (node.updatedAt || node.createdAt) >=
           (draft[0].node.updatedAt || draft[0].node.createdAt);
-      let doesFilterPass = true;
-      if (
-        doesFilterPass &&
-        variables?.dateRange?.start &&
-        new Date(node.updatedAt || node.createdAt) <=
-          new Date(variables?.dateRange?.start)
-      ) {
-        doesFilterPass = false;
-      }
-      if (
-        doesFilterPass &&
-        variables?.dateRange?.end &&
-        new Date(node.updatedAt || node.createdAt) >=
-          new Date(variables?.dateRange?.end)
-      ) {
-        doesFilterPass = false;
-      }
+      const doesFilterPass = !variables || orderMatchFilters(node, variables);
       if (index !== -1) {
         if (doesFilterPass) {
           Object.assign(draft[index].node, node);

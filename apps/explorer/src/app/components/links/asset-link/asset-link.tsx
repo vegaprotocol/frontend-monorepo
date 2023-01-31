@@ -4,6 +4,7 @@ import { useExplorerAssetQuery } from './__generated__/Asset';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
+import Hash from '../hash';
 
 export type AssetLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
@@ -16,7 +17,6 @@ export type AssetLinkProps = Partial<ComponentProps<typeof Link>> & {
  */
 const AssetLink = ({ id, ...props }: AssetLinkProps) => {
   const { data } = useExplorerAssetQuery({
-    fetchPolicy: 'cache-first',
     variables: { id },
   });
 
@@ -28,7 +28,7 @@ const AssetLink = ({ id, ...props }: AssetLinkProps) => {
 
   return (
     <Link className="underline" {...props} to={`/${Routes.ASSETS}#${id}`}>
-      {label}
+      <Hash text={label} />
     </Link>
   );
 };

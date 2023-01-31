@@ -9,9 +9,14 @@ import { useFillsList } from './use-fills-list';
 interface FillsManagerProps {
   partyId: string;
   marketId?: string;
+  onMarketClick?: (marketId: string) => void;
 }
 
-export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
+export const FillsManager = ({
+  partyId,
+  marketId,
+  onMarketClick,
+}: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const { data, error, loading, addNewRows, getRows } = useFillsList({
@@ -41,6 +46,7 @@ export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
         noRowsOverlayComponent={() => null}
+        onMarketClick={onMarketClick}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

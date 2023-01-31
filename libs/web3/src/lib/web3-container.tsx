@@ -22,13 +22,24 @@ export const Web3Container = ({
   connectEagerly,
 }: Web3ContainerProps) => {
   const { config, loading, error } = useEthereumConfig();
-  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
+    useEnvironment();
   const connectors = useMemo(() => {
     if (config?.chain_id) {
-      return createConnectors(ETHEREUM_PROVIDER_URL, Number(config?.chain_id));
+      return createConnectors(
+        ETHEREUM_PROVIDER_URL,
+        Number(config?.chain_id),
+        ETH_LOCAL_PROVIDER_URL,
+        ETH_WALLET_MNEMONIC
+      );
     }
     return null;
-  }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
+  }, [
+    config?.chain_id,
+    ETHEREUM_PROVIDER_URL,
+    ETH_LOCAL_PROVIDER_URL,
+    ETH_WALLET_MNEMONIC,
+  ]);
   return (
     <AsyncRenderer data={config} loading={loading} error={error}>
       {connectors && config && (

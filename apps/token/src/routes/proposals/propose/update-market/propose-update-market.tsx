@@ -94,7 +94,6 @@ export const ProposeUpdateMarket = () => {
   const [selectedMarket, setSelectedMarket] = useState<string | undefined>(
     undefined
   );
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
@@ -132,9 +131,9 @@ export const ProposeUpdateMarket = () => {
       terms: {
         updateMarket: {
           marketId: fields.proposalMarketId,
-          changes: {
-            ...JSON.parse(fields.proposalTerms),
-          },
+          changes: fields.proposalTerms
+            ? { ...JSON.parse(fields.proposalTerms) }
+            : {},
         },
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,

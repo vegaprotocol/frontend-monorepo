@@ -53,7 +53,6 @@ export const ProposeUpdateAsset = () => {
     NetworkParams.governance_proposal_updateAsset_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
@@ -89,9 +88,9 @@ export const ProposeUpdateAsset = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        updateAsset: {
-          ...JSON.parse(fields.proposalTerms),
-        },
+        updateAsset: fields.proposalTerms
+          ? { ...JSON.parse(fields.proposalTerms) }
+          : {},
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
           isVoteDeadlineAtMinimum,

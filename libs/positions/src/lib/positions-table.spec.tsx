@@ -172,3 +172,33 @@ it('displays realised and unrealised PNL', async () => {
   expect(cells[9].textContent).toEqual('1.23');
   expect(cells[10].textContent).toEqual('4.56');
 });
+
+it('displays close button', async () => {
+  await act(async () => {
+    render(
+      <PositionsTable
+        rowData={singleRowData}
+        onClose={() => {
+          return;
+        }}
+      />
+    );
+  });
+  const cells = screen.getAllByRole('gridcell');
+  expect(cells[12].textContent).toEqual('Close');
+});
+
+it('do not display close button if openVolume is zero', async () => {
+  await act(async () => {
+    render(
+      <PositionsTable
+        rowData={[{ ...singleRow, openVolume: '0' }]}
+        onClose={() => {
+          return;
+        }}
+      />
+    );
+  });
+  const cells = screen.getAllByRole('gridcell');
+  expect(cells[12].textContent).toEqual('');
+});

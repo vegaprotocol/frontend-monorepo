@@ -1,5 +1,5 @@
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import create from 'zustand';
+import { create } from 'zustand';
 import produce from 'immer';
 
 interface GlobalStore {

@@ -18,6 +18,7 @@ import type {
   NodesFragmentFragment,
 } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
+import BigNumber from 'bignumber.js';
 
 export interface ValidatorsTableProps {
   data: NodesQuery | undefined;
@@ -77,8 +78,8 @@ export const ValidatorTables = ({
     const lowestRankingConsensusScore = consensusValidators.reduce(
       (lowest: NodesFragmentFragment, validator: NodesFragmentFragment) => {
         if (
-          validator?.rankingScore &&
-          Number(validator.rankingScore) < Number(lowest.rankingScore)
+          Number(validator.rankingScore.rankingScore) <
+          Number(lowest.rankingScore.rankingScore)
         ) {
           lowest = validator;
         }
@@ -87,10 +88,12 @@ export const ValidatorTables = ({
     ).rankingScore.rankingScore;
 
     const lowestRankingBigNum = toBigNum(lowestRankingConsensusScore, 0);
-    const totalStakeBigNum = toBigNum(totalStake, decimals);
+    const consensusStakedTotal = consensusValidators.reduce((acc, cur) => {
+      return acc.plus(toBigNum(cur.stakedTotal, decimals));
+    }, new BigNumber(0));
 
     stakeNeededForPromotion = formatNumber(
-      lowestRankingBigNum.times(totalStakeBigNum),
+      lowestRankingBigNum.times(consensusStakedTotal),
       2
     ).toString();
   }

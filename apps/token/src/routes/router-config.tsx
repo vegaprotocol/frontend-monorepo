@@ -202,12 +202,12 @@ const LazyWithdrawals = React.lazy(
 
 const redirects = [
   {
-    path: Routes.STAKING,
+    path: Routes.VALIDATORS,
     element: <Navigate to={Routes.VALIDATORS} replace />,
   },
   {
     path: '/tranches',
-    element: <Navigate to={Routes.TRANCHES} replace />,
+    element: <Navigate to={Routes.SUPPLY} replace />,
   },
   {
     path: '/withdrawals',
@@ -264,8 +264,6 @@ const routerConfig = [
     path: Routes.VALIDATORS,
     element: <LazyStaking name="Staking" />,
     children: [
-      { path: 'associate', element: <LazyStakingAssociate /> },
-      { path: 'disassociate', element: <LazyStakingDisassociate /> },
       { path: ':node', element: <LazyStakingNode /> },
       {
         index: true,
@@ -286,7 +284,7 @@ const routerConfig = [
         index: true,
       },
       {
-        path: Routes.TRANCHES,
+        path: Routes.SUPPLY,
         element: <LazyTranches name="Tranches" />,
         children: [
           { index: true, element: <LazyTranchesTranches /> },
@@ -311,6 +309,8 @@ const routerConfig = [
           },
         ],
       },
+      { path: 'associate', element: <LazyStakingAssociate /> },
+      { path: 'disassociate', element: <LazyStakingDisassociate /> },
     ],
   },
   {

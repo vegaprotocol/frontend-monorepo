@@ -114,7 +114,7 @@ export const MarketLiquiditySupplied = ({
       MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
     market.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
-  const description = (
+  const description = marketId ? (
     <section>
       {compiledGrid && <DataGrid grid={compiledGrid} />}
       <br />
@@ -129,9 +129,11 @@ export const MarketLiquiditySupplied = ({
         </p>
       )}
     </section>
+  ) : (
+    '-'
   );
 
-  return (
+  return marketId ? (
     <HeaderStat
       heading={t('Liquidity supplied')}
       description={description}
@@ -140,6 +142,10 @@ export const MarketLiquiditySupplied = ({
       <Indicator variant={status} />
       {supplied} (
       {percentage.gt(100) ? '>100%' : formatNumberPercentage(percentage, 2)})
+    </HeaderStat>
+  ) : (
+    <HeaderStat heading={t('Liquidity supplied')} testId="liquidity-supplied">
+      {'-'}
     </HeaderStat>
   );
 };

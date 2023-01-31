@@ -43,3 +43,23 @@ export const aliasWalletQuery = (
     }
   }
 };
+
+export const aliasWalletConnectQuery = (
+  req: CyHttpMessages.IncomingHttpRequest,
+  token: string
+) => {
+  if (hasMethod(req, 'client.connect_wallet')) {
+    req.alias = 'client.connect_wallet';
+    req.reply({
+      statusCode: 200,
+      headers: {
+        'Access-Control-Expose-Headers': 'Authorization',
+        Authorization: `VWT ${token}`,
+      },
+      body: {
+        jsonrpc: '2.0',
+        id: '0',
+      },
+    });
+  }
+};

@@ -6,7 +6,6 @@ import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
 import { ClientErrors } from './connectors';
-import { WalletError } from './connectors';
 
 export interface DialogProps {
   intent?: Intent;
@@ -25,7 +24,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: WalletError | null;
+  error: Error | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -89,8 +88,9 @@ export const useVegaTransaction = () => {
 
         return null;
       } catch (err) {
+        const error = err instanceof Error ? err : ClientErrors.UNKNOWN;
         setTransaction({
-          error: err instanceof WalletError ? err : ClientErrors.UNKNOWN,
+          error,
           status: VegaTxStatus.Error,
         });
         return null;

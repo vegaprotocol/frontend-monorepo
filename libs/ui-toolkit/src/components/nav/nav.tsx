@@ -2,24 +2,29 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 export function getNavLinkClassNames(
-  navbarTheme: string
+  navbarTheme: string,
+  fullWidth = false
 ): (props: { isActive?: boolean }) => string | undefined {
   return ({ isActive = false }) => {
-    return getActiveNavLinkClassNames(isActive, navbarTheme);
+    return getActiveNavLinkClassNames(isActive, navbarTheme, fullWidth);
   };
 }
 
 export const getActiveNavLinkClassNames = (
   isActive: boolean,
-  navbarTheme: string
+  navbarTheme: string,
+  fullWidth = false
 ): string | undefined => {
-  return classNames('mx-2 py-3 self-end relative', {
+  return classNames('mx-2 my-4 md:my-0 md:py-3 self-start relative', {
     'cursor-default': isActive,
     'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
     'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
       !isActive && navbarTheme !== 'yellow',
-    'text-black': isActive && navbarTheme === 'yellow',
-    'text-black/60 hover:text-black': !isActive && navbarTheme === 'yellow',
+    'text-black dark:text-white md:dark:text-black':
+      isActive && navbarTheme === 'yellow',
+    'text-black/60 dark:text-neutral-400 md:dark:text-black/60 hover:text-black':
+      !isActive && navbarTheme === 'yellow',
+    'flex-1': fullWidth,
   });
 };
 

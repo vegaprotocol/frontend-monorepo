@@ -71,6 +71,15 @@ fragment OrderBusEventFields on Order {
     tradableInstrument {
       instrument {
         name
+        code
+        product {
+          ... on Future {
+            settlementAsset {
+              symbol
+              decimals
+            }
+          }
+        }
       }
     }
   }

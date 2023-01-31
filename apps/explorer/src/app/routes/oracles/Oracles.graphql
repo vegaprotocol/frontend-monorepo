@@ -1,0 +1,102 @@
+fragment ExplorerOracleDataSource on OracleSpec {
+  dataSourceSpec {
+    spec {
+      id
+      createdAt
+      updatedAt
+      status
+      data {
+        sourceType {
+          ... on DataSourceDefinitionInternal {
+            sourceType {
+              ... on DataSourceSpecConfigurationTime {
+                conditions {
+                  value
+                  operator
+                }
+              }
+            }
+          }
+          ... on DataSourceDefinitionExternal {
+            sourceType {
+              ... on DataSourceSpecConfiguration {
+                signers {
+                  signer {
+                    ... on ETHAddress {
+                      address
+                    }
+                    ... on PubKey {
+                      key
+                    }
+                  }
+                }
+                filters {
+                  key {
+                    name
+                    type
+                  }
+                  conditions {
+                    value
+                    operator
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ExplorerOracleDataConnection on OracleSpec {
+  dataConnection {
+    pageInfo {
+      hasNextPage
+    }
+    edges {
+      node {
+        externalData {
+          data {
+            signers {
+              signer {
+                ... on ETHAddress {
+                  address
+                }
+                ... on PubKey {
+                  key
+                }
+              }
+            }
+            data {
+              name
+              value
+            }
+            matchedSpecIds
+            broadcastAt
+          }
+        }
+      }
+    }
+  }
+}
+
+query ExplorerOracleSpecs {
+  oracleSpecsConnection(pagination: { first: 50 }) {
+    pageInfo {
+      hasNextPage
+    }
+    edges {
+      node {
+        ...ExplorerOracleDataSource
+      }
+    }
+  }
+}
+
+query ExplorerOracleSpecById($id: ID!) {
+  oracleSpec(oracleSpecId: $id) {
+    ...ExplorerOracleDataSource
+    ...ExplorerOracleDataConnection
+  }
+}

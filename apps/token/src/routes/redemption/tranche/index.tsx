@@ -78,7 +78,7 @@ export const RedeemFromTranche = () => {
             i18nKey="noVestingTokens"
             components={{
               tranchesLink: (
-                <Link className="underline text-white" to={Routes.TRANCHES} />
+                <Link className="underline text-white" to={Routes.SUPPLY} />
               ),
             }}
           />

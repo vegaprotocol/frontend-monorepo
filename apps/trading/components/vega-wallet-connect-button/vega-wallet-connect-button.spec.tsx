@@ -3,13 +3,12 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import { truncateByChars } from '@vegaprotocol/react-helpers';
+import userEvent from '@testing-library/user-event';
 
 const mockUpdateDialogOpen = jest.fn();
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
-  useVegaWalletDialogStore: () => ({
-    openVegaWalletDialog: mockUpdateDialogOpen,
-  }),
+  useVegaWalletDialogStore: () => mockUpdateDialogOpen,
 }));
 
 beforeEach(() => {
@@ -27,13 +26,13 @@ const generateJsx = (context: VegaWalletContextShape) => {
 it('Not connected', () => {
   render(generateJsx({ pubKey: null } as VegaWalletContextShape));
 
-  const button = screen.getByRole('button');
+  const button = screen.getByTestId('connect-vega-wallet');
   expect(button).toHaveTextContent('Connect Vega wallet');
   fireEvent.click(button);
   expect(mockUpdateDialogOpen).toHaveBeenCalled();
 });
 
-it('Connected', () => {
+it('Connected', async () => {
   const pubKey = { publicKey: '123456__123456', name: 'test' };
   render(
     generateJsx({
@@ -42,8 +41,8 @@ it('Connected', () => {
     } as VegaWalletContextShape)
   );
 
-  const button = screen.getByRole('button');
+  const button = screen.getByTestId('manage-vega-wallet');
   expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
-  fireEvent.click(button);
+  userEvent.click(button);
   expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
 });

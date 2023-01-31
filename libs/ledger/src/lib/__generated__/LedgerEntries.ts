@@ -3,16 +3,18 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type LedgerEntryFragment = { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, receiverAccountType?: Types.AccountType | null, receiverMarketId?: string | null, receiverPartyId?: string | null, senderAccountType?: Types.AccountType | null, senderMarketId?: string | null, senderPartyId?: string | null };
+export type LedgerEntryFragment = { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, toAccountType?: Types.AccountType | null, toAccountMarketId?: string | null, toAccountPartyId?: string | null, toAccountBalance: string, fromAccountType?: Types.AccountType | null, fromAccountMarketId?: string | null, fromAccountPartyId?: string | null, fromAccountBalance: string };
 
 export type LedgerEntriesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
   dateRange?: Types.InputMaybe<Types.DateRange>;
+  fromAccountType?: Types.InputMaybe<Array<Types.AccountType> | Types.AccountType>;
+  toAccountType?: Types.InputMaybe<Array<Types.AccountType> | Types.AccountType>;
 }>;
 
 
-export type LedgerEntriesQuery = { __typename?: 'Query', ledgerEntries: { __typename?: 'AggregatedLedgerEntriesConnection', edges: Array<{ __typename?: 'AggregatedLedgerEntriesEdge', node: { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, receiverAccountType?: Types.AccountType | null, receiverMarketId?: string | null, receiverPartyId?: string | null, senderAccountType?: Types.AccountType | null, senderMarketId?: string | null, senderPartyId?: string | null } } | null>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } };
+export type LedgerEntriesQuery = { __typename?: 'Query', ledgerEntries: { __typename?: 'AggregatedLedgerEntriesConnection', edges: Array<{ __typename?: 'AggregatedLedgerEntriesEdge', node: { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, toAccountType?: Types.AccountType | null, toAccountMarketId?: string | null, toAccountPartyId?: string | null, toAccountBalance: string, fromAccountType?: Types.AccountType | null, fromAccountMarketId?: string | null, fromAccountPartyId?: string | null, fromAccountBalance: string } } | null>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } };
 
 export const LedgerEntryFragmentDoc = gql`
     fragment LedgerEntry on AggregatedLedgerEntry {
@@ -20,18 +22,20 @@ export const LedgerEntryFragmentDoc = gql`
   quantity
   assetId
   transferType
-  receiverAccountType
-  receiverMarketId
-  receiverPartyId
-  senderAccountType
-  senderMarketId
-  senderPartyId
+  toAccountType
+  toAccountMarketId
+  toAccountPartyId
+  toAccountBalance
+  fromAccountType
+  fromAccountMarketId
+  fromAccountPartyId
+  fromAccountBalance
 }
     `;
 export const LedgerEntriesDocument = gql`
-    query LedgerEntries($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
+    query LedgerEntries($partyId: ID!, $pagination: Pagination, $dateRange: DateRange, $fromAccountType: [AccountType!], $toAccountType: [AccountType!]) {
   ledgerEntries(
-    filter: {SenderAccountFilter: {partyIds: [$partyId]}, ReceiverAccountFilter: {partyIds: [$partyId]}}
+    filter: {FromAccountFilter: {partyIds: [$partyId], accountTypes: $fromAccountType}, ToAccountFilter: {partyIds: [$partyId], accountTypes: $toAccountType}}
     pagination: $pagination
     dateRange: $dateRange
   ) {
@@ -65,6 +69,8 @@ export const LedgerEntriesDocument = gql`
  *      partyId: // value for 'partyId'
  *      pagination: // value for 'pagination'
  *      dateRange: // value for 'dateRange'
+ *      fromAccountType: // value for 'fromAccountType'
+ *      toAccountType: // value for 'toAccountType'
  *   },
  * });
  */

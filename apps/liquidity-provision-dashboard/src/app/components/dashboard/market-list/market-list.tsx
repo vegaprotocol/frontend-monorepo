@@ -10,7 +10,6 @@ import {
   formatNumberPercentage,
   t,
   toBigNum,
-  getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import type * as Schema from '@vegaprotocol/types';
@@ -31,6 +30,7 @@ import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
+import { getExpiryDate } from '@vegaprotocol/react-helpers';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
@@ -215,7 +215,7 @@ export const MarketList = () => {
                   ) * 100;
                 const display = Number.isNaN(roundedPercentage)
                   ? 'N/A'
-                  : formatNumberPercentage(toBigNum(roundedPercentage, 2));
+                  : formatNumberPercentage(toBigNum(roundedPercentage, 0), 0);
                 return display;
               } else return '-';
             }}
@@ -299,17 +299,20 @@ export const MarketList = () => {
           />
           <AgGridColumn
             headerName={t('Closing Time')}
-            field="proposal.terms.closingDatetime"
+            field="tradableInstrument.instrument.metadata.tags"
             headerTooltip={t('Closing time of the market')}
             valueFormatter={({
-              value,
-            }: VegaValueFormatterParams<
-              Market,
-              'proposal.terms.closingDatetime'
-            >) => {
-              return value
-                ? getDateTimeFormat().format(new Date(value).getTime())
-                : '-';
+              data,
+            }: VegaValueFormatterParams<Market, ''>) => {
+              let expiry;
+              if (data?.tradableInstrument.instrument.metadata.tags) {
+                expiry = getExpiryDate(
+                  data?.tradableInstrument.instrument.metadata.tags,
+                  data?.marketTimestamps.close,
+                  data?.state
+                );
+              }
+              return expiry ? expiry : '-';
             }}
           />
         </Grid>

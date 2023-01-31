@@ -4,6 +4,7 @@ import { useExplorerNodeQuery } from './__generated__/Node';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
+import Hash from '../hash';
 
 export type NodeLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
@@ -22,7 +23,7 @@ const NodeLink = ({ id, ...props }: NodeLinkProps) => {
 
   return (
     <Link className="underline" {...props} to={`/${Routes.VALIDATORS}#${id}`}>
-      <code>{label}</code>
+      <Hash text={label} />
     </Link>
   );
 };

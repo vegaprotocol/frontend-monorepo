@@ -9,9 +9,13 @@ const ignore = [
   'libs/fills/src/lib/fills-data-provider.ts',
   'libs/orders/src/lib/components/order-data-provider/order-data-provider.ts',
   'libs/trades/src/lib/trades-data-provider.ts',
+  // any queries in libs/cypress run against capsule
+  'libs/cypress/**/*.ts',
+  'libs/cypress/**/*.js',
 ];
 
 const globPromise = util.promisify(glob);
+const globOptions = { ignore };
 
 const processTsFiles = (files) => {
   for (const file of files) {
@@ -44,15 +48,11 @@ ${textContent}
 };
 
 const run = async () => {
-  const files1 = await globPromise('apps/**/*.ts');
-  const files2 = await globPromise('libs/**/*.ts');
-  const files3 = await globPromise('apps/**/*.tsx');
-  const files4 = await globPromise('lib/**/*.tsx');
-  processTsFiles(
-    [...files1, ...files2, ...files3, ...files4].filter(
-      (f) => !ignore.includes(f)
-    )
-  );
+  const files1 = await globPromise('apps/**/*.ts', globOptions);
+  const files2 = await globPromise('libs/**/*.ts', globOptions);
+  const files3 = await globPromise('apps/**/*.tsx', globOptions);
+  const files4 = await globPromise('lib/**/*.tsx', globOptions);
+  processTsFiles([...files1, ...files2, ...files3, ...files4]);
   const gqlFiles1 = await globPromise('lib/**/*.graphql');
   const gqlFiles2 = await globPromise('apps/**/*.graphql');
   processGraphQlFiles([...gqlFiles1, ...gqlFiles2]);

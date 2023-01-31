@@ -1,11 +1,11 @@
-import { aliasWalletQuery } from '../mock-rest';
+import { aliasWalletConnectQuery } from '../mock-rest';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      connectVegaWallet(): void;
+      connectVegaWallet(isMobile?: boolean): void;
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
@@ -15,20 +15,18 @@ declare global {
 }
 
 export const mockConnectWallet = () => {
-  const data = {
-    token: Cypress.env('VEGA_WALLET_API_TOKEN'),
-  };
-  console.log('mockConnectWallet', data);
   cy.mockWallet((req) => {
-    aliasWalletQuery(req, 'client.connect_wallet', data);
+    aliasWalletConnectQuery(req, Cypress.env('VEGA_WALLET_API_TOKEN'));
   });
 };
 
 export function addVegaWalletConnect() {
-  Cypress.Commands.add('connectVegaWallet', () => {
+  Cypress.Commands.add('connectVegaWallet', (isMobile) => {
     mockConnectWallet();
     cy.highlight(`Connecting Vega Wallet`);
-    cy.get('[data-testid=connect-vega-wallet]').click();
+    cy.get(
+      `[data-testid=connect-vega-wallet${isMobile ? '-mobile' : ''}]`
+    ).click();
     cy.get('[data-testid=connectors-list]')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
@@ -48,7 +46,7 @@ export function addSetVegaWallet() {
       win.localStorage.setItem(
         'vega_wallet_config',
         JSON.stringify({
-          token: Cypress.env('VEGA_WALLET_API_TOKEN'),
+          token: `VWT ${Cypress.env('VEGA_WALLET_API_TOKEN')}`,
           connector: 'jsonRpc',
           url: 'http://localhost:1789',
         })

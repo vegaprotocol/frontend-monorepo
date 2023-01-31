@@ -14,6 +14,7 @@ export interface ToggleProps {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   checkedValue?: string | undefined | null;
   type?: 'primary' | 'buy' | 'sell';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export const Toggle = ({
@@ -23,6 +24,7 @@ export const Toggle = ({
   onChange,
   checkedValue,
   type = 'primary',
+  size = 'lg',
   ...props
 }: ToggleProps) => {
   const fieldsetClasses =
@@ -35,7 +37,6 @@ export const Toggle = ({
   const buttonClasses = classnames(
     'relative inline-block w-full text-center',
     'peer-checked:rounded-full',
-    'px-10 py-2',
     {
       'peer-checked:bg-neutral-400 dark:peer-checked:bg-white dark:peer-checked:text-black':
         type === 'primary',
@@ -45,7 +46,13 @@ export const Toggle = ({
         type === 'sell',
     },
     'peer-checked:text-white dark:peer-checked:text-black',
-    'cursor-pointer peer-checked:cursor-auto select-none'
+    'cursor-pointer peer-checked:cursor-auto select-none',
+    {
+      'px-10 py-2': size === 'lg',
+      'px-8 py-2': size === 'md',
+      'px-6 py-2': size === 'sm',
+    },
+    'peer-focus:outline peer-focus:outline-2 peer-focus:outline-blue-700 dark:peer-focus:outline-blue-300 peer-focus:outline-offset-2'
   );
 
   return (

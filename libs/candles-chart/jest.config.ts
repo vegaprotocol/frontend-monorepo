@@ -7,5 +7,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/candles-chart',
-  setupFiles: ['jest-canvas-mock'],
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

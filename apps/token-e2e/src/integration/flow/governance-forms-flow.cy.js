@@ -1,3 +1,7 @@
+const proposalListItem = '[data-testid="proposals-list-item"]';
+const openProposals = '[data-testid="open-proposals"]';
+const proposalType = '[data-testid="proposal-type"]';
+const proposalDetails = '[data-testid="proposal-details"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
@@ -20,6 +24,7 @@ const dialogCloseButton = '[data-testid="dialog-close"]';
 const inputError = '[data-testid="input-error-text"]';
 const enactmentDeadlineError =
   '[data-testid="enactment-before-voting-deadline"]';
+const proposalDownloadBtn = '[data-testid="proposal-download-json"]';
 const feedbackError = '[data-testid="Error"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
@@ -60,7 +65,7 @@ context(
       // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
-      cy.get(proposalParameterSelect).find('option').should('have.length', 114);
+      cy.get(proposalParameterSelect).find('option').should('have.length', 116);
       cy.get(proposalParameterSelect).select(
         // 3007-PNEC-002
         'governance_proposal_asset_minEnact'
@@ -94,6 +99,55 @@ context(
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'not.exist'
       );
+    });
+
+    it('Able to download network param proposal json', function () {
+      const downloadFolder = './cypress/downloads/';
+      cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
+      cy.log('Download proposal file');
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          const filename =
+            downloadFolder +
+            'vega-network-param-proposal-' +
+            getFormattedTime() +
+            '.json';
+          cy.readFile(filename, proposalTimeout)
+            .its('terms.updateNetworkParameter')
+            .should('exist');
+        });
+
+      cy.get(newProposalDescription).type('E2E test for downloading proposals');
+      cy.get(proposalParameterSelect).select(
+        'governance_proposal_asset_minClose'
+      );
+      cy.get(newProposedParameterValue).type('10s');
+
+      cy.log('Download updated proposal file');
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          const filename =
+            downloadFolder +
+            'vega-network-param-proposal-' +
+            getFormattedTime() +
+            '.json';
+          cy.get(proposalDownloadBtn).should('be.visible').click();
+          cy.readFile(filename, proposalTimeout).then((jsonFile) => {
+            cy.wrap(jsonFile)
+              .its('rationale.description')
+              .should('eq', 'E2E test for downloading proposals');
+            cy.wrap(jsonFile)
+              .its('terms.updateNetworkParameter.changes.key')
+              .should('eq', 'governance.proposal.asset.minClose');
+            cy.wrap(jsonFile)
+              .its('terms.updateNetworkParameter.changes.value')
+              .should('eq', '10s');
+          });
+        });
     });
 
     it('Unable to submit network parameter proposal with vote deadline above enactment deadline', function () {
@@ -159,18 +213,15 @@ context(
       );
     });
 
-    // skipped because no markets available to select in capsule
     it.skip('Able to submit update market proposal', function () {
-      const marketId =
-        '315a8e48db0a292c92b617264728048c82c20efc922c75fd292fc54e5c727c81';
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
-      cy.get(newProposalTitle).type('Test update asset proposal');
+      cy.get(newProposalTitle).type('Test update market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.get(proposalMarketSelect).select(marketId);
+      cy.get(proposalMarketSelect).select('Test market 1');
       cy.get('[data-testid="update-market-details"]').within(() => {
-        cy.get('dd').eq(0).should('have.text', 'Oranges Daily');
-        cy.get('dd').eq(1).should('have.text', 'ORANGES.24h');
-        cy.get('dd').eq(2).should('have.text', marketId);
+        cy.get('dd').eq(0).should('have.text', 'Test market 1');
+        cy.get('dd').eq(1).should('have.text', 'TEST.24h');
+        cy.get('dd').eq(2).should('not.be.empty');
       });
       cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
         let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
@@ -231,12 +282,28 @@ context(
     });
 
     it('Able to submit update asset proposal using min deadline', function () {
+      const assetId =
+        'ebcd94151ae1f0d39a4bde3b21a9c7ae81a80ea4352fb075a92e07608d9c953d';
+
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
       cy.get(minVoteDeadline).click();
       cy.get(minEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
+      cy.navigate_to('proposals');
+      cy.get(openProposals).within(() => {
+        cy.get(proposalType)
+          .contains('Update asset')
+          .parentsUntil(proposalListItem)
+          .within(() => {
+            cy.get(proposalDetails).should('contain.text', assetId); // 3001-VOTE-029
+            cy.getByTestId('view-proposal-btn').click();
+          });
+      });
+      cy.get_proposal_information_from_table('Proposed enactment') // 3001-VOTE-044
+        .invoke('text')
+        .should('not.be.empty');
     });
 
     it('Able to submit update asset proposal using max deadline', function () {
@@ -253,6 +320,17 @@ context(
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.get(inputError).should('have.length', 3);
     });
+
+    function getFormattedTime() {
+      const now = new Date();
+      const day = now.getDate().toString().padStart(2, '0');
+      const month = now.toLocaleString('en-US', { month: 'short' });
+      const year = now.getFullYear().toString();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+
+      return `${day}-${month}-${year}-${hours}-${minutes}`;
+    }
 
     function enterUpdateAssetProposalDetails() {
       cy.get(newProposalTitle).type('Test update asset proposal');

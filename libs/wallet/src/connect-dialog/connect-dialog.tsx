@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import {
   Button,
   Dialog,
@@ -9,8 +9,10 @@ import {
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
+import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { ExternalLinks, t, useChainIdQuery } from '@vegaprotocol/react-helpers';
-import type { VegaConnector, WalletError } from '../connectors';
+import type { VegaConnector } from '../connectors';
+import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
@@ -22,10 +24,11 @@ import {
 } from './connect-dialog-elements';
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
+import { ViewConnectorForm } from './view-connector-form';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'jsonRpc' | 'hosted';
+type WalletType = 'jsonRpc' | 'hosted' | 'view';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -42,7 +45,7 @@ export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
   })
 );
 
-interface VegaWalletDialogStore {
+export interface VegaWalletDialogStore {
   vegaWalletDialogOpen: boolean;
   updateVegaWalletDialog: (open: boolean) => void;
   openVegaWalletDialog: () => void;
@@ -53,25 +56,25 @@ export const VegaConnectDialog = ({
   connectors,
   onChangeOpen,
 }: VegaConnectDialogProps) => {
-  const {
-    vegaWalletDialogOpen,
-    closeVegaWalletDialog,
-    updateVegaWalletDialog,
-  } = useVegaWalletDialogStore((store) => ({
-    vegaWalletDialogOpen: store.vegaWalletDialogOpen,
-    updateVegaWalletDialog: onChangeOpen
+  const vegaWalletDialogOpen = useVegaWalletDialogStore(
+    (store) => store.vegaWalletDialogOpen
+  );
+  const updateVegaWalletDialog = useVegaWalletDialogStore((store) =>
+    onChangeOpen
       ? (open: boolean) => {
           store.updateVegaWalletDialog(open);
           onChangeOpen(open);
         }
-      : store.updateVegaWalletDialog,
-    closeVegaWalletDialog: onChangeOpen
+      : store.updateVegaWalletDialog
+  );
+  const closeVegaWalletDialog = useVegaWalletDialogStore((store) =>
+    onChangeOpen
       ? () => {
           store.closeVegaWalletDialog();
           onChangeOpen(false);
         }
-      : store.closeVegaWalletDialog,
-  }));
+      : store.closeVegaWalletDialog
+  );
 
   const { data, error, loading } = useChainIdQuery();
 
@@ -217,7 +220,7 @@ const ConnectorList = ({
             />
           </li>
           {!isMainnet && (
-            <li className="mb-0 border-t pt-4">
+            <li className="mb-4 last:mb-0">
               <ConnectionOption
                 type="hosted"
                 text={t('Hosted Fairground wallet')}
@@ -225,6 +228,13 @@ const ConnectorList = ({
               />
             </li>
           )}
+          <li className="mb-4 last:mb-0">
+            <ConnectionOption
+              type="view"
+              text={t('View as vega user')}
+              onClick={() => onSelect('view')}
+            />
+          </li>
         </ul>
       </ConnectDialogContent>
       <ConnectDialogFooter />
@@ -245,7 +255,7 @@ const SelectedForm = ({
   appChainId: string;
   jsonRpcState: {
     status: Status;
-    error: WalletError | null;
+    error: WalletClientError | null;
   };
   reset: () => void;
   onConnect: () => void;
@@ -301,6 +311,17 @@ const SelectedForm = ({
     );
   }
 
+  if (connector instanceof ViewConnector) {
+    return (
+      <>
+        <ConnectDialogContent>
+          <ViewConnectorForm connector={connector} onConnect={onConnect} />
+        </ConnectDialogContent>
+        <ConnectDialogFooter />
+      </>
+    );
+  }
+
   throw new Error('No connector selected');
 };
 
@@ -318,7 +339,7 @@ const ConnectionOption = ({
       onClick={onClick}
       size="lg"
       fill={true}
-      variant={type === 'hosted' ? 'default' : 'primary'}
+      variant={['hosted', 'view'].includes(type) ? 'default' : 'primary'}
       data-testid={`connector-${type}`}
     >
       <span className="-mx-6 flex text-left justify-between items-center">

@@ -24,11 +24,6 @@ export const update: Update<
       continue;
     }
     if (BigInt(delta.sequenceNumber) <= BigInt(data.depth.sequenceNumber)) {
-      captureException(
-        new Error(
-          `Sequence number from delta is lower or equal to last sequenceNumber for ${data.id}, ${delta.sequenceNumber} <= ${data.depth.sequenceNumber}, update skipped`
-        )
-      );
       return data;
     }
     if (delta.previousSequenceNumber !== data.depth.sequenceNumber) {
@@ -58,7 +53,7 @@ export const update: Update<
   return data;
 };
 
-const getData = (responseData: MarketDepthQuery) => responseData.market;
+const getData = (responseData: MarketDepthQuery | null) => responseData?.market;
 
 const getDelta = (subscriptionData: MarketDepthUpdateSubscription) =>
   subscriptionData.marketsDepthUpdate;

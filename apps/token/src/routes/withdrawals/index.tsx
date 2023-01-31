@@ -5,10 +5,12 @@ import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
-  useWithdrawals,
+  withdrawalProvider,
   useWithdrawalDialog,
   WithdrawalsTable,
 } from '@vegaprotocol/withdraws';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '../index';
 
@@ -29,7 +31,12 @@ const Withdrawals = ({ name }: RouteChildProps) => {
 const WithdrawPendingContainer = () => {
   const openWithdrawalDialog = useWithdrawalDialog((state) => state.open);
   const { t } = useTranslation();
-  const { data, loading, error } = useWithdrawals();
+  const { pubKey } = useVegaWallet();
+  const { data, loading, error } = useDataProvider({
+    dataProvider: withdrawalProvider,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
 
   if (error) {
     return (

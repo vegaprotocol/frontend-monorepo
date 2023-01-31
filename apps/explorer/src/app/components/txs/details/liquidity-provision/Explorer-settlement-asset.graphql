@@ -1,0 +1,6 @@
+query ExplorerSettlementAssetForMarket($id: ID!) {
+  market(id: $id) {
+    id
+    decimalPlaces
+  }
+}

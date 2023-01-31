@@ -10,7 +10,7 @@ context(
         cy.visit('/').navigate_to('vesting');
       });
       it('should have vesting tab highlighted', function () {
-        cy.verify_tab_highlighted('vesting');
+        cy.verify_tab_highlighted('token');
       });
 
       it('should have VESTING header visible', function () {
@@ -37,9 +37,7 @@ context(
       // 1005-VEST-001
       // 1005-VEST-002
       it('Able to view tranches', function () {
-        cy.get('[href="/token/tranches"]')
-          .should('have.text', 'Supply & Vesting')
-          .click();
+        cy.navigate_to('supply');
         cy.url().should('include', '/token/tranches');
         cy.get('h1').should('contain.text', 'Vesting tranches');
       });

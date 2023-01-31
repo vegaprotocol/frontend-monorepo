@@ -31,10 +31,11 @@ type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
+  onMarketClick?: (marketId: string) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, setEditOrder, ...props }, ref) => {
+  ({ cancel, setEditOrder, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -51,7 +52,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
-          filter
           cellRenderer={({
             value,
             data,
@@ -59,8 +59,14 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             Order,
             'market.tradableInstrument.instrument.code'
           >) =>
-            data?.market?.id ? (
-              <Link href={`/#/markets/${data?.market?.id}`}>{value}</Link>
+            onMarketClick ? (
+              <Link
+                onClick={() =>
+                  data?.market?.id && onMarketClick(data?.market?.id)
+                }
+              >
+                {value}
+              </Link>
             ) : (
               value
             )
@@ -210,27 +216,36 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="createdAt"
-          valueFormatter={({
+          cellRenderer={({
+            data,
             value,
-          }: VegaValueFormatterParams<Order, 'createdAt'>) => {
-            return value ? getDateTimeFormat().format(new Date(value)) : value;
+          }: VegaICellRendererParams<Order, 'createdAt'>) => {
+            return (
+              <span data-value={value}>
+                {value ? getDateTimeFormat().format(new Date(value)) : value}
+              </span>
+            );
           }}
         />
         <AgGridColumn
           field="updatedAt"
           filter={DateRangeFilter}
-          valueFormatter={({
+          cellRenderer={({
+            data,
             value,
-            node,
-          }: VegaValueFormatterParams<Order, 'updatedAt'>) => {
-            return value ? getDateTimeFormat().format(new Date(value)) : '-';
+          }: VegaICellRendererParams<Order, 'updatedAt'>) => {
+            return (
+              <span data-value={value}>
+                {value ? getDateTimeFormat().format(new Date(value)) : '-'}
+              </span>
+            );
           }}
         />
         <AgGridColumn
           colId="amend"
           headerName=""
           field="status"
-          minWidth={150}
+          minWidth={100}
           type="rightAligned"
           cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
             return data && isOrderAmendable(data) ? (

@@ -89,4 +89,7 @@ module.exports = {
     'rotate-back': 'rotate 2s linear reverse infinite',
     wave: 'wave 2s linear infinite',
   },
+  data: {
+    selected: 'state~="checked"',
+  },
 };

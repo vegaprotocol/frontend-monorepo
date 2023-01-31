@@ -6,6 +6,7 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
+import Hash from '../../links/hash';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -47,7 +48,13 @@ export const TxDetailsOrder = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Order')}</TableCell>
           <TableCell>
-            <code>{deterministicId}</code>
+            <Hash text={deterministicId} />
+          </TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Market ID')}</TableCell>
+          <TableCell>
+            <MarketLink id={marketId} showMarketName={false} />
           </TableCell>
         </TableRow>
         <TableRow modifier="bordered">

@@ -62,21 +62,30 @@ describe('Chain Event: ERC20 asset deposit', () => {
     expect(screen.getByText(t('Recipient'))).toBeInTheDocument();
     const partyLink = screen.getByText(`${fullMock.targetPartyId}`);
     expect(partyLink).toBeInTheDocument();
-    expect(partyLink.tagName).toEqual('A');
-    expect(partyLink.getAttribute('href')).toEqual(
+    if (!partyLink.parentElement) {
+      throw new Error('Party link does not exist');
+    }
+    expect(partyLink.parentElement.tagName).toEqual('A');
+    expect(partyLink.parentElement.getAttribute('href')).toEqual(
       `/parties/${fullMock.targetPartyId}`
     );
 
     const assetLink = screen.getByText(`${fullMock.vegaAssetId}`);
     expect(assetLink).toBeInTheDocument();
-    expect(assetLink.tagName).toEqual('A');
-    expect(assetLink.getAttribute('href')).toEqual(
+    if (!assetLink.parentElement) {
+      throw new Error('Asset link does not exist');
+    }
+    expect(assetLink.parentElement.tagName).toEqual('A');
+    expect(assetLink.parentElement.getAttribute('href')).toEqual(
       `/assets#${fullMock.vegaAssetId}`
     );
 
     expect(screen.getByText(t('Source'))).toBeInTheDocument();
     const ethLink = screen.getByText(`${fullMock.sourceEthereumAddress}`);
-    expect(ethLink.getAttribute('href')).toContain(
+    if (!ethLink.parentElement) {
+      throw new Error('ETH link does not exist');
+    }
+    expect(ethLink.parentElement.getAttribute('href')).toContain(
       `/address/${fullMock.sourceEthereumAddress}`
     );
   });
