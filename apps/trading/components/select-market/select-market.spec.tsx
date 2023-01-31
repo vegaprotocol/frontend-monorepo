@@ -151,6 +151,8 @@ const MARKET_B: PartialMarket = {
 };
 
 describe('SelectMarket', () => {
+  const table = document.createElement('table');
+
   it('should render the SelectAllMarketsTableBody', () => {
     const onSelect = jest.fn();
     const onCellClick = jest.fn();
@@ -162,7 +164,7 @@ describe('SelectMarket', () => {
           onSelect={onSelect}
         />
       </MemoryRouter>,
-      { wrapper: MockedProvider }
+      { wrapper: MockedProvider, container: document.body.appendChild(table) }
     );
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
     expect(screen.getByText('25.00%')).toBeTruthy(); // price change
