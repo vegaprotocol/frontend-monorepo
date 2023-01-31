@@ -1,6 +1,7 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketQuery } from '@vegaprotocol/mock';
+import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -152,7 +153,9 @@ describe('markets table', { tags: '@smoke' }, () => {
     cy.getByTestId('item-value').contains('Opening auction').realHover();
     cy.getByTestId('opening-auction-sub-status').should(
       'contain.text',
-      'Opening auction: Closing on 31/01/2023, 12:00:01'
+      `Opening auction: Closing on ${getDateTimeFormat().format(
+        new Date('2023-01-31 12:00:01')
+      )}`
     );
     cy.clock().then((clock) => {
       clock.restore();
