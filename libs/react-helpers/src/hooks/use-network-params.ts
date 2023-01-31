@@ -104,6 +104,7 @@ export const NetworkParams = {
   market_liquidity_stakeToCcyVolume: 'market_liquidity_stakeToCcyVolume',
   market_liquidity_targetstake_triggering_ratio:
     'market_liquidity_targetstake_triggering_ratio',
+  transfer_fee_factor: 'transfer.fee.factor',
 } as const;
 
 type Params = typeof NetworkParams;
