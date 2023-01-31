@@ -2,14 +2,10 @@ import React from 'react';
 import * as Sentry from '@sentry/react';
 import type { TokenVesting } from '@vegaprotocol/smart-contracts';
 
-import {
-  AppStateActionType,
-  useAppState,
-} from '../contexts/app-state/app-state-context';
+import { useAppState } from '../contexts/app-state/app-state-context';
 import { BigNumber } from '../lib/bignumber';
 import { useTranches } from './use-tranches';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import { useBalances } from '../lib/balances/balances-store';
 
 export const useGetUserTrancheBalances = (
   address: string,
@@ -17,15 +13,9 @@ export const useGetUserTrancheBalances = (
 ) => {
   const {
     appState: { decimals },
-    appDispatch,
   } = useAppState();
-  const { setTranchesBalances } = useBalances();
   const { tranches } = useTranches();
   return React.useCallback(async () => {
-    appDispatch({
-      type: AppStateActionType.SET_TRANCHE_ERROR,
-      error: null,
-    });
     try {
       if (!tranches) {
         return;
@@ -53,17 +43,10 @@ export const useGetUserTrancheBalances = (
       });
 
       const trancheBalances = await Promise.all(promises);
-      setTranchesBalances(trancheBalances);
-      appDispatch({
-        type: AppStateActionType.SET_TRANCHE_DATA,
-        tranches,
-      });
+      return trancheBalances;
     } catch (e) {
       Sentry.captureException(e);
-      appDispatch({
-        type: AppStateActionType.SET_TRANCHE_ERROR,
-        error: e as Error,
-      });
+      return null;
     }
-  }, [appDispatch, tranches, setTranchesBalances, address, vesting, decimals]);
+  }, [tranches, address, vesting, decimals]);
 };

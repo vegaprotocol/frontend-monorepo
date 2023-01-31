@@ -300,12 +300,8 @@ const routerConfig = [
         element: <LazyRedemption name="Vesting" />,
         children: [
           {
-            index: true,
-            element: <LazyRedemptionIndex />,
-          },
-          {
             path: ':address',
-            element: <LazyRedemptionTranche />,
+            element: <LazyRedemptionIndex />,
             children: [
               {
                 path: ':id',
