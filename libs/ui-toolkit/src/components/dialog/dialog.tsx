@@ -79,7 +79,7 @@ export function Dialog({
             )}
             <div className="flex gap-4 max-w-full">
               {icon && <div className="fill-current">{icon}</div>}
-              <div data-testid="dialog-content" className="flex-1">
+              <div data-testid="dialog-content" className="flex-1 max-w-full">
                 {title && (
                   <h1
                     className="text-xl uppercase mb-4 pr-2"
