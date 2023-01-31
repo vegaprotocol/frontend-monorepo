@@ -45,7 +45,7 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
 };
 
 export const DealTicket = ({ market, submit }: DealTicketProps) => {
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
     (store) => ({
       getPersistedOrder: store.getOrder,
@@ -158,7 +158,11 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
+    <form
+      onSubmit={isReadOnly ? () => null : handleSubmit(onSubmit)}
+      className="p-4"
+      noValidate
+    >
       <Controller
         name="type"
         control={control}
@@ -220,13 +224,14 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
           />
         )}
       <DealTicketButton
-        disabled={Object.keys(errors).length >= 1}
+        disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <SummaryMessage
         errorMessage={errors.summary?.message}
         market={market}
         order={order}
+        isReadOnly={isReadOnly}
       />
       <DealTicketFeeDetails order={order} market={market} />
     </form>
@@ -241,9 +246,10 @@ interface SummaryMessageProps {
   errorMessage?: string;
   market: MarketDealTicket;
   order: OrderSubmissionBody['orderSubmission'];
+  isReadOnly: boolean;
 }
 const SummaryMessage = memo(
-  ({ errorMessage, market, order }: SummaryMessageProps) => {
+  ({ errorMessage, market, order, isReadOnly }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     const asset = market.tradableInstrument.instrument.product.settlementAsset;
@@ -251,6 +257,17 @@ const SummaryMessage = memo(
       market,
       order,
     });
+    if (isReadOnly) {
+      return (
+        <div className="mb-4">
+          <InputError data-testid="dealticket-error-message-summary">
+            {
+              'You need to connect your own wallet to start trading on this market'
+            }
+          </InputError>
+        </div>
+      );
+    }
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
         <ZeroBalanceError

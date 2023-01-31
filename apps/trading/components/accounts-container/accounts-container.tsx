@@ -9,7 +9,7 @@ import { AccountManager } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 
 export const AccountsContainer = () => {
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
   const openDepositDialog = useDepositDialog((store) => store.open);
@@ -37,13 +37,16 @@ export const AccountsContainer = () => {
           onClickAsset={onClickAsset}
           onClickWithdraw={openWithdrawalDialog}
           onClickDeposit={openDepositDialog}
+          isReadOnly={isReadOnly}
         />
       </div>
-      <div className="flex justify-end p-2 px-[11px]">
-        <Button size="sm" onClick={() => openDepositDialog()}>
-          {t('Deposit')}
-        </Button>
-      </div>
+      {!isReadOnly && (
+        <div className="flex justify-end p-2 px-[11px]">
+          <Button size="sm" onClick={() => openDepositDialog()}>
+            {t('Deposit')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

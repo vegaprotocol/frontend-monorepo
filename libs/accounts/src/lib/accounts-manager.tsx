@@ -16,6 +16,7 @@ interface AccountManagerProps {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
+  isReadOnly: boolean;
 }
 
 export const AccountManager = ({
@@ -23,6 +24,7 @@ export const AccountManager = ({
   onClickWithdraw,
   onClickDeposit,
   partyId,
+  isReadOnly,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const dataRef = useRef<AccountFields[] | null>(null);
@@ -58,6 +60,7 @@ export const AccountManager = ({
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
+        isReadOnly={isReadOnly}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

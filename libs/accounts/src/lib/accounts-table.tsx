@@ -29,6 +29,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
+  isReadOnly: boolean;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
@@ -127,48 +128,50 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }
             maxWidth={300}
           />
-          <AgGridColumn
-            colId="breakdown"
-            headerName=""
-            sortable={false}
-            minWidth={200}
-            type="rightAligned"
-            cellRenderer={({
-              data,
-            }: VegaICellRendererParams<AccountFields>) => {
-              return data ? (
-                <>
-                  <ButtonLink
-                    data-testid="breakdown"
-                    onClick={() => {
-                      setOpenBreakdown(!openBreakdown);
-                      setBreakdown(data.breakdown || null);
-                    }}
-                  >
-                    {t('Breakdown')}
-                  </ButtonLink>
-                  <span className="mx-1" />
-                  <ButtonLink
-                    data-testid="deposit"
-                    onClick={() => {
-                      onClickDeposit && onClickDeposit(data.asset.id);
-                    }}
-                  >
-                    {t('Deposit')}
-                  </ButtonLink>
-                  <span className="mx-1" />
-                  <ButtonLink
-                    data-testid="withdraw"
-                    onClick={() =>
-                      onClickWithdraw && onClickWithdraw(data.asset.id)
-                    }
-                  >
-                    {t('Withdraw')}
-                  </ButtonLink>
-                </>
-              ) : null;
-            }}
-          />
+          {!props.isReadOnly && (
+            <AgGridColumn
+              colId="breakdown"
+              headerName=""
+              sortable={false}
+              minWidth={200}
+              type="rightAligned"
+              cellRenderer={({
+                data,
+              }: VegaICellRendererParams<AccountFields>) => {
+                return data ? (
+                  <>
+                    <ButtonLink
+                      data-testid="breakdown"
+                      onClick={() => {
+                        setOpenBreakdown(!openBreakdown);
+                        setBreakdown(data.breakdown || null);
+                      }}
+                    >
+                      {t('Breakdown')}
+                    </ButtonLink>
+                    <span className="mx-1" />
+                    <ButtonLink
+                      data-testid="deposit"
+                      onClick={() => {
+                        onClickDeposit && onClickDeposit(data.asset.id);
+                      }}
+                    >
+                      {t('Deposit')}
+                    </ButtonLink>
+                    <span className="mx-1" />
+                    <ButtonLink
+                      data-testid="withdraw"
+                      onClick={() =>
+                        onClickWithdraw && onClickWithdraw(data.asset.id)
+                      }
+                    >
+                      {t('Withdraw')}
+                    </ButtonLink>
+                  </>
+                ) : null;
+              }}
+            />
+          )}
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">
