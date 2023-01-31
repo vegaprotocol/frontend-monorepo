@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import background from './banner-bg.jpg';
 import type { ReactNode } from 'react';
 
 export interface BannerProps {
@@ -7,14 +6,10 @@ export interface BannerProps {
 }
 
 export const AnnouncementBanner = ({ children }: BannerProps) => {
-  const bannerClasses = classnames('bg-cover bg-center bg-no-repeat', 'p-4');
-
-  return (
-    <div
-      style={{ backgroundImage: `url(${background})` }}
-      className={bannerClasses}
-    >
-      {children}
-    </div>
+  const bannerClasses = classnames(
+    "bg-[url('https://static.vega.xyz/assets/img/banner-bg.jpg')] bg-cover bg-center bg-no-repeat",
+    'p-4'
   );
+
+  return <div className={bannerClasses}>{children}</div>;
 };
