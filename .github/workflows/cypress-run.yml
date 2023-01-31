@@ -64,7 +64,7 @@ jobs:
       ######
 
       - name: Run Cypress tests
-        run: yarn nx run ${{ matrix.project }}:e2e ${{ env.SKIP_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: nx e2e ${{ matrix.project }}:e2e ${{ env.SKIP_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         working-directory: frontend-monorepo
         env:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
