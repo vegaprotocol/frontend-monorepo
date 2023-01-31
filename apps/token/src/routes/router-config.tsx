@@ -301,8 +301,11 @@ const routerConfig = [
         children: [
           {
             path: ':address',
-            element: <LazyRedemptionIndex />,
             children: [
+              {
+                index: true,
+                element: <LazyRedemptionIndex />,
+              },
               {
                 path: ':id',
                 element: <LazyRedemptionTranche />,
