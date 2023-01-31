@@ -1,7 +1,5 @@
 import React from 'react';
 import { useAppState } from '../../contexts/app-state/app-state-context';
-import { useContracts } from '../../contexts/contracts/contracts-context';
-import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
 import { useRefreshBalances } from '../../hooks/use-refresh-balances';
 import { useSearchParams } from '../../hooks/use-search-params';
 import { ClaimError } from './claim-error';
@@ -23,10 +21,8 @@ const Claim = ({
   tranches: Tranche[];
 }) => {
   const params = useSearchParams();
-  const { vesting } = useContracts();
   const { appState } = useAppState();
   const [state, dispatch] = React.useReducer(claimReducer, initialClaimState);
-  const getUserTrancheBalances = useGetUserTrancheBalances(address, vesting);
   const refreshBalances = useRefreshBalances(address);
 
   React.useEffect(() => {
@@ -48,10 +44,9 @@ const Claim = ({
   // If the claim has been committed refetch the new VEGA balance
   React.useEffect(() => {
     if (state.claimStatus === ClaimStatus.Finished && address) {
-      getUserTrancheBalances();
       refreshBalances();
     }
-  }, [address, getUserTrancheBalances, refreshBalances, state.claimStatus]);
+  }, [address, refreshBalances, state.claimStatus]);
 
   if (state.error) {
     return <ClaimError />;

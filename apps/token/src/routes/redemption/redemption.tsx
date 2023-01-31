@@ -51,21 +51,6 @@ const RedemptionRouter = () => {
     formState: { errors },
   } = useForm<FormFields>();
 
-  // useEffect(() => {
-  //   if (address) {
-  //     const userTranches = tranches?.filter((t) =>
-  //       t.users.some((a) => a.toLowerCase() === address.toLowerCase())
-  //     );
-
-  //     if (userTranches) {
-  //       dispatch({
-  //         type: RedemptionActionType.SET_USER_TRANCHES,
-  //         userTranches,
-  //       });
-  //     }
-  //   }
-  // }, [address, tranches]);
-
   const onSubmit = useCallback(
     (fields: FormFields) => {
       navigate(`${RoutesConfig.REDEEM}/${fields.address}`);
