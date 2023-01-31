@@ -50,10 +50,8 @@ export const StakeSuccess = ({
             to={Routes.VALIDATORS}
             onClick={(event) => {
               event.preventDefault();
-              // Because the dialog is not closed when the user clicks on the link,
-              // we need to remove the overflow-hidden class from the body.
-              document.body.classList.remove('overflow-hidden');
-              navigate(Routes.VALIDATORS);
+              toggleDialog();
+              setTimeout(() => navigate(Routes.VALIDATORS), 0);
             }}
           >
             {t('backToStaking')}
