@@ -5,8 +5,9 @@ import {
   useDataProvider,
   useNetworkParam,
 } from '@vegaprotocol/react-helpers';
-import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useMemo } from 'react';
+import type { Transfer } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
+import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
 
@@ -18,6 +19,14 @@ export const TransferContainer = () => {
     variables: { partyId: pubKey },
     skip: !pubKey,
   });
+  const create = useVegaTransactionStore((store) => store.create);
+
+  const transfer = useCallback(
+    (transfer: Transfer) => {
+      create({ transfer });
+    },
+    [create]
+  );
 
   const assets = useMemo(() => {
     if (!data) return [];
@@ -40,6 +49,7 @@ export const TransferContainer = () => {
       pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
       assets={assets}
       feeFactor={param}
+      submitTransfer={transfer}
     />
   );
 };

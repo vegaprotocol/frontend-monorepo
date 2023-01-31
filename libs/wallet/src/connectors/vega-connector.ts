@@ -292,7 +292,7 @@ export interface BatchMarketInstructionSubmissionBody {
   };
 }
 
-interface Transfer {
+interface TransferBase {
   fromAccountType: Schema.AccountType;
   to: string;
   toAccountType: Schema.AccountType;
@@ -301,13 +301,13 @@ interface Transfer {
   reference?: string;
 }
 
-interface OneOffTransfer extends Transfer {
+export interface OneOffTransfer extends TransferBase {
   oneOff: {
     deliverOn?: number; // omit for immediate
   };
 }
 
-interface RecurringTransfer extends Transfer {
+export interface RecurringTransfer extends TransferBase {
   recurring: {
     factor: string;
     startEpoch: number;
@@ -320,8 +320,10 @@ interface RecurringTransfer extends Transfer {
   };
 }
 
+export type Transfer = OneOffTransfer | RecurringTransfer;
+
 export interface TransferBody {
-  transfer: OneOffTransfer | RecurringTransfer;
+  transfer: Transfer;
 }
 
 export type Transaction =

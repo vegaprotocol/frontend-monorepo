@@ -17,8 +17,10 @@ import {
   RichSelect,
   Select,
 } from '@vegaprotocol/ui-toolkit';
+import type { Transfer } from '@vegaprotocol/wallet';
+import { normalizeTransfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 interface FormFields {
@@ -38,6 +40,7 @@ interface TransferFormProps {
     balance: string;
   }>;
   feeFactor: string | null;
+  submitTransfer: (transfer: Transfer) => void;
 }
 
 export const TransferForm = ({
@@ -45,6 +48,7 @@ export const TransferForm = ({
   pubKeys,
   assets,
   feeFactor,
+  submitTransfer,
 }: TransferFormProps) => {
   const [manualAddressEntry, setManualAddressEntry] = useState(false);
   const {
@@ -56,16 +60,26 @@ export const TransferForm = ({
     formState: { errors },
   } = useForm<FormFields>();
 
-  const onSubmit = (fields: FormFields) => {
-    console.log(fields);
-  };
-
   const amount = watch('amount');
   const assetId = watch('asset');
 
   const asset = useMemo(() => {
     return assets.find((a) => a.id === assetId);
   }, [assets, assetId]);
+
+  const onSubmit = useCallback(
+    (fields: FormFields) => {
+      if (!asset) {
+        throw new Error('Submitted transfer with no asset selected');
+      }
+      const transfer = normalizeTransfer(fields.toAddress, fields.amount, {
+        id: asset.id,
+        decimals: asset.decimals,
+      });
+      submitTransfer(transfer);
+    },
+    [asset, submitTransfer]
+  );
 
   const min = useMemo(() => {
     // Min viable amount given asset decimals EG for WEI 0.000000000000000001
@@ -81,8 +95,6 @@ export const TransferForm = ({
 
     return maxAmount;
   }, [asset]);
-
-  console.log(asset, max.toString());
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
