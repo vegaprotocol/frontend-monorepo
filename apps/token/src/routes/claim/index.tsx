@@ -5,7 +5,7 @@ import { EthConnectPrompt } from '../../components/eth-connect-prompt';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { useTranches } from '../../hooks/use-tranches';
+import { useTranches } from '../../lib/tranches/tranches-store';
 import type { RouteChildProps } from '..';
 import Claim from './claim';
 import { ClaimRestricted } from './claim-restricted';
@@ -16,7 +16,11 @@ const ClaimIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
   const { account } = useWeb3React();
-  const { tranches, loading, error } = useTranches();
+  const { tranches, loading, error } = useTranches((state) => ({
+    loading: state.loading,
+    error: state.error,
+    tranches: state.tranches,
+  }));
 
   if (loading || !tranches) {
     return (

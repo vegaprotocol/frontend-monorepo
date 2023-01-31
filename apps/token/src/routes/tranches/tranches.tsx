@@ -9,7 +9,7 @@ import { TrancheLabel } from './tranche-label';
 import { VestingChart } from './vesting-chart';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import type { Tranche } from '../../hooks/use-tranches';
+import type { Tranche } from '../../lib/tranches/tranches-store';
 
 const trancheMinimum = 10;
 

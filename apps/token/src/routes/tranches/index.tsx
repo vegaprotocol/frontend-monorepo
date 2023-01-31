@@ -4,14 +4,18 @@ import { Outlet } from 'react-router-dom';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { useTranches } from '../../hooks/use-tranches';
 import type { RouteChildProps } from '..';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import { useTranches } from '../../lib/tranches/tranches-store';
 
 const TrancheRouter = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const { tranches, error, loading } = useTranches();
+  const { tranches, error, loading } = useTranches((state) => ({
+    loading: state.loading,
+    error: state.error,
+    tranches: state.tranches,
+  }));
 
   if (!tranches || loading) {
     return (

@@ -21,7 +21,7 @@ import { TrancheNotFound } from './tranche-not-found';
 import { UntargetedClaim } from './untargeted-claim';
 import { Verifying } from './verifying';
 import type { ClaimAction, ClaimState } from './claim-reducer';
-import type { Tranche } from '../../hooks/use-tranches';
+import type { Tranche } from '../../lib/tranches/tranches-store';
 
 interface ClaimFlowProps {
   state: ClaimState;

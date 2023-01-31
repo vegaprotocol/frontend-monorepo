@@ -1,5 +1,4 @@
 import React from 'react';
-import type { Tranche } from '../../hooks/use-tranches';
 
 import type { BigNumber } from '../../lib/bignumber';
 
@@ -17,17 +16,6 @@ export interface VegaKey {
   algo: string;
   tainted: boolean;
   meta: Array<{ key: string; value: string }> | null;
-}
-
-export interface UserTrancheBalance {
-  /** ID of tranche */
-  id: number;
-
-  /** Users vesting tokens on tranche */
-  locked: BigNumber;
-
-  /** Users vested tokens on tranche */
-  vested: BigNumber;
 }
 
 export interface AppState {
