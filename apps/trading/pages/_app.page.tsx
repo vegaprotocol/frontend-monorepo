@@ -27,12 +27,13 @@ import './styles.css';
 import './gen-styles.scss';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
+import { AnnouncementBanner, ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -81,6 +82,14 @@ function AppBody({ Component }: AppProps) {
         <AppLoader>
           <Web3Provider>
             <div className="h-full relative z-0 grid grid-rows-[min-content,min-content,1fr,min-content]">
+              <AnnouncementBanner>
+                <div className="font-alpha calt uppercase text-center text-lg text-white">
+                  <span className="pr-4">The Mainnet sims are live!</span>
+                  <ExternalLink href="https://blog.vega.xyz/build-test-earn-with-the-launch-of-mainnet-simulations-ed1546c0c4c7">
+                    Come help stress test the network
+                  </ExternalLink>
+                </div>
+              </AnnouncementBanner>
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />

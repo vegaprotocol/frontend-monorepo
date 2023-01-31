@@ -8,6 +8,7 @@ import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { Footer } from './components/footer/footer';
+import { AnnouncementBanner, ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,6 +41,15 @@ function App() {
   return (
     <TendermintWebsocketProvider>
       <NetworkLoader cache={cacheConfig}>
+        <AnnouncementBanner>
+          <div className="font-alpha calt uppercase text-center text-lg text-white">
+            <span className="pr-4">The Mainnet sims are live!</span>
+            <ExternalLink href="https://blog.vega.xyz/build-test-earn-with-the-launch-of-mainnet-simulations-ed1546c0c4c7">
+              Come help stress test the network
+            </ExternalLink>
+          </div>
+        </AnnouncementBanner>
+
         <div className={layoutClasses}>
           <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
           <Nav menuOpen={menuOpen} />
