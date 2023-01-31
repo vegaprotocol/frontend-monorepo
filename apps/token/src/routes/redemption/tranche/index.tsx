@@ -15,14 +15,15 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import Routes from '../../routes';
-import type { RedemptionState } from '../redemption-reducer';
 import { TrancheTable } from '../tranche-table';
+import type { Tranche } from '../../../hooks/use-tranches';
 
 export const RedeemFromTranche = () => {
-  const { state, address } = useOutletContext<{
-    state: RedemptionState;
+  const { address, tranches } = useOutletContext<{
+    tranches: Tranche[];
     address: string;
   }>();
+
   const { vesting } = useContracts();
   const { t } = useTranslation();
   const { lien, totalVestedBalance, trancheBalances, totalLockedBalance } =
@@ -31,10 +32,9 @@ export const RedeemFromTranche = () => {
   const getUserTrancheBalances = useGetUserTrancheBalances(address, vesting);
   const { id } = useParams<{ id: string }>();
   const numberId = Number(id);
-  const { userTranches } = state;
   const tranche = React.useMemo(
-    () => userTranches.find(({ tranche_id }) => tranche_id === numberId),
-    [numberId, userTranches]
+    () => tranches.find(({ tranche_id }) => tranche_id === numberId),
+    [numberId, tranches]
   );
   const {
     state: txState,

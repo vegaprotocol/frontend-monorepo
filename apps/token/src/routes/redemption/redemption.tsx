@@ -8,22 +8,15 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
 import { SplashLoader } from '../../components/splash-loader';
 import { useTranches } from '../../hooks/use-tranches';
-import { useBalances } from '../../lib/balances/balances-store';
 import RoutesConfig from '../routes';
-import {
-  initialRedemptionState,
-  RedemptionActionType,
-  redemptionReducer,
-} from './redemption-reducer';
 
 interface FormFields {
   address: string;
@@ -46,11 +39,6 @@ const RedemptionRouter = () => {
     },
     [t]
   );
-  const [state, dispatch] = useReducer(
-    redemptionReducer,
-    initialRedemptionState
-  );
-  const { trancheBalances } = useBalances();
   const { account } = useWeb3React();
   const { tranches, error, loading } = useTranches();
   const {
@@ -59,20 +47,20 @@ const RedemptionRouter = () => {
     formState: { errors },
   } = useForm<FormFields>();
 
-  useEffect(() => {
-    if (address) {
-      const userTranches = tranches?.filter((t) =>
-        t.users.some((a) => a.toLowerCase() === address.toLowerCase())
-      );
+  // useEffect(() => {
+  //   if (address) {
+  //     const userTranches = tranches?.filter((t) =>
+  //       t.users.some((a) => a.toLowerCase() === address.toLowerCase())
+  //     );
 
-      if (userTranches) {
-        dispatch({
-          type: RedemptionActionType.SET_USER_TRANCHES,
-          userTranches,
-        });
-      }
-    }
-  }, [address, tranches]);
+  //     if (userTranches) {
+  //       dispatch({
+  //         type: RedemptionActionType.SET_USER_TRANCHES,
+  //         userTranches,
+  //       });
+  //     }
+  //   }
+  // }, [address, tranches]);
 
   const onSubmit = useCallback(
     (fields: FormFields) => {
@@ -138,20 +126,7 @@ const RedemptionRouter = () => {
     );
   }
 
-  if (!trancheBalances.length) {
-    return (
-      <>
-        <Callout>
-          <p>{t('You have no VEGA tokens currently vesting.')}</p>
-        </Callout>
-        <Link className="underline" to={RoutesConfig.SUPPLY}>
-          {t('viewAllTranches')}
-        </Link>
-      </>
-    );
-  }
-
-  return <Outlet context={{ state, account: address }} />;
+  return <Outlet context={{ tranches, account: address }} />;
 };
 
 export default RedemptionRouter;
