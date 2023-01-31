@@ -63,7 +63,10 @@ export const TradingModeTooltip = ({
           >
             {isValid(enactmentDate) && isAfter(new Date(), enactmentDate) ? (
               <>
-                <span className="justify-center font-bold my-2">
+                <span
+                  className="justify-center font-bold my-2"
+                  data-testid="opening-auction-sub-status"
+                >
                   {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
                     'Not enough liquidity to open'
                   )}`}
@@ -77,7 +80,10 @@ export const TradingModeTooltip = ({
             ) : (
               <>
                 {isValid(enactmentDate) && (
-                  <span className="justify-center font-bold my-2">
+                  <span
+                    className="justify-center font-bold my-2"
+                    data-testid="opening-auction-sub-status"
+                  >
                     {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
                       'Closing on %s',
                       getDateTimeFormat().format(enactmentDate)
