@@ -87,8 +87,8 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
     >
       {isDesktop ? (
         <nav className="flex items-center flex-1 px-2">
-          {routes.map((r) => (
-            <AppNavLink {...r} navbarTheme={navbarTheme} />
+          {routes.map((r, i) => (
+            <AppNavLink {...r} navbarTheme={navbarTheme} key={i} />
           ))}
         </nav>
       ) : (
