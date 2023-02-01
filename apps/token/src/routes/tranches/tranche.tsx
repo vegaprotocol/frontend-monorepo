@@ -55,26 +55,27 @@ export const Tranche = () => {
           <KeyValueTable>
             <KeyValueTableRow>
               <h1>{t('Ethereum Address')}</h1>
-              <h1>{t('Etherscan')}</h1>
+              <h1>{t('View tranche data')}</h1>
             </KeyValueTableRow>
             {tranche.users.map((user) => (
               <KeyValueTableRow key={user}>
-                {
-                  <RouterLink
-                    title={t('View on Etherscan (opens in a new tab)')}
-                    to={`${Routes.REDEEM}/${user}`}
-                  >
-                    {user}
-                  </RouterLink>
-                }
                 {
                   <Link
                     title={t('View on Etherscan (opens in a new tab)')}
                     href={`${ETHERSCAN_URL}/address/${user}`}
                     target="_blank"
                   >
-                    {t('View on Etherscan')}
+                    {user}
                   </Link>
+                }
+                {
+                  <RouterLink
+                    className="underline"
+                    title={t('View vesting information')}
+                    to={`${Routes.REDEEM}/${user}`}
+                  >
+                    {t('View vesting information')}
+                  </RouterLink>
                 }
               </KeyValueTableRow>
             ))}
