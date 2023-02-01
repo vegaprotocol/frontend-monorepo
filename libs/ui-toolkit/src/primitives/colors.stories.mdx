@@ -14,36 +14,63 @@ import colors from 'tailwindcss/colors';
 
 This project uses Tailwindcss so a lot of colour props are passed in as CSS classes that
 Tailwind applies styling to i.e. `text-blue-500` to use the primary blue. You can find the
-full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#default-color-palette).
+full tailiwnd's colour palette [here](https://tailwindcss.com/docs/customizing-colors/#default-color-palette).
+
+The Vega's colour palette can be found [here](https://www.figma.com/file/8lCQ6iNK3dbw42bIKwGCRk/Foundations?node-id=3750%3A77046)
 
 ## Colours
 
-### Shared
-
-<ColorPalette>
-  <ColorItem title="White" colors={colors.white} />
-  <ColorItem title="Black" colors={colors.black} />
-</ColorPalette>
-
-### Vega
-
 <ColorPalette>
   <ColorItem
-    title="theme.color.vega"
-    subtitle="Vega colors"
-    colors={theme.colors.vega}
+    title="dark"
+    colors={{ ...theme.colors.vega.dark, black: theme.colors.black }}
   />
-</ColorPalette>
-
-### Intent
-
-<ColorPalette>
   <ColorItem
-    title="theme.color[danger|warning|success]"
+    title="light"
+    colors={{ ...theme.colors.vega.light, white: theme.colors.white }}
+  />
+  <ColorItem title="yellow" colors={theme.colors.vega.yellow} />
+  <ColorItem title="green" colors={theme.colors.vega.green} />
+  <ColorItem title="blue" colors={theme.colors.vega.blue} />
+  <ColorItem title="purple" colors={theme.colors.vega.purple} />
+  <ColorItem title="pink" colors={theme.colors.vega.pink} />
+  <ColorItem title="orange" colors={theme.colors.vega.orange} />
+  <ColorItem
+    title="intent"
     colors={{
       danger: theme.colors.danger,
       warning: theme.colors.warning,
       success: theme.colors.success,
+    }}
+  />
+</ColorPalette>
+
+# Replacement for legacy shades
+
+<ColorPalette>
+  <ColorItem
+    title="legacy shades"
+    colors={{
+      'vega-yellow-dark': '#B6DC26',      // vega-yellow-dark       -> vega-yellow-550
+      'vega-pink-data-light': '#FF6AB2',  // vega-pink-data-light   -> vega-pink-400
+      'vega-pink-dark': '#CF0064',        // vega-pink-dark         -> vega-pink-550
+      'vega-pink-data-dark': '#7A033D',   // vega-pink-data-dark    -> vega-pink-650
+      'vega-green-data-light': '#85FBC2', // vega-green-data-light  -> vega-green-400
+      'vega-green-dark': '#00D46E',       // vega-green-dark        -> vega-green-550
+      'vega-green-data-dark': '#006333',  // vega-green-data-dark   -> vega-green-650
+    }}
+  />
+
+  <ColorItem
+    title="replacement"
+    colors={{
+      'vega-yellow-550': theme.colors.vega.yellow[550],
+      'vega-pink-400': theme.colors.vega.pink[400],
+      'vega-pink-550': theme.colors.vega.pink[550],
+      'vega-pink-650': theme.colors.vega.pink[650],
+      'vega-green-400': theme.colors.vega.green[400],
+      'vega-green-550': theme.colors.vega.green[550],
+      'vega-green-650': theme.colors.vega.green[650],
     }}
   />
 </ColorPalette>

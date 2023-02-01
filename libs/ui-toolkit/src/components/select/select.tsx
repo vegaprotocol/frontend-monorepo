@@ -69,7 +69,8 @@ export const RichSelect = forwardRef<
           data-testid={props['data-testid'] || 'rich-select-trigger'}
           className={classNames(
             defaultSelectElement(hasError),
-            'rounded-md pl-2 pr-11'
+            'rounded-md pl-2 pr-11',
+            'max-w-full overflow-hidden break-all'
           )}
           id={id}
           ref={forwardedRef}

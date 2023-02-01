@@ -1,4 +1,5 @@
 import type { Asset } from '@vegaprotocol/assets';
+import { AssetOption } from '@vegaprotocol/assets';
 import {
   ethereumAddress,
   minSafe,
@@ -14,7 +15,6 @@ import {
   Input,
   InputError,
   RichSelect,
-  Option,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
@@ -110,14 +110,7 @@ export const WithdrawForm = ({
         hasError={Boolean(errors.asset?.message)}
       >
         {assets.filter(isAssetTypeERC20).map((a) => (
-          <Option key={a.id} value={a.id}>
-            <div className="flex flex-col items-start">
-              <span>{a.name}</span>
-              <span className="text-[10px] font-mono">
-                <span className="text-gray-500">{a.id} -</span> {a.symbol}
-              </span>
-            </div>
-          </Option>
+          <AssetOption asset={a} />
         ))}
       </RichSelect>
     );

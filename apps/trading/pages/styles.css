@@ -10,49 +10,49 @@ body,
 
 /* Styles for allotment */
 html {
-  --focus-border: theme('colors.vega.pink');
-  --separator-border: theme('colors.neutral.300');
-  --pennant-color-danger: theme('colors.vega.pink');
+  --focus-border: theme('colors.vega.pink.500');
+  --separator-border: theme('colors.vega.light.200');
+  --pennant-color-danger: theme('colors.vega.pink.500');
 }
 
 html.dark {
-  --focus-border: theme('colors.vega.yellow');
-  --separator-border: theme('colors.neutral.600');
+  --focus-border: theme('colors.vega.yellow.500');
+  --separator-border: theme('colors.vega.dark.200');
 }
 
 .border-default {
-  @apply border-neutral-300 dark:border-neutral-600;
+  @apply border-vega-light-200 dark:border-vega-dark-200;
 }
 
 /* Styles for charts */
 html [data-theme='dark'] {
-  --pennant-color-danger: theme('colors.vega.pink');
+  --pennant-color-danger: theme('colors.vega.pink.DEFAULT');
 
   /* candles */
-  --pennant-color-buy-fill: theme('colors.vega.green-data-dark');
-  --pennant-color-buy-stroke: theme('colors.vega.green');
+  --pennant-color-buy-fill: theme('colors.vega.green.650');
+  --pennant-color-buy-stroke: theme('colors.vega.green.500');
   /* sell candles only use stroke as the candle is solid (without border) */
-  --pennant-color-sell-stroke: theme('colors.vega.pink');
+  --pennant-color-sell-stroke: theme('colors.vega.pink.500');
 
   /* depth chart */
-  --pennant-color-depth-buy-fill: theme('colors.vega.green-data-dark');
-  --pennant-color-depth-buy-stroke: theme('colors.vega.green');
-  --pennant-color-depth-sell-fill: theme('colors.vega.pink-data-dark');
-  --pennant-color-depth-sell-stroke: theme('colors.vega.pink');
+  --pennant-color-depth-buy-fill: theme('colors.vega.green.650');
+  --pennant-color-depth-buy-stroke: theme('colors.vega.green.500');
+  --pennant-color-depth-sell-fill: theme('colors.vega.pink.650');
+  --pennant-color-depth-sell-stroke: theme('colors.vega.pink.500');
 }
 
 html [data-theme='light'] {
-  --pennant-color-danger: theme('colors.vega.pink');
+  --pennant-color-danger: theme('colors.vega.pink.500');
 
   /* candles */
-  --pennant-color-buy-fill: theme('colors.vega.green-data-light');
-  --pennant-color-buy-stroke: theme('colors.vega.green-dark');
+  --pennant-color-buy-fill: theme('colors.vega.green.400');
+  --pennant-color-buy-stroke: theme('colors.vega.green.550');
   /* sell candles only use stroke as the candle is solid (without border) */
-  --pennant-color-sell-stroke: theme('colors.vega.pink-data-light');
+  --pennant-color-sell-stroke: theme('colors.vega.pink.400');
 
   /* depth chart */
-  --pennant-color-depth-buy-fill: theme('colors.vega.green-data-light');
-  --pennant-color-depth-buy-stroke: theme('colors.vega.green-dark');
-  --pennant-color-depth-sell-fill: theme('colors.vega.pink-data-light');
-  --pennant-color-depth-sell-stroke: theme('colors.vega.pink-dark');
+  --pennant-color-depth-buy-fill: theme('colors.vega.green.400');
+  --pennant-color-depth-buy-stroke: theme('colors.vega.green.550');
+  --pennant-color-depth-sell-fill: theme('colors.vega.pink.400');
+  --pennant-color-depth-sell-stroke: theme('colors.vega.pink.550');
 }

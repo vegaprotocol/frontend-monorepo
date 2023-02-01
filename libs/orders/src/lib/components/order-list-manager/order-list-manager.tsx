@@ -31,6 +31,7 @@ export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string) => void;
+  isReadOnly: boolean;
 }
 
 export const TransactionComplete = ({
@@ -72,6 +73,7 @@ export const OrderListManager = ({
   partyId,
   marketId,
   onMarketClick,
+  isReadOnly,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
@@ -146,6 +148,7 @@ export const OrderListManager = ({
             }}
             setEditOrder={setEditOrder}
             onMarketClick={onMarketClick}
+            isReadOnly={isReadOnly}
           />
           <div className="pointer-events-none absolute inset-0">
             <AsyncRenderer

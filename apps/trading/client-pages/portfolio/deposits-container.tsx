@@ -5,7 +5,7 @@ import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const DepositsContainer = () => {
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const { data, loading, error } = useDataProvider({
     dataProvider: depositsProvider,
     variables: { partyId: pubKey || '' },
@@ -30,15 +30,17 @@ export const DepositsContainer = () => {
           />
         </div>
       </div>
-      <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
-        <Button
-          size="sm"
-          onClick={() => openDepositDialog()}
-          data-testid="deposit-button"
-        >
-          {t('Deposit')}
-        </Button>
-      </div>
+      {!isReadOnly && (
+        <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
+          <Button
+            size="sm"
+            onClick={() => openDepositDialog()}
+            data-testid="deposit-button"
+          >
+            {t('Deposit')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

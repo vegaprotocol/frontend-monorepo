@@ -43,3 +43,12 @@ subscription OnUpdateNetworkParameters {
     }
   }
 }
+
+query ProposalOfMarket($marketId: ID!) {
+  proposal(id: $marketId) {
+    id
+    terms {
+      enactmentDatetime
+    }
+  }
+}

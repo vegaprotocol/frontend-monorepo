@@ -1,4 +1,5 @@
 import type { Asset } from '@vegaprotocol/assets';
+import { AssetOption } from '@vegaprotocol/assets';
 import {
   ethereumAddress,
   t,
@@ -17,7 +18,6 @@ import {
   Input,
   InputError,
   RichSelect,
-  Option,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -185,14 +185,7 @@ export const DepositForm = ({
               hasError={Boolean(errors.asset?.message)}
             >
               {assets.filter(isAssetTypeERC20).map((a) => (
-                <Option key={a.id} value={a.id}>
-                  <div className="flex flex-col items-start">
-                    <span>{a.name}</span>
-                    <span className="text-[10px] font-mono">
-                      <span className="text-gray-500">{a.id} -</span> {a.symbol}
-                    </span>
-                  </div>
-                </Option>
+                <AssetOption asset={a} />
               ))}
             </RichSelect>
           )}

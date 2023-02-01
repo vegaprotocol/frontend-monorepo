@@ -32,14 +32,16 @@ const singleRowData = [singleRow];
 
 it('should render successfully', async () => {
   await act(async () => {
-    const { baseElement } = render(<PositionsTable rowData={[]} />);
+    const { baseElement } = render(
+      <PositionsTable rowData={[]} isReadOnly={false} />
+    );
     expect(baseElement).toBeTruthy();
   });
 });
 
-it('Render correct columns', async () => {
+it('render correct columns', async () => {
   await act(async () => {
-    render(<PositionsTable rowData={singleRowData} />);
+    render(<PositionsTable rowData={singleRowData} isReadOnly={true} />);
   });
 
   const headers = screen.getAllByRole('columnheader');
@@ -64,7 +66,7 @@ it('Render correct columns', async () => {
 
 it('renders market name', async () => {
   await act(async () => {
-    render(<PositionsTable rowData={singleRowData} />);
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   expect(screen.getByText('ETH/BTC (31 july 2022)')).toBeTruthy();
 });
@@ -75,7 +77,7 @@ it('Does not fail if the market name does not match the split pattern', async ()
     Object.assign({}, singleRow, { marketName: breakingMarketName }),
   ];
   await act(async () => {
-    render(<PositionsTable rowData={row} />);
+    render(<PositionsTable rowData={row} isReadOnly={false} />);
   });
 
   expect(screen.getByText(breakingMarketName)).toBeTruthy();
@@ -84,7 +86,9 @@ it('Does not fail if the market name does not match the split pattern', async ()
 it('add color and sign to amount, displays positive notional value', async () => {
   let result: RenderResult;
   await act(async () => {
-    result = render(<PositionsTable rowData={singleRowData} />);
+    result = render(
+      <PositionsTable rowData={singleRowData} isReadOnly={false} />
+    );
   });
   let cells = screen.getAllByRole('gridcell');
 
@@ -94,7 +98,10 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[1].textContent).toEqual('1,230.0');
   await act(async () => {
     result.rerender(
-      <PositionsTable rowData={[{ ...singleRow, openVolume: '-100' }]} />
+      <PositionsTable
+        rowData={[{ ...singleRow, openVolume: '-100' }]}
+        isReadOnly={false}
+      />
     );
   });
   cells = screen.getAllByRole('gridcell');
@@ -107,7 +114,9 @@ it('add color and sign to amount, displays positive notional value', async () =>
 it('displays mark price', async () => {
   let result: RenderResult;
   await act(async () => {
-    result = render(<PositionsTable rowData={singleRowData} />);
+    result = render(
+      <PositionsTable rowData={singleRowData} isReadOnly={false} />
+    );
   });
 
   let cells = screen.getAllByRole('gridcell');
@@ -123,6 +132,7 @@ it('displays mark price', async () => {
               Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
           },
         ]}
+        isReadOnly={false}
       />
     );
   });
@@ -134,14 +144,19 @@ it('displays mark price', async () => {
 it("displays properly entry, liquidation price and liquidation bar and it's intent", async () => {
   let result: RenderResult;
   await act(async () => {
-    result = render(<PositionsTable rowData={singleRowData} />);
+    result = render(
+      <PositionsTable rowData={singleRowData} isReadOnly={false} />
+    );
   });
   let cells = screen.getAllByRole('gridcell');
   const entryPrice = cells[5].firstElementChild?.firstElementChild?.textContent;
   expect(entryPrice).toEqual('13.3');
   await act(async () => {
     result.rerender(
-      <PositionsTable rowData={[{ ...singleRow, lowMarginLevel: true }]} />
+      <PositionsTable
+        rowData={[{ ...singleRow, lowMarginLevel: true }]}
+        isReadOnly={false}
+      />
     );
   });
   cells = screen.getAllByRole('gridcell');
@@ -149,7 +164,7 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
 
 it('displays leverage', async () => {
   await act(async () => {
-    render(<PositionsTable rowData={singleRowData} />);
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
   expect(cells[7].textContent).toEqual('1.1');
@@ -157,7 +172,7 @@ it('displays leverage', async () => {
 
 it('displays allocated margin', async () => {
   await act(async () => {
-    render(<PositionsTable rowData={singleRowData} />);
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
   const cell = cells[8];
@@ -166,7 +181,7 @@ it('displays allocated margin', async () => {
 
 it('displays realised and unrealised PNL', async () => {
   await act(async () => {
-    render(<PositionsTable rowData={singleRowData} />);
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
   expect(cells[9].textContent).toEqual('1.23');
@@ -181,6 +196,7 @@ it('displays close button', async () => {
         onClose={() => {
           return;
         }}
+        isReadOnly={false}
       />
     );
   });
@@ -196,6 +212,7 @@ it('do not display close button if openVolume is zero', async () => {
         onClose={() => {
           return;
         }}
+        isReadOnly={false}
       />
     );
   });

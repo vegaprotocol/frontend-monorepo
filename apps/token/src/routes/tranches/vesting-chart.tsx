@@ -34,10 +34,10 @@ export const VestingChart = () => {
         <AreaChart data={data}>
           <defs>
             {[
-              ['pink', Colors.vega.pink],
-              ['green', Colors.vega.green],
+              ['pink', Colors.vega.pink.DEFAULT],
+              ['green', Colors.vega.green.DEFAULT],
               ['orange', Colors.warning],
-              ['yellow', Colors.vega.yellow],
+              ['yellow', Colors.vega.yellow.DEFAULT],
             ].map(([key, color]) => (
               <linearGradient key={key} id={key} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.85} />
@@ -97,7 +97,7 @@ export const VestingChart = () => {
             dot={false}
             type="linear"
             dataKey="team"
-            stroke={Colors.vega.pink}
+            stroke={Colors.vega.pink.DEFAULT}
             fill="url(#pink)"
             yAxisId={0}
             strokeWidth={2}
@@ -109,7 +109,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="earlyInvestors"
-            stroke={Colors.vega.green}
+            stroke={Colors.vega.green.DEFAULT}
             fill="url(#green)"
             yAxisId={0}
             strokeWidth={2}
@@ -121,7 +121,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="publicSale"
-            stroke={Colors.vega.yellow}
+            stroke={Colors.vega.yellow.DEFAULT}
             fill="url(#yellow)"
             yAxisId={0}
             strokeWidth={2}

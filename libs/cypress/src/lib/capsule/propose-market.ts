@@ -48,7 +48,7 @@ function createNewMarketProposal(): ProposalSubmissionBody {
                       signers: [
                         {
                           pubKey: {
-                            key: '0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC',
+                            key: '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680',
                           },
                         },
                       ],
