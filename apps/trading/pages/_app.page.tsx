@@ -85,7 +85,7 @@ function AppBody({ Component }: AppProps) {
               <AnnouncementBanner>
                 <div className="font-alpha calt uppercase text-center text-lg text-white">
                   <span className="pr-4">The Mainnet sims are live!</span>
-                  <ExternalLink href="https://blog.vega.xyz/build-test-earn-with-the-launch-of-mainnet-simulations-ed1546c0c4c7">
+                  <ExternalLink href="https://fairground.wtf/">
                     Come help stress test the network
                   </ExternalLink>
                 </div>
