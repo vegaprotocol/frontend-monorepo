@@ -13,7 +13,7 @@ import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
 import { useTransferDialog } from './transfer-dialog';
-import { Intent, Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Lozenge } from '@vegaprotocol/ui-toolkit';
 
 export const TransferContainer = () => {
   const { pubKey, pubKeys } = useVegaWallet();

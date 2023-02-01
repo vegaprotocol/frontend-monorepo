@@ -104,11 +104,11 @@ export const NetworkParams = {
   market_liquidity_stakeToCcyVolume: 'market_liquidity_stakeToCcyVolume',
   market_liquidity_targetstake_triggering_ratio:
     'market_liquidity_targetstake_triggering_ratio',
-  transfer_fee_factor: 'transfer.fee.factor',
+  transfer_fee_factor: 'transfer_fee_factor',
 } as const;
 
 type Params = typeof NetworkParams;
-export type NetworkParamsKey = Params[keyof Params];
+export type NetworkParamsKey = keyof Params;
 type Result = {
   [key in keyof Params]: string;
 };
@@ -121,7 +121,7 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
     return compact(data.networkParametersConnection.edges)
       .map((p) => ({
         ...p.node,
-        key: p.node.key.split('.').join('_'),
+        key: toInternalKey(p.node.key),
       }))
       .filter((p) => {
         if (params === undefined || params.length === 0) return true;
@@ -144,7 +144,7 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
 export const useNetworkParam = (param: NetworkParamsKey) => {
   const { data, loading, error } = useNetworkParamQuery({
     variables: {
-      key: param,
+      key: toRealKey(param),
     },
   });
 
@@ -153,4 +153,12 @@ export const useNetworkParam = (param: NetworkParamsKey) => {
     loading,
     error,
   };
+};
+
+export const toRealKey = (key: NetworkParamsKey) => {
+  return key.split('_').join('.');
+};
+
+export const toInternalKey = (key: string) => {
+  return key.split('.').join('_');
 };
