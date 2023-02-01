@@ -88,10 +88,10 @@ function AppBody({ Component }: AppProps) {
         <AppLoader>
           <Web3Provider>
             <div className={gridClasses}>
-              <Banner />
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
+              <Banner />
               <ViewingBanner />
               <main data-testid={location.pathname}>
                 <Component />
