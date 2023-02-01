@@ -35,10 +35,10 @@ export const useListenForPendingEthEvents = (
       }
     };
 
-    contract?.on(filter, listener);
+    contract.on(filter, listener);
 
     return () => {
-      contract?.off(filter, listener);
+      contract.off(filter, listener);
     };
   }, [addPendingTxs, contract, filter, numberOfConfirmations, removePendingTx]);
 

@@ -26,6 +26,7 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { usePendingBalancesStore } from '../../hooks/use-pending-balances-manager';
+import { StakingEventType } from '../../hooks/use-get-association-breakdown';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
@@ -134,14 +135,14 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
   const amountRemoved = BigNumber.sum.apply(null, [
     new BigNumber(0),
     ...pendingBalances
-      .filter(({ event }) => event === 'Stake_Removed')
+      .filter(({ event }) => event === StakingEventType.Stake_Removed)
       .map(({ args }) => toBigNum(args?.[1].toString(), decimals)),
   ]);
 
   const amountAdded = BigNumber.sum.apply(null, [
     new BigNumber(0),
     ...pendingBalances
-      .filter(({ event }) => event === 'Stake_Deposited')
+      .filter(({ event }) => event === StakingEventType.Stake_Deposited)
       .map(({ args }) => toBigNum(args?.[1].toString(), decimals)),
   ]);
   const totalPending = React.useMemo(

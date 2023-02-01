@@ -3,14 +3,14 @@ import uniqBy from 'lodash/uniqBy';
 
 import create from 'zustand';
 
-export type EthereumStore = {
+export type PendingTxsStore = {
   pendingBalances: Event[];
   addPendingTxs: (event: Event[]) => void;
   removePendingTx: (event: Event) => void;
   resetPendingTxs: () => void;
 };
 
-export const usePendingBalancesStore = create<EthereumStore>((set, get) => ({
+export const usePendingBalancesStore = create<PendingTxsStore>((set, get) => ({
   pendingBalances: [],
   addPendingTxs: (event: Event[]) => {
     set({
