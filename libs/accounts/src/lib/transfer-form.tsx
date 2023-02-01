@@ -8,6 +8,7 @@ import {
   formatNumber,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
+import { AccountTypeMapping } from '@vegaprotocol/types';
 import {
   Button,
   FormGroup,
@@ -100,17 +101,8 @@ export const TransferForm = ({
   }, [asset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormGroup label="From address" labelFor="from-address">
-        <Input
-          value={pubKey || ''}
-          id="from-address"
-          name="from-address"
-          readOnly={true}
-          disabled={true}
-        />
-      </FormGroup>
-      <FormGroup label="To address" labelFor="to-address">
+    <form onSubmit={handleSubmit(onSubmit)} className="text-sm">
+      <FormGroup label="Vega key" labelFor="to-address">
         <AddressField
           setValue={setValue}
           setFocus={setFocus}
@@ -185,17 +177,23 @@ export const TransferForm = ({
         )}
       </FormGroup>
       <FormGroup label="Account type" labelFor="account-type">
-        <Input
-          id="account-type"
-          name="account-type"
-          readOnly={true}
-          disabled={true}
-          value={Schema.AccountType.ACCOUNT_TYPE_GENERAL}
-        />
+        <div
+          className="border border-neutral-300 dark:border-neutral-700 rounded-md p-2"
+          aria-describedby="account-type"
+        >
+          {AccountTypeMapping.ACCOUNT_TYPE_GENERAL}{' '}
+          {asset && (
+            <span className="text-neutral-500">
+              ({formatNumber(asset.balance, asset.decimals)} available)
+            </span>
+          )}
+        </div>
       </FormGroup>
       <FormGroup label="Amount" labelFor="amount">
         <Input
-          type="number"
+          appendElement={
+            asset && <span className="text-xs">{asset.symbol}</span>
+          }
           {...register('amount', {
             validate: {
               required,
@@ -236,7 +234,7 @@ const TransferFee = ({
   const value = new BigNumber(amount).times(feeFactor).toString();
 
   return (
-    <div className="text-xs mb-4 flex justify-between items-center gap-4 flex-wrap">
+    <div className="mb-4 flex justify-between items-center gap-4 flex-wrap">
       <div>
         <Tooltip
           description={t(
@@ -276,7 +274,7 @@ const AddressField = ({ setValue, select, input }: AddressInputProps) => {
             setIsInput(true);
           }
         }}
-        className="text-xs underline"
+        className="ml-auto text-sm absolute top-0 right-0 underline"
       >
         {isInput ? t('Select from wallet') : t('Enter manually')}
       </button>

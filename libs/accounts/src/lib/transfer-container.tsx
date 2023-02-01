@@ -2,6 +2,8 @@ import * as Schema from '@vegaprotocol/types';
 import {
   addDecimal,
   NetworkParams,
+  t,
+  truncateByChars,
   useDataProvider,
   useNetworkParam,
 } from '@vegaprotocol/react-helpers';
@@ -11,6 +13,7 @@ import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
 import { useTransferDialog } from './transfer-dialog';
+import { Intent, Lozenge } from '@vegaprotocol/ui-toolkit';
 
 export const TransferContainer = () => {
   const { pubKey, pubKeys } = useVegaWallet();
@@ -47,12 +50,19 @@ export const TransferContainer = () => {
   }, [data]);
 
   return (
-    <TransferForm
-      pubKey={pubKey}
-      pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
-      assets={assets}
-      feeFactor={param}
-      submitTransfer={transfer}
-    />
+    <>
+      <p className="text-sm mb-4">
+        {t('Transfer funds to another Vega key from')}{' '}
+        <Lozenge className="font-mono">{truncateByChars(pubKey || '')}</Lozenge>{' '}
+        {t('If you are at all unsure, stop and seek advice')}
+      </p>
+      <TransferForm
+        pubKey={pubKey}
+        pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
+        assets={assets}
+        feeFactor={param}
+        submitTransfer={transfer}
+      />
+    </>
   );
 };
