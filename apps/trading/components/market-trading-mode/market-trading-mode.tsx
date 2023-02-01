@@ -1,11 +1,25 @@
 import type { RefObject } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { useMemo } from 'react';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { useInView } from 'react-intersection-observer';
 import * as Schema from '@vegaprotocol/types';
-import { useMarketData } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { marketDataProvider } from '@vegaprotocol/market-list';
+
+// This will cause often re-rendering
+// Here it may not be a problem because the component is not very complex
+// In general, we should avoid using this marketData hook without any throttling
+const useMarketData = (marketId?: string, skip?: boolean) => {
+  const variables = useMemo(() => ({ marketId }), [marketId]);
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables,
+    skip: skip || !marketId,
+  });
+  return data;
+};
 
 const getTradingModeLabel = (
   tradingMode?: Schema.MarketTradingMode,
