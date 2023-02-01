@@ -21,7 +21,9 @@ import {
 import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
+import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
+import type { UseFormSetFocus, UseFormSetValue } from 'react-hook-form';
 import { Controller, useForm } from 'react-hook-form';
 
 interface FormFields {
@@ -51,13 +53,13 @@ export const TransferForm = ({
   feeFactor,
   submitTransfer,
 }: TransferFormProps) => {
-  const [manualAddressEntry, setManualAddressEntry] = useState(false);
   const {
     control,
     register,
     watch,
     handleSubmit,
     setValue,
+    setFocus,
     formState: { errors },
   } = useForm<FormFields>();
 
@@ -109,35 +111,33 @@ export const TransferForm = ({
         />
       </FormGroup>
       <FormGroup label="To address" labelFor="to-address">
-        {!manualAddressEntry && pubKeys?.length ? (
-          <Select {...register('toAddress')}>
-            {pubKeys
-              .filter((pk) => pk !== pubKey)
-              .map((pk) => (
-                <option value={pk}>{pk}</option>
-              ))}
-          </Select>
-        ) : (
-          <Input
-            {...register('toAddress', {
-              validate: {
-                required,
-                vegaPublicKey,
-              },
-            })}
-          />
-        )}
-        <button
-          onClick={() => {
-            setManualAddressEntry((curr) => !curr);
-            if (!manualAddressEntry) {
-              setValue('toAddress', '');
-            }
-          }}
-          className="text-xs underline"
-        >
-          {manualAddressEntry ? t('Select from wallet') : t('Enter manually')}
-        </button>
+        <AddressField
+          setValue={setValue}
+          setFocus={setFocus}
+          select={
+            <Select {...register('toAddress')}>
+              <option value="" selected={true} disabled={true}>
+                {t('Please select')}
+              </option>
+              {pubKeys?.length &&
+                pubKeys
+                  .filter((pk) => pk !== pubKey) // remove currently selected pubkey
+                  .map((pk) => <option value={pk}>{pk}</option>)}
+            </Select>
+          }
+          input={
+            <Input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={true} // focus input immediately after is shown
+              {...register('toAddress', {
+                validate: {
+                  required,
+                  vegaPublicKey,
+                },
+              })}
+            />
+          }
+        />
         {errors.toAddress?.message && (
           <InputError forInput="to-address">
             {errors.toAddress.message}
@@ -250,5 +250,36 @@ const TransferFee = ({
         {value.toString()}
       </div>
     </div>
+  );
+};
+
+interface AddressInputProps {
+  setFocus: UseFormSetFocus<FormFields>;
+  setValue: UseFormSetValue<FormFields>;
+  select: ReactNode;
+  input: ReactNode;
+}
+
+const AddressField = ({ setValue, select, input }: AddressInputProps) => {
+  const [isInput, setIsInput] = useState(false);
+
+  return (
+    <>
+      {isInput ? input : select}
+      <button
+        type="button"
+        onClick={() => {
+          if (isInput) {
+            setIsInput(false);
+          } else {
+            setValue('toAddress', '');
+            setIsInput(true);
+          }
+        }}
+        className="text-xs underline"
+      >
+        {isInput ? t('Select from wallet') : t('Enter manually')}
+      </button>
+    </>
   );
 };
