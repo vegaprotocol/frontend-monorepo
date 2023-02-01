@@ -7,7 +7,6 @@ import {
   addDecimal,
   formatNumber,
 } from '@vegaprotocol/react-helpers';
-import * as Schema from '@vegaprotocol/types';
 import { AccountTypeMapping } from '@vegaprotocol/types';
 import {
   Button,
@@ -24,7 +23,6 @@ import { normalizeTransfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import type { UseFormSetFocus, UseFormSetValue } from 'react-hook-form';
 import { Controller, useForm } from 'react-hook-form';
 
 interface FormFields {
@@ -60,7 +58,6 @@ export const TransferForm = ({
     watch,
     handleSubmit,
     setValue,
-    setFocus,
     formState: { errors },
   } = useForm<FormFields>();
 
@@ -101,20 +98,28 @@ export const TransferForm = ({
   }, [asset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="text-sm">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="text-sm"
+      data-testid="transfer-form"
+    >
       <FormGroup label="Vega key" labelFor="to-address">
         <AddressField
-          setValue={setValue}
-          setFocus={setFocus}
+          defaultMode={pubKeys && pubKeys.length > 1 ? 'select' : 'input'}
+          onChange={() => setValue('toAddress', '')}
           select={
-            <Select {...register('toAddress')}>
-              <option value="" selected={true} disabled={true}>
+            <Select {...register('toAddress')} id="to-address" defaultValue="">
+              <option value="" disabled={true}>
                 {t('Please select')}
               </option>
               {pubKeys?.length &&
                 pubKeys
                   .filter((pk) => pk !== pubKey) // remove currently selected pubkey
-                  .map((pk) => <option value={pk}>{pk}</option>)}
+                  .map((pk) => (
+                    <option key={pk} value={pk}>
+                      {pk}
+                    </option>
+                  ))}
             </Select>
           }
           input={
@@ -191,6 +196,7 @@ export const TransferForm = ({
       </FormGroup>
       <FormGroup label="Amount" labelFor="amount">
         <Input
+          id="amount"
           appendElement={
             asset && <span className="text-xs">{asset.symbol}</span>
           }
@@ -223,7 +229,7 @@ export const TransferForm = ({
   );
 };
 
-const TransferFee = ({
+export const TransferFee = ({
   amount,
   feeFactor,
 }: {
@@ -244,7 +250,10 @@ const TransferFee = ({
           <div>{t('Transfer fee')}</div>
         </Tooltip>
       </div>
-      <div className="text-neutral-500 dark:text-neutral-300">
+      <div
+        data-testid="transfer-fee"
+        className="text-neutral-500 dark:text-neutral-300"
+      >
         {value.toString()}
       </div>
     </div>
@@ -252,14 +261,21 @@ const TransferFee = ({
 };
 
 interface AddressInputProps {
-  setFocus: UseFormSetFocus<FormFields>;
-  setValue: UseFormSetValue<FormFields>;
+  defaultMode: 'input' | 'select';
   select: ReactNode;
   input: ReactNode;
+  onChange: () => void;
 }
 
-const AddressField = ({ setValue, select, input }: AddressInputProps) => {
-  const [isInput, setIsInput] = useState(false);
+export const AddressField = ({
+  defaultMode,
+  select,
+  input,
+  onChange,
+}: AddressInputProps) => {
+  const [isInput, setIsInput] = useState(
+    defaultMode === 'input' ? true : false
+  );
 
   return (
     <>
@@ -267,12 +283,8 @@ const AddressField = ({ setValue, select, input }: AddressInputProps) => {
       <button
         type="button"
         onClick={() => {
-          if (isInput) {
-            setIsInput(false);
-          } else {
-            setValue('toAddress', '');
-            setIsInput(true);
-          }
+          setIsInput((curr) => !curr);
+          onChange();
         }}
         className="ml-auto text-sm absolute top-0 right-0 underline"
       >
