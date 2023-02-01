@@ -97,8 +97,10 @@ export const TrancheTable = ({
             amount: reduceAmount,
           }}
           components={{
-            stakeLink: <Link to={`/staking`} />,
-            disassociateLink: <Link to={`/staking/disassociate`} />,
+            stakeLink: <Link className="underline" to={Routes.VALIDATORS} />,
+            disassociateLink: (
+              <Link className="underline" to={Routes.DISASSOCIATE} />
+            ),
           }}
         />
       </div>
