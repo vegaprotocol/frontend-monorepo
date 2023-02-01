@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/react-helpers';
 import type { OrderFieldsFragment } from '../';
@@ -19,7 +19,7 @@ const generateJsx = () => {
   );
 };
 
-it('Renders a loading state while awaiting orders', () => {
+it('Renders a loading state while awaiting orders', async () => {
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
     data: [],
     loading: true,
@@ -29,11 +29,13 @@ it('Renders a loading state while awaiting orders', () => {
     load: jest.fn(),
     totalCount: 0,
   });
-  render(generateJsx());
+  await act(async () => {
+    render(generateJsx());
+  });
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 });
 
-it('Renders an error state', () => {
+it('Renders an error state', async () => {
   const errorMsg = 'Oops! An Error';
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
     data: [],
@@ -44,7 +46,9 @@ it('Renders an error state', () => {
     load: jest.fn(),
     totalCount: undefined,
   });
-  render(generateJsx());
+  await act(async () => {
+    render(generateJsx());
+  });
   expect(
     screen.getByText(`Something went wrong: ${errorMsg}`)
   ).toBeInTheDocument();
@@ -63,6 +67,8 @@ it('Renders the order list if orders provided', async () => {
     load: jest.fn(),
     totalCount: undefined,
   });
-  render(generateJsx());
+  await act(async () => {
+    render(generateJsx());
+  });
   expect(await screen.findByText('OrderList')).toBeInTheDocument();
 });

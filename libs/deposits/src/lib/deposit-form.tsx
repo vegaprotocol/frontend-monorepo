@@ -185,7 +185,7 @@ export const DepositForm = ({
               hasError={Boolean(errors.asset?.message)}
             >
               {assets.filter(isAssetTypeERC20).map((a) => (
-                <AssetOption asset={a} />
+                <AssetOption asset={a} key={a.id} />
               ))}
             </RichSelect>
           )}

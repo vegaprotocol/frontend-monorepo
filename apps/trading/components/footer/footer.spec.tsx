@@ -49,7 +49,6 @@ describe('NodeHealth', () => {
   it.each(cases)(
     'renders correct text and indicator color for $diff block difference',
     (elem) => {
-      console.log(elem);
       render(<NodeHealth blockDiff={elem.diff} openNodeSwitcher={jest.fn()} />);
       expect(screen.getByTestId('indicator')).toHaveClass(elem.classname);
       expect(screen.getByText(elem.text)).toBeInTheDocument();
