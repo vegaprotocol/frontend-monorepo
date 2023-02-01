@@ -98,3 +98,13 @@ export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
   });
   return data;
 };
+
+export const useMarketData = (marketId?: string, skip?: boolean) => {
+  const variables = useMemo(() => ({ marketId }), [marketId]);
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables,
+    skip: skip || !marketId,
+  });
+  return data;
+};

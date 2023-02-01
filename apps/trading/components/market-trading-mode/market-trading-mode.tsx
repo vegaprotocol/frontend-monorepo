@@ -3,7 +3,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { useInView } from 'react-intersection-observer';
 import * as Schema from '@vegaprotocol/types';
-import { useStaticMarketData } from '@vegaprotocol/market-list';
+import { useMarketData } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
@@ -35,7 +35,7 @@ export const HeaderStatMarketTradingMode = ({
   initialTradingMode,
   initialTrigger,
 }: HeaderStatMarketTradingModeProps) => {
-  const data = useStaticMarketData(marketId);
+  const data = useMarketData(marketId);
   const tradingMode = data?.marketTradingMode ?? initialTradingMode;
   const trigger = data?.trigger ?? initialTrigger;
 
@@ -61,7 +61,7 @@ export const MarketTradingMode = ({
   inViewRoot?: RefObject<Element>;
 }) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });
-  const data = useStaticMarketData(marketId, !inView);
+  const data = useMarketData(marketId, !inView);
 
   return (
     <Tooltip
