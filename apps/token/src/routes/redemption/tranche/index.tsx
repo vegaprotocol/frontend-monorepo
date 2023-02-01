@@ -19,14 +19,21 @@ import { useTranches } from '../../../lib/tranches/tranches-store';
 import { useWeb3React } from '@web3-react/core';
 import { EthConnectPrompt } from '../../../components/eth-connect-prompt';
 import { useUserTrancheBalances } from '../hooks';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 export const RedeemFromTranche = () => {
   const { account: address } = useWeb3React();
   const { vesting } = useContracts();
   const { t } = useTranslation();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const { lien, totalVestedBalance, totalLockedBalance } = useBalances();
   const refreshBalances = useRefreshBalances(address || '');
-  const tranches = useTranches((state) => state.tranches);
+  const { tranches, getTranches } = useTranches((state) => ({
+    tranches: state.tranches,
+    getTranches: state.getTranches,
+  }));
   const { id } = useParams<{ id: string }>();
   const numberId = Number(id);
   const tranche = React.useMemo(
@@ -53,9 +60,9 @@ export const RedeemFromTranche = () => {
   React.useEffect(() => {
     if (txState.txState === TxState.Complete && address) {
       refreshBalances();
-      // TODO need to refresh tranche balances here
+      getTranches(decimals);
     }
-  }, [address, refreshBalances, txState.txState]);
+  }, [address, decimals, getTranches, refreshBalances, txState.txState]);
 
   const trancheBalance = React.useMemo(() => {
     return trancheBalances.find(

@@ -1,6 +1,12 @@
 import BigNumber from 'bignumber.js';
 import create from 'zustand';
 
+interface UserTrancheBalance {
+  id: number;
+  locked: BigNumber;
+  vested: BigNumber;
+}
+
 export interface AssociationBreakdown {
   stakingAssociations: { [vegaKey: string]: BigNumber };
   vestingAssociations: { [vegaKey: string]: BigNumber };
@@ -12,6 +18,7 @@ export type BalancesStore = {
   balanceFormatted: BigNumber;
   totalVestedBalance: BigNumber;
   totalLockedBalance: BigNumber;
+  trancheBalances: UserTrancheBalance[];
   walletBalance: BigNumber;
   lien: BigNumber;
   walletAssociatedBalance: BigNumber;
@@ -19,6 +26,7 @@ export type BalancesStore = {
   updateBalances: (balances: Partial<RefreshBalances>) => void;
   setAllowance: (allowance: BigNumber) => void;
   setAssociationBreakdown: (associationBreakdown: AssociationBreakdown) => void;
+  setTranchesBalances: (trancheBalances: UserTrancheBalance[]) => void;
 };
 
 export interface RefreshBalances {
@@ -36,6 +44,7 @@ export const useBalances = create<BalancesStore>((set) => ({
     vestingAssociations: {},
   },
   allowance: new BigNumber(0),
+  trancheBalances: [],
   totalVestedBalance: new BigNumber(0),
   totalLockedBalance: new BigNumber(0),
   balanceFormatted: new BigNumber(0),
@@ -50,4 +59,16 @@ export const useBalances = create<BalancesStore>((set) => ({
   setAllowance: (allowance: BigNumber) => set({ allowance }),
   setAssociationBreakdown: (associationBreakdown: AssociationBreakdown) =>
     set({ associationBreakdown }),
+  setTranchesBalances: (trancheBalances: UserTrancheBalance[]) =>
+    set({
+      trancheBalances,
+      totalLockedBalance: BigNumber.sum.apply(null, [
+        new BigNumber(0),
+        ...trancheBalances.map((b) => b.locked),
+      ]),
+      totalVestedBalance: BigNumber.sum.apply(null, [
+        new BigNumber(0),
+        ...trancheBalances.map((b) => b.vested),
+      ]),
+    }),
 }));

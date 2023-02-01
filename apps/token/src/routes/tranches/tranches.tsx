@@ -1,4 +1,3 @@
-import { useOutletContext } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +9,7 @@ import { VestingChart } from './vesting-chart';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import type { Tranche } from '../../lib/tranches/tranches-store';
+import { useTranches } from '../../lib/tranches/tranches-store';
 
 const trancheMinimum = 10;
 
@@ -17,7 +17,7 @@ const shouldShowTranche = (t: Tranche) =>
   !t.total_added.isLessThanOrEqualTo(trancheMinimum);
 
 export const Tranches = () => {
-  const tranches = useOutletContext<Tranche[]>();
+  const tranches = useTranches((state) => state.tranches);
   const [showAll, setShowAll] = React.useState<boolean>(false);
   const { t } = useTranslation();
   const { chainId } = useWeb3React();
