@@ -27,7 +27,7 @@ import './styles.css';
 import './gen-styles.scss';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
