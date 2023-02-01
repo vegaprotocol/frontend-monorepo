@@ -1,4 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  act,
+  waitFor,
+} from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { Web3Container } from './web3-container';
@@ -63,103 +70,114 @@ jest.mock('@web3-react/core', () => {
   };
 });
 
-function setup(mock = networkParamsQueryMock) {
-  return render(
-    <EnvironmentProvider definitions={mockEnvironment}>
-      <MockedProvider mocks={[mock]}>
-        <Web3Container>
-          <div>
-            <div>Child</div>
-            <div>{mockEthereumConfig.collateral_bridge_contract.address}</div>
-          </div>
-        </Web3Container>
-      </MockedProvider>
-      <Web3ConnectUncontrolledDialog />
-    </EnvironmentProvider>
-  );
+let renderResults: RenderResult;
+async function setup(mock = networkParamsQueryMock) {
+  await act(async () => {
+    renderResults = await render(
+      <EnvironmentProvider definitions={mockEnvironment}>
+        <MockedProvider mocks={[mock]}>
+          <Web3Container>
+            <div>
+              <div>Child</div>
+              <div>{mockEthereumConfig.collateral_bridge_contract.address}</div>
+            </div>
+          </Web3Container>
+        </MockedProvider>
+        <Web3ConnectUncontrolledDialog />
+      </EnvironmentProvider>
+    );
+  });
+  return renderResults;
 }
 
-it('Prompt to connect opens dialog', async () => {
-  mockHookValue = defaultHookValue;
-  setup();
+describe('Web3Container', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  it('Prompt to connect opens dialog', async () => {
+    mockHookValue = defaultHookValue;
+    await setup();
+    act(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
+    await waitFor(async () => {
+      expect(
+        await screen.findByText('Connect your Ethereum wallet')
+      ).toBeInTheDocument();
 
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(
-    await screen.findByText('Connect your Ethereum wallet')
-  ).toBeInTheDocument();
+      expect(screen.queryByText('Child')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('web3-connector-list')
+      ).not.toBeInTheDocument();
+      await act(() => {
+        fireEvent.click(screen.getByText('Connect'));
+      });
+      expect(screen.getByTestId('web3-connector-list')).toBeInTheDocument();
+    });
+  });
 
-  expect(screen.queryByText('Child')).not.toBeInTheDocument();
-  expect(screen.queryByTestId('web3-connector-list')).not.toBeInTheDocument();
+  it('Error message is shown', async () => {
+    const message = 'Opps! An error';
+    mockHookValue = { ...defaultHookValue, error: new Error(message) };
+    await setup();
 
-  fireEvent.click(screen.getByText('Connect'));
-  expect(screen.getByTestId('web3-connector-list')).toBeInTheDocument();
-});
+    await waitFor(async () => {
+      expect(
+        await screen.findByText(`Something went wrong: ${message}`)
+      ).toBeInTheDocument();
+      expect(screen.queryByText('Child')).not.toBeInTheDocument();
+    });
+  });
 
-it('Error message is shown', async () => {
-  const message = 'Opps! An error';
-  mockHookValue = { ...defaultHookValue, error: new Error(message) };
-  setup();
+  it('Checks that chain ID matches app ID', async () => {
+    const expectedChainId = 4;
+    mockHookValue = {
+      ...defaultHookValue,
+      isActive: true,
+      chainId: expectedChainId,
+    };
+    await setup();
+    expect(
+      await screen.findByText(`This app only works on Sepolia`)
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Child')).not.toBeInTheDocument();
+  });
 
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(
-    await screen.findByText(`Something went wrong: ${message}`)
-  ).toBeInTheDocument();
-  expect(screen.queryByText('Child')).not.toBeInTheDocument();
-});
+  it('Passes ethereum config to children', async () => {
+    mockHookValue = {
+      ...defaultHookValue,
+      isActive: true,
+    };
+    await setup();
+    expect(
+      await screen.findByText(
+        mockEthereumConfig.collateral_bridge_contract.address
+      )
+    ).toBeInTheDocument();
+  });
 
-it('Checks that chain ID matches app ID', async () => {
-  const expectedChainId = 4;
-  mockHookValue = {
-    ...defaultHookValue,
-    isActive: true,
-    chainId: expectedChainId,
-  };
-  setup();
-
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(
-    await screen.findByText(`This app only works on Sepolia`)
-  ).toBeInTheDocument();
-  expect(screen.queryByText('Child')).not.toBeInTheDocument();
-});
-
-it('Passes ethereum config to children', async () => {
-  mockHookValue = {
-    ...defaultHookValue,
-    isActive: true,
-  };
-  setup();
-
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(
-    await screen.findByText(
-      mockEthereumConfig.collateral_bridge_contract.address
-    )
-  ).toBeInTheDocument();
-});
-
-it('Shows no config found message if the network parameter doesnt exist', async () => {
-  const mock: MockedResponse<NetworkParamsQuery> = {
-    request: {
-      query: NetworkParamsDocument,
-    },
-    result: {
-      data: {
-        networkParametersConnection: {
-          edges: [
-            {
-              node: {
-                __typename: 'NetworkParameter',
-                key: 'nope',
-                value: 'foo',
+  it('Shows no config found message if the network parameter doesnt exist', async () => {
+    const mock: MockedResponse<NetworkParamsQuery> = {
+      request: {
+        query: NetworkParamsDocument,
+      },
+      result: {
+        data: {
+          networkParametersConnection: {
+            edges: [
+              {
+                node: {
+                  __typename: 'NetworkParameter',
+                  key: 'nope',
+                  value: 'foo',
+                },
               },
-            },
-          ],
+            ],
+          },
         },
       },
-    },
-  };
-  setup(mock);
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(await screen.findByText('No data')).toBeInTheDocument();
+    };
+    await setup(mock);
+    expect(await screen.findByText('No data')).toBeInTheDocument();
+  });
 });
