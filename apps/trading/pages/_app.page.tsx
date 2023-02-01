@@ -82,17 +82,22 @@ function AppBody({ Component }: AppProps) {
         <AppLoader>
           <Web3Provider>
             <div className="h-full relative z-0 grid grid-rows-[min-content,min-content,1fr,min-content]">
-              <AnnouncementBanner>
-                <div className="font-alpha calt uppercase text-center text-lg text-white">
-                  <span className="pr-4">The Mainnet sims are live!</span>
-                  <ExternalLink href="https://fairground.wtf/">
-                    Come help stress test the network
-                  </ExternalLink>
-                </div>
-              </AnnouncementBanner>
-              <Navbar
-                navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
-              />
+              <div>
+                <AnnouncementBanner>
+                  <div className="font-alpha calt uppercase text-center text-lg text-white">
+                    <span className="pr-4">The Mainnet sims are live!</span>
+                    <ExternalLink href="https://fairground.wtf/">
+                      Come help stress test the network
+                    </ExternalLink>
+                  </div>
+                </AnnouncementBanner>
+
+                <Navbar
+                  navbarTheme={
+                    VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'
+                  }
+                />
+              </div>
               <ViewingBanner />
               <main data-testid={location.pathname}>
                 <Component />
