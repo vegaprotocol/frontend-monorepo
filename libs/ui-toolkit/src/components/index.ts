@@ -3,6 +3,7 @@ export * from './ag-grid';
 export * from './arrows';
 export * from './async-renderer';
 export * from './background-video';
+export * from './announcement-banner';
 export * from './button';
 export * from './callout';
 export * from './checkbox';

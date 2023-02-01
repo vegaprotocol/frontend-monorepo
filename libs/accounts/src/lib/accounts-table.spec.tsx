@@ -35,7 +35,11 @@ describe('AccountsTable', () => {
   it('should render correct columns', async () => {
     await act(async () => {
       render(
-        <AccountTable rowData={singleRowData} onClickAsset={() => null} />
+        <AccountTable
+          rowData={singleRowData}
+          onClickAsset={() => null}
+          isReadOnly={false}
+        />
       );
     });
     const expectedHeaders = ['Asset', 'Total', 'Used', 'Available', ''];
@@ -49,7 +53,11 @@ describe('AccountsTable', () => {
   it('should apply correct formatting', async () => {
     await act(async () => {
       render(
-        <AccountTable rowData={singleRowData} onClickAsset={() => null} />
+        <AccountTable
+          rowData={singleRowData}
+          onClickAsset={() => null}
+          isReadOnly={false}
+        />
       );
     });
     const cells = await screen.findAllByRole('gridcell');

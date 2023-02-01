@@ -10,7 +10,7 @@ export const OrderListContainer = ({
   marketId?: string;
   onMarketClick?: (marketId: string) => void;
 }) => {
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
 
   if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
@@ -21,6 +21,7 @@ export const OrderListContainer = ({
       partyId={pubKey}
       marketId={marketId}
       onMarketClick={onMarketClick}
+      isReadOnly={isReadOnly}
     />
   );
 };
