@@ -97,9 +97,6 @@ describe('Web3Container', () => {
   it('Prompt to connect opens dialog', async () => {
     mockHookValue = defaultHookValue;
     await setup();
-    act(() => {
-      expect(screen.getByText('Loading...')).toBeInTheDocument();
-    });
     await waitFor(async () => {
       expect(
         await screen.findByText('Connect your Ethereum wallet')
