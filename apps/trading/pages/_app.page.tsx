@@ -25,19 +25,15 @@ import {
 import { AppLoader, Web3Provider } from '../components/app-loader';
 import './styles.css';
 import './gen-styles.scss';
-import { useGlobalStore, usePageTitleStore } from '../stores';
+import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
-import {
-  AnnouncementBanner,
-  ExternalLink,
-  Icon,
-} from '@vegaprotocol/ui-toolkit';
+import { Banner } from '../components/banner';
 import classNames from 'classnames';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
@@ -76,23 +72,10 @@ function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
 
-  const { update, shouldDisplayAnnouncementBanner } = useGlobalStore(
-    (store) => ({
-      update: store.update,
-      shouldDisplayAnnouncementBanner: store.shouldDisplayAnnouncementBanner,
-    })
+  const gridClasses = classNames(
+    'h-full relative z-0 grid',
+    'grid-rows-[repeat(3,min-content),1fr,min-content]'
   );
-
-  const onBannerClose = useCallback(() => {
-    update({ shouldDisplayAnnouncementBanner: false });
-  }, [update]);
-
-  const gridClasses = classNames('h-full relative z-0 grid', {
-    'grid-rows-[repeat(3,min-content),1fr,min-content]':
-      shouldDisplayAnnouncementBanner,
-    'grid-rows-[repeat(2,min-content),1fr,min-content]':
-      !shouldDisplayAnnouncementBanner,
-  });
 
   return (
     <div className="h-full dark:bg-black dark:text-white">
@@ -105,38 +88,20 @@ function AppBody({ Component }: AppProps) {
         <AppLoader>
           <Web3Provider>
             <div className={gridClasses}>
+              <Banner />
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
               <ViewingBanner />
-              {shouldDisplayAnnouncementBanner ? (
-                <AnnouncementBanner>
-                  <div className="grid grid-cols-[auto_1fr] gap-4 font-alpha calt uppercase text-center text-lg text-white">
-                    <button onClick={onBannerClose}>
-                      <Icon
-                        name="cross"
-                        className="w-6 h-6"
-                        ariaLabel="dismiss"
-                      />
-                    </button>
-                    <div>
-                      <span className="pr-4">The Mainnet sims are live!</span>
-                      <ExternalLink href="https://fairground.wtf/">
-                        Come help stress test the network
-                      </ExternalLink>
-                    </div>
-                  </div>
-                </AnnouncementBanner>
-              ) : null}
               <main data-testid={location.pathname}>
                 <Component />
               </main>
               <Footer />
-              <DialogsContainer />
-              <ToastsManager />
-              <TransactionsHandler />
-              <MaybeConnectEagerly />
             </div>
+            <DialogsContainer />
+            <ToastsManager />
+            <TransactionsHandler />
+            <MaybeConnectEagerly />
           </Web3Provider>
         </AppLoader>
       </VegaWalletProvider>
