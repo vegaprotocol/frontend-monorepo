@@ -2,26 +2,44 @@ import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import React from 'react';
+import { useEffect } from 'react';
 
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useGetAssociationBreakdown } from '../../hooks/use-get-association-breakdown';
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
 import { useBalances } from '../../lib/balances/balances-store';
+import type { ReactElement } from 'react';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-listen-for-staking-events';
 
 interface BalanceManagerProps {
-  children: React.ReactElement;
+  children: ReactElement;
 }
 
 export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const contracts = useContracts();
+  const { pubKey } = useVegaWallet();
   const { account } = useWeb3React();
   const {
     appState: { decimals },
   } = useAppState();
   const { updateBalances: updateStoreBalances } = useBalances();
   const { config } = useEthereumConfig();
+
+  const numberOfConfirmations = config?.confirmations || 0;
+
+  useListenForAssociationEvents(
+    contracts?.staking.contract,
+    pubKey,
+    numberOfConfirmations
+  );
+
+  useListenForAssociationEvents(
+    contracts?.vesting.contract,
+    pubKey,
+    numberOfConfirmations
+  );
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
     account || '',
@@ -34,7 +52,7 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   );
 
   // update balances on connect to Ethereum
-  React.useEffect(() => {
+  useEffect(() => {
     const updateBalances = async () => {
       if (!account || !config) return;
       try {
@@ -75,13 +93,13 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   ]);
 
   // This use effect hook is very expensive and is kept separate to prevent expensive reloading of data.
-  React.useEffect(() => {
+  useEffect(() => {
     if (account) {
       getUserTrancheBalances();
     }
   }, [account, getUserTrancheBalances]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (account) {
       getAssociationBreakdown();
     }
