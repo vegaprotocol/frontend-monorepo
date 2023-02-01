@@ -208,7 +208,11 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
           theme={theme}
           volumeFormat={volumeFormat}
           priceFormat={priceFormat}
-          notEnoughDataText={<span className="font-light">{t('no data')}</span>}
+          notEnoughDataText={
+            <span className="text-xs text-center text-gray-800 dark:text-gray-200">
+              {t('No data')}
+            </span>
+          }
         />
       )}
     </AsyncRenderer>
