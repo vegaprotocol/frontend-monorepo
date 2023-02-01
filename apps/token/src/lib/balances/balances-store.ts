@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import create from 'zustand';
+import { create } from 'zustand';
 
 interface UserTrancheBalance {
   id: number;
