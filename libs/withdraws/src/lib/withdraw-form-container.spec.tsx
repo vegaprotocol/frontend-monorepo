@@ -193,10 +193,12 @@ describe('WithdrawFormContainer', () => {
       });
       rendererContainer = container;
     });
-    // await expect(screen.getByTestId('select-asset')).toBeInTheDocument();
+    await expect(screen.getByTestId('select-asset')).toBeInTheDocument();
     await waitFor(() => {
-      // const options = rendererContainer.querySelectorAll('select[name="asset"] option');
-      //expect(options).toHaveLength(3);
+      const options = rendererContainer.querySelectorAll(
+        'select[name="asset"] option'
+      );
+      expect(options).toHaveLength(3);
     });
   });
 
