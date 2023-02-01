@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
@@ -33,6 +33,7 @@ const render = (mocks?: MockedResponse[]) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
+
   return renderHook(() => useVegaTransactionUpdater(), { wrapper });
 };
 
@@ -193,19 +194,23 @@ describe('useVegaTransactionManager', () => {
   it('updates order on OrderBusEvents', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
     const { waitForNextUpdate } = render([mockedOrderBusEvent]);
-    waitForNextUpdate();
-    await waitForNextTick();
-    expect(updateOrder).toHaveBeenCalledWith(orderBusEvent);
+    await act(async () => {
+      waitForNextUpdate();
+      await waitForNextTick();
+      expect(updateOrder).toHaveBeenCalledWith(orderBusEvent);
+    });
   });
 
   it('updates transaction on TransactionResultBusEvents', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
     const { waitForNextUpdate } = render([mockedTransactionResultBusEvent]);
-    waitForNextUpdate();
-    await waitForNextTick();
-    expect(updateTransactionResult).toHaveBeenCalledWith(
-      transactionResultBusEvent
-    );
+    await act(async () => {
+      waitForNextUpdate();
+      await waitForNextTick();
+      expect(updateTransactionResult).toHaveBeenCalledWith(
+        transactionResultBusEvent
+      );
+    });
   });
 
   it('updates withdrawal on WithdrawalBusEvents', async () => {
@@ -215,11 +220,13 @@ describe('useVegaTransactionManager', () => {
       erc20WithdrawalApproval
     );
     const { waitForNextUpdate } = render([mockedWithdrawalBusEvent]);
-    waitForNextUpdate();
-    await waitForNextTick();
-    expect(updateWithdrawal).toHaveBeenCalledWith(
-      withdrawalBusEvent,
-      erc20WithdrawalApproval
-    );
+    await act(async () => {
+      waitForNextUpdate();
+      await waitForNextTick();
+      expect(updateWithdrawal).toHaveBeenCalledWith(
+        withdrawalBusEvent,
+        erc20WithdrawalApproval
+      );
+    });
   });
 });

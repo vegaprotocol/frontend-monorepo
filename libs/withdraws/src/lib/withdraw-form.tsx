@@ -92,9 +92,6 @@ export const WithdrawForm = ({
   }: {
     field: ControllerRenderProps<FormFields, 'asset'>;
   }) => {
-    console.log('assets', assets.filter(isAssetTypeERC20));
-    console.log('selected asset', selectedAsset);
-
     return (
       <RichSelect
         data-testid="select-asset"
@@ -110,7 +107,7 @@ export const WithdrawForm = ({
         hasError={Boolean(errors.asset?.message)}
       >
         {assets.filter(isAssetTypeERC20).map((a) => (
-          <AssetOption asset={a} />
+          <AssetOption key={a.id} asset={a} />
         ))}
       </RichSelect>
     );

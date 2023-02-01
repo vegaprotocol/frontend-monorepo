@@ -43,14 +43,17 @@ describe('AccountManager', () => {
     await waitFor(() => {
       expect(screen.getByText('No accounts')).toBeInTheDocument();
     });
-    expect(mockedUpdate({ data: [] })).toEqual(true);
-    expect(
-      mockedUpdate({ data: [{ party: { id: 't1' } }] as AccountFields[] })
-    ).toEqual(false);
-    expect(
-      mockedUpdate({ data: [{ party: { id: 't2' } }] as AccountFields[] })
-    ).toEqual(true);
-    expect(mockedUpdate({ data: [] })).toEqual(false);
-    expect(mockedUpdate({ data: [] })).toEqual(true);
+    await act(() => {
+      expect(mockedUpdate({ data: [] })).toEqual(true);
+
+      expect(
+        mockedUpdate({ data: [{ party: { id: 't1' } }] as AccountFields[] })
+      ).toEqual(false);
+      expect(
+        mockedUpdate({ data: [{ party: { id: 't2' } }] as AccountFields[] })
+      ).toEqual(true);
+      expect(mockedUpdate({ data: [] })).toEqual(false);
+      expect(mockedUpdate({ data: [] })).toEqual(true);
+    });
   });
 });

@@ -82,8 +82,9 @@ describe('FillsTable', () => {
         liquidityFee: '2',
       },
     });
-
-    render(<FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />);
+    await act(async () => {
+      render(<FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />);
+    });
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -119,8 +120,9 @@ describe('FillsTable', () => {
         liquidityFee: '1',
       },
     });
-
-    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
+    await act(async () => {
+      render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
+    });
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -150,10 +152,13 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_SELL,
     });
-
-    const { rerender } = render(
-      <FillsTable partyId={partyId} rowData={[takerFill]} />
-    );
+    let rerenderer: (ui: React.ReactElement) => void;
+    await act(async () => {
+      const { rerender } = render(
+        <FillsTable partyId={partyId} rowData={[takerFill]} />
+      );
+      rerenderer = rerender;
+    });
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -169,8 +174,9 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_BUY,
     });
-
-    rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);
+    await act(async () => {
+      rerenderer(<FillsTable partyId={partyId} rowData={[makerFill]} />);
+    });
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -189,7 +195,7 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_SELL,
     });
-    act(() => {
+    await act(async () => {
       render(<FillsTable partyId={partyId} rowData={[takerFill]} />);
     });
     await waitForGridToBeInTheDOM();
@@ -206,11 +212,12 @@ describe('FillsTable', () => {
     await waitFor(() => {
       expect(feeCell).toBeInTheDocument();
     });
-    act(() => {
+    await act(async () => {
       userEvent.hover(feeCell as HTMLElement);
+      await new Promise((res) => setTimeout(() => res(true), 500));
     });
 
-    await waitFor(() => {
+    await act(async () => {
       expect(screen.getByTestId('fee-breakdown-tooltip')).toBeInTheDocument();
     });
   });
