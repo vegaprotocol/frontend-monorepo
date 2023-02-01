@@ -35,7 +35,10 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       let signer = null;
 
       if (config) {
-        const defaultProvider = createDefaultProvider(ETHEREUM_PROVIDER_URL, 1);
+        const defaultProvider = createDefaultProvider(
+          ETHEREUM_PROVIDER_URL,
+          Number(config.chain_id)
+        );
         const provider = activeProvider ? activeProvider : defaultProvider;
 
         if (
@@ -47,23 +50,20 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
         }
 
         if (provider && config) {
-          // const staking = new StakingBridge(
-          //   '0x124Dd8a6044ef048614AEA0AAC86643a8Ae1312D',
-          //   signer || provider
-          // );
-          // const vegaAddress = await staking.staking_token();
+          const staking = new StakingBridge(
+            config.staking_bridge_contract.address,
+            signer || provider
+          );
+          const vegaAddress = await staking.staking_token();
           if (!cancelled) {
             setContracts({
-              token: new Token(
-                '0xcB84d72e61e383767C4DFEb2d8ff7f4FB89abc6e',
-                signer || provider
-              ),
+              token: new Token(vegaAddress, signer || provider),
               staking: new StakingBridge(
-                '0x195064D33f09e0c42cF98E665D9506e0dC17de68',
+                config.staking_bridge_contract.address,
                 signer || provider
               ),
               vesting: new TokenVesting(
-                '0x23d1bFE8fA50a167816fBD79D7932577c06011f4',
+                config.token_vesting_contract.address,
                 signer || provider
               ),
               claim: new Claim(ENV.addresses.claimAddress, signer || provider),

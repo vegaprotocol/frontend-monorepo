@@ -28,7 +28,7 @@ export function Web3Connector({
     },
     [appDispatch]
   );
-  const appChainId = Number(1);
+  const appChainId = Number(chainId);
   return (
     <>
       <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>

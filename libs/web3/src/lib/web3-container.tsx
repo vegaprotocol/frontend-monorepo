@@ -47,7 +47,7 @@ export const Web3Container = ({
           <Web3Content
             connectEagerly={connectEagerly}
             childrenOnly={childrenOnly}
-            appChainId={Number(1)}
+            appChainId={Number(config?.chain_id)}
             connectors={connectors}
           >
             {children}
