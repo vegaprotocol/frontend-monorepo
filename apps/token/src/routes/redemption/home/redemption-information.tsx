@@ -1,7 +1,7 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { AddLockedTokenAddress } from '../../../components/add-locked-token';
 import { formatNumber } from '../../../lib/format-number';
@@ -10,11 +10,9 @@ import Routes from '../../routes';
 import { Tranche0Table, TrancheTable } from '../tranche-table';
 import { VestingTable } from './vesting-table';
 import { useTranches } from '../../../lib/tranches/tranches-store';
-import { useContracts } from '../../../contexts/contracts/contracts-context';
 import { useGetUserBalances } from '../../../hooks/use-get-user-balances';
 import BigNumber from 'bignumber.js';
-import { toBigNum } from '@vegaprotocol/react-helpers';
-import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { useUserTrancheBalances } from '../hooks';
 
 interface UserBalances {
   balanceFormatted: BigNumber;
@@ -25,70 +23,20 @@ interface UserBalances {
 }
 
 // TODO
-// Error state, when bad ID
-// Empty state, when legit ID with nothing in it
 // Fix eth wallet state
-
-const useUserTrancheBalances = (address: string) => {
-  const [userTrancheBalances, setUserTrancheBalances] = useState<
-    {
-      id: number;
-      locked: BigNumber;
-      vested: BigNumber;
-    }[]
-  >([]);
-  const {
-    appState: { decimals },
-  } = useAppState();
-  const { vesting } = useContracts();
-  const tranches = useTranches((state) => state.tranches);
-  const loadUserTrancheBalances = useCallback(async () => {
-    const userTranches =
-      tranches?.filter((t) =>
-        t.users.some(
-          (a) => a && address && a.toLowerCase() === address.toLowerCase()
-        )
-      ) || [];
-    const trancheIds = [0, ...userTranches.map((t) => t.tranche_id)];
-    const promises = trancheIds.map(async (tId) => {
-      const [t, v] = await Promise.all([
-        vesting.get_tranche_balance(address, tId),
-        vesting.get_vested_for_tranche(address, tId),
-      ]);
-
-      const total = toBigNum(t, decimals);
-      const vested = toBigNum(v, decimals);
-
-      return {
-        id: tId,
-        locked: tId === 0 ? total : total.minus(vested),
-        vested: tId === 0 ? new BigNumber(0) : vested,
-      };
-    });
-
-    const trancheBalances = await Promise.all(promises);
-    setUserTrancheBalances(trancheBalances);
-  }, [address, decimals, tranches, vesting]);
-  useEffect(() => {
-    loadUserTrancheBalances();
-  }, [loadUserTrancheBalances]);
-  return userTrancheBalances;
-};
 
 export const RedemptionInformation = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const tranches = useTranches((state) => state.tranches);
-  const { account } = useOutletContext<{
-    account: string;
-  }>();
+  const { account } = useParams<{ account: string }>();
   const [userBalances, setUserBalances] = useState<null | UserBalances>();
   const getUsersBalances = useGetUserBalances(account);
   useEffect(() => {
     getUsersBalances().then(setUserBalances);
   }, [getUsersBalances]);
   const userTrancheBalances = useUserTrancheBalances(account);
-  const filteredTranches = React.useMemo(
+  const filteredTranches = useMemo(
     () =>
       tranches?.filter((tr) => {
         const balance = userTrancheBalances.find(
@@ -113,13 +61,22 @@ export const RedemptionInformation = () => {
     };
   }, [userTrancheBalances]);
 
-  const zeroTranche = React.useMemo(() => {
+  const zeroTranche = useMemo(() => {
     const zeroTranche = userTrancheBalances.find((t) => t.id === 0);
     if (zeroTranche && zeroTranche.locked.isGreaterThan(0)) {
       return zeroTranche;
     }
     return null;
   }, [userTrancheBalances]);
+
+  const isAccountValid = useMemo(
+    () => account && account.length === 42 && account.startsWith('0x'),
+    [account]
+  );
+
+  if (!isAccountValid || !account) {
+    return <div>The address {account} is not a valid Ethereum address</div>;
+  }
 
   if (!filteredTranches.length || !userBalances) {
     return (
