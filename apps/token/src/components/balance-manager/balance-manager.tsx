@@ -11,6 +11,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-listen-for-staking-events';
 import { useTranches } from '../../lib/tranches/tranches-store';
 import { useUserTrancheBalances } from '../../routes/redemption/hooks';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 
 interface BalanceManagerProps {
   children: ReactElement;
