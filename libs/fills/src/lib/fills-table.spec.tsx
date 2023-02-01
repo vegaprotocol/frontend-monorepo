@@ -214,7 +214,7 @@ describe('FillsTable', () => {
     });
     await act(async () => {
       userEvent.hover(feeCell as HTMLElement);
-      await new Promise((res) => setTimeout(() => res(true), 500));
+      await new Promise((res) => setTimeout(() => res(true), 1000));
     });
 
     await act(async () => {
