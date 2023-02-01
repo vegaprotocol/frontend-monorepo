@@ -101,6 +101,16 @@ beforeEach(() => {
 });
 
 describe('throws error', () => {
+  const consoleError = console.error;
+
+  beforeAll(() => {
+    console.error = jest.fn();
+  });
+
+  afterAll(() => {
+    console.error = consoleError;
+  });
+
   beforeEach(() => {
     // @ts-ignore: typescript doesn't recognize the mock implementation
     global.fetch.mockImplementation(setupFetch());
@@ -127,6 +137,7 @@ describe('throws error', () => {
   });
 
   beforeEach(() => jest.resetModules()); // clears the cache of the modules
+
   it('throws a validation error when NX_ETHERSCAN_URL is not a valid url', () => {
     process.env['NX_ETHERSCAN_URL'] = 'invalid-url';
     const result = () =>

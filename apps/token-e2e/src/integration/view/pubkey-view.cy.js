@@ -20,7 +20,10 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
 
   it('Able to connect public key via wallet', function () {
     verifyConnectedToPubKey();
-    cy.getByTestId('currency-title').should('contain.text', 'USDC (fake)');
+    cy.getByTestId('currency-title', Cypress.env('epochTimeout')).should(
+      'contain.text',
+      'USDC (fake)'
+    );
   });
 
   it('Able to connect public key using url', function () {

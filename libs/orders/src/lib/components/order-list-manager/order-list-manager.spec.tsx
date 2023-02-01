@@ -13,7 +13,7 @@ const generateJsx = () => {
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
-        <OrderListManager partyId={pubKey} />
+        <OrderListManager partyId={pubKey} isReadOnly={false} />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );

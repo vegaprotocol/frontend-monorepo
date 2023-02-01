@@ -22,7 +22,7 @@ describe('Proposal link component', () => {
     expect(res.getByText('123')).toBeInTheDocument();
   });
 
-  it('Renders the ID with an emoji on error', async () => {
+  it('Renders the ID on error', async () => {
     const mock = {
       request: {
         query: ExplorerProposalDocument,
@@ -37,9 +37,6 @@ describe('Proposal link component', () => {
     const res = render(renderComponent('456', [mock]));
     // The ID
     expect(res.getByText('456')).toBeInTheDocument();
-
-    // The emoji
-    expect(await res.findByRole('img')).toBeInTheDocument();
   });
 
   it('Renders the proposal title when the query returns a result', async () => {

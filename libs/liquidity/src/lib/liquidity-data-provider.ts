@@ -35,10 +35,10 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   query: LiquidityProvisionsDocument,
   subscriptionQuery: LiquidityProvisionsUpdateDocument,
   update: (
-    data: LiquidityProvisionFieldsFragment[],
+    data: LiquidityProvisionFieldsFragment[] | null,
     deltas: LiquidityProvisionsUpdateSubscription['liquidityProvisions']
   ) => {
-    return produce(data, (draft) => {
+    return produce(data || [], (draft) => {
       deltas?.forEach((delta) => {
         const id = getId(delta);
         const index = draft.findIndex((a) => getId(a) === id);
@@ -63,9 +63,9 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
       });
     });
   },
-  getData: (responseData: LiquidityProvisionsQuery) => {
+  getData: (responseData: LiquidityProvisionsQuery | null) => {
     return (
-      responseData.market?.liquidityProvisionsConnection?.edges?.map(
+      responseData?.market?.liquidityProvisionsConnection?.edges?.map(
         (e) => e?.node
       ) ?? []
     ).filter((e) => !!e) as LiquidityProvisionFieldsFragment[];
@@ -105,7 +105,7 @@ export const marketLiquidityDataProvider = makeDataProvider<
   never
 >({
   query: MarketLpDocument,
-  getData: (responseData: MarketLpQuery) => {
+  getData: (responseData: MarketLpQuery | null) => {
     return responseData;
   },
 });
@@ -119,10 +119,10 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
   query: LiquidityProviderFeeShareDocument,
   subscriptionQuery: LiquidityProviderFeeShareUpdateDocument,
   update: (
-    data: LiquidityProviderFeeShareFieldsFragment[],
+    data: LiquidityProviderFeeShareFieldsFragment[] | null,
     deltas: LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare']
   ) => {
-    return produce(data, (draft) => {
+    return produce(data || [], (draft) => {
       deltas?.forEach((delta) => {
         const id = delta.partyId;
         const index = draft.findIndex((a) => a.party.id === id);
@@ -143,7 +143,7 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
     });
   },
   getData: (data) => {
-    return data.market?.data?.liquidityProviderFeeShare || [];
+    return data?.market?.data?.liquidityProviderFeeShare || [];
   },
   getDelta: (subscriptionData: LiquidityProviderFeeShareUpdateSubscription) => {
     return subscriptionData.marketsData[0].liquidityProviderFeeShare;

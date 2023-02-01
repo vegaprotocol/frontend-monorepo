@@ -30,9 +30,12 @@ export function useAnimateValue(
   ) {
     elRef.current?.animate(
       [
-        { backgroundColor: customColors.vega.pink, color: colors.white },
         {
-          backgroundColor: customColors.vega.pink,
+          backgroundColor: customColors.vega.pink.DEFAULT,
+          color: colors.white,
+        },
+        {
+          backgroundColor: customColors.vega.pink.DEFAULT,
           color: colors.white,
           offset: 0.8,
         },
@@ -53,11 +56,11 @@ export function useAnimateValue(
     elRef.current?.animate(
       [
         {
-          backgroundColor: customColors.vega.green,
+          backgroundColor: customColors.vega.green.DEFAULT,
           color: colors.white,
         },
         {
-          backgroundColor: customColors.vega.green,
+          backgroundColor: customColors.vega.green.DEFAULT,
           color: colors.white,
           offset: 0.8,
         },

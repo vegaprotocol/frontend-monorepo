@@ -9,8 +9,9 @@ import {
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
+import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { ExternalLinks, t, useChainIdQuery } from '@vegaprotocol/react-helpers';
-import type { VegaConnector, WalletError } from '../connectors';
+import type { VegaConnector } from '../connectors';
 import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
@@ -44,7 +45,7 @@ export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
   })
 );
 
-interface VegaWalletDialogStore {
+export interface VegaWalletDialogStore {
   vegaWalletDialogOpen: boolean;
   updateVegaWalletDialog: (open: boolean) => void;
   openVegaWalletDialog: () => void;
@@ -55,25 +56,25 @@ export const VegaConnectDialog = ({
   connectors,
   onChangeOpen,
 }: VegaConnectDialogProps) => {
-  const {
-    vegaWalletDialogOpen,
-    closeVegaWalletDialog,
-    updateVegaWalletDialog,
-  } = useVegaWalletDialogStore((store) => ({
-    vegaWalletDialogOpen: store.vegaWalletDialogOpen,
-    updateVegaWalletDialog: onChangeOpen
+  const vegaWalletDialogOpen = useVegaWalletDialogStore(
+    (store) => store.vegaWalletDialogOpen
+  );
+  const updateVegaWalletDialog = useVegaWalletDialogStore((store) =>
+    onChangeOpen
       ? (open: boolean) => {
           store.updateVegaWalletDialog(open);
           onChangeOpen(open);
         }
-      : store.updateVegaWalletDialog,
-    closeVegaWalletDialog: onChangeOpen
+      : store.updateVegaWalletDialog
+  );
+  const closeVegaWalletDialog = useVegaWalletDialogStore((store) =>
+    onChangeOpen
       ? () => {
           store.closeVegaWalletDialog();
           onChangeOpen(false);
         }
-      : store.closeVegaWalletDialog,
-  }));
+      : store.closeVegaWalletDialog
+  );
 
   const { data, error, loading } = useChainIdQuery();
 
@@ -254,7 +255,7 @@ const SelectedForm = ({
   appChainId: string;
   jsonRpcState: {
     status: Status;
-    error: WalletError | null;
+    error: WalletClientError | null;
   };
   reset: () => void;
   onConnect: () => void;

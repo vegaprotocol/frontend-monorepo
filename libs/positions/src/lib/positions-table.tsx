@@ -33,6 +33,7 @@ interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
   onMarketClick?: (id: string) => void;
   style?: CSSProperties;
+  isReadOnly: boolean;
 }
 
 export interface AmountCellProps {
@@ -378,17 +379,19 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             return getDateTimeFormat().format(new Date(value));
           }}
         />
-        {onClose ? (
+        {onClose && !props.isReadOnly ? (
           <AgGridColumn
             type="rightAligned"
-            cellRenderer={({ data }: VegaICellRendererParams<Position>) => (
-              <ButtonLink
-                data-testid="close-position"
-                onClick={() => data && onClose(data)}
-              >
-                {t('Close')}
-              </ButtonLink>
-            )}
+            cellRenderer={({ data }: VegaICellRendererParams<Position>) =>
+              data?.openVolume && data?.openVolume !== '0' ? (
+                <ButtonLink
+                  data-testid="close-position"
+                  onClick={() => data && onClose(data)}
+                >
+                  {t('Close')}
+                </ButtonLink>
+              ) : null
+            }
           />
         ) : null}
       </AgGrid>

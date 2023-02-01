@@ -2,30 +2,17 @@ import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marginsDataProvider } from './margin-data-provider';
-import type {
-  MarginsQuery,
-  MarginsSubscriptionSubscription,
-} from './__generated__/Positions';
-
-const getMarketMarginPosition = ({
-  data,
-  marketId,
-}: {
-  data: MarginsQuery['party'] | null;
-  marketId: string;
-}) => {
-  const positions =
-    data?.marginsConnection?.edges?.map((item) => item.node) ?? [];
-  return positions.find((item) => item.market.id === marketId);
-};
+import type { MarginFieldsFragment } from './__generated__/Positions';
 
 export const useMarketMargin = (marketId: string) => {
   const { pubKey } = useVegaWallet();
   const [marginLevel, setMarginLevel] = useState<string>('');
 
   const update = useCallback(
-    ({ data }: { data: MarginsQuery['party'] | null }) => {
-      const marginMarketPosition = getMarketMarginPosition({ data, marketId });
+    ({ data }: { data: MarginFieldsFragment[] | null }) => {
+      const marginMarketPosition = data?.find(
+        (item) => item.market.id === marketId
+      );
       if (marginMarketPosition?.maintenanceLevel) {
         setMarginLevel(marginMarketPosition?.maintenanceLevel || '');
       }
@@ -34,10 +21,7 @@ export const useMarketMargin = (marketId: string) => {
     [setMarginLevel, marketId]
   );
 
-  useDataProvider<
-    MarginsQuery['party'],
-    MarginsSubscriptionSubscription['margins']
-  >({
+  useDataProvider({
     dataProvider: marginsDataProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey || !marketId,

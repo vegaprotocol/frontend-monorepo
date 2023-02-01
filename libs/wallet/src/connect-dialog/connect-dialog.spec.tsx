@@ -9,6 +9,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
 import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
+import type { VegaWalletDialogStore } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
@@ -23,13 +24,15 @@ import { ChainIdDocument } from '@vegaprotocol/react-helpers';
 
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
+const mockStoreObj: Partial<VegaWalletDialogStore> = {
+  updateVegaWalletDialog: mockUpdateDialogOpen,
+  closeVegaWalletDialog: mockCloseVegaDialog,
+  vegaWalletDialogOpen: true,
+};
 
 jest.mock('zustand', () => ({
-  create: () => () => ({
-    updateVegaWalletDialog: mockUpdateDialogOpen,
-    closeVegaWalletDialog: mockCloseVegaDialog,
-    vegaWalletDialogOpen: true,
-  }),
+  create: () => (storeGetter: (store: VegaWalletDialogStore) => unknown) =>
+    storeGetter(mockStoreObj as VegaWalletDialogStore),
 }));
 
 let defaultProps: VegaConnectDialogProps;
@@ -301,7 +304,9 @@ describe('VegaConnectDialog', () => {
       spyOnConnectWallet
         .mockClear()
         .mockImplementation(() =>
-          delayedReject(new WalletError('message', 3001, 'data'))
+          delayedReject(
+            new WalletError('User error', 3001, 'The user rejected the request')
+          )
         );
 
       render(generateJSX());
@@ -322,9 +327,9 @@ describe('VegaConnectDialog', () => {
       await act(async () => {
         jest.advanceTimersByTime(delay);
       });
-      expect(screen.getByText('Connection declined')).toBeInTheDocument();
+      expect(screen.getByText('User error')).toBeInTheDocument();
       expect(
-        screen.getByText('Your wallet connection was rejected')
+        screen.getByText('The user rejected the request')
       ).toBeInTheDocument();
     });
 

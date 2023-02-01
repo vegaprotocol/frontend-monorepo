@@ -8,10 +8,8 @@ import { TxDetailsHeartbeat } from './tx-hearbeat';
 import { TxDetailsGeneric } from './tx-generic';
 import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
-import { TxContent } from '../../../routes/txs/id/tx-content';
 import { TxDetailsNodeVote } from './tx-node-vote';
 import { TxDetailsOrderCancel } from './tx-order-cancel';
-import get from 'lodash/get';
 import { TxDetailsOrderAmend } from './tx-order-amend';
 import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
@@ -46,23 +44,9 @@ export const TxDetailsWrapper = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const raw = get(blockData, `result.block.data.txs[${txData.index}]`);
-
   return (
     <div key={`txd-${txData.hash}`}>
       <section>{child({ txData, pubKey, blockData })}</section>
-
-      <details title={t('Decoded transaction')} className="mt-3">
-        <summary className="cursor-pointer">{t('Decoded transaction')}</summary>
-        <TxContent data={txData} />
-      </details>
-
-      {raw ? (
-        <details title={t('Raw transaction')} className="mt-3">
-          <summary className="cursor-pointer">{t('Raw transaction')}</summary>
-          <code className="break-all font-mono text-xs">{raw}</code>
-        </details>
-      ) : null}
     </div>
   );
 };

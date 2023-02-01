@@ -62,14 +62,20 @@ describe('Chain Event: ERC20 Asset List', () => {
     expect(screen.getByText(t('Added Vega asset'))).toBeInTheDocument();
     const assetLink = screen.getByText(`${fullMock.vegaAssetId}`);
     expect(assetLink).toBeInTheDocument();
-    expect(assetLink.tagName).toEqual('A');
-    expect(assetLink.getAttribute('href')).toEqual(
+    if (!assetLink.parentElement) {
+      throw new Error('Asset link does not exist');
+    }
+    expect(assetLink.parentElement.tagName).toEqual('A');
+    expect(assetLink.parentElement.getAttribute('href')).toEqual(
       `/assets#${fullMock.vegaAssetId}`
     );
 
     expect(screen.getByText(t('Source'))).toBeInTheDocument();
     const ethLink = screen.getByText(`${fullMock.assetSource}`);
-    expect(ethLink.getAttribute('href')).toContain(
+    if (!ethLink.parentElement) {
+      throw new Error('Asset link does not exist');
+    }
+    expect(ethLink.parentElement.getAttribute('href')).toContain(
       `/address/${fullMock.assetSource}`
     );
   });

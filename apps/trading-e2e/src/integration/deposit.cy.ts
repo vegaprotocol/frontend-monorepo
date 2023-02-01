@@ -56,6 +56,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   });
 
   it('insufficient funds', () => {
+    // 1001-DEPO-005
     // Deposit amount is valid, but less than approved. This will always be the case because our
     // CI wallet wont have approved any assets
     cy.get(amountField)

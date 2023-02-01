@@ -50,10 +50,10 @@ export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
 };
 
 const update = (
-  data: AccountFieldsFragment[],
+  data: AccountFieldsFragment[] | null,
   deltas: AccountEventsSubscription['accounts']
 ) => {
-  return produce(data, (draft) => {
+  return produce(data || [], (draft) => {
     deltas.forEach((delta) => {
       const id = getId(delta);
       const index = draft.findIndex((a) => getId(a) === id);
@@ -73,15 +73,8 @@ const update = (
   });
 };
 
-const getData = (
-  responseData: AccountsQuery
-): AccountFieldsFragment[] | null => {
-  return (
-    removePaginationWrapper(responseData.party?.accountsConnection?.edges) ??
-    null
-  );
-};
-
+const getData = (responseData: AccountsQuery | null): AccountFieldsFragment[] =>
+  removePaginationWrapper(responseData?.party?.accountsConnection?.edges) || [];
 const getDelta = (
   subscriptionData: AccountEventsSubscription
 ): AccountEventsSubscription['accounts'] => {

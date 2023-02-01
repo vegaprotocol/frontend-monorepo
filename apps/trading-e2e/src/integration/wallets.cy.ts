@@ -7,7 +7,7 @@ const manageVegaBtn = 'manage-vega-wallet';
 const form = 'rest-connector-form';
 const dialogContent = 'dialog-content';
 
-describe('vega wallet v1', { tags: '@smoke' }, () => {
+describe('connect hosted wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
     cy.visit('/#/portfolio');
@@ -58,7 +58,7 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
   });
 });
 
-describe('vega wallet v2', { tags: '@smoke' }, () => {
+describe('connect vega wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
     cy.visit('/#/portfolio');
@@ -125,65 +125,5 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
       .should('have.text', 'Disconnect')
       .click();
     cy.getByTestId(connectEthWalletBtn).should('exist');
-  });
-});
-
-describe('Navbar', { tags: '@smoke' }, () => {
-  beforeEach(() => {
-    cy.mockTradingPage();
-    cy.mockSubscription();
-    cy.visit('/');
-    cy.wait('@Market');
-    cy.getByTestId('dialog-close').click();
-  });
-
-  it('should be properly rendered', () => {
-    const links = ['Markets', 'Trading', 'Portfolio'];
-    const hashes = ['#/markets/all', '#/markets/market-0', '#/portfolio'];
-    let i = 0;
-    cy.getByTestId('navbar').within(() => {
-      cy.get('[data-testid="navbar-links"] a[data-testid]', { log: true })
-        .should('have.length', 3)
-        .each((item) => {
-          cy.wrap(item).click();
-          cy.wrap(item).get('span.absolute.md\\:h-1.w-full').should('exist');
-          cy.location('hash').should('equal', hashes[i]);
-          cy.wrap(item).should('have.data', 'testid', links[i++]);
-        });
-    });
-  });
-
-  it('wallet drawer should be correctly rendered', () => {
-    cy.viewport(560, 890);
-    mockConnectWallet();
-    cy.connectVegaWallet(true);
-    cy.getByTestId('connect-vega-wallet-mobile').click();
-    cy.getByTestId('wallets-drawer').should('be.visible');
-    cy.getByTestId('wallets-drawer').within((el) => {
-      cy.wrap(el).get('button').contains('Disconnect').click();
-    });
-    cy.getByTestId('wallets-drawer').should('not.be.visible');
-  });
-
-  it('menu drawer should be correctly rendered', () => {
-    cy.viewport(560, 890);
-    cy.getByTestId('button-menu-drawer').click();
-    cy.getByTestId('menu-drawer').should('be.visible');
-    cy.getByTestId('menu-drawer').within((el) => {
-      cy.wrap(el).getByTestId('Markets').click();
-      cy.location('hash').should('equal', '#/markets/all');
-    });
-    cy.getByTestId('button-menu-drawer').click();
-    cy.getByTestId('menu-drawer').within((el) => {
-      cy.wrap(el).getByTestId('Trading').click();
-      cy.location('hash').should('equal', '#/markets/market-0');
-    });
-    cy.getByTestId('button-menu-drawer').click();
-    cy.getByTestId('menu-drawer').within((el) => {
-      cy.wrap(el).getByTestId('Portfolio').click();
-      cy.location('hash').should('equal', '#/portfolio');
-      cy.wrap(el).getByTestId('theme-switcher').should('be.visible');
-    });
-    cy.getByTestId('menu-drawer').should('not.be.visible');
   });
 });

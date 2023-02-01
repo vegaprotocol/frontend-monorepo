@@ -18,14 +18,20 @@ import type {
 
 export type MarketData = MarketDataFieldsFragment;
 
-const update = (data: MarketData, delta: MarketDataUpdateFieldsFragment) => {
-  return produce(data, (draft) => {
-    const { marketId, __typename, ...marketData } = delta;
-    Object.assign(draft, marketData);
-  });
+const update = (
+  data: MarketData | null,
+  delta: MarketDataUpdateFieldsFragment
+) => {
+  return (
+    data &&
+    produce(data, (draft) => {
+      const { marketId, __typename, ...marketData } = delta;
+      Object.assign(draft, marketData);
+    })
+  );
 };
 
-const getData = (responseData: MarketDataQuery): MarketData | null =>
+const getData = (responseData: MarketDataQuery | null): MarketData | null =>
   responseData?.marketsConnection?.edges[0].node.data || null;
 
 const getDelta = (

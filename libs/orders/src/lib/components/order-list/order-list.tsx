@@ -32,6 +32,7 @@ export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string) => void;
+  isReadOnly: boolean;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
@@ -248,7 +249,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           minWidth={100}
           type="rightAligned"
           cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
-            return data && isOrderAmendable(data) ? (
+            return data && isOrderAmendable(data) && !props.isReadOnly ? (
               <>
                 <ButtonLink
                   data-testid="edit"

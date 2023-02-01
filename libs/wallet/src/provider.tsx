@@ -1,6 +1,7 @@
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { VegaWalletContextShape } from '.';
 import type {
   PubKey,
@@ -9,7 +10,6 @@ import type {
 } from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage';
-import { WalletError } from './connectors/vega-connector';
 import { ViewConnector } from './connectors';
 
 interface VegaWalletProviderProps {
@@ -53,7 +53,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
         return null;
       }
     } catch (err) {
-      if (err instanceof WalletError) {
+      if (err instanceof WalletClientError) {
         throw err;
       }
       return null;

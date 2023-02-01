@@ -8,6 +8,7 @@ import type {
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
+import { isNotFoundGraphQLError } from './apollo-client';
 import type * as Schema from '@vegaprotocol/types';
 interface UpdateData<Data, Delta> {
   delta?: Delta;
@@ -71,7 +72,12 @@ export interface Update<
   Delta,
   Variables extends OperationVariables = OperationVariables
 > {
-  (data: Data, delta: Delta, reload: Reload, variables?: Variables): Data;
+  (
+    data: Data | null,
+    delta: Delta,
+    reload: Reload,
+    variables?: Variables
+  ): Data;
 }
 
 export interface Append<Data> {
@@ -88,7 +94,7 @@ export interface Append<Data> {
 }
 
 interface GetData<QueryData, Data, Variables> {
-  (queryData: QueryData, variables?: Variables): Data | null;
+  (queryData: QueryData | null, variables?: Variables): Data | null;
 }
 
 interface GetPageInfo<QueryData> {
@@ -160,7 +166,7 @@ interface DataProviderParams<
 > {
   query: Query<QueryData>;
   subscriptionQuery?: Query<SubscriptionData>;
-  update?: Update<Data, Delta, Variables>;
+  update?: Update<Data | null, Delta, Variables>;
   getData: GetData<QueryData, Data, Variables>;
   getDelta?: GetDelta<SubscriptionData, Delta, Variables>;
   pagination?: {
@@ -349,6 +355,11 @@ function makeDataProviderInternal<
       }
       loaded = true;
     } catch (e) {
+      if (isNotFoundGraphQLError(e as Error, 'party')) {
+        data = getData(null, variables);
+        loaded = true;
+        return;
+      }
       // if error will occur data provider stops subscription
       error = e as Error;
       if (subscription) {
@@ -384,7 +395,7 @@ function makeDataProviderInternal<
       return;
     }
     const delta = getDelta(subscriptionData, variables);
-    if (loading || !data) {
+    if (loading) {
       updateQueue.push(delta);
     } else {
       const updatedData = update(data, delta, reload, variables);
@@ -409,7 +420,6 @@ function makeDataProviderInternal<
     if (!client) {
       return;
     }
-
     if (subscriptionQuery && getDelta && update) {
       subscription = client
         .subscribe<SubscriptionData>({
