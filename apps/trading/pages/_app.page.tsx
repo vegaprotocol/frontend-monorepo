@@ -27,7 +27,7 @@ import './styles.css';
 import './gen-styles.scss';
 import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
@@ -38,6 +38,7 @@ import {
   ExternalLink,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
+import classNames from 'classnames';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -82,6 +83,17 @@ function AppBody({ Component }: AppProps) {
     })
   );
 
+  const onBannerClose = useCallback(() => {
+    update({ shouldDisplayAnnouncementBanner: false });
+  }, [update]);
+
+  const gridClasses = classNames('h-full relative z-0 grid', {
+    'grid-rows-[repeat(3,min-content),1fr,min-content]':
+      shouldDisplayAnnouncementBanner,
+    'grid-rows-[repeat(2,min-content),1fr,min-content]':
+      !shouldDisplayAnnouncementBanner,
+  });
+
   return (
     <div className="h-full dark:bg-black dark:text-white">
       <Head>
@@ -92,19 +104,15 @@ function AppBody({ Component }: AppProps) {
       <VegaWalletProvider>
         <AppLoader>
           <Web3Provider>
-            <div className="h-full relative z-0 grid grid-rows-[min-content,min-content,min-content,1fr,min-content]">
+            <div className={gridClasses}>
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
               <ViewingBanner />
-              {shouldDisplayAnnouncementBanner && (
+              {shouldDisplayAnnouncementBanner ? (
                 <AnnouncementBanner>
                   <div className="grid grid-cols-[auto_1fr] gap-4 font-alpha calt uppercase text-center text-lg text-white">
-                    <button
-                      onClick={() =>
-                        update({ shouldDisplayAnnouncementBanner: false })
-                      }
-                    >
+                    <button onClick={onBannerClose}>
                       <Icon
                         name="cross"
                         className="w-6 h-6"
@@ -119,7 +127,7 @@ function AppBody({ Component }: AppProps) {
                     </div>
                   </div>
                 </AnnouncementBanner>
-              )}
+              ) : null}
               <main data-testid={location.pathname}>
                 <Component />
               </main>
