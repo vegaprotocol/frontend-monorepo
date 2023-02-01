@@ -10,6 +10,7 @@ import type { ReactElement } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-listen-for-staking-events';
 import { useTranches } from '../../lib/tranches/tranches-store';
+import { useUserTrancheBalances } from '../../routes/redemption/hooks';
 
 interface BalanceManagerProps {
   children: ReactElement;
@@ -22,8 +23,13 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const {
     appState: { decimals },
   } = useAppState();
-  const { updateBalances: updateStoreBalances } = useBalances();
+  const updateStoreBalances = useBalances((state) => state.updateBalances);
+  const setTranchesBalances = useBalances((state) => state.setTranchesBalances);
   const getUserBalances = useGetUserBalances(account);
+  const userTrancheBalances = useUserTrancheBalances(account);
+  useEffect(() => {
+    setTranchesBalances(userTrancheBalances);
+  }, [setTranchesBalances, userTrancheBalances]);
   const { config } = useEthereumConfig();
 
   const numberOfConfirmations = config?.confirmations || 0;

@@ -11,20 +11,19 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 
-import { useOutletContext } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
-import type { Tranche as TrancheType } from '../../lib/tranches/tranches-store';
+import { useTranches } from '../../lib/tranches/tranches-store';
 
 export const Tranche = () => {
-  const tranches = useOutletContext<TrancheType[]>();
+  const tranches = useTranches((state) => state.tranches);
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
-  const { trancheId } = useParams<{ trancheId: string }>();
+  const { trancheId } = useParams<{ trancheId: string; address: string }>();
   const { chainId } = useWeb3React();
-  const tranche = tranches.find(
+  const tranche = tranches?.find(
     (tranche) => trancheId && parseInt(trancheId) === tranche.tranche_id
   );
 

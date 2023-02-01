@@ -22,20 +22,17 @@ interface UserBalances {
   balance: BigNumber;
 }
 
-// TODO
-// Fix eth wallet state
-
 export const RedemptionInformation = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const tranches = useTranches((state) => state.tranches);
-  const { account } = useParams<{ account: string }>();
+  const { address } = useParams<{ address: string }>();
   const [userBalances, setUserBalances] = useState<null | UserBalances>();
-  const getUsersBalances = useGetUserBalances(account);
+  const getUsersBalances = useGetUserBalances(address);
   useEffect(() => {
     getUsersBalances().then(setUserBalances);
   }, [getUsersBalances]);
-  const userTrancheBalances = useUserTrancheBalances(account);
+  const userTrancheBalances = useUserTrancheBalances(address);
   const filteredTranches = useMemo(
     () =>
       tranches?.filter((tr) => {
@@ -70,12 +67,12 @@ export const RedemptionInformation = () => {
   }, [userTrancheBalances]);
 
   const isAccountValid = useMemo(
-    () => account && account.length === 42 && account.startsWith('0x'),
-    [account]
+    () => address && address.length === 42 && address.startsWith('0x'),
+    [address]
   );
 
-  if (!isAccountValid || !account) {
-    return <div>The address {account} is not a valid Ethereum address</div>;
+  if (!isAccountValid || !address) {
+    return <div>The address {address} is not a valid Ethereum address</div>;
   }
 
   if (!filteredTranches.length || !userBalances) {
@@ -107,7 +104,7 @@ export const RedemptionInformation = () => {
         {t(
           '{{address}} has {{balance}} VEGA tokens in {{tranches}} tranches of the vesting contract.',
           {
-            address: truncateMiddle(account),
+            address: truncateMiddle(address),
             balance: formatNumber(userBalances.balanceFormatted),
             tranches: filteredTranches.length,
           }
@@ -152,9 +149,9 @@ export const RedemptionInformation = () => {
           totalVested={totalVested}
           totalLocked={totalLocked}
           onClick={() =>
-            navigate(`${Routes.REDEEM}/${account}/${tr.tranche_id}`)
+            navigate(`${Routes.REDEEM}/${address}/${tr.tranche_id}`)
           }
-          address={account}
+          address={address}
         />
       ))}
       <Callout
