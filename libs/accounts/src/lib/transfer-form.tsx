@@ -6,8 +6,8 @@ import {
   vegaPublicKey,
   addDecimal,
   formatNumber,
+  getUserLocale,
 } from '@vegaprotocol/react-helpers';
-import { AccountTypeMapping } from '@vegaprotocol/types';
 import {
   Button,
   FormGroup,
@@ -87,13 +87,11 @@ export const TransferForm = ({
     const minViableAmount = asset
       ? new BigNumber(addDecimal('1', asset.decimals))
       : new BigNumber(0);
-
     return minViableAmount;
   }, [asset]);
 
   const max = useMemo(() => {
     const maxAmount = asset ? new BigNumber(asset.balance) : new BigNumber(0);
-
     return maxAmount;
   }, [asset]);
 
@@ -215,7 +213,7 @@ export const TransferForm = ({
           <InputError forInput="amount">{errors.amount.message}</InputError>
         )}
       </FormGroup>
-      <TransferFee amount={amount} feeFactor={feeFactor} />
+      <TransferFee amount={amount} feeFactor={feeFactor} asset={asset} />
       <Button type="submit" variant="primary" fill={true}>
         {t('Confirm transfer')}
       </Button>
@@ -226,12 +224,20 @@ export const TransferForm = ({
 export const TransferFee = ({
   amount,
   feeFactor,
+  asset,
 }: {
   amount: string;
   feeFactor: string | null;
+  asset?: {
+    decimals: number;
+  };
 }) => {
-  if (!feeFactor || !amount) return null;
-  const value = new BigNumber(amount).times(feeFactor).toString();
+  if (!asset || !feeFactor || !amount) return null;
+
+  // using toFixed without an argument will always return a
+  // number in normal notation without rounding, formatting functions
+  // arent working in a way which won't round the decimal places
+  const value = new BigNumber(amount).times(feeFactor).toFixed();
 
   return (
     <div className="mb-4 flex justify-between items-center gap-4 flex-wrap">
@@ -248,7 +254,7 @@ export const TransferFee = ({
         data-testid="transfer-fee"
         className="text-neutral-500 dark:text-neutral-300"
       >
-        {value.toString()}
+        {value}
       </div>
     </div>
   );
