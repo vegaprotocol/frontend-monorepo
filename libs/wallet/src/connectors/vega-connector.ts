@@ -359,7 +359,7 @@ export const isBatchMarketInstructionsTransaction = (
 ): transaction is BatchMarketInstructionSubmissionBody =>
   'batchMarketInstructions' in transaction;
 
-export const isTransfer = (
+export const isTransferTransaction = (
   transaction: Transaction
 ): transaction is TransferBody => 'transfer' in transaction;
 

@@ -1,12 +1,12 @@
 import produce from 'immer';
 import type { Transaction } from './connectors';
-import { isTransfer } from './connectors';
 import {
   isWithdrawTransaction,
   isOrderSubmissionTransaction,
   isOrderCancellationTransaction,
   isOrderAmendmentTransaction,
   isBatchMarketInstructionsTransaction,
+  isTransferTransaction,
 } from './connectors';
 import { determineId } from './utils';
 
@@ -189,7 +189,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
             const isConfirmedOrderCancellation =
               isOrderCancellationTransaction(transaction.body) &&
               !transaction.body.orderCancellation.orderId;
-            const isConfirmedTransfer = isTransfer(transaction.body);
+            const isConfirmedTransfer = isTransferTransaction(transaction.body);
 
             if (
               (isConfirmedOrderCancellation || isConfirmedTransfer) &&
