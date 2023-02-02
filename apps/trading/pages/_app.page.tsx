@@ -33,7 +33,6 @@ import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
-import { Banner } from '../components/banner';
 import classNames from 'classnames';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
