@@ -105,7 +105,7 @@ export const TransferForm = ({
     >
       <FormGroup label="Vega key" labelFor="to-address">
         <AddressField
-          defaultMode={pubKeys && pubKeys.length > 1 ? 'select' : 'input'}
+          pubKeys={pubKeys}
           onChange={() => setValue('toAddress', '')}
           select={
             <Select {...register('toAddress')} id="to-address" defaultValue="">
@@ -248,35 +248,40 @@ export const TransferFee = ({
 };
 
 interface AddressInputProps {
-  defaultMode: 'input' | 'select';
+  pubKeys: string[] | null;
   select: ReactNode;
   input: ReactNode;
   onChange: () => void;
 }
 
 export const AddressField = ({
-  defaultMode,
+  pubKeys,
   select,
   input,
   onChange,
 }: AddressInputProps) => {
-  const [isInput, setIsInput] = useState(
-    defaultMode === 'input' ? true : false
-  );
+  const [isInput, setIsInput] = useState(() => {
+    if (pubKeys && pubKeys.length <= 1) {
+      return true;
+    }
+    return false;
+  });
 
   return (
     <>
       {isInput ? input : select}
-      <button
-        type="button"
-        onClick={() => {
-          setIsInput((curr) => !curr);
-          onChange();
-        }}
-        className="ml-auto text-sm absolute top-0 right-0 underline"
-      >
-        {isInput ? t('Select from wallet') : t('Enter manually')}
-      </button>
+      {pubKeys && pubKeys.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            setIsInput((curr) => !curr);
+            onChange();
+          }}
+          className="ml-auto text-sm absolute top-0 right-0 underline"
+        >
+          {isInput ? t('Select from wallet') : t('Enter manually')}
+        </button>
+      )}
     </>
   );
 };
