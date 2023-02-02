@@ -69,12 +69,13 @@ export const useFeeDealTicketDetails = (
     return null;
   }, [derivedPrice, order.size, market.decimalPlaces]);
 
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const symbol =
+    market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
   return useMemo(() => {
     return {
       market,
-      quoteName,
+      symbol,
       notionalSize,
       estMargin,
       estCloseOut,
@@ -83,7 +84,7 @@ export const useFeeDealTicketDetails = (
     };
   }, [
     market,
-    quoteName,
+    symbol,
     notionalSize,
     estMargin,
     estCloseOut,
@@ -94,7 +95,7 @@ export const useFeeDealTicketDetails = (
 
 export interface FeeDetails {
   market: MarketDealTicket;
-  quoteName: string;
+  symbol: string;
   notionalSize: string | null;
   estMargin: OrderMargin | null;
   estCloseOut: string | null;
@@ -102,7 +103,7 @@ export interface FeeDetails {
 }
 
 export const getFeeDetailsValues = ({
-  quoteName,
+  symbol,
   notionalSize,
   estMargin,
   estCloseOut,
@@ -128,7 +129,7 @@ export const getFeeDetailsValues = ({
     {
       label: t('Notional'),
       value: formatValueWithMarketDp(notionalSize),
-      quoteName,
+      symbol,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
     },
     {
@@ -146,24 +147,24 @@ export const getFeeDetailsValues = ({
           <FeesBreakdown
             fees={estMargin?.fees}
             feeFactors={market.fees.factors}
-            quoteName={quoteName}
+            symbol={symbol}
             decimals={assetDecimals}
           />
         </>
       ),
-      quoteName,
+      symbol,
     },
     {
       label: t('Margin'),
       value:
         estMargin?.margin && `~${formatValueWithAssetDp(estMargin?.margin)}`,
-      quoteName,
+      symbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
     {
       label: t('Liquidation'),
       value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
-      quoteName,
+      symbol,
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
     },
   ];
