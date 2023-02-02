@@ -130,6 +130,12 @@ export const TransferForm = ({
                 validate: {
                   required,
                   vegaPublicKey,
+                  sameKey: (value) => {
+                    if (value === pubKey) {
+                      return t('Vega key is the same as current key');
+                    }
+                    return true;
+                  },
                 },
               })}
             />
