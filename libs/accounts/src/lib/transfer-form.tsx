@@ -181,19 +181,6 @@ export const TransferForm = ({
           <InputError forInput="asset">{errors.asset.message}</InputError>
         )}
       </FormGroup>
-      <FormGroup label="Account type" labelFor="account-type">
-        <div
-          className="border border-neutral-300 dark:border-neutral-700 rounded-md p-2"
-          aria-describedby="account-type"
-        >
-          {AccountTypeMapping.ACCOUNT_TYPE_GENERAL}{' '}
-          {asset && (
-            <span className="text-neutral-500">
-              ({formatNumber(asset.balance, asset.decimals)} available)
-            </span>
-          )}
-        </div>
-      </FormGroup>
       <FormGroup label="Amount" labelFor="amount">
         <Input
           id="amount"
