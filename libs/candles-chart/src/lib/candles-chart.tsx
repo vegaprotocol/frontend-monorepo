@@ -1,5 +1,4 @@
 import 'pennant/dist/style.css';
-
 import {
   Chart,
   ChartType,
@@ -168,6 +167,11 @@ export const CandlesChartContainer = ({
             chartType: chartType,
             overlays: overlays,
             studies: studies,
+            notEnoughDataText: (
+              <span className="text-xs text-center text-neutral-800 dark:text-neutral-200">
+                {t('No data')}
+              </span>
+            ),
           }}
           interval={interval}
           theme={theme}
