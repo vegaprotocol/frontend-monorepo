@@ -168,7 +168,7 @@ export const CandlesChartContainer = ({
             overlays: overlays,
             studies: studies,
             notEnoughDataText: (
-              <span className="text-xs text-center text-gray-800 dark:text-gray-200">
+              <span className="text-xs text-center text-neutral-800 dark:text-neutral-200">
                 {t('No data')}
               </span>
             ),
