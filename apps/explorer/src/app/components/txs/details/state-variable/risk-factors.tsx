@@ -109,8 +109,10 @@ export const StateVariableProposalRiskFactors = ({
           return (
             <TableRow>
               <TableCell align="left">{row.o}</TableCell>
-              <TableCell align="right">{row.b}</TableCell>
-              <TableCell align="right" className="pl-2">
+              <TableCell align="right" className="font-mono">
+                {row.b}
+              </TableCell>
+              <TableCell align="right" className="pl-2 font-mono">
                 {row.a}
               </TableCell>
             </TableRow>

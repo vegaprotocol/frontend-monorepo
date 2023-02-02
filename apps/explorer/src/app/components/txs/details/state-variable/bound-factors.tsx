@@ -63,13 +63,21 @@ export const StateVariableProposalBoundFactors = ({
       <tbody>
         <TableRow modifier="bordered">
           <TableCell>{t('Up')}</TableCell>
-          <TableCell align="right">{v.up.value}</TableCell>
-          <TableCell align="right">{v.up.tolerance}</TableCell>
+          <TableCell align="right" className="font-mono">
+            {v.up.value}
+          </TableCell>
+          <TableCell align="right" className="font-mono">
+            {v.up.tolerance}
+          </TableCell>
         </TableRow>
         <TableRow modifier="bordered">
           <TableCell>{t('Down')}</TableCell>
-          <TableCell align="right">{v.down.value}</TableCell>
-          <TableCell align="right">{v.down.tolerance}</TableCell>
+          <TableCell align="right" className="font-mono">
+            {v.down.value}
+          </TableCell>
+          <TableCell align="right" className="font-mono">
+            {v.down.tolerance}
+          </TableCell>
         </TableRow>
       </tbody>
     </Table>
