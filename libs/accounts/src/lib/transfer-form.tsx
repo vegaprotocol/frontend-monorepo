@@ -6,7 +6,6 @@ import {
   vegaPublicKey,
   addDecimal,
   formatNumber,
-  getUserLocale,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -213,7 +212,7 @@ export const TransferForm = ({
           <InputError forInput="amount">{errors.amount.message}</InputError>
         )}
       </FormGroup>
-      <TransferFee amount={amount} feeFactor={feeFactor} asset={asset} />
+      <TransferFee amount={amount} feeFactor={feeFactor} />
       <Button type="submit" variant="primary" fill={true}>
         {t('Confirm transfer')}
       </Button>
@@ -224,15 +223,11 @@ export const TransferForm = ({
 export const TransferFee = ({
   amount,
   feeFactor,
-  asset,
 }: {
   amount: string;
   feeFactor: string | null;
-  asset?: {
-    decimals: number;
-  };
 }) => {
-  if (!asset || !feeFactor || !amount) return null;
+  if (!feeFactor || !amount) return null;
 
   // using toFixed without an argument will always return a
   // number in normal notation without rounding, formatting functions
