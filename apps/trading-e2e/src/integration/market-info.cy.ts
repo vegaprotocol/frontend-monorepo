@@ -4,7 +4,7 @@ const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
 const externalLink = 'external-link';
-const accordionContent = 'accordion-content'
+const accordionContent = 'accordion-content';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
@@ -180,7 +180,8 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       'termination.BTC.value'
     );
 
-    cy.getByTestId(accordionContent).find(`[data-testid="${externalLink}"]`)
+    cy.getByTestId(accordionContent)
+      .find(`[data-testid="${externalLink}"]`)
       .should('have.attr', 'href')
       .and('contain', '/oracles');
   });
@@ -188,12 +189,14 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('proposal displayed', () => {
     cy.getByTestId(marketTitle).contains('Proposal').click();
 
-    cy.getByTestId(accordionContent).find(`[data-testid="${externalLink}"]`)
+    cy.getByTestId(accordionContent)
+      .find(`[data-testid="${externalLink}"]`)
       .first()
       .should('have.text', 'View governance proposal')
       .and('have.attr', 'href')
       .and('contain', '/proposals/market-0');
-      cy.getByTestId(accordionContent).find(`[data-testid="${externalLink}"]`)
+    cy.getByTestId(accordionContent)
+      .find(`[data-testid="${externalLink}"]`)
       .eq(1)
       .should('have.text', 'Propose a change to market')
       .and('have.attr', 'href')
