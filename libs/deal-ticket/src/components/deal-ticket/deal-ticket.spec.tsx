@@ -84,7 +84,7 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
       `~${addDecimal(market!.data.markPrice, market.decimalPlaces)} ${
-        market.tradableInstrument.instrument.product.settlementAsset.symbol
+        market.tradableInstrument.instrument.product.quoteName
       }`
     );
   });
