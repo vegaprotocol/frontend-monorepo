@@ -190,6 +190,7 @@ export const TransferForm = ({
       <FormGroup label="Amount" labelFor="amount">
         <Input
           id="amount"
+          autoComplete="off"
           appendElement={
             asset && <span className="text-xs">{asset.symbol}</span>
           }
