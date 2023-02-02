@@ -33,6 +33,7 @@ import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
+import { Banner } from '../components/banner';
 import classNames from 'classnames';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
@@ -90,6 +91,7 @@ function AppBody({ Component }: AppProps) {
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
+              <Banner />
               <ViewingBanner />
               <main data-testid={location.pathname}>
                 <Component />
