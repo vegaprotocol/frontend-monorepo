@@ -19,6 +19,7 @@ import {
   signedNumberCssClassRules,
   DateRangeFilter,
   addDecimalsFormatNumber,
+  PriceCell,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -84,7 +85,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           filterParams: { buttons: ['reset'] },
           tooltipComponent: TooltipCellComponent,
         }}
-        components={{ AmountCell, PriceFlashCell, ProgressBarCell }}
+        components={{ AmountCell, PriceFlashCell, PriceCell, ProgressBarCell }}
         {...props}
       >
         <AgGridColumn
