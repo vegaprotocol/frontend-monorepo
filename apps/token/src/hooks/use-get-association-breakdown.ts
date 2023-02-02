@@ -11,6 +11,11 @@ import { useAppState } from '../contexts/app-state/app-state-context';
 import BigNumber from 'bignumber.js';
 import { useBalances } from '../lib/balances/balances-store';
 
+export enum StakingEventType {
+  Stake_Removed = 'Stake_Removed',
+  Stake_Deposited = 'Stake_Deposited',
+}
+
 export function useGetAssociationBreakdown(
   ethAddress: string,
   staking: StakingBridge,
@@ -63,8 +68,8 @@ function combineStakeEventsByVegaKey(
   const res = events.reduce((obj, e) => {
     const vegaKey = e.args?.vega_public_key;
     const amount = parseEventAmount(e, decimals);
-    const isDeposit = e.event === 'Stake_Deposited';
-    const isRemove = e.event === 'Stake_Removed';
+    const isDeposit = e.event === StakingEventType.Stake_Deposited;
+    const isRemove = e.event === StakingEventType.Stake_Removed;
 
     if (!isDeposit && !isRemove) return obj;
 

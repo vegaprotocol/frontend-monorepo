@@ -12,5 +12,10 @@ export default {
   moduleNameMapper: {
     '^d3-(.*)$': `d3-$1/dist/d3-$1`,
   },
-  collectCoverageFrom: ['**/*.{ts,tsx}', '!**/node_modules/**'],
+  collectCoverageFrom: [
+    '**/*.{ts,tsx}',
+    '!**/node_modules/**',
+    '!**/__generated__/**',
+    '!**/__generated___/**',
+  ],
 };
