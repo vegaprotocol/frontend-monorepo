@@ -1,5 +1,9 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { ViewingAsBanner } from '@vegaprotocol/ui-toolkit';
+import {
+  ViewingAsBanner,
+  AnnouncementBanner,
+  ExternalLink,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 
@@ -15,6 +19,14 @@ export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
   const { isReadOnly, pubKey, disconnect } = useVegaWallet();
   return (
     <>
+      <AnnouncementBanner>
+        <div className="font-alpha calt uppercase text-center text-lg text-white">
+          <span className="pr-4">The Mainnet sims are live!</span>
+          <ExternalLink href="https://fairground.wtf/">
+            Come help stress test the network
+          </ExternalLink>
+        </div>
+      </AnnouncementBanner>
       <Nav navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
       {isReadOnly ? (
         <ViewingAsBanner pubKey={pubKey} disconnect={disconnect} />
