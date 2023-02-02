@@ -164,7 +164,7 @@ export const getFeeDetailsValues = ({
     {
       label: t('Liquidation'),
       value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
-      symbol,
+      symbol: market.tradableInstrument.instrument.product.quoteName,
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
     },
   ];
