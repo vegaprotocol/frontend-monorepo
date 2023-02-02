@@ -91,7 +91,6 @@ function AppBody({ Component }: AppProps) {
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
-              <Banner />
               <ViewingBanner />
               <main data-testid={location.pathname}>
                 <Component />
