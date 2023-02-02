@@ -6,6 +6,7 @@ import {
   addDecimal,
   getNumberFormat,
   useThemeSwitcher,
+  t,
 } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -207,6 +208,11 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
           theme={theme}
           volumeFormat={volumeFormat}
           priceFormat={priceFormat}
+          notEnoughDataText={
+            <span className="text-xs text-center text-neutral-800 dark:text-neutral-200">
+              {t('No data')}
+            </span>
+          }
         />
       )}
     </AsyncRenderer>
