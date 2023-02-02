@@ -335,7 +335,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
           }}
-          cellRenderer="PriceFlashCell"
+          cellRenderer="PriceCell"
           headerTooltip={t(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
           )}
@@ -360,7 +360,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals)
           }
-          cellRenderer="PriceFlashCell"
+          cellRenderer="PriceCell"
           headerTooltip={t(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}
