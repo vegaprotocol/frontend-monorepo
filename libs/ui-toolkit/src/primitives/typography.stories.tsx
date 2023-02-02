@@ -52,7 +52,7 @@ export default {
     },
     alternatives: {
       name: 'Font features',
-      options: ['none', 'calt', 'liga-0-calt-0'],
+      options: ['none', 'calt', 'liga', 'liga-0-calt-0'],
       control: { type: 'select' },
     },
   },
