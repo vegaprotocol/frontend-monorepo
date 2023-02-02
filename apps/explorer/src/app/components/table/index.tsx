@@ -3,6 +3,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 interface TableProps {
+  allowWrap?: boolean;
   children: React.ReactNode;
   className?: string;
 }
@@ -25,8 +26,15 @@ interface TableCellProps extends ThHTMLAttributes<HTMLTableCellElement> {
   modifier?: 'bordered' | 'background';
 }
 
-export const Table = ({ children, className, ...props }: TableProps) => {
-  const classes = classnames(className, 'overflow-x-auto whitespace-nowrap');
+export const Table = ({
+  allowWrap,
+  children,
+  className,
+  ...props
+}: TableProps) => {
+  const classes = allowWrap
+    ? className
+    : classnames(className, 'overflow-x-auto whitespace-nowrap');
   return (
     <div className={classes}>
       <table className="w-full" {...props}>
@@ -37,11 +45,14 @@ export const Table = ({ children, className, ...props }: TableProps) => {
 };
 
 export const TableWithTbody = ({
+  allowWrap,
   children,
   className,
   ...props
 }: TableProps) => {
-  const classes = classnames(className, 'overflow-x-auto whitespace-nowrap');
+  const classes = allowWrap
+    ? className
+    : classnames(className, 'overflow-x-auto whitespace-nowrap');
   return (
     <div className={classes}>
       <table className="w-full" {...props}>

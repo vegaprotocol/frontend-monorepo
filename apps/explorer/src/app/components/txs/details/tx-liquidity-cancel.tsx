@@ -37,7 +37,7 @@ export const TxDetailsLiquidityCancellation = ({
   const marketId: string = cancel.marketId || '-';
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <TableRow modifier="bordered">
         <TableCell>{t('Market')}</TableCell>

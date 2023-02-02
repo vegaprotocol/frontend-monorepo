@@ -39,7 +39,7 @@ export const TxDetailsOrder = ({
 
   return (
     <>
-      <TableWithTbody className="mb-8">
+      <TableWithTbody className="mb-8" allowWrap={true}>
         <TxDetailsShared
           txData={txData}
           pubKey={pubKey}
