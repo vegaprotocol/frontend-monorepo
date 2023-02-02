@@ -6,6 +6,7 @@ import { MarketLink } from '../../links';
 import type { components } from '../../../../types/explorer';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
+import { StateVariableProposalWrapper } from './state-variable/data-wrapper';
 
 interface TxDetailsStateVariableProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -22,7 +23,9 @@ interface TxDetailsStateVariableProps {
  * @param stateVarId The full state variable proposal variable name
  * @returns null or a string market id
  */
-function hackyGetMarketFromStateVariable(stateVarId?: string): string | null {
+export function hackyGetMarketFromStateVariable(
+  stateVarId?: string
+): string | null {
   try {
     return stateVarId ? stateVarId.split('_')[1] : null;
   } catch (e) {
@@ -39,7 +42,9 @@ function hackyGetMarketFromStateVariable(stateVarId?: string): string | null {
  * @param stateVarId The full state variable proposal variable name
  * @returns null or a string variable name
  */
-function hackyGetVariableFromStateVariable(stateVarId?: string): string | null {
+export function hackyGetVariableFromStateVariable(
+  stateVarId?: string
+): string | null {
   try {
     if (!stateVarId) {
       return null;
@@ -73,8 +78,6 @@ export const TxDetailsStateVariable = ({
     command.proposal?.stateVarId
   );
 
-  const data = command.proposal?.kvb;
-
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
@@ -98,7 +101,12 @@ export const TxDetailsStateVariable = ({
           </TableCell>
         </TableRow>
       </TableWithTbody>
-      <section>{JSON.stringify(data)}</section>
+      <section>
+        <StateVariableProposalWrapper
+          stateVariable={command.proposal?.stateVarId}
+          kvb={command.proposal?.kvb}
+        />
+      </section>
     </>
   );
 };
