@@ -23,19 +23,21 @@ export function getValues(kvb: StateVariableProposalBoundFactorsProps['kvb']) {
     },
   };
 
-  kvb.forEach((v) => {
-    if (v.key === 'up') {
-      template.up.tolerance = v.tolerance || '-';
-      template.up.value = v.value?.vectorVal?.value
-        ? v.value?.vectorVal.value[0]
-        : '-';
-    } else if (v.key === 'down') {
-      template.down.tolerance = v.tolerance || '-';
-      template.down.value = v.value?.vectorVal?.value
-        ? v.value?.vectorVal.value[0]
-        : '-';
-    }
-  });
+  if (kvb && kvb.length > 0) {
+    kvb.forEach((v) => {
+      if (v.key === 'up') {
+        template.up.tolerance = v.tolerance || '-';
+        template.up.value = v.value?.vectorVal?.value
+          ? v.value?.vectorVal.value[0]
+          : '-';
+      } else if (v.key === 'down') {
+        template.down.tolerance = v.tolerance || '-';
+        template.down.value = v.value?.vectorVal?.value
+          ? v.value?.vectorVal.value[0]
+          : '-';
+      }
+    });
+  }
 
   return template;
 }

@@ -1,43 +1,10 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type { components } from '../../../../../types/explorer';
 import { Table, TableRow, TableHeader, TableCell } from '../../../table';
+import { getValues } from './bound-factors';
 
 interface StateVariableProposalBoundFactorsProps {
   kvb: readonly components['schemas']['vegaKeyValueBundle'][];
-}
-
-/**
- * A dumb as rocks function completely tied to what the structure of this variable should be
- * @param kvb The key/value bundle
- * @returns Object
- */
-export function getValues(kvb: StateVariableProposalBoundFactorsProps['kvb']) {
-  const template = {
-    up: {
-      tolerance: '-',
-      value: '-',
-    },
-    down: {
-      tolerance: '-',
-      value: '-',
-    },
-  };
-
-  kvb.forEach((v) => {
-    if (v.key === 'up') {
-      template.up.tolerance = v.tolerance || '-';
-      template.up.value = v.value?.vectorVal?.value
-        ? v.value?.vectorVal.value[0]
-        : '-';
-    } else if (v.key === 'down') {
-      template.down.tolerance = v.tolerance || '-';
-      template.down.value = v.value?.vectorVal?.value
-        ? v.value?.vectorVal.value[0]
-        : '-';
-    }
-  });
-
-  return template;
 }
 
 /**

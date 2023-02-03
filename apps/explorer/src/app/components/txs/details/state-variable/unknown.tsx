@@ -1,3 +1,4 @@
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import type { components } from '../../../../../types/explorer';
 
 interface StateVariableProposalUnknownProps {
@@ -11,5 +12,5 @@ interface StateVariableProposalUnknownProps {
 export const StateVariableProposalUnknown = ({
   kvb,
 }: StateVariableProposalUnknownProps) => {
-  return <code>{JSON.stringify(kvb)}</code>;
+  return <SyntaxHighlighter data={kvb} />;
 };

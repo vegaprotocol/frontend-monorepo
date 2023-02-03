@@ -7,6 +7,7 @@ import type { components } from '../../../../types/explorer';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { StateVariableProposalWrapper } from './state-variable/data-wrapper';
+import { isValidPartyId } from '../../../routes/parties/id/components/party-id-error';
 
 interface TxDetailsStateVariableProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -27,7 +28,8 @@ export function hackyGetMarketFromStateVariable(
   stateVarId?: string
 ): string | null {
   try {
-    return stateVarId ? stateVarId.split('_')[1] : null;
+    const res = stateVarId ? stateVarId.split('_')[1] : null;
+    return res && res.length === 64 ? res : null;
   } catch (e) {
     return null;
   }
