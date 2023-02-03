@@ -74,7 +74,7 @@ export const ToastsContainer = ({
             'absolute top-[-38px] right-0 z-20',
             'transition-opacity',
             'opacity-0 group-hover:opacity-50 hover:!opacity-100',
-            'text-sm text-black dark:text-white bg-white dark:bg-black hover:bg-white hover:dark:bg-black',
+            'text-sm text-black dark:text-white bg-white dark:bg-black hover:!bg-white hover:dark:!bg-black',
             {
               hidden: Object.keys(toasts).length === 0,
             }
