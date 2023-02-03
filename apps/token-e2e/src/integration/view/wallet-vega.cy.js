@@ -321,6 +321,8 @@ context(
             '200000',
             vegaWalletPublicKey
           );
+          cy.reload();
+          cy.wait_for_spinner();
           cy.connectVegaWallet();
           cy.ethereum_wallet_connect();
         });

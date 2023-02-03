@@ -58,6 +58,8 @@ Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
 Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
   let approve = options && options.approve ? options.approve : false;
   let type = options && options.type ? options.type : 'wallet';
+  let skipConfirmation =
+    options && options.skipConfirmation ? options.skipConfirmation : false;
 
   cy.highlight(`Associating ${amount} tokens from ${type}`);
   cy.get(ethWalletAssociateButton).first().click();
@@ -79,16 +81,19 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
     );
   }
   cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
-  cy.contains(
-    `Associating with Vega key. Waiting for ${Cypress.env(
-      'blockConfirmations'
-    )} more confirmations..`,
-    txTimeout
-  ).should('be.visible');
-  cy.contains(
-    'can now participate in governance and nominate a validator',
-    txTimeout
-  ).should('be.visible');
+
+  if (!skipConfirmation) {
+    cy.contains(
+      `Associating with Vega key. Waiting for ${Cypress.env(
+        'blockConfirmations'
+      )} more confirmations..`,
+      txTimeout
+    ).should('be.visible');
+    cy.contains(
+      'can now participate in governance and nominate a validator',
+      txTimeout
+    ).should('be.visible');
+  }
 });
 
 Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
@@ -216,3 +221,19 @@ Cypress.Commands.add('close_staking_dialog', () => {
     cy.get('a').should('have.text', 'Back to Staking').click();
   });
 });
+
+Cypress.Commands.add(
+  'validate_wallet_currency',
+  (currencyTitle, expectedAmount) => {
+    cy.get("[data-testid='currency-title']")
+      .contains(currencyTitle)
+      .parent()
+      .parent()
+      .within(() => {
+        cy.getByTestId('currency-value', txTimeout).should(
+          'have.text',
+          expectedAmount
+        );
+      });
+  }
+);
