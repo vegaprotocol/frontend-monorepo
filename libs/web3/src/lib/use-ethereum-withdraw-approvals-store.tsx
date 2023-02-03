@@ -46,6 +46,7 @@ export interface EthWithdrawApprovalStore {
     >
   ) => void;
   dismiss: (index: number) => void;
+  delete: (index: number) => void;
 }
 
 export const useEthWithdrawApprovalsStore = create(
@@ -105,6 +106,13 @@ export const useEthWithdrawApprovalsStore = create(
           if (transaction) {
             transaction.dialogOpen = false;
           }
+        })
+      );
+    },
+    delete: (index: number) => {
+      set(
+        produce((state: EthWithdrawApprovalStore) => {
+          delete state.transactions[index];
         })
       );
     },

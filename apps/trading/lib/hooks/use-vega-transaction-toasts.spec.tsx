@@ -260,7 +260,7 @@ describe('VegaTransactionDetails', () => {
     const { queryByTestId } = render(
       <VegaTransactionDetails tx={unsupportedTransaction} />
     );
-    expect(queryByTestId('vega-tx-details')).toBeNull();
+    expect(queryByTestId('toast-panel')).toBeNull();
   });
   it.each([
     { tx: withdraw, details: 'Withdraw 12.34 $A' },
@@ -275,6 +275,6 @@ describe('VegaTransactionDetails', () => {
     { tx: batch, details: 'Batch market instruction' },
   ])('display details for transaction', ({ tx, details }) => {
     const { queryByTestId } = render(<VegaTransactionDetails tx={tx} />);
-    expect(queryByTestId('vega-tx-details')?.textContent).toEqual(details);
+    expect(queryByTestId('toast-panel')?.textContent).toEqual(details);
   });
 });

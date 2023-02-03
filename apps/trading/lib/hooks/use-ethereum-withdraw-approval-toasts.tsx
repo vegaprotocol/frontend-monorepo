@@ -1,5 +1,6 @@
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Intent } from '@vegaprotocol/ui-toolkit';
@@ -32,23 +33,26 @@ const EthWithdrawalApprovalToastContent = ({
   if (tx.status === ApprovalStatus.Delayed) {
     title = t('Delayed');
   }
+  if (tx.status === ApprovalStatus.Ready) {
+    title = t('Approved');
+  }
   const num = formatNumber(
     toBigNum(tx.withdrawal.amount, tx.withdrawal.asset.decimals),
     tx.withdrawal.asset.decimals
   );
   const details = (
-    <div className="mt-[5px]">
-      <span className="font-mono text-xs p-1 bg-gray-100 rounded">
+    <Panel>
+      <b>
         {t('Withdraw')} {num} {tx.withdrawal.asset.symbol}
-      </span>
-    </div>
+      </b>
+    </Panel>
   );
   return (
-    <div>
+    <>
       {title.length > 0 && <h3 className="font-bold">{title}</h3>}
       <VerificationStatus state={tx} />
       {details}
-    </div>
+    </>
   );
 };
 
@@ -60,21 +64,28 @@ export const useEthereumWithdrawApprovalsToasts = () => {
     state.setToast,
     state.remove,
   ]);
-  const dismissTx = useEthWithdrawApprovalsStore((state) => state.dismiss);
+  const [dismissTx, deleteTx] = useEthWithdrawApprovalsStore((state) => [
+    state.dismiss,
+    state.delete,
+  ]);
 
   const fromWithdrawalApproval = useCallback(
     (tx: EthWithdrawalApprovalState): Toast => ({
       id: `withdrawal-${tx.id}`,
       intent: intentMap[tx.status],
       onClose: () => {
-        dismissTx(tx.id);
+        if ([ApprovalStatus.Error, ApprovalStatus.Ready].includes(tx.status)) {
+          deleteTx(tx.id);
+        } else {
+          dismissTx(tx.id);
+        }
         remove(`withdrawal-${tx.id}`);
       },
       loader: tx.status === ApprovalStatus.Pending,
       content: <EthWithdrawalApprovalToastContent tx={tx} />,
       closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
     }),
-    [dismissTx, remove]
+    [deleteTx, dismissTx, remove]
   );
 
   useEthWithdrawApprovalsStore.subscribe(

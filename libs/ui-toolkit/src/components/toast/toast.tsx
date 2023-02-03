@@ -3,7 +3,8 @@ import styles from './toast.module.css';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import { useEffect } from 'react';
+import type { ForwardedRef, HTMLAttributes, ReactNode } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useCallback } from 'react';
 import { useLayoutEffect } from 'react';
 import { useRef } from 'react';
@@ -33,22 +34,37 @@ const toastIconMapping: { [i in Intent]: IconName } = {
   [Intent.None]: IconNames.HELP,
   [Intent.Primary]: IconNames.INFO_SIGN,
   [Intent.Success]: IconNames.TICK_CIRCLE,
-  [Intent.Warning]: IconNames.ERROR,
+  [Intent.Warning]: IconNames.WARNING_SIGN,
   [Intent.Danger]: IconNames.ERROR,
 };
 
-const getToastAccent = (intent: Intent) => ({
-  // strip
-  'bg-gray-200 text-black text-opacity-70': intent === Intent.None,
-  'bg-vega-blue text-white text-opacity-70': intent === Intent.Primary,
-  'bg-success text-white text-opacity-70': intent === Intent.Success,
-  'bg-warning text-white text-opacity-70': intent === Intent.Warning,
-  'bg-vega-pink text-white text-opacity-70': intent === Intent.Danger,
-});
-
-export const CLOSE_DELAY = 750;
+export const CLOSE_DELAY = 500;
 export const TICKER = 100;
 export const CLOSE_AFTER = 5000;
+
+export const Panel = forwardRef<
+  HTMLDivElement,
+  {
+    ref: ForwardedRef<HTMLDivElement>;
+  } & HTMLAttributes<HTMLDivElement>
+>(({ children, ref, className, ...props }) => {
+  return (
+    <div
+      data-panel
+      ref={ref}
+      data-testid="toast-panel"
+      className={classNames(
+        'p-2 rounded mt-[10px]',
+        'font-mono text-[12px] leading-[16px] font-normal',
+        '[&>h4]:font-bold',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 
 export const Toast = ({
   id,
@@ -85,7 +101,7 @@ export const Toast = ({
       }
     });
     return () => cancelAnimationFrame(req);
-  }, [id]);
+  }, [id, intent, content]); // DO NOT REMOVE DEPS: intent, content
 
   useEffect(() => {
     const i = setInterval(() => {
@@ -130,8 +146,54 @@ export const Toast = ({
         }
       }}
       className={classNames(
-        'relative w-[300px] top-0 rounded-md border overflow-hidden mb-2',
-        'text-black bg-white dark:border-zinc-700',
+        'w-[320px] rounded-md overflow-hidden',
+        'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
+        'text-black dark:text-white',
+        'font-alpha liga-0-calt-0 text-[14px] leading-[19px]',
+        // background
+        {
+          'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
+          'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
+          'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
+          'bg-vega-orange-300 dark:bg-vega-orange-700':
+            intent === Intent.Warning,
+          'bg-vega-pink-300 dark:bg-vega-pink-700': intent === Intent.Danger,
+        },
+        // panel's colours
+        {
+          '[&_[data-panel]]:bg-vega-light-150 [&_[data-panel]]:dark:bg-vega-dark-150 ':
+            intent === Intent.None,
+          '[&_[data-panel]]:bg-vega-blue-350 [&_[data-panel]]:dark:bg-vega-blue-650':
+            intent === Intent.Primary,
+          '[&_[data-panel]]:bg-vega-green-350 [&_[data-panel]]:dark:bg-vega-green-650':
+            intent === Intent.Success,
+          '[&_[data-panel]]:bg-vega-orange-350 [&_[data-panel]]:dark:bg-vega-orange-650':
+            intent === Intent.Warning,
+          '[&_[data-panel]]:bg-vega-pink-350 [&_[data-panel]]:dark:bg-vega-pink-650':
+            intent === Intent.Danger,
+        },
+        // panels's progress bar colours
+        '[&_[data-progress-bar]]:mt-[10px] [&_[data-progress-bar]]:mb-[4px]',
+        {
+          '[&_[data-progress-bar]]:bg-vega-light-200 [&_[data-progress-bar]]:dark:bg-vega-dark-200 ':
+            intent === Intent.None,
+          '[&_[data-progress-bar]]:bg-vega-blue-400 [&_[data-progress-bar]]:dark:bg-vega-blue-600':
+            intent === Intent.Primary,
+          '[&_[data-progress-bar-value]]:bg-vega-blue-500 [&_[data-progress-bar-value]]:dark:bg-vega-blue-500':
+            intent === Intent.Primary,
+          '[&_[data-progress-bar]]:bg-vega-green-400 [&_[data-progress-bar]]:dark:bg-vega-green-600':
+            intent === Intent.Success,
+          '[&_[data-progress-bar-value]]:bg-vega-green-600 [&_[data-progress-bar-value]]:dark:bg-vega-green-500':
+            intent === Intent.Success,
+          '[&_[data-progress-bar]]:bg-vega-orange-400 [&_[data-progress-bar]]:dark:bg-vega-orange-600':
+            intent === Intent.Warning,
+          '[&_[data-progress-bar-value]]:bg-vega-orange-500 [&_[data-progress-bar-value]]:dark:bg-vega-orange-500':
+            intent === Intent.Warning,
+          '[&_[data-progress-bar]]:bg-vega-pink-400 [&_[data-progress-bar]]:dark:bg-vega-pink-600':
+            intent === Intent.Danger,
+          '[&_[data-progress-bar-value]]:bg-vega-pink-500 [&_[data-progress-bar-value]]:dark:bg-vega-pink-500':
+            intent === Intent.Danger,
+        },
         {
           [styles['initial']]: state === 'initial',
           [styles['showing']]: state === 'showing',
@@ -144,49 +206,83 @@ export const Toast = ({
           type="button"
           data-testid="toast-close"
           onClick={closeToast}
-          className="absolute p-2 top-0 right-0"
+          className="absolute p-[8px] top-[3px] right-[3px] z-20"
         >
-          <Icon name="cross" size={3} className="!block dark:text-white" />
+          <Icon
+            name="cross"
+            size={3}
+            className="!block dark:text-white !w-[11px] !h-[11px]"
+          />
         </button>
         <div
+          data-testid="toast-accent"
           className={classNames(
-            getToastAccent(intent),
-            'w-8',
-            'p-2 pt-3 text-center relative'
+            {
+              // gray
+              'bg-vega-light-200 dark:bg-vega-dark-200 text-vega-light-400 dark:text-vega-dark-100':
+                intent === Intent.None,
+              // blue
+              'bg-vega-blue-500 text-vega-blue-600': intent === Intent.Primary,
+              // green
+              'bg-vega-green-500 text-vega-green-600':
+                intent === Intent.Success,
+              // orange
+              'bg-vega-orange-500 text-vega-orange-600':
+                intent === Intent.Warning,
+              // pink
+              'bg-vega-pink-500 text-vega-pink-600': intent === Intent.Danger,
+            },
+            'w-8 p-[9px]',
+            'flex justify-center'
           )}
         >
+          {loader ? (
+            <div className="w-[15px] h-[15px]">
+              <Loader size="small" forceTheme="dark" />
+            </div>
+          ) : (
+            <Icon
+              name={toastIconMapping[intent]}
+              size={4}
+              className="!block !w-[14px] !h-[14px]"
+            />
+          )}
+        </div>
+        <div
+          className={classNames(
+            'relative',
+            'overflow-auto flex-1 p-4 pr-[40px] [&>p]:mb-[2.5px]',
+            // toast heading
+            '[&>h3]:text-[14px] [&>h3]:leading-[13px] [&>h3]:uppercase [&>h3]:mb-[8px]'
+          )}
+          data-testid="toast-content"
+        >
+          {content}
           {withProgress && (
             <div
               ref={progressRef}
+              data-testid="toast-progress-bar"
               className={classNames(
-                'absolute top-0 left-0 w-full h-full',
-                'animate-vertical-progress',
-                'bg-white/30 backdrop-saturate-125'
+                {
+                  'bg-vega-light-200 dark:bg-vega-dark-200 ':
+                    intent === Intent.None,
+                  'bg-vega-blue-400 dark:bg-vega-blue-600':
+                    intent === Intent.Primary,
+                  'bg-vega-green-400 dark:bg-vega-green-600':
+                    intent === Intent.Success,
+                  'bg-vega-orange-400 dark:bg-vega-orange-600':
+                    intent === Intent.Warning,
+                  'bg-vega-pink-400 dark:bg-vega-pink-600':
+                    intent === Intent.Danger,
+                },
+                'absolute bottom-0 left-0 w-full h-[4px]',
+                'animate-progress'
               )}
               style={{
                 animationDuration: `${closeAfter}ms`,
               }}
             ></div>
           )}
-          <div className="absolute">
-            {loader ? (
-              <div className="w-4 h-4">
-                <Loader size="small" forceTheme="dark" />
-              </div>
-            ) : (
-              <Icon
-                name={toastIconMapping[intent]}
-                size={4}
-                className="!block"
-              />
-            )}
-          </div>
-        </div>
-        <div
-          className="flex-1 p-2 pr-6 text-sm overflow-auto dark:bg-black dark:text-white"
-          data-testid="toast-content"
-        >
-          {content}
         </div>
       </div>
     </div>

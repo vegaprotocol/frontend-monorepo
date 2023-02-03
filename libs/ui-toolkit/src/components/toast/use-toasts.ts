@@ -71,7 +71,6 @@ export const useToasts = create(
         const found = state.toasts[toast.id];
         if (found) {
           if (!isEqual(found, toast)) {
-            console.log('updating', toast.id);
             Object.assign(found, toast);
           }
         } else {

@@ -3,6 +3,7 @@ import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
@@ -46,34 +47,35 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
       if (isWithdraw) label = t('Withdraw');
       if (isDeposit) label = t('Deposit');
       assetInfo = (
-        <div className="mt-[5px]">
-          <span className="font-mono text-xs p-1 bg-gray-100 rounded">
-            {label}{' '}
-            {formatNumber(toBigNum(tx.args[1], asset.decimals), asset.decimals)}{' '}
-            {asset.symbol}
-          </span>
-        </div>
+        <b>
+          {label}{' '}
+          {formatNumber(toBigNum(tx.args[1], asset.decimals), asset.decimals)}{' '}
+          {asset.symbol}
+        </b>
       );
     }
   }
 
-  return (
-    <>
-      {assetInfo}
-      {tx.status === EthTxStatus.Pending && (
-        <div className="mt-[10px]">
-          <span className="font-mono text-xs">
-            {t('Awaiting confirmations')}{' '}
-            {`(${tx.confirmations}/${tx.requiredConfirmations})`}
-          </span>
-          <ProgressBar
-            value={(tx.confirmations / tx.requiredConfirmations) * 100}
-            intent={Intent.Warning}
-          />
-        </div>
-      )}
-    </>
-  );
+  if (assetInfo || tx.requiresConfirmation) {
+    return (
+      <Panel>
+        {assetInfo}
+        {tx.status === EthTxStatus.Pending && (
+          <>
+            <p className="mt-[2px]">
+              {t('Awaiting confirmations')}{' '}
+              {`(${tx.confirmations}/${tx.requiredConfirmations})`}
+            </p>
+            <ProgressBar
+              value={(tx.confirmations / tx.requiredConfirmations) * 100}
+            />
+          </>
+        )}
+      </Panel>
+    );
+  }
+
+  return null;
 };
 
 type EthTxToastContentProps = {
@@ -82,26 +84,26 @@ type EthTxToastContentProps = {
 
 const EthTxRequestedToastContent = ({ tx }: EthTxToastContentProps) => {
   return (
-    <div>
-      <h3 className="font-bold">{t('Action required')}</h3>
+    <>
+      <h3>{t('Action required')}</h3>
       <p>
         {t(
           'Please go to your wallet application and approve or reject the transaction.'
         )}
       </p>
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
 const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
   return (
-    <div>
-      <h3 className="font-bold">{t('Awaiting confirmation')}</h3>
+    <>
+      <h3>{t('Awaiting confirmation')}</h3>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
       <EtherscanLink tx={tx} />
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
@@ -114,11 +116,11 @@ const EthTxErrorToastContent = ({ tx }: EthTxToastContentProps) => {
     errorMessage = tx.error.message;
   }
   return (
-    <div>
-      <h3 className="font-bold">{t('Error occurred')}</h3>
-      <p>{errorMessage}</p>
+    <>
+      <h3>{t('Error occurred')}</h3>
+      <p className="first-letter:uppercase">{errorMessage}</p>
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
@@ -138,20 +140,20 @@ const EtherscanLink = ({ tx }: EthTxToastContentProps) => {
 
 const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
   return (
-    <div>
-      <h3 className="font-bold">{t('Transaction confirmed')}</h3>
+    <>
+      <h3>{t('Transaction confirmed')}</h3>
       <p>{t('Your transaction has been confirmed.')}</p>
       <EtherscanLink tx={tx} />
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
 const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
   const isDeposit = isDepositTransaction(tx);
   return (
-    <div>
-      <h3 className="font-bold">
+    <>
+      <h3>
         {t('Processing')} {isDeposit && t('deposit')}
       </h3>
       <p>
@@ -160,7 +162,7 @@ const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
       </p>
       <EtherscanLink tx={tx} />
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
