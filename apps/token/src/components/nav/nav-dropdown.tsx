@@ -18,7 +18,7 @@ export const NavDropDown = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
       <AppNavLink
         name={
           <NavDropdownMenuTrigger
-            className="w-auto text-capMenu"
+            className="w-auto flex items-center"
             data-testid="state-trigger"
             onClick={() => setOpen(!isOpen)}
           >
@@ -38,6 +38,7 @@ export const NavDropDown = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
               name={t(r.name)}
               path={r.path}
               navbarTheme={'inherit'}
+              subNav={true}
               end={true}
               fullWidth={true}
             />

@@ -3,7 +3,7 @@ import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { useEffect, useState } from 'react';
 import { TOP_LEVEL_ROUTES } from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
-import vegaWhite from '../../images/vega_white.png';
+import logoWhiteText from '../../images/logo-white-text.png';
 import debounce from 'lodash/debounce';
 import { NavDrawer } from './nav-draw';
 import { Nav as ToolkitNav } from '@vegaprotocol/ui-toolkit';
@@ -46,14 +46,14 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
       navbarTheme={navbarTheme}
       icon={
         <Link to="/" data-testid="logo-link">
-          <img alt="Vega" src={vegaWhite} height={30} width={30} />
+          <img alt="Vega" src={logoWhiteText} height={30} width={260} />
         </Link>
       }
-      title={t('Governance')}
+      title={undefined}
       titleContent={<NetworkSwitcher />}
     >
       {isDesktop ? (
-        <nav className="flex items-center flex-1 px-2">
+        <nav className="flex items-center flex-1 px-4">
           {TOP_LEVEL_ROUTES.map((r) => (
             <AppNavLink
               key={r.path}
