@@ -10,6 +10,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.liga-0-calt-0': {
       fontFeatureSettings: "'liga' 0, 'calt' 0",
     },
+    '.liga': {
+      fontFeatureSettings: "'liga'",
+    },
     '.syntax-highlighter-wrapper .hljs': {
       fontSize: '1rem',
       fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",

@@ -22,7 +22,7 @@ export default function Document() {
           <script src="/assets/env-config.js" type="text/javascript" />
         ) : null}
       </Head>
-      <body>
+      <body className="font-alpha liga-0-calt-0">
         <Main />
         <NextScript />
       </body>

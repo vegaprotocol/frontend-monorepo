@@ -51,7 +51,7 @@ export const FeesBreakdownPercentage = ({
 export const FeesBreakdown = ({
   fees,
   feeFactors,
-  quoteName,
+  symbol,
   decimals,
 }: {
   fees?: {
@@ -60,7 +60,7 @@ export const FeesBreakdown = ({
     makerFee: string;
   };
   feeFactors?: Market['fees']['factors'];
-  quoteName?: string;
+  symbol?: string;
   decimals: number;
 }) => {
   if (!fees) return null;
@@ -84,7 +84,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {formatValue(fees.infrastructureFee)} {quoteName || ''}
+        {formatValue(fees.infrastructureFee)} {symbol || ''}
       </dd>
       <dt className="col-span-2">{t('Liquidity fee')}</dt>
       {feeFactors && (
@@ -95,7 +95,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {formatValue(fees.liquidityFee)} {quoteName || ''}
+        {formatValue(fees.liquidityFee)} {symbol || ''}
       </dd>
       <dt className="col-span-2">{t('Maker fee')}</dt>
       {feeFactors && (
@@ -106,7 +106,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {formatValue(fees.makerFee)} {quoteName || ''}
+        {formatValue(fees.makerFee)} {symbol || ''}
       </dd>
       <dt className="col-span-2">{t('Total fees')}</dt>
       {feeFactors && (
@@ -115,7 +115,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {formatValue(totalFees)} {quoteName || ''}
+        {formatValue(totalFees)} {symbol || ''}
       </dd>
     </dl>
   );

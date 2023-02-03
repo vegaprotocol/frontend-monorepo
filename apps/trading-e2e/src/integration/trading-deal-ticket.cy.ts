@@ -452,7 +452,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     //7002-SORD-018
     cy.getByTestId(orderPriceField)
       .siblings('label')
-      .should('have.text', 'Price (tBTC)');
+      .should('have.text', 'Price (BTC)');
   });
 
   it('must see warning when placing an order with expiry date in past', () => {

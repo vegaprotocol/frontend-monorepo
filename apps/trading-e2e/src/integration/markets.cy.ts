@@ -104,7 +104,8 @@ describe('markets table', { tags: '@smoke' }, () => {
       'have.length',
       10
     );
-    cy.getByTestId('external-link')
+    cy.getByTestId('tab-proposed-markets')
+      .find('[data-testid="external-link"]')
       .should('have.length', 11)
       .last()
       .should('have.text', 'Propose a new market')
