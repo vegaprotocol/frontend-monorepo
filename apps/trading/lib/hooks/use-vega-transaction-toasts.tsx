@@ -51,6 +51,8 @@ const intentMap: { [s in VegaTxStatus]: Intent } = {
 };
 
 const getIntent = (tx: VegaStoredTxState) => {
+  // Transaction can be successful
+  // But the order can be rejected by the network
   if (tx.order?.rejectionReason) {
     return Intent.Danger;
   }
