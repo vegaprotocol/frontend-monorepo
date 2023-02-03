@@ -5,8 +5,8 @@ import * as Schema from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderSubmit } from './use-order-submit';
-import type { OrderEventSubscription } from './';
-import { OrderEventDocument } from './';
+import type { OrderSubSubscription } from './';
+import { OrderSubDocument } from './';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -48,89 +48,56 @@ const defaultWalletContext = {
 };
 
 function setup(context?: Partial<VegaWalletContextShape>) {
-  const mocks: MockedResponse<OrderEventSubscription> = {
+  const mocks: MockedResponse<OrderSubSubscription> = {
     request: {
-      query: OrderEventDocument,
+      query: OrderSubDocument,
       variables: {
         partyId: context?.pubKey || '',
       },
     },
     result: {
       data: {
-        busEvents: [
+        orders: [
           {
-            type: Schema.BusEventType.Order,
-            event: {
-              type: Schema.OrderType.TYPE_LIMIT,
-              id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: Schema.OrderStatus.STATUS_ACTIVE,
-              rejectionReason: null,
-              createdAt: '2022-07-05T14:25:47.815283706Z',
-              expiresAt: '2022-07-05T14:25:47.815283706Z',
-              size: '10',
-              price: '300000',
-              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Schema.Side.SIDE_BUY,
-              market: {
-                id: 'market-id',
-                decimalPlaces: 5,
-                positionDecimalPlaces: 0,
-                tradableInstrument: {
-                  __typename: 'TradableInstrument',
-                  instrument: {
-                    name: 'UNIDAI Monthly (30 Jun 2022)',
-                    __typename: 'Instrument',
-                  },
-                },
-                __typename: 'Market',
-              },
-              __typename: 'Order',
-            },
-            __typename: 'BusEvent',
+            type: Schema.OrderType.TYPE_LIMIT,
+            id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
+            status: Schema.OrderStatus.STATUS_ACTIVE,
+            rejectionReason: null,
+            createdAt: '2022-07-05T14:25:47.815283706Z',
+            expiresAt: '2022-07-05T14:25:47.815283706Z',
+            size: '10',
+            price: '300000',
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+            side: Schema.Side.SIDE_BUY,
+            marketId: 'market-id',
           },
         ],
       },
     },
   };
-  const filterMocks: MockedResponse<OrderEventSubscription> = {
+  const filterMocks: MockedResponse<OrderSubSubscription> = {
     request: {
-      query: OrderEventDocument,
+      query: OrderSubDocument,
       variables: {
         partyId: context?.pubKey || '',
       },
     },
     result: {
       data: {
-        busEvents: [
+        orders: [
           {
-            type: Schema.BusEventType.Order,
-            event: {
-              type: Schema.OrderType.TYPE_LIMIT,
-              id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: Schema.OrderStatus.STATUS_ACTIVE,
-              rejectionReason: null,
-              createdAt: '2022-07-05T14:25:47.815283706Z',
-              expiresAt: '2022-07-05T14:25:47.815283706Z',
-              size: '10',
-              price: '300000',
-              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Schema.Side.SIDE_BUY,
-              market: {
-                id: 'market-id',
-                decimalPlaces: 5,
-                positionDecimalPlaces: 0,
-                tradableInstrument: {
-                  __typename: 'TradableInstrument',
-                  instrument: {
-                    name: 'UNIDAI Monthly (30 Jun 2022)',
-                    __typename: 'Instrument',
-                  },
-                },
-                __typename: 'Market',
-              },
-              __typename: 'Order',
-            },
-            __typename: 'BusEvent',
+            type: Schema.OrderType.TYPE_LIMIT,
+            id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
+            status: Schema.OrderStatus.STATUS_ACTIVE,
+            rejectionReason: null,
+            createdAt: '2022-07-05T14:25:47.815283706Z',
+            expiresAt: '2022-07-05T14:25:47.815283706Z',
+            size: '10',
+            price: '300000',
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+            side: Schema.Side.SIDE_BUY,
+            marketId: 'market-id',
+            __typename: 'Order',
           },
         ],
       },
