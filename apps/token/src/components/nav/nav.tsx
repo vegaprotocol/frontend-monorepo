@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { TOP_LEVEL_ROUTES } from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
 import logoWhiteText from '../../images/logo-white-text.png';
+import logoBlackText from '../../images/logo-black-text.png';
 import debounce from 'lodash/debounce';
 import { NavDrawer } from './nav-draw';
 import { Nav as ToolkitNav } from '@vegaprotocol/ui-toolkit';
@@ -46,7 +47,12 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
       navbarTheme={navbarTheme}
       icon={
         <Link to="/" data-testid="logo-link">
-          <img alt="Vega" src={logoWhiteText} height={30} width={260} />
+          <img
+            alt="Vega"
+            src={navbarTheme === 'yellow' ? logoBlackText : logoWhiteText}
+            height={30}
+            width={250}
+          />
         </Link>
       }
       title={undefined}

@@ -27,7 +27,7 @@ export const AppNavLink = ({
   subNav = false,
 }: AppNavLinkProps) => {
   const borderClasses = classNames(
-    'absolute h-[3px] w-full bottom-[-1px] left-0',
+    'absolute h-0.5 w-full bottom-[-1px] left-0',
     {
       'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
       'bg-black': navbarTheme === 'yellow',
