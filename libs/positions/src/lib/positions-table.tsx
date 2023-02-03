@@ -19,6 +19,7 @@ import {
   signedNumberCssClassRules,
   DateRangeFilter,
   addDecimalsFormatNumber,
+  PriceCell,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -84,7 +85,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           filterParams: { buttons: ['reset'] },
           tooltipComponent: TooltipCellComponent,
         }}
-        components={{ AmountCell, PriceFlashCell, ProgressBarCell }}
+        components={{ AmountCell, PriceFlashCell, PriceCell, ProgressBarCell }}
         {...props}
       >
         <AgGridColumn
@@ -335,7 +336,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
           }}
-          cellRenderer="PriceFlashCell"
+          cellRenderer="PriceCell"
           headerTooltip={t(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
           )}
@@ -360,7 +361,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals)
           }
-          cellRenderer="PriceFlashCell"
+          cellRenderer="PriceCell"
           headerTooltip={t(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}
