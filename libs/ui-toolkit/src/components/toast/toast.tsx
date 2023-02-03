@@ -3,7 +3,7 @@ import styles from './toast.module.css';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import type { ForwardedRef, HTMLAttributes, ReactNode } from 'react';
+import type { ForwardedRef, HTMLAttributes } from 'react';
 import { forwardRef, useEffect } from 'react';
 import { useCallback } from 'react';
 import { useLayoutEffect } from 'react';
