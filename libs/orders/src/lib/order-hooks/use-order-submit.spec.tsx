@@ -97,7 +97,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
             timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
             side: Schema.Side.SIDE_BUY,
             marketId: 'market-id',
-            __typename: 'Order',
+            __typename: 'OrderUpdate',
           },
         ],
       },
