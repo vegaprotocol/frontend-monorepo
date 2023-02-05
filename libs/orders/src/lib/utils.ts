@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
+import type { OrderSubFieldsFragment } from './order-hooks';
 
 // More detail in https://docs.vega.xyz/mainnet/graphql/enums/order-time-in-force
 export const timeInForceLabel = (tif: string) => {
@@ -18,5 +19,22 @@ export const timeInForceLabel = (tif: string) => {
       return t('Good for Auction (GFA)');
     default:
       return t(tif);
+  }
+};
+
+export const getRejectionReason = (
+  order: OrderSubFieldsFragment
+): string | null => {
+  switch (order.status) {
+    case Schema.OrderStatus.STATUS_STOPPED:
+      return t(
+        `Your ${
+          Schema.OrderTimeInForceMapping[order.timeInForce]
+        } order was not filled and it has been stopped`
+      );
+    default:
+      return order.rejectionReason
+        ? t(Schema.OrderRejectionReasonMapping[order.rejectionReason])
+        : null;
   }
 };

@@ -15,7 +15,7 @@ import { VegaTxStatus } from './use-vega-transaction';
 import type {
   TransactionEventFieldsFragment,
   WithdrawalBusEventFieldsFragment,
-  OrderBusEventFieldsFragment,
+  OrderTxUpdateFieldsFragment,
 } from './__generated__/TransactionResult';
 
 import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
@@ -27,7 +27,7 @@ export interface VegaStoredTxState extends VegaTxState {
   transactionResult?: TransactionEventFieldsFragment;
   withdrawal?: WithdrawalBusEventFieldsFragment;
   withdrawalApproval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
-  order?: OrderBusEventFieldsFragment;
+  order?: OrderTxUpdateFieldsFragment;
 }
 export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
@@ -44,7 +44,7 @@ export interface VegaTransactionStore {
     withdrawal: NonNullable<VegaStoredTxState['withdrawal']>,
     withdrawalApproval: NonNullable<VegaStoredTxState['withdrawalApproval']>
   ) => void;
-  updateOrder: (order: OrderBusEventFieldsFragment) => void;
+  updateOrder: (order: OrderTxUpdateFieldsFragment) => void;
   updateTransactionResult: (
     transactionResult: TransactionEventFieldsFragment
   ) => void;
@@ -124,7 +124,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-    updateOrder: (order: OrderBusEventFieldsFragment) => {
+    updateOrder: (order) => {
       set(
         produce((state: VegaTransactionStore) => {
           const transaction = state.transactions.find((transaction) => {

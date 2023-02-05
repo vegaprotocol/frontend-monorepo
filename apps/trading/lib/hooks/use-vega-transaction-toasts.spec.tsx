@@ -134,23 +134,7 @@ const submitOrder: VegaStoredTxState = {
     type: OrderType.TYPE_MARKET,
     price: '1234',
     createdAt: new Date(),
-    market: {
-      id: 'market-1',
-      decimalPlaces: 2,
-      positionDecimalPlaces: 2,
-      tradableInstrument: {
-        instrument: {
-          code: 'M1',
-          name: 'M1',
-          product: {
-            settlementAsset: {
-              decimals: 2,
-              symbol: '$A',
-            },
-          },
-        },
-      },
-    },
+    marketId: 'market-1',
     status: OrderStatus.STATUS_ACTIVE,
   },
 };
@@ -181,23 +165,7 @@ const editOrder: VegaStoredTxState = {
     type: OrderType.TYPE_MARKET,
     price: '1234',
     createdAt: new Date(),
-    market: {
-      id: 'market-1',
-      decimalPlaces: 2,
-      positionDecimalPlaces: 2,
-      tradableInstrument: {
-        instrument: {
-          code: 'M1',
-          name: 'M1',
-          product: {
-            settlementAsset: {
-              decimals: 2,
-              symbol: '$A',
-            },
-          },
-        },
-      },
-    },
+    marketId: 'market-1',
     status: OrderStatus.STATUS_ACTIVE,
   },
 };

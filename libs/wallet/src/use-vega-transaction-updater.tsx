@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client';
 import { useVegaWallet } from './use-vega-wallet';
 import {
-  useOrderBusEventsSubscription,
+  useOrderTxUpdateSubscription,
   useWithdrawalBusEventSubscription,
   useTransactionEventSubscription,
 } from './__generated__/TransactionResult';
@@ -21,14 +21,12 @@ export const useVegaTransactionUpdater = () => {
   const variables = { partyId: pubKey || '' };
   const skip = !pubKey;
 
-  useOrderBusEventsSubscription({
+  useOrderTxUpdateSubscription({
     variables,
     skip,
     onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'Order') {
-          updateOrder(event.event);
-        }
+      result.data?.orders?.forEach((order) => {
+        updateOrder(order);
       }),
   });
 

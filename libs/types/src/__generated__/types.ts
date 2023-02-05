@@ -3894,10 +3894,6 @@ export type Statistics = {
   chainVersion: Scalars['String'];
   /** RFC3339Nano current time (real) */
   currentTime: Scalars['Timestamp'];
-  /** Total number of events on the last block */
-  eventCount: Scalars['String'];
-  /** The number of events per second on the last block */
-  eventsPerSecond: Scalars['String'];
   /** RFC3339Nano genesis time of the chain */
   genesisTime: Scalars['Timestamp'];
   /** Number of orders per seconds */

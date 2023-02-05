@@ -4,7 +4,7 @@ import compact from 'lodash/compact';
 import type {
   BatchMarketInstructionSubmissionBody,
   OrderAmendment,
-  OrderBusEventFieldsFragment,
+  OrderTxUpdateFieldsFragment,
   OrderCancellationBody,
   OrderSubmission,
   VegaStoredTxState,
@@ -139,12 +139,10 @@ const SubmitOrderDetails = ({
   order,
 }: {
   data: OrderSubmission;
-  order?: OrderBusEventFieldsFragment;
+  order?: OrderTxUpdateFieldsFragment;
 }) => {
   const { data: markets } = useMarketList();
-  const market = order
-    ? order.market
-    : markets?.find((m) => m.id === data.marketId);
+  const market = markets?.find((m) => m.id === order?.marketId);
   if (!market) return null;
 
   const price = order ? order.price : data.price;
@@ -187,7 +185,7 @@ const EditOrderDetails = ({
   order,
 }: {
   data: OrderAmendment;
-  order?: OrderBusEventFieldsFragment;
+  order?: OrderTxUpdateFieldsFragment;
 }) => {
   const { data: orderById } = useOrderByIdQuery({
     variables: { orderId: data.orderId },
@@ -251,7 +249,7 @@ const CancelOrderDetails = ({
   order,
 }: {
   orderId: string;
-  order?: OrderBusEventFieldsFragment;
+  order?: OrderTxUpdateFieldsFragment;
 }) => {
   const { data: orderById } = useOrderByIdQuery({
     variables: { orderId },
