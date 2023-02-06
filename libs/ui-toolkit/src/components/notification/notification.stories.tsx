@@ -1,6 +1,6 @@
-import type { Meta, Story } from '@storybook/react';
+import type { Meta } from '@storybook/react';
 import { Intent } from '../../utils/intent';
-import { ExternalLink, Link } from '../link';
+import { Link } from '../link';
 import { Notification } from './notification';
 import type { ComponentStory } from '@storybook/react';
 
