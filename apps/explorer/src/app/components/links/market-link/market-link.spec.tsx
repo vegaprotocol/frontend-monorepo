@@ -55,6 +55,7 @@ describe('Market link component', () => {
           market: {
             id: '123',
             decimalPlaces: 5,
+            positionDecimalPlaces: 2,
             state: 'irrelevant-test-data',
             tradableInstrument: {
               instrument: {
