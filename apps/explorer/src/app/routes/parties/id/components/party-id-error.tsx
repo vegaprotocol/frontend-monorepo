@@ -14,7 +14,7 @@ type PartyIdErrorProps = {
 const PartyIdError = ({ id, error }: PartyIdErrorProps) => {
   const end = isValidPartyId(id)
     ? t('No accounts or transactions found for: ')
-    : 'Invalid party id: ';
+    : 'Invalid pubkey: ';
   return (
     <section>
       <p>
