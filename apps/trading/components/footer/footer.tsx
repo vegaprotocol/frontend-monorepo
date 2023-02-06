@@ -1,20 +1,16 @@
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
 import { t, useNavigatorOnline } from '@vegaprotocol/react-helpers';
 import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Footer = () => {
-  const { VEGA_URL, blockDifference, setNodeSwitcherOpen } = useEnvironment();
+  const { VEGA_URL, setNodeSwitcherOpen } = useEnvironment();
   return (
     <footer className="px-4 py-1 text-xs border-t border-default">
       <div className="flex justify-between">
         <div className="flex gap-2">
           {VEGA_URL && (
             <>
-              <NodeHealth
-                blockDiff={blockDifference}
-                openNodeSwitcher={setNodeSwitcherOpen}
-              />
-              {' | '}
+              <NodeHealth openNodeSwitcher={setNodeSwitcherOpen} />
               <NodeUrl url={VEGA_URL} openNodeSwitcher={setNodeSwitcherOpen} />
             </>
           )}
@@ -38,18 +34,15 @@ const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
 
 interface NodeHealthProps {
   openNodeSwitcher: () => void;
-  blockDiff: number;
 }
 
 // How many blocks behind the most advanced block that is
 // deemed acceptable for "Good" status
 const BLOCK_THRESHOLD = 3;
 
-export const NodeHealth = ({
-  blockDiff,
-  openNodeSwitcher,
-}: NodeHealthProps) => {
+export const NodeHealth = ({ openNodeSwitcher }: NodeHealthProps) => {
   const online = useNavigatorOnline();
+  const { blockDiff } = useNodeHealth();
 
   let intent = Intent.Success;
   let text = 'Operational';
@@ -57,7 +50,7 @@ export const NodeHealth = ({
   if (!online) {
     text = t('Offline');
     intent = Intent.Danger;
-  } else if (blockDiff < 0) {
+  } else if (blockDiff === null) {
     // Block height query failed and null was returned
     text = t('Non operational');
     intent = Intent.Danger;
@@ -67,9 +60,9 @@ export const NodeHealth = ({
   }
 
   return (
-    <span>
+    <>
       <Indicator variant={intent} />
       <ButtonLink onClick={openNodeSwitcher}>{text}</ButtonLink>
-    </span>
+    </>
   );
 };

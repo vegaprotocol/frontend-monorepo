@@ -13,7 +13,12 @@ import { createClient as createWSClient } from 'graphql-ws';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
-import { localLoggerFactory } from '@vegaprotocol/react-helpers';
+import {
+  fromISONanoSeconds,
+  fromNanoSeconds,
+  localLoggerFactory,
+} from '@vegaprotocol/react-helpers';
+import { useHeaderStore } from './header-store';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -24,6 +29,7 @@ export type ClientOptions = {
   cacheConfig?: InMemoryCacheConfig;
   retry?: boolean;
   connectToDevTools?: boolean;
+  connectToHeaderStore?: boolean;
 };
 
 export function createClient({
@@ -31,6 +37,7 @@ export function createClient({
   cacheConfig,
   retry = true,
   connectToDevTools = true,
+  connectToHeaderStore = true,
 }: ClientOptions) {
   if (!url) {
     throw new Error('url must be passed into createClient!');
@@ -43,6 +50,23 @@ export function createClient({
   const noOpLink = new ApolloLink((operation, forward) => {
     return forward(operation);
   });
+
+  const headerLink = connectToHeaderStore
+    ? new ApolloLink((operation, forward) => {
+        return forward(operation).map((response) => {
+          const context = operation.getContext();
+          const blockHeight = context.response?.headers.get('x-block-height');
+          const timestamp = context.response?.headers.get('x-block-timestamp');
+          if (blockHeight && timestamp) {
+            useHeaderStore.setState({
+              blockHeight: Number(blockHeight),
+              timestamp: fromNanoSeconds(timestamp),
+            });
+          }
+          return response;
+        });
+      })
+    : noOpLink;
 
   const timeoutLink = new ApolloLinkTimeout(10000);
   const enlargedTimeoutLink = new ApolloLinkTimeout(100000);
@@ -104,7 +128,13 @@ export function createClient({
   );
 
   return new ApolloClient({
-    link: from([errorLink, composedTimeoutLink, retryLink, splitLink]),
+    link: from([
+      errorLink,
+      composedTimeoutLink,
+      headerLink,
+      retryLink,
+      splitLink,
+    ]),
     cache: new InMemoryCache(cacheConfig),
     connectToDevTools,
   });

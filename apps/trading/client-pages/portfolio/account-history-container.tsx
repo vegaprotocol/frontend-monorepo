@@ -1,6 +1,6 @@
 import {
   addDecimal,
-  fromNanoSeconds,
+  fromISONanoSeconds,
   t,
   useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
@@ -228,7 +228,7 @@ export const AccountHistoryChart = ({
         .reduce((acc, edge) => {
           if (edge.node.accountType === accountType) {
             acc?.push({
-              datetime: fromNanoSeconds(edge.node.timestamp),
+              datetime: fromISONanoSeconds(edge.node.timestamp),
               balance: Number(addDecimal(edge.node.balance, asset.decimals)),
             });
           }

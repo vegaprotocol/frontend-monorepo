@@ -42,6 +42,7 @@ export const requestNode = (
     url,
     retry: false,
     connectToDevTools: false,
+    connectToHeaderStore: false,
   });
 
   // make a query for block height

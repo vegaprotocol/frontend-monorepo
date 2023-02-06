@@ -2,6 +2,7 @@ query Statistics {
   statistics {
     chainId
     blockHeight
+    vegaTime
   }
 }
 
