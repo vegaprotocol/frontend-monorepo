@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Footer, NodeHealth } from './footer';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/environment');
 
@@ -12,8 +12,12 @@ describe('Footer', () => {
     // @ts-ignore mock env hook
     useEnvironment.mockImplementation(() => ({
       VEGA_URL: `https://api.${node}/graphql`,
-      blockDifference: 0,
       setNodeSwitcherOpen: mockOpenNodeSwitcher,
+    }));
+
+    // @ts-ignore mock env hook
+    useNodeHealth.mockImplementation(() => ({
+      blockDiff: 0,
     }));
 
     render(<Footer />);
@@ -29,8 +33,12 @@ describe('Footer', () => {
     // @ts-ignore mock env hook
     useEnvironment.mockImplementation(() => ({
       VEGA_URL: `https://api.${node}/graphql`,
-      blockDifference: 0,
       setNodeSwitcherOpen: mockOpenNodeSwitcher,
+    }));
+
+    // @ts-ignore mock env hook
+    useNodeHealth.mockImplementation(() => ({
+      blockDiff: 0,
     }));
 
     render(<Footer />);
@@ -43,8 +51,9 @@ describe('Footer', () => {
 describe('NodeHealth', () => {
   const cases = [
     { diff: 0, classname: 'bg-success', text: 'Operational' },
+    { diff: -1, classname: 'bg-success', text: 'Operational' },
     { diff: 5, classname: 'bg-warning', text: '5 Blocks behind' },
-    { diff: -1, classname: 'bg-danger', text: 'Non operational' },
+    { diff: null, classname: 'bg-danger', text: 'Non operational' },
   ];
   it.each(cases)(
     'renders correct text and indicator color for $diff block difference',
