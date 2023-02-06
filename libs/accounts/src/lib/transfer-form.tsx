@@ -123,6 +123,8 @@ export const TransferForm = ({
             <Input
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
+              id="to-address"
+              type="text"
               {...register('toAddress', {
                 validate: {
                   required,
@@ -166,10 +168,10 @@ export const TransferForm = ({
             >
               {assets.map((a) => (
                 <Option key={a.id} value={a.id}>
-                  <div className="text-left">
+                  <div className="text-left" data-testid={`asset-${a.id}`}>
                     <div>{a.name}</div>
                     <div className="text-xs">
-                      <span className="font-mono">
+                      <span className="font-mono" data-testid="asset-balance">
                         {formatNumber(a.balance, a.decimals)}
                       </span>{' '}
                       <span>{a.symbol}</span>
@@ -197,7 +199,6 @@ export const TransferForm = ({
               minSafe: (value) => minSafe(new BigNumber(min))(value),
               maxSafe: (v) => {
                 const value = new BigNumber(v);
-                console.log(value.toString(), max.toString());
                 if (value.isGreaterThan(max)) {
                   return t(
                     'You cannot transfer more than your available collateral'
