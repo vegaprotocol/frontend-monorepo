@@ -21,14 +21,14 @@ export type WithdrawalBusEventSubscriptionVariables = Types.Exact<{
 
 export type WithdrawalBusEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } }> | null };
 
-export type OrderBusEventFieldsFragment = { __typename?: 'Order', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', symbol: string, decimals: number } } } } } };
+export type OrderTxUpdateFieldsFragment = { __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string };
 
-export type OrderBusEventsSubscriptionVariables = Types.Exact<{
+export type OrderTxUpdateSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type OrderBusEventsSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', symbol: string, decimals: number } } } } } } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
+export type OrderTxUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string }> | null };
 
 export type DepositBusEventFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
 
@@ -75,8 +75,8 @@ export const WithdrawalBusEventFieldsFragmentDoc = gql`
   pendingOnForeignChain @client
 }
     `;
-export const OrderBusEventFieldsFragmentDoc = gql`
-    fragment OrderBusEventFields on Order {
+export const OrderTxUpdateFieldsFragmentDoc = gql`
+    fragment OrderTxUpdateFields on OrderUpdate {
   type
   id
   status
@@ -87,25 +87,7 @@ export const OrderBusEventFieldsFragmentDoc = gql`
   timeInForce
   expiresAt
   side
-  market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-    tradableInstrument {
-      instrument {
-        name
-        code
-        product {
-          ... on Future {
-            settlementAsset {
-              symbol
-              decimals
-            }
-          }
-        }
-      }
-    }
-  }
+  marketId
 }
     `;
 export const DepositBusEventFieldsFragmentDoc = gql`
@@ -192,41 +174,36 @@ export function useWithdrawalBusEventSubscription(baseOptions: Apollo.Subscripti
       }
 export type WithdrawalBusEventSubscriptionHookResult = ReturnType<typeof useWithdrawalBusEventSubscription>;
 export type WithdrawalBusEventSubscriptionResult = Apollo.SubscriptionResult<WithdrawalBusEventSubscription>;
-export const OrderBusEventsDocument = gql`
-    subscription OrderBusEvents($partyId: ID!) {
-  busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
-    type
-    event {
-      ... on Order {
-        ...OrderBusEventFields
-      }
-    }
+export const OrderTxUpdateDocument = gql`
+    subscription OrderTxUpdate($partyId: ID!) {
+  orders(partyId: $partyId) {
+    ...OrderTxUpdateFields
   }
 }
-    ${OrderBusEventFieldsFragmentDoc}`;
+    ${OrderTxUpdateFieldsFragmentDoc}`;
 
 /**
- * __useOrderBusEventsSubscription__
+ * __useOrderTxUpdateSubscription__
  *
- * To run a query within a React component, call `useOrderBusEventsSubscription` and pass it any options that fit your needs.
- * When your component renders, `useOrderBusEventsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useOrderTxUpdateSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOrderTxUpdateSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useOrderBusEventsSubscription({
+ * const { data, loading, error } = useOrderTxUpdateSubscription({
  *   variables: {
  *      partyId: // value for 'partyId'
  *   },
  * });
  */
-export function useOrderBusEventsSubscription(baseOptions: Apollo.SubscriptionHookOptions<OrderBusEventsSubscription, OrderBusEventsSubscriptionVariables>) {
+export function useOrderTxUpdateSubscription(baseOptions: Apollo.SubscriptionHookOptions<OrderTxUpdateSubscription, OrderTxUpdateSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<OrderBusEventsSubscription, OrderBusEventsSubscriptionVariables>(OrderBusEventsDocument, options);
+        return Apollo.useSubscription<OrderTxUpdateSubscription, OrderTxUpdateSubscriptionVariables>(OrderTxUpdateDocument, options);
       }
-export type OrderBusEventsSubscriptionHookResult = ReturnType<typeof useOrderBusEventsSubscription>;
-export type OrderBusEventsSubscriptionResult = Apollo.SubscriptionResult<OrderBusEventsSubscription>;
+export type OrderTxUpdateSubscriptionHookResult = ReturnType<typeof useOrderTxUpdateSubscription>;
+export type OrderTxUpdateSubscriptionResult = Apollo.SubscriptionResult<OrderTxUpdateSubscription>;
 export const DepositBusEventDocument = gql`
     subscription DepositBusEvent($partyId: ID!) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {

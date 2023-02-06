@@ -23,7 +23,7 @@ import {
 } from '@vegaprotocol/wallet';
 import type { VegaTxState, TransactionResult } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import type { OrderEventFieldsFragment } from '../../order-hooks';
+import type { OrderSubFieldsFragment } from '../../order-hooks';
 import * as Schema from '@vegaprotocol/types';
 import type { Order } from '../order-data-provider';
 
@@ -238,7 +238,7 @@ export const getCancelDialogIntent = ({
   cancelledOrder,
   transactionResult,
 }: {
-  cancelledOrder: OrderEventFieldsFragment | null;
+  cancelledOrder: OrderSubFieldsFragment | null;
   transactionResult?: TransactionResult;
 }): Intent | undefined => {
   if (cancelledOrder) {
@@ -260,7 +260,7 @@ export const getCancelDialogTitle = ({
   cancelledOrder,
   transactionResult,
 }: {
-  cancelledOrder: OrderEventFieldsFragment | null;
+  cancelledOrder: OrderSubFieldsFragment | null;
   transactionResult?: TransactionResult;
 }): string | undefined => {
   if (cancelledOrder) {
