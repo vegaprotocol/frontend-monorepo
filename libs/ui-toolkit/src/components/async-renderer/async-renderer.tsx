@@ -27,7 +27,6 @@ export function AsyncRenderer<T = object>({
   render,
 }: AsyncRendererProps<T>) {
   if (error) {
-    Sentry.captureException(`Error rendering data: ${error.message}`);
     if (!data) {
       return (
         <Splash>
