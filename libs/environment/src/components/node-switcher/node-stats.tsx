@@ -13,6 +13,10 @@ type NodeStatsContentProps = {
   setBlock: (value: number) => void;
   children?: ReactNode;
   dataTestId?: string;
+  headers?: {
+    blockHeight: number;
+    timestamp: Date;
+  };
 };
 
 const getResponseTimeDisplayValue = (
@@ -59,6 +63,7 @@ const NodeStatsContent = ({
   setBlock,
   children,
   dataTestId,
+  headers,
 }: NodeStatsContentProps) => {
   return (
     <LayoutRow dataTestId={dataTestId}>
@@ -74,13 +79,18 @@ const NodeStatsContent = ({
       <LayoutCell
         label={t('Block')}
         isLoading={data.block?.isLoading}
-        hasError={
-          data.block?.hasError ||
-          (!!data.block?.value && highestBlock > data.block.value)
-        }
+        hasError={false}
         dataTestId="block-cell"
       >
         {getBlockDisplayValue(data.block, setBlock)}
+      </LayoutCell>
+      <LayoutCell
+        label={t('Header block')}
+        isLoading={false}
+        hasError={headers ? highestBlock - 3 > headers.blockHeight : false}
+        dataTestId="header-block-cell"
+      >
+        {headers?.blockHeight}
       </LayoutCell>
       <LayoutCell
         label={t('Subscription')}
@@ -113,6 +123,10 @@ export type NodeStatsProps = {
   highestBlock: number;
   setBlock: (value: number) => void;
   children?: ReactNode;
+  headers: {
+    blockHeight: number;
+    timestamp: Date;
+  };
 };
 
 export const NodeStats = ({
@@ -121,6 +135,7 @@ export const NodeStats = ({
   highestBlock,
   children,
   setBlock,
+  headers,
 }: NodeStatsProps) => {
   return (
     <Wrapper client={client}>
@@ -129,6 +144,7 @@ export const NodeStats = ({
         highestBlock={highestBlock}
         setBlock={setBlock}
         dataTestId="node-row"
+        headers={headers}
       >
         {children}
       </NodeStatsContent>

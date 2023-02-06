@@ -21,6 +21,7 @@ import type { Configuration, NodeData, ErrorType } from '../../types';
 import { LayoutRow } from './layout-row';
 import { NodeError } from './node-error';
 import { NodeStats } from './node-stats';
+import { useHeaderStore } from '@vegaprotocol/apollo-client';
 
 type NodeSwitcherProps = {
   error?: string;
@@ -46,6 +47,7 @@ export const NodeSwitcher = ({
   onConnect,
 }: NodeSwitcherProps) => {
   const { VEGA_ENV, VEGA_URL } = useEnvironment();
+  const headerStore = useHeaderStore();
   const [networkError, setNetworkError] = useState(
     getErrorByType(initialErrorType, VEGA_ENV, VEGA_URL)
   );
@@ -96,7 +98,8 @@ export const NodeSwitcher = ({
             <LayoutRow>
               <div />
               <span className="text-right">{t('Response time')}</span>
-              <span className="text-right">{t('Block')}</span>
+              <span className="text-right">{t('Core block')}</span>
+              <span className="text-right">{t('Node block')}</span>
               <span className="text-right">{t('Subscription')}</span>
             </LayoutRow>
           </div>
@@ -115,6 +118,7 @@ export const NodeSwitcher = ({
                   client={clients[node]}
                   highestBlock={highestBlock}
                   setBlock={(block) => updateNodeBlock(node, block)}
+                  headers={headerStore[node]}
                 >
                   <div className="break-all" data-testid="node">
                     <Radio
@@ -131,6 +135,7 @@ export const NodeSwitcher = ({
                 client={customUrl ? clients[customUrl] : undefined}
                 highestBlock={highestBlock}
                 setBlock={(block) => updateNodeBlock(CUSTOM_NODE_KEY, block)}
+                headers={headerStore[CUSTOM_NODE_KEY]}
               >
                 <div className="flex w-full mb-2">
                   <Radio

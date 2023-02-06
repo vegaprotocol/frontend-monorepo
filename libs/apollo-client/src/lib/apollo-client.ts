@@ -14,7 +14,6 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
 import {
-  fromISONanoSeconds,
   fromNanoSeconds,
   localLoggerFactory,
 } from '@vegaprotocol/react-helpers';
@@ -58,9 +57,13 @@ export function createClient({
           const blockHeight = context.response?.headers.get('x-block-height');
           const timestamp = context.response?.headers.get('x-block-timestamp');
           if (blockHeight && timestamp) {
+            const state = useHeaderStore.getState();
             useHeaderStore.setState({
-              blockHeight: Number(blockHeight),
-              timestamp: fromNanoSeconds(timestamp),
+              ...state,
+              [context.response.url]: {
+                blockHeight: Number(blockHeight),
+                timestamp: fromNanoSeconds(timestamp),
+              },
             });
           }
           return response;

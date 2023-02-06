@@ -2,9 +2,12 @@ import { useMemo } from 'react';
 import { useStatisticsQuery } from '../utils/__generated__/Node';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { fromISONanoSeconds } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from './use-environment';
 
 export const useNodeHealth = () => {
-  const { blockHeight, timestamp } = useHeaderStore();
+  const { VEGA_URL } = useEnvironment();
+  const headerStore = useHeaderStore();
+  const headers = VEGA_URL ? headerStore[VEGA_URL] : undefined;
   const { data } = useStatisticsQuery({
     pollInterval: 1000,
     fetchPolicy: 'no-cache',
@@ -15,14 +18,18 @@ export const useNodeHealth = () => {
       return null;
     }
 
-    return Number(data.statistics.blockHeight) - blockHeight;
-  }, [data, blockHeight]);
+    if (!headers) {
+      return 0;
+    }
+
+    return Number(data.statistics.blockHeight) - headers.blockHeight;
+  }, [data, headers]);
 
   return {
     coreBlockHeight: Number(data?.statistics.blockHeight || 0),
     coreVegaTime: fromISONanoSeconds(data?.statistics.vegaTime),
-    datanodeBlockHeight: blockHeight,
-    datanodeVegaTime: timestamp,
+    datanodeBlockHeight: headers?.blockHeight,
+    datanodeVegaTime: headers?.timestamp,
     blockDiff,
   };
 };

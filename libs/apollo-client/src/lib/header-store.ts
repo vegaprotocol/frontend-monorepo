@@ -1,11 +1,10 @@
 import { create } from 'zustand';
 
-interface HeaderStore {
-  blockHeight: number;
-  timestamp: Date;
-}
+type HeaderStore = {
+  [url: string]: {
+    blockHeight: number;
+    timestamp: Date;
+  };
+};
 
-export const useHeaderStore = create<HeaderStore>(() => ({
-  blockHeight: 0,
-  timestamp: new Date(),
-}));
+export const useHeaderStore = create<HeaderStore>(() => ({}));
