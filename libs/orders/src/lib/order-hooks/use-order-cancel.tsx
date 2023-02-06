@@ -8,15 +8,15 @@ import type {
   OrderCancellationBody,
   TransactionResult,
 } from '@vegaprotocol/wallet';
-import type { OrderEventFieldsFragment } from './';
+import type { OrderSubFieldsFragment } from './';
 import * as Sentry from '@sentry/react';
-import { useOrderEvent } from './use-order-event';
+import { useOrderUpdate } from './use-order-update';
 
 export const useOrderCancel = () => {
   const { pubKey } = useVegaWallet();
 
   const [cancelledOrder, setCancelledOrder] =
-    useState<OrderEventFieldsFragment | null>(null);
+    useState<OrderSubFieldsFragment | null>(null);
   const [transactionResult, setTransactionResult] =
     useState<TransactionResult>();
 
@@ -28,7 +28,7 @@ export const useOrderCancel = () => {
     Dialog,
   } = useVegaTransaction();
 
-  const waitForOrderEvent = useOrderEvent(transaction);
+  const waitForOrderUpdate = useOrderUpdate(transaction);
   const waitForTransactionResult = useTransactionResult();
 
   const reset = useCallback(() => {
@@ -49,7 +49,7 @@ export const useOrderCancel = () => {
           orderCancellation,
         });
         if (orderCancellation.orderId) {
-          const cancelledOrder = await waitForOrderEvent(
+          const cancelledOrder = await waitForOrderUpdate(
             orderCancellation.orderId,
             pubKey
           );
@@ -69,7 +69,7 @@ export const useOrderCancel = () => {
         return;
       }
     },
-    [pubKey, send, setComplete, waitForOrderEvent, waitForTransactionResult]
+    [pubKey, send, setComplete, waitForOrderUpdate, waitForTransactionResult]
   );
 
   return {

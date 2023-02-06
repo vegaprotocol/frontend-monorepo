@@ -8,7 +8,7 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
-import { useGlobalStore } from '../../stores/global';
+import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
   Drawer,
@@ -165,7 +165,7 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
         </Link>
       }
     >
-      <LinkList className="hidden md:flex" navbarTheme={navbarTheme} />
+      <LinkList className="hidden md:flex md:px-2" navbarTheme={navbarTheme} />
       <div className="flex items-center gap-2 ml-auto overflow-hidden">
         <VegaWalletConnectButton />
         <ThemeSwitcher className="hidden md:block" />

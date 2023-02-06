@@ -117,7 +117,7 @@ const NestedDataListItem = ({
           )}
         </h4>
         {!hasChildren && (
-          <code className="text-vega-light-400 mb-2 last:mb-0 dark:text-vega-dark-400 break-all">
+          <code className="text-vega-light-100 mb-2 last:mb-0 dark:text-vega-dark-100 break-all">
             {JSON.stringify(value, null, '  ')}
           </code>
         )}

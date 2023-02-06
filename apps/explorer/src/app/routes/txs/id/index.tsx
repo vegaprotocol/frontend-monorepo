@@ -38,7 +38,7 @@ const Tx = () => {
         to={`/${Routes.TX}`}
       >
         <Icon
-          className="text-vega-light-300 dark:text-vega-light-300"
+          className="text-vega-light-150 dark:text-vega-light-150"
           name={IconNames.CHEVRON_LEFT}
         />
         All Transactions
