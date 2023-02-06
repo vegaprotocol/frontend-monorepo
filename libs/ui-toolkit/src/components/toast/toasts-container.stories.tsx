@@ -2,6 +2,7 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 import { Intent } from '../../utils/intent';
 import type { Toast } from './toast';
+import { ToastHeading } from './toast';
 import { ToastsContainer } from './toasts-container';
 import random from 'lodash/random';
 import sample from 'lodash/sample';
@@ -207,7 +208,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
               intent: Intent.Danger,
               content: (
                 <>
-                  <h3>Error occurred</h3>
+                  <ToastHeading>Error occurred</ToastHeading>
                   <p>Something went terribly wrong</p>
                 </>
               ),

@@ -24,6 +24,7 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
@@ -292,9 +293,9 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       );
       return (
         <Panel>
-          <b>
+          <strong>
             {t('Withdraw')} {num} {asset.symbol}
-          </b>
+          </strong>
         </Panel>
       );
     }
@@ -338,7 +339,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
         <Panel>
           {marketName ? (
             <>
-              {t('Cancel all orders for')} <b>{marketName}</b>
+              {t('Cancel all orders for')} <strong>{marketName}</strong>
             </>
           ) : (
             t('Cancel all orders')
@@ -367,7 +368,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       return (
         <Panel>
           {t('Close position for')}{' '}
-          <b>{market.tradableInstrument.instrument.code}</b>
+          <strong>{market.tradableInstrument.instrument.code}</strong>
         </Panel>
       );
     }
@@ -404,7 +405,7 @@ type VegaTxToastContentProps = { tx: VegaStoredTxState };
 
 const VegaTxRequestedToastContent = ({ tx }: VegaTxToastContentProps) => (
   <>
-    <h3>{t('Action required')}</h3>
+    <ToastHeading>{t('Action required')}</ToastHeading>
     <p>
       {t(
         'Please go to your Vega wallet application and approve or reject the transaction.'
@@ -418,7 +419,7 @@ const VegaTxPendingToastContentProps = ({ tx }: VegaTxToastContentProps) => {
   const explorerLink = useLinks(DApp.Explorer);
   return (
     <>
-      <h3>{t('Awaiting confirmation')}</h3>
+      <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed')}</p>
       {tx.txHash && (
         <p className="break-all">
@@ -462,7 +463,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     );
     return (
       <>
-        <h3>{t('Funds unlocked')}</h3>
+        <ToastHeading>{t('Funds unlocked')}</ToastHeading>
         <p>{t('Your funds have been unlocked for withdrawal')}</p>
         {tx.txHash && (
           <p className="break-all">
@@ -483,7 +484,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   if (tx.order && tx.order.rejectionReason) {
     return (
       <>
-        <h3>{t('Rejected')}</h3>
+        <ToastHeading>{t('Rejected')}</ToastHeading>
         <p>
           {t(
             'Your order has been rejected because: %s',
@@ -537,7 +538,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
   return (
     <>
-      <h3>{t('Confirmed')}</h3>
+      <ToastHeading>{t('Confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed ')}</p>
       {tx.txHash && (
         <p className="break-all">
@@ -582,7 +583,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
 
   return (
     <>
-      <h3>{label}</h3>
+      <ToastHeading>{label}</ToastHeading>
       <p className="first-letter:uppercase">{errorMessage}</p>
       {walletError && (
         <Button size="xs" onClick={reconnectVegaWallet}>

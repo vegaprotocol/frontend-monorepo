@@ -1,6 +1,6 @@
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 import { ProposalState } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useUpdateNetworkParametersToasts } from './use-update-network-paramaters-toasts';
@@ -9,8 +9,8 @@ import type {
   OnUpdateNetworkParametersSubscription,
 } from './__generated__/Proposal';
 import { OnUpdateNetworkParametersDocument } from './__generated__/Proposal';
-import waitForNextTick from 'flush-promises';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
+import { waitFor } from '@testing-library/react';
 
 const render = (mocks?: MockedResponse[]) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
@@ -103,29 +103,23 @@ describe('useUpdateNetworkParametersToasts', () => {
   afterAll(clear);
 
   it('returns toast for update network parameters bus event', async () => {
-    const { waitForNextUpdate } = render([mockedEvent]);
-    await act(async () => {
-      waitForNextUpdate();
-      await waitForNextTick();
+    render([mockedEvent]);
+    await waitFor(() => {
+      expect(useToasts.getState().count).toBe(1);
     });
-    expect(useToasts.getState().count).toBe(1);
   });
 
   it('does not return toast for empty event', async () => {
-    const { waitForNextUpdate } = render([mockedEmptyEvent]);
-    await act(async () => {
-      waitForNextUpdate();
-      await waitForNextTick();
+    render([mockedEmptyEvent]);
+    await waitFor(() => {
+      expect(useToasts.getState().count).toBe(0);
     });
-    expect(useToasts.getState().count).toBe(0);
   });
 
   it('does not return toast for wrong event', async () => {
-    const { waitForNextUpdate } = render([mockedWrongEvent]);
-    await act(async () => {
-      waitForNextUpdate();
-      await waitForNextTick();
+    render([mockedWrongEvent]);
+    await waitFor(() => {
+      expect(useToasts.getState().count).toBe(0);
     });
-    expect(useToasts.getState().count).toBe(0);
   });
 });

@@ -20754,11 +20754,6 @@ ssri@^8.0.1:
   dependencies:
     minipass "^3.1.1"
 
-stable-hash@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/stable-hash/-/stable-hash-0.0.3.tgz#0078583e684d56ca0ece08f7c588b19f88955698"
-  integrity sha512-c63fvNCQ7ip1wBfPv54MflMA5L6OE5J0p6Fg13IpKft4JAFoNal8+s/jtJ8PibrwqXm4onnbeQsADs8k0NQGUA==
-
 stable@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/stable/-/stable-0.1.8.tgz#836eb3c8382fe2936feaf544631017ce7d47a3cf"

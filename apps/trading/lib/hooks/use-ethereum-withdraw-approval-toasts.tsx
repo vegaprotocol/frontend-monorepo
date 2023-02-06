@@ -1,5 +1,6 @@
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
@@ -42,14 +43,16 @@ const EthWithdrawalApprovalToastContent = ({
   );
   const details = (
     <Panel>
-      <b>
+      <strong>
         {t('Withdraw')} {num} {tx.withdrawal.asset.symbol}
-      </b>
+      </strong>
     </Panel>
   );
   return (
     <>
-      {title.length > 0 && <h3 className="font-bold">{title}</h3>}
+      {title.length > 0 && (
+        <ToastHeading className="font-bold">{title}</ToastHeading>
+      )}
       <VerificationStatus state={tx} />
       {details}
     </>

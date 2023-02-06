@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import { Panel, Toast } from './toast';
+import { Panel, Toast, ToastHeading } from './toast';
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 import { Intent } from '../../utils/intent';
 import { ExternalLink } from '../link';
@@ -21,7 +21,7 @@ Default.args = {
   state: 'showing',
   content: (
     <>
-      <h3>Optional heading</h3>
+      <ToastHeading>Optional heading</ToastHeading>
       <p>This is a message that can return over multiple lines.</p>
       <p>
         <ExternalLink>Optional link</ExternalLink>
@@ -38,7 +38,7 @@ Primary.args = {
   state: 'showing',
   content: (
     <>
-      <h3>Optional heading</h3>
+      <ToastHeading>Optional heading</ToastHeading>
       <p>This is a message that can return over multiple lines.</p>
       <p>
         <ExternalLink>Optional link</ExternalLink>
@@ -56,7 +56,7 @@ Danger.args = {
   state: 'showing',
   content: (
     <>
-      <h3>Optional heading</h3>
+      <ToastHeading>Optional heading</ToastHeading>
       <p>This is a message that can return over multiple lines.</p>
       <p>
         <ExternalLink>Optional link</ExternalLink>
@@ -74,13 +74,13 @@ Warning.args = {
   state: 'showing',
   content: (
     <>
-      <h3>Optional heading</h3>
+      <ToastHeading>Optional heading</ToastHeading>
       <p>This is a message that can return over multiple lines.</p>
       <p>
         <ExternalLink>Optional link</ExternalLink>
       </p>
       <Panel>
-        <b>Deposit 10.00 tUSDX</b>
+        <strong>Deposit 10.00 tUSDX</strong>
         <p className="mt-[2px]">Awaiting confirmations (1/3)</p>
         <ProgressBar value={33.33} />
       </Panel>
@@ -96,7 +96,7 @@ Success.args = {
   state: 'showing',
   content: (
     <>
-      <h3>Optional heading</h3>
+      <ToastHeading>Optional heading</ToastHeading>
       <p>This is a message that can return over multiple lines.</p>
       <p>
         <ExternalLink>Optional link</ExternalLink>

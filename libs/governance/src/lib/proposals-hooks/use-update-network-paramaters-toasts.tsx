@@ -4,6 +4,7 @@ import type { UpdateNetworkParameter } from '@vegaprotocol/types';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import { ProposalState } from '@vegaprotocol/types';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
@@ -28,7 +29,7 @@ const UpdateNetworkParameterToastContent = ({
   const enactment = Date.parse(proposal.terms.enactmentDatetime);
   return (
     <div>
-      <h3 className="font-bold">{title}</h3>
+      <ToastHeading>{title}</ToastHeading>
       <p className="italic">
         '
         {t(

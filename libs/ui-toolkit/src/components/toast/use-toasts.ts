@@ -1,16 +1,13 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import type { Toast } from './toast';
-import hash from 'stable-hash';
 import omit from 'lodash/omit';
+import isEqual from 'lodash/isEqual';
 
 export type Toasts = Record<string, Toast>;
 
-const isEqual = (a: Toast, b: Toast) => {
-  const h1 = hash(omit(a, 'onClose'));
-  const h2 = hash(omit(b, 'onClose'));
-  return h1 === h2;
-};
+const isUpdateable = (a: Toast, b: Toast) =>
+  isEqual(omit(a, 'onClose'), omit(b, 'onClose'));
 
 type State = {
   toasts: Toasts;
@@ -70,7 +67,7 @@ export const useToasts = create(
       set((state) => {
         const found = state.toasts[toast.id];
         if (found) {
-          if (!isEqual(found, toast)) {
+          if (!isUpdateable(found, toast)) {
             Object.assign(found, toast);
           }
         } else {

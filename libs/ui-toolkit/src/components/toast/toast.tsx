@@ -3,7 +3,7 @@ import styles from './toast.module.css';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import type { ForwardedRef, HTMLAttributes } from 'react';
+import type { HTMLAttributes, HtmlHTMLAttributes } from 'react';
 import { forwardRef, useEffect } from 'react';
 import { useCallback } from 'react';
 import { useLayoutEffect } from 'react';
@@ -42,29 +42,35 @@ export const CLOSE_DELAY = 500;
 export const TICKER = 100;
 export const CLOSE_AFTER = 5000;
 
-export const Panel = forwardRef<
-  HTMLDivElement,
-  {
-    ref: ForwardedRef<HTMLDivElement>;
-  } & HTMLAttributes<HTMLDivElement>
->(({ children, ref, className, ...props }) => {
-  return (
-    <div
-      data-panel
-      ref={ref}
-      data-testid="toast-panel"
-      className={classNames(
-        'p-2 rounded mt-[10px]',
-        'font-mono text-[12px] leading-[16px] font-normal',
-        '[&>h4]:font-bold',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-});
+export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div
+        data-panel
+        ref={ref}
+        data-testid="toast-panel"
+        className={classNames(
+          'p-2 rounded mt-[10px]',
+          'font-mono text-[12px] leading-[16px] font-normal',
+          '[&>h4]:font-bold',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+export const ToastHeading = forwardRef<
+  HTMLHeadingElement,
+  HtmlHTMLAttributes<HTMLHeadingElement>
+>(({ children, ...props }, ref) => (
+  <h3 ref={ref} className="text-sm uppercase mb-1" {...props}>
+    {children}
+  </h3>
+));
 
 export const Toast = ({
   id,
@@ -251,9 +257,7 @@ export const Toast = ({
         <div
           className={classNames(
             'relative',
-            'overflow-auto flex-1 p-4 pr-[40px] [&>p]:mb-[2.5px]',
-            // toast heading
-            '[&>h3]:text-[14px] [&>h3]:leading-[13px] [&>h3]:uppercase [&>h3]:mb-[8px]'
+            'overflow-auto flex-1 p-4 pr-[40px] [&>p]:mb-[2.5px]'
           )}
           data-testid="toast-content"
         >
