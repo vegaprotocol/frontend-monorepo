@@ -8,6 +8,7 @@ import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
 import { BalanceManager } from './components/balance-manager';
 import { EthWallet } from './components/eth-wallet';
+import { AppLayout } from './components/page-templates/app-layout';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
 import { TransactionModal } from './components/transactions-modal';
 import { VegaWallet } from './components/vega-wallet';
@@ -88,14 +89,14 @@ const Web3Container = ({
             <AppLoader>
               <BalanceManager>
                 <>
-                  <div className="app w-full max-w-[1500px] mx-auto grid grid-rows-[min-content_min-content_1fr_min-content] min-h-full border-neutral-700 lg:border-l lg:border-r lg:text-body-large">
+                  <AppLayout>
                     <TemplateSidebar sidebar={sideBar}>
                       <AppRouter />
                     </TemplateSidebar>
                     <footer className="p-4 border-t border-neutral-700">
                       <NetworkInfo />
                     </footer>
-                  </div>
+                  </AppLayout>
                   <VegaWalletDialogs />
                   <TransactionModal />
                   <WithdrawalDialog />
