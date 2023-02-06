@@ -32,13 +32,13 @@ const getResponseTimeDisplayValue = (
 };
 
 const getBlockDisplayValue = (
-  block: NodeData['block'] | undefined,
+  block: number | undefined,
   setBlock: (block: number) => void
 ) => {
-  if (block?.value) {
-    return <NodeBlockHeight value={block?.value} setValue={setBlock} />;
+  if (block) {
+    return <NodeBlockHeight value={block} setValue={setBlock} />;
   }
-  if (block?.hasError) {
+  if (!block) {
     return t('n/a');
   }
   return '-';
@@ -77,20 +77,12 @@ const NodeStatsContent = ({
         {getResponseTimeDisplayValue(data.responseTime)}
       </LayoutCell>
       <LayoutCell
-        label={t('Block')}
-        isLoading={data.block?.isLoading}
-        hasError={false}
-        dataTestId="block-cell"
-      >
-        {getBlockDisplayValue(data.block, setBlock)}
-      </LayoutCell>
-      <LayoutCell
         label={t('Header block')}
         isLoading={false}
         hasError={headers ? highestBlock - 3 > headers.blockHeight : false}
         dataTestId="header-block-cell"
       >
-        {headers?.blockHeight}
+        {getBlockDisplayValue(headers?.blockHeight, setBlock)}
       </LayoutCell>
       <LayoutCell
         label={t('Subscription')}

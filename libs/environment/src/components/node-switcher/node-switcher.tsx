@@ -98,8 +98,7 @@ export const NodeSwitcher = ({
             <LayoutRow>
               <div />
               <span className="text-right">{t('Response time')}</span>
-              <span className="text-right">{t('Core block')}</span>
-              <span className="text-right">{t('Node block')}</span>
+              <span className="text-right">{t('Block height')}</span>
               <span className="text-right">{t('Subscription')}</span>
             </LayoutRow>
           </div>
