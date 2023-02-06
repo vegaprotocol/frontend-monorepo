@@ -8,6 +8,7 @@ import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { DepositDialog } from '@vegaprotocol/deposits';
 import { Web3ConnectUncontrolledDialog } from '@vegaprotocol/web3';
 import { WelcomeDialog } from '../components/welcome-dialog';
+import { TransferDialog } from '@vegaprotocol/accounts';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
@@ -25,6 +26,7 @@ const DialogsContainer = () => {
       <DepositDialog />
       <Web3ConnectUncontrolledDialog />
       <CreateWithdrawalDialog />
+      <TransferDialog />
     </>
   );
 };

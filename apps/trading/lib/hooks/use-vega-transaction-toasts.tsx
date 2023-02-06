@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
+import first from 'lodash/first';
 import compact from 'lodash/compact';
 import type {
   BatchMarketInstructionSubmissionBody,
@@ -10,13 +11,12 @@ import type {
   VegaStoredTxState,
   WithdrawalBusEventFieldsFragment,
 } from '@vegaprotocol/wallet';
-import { isBatchMarketInstructionsTransaction } from '@vegaprotocol/wallet';
 import {
+  isTransferTransaction,
+  isBatchMarketInstructionsTransaction,
   ClientErrors,
   useReconnectVegaWallet,
   WalletError,
-} from '@vegaprotocol/wallet';
-import {
   isOrderAmendmentTransaction,
   isOrderCancellationTransaction,
   isOrderSubmissionTransaction,
@@ -32,13 +32,13 @@ import {
   Size,
   t,
   toBigNum,
+  truncateByChars,
 } from '@vegaprotocol/react-helpers';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import { getRejectionReason, useOrderByIdQuery } from '@vegaprotocol/orders';
 import { useMarketList } from '@vegaprotocol/market-list';
-import first from 'lodash/first';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 
@@ -87,12 +87,14 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
   const cancelOrder = isOrderCancellationTransaction(tx.body);
   const editOrder = isOrderAmendmentTransaction(tx.body);
   const batchMarketInstructions = isBatchMarketInstructionsTransaction(tx.body);
+  const transfer = isTransferTransaction(tx.body);
   return (
     withdraw ||
     submitOrder ||
     cancelOrder ||
     editOrder ||
-    batchMarketInstructions
+    batchMarketInstructions ||
+    transfer
   );
 };
 
@@ -388,6 +390,26 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     return <Details>{t('Batch market instruction')}</Details>;
   }
 
+  if (isTransferTransaction(tx.body)) {
+    const { amount, to, asset } = tx.body.transfer;
+    const transferAsset = assets?.find((a) => a.id === asset);
+    // only render if we have an asset to avoid unformatted amounts showing
+    if (transferAsset) {
+      const value = addDecimalsFormatNumber(amount, transferAsset.decimals);
+      return (
+        <Details>
+          <h4 className="font-bold">{t('Transfer')}</h4>
+          <p>
+            {t('To')} {truncateByChars(to)}
+          </p>
+          <p>
+            {value} {transferAsset.symbol}
+          </p>
+        </Details>
+      );
+    }
+  }
+
   return null;
 };
 
@@ -433,6 +455,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     })
   );
   const explorerLink = useLinks(DApp.Explorer);
+
   if (isWithdrawTransaction(tx.body)) {
     const completeWithdrawalButton = tx.withdrawal && (
       <div className="mt-[10px]">
@@ -485,6 +508,16 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
             </ExternalLink>
           </p>
         )}
+        <VegaTransactionDetails tx={tx} />
+      </div>
+    );
+  }
+
+  if (isTransferTransaction(tx.body)) {
+    return (
+      <div>
+        <h3 className="font-bold">{t('Transfer complete')}</h3>
+        <p>{t('Your transaction has been confirmed ')}</p>
         <VegaTransactionDetails tx={tx} />
       </div>
     );

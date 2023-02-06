@@ -151,7 +151,7 @@ export const DropdownMenuSeparator = forwardRef<
     {...separatorProps}
     ref={forwardedRef}
     className={classNames(
-      'h-px my-1 mx-2 bg-neutral-700 dark:bg-black',
+      'h-px my-1 mx-2 bg-neutral-400 dark:bg-neutral-300',
       className
     )}
   />

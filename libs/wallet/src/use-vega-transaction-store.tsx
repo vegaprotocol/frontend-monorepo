@@ -6,6 +6,7 @@ import {
   isOrderCancellationTransaction,
   isOrderAmendmentTransaction,
   isBatchMarketInstructionsTransaction,
+  isTransferTransaction,
 } from './connectors';
 import { determineId } from './utils';
 
@@ -184,9 +185,14 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           );
           if (transaction) {
             transaction.transactionResult = transactionResult;
-            if (
+
+            const isConfirmedOrderCancellation =
               isOrderCancellationTransaction(transaction.body) &&
-              !transaction.body.orderCancellation.orderId &&
+              !transaction.body.orderCancellation.orderId;
+            const isConfirmedTransfer = isTransferTransaction(transaction.body);
+
+            if (
+              (isConfirmedOrderCancellation || isConfirmedTransfer) &&
               !transactionResult.error &&
               transactionResult.status
             ) {
