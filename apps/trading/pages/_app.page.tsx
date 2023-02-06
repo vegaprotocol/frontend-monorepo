@@ -42,6 +42,7 @@ import { Banner } from '../components/banner';
 import classNames from 'classnames';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { ApolloProvider } from '@apollo/client';
+import { useHeaderStore } from '@vegaprotocol/apollo-client';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -124,7 +125,7 @@ const DynamicLoader = dynamic(
 );
 
 function VegaTradingApp(props: AppProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const status = useEnvironment2((store) => store.status);
   useInitializeEnv();
 
@@ -224,9 +225,11 @@ const Test = () => {
     nodes: store.nodes,
     status: store.status,
   }));
+  const headers = useHeaderStore();
   return (
     <div>
       <pre>{JSON.stringify(env, null, 2)}</pre>
+      <pre>{JSON.stringify(headers, null, 2)}</pre>
     </div>
   );
 };

@@ -56,15 +56,15 @@ export const useEnvironment2 = create<Env & Actions>((set, get) => ({
       });
     });
 
-    // if (storedUrl) {
-    //   set({ url: storedUrl, status: 'success' });
-    // } else {
-    const url = await findNode(clients);
-    set({
-      status: url ? 'success' : 'failed',
-      url: url ? url : '',
-    });
-    // }
+    if (storedUrl) {
+      set({ url: storedUrl, status: 'success' });
+    } else {
+      const url = await findNode(clients);
+      set({
+        status: url ? 'success' : 'failed',
+        url: url ? url : '',
+      });
+    }
   },
 }));
 
@@ -93,7 +93,6 @@ const testNode = async (
   url: string,
   client: Client
 ): Promise<string | null> => {
-  return null;
   try {
     const results = await Promise.all([
       testQuery(client),
