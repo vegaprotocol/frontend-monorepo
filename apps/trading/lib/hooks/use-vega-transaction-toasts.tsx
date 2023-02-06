@@ -399,7 +399,9 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       return (
         <Details>
           <h4 className="font-bold">{t('Transfer')}</h4>
-          <p>{truncateByChars(to)}</p>
+          <p>
+            {t('To')} {truncateByChars(to)}
+          </p>
           <p>
             {value} {transferAsset.symbol}
           </p>
