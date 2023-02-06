@@ -50,6 +50,15 @@ const intentMap: { [s in VegaTxStatus]: Intent } = {
   Complete: Intent.Success,
 };
 
+const getIntent = (tx: VegaStoredTxState) => {
+  // Transaction can be successful
+  // But the order can be rejected by the network
+  if (tx.order?.rejectionReason) {
+    return Intent.Danger;
+  }
+  return intentMap[tx.status];
+};
+
 const isClosePositionTransaction = (tx: VegaStoredTxState) => {
   if (isBatchMarketInstructionsTransaction(tx.body)) {
     const amendments =
@@ -461,6 +470,26 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     );
   }
 
+  if (isOrderSubmissionTransaction(tx.body) && tx.order?.rejectionReason) {
+    return (
+      <div>
+        <h3 className="font-bold">{t('Order rejected')}</h3>
+        <p>{t('Your order was rejected.')}</p>
+        {tx.txHash && (
+          <p className="break-all">
+            <ExternalLink
+              href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
+              rel="noreferrer"
+            >
+              {t('View in block explorer')}
+            </ExternalLink>
+          </p>
+        )}
+        <VegaTransactionDetails tx={tx} />
+      </div>
+    );
+  }
+
   return (
     <div>
       <h3 className="font-bold">{t('Confirmed')}</h3>
@@ -545,7 +574,7 @@ export const useVegaTransactionToasts = () => {
       }
       return {
         id: `vega-${tx.id}`,
-        intent: intentMap[tx.status],
+        intent: getIntent(tx),
         onClose: () => dismissVegaTransaction(tx.id),
         loader: tx.status === VegaTxStatus.Pending,
         content,
