@@ -90,22 +90,15 @@ describe('Raw proposal form', () => {
     },
     result: {
       data: {
-        busEvents: [
-          {
-            __typename: 'BusEvent',
-            type: Schema.BusEventType.Proposal,
-            event: {
-              __typename: 'Proposal',
-              id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
-              reference: 'proposal-reference',
-              state: Schema.ProposalState.STATE_OPEN,
-              rejectionReason:
-                Schema.ProposalRejectionReason
-                  .PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
-              errorDetails: 'error-details',
-            },
-          },
-        ],
+        proposals: {
+          __typename: 'Proposal',
+          id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
+          reference: 'proposal-reference',
+          state: Schema.ProposalState.STATE_OPEN,
+          rejectionReason:
+            Schema.ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
+          errorDetails: 'error-details',
+        },
       },
     },
     delay: 300,

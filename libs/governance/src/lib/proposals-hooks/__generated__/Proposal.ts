@@ -3,68 +3,165 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ProposalEventFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null };
+export type ProposalEventFieldsFragment = {
+  __typename?: 'Proposal';
+  id?: string | null;
+  reference: string;
+  state: Types.ProposalState;
+  rejectionReason?: Types.ProposalRejectionReason | null;
+  errorDetails?: string | null;
+};
 
 export type ProposalEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
+export type ProposalEventSubscription = {
+  __typename?: 'Subscription';
+  proposals: {
+    __typename?: 'Proposal';
+    id?: string | null;
+    reference: string;
+    state: Types.ProposalState;
+    rejectionReason?: Types.ProposalRejectionReason | null;
+    errorDetails?: string | null;
+  };
+};
 
-export type ProposalEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
+export type UpdateNetworkParameterFieldsFragment = {
+  __typename?: 'Proposal';
+  id?: string | null;
+  state: Types.ProposalState;
+  datetime: any;
+  terms: {
+    __typename?: 'ProposalTerms';
+    enactmentDatetime?: any | null;
+    change:
+      | { __typename?: 'NewAsset' }
+      | { __typename?: 'NewFreeform' }
+      | { __typename?: 'NewMarket' }
+      | { __typename?: 'UpdateAsset' }
+      | { __typename?: 'UpdateMarket' }
+      | {
+          __typename?: 'UpdateNetworkParameter';
+          networkParameter: {
+            __typename?: 'NetworkParameter';
+            key: string;
+            value: string;
+          };
+        };
+  };
+};
 
-export type UpdateNetworkParameterFieldsFragment = { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } };
+export type OnUpdateNetworkParametersSubscriptionVariables = Types.Exact<{
+  [key: string]: never;
+}>;
 
-export type OnUpdateNetworkParametersSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
-
-
-export type OnUpdateNetworkParametersSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
+export type OnUpdateNetworkParametersSubscription = {
+  __typename?: 'Subscription';
+  busEvents?: Array<{
+    __typename?: 'BusEvent';
+    event:
+      | { __typename?: 'AccountEvent' }
+      | { __typename?: 'Asset' }
+      | { __typename?: 'AuctionEvent' }
+      | { __typename?: 'Deposit' }
+      | { __typename?: 'LiquidityProvision' }
+      | { __typename?: 'LossSocialization' }
+      | { __typename?: 'MarginLevels' }
+      | { __typename?: 'Market' }
+      | { __typename?: 'MarketData' }
+      | { __typename?: 'MarketEvent' }
+      | { __typename?: 'MarketTick' }
+      | { __typename?: 'NodeSignature' }
+      | { __typename?: 'OracleSpec' }
+      | { __typename?: 'Order' }
+      | { __typename?: 'Party' }
+      | { __typename?: 'PositionResolution' }
+      | {
+          __typename?: 'Proposal';
+          id?: string | null;
+          state: Types.ProposalState;
+          datetime: any;
+          terms: {
+            __typename?: 'ProposalTerms';
+            enactmentDatetime?: any | null;
+            change:
+              | { __typename?: 'NewAsset' }
+              | { __typename?: 'NewFreeform' }
+              | { __typename?: 'NewMarket' }
+              | { __typename?: 'UpdateAsset' }
+              | { __typename?: 'UpdateMarket' }
+              | {
+                  __typename?: 'UpdateNetworkParameter';
+                  networkParameter: {
+                    __typename?: 'NetworkParameter';
+                    key: string;
+                    value: string;
+                  };
+                };
+          };
+        }
+      | { __typename?: 'RiskFactor' }
+      | { __typename?: 'SettleDistressed' }
+      | { __typename?: 'SettlePosition' }
+      | { __typename?: 'TimeUpdate' }
+      | { __typename?: 'Trade' }
+      | { __typename?: 'TransactionResult' }
+      | { __typename?: 'TransferResponses' }
+      | { __typename?: 'Vote' }
+      | { __typename?: 'Withdrawal' };
+  }> | null;
+};
 
 export type ProposalOfMarketQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
-
-export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
+export type ProposalOfMarketQuery = {
+  __typename?: 'Query';
+  proposal?: {
+    __typename?: 'Proposal';
+    id?: string | null;
+    terms: { __typename?: 'ProposalTerms'; enactmentDatetime?: any | null };
+  } | null;
+};
 
 export const ProposalEventFieldsFragmentDoc = gql`
-    fragment ProposalEventFields on Proposal {
-  id
-  reference
-  state
-  rejectionReason
-  errorDetails
-}
-    `;
+  fragment ProposalEventFields on Proposal {
+    id
+    reference
+    state
+    rejectionReason
+    errorDetails
+  }
+`;
 export const UpdateNetworkParameterFieldsFragmentDoc = gql`
-    fragment UpdateNetworkParameterFields on Proposal {
-  id
-  state
-  datetime
-  terms {
-    enactmentDatetime
-    change {
-      ... on UpdateNetworkParameter {
-        networkParameter {
-          key
-          value
+  fragment UpdateNetworkParameterFields on Proposal {
+    id
+    state
+    datetime
+    terms {
+      enactmentDatetime
+      change {
+        ... on UpdateNetworkParameter {
+          networkParameter {
+            key
+            value
+          }
         }
       }
     }
   }
-}
-    `;
+`;
 export const ProposalEventDocument = gql`
-    subscription ProposalEvent($partyId: ID!) {
-  busEvents(partyId: $partyId, batchSize: 0, types: [Proposal]) {
-    type
-    event {
-      ... on Proposal {
-        ...ProposalEventFields
-      }
+  subscription ProposalEvent($partyId: ID!) {
+    proposals(partyId: $partyId) {
+      ...ProposalEventFields
     }
   }
-}
-    ${ProposalEventFieldsFragmentDoc}`;
+  ${ProposalEventFieldsFragmentDoc}
+`;
 
 /**
  * __useProposalEventSubscription__
@@ -82,23 +179,35 @@ export const ProposalEventDocument = gql`
  *   },
  * });
  */
-export function useProposalEventSubscription(baseOptions: Apollo.SubscriptionHookOptions<ProposalEventSubscription, ProposalEventSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<ProposalEventSubscription, ProposalEventSubscriptionVariables>(ProposalEventDocument, options);
-      }
-export type ProposalEventSubscriptionHookResult = ReturnType<typeof useProposalEventSubscription>;
-export type ProposalEventSubscriptionResult = Apollo.SubscriptionResult<ProposalEventSubscription>;
+export function useProposalEventSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    ProposalEventSubscription,
+    ProposalEventSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    ProposalEventSubscription,
+    ProposalEventSubscriptionVariables
+  >(ProposalEventDocument, options);
+}
+export type ProposalEventSubscriptionHookResult = ReturnType<
+  typeof useProposalEventSubscription
+>;
+export type ProposalEventSubscriptionResult =
+  Apollo.SubscriptionResult<ProposalEventSubscription>;
 export const OnUpdateNetworkParametersDocument = gql`
-    subscription OnUpdateNetworkParameters {
-  busEvents(types: [Proposal], batchSize: 0) {
-    event {
-      ... on Proposal {
-        ...UpdateNetworkParameterFields
+  subscription OnUpdateNetworkParameters {
+    busEvents(types: [Proposal], batchSize: 0) {
+      event {
+        ... on Proposal {
+          ...UpdateNetworkParameterFields
+        }
       }
     }
   }
-}
-    ${UpdateNetworkParameterFieldsFragmentDoc}`;
+  ${UpdateNetworkParameterFieldsFragmentDoc}
+`;
 
 /**
  * __useOnUpdateNetworkParametersSubscription__
@@ -115,22 +224,33 @@ export const OnUpdateNetworkParametersDocument = gql`
  *   },
  * });
  */
-export function useOnUpdateNetworkParametersSubscription(baseOptions?: Apollo.SubscriptionHookOptions<OnUpdateNetworkParametersSubscription, OnUpdateNetworkParametersSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<OnUpdateNetworkParametersSubscription, OnUpdateNetworkParametersSubscriptionVariables>(OnUpdateNetworkParametersDocument, options);
-      }
-export type OnUpdateNetworkParametersSubscriptionHookResult = ReturnType<typeof useOnUpdateNetworkParametersSubscription>;
-export type OnUpdateNetworkParametersSubscriptionResult = Apollo.SubscriptionResult<OnUpdateNetworkParametersSubscription>;
+export function useOnUpdateNetworkParametersSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    OnUpdateNetworkParametersSubscription,
+    OnUpdateNetworkParametersSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    OnUpdateNetworkParametersSubscription,
+    OnUpdateNetworkParametersSubscriptionVariables
+  >(OnUpdateNetworkParametersDocument, options);
+}
+export type OnUpdateNetworkParametersSubscriptionHookResult = ReturnType<
+  typeof useOnUpdateNetworkParametersSubscription
+>;
+export type OnUpdateNetworkParametersSubscriptionResult =
+  Apollo.SubscriptionResult<OnUpdateNetworkParametersSubscription>;
 export const ProposalOfMarketDocument = gql`
-    query ProposalOfMarket($marketId: ID!) {
-  proposal(id: $marketId) {
-    id
-    terms {
-      enactmentDatetime
+  query ProposalOfMarket($marketId: ID!) {
+    proposal(id: $marketId) {
+      id
+      terms {
+        enactmentDatetime
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useProposalOfMarketQuery__
@@ -148,14 +268,37 @@ export const ProposalOfMarketDocument = gql`
  *   },
  * });
  */
-export function useProposalOfMarketQuery(baseOptions: Apollo.QueryHookOptions<ProposalOfMarketQuery, ProposalOfMarketQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProposalOfMarketQuery, ProposalOfMarketQueryVariables>(ProposalOfMarketDocument, options);
-      }
-export function useProposalOfMarketLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProposalOfMarketQuery, ProposalOfMarketQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProposalOfMarketQuery, ProposalOfMarketQueryVariables>(ProposalOfMarketDocument, options);
-        }
-export type ProposalOfMarketQueryHookResult = ReturnType<typeof useProposalOfMarketQuery>;
-export type ProposalOfMarketLazyQueryHookResult = ReturnType<typeof useProposalOfMarketLazyQuery>;
-export type ProposalOfMarketQueryResult = Apollo.QueryResult<ProposalOfMarketQuery, ProposalOfMarketQueryVariables>;
+export function useProposalOfMarketQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ProposalOfMarketQuery,
+    ProposalOfMarketQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ProposalOfMarketQuery, ProposalOfMarketQueryVariables>(
+    ProposalOfMarketDocument,
+    options
+  );
+}
+export function useProposalOfMarketLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ProposalOfMarketQuery,
+    ProposalOfMarketQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    ProposalOfMarketQuery,
+    ProposalOfMarketQueryVariables
+  >(ProposalOfMarketDocument, options);
+}
+export type ProposalOfMarketQueryHookResult = ReturnType<
+  typeof useProposalOfMarketQuery
+>;
+export type ProposalOfMarketLazyQueryHookResult = ReturnType<
+  typeof useProposalOfMarketLazyQuery
+>;
+export type ProposalOfMarketQueryResult = Apollo.QueryResult<
+  ProposalOfMarketQuery,
+  ProposalOfMarketQueryVariables
+>;

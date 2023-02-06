@@ -7,13 +7,8 @@ fragment ProposalEventFields on Proposal {
 }
 
 subscription ProposalEvent($partyId: ID!) {
-  busEvents(partyId: $partyId, batchSize: 0, types: [Proposal]) {
-    type
-    event {
-      ... on Proposal {
-        ...ProposalEventFields
-      }
-    }
+  proposals(partyId: $partyId) {
+    ...ProposalEventFields
   }
 }
 
