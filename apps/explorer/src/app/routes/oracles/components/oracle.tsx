@@ -22,7 +22,7 @@ export type SourceType =
 interface OracleDetailsProps {
   id: string;
   dataSource: ExplorerOracleDataSourceFragment;
-  dataConnection: ExplorerOracleDataConnectionFragment;
+  dataConnection?: ExplorerOracleDataConnectionFragment;
   // Defaults to false. Hides the count of 'broadcasts' this oracle has seen
   showBroadcasts?: boolean;
 }
@@ -41,7 +41,8 @@ export const OracleDetails = ({
   showBroadcasts = false,
 }: OracleDetailsProps) => {
   const sourceType = dataSource.dataSourceSpec.spec.data.sourceType;
-  const reportsCount: number = dataConnection.dataConnection.edges?.length || 0;
+  const reportsCount: number =
+    dataConnection?.dataConnection.edges?.length || 0;
 
   return (
     <div>
@@ -63,7 +64,9 @@ export const OracleDetails = ({
         </TableRow>
       </TableWithTbody>
       <OracleFilter data={dataSource} />
-      {showBroadcasts ? <OracleData data={dataConnection} /> : null}
+      {showBroadcasts && dataConnection ? (
+        <OracleData data={dataConnection} />
+      ) : null}
     </div>
   );
 };
