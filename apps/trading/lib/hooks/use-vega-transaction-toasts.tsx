@@ -43,7 +43,7 @@ import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import { getRejectionReason, useOrderByIdQuery } from '@vegaprotocol/orders';
 import { useMarketList } from '@vegaprotocol/market-list';
 import type { Side } from '@vegaprotocol/types';
-import { OrderRejectionReasonMapping, OrderStatus } from '@vegaprotocol/types';
+import { OrderStatus } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
@@ -52,15 +52,6 @@ const intentMap: { [s in VegaTxStatus]: Intent } = {
   Pending: Intent.Warning,
   Error: Intent.Danger,
   Complete: Intent.Success,
-};
-
-const getIntent = (tx: VegaStoredTxState) => {
-  // Transaction can be successful
-  // But the order can be rejected by the network
-  if (tx.order?.rejectionReason) {
-    return Intent.Danger;
-  }
-  return intentMap[tx.status];
 };
 
 const isClosePositionTransaction = (tx: VegaStoredTxState) => {
@@ -182,8 +173,9 @@ const EditOrderDetails = ({
   const { data: markets } = useMarketList();
 
   const originalOrder = order || orderById?.orderByID;
+  const marketId = order?.marketId || orderById?.orderByID.market.id;
   if (!originalOrder) return null;
-  const market = markets?.find((m) => m.id === originalOrder.market.id);
+  const market = markets?.find((m) => m.id === marketId);
   if (!market) return null;
 
   const original = (
@@ -488,7 +480,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         <p>
           {t(
             'Your order has been rejected because: %s',
-            OrderRejectionReasonMapping[tx.order.rejectionReason]
+            getRejectionReason(tx.order) || ''
           )}
         </p>
         {tx.txHash && (
@@ -638,6 +630,7 @@ export const useVegaTransactionToasts = () => {
       content = <VegaTxErrorToastContent tx={tx} />;
     }
 
+    // Transaction can be successful but the order can be rejected by the network
     const intent =
       tx.order && [OrderStatus.STATUS_REJECTED].includes(tx.order.status)
         ? Intent.Danger
