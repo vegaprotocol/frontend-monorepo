@@ -45,7 +45,7 @@ export const Notification = ({
           'border-yellow-500': intent === Intent.Warning,
           'border-vega-pink': intent === Intent.Danger,
         },
-        'border rounded-[4px] text-xs mb-1 mr-1 p-4 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900',
+        'border rounded text-xs p-4 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900',
         className
       )}
     >

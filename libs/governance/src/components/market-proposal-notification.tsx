@@ -23,11 +23,13 @@ export const MarketProposalNotification = ({
     const message = (
       <div className="flex flex-col text-sm">
         {t('Changes have been proposed for this market.')}{' '}
-        <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
+        <ExternalLink href={proposalLink} className="w-fit">
+          {t('View proposal')}
+        </ExternalLink>
       </div>
     );
     return (
-      <div className="border-l border-default pl-1">
+      <div className="border-l border-default pl-1 pr-1 pb-1 min-w-min whitespace-nowrap">
         <Notification
           intent={Intent.Warning}
           message={message}

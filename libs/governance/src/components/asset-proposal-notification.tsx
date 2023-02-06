@@ -31,6 +31,7 @@ export const AssetProposalNotification = ({
         intent={Intent.Warning}
         message={message}
         testId="asset-proposal-notification"
+        className="mb-2"
       />
     );
   }
