@@ -4,13 +4,17 @@ import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Footer = () => {
   const { VEGA_URL, setNodeSwitcherOpen } = useEnvironment();
+  const { blockDiff } = useNodeHealth();
   return (
     <footer className="px-4 py-1 text-xs border-t border-default">
       <div className="flex justify-between">
         <div className="flex gap-2">
           {VEGA_URL && (
             <>
-              <NodeHealth openNodeSwitcher={setNodeSwitcherOpen} />
+              <NodeHealth
+                blockDiff={blockDiff}
+                openNodeSwitcher={setNodeSwitcherOpen}
+              />
               <NodeUrl url={VEGA_URL} openNodeSwitcher={setNodeSwitcherOpen} />
             </>
           )}
@@ -33,6 +37,7 @@ const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
 };
 
 interface NodeHealthProps {
+  blockDiff: number | null;
   openNodeSwitcher: () => void;
 }
 
@@ -40,9 +45,11 @@ interface NodeHealthProps {
 // deemed acceptable for "Good" status
 const BLOCK_THRESHOLD = 3;
 
-export const NodeHealth = ({ openNodeSwitcher }: NodeHealthProps) => {
+export const NodeHealth = ({
+  blockDiff,
+  openNodeSwitcher,
+}: NodeHealthProps) => {
   const online = useNavigatorOnline();
-  const { blockDiff } = useNodeHealth();
 
   let intent = Intent.Success;
   let text = 'Operational';
