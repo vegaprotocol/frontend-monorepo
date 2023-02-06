@@ -41,6 +41,7 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
     cy.get(toAddressField).should('have.value', ethAddressValue);
   });
   it('min amount', () => {
+    // 1002-WITH-010
     selectAsset(ASSET_SEPOLIA_TBTC);
     cy.get(amountField).clear().type('0');
     cy.getByTestId(submitWithdrawBtn).click();
@@ -50,6 +51,8 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
     );
   });
   it('max amount', () => {
+    // 1002-WITH-005
+    // 1002-WITH-008
     selectAsset(ASSET_EURO); // Will be above maximum because the vega wallet doesn't have any collateral
     cy.get(amountField).clear().type('1001', { delay: 100 });
     cy.getByTestId(submitWithdrawBtn).click();
@@ -60,6 +63,7 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
   });
 
   it('can set amount using use maximum button', () => {
+    // 1002-WITH-004
     selectAsset(ASSET_SEPOLIA_TBTC);
     cy.getByTestId(useMaximumAmount).click();
     cy.get(amountField).should('have.value', '1000.00000');
@@ -68,6 +72,9 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
 
 describe('withdraw actions', { tags: '@regression' }, () => {
   // this is extremely ugly hack, but setting it properly in contract is too much effort for such simple validation
+
+  // 1002-WITH-018
+
   const withdrawalThreshold =
     Cypress.env('VEGA_ENV') === 'CUSTOM' ? '0.00' : '100.00';
   before(() => {
@@ -88,6 +95,8 @@ describe('withdraw actions', { tags: '@regression' }, () => {
   });
 
   it('triggers transaction when submitted', () => {
+    // 1002-WITH-002
+    // 1002-WITH-003
     selectAsset(ASSET_SEPOLIA_TBTC);
     cy.getByTestId('BALANCE_AVAILABLE_label').should(
       'contain.text',
@@ -108,7 +117,4 @@ describe('withdraw actions', { tags: '@regression' }, () => {
     cy.getByTestId(submitWithdrawBtn).click();
     cy.getByTestId('toast').should('contain.text', 'Awaiting confirmation');
   });
-
-  it.skip('creates a withdrawal on submit'); // Needs capsule
-  it.skip('creates a withdrawal on submit and prompts to complete withdrawal'); // Needs capsule
 });
