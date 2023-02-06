@@ -377,15 +377,15 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     if (transferAsset) {
       const value = addDecimalsFormatNumber(amount, transferAsset.decimals);
       return (
-        <Details>
-          <h4 className="font-bold">{t('Transfer')}</h4>
+        <Panel>
+          <h4>{t('Transfer')}</h4>
           <p>
             {t('To')} {truncateByChars(to)}
           </p>
           <p>
             {value} {transferAsset.symbol}
           </p>
-        </Details>
+        </Panel>
       );
     }
   }
@@ -476,7 +476,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   if (tx.order && tx.order.rejectionReason) {
     return (
       <>
-        <ToastHeading>{t('Rejected')}</ToastHeading>
+        <ToastHeading>{t('Order rejected')}</ToastHeading>
         <p>
           {t(
             'Your order has been rejected because: %s',
@@ -566,7 +566,10 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     walletNoConnectionCodes.includes(tx.error.code);
   if (orderRejection) {
     label = t('Order rejected');
-    errorMessage = orderRejection;
+    errorMessage = t(
+      'Your order has been rejected because: %s',
+      orderRejection
+    );
   }
   if (walletError) {
     label = t('Wallet disconnected');
