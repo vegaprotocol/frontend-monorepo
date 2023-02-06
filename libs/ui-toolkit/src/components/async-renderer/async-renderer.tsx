@@ -1,7 +1,6 @@
 import { Splash } from '../splash';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import * as Sentry from '@sentry/react';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
