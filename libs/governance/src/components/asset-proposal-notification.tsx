@@ -20,14 +20,19 @@ export const AssetProposalNotification = ({
     const proposalLink = tokenLink(
       TOKEN_PROPOSAL.replace(':id', proposal.id || '')
     );
+    const message = (
+      <>
+        {t('Changes have been proposed for this asset.')}{' '}
+        <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
+      </>
+    );
     return (
       <Notification
         intent={Intent.Warning}
-        message={t('Changes have been proposed for this asset')}
+        message={message}
         testId="asset-proposal-notification"
-      >
-        <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
-      </Notification>
+        className="mb-2"
+      />
     );
   }
 
