@@ -17,7 +17,7 @@ export const getActiveNavLinkClassNames = (
   fullWidth = false,
   subNav = false
 ): string | undefined => {
-  return classNames('mx-3 self-start relative', {
+  return classNames('mx-2 lg:mx-3 self-start relative', {
     'my-4 md:my-0 md:py-3': !subNav,
     'py-2 px-4': subNav,
     'cursor-default': isActive,
@@ -26,7 +26,7 @@ export const getActiveNavLinkClassNames = (
       !isActive && navbarTheme !== 'yellow',
     'text-black dark:text-white md:dark:text-black':
       isActive && navbarTheme === 'yellow',
-    'text-vega-dark-200 hover:text-black':
+    'text-black/60 dark:text-neutral-400 md:dark:text-black/60 hover:text-black':
       !isActive && navbarTheme === 'yellow',
     'flex-1': fullWidth,
   });
@@ -50,7 +50,7 @@ export const Nav = ({
   title,
 }: NavbarProps) => {
   const themeWrapperClasses = classNames(
-    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha text-lg',
+    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha lg:text-lg',
     {
       dark: navbarTheme === 'dark',
     }
