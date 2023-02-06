@@ -3,36 +3,31 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type VoteEventFieldsFragment = { __typename?: 'Vote', proposalId: string, value: Types.VoteValue, datetime: any };
+export type VoteEventFieldsFragment = { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } };
 
 export type VoteEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type VoteEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote', proposalId: string, value: Types.VoteValue, datetime: any } | { __typename?: 'Withdrawal' } }> | null };
+export type VoteEventSubscription = { __typename?: 'Subscription', votes: { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } } };
 
 export const VoteEventFieldsFragmentDoc = gql`
-    fragment VoteEventFields on Vote {
+    fragment VoteEventFields on ProposalVote {
   proposalId
-  value
-  datetime
+  vote {
+    value
+    datetime
+  }
 }
     `;
 export const VoteEventDocument = gql`
     subscription VoteEvent($partyId: ID!) {
-  busEvents(partyId: $partyId, batchSize: 0, types: [Vote]) {
-    type
-    event {
-      ... on Vote {
-        proposalId
-        value
-        datetime
-      }
-    }
+  votes(partyId: $partyId) {
+    ...VoteEventFields
   }
 }
-    `;
+    ${VoteEventFieldsFragmentDoc}`;
 
 /**
  * __useVoteEventSubscription__
