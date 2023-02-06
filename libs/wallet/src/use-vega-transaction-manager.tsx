@@ -3,10 +3,13 @@ import { useEffect, useRef } from 'react';
 import { ClientErrors } from './connectors';
 import { VegaTxStatus } from './use-vega-transaction';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
-import { WalletClientError } from '@vegaprotocol/wallet-client';
+import {
+  WalletClientError,
+  WalletHttpError,
+} from '@vegaprotocol/wallet-client';
 
 export const useVegaTransactionManager = () => {
-  const { sendTx, pubKey } = useVegaWallet();
+  const { sendTx, pubKey, disconnect } = useVegaWallet();
   const processed = useRef<Set<number>>(new Set());
   const transaction = useVegaTransactionStore((state) =>
     state.transactions.find(
@@ -38,10 +41,19 @@ export const useVegaTransactionManager = () => {
         }
       })
       .catch((err) => {
+        const error =
+          err instanceof WalletClientError
+            ? err
+            : err instanceof WalletHttpError
+            ? ClientErrors.UNKNOWN
+            : ClientErrors.NO_SERVICE;
+        if (error.code === ClientErrors.NO_SERVICE.code) {
+          disconnect();
+        }
         update(transaction.id, {
-          error: err instanceof WalletClientError ? err : ClientErrors.UNKNOWN,
+          error,
           status: VegaTxStatus.Error,
         });
       });
-  }, [transaction, pubKey, del, sendTx, update]);
+  }, [transaction, pubKey, del, sendTx, update, disconnect]);
 };

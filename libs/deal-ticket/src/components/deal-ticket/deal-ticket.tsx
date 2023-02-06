@@ -31,8 +31,6 @@ import {
   usePersistedOrderStoreSubscription,
 } from '@vegaprotocol/orders';
 
-export type TransactionStatus = 'default' | 'pending';
-
 export interface DealTicketProps {
   market: MarketDealTicket;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
