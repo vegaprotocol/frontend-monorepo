@@ -20,6 +20,7 @@ import type {
 } from './__generated__/TransactionResult';
 
 import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
+import { subscribeWithSelector } from 'zustand/middleware';
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   createdAt: Date;
@@ -51,8 +52,8 @@ export interface VegaTransactionStore {
   ) => void;
 }
 
-export const useVegaTransactionStore = create<VegaTransactionStore>(
-  (set, get) => ({
+export const useVegaTransactionStore = create(
+  subscribeWithSelector<VegaTransactionStore>((set, get) => ({
     transactions: [] as VegaStoredTxState[],
     create: (body: Transaction) => {
       const transactions = get().transactions;
@@ -204,5 +205,5 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-  })
+  }))
 );

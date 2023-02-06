@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import first from 'lodash/first';
 import compact from 'lodash/compact';
 import type {
@@ -25,6 +24,10 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
+import { Panel } from '@vegaprotocol/ui-toolkit';
+import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
+import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Button, ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
@@ -40,6 +43,7 @@ import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import { getRejectionReason, useOrderByIdQuery } from '@vegaprotocol/orders';
 import { useMarketList } from '@vegaprotocol/market-list';
 import type { Side } from '@vegaprotocol/types';
+import { OrderStatus } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
@@ -48,15 +52,6 @@ const intentMap: { [s in VegaTxStatus]: Intent } = {
   Pending: Intent.Warning,
   Error: Intent.Danger,
   Complete: Intent.Success,
-};
-
-const getIntent = (tx: VegaStoredTxState) => {
-  // Transaction can be successful
-  // But the order can be rejected by the network
-  if (tx.order?.rejectionReason) {
-    return Intent.Danger;
-  }
-  return intentMap[tx.status];
 };
 
 const isClosePositionTransaction = (tx: VegaStoredTxState) => {
@@ -98,20 +93,6 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
   );
 };
 
-const Details = ({
-  children,
-  title = '',
-}: {
-  children: ReactNode;
-  title?: string;
-}) => (
-  <div className="pt-[5px]" data-testid="vega-tx-details" title={title}>
-    <div className="font-mono text-xs p-2 bg-neutral-100 rounded dark:bg-neutral-700 dark:text-white">
-      {children}
-    </div>
-  </div>
-);
-
 type SizeAtPriceProps = {
   side: Side;
   size: string;
@@ -152,8 +133,8 @@ const SubmitOrderDetails = ({
   const side = order ? order.side : data.side;
 
   return (
-    <Details>
-      <h4 className="font-bold">
+    <Panel>
+      <h4>
         {order
           ? t(
               `Submit order - ${OrderStatusMapping[order.status].toLowerCase()}`
@@ -175,10 +156,7 @@ const SubmitOrderDetails = ({
           price={price}
         />
       </p>
-      {order && order.rejectionReason && (
-        <p className="italic">{getRejectionReason(order)}</p>
-      )}
-    </Details>
+    </Panel>
   );
 };
 
@@ -194,9 +172,10 @@ const EditOrderDetails = ({
   });
   const { data: markets } = useMarketList();
 
-  const originalOrder = orderById?.orderByID;
+  const originalOrder = order || orderById?.orderByID;
+  const marketId = order?.marketId || orderById?.orderByID.market.id;
   if (!originalOrder) return null;
-  const market = markets?.find((m) => m.id === originalOrder.market.id);
+  const market = markets?.find((m) => m.id === marketId);
   if (!market) return null;
 
   const original = (
@@ -228,8 +207,8 @@ const EditOrderDetails = ({
   );
 
   return (
-    <Details title={data.orderId}>
-      <h4 className="font-bold">
+    <Panel title={data.orderId}>
+      <h4>
         {order
           ? t(`Edit order - ${OrderStatusMapping[order.status].toLowerCase()}`)
           : t('Edit order')}
@@ -239,10 +218,7 @@ const EditOrderDetails = ({
         <s>{original}</s>
       </p>
       <p>{edited}</p>
-      {order && order.rejectionReason && (
-        <p className="italic">{getRejectionReason(order)}</p>
-      )}
-    </Details>
+    </Panel>
   );
 };
 
@@ -277,8 +253,8 @@ const CancelOrderDetails = ({
     />
   );
   return (
-    <Details title={orderId}>
-      <h4 className="font-bold">
+    <Panel title={orderId}>
+      <h4>
         {order
           ? t(
               `Cancel order - ${OrderStatusMapping[order.status].toLowerCase()}`
@@ -289,10 +265,7 @@ const CancelOrderDetails = ({
       <p>
         <s>{original}</s>
       </p>
-      {order && order.rejectionReason && (
-        <p className="italic">{getRejectionReason(order)}</p>
-      )}
-    </Details>
+    </Panel>
   );
 };
 
@@ -311,9 +284,11 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
         asset.decimals
       );
       return (
-        <Details>
-          {t('Withdraw')} {num} {asset.symbol}
-        </Details>
+        <Panel>
+          <strong>
+            {t('Withdraw')} {num} {asset.symbol}
+          </strong>
+        </Panel>
       );
     }
   }
@@ -330,7 +305,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       tx.body.orderCancellation.marketId === undefined &&
       tx.body.orderCancellation.orderId === undefined
     ) {
-      return <Details>{t('Cancel all orders')}</Details>;
+      return <Panel>{t('Cancel all orders')}</Panel>;
     }
 
     // CANCEL
@@ -353,11 +328,15 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
           m.id === (tx.body as OrderCancellationBody).orderCancellation.marketId
       )?.tradableInstrument.instrument.code;
       return (
-        <Details>
-          {marketName
-            ? `${t('Cancel all orders for')} ${marketName}`
-            : t('Cancel all orders')}
-        </Details>
+        <Panel>
+          {marketName ? (
+            <>
+              {t('Cancel all orders for')} <strong>{marketName}</strong>
+            </>
+          ) : (
+            t('Cancel all orders')
+          )}
+        </Panel>
       );
     }
   }
@@ -379,15 +358,16 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     const market = marketId && markets?.find((m) => m.id === marketId);
     if (market) {
       return (
-        <Details>
-          {t('Close position for')} {market.tradableInstrument.instrument.code}
-        </Details>
+        <Panel>
+          {t('Close position for')}{' '}
+          <strong>{market.tradableInstrument.instrument.code}</strong>
+        </Panel>
       );
     }
   }
 
   if (isBatchMarketInstructionsTransaction(tx.body)) {
-    return <Details>{t('Batch market instruction')}</Details>;
+    return <Panel>{t('Batch market instruction')}</Panel>;
   }
 
   if (isTransferTransaction(tx.body)) {
@@ -397,15 +377,15 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     if (transferAsset) {
       const value = addDecimalsFormatNumber(amount, transferAsset.decimals);
       return (
-        <Details>
-          <h4 className="font-bold">{t('Transfer')}</h4>
+        <Panel>
+          <h4>{t('Transfer')}</h4>
           <p>
             {t('To')} {truncateByChars(to)}
           </p>
           <p>
             {value} {transferAsset.symbol}
           </p>
-        </Details>
+        </Panel>
       );
     }
   }
@@ -416,22 +396,22 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
 type VegaTxToastContentProps = { tx: VegaStoredTxState };
 
 const VegaTxRequestedToastContent = ({ tx }: VegaTxToastContentProps) => (
-  <div>
-    <h3 className="font-bold">{t('Action required')}</h3>
+  <>
+    <ToastHeading>{t('Action required')}</ToastHeading>
     <p>
       {t(
         'Please go to your Vega wallet application and approve or reject the transaction.'
       )}
     </p>
     <VegaTransactionDetails tx={tx} />
-  </div>
+  </>
 );
 
 const VegaTxPendingToastContentProps = ({ tx }: VegaTxToastContentProps) => {
   const explorerLink = useLinks(DApp.Explorer);
   return (
-    <div>
-      <h3 className="font-bold">{t('Awaiting confirmation')}</h3>
+    <>
+      <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed')}</p>
       {tx.txHash && (
         <p className="break-all">
@@ -444,7 +424,7 @@ const VegaTxPendingToastContentProps = ({ tx }: VegaTxToastContentProps) => {
         </p>
       )}
       <VegaTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
@@ -458,7 +438,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
   if (isWithdrawTransaction(tx.body)) {
     const completeWithdrawalButton = tx.withdrawal && (
-      <div className="mt-[10px]">
+      <p className="mt-1">
         <Button
           data-testid="toast-complete-withdrawal"
           size="xs"
@@ -471,11 +451,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         >
           {t('Complete withdrawal')}
         </Button>
-      </div>
+      </p>
     );
     return (
-      <div>
-        <h3 className="font-bold">{t('Funds unlocked')}</h3>
+      <>
+        <ToastHeading>{t('Funds unlocked')}</ToastHeading>
         <p>{t('Your funds have been unlocked for withdrawal')}</p>
         {tx.txHash && (
           <p className="break-all">
@@ -489,7 +469,32 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         )}
         <VegaTransactionDetails tx={tx} />
         {completeWithdrawalButton}
-      </div>
+      </>
+    );
+  }
+
+  if (tx.order && tx.order.rejectionReason) {
+    return (
+      <>
+        <ToastHeading>{t('Order rejected')}</ToastHeading>
+        <p>
+          {t(
+            'Your order has been rejected because: %s',
+            getRejectionReason(tx.order) || ''
+          )}
+        </p>
+        {tx.txHash && (
+          <p className="break-all">
+            <ExternalLink
+              href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
+              rel="noreferrer"
+            >
+              {t('View in block explorer')}
+            </ExternalLink>
+          </p>
+        )}
+        <VegaTransactionDetails tx={tx} />
+      </>
     );
   }
 
@@ -524,8 +529,8 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   return (
-    <div>
-      <h3 className="font-bold">{t('Confirmed')}</h3>
+    <>
+      <ToastHeading>{t('Confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed ')}</p>
       {tx.txHash && (
         <p className="break-all">
@@ -538,7 +543,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         </p>
       )}
       <VegaTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
@@ -561,7 +566,10 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     walletNoConnectionCodes.includes(tx.error.code);
   if (orderRejection) {
     label = t('Order rejected');
-    errorMessage = orderRejection;
+    errorMessage = t(
+      'Your order has been rejected because: %s',
+      orderRejection
+    );
   }
   if (walletError) {
     label = t('Wallet disconnected');
@@ -569,60 +577,87 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   return (
-    <div>
-      <h3 className="font-bold">{label}</h3>
-      <p>{errorMessage}</p>
+    <>
+      <ToastHeading>{label}</ToastHeading>
+      <p className="first-letter:uppercase">{errorMessage}</p>
       {walletError && (
         <Button size="xs" onClick={reconnectVegaWallet}>
           {t('Connect vega wallet')}
         </Button>
       )}
       <VegaTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
+const isFinal = (tx: VegaStoredTxState) =>
+  [VegaTxStatus.Error, VegaTxStatus.Complete].includes(tx.status);
+
 export const useVegaTransactionToasts = () => {
-  const vegaTransactions = useVegaTransactionStore((state) =>
-    state.transactions.filter((transaction) => transaction?.dialogOpen)
-  );
-  const dismissVegaTransaction = useVegaTransactionStore(
-    (state) => state.dismiss
-  );
+  const [setToast, removeToast] = useToasts((store) => [
+    store.setToast,
+    store.remove,
+  ]);
 
-  const fromVegaTransaction = useCallback(
-    (tx: VegaStoredTxState): Toast => {
-      let content: ToastContent;
-      if (tx.status === VegaTxStatus.Requested) {
-        content = <VegaTxRequestedToastContent tx={tx} />;
+  const [dismissTx, deleteTx] = useVegaTransactionStore((state) => [
+    state.dismiss,
+    state.delete,
+  ]);
+
+  const onClose = useCallback(
+    (tx: VegaStoredTxState) => () => {
+      const safeToDelete = isFinal(tx);
+      if (safeToDelete) {
+        deleteTx(tx.id);
+      } else {
+        dismissTx(tx.id);
       }
-      if (tx.status === VegaTxStatus.Pending) {
-        content = <VegaTxPendingToastContentProps tx={tx} />;
-      }
-      if (tx.status === VegaTxStatus.Complete) {
-        content = <VegaTxCompleteToastsContent tx={tx} />;
-      }
-      if (tx.status === VegaTxStatus.Error) {
-        content = <VegaTxErrorToastContent tx={tx} />;
-      }
-      return {
-        id: `vega-${tx.id}`,
-        intent: getIntent(tx),
-        onClose: () => dismissVegaTransaction(tx.id),
-        loader: tx.status === VegaTxStatus.Pending,
-        content,
-      };
+      removeToast(`vega-${tx.id}`);
     },
-    [dismissVegaTransaction]
+    [deleteTx, dismissTx, removeToast]
   );
 
-  const toasts = useMemo(() => {
-    return [
-      ...compact(vegaTransactions)
-        .filter((tx) => isTransactionTypeSupported(tx))
-        .map(fromVegaTransaction),
-    ];
-  }, [fromVegaTransaction, vegaTransactions]);
+  const fromVegaTransaction = (tx: VegaStoredTxState): Toast => {
+    let content: ToastContent;
+    const closeAfter = isFinal(tx) ? CLOSE_AFTER : undefined;
+    if (tx.status === VegaTxStatus.Requested) {
+      content = <VegaTxRequestedToastContent tx={tx} />;
+    }
+    if (tx.status === VegaTxStatus.Pending) {
+      content = <VegaTxPendingToastContentProps tx={tx} />;
+    }
+    if (tx.status === VegaTxStatus.Complete) {
+      content = <VegaTxCompleteToastsContent tx={tx} />;
+    }
+    if (tx.status === VegaTxStatus.Error) {
+      content = <VegaTxErrorToastContent tx={tx} />;
+    }
 
-  return toasts;
+    // Transaction can be successful but the order can be rejected by the network
+    const intent =
+      tx.order && [OrderStatus.STATUS_REJECTED].includes(tx.order.status)
+        ? Intent.Danger
+        : intentMap[tx.status];
+
+    return {
+      id: `vega-${tx.id}`,
+      intent,
+      onClose: onClose(tx),
+      loader: tx.status === VegaTxStatus.Pending,
+      content,
+      closeAfter,
+    };
+  };
+
+  useVegaTransactionStore.subscribe(
+    (state) =>
+      compact(
+        state.transactions.filter(
+          (tx) => tx?.dialogOpen && isTransactionTypeSupported(tx)
+        )
+      ),
+    (txs) => {
+      txs.forEach((tx) => setToast(fromVegaTransaction(tx)));
+    }
+  );
 };
