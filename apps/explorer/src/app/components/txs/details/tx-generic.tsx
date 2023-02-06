@@ -11,8 +11,7 @@ interface TxDetailsGenericProps {
 }
 
 /**
- * If there is not yet a custom component for a transaction, just display
- * the basic details. This allows someone to view the decoded transaction.
+ * A node is
  */
 export const TxDetailsGeneric = ({
   txData,
