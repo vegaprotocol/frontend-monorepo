@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
+import {
+  WalletClientError,
+  WalletHttpError,
+} from '@vegaprotocol/wallet-client';
 import { useVegaWallet } from './use-vega-wallet';
 import type { VegaTransactionContentMap } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
@@ -39,7 +43,7 @@ export const initialState = {
 };
 
 export const useVegaTransaction = () => {
-  const { sendTx } = useVegaWallet();
+  const { sendTx, disconnect } = useVegaWallet();
   const [transaction, _setTransaction] = useState<VegaTxState>(initialState);
 
   const setTransaction = useCallback((update: Partial<VegaTxState>) => {
@@ -88,7 +92,15 @@ export const useVegaTransaction = () => {
 
         return null;
       } catch (err) {
-        const error = err instanceof Error ? err : ClientErrors.UNKNOWN;
+        const error =
+          err instanceof WalletClientError
+            ? err
+            : err instanceof WalletHttpError
+            ? ClientErrors.UNKNOWN
+            : ClientErrors.NO_SERVICE;
+        if (error.code === ClientErrors.NO_SERVICE.code) {
+          disconnect();
+        }
         setTransaction({
           error,
           status: VegaTxStatus.Error,
@@ -96,7 +108,7 @@ export const useVegaTransaction = () => {
         return null;
       }
     },
-    [sendTx, setTransaction, reset]
+    [sendTx, setTransaction, reset, disconnect]
   );
 
   const Dialog = useMemo(() => {

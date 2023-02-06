@@ -1,25 +1,12 @@
-import type { SubscriptionResult } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { useVegaWallet } from './use-vega-wallet';
-import type {
-  OrderTxUpdateSubscription,
-  OrderTxUpdateSubscriptionVariables,
-} from './__generated__/TransactionResult';
-import type {
-  WithdrawalBusEventSubscription,
-  WithdrawalBusEventSubscriptionVariables,
-  TransactionEventSubscription,
-  TransactionEventSubscriptionVariables,
-} from './__generated__/TransactionResult';
 import {
   useOrderTxUpdateSubscription,
   useWithdrawalBusEventSubscription,
   useTransactionEventSubscription,
 } from './__generated__/TransactionResult';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
-
 import { waitForWithdrawalApproval } from './wait-for-withdrawal-approval';
-import { useCallback, useMemo } from 'react';
 
 export const useVegaTransactionUpdater = () => {
   const client = useApolloClient();
@@ -32,44 +19,22 @@ export const useVegaTransactionUpdater = () => {
   );
 
   const { pubKey } = useVegaWallet();
-  const variables = useMemo(() => ({ partyId: pubKey || '' }), [pubKey]);
+  const variables = { partyId: pubKey || '' };
   const skip = !pubKey;
 
-  const onOrderUpdate = useCallback(
-    ({
-      data: result,
-    }: {
-      data: SubscriptionResult<
-        OrderTxUpdateSubscription,
-        OrderTxUpdateSubscriptionVariables
-      >;
-    }) =>
+  useOrderTxUpdateSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
       result.data?.orders?.forEach((order) => {
         updateOrder(order);
       }),
-    [updateOrder]
-  );
+  });
 
-  const orderSubscriptionOptions = useMemo(
-    () => ({
-      variables,
-      skip,
-      onData: onOrderUpdate,
-    }),
-    [variables, skip, onOrderUpdate]
-  );
-
-  useOrderTxUpdateSubscription(orderSubscriptionOptions);
-
-  const onWithdrawalUpdate = useCallback(
-    ({
-      data: result,
-    }: {
-      data: SubscriptionResult<
-        WithdrawalBusEventSubscription,
-        WithdrawalBusEventSubscriptionVariables
-      >;
-    }) =>
+  useWithdrawalBusEventSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
       result.data?.busEvents?.forEach((event) => {
         if (event.event.__typename === 'Withdrawal') {
           const withdrawal = event.event;
@@ -78,43 +43,16 @@ export const useVegaTransactionUpdater = () => {
           );
         }
       }),
-    [waitForWithdrawalApproval, client, updateWithdrawal]
-  );
+  });
 
-  const withdrawalSubscriptionOptions = useMemo(
-    () => ({
-      variables,
-      skip,
-      onData: onWithdrawalUpdate,
-    }),
-    [variables, skip, onWithdrawalUpdate]
-  );
-  useWithdrawalBusEventSubscription(withdrawalSubscriptionOptions);
-
-  const onUpdateTransaction = useCallback(
-    ({
-      data: result,
-    }: {
-      data: SubscriptionResult<
-        TransactionEventSubscription,
-        TransactionEventSubscriptionVariables
-      >;
-    }) =>
+  useTransactionEventSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
       result.data?.busEvents?.forEach((event) => {
         if (event.event.__typename === 'TransactionResult') {
           updateTransaction(event.event);
         }
       }),
-    [updateTransaction]
-  );
-  const transactionSubscriptionOption = useMemo(
-    () => ({
-      variables,
-      skip,
-      onData: onUpdateTransaction,
-    }),
-    [variables, skip, onUpdateTransaction]
-  );
-
-  useTransactionEventSubscription(transactionSubscriptionOption);
+  });
 };
