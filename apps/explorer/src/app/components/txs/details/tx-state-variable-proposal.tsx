@@ -7,7 +7,6 @@ import type { components } from '../../../../types/explorer';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { StateVariableProposalWrapper } from './state-variable/data-wrapper';
-import { isValidPartyId } from '../../../routes/parties/id/components/party-id-error';
 
 interface TxDetailsStateVariableProps {
   txData: BlockExplorerTransactionResult | undefined;

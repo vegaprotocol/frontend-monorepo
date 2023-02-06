@@ -20,16 +20,16 @@ export function getValues(kvb: StateVariableProposalRiskFactorsProps['kvb']) {
       bid: {
         offsetTolerance: '-',
         probabilityTolerance: '-',
-        offset: ['0'] as Readonly<string[]>,
-        probability: ['0'] as Readonly<string[]>,
-        rows: [['0', '0']] as [string | undefined, string | undefined][],
+        offset: [] as Readonly<string[]>,
+        probability: [] as Readonly<string[]>,
+        rows: [] as [string | undefined, string | undefined][],
       },
       ask: {
         offsetTolerance: '-',
         probabilityTolerance: '-',
-        offset: ['0'] as Readonly<string[]>,
-        probability: ['0'] as Readonly<string[]>,
-        rows: [['0', '0']] as [string | undefined, string | undefined][],
+        offset: [] as Readonly<string[]>,
+        probability: [] as Readonly<string[]>,
+        rows: [] as [string | undefined, string | undefined][],
       },
     };
 
@@ -62,7 +62,7 @@ export function getValues(kvb: StateVariableProposalRiskFactorsProps['kvb']) {
       template.bid.rows = zip(template.bid.offset, template.bid.probability);
     }
     if (template.ask.offset.length > 0 && template.ask.probability.length > 0) {
-      template.ask.rows = zip(template.bid.offset, template.bid.probability);
+      template.ask.rows = zip(template.ask.offset, template.ask.probability);
     }
 
     return template;
@@ -84,7 +84,7 @@ export const StateVariableProposalRiskFactors = ({
 
   if (all.length === 0) {
     // Give up, do a JSON view
-    <StateVariableProposalUnknown kvb={kvb} />;
+    return <StateVariableProposalUnknown kvb={kvb} />;
   }
 
   return (
@@ -102,12 +102,12 @@ export const StateVariableProposalRiskFactors = ({
         {all.map((r) => {
           // Simple remapping of the data to protect against undefineds
           const row = {
-            o: r[0] ? r[0][0] : '-',
+            o: r[0] ? r[0][0] : r[1] ? r[1][0] : '-',
             b: r[0] ? r[0][1] : '-',
             a: r[1] ? r[1][1] : '-',
           };
           return (
-            <TableRow>
+            <TableRow key={`${row.o}${row.b}${row.a}`}>
               <TableCell align="left">{row.o}</TableCell>
               <TableCell align="right" className="font-mono">
                 {row.b}
