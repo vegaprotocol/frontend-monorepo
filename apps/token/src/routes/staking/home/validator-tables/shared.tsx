@@ -177,7 +177,7 @@ interface TotalPenaltiesRendererProps {
     performanceScore: string;
     performancePenalty: string;
     overstakedAmount: string;
-    overstakedPenalty: string;
+    overstakingPenalty: string;
     totalPenalties: string;
   };
 }
@@ -192,20 +192,10 @@ export const TotalPenaltiesRenderer = ({
       description={
         <>
           <div>
-            <span>
-              {t('performancePenalty')}: {data.performancePenalty}
-            </span>
-            <span className="pl-2">
-              ({t('score')} {data.performanceScore})
-            </span>
+            {t('performancePenalty')}: {data.performancePenalty}
           </div>
           <div>
-            <span>
-              {t('overstakedPenalty')}: {data.overstakedPenalty}
-            </span>
-            <span className="pl-2">
-              ({t('overstaked')} {data.overstakedAmount})
-            </span>
+            {t('overstakedPenalty')}: {data.overstakingPenalty}
           </div>
           <div>
             {t('totalPenalties')}:{' '}
