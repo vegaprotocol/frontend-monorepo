@@ -13,3 +13,9 @@
     @apply mb-2 text-neutral-400;
   }
 }
+
+@layer components {
+  .border-default {
+    @apply border-vega-dark-200;
+  }
+}
