@@ -18,13 +18,12 @@ import {
 } from '@vegaprotocol/web3';
 import {
   clients,
-  EnvironmentProvider,
   envTriggerMapping,
   Networks,
-  NodeSwitcherDialog,
   useEnvironment,
   useEnvironment2,
   useInitializeEnv,
+  useNodeHealth,
   useStatisticsQuery,
 } from '@vegaprotocol/environment';
 import { AppLoader, Web3Provider } from '../components/app-loader';
@@ -41,8 +40,10 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import classNames from 'classnames';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
+import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
-import { useHeaderStore } from '@vegaprotocol/apollo-client';
+import { createClient, useHeaderStore } from '@vegaprotocol/apollo-client';
+import classNames from 'classnames';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -126,19 +127,34 @@ const DynamicLoader = dynamic(
 
 function VegaTradingApp(props: AppProps) {
   const [open, setOpen] = useState(false);
-  const status = useEnvironment2((store) => store.status);
+  const { status, url } = useEnvironment2((store) => ({
+    status: store.status,
+    url: store.url,
+  }));
+
   useInitializeEnv();
 
-  if (status === 'default' || status === 'pending') {
+  const client = useMemo(() => {
+    if (url) {
+      return createClient({
+        url,
+        cacheConfig,
+      });
+    }
+    return undefined;
+  }, [url]);
+
+  if (status === 'default' || status === 'pending' || !client) {
     return <DynamicLoader />;
   }
 
   return (
     <HashRouter>
-      {/* <AppBody {...props} /> */}
-      <Test />
-      <button onClick={() => setOpen(true)}>Status</button>
-      <NodeSwitcher open={open} setOpen={setOpen} />
+      <ApolloProvider client={client}>
+        <Test />
+        <button onClick={() => setOpen(true)}>Status</button>
+        <NodeSwitcher open={open} setOpen={setOpen} />
+      </ApolloProvider>
     </HashRouter>
   );
 }
@@ -151,7 +167,7 @@ const NodeSwitcher = ({
   setOpen: (x: boolean) => void;
 }) => {
   const [customUrl, setCustomUrl] = useState('');
-  const { status, nodes, setUrl } = useEnvironment2((store) => ({
+  const { nodes, setUrl } = useEnvironment2((store) => ({
     status: store.status,
     nodes: store.nodes,
     setUrl: store.setUrl,
@@ -164,7 +180,8 @@ const NodeSwitcher = ({
           <tr>
             <th className="text-left">node</th>
             <th className="text-right">response time</th>
-            <th className="text-right">block height</th>
+            <th className="text-right">core block height</th>
+            <th className="text-right">datanode block height</th>
           </tr>
         </thead>
         <tbody>
@@ -199,7 +216,10 @@ const Row = ({ url }: { url: string }) => {
   const [time, setTime] = useState<number>();
   const { data } = useStatisticsQuery({
     pollInterval: 3000,
+    fetchPolicy: 'no-cache',
   });
+  const headerStore = useHeaderStore();
+  const headers = headerStore[url];
 
   useEffect(() => {
     const requestUrl = new URL(url);
@@ -209,11 +229,19 @@ const Row = ({ url }: { url: string }) => {
     setTime(duration);
   }, [url]);
 
+  const headerBlockHeightClass = classNames('text-right', {
+    'text-vega-pink':
+      headers &&
+      data &&
+      headers.blockHeight < Number(data.statistics.blockHeight) - 3,
+  });
+
   return (
     <>
       <td>{url}</td>
       <td className="text-right">{time ? time.toFixed(2) + 'ms' : 'n/a'}</td>
       <td className="text-right">{data?.statistics.blockHeight || '-'}</td>
+      <td className={headerBlockHeightClass}>{headers?.blockHeight || '-'}</td>
     </>
   );
 };
@@ -226,10 +254,20 @@ const Test = () => {
     status: store.status,
   }));
   const headers = useHeaderStore();
+  const {
+    coreBlockHeight,
+    coreVegaTime,
+    datanodeBlockHeight,
+    datanodeVegaTime,
+  } = useNodeHealth();
   return (
     <div>
       <pre>{JSON.stringify(env, null, 2)}</pre>
       <pre>{JSON.stringify(headers, null, 2)}</pre>
+      <div>Core BH {coreBlockHeight}</div>
+      <div>Core time {coreVegaTime.toISOString()}</div>
+      <div>Datanode BH {datanodeBlockHeight}</div>
+      <div>Datanode time {datanodeVegaTime?.toISOString()}</div>
     </div>
   );
 };
@@ -247,4 +285,52 @@ const MaybeConnectEagerly = () => {
     connect(Connectors['view']);
   }
   return null;
+};
+
+const cacheConfig: InMemoryCacheConfig = {
+  typePolicies: {
+    Account: {
+      keyFields: false,
+      fields: {
+        balanceFormatted: {},
+      },
+    },
+    Instrument: {
+      keyFields: false,
+    },
+    TradableInstrument: {
+      keyFields: ['instrument'],
+    },
+    Product: {
+      keyFields: ['settlementAsset', ['id']],
+    },
+    MarketData: {
+      keyFields: ['market', ['id']],
+    },
+    Node: {
+      keyFields: false,
+    },
+    Withdrawal: {
+      fields: {
+        pendingOnForeignChain: {
+          read: (isPending = false) => isPending,
+        },
+      },
+    },
+    ERC20: {
+      keyFields: ['contractAddress'],
+    },
+    PositionUpdate: {
+      keyFields: false,
+    },
+    AccountUpdate: {
+      keyFields: false,
+    },
+    Party: {
+      keyFields: false,
+    },
+    Fees: {
+      keyFields: false,
+    },
+  },
 };
