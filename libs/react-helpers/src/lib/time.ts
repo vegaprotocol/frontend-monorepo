@@ -4,7 +4,7 @@ export const toNanoSeconds = (date: Date | string) => {
   return new Date(date).getTime().toString() + '000000';
 };
 
-export const fromISONanoSeconds = (ts: string) => {
+export const fromISONano = (ts: string) => {
   const val = parseISO(ts);
   return new Date(isValid(val) ? val : 0);
 };

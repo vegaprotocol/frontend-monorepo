@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useStatisticsQuery } from '../utils/__generated__/Node';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
-import { fromISONanoSeconds } from '@vegaprotocol/react-helpers';
+import { fromISONano } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from './use-environment';
 
 export const useNodeHealth = () => {
@@ -27,7 +27,7 @@ export const useNodeHealth = () => {
 
   return {
     coreBlockHeight: Number(data?.statistics.blockHeight || 0),
-    coreVegaTime: fromISONanoSeconds(data?.statistics.vegaTime),
+    coreVegaTime: fromISONano(data?.statistics.vegaTime),
     datanodeBlockHeight: headers?.blockHeight,
     datanodeVegaTime: headers?.timestamp,
     blockDiff,

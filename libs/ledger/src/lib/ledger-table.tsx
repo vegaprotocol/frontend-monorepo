@@ -1,7 +1,7 @@
 import {
   addDecimalsFormatNumber,
   DateRangeFilter,
-  fromISONanoSeconds,
+  fromISONano,
   getDateTimeFormat,
   SetFilter,
   t,
@@ -199,7 +199,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<LedgerEntry, 'vegaTime'>) =>
-            value ? getDateTimeFormat().format(fromISONanoSeconds(value)) : '-'
+            value ? getDateTimeFormat().format(fromISONano(value)) : '-'
           }
           filter={DateRangeFilter}
         />
