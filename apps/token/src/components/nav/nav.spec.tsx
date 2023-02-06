@@ -22,9 +22,8 @@ const renderComponent = (initialEntries?: string[]) => {
 };
 
 describe('nav', () => {
-  it('Renders title and logo with link to home', () => {
+  it('Renders logo with link to home', () => {
     renderComponent();
-    expect(screen.getByText('Governance')).toBeInTheDocument();
     expect(screen.getByTestId('logo-link')).toHaveProperty(
       'href',
       'http://localhost/'
