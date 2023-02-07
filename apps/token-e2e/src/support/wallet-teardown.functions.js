@@ -47,7 +47,7 @@ beforeEach(function () {
   cy.wrap(this.vestingContract).as('vestingContract');
 });
 
-Cypress.Commands.add('deposit_asset', function (assetEthAddress) {
+Cypress.Commands.add('deposit_asset', function (assetEthAddress, amount) {
   cy.get('@signer', { log: false }).then((signer) => {
     // Approve asset
     cy.wrap(

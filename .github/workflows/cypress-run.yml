@@ -69,6 +69,8 @@ jobs:
         env:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
+          CYPRESS_VEGA_WALLET_API_TOKEN_NODE0: ${{ steps.setup-vega.outputs.token-node0 }}
+          CYPRESS_VEGA_WALLET_API_TOKEN_NODE1: ${{ steps.setup-vega.outputs.token-node1 }}
 
       ######
       ## Upload logs

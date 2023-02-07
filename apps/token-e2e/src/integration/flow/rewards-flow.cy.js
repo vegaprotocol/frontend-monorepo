@@ -12,6 +12,8 @@ context('rewards - flow', { tags: '@slow' }, function () {
     cy.vega_wallet_set_specified_approval_amount('6000');
     cy.updateCapsuleMultiSig();
     cy.deposit_asset(vegaAssetAddress, '100000000000000000000');
+    cy.validatorsSelfDelegate(0);
+    cy.validatorsSelfDelegate(1);
     cy.connectVegaWallet();
     cy.ethereum_wallet_connect();
     cy.get(walletContainer).within(() => {
