@@ -11,6 +11,8 @@ import {
 } from '../../links/eth-explorer-link/eth-explorer-link';
 import { NodeLink } from '../../links';
 
+type Command = components['schemas']['v1IssueSignatures'];
+
 const kind: Record<components['schemas']['v1NodeSignatureKind'], string> = {
   NODE_SIGNATURE_KIND_UNSPECIFIED: 'Unspecified',
   NODE_SIGNATURE_KIND_ASSET_NEW: 'New asset',
@@ -39,7 +41,7 @@ export const TxDetailsIssueSignatures = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const cmd: components['schemas']['v1IssueSignatures'] = txData.command;
+  const cmd: Command = txData.command;
   const k = cmd.kind ? kind[cmd.kind] : null;
 
   return (
