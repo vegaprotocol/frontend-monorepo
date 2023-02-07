@@ -20,6 +20,7 @@ import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
 import { TxDetailsDataSubmission } from './tx-data-submission';
 import { TxProposalVote } from './tx-proposal-vote';
 import { TxDetailsProtocolUpgrade } from './tx-details-protocol-upgrade';
+import { TxDetailsIssueSignatures } from './tx-issue-signatures';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -67,6 +68,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
 
   // These come from https://github.com/vegaprotocol/vega/blob/develop/core/txn/command.go#L72-L98
   switch (txData.type) {
+    case 'Issue Signatures':
+      return TxDetailsIssueSignatures;
     case 'Submit Order':
       return TxDetailsOrder;
     case 'Submit Oracle Data':
