@@ -54,13 +54,14 @@ export function createClient({
     ? new ApolloLink((operation, forward) => {
         return forward(operation).map((response) => {
           const context = operation.getContext();
-          const blockHeight = context.response?.headers.get('x-block-height');
-          const timestamp = context.response?.headers.get('x-block-timestamp');
+          const headers = context['response'].headers;
+          const blockHeight = headers.get('x-block-height');
+          const timestamp = headers.get('x-block-timestamp');
           if (blockHeight && timestamp) {
             const state = useHeaderStore.getState();
             useHeaderStore.setState({
               ...state,
-              [context.response.url]: {
+              [context['response'].url]: {
                 blockHeight: Number(blockHeight),
                 timestamp: fromNanoSeconds(timestamp),
               },

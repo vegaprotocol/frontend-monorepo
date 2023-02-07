@@ -37,6 +37,7 @@ export const getMockStatisticsResult = (
     __typename: 'Statistics',
     chainId: `${env.toLowerCase()}-0123`,
     blockHeight: '11',
+    vegaTime: new Date().toISOString(),
   },
 });
 
@@ -45,6 +46,7 @@ export const getMockQueryResult = (env: Networks): StatisticsQuery => ({
     __typename: 'Statistics',
     chainId: `${env.toLowerCase()}-0123`,
     blockHeight: '11',
+    vegaTime: new Date().toISOString(),
   },
 });
 

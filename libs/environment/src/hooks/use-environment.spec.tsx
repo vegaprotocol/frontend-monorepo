@@ -17,6 +17,10 @@ jest.mock('react-dom', () => ({
   createPortal: (node: ReactNode) => node,
 }));
 
+jest.mock('../components/node-switcher', () => ({
+  NodeSwitcher: () => <div />,
+}));
+
 global.fetch = jest.fn();
 
 const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
@@ -46,7 +50,6 @@ const mockEnvironmentState = {
   GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
   MAINTENANCE_PAGE: false,
   configLoading: false,
-  blockDifference: 0,
   nodeSwitcherOpen: false,
   setNodeSwitcherOpen: noop,
   networkError: undefined,
