@@ -43,8 +43,6 @@ export const SparklineView = ({
 
   // Get the extent for our y value
   const [min, max] = extent(marketData, (d) => d[1]);
-  console.dir(marketData.length);
-  console.dir(points);
 
   if (typeof min !== 'number' || typeof max !== 'number') {
     return null;
