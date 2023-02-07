@@ -87,7 +87,7 @@ describe('useVegaTransaction', () => {
     );
   });
 
-  it('handles an unkwown error', () => {
+  it('handles an unknown error', () => {
     const unknownThrow = { foo: 'bar' };
     const mockSendTx = jest.fn(() => {
       throw unknownThrow;
