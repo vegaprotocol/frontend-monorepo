@@ -1,7 +1,7 @@
 import { getValues } from './bound-factors';
 import type { components } from '../../../../../types/explorer';
 
-type kvb = components['schemas']['vegaKeyValueBundle'][];
+type KeyValueBundle = components['schemas']['vegaKeyValueBundle'][];
 
 describe('getValues', () => {
   it('handles an empty array by returning a dashed template', () => {
@@ -15,7 +15,7 @@ describe('getValues', () => {
   });
 
   it('handles undefined', () => {
-    const res = getValues(undefined as unknown as kvb);
+    const res = getValues(undefined as unknown as KeyValueBundle);
     expect(res).toHaveProperty('down');
     expect(res.down).toHaveProperty('tolerance', '-');
     expect(res.down).toHaveProperty('value', '-');
@@ -25,7 +25,7 @@ describe('getValues', () => {
   });
 
   it('handles a kvb that only has one side (should not happen)', () => {
-    const k: kvb = [
+    const k: KeyValueBundle = [
       {
         key: 'up',
         tolerance: '0.1',
@@ -43,7 +43,7 @@ describe('getValues', () => {
   });
 
   it('handles a kvb that has a matrixVal instead of a scalarval by ignoring it', () => {
-    const k: kvb = [
+    const k: KeyValueBundle = [
       {
         key: 'up',
         tolerance: '0.1',
@@ -61,7 +61,7 @@ describe('getValues', () => {
   });
 
   it('ignores unexpected extra values in the kvb', () => {
-    const k: kvb = [
+    const k: KeyValueBundle = [
       {
         key: 'up',
         tolerance: '0.1',
@@ -84,7 +84,7 @@ describe('getValues', () => {
   });
 
   it('handles a full kvb', () => {
-    const k: kvb = [
+    const k: KeyValueBundle = [
       {
         key: 'up',
         tolerance: '0.1',
