@@ -75,7 +75,7 @@ export const Notification = ({
           <Button
             size="sm"
             onClick={buttonProps.action}
-            className={classNames('mt-2 px-6 py-3', buttonProps.className)}
+            className={classNames(buttonProps.className)}
           >
             {buttonProps.text}
           </Button>

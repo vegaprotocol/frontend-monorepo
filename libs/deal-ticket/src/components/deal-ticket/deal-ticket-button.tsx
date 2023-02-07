@@ -41,24 +41,20 @@ export const DealTicketButton = ({ disabled, variant, assetSymbol }: Props) => {
             with {assetSymbol} to start trading in this market.
           </p>
         }
+        buttonProps={{
+          text: 'Connect wallet',
+          action: openVegaWalletDialog,
+          className: 'px-14',
+        }}
       />
       <div>
-        <Button
-          variant="default"
-          fill
-          type="button"
-          data-testid="order-connect-wallet"
-          onClick={openVegaWalletDialog}
-          className="my-2"
-        >
-          {t('Connect wallet')}
-        </Button>
         <Button
           variant={variant}
           fill
           type="submit"
           disabled={true}
           data-testid="place-order"
+          className="my-2"
         >
           {t('Place order')}
         </Button>
