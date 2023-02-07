@@ -40,11 +40,11 @@ export const Notification = ({
       className={classNames(
         {
           'border-gray-700 dark:border-gray-300': intent === Intent.None,
-          'border-vega-blue-500': intent === Intent.Primary,
+          'border-vega-blue': intent === Intent.Primary,
           'border-vega-green-550 dark:border-vega-green':
             intent === Intent.Success,
-          'border-yellow-500': intent === Intent.Warning,
-          'border-vega-pink-500': intent === Intent.Danger,
+          'border-yellow': intent === Intent.Warning,
+          'border-vega-pink': intent === Intent.Danger,
         },
         'border rounded text-xs p-2 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900',
         className
@@ -56,7 +56,7 @@ export const Notification = ({
             'text-gray-700 dark:text-gray-300': intent === Intent.None,
             'text-vega-blue': intent === Intent.Primary,
             'text-vega-green dark:text-vega-green': intent === Intent.Success,
-            'text-yellow-600 dark:text-yellow-500': intent === Intent.Warning,
+            'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
             'text-vega-pink': intent === Intent.Danger,
           },
           'flex items-start mt-1'
