@@ -40,12 +40,13 @@ export const Notification = ({
       className={classNames(
         {
           'border-gray-700 dark:border-gray-300': intent === Intent.None,
-          'border-vega-blue': intent === Intent.Primary,
-          'border-vega-green dark:border-vega-green': intent === Intent.Success,
+          'border-vega-blue-500': intent === Intent.Primary,
+          'border-vega-green-550 dark:border-vega-green':
+            intent === Intent.Success,
           'border-yellow-500': intent === Intent.Warning,
-          'border-vega-pink': intent === Intent.Danger,
+          'border-vega-pink-500': intent === Intent.Danger,
         },
-        'border rounded text-xs p-4 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900',
+        'border rounded text-xs p-2 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900',
         className
       )}
     >

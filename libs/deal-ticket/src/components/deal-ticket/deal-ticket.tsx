@@ -224,6 +224,9 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
+        assetSymbol={
+          market.tradableInstrument.instrument.product.settlementAsset.symbol
+        }
       />
       <SummaryMessage
         errorMessage={errors.summary?.message}
