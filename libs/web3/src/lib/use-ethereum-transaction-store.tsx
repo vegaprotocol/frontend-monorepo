@@ -9,6 +9,7 @@ import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
 
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
+import { subscribeWithSelector } from 'zustand/middleware';
 
 type Contract = MultisigControl | CollateralBridge | Token | TokenFaucetable;
 type ContractMethod =
@@ -54,8 +55,8 @@ export interface EthTransactionStore {
   delete: (index: number) => void;
 }
 
-export const useEthTransactionStore = create<EthTransactionStore>(
-  (set, get) => ({
+export const useEthTransactionStore = create(
+  subscribeWithSelector<EthTransactionStore>((set, get) => ({
     transactions: [] as EthStoredTxState[],
     create: (
       contract: Contract | null,
@@ -139,5 +140,5 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         })
       );
     },
-  })
+  }))
 );

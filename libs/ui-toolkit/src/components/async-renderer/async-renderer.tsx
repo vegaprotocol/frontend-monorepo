@@ -1,7 +1,6 @@
 import { Splash } from '../splash';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import * as Sentry from '@sentry/react';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
@@ -27,7 +26,6 @@ export function AsyncRenderer<T = object>({
   render,
 }: AsyncRendererProps<T>) {
   if (error) {
-    Sentry.captureException(`Error rendering data: ${error.message}`);
     if (!data) {
       return (
         <Splash>

@@ -4,6 +4,7 @@ import type { UpdateNetworkParameter } from '@vegaprotocol/types';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import { ProposalState } from '@vegaprotocol/types';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
@@ -28,7 +29,7 @@ const UpdateNetworkParameterToastContent = ({
   const enactment = Date.parse(proposal.terms.enactmentDatetime);
   return (
     <div>
-      <h3 className="font-bold">{title}</h3>
+      <ToastHeading>{title}</ToastHeading>
       <p className="italic">
         '
         {t(
@@ -52,9 +53,8 @@ const UpdateNetworkParameterToastContent = ({
   );
 };
 
-export const useUpdateNetworkParametersToasts = (): Toast[] => {
-  const { proposalToasts, setToast, remove } = useToasts((store) => ({
-    proposalToasts: store.toasts,
+export const useUpdateNetworkParametersToasts = () => {
+  const { setToast, remove } = useToasts((store) => ({
     setToast: store.setToast,
     remove: store.remove,
   }));
@@ -66,7 +66,9 @@ export const useUpdateNetworkParametersToasts = (): Toast[] => {
         id: `update-network-param-proposal-${proposal.id}`,
         intent: Intent.Warning,
         content: <UpdateNetworkParameterToastContent proposal={proposal} />,
-        onClose: () => remove(id),
+        onClose: () => {
+          remove(id);
+        },
         closeAfter: CLOSE_AFTER,
       };
     },
@@ -96,6 +98,4 @@ export const useUpdateNetworkParametersToasts = (): Toast[] => {
       }
     },
   });
-
-  return proposalToasts;
 };

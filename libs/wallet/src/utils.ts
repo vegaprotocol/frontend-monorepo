@@ -1,6 +1,6 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import type { Market, Order } from '@vegaprotocol/types';
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { OrderTimeInForce, OrderType, AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
@@ -8,6 +8,7 @@ import type {
   OrderAmendmentBody,
   OrderSubmissionBody,
   Transaction,
+  Transfer,
 } from './connectors';
 
 /**
@@ -63,3 +64,23 @@ export const normalizeOrderAmendment = (
     ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
     : undefined,
 });
+
+export const normalizeTransfer = (
+  address: string,
+  amount: string,
+  asset: {
+    id: string;
+    decimals: number;
+  }
+): Transfer => {
+  return {
+    fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+    to: address,
+    toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+    asset: asset.id,
+    amount: removeDecimal(amount, asset.decimals),
+    // oneOff or recurring required otherwise wallet will error
+    // default oneOff is immediate transfer
+    oneOff: {},
+  };
+};

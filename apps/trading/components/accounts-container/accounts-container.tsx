@@ -5,7 +5,7 @@ import { useWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { AccountManager } from '@vegaprotocol/accounts';
+import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 
 export const AccountsContainer = () => {
@@ -13,6 +13,7 @@ export const AccountsContainer = () => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
   const openDepositDialog = useDepositDialog((store) => store.open);
+  const openTransferDialog = useTransferDialog((store) => store.open);
 
   const onClickAsset = useCallback(
     (assetId?: string) => {
@@ -41,7 +42,10 @@ export const AccountsContainer = () => {
         />
       </div>
       {!isReadOnly && (
-        <div className="flex justify-end p-2 px-[11px]">
+        <div className="flex gap-2 justify-end p-2 px-[11px]">
+          <Button size="sm" onClick={() => openTransferDialog()}>
+            {t('Transfer')}
+          </Button>
           <Button size="sm" onClick={() => openDepositDialog()}>
             {t('Deposit')}
           </Button>

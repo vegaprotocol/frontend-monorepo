@@ -3,8 +3,12 @@ import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
+import { Panel } from '@vegaprotocol/ui-toolkit';
+import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
+import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import compact from 'lodash/compact';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
 import {
@@ -44,34 +48,35 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
       if (isWithdraw) label = t('Withdraw');
       if (isDeposit) label = t('Deposit');
       assetInfo = (
-        <div className="mt-[5px]">
-          <span className="font-mono text-xs p-1 bg-gray-100 rounded">
-            {label}{' '}
-            {formatNumber(toBigNum(tx.args[1], asset.decimals), asset.decimals)}{' '}
-            {asset.symbol}
-          </span>
-        </div>
+        <strong>
+          {label}{' '}
+          {formatNumber(toBigNum(tx.args[1], asset.decimals), asset.decimals)}{' '}
+          {asset.symbol}
+        </strong>
       );
     }
   }
 
-  return (
-    <>
-      {assetInfo}
-      {tx.status === EthTxStatus.Pending && (
-        <div className="mt-[10px]">
-          <span className="font-mono text-xs">
-            {t('Awaiting confirmations')}{' '}
-            {`(${tx.confirmations}/${tx.requiredConfirmations})`}
-          </span>
-          <ProgressBar
-            value={(tx.confirmations / tx.requiredConfirmations) * 100}
-            intent={Intent.Warning}
-          />
-        </div>
-      )}
-    </>
-  );
+  if (assetInfo || tx.requiresConfirmation) {
+    return (
+      <Panel>
+        {assetInfo}
+        {tx.status === EthTxStatus.Pending && (
+          <>
+            <p className="mt-[2px]">
+              {t('Awaiting confirmations')}{' '}
+              {`(${tx.confirmations}/${tx.requiredConfirmations})`}
+            </p>
+            <ProgressBar
+              value={(tx.confirmations / tx.requiredConfirmations) * 100}
+            />
+          </>
+        )}
+      </Panel>
+    );
+  }
+
+  return null;
 };
 
 type EthTxToastContentProps = {
@@ -80,26 +85,26 @@ type EthTxToastContentProps = {
 
 const EthTxRequestedToastContent = ({ tx }: EthTxToastContentProps) => {
   return (
-    <div>
-      <h3 className="font-bold">{t('Action required')}</h3>
+    <>
+      <ToastHeading>{t('Action required')}</ToastHeading>
       <p>
         {t(
           'Please go to your wallet application and approve or reject the transaction.'
         )}
       </p>
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
 const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
   return (
-    <div>
-      <h3 className="font-bold">{t('Awaiting confirmation')}</h3>
+    <>
+      <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
       <EtherscanLink tx={tx} />
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
@@ -112,11 +117,11 @@ const EthTxErrorToastContent = ({ tx }: EthTxToastContentProps) => {
     errorMessage = tx.error.message;
   }
   return (
-    <div>
-      <h3 className="font-bold">{t('Error occurred')}</h3>
-      <p>{errorMessage}</p>
+    <>
+      <ToastHeading>{t('Error occurred')}</ToastHeading>
+      <p className="first-letter:uppercase">{errorMessage}</p>
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
@@ -136,42 +141,63 @@ const EtherscanLink = ({ tx }: EthTxToastContentProps) => {
 
 const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
   return (
-    <div>
-      <h3 className="font-bold">{t('Transaction confirmed')}</h3>
+    <>
+      <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
       <EtherscanLink tx={tx} />
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
 const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
   const isDeposit = isDepositTransaction(tx);
   return (
-    <div>
-      <h3 className="font-bold">
+    <>
+      <ToastHeading>
         {t('Processing')} {isDeposit && t('deposit')}
-      </h3>
+      </ToastHeading>
       <p>
         {t('Your transaction has been completed.')}{' '}
         {isDeposit && t('Waiting for deposit confirmation.')}
       </p>
       <EtherscanLink tx={tx} />
       <EthTransactionDetails tx={tx} />
-    </div>
+    </>
   );
 };
 
+const isFinal = (tx: EthStoredTxState) =>
+  [EthTxStatus.Confirmed, EthTxStatus.Error].includes(tx.status);
+
 export const useEthereumTransactionToasts = () => {
-  const ethTransactions = useEthTransactionStore((state) =>
-    state.transactions.filter((transaction) => transaction?.dialogOpen)
+  const [setToast, removeToast] = useToasts((store) => [
+    store.setToast,
+    store.remove,
+  ]);
+
+  const [dismissTx, deleteTx] = useEthTransactionStore((state) => [
+    state.dismiss,
+    state.delete,
+  ]);
+
+  const onClose = useCallback(
+    (tx: EthStoredTxState) => () => {
+      const safeToDelete = isFinal(tx);
+      if (safeToDelete) {
+        deleteTx(tx.id);
+      } else {
+        dismissTx(tx.id);
+      }
+      removeToast(`eth-${tx.id}`);
+    },
+    [deleteTx, dismissTx, removeToast]
   );
-  const dismissEthTransaction = useEthTransactionStore(
-    (state) => state.dismiss
-  );
+
   const fromEthTransaction = useCallback(
     (tx: EthStoredTxState): Toast => {
       let content: ToastContent = <TransactionContent {...tx} />;
+      const closeAfter = isFinal(tx) ? CLOSE_AFTER : undefined;
       if (tx.status === EthTxStatus.Requested) {
         content = <EthTxRequestedToastContent tx={tx} />;
       }
@@ -191,15 +217,21 @@ export const useEthereumTransactionToasts = () => {
       return {
         id: `eth-${tx.id}`,
         intent: intentMap[tx.status],
-        onClose: () => dismissEthTransaction(tx.id),
+        onClose: onClose(tx),
         loader: [EthTxStatus.Pending, EthTxStatus.Complete].includes(tx.status),
         content,
+        closeAfter,
       };
     },
-    [dismissEthTransaction]
+    [onClose]
   );
 
-  return useMemo(() => {
-    return [...compact(ethTransactions).map(fromEthTransaction)];
-  }, [ethTransactions, fromEthTransaction]);
+  useEthTransactionStore.subscribe(
+    (state) => compact(state.transactions.filter((tx) => tx?.dialogOpen)),
+    (txs) => {
+      txs.forEach((tx) => {
+        setToast(fromEthTransaction(tx));
+      });
+    }
+  );
 };

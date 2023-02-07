@@ -6,6 +6,7 @@ import {
   isOrderCancellationTransaction,
   isOrderAmendmentTransaction,
   isBatchMarketInstructionsTransaction,
+  isTransferTransaction,
 } from './connectors';
 import { determineId } from './utils';
 
@@ -19,6 +20,7 @@ import type {
 } from './__generated__/TransactionResult';
 
 import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
+import { subscribeWithSelector } from 'zustand/middleware';
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   createdAt: Date;
@@ -50,8 +52,8 @@ export interface VegaTransactionStore {
   ) => void;
 }
 
-export const useVegaTransactionStore = create<VegaTransactionStore>(
-  (set, get) => ({
+export const useVegaTransactionStore = create(
+  subscribeWithSelector<VegaTransactionStore>((set, get) => ({
     transactions: [] as VegaStoredTxState[],
     create: (body: Transaction) => {
       const transactions = get().transactions;
@@ -184,9 +186,14 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           );
           if (transaction) {
             transaction.transactionResult = transactionResult;
-            if (
+
+            const isConfirmedOrderCancellation =
               isOrderCancellationTransaction(transaction.body) &&
-              !transaction.body.orderCancellation.orderId &&
+              !transaction.body.orderCancellation.orderId;
+            const isConfirmedTransfer = isTransferTransaction(transaction.body);
+
+            if (
+              (isConfirmedOrderCancellation || isConfirmedTransfer) &&
               !transactionResult.error &&
               transactionResult.status
             ) {
@@ -198,5 +205,5 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-  })
+  }))
 );

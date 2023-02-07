@@ -103,7 +103,7 @@ export const useEthWithdrawApprovalsManager = () => {
       update(transaction.id, {
         status: ApprovalStatus.Ready,
         approval,
-        dialogOpen: false,
+        dialogOpen: true,
       });
       const signer = provider.getSigner();
       createEthTransaction(

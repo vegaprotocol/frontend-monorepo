@@ -1,8 +1,12 @@
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
+import { Panel } from '@vegaprotocol/ui-toolkit';
+import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
+import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 import { ApprovalStatus, VerificationStatus } from '@vegaprotocol/withdraws';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import compact from 'lodash/compact';
 import type { EthWithdrawalApprovalState } from '@vegaprotocol/web3';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
@@ -30,49 +34,72 @@ const EthWithdrawalApprovalToastContent = ({
   if (tx.status === ApprovalStatus.Delayed) {
     title = t('Delayed');
   }
+  if (tx.status === ApprovalStatus.Ready) {
+    title = t('Approved');
+  }
   const num = formatNumber(
     toBigNum(tx.withdrawal.amount, tx.withdrawal.asset.decimals),
     tx.withdrawal.asset.decimals
   );
   const details = (
-    <div className="mt-[5px]">
-      <span className="font-mono text-xs p-1 bg-gray-100 rounded">
+    <Panel>
+      <strong>
         {t('Withdraw')} {num} {tx.withdrawal.asset.symbol}
-      </span>
-    </div>
+      </strong>
+    </Panel>
   );
   return (
-    <div>
-      {title.length > 0 && <h3 className="font-bold">{title}</h3>}
+    <>
+      {title.length > 0 && (
+        <ToastHeading className="font-bold">{title}</ToastHeading>
+      )}
       <VerificationStatus state={tx} />
       {details}
-    </div>
+    </>
   );
 };
 
+const isFinal = (tx: EthWithdrawalApprovalState) =>
+  [ApprovalStatus.Ready, ApprovalStatus.Error].includes(tx.status);
+
 export const useEthereumWithdrawApprovalsToasts = () => {
-  const { withdrawApprovals, dismissWithdrawApproval } =
-    useEthWithdrawApprovalsStore((state) => ({
-      withdrawApprovals: state.transactions.filter(
-        (transaction) => transaction?.dialogOpen
-      ),
-      dismissWithdrawApproval: state.dismiss,
-    }));
+  const [setToast, remove] = useToasts((state) => [
+    state.setToast,
+    state.remove,
+  ]);
+  const [dismissTx, deleteTx] = useEthWithdrawApprovalsStore((state) => [
+    state.dismiss,
+    state.delete,
+  ]);
 
   const fromWithdrawalApproval = useCallback(
     (tx: EthWithdrawalApprovalState): Toast => ({
       id: `withdrawal-${tx.id}`,
       intent: intentMap[tx.status],
-      onClose: () => dismissWithdrawApproval(tx.id),
+      onClose: () => {
+        if ([ApprovalStatus.Error, ApprovalStatus.Ready].includes(tx.status)) {
+          deleteTx(tx.id);
+        } else {
+          dismissTx(tx.id);
+        }
+        remove(`withdrawal-${tx.id}`);
+      },
       loader: tx.status === ApprovalStatus.Pending,
       content: <EthWithdrawalApprovalToastContent tx={tx} />,
+      closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
     }),
-    [dismissWithdrawApproval]
+    [deleteTx, dismissTx, remove]
   );
 
-  const toasts = useMemo(() => {
-    return [...compact(withdrawApprovals).map(fromWithdrawalApproval)];
-  }, [fromWithdrawalApproval, withdrawApprovals]);
-
-  return toasts;
+  useEthWithdrawApprovalsStore.subscribe(
+    (state) =>
+      compact(
+        state.transactions.filter((transaction) => transaction?.dialogOpen)
+      ),
+    (txs) => {
+      txs.forEach((tx) => {
+        setToast(fromWithdrawalApproval(tx));
+      });
+    }
+  );
 };
