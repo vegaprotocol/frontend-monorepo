@@ -73,7 +73,7 @@ export const Notification = ({
         <div>{message}</div>
         {buttonProps && (
           <Button
-            size="sm"
+            size="md"
             onClick={buttonProps.action}
             className={classNames(buttonProps.className)}
           >

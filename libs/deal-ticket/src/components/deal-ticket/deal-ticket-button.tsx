@@ -31,7 +31,7 @@ export const DealTicketButton = ({ disabled, variant, assetSymbol }: Props) => {
   ) : (
     <>
       <Notification
-        intent={Intent.Danger}
+        intent={Intent.Warning}
         message={
           <p className="text-sm pb-2">
             You need a{' '}
