@@ -15,18 +15,17 @@ import { createWalletClient, sendVegaTx } from './wallet-client';
 import { createEthereumWallet } from './ethereum-wallet';
 import { ASSET_ID_FOR_MARKET } from './contants';
 
-export async function selfDelegate(
-  cfg: {
-    vegaPubKey: string;
-    token: string;
-    ethWalletMnemonic: string;
-    ethereumProviderUrl: string;
-    vegaWalletUrl: string;
-    vegaUrl: string;
-    faucetUrl: string;
-    nodeId: string
-  }) {
-    // setup wallet client and graphql clients
+export async function selfDelegate(cfg: {
+  vegaPubKey: string;
+  token: string;
+  ethWalletMnemonic: string;
+  ethereumProviderUrl: string;
+  vegaWalletUrl: string;
+  vegaUrl: string;
+  faucetUrl: string;
+  nodeId: string;
+}) {
+  // setup wallet client and graphql clients
   setGraphQLEndpoint(cfg.vegaUrl);
   createWalletClient(cfg.vegaWalletUrl, cfg.token);
   createEthereumWallet(cfg.ethWalletMnemonic, cfg.ethereumProviderUrl);
@@ -36,14 +35,13 @@ export async function selfDelegate(
 
   // Stake on validator
   // By default 3000 vega is minimum amount of stake required for self-delegation
-  const stakeTx =
-  {
-    "delegateSubmission": {
-        "nodeId": cfg.nodeId,
-        "amount": "3000000000000000000000"
-    }
-  }
+  const stakeTx = {
+    delegateSubmission: {
+      nodeId: cfg.nodeId,
+      amount: '3000000000000000000000',
+    },
+  };
 
-  const result = await sendVegaTx(cfg.vegaPubKey, stakeTx)
-  console.log(result)
+  const result = await sendVegaTx(cfg.vegaPubKey, stakeTx);
+  console.log(result);
 }
