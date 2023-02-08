@@ -330,7 +330,7 @@ function makeDataProviderInternal<
       });
 
     try {
-      const res = (await call().catch((err) => {
+      const res = await call().catch((err) => {
         if (
           err.graphQLErrors &&
           isOnlyMarketDataNotFoundErrors(err.graphQLErrors, ['market', 'data'])
@@ -339,7 +339,7 @@ function makeDataProviderInternal<
         } else {
           throw err;
         }
-      }));
+      });
       data = getData(res.data, variables);
       if (data && pagination) {
         if (!(data instanceof Array)) {
