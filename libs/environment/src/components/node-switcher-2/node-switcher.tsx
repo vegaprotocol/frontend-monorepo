@@ -3,8 +3,10 @@ import { createClient, useHeaderStore } from '@vegaprotocol/apollo-client';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   Button,
+  ButtonLink,
   Dialog,
   Input,
+  Loader,
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
@@ -13,8 +15,11 @@ import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useEnvironment } from '../../hooks';
 import { useStatisticsQuery } from '../../utils/__generated__/Node';
+import { LayoutCell } from '../node-switcher/layout-cell';
+import { LayoutRow } from '../node-switcher/layout-row';
 
 const POLL_INTERVAL = 3000;
+const CUSTOM_NODE_KEY = 'custom';
 
 export const NodeSwitcher = ({
   open,
@@ -23,10 +28,11 @@ export const NodeSwitcher = ({
   open: boolean;
   setOpen: (x: boolean) => void;
 }) => {
-  const { nodes, setUrl } = useEnvironment((store) => ({
+  const { nodes, setUrl, status, VEGA_ENV } = useEnvironment((store) => ({
     status: store.status,
     nodes: store.nodes,
     setUrl: store.setUrl,
+    VEGA_ENV: store.VEGA_ENV,
   }));
 
   const [nodeRadio, setNodeRadio] = useState<string>('');
@@ -45,66 +51,84 @@ export const NodeSwitcher = ({
   }, []);
 
   return (
-    <Dialog open={open} onChange={setOpen}>
-      <div>
-        <RadioGroup
-          value={nodeRadio}
-          onChange={(value) => {
-            setNodeRadio(value);
-          }}
-        >
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th />
-                <th className="text-left">node</th>
-                <th className="text-right">response time</th>
-                <th className="text-right">core block height</th>
-                <th className="text-right">datanode block height</th>
-              </tr>
-            </thead>
-            <tbody>
-              {nodes.map((node) => {
-                return (
-                  <tr key={node}>
-                    <ClientWrapper
-                      url={node}
-                      renderChildren={(client) => (
-                        <>
-                          <RowLabels url={node} />
+    <Dialog open={open} onChange={setOpen} size="medium">
+      <h3 className="uppercase text-xl text-center mb-2">
+        {t('Connected node')}
+      </h3>
+      {status === 'pending' ? (
+        <div className="py-8">
+          <p className="mb-4 text-center">{t('Loading configuration...')}</p>
+          <Loader size="large" />
+        </div>
+      ) : (
+        <div>
+          <p className="mb-2 text-center">
+            {t(`This app will only work on a `)}
+            <span className="font-mono capitalize">
+              {VEGA_ENV.toLowerCase()}
+            </span>
+            {t(' chain ID')}
+          </p>
+          <RadioGroup
+            value={nodeRadio}
+            onChange={(value) => {
+              setNodeRadio(value);
+            }}
+          >
+            <div className="hidden lg:block">
+              <LayoutRow>
+                <div />
+                <span className="text-right">{t('Response time')}</span>
+                <span className="text-right">{t('Block')}</span>
+                <span className="text-right">{t('Subscription')}</span>
+              </LayoutRow>
+              <div>
+                {nodes.map((node, index) => {
+                  return (
+                    <LayoutRow key={node}>
+                      <div className="break-all" data-testid="node">
+                        <Radio
+                          id={`node-url-${index}`}
+                          value={node}
+                          label={node}
+                          // disabled={getIsNodeDisabled(VEGA_ENV, state[node])}
+                        />
+                      </div>
+                      <ClientWrapper
+                        url={node}
+                        renderChildren={(client) => (
                           <RowData
                             client={client}
                             url={node}
                             highestBlock={highestBlock}
                             onBlockHeight={handleHighestBlock}
                           />
-                        </>
-                      )}
-                    />
-                  </tr>
-                );
-              })}
-              <tr>
+                        )}
+                      />
+                    </LayoutRow>
+                  );
+                })}
                 <CustomRowWrapper
                   highestBlock={highestBlock}
                   onBlockHeight={handleHighestBlock}
                   nodeRadio={nodeRadio}
                 />
-              </tr>
-            </tbody>
-          </table>
-        </RadioGroup>
-        <div className="mt-4">
-          <Button
-            fill={true}
-            onClick={() => {
-              setUrl(nodeRadio);
-            }}
-          >
-            {t('Connect to this node')}
-          </Button>
+              </div>
+            </div>
+          </RadioGroup>
+          <div className="mt-4">
+            <Button
+              fill={true}
+              onClick={() => {
+                setUrl(nodeRadio);
+              }}
+              data-testid="connect"
+            >
+              {t('Connect to this node')}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </Dialog>
   );
 };
@@ -130,17 +154,6 @@ const ClientWrapper = ({
   return <>{renderChildren(client)}</>;
 };
 
-const RowLabels = ({ url }: { url: string }) => {
-  return (
-    <>
-      <td>
-        <Radio id={`node-url-${url}`} value={url} label="" />
-      </td>
-      <td>{url}</td>
-    </>
-  );
-};
-
 const RowData = ({
   client,
   url,
@@ -152,7 +165,6 @@ const RowData = ({
   highestBlock: number | null;
   onBlockHeight: (blockHeight: number) => void;
 }) => {
-  console.log(client);
   const [time, setTime] = useState<number>();
   const { data, startPolling, stopPolling } = useStatisticsQuery({
     client,
@@ -204,9 +216,33 @@ const RowData = ({
 
   return (
     <>
-      <td className="text-right">{time ? time.toFixed(2) + 'ms' : 'n/a'}</td>
-      <td className="text-right">{data?.statistics.blockHeight || '-'}</td>
-      <td className={headerBlockHeightClass}>{headers?.blockHeight || '-'}</td>
+      <LayoutCell
+        label={t('Response time')}
+        // isLoading={data.responseTime?.isLoading}
+        // hasError={data.responseTime?.hasError}
+        // dataTestId="response-time-cell"
+      >
+        {time ? time.toFixed(2) + 'ms' : 'n/a'}
+      </LayoutCell>
+      <LayoutCell
+        label={t('Block')}
+        // isLoading={data.block?.isLoading}
+        // hasError={
+        //   data.block?.hasError ||
+        //   (!!data.block?.value && highestBlock > data.block.value)
+        // }
+        // dataTestId="block-cell"
+      >
+        {data?.statistics.blockHeight || '-'}
+      </LayoutCell>
+      <LayoutCell
+        label={t('Subscription')}
+        // isLoading={data.subscription?.isLoading}
+        // hasError={data.subscription?.hasError}
+        // dataTestId="subscription-cell"
+      >
+        {headers?.blockHeight || '-'}
+      </LayoutCell>
     </>
   );
 };
@@ -220,57 +256,57 @@ const CustomRowWrapper = ({
   nodeRadio: string;
   onBlockHeight: (blockHeight: number) => void;
 }) => {
-  const [customUrl, setCustomUrl] = useState('');
+  const [customUrlText, setCustomUrlText] = useState('');
   const [displayCustom, setDisplayCustom] = useState(false);
 
   return (
-    <>
-      <td>
-        <Radio id="node-url-other" value="other" label="" />
-      </td>
-      <td>
-        {nodeRadio === 'other' ? (
-          <>
+    <LayoutRow>
+      <div className="flex w-full mb-2">
+        <Radio
+          id="node-url-custom"
+          value={CUSTOM_NODE_KEY}
+          label={nodeRadio === CUSTOM_NODE_KEY ? '' : t('Other')}
+        />
+        {nodeRadio === CUSTOM_NODE_KEY && (
+          <div
+            data-testid="custom-node"
+            className="flex items-center w-full gap-2"
+          >
             <Input
-              value={customUrl}
-              onChange={(e) => setCustomUrl(e.target.value)}
-              className="border"
+              placeholder="https://"
+              value={customUrlText}
+              onChange={(e) => {
+                setDisplayCustom(false);
+                setCustomUrlText(e.target.value);
+              }}
             />
-            <button
+            <ButtonLink
               onClick={() => {
-                if (!isValidUrl(customUrl)) {
+                if (!isValidUrl(customUrlText)) {
                   return;
                 }
                 setDisplayCustom(true);
               }}
             >
               {t('Check')}
-            </button>
-          </>
-        ) : (
-          t('Other')
+            </ButtonLink>
+          </div>
         )}
-      </td>
+      </div>
       {displayCustom ? (
         <ClientWrapper
-          url={customUrl}
+          url={customUrlText}
           renderChildren={(client) => (
             <RowData
               client={client}
-              url={customUrl}
+              url={customUrlText}
               onBlockHeight={onBlockHeight}
               highestBlock={highestBlock}
             />
           )}
-        ></ClientWrapper>
-      ) : (
-        <>
-          <td></td>
-          <td></td>
-          <td></td>
-        </>
-      )}
-    </>
+        />
+      ) : null}
+    </LayoutRow>
   );
 };
 
