@@ -10,7 +10,6 @@ import {
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useEnvironment } from '../../hooks';
@@ -28,6 +27,18 @@ export const NodeSwitcher = ({
   open: boolean;
   setOpen: (x: boolean) => void;
 }) => {
+  return (
+    <Dialog open={open} onChange={setOpen} size="medium">
+      <NodeSwitcherContainer closeDialog={() => setOpen(false)} />
+    </Dialog>
+  );
+};
+
+const NodeSwitcherContainer = ({
+  closeDialog,
+}: {
+  closeDialog: () => void;
+}) => {
   const { nodes, setUrl, status, VEGA_ENV } = useEnvironment((store) => ({
     status: store.status,
     nodes: store.nodes,
@@ -35,9 +46,7 @@ export const NodeSwitcher = ({
     VEGA_ENV: store.VEGA_ENV,
   }));
 
-  const [nodeRadio, setNodeRadio] = useState<string>(
-    nodes.length > 0 ? '' : CUSTOM_NODE_KEY // if there are no node options default to custom so input box is displayed
-  );
+  const [nodeRadio, setNodeRadio] = useState<string>('');
   const [highestBlock, setHighestBlock] = useState<number | null>(null);
   const [customUrlText, setCustomUrlText] = useState('');
 
@@ -52,9 +61,8 @@ export const NodeSwitcher = ({
       return curr;
     });
   }, []);
-
   return (
-    <Dialog open={open} onChange={setOpen} size="medium">
+    <div>
       <h3 className="uppercase text-xl text-center mb-2">
         {t('Connected node')}
       </h3>
@@ -83,7 +91,6 @@ export const NodeSwitcher = ({
                 <div />
                 <span className="text-right">{t('Response time')}</span>
                 <span className="text-right">{t('Block')}</span>
-                <span className="text-right">{t('Subscription')}</span>
               </LayoutRow>
               <div>
                 {nodes.map((node, index) => {
@@ -131,7 +138,7 @@ export const NodeSwitcher = ({
                 } else {
                   setUrl(nodeRadio);
                 }
-                setOpen(false);
+                closeDialog();
               }}
               data-testid="connect"
             >
@@ -140,7 +147,7 @@ export const NodeSwitcher = ({
           </div>
         </div>
       )}
-    </Dialog>
+    </div>
   );
 };
 
@@ -177,7 +184,8 @@ const RowData = ({
   onBlockHeight: (blockHeight: number) => void;
 }) => {
   const [time, setTime] = useState<number>();
-  const { data, startPolling, stopPolling } = useStatisticsQuery({
+  // no use of data here as we need the data nodes reference to block height
+  const { error, startPolling, stopPolling } = useStatisticsQuery({
     client,
     // pollInterval doesnt seem to work any more
     // https://github.com/apollographql/apollo-client/issues/9819
@@ -212,45 +220,35 @@ const RowData = ({
     }
   }, [headers?.blockHeight, onBlockHeight]);
 
-  const headerBlockHeightClass = classNames('text-right', {
-    // red if datanode block height is more than 5 behind highest block height across all nodes
-    'text-vega-pink':
-      highestBlock !== null &&
-      headers &&
-      headers.blockHeight < highestBlock - 5,
-    // if datanode block height is more than three behind core block height
-    'text-vega-orange':
-      headers &&
-      data &&
-      headers.blockHeight < Number(data.statistics.blockHeight),
-  });
+  const getHasError = () => {
+    if (!headers) {
+      return false;
+    }
+
+    if (error) {
+      return true;
+    }
+
+    if (highestBlock !== null && headers.blockHeight < highestBlock - 3) {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <>
       <LayoutCell
         label={t('Response time')}
-        // isLoading={data.responseTime?.isLoading}
-        // hasError={data.responseTime?.hasError}
-        // dataTestId="response-time-cell"
+        isLoading={time === undefined}
+        dataTestId="response-time-cell"
       >
         {time ? time.toFixed(2) + 'ms' : 'n/a'}
       </LayoutCell>
       <LayoutCell
         label={t('Block')}
-        // isLoading={data.block?.isLoading}
-        // hasError={
-        //   data.block?.hasError ||
-        //   (!!data.block?.value && highestBlock > data.block.value)
-        // }
-        // dataTestId="block-cell"
-      >
-        {data?.statistics.blockHeight || '-'}
-      </LayoutCell>
-      <LayoutCell
-        label={t('Subscription')}
-        // isLoading={data.subscription?.isLoading}
-        // hasError={data.subscription?.hasError}
-        // dataTestId="subscription-cell"
+        isLoading={headers === undefined}
+        hasError={getHasError()}
       >
         {headers?.blockHeight || '-'}
       </LayoutCell>
