@@ -15,13 +15,17 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     },
     '.syntax-highlighter-wrapper .hljs': {
       fontSize: '1rem',
-      fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
+      fontFamily: "'Roboto Mono', monospace",
       display: 'block',
       overflowX: 'auto',
       padding: '1em',
       background: colors.white,
       color: colors.neutral[700],
       border: `1px solid ${colors.neutral[300]}`,
+    },
+    '.syntax-highlighter-wrapper-sm .hljs': {
+      fontSize: '0.875rem',
+      lineHeight: '1.25rem',
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: colors.neutral[800],

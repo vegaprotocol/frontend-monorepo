@@ -45,7 +45,7 @@ export const TxDetailsChainEventWithdrawal = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={withdrawal.vegaAssetId} />
+          <AssetLink assetId={withdrawal.vegaAssetId} />
         </TableCell>
       </TableRow>
     </>

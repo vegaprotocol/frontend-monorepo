@@ -1,13 +1,13 @@
-import React from 'react';
-import { Routes } from '../../../routes/route-names';
-import { useExplorerAssetQuery } from './__generated__/Asset';
-import { Link } from 'react-router-dom';
-
 import type { ComponentProps } from 'react';
 import Hash from '../hash';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  useAssetDataProvider,
+  useAssetDetailsDialogStore,
+} from '@vegaprotocol/assets';
 
-export type AssetLinkProps = Partial<ComponentProps<typeof Link>> & {
-  id: string;
+export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
+  assetId: string;
 };
 
 /**
@@ -15,22 +15,21 @@ export type AssetLinkProps = Partial<ComponentProps<typeof Link>> & {
  * with a link to the assets list. If the name does not come back
  * it will use the ID instead.
  */
-const AssetLink = ({ id, ...props }: AssetLinkProps) => {
-  const { data } = useExplorerAssetQuery({
-    variables: { id },
-  });
+export const AssetLink = ({ assetId, ...props }: AssetLinkProps) => {
+  const { data: asset } = useAssetDataProvider(assetId);
 
-  let label: string = id;
-
-  if (data?.asset?.name) {
-    label = data.asset.name;
-  }
-
+  const open = useAssetDetailsDialogStore((state) => state.open);
+  const label = asset?.name ? asset.name : assetId;
   return (
-    <Link className="underline" {...props} to={`/${Routes.ASSETS}#${id}`}>
+    <ButtonLink
+      data-testid="asset-link"
+      disabled={!asset}
+      onClick={(e) => {
+        open(assetId, e.target as HTMLElement);
+      }}
+      {...props}
+    >
       <Hash text={label} />
-    </Link>
+    </ButtonLink>
   );
 };
-
-export default AssetLink;

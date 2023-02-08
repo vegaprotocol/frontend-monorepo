@@ -9,6 +9,23 @@ import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-web
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { Footer } from './components/footer/footer';
 import { AnnouncementBanner, ExternalLink } from '@vegaprotocol/ui-toolkit';
+import {
+  AssetDetailsDialog,
+  useAssetDetailsDialogStore,
+} from '@vegaprotocol/assets';
+
+const DialogsContainer = () => {
+  const { isOpen, id, trigger, asJson, setOpen } = useAssetDetailsDialogStore();
+  return (
+    <AssetDetailsDialog
+      assetId={id}
+      trigger={trigger || null}
+      asJson={asJson}
+      open={isOpen}
+      onChange={setOpen}
+    />
+  );
+};
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -56,6 +73,8 @@ function App() {
           <Main />
           <Footer />
         </div>
+
+        <DialogsContainer />
       </NetworkLoader>
     </TendermintWebsocketProvider>
   );
