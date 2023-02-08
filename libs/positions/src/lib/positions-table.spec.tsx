@@ -92,7 +92,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   });
   let cells = screen.getAllByRole('gridcell');
 
-  expect(cells[2].classList.contains('text-vega-green')).toBeTruthy();
+  expect(cells[2].classList.contains('text-vega-green-550')).toBeTruthy();
   expect(cells[2].classList.contains('text-vega-pink')).toBeFalsy();
   expect(cells[2].textContent).toEqual('+100');
   expect(cells[1].textContent).toEqual('1,230.0');
