@@ -1,9 +1,15 @@
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
 import { t, useNavigatorOnline } from '@vegaprotocol/react-helpers';
 import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
+import { useGlobalStore } from '../../stores';
 
 export const Footer = () => {
-  const { VEGA_URL, blockDifference, setNodeSwitcherOpen } = useEnvironment();
+  const { VEGA_URL } = useEnvironment();
+  const setNodeSwitcher = useGlobalStore(
+    (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
+  );
+  const { blockDiff } = useNodeHealth();
+
   return (
     <footer className="px-4 py-1 text-xs border-t border-default">
       <div className="flex justify-between">
@@ -11,11 +17,14 @@ export const Footer = () => {
           {VEGA_URL && (
             <>
               <NodeHealth
-                blockDiff={blockDifference}
-                openNodeSwitcher={setNodeSwitcherOpen}
+                blockDiff={blockDiff}
+                openNodeSwitcher={() => setNodeSwitcher(true)}
               />
               {' | '}
-              <NodeUrl url={VEGA_URL} openNodeSwitcher={setNodeSwitcherOpen} />
+              <NodeUrl
+                url={VEGA_URL}
+                openNodeSwitcher={() => setNodeSwitcher(true)}
+              />
             </>
           )}
         </div>
@@ -38,7 +47,7 @@ const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
 
 interface NodeHealthProps {
   openNodeSwitcher: () => void;
-  blockDiff: number;
+  blockDiff: number | null;
 }
 
 // How many blocks behind the most advanced block that is
@@ -57,7 +66,7 @@ export const NodeHealth = ({
   if (!online) {
     text = t('Offline');
     intent = Intent.Danger;
-  } else if (blockDiff < 0) {
+  } else if (blockDiff === null) {
     // Block height query failed and null was returned
     text = t('Non operational');
     intent = Intent.Danger;
@@ -67,9 +76,9 @@ export const NodeHealth = ({
   }
 
   return (
-    <span>
+    <>
       <Indicator variant={intent} />
       <ButtonLink onClick={openNodeSwitcher}>{text}</ButtonLink>
-    </span>
+    </>
   );
 };

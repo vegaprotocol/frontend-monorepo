@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 import { useStatisticsQuery } from '../utils/__generated__/Node';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
-import { useEnvironment } from './use-environment';
+import { useEnvironment } from './use-environment-2';
 import { fromNanoSeconds } from '@vegaprotocol/react-helpers';
-import { useEnvironment2 } from './use-environment-2';
 
 export const useNodeHealth = () => {
-  const url = useEnvironment2((store) => store.url);
+  const url = useEnvironment((store) => store.VEGA_URL);
   const headerStore = useHeaderStore();
   const headers = url ? headerStore[url] : undefined;
   const { data } = useStatisticsQuery({

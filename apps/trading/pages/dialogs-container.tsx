@@ -9,9 +9,16 @@ import { DepositDialog } from '@vegaprotocol/deposits';
 import { Web3ConnectUncontrolledDialog } from '@vegaprotocol/web3';
 import { WelcomeDialog } from '../components/welcome-dialog';
 import { TransferDialog } from '@vegaprotocol/accounts';
+import { NodeSwitcher } from '@vegaprotocol/environment';
+import { useGlobalStore } from '../stores';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
+  const { nodeSwitcherOpen, setNodeSwitcherOpen } = useGlobalStore((store) => ({
+    nodeSwitcherOpen: store.nodeSwitcherDialog,
+    setNodeSwitcherOpen: (open: boolean) =>
+      store.update({ nodeSwitcherDialog: open }),
+  }));
 
   return (
     <>
@@ -27,6 +34,7 @@ const DialogsContainer = () => {
       <Web3ConnectUncontrolledDialog />
       <CreateWithdrawalDialog />
       <TransferDialog />
+      <NodeSwitcher open={nodeSwitcherOpen} setOpen={setNodeSwitcherOpen} />
     </>
   );
 };

@@ -26,6 +26,7 @@ import {
   useEnvironment,
   EnvironmentProvider,
   NetworkLoader,
+  useInitializeEnv,
 } from '@vegaprotocol/environment';
 import { createConnectors } from './lib/web3-connectors';
 import { ENV } from './config/env';
@@ -166,12 +167,12 @@ const AppContainer = () => {
 };
 
 function App() {
+  useInitializeEnv();
+
   return (
-    <EnvironmentProvider>
-      <NetworkLoader cache={cache}>
-        <AppContainer />
-      </NetworkLoader>
-    </EnvironmentProvider>
+    <NetworkLoader cache={cache}>
+      <AppContainer />
+    </NetworkLoader>
   );
 }
 

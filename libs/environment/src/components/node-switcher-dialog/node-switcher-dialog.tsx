@@ -1,12 +1,12 @@
 import type { ComponentProps } from 'react';
 import { Dialog, Loader } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { NodeSwitcher } from '../node-switcher';
-import { useEnvironment } from '../../hooks/use-environment';
+import { NodeSwitcher2 } from '../node-switcher';
+import { useEnvironment } from '../../hooks/use-environment-2';
 import type { Configuration } from '../../types';
 
 type NodeSwitcherDialogProps = Pick<
-  ComponentProps<typeof NodeSwitcher>,
+  ComponentProps<typeof NodeSwitcher2>,
   'initialErrorType' | 'onConnect'
 > & {
   loading: boolean;
@@ -44,7 +44,7 @@ export const NodeSwitcherDialog = ({
             </span>
             {t(' chain ID')}
           </p>
-          <NodeSwitcher
+          <NodeSwitcher2
             config={config}
             initialErrorType={initialErrorType}
             onConnect={(url) => {

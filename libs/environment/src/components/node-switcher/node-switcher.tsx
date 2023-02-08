@@ -7,7 +7,7 @@ import {
   Link,
   Radio,
 } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '../../hooks/use-environment';
+import { useEnvironment } from '../../hooks/use-environment-2';
 import { useNodes } from '../../hooks/use-nodes';
 import {
   getIsNodeLoading,
@@ -40,7 +40,7 @@ const getHighestBlock = (state: Record<string, NodeData>) => {
   }, 0);
 };
 
-export const NodeSwitcher = ({
+export const NodeSwitcher2 = ({
   config,
   initialErrorType,
   onConnect,

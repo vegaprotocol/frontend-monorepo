@@ -86,7 +86,7 @@ export const EnvironmentProvider = ({
     environment.MAINTENANCE_PAGE
   );
 
-  const blockDifference = useNodeHealth(clients, environment.VEGA_URL);
+  // const blockDifference = useNodeHealth(clients, environment.VEGA_URL);
 
   const nodeKeys = Object.keys(nodes);
 
@@ -150,7 +150,7 @@ export const EnvironmentProvider = ({
         ...environment,
         configLoading: loading,
         networkError,
-        blockDifference,
+        blockDifference: 0,
         nodeSwitcherOpen: isNodeSwitcherOpen,
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
@@ -170,7 +170,7 @@ export const EnvironmentProvider = ({
   );
 };
 
-export const useEnvironment = () => {
+export const useEnvironment2 = () => {
   const context = useContext(EnvironmentContext);
   if (context === undefined) {
     throw new Error(
