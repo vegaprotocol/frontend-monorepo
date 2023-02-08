@@ -24,7 +24,6 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import {
   useEnvironment,
-  EnvironmentProvider,
   NetworkLoader,
   useInitializeEnv,
 } from '@vegaprotocol/environment';

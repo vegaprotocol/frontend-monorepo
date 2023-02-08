@@ -26,17 +26,17 @@ type Actions = {
 };
 
 const EnvSchema = z.object({
-  VEGA_URL: z.optional(z.string()),
+  VEGA_URL: z.string().url().optional(),
   VEGA_WALLET_URL: z.string(),
   VEGA_CONFIG_URL: z.string(),
-  GIT_BRANCH: z.optional(z.string()),
-  GIT_COMMIT_HASH: z.optional(z.string()),
-  GIT_ORIGIN_URL: z.optional(z.string()),
-  GITHUB_FEEDBACK_URL: z.optional(z.string()),
+  GIT_BRANCH: z.string().optional(),
+  GIT_COMMIT_HASH: z.string().optional(),
+  GIT_ORIGIN_URL: z.string().optional(),
+  GITHUB_FEEDBACK_URL: z.string().optional(),
   VEGA_ENV: z.nativeEnum(Networks),
-  VEGA_EXPLORER_URL: z.optional(z.string()),
-  VEGA_TOKEN_URL: z.optional(z.string()),
-  VEGA_DOCS_URL: z.optional(z.string()),
+  VEGA_EXPLORER_URL: z.string().optional(),
+  VEGA_TOKEN_URL: z.string().optional(),
+  VEGA_DOCS_URL: z.string().optional(),
   VEGA_NETWORKS: z
     .object(
       Object.keys(Networks).reduce(
@@ -77,6 +77,7 @@ export const useEnvironment = create<Env & Actions>((set, get) => ({
   initialize: async () => {
     const state = get();
     set({ status: 'pending' });
+
     const storedUrl = LocalStorage.getItem('vega_url');
 
     let nodes: string[] | undefined;
@@ -137,13 +138,16 @@ export const useEnvironment = create<Env & Actions>((set, get) => ({
 }));
 
 export const useInitializeEnv = () => {
-  const { initialize, ...env } = useEnvironment();
+  const { initialize, status } = useEnvironment((store) => ({
+    status: store.status,
+    initialize: store.initialize,
+  }));
 
   useEffect(() => {
-    if (env.status === 'default') {
+    if (status === 'default') {
       initialize();
     }
-  }, [env.status, initialize]);
+  }, [status, initialize]);
 };
 
 export const ConfigSchema = z.object({
@@ -237,6 +241,7 @@ function compileEnvVars() {
     GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'],
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
   };
+
   return EnvSchema.parse(env);
 }
 

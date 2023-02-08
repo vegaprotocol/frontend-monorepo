@@ -46,7 +46,9 @@ const NodeSwitcherContainer = ({
     VEGA_ENV: store.VEGA_ENV,
   }));
 
-  const [nodeRadio, setNodeRadio] = useState<string>('');
+  const [nodeRadio, setNodeRadio] = useState<string>(
+    nodes.length > 0 ? '' : CUSTOM_NODE_KEY
+  );
   const [highestBlock, setHighestBlock] = useState<number | null>(null);
   const [customUrlText, setCustomUrlText] = useState('');
 
@@ -132,6 +134,7 @@ const NodeSwitcherContainer = ({
           <div className="mt-4">
             <Button
               fill={true}
+              disabled={!nodeRadio}
               onClick={() => {
                 if (nodeRadio === CUSTOM_NODE_KEY) {
                   setUrl(customUrlText);
@@ -185,12 +188,13 @@ const RowData = ({
 }) => {
   const [time, setTime] = useState<number>();
   // no use of data here as we need the data nodes reference to block height
-  const { error, startPolling, stopPolling } = useStatisticsQuery({
-    client,
-    // pollInterval doesnt seem to work any more
-    // https://github.com/apollographql/apollo-client/issues/9819
-    ssr: false,
-  });
+  const { data, error, loading, startPolling, stopPolling } =
+    useStatisticsQuery({
+      client,
+      // pollInterval doesnt seem to work any more
+      // https://github.com/apollographql/apollo-client/issues/9819
+      ssr: false,
+    });
   const headerStore = useHeaderStore();
   const headers = headerStore[url];
 
@@ -207,12 +211,13 @@ const RowData = ({
   }, [startPolling, stopPolling]);
 
   useEffect(() => {
+    // every time we get data measure response speed
     const requestUrl = new URL(url);
     const requests = window.performance.getEntriesByName(requestUrl.href);
     const { duration } =
       (requests.length && requests[requests.length - 1]) || {};
     setTime(duration);
-  }, [url]);
+  }, [url, data]);
 
   useEffect(() => {
     if (headers?.blockHeight) {
@@ -221,12 +226,12 @@ const RowData = ({
   }, [headers?.blockHeight, onBlockHeight]);
 
   const getHasError = () => {
-    if (!headers) {
-      return false;
-    }
-
     if (error) {
       return true;
+    }
+
+    if (!headers) {
+      return false;
     }
 
     if (highestBlock !== null && headers.blockHeight < highestBlock - 3) {
@@ -241,16 +246,17 @@ const RowData = ({
       <LayoutCell
         label={t('Response time')}
         isLoading={time === undefined}
+        hasError={Boolean(error)}
         dataTestId="response-time-cell"
       >
-        {time ? time.toFixed(2) + 'ms' : 'n/a'}
+        {error ? 'n/a' : time ? time.toFixed(2) + 'ms' : 'n/a'}
       </LayoutCell>
       <LayoutCell
         label={t('Block')}
-        isLoading={headers === undefined}
+        isLoading={loading}
         hasError={getHasError()}
       >
-        {headers?.blockHeight || '-'}
+        {error ? 'n/a' : headers?.blockHeight || '-'}
       </LayoutCell>
     </>
   );
@@ -273,6 +279,7 @@ const CustomRowWrapper = ({
 }) => {
   const [displayCustom, setDisplayCustom] = useState(false);
   const showInput = nodeRadio === CUSTOM_NODE_KEY || nodes.length <= 0;
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <LayoutRow>
@@ -290,6 +297,7 @@ const CustomRowWrapper = ({
             <Input
               placeholder="https://"
               value={inputText}
+              hasError={Boolean(error)}
               onChange={(e) => {
                 setDisplayCustom(false);
                 setInputText(e.target.value);
@@ -298,6 +306,7 @@ const CustomRowWrapper = ({
             <ButtonLink
               onClick={() => {
                 if (!isValidUrl(inputText)) {
+                  setError('Invalid url');
                   return;
                 }
                 setDisplayCustom(true);
