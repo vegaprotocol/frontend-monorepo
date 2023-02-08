@@ -50,6 +50,20 @@ jobs:
           projects=[${projects// /,}]
           echo PROJECTS=$projects >> $GITHUB_ENV
 
+      # Rename required because some of the files contains the colon character (in the dates)
+      - name: Rename files to allow archive
+        if: ${{ always() }}
+        run: |
+          while read -r file; do
+            mv "${file}" "$(echo ${file} | sed 's|:|-|g')"
+          done< <(find /home/runner/.vegacapsule/testnet/logs -type f)
+      
+      - uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: logs-${{ matrix.project }}
+          path: /home/runner/.vegacapsule/testnet/logs
+
     outputs:
       projects: ${{ env.PROJECTS }}
 
