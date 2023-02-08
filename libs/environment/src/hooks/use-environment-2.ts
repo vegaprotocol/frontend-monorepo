@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';
@@ -13,9 +13,11 @@ type ClientCollection = {
 };
 
 type EnvVars = z.infer<typeof EnvSchema>;
+
 type EnvState = {
   nodes: string[];
   status: 'default' | 'pending' | 'success' | 'failed';
+  error: string | null;
 };
 type Env = EnvVars & EnvState;
 type Actions = {
@@ -43,7 +45,7 @@ const EnvSchema = z.object({
           [env]: z.optional(z.string()),
         }),
         {}
-      )
+      ) as Record<Networks, z.ZodOptional<z.ZodString>>
     )
     .strict({
       message: `All keys in NX_VEGA_NETWORKS must represent a valid environment: ${Object.keys(
@@ -63,32 +65,28 @@ const EnvSchema = z.object({
   ETH_WALLET_MNEMONIC: z.optional(z.string()),
 });
 
-const envvars = compileEnvVars();
-
 export const useEnvironment = create<Env & Actions>((set, get) => ({
-  ...envvars,
+  ...compileEnvVars(),
   nodes: [],
   status: 'default',
+  error: null,
   setUrl: (url) => {
-    set({ VEGA_URL: url });
+    set({ VEGA_URL: url, status: 'success', error: null });
     LocalStorage.setItem('vega_url', url);
   },
   initialize: async () => {
     const state = get();
-    if (state.status === 'pending') return;
-    const storedUrl = LocalStorage.getItem('vega_url');
     set({ status: 'pending' });
+    const storedUrl = LocalStorage.getItem('vega_url');
 
-    let nodes: string[];
+    let nodes: string[] | undefined;
 
     try {
       nodes = await fetchConfig(state.VEGA_CONFIG_URL);
+      set({ nodes });
     } catch (err) {
-      set({ status: 'failed' });
-      return;
+      console.warn('could not fetch node config');
     }
-
-    set({ nodes });
 
     // user has previously loaded the app and found
     // a successful node, or chosen one manually - reconnect
@@ -98,8 +96,17 @@ export const useEnvironment = create<Env & Actions>((set, get) => ({
       return;
     }
 
+    // VEGA_URL env var is set no need to find suitable node
     if (state.VEGA_URL) {
       set({ status: 'success' });
+      return;
+    }
+
+    if (!nodes || !nodes.length) {
+      set({
+        status: 'failed',
+        error: t(`Failed to fetch node config from ${state.VEGA_CONFIG_URL}`),
+      });
       return;
     }
 
@@ -139,14 +146,14 @@ export const useInitializeEnv = () => {
   }, [env.status, initialize]);
 };
 
-export const configSchema = z.object({
+export const ConfigSchema = z.object({
   hosts: z.array(z.string()),
 });
 
 const fetchConfig = async (url: string) => {
   const res = await fetch(url);
   const cfg = await res.json();
-  const result = configSchema.parse(cfg);
+  const result = ConfigSchema.parse(cfg);
   return result.hosts;
 };
 
@@ -210,26 +217,43 @@ const testQuery = async (client: Client) => {
 // };
 
 function compileEnvVars() {
-  const env: EnvVars = {
-    VEGA_URL: process.env['NX_VEGA_URL'] || '',
-    VEGA_ENV: process.env['NX_VEGA_ENV'] as Networks,
-    VEGA_NETWORKS: JSON.parse(
-      process.env['NX_VEGA_NETWORKS'] || '{}'
-    ) as Record<Networks, string>,
-    VEGA_CONFIG_URL: process.env['NX_VEGA_CONFIG_URL'] || '',
-    GIT_BRANCH: process.env['GIT_COMMIT_BRANCH'] || '',
-    GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'] || '',
-    GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'] || '',
-    ETHEREUM_PROVIDER_URL: process.env['NX_ETHEREUM_PROVIDER_URL'] || '',
-    ETH_LOCAL_PROVIDER_URL: process.env['NX_ETH_LOCAL_PROVIDER_URL'] || '',
-    ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'] || '',
-    ETHERSCAN_URL: process.env['NX_ETHERSCAN_URL'] || '',
-    VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'] || '',
-    VEGA_EXPLORER_URL: process.env['NX_VEGA_EXPLORER_URL'] || '',
-    VEGA_TOKEN_URL: process.env['NX_TOKEN_URL'] || '',
-    GITHUB_FEEDBACK_URL: process.env['NX_GITHUB_FEEDBACK_URL'] || '',
-    VEGA_WALLET_URL: process.env['NX_VEGA_WALLET_URL'] || '',
-    HOSTED_WALLET_URL: process.env['NX_HOSTED_WALLET_URL'] || '',
+  const env = {
+    VEGA_URL: process.env['NX_VEGA_URL'],
+    VEGA_NETWORKS: parseJSON(process.env['NX_VEGA_NETWORKS']),
+    VEGA_ENV: process.env['NX_VEGA_ENV'],
+    VEGA_CONFIG_URL: process.env['NX_VEGA_CONFIG_URL'],
+    VEGA_WALLET_URL: process.env['NX_VEGA_WALLET_URL'],
+    HOSTED_WALLET_URL: process.env['NX_HOSTED_WALLET_URL'],
+    ETHERSCAN_URL: process.env['NX_ETHERSCAN_URL'],
+    ETHEREUM_PROVIDER_URL: process.env['NX_ETHEREUM_PROVIDER_URL'],
+    ETH_LOCAL_PROVIDER_URL: process.env['NX_ETH_LOCAL_PROVIDER_URL'],
+    ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'],
+    VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'],
+    VEGA_EXPLORER_URL: process.env['NX_VEGA_EXPLORER_URL'],
+    VEGA_TOKEN_URL: process.env['NX_TOKEN_URL'],
+    GITHUB_FEEDBACK_URL: process.env['NX_GITHUB_FEEDBACK_URL'],
+    MAINTENANCE_PAGE: parseBoolean(process.env['NX_MAINTENANCE_PAGE']),
+    GIT_BRANCH: process.env['GIT_COMMIT_BRANCH'],
+    GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'],
+    GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
   };
   return EnvSchema.parse(env);
+}
+
+function parseJSON(value?: string) {
+  if (value) {
+    try {
+      return JSON.parse(value);
+    } catch (e) {
+      console.warn(
+        'Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.'
+      );
+      return {};
+    }
+  }
+  return {};
+}
+
+function parseBoolean(value?: string) {
+  return ['true', '1', 'yes'].includes(value?.toLowerCase() || '');
 }

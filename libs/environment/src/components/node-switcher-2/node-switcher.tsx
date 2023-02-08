@@ -35,8 +35,11 @@ export const NodeSwitcher = ({
     VEGA_ENV: store.VEGA_ENV,
   }));
 
-  const [nodeRadio, setNodeRadio] = useState<string>('');
+  const [nodeRadio, setNodeRadio] = useState<string>(
+    nodes.length > 0 ? '' : CUSTOM_NODE_KEY // if there are no node options default to custom so input box is displayed
+  );
   const [highestBlock, setHighestBlock] = useState<number | null>(null);
+  const [customUrlText, setCustomUrlText] = useState('');
 
   const handleHighestBlock = useCallback((blockHeight: number) => {
     setHighestBlock((curr) => {
@@ -109,6 +112,9 @@ export const NodeSwitcher = ({
                   );
                 })}
                 <CustomRowWrapper
+                  inputText={customUrlText}
+                  setInputText={setCustomUrlText}
+                  nodes={nodes}
                   highestBlock={highestBlock}
                   onBlockHeight={handleHighestBlock}
                   nodeRadio={nodeRadio}
@@ -120,7 +126,12 @@ export const NodeSwitcher = ({
             <Button
               fill={true}
               onClick={() => {
-                setUrl(nodeRadio);
+                if (nodeRadio === CUSTOM_NODE_KEY) {
+                  setUrl(customUrlText);
+                } else {
+                  setUrl(nodeRadio);
+                }
+                setOpen(false);
               }}
               data-testid="connect"
             >
@@ -248,16 +259,22 @@ const RowData = ({
 };
 
 const CustomRowWrapper = ({
+  inputText,
+  setInputText,
+  nodes,
   highestBlock,
   nodeRadio,
   onBlockHeight,
 }: {
+  inputText: string;
+  setInputText: (text: string) => void;
+  nodes: string[];
   highestBlock: number | null;
   nodeRadio: string;
   onBlockHeight: (blockHeight: number) => void;
 }) => {
-  const [customUrlText, setCustomUrlText] = useState('');
   const [displayCustom, setDisplayCustom] = useState(false);
+  const showInput = nodeRadio === CUSTOM_NODE_KEY || nodes.length <= 0;
 
   return (
     <LayoutRow>
@@ -267,22 +284,22 @@ const CustomRowWrapper = ({
           value={CUSTOM_NODE_KEY}
           label={nodeRadio === CUSTOM_NODE_KEY ? '' : t('Other')}
         />
-        {nodeRadio === CUSTOM_NODE_KEY && (
+        {showInput && (
           <div
             data-testid="custom-node"
             className="flex items-center w-full gap-2"
           >
             <Input
               placeholder="https://"
-              value={customUrlText}
+              value={inputText}
               onChange={(e) => {
                 setDisplayCustom(false);
-                setCustomUrlText(e.target.value);
+                setInputText(e.target.value);
               }}
             />
             <ButtonLink
               onClick={() => {
-                if (!isValidUrl(customUrlText)) {
+                if (!isValidUrl(inputText)) {
                   return;
                 }
                 setDisplayCustom(true);
@@ -295,11 +312,11 @@ const CustomRowWrapper = ({
       </div>
       {displayCustom ? (
         <ClientWrapper
-          url={customUrlText}
+          url={inputText}
           renderChildren={(client) => (
             <RowData
               client={client}
-              url={customUrlText}
+              url={inputText}
               onBlockHeight={onBlockHeight}
               highestBlock={highestBlock}
             />

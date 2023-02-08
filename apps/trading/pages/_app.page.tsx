@@ -20,13 +20,14 @@ import {
   envTriggerMapping,
   NetworkLoader,
   Networks,
+  NodeSwitcher,
   useEnvironment,
   useInitializeEnv,
 } from '@vegaprotocol/environment';
 import { Web3Provider } from '../components/app-loader';
 import './styles.css';
 import './gen-styles.scss';
-import { usePageTitleStore } from '../stores';
+import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
@@ -35,9 +36,9 @@ import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
-import { Loader } from '@vegaprotocol/ui-toolkit';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import classNames from 'classnames';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -114,23 +115,46 @@ const DynamicLoader = dynamic(
 );
 
 function VegaTradingApp(props: AppProps) {
-  const status = useEnvironment((store) => store.status);
+  const { status, error } = useEnvironment((store) => ({
+    status: store.status,
+    error: store.error,
+  }));
+  const { nodeSwitcherOpen, setNodeSwitcher } = useGlobalStore((store) => ({
+    nodeSwitcherOpen: store.nodeSwitcherDialog,
+    setNodeSwitcher: (open: boolean) =>
+      store.update({ nodeSwitcherDialog: open }),
+  }));
 
   useInitializeEnv();
 
-  if (status === 'default' || status === 'pending') {
-    return <DynamicLoader />;
+  // Prevent HashRouter from being server side rendered as it
+  // relies on presence of document object
+  if (status === 'default') {
+    return null;
   }
 
   return (
     <HashRouter>
-      <NetworkLoader cache={cacheConfig} skeleton={<Loader />}>
+      <NetworkLoader
+        cache={cacheConfig}
+        skeleton={<DynamicLoader />}
+        failure={
+          <div className="text-center">
+            <h1 className="text-xl mb-4">{t('Could not initialize app')}</h1>
+            <p className="text-sm mb-8">{error}</p>
+            <Button onClick={() => setNodeSwitcher(true)}>
+              {t('Change node')}
+            </Button>
+          </div>
+        }
+      >
         <VegaWalletProvider>
           <Web3Provider>
             <AppBody {...props} />
           </Web3Provider>
         </VegaWalletProvider>
       </NetworkLoader>
+      <NodeSwitcher open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </HashRouter>
   );
 }
