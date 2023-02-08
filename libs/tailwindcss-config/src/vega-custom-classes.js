@@ -10,6 +10,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.liga-0-calt-0': {
       fontFeatureSettings: "'liga' 0, 'calt' 0",
     },
+    '.liga': {
+      fontFeatureSettings: "'liga'",
+    },
     '.syntax-highlighter-wrapper .hljs': {
       fontSize: '1rem',
       fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
@@ -22,17 +25,17 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: colors.neutral[800],
-      color: theme.colors.vega.green,
+      color: theme.colors.vega.green.DEFAULT,
       border: 0,
     },
     '.syntax-highlighter-wrapper .hljs-literal': {
-      color: theme.colors.vega.pink,
+      color: theme.colors.vega.pink.DEFAULT,
     },
     '.syntax-highlighter-wrapper .hljs-number': {
-      color: theme.colors.vega.orange,
+      color: theme.colors.vega.orange.DEFAULT,
     },
     '.syntax-highlighter-wrapper .hljs-string': {
-      color: theme.colors.vega.blue,
+      color: theme.colors.vega.blue.DEFAULT,
     },
     '.clip-path-rounded': {
       clipPath: 'circle(50%)',

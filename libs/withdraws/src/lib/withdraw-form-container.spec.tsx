@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Account } from '@vegaprotocol/accounts';
 import { WithdrawFormContainer } from './withdraw-form-container';
@@ -95,7 +95,7 @@ describe('WithdrawFormContainer', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
-  it('should be properly rendered', () => {
+  it('should be properly rendered', async () => {
     mockData = [
       { ...account1 },
       { ...account2 },
@@ -190,48 +190,68 @@ describe('WithdrawFormContainer', () => {
         __typename: 'AccountBalance',
       },
     ];
-    render(
-      <MockedProvider>
-        <WithdrawFormContainer {...props} />
-      </MockedProvider>
-    );
-    expect(screen.getByTestId('select-asset')).toBeInTheDocument();
-    expect(screen.getAllByRole('option')).toHaveLength(3);
+    let rendererContainer: Element;
+    await act(() => {
+      const { container } = render(<WithdrawFormContainer {...props} />, {
+        wrapper: MockedProvider,
+      });
+      rendererContainer = container;
+    });
+    await expect(screen.getByTestId('select-asset')).toBeInTheDocument();
+    await waitFor(() => {
+      const options = rendererContainer.querySelectorAll(
+        'select[name="asset"] option'
+      );
+      expect(options).toHaveLength(3);
+    });
   });
 
-  it('should display no data message', () => {
+  it('should display no data message', async () => {
     mockData = null;
-    render(
-      <MockedProvider>
-        <WithdrawFormContainer {...props} />
-      </MockedProvider>
-    );
+    await act(() => {
+      render(
+        <MockedProvider>
+          <WithdrawFormContainer {...props} />
+        </MockedProvider>
+      );
+    });
     expect(
       screen.getByText('You have no assets to withdraw')
     ).toBeInTheDocument();
   });
 
-  it('should filter out zero balance account assets', () => {
+  it('should filter out zero balance account assets', async () => {
+    let rendererContainer: Element;
     mockData = [{ ...account1 }, { ...account2, balance: '0' }];
-    render(
-      <MockedProvider>
-        <WithdrawFormContainer {...props} />
-      </MockedProvider>
-    );
+    await act(() => {
+      const { container } = render(
+        <MockedProvider>
+          <WithdrawFormContainer {...props} />
+        </MockedProvider>
+      );
+      rendererContainer = container;
+    });
     expect(screen.getByTestId('select-asset')).toBeInTheDocument();
-    expect(screen.getAllByRole('option')).toHaveLength(2);
+    await waitFor(() => {
+      const options = rendererContainer.querySelectorAll(
+        'select[name="asset"] option'
+      );
+      expect(options).toHaveLength(2);
+    });
   });
 
-  it('when no accounts have a balance should should display no data message', () => {
+  it('when no accounts have a balance should should display no data message', async () => {
     mockData = [
       { ...account1, balance: '0' },
       { ...account2, balance: '0' },
     ];
-    render(
-      <MockedProvider>
-        <WithdrawFormContainer {...props} />
-      </MockedProvider>
-    );
+    await act(() => {
+      render(
+        <MockedProvider>
+          <WithdrawFormContainer {...props} />
+        </MockedProvider>
+      );
+    });
     expect(
       screen.getByText('You have no assets to withdraw')
     ).toBeInTheDocument();

@@ -20,7 +20,10 @@ export function NetworkLoader({
 
   const client = useMemo(() => {
     if (VEGA_URL) {
-      return createClient(VEGA_URL, cache);
+      return createClient({
+        url: VEGA_URL,
+        cacheConfig: cache,
+      });
     }
     return undefined;
   }, [VEGA_URL, cache]);

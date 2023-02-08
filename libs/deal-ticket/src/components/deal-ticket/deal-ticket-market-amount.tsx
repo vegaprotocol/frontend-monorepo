@@ -20,9 +20,8 @@ export const DealTicketMarketAmount = ({
   marketData,
   sizeError,
 }: DealTicketMarketAmountProps) => {
-  const quoteName =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
-  const sizeStep = toDecimal(market.positionDecimalPlaces);
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const price = getMarketPrice(marketData);
 
   const priceFormatted = price

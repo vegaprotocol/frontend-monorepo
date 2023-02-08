@@ -14,6 +14,7 @@ export const candlesQuery = (
     market: {
       id: 'market-0',
       decimalPlaces: 5,
+      positionDecimalPlaces: 0,
       tradableInstrument: {
         instrument: {
           id: '',

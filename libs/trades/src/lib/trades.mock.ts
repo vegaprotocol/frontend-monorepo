@@ -1,3 +1,4 @@
+import { Side } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
@@ -47,6 +48,7 @@ export const tradesUpdateSubscription = (
         size: '24',
         createdAt: '2022-04-06T16:19:42.692598951Z',
         marketId: 'market-0',
+        aggressor: Side.SIDE_BUY,
       },
     ],
   };
@@ -59,6 +61,7 @@ const trades: TradeFieldsFragment[] = [
     price: '17116898',
     size: '24',
     createdAt: '2022-04-06T16:19:42.692598951Z',
+    aggressor: Side.SIDE_BUY,
     market: {
       id: 'market-0',
       __typename: 'Market',
@@ -70,6 +73,7 @@ const trades: TradeFieldsFragment[] = [
     price: '17209102',
     size: '7',
     createdAt: '2022-04-07T06:59:44.835686754Z',
+    aggressor: Side.SIDE_SELL,
     market: {
       id: 'market-0',
       __typename: 'Market',
@@ -81,6 +85,7 @@ const trades: TradeFieldsFragment[] = [
     price: '17106734',
     size: '18',
     createdAt: '2022-04-07T17:56:47.997938583Z',
+    aggressor: Side.SIDE_BUY,
     market: {
       id: 'market-0',
       __typename: 'Market',

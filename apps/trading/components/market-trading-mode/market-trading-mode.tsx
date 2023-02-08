@@ -3,9 +3,9 @@ import { t } from '@vegaprotocol/react-helpers';
 import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { useInView } from 'react-intersection-observer';
 import * as Schema from '@vegaprotocol/types';
-import { useStaticMarketData } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { useStaticMarketData } from '@vegaprotocol/market-list';
 
 const getTradingModeLabel = (
   marketTradingMode?: Schema.MarketTradingMode,

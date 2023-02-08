@@ -110,6 +110,7 @@ export const WithdrawalsTable = (
           complete: (withdrawal: WithdrawalFieldsFragment) => {
             createWithdrawApproval(withdrawal);
           },
+          ethUrl: ETHERSCAN_URL,
         }}
         cellRendererSelector={({
           data,
@@ -228,12 +229,14 @@ export const VerificationStatus = ({ state }: { state: VerifyState }) => {
     );
     return (
       <>
-        <p className="mb-2">
-          {t("The amount you're withdrawing has triggered a time delay")}
-        </p>
+        <p>{t("The amount you're withdrawing has triggered a time delay")}</p>
         <p>{t(`Cannot be completed until ${formattedTime}`)}</p>
       </>
     );
+  }
+
+  if (state.status === ApprovalStatus.Ready) {
+    return <p>{t('The withdrawal has been approved.')}</p>;
   }
 
   return null;

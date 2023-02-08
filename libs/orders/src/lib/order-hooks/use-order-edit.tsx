@@ -1,10 +1,10 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useState, useCallback } from 'react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
-import type { OrderEventFieldsFragment } from './';
+import type { OrderSubFieldsFragment } from './';
 import * as Sentry from '@sentry/react';
 import type { Order } from '../components';
-import { useOrderEvent } from './use-order-event';
+import { useOrderUpdate } from './use-order-update';
 import BigNumber from 'bignumber.js';
 
 export interface EditOrderArgs {
@@ -16,7 +16,7 @@ export const useOrderEdit = (order: Order | null) => {
   const { pubKey } = useVegaWallet();
 
   const [updatedOrder, setUpdatedOrder] =
-    useState<OrderEventFieldsFragment | null>(null);
+    useState<OrderSubFieldsFragment | null>(null);
 
   const {
     send,
@@ -26,7 +26,7 @@ export const useOrderEdit = (order: Order | null) => {
     Dialog,
   } = useVegaTransaction();
 
-  const waitForOrderEvent = useOrderEvent(transaction);
+  const waitForOrderUpdate = useOrderUpdate(transaction);
 
   const reset = useCallback(() => {
     resetTransaction();
@@ -61,7 +61,7 @@ export const useOrderEdit = (order: Order | null) => {
           },
         });
 
-        const updatedOrder = await waitForOrderEvent(order.id, pubKey);
+        const updatedOrder = await waitForOrderUpdate(order.id, pubKey);
         setUpdatedOrder(updatedOrder);
         setComplete();
       } catch (e) {
@@ -69,7 +69,7 @@ export const useOrderEdit = (order: Order | null) => {
         return;
       }
     },
-    [pubKey, send, order, setComplete, waitForOrderEvent]
+    [pubKey, send, order, setComplete, waitForOrderUpdate]
   );
 
   return {

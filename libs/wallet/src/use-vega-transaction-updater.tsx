@@ -1,34 +1,33 @@
 import { useApolloClient } from '@apollo/client';
 import { useVegaWallet } from './use-vega-wallet';
 import {
-  useOrderBusEventsSubscription,
+  useOrderTxUpdateSubscription,
   useWithdrawalBusEventSubscription,
   useTransactionEventSubscription,
 } from './__generated__/TransactionResult';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
-
 import { waitForWithdrawalApproval } from './wait-for-withdrawal-approval';
 
 export const useVegaTransactionUpdater = () => {
   const client = useApolloClient();
-  const { updateWithdrawal, updateOrder, updateTransaction } =
-    useVegaTransactionStore((state) => ({
-      updateWithdrawal: state.updateWithdrawal,
-      updateOrder: state.updateOrder,
-      updateTransaction: state.updateTransactionResult,
-    }));
+  const updateWithdrawal = useVegaTransactionStore(
+    (state) => state.updateWithdrawal
+  );
+  const updateOrder = useVegaTransactionStore((state) => state.updateOrder);
+  const updateTransaction = useVegaTransactionStore(
+    (state) => state.updateTransactionResult
+  );
+
   const { pubKey } = useVegaWallet();
   const variables = { partyId: pubKey || '' };
   const skip = !pubKey;
 
-  useOrderBusEventsSubscription({
+  useOrderTxUpdateSubscription({
     variables,
     skip,
     onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'Order') {
-          updateOrder(event.event);
-        }
+      result.data?.orders?.forEach((order) => {
+        updateOrder(order);
       }),
   });
 

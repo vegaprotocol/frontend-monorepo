@@ -53,7 +53,7 @@ subscription WithdrawalBusEvent($partyId: ID!) {
   }
 }
 
-fragment OrderBusEventFields on Order {
+fragment OrderTxUpdateFields on OrderUpdate {
   type
   id
   status
@@ -64,35 +64,12 @@ fragment OrderBusEventFields on Order {
   timeInForce
   expiresAt
   side
-  market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-    tradableInstrument {
-      instrument {
-        name
-        code
-        product {
-          ... on Future {
-            settlementAsset {
-              symbol
-              decimals
-            }
-          }
-        }
-      }
-    }
-  }
+  marketId
 }
 
-subscription OrderBusEvents($partyId: ID!) {
-  busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
-    type
-    event {
-      ... on Order {
-        ...OrderBusEventFields
-      }
-    }
+subscription OrderTxUpdate($partyId: ID!) {
+  orders(partyId: $partyId) {
+    ...OrderTxUpdateFields
   }
 }
 

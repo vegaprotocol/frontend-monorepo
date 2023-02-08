@@ -1,64 +1,63 @@
 import produce from 'immer';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  removePaginationWrapper,
+} from '@vegaprotocol/react-helpers';
 import {
   MarginsSubscriptionDocument,
   MarginsDocument,
 } from './__generated__/Positions';
 import type {
   MarginsQuery,
+  MarginFieldsFragment,
   MarginsSubscriptionSubscription,
 } from './__generated__/Positions';
 
 const update = (
-  data: MarginsQuery['party'],
+  data: MarginFieldsFragment[] | null,
   delta: MarginsSubscriptionSubscription['margins']
 ) => {
-  return produce(data, (draft) => {
+  return produce(data || [], (draft) => {
     const { marketId } = delta;
-    if (marketId && draft?.marginsConnection?.edges) {
-      const index = draft.marginsConnection.edges.findIndex(
-        (edge) => edge.node.market.id === marketId
-      );
-      if (index !== -1) {
-        const currNode = draft.marginsConnection.edges[index].node;
-        draft.marginsConnection.edges[index].node = {
-          ...currNode,
-          maintenanceLevel: delta.maintenanceLevel,
-          searchLevel: delta.searchLevel,
-          initialLevel: delta.initialLevel,
-          collateralReleaseLevel: delta.collateralReleaseLevel,
-        };
-      } else {
-        draft.marginsConnection.edges.unshift({
-          __typename: 'MarginEdge',
-          node: {
-            __typename: 'MarginLevels',
-            market: {
-              __typename: 'Market',
-              id: delta.marketId,
-            },
-            maintenanceLevel: delta.maintenanceLevel,
-            searchLevel: delta.searchLevel,
-            initialLevel: delta.initialLevel,
-            collateralReleaseLevel: delta.collateralReleaseLevel,
-            asset: {
-              __typename: 'Asset',
-              id: delta.asset,
-            },
-          },
-        });
-      }
+    const index = draft.findIndex((node) => node.market.id === marketId);
+    if (index !== -1) {
+      const currNode = draft[index];
+      draft[index] = {
+        ...currNode,
+        maintenanceLevel: delta.maintenanceLevel,
+        searchLevel: delta.searchLevel,
+        initialLevel: delta.initialLevel,
+        collateralReleaseLevel: delta.collateralReleaseLevel,
+      };
+    } else {
+      draft.unshift({
+        __typename: 'MarginLevels',
+        market: {
+          __typename: 'Market',
+          id: delta.marketId,
+        },
+        maintenanceLevel: delta.maintenanceLevel,
+        searchLevel: delta.searchLevel,
+        initialLevel: delta.initialLevel,
+        collateralReleaseLevel: delta.collateralReleaseLevel,
+        asset: {
+          __typename: 'Asset',
+          id: delta.asset,
+        },
+      });
     }
   });
 };
 
-const getData = (responseData: MarginsQuery) => responseData.party;
+const getData = (responseData: MarginsQuery | null) =>
+  removePaginationWrapper(responseData?.party?.marginsConnection?.edges) || [];
+
 const getDelta = (subscriptionData: MarginsSubscriptionSubscription) =>
   subscriptionData.margins;
 
 export const marginsDataProvider = makeDataProvider<
   MarginsQuery,
-  MarginsQuery['party'],
+  MarginFieldsFragment[],
   MarginsSubscriptionSubscription,
   MarginsSubscriptionSubscription['margins']
 >({

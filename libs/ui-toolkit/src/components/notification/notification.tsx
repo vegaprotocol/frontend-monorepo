@@ -4,12 +4,15 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
+import { Button } from '../button';
 
 type NotificationProps = {
   intent: Intent;
-  message: string;
+  message: ReactNode | string;
+  title?: string;
+  buttonProps?: { text: string; action: () => void; className?: string };
   testId?: string;
-  children?: ReactNode;
+  className?: string;
 };
 
 const getIcon = (intent: Intent): IconName => {
@@ -26,8 +29,10 @@ const getIcon = (intent: Intent): IconName => {
 export const Notification = ({
   intent,
   message,
+  title,
   testId,
-  children,
+  buttonProps,
+  className,
 }: NotificationProps) => {
   return (
     <div
@@ -40,7 +45,8 @@ export const Notification = ({
           'border-yellow-500': intent === Intent.Warning,
           'border-vega-pink': intent === Intent.Danger,
         },
-        'border rounded px-3 py-1 text-xs mb-1 mr-1'
+        'border rounded text-xs p-4 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900',
+        className
       )}
     >
       <div
@@ -52,18 +58,28 @@ export const Notification = ({
             'text-yellow-600 dark:text-yellow-500': intent === Intent.Warning,
             'text-vega-pink': intent === Intent.Danger,
           },
-          'flex items-start'
+          'flex items-start mt-1'
         )}
       >
-        <Icon size={3} className="mr-1 mt-[2px]" name={getIcon(intent)} />
-        <span
-          title={message}
-          className="whitespace-nowrap overflow-hidden text-ellipsis"
-        >
-          {message}
-        </span>
+        <Icon size={4} name={getIcon(intent)} />
       </div>
-      {children}
+      <div className="flex flex-col flex-grow items-start gap-1.5 text-base">
+        {title && (
+          <div className="whitespace-nowrap overflow-hidden text-ellipsis uppercase text-sm leading-6">
+            {title}
+          </div>
+        )}
+        <div>{message}</div>
+        {buttonProps && (
+          <Button
+            size="sm"
+            onClick={buttonProps.action}
+            className={classNames('mt-2 px-6 py-3', buttonProps.className)}
+          >
+            {buttonProps.text}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

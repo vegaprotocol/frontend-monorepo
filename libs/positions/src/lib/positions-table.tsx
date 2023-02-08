@@ -33,6 +33,7 @@ interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
   onMarketClick?: (id: string) => void;
   style?: CSSProperties;
+  isReadOnly: boolean;
 }
 
 export interface AmountCellProps {
@@ -334,7 +335,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
           }}
-          cellRenderer="PriceFlashCell"
           headerTooltip={t(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
           )}
@@ -359,7 +359,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals)
           }
-          cellRenderer="PriceFlashCell"
           headerTooltip={t(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}
@@ -378,17 +377,19 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             return getDateTimeFormat().format(new Date(value));
           }}
         />
-        {onClose ? (
+        {onClose && !props.isReadOnly ? (
           <AgGridColumn
             type="rightAligned"
-            cellRenderer={({ data }: VegaICellRendererParams<Position>) => (
-              <ButtonLink
-                data-testid="close-position"
-                onClick={() => data && onClose(data)}
-              >
-                {t('Close')}
-              </ButtonLink>
-            )}
+            cellRenderer={({ data }: VegaICellRendererParams<Position>) =>
+              data?.openVolume && data?.openVolume !== '0' ? (
+                <ButtonLink
+                  data-testid="close-position"
+                  onClick={() => data && onClose(data)}
+                >
+                  {t('Close')}
+                </ButtonLink>
+              ) : null
+            }
           />
         ) : null}
       </AgGrid>

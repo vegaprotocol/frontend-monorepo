@@ -4,6 +4,7 @@ const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
 const externalLink = 'external-link';
+const accordionContent = 'accordion-content';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
@@ -161,6 +162,14 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     );
   });
 
+  it('liquidity price range displayed', () => {
+    cy.getByTestId(marketTitle).contains('Liquidity price range').click();
+
+    validateMarketDataRow(0, 'Liquidity Price Range', '2.00%');
+    validateMarketDataRow(1, 'LP Volume Min', '0.05634 tBTC');
+    validateMarketDataRow(2, 'LP Volume Max', '0.05864 tBTC');
+  });
+
   it('oracle displayed', () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
 
@@ -171,7 +180,8 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       'termination.BTC.value'
     );
 
-    cy.getByTestId(externalLink)
+    cy.getByTestId(accordionContent)
+      .find(`[data-testid="${externalLink}"]`)
       .should('have.attr', 'href')
       .and('contain', '/oracles');
   });
@@ -179,12 +189,14 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('proposal displayed', () => {
     cy.getByTestId(marketTitle).contains('Proposal').click();
 
-    cy.getByTestId(externalLink)
+    cy.getByTestId(accordionContent)
+      .find(`[data-testid="${externalLink}"]`)
       .first()
       .should('have.text', 'View governance proposal')
       .and('have.attr', 'href')
       .and('contain', '/proposals/market-0');
-    cy.getByTestId(externalLink)
+    cy.getByTestId(accordionContent)
+      .find(`[data-testid="${externalLink}"]`)
       .eq(1)
       .should('have.text', 'Propose a change to market')
       .and('have.attr', 'href')

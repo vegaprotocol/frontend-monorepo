@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import { Dialog } from '@vegaprotocol/ui-toolkit';

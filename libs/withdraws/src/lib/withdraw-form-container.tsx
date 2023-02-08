@@ -23,13 +23,17 @@ export const WithdrawFormContainer = ({
     variables,
   });
 
-  const filteredAsset = data
-    ?.filter(
-      (account) =>
-        account.type === Types.AccountType.ACCOUNT_TYPE_GENERAL &&
-        toBigNum(account.balance, account.asset.decimals).isGreaterThan(0)
-    )
-    .map((account) => account.asset);
+  const filteredAsset = useMemo(
+    () =>
+      data
+        ?.filter(
+          (account) =>
+            account.type === Types.AccountType.ACCOUNT_TYPE_GENERAL &&
+            toBigNum(account.balance, account.asset.decimals).isGreaterThan(0)
+        )
+        .map((account) => account.asset),
+    [data]
+  );
   const assets = filteredAsset?.length ? filteredAsset : null;
   return (
     <AsyncRenderer

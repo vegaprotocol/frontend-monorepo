@@ -3,16 +3,17 @@ import type { Web3ReactHooks } from '@web3-react/core';
 import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
-import { Url } from './url-connector';
 import type { Connector } from '@web3-react/types';
 import { ENV } from '../config/env';
+import { UrlConnector } from '@vegaprotocol/web3';
 
 const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
 );
 
-const [urlConnector, urlHooks] = initializeConnector<Url>(
-  (actions) => new Url(actions, ENV.localProviderUrl)
+const [urlConnector, urlHooks] = initializeConnector<UrlConnector>(
+  (actions) =>
+    new UrlConnector(actions, ENV.localProviderUrl, ENV.ethWalletMnemonic)
 );
 
 export const createDefaultProvider = (providerUrl: string, chainId: number) => {

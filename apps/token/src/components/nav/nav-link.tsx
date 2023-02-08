@@ -13,6 +13,7 @@ interface AppNavLinkProps {
   target?: HTMLAttributeAnchorTarget;
   end?: boolean;
   fullWidth?: boolean;
+  subNav?: boolean;
 }
 
 export const AppNavLink = ({
@@ -23,28 +24,32 @@ export const AppNavLink = ({
   testId,
   end = false,
   fullWidth = false,
+  subNav = false,
 }: AppNavLinkProps) => {
-  const borderClasses = classNames('absolute h-1 w-full bottom-[-1px] left-0', {
-    'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
-    'bg-black': navbarTheme === 'yellow',
-  });
+  const borderClasses = classNames(
+    'absolute h-0.5 w-full bottom-[-1px] left-0',
+    {
+      'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
+      'bg-black': navbarTheme === 'yellow',
+    }
+  );
   return (
     <NavLink
       key={path}
       data-testid={testId}
       to={{ pathname: path }}
-      className={getNavLinkClassNames(navbarTheme, fullWidth)}
+      className={getNavLinkClassNames(navbarTheme, fullWidth, subNav)}
       target={target}
       end={end}
     >
       {({ isActive }) => {
         return (
-          <>
+          <div className={subNav ? 'inline-block relative pb-1' : undefined}>
             {name}
             {isActive && (
               <span data-testid="link-active" className={borderClasses} />
             )}
-          </>
+          </div>
         );
       }}
     </NavLink>

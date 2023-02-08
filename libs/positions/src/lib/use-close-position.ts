@@ -5,8 +5,8 @@ import { useVegaWallet, useTransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import * as Schema from '@vegaprotocol/types';
-import { useOrderEvent } from '@vegaprotocol/orders';
-import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
+import { useOrderUpdate } from '@vegaprotocol/orders';
+import type { OrderSubFieldsFragment } from '@vegaprotocol/orders';
 
 export interface ClosingOrder {
   marketId: string;
@@ -21,11 +21,11 @@ export const useClosePosition = () => {
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const [closingOrder, setClosingOrder] = useState<ClosingOrder>();
   const [closingOrderResult, setClosingOrderResult] =
-    useState<OrderEventFieldsFragment>();
+    useState<OrderSubFieldsFragment>();
   const [transactionResult, setTransactionResult] =
     useState<TransactionResult>();
   const waitForTransactionResult = useTransactionResult();
-  const waitForOrder = useOrderEvent(transaction);
+  const waitForOrder = useOrderUpdate(transaction);
 
   const submit = useCallback(
     async ({

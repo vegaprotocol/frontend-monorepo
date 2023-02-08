@@ -10,9 +10,9 @@ export function useVegaWallet() {
 }
 
 export function useReconnectVegaWallet() {
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
   const { disconnect } = useVegaWallet();
   const reconnect = useCallback(async () => {
     await disconnect();

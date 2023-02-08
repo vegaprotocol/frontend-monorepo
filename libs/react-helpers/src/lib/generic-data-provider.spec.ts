@@ -62,7 +62,7 @@ const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
   query,
   subscriptionQuery,
   update,
-  getData: (r) => r.data,
+  getData: (r) => r?.data || null,
   getDelta: (r) => r.data,
 });
 
@@ -91,7 +91,7 @@ const paginatedSubscribe = makeDataProvider<
   query,
   subscriptionQuery,
   update,
-  getData: (r) => r.data,
+  getData: (r) => r?.data || null,
   getDelta: (r) => r.data,
   pagination: {
     first,
@@ -215,7 +215,7 @@ describe('data provider', () => {
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
     const delta: Item[] = [];
-    update.mockImplementationOnce((data, delta) => [...data, ...delta]);
+    update.mockImplementationOnce((data, delta) => [...(data || []), ...delta]);
     // calling onNext from client.subscribe({ query }).subscribe(onNext)
     await clientSubscribeSubscribe.mock.calls[
       clientSubscribeSubscribe.mock.calls.length - 1
@@ -234,7 +234,7 @@ describe('data provider', () => {
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
     const delta: Item[] = [];
-    update.mockImplementationOnce((data, delta) => data);
+    update.mockImplementationOnce((data, delta) => data || []);
     const callbackCallsLength = callback.mock.calls.length;
     // calling onNext from client.subscribe({ query }).subscribe(onNext)
     await clientSubscribeSubscribe.mock.calls[
@@ -591,7 +591,7 @@ describe('derived data provider', () => {
     await resolveQuery({ data: part2 });
     expect(combineData).toBeCalledTimes(1);
     expect(callback).toBeCalledTimes(1);
-    update.mockImplementation((data, delta) => [...data, ...delta]);
+    update.mockImplementation((data, delta) => [...(data || []), ...delta]);
     combineData.mockReturnValueOnce({ ...data });
     const combinedDelta = {};
     combineDelta.mockReturnValueOnce(combinedDelta);
@@ -629,7 +629,7 @@ describe('derived data provider', () => {
     await resolveQuery({ data: [] });
     expect(combineData).toBeCalledTimes(1);
     expect(callback).toBeCalledTimes(1);
-    update.mockImplementation((data, delta) => [...data, ...delta]);
+    update.mockImplementation((data, delta) => [...(data || []), ...delta]);
     combineData.mockReturnValueOnce({ ...data });
     const combinedInsertionData = {};
     combineInsertionData.mockReturnValueOnce(combinedInsertionData);

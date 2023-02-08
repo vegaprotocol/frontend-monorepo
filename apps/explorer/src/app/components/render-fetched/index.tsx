@@ -1,5 +1,4 @@
 import { t } from '@vegaprotocol/react-helpers';
-import React from 'react';
 import { StatusMessage } from '../status-message';
 
 interface RenderFetchedProps {

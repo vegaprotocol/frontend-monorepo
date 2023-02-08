@@ -2,12 +2,13 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 import { Intent } from '../../utils/intent';
 import type { Toast } from './toast';
+import { ToastHeading } from './toast';
 import { ToastsContainer } from './toasts-container';
 import random from 'lodash/random';
 import sample from 'lodash/sample';
 import uniqueId from 'lodash/uniqueId';
 import { useToasts } from './use-toasts';
-import create from 'zustand';
+import { create } from 'zustand';
 import { useEffect } from '@storybook/addons';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 
@@ -59,7 +60,8 @@ const randomWords = [
 ];
 
 const randomToast = (): Toast => {
-  const content = sample(contents);
+  const now = new Date().toISOString();
+  const content = now + ' ' + sample(contents);
   return {
     id: String(uniqueId('toast_')),
     intent: sample<Intent>([
@@ -83,7 +85,7 @@ const usePrice = create<PriceStore>((set) => ({
 const Template: ComponentStory<typeof ToastsContainer> = (args) => {
   const setPrice = usePrice((state) => state.setPrice);
 
-  const { add, close, closeAll, update, remove, toasts } = useToasts(
+  const { add, close, closeAll, update, remove, toasts, setToast } = useToasts(
     (state) => ({
       add: state.add,
       close: state.close,
@@ -91,6 +93,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
       update: state.update,
       remove: state.remove,
       toasts: state.toasts,
+      setToast: state.setToast,
     })
   );
 
@@ -195,6 +198,26 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
       >
         🧽
       </button>
+      <button
+        onClick={() => {
+          const toasts = Object.values(useToasts.getState().toasts);
+          if (toasts.length > 0) {
+            const t = toasts[toasts.length - 1];
+            setToast({
+              ...t,
+              intent: Intent.Danger,
+              content: (
+                <>
+                  <ToastHeading>Error occurred</ToastHeading>
+                  <p>Something went terribly wrong</p>
+                </>
+              ),
+            });
+          }
+        }}
+      >
+        Set first as Error
+      </button>
       <ToastsContainer {...args} toasts={toasts} />
     </div>
   );
@@ -202,5 +225,5 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  order: 'asc',
+  order: 'desc',
 };

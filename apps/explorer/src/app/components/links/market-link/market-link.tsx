@@ -1,13 +1,14 @@
-import React from 'react';
 import { Routes } from '../../../routes/route-names';
 import { useExplorerMarketQuery } from './__generated__/Market';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
+import Hash from '../hash';
 
 export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
+  showMarketName?: boolean;
 };
 
 /**
@@ -15,7 +16,11 @@ export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
  * with a link to the markets list. If the name does not come back
  * it will use the ID instead
  */
-const MarketLink = ({ id, ...props }: MarketLinkProps) => {
+const MarketLink = ({
+  id,
+  showMarketName = true,
+  ...props
+}: MarketLinkProps) => {
   const { data, error, loading } = useExplorerMarketQuery({
     variables: { id },
   });
@@ -31,17 +36,31 @@ const MarketLink = ({ id, ...props }: MarketLinkProps) => {
           <span role="img" aria-label="Unknown market" className="img">
             ⚠️&nbsp;{t('Invalid market')}
           </span>
-          &nbsp;{id}
+          &nbsp;
+          <Hash text={id} />
         </div>
       );
     }
   }
 
-  return (
-    <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
-      {label}
-    </Link>
-  );
+  if (showMarketName) {
+    return (
+      <Link
+        className="underline"
+        {...props}
+        to={`/${Routes.MARKETS}#${id}`}
+        title={id}
+      >
+        {label}
+      </Link>
+    );
+  } else {
+    return (
+      <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
+        <Hash text={id} />
+      </Link>
+    );
+  }
 };
 
 export default MarketLink;

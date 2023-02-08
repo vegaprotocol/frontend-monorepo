@@ -87,7 +87,7 @@ describe('useVegaTransaction', () => {
     );
   });
 
-  it('handles an unkwown error', () => {
+  it('handles an unknown error', () => {
     const unknownThrow = { foo: 'bar' };
     const mockSendTx = jest.fn(() => {
       throw unknownThrow;
@@ -98,10 +98,14 @@ describe('useVegaTransaction', () => {
     });
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
     expect(result.current.transaction.error).toHaveProperty(
-      'message',
+      'title',
       'Something went wrong'
     );
     expect(result.current.transaction.error).toHaveProperty('code', 105);
+    expect(result.current.transaction.error).toHaveProperty(
+      'message',
+      'Unknown error occurred'
+    );
     expect(result.current.transaction.error).toHaveProperty(
       'data',
       'Unknown error occurred'

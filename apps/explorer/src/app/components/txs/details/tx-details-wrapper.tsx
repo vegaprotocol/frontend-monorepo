@@ -8,10 +8,8 @@ import { TxDetailsHeartbeat } from './tx-hearbeat';
 import { TxDetailsGeneric } from './tx-generic';
 import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
-import { TxContent } from '../../../routes/txs/id/tx-content';
 import { TxDetailsNodeVote } from './tx-node-vote';
 import { TxDetailsOrderCancel } from './tx-order-cancel';
-import get from 'lodash/get';
 import { TxDetailsOrderAmend } from './tx-order-amend';
 import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
@@ -19,6 +17,10 @@ import { TxDetailsUndelegate } from './tx-undelegation';
 import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
 import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
 import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
+import { TxDetailsDataSubmission } from './tx-data-submission';
+import { TxProposalVote } from './tx-proposal-vote';
+import { TxDetailsProtocolUpgrade } from './tx-details-protocol-upgrade';
+import { TxDetailsIssueSignatures } from './tx-issue-signatures';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -44,23 +46,9 @@ export const TxDetailsWrapper = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const raw = get(blockData, `result.block.data.txs[${txData.index}]`);
-
   return (
     <div key={`txd-${txData.hash}`}>
       <section>{child({ txData, pubKey, blockData })}</section>
-
-      <details title={t('Decoded transaction')} className="mt-3">
-        <summary className="cursor-pointer">{t('Decoded transaction')}</summary>
-        <TxContent data={txData} />
-      </details>
-
-      {raw ? (
-        <details title={t('Raw transaction')} className="mt-3">
-          <summary className="cursor-pointer">{t('Raw transaction')}</summary>
-          <code className="break-all font-mono text-xs">{raw}</code>
-        </details>
-      ) : null}
     </div>
   );
 };
@@ -80,14 +68,22 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
 
   // These come from https://github.com/vegaprotocol/vega/blob/develop/core/txn/command.go#L72-L98
   switch (txData.type) {
+    case 'Issue Signatures':
+      return TxDetailsIssueSignatures;
     case 'Submit Order':
       return TxDetailsOrder;
+    case 'Submit Oracle Data':
+      return TxDetailsDataSubmission;
+    case 'Protocol Upgrade':
+      return TxDetailsProtocolUpgrade;
     case 'Cancel Order':
       return TxDetailsOrderCancel;
     case 'Amend Order':
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
+    case 'Vote on Proposal':
+      return TxProposalVote;
     case 'Batch Market Instructions':
       return TxDetailsBatch;
     case 'Chain Event':

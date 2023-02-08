@@ -18,6 +18,9 @@ type UseConfigOptions = {
   defaultConfig?: Configuration;
 };
 
+/**
+ * Fetch list of hosts from the VEGA_CONFIG_URL
+ */
 export const useConfig = (
   { environment, defaultConfig }: UseConfigOptions,
   onError: (errorType: ErrorType) => void

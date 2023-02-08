@@ -13,10 +13,12 @@ const mockSendTx = jest.fn<Promise<Partial<TransactionResponse> | null>, []>();
 
 const pubKey = 'pubKey';
 
+const mockDisconnect = jest.fn();
 jest.mock('./use-vega-wallet', () => ({
   useVegaWallet: () => ({
     sendTx: mockSendTx,
     pubKey,
+    disconnect: mockDisconnect,
   }),
 }));
 
@@ -104,6 +106,17 @@ describe('useVegaTransactionManager', () => {
     mockSendTx.mockRejectedValue(null);
     renderHook(useVegaTransactionManager);
     await waitForNextTick();
+    expect(mockDisconnect).not.toHaveBeenCalledWith();
+    expect(update).toBeCalled();
+    expect(update.mock.calls[0][1]?.status).toEqual(VegaTxStatus.Error);
+  });
+
+  it('call disconnect if detect no service error', async () => {
+    mockTransactionStoreState.mockReturnValue(defaultState);
+    mockSendTx.mockRejectedValue(new TypeError('Failed to fetch'));
+    renderHook(useVegaTransactionManager);
+    await waitForNextTick();
+    expect(mockDisconnect).toHaveBeenCalledWith();
     expect(update).toBeCalled();
     expect(update.mock.calls[0][1]?.status).toEqual(VegaTxStatus.Error);
   });

@@ -11,6 +11,7 @@ interface ProgressBarProps {
 export const ProgressBar = ({ className, intent, value }: ProgressBarProps) => {
   return (
     <div
+      data-progress-bar
       style={{ height: '6px' }}
       className={classNames(
         'bg-neutral-300 dark:bg-neutral-700 relative',
@@ -18,6 +19,7 @@ export const ProgressBar = ({ className, intent, value }: ProgressBarProps) => {
       )}
     >
       <div
+        data-progress-bar-value
         className={classNames(
           'absolute left-0 top-0 bottom-0',
           intent === undefined || intent === Intent.None

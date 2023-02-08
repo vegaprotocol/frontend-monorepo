@@ -55,6 +55,7 @@ export const TxDetailsLiquidityAmendment = ({
               <PriceInMarket
                 price={amendment.commitmentAmount}
                 marketId={marketId}
+                decimalSource="SETTLEMENT_ASSET"
               />
             </TableCell>
           </TableRow>

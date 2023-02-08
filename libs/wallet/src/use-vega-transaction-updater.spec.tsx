@@ -1,17 +1,17 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { useVegaTransactionUpdater } from './use-vega-transaction-updater';
 import waitForNextTick from 'flush-promises';
 import {
-  OrderBusEventsDocument,
+  OrderTxUpdateDocument,
   TransactionEventDocument,
   WithdrawalBusEventDocument,
 } from './__generated__/TransactionResult';
 import type {
-  OrderBusEventsSubscription,
-  OrderBusEventFieldsFragment,
+  OrderTxUpdateSubscription,
+  OrderTxUpdateFieldsFragment,
   WithdrawalBusEventSubscription,
   WithdrawalBusEventFieldsFragment,
   TransactionEventSubscription,
@@ -33,6 +33,7 @@ const render = (mocks?: MockedResponse[]) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
+
   return renderHook(() => useVegaTransactionUpdater(), { wrapper });
 };
 
@@ -68,7 +69,7 @@ jest.mock('./use-vega-transaction-store', () => ({
   ) => selector(mockTransactionStoreState()),
 }));
 
-const orderBusEvent: OrderBusEventFieldsFragment = {
+const orderUpdate: OrderTxUpdateFieldsFragment = {
   type: OrderType.TYPE_LIMIT,
   id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
   status: OrderStatus.STATUS_ACTIVE,
@@ -79,43 +80,17 @@ const orderBusEvent: OrderBusEventFieldsFragment = {
   price: '300000',
   timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
   side: Side.SIDE_BUY,
-  market: {
-    id: 'market-id',
-    decimalPlaces: 5,
-    positionDecimalPlaces: 0,
-    tradableInstrument: {
-      __typename: 'TradableInstrument',
-      instrument: {
-        name: 'UNIDAI Monthly (30 Jun 2022)',
-        code: 'UNIDAI',
-        product: {
-          __typename: 'Future',
-          settlementAsset: {
-            __typename: 'Asset',
-            decimals: 8,
-            symbol: 'AAA',
-          },
-        },
-        __typename: 'Instrument',
-      },
-    },
-    __typename: 'Market',
-  },
-  __typename: 'Order',
+  marketId: 'market-id',
+  __typename: 'OrderUpdate',
 };
-const mockedOrderBusEvent: MockedResponse<OrderBusEventsSubscription> = {
+const mockedOrderUpdate: MockedResponse<OrderTxUpdateSubscription> = {
   request: {
-    query: OrderBusEventsDocument,
+    query: OrderTxUpdateDocument,
     variables: { partyId: pubKey },
   },
   result: {
     data: {
-      busEvents: [
-        {
-          type: BusEventType.Order,
-          event: orderBusEvent,
-        },
-      ],
+      orders: [orderUpdate],
     },
   },
 };
@@ -190,22 +165,26 @@ const mockedWithdrawalBusEvent: MockedResponse<WithdrawalBusEventSubscription> =
   };
 
 describe('useVegaTransactionManager', () => {
-  it('updates order on OrderBusEvents', async () => {
+  it('updates order on OrderTxUpdate', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
-    const { waitForNextUpdate } = render([mockedOrderBusEvent]);
-    waitForNextUpdate();
-    await waitForNextTick();
-    expect(updateOrder).toHaveBeenCalledWith(orderBusEvent);
+    const { waitForNextUpdate } = render([mockedOrderUpdate]);
+    await act(async () => {
+      waitForNextUpdate();
+      await waitForNextTick();
+      expect(updateOrder).toHaveBeenCalledWith(orderUpdate);
+    });
   });
 
   it('updates transaction on TransactionResultBusEvents', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
     const { waitForNextUpdate } = render([mockedTransactionResultBusEvent]);
-    waitForNextUpdate();
-    await waitForNextTick();
-    expect(updateTransactionResult).toHaveBeenCalledWith(
-      transactionResultBusEvent
-    );
+    await act(async () => {
+      waitForNextUpdate();
+      await waitForNextTick();
+      expect(updateTransactionResult).toHaveBeenCalledWith(
+        transactionResultBusEvent
+      );
+    });
   });
 
   it('updates withdrawal on WithdrawalBusEvents', async () => {
@@ -215,11 +194,13 @@ describe('useVegaTransactionManager', () => {
       erc20WithdrawalApproval
     );
     const { waitForNextUpdate } = render([mockedWithdrawalBusEvent]);
-    waitForNextUpdate();
-    await waitForNextTick();
-    expect(updateWithdrawal).toHaveBeenCalledWith(
-      withdrawalBusEvent,
-      erc20WithdrawalApproval
-    );
+    await act(async () => {
+      waitForNextUpdate();
+      await waitForNextTick();
+      expect(updateWithdrawal).toHaveBeenCalledWith(
+        withdrawalBusEvent,
+        erc20WithdrawalApproval
+      );
+    });
   });
 });

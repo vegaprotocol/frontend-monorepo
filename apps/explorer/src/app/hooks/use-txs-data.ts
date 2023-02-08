@@ -5,6 +5,7 @@ import type {
   BlockExplorerTransactions,
 } from '../routes/types/block-explorer-response';
 import { DATA_SOURCES } from '../config';
+import isNumber from 'lodash/isNumber';
 
 export interface TxsStateProps {
   txsData: BlockExplorerTransactionResult[];
@@ -54,15 +55,15 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
   } = useFetch<BlockExplorerTransactions>(url, {}, false);
 
   useEffect(() => {
-    if (data?.transactions?.length) {
+    if (data && isNumber(data?.transactions?.length)) {
       setTxsState((prev) => ({
         txsData: [...prev.txsData, ...data.transactions],
-        hasMoreTxs: true,
+        hasMoreTxs: data.transactions.length > 0,
         lastCursor:
-          data.transactions[data.transactions.length - 1].cursor || '',
+          data.transactions[data.transactions.length - 1]?.cursor || '',
       }));
     }
-  }, [setTxsState, data?.transactions]);
+  }, [setTxsState, data]);
 
   const loadTxs = useCallback(() => {
     return refetch({

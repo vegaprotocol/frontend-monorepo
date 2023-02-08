@@ -3,6 +3,7 @@ fragment TradeFields on Trade {
   price
   size
   createdAt
+  aggressor
   market {
     id
   }
@@ -35,5 +36,6 @@ subscription TradesUpdate($marketId: ID!) {
     size
     createdAt
     marketId
+    aggressor
   }
 }

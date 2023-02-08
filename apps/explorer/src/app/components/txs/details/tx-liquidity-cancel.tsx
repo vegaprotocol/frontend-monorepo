@@ -1,10 +1,11 @@
 import { t } from '@vegaprotocol/react-helpers';
-import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { MarketLink } from '../../links';
-import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
+
 import type { components } from '../../../../types/explorer';
+import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 
 export type LiquidityCancellation =
   components['schemas']['v1LiquidityProvisionCancellation'];
@@ -27,7 +28,7 @@ export const TxDetailsLiquidityCancellation = ({
   pubKey,
   blockData,
 }: TxDetailsLiquidityCancellationProps) => {
-  if (!txData || !txData.command.liquidityProvisionAmendment) {
+  if (!txData || !txData.command.liquidityProvisionCancellation) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 

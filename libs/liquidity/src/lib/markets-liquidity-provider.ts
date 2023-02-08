@@ -30,8 +30,6 @@ import {
   getTargetStake,
 } from './utils/liquidity-utils';
 import type { Provider, LiquidityProvisionMarket } from './utils';
-import { proposalsListDataProvider } from '@vegaprotocol/governance';
-import type { Proposal } from '@vegaprotocol/types';
 
 export interface FeeLevels {
   commitmentAmount: number;
@@ -44,11 +42,21 @@ export type Market = MarketMaybeWithDataAndCandles & {
   dayVolume: string;
   liquidityCommitted: number;
   volumeChange: string;
-  proposal?: Proposal;
+  tradableInstrument?: {
+    instrument?: {
+      metadata?: {
+        tags?: string[] | null;
+      };
+    };
+  };
 };
 
+export interface Markets {
+  markets: Market[];
+}
+
 const getData = (
-  responseData: LiquidityProvisionMarketsQuery
+  responseData: LiquidityProvisionMarketsQuery | null
 ): LiquidityProvisionMarket[] | null => {
   return (
     responseData?.marketsConnection?.edges.map((edge) => {
@@ -60,8 +68,7 @@ const getData = (
 export const addData = (
   markets: MarketMaybeWithDataAndCandles[],
   marketsCandles24hAgo: MarketCandles[],
-  marketsLiquidity: LiquidityProvisionMarket[],
-  proposals: Proposal[]
+  marketsLiquidity: LiquidityProvisionMarket[]
 ) => {
   return markets.map((market) => {
     const dayVolume = calcDayVolume(market.candles);
@@ -74,9 +81,6 @@ export const addData = (
       marketsLiquidity
     ) as Provider[];
 
-    const proposalForMarket =
-      proposals && proposals.find((p) => p.id === market.id);
-
     return {
       ...market,
       dayVolume,
@@ -84,7 +88,6 @@ export const addData = (
       liquidityCommitted: sumLiquidityCommitted(liquidityProviders),
       feeLevels: getFeeLevels(liquidityProviders) || [],
       target: getTargetStake(market.id, marketsLiquidity),
-      proposal: proposalForMarket,
     };
   });
 };
@@ -108,14 +111,12 @@ const liquidityProvisionProvider = makeDerivedDataProvider<Market[], never>(
         interval: Schema.Interval.INTERVAL_I1D,
       }),
     liquidityMarketsProvider,
-    proposalsListDataProvider,
   ],
   (parts) => {
     return addData(
       parts[0] as MarketMaybeWithDataAndCandles[],
       parts[1] as MarketCandles[],
-      parts[2] as LiquidityProvisionMarket[],
-      parts[3] as Proposal[]
+      parts[2] as LiquidityProvisionMarket[]
     );
   }
 );

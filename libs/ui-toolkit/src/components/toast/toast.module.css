@@ -1,21 +1,17 @@
 .initial {
-  top: 20px;
   opacity: 0;
-  max-height: 0;
-  border: 0;
+  transition: all 0.3s;
   margin-bottom: 0;
 }
 
 .showing {
-  right: 0;
   opacity: 1;
   transition: all 0.3s;
   max-height: 100vw;
 }
 
 .expired {
-  right: -375px;
   opacity: 0;
+  transition: all 0.5s;
   max-height: 0;
-  transition: all 0.75s;
 }

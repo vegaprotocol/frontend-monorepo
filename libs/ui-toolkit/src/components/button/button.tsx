@@ -27,20 +27,20 @@ const primary = [
   'text-black',
   'border-vega-yellow',
   'bg-vega-yellow',
-  'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
-  'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark',
+  'enabled:hover:bg-vega-yellow-550 enabled:hover:border-vega-yellow-550',
+  'enabled:active:bg-vega-yellow-550 enabled:active:border-vega-yellow-550',
 ];
 const secondary = [
   'text-white dark:text-black',
   'border-vega-pink',
-  'dark:bg-vega-pink bg-vega-pink-dark',
+  'dark:bg-vega-pink bg-vega-pink-550',
   'enabled:hover:bg-vega-pink enabled:hover:border-vega-pink',
   'enabled:active:bg-vega-pink enabled:active:border-vega-pink',
 ];
 const ternary = [
   'text-white dark:text-black',
   'border-vega-green',
-  'dark:bg-vega-green bg-vega-green-dark',
+  'dark:bg-vega-green bg-vega-green-550',
   'enabled:hover:bg-vega-green enabled:hover:border-vega-green',
   'enabled:active:bg-vega-green enabled:active:border-vega-green',
 ];

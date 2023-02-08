@@ -15,7 +15,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
-import { usePersistedOrder } from '../../hooks/use-persisted-order';
 import {
   getDefaultOrder,
   validateMarketState,
@@ -27,6 +26,10 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
+import {
+  usePersistedOrderStore,
+  usePersistedOrderStoreSubscription,
+} from '@vegaprotocol/orders';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -43,8 +46,14 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
 };
 
 export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
-  const { pubKey } = useVegaWallet();
-  const [persistedOrder, setPersistedOrder] = usePersistedOrder(market.id);
+  const { pubKey, isReadOnly } = useVegaWallet();
+  const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
+    (store) => ({
+      getPersistedOrder: store.getOrder,
+      setPersistedOrder: store.setOrder,
+    })
+  );
+
   const {
     register,
     control,
@@ -53,11 +62,24 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
     setError,
     clearErrors,
     formState: { errors },
+    setValue,
   } = useForm<DealTicketFormFields>({
-    defaultValues: persistedOrder || getDefaultOrder(market),
+    defaultValues: getPersistedOrder(market.id) || getDefaultOrder(market),
   });
 
   const order = watch();
+
+  watch((orderData) => {
+    setPersistedOrder(orderData as DealTicketFormFields);
+  });
+
+  usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
+    if (order.price !== storedOrder.price) {
+      clearErrors('price');
+      setValue('price', storedOrder.price);
+    }
+  });
+
   const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
@@ -84,9 +106,6 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
     errors.summary?.message,
     errors.summary?.type,
   ]);
-
-  // When order state changes persist it in local storage
-  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
@@ -140,7 +159,11 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
+    <form
+      onSubmit={isReadOnly ? () => null : handleSubmit(onSubmit)}
+      className="p-4"
+      noValidate
+    >
       <Controller
         name="type"
         control={control}
@@ -211,7 +234,7 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
           />
         )}
       <DealTicketButton
-        disabled={Object.keys(errors).length >= 1}
+        disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <SummaryMessage
@@ -219,6 +242,7 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
         market={market}
         marketData={marketData}
         order={order}
+        isReadOnly={isReadOnly}
       />
       <DealTicketFeeDetails
         order={order}
@@ -238,9 +262,16 @@ interface SummaryMessageProps {
   market: Market;
   marketData: MarketData;
   order: OrderSubmissionBody['orderSubmission'];
+  isReadOnly: boolean;
 }
 const SummaryMessage = memo(
-  ({ errorMessage, marketData, market, order }: SummaryMessageProps) => {
+  ({
+    errorMessage,
+    market,
+    marketData,
+    order,
+    isReadOnly,
+  }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     const asset = market.tradableInstrument.instrument.product.settlementAsset;
@@ -249,6 +280,17 @@ const SummaryMessage = memo(
       marketData,
       order,
     });
+    if (isReadOnly) {
+      return (
+        <div className="mb-4">
+          <InputError data-testid="dealticket-error-message-summary">
+            {
+              'You need to connect your own wallet to start trading on this market'
+            }
+          </InputError>
+        </div>
+      );
+    }
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
         <ZeroBalanceError

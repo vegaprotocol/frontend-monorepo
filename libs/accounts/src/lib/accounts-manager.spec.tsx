@@ -23,13 +23,23 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
 describe('AccountManager', () => {
   it('change partyId should reload data provider', async () => {
     const { rerender } = render(
-      <AccountManager partyId="partyOne" onClickAsset={jest.fn} />
+      <AccountManager
+        partyId="partyOne"
+        onClickAsset={jest.fn}
+        isReadOnly={false}
+      />
     );
     expect(
       (helpers.useDataProvider as jest.Mock).mock.calls[0][0].variables.partyId
     ).toEqual('partyOne');
     await act(() => {
-      rerender(<AccountManager partyId="partyTwo" onClickAsset={jest.fn} />);
+      rerender(
+        <AccountManager
+          partyId="partyTwo"
+          onClickAsset={jest.fn}
+          isReadOnly={false}
+        />
+      );
     });
     expect(
       (helpers.useDataProvider as jest.Mock).mock.calls[1][0].variables.partyId
@@ -38,19 +48,28 @@ describe('AccountManager', () => {
 
   it('update method should return proper result', async () => {
     await act(() => {
-      render(<AccountManager partyId="partyOne" onClickAsset={jest.fn} />);
+      render(
+        <AccountManager
+          partyId="partyOne"
+          onClickAsset={jest.fn}
+          isReadOnly={false}
+        />
+      );
     });
     await waitFor(() => {
       expect(screen.getByText('No accounts')).toBeInTheDocument();
     });
-    expect(mockedUpdate({ data: [] })).toEqual(true);
-    expect(
-      mockedUpdate({ data: [{ party: { id: 't1' } }] as AccountFields[] })
-    ).toEqual(false);
-    expect(
-      mockedUpdate({ data: [{ party: { id: 't2' } }] as AccountFields[] })
-    ).toEqual(true);
-    expect(mockedUpdate({ data: [] })).toEqual(false);
-    expect(mockedUpdate({ data: [] })).toEqual(true);
+    await act(() => {
+      expect(mockedUpdate({ data: [] })).toEqual(true);
+
+      expect(
+        mockedUpdate({ data: [{ party: { id: 't1' } }] as AccountFields[] })
+      ).toEqual(false);
+      expect(
+        mockedUpdate({ data: [{ party: { id: 't2' } }] as AccountFields[] })
+      ).toEqual(true);
+      expect(mockedUpdate({ data: [] })).toEqual(false);
+      expect(mockedUpdate({ data: [] })).toEqual(true);
+    });
   });
 });

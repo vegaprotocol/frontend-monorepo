@@ -1,9 +1,12 @@
 import { connectEthereumWallet } from '../support/ethereum-wallet';
+import { selectAsset } from '../support/helpers';
 
 const assetSelectField = 'select[name="asset"]';
 const toAddressField = 'input[name="to"]';
 const amountField = 'input[name="amount"]';
 const formFieldError = 'input-error-text';
+
+const ASSET_EURO = 1;
 
 describe('deposit form validation', { tags: '@smoke' }, () => {
   before(() => {
@@ -16,7 +19,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
     cy.wait('@Assets');
-    connectEthereumWallet();
+    connectEthereumWallet('MetaMask');
     cy.getByTestId('deposit-submit').click();
   });
 
@@ -43,7 +46,8 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   it('invalid amount', () => {
     // Deposit amount smaller than minimum viable for selected asset
     // Select an amount so that we have a known decimal places value to work with
-    cy.get(assetSelectField).select('Euro');
+    selectAsset(ASSET_EURO);
+
     cy.get(amountField)
       .clear()
       .type('0.00000000000000000000000000000000001')
@@ -52,6 +56,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   });
 
   it('insufficient funds', () => {
+    // 1001-DEPO-005
     // Deposit amount is valid, but less than approved. This will always be the case because our
     // CI wallet wont have approved any assets
     cy.get(amountField)

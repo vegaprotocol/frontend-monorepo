@@ -2,12 +2,16 @@ query ExplorerMarket($id: ID!) {
   market(id: $id) {
     id
     decimalPlaces
+    positionDecimalPlaces
     tradableInstrument {
       instrument {
         name
         product {
           ... on Future {
             quoteName
+            settlementAsset {
+              decimals
+            }
           }
         }
       }

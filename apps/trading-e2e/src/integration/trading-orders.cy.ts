@@ -454,8 +454,4 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
         );
       });
   });
-  it.skip('tbd for 7003-MORD', () => {
-    // NOT COVERED: must see the reference, offset and direction for each part pegged order - waiting for clarification
-    // NOT COVERED: must see the reference, offset and direction for each part liquidity order order - waiting for clarification
-  });
 });

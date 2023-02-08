@@ -10,9 +10,9 @@ interface Props {
 
 export const DealTicketButton = ({ disabled, variant }: Props) => {
   const { pubKey } = useVegaWallet();
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
   return pubKey ? (
     <div className="mb-4">
       <Button

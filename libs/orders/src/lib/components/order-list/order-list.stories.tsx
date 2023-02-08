@@ -22,6 +22,7 @@ const Template: Story = (args) => {
         setEditOrder={() => {
           return;
         }}
+        isReadOnly={false}
       />
     </div>
   );
@@ -48,6 +49,7 @@ const Template2: Story = (args) => {
           rowData={args.data}
           cancel={cancel}
           setEditOrder={setEditOrder}
+          isReadOnly={false}
         />
       </div>
       <VegaTransactionDialog

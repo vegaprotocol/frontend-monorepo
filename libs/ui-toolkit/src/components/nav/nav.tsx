@@ -3,22 +3,26 @@ import type { ReactNode } from 'react';
 
 export function getNavLinkClassNames(
   navbarTheme: string,
-  fullWidth = false
+  fullWidth = false,
+  subNav = false
 ): (props: { isActive?: boolean }) => string | undefined {
   return ({ isActive = false }) => {
-    return getActiveNavLinkClassNames(isActive, navbarTheme, fullWidth);
+    return getActiveNavLinkClassNames(isActive, navbarTheme, fullWidth, subNav);
   };
 }
 
 export const getActiveNavLinkClassNames = (
   isActive: boolean,
   navbarTheme: string,
-  fullWidth = false
+  fullWidth = false,
+  subNav = false
 ): string | undefined => {
-  return classNames('mx-2 my-4 md:my-0 md:py-3 self-start relative', {
+  return classNames('mx-2 lg:mx-3 self-start relative', {
+    'my-4 md:my-0 md:py-3': !subNav,
+    'py-2 px-4': subNav,
     'cursor-default': isActive,
     'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
-    'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
+    'text-vega-light-300 dark:text-vega-dark-300 hover:text-vega-light-400 dark:hover:text-vega-dark-400':
       !isActive && navbarTheme !== 'yellow',
     'text-black dark:text-white md:dark:text-black':
       isActive && navbarTheme === 'yellow',
@@ -35,7 +39,7 @@ interface NavbarProps {
   icon: ReactNode;
   titleContent: ReactNode;
   children: ReactNode;
-  title: string;
+  title?: string;
 }
 
 export const Nav = ({
@@ -46,7 +50,7 @@ export const Nav = ({
   title,
 }: NavbarProps) => {
   const themeWrapperClasses = classNames(
-    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden',
+    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha lg:text-lg',
     {
       dark: navbarTheme === 'dark',
     }
@@ -54,10 +58,10 @@ export const Nav = ({
 
   const isYellow = navbarTheme === 'yellow';
   const navbarClasses = classNames(
-    'min-w-max w-full flex items-stretch border-b px-4 border-default',
+    'min-w-max w-full flex items-stretch border-b px-4',
     {
-      'dark:bg-black dark:text-white': !isYellow,
-      'bg-vega-yellow text-black bg-right-top bg-no-repeat bg-contain':
+      'dark:bg-black dark:text-white border-default': !isYellow,
+      'border-vega-yellow bg-vega-yellow text-black bg-right-top bg-no-repeat bg-contain':
         isYellow,
     }
   );
@@ -69,7 +73,7 @@ export const Nav = ({
           {icon}
           <h1
             className={classNames(
-              'h-full flex flex-col my-0 justify-center font-alpha calt uppercase',
+              'h-full flex flex-col my-0 justify-center font-alpha uppercase',
               { 'text-black': isYellow, 'text-white': !isYellow }
             )}
           >

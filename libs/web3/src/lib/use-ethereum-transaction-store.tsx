@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import produce from 'immer';
 import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
@@ -9,6 +9,7 @@ import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
 
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
+import { subscribeWithSelector } from 'zustand/middleware';
 
 type Contract = MultisigControl | CollateralBridge | Token | TokenFaucetable;
 type ContractMethod =
@@ -54,8 +55,8 @@ export interface EthTransactionStore {
   delete: (index: number) => void;
 }
 
-export const useEthTransactionStore = create<EthTransactionStore>(
-  (set, get) => ({
+export const useEthTransactionStore = create(
+  subscribeWithSelector<EthTransactionStore>((set, get) => ({
     transactions: [] as EthStoredTxState[],
     create: (
       contract: Contract | null,
@@ -120,9 +121,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         produce((state: EthTransactionStore) => {
           const transaction = state.transactions.find(
             (transaction) =>
-              transaction &&
-              transaction.status === EthTxStatus.Pending &&
-              deposit.txHash === transaction.txHash
+              transaction && deposit.txHash === transaction.txHash
           );
           if (!transaction) {
             return;
@@ -141,5 +140,5 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         })
       );
     },
-  })
+  }))
 );

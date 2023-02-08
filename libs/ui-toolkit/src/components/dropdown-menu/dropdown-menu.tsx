@@ -1,5 +1,6 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import { Icon } from '../icon';
 
@@ -12,11 +13,24 @@ const itemClass = classNames(
   'whitespace-nowrap'
 );
 
+type DropdownMenuProps = DropdownMenuPrimitive.DropdownMenuProps & {
+  trigger: ReactNode;
+};
 /**
  * Contains all the parts of a dropdown menu.
  */
-export const DropdownMenu = DropdownMenuPrimitive.Root;
-
+export const DropdownMenu = ({
+  children,
+  trigger,
+  ...props
+}: DropdownMenuProps) => {
+  return (
+    <DropdownMenuPrimitive.Root {...props}>
+      {trigger}
+      <DropdownMenuPrimitive.Portal>{children}</DropdownMenuPrimitive.Portal>
+    </DropdownMenuPrimitive.Root>
+  );
+};
 /**
  * The button that toggles the dropdown menu.
  * By default, the {@link DropdownMenuContent} will position itself against the trigger.
@@ -137,7 +151,7 @@ export const DropdownMenuSeparator = forwardRef<
     {...separatorProps}
     ref={forwardedRef}
     className={classNames(
-      'h-px my-1 mx-2 bg-neutral-700 dark:bg-black',
+      'h-px my-1 mx-2 bg-neutral-400 dark:bg-neutral-300',
       className
     )}
   />

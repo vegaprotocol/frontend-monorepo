@@ -11,6 +11,7 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const openProposals = '[data-testid="open-proposals"]';
+const closedProposals = '[data-testid="closed-proposals"]';
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
 const proposalVoteProgressAgainstPercentage =
@@ -22,7 +23,9 @@ const proposalVoteProgressAgainstTokens =
 const changeVoteButton = '[data-testid="change-vote-button"]';
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
+const proposalStatus = '[data-testid="proposal-status"]';
 const rawProposalData = '[data-testid="proposal-data"]';
+const votesTable = '[data-testid="votes-table"]';
 const minVoteButton = '[data-testid="min-vote"]';
 const maxVoteButton = '[data-testid="max-vote"]';
 const voteButtons = '[data-testid="vote-buttons"]';
@@ -36,6 +39,10 @@ const noClosedProposals = '[data-testid="no-closed-proposals"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
+
+const minCloseDays = 2;
+const maxCloseDays = 3;
+const requiredParticipation = 0.001;
 
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
@@ -66,21 +73,6 @@ context(
             100
         ).as('requiredMajority');
         cy.wrap(
-          network_parameters[
-            'governance.proposal.freeform.requiredParticipation'
-          ] * 100
-        ).as('requiredParticipation');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.minClose'].split(
-            'h'
-          )[0] / 24
-        ).as('minCloseDays');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.maxClose'].split(
-            'h'
-          )[0] / 24
-        ).as('maxCloseDays');
-        cy.wrap(
           network_parameters['governance.proposal.freeform.minClose'].split(
             'h'
           )[0]
@@ -107,21 +99,6 @@ context(
             parseInt(this.minVoterBalance),
             0.00001,
             'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
-          );
-          assert.isAtLeast(
-            parseFloat(this.requiredParticipation),
-            0.00001,
-            'Asserting that value is at least 0.00001 for network parameter requiredParticipation'
-          );
-          assert.isAtLeast(
-            parseInt(this.minCloseDays),
-            1,
-            'Asserting that value is at least 1 for network parameter minCloseDays'
-          );
-          assert.isAtLeast(
-            parseInt(this.maxCloseDays),
-            parseInt(this.minCloseDays + 1),
-            'Asserting that network parameter maxCloseDays is at least 1 day higher than minCloseDays'
           );
           // workaround for first eth tx hanging
           associateTokenStartOfTests();
@@ -182,10 +159,10 @@ context(
           this.minProposerBalance
         );
         let proposalDays = [
-          this.minCloseDays + 1,
-          this.maxCloseDays,
-          this.minCloseDays + 3,
-          this.minCloseDays + 2,
+          minCloseDays + 1,
+          maxCloseDays,
+          minCloseDays + 3,
+          minCloseDays + 2,
         ];
         for (var index = 0; index < proposalDays.length; index++) {
           cy.go_to_make_new_proposal(governanceProposalType.RAW);
@@ -227,6 +204,7 @@ context(
         cy.navigate_to('validators');
         cy.click_on_validator_from_list(0);
         cy.staking_validator_page_add_stake('2');
+        cy.close_staking_dialog();
 
         cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
 
@@ -297,10 +275,12 @@ context(
         });
       });
 
-      // Skipping test due to bug: #1320
-      it.skip('Newly created freeform proposals list - shows proposal participation - both met and not', function () {
-        createFreeformProposal(this.minProposerBalance);
-        cy.get_submitted_proposal_from_proposal_list()
+      // 3001-VOTE-071
+      it('Newly created freeform proposals list - shows proposal participation - both met and not', function () {
+        const proposalTitle = generateProposalTitle();
+        createFreeformProposal(this.minProposerBalance, proposalTitle);
+
+        cy.get_submitted_proposal_from_proposal_list(proposalTitle)
           .as('submittedProposal')
           .within(() => {
             // 3001-VOTE-039
@@ -312,7 +292,7 @@ context(
           .invoke('text')
           .then((totalSupply) => {
             let tokensRequiredToAchieveResult = parseFloat(
-              (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
+              (totalSupply.replace(/,/g, '') * requiredParticipation) / 100
             ).toFixed(2);
             cy.ensure_specified_unstaked_tokens_are_associated(
               tokensRequiredToAchieveResult
@@ -321,16 +301,17 @@ context(
             cy.get('@submittedProposal').within(() =>
               cy.get(viewProposalButton).click()
             );
-            cy.get_proposal_information_from_table('Participation met')
+            cy.get_proposal_information_from_table('Token participation met')
               .contains('👍')
               .should('be.visible');
             cy.navigate_to('proposals');
             cy.get('@submittedProposal').within(() =>
-              cy.get(voteStatus).should('have.text', 'Participation met')
+              cy.get(voteStatus).should('have.text', 'Set to pass')
             );
           });
       });
 
+      // 3001-VOTE-055
       it('Newly created raw proposal details - shows proposal title and full description', function () {
         createRawProposal(this.minProposerBalance);
         cy.get('@rawProposal').then((rawProposal) => {
@@ -357,6 +338,7 @@ context(
           });
       });
 
+      // 3001-VOTE-043
       it('Newly created freeform proposal details - shows proposed and closing dates', function () {
         const closingVoteHrs = '72';
         const proposalTitle = generateProposalTitle();
@@ -399,6 +381,7 @@ context(
       it('Newly created proposal details - shows default status set to fail', function () {
         // 3001-VOTE-037
         // 3001-VOTE-040
+        // 3001-VOTE-067
         createRawProposal(this.minProposerBalance);
         cy.get('@rawProposal').then((rawProposal) => {
           cy.get_submitted_proposal_from_proposal_list(
@@ -413,15 +396,17 @@ context(
           .should('be.visible');
         // 3001-VOTE-062
         // 3001-VOTE-040
+        // 3001-VOTE-070
         cy.get_proposal_information_from_table('Token majority met')
           .contains('👎')
           .should('be.visible');
+        // 3001-VOTE-068
         cy.get_proposal_information_from_table('Token participation met')
           .contains('👎')
           .should('be.visible');
       });
 
-      // 3001-VOTE-080 3001-VOTE-090
+      // 3001-VOTE-080 3001-VOTE-090 3001-VOTE-069 3001-VOTE-072 3001-VOTE-073
       it('Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated', function () {
         createRawProposal(this.minProposerBalance);
         cy.get('@rawProposal').then((rawProposal) => {
@@ -446,7 +431,7 @@ context(
             .contains(votedDate)
             .should('be.visible');
         });
-        cy.get(proposalVoteProgressForPercentage)
+        cy.get(proposalVoteProgressForPercentage) // 3001-VOTE-072
           .contains('100.00%')
           .and('be.visible');
         cy.get(proposalVoteProgressAgainstPercentage)
@@ -466,10 +451,10 @@ context(
           .and('be.visible');
         // 3001-VOTE-061
         cy.get_proposal_information_from_table('Participation required')
-          .contains(`${this.requiredParticipation}%`)
+          .contains(`${requiredParticipation}%`)
           .should('be.visible');
         // 3001-VOTE-066
-        cy.get_proposal_information_from_table('Majority Required')
+        cy.get_proposal_information_from_table('Majority Required') // 3001-VOTE-073
           .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
           .should('be.visible');
         cy.get_proposal_information_from_table('Number of voting parties')
@@ -512,7 +497,7 @@ context(
           .invoke('text')
           .then((totalSupply) => {
             let tokensRequiredToAchieveResult = parseFloat(
-              (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
+              (totalSupply.replace(/,/g, '') * requiredParticipation) / 100
             ).toFixed(2);
             cy.ensure_specified_unstaked_tokens_are_associated(
               tokensRequiredToAchieveResult
@@ -535,6 +520,11 @@ context(
               .and('be.visible');
             cy.get(proposalVoteProgressAgainstTokens)
               .contains('0.00')
+              .and('be.visible');
+            cy.get_proposal_information_from_table(
+              'Total tokens voted percentage'
+            )
+              .should('have.text', '0.00%')
               .and('be.visible');
             cy.get_proposal_information_from_table('Tokens for proposal')
               .should('have.text', tokensRequiredToAchieveResult)
@@ -588,6 +578,7 @@ context(
         );
       });
 
+      // 3001-VOTE-006
       it('Creating a proposal - proposal rejected - able to access rejected proposals', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
@@ -649,6 +640,7 @@ context(
         cy.get(dialogCloseButton).click();
       });
 
+      // 3002-PROP-009
       it('Unable to create a proposal - when some but not enough tokens are associated', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance - 0.000001
@@ -669,7 +661,7 @@ context(
       });
 
       it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
-        // 3001-VOTE-038
+        // 3001-VOTE-038 3002-PROP-013 3002-PROP-014
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
@@ -695,6 +687,9 @@ context(
           'Invalid params: the transaction is malformed'
         );
         cy.get(dialogCloseButton).click();
+        cy.get(rawProposalData)
+          .invoke('val')
+          .should('contain', "i shouldn't be here");
       });
 
       it('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
@@ -792,6 +787,107 @@ context(
         cy.contains('You voted: Against').should('be.visible');
       });
 
+      // 3001-VOTE-006
+      it('Able to view enacted proposal', function () {
+        cy.createMarket();
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.get(closedProposals).within(() => {
+          cy.get(proposalDetailsTitle).should(
+            'have.text',
+            'Add Lorem Ipsum market'
+          );
+          cy.get(proposalStatus).should('have.text', 'Enacted ');
+          cy.get(viewProposalButton).click();
+        });
+        cy.getByTestId('proposal-type').should('have.text', 'New market');
+        cy.get_proposal_information_from_table('State')
+          .contains('Enacted')
+          .and('be.visible');
+        cy.get(votesTable).within(() => {
+          cy.contains('Vote passed.').should('be.visible');
+          cy.contains('Voting has ended.').should('be.visible');
+        });
+      });
+
+      // 3001-VOTE-047
+      it('Able to enact freeform proposal', function () {
+        const proposalTitle = 'Add New free form proposal with short enactment';
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.sendWalletTxFreeFormProposal();
+        cy.navigate_to('proposals');
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.contains(proposalTitle)
+          .parentsUntil('[data-testid="proposals-list-item"]')
+          .within(() => cy.get(viewProposalButton).click());
+        cy.get_proposal_information_from_table('State')
+          .contains('Open')
+          .and('be.visible');
+        cy.vote_for_proposal('for');
+        cy.get_proposal_information_from_table('State')
+          .contains('Enacted', epochTimeout)
+          .and('be.visible');
+      });
+
+      // 3001-VOTE-046 3001-VOTE-044 3001-VOTE-074 3001-VOTE-074
+      it('Able to enact proposal by voting', function () {
+        const proposalTitle = 'Add New proposal with short enactment';
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.sendWalletTxUpdateNetworkProposal();
+        cy.navigate_to('proposals');
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.contains(proposalTitle)
+          .parentsUntil('[data-testid="proposals-list-item"]')
+          .within(() => cy.get(viewProposalButton).click());
+        cy.get_proposal_information_from_table('State')
+          .contains('Open')
+          .and('be.visible');
+        cy.vote_for_proposal('for');
+        cy.get_proposal_information_from_table('State') // 3001-VOTE-047
+          .contains('Passed', txTimeout)
+          .and('be.visible');
+        cy.get_proposal_information_from_table('State')
+          .contains('Enacted', epochTimeout)
+          .and('be.visible');
+        cy.get(votesTable).within(() => {
+          cy.contains('Vote passed.').should('be.visible');
+          cy.contains('Voting has ended.').should('be.visible');
+        });
+        cy.get(proposalVoteProgressForPercentage)
+          .contains('100.00%')
+          .and('be.visible');
+      });
+
+      // 3001-VOTE-048 3001-VOTE-049
+      it('Able to fail proposal due to lack of participation', function () {
+        const proposalTitle = 'Add New free form proposal with short enactment';
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.sendWalletTxFreeFormProposal();
+        cy.navigate_to('proposals');
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.contains(proposalTitle)
+          .parentsUntil('[data-testid="proposals-list-item"]')
+          .within(() => cy.get(viewProposalButton).click());
+        cy.get_proposal_information_from_table('State')
+          .contains('Open')
+          .and('be.visible');
+        cy.get_proposal_information_from_table('State') // 3001-VOTE-047
+          .contains('Declined', txTimeout)
+          .and('be.visible');
+        cy.get_proposal_information_from_table('Rejection reason')
+          .contains('PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED')
+          .and('be.visible');
+      });
+
       function createRawProposal(proposerBalance) {
         if (proposerBalance)
           cy.ensure_specified_unstaked_tokens_are_associated(proposerBalance);
@@ -829,7 +925,7 @@ context(
         cy.highlight(`Associating tokens for first time`);
         cy.ethereum_wallet_connect();
         cy.connectVegaWallet();
-        cy.get('[href="/validators/associate"]').first().click();
+        cy.get('[href="/token/associate"]').first().click();
         cy.getByTestId('associate-radio-wallet', { timeout: 30000 }).click();
         cy.getByTestId('token-amount-input', epochTimeout).type('1');
         cy.getByTestId('token-input-submit-button', txTimeout)

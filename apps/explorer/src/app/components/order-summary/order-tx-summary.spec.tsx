@@ -90,6 +90,7 @@ describe('Order TX Summary component', () => {
           market: {
             id: '123',
             decimalPlaces: 2,
+            positionDecimalPlaces: 2,
             state: 'irrelevant-test-data',
             tradableInstrument: {
               instrument: {
@@ -97,6 +98,10 @@ describe('Order TX Summary component', () => {
                 product: {
                   __typename: 'Future',
                   quoteName: 'TEST',
+                  settlementAsset: {
+                    __typeName: 'SettlementAsset',
+                    decimals: 18,
+                  },
                 },
               },
             },

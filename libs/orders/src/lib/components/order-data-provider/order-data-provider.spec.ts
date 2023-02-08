@@ -62,7 +62,7 @@ describe('order data provider', () => {
     expect(updatedData && updatedData[1].node.updatedAt).toEqual(
       delta[4].updatedAt
     );
-    expect(update([], delta, () => null, { partyId: '0x123' }).length).toEqual(
+    expect(update([], delta, () => null, { partyId: '0x123' })?.length).toEqual(
       4
     );
   });

@@ -1,13 +1,16 @@
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
+import {
+  WalletClientError,
+  WalletHttpError,
+} from '@vegaprotocol/wallet-client';
 import { useVegaWallet } from './use-vega-wallet';
 import type { VegaTransactionContentMap } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
+import type { WalletError } from './connectors';
 import { ClientErrors } from './connectors';
-import { WalletError } from './connectors';
-import type { WalletClientError } from '@vegaprotocol/wallet-client';
 
 export interface DialogProps {
   intent?: Intent;
@@ -26,7 +29,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: WalletError | WalletClientError | Error | null;
+  error: Error | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -40,8 +43,21 @@ export const initialState = {
   dialogOpen: false,
 };
 
+export const orderErrorResolve = (err: Error | unknown): Error => {
+  if (err instanceof WalletClientError) {
+    return err;
+  } else if (err instanceof WalletHttpError) {
+    return ClientErrors.UNKNOWN;
+  } else if (err instanceof TypeError) {
+    return ClientErrors.NO_SERVICE;
+  } else if (err instanceof Error) {
+    return err;
+  }
+  return ClientErrors.UNKNOWN;
+};
+
 export const useVegaTransaction = () => {
-  const { sendTx } = useVegaWallet();
+  const { sendTx, disconnect } = useVegaWallet();
   const [transaction, _setTransaction] = useState<VegaTxState>(initialState);
 
   const setTransaction = useCallback((update: Partial<VegaTxState>) => {
@@ -90,20 +106,18 @@ export const useVegaTransaction = () => {
 
         return null;
       } catch (err) {
-        const error =
-          err instanceof WalletError
-            ? err
-            : err instanceof Error
-            ? err
-            : ClientErrors.UNKNOWN;
+        const error = orderErrorResolve(err);
+        if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
+          disconnect();
+        }
         setTransaction({
-          error: error,
+          error,
           status: VegaTxStatus.Error,
         });
         return null;
       }
     },
-    [sendTx, setTransaction, reset]
+    [sendTx, setTransaction, reset, disconnect]
   );
 
   const Dialog = useMemo(() => {

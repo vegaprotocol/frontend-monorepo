@@ -72,8 +72,8 @@ export const LockedProgress = ({
   unlocked,
   leftLabel,
   rightLabel,
-  leftColor = Colors.vega.pink,
-  rightColor = Colors.vega.green,
+  leftColor = Colors.vega.pink.DEFAULT,
+  rightColor = Colors.vega.green.DEFAULT,
   decimals = 2,
 }: LockedProgressProps) => {
   const lockedPercentage = React.useMemo(() => {

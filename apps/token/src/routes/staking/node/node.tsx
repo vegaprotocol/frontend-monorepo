@@ -20,7 +20,7 @@ import NodeContainer from './nodes-container';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { Heading, SubHeading } from '../../../components/heading';
 import Routes from '../../routes';
-import type { StakingQuery } from './__generated___/Staking';
+import type { StakingQuery } from './__generated__/Staking';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 
 interface StakingNodeProps {

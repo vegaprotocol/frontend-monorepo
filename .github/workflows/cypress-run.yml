@@ -14,15 +14,16 @@ on:
 jobs:
   e2e:
     strategy:
+      fail-fast: false
       matrix:
         project: ${{ fromJSON(inputs.projects) }}
-    runs-on: self-hosted
+    runs-on: self-hosted-runner
     timeout-minutes: 30
     steps:
       # Checks if skip cache was requested
       - name: Set skip-nx-cache flag
         if: ${{ inputs.skip-cache == true }}
-        run: echo SKIP_CACHE="--skip-nx-cache" >> GITHUB_ENV
+        run: echo "SKIP_CACHE=--skip-nx-cache" >> $GITHUB_ENV
 
       # Checkout front ends
       - name: Checkout frontend mono repo
@@ -63,13 +64,11 @@ jobs:
       ######
 
       - name: Run Cypress tests
-        run: yarn nx run ${{ matrix.project }}:e2e ${{ env.SKIP_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: yarn nx run ${{ matrix.project }}:e2e ${{ env.SKIP_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome --env.grepTags="${{ inputs.tags }}"
         working-directory: frontend-monorepo
         env:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
-          CYPRESS_grepTags: ${{ inputs.tags }}
 
       ######
       ## Upload logs

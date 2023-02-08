@@ -16,7 +16,7 @@ import { PartyAccounts } from './components/party-accounts';
 const Party = () => {
   const { party } = useParams<{ party: string }>();
 
-  useDocumentTitle(['Parties', party || '-']);
+  useDocumentTitle(['Public keys', party || '-']);
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
@@ -44,7 +44,7 @@ const Party = () => {
     />
   ) : (
     <Panel>
-      <p>No party found for key {party}</p>
+      <p>No data found for public key {party}</p>
     </Panel>
   );
 
@@ -71,7 +71,7 @@ const Party = () => {
         className="font-alpha uppercase font-xl mb-4 text-zinc-800 dark:text-zinc-200"
         data-testid="parties-header"
       >
-        {t('Party')}
+        {t('Public key')}
       </h1>
       {partyRes.data ? (
         <>

@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { OrderEventFieldsFragment } from './__generated__/OrderEvent';
+import type { OrderSubFieldsFragment } from './__generated__/OrdersSubscription';
 import {
   useVegaWallet,
   useVegaTransaction,
   determineId,
 } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
-import { useOrderEvent } from './use-order-event';
+import { useOrderUpdate } from './use-order-update';
 import * as Schema from '@vegaprotocol/types';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
@@ -96,10 +96,10 @@ export const useOrderSubmit = () => {
     Dialog,
   } = useVegaTransaction();
 
-  const waitForOrderEvent = useOrderEvent(transaction);
+  const waitForOrderUpdate = useOrderUpdate(transaction);
 
   const [finalizedOrder, setFinalizedOrder] =
-    useState<OrderEventFieldsFragment | null>(null);
+    useState<OrderSubFieldsFragment | null>(null);
 
   const reset = useCallback(() => {
     resetTransaction();
@@ -120,7 +120,7 @@ export const useOrderSubmit = () => {
         if (res) {
           const orderId = determineId(res.signature);
           if (orderId) {
-            const order = await waitForOrderEvent(orderId, pubKey);
+            const order = await waitForOrderUpdate(orderId, pubKey);
             setFinalizedOrder(order);
             setComplete();
           }
@@ -129,7 +129,7 @@ export const useOrderSubmit = () => {
         Sentry.captureException(e);
       }
     },
-    [pubKey, send, setComplete, waitForOrderEvent]
+    [pubKey, send, setComplete, waitForOrderUpdate]
   );
 
   return {

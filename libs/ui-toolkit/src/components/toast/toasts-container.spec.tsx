@@ -1,5 +1,5 @@
 import { act, render, renderHook, screen } from '@testing-library/react';
-import { ToastsContainer, useToasts } from '..';
+import { CLOSE_DELAY, ToastsContainer, useToasts } from '..';
 import { Intent } from '../../utils/intent';
 
 describe('ToastsContainer', () => {
@@ -108,7 +108,7 @@ describe('ToastsContainer', () => {
     ) as HTMLButtonElement;
     act(() => {
       closeBtn.click();
-      jest.runAllTimers();
+      jest.advanceTimersByTime(CLOSE_DELAY);
     });
     rerender(<ToastsContainer order="asc" toasts={result.current.toasts} />);
     const toasts = [...screen.queryAllByTestId('toast-content')].map((t) =>

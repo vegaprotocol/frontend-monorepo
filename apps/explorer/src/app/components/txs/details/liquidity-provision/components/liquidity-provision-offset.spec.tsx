@@ -13,15 +13,6 @@ const decimalsMock: ExplorerSettlementAssetForMarketQuery = {
     id: '123',
     __typename: 'Market',
     decimalPlaces: 5,
-    tradableInstrument: {
-      instrument: {
-        product: {
-          settlementAsset: {
-            decimals: 5,
-          },
-        },
-      },
-    },
   },
 };
 

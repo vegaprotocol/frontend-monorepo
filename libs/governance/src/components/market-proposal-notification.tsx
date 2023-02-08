@@ -20,14 +20,23 @@ export const MarketProposalNotification = ({
     const proposalLink = tokenLink(
       TOKEN_PROPOSAL.replace(':id', proposal.id || '')
     );
+    const message = (
+      <div className="flex flex-col text-sm">
+        {t('Changes have been proposed for this market.')}{' '}
+        <ExternalLink href={proposalLink} className="w-fit">
+          {t('View proposal')}
+        </ExternalLink>
+      </div>
+    );
     return (
-      <Notification
-        intent={Intent.Warning}
-        message={t('Changes have been proposed for this market')}
-        testId="market-proposal-notification"
-      >
-        <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
-      </Notification>
+      <div className="border-l border-default pl-1 pr-1 pb-1 min-w-min whitespace-nowrap">
+        <Notification
+          intent={Intent.Warning}
+          message={message}
+          testId="market-proposal-notification"
+          className="px-2 py-1"
+        />
+      </div>
     );
   }
 

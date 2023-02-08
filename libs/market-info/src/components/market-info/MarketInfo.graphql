@@ -5,6 +5,7 @@ query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
     positionDecimalPlaces
     state
     tradingMode
+    lpPriceRange
     proposal {
       id
       rationale {
@@ -58,6 +59,7 @@ query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
         id
       }
       markPrice
+      midPrice
       bestBidVolume
       bestOfferVolume
       bestStaticBidVolume

@@ -23,7 +23,7 @@ import {
 } from '@vegaprotocol/wallet';
 import type { VegaTxState, TransactionResult } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import type { OrderEventFieldsFragment } from '../../order-hooks';
+import type { OrderSubFieldsFragment } from '../../order-hooks';
 import * as Schema from '@vegaprotocol/types';
 import type { Order } from '../order-data-provider';
 
@@ -31,6 +31,7 @@ export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string) => void;
+  isReadOnly: boolean;
 }
 
 export const TransactionComplete = ({
@@ -72,6 +73,7 @@ export const OrderListManager = ({
   partyId,
   marketId,
   onMarketClick,
+  isReadOnly,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
@@ -146,6 +148,7 @@ export const OrderListManager = ({
             }}
             setEditOrder={setEditOrder}
             onMarketClick={onMarketClick}
+            isReadOnly={isReadOnly}
           />
           <div className="pointer-events-none absolute inset-0">
             <AsyncRenderer
@@ -235,7 +238,7 @@ export const getCancelDialogIntent = ({
   cancelledOrder,
   transactionResult,
 }: {
-  cancelledOrder: OrderEventFieldsFragment | null;
+  cancelledOrder: OrderSubFieldsFragment | null;
   transactionResult?: TransactionResult;
 }): Intent | undefined => {
   if (cancelledOrder) {
@@ -257,7 +260,7 @@ export const getCancelDialogTitle = ({
   cancelledOrder,
   transactionResult,
 }: {
-  cancelledOrder: OrderEventFieldsFragment | null;
+  cancelledOrder: OrderSubFieldsFragment | null;
   transactionResult?: TransactionResult;
 }): string | undefined => {
   if (cancelledOrder) {

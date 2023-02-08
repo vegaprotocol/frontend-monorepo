@@ -60,8 +60,11 @@ describe('Chain Event: ERC20 Asset Delist', () => {
 
     const assetLink = screen.getByText(`${fullMock.vegaAssetId}`);
     expect(assetLink).toBeInTheDocument();
-    expect(assetLink.tagName).toEqual('A');
-    expect(assetLink.getAttribute('href')).toEqual(
+    if (!assetLink.parentElement) {
+      throw new Error('Asset link does not exist');
+    }
+    expect(assetLink.parentElement.tagName).toEqual('A');
+    expect(assetLink.parentElement.getAttribute('href')).toEqual(
       `/assets#${fullMock.vegaAssetId}`
     );
   });

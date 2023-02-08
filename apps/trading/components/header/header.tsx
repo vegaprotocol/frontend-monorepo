@@ -15,7 +15,7 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
         <div className="px-4 xl:px-0 pb-2 xl:pb-3">{title}</div>
         <div
           data-testid="header-summary"
-          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs"
+          className="flex flex-nowrap items-end xl:flex-1 w-full overflow-x-auto text-xs"
         >
           {Children.map(children, (child, index) => {
             if (!child) return null;
@@ -43,8 +43,8 @@ export const HeaderStat = ({
   testId?: string;
 }) => {
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default';
-  const itemHeading = 'text-neutral-500 dark:text-neutral-400';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default text-neutral-500 dark:text-neutral-400';
+  const itemHeading = 'text-black dark:text-white';
 
   return (
     <div data-testid={testId} className={itemClass}>

@@ -5,8 +5,9 @@ import {
   t,
   titlefy,
   useDataProvider,
+  useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
@@ -24,16 +25,53 @@ const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
     : '-';
 };
 
-export const Market = () => {
+const TitleUpdater = ({
+  marketId,
+  marketName,
+  decimalPlaces,
+}: {
+  marketId?: string;
+  marketName?: string;
+  decimalPlaces?: number;
+}) => {
+  const pageTitle = usePageTitleStore((store) => store.pageTitle);
+  const updateTitle = usePageTitleStore((store) => store.updateTitle);
+  const { data: marketData } = useThrottledDataProvider<
+    MarketData,
+    MarketDataUpdateFieldsFragment
+  >(
+    {
+      dataProvider: marketDataProvider,
+      variables: useMemo(() => ({ marketId }), [marketId]),
+      skip: !marketId,
+    },
+    1000
+  );
+  useEffect(() => {
+    const marketPrice = calculatePrice(marketData?.markPrice, decimalPlaces);
+    if (marketName) {
+      const newPageTitle = titlefy([marketName, marketPrice]);
+      if (pageTitle !== newPageTitle) {
+        updateTitle(newPageTitle);
+      }
+    }
+  }, [
+    decimalPlaces,
+    marketName,
+    marketData?.markPrice,
+    pageTitle,
+    updateTitle,
+  ]);
+  return null;
+};
+
+export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
 
   const { w } = useWindowSize();
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
-
-  const pageTitle = usePageTitleStore((store) => store.pageTitle);
-  const updateTitle = usePageTitleStore((store) => store.updateTitle);
 
   const onSelect = useCallback(
     (id: string) => {
@@ -44,53 +82,17 @@ export const Market = () => {
     [marketId, navigate]
   );
 
-  const variables = useMemo(
-    () => ({
-      marketId: marketId || '',
-    }),
-    [marketId]
-  );
-
-  const updateMarketId = useCallback(
-    ({ data }: { data: { id?: string } | null }) => {
-      if (data?.id && data.id !== lastMarketId) {
-        update({ marketId: data.id });
-      }
-      return true;
-    },
-    [update, lastMarketId]
-  );
   const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,
-    variables,
-    update: updateMarketId,
+    variables: { marketId: marketId || '' },
     skip: !marketId,
   });
 
-  const marketName = data?.tradableInstrument.instrument.name;
-  const updateProvider = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      const marketPrice = calculatePrice(
-        marketData?.markPrice,
-        data?.decimalPlaces
-      );
-      if (marketName) {
-        const newPageTitle = titlefy([marketName, marketPrice]);
-        if (pageTitle !== newPageTitle) {
-          updateTitle(newPageTitle);
-        }
-      }
-      return true;
-    },
-    [updateTitle, pageTitle, marketName, data?.decimalPlaces]
-  );
-
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
-    dataProvider: marketDataProvider,
-    update: updateProvider,
-    variables,
-    skip: !marketId || !data,
-  });
+  useEffect(() => {
+    if (data?.id && data.id !== lastMarketId) {
+      update({ marketId: data.id });
+    }
+  }, [update, lastMarketId, data?.id]);
 
   const tradeView = useMemo(() => {
     if (w > 960) {
@@ -101,7 +103,17 @@ export const Market = () => {
   if (!data && marketId) {
     return (
       <Splash>
-        <p>{t('Market not found')}</p>
+        <span className="flex flex-col items-center gap-2">
+          <p className="text-sm justify-center">
+            {t('This market URL is not available any more.')}
+          </p>
+          <p className="text-sm justify-center">
+            {t(`Please choose another market from the`)}{' '}
+            <ExternalLink onClick={() => navigate(Links[Routes.MARKETS]())}>
+              market list
+            </ExternalLink>
+          </p>
+        </span>
       </Splash>
     );
   }
@@ -113,6 +125,11 @@ export const Market = () => {
       data={data || undefined}
       noDataCondition={(data) => false}
     >
+      <TitleUpdater
+        marketId={data?.id}
+        marketName={data?.tradableInstrument.instrument.name}
+        decimalPlaces={data?.decimalPlaces}
+      />
       {tradeView}
     </AsyncRenderer>
   );

@@ -66,7 +66,9 @@ export const Search = () => {
             className="text-white"
             hasError={Boolean(error?.message)}
             type="text"
-            placeholder={t('Enter block number, party id or transaction hash')}
+            placeholder={t(
+              'Enter block number, public key or transaction hash'
+            )}
           />
           {error?.message && (
             <div className="bg-white border border-t-0 border-accent absolute top-[100%] flex-1 w-full pb-2 px-2 rounded-b text-black">

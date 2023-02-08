@@ -21,6 +21,7 @@ interface OrderbookRowProps {
   price: string;
   relativeAsk?: number;
   relativeBid?: number;
+  onClick?: (price?: string | number) => void;
 }
 
 export const OrderbookRow = React.memo(
@@ -37,6 +38,7 @@ export const OrderbookRow = React.memo(
     price,
     relativeAsk,
     relativeBid,
+    onClick,
   }: OrderbookRowProps) => {
     return (
       <>
@@ -57,6 +59,7 @@ export const OrderbookRow = React.memo(
         <PriceCell
           testId={`price-${price}`}
           value={BigInt(price)}
+          onClick={() => onClick && onClick(price)}
           valueFormatted={addDecimalsFormatNumber(price, decimalPlaces)}
         />
         <CumulativeVol
