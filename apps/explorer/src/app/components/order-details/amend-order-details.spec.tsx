@@ -61,6 +61,7 @@ function renderExistingAmend(id: string, version: number, amend: Amend) {
               __typename: 'Market',
               id: '789',
               state: 'STATUS_ACTIVE',
+              positionDecimalPlaces: 2,
               decimalPlaces: '5',
               tradableInstrument: {
                 instrument: {
@@ -88,6 +89,7 @@ function renderExistingAmend(id: string, version: number, amend: Amend) {
           market: {
             id: '789',
             decimalPlaces: 5,
+            positionDecimalPlaces: 2,
             state: 'irrelevant-test-data',
             tradableInstrument: {
               instrument: {

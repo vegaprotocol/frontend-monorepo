@@ -90,6 +90,7 @@ describe('Order TX Summary component', () => {
           market: {
             id: '123',
             decimalPlaces: 2,
+            positionDecimalPlaces: 2,
             state: 'irrelevant-test-data',
             tradableInstrument: {
               instrument: {

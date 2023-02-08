@@ -38,6 +38,7 @@ const mock = {
           __typename: 'Market',
           id: '789',
           state: 'STATE_ACTIVE',
+          positionDecimalPlaces: 2,
           decimalPlaces: 2,
           tradableInstrument: {
             instrument: {
