@@ -1,3 +1,4 @@
+import type { GraphQLError } from 'graphql';
 import type { RouteHandler } from 'cypress/types/net-stubbing';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 
@@ -30,14 +31,15 @@ export const aliasGQLQuery = (
   req: CyHttpMessages.IncomingHttpRequest,
   operationName: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any
+  data?: any,
+  errors?: Partial<GraphQLError>[]
 ) => {
   if (hasOperationName(req, operationName)) {
     req.alias = operationName;
-    if (data !== undefined) {
+    if (data !== undefined || errors !== undefined) {
       req.reply({
         statusCode: 200,
-        body: { data },
+        body: { ...(data && { data }), ...(errors && { errors }) },
       });
     }
   }

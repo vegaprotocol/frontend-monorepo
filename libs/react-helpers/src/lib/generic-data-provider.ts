@@ -493,7 +493,7 @@ const memoize = <
   Delta,
   Variables extends OperationVariables = OperationVariables
 >(
-  fn: (variables?: Variables) => Subscribe<Data, Delta, Variables>
+  fn: () => Subscribe<Data, Delta, Variables>
 ) => {
   const cache: {
     subscribe: Subscribe<Data, Delta, Variables>;
@@ -504,7 +504,7 @@ const memoize = <
     if (cached) {
       return cached.subscribe;
     }
-    const subscribe = fn(variables);
+    const subscribe = fn();
     cache.push({ subscribe, variables });
     return subscribe;
   };
@@ -575,7 +575,8 @@ export type CombineDerivedData<
 > = (
   data: DerivedPart<Variables>['data'][],
   variables: Variables | undefined,
-  prevData: Data | null
+  prevData: Data | null,
+  errors?: (Error | undefined)[]
 ) => Data | null;
 
 export type CombineDerivedDelta<
@@ -657,7 +658,8 @@ function makeDerivedDataProviderInternal<
       ? combineData(
           parts.map((part) => part.data),
           variables,
-          data
+          data,
+          parts.map((part) => part.error)
         )
       : data;
     if (

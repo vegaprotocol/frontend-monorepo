@@ -1,3 +1,6 @@
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { marketsDataQuery } from '@vegaprotocol/mock';
+
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockSubscription();
@@ -15,6 +18,47 @@ describe('positions', { tags: '@smoke' }, () => {
     cy.visit('/#/portfolio');
     cy.getByTestId('Positions').click();
     validatePositionsDisplayed();
+  });
+
+  it('renders position among some graphql errors', () => {
+    const errors = [
+      {
+        message: 'no market data for market: market-2',
+        path: ['market', 'data'],
+        extensions: {
+          code: 13,
+          type: 'Internal',
+        },
+      },
+    ];
+    const marketData = marketsDataQuery();
+    const edges = marketData.marketsConnection?.edges.map((market) => {
+      const replace =
+        market.node.data?.market.id === 'market-2' ? null : market.node.data;
+      return { ...market, node: { ...market.node, data: replace } };
+    });
+    const overrides = {
+      ...marketData,
+      marketsConnection: { ...marketData.marketsConnection, edges },
+    };
+    cy.mockGQL((req) => {
+      aliasGQLQuery(req, 'MarketsData', overrides, errors);
+    });
+    cy.visit('/#/markets/market-0');
+    const emptyCells = [
+      'notional',
+      'markPrice',
+      'liquidationPrice',
+      'currentLeverage',
+      'averageEntryPrice',
+    ];
+    cy.getByTestId('tab-positions').within(() => {
+      cy.get('[row-id="market-2"]').within(() => {
+        emptyCells.forEach((cell) => {
+          cy.get(`[col-id="${cell}"]`).should('contain.text', '-');
+        });
+      });
+    });
   });
 
   function validatePositionsDisplayed() {
