@@ -150,7 +150,7 @@ export const getMetrics = (
       ) && generalAccountBalance.isLessThan(marginInitial.minus(marginSearch));
 
     metrics.push({
-      marketName: market.tradableInstrument.instrument.name + ' ' + market.id,
+      marketName: market.tradableInstrument.instrument.name,
       averageEntryPrice: position.averageEntryPrice,
       marginAccountBalance: marginAccount.balance,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),

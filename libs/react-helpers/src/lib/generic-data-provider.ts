@@ -5,10 +5,14 @@ import type {
   OperationVariables,
   TypedDocumentNode,
   FetchResult,
+  ErrorPolicy,
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
-import { isNotFoundGraphQLError } from './apollo-client';
+import {
+  isNotFoundGraphQLError,
+  isOnlyMarketDataNotFoundErrors,
+} from './apollo-client';
 import type * as Schema from '@vegaprotocol/types';
 interface UpdateData<Data, Delta> {
   delta?: Delta;
@@ -313,15 +317,29 @@ function makeDataProviderInternal<
     if (!client) {
       return;
     }
-    try {
-      const res = await client.query<QueryData>({
+
+    const call = (policy?: ErrorPolicy) =>
+      client.query<QueryData>({
         query,
         variables: pagination
           ? { ...variables, pagination: { first: pagination.first } }
           : variables,
         fetchPolicy: fetchPolicy || 'no-cache',
         context: additionalContext,
+        errorPolicy: policy || 'none',
       });
+
+    try {
+      const res = (await call().catch((err) => {
+        if (
+          err.graphQLErrors &&
+          isOnlyMarketDataNotFoundErrors(err.graphQLErrors, ['market', 'data'])
+        ) {
+          return call('ignore');
+        } else {
+          throw err;
+        }
+      }));
       data = getData(res.data, variables);
       if (data && pagination) {
         if (!(data instanceof Array)) {
@@ -355,7 +373,7 @@ function makeDataProviderInternal<
       }
       loaded = true;
     } catch (e) {
-      if (isNotFoundGraphQLError(e as Error, 'party')) {
+      if (isNotFoundGraphQLError(e as Error, ['party'])) {
         data = getData(null, variables);
         loaded = true;
         return;
