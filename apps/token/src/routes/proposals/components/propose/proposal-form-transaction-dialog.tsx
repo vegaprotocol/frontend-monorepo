@@ -15,7 +15,7 @@ export const ProposalFormTransactionDialog = ({
   finalizedProposal,
   TransactionDialog,
 }: ProposalFormTransactionDialogProps) => {
-  // Render a custom complete UI if the proposal was rejected other wise
+  // Render a custom complete UI if the proposal was rejected otherwise
   // pass undefined so that the default vega transaction dialog UI gets used
   const completeContent = finalizedProposal?.rejectionReason ? (
     <p>{finalizedProposal.rejectionReason}</p>
