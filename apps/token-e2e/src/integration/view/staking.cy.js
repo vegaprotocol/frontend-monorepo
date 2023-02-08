@@ -1,5 +1,4 @@
 /// <reference types="cypress" />
-import { aliasGQLQuery } from '@vegaprotocol/cypress';
 const guideLink = '[data-testid="staking-guide-link"]';
 const validatorTitle = '[data-testid="validator-node-title"]';
 const validatorId = '[data-testid="validator-id"]';
