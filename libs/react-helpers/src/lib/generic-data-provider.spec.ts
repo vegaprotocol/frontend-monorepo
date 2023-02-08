@@ -193,9 +193,20 @@ const clearPendingQueries = () => {
 };
 
 describe('data provider', () => {
+  beforeEach(() => {
+    clearPendingQueries();
+    callback.mockClear();
+    getData.mockClear();
+    clientQuery.mockClear();
+    clientSubscribeUnsubscribe.mockClear();
+    clientSubscribeSubscribe.mockClear();
+  });
   it('memoize instance and unsubscribe if no subscribers', () => {
-    const subscription1 = subscribe(jest.fn(), client);
-    const subscription2 = subscribe(jest.fn(), client);
+    const variables = { var: 'val' };
+    const subscription1 = subscribe(jest.fn(), client, variables);
+    const subscription2 = subscribe(jest.fn(), client, { ...variables });
+    // const subscription1 = subscribe(jest.fn(), client);
+    // const subscription2 = subscribe(jest.fn(), client);
     expect(clientSubscribeSubscribe.mock.calls.length).toEqual(1);
     subscription1.unsubscribe();
     expect(clientSubscribeUnsubscribe.mock.calls.length).toEqual(0);
@@ -204,7 +215,6 @@ describe('data provider', () => {
   });
 
   it('calls callback before and after initial fetch', async () => {
-    callback.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     expect(callback.mock.calls.length).toBe(1);
@@ -218,14 +228,12 @@ describe('data provider', () => {
   });
 
   it('calls callback on error', async () => {
-    callback.mockClear();
-    getData.mockClear();
     const subscription = subscribe(callback, client);
     expect(callback.mock.calls.length).toBe(1);
     expect(callback.mock.calls[0][0].data).toBe(null);
     expect(callback.mock.calls[0][0].loading).toBe(true);
-    const error = new Error();
-    await rejectQuery(new Error());
+    const error = new Error('Rejected by unit test');
+    await rejectQuery(error);
     expect(getData).not.toBeCalled();
     expect(callback.mock.calls.length).toBe(2);
     expect(callback.mock.calls[1][0].error).toEqual(error);
@@ -234,8 +242,6 @@ describe('data provider', () => {
   });
 
   it('calls successful callback on NotFound error on party path', async () => {
-    callback.mockClear();
-    callback.mockClear();
     const subscription = subscribe(callback, client);
     expect(callback.mock.calls.length).toBe(1);
     expect(callback.mock.calls[0][0].data).toBe(null);
@@ -283,7 +289,6 @@ describe('data provider', () => {
   });
 
   it("don't calls callback on update if data doesn't change", async () => {
-    callback.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -301,10 +306,6 @@ describe('data provider', () => {
   });
 
   it('refetch data on reload', async () => {
-    clearPendingQueries();
-    clientQuery.mockClear();
-    clientSubscribeUnsubscribe.mockClear();
-    clientSubscribeSubscribe.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -317,9 +318,6 @@ describe('data provider', () => {
   });
 
   it('refetch data and restart subscription on reload with force', async () => {
-    clientQuery.mockClear();
-    clientSubscribeUnsubscribe.mockClear();
-    clientSubscribeSubscribe.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -332,7 +330,6 @@ describe('data provider', () => {
   });
 
   it('calls callback on flush', async () => {
-    callback.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -343,8 +340,6 @@ describe('data provider', () => {
   });
 
   it('fills data with nulls if pagination is enabled', async () => {
-    callback.mockClear();
-    clearPendingQueries();
     const totalCount = 1000;
     const data: Item[] = new Array(first).fill(null).map((v, i) => ({
       cursor: i.toString(),
@@ -365,7 +360,6 @@ describe('data provider', () => {
   });
 
   it('loads requested data blocks and inserts data with total count', async () => {
-    callback.mockClear();
     const totalCount = 1000;
     const subscription = paginatedSubscribe(callback, client);
     await resolveQuery({
@@ -490,7 +484,6 @@ describe('data provider', () => {
   });
 
   it('loads requested data blocks and inserts data without totalCount', async () => {
-    callback.mockClear();
     const totalCount = undefined;
     const subscription = paginatedSubscribe(callback, client);
     await resolveQuery({
