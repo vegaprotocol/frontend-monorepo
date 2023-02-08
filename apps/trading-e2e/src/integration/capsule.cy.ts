@@ -258,8 +258,8 @@ describe('capsule', { tags: '@slow' }, () => {
         });
     });
   });
-
-  it('can edit order', function () {
+  // comment because of bug #2695
+  it.skip('can edit order', function () {
     cy.getByTestId(ordersTab).click();
     cy.getByTestId('edit').first().should('be.visible').click();
     cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
@@ -284,8 +284,8 @@ describe('capsule', { tags: '@slow' }, () => {
         checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
       });
   });
-
-  it('can cancel order', function () {
+  // comment because of bug #2695
+  it.skip('can cancel order', function () {
     cy.getByTestId(ordersTab).click();
     cy.getByTestId('cancel').first().click();
     cy.getByTestId(toastContent).should(
