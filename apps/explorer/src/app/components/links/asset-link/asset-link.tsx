@@ -12,7 +12,7 @@ export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
 
 /**
  * Given an asset ID, it will fetch the asset name and show that,
- * with a link to the assets list. If the name does not come back
+ * with a link to the assets modal. If the name does not come back
  * it will use the ID instead.
  */
 export const AssetLink = ({ assetId, ...props }: AssetLinkProps) => {
