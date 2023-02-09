@@ -126,10 +126,10 @@ export const VotingPowerRenderer = ({ data }: VotingPowerRendererProps) => {
     <Tooltip
       description={
         <>
-          <div>
+          <div data-testid="unnormalised-voting-power-tooltip">
             {t('unnormalisedVotingPower')}: {data.unnormalisedVotingPower}
           </div>
-          <div>
+          <div data-testid="normalised-voting-power-tooltip">
             {t('normalisedVotingPower')}: {data.normalisedVotingPower}
           </div>
         </>
@@ -155,13 +155,13 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
     <Tooltip
       description={
         <>
-          <div>
+          <div data-testid="staked-operator-tooltip">
             {t('stakedByOperator')}: {data.stakedByOperator.toString()}
           </div>
-          <div>
+          <div data-testid="staked-delegates-tooltip">
             {t('stakedByDelegates')}: {data.stakedByDelegates.toString()}
           </div>
-          <div>
+          <div data-testid="total-staked-tooltip">
             {t('totalStake')}: <span className="font-bold">{data.stake}</span>
           </div>
         </>
@@ -191,13 +191,13 @@ export const TotalPenaltiesRenderer = ({
     <Tooltip
       description={
         <>
-          <div>
+          <div data-testid="performance-penalty-tooltip">
             {t('performancePenalty')}: {data.performancePenalty}
           </div>
-          <div>
+          <div data-testid="overstaked-penalty-tooltip">
             {t('overstakedPenalty')}: {data.overstakingPenalty}
           </div>
-          <div>
+          <div data-testid="total-penalty-tooltip">
             {t('totalPenalties')}:{' '}
             <span className="font-bold">{data.totalPenalties}</span>
           </div>

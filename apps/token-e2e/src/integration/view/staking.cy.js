@@ -10,6 +10,16 @@ const pendingStake = '[data-testid="pending-stake"]';
 const stakedByOperator = '[data-testid="staked-by-operator"]';
 const stakedByDelegates = '[data-testid="staked-by-delegates"]';
 const stakeShare = '[data-testid="stake-percentage"]';
+const stakedByOperatorToolTip = "[data-testid='staked-operator-tooltip']";
+const stakedByDelegatesToolTip = "[data-testid='staked-delegates-tooltip']";
+const totalStakedToolTip = "[data-testid='total-staked-tooltip']";
+const unnormalisedVotingPowerToolTip =
+  "[data-testid='unnormalised-voting-power-tooltip']";
+const normalisedVotingPowerToolTip =
+  "[data-testid='normalised-voting-power-tooltip']";
+const performancePenaltyToolTip = "[data-testid='performance-penalty-tooltip']";
+const overstakedPenaltyToolTip = "[data-testid='overstaked-penalty-tooltip']";
+const totalPenaltyToolTip = "[data-testid='total-penalty-tooltip']";
 const epochCountDown = '[data-testid="epoch-countdown"]';
 const stakeNumberRegex = /^\d*\.?\d*$/;
 
@@ -56,35 +66,68 @@ context('Staking Page - verify elements on page', function () {
       });
 
       it('Should be able to see validator stake', function () {
-        cy.get('[col-id="stake"] > div > span')
+        cy.get('[col-id="stake"] > div > span > span')
           .should('have.length.at.least', 1)
           .each(($stake) => {
             cy.wrap($stake).should('not.be.empty');
           });
       });
 
+      it('Should be able to see validator stake tooltip', function () {
+        cy.get('[col-id="stake"] > div > span > span').first().realHover();
+
+        cy.get(stakedByOperatorToolTip)
+          .invoke('text')
+          .should('contain', 'Staked by operator: 0.00');
+        cy.get(stakedByDelegatesToolTip)
+          .invoke('text')
+          .should('contain', 'Staked by delegates: 0.00');
+        cy.get(totalStakedToolTip)
+          .invoke('text')
+          .should('contain', 'Total stake: 0.00');
+      });
+
       it('Should be able to see validator normalised voting power', function () {
-        cy.get('[col-id="normalisedVotingPower"] > div > span')
+        cy.get('[col-id="normalisedVotingPower"] > div > span > span')
           .should('have.length.at.least', 1)
           .each(($vPower) => {
             cy.wrap($vPower).should('not.be.empty');
           });
       });
 
-      it('Should be able to see validator normalised voting power', function () {
-        cy.get('[col-id="normalisedVotingPower"] > div > span')
-          .should('have.length.at.least', 1)
-          .each(($vPower) => {
-            cy.wrap($vPower).should('not.be.empty');
-          });
+      it('Should be able to see validator voting power tooltip', function () {
+        cy.get('[col-id="normalisedVotingPower"] > div > span > span')
+          .first()
+          .realHover();
+
+        cy.get(unnormalisedVotingPowerToolTip)
+          .invoke('text')
+          .should('contain', 'Unnormalised voting power: 0.00%');
+        cy.get(normalisedVotingPowerToolTip)
+          .invoke('text')
+          .should('contain', 'Normalised voting power: 0.10%');
       });
 
       it('Should be able to see validator total penalties', function () {
-        cy.get('[col-id="totalPenalties"] > div > span')
+        cy.get('[col-id="totalPenalties"] > div > span > span')
           .should('have.length.at.least', 1)
           .each(($penalties) => {
             cy.wrap($penalties).should('contain.text', '0%');
           });
+      });
+
+      it('Should be able to see validator penalties tooltip', function () {
+        cy.get('[col-id="totalPenalties"] > div > span > span').realHover();
+
+        cy.get(performancePenaltyToolTip)
+          .invoke('text')
+          .should('contain', 'Performance penalty: 100.00%');
+        cy.get(overstakedPenaltyToolTip)
+          .invoke('text')
+          .should('contain', 'Overstaked penalty:'); // value not asserted due to #2886
+        cy.get(totalPenaltyToolTip)
+          .invoke('text')
+          .should('contain', 'Total penalties: 0.00%');
       });
 
       it('Should be able to see validator pending stake', function () {
