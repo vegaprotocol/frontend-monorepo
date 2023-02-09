@@ -17,7 +17,9 @@ export type RewardsQuery = { __typename?: 'Query', party?: { __typename?: 'Party
 
 export type EpochRewardSummaryFieldsFragment = { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType };
 
-export type EpochAssetsRewardsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type EpochAssetsRewardsQueryVariables = Types.Exact<{
+  epochRewardSummariesPagination?: Types.InputMaybe<Types.Pagination>;
+}>;
 
 
 export type EpochAssetsRewardsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string } } | null> | null } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null, epoch: { __typename?: 'Epoch', timestamps: { __typename?: 'EpochTimestamps', expiry?: any | null } } };
@@ -131,7 +133,7 @@ export type RewardsQueryHookResult = ReturnType<typeof useRewardsQuery>;
 export type RewardsLazyQueryHookResult = ReturnType<typeof useRewardsLazyQuery>;
 export type RewardsQueryResult = Apollo.QueryResult<RewardsQuery, RewardsQueryVariables>;
 export const EpochAssetsRewardsDocument = gql`
-    query EpochAssetsRewards {
+    query EpochAssetsRewards($epochRewardSummariesPagination: Pagination) {
   assetsConnection {
     edges {
       node {
@@ -140,7 +142,7 @@ export const EpochAssetsRewardsDocument = gql`
       }
     }
   }
-  epochRewardSummaries {
+  epochRewardSummaries(pagination: $epochRewardSummariesPagination) {
     edges {
       node {
         ...EpochRewardSummaryFields
@@ -167,6 +169,7 @@ export const EpochAssetsRewardsDocument = gql`
  * @example
  * const { data, loading, error } = useEpochAssetsRewardsQuery({
  *   variables: {
+ *      epochRewardSummariesPagination: // value for 'epochRewardSummariesPagination'
  *   },
  * });
  */

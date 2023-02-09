@@ -55,7 +55,7 @@ fragment EpochRewardSummaryFields on EpochRewardSummary {
   rewardType
 }
 
-query EpochAssetsRewards {
+query EpochAssetsRewards($epochRewardSummariesPagination: Pagination) {
   assetsConnection {
     edges {
       node {
@@ -64,7 +64,7 @@ query EpochAssetsRewards {
       }
     }
   }
-  epochRewardSummaries {
+  epochRewardSummaries(pagination: $epochRewardSummariesPagination) {
     edges {
       node {
         ...EpochRewardSummaryFields

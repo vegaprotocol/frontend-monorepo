@@ -12,7 +12,13 @@ export const EpochRewards = () => {
     AggregatedEpochSummary[]
   >([]);
 
-  const { data, loading, error, refetch } = useEpochAssetsRewardsQuery();
+  const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
+    variables: {
+      epochRewardSummariesPagination: {
+        first: 10,
+      },
+    },
+  });
   useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
 
   useEffect(() => {
