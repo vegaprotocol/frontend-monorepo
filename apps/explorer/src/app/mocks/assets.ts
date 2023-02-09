@@ -1,19 +1,7 @@
-import type { MockedResponse } from '@apollo/client/testing';
-import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor } from '@testing-library/react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import { AssetDocument } from '@vegaprotocol/assets';
 import { AssetsDocument } from '@vegaprotocol/assets';
 import { AssetStatus } from '@vegaprotocol/types';
-import { MemoryRouter } from 'react-router-dom';
-import Assets from './index';
-
-const component = (mocks: MockedResponse[]) => (
-  <MemoryRouter>
-    <MockedProvider mocks={mocks}>
-      <Assets />
-    </MockedProvider>
-  </MemoryRouter>
-);
 
 const A1: AssetFieldsFragment = {
   __typename: 'Asset',
@@ -91,7 +79,9 @@ const A2: AssetFieldsFragment = {
   },
 };
 
-const mock = {
+export const assetsList = [A1, A2];
+
+export const mockAssetsList = {
   request: {
     query: AssetsDocument,
   },
@@ -114,36 +104,31 @@ const mock = {
   },
 };
 
-describe('Assets', () => {
-  it('shows loading message on first render', async () => {
-    const res = render(component([mock]));
-    expect(await res.findByText('Loading...')).toBeInTheDocument();
-  });
+export const mockEmptyAssetsList = {
+  request: {
+    query: AssetsDocument,
+  },
+  result: { data: null },
+};
 
-  it('shows no data message if no assets found', async () => {
-    const res = render(
-      component([
-        {
-          request: {
-            query: AssetsDocument,
+export const mockAssetA1 = {
+  request: {
+    query: AssetDocument,
+    variables: {
+      assetId: '123',
+    },
+  },
+  result: {
+    data: {
+      assetsConnection: {
+        __typename: 'AssetsConnection',
+        edges: [
+          {
+            __typename: 'AssetEdge',
+            node: A1,
           },
-          result: { data: null },
-        },
-      ])
-    );
-    expect(
-      await res.findByText('This chain has no assets')
-    ).toBeInTheDocument();
-  });
-
-  it('shows a table/list with all the assets', async () => {
-    const res = render(component([mock]));
-    await waitFor(() => {
-      const rowA1 = res.container.querySelector('[row-id="123"]');
-      expect(rowA1).toBeInTheDocument();
-
-      const rowA2 = res.container.querySelector('[row-id="456"]');
-      expect(rowA2).toBeInTheDocument();
-    });
-  });
-});
+        ],
+      },
+    },
+  },
+};
