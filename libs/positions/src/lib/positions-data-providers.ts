@@ -45,22 +45,22 @@ export interface Position {
   averageEntryPrice: string;
   marginAccountBalance: string;
   capitalUtilisation: number;
-  currentLeverage: number;
+  currentLeverage: number | undefined;
   decimals: number;
   marketDecimalPlaces: number;
   positionDecimalPlaces: number;
   totalBalance: string;
   assetSymbol: string;
-  liquidationPrice: string;
+  liquidationPrice: string | undefined;
   lowMarginLevel: boolean;
   marketId: string;
   marketTradingMode: Schema.MarketTradingMode;
-  markPrice: string;
-  notional: string;
+  markPrice: string | undefined;
+  notional: string | undefined;
   openVolume: string;
   realisedPNL: string;
   unrealisedPNL: string;
-  searchPrice: string;
+  searchPrice: string | undefined;
   updatedAt: string | null;
 }
 
@@ -84,7 +84,7 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    if (!marginAccount || !marginLevel || !market || !marketData) {
+    if (!marginAccount || !marginLevel || !market) {
       return;
     }
     const generalAccount = accounts?.find(
@@ -102,15 +102,22 @@ export const getMetrics = (
       generalAccount?.balance ?? 0,
       decimals
     );
-    const markPrice = toBigNum(marketData.markPrice, marketDecimalPlaces);
 
-    const notional = (
-      openVolume.isGreaterThan(0) ? openVolume : openVolume.multipliedBy(-1)
-    ).multipliedBy(markPrice);
+    const markPrice = marketData
+      ? toBigNum(marketData.markPrice, marketDecimalPlaces)
+      : undefined;
+    const notional = markPrice
+      ? (openVolume.isGreaterThan(0)
+          ? openVolume
+          : openVolume.multipliedBy(-1)
+        ).multipliedBy(markPrice)
+      : undefined;
     const totalBalance = marginAccountBalance.plus(generalAccountBalance);
-    const currentLeverage = totalBalance.isEqualTo(0)
-      ? new BigNumber(0)
-      : notional.dividedBy(totalBalance);
+    const currentLeverage = notional
+      ? totalBalance.isEqualTo(0)
+        ? new BigNumber(0)
+        : notional.dividedBy(totalBalance)
+      : undefined;
     const capitalUtilisation = totalBalance.isEqualTo(0)
       ? new BigNumber(0)
       : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
@@ -119,19 +126,23 @@ export const getMetrics = (
     const marginSearch = toBigNum(marginLevel.searchLevel, decimals);
     const marginInitial = toBigNum(marginLevel.initialLevel, decimals);
 
-    const searchPrice = marginSearch
-      .minus(marginAccountBalance)
-      .dividedBy(openVolume)
-      .plus(markPrice);
+    const searchPrice = markPrice
+      ? marginSearch
+          .minus(marginAccountBalance)
+          .dividedBy(openVolume)
+          .plus(markPrice)
+      : undefined;
 
-    const liquidationPrice = BigNumber.maximum(
-      0,
-      marginMaintenance
-        .minus(marginAccountBalance)
-        .minus(generalAccountBalance)
-        .dividedBy(openVolume)
-        .plus(markPrice)
-    );
+    const liquidationPrice = markPrice
+      ? BigNumber.maximum(
+          0,
+          marginMaintenance
+            .minus(marginAccountBalance)
+            .minus(generalAccountBalance)
+            .dividedBy(openVolume)
+            .plus(markPrice)
+        )
+      : undefined;
 
     const lowMarginLevel =
       marginAccountBalance.isLessThan(
@@ -143,7 +154,7 @@ export const getMetrics = (
       averageEntryPrice: position.averageEntryPrice,
       marginAccountBalance: marginAccount.balance,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
-      currentLeverage: currentLeverage.toNumber(),
+      currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
       marketDecimalPlaces,
       positionDecimalPlaces,
       decimals,
@@ -152,18 +163,20 @@ export const getMetrics = (
       totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       lowMarginLevel,
       liquidationPrice: liquidationPrice
-        .multipliedBy(10 ** marketDecimalPlaces)
-        .toFixed(0),
+        ? liquidationPrice.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
+        : undefined,
       marketId: market.id,
       marketTradingMode: market.tradingMode,
-      markPrice: marketData.markPrice,
-      notional: notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0),
+      markPrice: marketData ? marketData.markPrice : undefined,
+      notional: notional
+        ? notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
+        : undefined,
       openVolume: position.openVolume,
       realisedPNL: position.realisedPNL,
       unrealisedPNL: position.unrealisedPNL,
       searchPrice: searchPrice
-        .multipliedBy(10 ** marketDecimalPlaces)
-        .toFixed(0),
+        ? searchPrice.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
+        : undefined,
       updatedAt: position.updatedAt || null,
     });
   });
