@@ -15,7 +15,7 @@ import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   ExternalLink,
-  InputError,
+  NotificationError,
   Intent,
   Notification,
 } from '@vegaprotocol/ui-toolkit';
@@ -282,11 +282,11 @@ const SummaryMessage = memo(
     if (isReadOnly) {
       return (
         <div className="mb-4">
-          <InputError data-testid="dealticket-error-message-summary">
+          <NotificationError data-testid="dealticket-error-message-summary">
             {
               'You need to connect your own wallet to start trading on this market'
             }
-          </InputError>
+          </NotificationError>
         </div>
       );
     }
@@ -325,9 +325,9 @@ const SummaryMessage = memo(
     if (errorMessage) {
       return (
         <div className="mb-4">
-          <InputError data-testid="dealticket-error-message-summary">
+          <NotificationError data-testid="dealticket-error-message-summary">
             {errorMessage}
-          </InputError>
+          </NotificationError>
         </div>
       );
     }

@@ -3,39 +3,50 @@ import type { HTMLAttributes } from 'react';
 import { Intent } from '../../utils/intent';
 import { Notification } from '../notification';
 
-interface InputErrorInlineProps extends HTMLAttributes<HTMLDivElement> {
+interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   intent?: 'danger' | 'warning';
   forInput?: string;
 }
 
-interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
+interface NotificationErrorProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
-  intent?: Intent;
+  intent?: Intent | 'danger' | 'warning';
   forInput?: string;
 }
 
-export const InputError = ({
+const getIntent = (intent: Intent | 'danger' | 'warning') => {
+  switch (intent) {
+    case 'danger':
+      return Intent.Danger;
+    case 'warning':
+      return Intent.Warning;
+    default:
+      return intent;
+  }
+};
+
+export const NotificationError = ({
   intent = Intent.Danger,
   children,
   forInput,
-}: InputErrorProps) => {
+}: NotificationErrorProps) => {
   return (
     <Notification
-      intent={intent}
-      message={children}
-      data-testid="input-error-text"
+      intent={getIntent(intent)}
+      testId={'input-error-text'}
+      message={<div className="role">{children}</div>}
       aria-describedby={forInput}
     />
   );
 };
 
-export const InputErrorInline = ({
+export const InputError = ({
   intent = 'danger',
   children,
   forInput,
   ...props
-}: InputErrorInlineProps) => {
+}: InputErrorProps) => {
   const effectiveClassName = classNames(
     'text-sm flex items-center first-letter:uppercase',
     'mt-2',

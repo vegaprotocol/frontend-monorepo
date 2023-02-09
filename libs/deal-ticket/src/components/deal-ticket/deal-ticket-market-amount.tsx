@@ -4,7 +4,7 @@ import {
   toDecimal,
   validateAmount,
 } from '@vegaprotocol/react-helpers';
-import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Input, NotificationError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '../../utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { getMarketPrice } from '../../utils/get-price';
@@ -76,12 +76,12 @@ export const DealTicketMarketAmount = ({
         </div>
       </div>
       {sizeError && (
-        <InputError
+        <NotificationError
           intent="danger"
           data-testid="dealticket-error-message-size-market"
         >
           {sizeError}
-        </InputError>
+        </NotificationError>
       )}
     </div>
   );
