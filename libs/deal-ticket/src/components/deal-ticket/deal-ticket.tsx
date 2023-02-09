@@ -10,9 +10,15 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { InputError, Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import {
+  ExternalLink,
+  InputError,
+  Intent,
+  Notification,
+} from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
@@ -226,13 +232,11 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         market={market}
         order={order}
         isReadOnly={isReadOnly}
+        pubKey={pubKey}
       />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
-        assetSymbol={
-          market.tradableInstrument.instrument.product.settlementAsset.symbol
-        }
       />
       <DealTicketFeeDetails order={order} market={market} />
     </form>
@@ -248,16 +252,27 @@ interface SummaryMessageProps {
   market: MarketDealTicket;
   order: OrderSubmissionBody['orderSubmission'];
   isReadOnly: boolean;
+  pubKey: string | null;
 }
 const SummaryMessage = memo(
-  ({ errorMessage, market, order, isReadOnly }: SummaryMessageProps) => {
+  ({
+    errorMessage,
+    market,
+    order,
+    isReadOnly,
+    pubKey,
+  }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     const asset = market.tradableInstrument.instrument.product.settlementAsset;
+    const assetSymbol = asset.symbol;
     const { balanceError, balance, margin } = useOrderMarginValidation({
       market,
       order,
     });
+    const openVegaWalletDialog = useVegaWalletDialogStore(
+      (store) => store.openVegaWalletDialog
+    );
     if (isReadOnly) {
       return (
         <div className="mb-4">
@@ -267,6 +282,28 @@ const SummaryMessage = memo(
             }
           </InputError>
         </div>
+      );
+    }
+    if (!pubKey) {
+      return (
+        <Notification
+          intent={Intent.Warning}
+          message={
+            <p className="text-sm pb-2">
+              You need a{' '}
+              <ExternalLink href="https://vega.xyz/wallet">
+                Vega wallet
+              </ExternalLink>{' '}
+              with {assetSymbol} to start trading in this market.
+            </p>
+          }
+          buttonProps={{
+            text: t('Connect wallet'),
+            action: openVegaWalletDialog,
+            dataTestId: 'connect-wallet',
+            size: 'md',
+          }}
+        />
       );
     }
     if (errorMessage === SummaryValidationType.NoCollateral) {
