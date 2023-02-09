@@ -1,4 +1,5 @@
 import '@vegaprotocol/cypress';
+import 'cypress-real-events/support';
 
 import './common.functions.js';
 import './staking.functions.js';

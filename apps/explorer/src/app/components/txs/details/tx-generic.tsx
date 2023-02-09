@@ -11,8 +11,7 @@ interface TxDetailsGenericProps {
 }
 
 /**
- * If there is not yet a custom component for a transaction, just display
- * the basic details. This allows someone to view the decoded transaction.
+ * A node is
  */
 export const TxDetailsGeneric = ({
   txData,
@@ -24,7 +23,7 @@ export const TxDetailsGeneric = ({
   }
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
     </TableWithTbody>
   );

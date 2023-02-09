@@ -41,7 +41,7 @@ export const TxDetailsChainEventErc20AssetList = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Added Vega asset')}</TableCell>
         <TableCell>
-          <AssetLink id={assetList.vegaAssetId} />
+          <AssetLink assetId={assetList.vegaAssetId} />
         </TableCell>
       </TableRow>
     </>

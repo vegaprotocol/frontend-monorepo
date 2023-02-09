@@ -143,8 +143,12 @@ describe('WithdrawFormContainer', () => {
                 settlementAsset: {
                   __typename: 'Asset',
                   id: 'asset-id',
+                  name: 'asset-id',
                   symbol: 'tUSDC',
                   decimals: 5,
+                },
+                dataSourceSpecForTradingTermination: {
+                  id: '',
                 },
                 quoteName: 'USD',
               },

@@ -4,12 +4,13 @@ import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { getDerivedPrice } from '../utils/get-price';
 
 export interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   partyId: string;
   derivedPrice?: string;
 }
@@ -27,11 +28,13 @@ export interface OrderMargin {
 export const useOrderMargin = ({
   order,
   market,
+  marketData,
   partyId,
   derivedPrice,
 }: Props): OrderMargin | null => {
   const { balance } = useMarketPositions({ marketId: market.id }) || {};
-  const priceForEstimate = derivedPrice || getDerivedPrice(order, market);
+  const priceForEstimate =
+    derivedPrice || getDerivedPrice(order, market, marketData);
 
   const { data } = useEstimateOrderQuery({
     variables: {

@@ -2,7 +2,7 @@ import throttle from 'lodash/throttle';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
-  SingleMarketFieldsFragment,
+  Market,
 } from '@vegaprotocol/market-list';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
@@ -11,11 +11,7 @@ import { HeaderStat } from '../header';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import * as constants from '../constants';
 
-export const MarketState = ({
-  market,
-}: {
-  market: SingleMarketFieldsFragment | null;
-}) => {
+export const MarketState = ({ market }: { market: Market | null }) => {
   const [marketState, setMarketState] = useState<Schema.MarketState | null>(
     null
   );

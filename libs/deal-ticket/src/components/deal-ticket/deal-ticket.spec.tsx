@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { fireEvent, render, screen, act } from '@testing-library/react';
-import { generateMarket } from '../../test-helpers';
+import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
@@ -11,6 +11,7 @@ import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument, addDecimal } from '@vegaprotocol/react-helpers';
 
 const market = generateMarket();
+const marketData = generateMarketData();
 const submit = jest.fn();
 
 const mockChainId = 'chain-id';
@@ -31,7 +32,7 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
   return (
     <MockedProvider mocks={[chainIdMock]}>
       <VegaWalletContext.Provider value={{ pubKey: mockChainId } as any}>
-        <DealTicket market={market} submit={submit} />
+        <DealTicket market={market} marketData={marketData} submit={submit} />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
@@ -65,11 +66,10 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
-
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(market!.data.markPrice, market.decimalPlaces)} ${
+      `~${addDecimal(marketData.markPrice, market.decimalPlaces)} ${
         market.tradableInstrument.instrument.product.quoteName
       }`
     );

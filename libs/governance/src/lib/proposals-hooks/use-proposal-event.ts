@@ -28,24 +28,15 @@ export const useProposalEvent = (transaction: VegaTxState) => {
           variables: { partyId },
         })
         .subscribe(({ data }) => {
-          if (!data?.busEvents?.length) {
+          if (!data?.proposals) {
             return;
           }
 
-          // No types available for the subscription result
-          const matchingProposalEvent = data.busEvents.find((e) => {
-            if (e.event.__typename !== 'Proposal') {
-              return false;
-            }
+          // typo in 'proposals' - this should be singular
+          const proposal = data.proposals;
 
-            return e.event.id === id;
-          });
-
-          if (
-            matchingProposalEvent &&
-            matchingProposalEvent.event.__typename === 'Proposal'
-          ) {
-            callback(matchingProposalEvent.event);
+          if (proposal.id === id) {
+            callback(proposal);
             subRef.current?.unsubscribe();
           }
         });

@@ -31,14 +31,17 @@ import {
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {
   usePersistedOrderStore,
   usePersistedOrderStoreSubscription,
 } from '@vegaprotocol/orders';
 
+export type TransactionStatus = 'default' | 'pending';
+
 export interface DealTicketProps {
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
 }
 
@@ -48,7 +51,7 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   summary: string;
 };
 
-export const DealTicket = ({ market, submit }: DealTicketProps) => {
+export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
     (store) => ({
@@ -83,12 +86,12 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     }
   });
 
-  const marketStateError = validateMarketState(market.data.marketState);
+  const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
   const marketTradingModeError = validateMarketTradingMode(
-    market.data.marketTradingMode
+    marketData.marketTradingMode
   );
 
   const checkForErrors = useCallback(() => {
@@ -177,13 +180,17 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         name="type"
         control={control}
         rules={{
-          validate: validateType(market),
+          validate: validateType(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
         }}
         render={({ field }) => (
           <TypeSelector
             value={field.value}
             onSelect={field.onChange}
             market={market}
+            marketData={marketData}
             errorMessage={errors.type?.message}
           />
         )}
@@ -198,6 +205,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
       <DealTicketAmount
         orderType={order.type}
         market={market}
+        marketData={marketData}
         register={register}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
@@ -206,7 +214,10 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         name="timeInForce"
         control={control}
         rules={{
-          validate: validateTimeInForce(market),
+          validate: validateTimeInForce(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
         }}
         render={({ field }) => (
           <TimeInForceSelector
@@ -214,6 +225,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
             orderType={order.type}
             onSelect={field.onChange}
             market={market}
+            marketData={marketData}
             errorMessage={errors.timeInForce?.message}
           />
         )}
@@ -236,6 +248,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
       <SummaryMessage
         errorMessage={errors.summary?.message}
         market={market}
+        marketData={marketData}
         order={order}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
@@ -244,7 +257,11 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
-      <DealTicketFeeDetails order={order} market={market} />
+      <DealTicketFeeDetails
+        order={order}
+        market={market}
+        marketData={marketData}
+      />
     </form>
   );
 };
@@ -255,7 +272,8 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   order: OrderSubmissionBody['orderSubmission'];
   isReadOnly: boolean;
   pubKey: string | null;
@@ -264,6 +282,7 @@ const SummaryMessage = memo(
   ({
     errorMessage,
     market,
+    marketData,
     order,
     isReadOnly,
     pubKey,
@@ -274,6 +293,7 @@ const SummaryMessage = memo(
     const assetSymbol = asset.symbol;
     const { balanceError, balance, margin } = useOrderMarginValidation({
       market,
+      marketData,
       order,
     });
     const openVegaWalletDialog = useVegaWalletDialogStore(
@@ -344,7 +364,7 @@ const SummaryMessage = memo(
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(market.data.marketTradingMode)
+      ].includes(marketData.marketTradingMode)
     ) {
       return (
         <Notification

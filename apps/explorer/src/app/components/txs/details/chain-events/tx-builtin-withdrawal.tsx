@@ -39,8 +39,8 @@ export const TxDetailsChainEventBuiltinWithdrawal = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={withdrawal.vegaAssetId || ''} /> ({t('built in asset')}
-          )
+          <AssetLink assetId={withdrawal.vegaAssetId || ''} /> (
+          {t('built in asset')})
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

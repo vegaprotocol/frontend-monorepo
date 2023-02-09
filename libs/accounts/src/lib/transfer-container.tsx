@@ -51,7 +51,7 @@ export const TransferContainer = () => {
 
   return (
     <>
-      <p className="text-sm mb-4">
+      <p className="text-sm mb-4" data-testid="dialog-transfer-text">
         {t('Transfer funds to another Vega key from')}{' '}
         <Lozenge className="font-mono">{truncateByChars(pubKey || '')}</Lozenge>{' '}
         {t('If you are at all unsure, stop and seek advice.')}

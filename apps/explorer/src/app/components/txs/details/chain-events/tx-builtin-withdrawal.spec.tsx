@@ -82,9 +82,7 @@ describe('Chain Event: Builtin asset withdrawal', () => {
     if (!assetLink.parentElement) {
       throw new Error('Asset link does not exist');
     }
-    expect(assetLink.parentElement.tagName).toEqual('A');
-    expect(assetLink.parentElement.getAttribute('href')).toEqual(
-      `/assets#${fullMock.vegaAssetId}`
-    );
+    expect(assetLink.parentElement.tagName).toEqual('BUTTON');
+    expect(assetLink.parentElement.textContent).toEqual(fullMock.vegaAssetId);
   });
 });

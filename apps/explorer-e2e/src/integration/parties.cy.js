@@ -123,7 +123,7 @@ context.skip('Parties page', { tags: '@regression' }, function () {
           .convert_string_json_to_js_object()
           .get_party_accounts_data_from_js_object()
           .then((accountsListedInJson) => {
-            cy.get_asset_information().then((assetsInfo) => {
+            cy.getAssets().then((assetsInfo) => {
               const assetInfo =
                 assetsInfo[accountsListedInJson[assetInTest].asset.name];
 
@@ -205,7 +205,7 @@ context.skip('Parties page', { tags: '@regression' }, function () {
     });
 
     Cypress.Commands.add('get_asset_decimals', (assetID) => {
-      cy.get_asset_information().then((assetsInfo) => {
+      cy.getAssets().then((assetsInfo) => {
         const assetDecimals = assetsInfo[assetData[assetID].name].decimals;
         let decimals = '';
         for (let i = 0; i < assetDecimals; i++) decimals += '0';

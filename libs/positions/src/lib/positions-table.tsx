@@ -49,7 +49,7 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
   }
   const { openVolume, positionDecimalPlaces, marketDecimalPlaces, notional } =
     valueFormatted;
-  return valueFormatted ? (
+  return valueFormatted && notional ? (
     <div className="leading-tight font-mono">
       <div
         className={classNames('text-right', signedNumberCssClass(openVolume))}
@@ -115,15 +115,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueGetter={({
             data,
           }: VegaValueGetterParams<Position, 'notional'>) => {
-            return data?.notional === undefined
+            return !data?.notional
               ? undefined
-              : toBigNum(data?.notional, data.marketDecimalPlaces).toNumber();
+              : toBigNum(data.notional, data.marketDecimalPlaces).toNumber();
           }}
           valueFormatter={({
             data,
           }: VegaValueFormatterParams<Position, 'notional'>) => {
-            return !data
-              ? undefined
+            return !data || !data.notional
+              ? '-'
               : addDecimalsFormatNumber(
                   data.notional,
                   data.marketDecimalPlaces
@@ -173,6 +173,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             data,
           }: VegaValueGetterParams<Position, 'markPrice'>) => {
             return !data ||
+              !data.markPrice ||
               data.marketTradingMode ===
                 Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
               ? undefined
@@ -180,14 +181,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'markPrice'>) => {
             if (!data) {
               return undefined;
             }
             if (
+              !data.markPrice ||
               data.marketTradingMode ===
-              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+                Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
             ) {
               return '-';
             }
@@ -220,7 +221,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'averageEntryPrice'>):
             | string
             | undefined => {
@@ -258,7 +258,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'liquidationPrice'>):
             | string
             | undefined => {
-            if (!data) {
+            if (!data || data?.liquidationPrice === undefined) {
               return undefined;
             }
             return addDecimalsFormatNumber(

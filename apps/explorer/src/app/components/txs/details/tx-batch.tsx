@@ -53,7 +53,7 @@ export const TxDetailsBatch = ({
   let index = 0;
   return (
     <div key={`tx-${index}`}>
-      <TableWithTbody className="mb-8">
+      <TableWithTbody className="mb-8" allowWrap={true}>
         <TxDetailsShared
           txData={txData}
           pubKey={pubKey}
