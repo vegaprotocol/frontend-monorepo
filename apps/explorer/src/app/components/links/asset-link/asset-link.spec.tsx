@@ -1,63 +1,37 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
-import { render } from '@testing-library/react';
-import AssetLink from './asset-link';
-import { ExplorerAssetDocument } from './__generated__/Asset';
+import { render, waitFor } from '@testing-library/react';
+import { AssetLink } from './asset-link';
+import { mockAssetA1 } from '../../../mocks/assets';
 
 function renderComponent(id: string, mock: MockedResponse[]) {
   return (
-    <MockedProvider mocks={mock}>
+    <MockedProvider mocks={mock} addTypename={false}>
       <MemoryRouter>
-        <AssetLink id={id} />
+        <AssetLink assetId={id} />
       </MemoryRouter>
     </MockedProvider>
   );
 }
 
-describe('Asset link component', () => {
-  it('Renders the ID at first', () => {
+describe('AssetLink', () => {
+  it('renders the asset id when not found and makes the button disabled', async () => {
     const res = render(renderComponent('123', []));
     expect(res.getByText('123')).toBeInTheDocument();
+    expect(await res.findByTestId('asset-link')).toBeDisabled();
+    await waitFor(async () => {
+      expect(await res.queryByText('A ONE')).toBeFalsy();
+    });
   });
 
-  it('Renders the asset name when the query returns a result', async () => {
-    const mock = {
-      request: {
-        query: ExplorerAssetDocument,
-        variables: {
-          id: '123',
-        },
-      },
-      result: {
-        data: {
-          asset: {
-            id: '123',
-            name: 'test-label',
-            status: 'irrelevant-test-data',
-            decimals: 18,
-          },
-        },
-      },
-    };
-
-    const res = render(renderComponent('123', [mock]));
+  it('renders the asset name when found and make the button enabled', async () => {
+    const res = render(renderComponent('123', [mockAssetA1]));
     expect(res.getByText('123')).toBeInTheDocument();
-    expect(await res.findByText('test-label')).toBeInTheDocument();
-  });
 
-  it('Leaves the asset id when the asset is not found', async () => {
-    const mock = {
-      request: {
-        query: ExplorerAssetDocument,
-        variables: {
-          id: '123',
-        },
-      },
-      error: new Error('No such asset'),
-    };
-
-    const res = render(renderComponent('123', [mock]));
-    expect(await res.findByText('123')).toBeInTheDocument();
+    await waitFor(async () => {
+      expect(await res.findByText('A ONE')).toBeInTheDocument();
+      expect(await res.findByTestId('asset-link')).not.toBeDisabled();
+    });
   });
 });

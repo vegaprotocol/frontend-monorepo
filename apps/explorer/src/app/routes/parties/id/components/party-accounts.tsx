@@ -71,7 +71,7 @@ export const PartyAccounts = ({ accounts }: PartyAccountsProps) => {
                 />
               </td>
               <td className="text-md">
-                <AssetLink id={account.asset.id} />
+                <AssetLink assetId={account.asset.id} />
               </td>
             </TableRow>
           );

@@ -1,8 +1,0 @@
-query ExplorerAsset($id: ID!) {
-  asset(id: $id) {
-    id
-    name
-    status
-    decimals
-  }
-}
