@@ -43,7 +43,11 @@ export const AccountsContainer = () => {
       </div>
       {!isReadOnly && (
         <div className="flex gap-2 justify-end p-2 px-[11px]">
-          <Button size="sm" onClick={() => openTransferDialog()}>
+          <Button
+            size="sm"
+            data-testid="open-transfer-dialog"
+            onClick={() => openTransferDialog()}
+          >
             {t('Transfer')}
           </Button>
           <Button size="sm" onClick={() => openDepositDialog()}>

@@ -185,7 +185,10 @@ export const VegaWalletConnectButton = () => {
                   ))}
                 </DropdownMenuRadioGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => openTransferDialog(true)}>
+                <DropdownMenuItem
+                  data-testid="wallet-transfer"
+                  onClick={() => openTransferDialog(true)}
+                >
                   {t('Transfer')}
                 </DropdownMenuItem>
                 <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>

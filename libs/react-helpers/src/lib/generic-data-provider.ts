@@ -426,6 +426,15 @@ function makeDataProviderInternal<
     }
   };
 
+  const onError = (e: Error) => {
+    error = e;
+    if (subscription) {
+      subscription.unsubscribe();
+      subscription = undefined;
+    }
+    notifyAll();
+  };
+
   const initialize = async () => {
     if (subscription) {
       if (resetTimer) {
@@ -446,14 +455,7 @@ function makeDataProviderInternal<
           variables,
           fetchPolicy,
         })
-        .subscribe(onNext, (e) => {
-          error = e as Error;
-          if (subscription) {
-            subscription.unsubscribe();
-            subscription = undefined;
-          }
-          notifyAll();
-        });
+        .subscribe(onNext, onError);
     }
     await initialFetch();
   };
