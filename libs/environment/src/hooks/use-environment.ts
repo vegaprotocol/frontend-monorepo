@@ -28,7 +28,7 @@ type Actions = {
 const EnvSchema = z.object({
   VEGA_URL: z.string().url().optional(),
   VEGA_WALLET_URL: z.string(),
-  VEGA_CONFIG_URL: z.string(),
+  VEGA_CONFIG_URL: z.string().optional(),
   GIT_BRANCH: z.string().optional(),
   GIT_COMMIT_HASH: z.string().optional(),
   GIT_ORIGIN_URL: z.string().optional(),
@@ -66,6 +66,12 @@ const EnvSchema = z.object({
 });
 
 export const useEnvironment = create<Env & Actions>((set, get) => ({
+  // VEGA_URL: undefined,
+  // VEGA_ENV: '' as unknown as Networks,
+  // VEGA_WALLET_URL: '',
+  // VEGA_NETWORKS: {},
+  // ETHEREUM_PROVIDER_URL: '',
+  // ETHERSCAN_URL: '',
   ...compileEnvVars(),
   nodes: [],
   status: 'default',
@@ -75,9 +81,8 @@ export const useEnvironment = create<Env & Actions>((set, get) => ({
     LocalStorage.setItem('vega_url', url);
   },
   initialize: async () => {
-    const state = get();
     set({ status: 'pending' });
-
+    const state = get();
     const storedUrl = LocalStorage.getItem('vega_url');
 
     let nodes: string[] | undefined;
@@ -132,11 +137,17 @@ export const useEnvironment = create<Env & Actions>((set, get) => ({
       });
       LocalStorage.setItem('vega_url', url);
     } else {
+      set({
+        status: 'failed',
+        error: 'No node found',
+      });
       console.warn('No suitable vega node was found');
     }
   },
 }));
 
+// Use this to fetch node config and find suitable node
+// if no NX_VEGA_URL is not provided
 export const useInitializeEnv = () => {
   const { initialize, status } = useEnvironment((store) => ({
     status: store.status,
@@ -154,7 +165,8 @@ export const ConfigSchema = z.object({
   hosts: z.array(z.string()),
 });
 
-const fetchConfig = async (url: string) => {
+const fetchConfig = async (url?: string) => {
+  if (!url) return [];
   const res = await fetch(url);
   const cfg = await res.json();
   const result = ConfigSchema.parse(cfg);
@@ -223,9 +235,9 @@ const testQuery = async (client: Client) => {
 function compileEnvVars() {
   const env = {
     VEGA_URL: process.env['NX_VEGA_URL'],
-    VEGA_NETWORKS: parseJSON(process.env['NX_VEGA_NETWORKS']),
     VEGA_ENV: process.env['NX_VEGA_ENV'] as Networks,
     VEGA_CONFIG_URL: process.env['NX_VEGA_CONFIG_URL'] as string,
+    VEGA_NETWORKS: parseJSON(process.env['NX_VEGA_NETWORKS']),
     VEGA_WALLET_URL: process.env['NX_VEGA_WALLET_URL'] as string,
     HOSTED_WALLET_URL: process.env['NX_HOSTED_WALLET_URL'],
     ETHERSCAN_URL: process.env['NX_ETHERSCAN_URL'] as string,
@@ -241,12 +253,6 @@ function compileEnvVars() {
     GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'],
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
   };
-
-  // dont parse provided env vars when testing so that useEnvironment
-  // can be used without having to pass a complete set of values
-  if (process.env['NODE_ENV'] === 'test') {
-    return env;
-  }
 
   return EnvSchema.parse(env);
 }

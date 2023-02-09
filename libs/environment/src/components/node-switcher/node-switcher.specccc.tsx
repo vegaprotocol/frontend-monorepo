@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { useEnvironment } from '../../hooks/use-environment';
+import { useEnvironment } from '../../hooks/use-environment_old';
 import { useNodes } from '../../hooks/use-nodes';
 import createMockClient from '../../hooks/mocks/apollo-client';
 import { StatisticsDocument } from '../../utils/__generated__/Node';

@@ -201,6 +201,9 @@ const RowData = ({
   useEffect(() => {
     const handleStartPoll = () => startPolling(POLL_INTERVAL);
     const handleStopPoll = () => stopPolling();
+
+    // TODO: possibly remove blur focus handling.
+
     window.addEventListener('blur', handleStopPoll);
     window.addEventListener('focus', handleStartPoll);
     handleStartPoll();

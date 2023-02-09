@@ -3,7 +3,7 @@
 import type { ComponentProps, ReactNode } from 'react';
 import { renderHook } from '@testing-library/react';
 import { createClient } from '@vegaprotocol/apollo-client';
-import { useEnvironment, EnvironmentProvider } from './use-environment';
+import { useEnvironment, EnvironmentProvider } from './use-environment_old';
 import { Networks } from '../types';
 import createMockClient from './mocks/apollo-client';
 jest.mock('@vegaprotocol/apollo-client');
