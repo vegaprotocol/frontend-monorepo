@@ -5,13 +5,14 @@ before(() => {
   cy.mockSubscription();
   cy.visit('/');
   cy.wait('@Markets');
+  cy.wait('@MarketsData');
   cy.getByTestId('dialog-close').click();
 });
 
 describe('Desktop view', { tags: '@smoke' }, () => {
   describe('Navbar', () => {
     const links = ['Markets', 'Trading', 'Portfolio'];
-    const hashes = ['#/markets/all', '#/markets/market-0', '#/portfolio'];
+    const hashes = ['#/markets/all', '#/markets/market-1', '#/portfolio'];
 
     links.forEach((link, index) => {
       it(`${link} should be correctly rendered`, () => {
@@ -67,7 +68,7 @@ describe('Mobile view', { tags: '@smoke' }, () => {
       cy.getByTestId('button-menu-drawer').click();
       cy.getByTestId('menu-drawer').within((el) => {
         cy.wrap(el).getByTestId('Trading').click();
-        cy.location('hash').should('equal', '#/markets/market-0');
+        cy.location('hash').should('equal', '#/markets/market-1');
       });
     });
     it('Portfolio should be correctly rendered', () => {
