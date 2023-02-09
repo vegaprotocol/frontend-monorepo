@@ -190,6 +190,9 @@ interface DataProviderParams<
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
  * @param fetchPolicy
+ * @param resetDelay
+ * @param additionalContext add property to the context of the query, ie. 'isEnlargedTimeout'
+ * @param errorPolicyGuard indicate which gql errors can be tolerate
  * @returns subscribe function
  */
 function makeDataProviderInternal<

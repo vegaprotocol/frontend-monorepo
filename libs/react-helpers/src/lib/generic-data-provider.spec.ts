@@ -19,11 +19,12 @@ import type {
   OperationVariables,
   ApolloQueryResult,
   QueryOptions,
-  ApolloError,
 } from '@apollo/client';
+import { ApolloError } from '@apollo/client';
+import type { GraphQLErrors } from '@apollo/client/errors';
 import { GraphQLError } from 'graphql';
-
 import type { Subscription, Observable } from 'zen-observable-ts';
+import { waitFor } from '@testing-library/react';
 
 type Item = {
   cursor: string;
@@ -106,6 +107,23 @@ const paginatedSubscribe = makeDataProvider<
     getPageInfo: (r) => r?.pageInfo ?? null,
     getTotalCount: (r) => r?.totalCount,
   },
+});
+
+const mockErrorPolicyGuard: (errors: GraphQLErrors) => boolean = jest
+  .fn()
+  .mockImplementation(() => true);
+const errorGuardedSubscribe = makeDataProvider<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta
+>({
+  query,
+  subscriptionQuery,
+  update,
+  getData,
+  getDelta,
+  errorPolicyGuard: mockErrorPolicyGuard,
 });
 
 const derivedSubscribe = makeDerivedDataProvider(
@@ -535,6 +553,34 @@ describe('data provider', () => {
     const lastCallbackArgs =
       callback.mock.calls[callback.mock.calls.length - 1];
     expect(lastCallbackArgs[0].totalCount).toBe(100);
+    subscription.unsubscribe();
+  });
+
+  it('errorPolicyGuard should work properly', async () => {
+    const subscription = errorGuardedSubscribe(callback, client);
+    const graphQLError = new GraphQLError(
+      '',
+      undefined,
+      undefined,
+      undefined,
+      ['market', 'data'],
+      undefined,
+      {
+        type: 'Internal',
+      }
+    );
+    const graphQLErrors = [graphQLError];
+    const error = new ApolloError({ graphQLErrors });
+
+    await rejectQuery(error);
+    const data = generateData(0, 5);
+    await resolveQuery({
+      data,
+    });
+    expect(mockErrorPolicyGuard).toHaveBeenNthCalledWith(1, graphQLErrors);
+    await waitFor(() =>
+      expect(getData).toHaveBeenCalledWith({ data }, undefined)
+    );
     subscription.unsubscribe();
   });
 });
