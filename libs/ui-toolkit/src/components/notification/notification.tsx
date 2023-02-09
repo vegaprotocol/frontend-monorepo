@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
+import type { ButtonSize } from '../button';
 import { Button } from '../button';
 
 type NotificationProps = {
