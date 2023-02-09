@@ -90,6 +90,48 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
   const marketTradingModeError = validateMarketTradingMode(
     market.data.marketTradingMode
   );
+
+  const checkForErrors = useCallback(() => {
+    if (!pubKey) {
+      setError('summary', { message: t('No public key selected') });
+      return;
+    }
+
+    if (marketStateError !== true) {
+      setError('summary', {
+        message: marketStateError,
+        type: SummaryValidationType.MarketState,
+      });
+      return;
+    }
+
+    if (hasNoBalance) {
+      setError('summary', {
+        message: SummaryValidationType.NoCollateral,
+        type: SummaryValidationType.NoCollateral,
+      });
+      return;
+    }
+
+    if (marketTradingModeError !== true) {
+      setError('summary', {
+        message: marketTradingModeError,
+        type: SummaryValidationType.TradingMode,
+      });
+      return;
+    }
+  }, [
+    hasNoBalance,
+    marketStateError,
+    marketTradingModeError,
+    pubKey,
+    setError,
+  ]);
+
+  useEffect(() => {
+    checkForErrors();
+  }, [checkForErrors]);
+
   useEffect(() => {
     if (
       (!hasNoBalance &&
@@ -108,39 +150,12 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     clearErrors,
     errors.summary?.message,
     errors.summary?.type,
+    checkForErrors,
   ]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
-      if (!pubKey) {
-        setError('summary', { message: t('No public key selected') });
-        return;
-      }
-
-      if (marketStateError !== true) {
-        setError('summary', {
-          message: marketStateError,
-          type: SummaryValidationType.MarketState,
-        });
-        return;
-      }
-
-      if (hasNoBalance) {
-        setError('summary', {
-          message: SummaryValidationType.NoCollateral,
-          type: SummaryValidationType.NoCollateral,
-        });
-        return;
-      }
-
-      if (marketTradingModeError !== true) {
-        setError('summary', {
-          message: marketTradingModeError,
-          type: SummaryValidationType.TradingMode,
-        });
-        return;
-      }
-
+      checkForErrors();
       submit(
         normalizeOrderSubmission(
           order,
@@ -149,16 +164,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         )
       );
     },
-    [
-      submit,
-      pubKey,
-      hasNoBalance,
-      market.positionDecimalPlaces,
-      market.decimalPlaces,
-      marketStateError,
-      marketTradingModeError,
-      setError,
-    ]
+    [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
   return (
