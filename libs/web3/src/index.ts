@@ -19,6 +19,5 @@ export * from './lib/web3-provider';
 export * from './lib/web3-connectors';
 export * from './lib/web3-connect-dialog';
 export * from './lib/web3-connect-store';
-export * from './lib/web3-container';
 export * from './lib/url-connector';
 export * from './lib/eip-1193-custom-bridge';

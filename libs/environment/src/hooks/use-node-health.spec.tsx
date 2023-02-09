@@ -8,7 +8,7 @@ import { useHeaderStore } from '@vegaprotocol/apollo-client';
 
 const vegaUrl = 'https://foo.bar.com';
 
-jest.mock('./use-environment-2', () => ({
+jest.mock('./use-environment', () => ({
   useEnvironment: () => vegaUrl,
 }));
 jest.mock('@vegaprotocol/apollo-client');

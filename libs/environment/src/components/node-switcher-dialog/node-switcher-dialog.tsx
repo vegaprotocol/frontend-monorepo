@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 import { Dialog, Loader } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { NodeSwitcher2 } from '../node-switcher';
-import { useEnvironment } from '../../hooks/use-environment-2';
+import { useEnvironment } from '../../hooks/use-environment';
 import type { Configuration } from '../../types';
 
 type NodeSwitcherDialogProps = Pick<

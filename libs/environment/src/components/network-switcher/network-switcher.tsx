@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
   ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '../../hooks/use-environment-2';
+import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
 

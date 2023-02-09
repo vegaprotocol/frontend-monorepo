@@ -7,7 +7,7 @@ import {
   Link,
   Radio,
 } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '../../hooks/use-environment-2';
+import { useEnvironment } from '../../hooks/use-environment';
 import { useNodes } from '../../hooks/use-nodes';
 import {
   getIsNodeLoading,

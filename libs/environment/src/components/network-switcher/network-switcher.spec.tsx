@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { t } from '@vegaprotocol/react-helpers';
-import { useEnvironment } from '../../hooks/use-environment-2';
+import { useEnvironment } from '../../hooks/use-environment';
 import {
   NetworkSwitcher,
   envNameMapping,
@@ -10,7 +10,7 @@ import {
 } from './';
 import { Networks } from '../../';
 
-jest.mock('../../hooks/use-environment-2');
+jest.mock('../../hooks/use-environment');
 
 describe('Network switcher', () => {
   it.each`

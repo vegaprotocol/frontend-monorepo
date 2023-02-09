@@ -242,7 +242,9 @@ function compileEnvVars() {
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
   };
 
-  if (process.env.NODE_ENV === 'test') {
+  // dont parse provided env vars when testing so that useEnvironment
+  // can be used without having to pass a complete set of values
+  if (process.env['NODE_ENV'] === 'test') {
     return env;
   }
 
@@ -254,9 +256,6 @@ function parseJSON(value?: string) {
     try {
       return JSON.parse(value);
     } catch (e) {
-      console.warn(
-        'Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.'
-      );
       return {};
     }
   }

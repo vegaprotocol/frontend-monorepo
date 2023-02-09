@@ -1,7 +1,7 @@
 import trim from 'lodash/trim';
 import { useCallback } from 'react';
 import { Networks } from '../types';
-import { useEnvironment } from './use-environment-2';
+import { useEnvironment } from './use-environment';
 
 type Net = Exclude<Networks, 'CUSTOM' | 'SANDBOX'>;
 export enum DApp {

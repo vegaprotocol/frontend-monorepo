@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useStatisticsQuery } from '../utils/__generated__/Node';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
-import { useEnvironment } from './use-environment-2';
+import { useEnvironment } from './use-environment';
 import { fromNanoSeconds } from '@vegaprotocol/react-helpers';
 
 export const useNodeHealth = () => {

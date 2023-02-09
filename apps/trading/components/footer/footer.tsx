@@ -38,7 +38,7 @@ interface NodeUrlProps {
   openNodeSwitcher: () => void;
 }
 
-const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
+export const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
   // get base url from api url, api sub domain
   const urlObj = new URL(url);
   const nodeUrl = urlObj.origin.replace(/^[^.]+\./g, '');
