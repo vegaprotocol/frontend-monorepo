@@ -26,8 +26,12 @@ export const useNodeHealth = () => {
   }, [data, headers]);
 
   return {
-    coreBlockHeight: Number(data?.statistics.blockHeight || 0),
-    coreVegaTime: fromNanoSeconds(data?.statistics.vegaTime),
+    coreBlockHeight: data?.statistics
+      ? Number(data.statistics.blockHeight)
+      : undefined,
+    coreVegaTime: data?.statistics
+      ? fromNanoSeconds(data?.statistics.vegaTime)
+      : undefined,
     datanodeBlockHeight: headers?.blockHeight,
     datanodeVegaTime: headers?.timestamp,
     blockDiff,
