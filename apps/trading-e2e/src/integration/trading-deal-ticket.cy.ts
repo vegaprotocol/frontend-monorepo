@@ -363,11 +363,11 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.wait('@Market');
   });
 
-  it('must not place an order if wallet is not connected', () => {
+  it('must show place order button and connect wallet if wallet is not connected', () => {
     cy.getByTestId('connect-vega-wallet'); // Not connected
     cy.getByTestId('order-connect-wallet').should('exist');
-    cy.getByTestId(placeOrderBtn).should('not.exist');
-    cy.getByTestId(errorMessage).should('not.exist');
+    cy.getByTestId(placeOrderBtn).should('exist');
+    cy.getByTestId(errorMessage).should('exist');
   });
 
   it('must be able to select order direction - long/short', function () {

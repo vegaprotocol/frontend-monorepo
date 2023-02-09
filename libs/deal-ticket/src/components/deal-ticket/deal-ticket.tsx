@@ -12,7 +12,7 @@ import { TypeSelector } from './type-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { InputError } from '@vegaprotocol/ui-toolkit';
+import { InputError, Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
@@ -221,18 +221,18 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
             )}
           />
         )}
+      <SummaryMessage
+        errorMessage={errors.summary?.message}
+        market={market}
+        order={order}
+        isReadOnly={isReadOnly}
+      />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
         assetSymbol={
           market.tradableInstrument.instrument.product.settlementAsset.symbol
         }
-      />
-      <SummaryMessage
-        errorMessage={errors.summary?.message}
-        market={market}
-        order={order}
-        isReadOnly={isReadOnly}
       />
       <DealTicketFeeDetails order={order} market={market} />
     </form>
@@ -304,14 +304,12 @@ const SummaryMessage = memo(
       ].includes(market.data.marketTradingMode)
     ) {
       return (
-        <div
-          className="text-sm text-warning mb-4"
-          data-testid="dealticket-warning-auction"
-        >
-          <p>
-            {t('Any orders placed now will not trade until the auction ends')}
-          </p>
-        </div>
+        <Notification
+          intent={Intent.Warning}
+          message={t(
+            'Any orders placed now will not trade until the auction ends'
+          )}
+        />
       );
     }
 

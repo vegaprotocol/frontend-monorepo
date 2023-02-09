@@ -10,7 +10,13 @@ type NotificationProps = {
   intent: Intent;
   message: ReactNode | string;
   title?: string;
-  buttonProps?: { text: string; action: () => void; className?: string };
+  buttonProps?: {
+    text: string;
+    action: () => void;
+    className?: string;
+    dataTestId?: string;
+    size?: ButtonSize;
+  };
   testId?: string;
   className?: string;
 };
@@ -43,10 +49,18 @@ export const Notification = ({
           'border-vega-blue': intent === Intent.Primary,
           'border-vega-green-550 dark:border-vega-green':
             intent === Intent.Success,
-          'border-yellow': intent === Intent.Warning,
+          'border-vega-orange': intent === Intent.Warning,
           'border-vega-pink': intent === Intent.Danger,
         },
-        'border rounded text-xs p-2 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900',
+        {
+          'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
+          'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
+          'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
+          'bg-vega-orange-300 dark:bg-vega-orange-700':
+            intent === Intent.Warning,
+          'bg-vega-pink-300 dark:bg-vega-pink-700': intent === Intent.Danger,
+        },
+        'border rounded p-2 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900 my-4',
         className
       )}
     >
@@ -64,18 +78,19 @@ export const Notification = ({
       >
         <Icon size={4} name={getIcon(intent)} />
       </div>
-      <div className="flex flex-col flex-grow items-start gap-1.5 text-base">
+      <div className="flex flex-col flex-grow items-start gap-1.5">
         {title && (
-          <div className="whitespace-nowrap overflow-hidden text-ellipsis uppercase text-sm leading-6">
+          <div className="whitespace-nowrap overflow-hidden text-ellipsis uppercase leading-6">
             {title}
           </div>
         )}
-        <div>{message}</div>
+        <div className="text-sm">{message}</div>
         {buttonProps && (
           <Button
-            size="md"
+            size={buttonProps.size || 'sm'}
             onClick={buttonProps.action}
             className={classNames(buttonProps.className)}
+            data-testid={buttonProps.dataTestId}
           >
             {buttonProps.text}
           </Button>

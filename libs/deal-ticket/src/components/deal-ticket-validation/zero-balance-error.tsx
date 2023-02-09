@@ -1,6 +1,6 @@
-import { t } from '@vegaprotocol/react-helpers';
-import { ButtonLink, InputError } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification, Link } from '@vegaprotocol/ui-toolkit';
 import { useDepositDialog } from '@vegaprotocol/deposits';
+import { t } from '@vegaprotocol/react-helpers';
 interface ZeroBalanceErrorProps {
   asset: {
     id: string;
@@ -11,16 +11,21 @@ interface ZeroBalanceErrorProps {
 export const ZeroBalanceError = ({ asset }: ZeroBalanceErrorProps) => {
   const openDepositDialog = useDepositDialog((state) => state.open);
   return (
-    <InputError data-testid="dealticket-error-message-zero-balance">
-      <p className="mb-2">
-        {t('Insufficient balance. ')}
-        <ButtonLink
-          data-testid="deal-ticket-deposit-dialog-button"
-          onClick={() => openDepositDialog(asset.id)}
-        >
-          {t(`Deposit ${asset.symbol}`)}
-        </ButtonLink>
-      </p>
-    </InputError>
+    <Notification
+      intent={Intent.Warning}
+      data-testid="dealticket-error-message-zero-balance"
+      message={
+        <>
+          You need a {asset.symbol} in your wallet to trade in this market. See
+          all your <Link>collateral</Link>.
+        </>
+      }
+      buttonProps={{
+        text: t(`Make a deposit`),
+        action: () => openDepositDialog(asset.id),
+        dataTestId: 'deal-ticket-deposit-dialog-button',
+        size: 'md',
+      }}
+    />
   );
 };

@@ -12,11 +12,11 @@ interface Props {
 }
 
 export const DealTicketButton = ({ disabled, variant, assetSymbol }: Props) => {
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  return pubKey ? (
+  return pubKey && !isReadOnly ? (
     <div className="mb-4">
       <Button
         variant={variant}
@@ -42,9 +42,10 @@ export const DealTicketButton = ({ disabled, variant, assetSymbol }: Props) => {
           </p>
         }
         buttonProps={{
-          text: 'Connect wallet',
+          text: t('Connect wallet'),
           action: openVegaWalletDialog,
-          className: 'px-14',
+          dataTestId: 'connect-wallet',
+          size: 'md',
         }}
       />
       <div>
