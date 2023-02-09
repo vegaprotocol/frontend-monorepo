@@ -2,7 +2,7 @@ import { ENV } from '../../../config';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useTranslation } from 'react-i18next';
-import { useRefreshValidators } from '../../../hooks/use-refresh-validators';
+import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { SplashLoader } from '../../../components/splash-loader';
 import { useStakingQuery } from './__generated__/Staking';
 import { usePreviousEpochQuery } from '../__generated___/PreviousEpoch';
@@ -45,7 +45,7 @@ export const NodeContainer = ({
     skip: !data?.epoch.id,
   });
 
-  useRefreshValidators(data?.epoch.timestamps.expiry, refetch);
+  useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
 
   if (error) {
     return (

@@ -1,7 +1,7 @@
 import type { ObservableQuery } from '@apollo/client';
 import { useEffect } from 'react';
 
-export const useRefreshValidators = (
+export const useRefreshAfterEpoch = (
   epochExpiry: string | undefined,
   refetch: ObservableQuery['refetch']
 ) => {

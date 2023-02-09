@@ -47,3 +47,48 @@ query Rewards($partyId: ID!, $delegationsPagination: Pagination) {
     }
   }
 }
+
+fragment EpochRewardSummaryFields on EpochRewardSummary {
+  epoch
+  assetId
+  amount
+  rewardType
+}
+
+query EpochAssetsRewards {
+  assetsConnection {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+  epochRewardSummaries {
+    edges {
+      node {
+        ...EpochRewardSummaryFields
+      }
+    }
+  }
+  epoch {
+    timestamps {
+      expiry
+    }
+  }
+}
+
+fragment EpochFields on Epoch {
+  id
+  timestamps {
+    start
+    end
+    expiry
+  }
+}
+
+query Epoch {
+epoch {
+    ...EpochFields
+  }
+}
