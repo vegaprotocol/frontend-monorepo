@@ -6,13 +6,12 @@ import type {
   TypedDocumentNode,
   FetchResult,
   ErrorPolicy,
+  ApolloQueryResult,
 } from '@apollo/client';
+import type { GraphQLErrors } from '@apollo/client/errors';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
-import {
-  isNotFoundGraphQLError,
-  isOnlyMarketDataNotFoundErrors,
-} from './apollo-client';
+import { isNotFoundGraphQLError } from './apollo-client';
 import type * as Schema from '@vegaprotocol/types';
 interface UpdateData<Data, Delta> {
   delta?: Delta;
@@ -182,6 +181,7 @@ interface DataProviderParams<
   fetchPolicy?: FetchPolicy;
   resetDelay?: number;
   additionalContext?: Record<string, unknown>;
+  errorPolicyGuard?: (graphqlErrors: GraphQLErrors) => boolean;
 }
 
 /**
@@ -208,6 +208,7 @@ function makeDataProviderInternal<
   fetchPolicy,
   resetDelay,
   additionalContext,
+  errorPolicyGuard,
 }: DataProviderParams<
   QueryData,
   Data,
@@ -252,6 +253,30 @@ function makeDataProviderInternal<
     callbacks.forEach((callback) => notify(callback, updateData));
   };
 
+  const call = (
+    pagination?: Pagination,
+    policy?: ErrorPolicy
+  ): Promise<ApolloQueryResult<QueryData>> =>
+    client
+      .query<QueryData>({
+        query,
+        variables: { ...variables, ...(pagination && { pagination }) },
+        fetchPolicy: fetchPolicy || 'no-cache',
+        context: additionalContext,
+        errorPolicy: policy || 'none',
+      })
+      .catch((err) => {
+        if (
+          err.graphQLErrors &&
+          errorPolicyGuard &&
+          errorPolicyGuard(err.graphQLErrors)
+        ) {
+          return call(pagination, 'ignore');
+        } else {
+          throw err;
+        }
+      });
+
   const load = async (start?: number, end?: number) => {
     if (!pagination) {
       return Promise.reject();
@@ -280,15 +305,9 @@ function makeDataProviderInternal<
     } else if (!pageInfo?.hasNextPage) {
       return null;
     }
-    const res = await client.query<QueryData>({
-      query,
-      variables: {
-        ...variables,
-        pagination: paginationVariables,
-      },
-      fetchPolicy: fetchPolicy || 'no-cache',
-      context: additionalContext,
-    });
+
+    const res = await call(paginationVariables);
+
     const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
     ({ data, totalCount } = pagination.append(
@@ -317,29 +336,11 @@ function makeDataProviderInternal<
     if (!client) {
       return;
     }
-
-    const call = (policy?: ErrorPolicy) =>
-      client.query<QueryData>({
-        query,
-        variables: pagination
-          ? { ...variables, pagination: { first: pagination.first } }
-          : variables,
-        fetchPolicy: fetchPolicy || 'no-cache',
-        context: additionalContext,
-        errorPolicy: policy || 'none',
-      });
-
+    const paginationVariables = pagination
+      ? { first: pagination.first }
+      : undefined;
     try {
-      const res = await call().catch((err) => {
-        if (
-          err.graphQLErrors &&
-          isOnlyMarketDataNotFoundErrors(err.graphQLErrors, ['market', 'data'])
-        ) {
-          return call('ignore');
-        } else {
-          throw err;
-        }
-      });
+      const res = await call(paginationVariables);
       data = getData(res.data, variables);
       if (data && pagination) {
         if (!(data instanceof Array)) {

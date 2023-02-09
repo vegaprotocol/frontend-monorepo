@@ -29,10 +29,8 @@ export const isNotFoundGraphQLError = (
   );
 };
 
-export const isOnlyMarketDataNotFoundErrors = (
-  errors: GraphQLErrors,
-  path?: string[]
-) => {
+export const marketDataErrorPolicyGuard = (errors: GraphQLErrors) => {
+  const path = ['market', 'data'];
   return errors.every(
     (e) =>
       e.extensions &&

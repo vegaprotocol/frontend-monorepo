@@ -20,7 +20,7 @@ describe('positions', { tags: '@smoke' }, () => {
     validatePositionsDisplayed();
   });
 
-  it('renders position among some graphql errors', () => {
+  it.only('renders position among some graphql errors', () => {
     const errors = [
       {
         message: 'no market data for market: market-2',
@@ -52,6 +52,7 @@ describe('positions', { tags: '@smoke' }, () => {
       'currentLeverage',
       'averageEntryPrice',
     ];
+    cy.pause();
     cy.getByTestId('tab-positions').within(() => {
       cy.get('[row-id="market-2"]').within(() => {
         emptyCells.forEach((cell) => {
