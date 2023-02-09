@@ -88,7 +88,7 @@ fragment EpochFields on Epoch {
 }
 
 query Epoch {
-epoch {
+  epoch {
     ...EpochFields
   }
 }
