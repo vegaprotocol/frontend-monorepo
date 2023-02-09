@@ -124,7 +124,7 @@ context('Staking Page - verify elements on page', function () {
           .should('contain', 'Performance penalty: 100.00%');
         cy.get(overstakedPenaltyToolTip)
           .invoke('text')
-          .should('contain', 'Overstaked penalty: NaN%');
+          .should('contain', 'Overstaked penalty:'); // value not asserted due to #2886
         cy.get(totalPenaltyToolTip)
           .invoke('text')
           .should('contain', 'Total penalties: 0.00%');
