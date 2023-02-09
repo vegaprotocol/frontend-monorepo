@@ -95,8 +95,15 @@ Cypress.Commands.add('faucet_asset', function (assetEthAddress) {
 });
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
+  cy.get('[data-testid="associated-amount"]')
+    .should('be.visible')
+    .invoke('text')
+    .as('associatedAmount');
   cy.get('body').then(($body) => {
-    if ($body.find('[data-testid="eth-wallet-associated-balances"]').length) {
+    if (
+      $body.find('[data-testid="eth-wallet-associated-balances"]').length ||
+      this.associatedAmount != '0.00'
+    ) {
       cy.vega_wallet_teardown_vesting(this.vestingContract);
       cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
     }
