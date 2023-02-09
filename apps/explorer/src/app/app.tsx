@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 import { Nav } from './components/nav';
@@ -43,9 +43,9 @@ function App() {
       <NetworkLoader cache={cacheConfig}>
         <AnnouncementBanner>
           <div className="font-alpha calt uppercase text-center text-lg text-white">
-            <span className="pr-4">The Mainnet sims are live!</span>
+            <span className="pr-4">Mainnet sim 2 coming in March!</span>
             <ExternalLink href="https://fairground.wtf/">
-              Come help stress test the network
+              Learn more
             </ExternalLink>
           </div>
         </AnnouncementBanner>
