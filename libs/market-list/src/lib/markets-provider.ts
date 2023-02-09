@@ -9,6 +9,7 @@ import type {
   MarketFieldsFragment,
 } from './__generated__/markets';
 import { marketsDataProvider } from './markets-data-provider';
+import { marketDataProvider } from './market-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
 import type { MarketCandles } from './markets-candles-provider';
@@ -35,7 +36,7 @@ export const marketsProvider = makeDataProvider<
   fetchPolicy: 'cache-first',
 });
 
-const marketProvider = makeDerivedDataProvider<
+export const marketProvider = makeDerivedDataProvider<
   Market,
   never,
   { marketId: string }
@@ -49,20 +50,31 @@ const marketProvider = makeDerivedDataProvider<
 
 export const useMarket = (marketId?: string) => {
   const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
-  const { data } = useDataProvider({
+  return useDataProvider({
     dataProvider: marketProvider,
     variables,
     skip: !marketId,
   });
-  return data;
 };
+export type MarketWithData = Market & { data: MarketData };
+
+export const marketWithDataProvider = makeDerivedDataProvider<
+  MarketWithData,
+  never,
+  { marketId: string }
+>([marketProvider, marketDataProvider], ([market, marketData]) => {
+  return {
+    ...market,
+    data: marketData,
+  };
+});
 
 export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
   ([markets]) => filterAndSortMarkets(markets)
 );
 
-export type MarketWithCandles = Market & { candles?: Candle[] };
+export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
 
 const addCandles = <T extends Market>(
   markets: T[],
@@ -75,7 +87,7 @@ const addCandles = <T extends Market>(
   }));
 
 export const marketsWithCandlesProvider = makeDerivedDataProvider<
-  MarketWithCandles[],
+  MarketMaybeWithCandles[],
   never
 >(
   [
@@ -85,7 +97,7 @@ export const marketsWithCandlesProvider = makeDerivedDataProvider<
   (parts) => addCandles(parts[0] as Market[], parts[1] as MarketCandles[])
 );
 
-export type MarketWithData = Market & { data?: MarketData };
+export type MarketMaybeWithData = Market & { data?: MarketData };
 
 const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
   markets.map((market) => ({
@@ -94,14 +106,17 @@ const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
   }));
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
-  MarketWithData[],
+  MarketMaybeWithData[],
   never
 >([activeMarketsProvider, marketsDataProvider], (parts) =>
   addData(parts[0] as Market[], parts[1] as MarketData[])
 );
 
+export type MarketMaybeWithDataAndCandles = MarketMaybeWithData &
+  MarketMaybeWithCandles;
+
 export const marketListProvider = makeDerivedDataProvider<
-  (MarketWithData & MarketWithCandles)[],
+  MarketMaybeWithDataAndCandles[],
   never
 >(
   [
@@ -109,7 +124,7 @@ export const marketListProvider = makeDerivedDataProvider<
     marketsCandlesProvider,
   ],
   (parts) =>
-    addCandles(parts[0] as MarketWithCandles[], parts[1] as MarketCandles[])
+    addCandles(parts[0] as MarketMaybeWithData[], parts[1] as MarketCandles[])
 );
 
 export const useMarketList = () => {

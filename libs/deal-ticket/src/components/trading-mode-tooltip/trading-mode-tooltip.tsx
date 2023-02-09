@@ -22,15 +22,16 @@ export const TradingModeTooltip = ({
   skip,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
-  const market = useMarket(marketId);
-  const marketData = useStaticMarketData(marketId, skip);
-  const { marketTradingMode: tradingMode, trigger } = marketData || {};
+  const { data: market } = useMarket(marketId);
+  const { data: marketData } = useStaticMarketData(marketId, skip);
+  const { marketTradingMode, trigger } = marketData || {};
   const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
   const { data: proposalData } = useProposalOfMarketQuery({
     variables,
     skip:
-      !tradingMode ||
-      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION !== tradingMode,
+      !marketTradingMode ||
+      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION !==
+        marketTradingMode,
   });
 
   if (!market || !marketData) {
@@ -43,7 +44,7 @@ export const TradingModeTooltip = ({
   const compiledGrid =
     onSelect && compileGridData(market, marketData, onSelect);
 
-  switch (tradingMode) {
+  switch (marketTradingMode) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
         <section data-testid="trading-mode-tooltip">
@@ -67,7 +68,7 @@ export const TradingModeTooltip = ({
                   className="justify-center font-bold my-2"
                   data-testid="opening-auction-sub-status"
                 >
-                  {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
+                  {`${Schema.MarketTradingModeMapping[marketTradingMode]}: ${t(
                     'Not enough liquidity to open'
                   )}`}
                 </span>
@@ -84,7 +85,9 @@ export const TradingModeTooltip = ({
                     className="justify-center font-bold my-2"
                     data-testid="opening-auction-sub-status"
                   >
-                    {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
+                    {`${
+                      Schema.MarketTradingModeMapping[marketTradingMode]
+                    }: ${t(
                       'Closing on %s',
                       getDateTimeFormat().format(enactmentDate)
                     )}`}

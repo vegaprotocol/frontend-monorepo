@@ -3,7 +3,7 @@ import { t, toDecimal, validateAmount } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
 export type DealTicketLimitAmountProps = Omit<
-  DealTicketAmountProps,
+  Omit<DealTicketAmountProps, 'marketData'>,
   'orderType'
 >;
 

@@ -14,18 +14,13 @@ import {
 import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
 import type { CandleClose } from '@vegaprotocol/types';
-import type {
-  MarketWithData,
-  MarketWithCandles,
-} from '@vegaprotocol/market-list';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
 import { Link } from 'react-router-dom';
 import { MarketMarkPrice } from '../market-mark-price';
 import { Last24hPriceChange } from '../last-24h-price-change';
 import { MarketTradingMode } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
 import { Links, Routes } from '../../pages/client-router';
-
-type Market = MarketWithData & MarketWithCandles;
 
 const ellipsisClasses = 'whitespace-nowrap overflow-hidden text-ellipsis';
 export const cellClassNames = `py-1 first:text-left text-right ${ellipsisClasses}`;
@@ -171,7 +166,7 @@ export type OnCellClickHandler = (
 ) => void;
 
 export const columns = (
-  market: Market,
+  market: MarketMaybeWithDataAndCandles,
   onSelect: (id: string) => void,
   onCellClick: OnCellClickHandler,
   inViewRoot?: RefObject<HTMLElement>
@@ -359,7 +354,7 @@ export const columns = (
 };
 
 export const columnsPositionMarkets = (
-  market: Market,
+  market: MarketMaybeWithDataAndCandles,
   onSelect: (id: string) => void,
   inViewRoot?: RefObject<HTMLElement>,
   openVolume?: string,

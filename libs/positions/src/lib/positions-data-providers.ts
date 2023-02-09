@@ -11,7 +11,7 @@ import {
   removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketWithData } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
 import type {
   PositionsQuery,
@@ -36,7 +36,7 @@ interface PositionRejoined {
   unrealisedPNL: string;
   averageEntryPrice: string;
   updatedAt?: string | null;
-  market: MarketWithData | null;
+  market: MarketMaybeWithData | null;
   margins: PositionMarginLevel | null;
 }
 
@@ -253,7 +253,7 @@ const upgradeMarginsConnection = (
 
 export const rejoinPositionData = (
   positions: PositionFieldsFragment[] | null,
-  marketsData: MarketWithData[] | null,
+  marketsData: MarketMaybeWithData[] | null,
   margins: MarginFieldsFragment[] | null
 ): PositionRejoined[] | null => {
   if (positions && marketsData && margins) {
