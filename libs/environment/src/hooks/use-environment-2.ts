@@ -224,12 +224,12 @@ function compileEnvVars() {
   const env = {
     VEGA_URL: process.env['NX_VEGA_URL'],
     VEGA_NETWORKS: parseJSON(process.env['NX_VEGA_NETWORKS']),
-    VEGA_ENV: process.env['NX_VEGA_ENV'],
-    VEGA_CONFIG_URL: process.env['NX_VEGA_CONFIG_URL'],
-    VEGA_WALLET_URL: process.env['NX_VEGA_WALLET_URL'],
+    VEGA_ENV: process.env['NX_VEGA_ENV'] as Networks,
+    VEGA_CONFIG_URL: process.env['NX_VEGA_CONFIG_URL'] as string,
+    VEGA_WALLET_URL: process.env['NX_VEGA_WALLET_URL'] as string,
     HOSTED_WALLET_URL: process.env['NX_HOSTED_WALLET_URL'],
-    ETHERSCAN_URL: process.env['NX_ETHERSCAN_URL'],
-    ETHEREUM_PROVIDER_URL: process.env['NX_ETHEREUM_PROVIDER_URL'],
+    ETHERSCAN_URL: process.env['NX_ETHERSCAN_URL'] as string,
+    ETHEREUM_PROVIDER_URL: process.env['NX_ETHEREUM_PROVIDER_URL'] as string,
     ETH_LOCAL_PROVIDER_URL: process.env['NX_ETH_LOCAL_PROVIDER_URL'],
     ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'],
     VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'],
@@ -241,6 +241,10 @@ function compileEnvVars() {
     GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'],
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
   };
+
+  if (process.env.NODE_ENV === 'test') {
+    return env;
+  }
 
   return EnvSchema.parse(env);
 }

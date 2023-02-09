@@ -4,7 +4,6 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
 import { createClient } from '@vegaprotocol/apollo-client';
-import { t } from '@vegaprotocol/react-helpers';
 
 type NetworkLoaderProps = {
   children?: ReactNode;
@@ -21,7 +20,6 @@ export function NetworkLoader({
 }: NetworkLoaderProps) {
   const { status, VEGA_URL } = useEnvironment((store) => ({
     status: store.status,
-    error: store.error,
     VEGA_URL: store.VEGA_URL,
   }));
 
