@@ -599,8 +599,7 @@ export type CombineDerivedData<
 > = (
   data: DerivedPart<Variables>['data'][],
   variables: Variables | undefined,
-  prevData: Data | null,
-  errors?: (Error | undefined)[]
+  prevData: Data | null
 ) => Data | null;
 
 export type CombineDerivedDelta<
@@ -682,8 +681,7 @@ function makeDerivedDataProviderInternal<
       ? combineData(
           parts.map((part) => part.data),
           variables,
-          data,
-          parts.map((part) => part.error)
+          data
         )
       : data;
     if (
