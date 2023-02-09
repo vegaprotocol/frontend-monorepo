@@ -452,7 +452,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     //7002-SORD-018
     cy.getByTestId(orderPriceField)
       .siblings('label')
-      .should('have.text', 'Price (tDAI)');
+      .should('have.text', 'Price (DAI)');
   });
 
   it('must see warning when placing an order with expiry date in past', () => {
@@ -648,7 +648,7 @@ describe('account validation', { tags: '@regression' }, () => {
                       market: null,
                       asset: {
                         __typename: 'Asset',
-                        id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+                        id: 'asset-0',
                       },
                     },
                   },
