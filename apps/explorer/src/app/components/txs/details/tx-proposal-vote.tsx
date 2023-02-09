@@ -32,7 +32,7 @@ export const TxProposalVote = ({
 
   const vote = txData.command.voteSubmission.value ? '👍' : '👎';
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <TableRow modifier="bordered">
         <TableCell>{t('Proposal ID')}</TableCell>
