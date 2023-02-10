@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 import { Nav } from './components/nav';
