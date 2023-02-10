@@ -1,6 +1,7 @@
 import { useExplorerDeterministicOrderQuery } from '../order-details/__generated__/Order';
 import PriceInMarket from '../price-in-market/price-in-market';
 import { sideText } from '../order-details/lib/order-labels';
+import SizeInMarket from '../size-in-market/size-in-market';
 
 // Note: Edited has no style currently
 export type OrderSummaryModifier = 'cancelled' | 'edited';
@@ -41,7 +42,8 @@ const OrderSummary = ({ id, modifier }: OrderSummaryProps) => {
   return (
     <div data-testid="order-summary" className={getClassName(modifier)}>
       <span>{sideText[order.side]}</span>&nbsp;
-      <span>{order.size}</span>&nbsp;<i>@</i>&nbsp;
+      <SizeInMarket marketId={order.market.id} size={order.size} />
+      &nbsp;<i>@</i>&nbsp;
       <PriceInMarket marketId={order.market.id} price={order.price} />
     </div>
   );

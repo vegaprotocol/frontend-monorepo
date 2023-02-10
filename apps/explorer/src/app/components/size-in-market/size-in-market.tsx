@@ -5,7 +5,7 @@ export type DecimalSource = 'MARKET';
 
 export type PriceInMarketProps = {
   marketId: string;
-  size: string | number;
+  size?: string | number;
   decimalSource?: DecimalSource;
 };
 
@@ -22,6 +22,9 @@ const SizeInMarket = ({
     variables: { id: marketId },
     fetchPolicy: 'cache-first',
   });
+  if (!size) {
+    return <span>-</span>;
+  }
 
   let label = size;
 
