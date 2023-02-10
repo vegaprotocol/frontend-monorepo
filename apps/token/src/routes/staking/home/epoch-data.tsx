@@ -3,7 +3,7 @@ import { EpochCountdown } from '../../../components/epoch-countdown';
 import { useNodesQuery } from './__generated___/Nodes';
 import { usePreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import { ValidatorTables } from './validator-tables';
-import { useRefreshValidators } from '../../../hooks/use-refresh-validators';
+import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 
 export const EpochData = () => {
   // errorPolicy due to vegaprotocol/vega issue 5898
@@ -15,7 +15,7 @@ export const EpochData = () => {
     skip: !data?.epoch.id,
   });
 
-  useRefreshValidators(data?.epoch.timestamps.expiry, refetch);
+  useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>

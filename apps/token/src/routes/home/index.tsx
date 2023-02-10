@@ -8,7 +8,7 @@ import {
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { useRefreshValidators } from '../../hooks/use-refresh-validators';
+import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import Routes from '../routes';
 import {
@@ -156,7 +156,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     refetch,
   } = useNodesQuery();
 
-  useRefreshValidators(validatorsData?.epoch.timestamps.expiry, refetch);
+  useRefreshAfterEpoch(validatorsData?.epoch.timestamps.expiry, refetch);
 
   const proposals = useMemo(
     () =>
