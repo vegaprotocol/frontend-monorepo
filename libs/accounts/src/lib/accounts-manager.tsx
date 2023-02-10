@@ -42,6 +42,7 @@ export const AccountManager = ({
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         isReadOnly={isReadOnly}
+        noRowsOverlayComponent={() => null}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
