@@ -27,36 +27,17 @@ export const AccountManager = ({
   isReadOnly,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<AccountFields[] | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const update = useCallback(
-    ({ data }: { data: AccountFields[] | null }) => {
-      return updateGridData(dataRef, data, gridRef);
-    },
-    [gridRef]
-  );
 
   const { data, loading, error } = useDataProvider<AccountFields[], never>({
     dataProvider: aggregatedAccountsDataProvider,
-    update,
     variables,
   });
-  const getRows = useCallback(
-    async ({ successCallback, startRow, endRow }: GetRowsParams) => {
-      const rowsThisBlock = dataRef.current
-        ? dataRef.current.slice(startRow, endRow)
-        : [];
-      const lastRow = dataRef.current ? dataRef.current.length : 0;
-      successCallback(rowsThisBlock, lastRow);
-    },
-    []
-  );
   return (
     <div className="relative h-full">
       <AccountTable
-        rowModelType="infinite"
         ref={gridRef}
-        datasource={{ getRows }}
+        rowData={data}
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
