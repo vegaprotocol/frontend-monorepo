@@ -61,7 +61,7 @@ export const Notification = ({
             intent === Intent.Warning,
           'bg-vega-pink-300 dark:bg-vega-pink-650': intent === Intent.Danger,
         },
-        'border rounded p-2 flex items-start gap-2.5 bg-neutral-100 dark:bg-neutral-900 my-4',
+        'border rounded p-2 flex items-start gap-2.5 my-4',
         className
       )}
     >

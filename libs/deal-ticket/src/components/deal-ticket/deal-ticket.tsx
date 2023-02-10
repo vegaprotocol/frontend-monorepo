@@ -153,7 +153,6 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
     clearErrors,
     errors.summary?.message,
     errors.summary?.type,
-    checkForErrors,
   ]);
 
   const onSubmit = useCallback(

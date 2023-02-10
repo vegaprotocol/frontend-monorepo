@@ -10,7 +10,7 @@ interface Props {
 
 export const DealTicketButton = ({ disabled, variant }: Props) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const isDisabled = Boolean(pubKey) && !isReadOnly ? disabled : true;
+  const isDisabled = !pubKey || isReadOnly || disabled;
   return (
     <div className="mb-4">
       <Button
