@@ -30,7 +30,11 @@ const OrderTxSummary = ({ order }: OrderSummaryProps) => {
   return (
     <div data-testid="order-summary">
       <span>{sideText[order.side]}</span>&nbsp;
-      <SizeInMarket size={order.size} marketId={order.marketId} />
+      {order.size ? (
+        <SizeInMarket size={order.size} marketId={order.marketId} />
+      ) : (
+        '-'
+      )}
       &nbsp;<i className="text-xs">@</i>&nbsp;
       <PriceInMarket
         marketId={order.marketId}

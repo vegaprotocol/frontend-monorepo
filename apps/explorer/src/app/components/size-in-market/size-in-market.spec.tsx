@@ -7,7 +7,7 @@ import type { DecimalSource } from './size-in-market';
 import { ExplorerMarketDocument } from '../links/market-link/__generated__/Market';
 
 function renderComponent(
-  price: string,
+  size: string | undefined,
   marketId: string,
   mocks: MockedResponse[],
   decimalSource: DecimalSource = 'MARKET'
@@ -17,7 +17,7 @@ function renderComponent(
       <MemoryRouter>
         <SizeInMarket
           marketId={marketId}
-          size={price}
+          size={size}
           decimalSource={decimalSource}
         />
       </MemoryRouter>
@@ -57,6 +57,11 @@ const fullMock = {
 };
 
 describe('Size in Market component', () => {
+  it('Renders a dash size when there is no size', () => {
+    const res = render(renderComponent(undefined, '123', []));
+    expect(res.getByText('-')).toBeInTheDocument();
+  });
+
   it('Renders the raw size when there is no market data', () => {
     const res = render(renderComponent('100', '123', []));
     expect(res.getByText('100')).toBeInTheDocument();
