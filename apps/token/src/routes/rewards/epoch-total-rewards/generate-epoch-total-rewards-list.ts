@@ -24,13 +24,13 @@ export interface AggregatedEpochSummary {
 }
 
 export const generateEpochTotalRewardsList = (
-  epochData: EpochAssetsRewardsQuery
+  epochData: EpochAssetsRewardsQuery | undefined
 ) => {
   const epochRewardSummaries = removePaginationWrapper(
-    epochData.epochRewardSummaries?.edges
+    epochData?.epochRewardSummaries?.edges
   );
 
-  const assets = removePaginationWrapper(epochData.assetsConnection?.edges);
+  const assets = removePaginationWrapper(epochData?.assetsConnection?.edges);
 
   // Because the epochRewardSummaries don't have the asset name, we need to find it in the assets list
   const epochSummariesWithNamedReward: EpochSummaryWithNamedReward[] =

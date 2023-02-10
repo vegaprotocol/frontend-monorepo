@@ -2,7 +2,13 @@ import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-li
 import { AccountType } from '@vegaprotocol/types';
 
 describe('generateEpochAssetRewardsList', () => {
-  it('should return an empty array if no data is provided', () => {
+  it('should return an empty array if data is undefined', () => {
+    const result = generateEpochTotalRewardsList(undefined);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should return an empty array if empty data is provided', () => {
     const epochData = {
       assetsConnection: {
         edges: [],
