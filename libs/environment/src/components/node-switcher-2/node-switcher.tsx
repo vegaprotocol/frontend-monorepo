@@ -1,4 +1,8 @@
-import type { ApolloClient, NormalizedCacheObject } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import { createClient, useHeaderStore } from '@vegaprotocol/apollo-client';
 import { t } from '@vegaprotocol/react-helpers';
 import {
@@ -63,6 +67,7 @@ const NodeSwitcherContainer = ({
       return curr;
     });
   }, []);
+
   return (
     <div>
       <h3 className="uppercase text-xl text-center mb-2">
@@ -106,17 +111,13 @@ const NodeSwitcherContainer = ({
                           // disabled={getIsNodeDisabled(VEGA_ENV, state[node])}
                         />
                       </div>
-                      <ClientWrapper
-                        url={node}
-                        renderChildren={(client) => (
-                          <RowData
-                            client={client}
-                            url={node}
-                            highestBlock={highestBlock}
-                            onBlockHeight={handleHighestBlock}
-                          />
-                        )}
-                      />
+                      <ClientWrapper url={node}>
+                        <RowData
+                          url={node}
+                          highestBlock={highestBlock}
+                          onBlockHeight={handleHighestBlock}
+                        />
+                      </ClientWrapper>
                     </LayoutRow>
                   );
                 })}
@@ -156,10 +157,10 @@ const NodeSwitcherContainer = ({
 
 const ClientWrapper = ({
   url,
-  renderChildren,
+  children,
 }: {
   url: string;
-  renderChildren: (client: ApolloClient<NormalizedCacheObject>) => ReactNode;
+  children: ReactNode;
 }) => {
   const client = useMemo(
     () =>
@@ -172,16 +173,14 @@ const ClientWrapper = ({
       }),
     [url]
   );
-  return <>{renderChildren(client)}</>;
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
 const RowData = ({
-  client,
   url,
   highestBlock,
   onBlockHeight,
 }: {
-  client: ApolloClient<NormalizedCacheObject>;
   url: string;
   highestBlock: number | null;
   onBlockHeight: (blockHeight: number) => void;
@@ -190,7 +189,6 @@ const RowData = ({
   // no use of data here as we need the data nodes reference to block height
   const { data, error, loading, startPolling, stopPolling } =
     useStatisticsQuery({
-      client,
       // pollInterval doesnt seem to work any more
       // https://github.com/apollographql/apollo-client/issues/9819
       ssr: false,
@@ -321,17 +319,13 @@ const CustomRowWrapper = ({
         )}
       </div>
       {displayCustom ? (
-        <ClientWrapper
-          url={inputText}
-          renderChildren={(client) => (
-            <RowData
-              client={client}
-              url={inputText}
-              onBlockHeight={onBlockHeight}
-              highestBlock={highestBlock}
-            />
-          )}
-        />
+        <ClientWrapper url={inputText}>
+          <RowData
+            url={inputText}
+            onBlockHeight={onBlockHeight}
+            highestBlock={highestBlock}
+          />
+        </ClientWrapper>
       ) : null}
     </LayoutRow>
   );

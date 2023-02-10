@@ -66,12 +66,6 @@ const EnvSchema = z.object({
 });
 
 export const useEnvironment = create<Env & Actions>((set, get) => ({
-  // VEGA_URL: undefined,
-  // VEGA_ENV: '' as unknown as Networks,
-  // VEGA_WALLET_URL: '',
-  // VEGA_NETWORKS: {},
-  // ETHEREUM_PROVIDER_URL: '',
-  // ETHERSCAN_URL: '',
   ...compileEnvVars(),
   nodes: [],
   status: 'default',
@@ -82,6 +76,16 @@ export const useEnvironment = create<Env & Actions>((set, get) => ({
   },
   initialize: async () => {
     set({ status: 'pending' });
+
+    try {
+      const rawVars = compileEnvVars();
+      const safeVars = EnvSchema.parse(rawVars);
+      set({ ...safeVars });
+    } catch (err) {
+      set({ status: 'failed', error: 'Environment validation failed' });
+      return;
+    }
+
     const state = get();
     const storedUrl = LocalStorage.getItem('vega_url');
 
@@ -91,7 +95,7 @@ export const useEnvironment = create<Env & Actions>((set, get) => ({
       nodes = await fetchConfig(state.VEGA_CONFIG_URL);
       set({ nodes });
     } catch (err) {
-      console.warn('could not fetch node config');
+      console.warn(`could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }
 
     // user has previously loaded the app and found
@@ -254,7 +258,7 @@ function compileEnvVars() {
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
   };
 
-  return EnvSchema.parse(env);
+  return env;
 }
 
 function parseJSON(value?: string) {
