@@ -99,7 +99,7 @@ context(
             'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
           );
           // workaround for first eth tx hanging
-          // associateTokenStartOfTests();
+          associateTokenStartOfTests();
         }
       );
 
