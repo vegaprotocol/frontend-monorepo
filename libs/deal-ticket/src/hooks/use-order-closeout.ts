@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {
   useAccountBalance,
   useMarketAccountBalance,
@@ -12,10 +12,15 @@ import { useMarketPositions } from './use-market-positions';
 
 interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
 }
 
-export const useOrderCloseOut = ({ order, market }: Props): string | null => {
+export const useOrderCloseOut = ({
+  order,
+  market,
+  marketData,
+}: Props): string | null => {
   const { accountBalance, accountDecimals } = useAccountBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
@@ -43,9 +48,7 @@ export const useOrderCloseOut = ({ order, market }: Props): string | null => {
   const price =
     order.type === Schema.OrderType.TYPE_LIMIT && order.price
       ? new BigNumber(order.price)
-      : new BigNumber(
-          addDecimal(market.data.markPrice || 0, market.decimalPlaces || 0)
-        );
+      : new BigNumber(addDecimal(marketData.markPrice, market.decimalPlaces));
   // regarding formula (marginMaintenanceLevel - positionAccountBalance - generalAccountBalance) / volume + markPrice
   const marginDifference = marginMaintenanceLevel
     .minus(positionAccountBalance)

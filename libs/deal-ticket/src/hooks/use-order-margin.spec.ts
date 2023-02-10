@@ -5,7 +5,7 @@ import type { PositionMargin } from './use-market-positions';
 import type { Props } from './use-order-margin';
 import { useOrderMargin } from './use-order-margin';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 
 let mockEstimateData = {
   estimateOrder: {
@@ -55,11 +55,11 @@ describe('useOrderMargin', () => {
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
       tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      data: {
-        indicativePrice: '100',
-        markPrice: '200',
-      },
-    } as MarketDealTicket,
+    } as unknown as Market,
+    marketData: {
+      indicativePrice: '100',
+      markPrice: '200',
+    } as unknown as MarketData,
     partyId: 'partyId',
   };
 

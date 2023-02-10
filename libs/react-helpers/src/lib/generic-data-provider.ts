@@ -5,7 +5,10 @@ import type {
   OperationVariables,
   TypedDocumentNode,
   FetchResult,
+  ErrorPolicy,
+  ApolloQueryResult,
 } from '@apollo/client';
+import type { GraphQLErrors } from '@apollo/client/errors';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
 import { isNotFoundGraphQLError } from './apollo-client';
@@ -178,6 +181,7 @@ interface DataProviderParams<
   fetchPolicy?: FetchPolicy;
   resetDelay?: number;
   additionalContext?: Record<string, unknown>;
+  errorPolicyGuard?: (graphqlErrors: GraphQLErrors) => boolean;
 }
 
 /**
@@ -186,6 +190,9 @@ interface DataProviderParams<
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
  * @param fetchPolicy
+ * @param resetDelay
+ * @param additionalContext add property to the context of the query, ie. 'isEnlargedTimeout'
+ * @param errorPolicyGuard indicate which gql errors can be tolerate
  * @returns subscribe function
  */
 function makeDataProviderInternal<
@@ -204,6 +211,7 @@ function makeDataProviderInternal<
   fetchPolicy,
   resetDelay,
   additionalContext,
+  errorPolicyGuard,
 }: DataProviderParams<
   QueryData,
   Data,
@@ -248,6 +256,30 @@ function makeDataProviderInternal<
     callbacks.forEach((callback) => notify(callback, updateData));
   };
 
+  const call = (
+    pagination?: Pagination,
+    policy?: ErrorPolicy
+  ): Promise<ApolloQueryResult<QueryData>> =>
+    client
+      .query<QueryData>({
+        query,
+        variables: { ...variables, ...(pagination && { pagination }) },
+        fetchPolicy: fetchPolicy || 'no-cache',
+        context: additionalContext,
+        errorPolicy: policy || 'none',
+      })
+      .catch((err) => {
+        if (
+          err.graphQLErrors &&
+          errorPolicyGuard &&
+          errorPolicyGuard(err.graphQLErrors)
+        ) {
+          return call(pagination, 'ignore');
+        } else {
+          throw err;
+        }
+      });
+
   const load = async (start?: number, end?: number) => {
     if (!pagination) {
       return Promise.reject();
@@ -276,15 +308,9 @@ function makeDataProviderInternal<
     } else if (!pageInfo?.hasNextPage) {
       return null;
     }
-    const res = await client.query<QueryData>({
-      query,
-      variables: {
-        ...variables,
-        pagination: paginationVariables,
-      },
-      fetchPolicy: fetchPolicy || 'no-cache',
-      context: additionalContext,
-    });
+
+    const res = await call(paginationVariables);
+
     const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
     ({ data, totalCount } = pagination.append(
@@ -313,15 +339,11 @@ function makeDataProviderInternal<
     if (!client) {
       return;
     }
+    const paginationVariables = pagination
+      ? { first: pagination.first }
+      : undefined;
     try {
-      const res = await client.query<QueryData>({
-        query,
-        variables: pagination
-          ? { ...variables, pagination: { first: pagination.first } }
-          : variables,
-        fetchPolicy: fetchPolicy || 'no-cache',
-        context: additionalContext,
-      });
+      const res = await call(paginationVariables);
       data = getData(res.data, variables);
       if (data && pagination) {
         if (!(data instanceof Array)) {
@@ -355,7 +377,7 @@ function makeDataProviderInternal<
       }
       loaded = true;
     } catch (e) {
-      if (isNotFoundGraphQLError(e as Error, 'party')) {
+      if (isNotFoundGraphQLError(e as Error, ['party'])) {
         data = getData(null, variables);
         loaded = true;
         return;
@@ -495,7 +517,7 @@ const memoize = <
   Delta,
   Variables extends OperationVariables = OperationVariables
 >(
-  fn: (variables?: Variables) => Subscribe<Data, Delta, Variables>
+  fn: () => Subscribe<Data, Delta, Variables>
 ) => {
   const cache: {
     subscribe: Subscribe<Data, Delta, Variables>;
@@ -506,7 +528,7 @@ const memoize = <
     if (cached) {
       return cached.subscribe;
     }
-    const subscribe = fn(variables);
+    const subscribe = fn();
     cache.push({ subscribe, variables });
     return subscribe;
   };

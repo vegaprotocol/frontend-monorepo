@@ -17,10 +17,7 @@ import {
   SelectMarketTableRowSplash,
 } from './select-market-table';
 import type { ReactNode } from 'react';
-import type {
-  MarketWithCandles,
-  MarketWithData,
-} from '@vegaprotocol/market-list';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
 import {
@@ -29,8 +26,6 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { HeaderTitle } from '../header';
-
-export type Market = MarketWithCandles & MarketWithData;
 
 export const SelectAllMarketsTableBody = ({
   markets,
@@ -41,14 +36,14 @@ export const SelectAllMarketsTableBody = ({
   headers = columnHeaders,
   tableColumns = (market) => columns(market, onSelect, onCellClick, inViewRoot),
 }: {
-  markets?: Market[] | null;
+  markets?: MarketMaybeWithDataAndCandles[] | null;
   positions?: PositionFieldsFragment[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
   headers?: Column[];
   tableColumns?: (
-    market: Market,
+    market: MarketMaybeWithDataAndCandles,
     inViewRoot?: RefObject<HTMLDivElement>,
     openVolume?: string
   ) => Column[];

@@ -2,14 +2,15 @@ import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { DataGrid, t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 
 interface TypeSelectorProps {
   value: Schema.OrderType;
   onSelect: (type: Schema.OrderType) => void;
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   errorMessage?: string;
 }
 
@@ -22,6 +23,7 @@ export const TypeSelector = ({
   value,
   onSelect,
   market,
+  marketData,
   errorMessage,
 }: TypeSelectorProps) => {
   const renderError = (errorType: MarketModeValidationType) => {
@@ -35,7 +37,7 @@ export const TypeSelector = ({
           {t('This market is in auction until it reaches')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, market.data)} />
+              <DataGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('sufficient liquidity')}</span>
@@ -52,7 +54,7 @@ export const TypeSelector = ({
           {t('This market is in auction due to')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, market.data)} />
+              <DataGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('high price volatility')}</span>

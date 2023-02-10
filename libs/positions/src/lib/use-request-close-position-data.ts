@@ -8,7 +8,10 @@ export const useRequestClosePositionData = (
   marketId?: string,
   partyId?: string
 ) => {
-  const marketVariables = useMemo(() => ({ marketId }), [marketId]);
+  const marketVariables = useMemo(
+    () => ({ marketId: marketId || '' }),
+    [marketId]
+  );
   const orderVariables = useMemo<OrdersQueryVariables>(
     () => ({ partyId: partyId || '' }),
     [partyId]

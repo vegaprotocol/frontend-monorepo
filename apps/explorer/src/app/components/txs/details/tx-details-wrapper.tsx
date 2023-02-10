@@ -22,6 +22,7 @@ import { TxProposalVote } from './tx-proposal-vote';
 import { TxDetailsProtocolUpgrade } from './tx-details-protocol-upgrade';
 import { TxDetailsIssueSignatures } from './tx-issue-signatures';
 import { TxDetailsNodeAnnounce } from './tx-node-announce';
+import { TxDetailsStateVariable } from './tx-state-variable-proposal';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -105,6 +106,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsDelegate;
     case 'Undelegate':
       return TxDetailsUndelegate;
+    case 'State Variable Proposal':
+      return TxDetailsStateVariable;
     default:
       return TxDetailsGeneric;
   }

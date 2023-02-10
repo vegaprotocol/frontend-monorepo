@@ -17,11 +17,12 @@ export type DealTicketMarketAmountProps = Omit<
 export const DealTicketMarketAmount = ({
   register,
   market,
+  marketData,
   sizeError,
 }: DealTicketMarketAmountProps) => {
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const price = getMarketPrice(market);
+  const price = getMarketPrice(marketData);
 
   const priceFormatted = price
     ? addDecimalsFormatNumber(price, market.decimalPlaces)
@@ -33,7 +34,7 @@ export const DealTicketMarketAmount = ({
         <div className="flex-1 text-sm">Size</div>
         <div />
         <div className="flex-2 text-sm text-right">
-          {isMarketInAuction(market) && (
+          {isMarketInAuction(marketData.marketTradingMode) && (
             <Tooltip
               description={t(
                 'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'

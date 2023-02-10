@@ -8,7 +8,6 @@ import {
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
-  SingleMarketFieldsFragment,
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
@@ -22,7 +21,7 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
     }),
     [marketId]
   );
-  const { data } = useDataProvider<SingleMarketFieldsFragment, never>({
+  const { data } = useDataProvider({
     dataProvider: marketProvider,
     variables,
     skip: !marketId,

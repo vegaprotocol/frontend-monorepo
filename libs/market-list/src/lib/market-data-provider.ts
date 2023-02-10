@@ -54,6 +54,7 @@ export const marketDataProvider = makeDataProvider<
 export type StaticMarketData = Pick<
   MarketData,
   | 'marketTradingMode'
+  | 'marketState'
   | 'auctionStart'
   | 'auctionEnd'
   | 'indicativePrice'
@@ -73,6 +74,7 @@ export const staticMarketDataProvider = makeDerivedDataProvider<
   }
   const data: StaticMarketData = {
     marketTradingMode: marketData.marketTradingMode,
+    marketState: marketData.marketState,
     auctionStart: marketData.auctionStart,
     auctionEnd: marketData.auctionEnd,
     indicativePrice: marketData.indicativePrice,
@@ -91,10 +93,9 @@ export const staticMarketDataProvider = makeDerivedDataProvider<
 
 export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
-  const { data } = useDataProvider({
+  return useDataProvider({
     dataProvider: staticMarketDataProvider,
     variables,
     skip: skip || !marketId,
   });
-  return data;
 };

@@ -6,7 +6,7 @@ import { AssetDocument } from './__generated__/Asset';
 
 export type Asset = AssetFieldsFragment;
 
-const getData = (responseData: AssetQuery | null) => {
+export const getData = (responseData: AssetQuery | null | undefined) => {
   const foundAssets = responseData?.assetsConnection?.edges
     ?.filter((e) => Boolean(e?.node))
     .map((e) => e?.node as Asset);

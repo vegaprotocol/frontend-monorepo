@@ -35,7 +35,7 @@ describe('time in force default values', () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
-    cy.wait('@Market');
+    cy.wait('@Markets');
   });
 
   it('must have market order set up to IOC by default', function () {
@@ -64,7 +64,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
-    cy.wait('@Market');
+    cy.wait('@Markets');
   });
 
   beforeEach(() => {
@@ -162,7 +162,7 @@ describe(
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
-      cy.wait('@Market');
+      cy.wait('@Markets');
     });
 
     beforeEach(() => {
@@ -231,7 +231,7 @@ describe(
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
-      cy.wait('@Market');
+      cy.wait('@Markets');
     });
 
     beforeEach(() => {
@@ -300,7 +300,7 @@ describe(
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
-      cy.wait('@Market');
+      cy.wait('@Markets');
     });
 
     beforeEach(() => {
@@ -360,7 +360,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
-    cy.wait('@Market');
+    cy.wait('@Markets');
   });
 
   it('must not place an order if wallet is not connected', () => {
@@ -405,7 +405,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
     cy.setVegaWallet();
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
-    cy.wait('@Market');
+    cy.wait('@Markets');
   });
 
   it('must warn if order size input has too many digits after the decimal place', function () {
@@ -440,7 +440,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
-    cy.wait('@Market');
+    cy.wait('@Markets');
     cy.getByTestId(toggleLimit).click();
   });
 
@@ -452,7 +452,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     //7002-SORD-018
     cy.getByTestId(orderPriceField)
       .siblings('label')
-      .should('have.text', 'Price (BTC)');
+      .should('have.text', 'Price (DAI)');
   });
 
   it('must see warning when placing an order with expiry date in past', () => {
@@ -532,7 +532,7 @@ describe('market order validations', { tags: '@smoke' }, () => {
     cy.setVegaWallet();
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
-    cy.wait('@Market');
+    cy.wait('@Markets');
     cy.getByTestId(toggleMarket).click();
   });
 
@@ -586,7 +586,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     );
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
-    cy.wait('@Market');
+    cy.wait('@Markets');
   });
 
   beforeEach(() => {
@@ -648,7 +648,7 @@ describe('account validation', { tags: '@regression' }, () => {
                       market: null,
                       asset: {
                         __typename: 'Asset',
-                        id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+                        id: 'asset-0',
                       },
                     },
                   },
@@ -660,7 +660,7 @@ describe('account validation', { tags: '@regression' }, () => {
       });
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
-      cy.wait('@Market');
+      cy.wait('@Markets');
     });
 
     it('should show an error if your balance is zero', () => {
@@ -670,7 +670,7 @@ describe('account validation', { tags: '@regression' }, () => {
       //7002-SORD-003
       cy.getByTestId('dealticket-error-message-zero-balance').should(
         'have.text',
-        'Insufficient balance. Deposit ' + 'tBTC'
+        'Insufficient balance. Deposit ' + 'tDAI'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
     });
@@ -696,7 +696,7 @@ describe('account validation', { tags: '@regression' }, () => {
       });
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
-      cy.wait('@Market');
+      cy.wait('@Markets');
     });
 
     it('should display info and button for deposit', () => {
@@ -708,7 +708,7 @@ describe('account validation', { tags: '@regression' }, () => {
       );
       cy.getByTestId('dealticket-warning-margin').should(
         'contain.text',
-        '9,999.99 tBTC currently required, 1,000.00 tBTC available'
+        '9,999.99 tDAI currently required, 1,000.00 tDAI available'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').click();
       cy.getByTestId('dialog-content')

@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { useOrderCloseOut } from './use-order-closeout';
 
 jest.mock('@vegaprotocol/wallet', () => ({
@@ -18,11 +18,6 @@ describe('useOrderCloseOut', () => {
   const order = { size: '2', side: 'SIDE_BUY' };
   const market = {
     decimalPlaces: 5,
-    depth: {
-      lastTrade: {
-        price: '1000000',
-      },
-    },
     tradableInstrument: {
       instrument: {
         product: {
@@ -32,10 +27,11 @@ describe('useOrderCloseOut', () => {
         },
       },
     },
-    data: {
-      markPrice: 100000,
-    },
-  } as unknown as MarketDealTicket;
+  } as unknown as Market;
+
+  const marketData = {
+    markPrice: 100000,
+  } as unknown as MarketData;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -47,7 +43,10 @@ describe('useOrderCloseOut', () => {
       () =>
         useOrderCloseOut({
           order: order as OrderSubmissionBody['orderSubmission'],
-          market: { ...market, data: { ...market.data, markPrice: '0' } },
+          market,
+          marketData: {
+            markPrice: '0',
+          } as MarketData,
         }),
       {
         wrapper: MockedProvider,
@@ -65,7 +64,8 @@ describe('useOrderCloseOut', () => {
             ...order,
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
-          market: market,
+          market,
+          marketData,
         }),
       {
         wrapper: MockedProvider,
@@ -85,7 +85,8 @@ describe('useOrderCloseOut', () => {
             type: 'TYPE_LIMIT',
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
-          market: market,
+          market,
+          marketData,
         }),
       {
         wrapper: MockedProvider,
@@ -102,7 +103,10 @@ describe('useOrderCloseOut', () => {
             ...order,
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
-          market: { ...market, data: { ...market.data, markPrice: '0' } },
+          market,
+          marketData: {
+            markPrice: '0',
+          } as MarketData,
         }),
       {
         wrapper: MockedProvider,
