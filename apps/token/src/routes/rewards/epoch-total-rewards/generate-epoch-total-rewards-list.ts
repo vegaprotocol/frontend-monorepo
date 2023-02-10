@@ -42,16 +42,16 @@ export const generateEpochTotalRewardsList = (
 
   // Aggregating the epoch summaries by epoch number
   const aggregatedEpochSummariesByEpochNumber =
-    epochSummariesWithNamedReward.reduce((acc, epochSummary) => {
-      const epoch = epochSummary.epoch;
+    epochSummariesWithNamedReward.reduce((acc, epochReward) => {
+      const epoch = epochReward.epoch;
       const epochSummaryIndex = acc.findIndex(
         (epochSummary) => epochSummary[0].epoch === epoch
       );
 
       if (epochSummaryIndex === -1) {
-        acc.push([epochSummary]);
+        acc.push([epochReward]);
       } else {
-        acc[epochSummaryIndex].push(epochSummary);
+        acc[epochSummaryIndex].push(epochReward);
       }
 
       return acc;
