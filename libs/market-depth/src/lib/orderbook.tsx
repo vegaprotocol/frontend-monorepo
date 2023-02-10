@@ -98,6 +98,10 @@ const getRowsToRender = (
 
 // 17px of row height plus 5px gap
 export const rowHeight = 22;
+// top padding to make space for header
+const headerPadding = 30;
+// bottom padding to make space for footer
+const footerPadding = 25;
 // buffer size in rows
 const bufferSize = 30;
 // margin size in px, when reached scrollOffset will be updated
@@ -325,12 +329,14 @@ export const Orderbook = ({
       if (scrollTop === scrollTopRef.current) {
         return;
       }
+      // top offset in rows to row in the middle
       const offsetTop = Math.floor(
-        (scrollTop + Math.floor(viewportHeight / 2)) / rowHeight
+        (scrollTop +
+          Math.floor((viewportHeight - footerPadding - headerPadding) / 2)) /
+          rowHeight
       );
       priceInCenter.current = fillGaps
         ? (
-            BigInt(resolution) + // extra row on very top - sticky header
             BigInt(maxPriceLevel) -
             BigInt(offsetTop) * BigInt(resolution)
           ).toString()
@@ -389,7 +395,13 @@ export const Orderbook = ({
           (scrollTopRef.current % rowHeight) - (scrollTop % rowHeight);
         const priceCenterScrollOffset = Math.max(
           0,
-          Math.min(scrollTop, numberOfRows * rowHeight - viewportHeight)
+          Math.min(
+            scrollTop,
+            numberOfRows * rowHeight +
+              headerPadding +
+              footerPadding +
+              -viewportHeight
+          )
         );
         if (scrollTopRef.current !== priceCenterScrollOffset) {
           updateScrollOffset(priceCenterScrollOffset);
@@ -521,8 +533,9 @@ export const Orderbook = ({
     ? getRowsToRender(rows, resolution, offset, limit)
     : rows?.slice(offset, offset + limit) ?? [];
 
-  const paddingTop = offset * rowHeight;
-  const paddingBottom = (numberOfRows - offset - limit) * rowHeight;
+  const paddingTop = offset * rowHeight + headerPadding;
+  const paddingBottom =
+    (numberOfRows - offset - limit) * rowHeight + footerPadding;
   const tableBody =
     data && data.length !== 0 ? (
       <div
@@ -603,7 +616,7 @@ export const Orderbook = ({
         </div>
       </div>
       <div
-        className={`h-full overflow-auto relative ${styles['scroll']} pt-[26px] pb-[17px]`}
+        className={`h-full overflow-auto relative ${styles['scroll']}`}
         onScroll={onScroll}
         ref={scrollElement}
         data-testid="scroll"
