@@ -1,14 +1,9 @@
-import {
-  t,
-  useDataProvider,
-  updateGridData,
-} from '@vegaprotocol/react-helpers';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import { useRef, useMemo, useCallback, memo } from 'react';
+import { useRef, useMemo, memo } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
-import type { GetRowsParams } from './accounts-table';
 import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
