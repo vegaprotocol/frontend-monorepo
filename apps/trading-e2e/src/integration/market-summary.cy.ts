@@ -17,6 +17,7 @@ const itemValue = 'item-value';
 
 describe('Market proposal notification', { tags: '@smoke' }, () => {
   before(() => {
+    cy.setVegaWallet();
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
