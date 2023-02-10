@@ -116,30 +116,30 @@ const getBestStaticBidPriceLinePosition = (
   rows: OrderbookRowData[] | null
 ) => {
   let bestStaticBidPriceLinePosition = '';
-  if (maxPriceLevel !== '0' && minPriceLevel !== '0') {
-    if (
-      bestStaticBidPrice &&
-      BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
-      BigInt(bestStaticBidPrice) > BigInt(minPriceLevel)
-    ) {
-      if (fillGaps) {
+  if (
+    rows?.length &&
+    bestStaticBidPrice &&
+    BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
+    BigInt(bestStaticBidPrice) > BigInt(minPriceLevel)
+  ) {
+    if (fillGaps) {
+      bestStaticBidPriceLinePosition = (
+        ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
+          BigInt(resolution) +
+          BigInt(1)) *
+          BigInt(rowHeight) +
+        BigInt(1)
+      ).toString();
+    } else {
+      const index = rows?.findIndex(
+        (row) => BigInt(row.price) <= BigInt(bestStaticBidPrice)
+      );
+      if (index !== undefined && index !== -1) {
         bestStaticBidPriceLinePosition = (
-          ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
-            BigInt(resolution) +
-            BigInt(1)) *
-            BigInt(rowHeight) +
-          BigInt(1)
+          index * rowHeight +
+          headerPadding -
+          3
         ).toString();
-      } else {
-        const index = rows?.findIndex(
-          (row) => BigInt(row.price) <= BigInt(bestStaticBidPrice)
-        );
-        if (index !== undefined && index !== -1) {
-          bestStaticBidPriceLinePosition = (
-            (index + 1) * rowHeight +
-            1
-          ).toString();
-        }
       }
     }
   }
@@ -155,6 +155,7 @@ const getBestStaticOfferPriceLinePosition = (
 ) => {
   let bestStaticOfferPriceLinePosition = '';
   if (
+    rows?.length &&
     bestStaticOfferPrice &&
     BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
     BigInt(bestStaticOfferPrice) > BigInt(minPriceLevel)
@@ -173,8 +174,9 @@ const getBestStaticOfferPriceLinePosition = (
       );
       if (index !== undefined && index !== -1) {
         bestStaticOfferPriceLinePosition = (
-          (index + 2) * rowHeight +
-          1
+          (index + 1) * rowHeight +
+          headerPadding -
+          3
         ).toString();
       }
     }
