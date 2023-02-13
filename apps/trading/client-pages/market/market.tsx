@@ -98,8 +98,14 @@ export const MarketPage = () => {
     if (w > 960) {
       return <TradeGrid market={data} onSelect={onSelect} />;
     }
-    return <TradePanels market={data} onSelect={onSelect} />;
-  }, [w, data, onSelect]);
+    return (
+      <TradePanels
+        market={data}
+        onSelect={onSelect}
+        onClickCollateral={() => navigate('/portfolio')}
+      />
+    );
+  }, [w, data, onSelect, navigate]);
   if (!data && marketId) {
     return (
       <Splash>

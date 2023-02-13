@@ -1,14 +1,19 @@
 import { Intent, Notification, Link } from '@vegaprotocol/ui-toolkit';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/react-helpers';
+
 interface ZeroBalanceErrorProps {
   asset: {
     id: string;
     symbol: string;
   };
+  onClickCollateral: () => void;
 }
 
-export const ZeroBalanceError = ({ asset }: ZeroBalanceErrorProps) => {
+export const ZeroBalanceError = ({
+  asset,
+  onClickCollateral,
+}: ZeroBalanceErrorProps) => {
   const openDepositDialog = useDepositDialog((state) => state.open);
   return (
     <Notification
@@ -17,7 +22,7 @@ export const ZeroBalanceError = ({ asset }: ZeroBalanceErrorProps) => {
       message={
         <>
           You need a {asset.symbol} in your wallet to trade in this market. See
-          all your <Link>collateral</Link>.
+          all your <Link onClick={onClickCollateral}>collateral</Link>.
         </>
       }
       buttonProps={{

@@ -43,6 +43,7 @@ export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
+  onClickCollateral: () => void;
 }
 
 export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
@@ -51,7 +52,12 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   summary: string;
 };
 
-export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
+export const DealTicket = ({
+  market,
+  marketData,
+  submit,
+  onClickCollateral,
+}: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
     (store) => ({
@@ -132,10 +138,6 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
   ]);
 
   useEffect(() => {
-    checkForErrors();
-  }, [checkForErrors]);
-
-  useEffect(() => {
     if (
       (!hasNoBalance &&
         errors.summary?.type === SummaryValidationType.NoCollateral) ||
@@ -146,6 +148,7 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
     ) {
       clearErrors('summary');
     }
+    checkForErrors();
   }, [
     hasNoBalance,
     marketStateError,
@@ -153,6 +156,7 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
     clearErrors,
     errors.summary?.message,
     errors.summary?.type,
+    checkForErrors,
   ]);
 
   const onSubmit = useCallback(
@@ -251,6 +255,7 @@ export const DealTicket = ({ market, marketData, submit }: DealTicketProps) => {
         order={order}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
+        onClickCollateral={onClickCollateral || (() => null)}
       />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
@@ -276,6 +281,7 @@ interface SummaryMessageProps {
   order: OrderSubmissionBody['orderSubmission'];
   isReadOnly: boolean;
   pubKey: string | null;
+  onClickCollateral: () => void;
 }
 const SummaryMessage = memo(
   ({
@@ -285,6 +291,7 @@ const SummaryMessage = memo(
     order,
     isReadOnly,
     pubKey,
+    onClickCollateral,
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
@@ -335,6 +342,7 @@ const SummaryMessage = memo(
       return (
         <ZeroBalanceError
           asset={market.tradableInstrument.instrument.product.settlementAsset}
+          onClickCollateral={onClickCollateral}
         />
       );
     }
