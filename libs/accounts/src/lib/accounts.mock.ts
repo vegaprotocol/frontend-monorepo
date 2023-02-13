@@ -80,6 +80,19 @@ export const accountFields: AccountFieldsFragment[] = [
   },
   {
     __typename: 'AccountBalance',
+    type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
+    balance: '100000',
+    market: {
+      __typename: 'Market',
+      id: 'market-3',
+    },
+    asset: {
+      __typename: 'Asset',
+      id: 'asset-0',
+    },
+  },
+  {
+    __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '100000000',
     market: null,
@@ -92,7 +105,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
+    balance: '100000001',
     market: null,
     asset: {
       __typename: 'Asset',
@@ -102,7 +115,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
+    balance: '100000002',
     market: null,
     asset: {
       __typename: 'Asset',
