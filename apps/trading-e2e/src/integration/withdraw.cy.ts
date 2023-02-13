@@ -66,7 +66,7 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
     // 1002-WITH-004
     selectAsset(ASSET_SEPOLIA_TBTC);
     cy.getByTestId(useMaximumAmount).click();
-    cy.get(amountField).should('have.value', '1000.00000');
+    cy.get(amountField).should('have.value', '1000.00001');
   });
 });
 
@@ -102,7 +102,10 @@ describe('withdraw actions', { tags: '@regression' }, () => {
       'contain.text',
       'Balance available'
     );
-    cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '1,000.00');
+    cy.getByTestId('BALANCE_AVAILABLE_value').should(
+      'have.text',
+      '1,000.00001'
+    );
     cy.getByTestId('WITHDRAWAL_THRESHOLD_label').should(
       'contain.text',
       'Delayed withdrawal threshold'
