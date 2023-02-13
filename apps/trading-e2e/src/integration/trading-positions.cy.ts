@@ -1,3 +1,4 @@
+import { checkSorting } from '@vegaprotocol/cypress';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketsDataQuery } from '@vegaprotocol/mock';
 
@@ -58,6 +59,54 @@ describe('positions', { tags: '@smoke' }, () => {
           cy.get(`[col-id="${cell}"]`).should('contain.text', '-');
         });
       });
+    });
+  });
+
+  describe('sorting by ag-grid columns should work well', () => {
+    it('sorting by Market', () => {
+      cy.visit('/#/markets/market-0');
+      const marketsSortedDefault = [
+        'ACTIVE MARKET',
+        'Apple Monthly (30 Jun 2022)',
+      ];
+      const marketsSortedAsc = ['ACTIVE MARKET', 'Apple Monthly (30 Jun 2022)'];
+      const marketsSortedDesc = [
+        'Apple Monthly (30 Jun 2022)',
+        'ACTIVE MARKET',
+      ];
+      cy.getByTestId('Positions').click();
+      checkSorting(
+        'marketName',
+        marketsSortedDefault,
+        marketsSortedAsc,
+        marketsSortedDesc
+      );
+    });
+    it('sorting by notional', () => {
+      cy.visit('/#/markets/market-0');
+      const marketsSortedDefault = ['276,761.40348', '46,126.90058'];
+      const marketsSortedAsc = ['46,126.90058', '276,761.40348'];
+      const marketsSortedDesc = ['276,761.40348', '46,126.90058'];
+      cy.getByTestId('Positions').click();
+      checkSorting(
+        'notional',
+        marketsSortedDefault,
+        marketsSortedAsc,
+        marketsSortedDesc
+      );
+    });
+    it('sorting by unrealisedPNL', () => {
+      cy.visit('/#/markets/market-0');
+      const marketsSortedDefault = ['8.95', '-0.22519'];
+      const marketsSortedAsc = ['-0.22519', '8.95'];
+      const marketsSortedDesc = ['8.95', '-0.22519'];
+      cy.getByTestId('Positions').click();
+      checkSorting(
+        'unrealisedPNL',
+        marketsSortedDefault,
+        marketsSortedAsc,
+        marketsSortedDesc
+      );
     });
   });
 

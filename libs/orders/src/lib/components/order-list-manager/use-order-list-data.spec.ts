@@ -34,6 +34,7 @@ describe('useOrderListData Hook', () => {
     current: {
       api: {
         refreshInfiniteCache: mockRefreshAgGridApi,
+        getModel: () => ({ getType: () => 'infinite' }),
       },
     } as unknown as AgGridReact,
   };
