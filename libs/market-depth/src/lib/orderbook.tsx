@@ -36,7 +36,7 @@ interface OrderbookProps extends OrderbookData {
 
 const HorizontalLine = ({ top, testId }: { top: string; testId: string }) => (
   <div
-    className="absolute border-b border-default inset-x-0"
+    className="absolute border-b border-default inset-x-0 hidden"
     style={{ top }}
     data-testid={testId}
   />
@@ -343,6 +343,7 @@ export const Orderbook = ({
             BigInt(offsetTop) * BigInt(resolution)
           ).toString()
         : rows?.[Math.min(offsetTop, rows.length - 1)].price.toString();
+      // console.log('onScroll', priceInCenter.current);
       if (lockOnMidPrice) {
         setLockOnMidPrice(false);
       }
@@ -361,6 +362,7 @@ export const Orderbook = ({
 
   const scrollToPrice = useCallback(
     (price: string) => {
+      // console.log({ price });
       if (scrollElement.current && maxPriceLevel !== '0') {
         let scrollTop = 0;
         if (fillGaps) {
@@ -440,6 +442,7 @@ export const Orderbook = ({
         midPrice = minPriceLevel.toString();
       }
     }
+    console.log({ midPrice });
     scrollToPrice(midPrice);
     setLockOnMidPrice(true);
   }, [
