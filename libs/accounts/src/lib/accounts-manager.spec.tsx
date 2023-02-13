@@ -1,26 +1,37 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  getAllByRole,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import * as helpers from '@vegaprotocol/react-helpers';
-import type { AccountFields } from './accounts-data-provider';
 import { AccountManager } from './accounts-manager';
 
-let mockedUpdate: ({
-  delta,
-  data,
-}: {
-  delta?: never;
-  data: AccountFields[] | null;
-}) => boolean;
+const mockedUseDataProvider = jest.fn();
 jest.mock('@vegaprotocol/react-helpers', () => ({
   ...jest.requireActual('@vegaprotocol/react-helpers'),
-  useDataProvider: jest.fn((args) => {
-    mockedUpdate = args.update;
-    return {
-      data: [],
-    };
-  }),
+  useDataProvider: jest.fn(() => mockedUseDataProvider()),
 }));
 
 describe('AccountManager', () => {
+  beforeEach(() => {
+    mockedUseDataProvider
+      .mockImplementationOnce((args) => {
+        return {
+          data: [],
+        };
+      })
+      .mockImplementationOnce((args) => {
+        return {
+          data: [
+            { asset: { id: 'a1' }, party: { id: 't1' } },
+            { asset: { id: 'a2' }, party: { id: 't2' } },
+          ],
+        };
+      });
+  });
+
   it('change partyId should reload data provider', async () => {
     const { rerender } = render(
       <AccountManager
@@ -47,8 +58,22 @@ describe('AccountManager', () => {
   });
 
   it('update method should return proper result', async () => {
+    let rerenderer: (ui: React.ReactElement) => void;
     await act(() => {
-      render(
+      const { rerender } = render(
+        <AccountManager
+          partyId="partyOne"
+          onClickAsset={jest.fn}
+          isReadOnly={false}
+        />
+      );
+      rerenderer = rerender;
+    });
+    await waitFor(() => {
+      expect(screen.getByText('No accounts')).toBeInTheDocument();
+    });
+    await act(() => {
+      rerenderer(
         <AccountManager
           partyId="partyOne"
           onClickAsset={jest.fn}
@@ -56,20 +81,11 @@ describe('AccountManager', () => {
         />
       );
     });
-    await waitFor(() => {
-      expect(screen.getByText('No accounts')).toBeInTheDocument();
-    });
-    await act(() => {
-      expect(mockedUpdate({ data: [] })).toEqual(true);
 
-      expect(
-        mockedUpdate({ data: [{ party: { id: 't1' } }] as AccountFields[] })
-      ).toEqual(false);
-      expect(
-        mockedUpdate({ data: [{ party: { id: 't2' } }] as AccountFields[] })
-      ).toEqual(true);
-      expect(mockedUpdate({ data: [] })).toEqual(false);
-      expect(mockedUpdate({ data: [] })).toEqual(true);
+    const container = document.querySelector('.ag-center-cols-container');
+    await waitFor(() => {
+      expect(container).toBeInTheDocument();
     });
+    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
   });
 });
