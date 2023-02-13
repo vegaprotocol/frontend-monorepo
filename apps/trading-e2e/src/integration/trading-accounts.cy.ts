@@ -1,3 +1,5 @@
+import { checkSorting } from '@vegaprotocol/cypress';
+
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockWeb3Provider();
@@ -128,29 +130,4 @@ describe('accounts', { tags: '@smoke' }, () => {
       );
     });
   });
-  function checkSorting(
-    column: string,
-    orderTabDefault: string[],
-    orderTabAsc: string[],
-    orderTabDesc: string[]
-  ) {
-    checkSortChange(orderTabDefault, column);
-    cy.get('.ag-header-container').within(() => {
-      cy.get(`[col-id="${column}"]`).click();
-    });
-    checkSortChange(orderTabAsc, column);
-    cy.get('.ag-header-container').within(() => {
-      cy.get(`[col-id="${column}"]`).click();
-    });
-    checkSortChange(orderTabDesc, column);
-  }
-  function checkSortChange(tabsArr: string[], column: string) {
-    cy.get('.ag-center-cols-container').within(() => {
-      tabsArr.forEach((entry, i) => {
-        cy.get(`[row-index="${i}"]`).within(() => {
-          cy.get(`[col-id="${column}"]`).should('have.text', tabsArr[i]);
-        });
-      });
-    });
-  }
 });
