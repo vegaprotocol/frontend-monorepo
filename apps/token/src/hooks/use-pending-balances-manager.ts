@@ -1,7 +1,6 @@
-import type { Event } from 'ethers';
 import uniqBy from 'lodash/uniqBy';
-
-import create from 'zustand';
+import { create } from 'zustand';
+import type { Event } from 'ethers';
 
 export type PendingTxsStore = {
   pendingBalances: Event[];
