@@ -1,9 +1,6 @@
 const { join } = require('path');
 const { createGlobPatternsForDependencies } = require('@nrwl/next/tailwind');
 const theme = require('../../libs/tailwindcss-config/src/theme');
-const {
-  VegaColours,
-} = require('../../libs/tailwindcss-config/src/vega-colours');
 const vegaCustomClasses = require('../../libs/tailwindcss-config/src/vega-custom-classes');
 
 module.exports = {
@@ -14,12 +11,7 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    extend: {
-      ...theme,
-      colors: {
-        vega: VegaColours,
-      },
-    },
+    extend: theme,
   },
   plugins: [vegaCustomClasses],
 };

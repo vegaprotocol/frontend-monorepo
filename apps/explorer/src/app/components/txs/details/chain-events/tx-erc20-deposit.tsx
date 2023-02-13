@@ -51,7 +51,7 @@ export const TxDetailsChainEventDeposit = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={deposit.vegaAssetId} />
+          <AssetLink assetId={deposit.vegaAssetId} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

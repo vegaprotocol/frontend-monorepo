@@ -1,4 +1,4 @@
-import Assets from './assets';
+import { Assets } from './assets';
 import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
