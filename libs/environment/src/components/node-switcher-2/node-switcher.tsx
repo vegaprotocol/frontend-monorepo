@@ -1,9 +1,3 @@
-import {
-  ApolloClient,
-  ApolloProvider,
-  NormalizedCacheObject,
-} from '@apollo/client';
-import { createClient, useHeaderStore } from '@vegaprotocol/apollo-client';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -14,15 +8,12 @@ import {
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
-import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useEnvironment } from '../../hooks';
-import { useStatisticsQuery } from '../../utils/__generated__/Node';
-import { LayoutCell } from '../node-switcher/layout-cell';
+import { CUSTOM_NODE_KEY } from '../../types';
 import { LayoutRow } from '../node-switcher/layout-row';
-
-const POLL_INTERVAL = 3000;
-const CUSTOM_NODE_KEY = 'custom';
+import { ApolloWrapper } from './apollo-wrapper';
+import { RowData } from './row-data';
 
 export const NodeSwitcher = ({
   open,
@@ -38,21 +29,27 @@ export const NodeSwitcher = ({
   );
 };
 
-const NodeSwitcherContainer = ({
+export const NodeSwitcherContainer = ({
   closeDialog,
 }: {
   closeDialog: () => void;
 }) => {
-  const { nodes, setUrl, status, VEGA_ENV } = useEnvironment((store) => ({
-    status: store.status,
-    nodes: store.nodes,
-    setUrl: store.setUrl,
-    VEGA_ENV: store.VEGA_ENV,
-  }));
-
-  const [nodeRadio, setNodeRadio] = useState<string>(
-    nodes.length > 0 ? '' : CUSTOM_NODE_KEY
+  const { nodes, setUrl, status, VEGA_ENV, VEGA_URL } = useEnvironment(
+    (store) => ({
+      status: store.status,
+      nodes: store.nodes,
+      setUrl: store.setUrl,
+      VEGA_ENV: store.VEGA_ENV,
+      VEGA_URL: store.VEGA_URL,
+    })
   );
+
+  const [nodeRadio, setNodeRadio] = useState<string>(() => {
+    if (VEGA_URL) {
+      return VEGA_URL;
+    }
+    return nodes.length > 0 ? '' : CUSTOM_NODE_KEY;
+  });
   const [highestBlock, setHighestBlock] = useState<number | null>(null);
   const [customUrlText, setCustomUrlText] = useState('');
 
@@ -67,6 +64,17 @@ const NodeSwitcherContainer = ({
       return curr;
     });
   }, []);
+
+  let isDisabled = false;
+  if (nodeRadio === '') {
+    isDisabled = true;
+  } else if (nodeRadio === VEGA_URL) {
+    isDisabled = true;
+  } else if (nodeRadio === CUSTOM_NODE_KEY) {
+    if (!isValidUrl(customUrlText)) {
+      isDisabled = true;
+    }
+  }
 
   return (
     <div>
@@ -89,9 +97,7 @@ const NodeSwitcherContainer = ({
           </p>
           <RadioGroup
             value={nodeRadio}
-            onChange={(value) => {
-              setNodeRadio(value);
-            }}
+            onChange={(value) => setNodeRadio(value)}
           >
             <div className="hidden lg:block">
               <LayoutRow>
@@ -102,22 +108,15 @@ const NodeSwitcherContainer = ({
               <div>
                 {nodes.map((node, index) => {
                   return (
-                    <LayoutRow key={node}>
-                      <div className="break-all" data-testid="node">
-                        <Radio
-                          id={`node-url-${index}`}
-                          value={node}
-                          label={node}
-                          // disabled={getIsNodeDisabled(VEGA_ENV, state[node])}
-                        />
-                      </div>
-                      <ClientWrapper url={node}>
+                    <LayoutRow key={node} dataTestId="node-row">
+                      <ApolloWrapper url={node}>
                         <RowData
+                          id={index.toString()}
                           url={node}
                           highestBlock={highestBlock}
                           onBlockHeight={handleHighestBlock}
                         />
-                      </ClientWrapper>
+                      </ApolloWrapper>
                     </LayoutRow>
                   );
                 })}
@@ -135,7 +134,7 @@ const NodeSwitcherContainer = ({
           <div className="mt-4">
             <Button
               fill={true}
-              disabled={!nodeRadio}
+              disabled={isDisabled}
               onClick={() => {
                 if (nodeRadio === CUSTOM_NODE_KEY) {
                   setUrl(customUrlText);
@@ -152,114 +151,6 @@ const NodeSwitcherContainer = ({
         </div>
       )}
     </div>
-  );
-};
-
-const ClientWrapper = ({
-  url,
-  children,
-}: {
-  url: string;
-  children: ReactNode;
-}) => {
-  const client = useMemo(
-    () =>
-      createClient({
-        url,
-        cacheConfig: undefined,
-        retry: false,
-        connectToDevTools: false,
-        connectToHeaderStore: true,
-      }),
-    [url]
-  );
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
-};
-
-const RowData = ({
-  url,
-  highestBlock,
-  onBlockHeight,
-}: {
-  url: string;
-  highestBlock: number | null;
-  onBlockHeight: (blockHeight: number) => void;
-}) => {
-  const [time, setTime] = useState<number>();
-  // no use of data here as we need the data nodes reference to block height
-  const { data, error, loading, startPolling, stopPolling } =
-    useStatisticsQuery({
-      // pollInterval doesnt seem to work any more
-      // https://github.com/apollographql/apollo-client/issues/9819
-      ssr: false,
-    });
-  const headerStore = useHeaderStore();
-  const headers = headerStore[url];
-
-  useEffect(() => {
-    const handleStartPoll = () => startPolling(POLL_INTERVAL);
-    const handleStopPoll = () => stopPolling();
-
-    // TODO: possibly remove blur focus handling.
-
-    window.addEventListener('blur', handleStopPoll);
-    window.addEventListener('focus', handleStartPoll);
-    handleStartPoll();
-    return () => {
-      window.removeEventListener('blur', handleStopPoll);
-      window.removeEventListener('focus', handleStartPoll);
-    };
-  }, [startPolling, stopPolling]);
-
-  useEffect(() => {
-    // every time we get data measure response speed
-    const requestUrl = new URL(url);
-    const requests = window.performance.getEntriesByName(requestUrl.href);
-    const { duration } =
-      (requests.length && requests[requests.length - 1]) || {};
-    setTime(duration);
-  }, [url, data]);
-
-  useEffect(() => {
-    if (headers?.blockHeight) {
-      onBlockHeight(headers.blockHeight);
-    }
-  }, [headers?.blockHeight, onBlockHeight]);
-
-  const getHasError = () => {
-    if (error) {
-      return true;
-    }
-
-    if (!headers) {
-      return false;
-    }
-
-    if (highestBlock !== null && headers.blockHeight < highestBlock - 3) {
-      return true;
-    }
-
-    return false;
-  };
-
-  return (
-    <>
-      <LayoutCell
-        label={t('Response time')}
-        isLoading={time === undefined}
-        hasError={Boolean(error)}
-        dataTestId="response-time-cell"
-      >
-        {error ? 'n/a' : time ? time.toFixed(2) + 'ms' : 'n/a'}
-      </LayoutCell>
-      <LayoutCell
-        label={t('Block')}
-        isLoading={loading}
-        hasError={getHasError()}
-      >
-        {error ? 'n/a' : headers?.blockHeight || '-'}
-      </LayoutCell>
-    </>
   );
 };
 
@@ -285,11 +176,13 @@ const CustomRowWrapper = ({
   return (
     <LayoutRow>
       <div className="flex w-full mb-2">
-        <Radio
-          id="node-url-custom"
-          value={CUSTOM_NODE_KEY}
-          label={nodeRadio === CUSTOM_NODE_KEY ? '' : t('Other')}
-        />
+        {nodes.length > 0 && (
+          <Radio
+            id="node-url-custom"
+            value={CUSTOM_NODE_KEY}
+            label={nodeRadio === CUSTOM_NODE_KEY ? '' : t('Other')}
+          />
+        )}
         {showInput && (
           <div
             data-testid="custom-node"
@@ -319,19 +212,20 @@ const CustomRowWrapper = ({
         )}
       </div>
       {displayCustom ? (
-        <ClientWrapper url={inputText}>
+        <ApolloWrapper url={inputText}>
           <RowData
+            id={CUSTOM_NODE_KEY}
             url={inputText}
             onBlockHeight={onBlockHeight}
             highestBlock={highestBlock}
           />
-        </ClientWrapper>
+        </ApolloWrapper>
       ) : null}
     </LayoutRow>
   );
 };
 
-const isValidUrl = (url?: string) => {
+export const isValidUrl = (url?: string) => {
   if (!url) return false;
   try {
     new URL(url);

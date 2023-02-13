@@ -19,11 +19,12 @@ type EnvState = {
   status: 'default' | 'pending' | 'success' | 'failed';
   error: string | null;
 };
-type Env = EnvVars & EnvState;
+export type Env = EnvVars & EnvState;
 type Actions = {
   setUrl: (url: string) => void;
   initialize: () => Promise<void>;
 };
+export type EnvStore = Env & Actions;
 
 const EnvSchema = z.object({
   VEGA_URL: z.string().url().optional(),
@@ -65,7 +66,7 @@ const EnvSchema = z.object({
   ETH_WALLET_MNEMONIC: z.optional(z.string()),
 });
 
-export const useEnvironment = create<Env & Actions>((set, get) => ({
+export const useEnvironment = create<EnvStore>((set, get) => ({
   ...compileEnvVars(),
   nodes: [],
   status: 'default',
