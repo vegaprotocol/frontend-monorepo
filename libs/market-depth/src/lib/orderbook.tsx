@@ -343,7 +343,6 @@ export const Orderbook = ({
             BigInt(offsetTop) * BigInt(resolution)
           ).toString()
         : rows?.[Math.min(offsetTop, rows.length - 1)].price.toString();
-      // console.log('onScroll', priceInCenter.current);
       if (lockOnMidPrice) {
         setLockOnMidPrice(false);
       }
@@ -362,7 +361,6 @@ export const Orderbook = ({
 
   const scrollToPrice = useCallback(
     (price: string) => {
-      // console.log({ price });
       if (scrollElement.current && maxPriceLevel !== '0') {
         let scrollTop = 0;
         if (fillGaps) {
@@ -371,24 +369,19 @@ export const Orderbook = ({
             (Number(
               (BigInt(maxPriceLevel) - BigInt(price)) / BigInt(resolution)
             ) +
-              1) * // add one row for sticky header
-              rowHeight +
-            rowHeight / 2 -
-            (viewportHeight % rowHeight);
+              1) *
+            rowHeight;
         } else if (rows) {
           const index = rows.findIndex(
             (row) => BigInt(row.price) <= BigInt(price)
           );
           if (index !== -1) {
-            scrollTop =
-              index * rowHeight + rowHeight / 2 - (viewportHeight % rowHeight);
-            if (
-              price === rows[index].price ||
-              index === 0 ||
-              BigInt(rows[index].price) - BigInt(price) <
-                BigInt(price) - BigInt(rows[index - 1].price)
-            ) {
-              scrollTop += rowHeight;
+            scrollTop = rowHeight * (index + 1);
+            const diffToCurrentRow = BigInt(price) - BigInt(rows[index].price);
+            const diffToPreviousRow =
+              BigInt(rows[index - 1].price) - BigInt(price);
+            if (diffToPreviousRow < diffToCurrentRow) {
+              scrollTop -= rowHeight;
             }
           }
         }
@@ -442,7 +435,6 @@ export const Orderbook = ({
         midPrice = minPriceLevel.toString();
       }
     }
-    console.log({ midPrice });
     scrollToPrice(midPrice);
     setLockOnMidPrice(true);
   }, [
