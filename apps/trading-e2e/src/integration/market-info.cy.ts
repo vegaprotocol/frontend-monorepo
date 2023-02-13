@@ -72,7 +72,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('settlement asset displayed', () => {
     cy.getByTestId(marketTitle).contains('Settlement asset').click();
-    cy.window().then(win => {
+    cy.window().then((win) => {
       cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT');
     });
     validateMarketDataRow(0, 'ID', 'asset-id');
