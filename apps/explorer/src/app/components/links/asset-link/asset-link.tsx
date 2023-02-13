@@ -11,6 +11,7 @@ import { Routes } from '../../../routes/route-names';
 export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
   assetId: string;
   asDialog?: boolean;
+  showAssetSymbol?: boolean;
 };
 
 /**
@@ -18,12 +19,17 @@ export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
  * with a link to the assets modal. If the name does not come back
  * it will use the ID instead.
  */
-export const AssetLink = ({ assetId, asDialog, ...props }: AssetLinkProps) => {
+export const AssetLink = ({ assetId, asDialog, showAssetSymbol = false, ...props }: AssetLinkProps) => {
   const { data: asset } = useAssetDataProvider(assetId);
 
   const open = useAssetDetailsDialogStore((state) => state.open);
   const navigate = useNavigate();
-  const label = asset?.name ? asset.name : assetId;
+  const label = asset
+    ? showAssetSymbol
+      ? asset?.symbol
+      : asset?.name
+    : assetId;
+    
   return (
     <ButtonLink
       data-testid="asset-link"
