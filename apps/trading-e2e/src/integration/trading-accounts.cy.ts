@@ -1,4 +1,3 @@
-const { _ } = Cypress;
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockWeb3Provider();
