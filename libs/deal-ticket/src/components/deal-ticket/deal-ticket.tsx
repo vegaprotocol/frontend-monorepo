@@ -332,7 +332,7 @@ const SummaryMessage = memo(
           buttonProps={{
             text: t('Connect wallet'),
             action: openVegaWalletDialog,
-            dataTestId: 'connect-wallet',
+            dataTestId: 'order-connect-wallet',
             size: 'md',
           }}
         />
@@ -376,6 +376,7 @@ const SummaryMessage = memo(
       return (
         <Notification
           intent={Intent.Warning}
+          testId={'dealticket-warning-auction'}
           message={t(
             'Any orders placed now will not trade until the auction ends'
           )}
