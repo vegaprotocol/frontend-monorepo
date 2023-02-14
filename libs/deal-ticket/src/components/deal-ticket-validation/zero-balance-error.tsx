@@ -18,10 +18,10 @@ export const ZeroBalanceError = ({
   return (
     <Notification
       intent={Intent.Warning}
-      data-testid="dealticket-error-message-zero-balance"
+      testId="dealticket-error-message-zero-balance"
       message={
         <>
-          You need a {asset.symbol} in your wallet to trade in this market. See
+          You need {asset.symbol} in your wallet to trade in this market. See
           all your <Link onClick={onClickCollateral}>collateral</Link>.
         </>
       }

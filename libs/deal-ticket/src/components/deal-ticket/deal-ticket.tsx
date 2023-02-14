@@ -319,6 +319,7 @@ const SummaryMessage = memo(
     if (!pubKey) {
       return (
         <Notification
+          testId={'deal-ticket-connect-wallet'}
           intent={Intent.Warning}
           message={
             <p className="text-sm pb-2">

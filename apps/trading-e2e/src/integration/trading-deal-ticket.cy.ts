@@ -367,7 +367,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('connect-vega-wallet'); // Not connected
     cy.getByTestId('order-connect-wallet').should('exist');
     cy.getByTestId(placeOrderBtn).should('exist');
-    cy.getByTestId(errorMessage).should('exist');
+    cy.getByTestId('deal-ticket-connect-wallet').should('exist');
   });
 
   it('must be able to select order direction - long/short', function () {
@@ -663,13 +663,14 @@ describe('account validation', { tags: '@regression' }, () => {
       cy.wait('@Markets');
     });
 
+    //AICI
     it('should show an error if your balance is zero', () => {
       cy.getByTestId('place-order').should('not.be.disabled');
       cy.getByTestId('place-order').should('be.disabled');
       //7002-SORD-003
       cy.getByTestId('dealticket-error-message-zero-balance').should(
         'have.text',
-        'Insufficient balance. Deposit ' + 'tDAI'
+        'You need ' + 'tDAI' + ' in your wallet to trade in this market'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
     });
