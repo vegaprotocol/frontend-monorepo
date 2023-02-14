@@ -13,7 +13,6 @@ const toggleShort = 'order-side-SIDE_SELL';
 const toggleLong = 'order-side-SIDE_BUY';
 const toggleLimit = 'order-type-TYPE_LIMIT';
 const toggleMarket = 'order-type-TYPE_MARKET';
-const errorMessage = 'dealticket-error-message';
 
 const TIFlist = Object.values(Schema.OrderTimeInForce).map((value) => {
   return {
