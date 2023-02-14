@@ -707,7 +707,7 @@ describe('account validation', { tags: '@regression' }, () => {
       );
       cy.getByTestId('dealticket-warning-margin').should(
         'contain.text',
-        '9,999.99 tDAI currently required, 1,000.00 tDAI available'
+        '9,999.99 tDAI is currently required. You have only 1,000.00 tDAI available.Deposit tDAI'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').click();
       cy.getByTestId('dialog-content')
