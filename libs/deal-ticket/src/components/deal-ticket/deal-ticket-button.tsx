@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type { ButtonVariant } from '@vegaprotocol/ui-toolkit';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface Props {
   disabled: boolean;
@@ -9,32 +9,19 @@ interface Props {
 }
 
 export const DealTicketButton = ({ disabled, variant }: Props) => {
-  const { pubKey } = useVegaWallet();
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
-  return pubKey ? (
+  const { pubKey, isReadOnly } = useVegaWallet();
+  const isDisabled = !pubKey || isReadOnly || disabled;
+  return (
     <div className="mb-4">
       <Button
         variant={variant}
         fill
         type="submit"
-        disabled={disabled}
+        disabled={isDisabled}
         data-testid="place-order"
       >
         {t('Place order')}
       </Button>
     </div>
-  ) : (
-    <Button
-      variant="default"
-      fill
-      type="button"
-      data-testid="order-connect-wallet"
-      onClick={openVegaWalletDialog}
-      className="mb-6"
-    >
-      {t('Connect wallet')}
-    </Button>
   );
 };

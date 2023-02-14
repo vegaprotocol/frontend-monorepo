@@ -111,7 +111,10 @@ const MainGrid = ({
             <TradeGridChild>
               <Tabs>
                 <Tab id="ticket" name={t('Ticket')}>
-                  <TradingViews.Ticket marketId={marketId} />
+                  <TradingViews.Ticket
+                    marketId={marketId}
+                    onClickCollateral={() => navigate('/portfolio')}
+                  />
                 </Tab>
                 <Tab id="info" name={t('Info')}>
                   <TradingViews.Info
@@ -210,15 +213,21 @@ interface TradePanelsProps {
   market: Market | null;
   onSelect: (marketId: string) => void;
   onMarketClick?: (marketId: string) => void;
+  onClickCollateral: () => void;
 }
 
-export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
+export const TradePanels = ({
+  market,
+  onSelect,
+  onClickCollateral,
+}: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
   const renderView = () => {
     const Component = memo<{
       marketId: string;
       onSelect: (marketId: string) => void;
       onMarketClick?: (marketId: string) => void;
+      onClickCollateral: () => void;
     }>(TradingViews[view]);
 
     if (!Component) {
@@ -227,7 +236,13 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
 
     if (!market) return <Splash>{NO_MARKET}</Splash>;
 
-    return <Component marketId={market?.id} onSelect={onSelect} />;
+    return (
+      <Component
+        marketId={market?.id}
+        onSelect={onSelect}
+        onClickCollateral={onClickCollateral}
+      />
+    );
   };
 
   return (

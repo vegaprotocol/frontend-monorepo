@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   FormGroup,
-  InputError,
+  NotificationError,
   Select,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
@@ -139,9 +139,9 @@ export const TimeInForceSelector = ({
         ))}
       </Select>
       {errorMessage && (
-        <InputError data-testid="dealticket-error-message-tif">
+        <NotificationError testId="dealticket-error-message-tif">
           {renderError(errorMessage)}
-        </InputError>
+        </NotificationError>
       )}
     </FormGroup>
   );

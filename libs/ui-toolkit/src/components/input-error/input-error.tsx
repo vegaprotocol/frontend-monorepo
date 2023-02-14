@@ -1,11 +1,47 @@
 import classNames from 'classnames';
 import type { HTMLAttributes } from 'react';
+import { Intent } from '../../utils/intent';
+import { Notification } from '../notification';
 
 interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   intent?: 'danger' | 'warning';
   forInput?: string;
 }
+
+interface NotificationErrorProps extends HTMLAttributes<HTMLDivElement> {
+  children?: React.ReactNode;
+  intent?: Intent | 'danger' | 'warning';
+  forInput?: string;
+  testId?: string;
+}
+
+const getIntent = (intent: Intent | 'danger' | 'warning') => {
+  switch (intent) {
+    case 'danger':
+      return Intent.Danger;
+    case 'warning':
+      return Intent.Warning;
+    default:
+      return intent;
+  }
+};
+
+export const NotificationError = ({
+  intent = Intent.Danger,
+  children,
+  forInput,
+  testId,
+}: NotificationErrorProps) => {
+  return (
+    <Notification
+      intent={getIntent(intent)}
+      testId={testId || 'input-error-text'}
+      message={<div className="role">{children}</div>}
+      aria-describedby={forInput}
+    />
+  );
+};
 
 export const InputError = ({
   intent = 'danger',

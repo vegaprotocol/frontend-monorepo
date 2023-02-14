@@ -13,7 +13,6 @@ const toggleShort = 'order-side-SIDE_SELL';
 const toggleLong = 'order-side-SIDE_BUY';
 const toggleLimit = 'order-type-TYPE_LIMIT';
 const toggleMarket = 'order-type-TYPE_MARKET';
-const errorMessage = 'dealticket-error-message';
 
 const TIFlist = Object.values(Schema.OrderTimeInForce).map((value) => {
   return {
@@ -363,11 +362,11 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.wait('@Markets');
   });
 
-  it('must not place an order if wallet is not connected', () => {
+  it('must show place order button and connect wallet if wallet is not connected', () => {
     cy.getByTestId('connect-vega-wallet'); // Not connected
     cy.getByTestId('order-connect-wallet').should('exist');
-    cy.getByTestId(placeOrderBtn).should('not.exist');
-    cy.getByTestId(errorMessage).should('not.exist');
+    cy.getByTestId(placeOrderBtn).should('exist');
+    cy.getByTestId('deal-ticket-connect-wallet').should('exist');
   });
 
   it('must be able to select order direction - long/short', function () {
@@ -664,13 +663,13 @@ describe('account validation', { tags: '@regression' }, () => {
     });
 
     it('should show an error if your balance is zero', () => {
-      cy.getByTestId('place-order').should('not.be.disabled');
-      cy.getByTestId('place-order').click();
       cy.getByTestId('place-order').should('be.disabled');
       //7002-SORD-003
       cy.getByTestId('dealticket-error-message-zero-balance').should(
         'have.text',
-        'Insufficient balance. Deposit ' + 'tDAI'
+        'You need ' +
+          'tDAI' +
+          ' in your wallet to trade in this market. See all your collateral.Make a deposit'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
     });
@@ -708,7 +707,7 @@ describe('account validation', { tags: '@regression' }, () => {
       );
       cy.getByTestId('dealticket-warning-margin').should(
         'contain.text',
-        '9,999.99 tDAI currently required, 1,000.00 tDAI available'
+        '9,999.99 tDAI is currently required. You have only 1,000.00 tDAI available.Deposit tDAI'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').click();
       cy.getByTestId('dialog-content')

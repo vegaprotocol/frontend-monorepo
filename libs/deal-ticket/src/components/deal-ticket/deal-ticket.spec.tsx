@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  fireEvent,
-  render,
-  screen,
-  act,
-  waitFor,
-} from '@testing-library/react';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
@@ -15,14 +9,6 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument, addDecimal } from '@vegaprotocol/react-helpers';
-import * as utils from '../../utils';
-
-let mockHasNoBalance = false;
-jest.mock('../../hooks/use-has-no-balance', () => {
-  return {
-    useHasNoBalance: () => mockHasNoBalance,
-  };
-});
 
 const market = generateMarket();
 const marketData = generateMarketData();
@@ -146,50 +132,6 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
-  });
-
-  it('validation should be reset', async () => {
-    mockHasNoBalance = true;
-    jest.spyOn(utils, 'validateMarketState').mockReturnValue('Wrong state');
-    jest
-      .spyOn(utils, 'validateMarketTradingMode')
-      .mockReturnValue('Wrong trading mode');
-    const { rerender } = render(generateJsx());
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('place-order'));
-    });
-    await waitFor(async () => {
-      expect(
-        await screen.getByTestId('dealticket-error-message-summary')
-      ).toHaveTextContent('Wrong state');
-    });
-
-    jest.spyOn(utils, 'validateMarketState').mockReturnValue(true);
-    await act(async () => {
-      rerender(generateJsx());
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('place-order'));
-    });
-    await waitFor(async () => {
-      expect(
-        await screen.getByTestId('dealticket-error-message-zero-balance')
-      ).toHaveTextContent('Insufficient balance.');
-    });
-
-    mockHasNoBalance = false;
-    await act(async () => {
-      rerender(generateJsx());
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('place-order'));
-    });
-    await waitFor(async () => {
-      expect(
-        await screen.getByTestId('dealticket-error-message-summary')
-      ).toHaveTextContent('Wrong trading mode');
-    });
   });
 
   it('can edit deal ticket', async () => {
