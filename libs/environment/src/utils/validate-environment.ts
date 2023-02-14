@@ -89,10 +89,6 @@ export const validateEnvironment = (
     return undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    return compileErrors(
-      'Error processing the vega app environment',
-      err,
-      compileIssue
-    );
+    return compileErrors('Error processing the vega app environment', err);
   }
 };

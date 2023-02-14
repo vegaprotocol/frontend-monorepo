@@ -87,7 +87,8 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       const rawVars = compileEnvVars();
       const safeVars = EnvSchema.parse(rawVars);
       set({ ...safeVars });
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       set({
         status: 'failed',
         error: t('Error processing the Vega environemnt'),

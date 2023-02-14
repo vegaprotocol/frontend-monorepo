@@ -1,9 +1,18 @@
-import type { ZodIssue, ZodError } from 'zod';
+import type { ZodIssue } from 'zod';
+import { ZodError } from 'zod';
 
-export const compileErrors = (headline: string, error: ZodError) => {
-  return error.issues.reduce((acc, issue) => {
-    return acc + `\n  - ${compileIssue(issue)}`;
-  }, headline);
+export const compileErrors = (
+  headline: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: any
+) => {
+  if (error instanceof ZodError) {
+    return error.issues.reduce((acc, issue) => {
+      return acc + `\n  - ${compileIssue(issue)}`;
+    }, headline);
+  }
+
+  return `${headline}${error?.message ? `: ${error.message}` : ''}`;
 };
 
 const compileIssue = (issue: ZodIssue) => {
