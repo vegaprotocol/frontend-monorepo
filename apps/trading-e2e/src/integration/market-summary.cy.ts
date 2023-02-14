@@ -240,7 +240,6 @@ describe('market states not accepting orders', { tags: '@smoke' }, function () {
         cy.visit('/#/markets/market-0');
       });
       it('must display that market is not accepting orders', function () {
-        cy.getByTestId('place-order').click();
         cy.getByTestId('dealticket-error-message-summary').should(
           'have.text',
           `This market is ${marketState
