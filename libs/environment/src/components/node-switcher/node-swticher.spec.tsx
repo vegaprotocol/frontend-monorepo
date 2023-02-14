@@ -19,7 +19,7 @@ const mockEnv = (env: Partial<EnvStore>) => {
   (useEnvironment as unknown as jest.Mock).mockImplementation(() => env);
 };
 
-describe('NodeSwitcherContainer', () => {
+describe('NodeSwitcher', () => {
   it('renders with no nodes', () => {
     mockEnv({
       VEGA_ENV: Networks.TESTNET,
@@ -27,7 +27,7 @@ describe('NodeSwitcherContainer', () => {
     });
     render(<NodeSwitcher closeDialog={jest.fn()} />);
     expect(
-      screen.getByText(Networks.TESTNET.toLowerCase())
+      screen.getByText(new RegExp(Networks.TESTNET, 'i'))
     ).toBeInTheDocument();
     expect(screen.queryAllByTestId('node')).toHaveLength(0);
     expect(

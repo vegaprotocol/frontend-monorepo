@@ -41,6 +41,8 @@ const schemaObject = {
   ETH_WALLET_MNEMONIC: z.optional(z.string()),
 };
 
+// combine schema above with custom rule to ensure either
+// VEGA_URL or VEGA_CONFIG_URL are provided
 export const envSchema = z.object(schemaObject).refine(
   (data) => {
     return !(!data.VEGA_URL && !data.VEGA_CONFIG_URL);

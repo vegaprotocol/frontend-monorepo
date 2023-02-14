@@ -162,7 +162,7 @@ export const RowData = ({
         label={t('Subscription')}
         isLoading={subLoading}
         hasError={Boolean(subError)}
-        dataTestId="subscription -cell"
+        dataTestId="subscription-cell"
       >
         {getSubscriptionDisplayValue(subData?.busEvents, subError)}
       </LayoutCell>
@@ -174,21 +174,21 @@ const getResponseTimeDisplayValue = (
   responseTime?: number,
   error?: ApolloError
 ) => {
-  if (typeof responseTime === 'number') {
-    return `${Number(responseTime).toFixed(2)}ms`;
-  }
   if (error) {
     return t('n/a');
+  }
+  if (typeof responseTime === 'number') {
+    return `${Number(responseTime).toFixed(2)}ms`;
   }
   return '-';
 };
 
 const getBlockDisplayValue = (block?: number, error?: ApolloError) => {
-  if (block) {
-    return block;
-  }
   if (error) {
     return t('n/a');
+  }
+  if (block) {
+    return block;
   }
   return '-';
 };
@@ -197,11 +197,11 @@ const getSubscriptionDisplayValue = (
   events?: { id: string }[] | null,
   error?: ApolloError
 ) => {
-  if (events?.length) {
-    return t('Yes');
-  }
   if (error) {
     return t('No');
+  }
+  if (events?.length) {
+    return t('Yes');
   }
   return '-';
 };

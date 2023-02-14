@@ -1,6 +1,9 @@
 import type { ZodIssue } from 'zod';
 import { ZodError } from 'zod';
 
+/**
+ *  Makes a nice error string to be printed to the console
+ */
 export const compileErrors = (
   headline: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +19,6 @@ export const compileErrors = (
 };
 
 const compileIssue = (issue: ZodIssue) => {
-  console.log(issue.code, issue.message, issue.path.join('.'));
   switch (issue.code) {
     case 'invalid_type':
       return `NX_${issue.path[0]}: Received "${issue.received}" instead of: ${issue.expected}`;

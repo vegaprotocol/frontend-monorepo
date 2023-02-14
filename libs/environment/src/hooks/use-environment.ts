@@ -49,14 +49,12 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       set({ ...safeVars });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
+      const headline = t('Error processing the Vega environment');
       set({
         status: 'failed',
-        error: t('Error processing the Vega environemnt'),
+        error: headline,
       });
-
-      console.error(
-        compileErrors(t('Error processing the Vega environment'), err)
-      );
+      console.error(compileErrors(headline, err));
       return;
     }
 
@@ -68,7 +66,7 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       nodes = await fetchConfig(state.VEGA_CONFIG_URL);
       set({ nodes });
     } catch (err) {
-      console.warn(`could not fetch node config from ${state.VEGA_CONFIG_URL}`);
+      console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }
 
     // user has previously loaded the app and found
@@ -169,7 +167,7 @@ const testNode = async (
     }
     return null;
   } catch (err) {
-    console.warn(`tests failed for ${url}`);
+    console.warn(`Tests failed for ${url}`);
     return null;
   }
 };
@@ -188,6 +186,7 @@ const testQuery = async (client: Client) => {
   }
 };
 
+// TODO: fail test if timeout passes
 const testSubscription = (client: Client) => {
   return new Promise((resolve) => {
     const sub = client

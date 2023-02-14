@@ -2,7 +2,11 @@ import type { MockedResponse } from '@apollo/react-testing';
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { RadioGroup } from '@vegaprotocol/ui-toolkit';
-import type { StatisticsQuery } from '../../utils/__generated__/Node';
+import type {
+  BlockTimeSubscription,
+  StatisticsQuery,
+} from '../../utils/__generated__/Node';
+import { BlockTimeDocument } from '../../utils/__generated__/Node';
 import { StatisticsDocument } from '../../utils/__generated__/Node';
 import type { RowDataProps } from './row-data';
 import { BLOCK_THRESHOLD, RowData } from './row-data';
@@ -29,6 +33,22 @@ const statsQueryMock: MockedResponse<StatisticsQuery> = {
   },
 };
 
+const subMock: MockedResponse<BlockTimeSubscription> = {
+  request: {
+    query: BlockTimeDocument,
+  },
+  result: {
+    data: {
+      busEvents: [
+        {
+          __typename: 'BusEvent',
+          id: '123',
+        },
+      ],
+    },
+  },
+};
+
 const mockResponseTime = 50;
 global.performance.getEntriesByName = jest.fn().mockReturnValue([
   {
@@ -50,10 +70,11 @@ const mockHeaders = (
 
 const renderComponent = (
   props: RowDataProps,
-  queryMock: MockedResponse<StatisticsQuery>
+  queryMock: MockedResponse<StatisticsQuery>,
+  subMock: MockedResponse<BlockTimeSubscription>
 ) => {
   return (
-    <MockedProvider mocks={[queryMock]}>
+    <MockedProvider mocks={[queryMock, subMock, subMock, subMock]}>
       <RadioGroup>
         {/* Radio group required as radio is being render in isolation */}
         <RowData {...props} />
@@ -72,7 +93,7 @@ describe('RowData', () => {
 
   it('radio button enabled after stats query successful', async () => {
     mockHeaders(props.url);
-    render(renderComponent(props, statsQueryMock));
+    render(renderComponent(props, statsQueryMock, subMock));
 
     // radio should be disabled until query resolves
     expect(
@@ -88,10 +109,11 @@ describe('RowData', () => {
       'Checking'
     );
     await waitFor(() => {
+      expect(screen.getByTestId('block-height-cell')).toHaveTextContent('100');
       expect(screen.getByTestId('response-time-cell')).toHaveTextContent(
         mockResponseTime.toFixed(2) + 'ms'
       );
-      expect(screen.getByTestId('block-height-cell')).toHaveTextContent('100');
+      expect(screen.getByTestId('subscription-cell')).toHaveTextContent('Yes');
       expect(
         screen.getByRole('radio', {
           checked: false,
@@ -111,7 +133,14 @@ describe('RowData', () => {
       error: new Error('failed'),
     };
 
-    render(renderComponent(props, failedQueryMock));
+    const failedSubMock: MockedResponse<BlockTimeSubscription> = {
+      request: {
+        query: BlockTimeDocument,
+      },
+      error: new Error('failed'),
+    };
+
+    render(renderComponent(props, failedQueryMock, failedSubMock));
 
     // radio should be disabled until query resolves
     expect(
@@ -129,10 +158,12 @@ describe('RowData', () => {
     await waitFor(() => {
       const responseCell = screen.getByTestId('response-time-cell');
       const blockHeightCell = screen.getByTestId('block-height-cell');
+      const subscriptionCell = screen.getByTestId('subscription-cell');
       expect(responseCell).toHaveTextContent('n/a');
       expect(responseCell).toHaveClass('text-danger');
       expect(blockHeightCell).toHaveTextContent('n/a');
       expect(blockHeightCell).toHaveClass('text-danger');
+      expect(subscriptionCell).toHaveTextContent('No');
       expect(
         screen.getByRole('radio', {
           checked: false,
@@ -149,7 +180,8 @@ describe('RowData', () => {
     const { rerender } = render(
       renderComponent(
         { ...props, highestBlock: blockHeight + BLOCK_THRESHOLD },
-        statsQueryMock
+        statsQueryMock,
+        subMock
       )
     );
 
@@ -166,7 +198,8 @@ describe('RowData', () => {
     rerender(
       renderComponent(
         { ...props, highestBlock: blockHeight + BLOCK_THRESHOLD + 1 },
-        statsQueryMock
+        statsQueryMock,
+        subMock
       )
     );
 
@@ -176,7 +209,7 @@ describe('RowData', () => {
   it('disables radio button if url is invalid', () => {
     mockHeaders(props.url, { blockHeight: 100 });
 
-    render(renderComponent(props, statsQueryMock));
+    render(renderComponent(props, statsQueryMock, subMock));
 
     expect(
       screen.getByRole('radio', {
@@ -193,7 +226,8 @@ describe('RowData', () => {
           ...props,
           id: CUSTOM_NODE_KEY,
         },
-        statsQueryMock
+        statsQueryMock,
+        subMock
       )
     );
     expect(
@@ -210,7 +244,8 @@ describe('RowData', () => {
     render(
       renderComponent(
         { ...props, onBlockHeight: mockOnBlockHeight },
-        statsQueryMock
+        statsQueryMock,
+        subMock
       )
     );
 

@@ -19,9 +19,14 @@ jest.mock('@vegaprotocol/apollo-client', () => ({
           },
         },
       }),
+    subscribe: () => ({
+      // eslint-disable-next-line
+      subscribe: (obj: any) => {
+        obj.next();
+      },
+    }),
   }),
 }));
-
 jest.mock('zustand');
 
 global.fetch = jest.fn();
@@ -115,6 +120,8 @@ describe('useEnvironment', () => {
   });
 
   it('sets error if environment is invalid', async () => {
+    const error = console.error;
+    console.error = noop;
     process.env['NX_VEGA_ENV'] = undefined; // VEGA_ENV is required by zod schema
     const { result } = setup();
     await act(async () => {
@@ -122,11 +129,14 @@ describe('useEnvironment', () => {
     });
     expect(result.current).toMatchObject({
       status: 'failed',
-      error: 'Environment validation failed',
+      error: 'Error processing the Vega environment',
     });
+    console.error = error;
   });
 
   it('errors if neither VEGA_URL or VEGA_CONFIG_URL are set', async () => {
+    const error = console.error;
+    console.error = noop;
     process.env['NX_VEGA_ENV'] = undefined;
     process.env['NX_VEGA_URL'] = undefined;
     const { result } = setup();
@@ -136,6 +146,7 @@ describe('useEnvironment', () => {
     expect(result.current).toMatchObject({
       status: 'failed',
     });
+    console.error = error;
   });
 
   it('allows for undefined VEGA_CONFIG_URL if VEGA_URL is set', async () => {
@@ -213,6 +224,12 @@ describe('useEnvironment', () => {
   });
 
   it('uses stored url', async () => {
+    const configUrl = 'https://vega.xyz/testnet-config.json';
+    process.env['NX_VEGA_CONFIG_URL'] = configUrl;
+    // @ts-ignore setup mock fetch for config url
+    global.fetch.mockImplementation(
+      setupFetch({ hosts: ['http://foo.bar.com'] })
+    );
     const url = 'https://api.n00.foo.com';
     localStorage.setItem('vega_url', url);
     const { result } = setup();
