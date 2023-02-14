@@ -30,6 +30,7 @@ export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
 
 const STORAGE_KEY = 'vega_url';
+const SUBSCRIPTION_TIMEOUT = 3000;
 
 export const useEnvironment = create<EnvStore>((set, get) => ({
   ...compileEnvVars(),
@@ -186,7 +187,6 @@ const testQuery = async (client: Client) => {
   }
 };
 
-// TODO: fail test if timeout passes
 const testSubscription = (client: Client) => {
   return new Promise((resolve) => {
     const sub = client
@@ -204,6 +204,11 @@ const testSubscription = (client: Client) => {
           sub.unsubscribe();
         },
       });
+
+    setTimeout(() => {
+      resolve(false);
+      sub.unsubscribe();
+    }, SUBSCRIPTION_TIMEOUT);
   });
 };
 
