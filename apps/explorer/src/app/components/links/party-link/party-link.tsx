@@ -19,7 +19,7 @@ const PartyLink = ({ id, ...props }: PartyLinkProps) => {
   // The party page does not handle this nicely, so in this case we render the word 'Network'
   if (id === SPECIAL_CASE_NETWORK || id === SPECIAL_CASE_NETWORK_ID) {
     return (
-      <span className="font-mono" data-testId="network">
+      <span className="font-mono" data-testid="network">
         {t('Network')}
       </span>
     );
@@ -29,7 +29,7 @@ const PartyLink = ({ id, ...props }: PartyLinkProps) => {
   // the ID as it was given to us
   if (!isValidPartyId(id)) {
     return (
-      <span className="font-mono" data-testId="invalid-party">
+      <span className="font-mono" data-testid="invalid-party">
         {id}
       </span>
     );

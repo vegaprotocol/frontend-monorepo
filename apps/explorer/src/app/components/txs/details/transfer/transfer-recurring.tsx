@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type { components } from '../../../../../types/explorer';
+import EpochOverview from '../../../epoch-overview/epoch';
 import { AssetLink, MarketLink } from '../../../links';
 
 interface TransferRecurringProps {
@@ -16,10 +17,12 @@ export function TransferRecurring({ transfer }: TransferRecurringProps) {
   return (
     <ul>
       <li>
-        <strong>{t('Start epoch')}</strong>: {transfer.startEpoch}
+        <strong>{t('Starting epoch')}</strong>:{' '}
+        <EpochOverview id={transfer.startEpoch} />
       </li>
       <li>
-        <strong>{t('End epoch')}</strong>: {transfer.endEpoch}
+        <strong>{t('Ending epoch')}</strong>:{' '}
+        <EpochOverview id={transfer.endEpoch} />
       </li>
       <li>
         <strong>{t('Factor')}</strong>: {transfer.factor}

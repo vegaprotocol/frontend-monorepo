@@ -8,13 +8,12 @@ type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = T | U extends object
   ? (Without<T, U> & U) | (Without<U, T> & T)
   : T | U;
-/* eslint-disable @typescript-eslint/no-explicit-any */
 type OneOf<T extends any[]> = T extends [infer Only]
   ? Only
   : T extends [infer A, infer B, ...infer Rest]
   ? OneOf<[XOR<A, B>, ...Rest]>
   : never;
-/* eslint-enable @typescript-eslint/no-explicit-any */
+
 export interface paths {
   '/info': {
     /**
@@ -40,8 +39,6 @@ export interface paths {
   };
 }
 
-export type webhooks = Record<string, never>;
-
 export interface components {
   schemas: {
     /**
@@ -66,7 +63,7 @@ export interface components {
       | 'OPERATOR_LESS_THAN'
       | 'OPERATOR_LESS_THAN_OR_EQUAL';
     /**
-     * The supported Oracle sources
+     * The supported oracle sources
      * @description - ORACLE_SOURCE_UNSPECIFIED: The default value
      *  - ORACLE_SOURCE_OPEN_ORACLE: Specifies that the payload will be base64 encoded JSON conforming to the Open Oracle standard
      *  - ORACLE_SOURCE_JSON: Specifies that the payload will be base64 encoded JSON, but does not specify the shape of the data
@@ -174,7 +171,7 @@ export interface components {
       readonly '@type'?: string;
       [key: string]: unknown | undefined;
     };
-    /** Used announce a node as a new pending validator */
+    /** Used to announce a node as a new pending validator */
     readonly v1AnnounceNode: {
       /** AvatarURL of the validator */
       readonly avatarUrl?: string;
@@ -269,13 +266,13 @@ export interface components {
     readonly v1ETHAddress: {
       readonly address?: string;
     };
-    /** A transaction to allow validator to rotate their ethereum keys */
+    /** A transaction to allow a validator to rotate their ethereum keys */
     readonly v1EthereumKeyRotateSubmission: {
       /** Currently used public address */
       readonly currentAddress?: string;
       /** Signature that can be verified using the new ethereum address */
       readonly ethereumSignature?: components['schemas']['v1Signature'];
-      /** The new adress to rotate to */
+      /** The new address to rotate to */
       readonly newAddress?: string;
       /** Ethereum public key to use as a submitter to allow automatic signature generation */
       readonly submitterAddress?: string;
@@ -309,7 +306,9 @@ export interface components {
       readonly version?: string;
     };
     readonly v1InputData: {
+      /** A command used by a node operator to announce its node as a pending validator */
       readonly announceNode?: components['schemas']['v1AnnounceNode'];
+      /** A command to submit a batch of order instructions to a market */
       readonly batchMarketInstructions?: components['schemas']['v1BatchMarketInstructions'];
       /**
        * Format: uint64
@@ -323,17 +322,35 @@ export interface components {
        * `block_height` prevents replay attacks in conjunction with `nonce` (see above).
        */
       readonly blockHeight?: string;
+      /** A command to request cancelling a recurring transfer */
       readonly cancelTransfer?: components['schemas']['v1CancelTransfer'];
+      /**
+       * Command used by a validator to submit an event forwarded to the Vega network to provide information
+       * on events happening on other networks, to be used by a foreign chain
+       * to recognise a decision taken by the Vega network
+       */
       readonly chainEvent?: components['schemas']['v1ChainEvent'];
+      /** Command to delegate tokens to a validator */
       readonly delegateSubmission?: components['schemas']['v1DelegateSubmission'];
+      /** Command used by a validator to allow given validator to rotate their Ethereum keys */
       readonly ethereumKeyRotateSubmission?: components['schemas']['v1EthereumKeyRotateSubmission'];
+      /** Command used by a validator to submit signatures to a smart contract */
       readonly issueSignatures?: components['schemas']['v1IssueSignatures'];
+      /** Command used by a validator to allow given validator to rotate their Vega keys */
       readonly keyRotateSubmission?: components['schemas']['v1KeyRotateSubmission'];
+      /** Command to request amending a liquidity commitment */
       readonly liquidityProvisionAmendment?: components['schemas']['v1LiquidityProvisionAmendment'];
+      /** Command to request cancelling a liquidity commitment */
       readonly liquidityProvisionCancellation?: components['schemas']['v1LiquidityProvisionCancellation'];
+      /** Command to submit a liquidity commitment */
       readonly liquidityProvisionSubmission?: components['schemas']['v1LiquidityProvisionSubmission'];
+      /** Command used by a validator to submit a signature, to be used by a foreign chain to recognise a decision taken by the Vega network */
       readonly nodeSignature?: components['schemas']['v1NodeSignature'];
-      /** Validator commands */
+      /**
+       * Validator commands
+       * Command used by a validator when a node votes for validating that a given resource exists or is valid,
+       * for example, an ERC20 deposit is valid and exists on ethereum
+       */
       readonly nodeVote?: components['schemas']['v1NodeVote'];
       /**
        * Format: uint64
@@ -349,30 +366,50 @@ export interface components {
        * slightly differently, causing a different hash.
        */
       readonly nonce?: string;
-      /** Oracles */
+      /**
+       * Oracles
+       * Command to submit new oracle data from third party providers
+       */
       readonly oracleDataSubmission?: components['schemas']['v1OracleDataSubmission'];
+      /** Command to amend an order */
       readonly orderAmendment?: components['schemas']['v1OrderAmendment'];
+      /**
+       * User commands
+       * Command to cancel an order
+       */
       readonly orderCancellation?: components['schemas']['v1OrderCancellation'];
-      /** User commands */
+      /** A command for submitting an order */
       readonly orderSubmission?: components['schemas']['v1OrderSubmission'];
+      /** Command to submit a governance proposal */
       readonly proposalSubmission?: components['schemas']['v1ProposalSubmission'];
+      /** Command used by a validator to propose a protocol upgrade */
       readonly protocolUpgradeProposal?: components['schemas']['v1ProtocolUpgradeProposal'];
+      /** Command used by a validator to submit a floating point value */
       readonly stateVariableProposal?: components['schemas']['v1StateVariableProposal'];
+      /** Command to submit a transfer */
       readonly transfer?: components['schemas']['commandsv1Transfer'];
+      /** Command to remove tokens delegated to a validator */
       readonly undelegateSubmission?: components['schemas']['v1UndelegateSubmission'];
+      /**
+       * Command used by a validator to signal they are still online and validating blocks
+       * or ready to validate blocks when they are still a pending validator
+       */
       readonly validatorHeartbeat?: components['schemas']['v1ValidatorHeartbeat'];
+      /** Command to submit a vote on a governance proposal */
       readonly voteSubmission?: components['schemas']['v1VoteSubmission'];
+      /** Command to submit a withdrawal */
       readonly withdrawSubmission?: components['schemas']['v1WithdrawSubmission'];
     };
+    /** A transaction for a validator to submit signatures to a smart contract */
     readonly v1IssueSignatures: {
       /** The kind of signatures to generate, namely for whether a signer is being added or removed */
       readonly kind?: components['schemas']['v1NodeSignatureKind'];
-      /** The ethereum address which will submit the signatures to the smart-contract */
+      /** The ethereum address which will submit the signatures to the smart contract */
       readonly submitter?: string;
-      /** The ID of the node that will be signed in or out of the smartcontract */
+      /** The ID of the node that will be signed in or out of the smart contract */
       readonly validatorNodeId?: string;
     };
-    /** A transaction to allow validator to rotate their Vega keys */
+    /** A transaction to allow a validator to rotate their Vega keys */
     readonly v1KeyRotateSubmission: {
       /** Hash of currently used public key */
       readonly currentPubKeyHash?: string;
@@ -496,8 +533,8 @@ export interface components {
     /** Specific details for a one off transfer */
     readonly v1OneOffTransfer: {
       /**
-       * A unix timestamp in second. Time at which the
-       * transfer should be delivered in the to account
+       * A unix timestamp in seconds. Time at which the
+       * transfer should be delivered into the To account
        * Format: int64
        */
       readonly deliverOn?: string;
@@ -512,7 +549,7 @@ export interface components {
       readonly payload?: string;
       /**
        * @description The source from which the data is coming from. Must be base64 encoded.
-       * Oracle data a type of external data source data.
+       * Oracle data is a type of external data source data.
        */
       readonly source?: components['schemas']['OracleDataSubmissionOracleSource'];
     };
@@ -603,7 +640,7 @@ export interface components {
       /** Type for the order, required field - See `Order.Type` */
       readonly type?: components['schemas']['vegaOrderType'];
     };
-    /** @description PropertyKey describes the property key contained in an data source data. */
+    /** @description PropertyKey describes the property key contained in data source data. */
     readonly v1PropertyKey: {
       /** @description name is the name of the property. */
       readonly name?: string;
@@ -650,6 +687,7 @@ export interface components {
       /** Proposal configuration and the actual change that is meant to be executed when proposal is enacted */
       readonly terms?: components['schemas']['vegaProposalTerms'];
     };
+    /** A transaction for a validator to suggest a protocol upgrade */
     readonly v1ProtocolUpgradeProposal: {
       /**
        * The block height at which to perform the upgrade
@@ -708,6 +746,7 @@ export interface components {
        */
       readonly pubKey?: components['schemas']['v1PubKey'];
     };
+    /** A transaction for a validator to submit a floating point value */
     readonly v1StateVariableProposal: {
       /** The state value proposal details */
       readonly proposal?: components['schemas']['vegaStateValueProposal'];
@@ -969,7 +1008,7 @@ export interface components {
       readonly sourceEthereumAddress?: string;
       /** The Vega network internal identifier of the asset */
       readonly vegaAssetId?: string;
-      /** The updated withdraw threshold */
+      /** The updated withdrawal threshold */
       readonly withdrawThreshold?: string;
     };
     /** An asset allow-listing for an ERC20 token */
@@ -1064,7 +1103,7 @@ export interface components {
       /** The ethereum address of the old signer */
       readonly oldSigner?: string;
     };
-    /** The threshold have been updated on the multisigcontrol */
+    /** The threshold has been updated on the multisig control */
     readonly vegaERC20ThresholdSet: {
       /**
        * Format: int64
@@ -1078,13 +1117,13 @@ export interface components {
        * Format: int64
        */
       readonly newThreshold?: number;
-      /** The nonce create by the vega network */
+      /** The nonce created by the Vega network */
       readonly nonce?: string;
     };
     readonly vegaERC20Update: {
       /**
        * The lifetime limits deposit per address.
-       * This is will be interpreted against the asset decimals.
+       * This will be interpreted against the asset decimals.
        * note: this is a temporary measure that can be changed by governance
        */
       readonly lifetimeLimit?: string;
@@ -1237,7 +1276,7 @@ export interface components {
        * price levels over which automated liquidity provision orders will be deployed
        */
       readonly lpPriceRange?: string;
-      /** Optional new market meta data, tags */
+      /** Optional new market metadata, tags */
       readonly metadata?: readonly string[];
       /**
        * Decimal places for order sizes, sets what size the smallest order / position on the market can be
