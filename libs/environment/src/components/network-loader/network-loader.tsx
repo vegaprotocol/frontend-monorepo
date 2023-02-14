@@ -4,7 +4,6 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
 import { createClient } from '@vegaprotocol/apollo-client';
-import { isValidUrl } from '../node-switcher-2';
 
 type NetworkLoaderProps = {
   children?: ReactNode;

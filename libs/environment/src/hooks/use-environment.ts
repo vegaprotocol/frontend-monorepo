@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
+import { isValidUrl, LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';
@@ -11,7 +11,6 @@ import { BlockTimeDocument } from '../utils/__generated__/Node';
 import { StatisticsDocument } from '../utils/__generated__/Node';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
-import { isValidUrl } from '../components';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {

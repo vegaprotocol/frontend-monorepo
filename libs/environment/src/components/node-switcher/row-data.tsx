@@ -1,6 +1,6 @@
 import type { ApolloError } from '@apollo/client';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
-import { t } from '@vegaprotocol/react-helpers';
+import { isValidUrl, t } from '@vegaprotocol/react-helpers';
 import { Radio } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';
@@ -9,7 +9,6 @@ import {
   useStatisticsQuery,
 } from '../../utils/__generated__/Node';
 import { LayoutCell } from './layout-cell';
-import { isValidUrl } from './node-switcher';
 
 const POLL_INTERVAL = 1000;
 export const BLOCK_THRESHOLD = 3;

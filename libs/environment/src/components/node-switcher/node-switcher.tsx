@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { isValidUrl, t } from '@vegaprotocol/react-helpers';
 import {
   Button,
   ButtonLink,
@@ -234,14 +234,4 @@ const CustomRowWrapper = ({
       )}
     </LayoutRow>
   );
-};
-
-export const isValidUrl = (url?: string) => {
-  if (!url) return false;
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
 };

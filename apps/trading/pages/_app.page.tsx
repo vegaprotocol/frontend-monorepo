@@ -1,11 +1,9 @@
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   useEagerConnect as useVegaEagerConnect,
-  VegaWalletProvider,
   useVegaTransactionManager,
   useVegaTransactionUpdater,
   useVegaWallet,
@@ -18,14 +16,11 @@ import {
 } from '@vegaprotocol/web3';
 import {
   envTriggerMapping,
-  NetworkLoader,
   Networks,
-  NodeGuard,
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
 } from '@vegaprotocol/environment';
-import { Web3Provider } from '../components/app-loader';
 import './styles.css';
 import './gen-styles.scss';
 import { useGlobalStore, usePageTitleStore } from '../stores';
@@ -37,10 +32,8 @@ import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
-import type { InMemoryCacheConfig } from '@apollo/client';
 import classNames from 'classnames';
-import { AppFailure } from '../components/app-loader/app-failure';
-import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
+import { AppLoader } from '../components/app-loader';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -109,22 +102,8 @@ function AppBody({ Component }: AppProps) {
   );
 }
 
-const DynamicLoader = dynamic(
-  () => import('../components/preloader/preloader'),
-  {
-    loading: () => <>Loading...</>,
-  }
-);
-
 function VegaTradingApp(props: AppProps) {
-  const { status, error, VEGA_URL, MAINTENANCE_PAGE } = useEnvironment(
-    (store) => ({
-      status: store.status,
-      error: store.error,
-      VEGA_URL: store.VEGA_URL,
-      MAINTENANCE_PAGE: store.MAINTENANCE_PAGE,
-    })
-  );
+  const status = useEnvironment((store) => store.status);
   const { nodeSwitcherOpen, setNodeSwitcher } = useGlobalStore((store) => ({
     nodeSwitcherOpen: store.nodeSwitcherDialog,
     setNodeSwitcher: (open: boolean) =>
@@ -132,10 +111,6 @@ function VegaTradingApp(props: AppProps) {
   }));
 
   useInitializeEnv();
-
-  if (MAINTENANCE_PAGE) {
-    return <MaintenancePage />;
-  }
 
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
@@ -145,24 +120,9 @@ function VegaTradingApp(props: AppProps) {
 
   return (
     <HashRouter>
-      <NetworkLoader
-        cache={cacheConfig}
-        skeleton={<DynamicLoader />}
-        failure={
-          <AppFailure title={t('Could not initialize app')} error={error} />
-        }
-      >
-        <NodeGuard
-          skeleton={<DynamicLoader />}
-          failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
-        >
-          <Web3Provider>
-            <VegaWalletProvider>
-              <AppBody {...props} />
-            </VegaWalletProvider>
-          </Web3Provider>
-        </NodeGuard>
-      </NetworkLoader>
+      <AppLoader>
+        <AppBody {...props} />
+      </AppLoader>
       <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </HashRouter>
   );
@@ -181,52 +141,4 @@ const MaybeConnectEagerly = () => {
     connect(Connectors['view']);
   }
   return null;
-};
-
-const cacheConfig: InMemoryCacheConfig = {
-  typePolicies: {
-    Account: {
-      keyFields: false,
-      fields: {
-        balanceFormatted: {},
-      },
-    },
-    Instrument: {
-      keyFields: false,
-    },
-    TradableInstrument: {
-      keyFields: ['instrument'],
-    },
-    Product: {
-      keyFields: ['settlementAsset', ['id']],
-    },
-    MarketData: {
-      keyFields: ['market', ['id']],
-    },
-    Node: {
-      keyFields: false,
-    },
-    Withdrawal: {
-      fields: {
-        pendingOnForeignChain: {
-          read: (isPending = false) => isPending,
-        },
-      },
-    },
-    ERC20: {
-      keyFields: ['contractAddress'],
-    },
-    PositionUpdate: {
-      keyFields: false,
-    },
-    AccountUpdate: {
-      keyFields: false,
-    },
-    Party: {
-      keyFields: false,
-    },
-    Fees: {
-      keyFields: false,
-    },
-  },
 };
