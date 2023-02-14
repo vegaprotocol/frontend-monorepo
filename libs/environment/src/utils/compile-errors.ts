@@ -16,6 +16,7 @@ export const compileErrors = (
 };
 
 const compileIssue = (issue: ZodIssue) => {
+  console.log(issue.code, issue.message, issue.path.join('.'));
   switch (issue.code) {
     case 'invalid_type':
       return `NX_${issue.path[0]}: Received "${issue.received}" instead of: ${issue.expected}`;
@@ -24,6 +25,6 @@ const compileIssue = (issue: ZodIssue) => {
         issue.received
       }" instead of: ${issue.options.join(' | ')}`;
     default:
-      return `NX_${issue.path.join('.')}: ${issue.message}`;
+      return `${issue.path.join('.')} ${issue.message}`;
   }
 };

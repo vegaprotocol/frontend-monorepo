@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { isValidUrl, LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { create } from 'zustand';
@@ -9,14 +8,15 @@ import type {
 } from '../utils/__generated__/Node';
 import { BlockTimeDocument } from '../utils/__generated__/Node';
 import { StatisticsDocument } from '../utils/__generated__/Node';
-import { Networks } from '../types';
+import type { Environment, Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
+import { envSchema } from '../utils/validate-environment';
+import { configSchema } from '../utils/validate-configuration';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
   [node: string]: Client;
 };
-type EnvVars = z.infer<typeof EnvSchema>;
 type EnvState = {
   nodes: string[];
   status: 'default' | 'pending' | 'success' | 'failed';
@@ -26,50 +26,10 @@ type Actions = {
   setUrl: (url: string) => void;
   initialize: () => Promise<void>;
 };
-export type Env = EnvVars & EnvState;
+export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
 
 const STORAGE_KEY = 'vega_url';
-
-const EnvSchema = z.object({
-  VEGA_URL: z.string().url().optional(),
-  VEGA_WALLET_URL: z.string().optional(),
-  VEGA_CONFIG_URL: z.string().optional(),
-  GIT_BRANCH: z.string().optional(),
-  GIT_COMMIT_HASH: z.string().optional(),
-  GIT_ORIGIN_URL: z.string().optional(),
-  GITHUB_FEEDBACK_URL: z.string().optional(),
-  VEGA_ENV: z.nativeEnum(Networks),
-  VEGA_EXPLORER_URL: z.string().optional(),
-  VEGA_TOKEN_URL: z.string().optional(),
-  VEGA_DOCS_URL: z.string().optional(),
-  VEGA_NETWORKS: z
-    .object(
-      Object.keys(Networks).reduce(
-        (acc, env) => ({
-          ...acc,
-          [env]: z.optional(z.string()),
-        }),
-        {}
-      ) as Record<Networks, z.ZodOptional<z.ZodString>>
-    )
-    .strict({
-      message: `All keys in NX_VEGA_NETWORKS must represent a valid environment: ${Object.keys(
-        Networks
-      ).join(' | ')}`,
-    }),
-  ETHEREUM_PROVIDER_URL: z.string().url({
-    message:
-      'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
-  }),
-  ETHERSCAN_URL: z.string().url({
-    message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
-  }),
-  HOSTED_WALLET_URL: z.string().optional(),
-  MAINTENANCE_PAGE: z.boolean().optional(),
-  ETH_LOCAL_PROVIDER_URL: z.string().optional(),
-  ETH_WALLET_MNEMONIC: z.string().optional(),
-});
 
 export const useEnvironment = create<EnvStore>((set, get) => ({
   ...compileEnvVars(),
@@ -85,7 +45,7 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
 
     try {
       const rawVars = compileEnvVars();
-      const safeVars = EnvSchema.parse(rawVars);
+      const safeVars = envSchema.parse(rawVars);
       set({ ...safeVars });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -182,15 +142,11 @@ export const useInitializeEnv = () => {
   }, [status, initialize]);
 };
 
-export const ConfigSchema = z.object({
-  hosts: z.array(z.string()),
-});
-
 const fetchConfig = async (url?: string) => {
   if (!url) return [];
   const res = await fetch(url);
   const cfg = await res.json();
-  const result = ConfigSchema.parse(cfg);
+  const result = configSchema.parse(cfg);
   return result.hosts;
 };
 
