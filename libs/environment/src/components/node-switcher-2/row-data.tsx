@@ -25,29 +25,38 @@ export const RowData = ({
 }: RowDataProps) => {
   const [time, setTime] = useState<number>();
   // no use of data here as we need the data nodes reference to block height
-  const { data, error, loading } = useStatisticsQuery({
-    pollInterval: POLL_INTERVAL,
-    // fix for pollInterval
-    // https://github.com/apollographql/apollo-client/issues/9819
-    ssr: false,
-  });
+  const { data, error, loading, startPolling, stopPolling } =
+    useStatisticsQuery({
+      pollInterval: POLL_INTERVAL,
+      // fix for pollInterval
+      // https://github.com/apollographql/apollo-client/issues/9819
+      ssr: false,
+    });
   const headerStore = useHeaderStore();
   const headers = headerStore[url];
 
-  // useEffect(() => {
-  //   const handleStartPoll = () => startPolling(POLL_INTERVAL);
-  //   const handleStopPoll = () => stopPolling();
+  useEffect(() => {
+    // stop polling if row has errored
+  }, [error, stopPolling]);
 
-  //   // TODO: possibly remove blur focus handling.
+  useEffect(() => {
+    const handleStartPoll = () => startPolling(POLL_INTERVAL);
+    const handleStopPoll = () => stopPolling();
 
-  //   window.addEventListener('blur', handleStopPoll);
-  //   window.addEventListener('focus', handleStartPoll);
-  //   handleStartPoll();
-  //   return () => {
-  //     window.removeEventListener('blur', handleStopPoll);
-  //     window.removeEventListener('focus', handleStartPoll);
-  //   };
-  // }, [startPolling, stopPolling]);
+    window.addEventListener('blur', handleStopPoll);
+    window.addEventListener('focus', handleStartPoll);
+
+    handleStartPoll();
+
+    if (error) {
+      stopPolling();
+    }
+
+    return () => {
+      window.removeEventListener('blur', handleStopPoll);
+      window.removeEventListener('focus', handleStartPoll);
+    };
+  }, [startPolling, stopPolling, error]);
 
   useEffect(() => {
     if (!isValidUrl(url)) return;
@@ -122,7 +131,7 @@ export const RowData = ({
       )}
       <LayoutCell
         label={t('Response time')}
-        isLoading={loading || time === undefined}
+        isLoading={!error && loading}
         hasError={Boolean(error)}
         dataTestId="response-time-cell"
       >

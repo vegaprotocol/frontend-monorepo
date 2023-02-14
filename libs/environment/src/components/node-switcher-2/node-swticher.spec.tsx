@@ -16,8 +16,7 @@ jest.mock('./apollo-wrapper', () => ({
 global.performance.getEntriesByName = jest.fn().mockReturnValue([]);
 
 const mockEnv = (env: Partial<EnvStore>) => {
-  // @ts-ignore typescript not playing nice with mocks
-  useEnvironment.mockImplementation(() => env);
+  (useEnvironment as unknown as jest.Mock).mockImplementation(() => env);
 };
 
 describe('NodeSwitcherContainer', () => {
@@ -104,17 +103,10 @@ describe('NodeSwitcherContainer', () => {
     ).toHaveAttribute('disabled');
   });
 
-  it.todo('disables nodes based on state');
-  it.todo('allows connecting to a valid node');
-
   it('allows setting a custom node', () => {
     const mockSetUrl = jest.fn();
     const mockUrl = 'https://custom.url';
-    const nodes = [
-      'https://n00.api.vega.xyz',
-      'https://n01.api.vega.xyz',
-      'https://n02.api.vega.xyz',
-    ];
+    const nodes = ['https://n00.api.vega.xyz'];
     mockEnv({
       VEGA_ENV: Networks.TESTNET,
       nodes,
@@ -132,18 +124,22 @@ describe('NodeSwitcherContainer', () => {
         value: mockUrl,
       },
     });
+
+    expect(screen.getByRole('textbox')).toHaveValue(mockUrl);
     expect(screen.getByRole('button', { name: 'Check' })).not.toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }));
+
+    const customRow = within(screen.getByTestId('custom-row'));
+    expect(customRow.getByTestId('block-height-cell')).toBeInTheDocument();
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Connect to this node' })
     );
-
     expect(mockSetUrl).toHaveBeenCalledWith(mockUrl);
   });
 
-  it.todo('disables a custom node');
-
-  it('disables a custom with an invalid url', () => {
+  it('disables a custom node with an invalid url', () => {
     const mockSetUrl = jest.fn();
     const mockUrl = 'invalid-url';
     const nodes = [
@@ -173,5 +169,6 @@ describe('NodeSwitcherContainer', () => {
       })
     ).toBeDisabled();
   });
+
   it.todo('displays errors');
 });

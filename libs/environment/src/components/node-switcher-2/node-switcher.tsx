@@ -95,6 +95,9 @@ export const NodeSwitcherContainer = ({
             </span>
             {t(' chain ID')}
           </p>
+          <p className="text-lg mt-4">
+            {t('Select a GraphQL node to connect to:')}
+          </p>
           <RadioGroup
             value={nodeRadio}
             onChange={(value) => setNodeRadio(value)}
@@ -154,6 +157,15 @@ export const NodeSwitcherContainer = ({
   );
 };
 
+interface CustomRowWrapperProps {
+  inputText: string;
+  setInputText: (text: string) => void;
+  nodes: string[];
+  highestBlock: number | null;
+  nodeRadio: string;
+  onBlockHeight: (blockHeight: number) => void;
+}
+
 const CustomRowWrapper = ({
   inputText,
   setInputText,
@@ -161,20 +173,13 @@ const CustomRowWrapper = ({
   highestBlock,
   nodeRadio,
   onBlockHeight,
-}: {
-  inputText: string;
-  setInputText: (text: string) => void;
-  nodes: string[];
-  highestBlock: number | null;
-  nodeRadio: string;
-  onBlockHeight: (blockHeight: number) => void;
-}) => {
+}: CustomRowWrapperProps) => {
   const [displayCustom, setDisplayCustom] = useState(false);
-  const showInput = nodeRadio === CUSTOM_NODE_KEY || nodes.length <= 0;
   const [error, setError] = useState<string | null>(null);
+  const showInput = nodeRadio === CUSTOM_NODE_KEY || nodes.length <= 0;
 
   return (
-    <LayoutRow>
+    <LayoutRow dataTestId="custom-row">
       <div className="flex w-full mb-2">
         {nodes.length > 0 && (
           <Radio

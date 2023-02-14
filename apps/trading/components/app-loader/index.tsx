@@ -9,6 +9,7 @@ import {
   useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -64,6 +65,7 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
         if (!d) return true;
         return d.length < 1;
       }}
+      noDataMessage={t('Could not fetch Ethereum configuration')}
     >
       <Web3ProviderInternal connectors={connectors}>
         <>{children}</>
