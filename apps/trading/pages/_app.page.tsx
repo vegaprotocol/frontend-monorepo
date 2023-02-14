@@ -21,7 +21,7 @@ import {
   NetworkLoader,
   Networks,
   NodeGuard,
-  NodeSwitcher,
+  NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
 } from '@vegaprotocol/environment';
@@ -163,7 +163,7 @@ function VegaTradingApp(props: AppProps) {
           </Web3Provider>
         </NodeGuard>
       </NetworkLoader>
-      <NodeSwitcher open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
+      <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </HashRouter>
   );
 }

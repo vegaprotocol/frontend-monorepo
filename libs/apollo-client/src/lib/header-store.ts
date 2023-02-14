@@ -6,7 +6,7 @@ export interface HeaderEntry {
 }
 
 type HeaderStore = {
-  [url: string]: HeaderEntry;
+  [url: string]: HeaderEntry | undefined;
 };
 
 export const useHeaderStore = create<HeaderStore>(() => ({}));

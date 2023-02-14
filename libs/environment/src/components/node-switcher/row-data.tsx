@@ -1,3 +1,4 @@
+import type { ApolloError } from '@apollo/client';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { t } from '@vegaprotocol/react-helpers';
 import { Radio } from '@vegaprotocol/ui-toolkit';
@@ -7,7 +8,7 @@ import {
   useBlockTimeSubscription,
   useStatisticsQuery,
 } from '../../utils/__generated__/Node';
-import { LayoutCell } from '../node-switcher/layout-cell';
+import { LayoutCell } from './layout-cell';
 import { isValidUrl } from './node-switcher';
 
 const POLL_INTERVAL = 1000;
@@ -148,7 +149,7 @@ export const RowData = ({
         hasError={Boolean(error)}
         dataTestId="response-time-cell"
       >
-        {error ? 'n/a' : time ? time.toFixed(2) + 'ms' : '-'}
+        {getResponseTimeDisplayValue(time, error)}
       </LayoutCell>
       <LayoutCell
         label={t('Block')}
@@ -156,7 +157,7 @@ export const RowData = ({
         hasError={getHasError()}
         dataTestId="block-height-cell"
       >
-        {error ? 'n/a' : headers?.blockHeight || '-'}
+        {getBlockDisplayValue(headers?.blockHeight, error)}
       </LayoutCell>
       <LayoutCell
         label={t('Subscription')}
@@ -164,20 +165,44 @@ export const RowData = ({
         hasError={Boolean(subError)}
         dataTestId="subscription -cell"
       >
-        {getSubscriptionDisplayValue(subData?.busEvents)}
+        {getSubscriptionDisplayValue(subData?.busEvents, subError)}
       </LayoutCell>
     </>
   );
 };
 
-const getSubscriptionDisplayValue = (events?: { id: string }[] | null) => {
-  if (!events) {
-    return t('No');
+const getResponseTimeDisplayValue = (
+  responseTime?: number,
+  error?: ApolloError
+) => {
+  if (typeof responseTime === 'number') {
+    return `${Number(responseTime).toFixed(2)}ms`;
   }
+  if (error) {
+    return t('n/a');
+  }
+  return '-';
+};
 
-  if (events.length) {
+const getBlockDisplayValue = (block?: number, error?: ApolloError) => {
+  if (block) {
+    return block;
+  }
+  if (error) {
+    return t('n/a');
+  }
+  return '-';
+};
+
+const getSubscriptionDisplayValue = (
+  events?: { id: string }[] | null,
+  error?: ApolloError
+) => {
+  if (events?.length) {
     return t('Yes');
   }
-
+  if (error) {
+    return t('No');
+  }
   return '-';
 };

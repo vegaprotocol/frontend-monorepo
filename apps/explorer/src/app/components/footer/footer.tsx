@@ -1,4 +1,4 @@
-import { NodeSwitcher, useEnvironment } from '@vegaprotocol/environment';
+import { NodeSwitcherDialog, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
@@ -36,7 +36,10 @@ export const Footer = () => {
           </div>
         </div>
       </footer>
-      <NodeSwitcher open={nodeSwitcherOpen} setOpen={setNodeSwitcherOpen} />
+      <NodeSwitcherDialog
+        open={nodeSwitcherOpen}
+        setOpen={setNodeSwitcherOpen}
+      />
     </>
   );
 };

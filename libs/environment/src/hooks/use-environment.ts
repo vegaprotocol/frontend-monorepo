@@ -59,13 +59,10 @@ const EnvSchema = z.object({
         Networks
       ).join(' | ')}`,
     }),
-  ETHEREUM_PROVIDER_URL: z
-    .string()
-    .url({
-      message:
-        'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
-    })
-    .optional(),
+  ETHEREUM_PROVIDER_URL: z.string().url({
+    message:
+      'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
+  }),
   ETHERSCAN_URL: z.string().url({
     message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
   }),

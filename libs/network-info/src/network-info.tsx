@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Link, Lozenge } from '@vegaprotocol/ui-toolkit';
-import { NodeSwitcher, useEnvironment } from '@vegaprotocol/environment';
+import { NodeSwitcherDialog, useEnvironment } from '@vegaprotocol/environment';
 
 const getFeedbackLinks = (gitOriginUrl?: string) =>
   [
@@ -73,7 +73,10 @@ export const NetworkInfo = () => {
           </p>
         )}
       </div>
-      <NodeSwitcher open={nodeSwitcherOpen} setOpen={setNodeSwitcherOpen} />
+      <NodeSwitcherDialog
+        open={nodeSwitcherOpen}
+        setOpen={setNodeSwitcherOpen}
+      />
     </>
   );
 };
