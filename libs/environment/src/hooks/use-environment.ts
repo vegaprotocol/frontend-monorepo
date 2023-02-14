@@ -11,6 +11,7 @@ import { BlockTimeDocument } from '../utils/__generated__/Node';
 import { StatisticsDocument } from '../utils/__generated__/Node';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
+import { isValidUrl } from '../components';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -33,7 +34,7 @@ const STORAGE_KEY = 'vega_url';
 
 const EnvSchema = z.object({
   VEGA_URL: z.string().url().optional(),
-  VEGA_WALLET_URL: z.string(),
+  VEGA_WALLET_URL: z.string().optional(),
   VEGA_CONFIG_URL: z.string().optional(),
   GIT_BRANCH: z.string().optional(),
   GIT_COMMIT_HASH: z.string().optional(),
@@ -58,17 +59,20 @@ const EnvSchema = z.object({
         Networks
       ).join(' | ')}`,
     }),
-  ETHEREUM_PROVIDER_URL: z.string().url({
-    message:
-      'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
-  }),
+  ETHEREUM_PROVIDER_URL: z
+    .string()
+    .url({
+      message:
+        'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
+    })
+    .optional(),
   ETHERSCAN_URL: z.string().url({
     message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
   }),
-  HOSTED_WALLET_URL: z.optional(z.string()),
-  MAINTENANCE_PAGE: z.optional(z.boolean()),
-  ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
-  ETH_WALLET_MNEMONIC: z.optional(z.string()),
+  HOSTED_WALLET_URL: z.string().optional(),
+  MAINTENANCE_PAGE: z.boolean().optional(),
+  ETH_LOCAL_PROVIDER_URL: z.string().optional(),
+  ETH_WALLET_MNEMONIC: z.string().optional(),
 });
 
 export const useEnvironment = create<EnvStore>((set, get) => ({
@@ -115,8 +119,12 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
     // a successful node, or chosen one manually - reconnect
     // to same node
     if (storedUrl) {
-      set({ VEGA_URL: storedUrl, status: 'success' });
-      return;
+      if (isValidUrl(storedUrl)) {
+        set({ VEGA_URL: storedUrl, status: 'success' });
+        return;
+      } else {
+        LocalStorage.removeItem(STORAGE_KEY);
+      }
     }
 
     // VEGA_URL env var is set no need to find suitable node
