@@ -2,7 +2,6 @@ import { Assets } from './assets';
 import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
-import Markets from './markets';
 import OraclePage from './oracles';
 import Oracles from './oracles/home';
 import { Oracle } from './oracles/id';
@@ -21,8 +20,13 @@ import flags from '../config/flags';
 import { t } from '@vegaprotocol/react-helpers';
 import { Routes } from './route-names';
 import { NetworkParameters } from './network-parameters';
+import type { RouteObject } from 'react-router-dom';
+import { MarketPage, MarketsPage } from './markets';
 
-const partiesRoutes = flags.parties
+export type Navigable = { path: string; name: string; text: string };
+type Route = RouteObject & Navigable;
+
+const partiesRoutes: Route[] = flags.parties
   ? [
       {
         path: Routes.PARTIES,
@@ -43,7 +47,7 @@ const partiesRoutes = flags.parties
     ]
   : [];
 
-const assetsRoutes = flags.assets
+const assetsRoutes: Route[] = flags.assets
   ? [
       {
         path: Routes.ASSETS,
@@ -54,7 +58,7 @@ const assetsRoutes = flags.assets
     ]
   : [];
 
-const genesisRoutes = flags.genesis
+const genesisRoutes: Route[] = flags.genesis
   ? [
       {
         path: Routes.GENESIS,
@@ -65,7 +69,7 @@ const genesisRoutes = flags.genesis
     ]
   : [];
 
-const governanceRoutes = flags.governance
+const governanceRoutes: Route[] = flags.governance
   ? [
       {
         path: Routes.GOVERNANCE,
@@ -76,18 +80,27 @@ const governanceRoutes = flags.governance
     ]
   : [];
 
-const marketsRoutes = flags.markets
+const marketsRoutes: Route[] = flags.markets
   ? [
       {
         path: Routes.MARKETS,
         name: 'Markets',
         text: t('Markets'),
-        element: <Markets />,
+        children: [
+          {
+            index: true,
+            element: <MarketsPage />,
+          },
+          {
+            path: ':marketId',
+            element: <MarketPage />,
+          },
+        ],
       },
     ]
   : [];
 
-const networkParametersRoutes = flags.networkParameters
+const networkParametersRoutes: Route[] = flags.networkParameters
   ? [
       {
         path: Routes.NETWORK_PARAMETERS,
@@ -97,7 +110,7 @@ const networkParametersRoutes = flags.networkParameters
       },
     ]
   : [];
-const validators = flags.validators
+const validators: Route[] = flags.validators
   ? [
       {
         path: Routes.VALIDATORS,
@@ -108,7 +121,7 @@ const validators = flags.validators
     ]
   : [];
 
-const routerConfig = [
+const routerConfig: Route[] = [
   {
     path: Routes.HOME,
     name: 'Home',
