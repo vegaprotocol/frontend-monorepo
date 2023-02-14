@@ -44,6 +44,7 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
   initialize: async () => {
     set({ status: 'pending' });
 
+    // validate env vars
     try {
       const rawVars = compileEnvVars();
       const safeVars = envSchema.parse(rawVars);
@@ -70,9 +71,7 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }
 
-    // user has previously loaded the app and found
-    // a successful node, or chosen one manually - reconnect
-    // to same node
+    // Node url found in localStorage, if its valid attempt to connect
     if (storedUrl) {
       if (isValidUrl(storedUrl)) {
         set({ VEGA_URL: storedUrl, status: 'success' });
@@ -82,12 +81,14 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       }
     }
 
-    // VEGA_URL env var is set no need to find suitable node
+    // VEGA_URL env var is set and is a valid url no need to proceed
     if (state.VEGA_URL) {
       set({ status: 'success' });
       return;
     }
 
+    // No url found in env vars or localStorage, AND no nodes were found in
+    // the config fetched from VEGA_CONFIG_URL, app initialization has failed
     if (!nodes || !nodes.length) {
       set({
         status: 'failed',
@@ -96,7 +97,7 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       return;
     }
 
-    // create client and store instances
+    // Create a map of node urls to client instances
     const clients: ClientCollection = {};
     nodes.forEach((url) => {
       clients[url] = createClient({
@@ -107,7 +108,8 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       });
     });
 
-    // find a suitable node to connected, first one to respond is chosen
+    // Find a suitable node to connect to by attempting a query and a
+    // subscription, first to fulfill both will be the resulting url.
     const url = await findNode(clients);
 
     if (url !== null) {
@@ -116,7 +118,10 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
         VEGA_URL: url,
       });
       LocalStorage.setItem(STORAGE_KEY, url);
-    } else {
+    }
+    // Every node failed either to make a query or retrieve data from
+    // a subscription
+    else {
       set({
         status: 'failed',
         error: t('No node found'),
@@ -126,8 +131,13 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
   },
 }));
 
-// Use this to fetch node config and find suitable node
-// if no NX_VEGA_URL is not provided
+/**
+ * Initialize Vega app to dynamically select a node from the
+ * VEGA_CONFIG_URL
+ *
+ * This can be ommitted if you intend to only use a single node,
+ * in those cases be sure to set NX_VEGA_URL
+ */
 export const useInitializeEnv = () => {
   const { initialize, status } = useEnvironment((store) => ({
     status: store.status,
@@ -141,6 +151,9 @@ export const useInitializeEnv = () => {
   }, [status, initialize]);
 };
 
+/**
+ * Fetch and validate a vega node configuration
+ */
 const fetchConfig = async (url?: string) => {
   if (!url) return [];
   const res = await fetch(url);
@@ -149,11 +162,18 @@ const fetchConfig = async (url?: string) => {
   return result.hosts;
 };
 
+/**
+ * Find a suitable node by running a test query and test
+ * subscription, against a list of clients, first to resolve wins
+ */
 const findNode = (clients: ClientCollection): Promise<string | null> => {
   const tests = Object.entries(clients).map((args) => testNode(...args));
   return Promise.race(tests);
 };
 
+/**
+ * Test a node for suitability for connection
+ */
 const testNode = async (
   url: string,
   client: Client
@@ -173,6 +193,9 @@ const testNode = async (
   }
 };
 
+/**
+ * Run a test query on a client
+ */
 const testQuery = async (client: Client) => {
   try {
     const result = await client.query<StatisticsQuery>({
@@ -187,6 +210,11 @@ const testQuery = async (client: Client) => {
   }
 };
 
+/**
+ * Run a test subscription on a client. A subscription
+ * that takes longer than SUBSCRIPTION_TIMEOUT ms to respond
+ * is deemed a failure
+ */
 const testSubscription = (client: Client) => {
   return new Promise((resolve) => {
     const sub = client
@@ -212,6 +240,10 @@ const testSubscription = (client: Client) => {
   });
 };
 
+/**
+ * Retrieve env vars, parsing where needed some type casting is needed
+ * here to appease the environment store interface
+ */
 function compileEnvVars() {
   const env = {
     VEGA_URL: process.env['NX_VEGA_URL'],
