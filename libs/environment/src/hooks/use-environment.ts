@@ -16,20 +16,20 @@ type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
   [node: string]: Client;
 };
-
 type EnvVars = z.infer<typeof EnvSchema>;
-
 type EnvState = {
   nodes: string[];
   status: 'default' | 'pending' | 'success' | 'failed';
   error: string | null;
 };
-export type Env = EnvVars & EnvState;
 type Actions = {
   setUrl: (url: string) => void;
   initialize: () => Promise<void>;
 };
+export type Env = EnvVars & EnvState;
 export type EnvStore = Env & Actions;
+
+const STORAGE_KEY = 'vega_url';
 
 const EnvSchema = z.object({
   VEGA_URL: z.string().url().optional(),
@@ -78,7 +78,7 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
   error: null,
   setUrl: (url) => {
     set({ VEGA_URL: url, status: 'success', error: null });
-    LocalStorage.setItem('vega_url', url);
+    LocalStorage.setItem(STORAGE_KEY, url);
   },
   initialize: async () => {
     set({ status: 'pending' });
@@ -101,7 +101,7 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
     }
 
     const state = get();
-    const storedUrl = LocalStorage.getItem('vega_url');
+    const storedUrl = LocalStorage.getItem(STORAGE_KEY);
 
     let nodes: string[] | undefined;
     try {
@@ -152,13 +152,13 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
         status: 'success',
         VEGA_URL: url,
       });
-      LocalStorage.setItem('vega_url', url);
+      LocalStorage.setItem(STORAGE_KEY, url);
     } else {
       set({
         status: 'failed',
-        error: 'No node found',
+        error: t('No node found'),
       });
-      console.warn('No suitable vega node was found');
+      console.warn(t('No suitable vega node was found'));
     }
   },
 }));
