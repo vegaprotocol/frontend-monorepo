@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useStatisticsQuery } from '../utils/__generated__/Node';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { useEnvironment } from './use-environment';
@@ -8,7 +8,7 @@ export const useNodeHealth = () => {
   const url = useEnvironment((store) => store.VEGA_URL);
   const headerStore = useHeaderStore();
   const headers = url ? headerStore[url] : undefined;
-  const { data } = useStatisticsQuery({
+  const { data, error, loading, stopPolling } = useStatisticsQuery({
     pollInterval: 1000,
     fetchPolicy: 'no-cache',
   });
@@ -25,7 +25,15 @@ export const useNodeHealth = () => {
     return Number(data.statistics.blockHeight) - headers.blockHeight;
   }, [data, headers]);
 
+  useEffect(() => {
+    if (error) {
+      stopPolling();
+    }
+  }, [error, stopPolling]);
+
   return {
+    error,
+    loading,
     coreBlockHeight: data?.statistics
       ? Number(data.statistics.blockHeight)
       : undefined,

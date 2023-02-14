@@ -3,7 +3,10 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Radio } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';
-import { useStatisticsQuery } from '../../utils/__generated__/Node';
+import {
+  useBlockTimeSubscription,
+  useStatisticsQuery,
+} from '../../utils/__generated__/Node';
 import { LayoutCell } from '../node-switcher/layout-cell';
 import { isValidUrl } from './node-switcher';
 
@@ -34,6 +37,12 @@ export const RowData = ({
     });
   const headerStore = useHeaderStore();
   const headers = headerStore[url];
+
+  const {
+    data: subData,
+    error: subError,
+    loading: subLoading,
+  } = useBlockTimeSubscription();
 
   useEffect(() => {
     // stop polling if row has errored
@@ -108,6 +117,10 @@ export const RowData = ({
       return true;
     }
 
+    if (subLoading || subError) {
+      return true;
+    }
+
     // if we are still waiting for a header entry for this
     // url disable the node
     if (!headers) {
@@ -145,6 +158,26 @@ export const RowData = ({
       >
         {error ? 'n/a' : headers?.blockHeight || '-'}
       </LayoutCell>
+      <LayoutCell
+        label={t('Subscription')}
+        isLoading={subLoading}
+        hasError={Boolean(subError)}
+        dataTestId="subscription -cell"
+      >
+        <pre>{getSubscriptionDisplayValue(subData?.busEvents)}</pre>
+      </LayoutCell>
     </>
   );
+};
+
+const getSubscriptionDisplayValue = (events?: { id: string }[] | null) => {
+  if (!events) {
+    return t('No');
+  }
+
+  if (events.length) {
+    return t('Yes');
+  }
+
+  return '-';
 };

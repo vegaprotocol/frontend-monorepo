@@ -20,6 +20,7 @@ import {
   envTriggerMapping,
   NetworkLoader,
   Networks,
+  NodeGuard,
   NodeSwitcher,
   useEnvironment,
   useInitializeEnv,
@@ -38,7 +39,7 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import classNames from 'classnames';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { AppFailure } from '../components/app-loader/app-failure';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -115,9 +116,10 @@ const DynamicLoader = dynamic(
 );
 
 function VegaTradingApp(props: AppProps) {
-  const { status, error } = useEnvironment((store) => ({
+  const { status, error, VEGA_URL } = useEnvironment((store) => ({
     status: store.status,
     error: store.error,
+    VEGA_URL: store.VEGA_URL,
   }));
   const { nodeSwitcherOpen, setNodeSwitcher } = useGlobalStore((store) => ({
     nodeSwitcherOpen: store.nodeSwitcherDialog,
@@ -139,20 +141,19 @@ function VegaTradingApp(props: AppProps) {
         cache={cacheConfig}
         skeleton={<DynamicLoader />}
         failure={
-          <div className="text-center">
-            <h1 className="text-xl mb-4">{t('Could not initialize app')}</h1>
-            <p className="text-sm mb-8">{error}</p>
-            <Button onClick={() => setNodeSwitcher(true)}>
-              {t('Change node')}
-            </Button>
-          </div>
+          <AppFailure title={t('Could not initialize app')} error={error} />
         }
       >
-        <VegaWalletProvider>
+        <NodeGuard
+          skeleton={<DynamicLoader />}
+          failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
+        >
           <Web3Provider>
-            <AppBody {...props} />
+            <VegaWalletProvider>
+              <AppBody {...props} />
+            </VegaWalletProvider>
           </Web3Provider>
-        </VegaWalletProvider>
+        </NodeGuard>
       </NetworkLoader>
       <NodeSwitcher open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </HashRouter>

@@ -107,6 +107,7 @@ export const NodeSwitcherContainer = ({
                 <div />
                 <span className="text-right">{t('Response time')}</span>
                 <span className="text-right">{t('Block')}</span>
+                <span className="text-right">{t('Subscription')}</span>
               </LayoutRow>
               <div>
                 {nodes.map((node, index) => {
