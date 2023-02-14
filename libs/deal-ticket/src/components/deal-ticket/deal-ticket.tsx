@@ -43,7 +43,7 @@ export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
-  onClickCollateral: () => void;
+  onClickCollateral?: () => void;
 }
 
 export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
