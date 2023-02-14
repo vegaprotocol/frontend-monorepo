@@ -308,7 +308,7 @@ const SummaryMessage = memo(
     if (isReadOnly) {
       return (
         <div className="mb-4">
-          <NotificationError data-testid="dealticket-error-message-summary">
+          <NotificationError testId="dealticket-error-message-summary">
             {
               'You need to connect your own wallet to start trading on this market'
             }
@@ -352,7 +352,7 @@ const SummaryMessage = memo(
     if (errorMessage) {
       return (
         <div className="mb-4">
-          <NotificationError data-testid="dealticket-error-message-summary">
+          <NotificationError testId="dealticket-error-message-summary">
             {errorMessage}
           </NotificationError>
         </div>

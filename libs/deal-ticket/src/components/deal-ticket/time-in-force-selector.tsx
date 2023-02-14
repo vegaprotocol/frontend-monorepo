@@ -139,7 +139,7 @@ export const TimeInForceSelector = ({
         ))}
       </Select>
       {errorMessage && (
-        <NotificationError data-testid="dealticket-error-message-tif">
+        <NotificationError testId="dealticket-error-message-tif">
           {renderError(errorMessage)}
         </NotificationError>
       )}

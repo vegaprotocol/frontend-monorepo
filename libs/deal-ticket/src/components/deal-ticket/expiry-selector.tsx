@@ -35,7 +35,7 @@ export const ExpirySelector = ({
         })}
       />
       {errorMessage && (
-        <NotificationError data-testid="dealticket-error-message-expiry">
+        <NotificationError testId="dealticket-error-message-expiry">
           {errorMessage}
         </NotificationError>
       )}

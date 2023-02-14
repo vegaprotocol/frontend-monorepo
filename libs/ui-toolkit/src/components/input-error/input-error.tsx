@@ -13,6 +13,7 @@ interface NotificationErrorProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   intent?: Intent | 'danger' | 'warning';
   forInput?: string;
+  testId?: string;
 }
 
 const getIntent = (intent: Intent | 'danger' | 'warning') => {
@@ -30,11 +31,12 @@ export const NotificationError = ({
   intent = Intent.Danger,
   children,
   forInput,
+  testId,
 }: NotificationErrorProps) => {
   return (
     <Notification
       intent={getIntent(intent)}
-      testId={'input-error-text'}
+      testId={testId || 'input-error-text'}
       message={<div className="role">{children}</div>}
       aria-describedby={forInput}
     />

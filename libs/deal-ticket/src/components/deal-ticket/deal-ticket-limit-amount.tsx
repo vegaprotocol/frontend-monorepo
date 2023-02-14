@@ -20,7 +20,7 @@ export const DealTicketLimitAmount = ({
   const renderError = () => {
     if (sizeError) {
       return (
-        <NotificationError data-testid="dealticket-error-message-size-limit">
+        <NotificationError testId="dealticket-error-message-size-limit">
           {sizeError}
         </NotificationError>
       );
@@ -28,7 +28,7 @@ export const DealTicketLimitAmount = ({
 
     if (priceError) {
       return (
-        <NotificationError data-testid="dealticket-error-message-price-limit">
+        <NotificationError testId="dealticket-error-message-price-limit">
           {priceError}
         </NotificationError>
       );
