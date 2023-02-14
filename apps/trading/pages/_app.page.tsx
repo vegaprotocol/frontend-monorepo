@@ -40,6 +40,7 @@ import { Banner } from '../components/banner';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import classNames from 'classnames';
 import { AppFailure } from '../components/app-loader/app-failure';
+import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -116,11 +117,14 @@ const DynamicLoader = dynamic(
 );
 
 function VegaTradingApp(props: AppProps) {
-  const { status, error, VEGA_URL } = useEnvironment((store) => ({
-    status: store.status,
-    error: store.error,
-    VEGA_URL: store.VEGA_URL,
-  }));
+  const { status, error, VEGA_URL, MAINTENANCE_PAGE } = useEnvironment(
+    (store) => ({
+      status: store.status,
+      error: store.error,
+      VEGA_URL: store.VEGA_URL,
+      MAINTENANCE_PAGE: store.MAINTENANCE_PAGE,
+    })
+  );
   const { nodeSwitcherOpen, setNodeSwitcher } = useGlobalStore((store) => ({
     nodeSwitcherOpen: store.nodeSwitcherDialog,
     setNodeSwitcher: (open: boolean) =>
@@ -128,6 +132,10 @@ function VegaTradingApp(props: AppProps) {
   }));
 
   useInitializeEnv();
+
+  if (MAINTENANCE_PAGE) {
+    return <MaintenancePage />;
+  }
 
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object

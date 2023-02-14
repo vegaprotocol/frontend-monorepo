@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useNodeHealth } from '../../hooks';
+import { useStatisticsQuery } from '../../utils/__generated__/Node';
 
 export const NodeGuard = ({
   children,
@@ -10,7 +10,7 @@ export const NodeGuard = ({
   failure: ReactNode;
   skeleton: ReactNode;
 }) => {
-  const { error, loading } = useNodeHealth();
+  const { error, loading } = useStatisticsQuery();
   const nonIdealWrapperClasses =
     'h-full min-h-screen flex items-center justify-center';
 

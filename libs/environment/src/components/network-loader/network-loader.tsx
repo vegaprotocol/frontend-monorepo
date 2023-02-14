@@ -4,6 +4,7 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
 import { createClient } from '@vegaprotocol/apollo-client';
+import { isValidUrl } from '../node-switcher-2';
 
 type NetworkLoaderProps = {
   children?: ReactNode;
@@ -24,14 +25,14 @@ export function NetworkLoader({
   }));
 
   const client = useMemo(() => {
-    if (VEGA_URL) {
+    if (status === 'success' && VEGA_URL) {
       return createClient({
         url: VEGA_URL,
         cacheConfig: cache,
       });
     }
     return undefined;
-  }, [VEGA_URL, cache]);
+  }, [VEGA_URL, status, cache]);
 
   const nonIdealWrapperClasses =
     'h-full min-h-screen flex items-center justify-center';

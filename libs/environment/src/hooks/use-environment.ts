@@ -3,9 +3,14 @@ import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';
-import type { StatisticsQuery } from '../utils/__generated__/Node';
+import type {
+  BlockTimeSubscription,
+  StatisticsQuery,
+} from '../utils/__generated__/Node';
+import { BlockTimeDocument } from '../utils/__generated__/Node';
 import { StatisticsDocument } from '../utils/__generated__/Node';
 import { Networks } from '../types';
+import { compileErrors } from '../utils/compile-errors';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -83,7 +88,14 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
       const safeVars = EnvSchema.parse(rawVars);
       set({ ...safeVars });
     } catch (err) {
-      set({ status: 'failed', error: 'Environment validation failed' });
+      set({
+        status: 'failed',
+        error: t('Error processing the Vega environemnt'),
+      });
+
+      console.error(
+        compileErrors(t('Error processing the Vega environment'), err)
+      );
       return;
     }
 
@@ -91,7 +103,6 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
     const storedUrl = LocalStorage.getItem('vega_url');
 
     let nodes: string[] | undefined;
-
     try {
       nodes = await fetchConfig(state.VEGA_CONFIG_URL);
       set({ nodes });
@@ -188,12 +199,11 @@ const testNode = async (
   client: Client
 ): Promise<string | null> => {
   try {
-    // const results = await Promise.all([
-    //   testQuery(client),
-    //   testSubscription(client),
-    // ]);
-    const success = await testQuery(client);
-    if (success) {
+    const results = await Promise.all([
+      testQuery(client),
+      testSubscription(client),
+    ]);
+    if (results[0] && results[1]) {
       return url;
     }
     return null;
@@ -217,25 +227,25 @@ const testQuery = async (client: Client) => {
   }
 };
 
-// const testSubscription = (client: Client) => {
-//   return new Promise((resolve) => {
-//     const sub = client
-//       .subscribe<BlockTimeSubscription>({
-//         query: BlockTimeDocument,
-//         errorPolicy: 'all',
-//       })
-//       .subscribe({
-//         next: () => {
-//           resolve(true);
-//           sub.unsubscribe();
-//         },
-//         error: () => {
-//           resolve(false);
-//           sub.unsubscribe();
-//         },
-//       });
-//   });
-// };
+const testSubscription = (client: Client) => {
+  return new Promise((resolve) => {
+    const sub = client
+      .subscribe<BlockTimeSubscription>({
+        query: BlockTimeDocument,
+        errorPolicy: 'all',
+      })
+      .subscribe({
+        next: () => {
+          resolve(true);
+          sub.unsubscribe();
+        },
+        error: () => {
+          resolve(false);
+          sub.unsubscribe();
+        },
+      });
+  });
+};
 
 function compileEnvVars() {
   const env = {

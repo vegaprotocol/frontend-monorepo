@@ -11,6 +11,7 @@ import {
 import { useCallback, useState } from 'react';
 import { useEnvironment } from '../../hooks';
 import { CUSTOM_NODE_KEY } from '../../types';
+import { LayoutCell } from '../node-switcher/layout-cell';
 import { LayoutRow } from '../node-switcher/layout-row';
 import { ApolloWrapper } from './apollo-wrapper';
 import { RowData } from './row-data';
@@ -78,7 +79,7 @@ export const NodeSwitcherContainer = ({
 
   return (
     <div>
-      <h3 className="uppercase text-xl text-center mb-2">
+      <h3 className="uppercase text-xl calt text-center mb-2">
         {t('Connected node')}
       </h3>
       {status === 'pending' ? (
@@ -88,15 +89,10 @@ export const NodeSwitcherContainer = ({
         </div>
       ) : (
         <div>
-          <p className="mb-2 text-center">
-            {t(`This app will only work on a `)}
-            <span className="font-mono capitalize">
-              {VEGA_ENV.toLowerCase()}
-            </span>
-            {t(' chain ID')}
-          </p>
-          <p className="text-lg mt-4">
-            {t('Select a GraphQL node to connect to:')}
+          <p className="mb-2 text-sm text-center">
+            {t(
+              `This app will only work on ${VEGA_ENV}. Select a node to connect to.`
+            )}
           </p>
           <RadioGroup
             value={nodeRadio}
@@ -104,7 +100,7 @@ export const NodeSwitcherContainer = ({
           >
             <div className="hidden lg:block">
               <LayoutRow>
-                <div />
+                <span>{t('Node')}</span>
                 <span className="text-right">{t('Response time')}</span>
                 <span className="text-right">{t('Block')}</span>
                 <span className="text-right">{t('Subscription')}</span>
@@ -226,7 +222,34 @@ const CustomRowWrapper = ({
             highestBlock={highestBlock}
           />
         </ApolloWrapper>
-      ) : null}
+      ) : (
+        <>
+          <LayoutCell
+            label={t('Response time')}
+            isLoading={false}
+            hasError={false}
+            dataTestId="response-time-cell"
+          >
+            {'-'}
+          </LayoutCell>
+          <LayoutCell
+            label={t('Block')}
+            isLoading={false}
+            hasError={false}
+            dataTestId="block-height-cell"
+          >
+            {'-'}
+          </LayoutCell>
+          <LayoutCell
+            label={t('Subscription')}
+            isLoading={false}
+            hasError={false}
+            dataTestId="subscription -cell"
+          >
+            {'-'}
+          </LayoutCell>
+        </>
+      )}
     </LayoutRow>
   );
 };

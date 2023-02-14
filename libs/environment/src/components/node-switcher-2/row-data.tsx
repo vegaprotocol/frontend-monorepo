@@ -164,7 +164,7 @@ export const RowData = ({
         hasError={Boolean(subError)}
         dataTestId="subscription -cell"
       >
-        <pre>{getSubscriptionDisplayValue(subData?.busEvents)}</pre>
+        {getSubscriptionDisplayValue(subData?.busEvents)}
       </LayoutCell>
     </>
   );

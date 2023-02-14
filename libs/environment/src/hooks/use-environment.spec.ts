@@ -3,6 +3,10 @@ import { act } from 'react-dom/test-utils';
 import { Networks } from '../types';
 import { useEnvironment } from './use-environment';
 
+const noop = () => {
+  /* no op*/
+};
+
 jest.mock('@vegaprotocol/apollo-client', () => ({
   createClient: () => ({
     query: () =>
@@ -168,9 +172,7 @@ describe('useEnvironment', () => {
 
   it('handles error if node config cannot be fetched', async () => {
     const warn = console.warn;
-    console.warn = () => {
-      /* no op */
-    };
+    console.warn = noop;
     const configUrl = 'https://vega.xyz/testnet-config.json';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     process.env['NX_VEGA_URL'] = undefined;
@@ -192,9 +194,7 @@ describe('useEnvironment', () => {
 
   it('handles an invalid node config', async () => {
     const warn = console.warn;
-    console.warn = () => {
-      /* no op*/
-    };
+    console.warn = noop;
     const configUrl = 'https://vega.xyz/testnet-config.json';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     process.env['NX_VEGA_URL'] = undefined;
