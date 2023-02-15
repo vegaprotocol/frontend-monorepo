@@ -16,12 +16,26 @@ fragment MarketFields on Market {
       id
       name
       code
+
       metadata {
         tags
       }
       product {
         ... on Future {
           settlementAsset {
+            source {
+              __typename
+              ... on ERC20 {
+                contractAddress
+                lifetimeLimit
+                withdrawThreshold
+              }
+              ... on BuiltinAsset {
+                maxFaucetAmountMint
+              }
+            }
+            quantum
+            status
             id
             symbol
             name

@@ -8,7 +8,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 
-export const AccountsContainer = () => {
+export const AccountsContainer = ({ marketAsset }: { marketAsset?: Asset }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
@@ -39,6 +39,7 @@ export const AccountsContainer = () => {
           onClickWithdraw={openWithdrawalDialog}
           onClickDeposit={openDepositDialog}
           isReadOnly={isReadOnly}
+          marketAsset={marketAsset}
         />
       </div>
       {!isReadOnly && (

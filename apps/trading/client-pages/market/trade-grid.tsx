@@ -28,6 +28,7 @@ import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
+import type { Asset } from '@vegaprotocol/types';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -65,14 +66,17 @@ type TradingView = keyof typeof TradingViews;
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string) => void;
+  marketAsset?: Asset;
 }
 
 const MainGrid = ({
   marketId,
   onSelect,
+  marketAsset,
 }: {
   marketId: string;
   onSelect?: (marketId: string) => void;
+  marketAsset?: Asset;
 }) => {
   const navigate = useNavigate();
   const onMarketClick = (marketId: string) => {
@@ -175,7 +179,7 @@ const MainGrid = ({
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
               <VegaWalletContainer>
-                <TradingViews.Collateral />
+                <TradingViews.Collateral marketAsset={marketAsset} />
               </VegaWalletContainer>
             </Tab>
           </Tabs>
@@ -186,11 +190,19 @@ const MainGrid = ({
 };
 const MainGridWrapped = memo(MainGrid);
 
-export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
+export const TradeGrid = ({
+  market,
+  onSelect,
+  marketAsset,
+}: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <TradeMarketHeader market={market} onSelect={onSelect} />
-      <MainGridWrapped marketId={market?.id || ''} onSelect={onSelect} />
+      <MainGridWrapped
+        marketId={market?.id || ''}
+        onSelect={onSelect}
+        marketAsset={marketAsset}
+      />
     </div>
   );
 };
@@ -214,12 +226,14 @@ interface TradePanelsProps {
   onSelect: (marketId: string) => void;
   onMarketClick?: (marketId: string) => void;
   onClickCollateral: () => void;
+  marketAsset?: Asset;
 }
 
 export const TradePanels = ({
   market,
   onSelect,
   onClickCollateral,
+  marketAsset,
 }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
   const renderView = () => {
@@ -228,6 +242,7 @@ export const TradePanels = ({
       onSelect: (marketId: string) => void;
       onMarketClick?: (marketId: string) => void;
       onClickCollateral: () => void;
+      marketAsset?: Asset;
     }>(TradingViews[view]);
 
     if (!Component) {
@@ -241,6 +256,7 @@ export const TradePanels = ({
         marketId={market?.id}
         onSelect={onSelect}
         onClickCollateral={onClickCollateral}
+        marketAsset={marketAsset}
       />
     );
   };

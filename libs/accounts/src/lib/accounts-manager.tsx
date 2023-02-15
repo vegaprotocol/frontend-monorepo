@@ -1,4 +1,5 @@
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, memo } from 'react';
@@ -12,6 +13,7 @@ interface AccountManagerProps {
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
   isReadOnly: boolean;
+  marketAsset?: Asset;
 }
 
 export const AccountManager = ({
@@ -20,6 +22,7 @@ export const AccountManager = ({
   onClickDeposit,
   partyId,
   isReadOnly,
+  marketAsset,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -38,6 +41,7 @@ export const AccountManager = ({
         onClickWithdraw={onClickWithdraw}
         isReadOnly={isReadOnly}
         noRowsOverlayComponent={() => null}
+        marketAsset={marketAsset}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
