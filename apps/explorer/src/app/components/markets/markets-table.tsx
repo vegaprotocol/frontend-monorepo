@@ -25,15 +25,14 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
 
   const navigate = useNavigate();
 
-  const ref = useRef<AgGridReact>(null);
-  const showColumnsOnDesktop = () => {
-    ref.current?.columnApi.setColumnsVisible(
-      ['id', 'state', 'asset'],
-      window.innerWidth > BREAKPOINT_MD
-    );
-  };
-
+  const gridRef = useRef<AgGridReact>(null);
   useLayoutEffect(() => {
+    const showColumnsOnDesktop = () => {
+      gridRef.current?.columnApi.setColumnsVisible(
+        ['id', 'state', 'asset'],
+        window.innerWidth > BREAKPOINT_MD
+      );
+    };
     window.addEventListener('resize', showColumnsOnDesktop);
     return () => {
       window.removeEventListener('resize', showColumnsOnDesktop);
@@ -42,7 +41,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
 
   return (
     <AgGrid
-      ref={ref}
+      ref={gridRef}
       rowData={data}
       getRowId={({ data }: { data: MarketFieldsFragment }) => data.id}
       overlayNoRowsTemplate={t('This chain has no markets')}
@@ -56,9 +55,6 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         autoHeight: true,
       }}
       suppressCellFocus={true}
-      onGridReady={() => {
-        showColumnsOnDesktop();
-      }}
       onRowClicked={({ data, event }: RowClickedEvent) => {
         if ((event?.target as HTMLElement).tagName.toUpperCase() !== 'BUTTON') {
           navigate(data.id);
@@ -78,6 +74,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
       <AgGridColumn
         headerName={t('Status')}
         field="state"
+        hide={window.innerWidth <= BREAKPOINT_MD}
         valueGetter={({
           data,
         }: VegaValueGetterParams<MarketFieldsFragment, 'state'>) => {
@@ -88,6 +85,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         colId="asset"
         headerName={t('Settlement asset')}
         field="tradableInstrument.instrument.product.settlementAsset"
+        hide={window.innerWidth <= BREAKPOINT_MD}
         cellRenderer={({
           value,
         }: VegaICellRendererParams<
@@ -107,7 +105,12 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
           )
         }
       />
-      <AgGridColumn flex={2} headerName={t('Market ID')} field="id" />
+      <AgGridColumn
+        flex={2}
+        headerName={t('Market ID')}
+        field="id"
+        hide={window.innerWidth <= BREAKPOINT_MD}
+      />
       <AgGridColumn
         colId="actions"
         headerName=""

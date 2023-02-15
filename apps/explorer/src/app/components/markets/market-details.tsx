@@ -4,7 +4,7 @@ import {
   getMarketExpiryDateFormatted,
   t,
 } from '@vegaprotocol/react-helpers';
-import type { MarketInfoQuery } from '@vegaprotocol/market-info';
+import type { MarketInfoNoCandlesQuery } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
 import pick from 'lodash/pick';
 import {
@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom';
 export const MarketDetails = ({
   market,
 }: {
-  market: MarketInfoQuery['market'];
+  market: MarketInfoNoCandlesQuery['market'];
 }) => {
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol;

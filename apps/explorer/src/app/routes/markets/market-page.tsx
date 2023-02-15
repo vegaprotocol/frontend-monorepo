@@ -1,4 +1,4 @@
-import { t, useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -7,30 +7,23 @@ import { RouteTitle } from '../../components/route-title';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import compact from 'lodash/compact';
-import { Interval } from '@vegaprotocol/types';
 import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
-import { marketInfoDataProvider } from '@vegaprotocol/market-info';
+import { marketInfoNoCandlesDataProvider } from '@vegaprotocol/market-info';
 
 export const MarketPage = () => {
   useScrollToLocation();
 
   const { marketId } = useParams<{ marketId: string }>();
 
-  const yesterday = useYesterday();
-  const yTimestamp = useMemo(() => {
-    return new Date(yesterday).toISOString();
-  }, [yesterday]);
   const variables = useMemo(
     () => ({
       marketId,
-      since: yTimestamp,
-      interval: Interval.INTERVAL_I1H,
     }),
-    [marketId, yTimestamp]
+    [marketId]
   );
 
   const { data, loading, error } = useDataProvider({
-    dataProvider: marketInfoDataProvider,
+    dataProvider: marketInfoNoCandlesDataProvider,
     skipUpdates: true,
     variables,
   });

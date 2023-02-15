@@ -92,6 +92,13 @@ export const Nav = () => {
       focusable.forEach((fe) => fe.setAttribute('tabindex', '0'));
     }
 
+    document.body.style.overflow = open ? 'hidden' : '';
+    const offset =
+      document.querySelector('header')?.getBoundingClientRect().top || 0;
+    if (navRef.current) {
+      navRef.current.style.height = `calc(100vh - ${offset}px)`;
+    }
+
     // focus current by default
     if (navRef.current && open) {
       (navRef.current.querySelector('a[aria-current]') as HTMLElement)?.focus();
@@ -148,7 +155,7 @@ export const Nav = () => {
     <nav
       ref={navRef}
       className={classnames(
-        'absolute top-0 z-20 overflow-y-scroll',
+        'absolute top-0 z-20 overflow-y-auto',
         'transition-[right]',
         {
           'right-[-200vw] h-full': !open,
