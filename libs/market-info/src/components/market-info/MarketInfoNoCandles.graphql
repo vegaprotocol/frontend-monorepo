@@ -1,0 +1,147 @@
+query MarketInfoNoCandles($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    state
+    tradingMode
+    lpPriceRange
+    proposal {
+      id
+      rationale {
+        title
+        description
+      }
+    }
+    marketTimestamps {
+      open
+      close
+    }
+    openingAuction {
+      durationSecs
+      volume
+    }
+    accountsConnection {
+      edges {
+        node {
+          type
+          asset {
+            id
+          }
+          balance
+        }
+      }
+    }
+    tradingMode
+    fees {
+      factors {
+        makerFee
+        infrastructureFee
+        liquidityFee
+      }
+    }
+    priceMonitoringSettings {
+      parameters {
+        triggers {
+          horizonSecs
+          probability
+          auctionExtensionSecs
+        }
+      }
+    }
+    riskFactors {
+      market
+      short
+      long
+    }
+    data {
+      market {
+        id
+      }
+      markPrice
+      midPrice
+      bestBidVolume
+      bestOfferVolume
+      bestStaticBidVolume
+      bestStaticOfferVolume
+      bestBidPrice
+      bestOfferPrice
+      trigger
+      openInterest
+      suppliedStake
+      openInterest
+      targetStake
+      marketValueProxy
+      priceMonitoringBounds {
+        minValidPrice
+        maxValidPrice
+        trigger {
+          horizonSecs
+          probability
+          auctionExtensionSecs
+        }
+        referencePrice
+      }
+    }
+    liquidityMonitoringParameters {
+      triggeringRatio
+      targetStakeParameters {
+        timeWindow
+        scalingFactor
+      }
+    }
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
+        }
+        product {
+          ... on Future {
+            quoteName
+            settlementAsset {
+              id
+              symbol
+              name
+              decimals
+            }
+            dataSourceSpecForSettlementData {
+              id
+            }
+            dataSourceSpecForTradingTermination {
+              id
+            }
+            dataSourceSpecBinding {
+              settlementDataProperty
+              tradingTerminationProperty
+            }
+          }
+        }
+      }
+      riskModel {
+        ... on LogNormalRiskModel {
+          tau
+          riskAversionParameter
+          params {
+            r
+            sigma
+            mu
+          }
+        }
+        ... on SimpleRiskModel {
+          params {
+            factorLong
+            factorShort
+          }
+        }
+      }
+    }
+    depth {
+      lastTrade {
+        price
+      }
+    }
+  }
+}
