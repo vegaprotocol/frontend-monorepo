@@ -179,7 +179,7 @@ export const useLedgerEntriesDataProvider = ({
     [gridRef]
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: ledgerEntriesProvider,
     update,
     insert,
@@ -193,5 +193,5 @@ export const useLedgerEntriesDataProvider = ({
     totalCountRef,
     load
   );
-  return { loading, error, data, getRows };
+  return { loading, error, data, getRows, reload };
 };

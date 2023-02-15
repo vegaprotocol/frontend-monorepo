@@ -21,11 +21,12 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter | undefined>();
 
-  const { data, error, loading, getRows } = useLedgerEntriesDataProvider({
-    partyId,
-    filter,
-    gridRef,
-  });
+  const { data, error, loading, getRows, reload } =
+    useLedgerEntriesDataProvider({
+      partyId,
+      filter,
+      gridRef,
+    });
 
   const onFilterChanged = useCallback(
     (event: FilterChangedEvent) => {
@@ -54,6 +55,7 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
           data={data}
           noDataMessage={t('No entries')}
           noDataCondition={(data) => !(data && data.length)}
+          reload={reload}
         />
       </div>
     </div>

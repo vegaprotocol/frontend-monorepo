@@ -1,5 +1,5 @@
 import type { AgGridReact } from 'ag-grid-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { FillsTable } from './fills-table';
@@ -17,9 +17,10 @@ export const FillsManager = ({
   marketId,
   onMarketClick,
 }: FillsManagerProps) => {
+  const [rerender, setRerender] = useState(false);
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
-  const { data, error, loading, addNewRows, getRows } = useFillsList({
+  const { data, error, loading, addNewRows, getRows, reload } = useFillsList({
     partyId,
     marketId,
     gridRef,
@@ -55,6 +56,7 @@ export const FillsManager = ({
           data={data}
           noDataMessage={t('No fills')}
           noDataCondition={(data) => !(data && data.length)}
+          reload={reload}
         />
       </div>
     </div>

@@ -83,14 +83,15 @@ export const OrderListManager = ({
   const create = useVegaTransactionStore((state) => state.create);
   const hasActiveOrder = useHasActiveOrder(marketId);
 
-  const { data, error, loading, addNewRows, getRows } = useOrderListData({
-    partyId,
-    marketId,
-    sort,
-    filter,
-    gridRef,
-    scrolledToTop,
-  });
+  const { data, error, loading, addNewRows, getRows, reload } =
+    useOrderListData({
+      partyId,
+      marketId,
+      sort,
+      filter,
+      gridRef,
+      scrolledToTop,
+    });
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {
@@ -159,6 +160,7 @@ export const OrderListManager = ({
               data={data}
               noDataMessage={t('No orders')}
               noDataCondition={(data) => !(data && data.length)}
+              reload={reload}
             />
           </div>
         </div>
