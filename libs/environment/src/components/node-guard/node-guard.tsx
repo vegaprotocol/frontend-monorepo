@@ -11,15 +11,14 @@ export const NodeGuard = ({
   skeleton: ReactNode;
 }) => {
   const { error, loading } = useStatisticsQuery();
-  const nonIdealWrapperClasses =
-    'h-full min-h-screen flex items-center justify-center';
+  const wrapperClasses = 'h-full min-h-screen flex items-center justify-center';
 
   if (loading) {
-    return <div className={nonIdealWrapperClasses}>{skeleton}</div>;
+    return <div className={wrapperClasses}>{skeleton}</div>;
   }
 
   if (error) {
-    return <div className={nonIdealWrapperClasses}>{failure}</div>;
+    return <div className={wrapperClasses}>{failure}</div>;
   }
 
   // eslint-disable-next-line
