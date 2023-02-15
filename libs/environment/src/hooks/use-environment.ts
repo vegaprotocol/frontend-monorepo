@@ -258,7 +258,7 @@ function compileEnvVars() {
     ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'],
     VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'],
     VEGA_EXPLORER_URL: process.env['NX_VEGA_EXPLORER_URL'],
-    VEGA_TOKEN_URL: process.env['NX_TOKEN_URL'],
+    VEGA_TOKEN_URL: process.env['NX_VEGA_TOKEN_URL'],
     GITHUB_FEEDBACK_URL: process.env['NX_GITHUB_FEEDBACK_URL'],
     MAINTENANCE_PAGE: parseBoolean(process.env['NX_MAINTENANCE_PAGE']),
     GIT_BRANCH: process.env['GIT_COMMIT_BRANCH'],
