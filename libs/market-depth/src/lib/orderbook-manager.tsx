@@ -85,7 +85,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     [marketId, updateOrderbookData]
   );
 
-  const { data, error, loading, flush } = useDataProvider({
+  const { data, error, loading, flush, reload } = useDataProvider({
     dataProvider: marketDepthProvider,
     update,
     variables,
@@ -156,6 +156,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       loading={loading || marketDataLoading || marketLoading}
       error={error || marketDataError || marketError}
       data={data}
+      reload={reload}
     >
       <Orderbook
         {...orderbookData}

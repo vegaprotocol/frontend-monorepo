@@ -31,6 +31,8 @@ export const AccountManager = ({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
+  console.log('data', data);
+  console.log('error', error);
   return (
     <div className="relative h-full">
       <AccountTable
