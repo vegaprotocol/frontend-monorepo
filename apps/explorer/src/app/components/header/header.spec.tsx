@@ -14,7 +14,7 @@ jest.mock('../search', () => ({
 
 const renderComponent = () => (
   <MemoryRouter>
-    <Header menuOpen={false} setMenuOpen={jest.fn()} />
+    <Header />
   </MemoryRouter>
 );
 
