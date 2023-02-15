@@ -8,7 +8,8 @@ import type {
 } from '../utils/__generated__/Node';
 import { BlockTimeDocument } from '../utils/__generated__/Node';
 import { StatisticsDocument } from '../utils/__generated__/Node';
-import type { Environment, Networks } from '../types';
+import type { Environment } from '../types';
+import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
 import { configSchema } from '../utils/validate-configuration';
@@ -245,15 +246,19 @@ const testSubscription = (client: Client) => {
  * here to appease the environment store interface
  */
 function compileEnvVars() {
-  const env = {
+  const VEGA_ENV = process.env['NX_VEGA_ENV'] as Networks;
+  const env: Environment = {
     VEGA_URL: process.env['NX_VEGA_URL'],
-    VEGA_ENV: process.env['NX_VEGA_ENV'] as Networks,
+    VEGA_ENV,
     VEGA_CONFIG_URL: process.env['NX_VEGA_CONFIG_URL'] as string,
-    VEGA_NETWORKS: parseJSON(process.env['NX_VEGA_NETWORKS']),
+    VEGA_NETWORKS: parseNetworks(process.env['NX_VEGA_NETWORKS']),
     VEGA_WALLET_URL: process.env['NX_VEGA_WALLET_URL'] as string,
     HOSTED_WALLET_URL: process.env['NX_HOSTED_WALLET_URL'],
-    ETHERSCAN_URL: process.env['NX_ETHERSCAN_URL'] as string,
-    ETHEREUM_PROVIDER_URL: process.env['NX_ETHEREUM_PROVIDER_URL'] as string,
+    ETHERSCAN_URL: getEtherscanUrl(VEGA_ENV, process.env['NX_ETHERSCAN_URL']),
+    ETHEREUM_PROVIDER_URL: getEthereumProviderUrl(
+      VEGA_ENV,
+      process.env['NX_ETHEREUM_PROVIDER_URL']
+    ),
     ETH_LOCAL_PROVIDER_URL: process.env['NX_ETH_LOCAL_PROVIDER_URL'],
     ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'],
     VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'],
@@ -269,7 +274,7 @@ function compileEnvVars() {
   return env;
 }
 
-function parseJSON(value?: string) {
+function parseNetworks(value?: string) {
   if (value) {
     try {
       return JSON.parse(value);
@@ -282,4 +287,29 @@ function parseJSON(value?: string) {
 
 function parseBoolean(value?: string) {
   return ['true', '1', 'yes'].includes(value?.toLowerCase() || '');
+}
+
+/**
+ * Provides a fallback ethereum provider url for test purposes in some apps
+ */
+function getEthereumProviderUrl(
+  network: Networks | undefined,
+  envvar: string | undefined
+) {
+  if (envvar) return envvar;
+  return network === Networks.MAINNET
+    ? 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'
+    : 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
+}
+/**
+ * Provide a fallback etherscan url for test purposes in some apps
+ */
+function getEtherscanUrl(
+  network: Networks | undefined,
+  envvar: string | undefined
+) {
+  if (envvar) return envvar;
+  return network === Networks.MAINNET
+    ? 'https://etherscan.io'
+    : 'https://sepolia.etherscan.io';
 }
