@@ -128,7 +128,7 @@ export const OrderListManager = ({
   return (
     <>
       <div className="h-full relative grid grid-rows-[1fr,min-content]">
-        <div className="h-full relative">
+        <div className="relative">
           <OrderListTable
             ref={gridRef}
             rowModelType="infinite"
@@ -149,6 +149,8 @@ export const OrderListManager = ({
             setEditOrder={setEditOrder}
             onMarketClick={onMarketClick}
             isReadOnly={isReadOnly}
+            hasActiveOrder={hasActiveOrder}
+            blockLoadDebounceMillis={100}
           />
           <div className="pointer-events-none absolute inset-0">
             <AsyncRenderer
