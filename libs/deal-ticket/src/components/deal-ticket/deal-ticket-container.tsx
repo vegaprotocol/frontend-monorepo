@@ -25,6 +25,7 @@ export const DealTicketContainer = ({
     data: marketData,
     error: marketDataError,
     loading: marketDataLoading,
+    reload,
   } = useThrottledDataProvider(
     {
       dataProvider: marketDataProvider,
@@ -39,6 +40,7 @@ export const DealTicketContainer = ({
       data={market && marketData}
       loading={marketLoading || marketDataLoading}
       error={marketError || marketDataError}
+      reload={reload}
     >
       {market && marketData ? (
         <DealTicket

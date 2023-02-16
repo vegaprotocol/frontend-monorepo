@@ -16,6 +16,7 @@ export const ledgerEntriesQuery = (
       edges: ledgerEntries.map((node) => ({
         __typename: 'AggregatedLedgerEntriesEdge',
         node,
+        cursor: 'cursor-1',
       })),
       pageInfo: {
         startCursor:

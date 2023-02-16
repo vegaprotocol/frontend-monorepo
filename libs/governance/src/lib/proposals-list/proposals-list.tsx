@@ -29,14 +29,19 @@ export const ProposalsList = () => {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
     };
   }, []);
-  const { data, loading, error } = useDataProvider({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: proposalsListDataProvider,
     variables,
   });
   const filteredData = getNewMarketProposals(data || []);
   const { columnDefs, defaultColDef } = useColumnDefs();
   return (
-    <AsyncRenderer loading={loading} error={error} data={filteredData}>
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={filteredData}
+      reload={reload}
+    >
       <AgGrid
         ref={gridRef}
         domLayout="autoHeight"
