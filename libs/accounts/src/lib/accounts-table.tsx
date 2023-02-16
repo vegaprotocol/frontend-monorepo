@@ -25,6 +25,11 @@ export interface Datasource extends IDatasource {
   getRows(params: GetRowsParams): void;
 }
 
+export type MarketAsset = Pick<
+  Asset,
+  'symbol' | 'status' | 'name' | 'id' | 'decimals'
+>;
+
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
   datasource?: Datasource;
@@ -32,7 +37,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   isReadOnly: boolean;
-  marketAsset?: Asset;
+  marketAsset?: MarketAsset;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
@@ -74,7 +79,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             sortable: true,
           }}
           {...props}
-          pinnedTopRowData={[marketAssetRow]}
+          pinnedTopRowData={marketAssetRow ? [marketAssetRow] : undefined}
         >
           <AgGridColumn
             headerName={t('Asset')}

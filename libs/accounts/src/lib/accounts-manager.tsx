@@ -1,10 +1,10 @@
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import type { Asset } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, memo } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
+import type { MarketAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
@@ -13,7 +13,7 @@ interface AccountManagerProps {
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
   isReadOnly: boolean;
-  marketAsset?: Asset;
+  marketAsset?: MarketAsset;
 }
 
 export const AccountManager = ({

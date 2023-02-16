@@ -5,10 +5,15 @@ import { useWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import type { MarketAsset } from '@vegaprotocol/accounts';
 import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 
-export const AccountsContainer = ({ marketAsset }: { marketAsset?: Asset }) => {
+export const AccountsContainer = ({
+  marketAsset,
+}: {
+  marketAsset?: MarketAsset;
+}) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);

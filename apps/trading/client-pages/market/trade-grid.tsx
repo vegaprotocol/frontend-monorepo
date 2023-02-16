@@ -29,6 +29,7 @@ import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import type { Asset } from '@vegaprotocol/types';
+import type { MarketAsset } from '@vegaprotocol/accounts';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -66,7 +67,7 @@ type TradingView = keyof typeof TradingViews;
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string) => void;
-  marketAsset?: Asset;
+  marketAsset?: MarketAsset;
 }
 
 const MainGrid = ({
@@ -76,7 +77,7 @@ const MainGrid = ({
 }: {
   marketId: string;
   onSelect?: (marketId: string) => void;
-  marketAsset?: Asset;
+  marketAsset?: MarketAsset;
 }) => {
   const navigate = useNavigate();
   const onMarketClick = (marketId: string) => {
@@ -226,7 +227,7 @@ interface TradePanelsProps {
   onSelect: (marketId: string) => void;
   onMarketClick?: (marketId: string) => void;
   onClickCollateral: () => void;
-  marketAsset?: Asset;
+  marketAsset?: MarketAsset;
 }
 
 export const TradePanels = ({
@@ -242,7 +243,10 @@ export const TradePanels = ({
       onSelect: (marketId: string) => void;
       onMarketClick?: (marketId: string) => void;
       onClickCollateral: () => void;
-      marketAsset?: Asset;
+      marketAsset?: Pick<
+        Asset,
+        'symbol' | 'status' | 'name' | 'id' | 'decimals'
+      >;
     }>(TradingViews[view]);
 
     if (!Component) {
