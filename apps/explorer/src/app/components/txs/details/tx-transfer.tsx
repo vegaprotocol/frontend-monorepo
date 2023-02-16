@@ -44,7 +44,7 @@ export const TxDetailsTransfer = ({
 
   return (
     <>
-      <TableWithTbody className="mb-8">
+      <TableWithTbody className="mb-8" allowWrap={true}>
         <TxDetailsShared
           txData={txData}
           pubKey={pubKey}
@@ -75,9 +75,7 @@ export const TxDetailsTransfer = ({
           </TableRow>
         ) : null}
       </TableWithTbody>
-      {transfer.recurring ? (
-        <TransferRecurring transfer={transfer.recurring} />
-      ) : null}
+      <TransferRecurring from={from} transfer={transfer} />
     </>
   );
 };

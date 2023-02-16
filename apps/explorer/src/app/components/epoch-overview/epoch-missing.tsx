@@ -1,19 +1,9 @@
-import {
-  useExplorerEpochQuery,
-  useExplorerFutureEpochQuery,
-} from './__generated__/Epoch';
+import { useExplorerFutureEpochQuery } from './__generated__/Epoch';
 
-import { t } from '@vegaprotocol/react-helpers';
-import { BlockLink } from '../links';
-import { Time } from '../time';
-import { TimeAgo } from '../time-ago';
-import parseISO from 'date-fns/parseISO';
 import addSeconds from 'date-fns/addSeconds';
-import parse from 'date-fns/parse';
 import formatDistance from 'date-fns/formatDistance';
-
-const borderClass =
-  'border-solid border-2 border-vega-dark-150 border-collapse';
+import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import isFuture from 'date-fns/isFuture';
 
 export type EpochMissingOverviewProps = {
   missingEpochId?: string;
@@ -26,11 +16,16 @@ const EpochMissingOverview = ({
 }: EpochMissingOverviewProps) => {
   const { data, error, loading } = useExplorerFutureEpochQuery();
 
+  if (!missingEpochId) {
+    return <span>-</span>;
+  }
   if (!data || loading || error) {
     return <span>{missingEpochId}</span>;
   }
 
   let label = 'Missing data';
+  // Let's assume it is
+  let isInFuture = true;
 
   const epochLength = data.networkParameter?.value || '';
   const epochLengthInSeconds = getSeconds(epochLength);
@@ -42,19 +37,29 @@ const EpochMissingOverview = ({
 
     const diff = missing - current;
     const futureDate = addSeconds(startFrom, diff * epochLengthInSeconds);
-    label = `${futureDate.toLocaleString()} - roughly ${formatDistance(
+
+    label = `Estimate: ${futureDate.toLocaleString()} - ${formatDistance(
       futureDate,
-      startFrom
+      startFrom,
+      { addSuffix: true }
     )} `;
+
+    isInFuture = isFuture(futureDate);
   }
 
+  const description = <p className="text-xs m-2">{label}</p>;
+
   return (
-    <details className="inline-block pl-2 cursor-pointer">
-      <summary className="mr-5">{missingEpochId}</summary>
-      <div className="text-xs m-2">
-        <p>{label}</p>
-      </div>
-    </details>
+    <Tooltip description={description}>
+      <p>
+        {isInFuture ? (
+          <Icon name="calendar" className="mr-1" />
+        ) : (
+          <Icon name="outdated" className="mr-1" />
+        )}
+        {missingEpochId}
+      </p>
+    </Tooltip>
   );
 };
 

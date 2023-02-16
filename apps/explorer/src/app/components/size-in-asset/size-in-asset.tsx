@@ -1,7 +1,6 @@
 import { useAssetDataProvider } from '@vegaprotocol/assets';
 import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { AssetLink } from '../links';
-import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 
 export type DecimalSource = 'ASSET';
 
