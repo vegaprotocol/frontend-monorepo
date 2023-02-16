@@ -39,7 +39,11 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
     },
     [filter]
   );
-
+  const getRowId = useCallback(
+    ({ data }: { data: Types.AggregatedLedgerEntry }) =>
+      `${data.vegaTime}-${data.fromAccountPartyId}-${data.toAccountPartyId}`,
+    []
+  );
   return (
     <div className="h-full relative">
       <LedgerTable
@@ -47,6 +51,7 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
         rowModelType="infinite"
         datasource={{ getRows }}
         onFilterChanged={onFilterChanged}
+        getRowId={getRowId}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
