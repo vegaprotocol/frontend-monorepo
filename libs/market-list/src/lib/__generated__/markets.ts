@@ -3,12 +3,12 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketFieldsFragment = { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', quantum: string, status: Types.AssetStatus, id: string, symbol: string, name: string, decimals: number, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open: any, close: any } };
+export type MarketFieldsFragment = { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', quantum: string, status: Types.AssetStatus, id: string, symbol: string, name: string, decimals: number }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open: any, close: any } };
 
 export type MarketsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type MarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', quantum: string, status: Types.AssetStatus, id: string, symbol: string, name: string, decimals: number, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open: any, close: any } } }> } | null };
+export type MarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', quantum: string, status: Types.AssetStatus, id: string, symbol: string, name: string, decimals: number }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open: any, close: any } } }> } | null };
 
 export const MarketFieldsFragmentDoc = gql`
     fragment MarketFields on Market {
@@ -35,17 +35,6 @@ export const MarketFieldsFragmentDoc = gql`
       product {
         ... on Future {
           settlementAsset {
-            source {
-              __typename
-              ... on ERC20 {
-                contractAddress
-                lifetimeLimit
-                withdrawThreshold
-              }
-              ... on BuiltinAsset {
-                maxFaucetAmountMint
-              }
-            }
             quantum
             status
             id

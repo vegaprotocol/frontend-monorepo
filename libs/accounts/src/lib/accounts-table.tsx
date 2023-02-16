@@ -41,32 +41,23 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
     const marketAssetId = props.marketAsset?.id;
 
-    const marketAssetRow = useMemo(
-      () => props.rowData?.find((row) => row.asset.id === marketAssetId),
-      [marketAssetId, props.rowData]
-    );
-
-    const rows = useMemo(() => {
-      const data = props.rowData;
-      if (!marketAssetRow) {
+    const marketAssetRow = useMemo(() => {
+      const newAssetRow = props.rowData?.find(
+        (row) => row.asset.id === marketAssetId
+      );
+      if (!newAssetRow) {
         if (props.marketAsset) {
-          const accountFields: AccountFields = {
-            asset: {
-              ...props.marketAsset,
-              __typename: 'Asset',
-              source: undefined,
-            },
+          return {
+            asset: props.marketAsset,
             available: '0',
             used: '0',
             deposited: '0',
             balance: '0',
-            breakdown: undefined,
           };
-          return data && [accountFields, ...data];
         }
       }
-      return data;
-    }, [marketAssetRow, props.marketAsset, props.rowData]);
+      return newAssetRow;
+    }, [marketAssetId, props.marketAsset, props.rowData]);
 
     return (
       <>
@@ -83,8 +74,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             sortable: true,
           }}
           {...props}
-          rowData={rows}
-          pinnedTopRowData={marketAssetRow ? [marketAssetRow] : undefined}
+          pinnedTopRowData={[marketAssetRow]}
         >
           <AgGridColumn
             headerName={t('Asset')}
