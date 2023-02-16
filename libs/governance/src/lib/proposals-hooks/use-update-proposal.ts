@@ -1,4 +1,4 @@
-import { proposalsListDataProvider } from '..';
+import { proposalsDataProvider } from '..';
 import * as Schema from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
@@ -42,7 +42,7 @@ export const useUpdateProposal = ({
   );
 
   const { data, loading, error } = useDataProvider({
-    dataProvider: proposalsListDataProvider,
+    dataProvider: proposalsDataProvider,
     variables,
   });
 
@@ -189,7 +189,7 @@ const fieldGetters = {
 };
 
 export const isChangeProposed = (
-  proposal: ProposalListFieldsFragment | undefined,
+  proposal: Pick<ProposalListFieldsFragment, 'terms'>,
   field: UpdateProposalField
 ) => {
   if (proposal) {

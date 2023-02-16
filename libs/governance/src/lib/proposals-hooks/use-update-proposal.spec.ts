@@ -14,30 +14,18 @@ import {
   useUpdateProposal,
 } from './use-update-proposal';
 
+type Proposal = Pick<ProposalListFieldsFragment, 'terms'> &
+  Pick<ProposalListFieldsFragment, 'state'> &
+  Pick<ProposalListFieldsFragment, 'id'>;
+
 const generateUpdateAssetProposal = (
   id: string,
   quantum = '',
   lifetimeLimit = '',
   withdrawThreshold = ''
-): ProposalListFieldsFragment => ({
-  reference: '',
+): Proposal => ({
+  id,
   state: Schema.ProposalState.STATE_OPEN,
-  datetime: '',
-  votes: {
-    __typename: undefined,
-    yes: {
-      __typename: undefined,
-      totalTokens: '',
-      totalNumber: '',
-      totalWeight: '',
-    },
-    no: {
-      __typename: undefined,
-      totalTokens: '',
-      totalNumber: '',
-      totalWeight: '',
-    },
-  },
   terms: {
     __typename: 'ProposalTerms',
     closingDatetime: '',
@@ -120,25 +108,8 @@ const generateUpdateMarketProposal = (
   riskParametersType:
     | 'UpdateMarketLogNormalRiskModel'
     | 'UpdateMarketSimpleRiskModel' = 'UpdateMarketLogNormalRiskModel'
-): ProposalListFieldsFragment => ({
-  reference: '',
+): Proposal => ({
   state: Schema.ProposalState.STATE_OPEN,
-  datetime: '',
-  votes: {
-    __typename: undefined,
-    yes: {
-      __typename: undefined,
-      totalTokens: '',
-      totalNumber: '',
-      totalWeight: '',
-    },
-    no: {
-      __typename: undefined,
-      totalTokens: '',
-      totalNumber: '',
-      totalWeight: '',
-    },
-  },
   terms: {
     __typename: 'ProposalTerms',
     closingDatetime: '',
@@ -155,6 +126,28 @@ const generateUpdateMarketProposal = (
               : undefined,
           code,
           product: {
+            dataSourceSpecBinding: {
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
             __typename:
               quoteName.length > 0 ? 'UpdateFutureProduct' : undefined,
             quoteName,
@@ -195,7 +188,7 @@ const generateUpdateMarketProposal = (
 });
 
 const mockDataProviderData: {
-  data: ProposalListFieldsFragment[];
+  data: Proposal[];
   error: Error | undefined;
   loading: boolean;
 } = {

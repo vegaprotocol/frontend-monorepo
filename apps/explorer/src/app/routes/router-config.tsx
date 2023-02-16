@@ -1,6 +1,6 @@
 import { AssetPage, AssetsPage } from './assets';
 import BlockPage from './blocks';
-import Governance from './governance';
+import { Proposals } from './governance';
 import Home from './home';
 import OraclePage from './oracles';
 import Oracles from './oracles/home';
@@ -84,7 +84,7 @@ const governanceRoutes: Route[] = flags.governance
         path: Routes.GOVERNANCE,
         name: 'Governance proposals',
         text: t('Governance Proposals'),
-        element: <Governance />,
+        element: <Proposals />,
       },
     ]
   : [];

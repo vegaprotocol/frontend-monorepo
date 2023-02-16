@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import { proposalsListDataProvider } from '@vegaprotocol/governance';
+import { proposalsDataProvider } from '@vegaprotocol/governance';
 import take from 'lodash/take';
 import * as Types from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -19,7 +19,7 @@ export const ProposedMarkets = () => {
     };
   }, []);
   const { data } = useDataProvider({
-    dataProvider: proposalsListDataProvider,
+    dataProvider: proposalsDataProvider,
     variables,
     skipUpdates: true,
   });

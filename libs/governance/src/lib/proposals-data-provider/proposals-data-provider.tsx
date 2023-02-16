@@ -10,7 +10,7 @@ const getData = (responseData: ProposalsListQuery | null) =>
     ?.filter((edge) => Boolean(edge?.node))
     .map((edge) => edge?.node as ProposalListFieldsFragment) || null;
 
-export const proposalsListDataProvider = makeDataProvider<
+export const proposalsDataProvider = makeDataProvider<
   ProposalsListQuery,
   ProposalListFieldsFragment[],
   never,

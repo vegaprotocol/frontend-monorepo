@@ -1,6 +1,7 @@
 import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
+import { UpdateNetworkParameterFielsFragmentDoc } from '../../proposals-data-provider/__generated__/Proposals';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ProposalEventFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null };
@@ -12,7 +13,7 @@ export type ProposalEventSubscriptionVariables = Types.Exact<{
 
 export type ProposalEventSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null } };
 
-export type UpdateNetworkParameterFieldsFragment = { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } };
+export type UpdateNetworkParameterProposalFragment = { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } };
 
 export type OnUpdateNetworkParametersSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
 
@@ -35,8 +36,8 @@ export const ProposalEventFieldsFragmentDoc = gql`
   errorDetails
 }
     `;
-export const UpdateNetworkParameterFieldsFragmentDoc = gql`
-    fragment UpdateNetworkParameterFields on Proposal {
+export const UpdateNetworkParameterProposalFragmentDoc = gql`
+    fragment UpdateNetworkParameterProposal on Proposal {
   id
   state
   datetime
@@ -44,15 +45,12 @@ export const UpdateNetworkParameterFieldsFragmentDoc = gql`
     enactmentDatetime
     change {
       ... on UpdateNetworkParameter {
-        networkParameter {
-          key
-          value
-        }
+        ...UpdateNetworkParameterFiels
       }
     }
   }
 }
-    `;
+    ${UpdateNetworkParameterFielsFragmentDoc}`;
 export const ProposalEventDocument = gql`
     subscription ProposalEvent($partyId: ID!) {
   proposals(partyId: $partyId) {
@@ -88,12 +86,12 @@ export const OnUpdateNetworkParametersDocument = gql`
   busEvents(types: [Proposal], batchSize: 0) {
     event {
       ... on Proposal {
-        ...UpdateNetworkParameterFields
+        ...UpdateNetworkParameterProposal
       }
     }
   }
 }
-    ${UpdateNetworkParameterFieldsFragmentDoc}`;
+    ${UpdateNetworkParameterProposalFragmentDoc}`;
 
 /**
  * __useOnUpdateNetworkParametersSubscription__

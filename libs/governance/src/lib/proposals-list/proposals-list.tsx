@@ -4,7 +4,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Types from '@vegaprotocol/types';
-import { proposalsListDataProvider } from '../proposals-data-provider';
+import { proposalsDataProvider } from '../proposals-data-provider';
 import { useCallback, useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
@@ -29,8 +29,8 @@ export const ProposalsList = () => {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
     };
   }, []);
-  const { data, loading, error, reload } = useDataProvider({
-    dataProvider: proposalsListDataProvider,
+  const { data, loading, error } = useDataProvider({
+    dataProvider: proposalsDataProvider,
     variables,
   });
   const filteredData = getNewMarketProposals(data || []);

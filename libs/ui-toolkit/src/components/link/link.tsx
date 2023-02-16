@@ -46,6 +46,7 @@ export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
     className={classNames(className, 'inline-flex items-baseline')}
     target="_blank"
     data-testid="external-link"
+    rel="noreferrer nofollow"
     {...props}
   >
     {typeof children === 'string' ? (
