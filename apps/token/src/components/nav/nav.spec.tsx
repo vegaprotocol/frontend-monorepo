@@ -1,23 +1,18 @@
 import { render, screen, within } from '@testing-library/react';
-import { EnvironmentProvider, Networks } from '@vegaprotocol/environment';
 import { MemoryRouter } from 'react-router-dom';
 import { Nav } from './nav';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
   NetworkSwitcher: () => <div data-testid="network-switcher" />,
+  useEnvironment: () => ({ VEGA_ENV: 'MAINNET' }),
 }));
 
 const renderComponent = (initialEntries?: string[]) => {
   return render(
-    <EnvironmentProvider
-      definitions={{ VEGA_ENV: Networks.MAINNET }}
-      config={{ hosts: [] }}
-    >
-      <MemoryRouter initialEntries={initialEntries}>
-        <Nav />
-      </MemoryRouter>
-    </EnvironmentProvider>
+    <MemoryRouter initialEntries={initialEntries}>
+      <Nav />
+    </MemoryRouter>
   );
 };
 

@@ -1,9 +1,11 @@
 import { BrowserRouter } from 'react-router-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { Networks, EnvironmentProvider } from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { RiskNoticeDialog } from './risk-notice-dialog';
 import { WelcomeDialog } from './welcome-dialog';
+
+jest.mock('@vegaprotocol/environment');
 
 const mockEnvDefinitions = {
   VEGA_CONFIG_URL: 'https://config.url',
@@ -28,15 +30,16 @@ describe('Risk notice dialog', () => {
   `(
     '$assertion the risk notice on $network',
     async ({ assertion, network }) => {
+      // @ts-ignore ignore mock implementation
+      useEnvironment.mockImplementation(() => ({
+        ...mockEnvDefinitions,
+        VEGA_ENV: network,
+      }));
+
       render(
-        <EnvironmentProvider
-          definitions={{ ...mockEnvDefinitions, VEGA_ENV: network }}
-          config={{ hosts: [] }}
-        >
-          <MockedProvider>
-            <WelcomeDialog />
-          </MockedProvider>
-        </EnvironmentProvider>,
+        <MockedProvider>
+          <WelcomeDialog />
+        </MockedProvider>,
         { wrapper: BrowserRouter }
       );
 
@@ -51,14 +54,13 @@ describe('Risk notice dialog', () => {
   );
 
   it("doesn't display the risk notice when previously acknowledged", () => {
-    render(
-      <EnvironmentProvider
-        definitions={{ ...mockEnvDefinitions, VEGA_ENV: Networks.MAINNET }}
-        config={{ hosts: [] }}
-      >
-        <RiskNoticeDialog onClose={mockOnClose} />
-      </EnvironmentProvider>
-    );
+    // @ts-ignore ignore mock implementation
+    useEnvironment.mockImplementation(() => ({
+      ...mockEnvDefinitions,
+      VEGA_ENV: Networks.MAINNET,
+    }));
+
+    render(<RiskNoticeDialog onClose={mockOnClose} />);
 
     expect(screen.queryByText(introText)).toBeInTheDocument();
 

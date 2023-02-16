@@ -2,58 +2,47 @@ import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
-import { useEnvironment, useOfflineListener } from '../../hooks';
-import { t } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '../../hooks';
 import { createClient } from '@vegaprotocol/apollo-client';
 
 type NetworkLoaderProps = {
   children?: ReactNode;
   skeleton?: ReactNode;
+  failure?: ReactNode;
   cache?: InMemoryCacheConfig;
 };
 
 export function NetworkLoader({
   skeleton,
+  failure,
   children,
   cache,
 }: NetworkLoaderProps) {
-  const { VEGA_URL } = useEnvironment();
-  const isOffline = useOfflineListener();
+  const { status, VEGA_URL } = useEnvironment((store) => ({
+    status: store.status,
+    VEGA_URL: store.VEGA_URL,
+  }));
+
   const client = useMemo(() => {
-    if (VEGA_URL) {
+    if (status === 'success' && VEGA_URL) {
       return createClient({
         url: VEGA_URL,
         cacheConfig: cache,
       });
     }
     return undefined;
-  }, [VEGA_URL, cache]);
+  }, [VEGA_URL, status, cache]);
 
-  const offlineLayer = useMemo(() => {
-    return isOffline ? (
-      <div className="h-full w-full absolute top-0 left-0 right-0 bottom-0 z-50 backdrop-blur-sm ease-in duration-1000">
-        <div className="h-full min-h-screen flex items-center justify-center">
-          <div>
-            <h3>{t('Your are offline....')}</h3>
-            {t('Check your network connection')}
-          </div>
-        </div>
-      </div>
-    ) : null;
-  }, [isOffline]);
+  const nonIdealWrapperClasses =
+    'h-full min-h-screen flex items-center justify-center';
 
-  if (!client) {
-    return (
-      <div className="h-full min-h-screen flex items-center justify-center">
-        {skeleton}
-      </div>
-    );
+  if (status === 'failed') {
+    return <div className={nonIdealWrapperClasses}>{failure}</div>;
   }
 
-  return (
-    <ApolloProvider client={client}>
-      {offlineLayer}
-      {children}
-    </ApolloProvider>
-  );
+  if (status === 'default' || status === 'pending' || !client) {
+    return <div className={nonIdealWrapperClasses}>{skeleton}</div>;
+  }
+
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }

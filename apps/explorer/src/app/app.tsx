@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
+import { NetworkLoader, useInitializeEnv } from '@vegaprotocol/environment';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
 import { Main } from './components/main';
@@ -61,11 +61,8 @@ function App() {
 }
 
 const Wrapper = () => {
-  return (
-    <EnvironmentProvider>
-      <App />
-    </EnvironmentProvider>
-  );
+  useInitializeEnv();
+  return <App />;
 };
 
 export default Wrapper;
