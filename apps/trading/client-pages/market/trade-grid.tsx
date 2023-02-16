@@ -28,7 +28,6 @@ import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
-import type { Asset } from '@vegaprotocol/types';
 import type { MarketAsset } from '@vegaprotocol/accounts';
 
 type MarketDependantView =
@@ -243,10 +242,7 @@ export const TradePanels = ({
       onSelect: (marketId: string) => void;
       onMarketClick?: (marketId: string) => void;
       onClickCollateral: () => void;
-      marketAsset?: Pick<
-        Asset,
-        'symbol' | 'status' | 'name' | 'id' | 'decimals'
-      >;
+      marketAsset?: MarketAsset;
     }>(TradingViews[view]);
 
     if (!Component) {

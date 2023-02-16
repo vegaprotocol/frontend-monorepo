@@ -25,10 +25,7 @@ export interface Datasource extends IDatasource {
   getRows(params: GetRowsParams): void;
 }
 
-export type MarketAsset = Pick<
-  Asset,
-  'symbol' | 'status' | 'name' | 'id' | 'decimals'
->;
+export type MarketAsset = Pick<Asset, 'symbol' | 'name' | 'id' | 'decimals'>;
 
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
