@@ -47,10 +47,10 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     const marketAssetId = props.marketAsset?.id;
 
     const marketAssetRow = useMemo(() => {
-      const newAssetRow = props.rowData?.find(
+      const currentMarketAssetRow = props.rowData?.find(
         (row) => row.asset.id === marketAssetId
       );
-      if (!newAssetRow) {
+      if (!currentMarketAssetRow) {
         if (props.marketAsset) {
           return {
             asset: props.marketAsset,
@@ -61,7 +61,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           };
         }
       }
-      return newAssetRow;
+      return currentMarketAssetRow;
     }, [marketAssetId, props.marketAsset, props.rowData]);
 
     return (
