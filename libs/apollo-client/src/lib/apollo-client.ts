@@ -14,6 +14,7 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
 import { localLoggerFactory } from '@vegaprotocol/react-helpers';
+import { useHeaderStore } from './header-store';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -24,6 +25,7 @@ export type ClientOptions = {
   cacheConfig?: InMemoryCacheConfig;
   retry?: boolean;
   connectToDevTools?: boolean;
+  connectToHeaderStore?: boolean;
 };
 
 export function createClient({
@@ -31,6 +33,7 @@ export function createClient({
   cacheConfig,
   retry = true,
   connectToDevTools = true,
+  connectToHeaderStore = true,
 }: ClientOptions) {
   if (!url) {
     throw new Error('url must be passed into createClient!');
@@ -46,6 +49,28 @@ export function createClient({
 
   const timeoutLink = new ApolloLinkTimeout(10000);
   const enlargedTimeoutLink = new ApolloLinkTimeout(100000);
+
+  const headerLink = connectToHeaderStore
+    ? new ApolloLink((operation, forward) => {
+        return forward(operation).map((response) => {
+          const context = operation.getContext();
+          const r = context['response'];
+          const blockHeight = r?.headers.get('x-block-height');
+          const timestamp = r?.headers.get('x-block-timestamp');
+          if (blockHeight && timestamp) {
+            const state = useHeaderStore.getState();
+            useHeaderStore.setState({
+              ...state,
+              [r.url]: {
+                blockHeight: Number(blockHeight),
+                timestamp: new Date(Number(timestamp.slice(0, -6))),
+              },
+            });
+          }
+          return response;
+        });
+      })
+    : noOpLink;
 
   const retryLink = retry
     ? new RetryLink({
@@ -104,7 +129,13 @@ export function createClient({
   );
 
   return new ApolloClient({
-    link: from([errorLink, composedTimeoutLink, retryLink, splitLink]),
+    link: from([
+      errorLink,
+      composedTimeoutLink,
+      retryLink,
+      headerLink,
+      splitLink,
+    ]),
     cache: new InMemoryCache(cacheConfig),
     connectToDevTools,
   });
