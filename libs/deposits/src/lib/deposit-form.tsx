@@ -186,12 +186,16 @@ export const DepositForm = ({
                       },
                     })}
                   />
-                  <DisconnectEthereumButton />
+                  <DisconnectEthereumButton
+                    onDisconnect={() => {
+                      setValue('from', ''); // clear from value so required ethereum connection validation works
+                    }}
+                  />
                 </>
               );
             }
             return (
-              <Button onClick={openDialog} fill={true}>
+              <Button onClick={openDialog} variant="primary" fill={true}>
                 {t('Connect')}
               </Button>
             );
@@ -365,7 +369,7 @@ const FormButton = ({ selectedAsset, formState }: FormButtonProps) => {
       <Button
         type="submit"
         data-testid="deposit-submit"
-        variant="primary"
+        variant={isActive ? 'primary' : 'default'}
         fill={true}
         disabled={invalidChain}
       >
@@ -387,7 +391,11 @@ const UseButton = (props: UseButtonProps) => {
   );
 };
 
-const DisconnectEthereumButton = () => {
+const DisconnectEthereumButton = ({
+  onDisconnect,
+}: {
+  onDisconnect: () => void;
+}) => {
   const { connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
 
@@ -396,6 +404,7 @@ const DisconnectEthereumButton = () => {
       onClick={() => {
         connector.deactivate();
         removeEagerConnector();
+        onDisconnect();
       }}
       data-testid="disconnect-ethereum-wallet"
     >
