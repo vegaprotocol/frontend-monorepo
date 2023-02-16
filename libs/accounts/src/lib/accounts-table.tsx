@@ -167,7 +167,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 else {
                   if (
                     data.asset.id === marketAssetId &&
-                    new BigNumber(data.available).isLessThanOrEqualTo(0)
+                    new BigNumber(data.deposited).isLessThanOrEqualTo(0)
                   ) {
                     return (
                       <ButtonLink
