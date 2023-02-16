@@ -318,33 +318,37 @@ const SummaryMessage = memo(
     }
     if (!pubKey) {
       return (
-        <Notification
-          testId={'deal-ticket-connect-wallet'}
-          intent={Intent.Warning}
-          message={
-            <p className="text-sm pb-2">
-              You need a{' '}
-              <ExternalLink href="https://vega.xyz/wallet">
-                Vega wallet
-              </ExternalLink>{' '}
-              with {assetSymbol} to start trading in this market.
-            </p>
-          }
-          buttonProps={{
-            text: t('Connect wallet'),
-            action: openVegaWalletDialog,
-            dataTestId: 'order-connect-wallet',
-            size: 'md',
-          }}
-        />
+        <div className="mb-4">
+          <Notification
+            testId={'deal-ticket-connect-wallet'}
+            intent={Intent.Warning}
+            message={
+              <p className="text-sm pb-2">
+                You need a{' '}
+                <ExternalLink href="https://vega.xyz/wallet">
+                  Vega wallet
+                </ExternalLink>{' '}
+                with {assetSymbol} to start trading in this market.
+              </p>
+            }
+            buttonProps={{
+              text: t('Connect wallet'),
+              action: openVegaWalletDialog,
+              dataTestId: 'order-connect-wallet',
+              size: 'md',
+            }}
+          />
+        </div>
       );
     }
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
-        <ZeroBalanceError
-          asset={market.tradableInstrument.instrument.product.settlementAsset}
-          onClickCollateral={onClickCollateral}
-        />
+        <div className="mb-4">
+          <ZeroBalanceError
+            asset={market.tradableInstrument.instrument.product.settlementAsset}
+            onClickCollateral={onClickCollateral}
+          />
+        </div>
       );
     }
 
@@ -363,7 +367,11 @@ const SummaryMessage = memo(
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
     if (balanceError) {
-      return <MarginWarning balance={balance} margin={margin} asset={asset} />;
+      return (
+        <div className="mb-4">
+          <MarginWarning balance={balance} margin={margin} asset={asset} />;
+        </div>
+      );
     }
 
     // Show auction mode warning
@@ -375,13 +383,15 @@ const SummaryMessage = memo(
       ].includes(marketData.marketTradingMode)
     ) {
       return (
-        <Notification
-          intent={Intent.Warning}
-          testId={'dealticket-warning-auction'}
-          message={t(
-            'Any orders placed now will not trade until the auction ends'
-          )}
-        />
+        <div className="mb-4">
+          <Notification
+            intent={Intent.Warning}
+            testId={'dealticket-warning-auction'}
+            message={t(
+              'Any orders placed now will not trade until the auction ends'
+            )}
+          />
+        </div>
       );
     }
 
