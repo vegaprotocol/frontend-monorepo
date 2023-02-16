@@ -200,6 +200,7 @@ export const DepositForm = ({
                 variant="primary"
                 fill={true}
                 type="button"
+                data-testid="connect-eth-wallet-btn"
               >
                 {t('Connect')}
               </Button>
