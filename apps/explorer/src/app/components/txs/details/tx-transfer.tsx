@@ -1,13 +1,20 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
-import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
-import { TxDetailsShared } from './shared/tx-details-shared';
+import type {
+  Block,
+  TendermintBlocksResponse,
+} from '../../../routes/blocks/tendermint-blocks-response';
+import { sharedHeaderProps, TxDetailsShared } from './shared/tx-details-shared';
 import { TableRow, TableCell, TableWithTbody } from '../../table';
 
 import type { components } from '../../../../types/explorer';
 import { PartyLink } from '../../links';
 import SizeInAsset from '../../size-in-asset/size-in-asset';
 import { TransferRecurring } from './transfer/transfer-recurring';
+import {
+  SPECIAL_CASE_NETWORK,
+  SPECIAL_CASE_NETWORK_ID,
+} from '../../links/party-link/party-link';
 
 type Transfer = components['schemas']['commandsv1Transfer'];
 
@@ -45,10 +52,15 @@ export const TxDetailsTransfer = ({
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
+        <TableRow modifier="bordered">
+          <TableCell {...sharedHeaderProps}>{t('Type')}</TableCell>
+          <TableCell>{getTypeLabelForTransfer(transfer)}</TableCell>
+        </TableRow>
         <TxDetailsShared
           txData={txData}
           pubKey={pubKey}
           blockData={blockData}
+          hideTypeRow={true}
         />
         {from ? (
           <TableRow modifier="bordered">
@@ -79,3 +91,24 @@ export const TxDetailsTransfer = ({
     </>
   );
 };
+
+/**
+ * Gets a string description of this transfer
+ * @param txData A full transfer
+ * @returns string Transfer label
+ */
+export function getTypeLabelForTransfer(tx: Transfer) {
+  if (tx.to === SPECIAL_CASE_NETWORK || tx.to === SPECIAL_CASE_NETWORK_ID) {
+    if (tx.recurring && tx.recurring.dispatchStrategy) {
+      return 'Reward top up transfer';
+    }
+    // Else: we don't know that it's a reward transfer, so let's not guess
+  } else if (tx.recurring) {
+    return 'Recurring transfer';
+  } else if (tx.oneOff) {
+    // Currently redundant, but could be used to indicate something more specific
+    return 'Transfer';
+  }
+
+  return 'Transfer';
+}

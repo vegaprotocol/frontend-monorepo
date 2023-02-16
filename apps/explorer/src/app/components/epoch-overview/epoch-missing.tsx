@@ -10,15 +10,30 @@ export type EpochMissingOverviewProps = {
 };
 
 /**
+ * Renders a set of details for an epoch that has no representation in the
+ * data node. This is primarily for one of two reasons:
+ *
+ * 1. The epoch hasn't happened yet
+ * 2. The epoch happened before a snapshot, and thus the details don't exist
+ *
+ * This component is used when the API has responded with no data for an epoch
+ * by ID, so we already know that we can't display start time/block etc.
+ *
+ * We can detect 1 if the epoch is a higher number than the current epoch
+ * We can detect 2 if the epoch is in the past, but we still get no response.
  */
 const EpochMissingOverview = ({
   missingEpochId,
 }: EpochMissingOverviewProps) => {
   const { data, error, loading } = useExplorerFutureEpochQuery();
 
+  // This should not happen, but it's easily handled
   if (!missingEpochId) {
     return <span>-</span>;
   }
+
+  // No data should also not happen - we've requested the current epoch. This
+  // could happen at chain restart, but shouldn't. If it does, fallback.
   if (!data || loading || error) {
     return <span>{missingEpochId}</span>;
   }
@@ -27,9 +42,11 @@ const EpochMissingOverview = ({
   // Let's assume it is
   let isInFuture = true;
 
+  // Blank string will be return 0 seconds from getSecondsFromInterval
   const epochLength = data.networkParameter?.value || '';
-  const epochLengthInSeconds = getSeconds(epochLength);
+  const epochLengthInSeconds = getSecondsFromInterval(epochLength);
 
+  // If we have enough information to predict a future or past block time, let's do it
   if (missingEpochId && data.epoch.id && data.epoch.timestamps.start) {
     const missing = parseInt(missingEpochId);
     const current = parseInt(data.epoch.id);
@@ -65,7 +82,15 @@ const EpochMissingOverview = ({
 
 export default EpochMissingOverview;
 
-function getSeconds(str: string) {
+/**
+ * Parses the interval string we get for the epoch length from the
+ * network parameter API. These are in the format '1D2H3m' for 1 day,
+ * 2 hours and 3 minutes.
+ *
+ * @param str Interval string
+ * @returns integer the number of seconds the interval represents
+ */
+export function getSecondsFromInterval(str: string) {
   let seconds = 0;
   const months = str.match(/(\d+)\s*M/);
   const days = str.match(/(\d+)\s*D/);

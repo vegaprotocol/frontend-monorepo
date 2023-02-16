@@ -17,6 +17,12 @@ export type EpochOverviewProps = {
 };
 
 /**
+ * Displays detailed information about an epoch, given an ID. This
+ * works for past epochs and current epochs - future epochs, and a
+ * few other situations (see epoch-missing) will not return us
+ * enough information to render this.
+ *
+ * The details are hidden in a tooltip, behind the epoch number
  */
 const EpochOverview = ({ id }: EpochOverviewProps) => {
   const { data, error, loading } = useExplorerEpochQuery({
@@ -96,6 +102,11 @@ export type IconForEpochProps = {
   end: string;
 };
 
+/**
+ * Chooses an icon to display next to the epoch number, representing
+ * when the epoch is relative to now (i.e. not yet started, started,
+ * finished)
+ */
 function IconForEpoch({ start, end }: IconForEpochProps) {
   const startHasPassed = isPast(new Date(start));
   const endHasPassed = end ? isPast(new Date(end)) : false;
