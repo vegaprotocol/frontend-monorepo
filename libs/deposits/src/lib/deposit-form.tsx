@@ -171,7 +171,7 @@ export const DepositForm = ({
           }}
           defaultValue={account}
           render={() => {
-            if (isActive) {
+            if (isActive && account) {
               return (
                 <>
                   <Input
@@ -195,7 +195,12 @@ export const DepositForm = ({
               );
             }
             return (
-              <Button onClick={openDialog} variant="primary" fill={true}>
+              <Button
+                onClick={openDialog}
+                variant="primary"
+                fill={true}
+                type="button"
+              >
                 {t('Connect')}
               </Button>
             );
@@ -352,6 +357,7 @@ const FormButton = ({ selectedAsset, formState }: FormButtonProps) => {
         <div className="mb-2">
           <Notification
             intent={Intent.Warning}
+            testId="approve-warning"
             message={t(`Deposits of ${selectedAsset?.symbol} not approved`)}
           />
         </div>
@@ -360,6 +366,7 @@ const FormButton = ({ selectedAsset, formState }: FormButtonProps) => {
         <div className="mb-2">
           <Notification
             intent={Intent.Danger}
+            testId="chain-error"
             message={t(
               `This app only works on ${getChainName(desiredChainId)}.`
             )}
