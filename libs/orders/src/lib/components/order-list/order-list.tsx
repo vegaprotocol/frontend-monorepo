@@ -33,20 +33,24 @@ export type OrderListTableProps = OrderListProps & {
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
+  hasActiveOrder?: boolean;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, setEditOrder, onMarketClick, ...props }, ref) => {
+  ({ cancel, setEditOrder, onMarketClick, hasActiveOrder, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
-        overlayNoRowsTemplate="No orders"
+        overlayNoRowsTemplate={t('No orders')}
         defaultColDef={{
           flex: 1,
           resizable: true,
           filterParams: { buttons: ['reset'] },
         }}
-        style={{ width: '100%', height: '100%' }}
+        style={{
+          width: '100%',
+          height: hasActiveOrder ? 'calc(100% - 46px)' : '100%',
+        }}
         getRowId={({ data }) => data.id}
         {...props}
       >

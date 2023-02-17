@@ -6,7 +6,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const DepositsContainer = () => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const { data, loading, error } = useDataProvider({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: depositsProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
@@ -27,6 +27,7 @@ export const DepositsContainer = () => {
             error={error}
             noDataCondition={(data) => !(data && data.length)}
             noDataMessage={t('No deposits')}
+            reload={reload}
           />
         </div>
       </div>

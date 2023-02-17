@@ -155,6 +155,7 @@ export const ordersProvider = makeDataProvider({
     append,
     first: 100,
   },
+  additionalContext: { isEnlargedTimeout: true },
 });
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<

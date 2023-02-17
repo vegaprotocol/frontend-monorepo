@@ -119,7 +119,7 @@ export const useOrderListData = ({
     [gridRef]
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     update,
     insert,
@@ -133,5 +133,5 @@ export const useOrderListData = ({
     load,
     newRows
   );
-  return { loading, error, data, addNewRows, getRows };
+  return { loading, error, data, addNewRows, getRows, reload };
 };

@@ -22,6 +22,7 @@ interface RowProps {
   asPercentage?: boolean;
   unformatted?: boolean;
   assetSymbol?: string;
+  noBorder?: boolean;
 }
 
 const Row = ({
@@ -31,6 +32,7 @@ const Row = ({
   asPercentage,
   unformatted,
   assetSymbol = '',
+  noBorder = true,
 }: RowProps) => {
   const className = 'text-black dark:text-white text-sm !px-0';
 
@@ -55,7 +57,7 @@ const Row = ({
     <KeyValueTableRow
       key={field}
       inline={true}
-      noBorder={true}
+      noBorder={noBorder}
       dtClassName={className}
       ddClassName={className}
     >
@@ -75,6 +77,7 @@ export interface MarketInfoTableProps {
   omits?: string[];
   children?: ReactNode;
   assetSymbol?: string;
+  noBorder?: boolean;
 }
 
 export const MarketInfoTable = ({
@@ -85,6 +88,7 @@ export const MarketInfoTable = ({
   omits = ['__typename'],
   children,
   assetSymbol,
+  noBorder,
 }: MarketInfoTableProps) => {
   if (!data || typeof data !== 'object') {
     return null;
@@ -103,6 +107,7 @@ export const MarketInfoTable = ({
               assetSymbol={assetSymbol}
               asPercentage={asPercentage}
               unformatted={unformatted || key.toLowerCase().includes('volume')}
+              noBorder={noBorder}
             />
           ))}
       </KeyValueTable>

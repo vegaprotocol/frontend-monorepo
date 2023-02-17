@@ -69,14 +69,14 @@ export const MarketInfoContainer = ({
     [marketId, yTimestamp]
   );
 
-  const { data, loading, error } = useDataProvider({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: marketInfoDataProvider,
     skipUpdates: true,
     variables,
   });
 
   return (
-    <AsyncRenderer data={data} loading={loading} error={error}>
+    <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
       {data && data.market ? (
         <Info market={data.market} onSelect={(id) => onSelect?.(id)} />
       ) : (

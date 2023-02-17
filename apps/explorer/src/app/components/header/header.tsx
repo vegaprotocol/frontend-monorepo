@@ -4,15 +4,11 @@ import { ThemeSwitcher, Icon } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Search } from '../search';
 import { Routes } from '../../routes/route-names';
-import type { Dispatch, SetStateAction } from 'react';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
+import { useNavStore } from '../nav';
 
-interface ThemeToggleProps {
-  menuOpen: boolean;
-  setMenuOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-export const Header = ({ menuOpen, setMenuOpen }: ThemeToggleProps) => {
+export const Header = () => {
+  const [open, toggle] = useNavStore((state) => [state.open, state.toggle]);
   const headerClasses = classnames(
     'md:col-span-2',
     'grid grid-rows-2 md:grid-rows-1 grid-cols-[1fr_auto] md:grid-cols-[auto_1fr_auto] items-center',
@@ -36,9 +32,9 @@ export const Header = ({ menuOpen, setMenuOpen }: ThemeToggleProps) => {
       <button
         data-testid="open-menu"
         className="md:hidden text-white"
-        onClick={() => setMenuOpen(!menuOpen)}
+        onClick={() => toggle()}
       >
-        <Icon name={menuOpen ? 'cross' : 'menu'} />
+        <Icon name={open ? 'cross' : 'menu'} />
       </button>
       <Search />
       <ThemeSwitcher className="-my-4" />

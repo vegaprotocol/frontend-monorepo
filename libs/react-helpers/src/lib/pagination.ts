@@ -17,7 +17,7 @@ const getLastRow = (
       lastRow = totalCount;
     }
   } else if (blockLength < endRow - startRow) {
-    lastRow = blockLength;
+    lastRow = blockLength + startRow;
   }
   return lastRow;
 };

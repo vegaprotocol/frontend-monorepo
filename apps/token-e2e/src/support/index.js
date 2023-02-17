@@ -7,7 +7,7 @@ import './governance.functions.js';
 import './wallet-eth.functions.js';
 import './wallet-teardown.functions.js';
 import './wallet-vega.functions.js';
-import './proposal.functions.js';
+import './proposal.functions.ts';
 import registerCypressGrep from '@cypress/grep';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';

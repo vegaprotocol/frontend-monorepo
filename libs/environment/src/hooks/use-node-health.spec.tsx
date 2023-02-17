@@ -1,117 +1,114 @@
-import { act, renderHook } from '@testing-library/react';
-import {
-  useNodeHealth,
-  NODE_SUBSET_COUNT,
-  INTERVAL_TIME,
-} from './use-node-health';
-import type { createClient } from '@vegaprotocol/apollo-client';
-import type { ClientCollection } from './use-nodes';
+import { renderHook, waitFor } from '@testing-library/react';
+import { useNodeHealth } from './use-node-health';
+import type { MockedResponse } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/react-testing';
+import type { StatisticsQuery } from '../utils/__generated__/Node';
+import { StatisticsDocument } from '../utils/__generated__/Node';
+import { useHeaderStore } from '@vegaprotocol/apollo-client';
 
-function setup(...args: Parameters<typeof useNodeHealth>) {
-  return renderHook(() => useNodeHealth(...args));
-}
+const vegaUrl = 'https://foo.bar.com';
 
-function createMockClient(blockHeight: number) {
+jest.mock('./use-environment', () => ({
+  useEnvironment: () => vegaUrl,
+}));
+jest.mock('@vegaprotocol/apollo-client');
+
+const createStatsMock = (
+  blockHeight: number
+): MockedResponse<StatisticsQuery> => {
   return {
-    query: jest.fn().mockResolvedValue({
+    request: {
+      query: StatisticsDocument,
+    },
+    result: {
       data: {
         statistics: {
           chainId: 'chain-id',
           blockHeight: blockHeight.toString(),
+          vegaTime: '12345',
         },
       },
-    }),
-  } as unknown as ReturnType<typeof createClient>;
-}
+    },
+  };
+};
 
-function createRejectingClient() {
-  return {
-    query: () => Promise.reject(new Error('request failed')),
-  } as unknown as ReturnType<typeof createClient>;
-}
+function setup(
+  mock: MockedResponse<StatisticsQuery>,
+  headers:
+    | {
+        blockHeight: number;
+        timestamp: Date;
+      }
+    | undefined
+) {
+  // @ts-ignore ignore mock implementation
+  useHeaderStore.mockImplementation(() => ({
+    [vegaUrl]: headers,
+  }));
 
-function createErroringClient() {
-  return {
-    query: () =>
-      Promise.resolve({
-        error: new Error('failed'),
-      }),
-  } as unknown as ReturnType<typeof createClient>;
+  return renderHook(() => useNodeHealth(), {
+    wrapper: ({ children }) => (
+      <MockedProvider mocks={[mock]}>{children}</MockedProvider>
+    ),
+  });
 }
-
-const CURRENT_URL = 'https://current.test.com';
 
 describe('useNodeHealth', () => {
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
+  it.each([
+    { core: 1, node: 1, expected: 0 },
+    { core: 1, node: 5, expected: -4 },
+    { core: 10, node: 5, expected: 5 },
+  ])(
+    'provides difference core block $core and node block $node',
+    async (cases) => {
+      const { result } = setup(createStatsMock(cases.core), {
+        blockHeight: cases.node,
+        timestamp: new Date(),
+      });
+      expect(result.current.blockDiff).toEqual(null);
+      expect(result.current.coreBlockHeight).toEqual(undefined);
+      expect(result.current.datanodeBlockHeight).toEqual(cases.node);
+      await waitFor(() => {
+        expect(result.current.blockDiff).toEqual(cases.expected);
+        expect(result.current.coreBlockHeight).toEqual(cases.core);
+        expect(result.current.datanodeBlockHeight).toEqual(cases.node);
+      });
+    }
+  );
 
-  it('provides difference between the highest block and the current block', async () => {
-    const highest = 100;
-    const curr = 97;
-    const clientCollection: ClientCollection = {
-      [CURRENT_URL]: createMockClient(curr),
-      'https://n02.test.com': createMockClient(98),
-      'https://n03.test.com': createMockClient(highest),
+  it('block diff is null if query fails indicating non operational', async () => {
+    const failedQuery: MockedResponse<StatisticsQuery> = {
+      request: {
+        query: StatisticsDocument,
+      },
+      result: {
+        // @ts-ignore failed query with no result
+        data: {},
+      },
     };
-    const { result } = setup(clientCollection, CURRENT_URL);
-    await act(async () => {
-      jest.advanceTimersByTime(INTERVAL_TIME);
+    const { result } = setup(failedQuery, {
+      blockHeight: 1,
+      timestamp: new Date(),
     });
-    expect(result.current).toBe(highest - curr);
+    expect(result.current.blockDiff).toEqual(null);
+    expect(result.current.coreBlockHeight).toEqual(undefined);
+    expect(result.current.datanodeBlockHeight).toEqual(1);
+    await waitFor(() => {
+      expect(result.current.blockDiff).toEqual(null);
+      expect(result.current.coreBlockHeight).toEqual(undefined);
+      expect(result.current.datanodeBlockHeight).toEqual(1);
+    });
   });
 
-  it('returns -1 if the current node query fails', async () => {
-    const clientCollection: ClientCollection = {
-      [CURRENT_URL]: createRejectingClient(),
-      'https://n02.test.com': createMockClient(200),
-      'https://n03.test.com': createMockClient(102),
-    };
-    const { result } = setup(clientCollection, CURRENT_URL);
-    await act(async () => {
-      jest.advanceTimersByTime(INTERVAL_TIME);
+  it('returns 0 if no headers are found (waits until stats query resolves)', async () => {
+    const { result } = setup(createStatsMock(1), undefined);
+    expect(result.current.blockDiff).toEqual(null);
+    expect(result.current.coreBlockHeight).toEqual(undefined);
+    expect(result.current.datanodeBlockHeight).toEqual(undefined);
+    await waitFor(() => {
+      expect(result.current.blockDiff).toEqual(0);
+      expect(result.current.coreBlockHeight).toEqual(1);
+      expect(result.current.datanodeBlockHeight).toEqual(undefined);
     });
-    expect(result.current).toBe(-1);
-  });
-
-  it('returns -1 if the current node query returns an error', async () => {
-    const clientCollection: ClientCollection = {
-      [CURRENT_URL]: createErroringClient(),
-      'https://n02.test.com': createMockClient(200),
-      'https://n03.test.com': createMockClient(102),
-    };
-    const { result } = setup(clientCollection, CURRENT_URL);
-    await act(async () => {
-      jest.advanceTimersByTime(INTERVAL_TIME);
-    });
-    expect(result.current).toBe(-1);
-  });
-
-  it('queries against 5 random nodes along with the current url', async () => {
-    const clientCollection: ClientCollection = new Array(20)
-      .fill(null)
-      .reduce((obj, x, i) => {
-        obj[`https://n${i}.test.com`] = createMockClient(100);
-        return obj;
-      }, {} as ClientCollection);
-    clientCollection[CURRENT_URL] = createMockClient(100);
-    const spyOnCurrent = jest.spyOn(clientCollection[CURRENT_URL], 'query');
-
-    const { result } = setup(clientCollection, CURRENT_URL);
-    await act(async () => {
-      jest.advanceTimersByTime(INTERVAL_TIME);
-    });
-
-    let count = 0;
-    Object.values(clientCollection).forEach((client) => {
-      // @ts-ignore jest.fn() in client setup means mock will be present
-      if (client?.query.mock.calls.length) {
-        count++;
-      }
-    });
-
-    expect(count).toBe(NODE_SUBSET_COUNT + 1);
-    expect(spyOnCurrent).toHaveBeenCalledTimes(1);
-    expect(result.current).toBe(0);
   });
 });

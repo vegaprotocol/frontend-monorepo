@@ -23,6 +23,7 @@ describe('Network loader', () => {
     // @ts-ignore Typescript doesn't recognise mocked instances
     useEnvironment.mockImplementation(() => ({
       VEGA_URL: undefined,
+      status: 'success',
     }));
 
     render(
@@ -30,7 +31,7 @@ describe('Network loader', () => {
     );
 
     expect(screen.getByText(SKELETON_TEXT)).toBeInTheDocument();
-    expect(() => screen.getByText(SUCCESS_TEXT)).toThrow();
+    expect(screen.queryByText(SUCCESS_TEXT)).not.toBeInTheDocument();
     expect(createClient).not.toHaveBeenCalled();
   });
 
@@ -41,6 +42,7 @@ describe('Network loader', () => {
     // @ts-ignore Typescript doesn't recognise mocked instances
     useEnvironment.mockImplementation(() => ({
       VEGA_URL: 'http://vega.node',
+      status: 'success',
     }));
 
     render(
@@ -50,6 +52,6 @@ describe('Network loader', () => {
       url: 'http://vega.node',
       cacheConfig: undefined,
     });
-    expect(await screen.findByText(SUCCESS_TEXT)).toBeInTheDocument();
+    expect(screen.getByText(SUCCESS_TEXT)).toBeInTheDocument();
   });
 });

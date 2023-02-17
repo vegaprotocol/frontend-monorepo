@@ -27,7 +27,10 @@ export const AccountManager = ({
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
-  const { data, loading, error } = useDataProvider<AccountFields[], never>({
+  const { data, loading, error, reload } = useDataProvider<
+    AccountFields[],
+    never
+  >({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
@@ -35,7 +38,7 @@ export const AccountManager = ({
     <div className="relative h-full">
       <AccountTable
         ref={gridRef}
-        rowData={data}
+        rowData={error ? [] : data}
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
@@ -50,6 +53,7 @@ export const AccountManager = ({
           error={error}
           loading={loading}
           noDataMessage={t('No accounts')}
+          reload={reload}
         />
       </div>
     </div>

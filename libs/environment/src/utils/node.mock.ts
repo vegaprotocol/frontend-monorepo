@@ -10,6 +10,7 @@ export const statisticsQuery = (
       __typename: 'Statistics',
       chainId: 'chain-id',
       blockHeight: '11',
+      vegaTime: new Date().toISOString(),
     },
   };
 

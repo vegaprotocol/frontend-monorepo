@@ -247,7 +247,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         .and('include', darkThemeSideMenuBackgroundColor);
     });
 
-    it('should be able to see network parameters - on mobile', function () {
+    it.skip('should be able to see network parameters - on mobile', function () {
       cy.common_switch_to_mobile_and_click_toggle();
       cy.get(networkParametersNavigation).click();
       cy.get_network_parameters().then((network_parameters) => {

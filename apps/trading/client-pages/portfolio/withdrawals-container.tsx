@@ -10,7 +10,7 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 
 export const WithdrawalsContainer = () => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const { data, loading, error } = useDataProvider({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: withdrawalProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
@@ -33,6 +33,7 @@ export const WithdrawalsContainer = () => {
               error={error}
               noDataCondition={(data) => !(data && data.length)}
               noDataMessage={t('No withdrawals')}
+              reload={reload}
             />
           </div>
         </div>
