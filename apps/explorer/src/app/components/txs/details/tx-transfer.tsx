@@ -25,13 +25,27 @@ interface TxDetailsNodeAnnounceProps {
 }
 
 /**
- * When a new potential validator node comes online, it announces
- * itself with this transaction.
+ * Displays the details of a transfer. Broadly there are three distinct
+ * types of transfer, listed below in order of complexity:
  *
- * Design decisions:
- * - Signatures are not rendered. You can still access them via the
- *   TX details. This is consistent with explorers for other chains
- * - The avatar icon is rendered as a link rather than embedding
+ * - A one off transfer
+ * - A recurring transfer
+ * - A recurring rewards pool transfer
+ *
+ * One off transfers are simple, really the important data is the amount
+ * and who sent it to whom. This is rendered as one distinct box.
+ *
+ * A recurring transfer has two components - the same as above, and an
+ * additional box that shows details about how it repeats. This is defined
+ * as a start epoch and and end epoch. The Epoch/MissingEpoch components
+ * render slightly differently depending on if the epoch is in the past,
+ * current or in the future.
+ *
+ * Finally rewards pool transfers get the two boxes above, and an additional
+ * one that describes how the reward is distributed.
+ *
+ * The information is split up in to three boxes to allow for the reuse across
+ * all the types of transfer above.
  */
 export const TxDetailsTransfer = ({
   txData,
