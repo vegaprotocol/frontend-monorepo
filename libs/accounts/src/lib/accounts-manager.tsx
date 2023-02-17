@@ -4,6 +4,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, memo } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
+import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
@@ -12,6 +13,7 @@ interface AccountManagerProps {
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
   isReadOnly: boolean;
+  pinnedAsset?: PinnedAsset;
 }
 
 export const AccountManager = ({
@@ -20,6 +22,7 @@ export const AccountManager = ({
   onClickDeposit,
   partyId,
   isReadOnly,
+  pinnedAsset,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -41,6 +44,7 @@ export const AccountManager = ({
         onClickWithdraw={onClickWithdraw}
         isReadOnly={isReadOnly}
         noRowsOverlayComponent={() => null}
+        pinnedAsset={pinnedAsset}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
@@ -48,7 +52,7 @@ export const AccountManager = ({
           noDataCondition={(data) => !(data && data.length)}
           error={error}
           loading={loading}
-          noDataMessage={t('No accounts')}
+          noDataMessage={pinnedAsset ? ' ' : t('No accounts')}
           reload={reload}
         />
       </div>

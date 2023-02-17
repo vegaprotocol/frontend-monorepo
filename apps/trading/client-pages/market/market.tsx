@@ -96,7 +96,15 @@ export const MarketPage = () => {
 
   const tradeView = useMemo(() => {
     if (w > 960) {
-      return <TradeGrid market={data} onSelect={onSelect} />;
+      return (
+        <TradeGrid
+          market={data}
+          onSelect={onSelect}
+          pinnedAsset={
+            data?.tradableInstrument.instrument.product.settlementAsset
+          }
+        />
+      );
     }
     return (
       <TradePanels
