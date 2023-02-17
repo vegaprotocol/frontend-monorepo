@@ -8,6 +8,7 @@ const rawProposalData = '[data-testid="proposal-data"]';
 const voteButtons = '[data-testid="vote-buttons"]';
 const dialogTitle = '[data-testid="dialog-title"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
+const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
@@ -61,6 +62,7 @@ Cypress.Commands.add('enter_raw_proposal_body', (timestamp) => {
       parseSpecialCharSequences: false,
       delay: 2,
     });
+    cy.get(newProposalSubmitButton).should('be.visible').click();
     cy.wrap(rawProposal);
   });
 });
@@ -73,6 +75,7 @@ Cypress.Commands.add(
       'this is a e2e freeform proposal description'
     );
     cy.get(proposalVoteDeadline).clear().click().type(timestamp);
+    cy.getByTestId('proposal-submit').should('be.visible').click();
   }
 );
 
@@ -185,3 +188,40 @@ Cypress.Commands.add('wait_for_proposal_submitted', () => {
   cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
   cy.get(dialogCloseButton).click();
 });
+
+export function createRawProposal(proposerBalance) {
+  if (proposerBalance)
+    cy.ensure_specified_unstaked_tokens_are_associated(proposerBalance);
+  cy.go_to_make_new_proposal('raw proposal');
+  cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
+    (closingDateTimestamp) => {
+      cy.enter_raw_proposal_body(closingDateTimestamp).as('rawProposal');
+    }
+  );
+  cy.wait_for_proposal_submitted();
+  cy.wait_for_proposal_sync();
+  cy.navigate_to('proposals');
+}
+
+export function generateFreeFormProposalTitle() {
+  const randomNum = Math.floor(Math.random() * 1000) + 1;
+  return randomNum + ': Freeform e2e proposal';
+}
+
+export function createFreeformProposal(proposalTitle) {
+  cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+  cy.enter_unique_freeform_proposal_body('50', proposalTitle);
+  cy.wait_for_proposal_submitted();
+  cy.wait_for_proposal_sync();
+  cy.getByTestId('proposal-title').invoke('text').as('proposalTitle');
+  cy.navigate_to('proposals');
+}
+
+export const governanceProposalType = {
+  NETWORK_PARAMETER: 'Network parameter',
+  NEW_MARKET: 'New market',
+  UPDATE_MARKET: 'Update market',
+  NEW_ASSET: 'New asset',
+  FREEFORM: 'Freeform',
+  RAW: 'raw proposal',
+};

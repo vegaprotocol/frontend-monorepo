@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+import { associateTokenStartOfTests } from '../../support/governance.functions';
 
 import {
   createUpdateNetworkProposalTxBody,
@@ -21,6 +22,7 @@ context(
     before('Connect wallets and set approval', function () {
       cy.visit('/');
       cy.vega_wallet_set_specified_approval_amount('1000');
+      associateTokenStartOfTests();
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.ensure_specified_unstaked_tokens_are_associated(1);

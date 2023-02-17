@@ -1,3 +1,6 @@
+const epochTimeout = Cypress.env('epochTimeout');
+const txTimeout = Cypress.env('txTimeout');
+
 Cypress.Commands.add(
   'convert_token_value_to_number',
   { prevSubject: true },
@@ -49,3 +52,29 @@ Cypress.Commands.add('wait_for_spinner', () => {
   cy.get(navigation.pageSpinner, Cypress.env('epochTimeout')).should('exist');
   cy.get(navigation.pageSpinner, { timeout: 20000 }).should('not.exist');
 });
+
+// This is a workaround function to begin tests with associating tokens without failing
+// Should be removed when eth transaction bug is fixed
+export function associateTokenStartOfTests() {
+  cy.highlight(`Associating tokens for first time`);
+  cy.ethereum_wallet_connect();
+  cy.connectVegaWallet();
+  cy.get('[href="/token/associate"]').first().click();
+  cy.getByTestId('associate-radio-wallet', { timeout: 30000 }).click();
+  cy.getByTestId('token-amount-input', epochTimeout).type('1');
+  cy.getByTestId('token-input-submit-button', txTimeout)
+    .should('be.enabled')
+    .click();
+  cy.contains(
+    `Associating with Vega key. Waiting for ${Cypress.env(
+      'blockConfirmations'
+    )} more confirmations..`,
+    txTimeout
+  ).should('be.visible');
+  cy.getByTestId('associated-amount', txTimeout).should('contain.text', '1');
+  // Wait is needed to allow time for transaction to complete
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(10000);
+  cy.vega_wallet_teardown();
+  cy.clearLocalStorage();
+}
