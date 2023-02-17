@@ -5,10 +5,15 @@ import { useWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 
-export const AccountsContainer = () => {
+export const AccountsContainer = ({
+  pinnedAsset,
+}: {
+  pinnedAsset?: PinnedAsset;
+}) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
@@ -39,6 +44,7 @@ export const AccountsContainer = () => {
           onClickWithdraw={openWithdrawalDialog}
           onClickDeposit={openDepositDialog}
           isReadOnly={isReadOnly}
+          pinnedAsset={pinnedAsset}
         />
       </div>
       {!isReadOnly && (

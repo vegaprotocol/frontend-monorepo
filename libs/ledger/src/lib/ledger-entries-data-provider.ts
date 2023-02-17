@@ -128,7 +128,11 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
       const marketReceiver = markets.find(
         (market: Market) => market.id === entry.toAccountMarketId
       );
-      return { node: { ...entry, asset, marketSender, marketReceiver } };
+      const cursor = edge?.cursor;
+      return {
+        node: { ...entry, asset, marketSender, marketReceiver },
+        cursor,
+      };
     });
   }
 );
@@ -172,14 +176,13 @@ export const useLedgerEntriesDataProvider = ({
       data: (AggregatedLedgerEntriesEdge | null)[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current = data;
       totalCountRef.current = totalCount;
       return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: ledgerEntriesProvider,
     update,
     insert,
@@ -193,5 +196,5 @@ export const useLedgerEntriesDataProvider = ({
     totalCountRef,
     load
   );
-  return { loading, error, data, getRows };
+  return { loading, error, data, getRows, reload };
 };

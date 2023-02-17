@@ -80,6 +80,7 @@ export const useDataProvider = <
     }
   }, []);
   const reload = useCallback((force = false) => {
+    initialized.current = false;
     if (reloadRef.current) {
       reloadRef.current(force);
     }

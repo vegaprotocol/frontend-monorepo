@@ -25,7 +25,7 @@ export const usePositionsData = (
     },
     [gridRef, clientSideModel]
   );
-  const { data, error, loading } = useDataProvider({
+  const { data, error, loading, reload } = useDataProvider({
     dataProvider: positionsMetricsProvider,
     update,
     variables,
@@ -45,5 +45,6 @@ export const usePositionsData = (
     error,
     loading,
     getRows,
+    reload,
   };
 };

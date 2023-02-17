@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import {
   addDecimalsFormatNumber,
   isNumeric,
@@ -14,6 +14,8 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
+import type { Asset } from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
@@ -23,6 +25,8 @@ export interface Datasource extends IDatasource {
   getRows(params: GetRowsParams): void;
 }
 
+export type PinnedAsset = Pick<Asset, 'symbol' | 'name' | 'id' | 'decimals'>;
+
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
   datasource?: Datasource;
@@ -30,12 +34,33 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   isReadOnly: boolean;
+  pinnedAsset?: PinnedAsset;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
   ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
     const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
+    const pinnedAssetId = props.pinnedAsset?.id;
+
+    const pinnedAssetRow = useMemo(() => {
+      const currentPinnedAssetRow = props.rowData?.find(
+        (row) => row.asset.id === pinnedAssetId
+      );
+      if (!currentPinnedAssetRow) {
+        if (props.pinnedAsset) {
+          return {
+            asset: props.pinnedAsset,
+            available: '0',
+            used: '0',
+            deposited: '0',
+            balance: '0',
+          };
+        }
+      }
+      return currentPinnedAssetRow;
+    }, [pinnedAssetId, props.pinnedAsset, props.rowData]);
+
     return (
       <>
         <AgGrid
@@ -51,6 +76,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             sortable: true,
           }}
           {...props}
+          pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
         >
           <AgGridColumn
             headerName={t('Asset')}
@@ -138,37 +164,55 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               cellRenderer={({
                 data,
               }: VegaICellRendererParams<AccountFields>) => {
-                return data ? (
-                  <>
-                    <ButtonLink
-                      data-testid="breakdown"
-                      onClick={() => {
-                        setOpenBreakdown(!openBreakdown);
-                        setBreakdown(data.breakdown || null);
-                      }}
-                    >
-                      {t('Breakdown')}
-                    </ButtonLink>
-                    <span className="mx-1" />
-                    <ButtonLink
-                      data-testid="deposit"
-                      onClick={() => {
-                        onClickDeposit && onClickDeposit(data.asset.id);
-                      }}
-                    >
-                      {t('Deposit')}
-                    </ButtonLink>
-                    <span className="mx-1" />
-                    <ButtonLink
-                      data-testid="withdraw"
-                      onClick={() =>
-                        onClickWithdraw && onClickWithdraw(data.asset.id)
-                      }
-                    >
-                      {t('Withdraw')}
-                    </ButtonLink>
-                  </>
-                ) : null;
+                if (!data) return null;
+                else {
+                  if (
+                    data.asset.id === pinnedAssetId &&
+                    new BigNumber(data.deposited).isLessThanOrEqualTo(0)
+                  ) {
+                    return (
+                      <ButtonLink
+                        data-testid="deposit"
+                        onClick={() => {
+                          onClickDeposit && onClickDeposit(data.asset.id);
+                        }}
+                      >
+                        {t('Deposit to trade')}
+                      </ButtonLink>
+                    );
+                  }
+                  return (
+                    <>
+                      <ButtonLink
+                        data-testid="breakdown"
+                        onClick={() => {
+                          setOpenBreakdown(!openBreakdown);
+                          setBreakdown(data.breakdown || null);
+                        }}
+                      >
+                        {t('Breakdown')}
+                      </ButtonLink>
+                      <span className="mx-1" />
+                      <ButtonLink
+                        data-testid="deposit"
+                        onClick={() => {
+                          onClickDeposit && onClickDeposit(data.asset.id);
+                        }}
+                      >
+                        {t('Deposit')}
+                      </ButtonLink>
+                      <span className="mx-1" />
+                      <ButtonLink
+                        data-testid="withdraw"
+                        onClick={() =>
+                          onClickWithdraw && onClickWithdraw(data.asset.id)
+                        }
+                      >
+                        {t('Withdraw')}
+                      </ButtonLink>
+                    </>
+                  );
+                }
               }}
             />
           )}

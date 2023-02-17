@@ -4,6 +4,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, memo } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
+import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
@@ -12,6 +13,7 @@ interface AccountManagerProps {
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
   isReadOnly: boolean;
+  pinnedAsset?: PinnedAsset;
 }
 
 export const AccountManager = ({
@@ -20,11 +22,15 @@ export const AccountManager = ({
   onClickDeposit,
   partyId,
   isReadOnly,
+  pinnedAsset,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
-  const { data, loading, error } = useDataProvider<AccountFields[], never>({
+  const { data, loading, error, reload } = useDataProvider<
+    AccountFields[],
+    never
+  >({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
@@ -32,12 +38,13 @@ export const AccountManager = ({
     <div className="relative h-full">
       <AccountTable
         ref={gridRef}
-        rowData={data}
+        rowData={error ? [] : data}
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         isReadOnly={isReadOnly}
         noRowsOverlayComponent={() => null}
+        pinnedAsset={pinnedAsset}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
@@ -45,7 +52,8 @@ export const AccountManager = ({
           noDataCondition={(data) => !(data && data.length)}
           error={error}
           loading={loading}
-          noDataMessage={t('No accounts')}
+          noDataMessage={pinnedAsset ? ' ' : t('No accounts')}
+          reload={reload}
         />
       </div>
     </div>
