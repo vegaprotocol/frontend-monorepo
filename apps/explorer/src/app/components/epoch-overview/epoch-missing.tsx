@@ -41,10 +41,10 @@ const EpochMissingOverview = ({
 
   // If we have enough information to predict a future or past block time, let's do it
   if (
-    missingEpochId &&
-    data.epoch.id &&
-    data.epoch.timestamps.start &&
-    data.networkParameter?.value
+    !missingEpochId ||
+    !data.epoch.id ||
+    !data.epoch.timestamps.start ||
+    !data?.networkParameter?.value
   ) {
     return <span data-testid="empty">{missingEpochId}</span>;
   }

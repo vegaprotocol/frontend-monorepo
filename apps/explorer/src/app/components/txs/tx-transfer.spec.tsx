@@ -5,7 +5,7 @@ type Transfer = components['schemas']['commandsv1Transfer'];
 
 describe('TX: Transfer: getLabelForTransfer', () => {
   it('renders reward top up label if the TO party is 000', () => {
-    const mock: transfer = {
+    const mock: Transfer = {
       to: '0000000000000000000000000000000000000000000000000000000000000000',
       recurring: {
         dispatchStrategy: {},

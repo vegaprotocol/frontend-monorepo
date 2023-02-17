@@ -1,16 +1,13 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
-import type {
-  Block,
-  TendermintBlocksResponse,
-} from '../../../routes/blocks/tendermint-blocks-response';
+import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { sharedHeaderProps, TxDetailsShared } from './shared/tx-details-shared';
 import { TableRow, TableCell, TableWithTbody } from '../../table';
 
 import type { components } from '../../../../types/explorer';
 import { PartyLink } from '../../links';
 import SizeInAsset from '../../size-in-asset/size-in-asset';
-import { TransferRecurring } from './transfer/transfer-recurring';
+import { TransferDetails } from './transfer/transfer-details';
 import {
   SPECIAL_CASE_NETWORK,
   SPECIAL_CASE_NETWORK_ID,
@@ -101,7 +98,7 @@ export const TxDetailsTransfer = ({
           </TableRow>
         ) : null}
       </TableWithTbody>
-      <TransferRecurring from={from} transfer={transfer} />
+      <TransferDetails from={from} transfer={transfer} />
     </>
   );
 };
