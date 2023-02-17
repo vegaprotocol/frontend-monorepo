@@ -1,3 +1,4 @@
+import { associateTokenStartOfTests } from '../../support/common.functions';
 import {
   createRawProposal,
   generateFreeFormProposalTitle,
@@ -23,8 +24,9 @@ describe(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      cy.vega_wallet_set_specified_approval_amount('1000');
       cy.visit('/');
+      cy.vega_wallet_set_specified_approval_amount('1000');
+      associateTokenStartOfTests();
     });
 
     beforeEach('visit proposals tab', function () {

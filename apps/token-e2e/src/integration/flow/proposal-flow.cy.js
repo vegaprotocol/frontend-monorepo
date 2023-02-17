@@ -1,5 +1,11 @@
 /// <reference types="cypress" />
-import { createRawProposal, generateFreeFormProposalTitle, governanceProposalType } from '../../support/governance.functions'
+import {
+  createRawProposal,
+  generateFreeFormProposalTitle,
+  governanceProposalType,
+} from '../../support/governance.functions';
+
+import { associateTokenStartOfTests } from '../../support/common.functions';
 
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
@@ -26,7 +32,6 @@ const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
-
 context(
   'Governance flow - with eth and vega wallets connected',
   { tags: '@slow' },
@@ -49,6 +54,7 @@ context(
       });
 
       cy.vega_wallet_set_specified_approval_amount('1000');
+      associateTokenStartOfTests();
     });
 
     beforeEach('visit governance tab', function () {
@@ -56,7 +62,7 @@ context(
       cy.wait_for_spinner();
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
-      cy.ensure_specified_unstaked_tokens_are_associated(1)
+      cy.ensure_specified_unstaked_tokens_are_associated(1);
       cy.navigate_to_page_if_not_already_loaded('proposals');
     });
 
@@ -90,7 +96,10 @@ context(
         'contain.text',
         'we add 2 minutes of extra time'
       );
-      cy.enter_unique_freeform_proposal_body('50', generateFreeFormProposalTitle());
+      cy.enter_unique_freeform_proposal_body(
+        '50',
+        generateFreeFormProposalTitle()
+      );
       // 3002-PROP-012
       // 3002-PROP-016
       cy.wait_for_proposal_submitted();
@@ -108,30 +117,39 @@ context(
 
       cy.navigate_to('proposals');
       cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-      cy.enter_unique_freeform_proposal_body('50', generateFreeFormProposalTitle());
+      cy.enter_unique_freeform_proposal_body(
+        '50',
+        generateFreeFormProposalTitle()
+      );
       cy.wait_for_proposal_submitted();
     });
 
     it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
       cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-      cy.enter_unique_freeform_proposal_body('0.1', generateFreeFormProposalTitle());
+      cy.enter_unique_freeform_proposal_body(
+        '0.1',
+        generateFreeFormProposalTitle()
+      );
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'not.exist'
       );
       cy.get('input:invalid')
-      .invoke('prop', 'validationMessage')
-      .should('equal', 'Value must be greater than or equal to 1.')
+        .invoke('prop', 'validationMessage')
+        .should('equal', 'Value must be greater than or equal to 1.');
     });
 
     it('Creating a proposal - proposal rejected - when closing time later than system default', function () {
       cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-      cy.enter_unique_freeform_proposal_body('100000', generateFreeFormProposalTitle());
+      cy.enter_unique_freeform_proposal_body(
+        '100000',
+        generateFreeFormProposalTitle()
+      );
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'not.exist'
       );
       cy.get('input:invalid')
-      .invoke('prop', 'validationMessage')
-      .should('equal', 'Value must be less than or equal to 8760.')
+        .invoke('prop', 'validationMessage')
+        .should('equal', 'Value must be less than or equal to 8760.');
     });
 
     // 3001-VOTE-006
@@ -265,40 +283,34 @@ context(
     });
 
     // 1005-PROP-009
-    it(
-      'Unable to vote on a freeform proposal - when some but not enough vega associated',
-      function () {
-        const proposalTitle = generateFreeFormProposalTitle();
+    it('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
+      const proposalTitle = generateFreeFormProposalTitle();
 
-        cy.ensure_specified_unstaked_tokens_are_associated(1);
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50', proposalTitle);
-        cy.wait_for_proposal_submitted();
-        cy.staking_page_disassociate_tokens('0.0001');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance).should(
-            'have.length',
-            1
-          );
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-            'contain',
-            '0.9999'
-          );
-        });
-        cy.navigate_to('proposals');
-        cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(() =>
-          cy.get(viewProposalButton).click()
+      cy.ensure_specified_unstaked_tokens_are_associated(1);
+      cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+      cy.enter_unique_freeform_proposal_body('50', proposalTitle);
+      cy.wait_for_proposal_submitted();
+      cy.staking_page_disassociate_tokens('0.0001');
+      cy.get(vegaWallet).within(() => {
+        cy.get(vegaWalletAssociatedBalance).should('have.length', 1);
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          'contain',
+          '0.9999'
         );
-        cy.contains('Vote breakdown').should('be.visible', {
-          timeout: 10000,
-        });
-        cy.get(voteButtons).should('not.exist');
-        cy.getByTestId('min-proposal-requirements').should(
-          'have.text',
-          `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
-        );
-      }
-    );
+      });
+      cy.navigate_to('proposals');
+      cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(() =>
+        cy.get(viewProposalButton).click()
+      );
+      cy.contains('Vote breakdown').should('be.visible', {
+        timeout: 10000,
+      });
+      cy.get(voteButtons).should('not.exist');
+      cy.getByTestId('min-proposal-requirements').should(
+        'have.text',
+        `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
+      );
+    });
 
     it('Unable to vote on a proposal - when vega wallet disconnected - option to connect from within', function () {
       createRawProposal();
