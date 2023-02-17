@@ -28,7 +28,7 @@ import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
-import type { MarketAsset } from '@vegaprotocol/accounts';
+import type { PinnedAsset } from '@vegaprotocol/accounts';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -66,17 +66,17 @@ type TradingView = keyof typeof TradingViews;
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string) => void;
-  marketAsset?: MarketAsset;
+  pinnedAsset?: PinnedAsset;
 }
 
 const MainGrid = ({
   marketId,
   onSelect,
-  marketAsset,
+  pinnedAsset,
 }: {
   marketId: string;
   onSelect?: (marketId: string) => void;
-  marketAsset?: MarketAsset;
+  pinnedAsset?: PinnedAsset;
 }) => {
   const navigate = useNavigate();
   const onMarketClick = (marketId: string) => {
@@ -179,7 +179,7 @@ const MainGrid = ({
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
               <VegaWalletContainer>
-                <TradingViews.Collateral marketAsset={marketAsset} />
+                <TradingViews.Collateral pinnedAsset={pinnedAsset} />
               </VegaWalletContainer>
             </Tab>
           </Tabs>
@@ -193,7 +193,7 @@ const MainGridWrapped = memo(MainGrid);
 export const TradeGrid = ({
   market,
   onSelect,
-  marketAsset,
+  pinnedAsset,
 }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
@@ -201,7 +201,7 @@ export const TradeGrid = ({
       <MainGridWrapped
         marketId={market?.id || ''}
         onSelect={onSelect}
-        marketAsset={marketAsset}
+        pinnedAsset={pinnedAsset}
       />
     </div>
   );
@@ -226,14 +226,14 @@ interface TradePanelsProps {
   onSelect: (marketId: string) => void;
   onMarketClick?: (marketId: string) => void;
   onClickCollateral: () => void;
-  marketAsset?: MarketAsset;
+  pinnedAsset?: PinnedAsset;
 }
 
 export const TradePanels = ({
   market,
   onSelect,
   onClickCollateral,
-  marketAsset,
+  pinnedAsset,
 }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
   const renderView = () => {
@@ -242,7 +242,7 @@ export const TradePanels = ({
       onSelect: (marketId: string) => void;
       onMarketClick?: (marketId: string) => void;
       onClickCollateral: () => void;
-      marketAsset?: MarketAsset;
+      pinnedAsset?: PinnedAsset;
     }>(TradingViews[view]);
 
     if (!Component) {
@@ -256,7 +256,7 @@ export const TradePanels = ({
         marketId={market?.id}
         onSelect={onSelect}
         onClickCollateral={onClickCollateral}
-        marketAsset={marketAsset}
+        pinnedAsset={pinnedAsset}
       />
     );
   };

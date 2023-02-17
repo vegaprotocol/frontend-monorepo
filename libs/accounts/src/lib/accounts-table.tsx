@@ -25,7 +25,7 @@ export interface Datasource extends IDatasource {
   getRows(params: GetRowsParams): void;
 }
 
-export type MarketAsset = Pick<Asset, 'symbol' | 'name' | 'id' | 'decimals'>;
+export type PinnedAsset = Pick<Asset, 'symbol' | 'name' | 'id' | 'decimals'>;
 
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
@@ -34,23 +34,23 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   isReadOnly: boolean;
-  marketAsset?: MarketAsset;
+  pinnedAsset?: PinnedAsset;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
   ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
     const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
-    const marketAssetId = props.marketAsset?.id;
+    const pinnedAssetId = props.pinnedAsset?.id;
 
-    const marketAssetRow = useMemo(() => {
-      const currentMarketAssetRow = props.rowData?.find(
-        (row) => row.asset.id === marketAssetId
+    const pinnedAssetRow = useMemo(() => {
+      const currentPinnedAssetRow = props.rowData?.find(
+        (row) => row.asset.id === pinnedAssetId
       );
-      if (!currentMarketAssetRow) {
-        if (props.marketAsset) {
+      if (!currentPinnedAssetRow) {
+        if (props.pinnedAsset) {
           return {
-            asset: props.marketAsset,
+            asset: props.pinnedAsset,
             available: '0',
             used: '0',
             deposited: '0',
@@ -58,8 +58,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           };
         }
       }
-      return currentMarketAssetRow;
-    }, [marketAssetId, props.marketAsset, props.rowData]);
+      return currentPinnedAssetRow;
+    }, [pinnedAssetId, props.pinnedAsset, props.rowData]);
 
     return (
       <>
@@ -76,7 +76,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             sortable: true,
           }}
           {...props}
-          pinnedTopRowData={marketAssetRow ? [marketAssetRow] : undefined}
+          pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
         >
           <AgGridColumn
             headerName={t('Asset')}
@@ -163,12 +163,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               type="rightAligned"
               cellRenderer={({
                 data,
-                api,
               }: VegaICellRendererParams<AccountFields>) => {
                 if (!data) return null;
                 else {
                   if (
-                    data.asset.id === marketAssetId &&
+                    data.asset.id === pinnedAssetId &&
                     new BigNumber(data.deposited).isLessThanOrEqualTo(0)
                   ) {
                     return (
@@ -181,39 +180,38 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                         {t('Deposit to trade')}
                       </ButtonLink>
                     );
-                  } else {
-                    return (
-                      <>
-                        <ButtonLink
-                          data-testid="breakdown"
-                          onClick={() => {
-                            setOpenBreakdown(!openBreakdown);
-                            setBreakdown(data.breakdown || null);
-                          }}
-                        >
-                          {t('Breakdown')}
-                        </ButtonLink>
-                        <span className="mx-1" />
-                        <ButtonLink
-                          data-testid="deposit"
-                          onClick={() => {
-                            onClickDeposit && onClickDeposit(data.asset.id);
-                          }}
-                        >
-                          {t('Deposit')}
-                        </ButtonLink>
-                        <span className="mx-1" />
-                        <ButtonLink
-                          data-testid="withdraw"
-                          onClick={() =>
-                            onClickWithdraw && onClickWithdraw(data.asset.id)
-                          }
-                        >
-                          {t('Withdraw')}
-                        </ButtonLink>
-                      </>
-                    );
                   }
+                  return (
+                    <>
+                      <ButtonLink
+                        data-testid="breakdown"
+                        onClick={() => {
+                          setOpenBreakdown(!openBreakdown);
+                          setBreakdown(data.breakdown || null);
+                        }}
+                      >
+                        {t('Breakdown')}
+                      </ButtonLink>
+                      <span className="mx-1" />
+                      <ButtonLink
+                        data-testid="deposit"
+                        onClick={() => {
+                          onClickDeposit && onClickDeposit(data.asset.id);
+                        }}
+                      >
+                        {t('Deposit')}
+                      </ButtonLink>
+                      <span className="mx-1" />
+                      <ButtonLink
+                        data-testid="withdraw"
+                        onClick={() =>
+                          onClickWithdraw && onClickWithdraw(data.asset.id)
+                        }
+                      >
+                        {t('Withdraw')}
+                      </ButtonLink>
+                    </>
+                  );
                 }
               }}
             />

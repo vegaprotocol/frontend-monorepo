@@ -100,7 +100,7 @@ export const MarketPage = () => {
         <TradeGrid
           market={data}
           onSelect={onSelect}
-          marketAsset={
+          pinnedAsset={
             data?.tradableInstrument.instrument.product.settlementAsset
           }
         />
