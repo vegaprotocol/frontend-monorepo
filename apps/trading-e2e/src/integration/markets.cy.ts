@@ -3,6 +3,8 @@ import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketsQuery } from '@vegaprotocol/mock';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 
+const dialogCloseBtn = 'dialog-close';
+
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.clearLocalStorage().then(() => {
@@ -147,7 +149,7 @@ describe('markets table', { tags: '@smoke' }, () => {
     });
     cy.visit('#/markets/market-0');
     cy.url().should('contain', 'market-0');
-    cy.getByTestId('dialog-close').click();
+    cy.getByTestId(dialogCloseBtn).click();
     cy.getByTestId('item-value').contains('Opening auction').realHover();
     cy.getByTestId('opening-auction-sub-status').should(
       'contain.text',
@@ -171,7 +173,8 @@ describe('markets table', { tags: '@smoke' }, () => {
 });
 
 function openMarketDropDown() {
-  cy.getByTestId('dialog-close').click();
+  cy.getByTestId(dialogCloseBtn).should('be.visible');
+  cy.getByTestId(dialogCloseBtn).click();
   cy.getByTestId('popover-trigger').click();
   cy.contains('Loading market data...').should('not.exist');
 }
