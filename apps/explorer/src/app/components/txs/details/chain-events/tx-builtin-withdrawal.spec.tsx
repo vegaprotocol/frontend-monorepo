@@ -10,7 +10,7 @@ import { MemoryRouter } from 'react-router-dom';
 type Withdrawal = components['schemas']['vegaBuiltinAssetWithdrawal'];
 
 const fullMock: Withdrawal = {
-  partyId: 'party123',
+  partyId: '0000000000000000000000000000000000000000000000000000000000000001',
   vegaAssetId: 'asset123',
   amount: 'amount123',
 };
@@ -67,11 +67,12 @@ describe('Chain Event: Builtin asset withdrawal', () => {
     expect(screen.getByText(`${fullMock.amount}`)).toBeInTheDocument();
 
     expect(screen.getByText(t('Recipient'))).toBeInTheDocument();
+
     const partyLink = screen.getByText(`${fullMock.partyId}`);
-    expect(partyLink).toBeInTheDocument();
     if (!partyLink.parentElement) {
       throw new Error('Party link does not exist');
     }
+
     expect(partyLink.parentElement.tagName).toEqual('A');
     expect(partyLink.parentElement.getAttribute('href')).toEqual(
       `/parties/${fullMock.partyId}`

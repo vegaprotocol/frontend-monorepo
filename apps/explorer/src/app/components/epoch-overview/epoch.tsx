@@ -110,7 +110,7 @@ export type IconForEpochProps = {
 export function IconForEpoch({ start, end }: IconForEpochProps) {
   const startHasPassed = start ? isPast(new Date(start)) : false;
   const endHasPassed = end ? isPast(new Date(end)) : false;
-  
+
   let i: IconProps['name'] = 'calendar';
 
   if (!startHasPassed && !endHasPassed) {

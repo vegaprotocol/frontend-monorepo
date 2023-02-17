@@ -40,11 +40,21 @@ const EpochMissingOverview = ({
   }
 
   // If we have enough information to predict a future or past block time, let's do it
-  if (missingEpochId && data.epoch.id && data.epoch.timestamps.start && data.networkParameter?.value) {
+  if (
+    missingEpochId &&
+    data.epoch.id &&
+    data.epoch.timestamps.start &&
+    data.networkParameter?.value
+  ) {
     return <span data-testid="empty">{missingEpochId}</span>;
   }
 
-  const { label, isInFuture } = calculateEpochData(data.epoch.id, missingEpochId, data.epoch.timestamps.start, data.networkParameter.value)
+  const { label, isInFuture } = calculateEpochData(
+    data.epoch.id,
+    missingEpochId,
+    data.epoch.timestamps.start,
+    data.networkParameter.value
+  );
 
   return (
     <Tooltip description={<p className="text-xs m-2">{label}</p>}>
@@ -60,7 +70,12 @@ const EpochMissingOverview = ({
   );
 };
 
-export function calculateEpochData(currentEpochId: string, missingEpochId: string, epochStart: string, epochLength: string) {
+export function calculateEpochData(
+  currentEpochId: string,
+  missingEpochId: string,
+  epochStart: string,
+  epochLength: string
+) {
   // Blank string will be return 0 seconds from getSecondsFromInterval
   const epochLengthInSeconds = getSecondsFromInterval(epochLength);
 
@@ -68,8 +83,8 @@ export function calculateEpochData(currentEpochId: string, missingEpochId: strin
     // Let's just take a guess
     return {
       label: 'Missing data',
-      isInFuture: parseInt(missingEpochId) > parseInt(currentEpochId)
-    }
+      isInFuture: parseInt(missingEpochId) > parseInt(currentEpochId),
+    };
   }
 
   const startFrom = new Date(epochStart);
@@ -77,16 +92,19 @@ export function calculateEpochData(currentEpochId: string, missingEpochId: strin
   const diff = parseInt(missingEpochId) - parseInt(currentEpochId);
   const futureDate = addSeconds(startFrom, diff * epochLengthInSeconds);
 
-  const label = isValidDate(futureDate) && isValidDate(startFrom) ? `Estimate: ${futureDate.toLocaleString()} - ${formatDistance(
-      futureDate,
-      startFrom,
-      { addSuffix: true }
-    )}` : 'Missing data'
+  const label =
+    isValidDate(futureDate) && isValidDate(startFrom)
+      ? `Estimate: ${futureDate.toLocaleString()} - ${formatDistance(
+          futureDate,
+          startFrom,
+          { addSuffix: true }
+        )}`
+      : 'Missing data';
 
   return {
-    label, 
-    isInFuture: isFuture(futureDate) 
-  }
+    label,
+    isInFuture: isFuture(futureDate),
+  };
 }
 
 export default EpochMissingOverview;
@@ -103,7 +121,7 @@ export function getSecondsFromInterval(str: string) {
   let seconds = 0;
 
   if (!str || !str.match) {
-    return seconds
+    return seconds;
   }
 
   const months = str.match(/(\d+)\s*M/);
