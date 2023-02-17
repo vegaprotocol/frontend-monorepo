@@ -59,11 +59,17 @@ export const getOverstakedAmount = (
 export const getOverstakingPenalty = (
   overstakedAmount: BigNumber,
   stakedOnNode: string
-) =>
-  formatNumberPercentage(
+) => {
+  // avoid division by zero
+  if (new BigNumber(stakedOnNode).isZero() || overstakedAmount.isZero()) {
+    return '0';
+  }
+
+  return formatNumberPercentage(
     overstakedAmount.dividedBy(new BigNumber(stakedOnNode)).times(100),
     2
   );
+};
 
 export const getTotalPenalties = (
   rawValidatorScore: string | null | undefined,
