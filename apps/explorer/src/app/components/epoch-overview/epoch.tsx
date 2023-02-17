@@ -107,10 +107,10 @@ export type IconForEpochProps = {
  * when the epoch is relative to now (i.e. not yet started, started,
  * finished)
  */
-function IconForEpoch({ start, end }: IconForEpochProps) {
-  const startHasPassed = isPast(new Date(start));
+export function IconForEpoch({ start, end }: IconForEpochProps) {
+  const startHasPassed = start ? isPast(new Date(start)) : false;
   const endHasPassed = end ? isPast(new Date(end)) : false;
-
+  
   let i: IconProps['name'] = 'calendar';
 
   if (!startHasPassed && !endHasPassed) {

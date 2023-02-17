@@ -4,6 +4,7 @@ import addSeconds from 'date-fns/addSeconds';
 import formatDistance from 'date-fns/formatDistance';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isFuture from 'date-fns/isFuture';
+import { isValidDate } from '@vegaprotocol/react-helpers';
 
 export type EpochMissingOverviewProps = {
   missingEpochId?: string;
@@ -29,45 +30,24 @@ const EpochMissingOverview = ({
 
   // This should not happen, but it's easily handled
   if (!missingEpochId) {
-    return <span>-</span>;
+    return <span data-testid="empty">-</span>;
   }
 
   // No data should also not happen - we've requested the current epoch. This
   // could happen at chain restart, but shouldn't. If it does, fallback.
   if (!data || loading || error) {
-    return <span>{missingEpochId}</span>;
+    return <span data-testid="empty">{missingEpochId}</span>;
   }
-
-  let label = 'Missing data';
-  // Let's assume it is
-  let isInFuture = true;
-
-  // Blank string will be return 0 seconds from getSecondsFromInterval
-  const epochLength = data.networkParameter?.value || '';
-  const epochLengthInSeconds = getSecondsFromInterval(epochLength);
 
   // If we have enough information to predict a future or past block time, let's do it
-  if (missingEpochId && data.epoch.id && data.epoch.timestamps.start) {
-    const missing = parseInt(missingEpochId);
-    const current = parseInt(data.epoch.id);
-    const startFrom = new Date(data.epoch.timestamps.start);
-
-    const diff = missing - current;
-    const futureDate = addSeconds(startFrom, diff * epochLengthInSeconds);
-
-    label = `Estimate: ${futureDate.toLocaleString()} - ${formatDistance(
-      futureDate,
-      startFrom,
-      { addSuffix: true }
-    )} `;
-
-    isInFuture = isFuture(futureDate);
+  if (missingEpochId && data.epoch.id && data.epoch.timestamps.start && data.networkParameter?.value) {
+    return <span data-testid="empty">{missingEpochId}</span>;
   }
 
-  const description = <p className="text-xs m-2">{label}</p>;
+  const { label, isInFuture } = calculateEpochData(data.epoch.id, missingEpochId, data.epoch.timestamps.start, data.networkParameter.value)
 
   return (
-    <Tooltip description={description}>
+    <Tooltip description={<p className="text-xs m-2">{label}</p>}>
       <p>
         {isInFuture ? (
           <Icon name="calendar" className="mr-1" />
@@ -79,6 +59,35 @@ const EpochMissingOverview = ({
     </Tooltip>
   );
 };
+
+export function calculateEpochData(currentEpochId: string, missingEpochId: string, epochStart: string, epochLength: string) {
+  // Blank string will be return 0 seconds from getSecondsFromInterval
+  const epochLengthInSeconds = getSecondsFromInterval(epochLength);
+
+  if (!epochStart || !epochLength) {
+    // Let's just take a guess
+    return {
+      label: 'Missing data',
+      isInFuture: parseInt(missingEpochId) > parseInt(currentEpochId)
+    }
+  }
+
+  const startFrom = new Date(epochStart);
+
+  const diff = parseInt(missingEpochId) - parseInt(currentEpochId);
+  const futureDate = addSeconds(startFrom, diff * epochLengthInSeconds);
+
+  const label = isValidDate(futureDate) && isValidDate(startFrom) ? `Estimate: ${futureDate.toLocaleString()} - ${formatDistance(
+      futureDate,
+      startFrom,
+      { addSuffix: true }
+    )}` : 'Missing data'
+
+  return {
+    label, 
+    isInFuture: isFuture(futureDate) 
+  }
+}
 
 export default EpochMissingOverview;
 
@@ -92,6 +101,11 @@ export default EpochMissingOverview;
  */
 export function getSecondsFromInterval(str: string) {
   let seconds = 0;
+
+  if (!str || !str.match) {
+    return seconds
+  }
+
   const months = str.match(/(\d+)\s*M/);
   const days = str.match(/(\d+)\s*D/);
   const hours = str.match(/(\d+)\s*h/);
