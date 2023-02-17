@@ -23,9 +23,10 @@ describe('Desktop view', { tags: '@smoke' }, () => {
             cy.wrap(element)
               .get('span.absolute.md\\:h-1.w-full')
               .should('exist');
-            cy.location('hash').should('equal', hashes[index], {
-              timeout: 300,
-            });
+            cy.location('hash', { timeout: 300 }).should(
+              'equal',
+              hashes[index]
+            );
           });
       });
     });
@@ -70,9 +71,11 @@ describe('Mobile view', { tags: '@smoke' }, () => {
       cy.getByTestId('button-menu-drawer').click();
       cy.getByTestId('menu-drawer').within((el) => {
         cy.wrap(el).getByTestId('Trading').click();
-        cy.location('hash').should('equal', '#/markets/market-1', {
-          timeout: 300,
-        });
+
+        cy.location('hash', { timeout: 300 }).should(
+          'equal',
+          '#/markets/market-1'
+        );
       });
     });
     it('Portfolio should be correctly rendered', () => {
