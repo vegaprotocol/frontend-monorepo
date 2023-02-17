@@ -458,6 +458,7 @@
   "rewardsColMarketCreationHeader": "MARKET CREATION",
   "rewardsColMarketCreationTooltip": "Market creation rewards are paid out to the creator of any market that exceeds a set threshold of cumulative volume in a given epoch, currently [rewards.marketCreationQuantumMultiple]",
   "rewardsColTotalHeader": "TOTAL",
+  "ofTotalDistributed": "of total distributed",
   "checkBackSoon": "Check back soon",
   "yourStake": "Your stake",
   "reward": "Reward",

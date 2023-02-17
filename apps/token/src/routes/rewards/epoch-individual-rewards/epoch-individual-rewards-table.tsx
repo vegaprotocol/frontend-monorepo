@@ -6,6 +6,7 @@ import {
   RewardsTable,
 } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { EpochIndividualReward } from './generate-epoch-individual-rewards-list';
+import { useTranslation } from 'react-i18next';
 
 interface EpochIndividualRewardsGridProps {
   data: EpochIndividualReward;
@@ -19,6 +20,7 @@ interface RewardItemProps {
 }
 
 const DisplayReward = (reward: string, percentageOfTotal?: string) => {
+  const { t } = useTranslation();
   const {
     appState: { decimals },
   } = useAppState();
@@ -34,7 +36,7 @@ const DisplayReward = (reward: string, percentageOfTotal?: string) => {
           <span>{formatNumber(toBigNum(reward, decimals), decimals)}</span>
           {percentageOfTotal && (
             <span className="text-vega-dark-300">
-              ({percentageOfTotal}% of total distributed)
+              ({percentageOfTotal}% {t('ofTotalDistributed')})
             </span>
           )}
         </div>
