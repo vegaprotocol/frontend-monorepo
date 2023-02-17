@@ -1,54 +1,51 @@
 import { render } from '@testing-library/react';
 import { AppStateProvider } from '../../../contexts/app-state/app-state-provider';
-import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
-import { AccountType } from '@vegaprotocol/types';
+import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 
 const mockData = {
-  epoch: 4431,
-  assetRewards: [
+  epoch: '4441',
+  rewards: [
     {
-      assetId:
-        'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
-      name: 'tDAI TEST',
-      rewards: [
-        {
-          rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+      asset: 'tDAI',
+      totalAmount: '5',
+      rewardTypes: {
+        ACCOUNT_TYPE_GLOBAL_REWARD: {
           amount: '0',
+          percentageOfTotal: '0',
         },
-        {
-          rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-          amount: '295',
+        ACCOUNT_TYPE_FEES_INFRASTRUCTURE: {
+          amount: '5',
+          percentageOfTotal: '0.00305237260923',
         },
-        {
-          rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+        ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: {
           amount: '0',
+          percentageOfTotal: '0',
         },
-        {
-          rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+        ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: {
           amount: '0',
+          percentageOfTotal: '0',
         },
-        {
-          rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+        ACCOUNT_TYPE_FEES_LIQUIDITY: {
           amount: '0',
+          percentageOfTotal: '0',
         },
-        {
-          rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+        ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: {
           amount: '0',
+          percentageOfTotal: '0',
         },
-      ],
-      totalAmount: '295',
+      },
     },
   ],
 };
 
-describe('EpochTotalRewardsTable', () => {
+describe('EpochIndividualRewardsTable', () => {
   it('should render correctly', () => {
     const { getByTestId } = render(
       <AppStateProvider>
-        <EpochTotalRewardsTable data={mockData} />
+        <EpochIndividualRewardsTable data={mockData} />
       </AppStateProvider>
     );
-    expect(getByTestId('epoch-total-rewards-table')).toBeInTheDocument();
+    expect(getByTestId('epoch-individual-rewards-table')).toBeInTheDocument();
     expect(getByTestId('asset')).toBeInTheDocument();
     expect(getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD')).toBeInTheDocument();
     expect(getByTestId('ACCOUNT_TYPE_FEES_INFRASTRUCTURE')).toBeInTheDocument();
@@ -62,6 +59,5 @@ describe('EpochTotalRewardsTable', () => {
     expect(
       getByTestId('ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS')
     ).toBeInTheDocument();
-    expect(getByTestId('total')).toBeInTheDocument();
   });
 });

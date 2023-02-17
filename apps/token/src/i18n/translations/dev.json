@@ -432,6 +432,7 @@
   "associatedWithVegaKeys": "Associated with Vega keys",
   "thisEpoch": "This Epoch",
   "nextEpoch": "Next epoch",
+  "toSeeYourRewardsConnectYourWallet": "TO SEE YOUR REWARDS, CONNECT YOUR WALLET",
   "rewardsIntro": "Earn rewards and infrastructure fees for trading and maintaining the network.",
   "rewardsCallout": "Rewards are credited {{duration}} after the epoch ends.",
   "rewardsCalloutDetail": "This delay is set by a network parameter",

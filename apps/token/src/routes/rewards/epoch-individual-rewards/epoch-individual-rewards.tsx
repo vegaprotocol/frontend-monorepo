@@ -5,9 +5,10 @@ import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
 import { useRewardsQuery } from '../home/__generated__/Rewards';
 import { ENV } from '../../../config';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { RewardTable } from './reward-table';
+import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
+import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
 
-export const RewardInfo = () => {
+export const EpochIndividualRewards = () => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const { delegationsPagination } = ENV;
@@ -30,13 +31,10 @@ export const RewardInfo = () => {
     return removePaginationWrapper(data.party.rewardsConnection.edges);
   }, [data]);
 
-  const delegations = useMemo(() => {
-    if (!data?.party || !data.party.delegationsConnection?.edges?.length) {
-      return [];
-    }
-
-    return removePaginationWrapper(data.party.delegationsConnection.edges);
-  }, [data]);
+  const epochIndividualRewardSummaries = useMemo(() => {
+    if (!data?.party) return [];
+    return generateEpochIndividualRewardsList(rewards);
+  }, [data?.party, rewards]);
 
   return (
     <AsyncRenderer
@@ -45,20 +43,18 @@ export const RewardInfo = () => {
       data={data}
       render={() => (
         <div>
-          <p>
-            {t('Connected Vega key')}: {pubKey}
+          <p className="mb-10">
+            {t('Connected Vega key')}:{' '}
+            <span className="text-white">{pubKey}</span>
           </p>
-          {rewards.length ? (
-            rewards.map((reward, i) => {
-              if (!reward) return null;
-              return (
-                <RewardTable
-                  key={i}
-                  reward={reward}
-                  delegations={delegations || []}
+          {epochIndividualRewardSummaries.length ? (
+            epochIndividualRewardSummaries.map(
+              (epochIndividualRewardSummary) => (
+                <EpochIndividualRewardsTable
+                  data={epochIndividualRewardSummary}
                 />
-              );
-            })
+              )
+            )
           ) : (
             <p>{t('noRewards')}</p>
           )}
