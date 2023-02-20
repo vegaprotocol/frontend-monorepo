@@ -168,7 +168,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 else {
                   if (
                     data.asset.id === pinnedAssetId &&
-                    pinnedAssetRow &&
                     new BigNumber(data.deposited).isLessThanOrEqualTo(0)
                   ) {
                     return (
