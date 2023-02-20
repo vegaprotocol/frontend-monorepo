@@ -24,9 +24,13 @@ fragment MarketFields on Market {
           settlementAsset {
             id
             symbol
+            name
             decimals
           }
           quoteName
+          dataSourceSpecForTradingTermination {
+            id
+          }
         }
       }
     }

@@ -1,9 +1,9 @@
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, NotificationError } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal, validateAmount } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
 export type DealTicketLimitAmountProps = Omit<
-  DealTicketAmountProps,
+  Omit<DealTicketAmountProps, 'marketData'>,
   'orderType'
 >;
 
@@ -15,23 +15,22 @@ export const DealTicketLimitAmount = ({
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const quoteName =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   const renderError = () => {
     if (sizeError) {
       return (
-        <InputError data-testid="dealticket-error-message-size-limit">
+        <NotificationError testId="dealticket-error-message-size-limit">
           {sizeError}
-        </InputError>
+        </NotificationError>
       );
     }
 
     if (priceError) {
       return (
-        <InputError data-testid="dealticket-error-message-price-limit">
+        <NotificationError testId="dealticket-error-message-price-limit">
           {priceError}
-        </InputError>
+        </NotificationError>
       );
     }
 

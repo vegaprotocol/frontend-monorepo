@@ -19,6 +19,10 @@ import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
 import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
 import { TxDetailsDataSubmission } from './tx-data-submission';
 import { TxProposalVote } from './tx-proposal-vote';
+import { TxDetailsProtocolUpgrade } from './tx-details-protocol-upgrade';
+import { TxDetailsIssueSignatures } from './tx-issue-signatures';
+import { TxDetailsNodeAnnounce } from './tx-node-announce';
+import { TxDetailsStateVariable } from './tx-state-variable-proposal';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -66,10 +70,16 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
 
   // These come from https://github.com/vegaprotocol/vega/blob/develop/core/txn/command.go#L72-L98
   switch (txData.type) {
+    case 'Register new Node':
+      return TxDetailsNodeAnnounce;
+    case 'Issue Signatures':
+      return TxDetailsIssueSignatures;
     case 'Submit Order':
       return TxDetailsOrder;
     case 'Submit Oracle Data':
       return TxDetailsDataSubmission;
+    case 'Protocol Upgrade':
+      return TxDetailsProtocolUpgrade;
     case 'Cancel Order':
       return TxDetailsOrderCancel;
     case 'Amend Order':
@@ -96,6 +106,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsDelegate;
     case 'Undelegate':
       return TxDetailsUndelegate;
+    case 'State Variable Proposal':
+      return TxDetailsStateVariable;
     default:
       return TxDetailsGeneric;
   }

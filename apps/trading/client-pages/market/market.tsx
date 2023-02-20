@@ -9,9 +9,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import type {
-  SingleMarketFieldsFragment,
   MarketData,
-  Candle,
   MarketDataUpdateFieldsFragment,
 } from '@vegaprotocol/market-list';
 
@@ -26,11 +24,6 @@ const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
     ? addDecimalsFormatNumber(markPrice, decimalPlaces)
     : '-';
 };
-
-export interface SingleMarketData extends SingleMarketFieldsFragment {
-  candles: Candle[];
-  data: MarketData;
-}
 
 const TitleUpdater = ({
   marketId,
@@ -89,12 +82,9 @@ export const MarketPage = () => {
     [marketId, navigate]
   );
 
-  const { data, error, loading } = useDataProvider<
-    SingleMarketFieldsFragment,
-    never
-  >({
+  const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,
-    variables: useMemo(() => ({ marketId: marketId || '' }), [marketId]),
+    variables: { marketId: marketId || '' },
     skip: !marketId,
   });
 
@@ -108,14 +98,20 @@ export const MarketPage = () => {
     if (w > 960) {
       return <TradeGrid market={data} onSelect={onSelect} />;
     }
-    return <TradePanels market={data} onSelect={onSelect} />;
-  }, [w, data, onSelect]);
+    return (
+      <TradePanels
+        market={data}
+        onSelect={onSelect}
+        onClickCollateral={() => navigate('/portfolio')}
+      />
+    );
+  }, [w, data, onSelect, navigate]);
   if (!data && marketId) {
     return (
       <Splash>
         <span className="flex flex-col items-center gap-2">
           <p className="text-sm justify-center">
-            {t('This market URL is not available anymore.')}
+            {t('This market URL is not available any more.')}
           </p>
           <p className="text-sm justify-center">
             {t(`Please choose another market from the`)}{' '}
@@ -129,7 +125,7 @@ export const MarketPage = () => {
   }
 
   return (
-    <AsyncRenderer<SingleMarketFieldsFragment>
+    <AsyncRenderer
       loading={loading}
       error={error}
       data={data || undefined}

@@ -28,7 +28,7 @@ const Oracles = () => {
                 <OracleDetails
                   id={id}
                   dataSource={o?.node}
-                  dataConnection={o?.node}
+                  showBroadcasts={false}
                 />
                 <details>
                   <summary className="pointer">JSON</summary>

@@ -126,10 +126,10 @@ export const VotingPowerRenderer = ({ data }: VotingPowerRendererProps) => {
     <Tooltip
       description={
         <>
-          <div>
+          <div data-testid="unnormalised-voting-power-tooltip">
             {t('unnormalisedVotingPower')}: {data.unnormalisedVotingPower}
           </div>
-          <div>
+          <div data-testid="normalised-voting-power-tooltip">
             {t('normalisedVotingPower')}: {data.normalisedVotingPower}
           </div>
         </>
@@ -155,13 +155,13 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
     <Tooltip
       description={
         <>
-          <div>
+          <div data-testid="staked-operator-tooltip">
             {t('stakedByOperator')}: {data.stakedByOperator.toString()}
           </div>
-          <div>
+          <div data-testid="staked-delegates-tooltip">
             {t('stakedByDelegates')}: {data.stakedByDelegates.toString()}
           </div>
-          <div>
+          <div data-testid="total-staked-tooltip">
             {t('totalStake')}: <span className="font-bold">{data.stake}</span>
           </div>
         </>
@@ -177,7 +177,7 @@ interface TotalPenaltiesRendererProps {
     performanceScore: string;
     performancePenalty: string;
     overstakedAmount: string;
-    overstakedPenalty: string;
+    overstakingPenalty: string;
     totalPenalties: string;
   };
 }
@@ -191,23 +191,13 @@ export const TotalPenaltiesRenderer = ({
     <Tooltip
       description={
         <>
-          <div>
-            <span>
-              {t('performancePenalty')}: {data.performancePenalty}
-            </span>
-            <span className="pl-2">
-              ({t('score')} {data.performanceScore})
-            </span>
+          <div data-testid="performance-penalty-tooltip">
+            {t('performancePenalty')}: {data.performancePenalty}
           </div>
-          <div>
-            <span>
-              {t('overstakedPenalty')}: {data.overstakedPenalty}
-            </span>
-            <span className="pl-2">
-              ({t('overstaked')} {data.overstakedAmount})
-            </span>
+          <div data-testid="overstaked-penalty-tooltip">
+            {t('overstakedPenalty')}: {data.overstakingPenalty}
           </div>
-          <div>
+          <div data-testid="total-penalty-tooltip">
             {t('totalPenalties')}:{' '}
             <span className="font-bold">{data.totalPenalties}</span>
           </div>

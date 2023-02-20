@@ -4,18 +4,24 @@ import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderMargin } from './use-order-margin';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   order: OrderSubmissionBody['orderSubmission'];
 }
 
-export const useOrderMarginValidation = ({ market, order }: Props) => {
+export const useOrderMarginValidation = ({
+  market,
+  marketData,
+  order,
+}: Props) => {
   const { pubKey } = useVegaWallet();
   const estMargin = useOrderMargin({
     order,
     market,
+    marketData,
     partyId: pubKey || '',
   });
   const { id: assetId, decimals: assetDecimals } =

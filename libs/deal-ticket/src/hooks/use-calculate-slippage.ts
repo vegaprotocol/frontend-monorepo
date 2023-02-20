@@ -1,36 +1,29 @@
 import { useMemo } from 'react';
 import { marketDepthProvider } from '@vegaprotocol/market-depth';
 import * as Schema from '@vegaprotocol/types';
-import { marketProvider } from '@vegaprotocol/market-list';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { BigNumber } from 'bignumber.js';
 import {
   formatNumber,
   toBigNum,
-  useDataProvider,
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
 
 interface Props {
-  marketId: string;
+  market: Market;
   order: OrderSubmissionBody['orderSubmission'];
 }
 
-export const useCalculateSlippage = ({ marketId, order }: Props) => {
-  const variables = useMemo(() => ({ marketId }), [marketId]);
+export const useCalculateSlippage = ({ market, order }: Props) => {
+  const variables = useMemo(() => ({ marketId: market.id }), [market.id]);
   const { data } = useThrottledDataProvider(
     {
       dataProvider: marketDepthProvider,
       variables,
     },
-    5000
+    1000
   );
-  const { data: market } = useDataProvider<SingleMarketFieldsFragment, never>({
-    dataProvider: marketProvider,
-    skipUpdates: true,
-    variables,
-  });
   const volPriceArr =
     data?.depth[order.side === Schema.Side.SIDE_BUY ? 'sell' : 'buy'] || [];
   if (volPriceArr.length && market) {

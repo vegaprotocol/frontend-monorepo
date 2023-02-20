@@ -4,6 +4,7 @@ import { MarketLink } from '../links';
 import PriceInMarket from '../price-in-market/price-in-market';
 import { Time } from '../time';
 import { sideText, statusText, tifFull, tifShort } from './lib/order-labels';
+import SizeInMarket from '../size-in-market/size-in-market';
 
 export interface DeterministicOrderDetailsProps {
   id: string;
@@ -90,7 +91,7 @@ const DeterministicOrderDetails = ({
             <div className="mb-12 md:mb-0">
               <h2 className="text-2xl font-bold text-dark mb-4">{t('Size')}</h2>
               <h5 className="text-lg font-medium text-gray-500 mb-0">
-                {o.size}
+                <SizeInMarket size={o.size} marketId={o.market.id} />
               </h5>
             </div>
 

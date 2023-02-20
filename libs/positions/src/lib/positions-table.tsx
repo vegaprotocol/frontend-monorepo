@@ -49,7 +49,7 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
   }
   const { openVolume, positionDecimalPlaces, marketDecimalPlaces, notional } =
     valueFormatted;
-  return valueFormatted ? (
+  return valueFormatted && notional ? (
     <div className="leading-tight font-mono">
       <div
         className={classNames('text-right', signedNumberCssClass(openVolume))}
@@ -115,15 +115,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueGetter={({
             data,
           }: VegaValueGetterParams<Position, 'notional'>) => {
-            return data?.notional === undefined
+            return !data?.notional
               ? undefined
-              : toBigNum(data?.notional, data.marketDecimalPlaces).toNumber();
+              : toBigNum(data.notional, data.marketDecimalPlaces).toNumber();
           }}
           valueFormatter={({
             data,
           }: VegaValueFormatterParams<Position, 'notional'>) => {
-            return !data
-              ? undefined
+            return !data || !data.notional
+              ? '-'
               : addDecimalsFormatNumber(
                   data.notional,
                   data.marketDecimalPlaces
@@ -142,7 +142,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueGetterParams<Position, 'openVolume'>) => {
             return data?.openVolume === undefined
               ? undefined
-              : toBigNum(data?.openVolume, data.decimals).toNumber();
+              : toBigNum(
+                  data?.openVolume,
+                  data.positionDecimalPlaces
+                ).toNumber();
           }}
           valueFormatter={({
             data,
@@ -173,6 +176,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             data,
           }: VegaValueGetterParams<Position, 'markPrice'>) => {
             return !data ||
+              !data.markPrice ||
               data.marketTradingMode ===
                 Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
               ? undefined
@@ -180,14 +184,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'markPrice'>) => {
             if (!data) {
               return undefined;
             }
             if (
+              !data.markPrice ||
               data.marketTradingMode ===
-              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+                Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
             ) {
               return '-';
             }
@@ -220,7 +224,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'averageEntryPrice'>):
             | string
             | undefined => {
@@ -258,7 +261,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'liquidationPrice'>):
             | string
             | undefined => {
-            if (!data) {
+            if (!data || data?.liquidationPrice === undefined) {
               return undefined;
             }
             return addDecimalsFormatNumber(
@@ -335,7 +338,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
           }}
-          cellRenderer="PriceFlashCell"
           headerTooltip={t(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
           )}
@@ -360,7 +362,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals)
           }
-          cellRenderer="PriceFlashCell"
           headerTooltip={t(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}

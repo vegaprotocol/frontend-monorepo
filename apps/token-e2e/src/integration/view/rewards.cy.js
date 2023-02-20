@@ -1,4 +1,4 @@
-const connectToVegaBtn = '[data-testid="connect-to-vega-wallet-btn"]';
+const viewToggle = '[data-testid="epoch-reward-view-toggle-total"]';
 const warning = '[data-testid="callout"]';
 
 context(
@@ -15,7 +15,7 @@ context(
       });
 
       it('should have rewards header visible', function () {
-        cy.verify_page_header('Rewards');
+        cy.verify_page_header('Rewards and fees');
       });
 
       it('should have epoch warning', function () {
@@ -27,10 +27,8 @@ context(
           );
       });
 
-      it('should have connect Vega wallet button', function () {
-        cy.get(connectToVegaBtn)
-          .should('be.visible')
-          .and('have.text', 'Connect Vega wallet');
+      it('should have toggle for seeing total vs individual rewards', function () {
+        cy.get(viewToggle).should('be.visible');
       });
     });
   }

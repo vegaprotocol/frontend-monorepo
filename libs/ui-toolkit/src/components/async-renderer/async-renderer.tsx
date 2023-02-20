@@ -26,13 +26,15 @@ export function AsyncRenderer<T = object>({
   render,
 }: AsyncRendererProps<T>) {
   if (error) {
-    return (
-      <Splash>
-        {errorMessage
-          ? errorMessage
-          : t(`Something went wrong: ${error.message}`)}
-      </Splash>
-    );
+    if (!data) {
+      return (
+        <Splash>
+          {errorMessage
+            ? errorMessage
+            : t(`Something went wrong: ${error.message}`)}
+        </Splash>
+      );
+    }
   }
 
   if (loading) {

@@ -4,7 +4,7 @@ import {
   toDecimal,
   validateAmount,
 } from '@vegaprotocol/react-helpers';
-import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Input, NotificationError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '../../utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { getMarketPrice } from '../../utils/get-price';
@@ -17,12 +17,12 @@ export type DealTicketMarketAmountProps = Omit<
 export const DealTicketMarketAmount = ({
   register,
   market,
+  marketData,
   sizeError,
 }: DealTicketMarketAmountProps) => {
-  const quoteName =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const price = getMarketPrice(market);
+  const price = getMarketPrice(marketData);
 
   const priceFormatted = price
     ? addDecimalsFormatNumber(price, market.decimalPlaces)
@@ -34,7 +34,7 @@ export const DealTicketMarketAmount = ({
         <div className="flex-1 text-sm">Size</div>
         <div />
         <div className="flex-2 text-sm text-right">
-          {isMarketInAuction(market) && (
+          {isMarketInAuction(marketData.marketTradingMode) && (
             <Tooltip
               description={t(
                 'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
@@ -77,12 +77,12 @@ export const DealTicketMarketAmount = ({
         </div>
       </div>
       {sizeError && (
-        <InputError
+        <NotificationError
           intent="danger"
-          data-testid="dealticket-error-message-size-market"
+          testId="dealticket-error-message-size-market"
         >
           {sizeError}
-        </InputError>
+        </NotificationError>
       )}
     </div>
   );

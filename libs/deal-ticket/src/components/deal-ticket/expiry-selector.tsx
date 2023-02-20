@@ -1,4 +1,4 @@
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, NotificationError } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import type { UseFormRegister } from 'react-hook-form';
@@ -35,9 +35,9 @@ export const ExpirySelector = ({
         })}
       />
       {errorMessage && (
-        <InputError data-testid="dealticket-error-message-expiry">
+        <NotificationError testId="dealticket-error-message-expiry">
           {errorMessage}
-        </InputError>
+        </NotificationError>
       )}
     </FormGroup>
   );

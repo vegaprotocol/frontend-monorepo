@@ -21,7 +21,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
         `Topping up vega wallet with ${assetName}, amount: ${amount}`
       );
       // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
-      cy.get_asset_information().then((assets) => {
+      cy.getAssets().then((assets) => {
         console.log(assets);
         const asset = assets[assetName];
         if (assets[assetName] !== undefined) {

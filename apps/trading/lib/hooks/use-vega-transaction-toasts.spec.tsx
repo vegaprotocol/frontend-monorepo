@@ -134,23 +134,7 @@ const submitOrder: VegaStoredTxState = {
     type: OrderType.TYPE_MARKET,
     price: '1234',
     createdAt: new Date(),
-    market: {
-      id: 'market-1',
-      decimalPlaces: 2,
-      positionDecimalPlaces: 2,
-      tradableInstrument: {
-        instrument: {
-          code: 'M1',
-          name: 'M1',
-          product: {
-            settlementAsset: {
-              decimals: 2,
-              symbol: '$A',
-            },
-          },
-        },
-      },
-    },
+    marketId: 'market-1',
     status: OrderStatus.STATUS_ACTIVE,
   },
 };
@@ -181,23 +165,7 @@ const editOrder: VegaStoredTxState = {
     type: OrderType.TYPE_MARKET,
     price: '1234',
     createdAt: new Date(),
-    market: {
-      id: 'market-1',
-      decimalPlaces: 2,
-      positionDecimalPlaces: 2,
-      tradableInstrument: {
-        instrument: {
-          code: 'M1',
-          name: 'M1',
-          product: {
-            settlementAsset: {
-              decimals: 2,
-              symbol: '$A',
-            },
-          },
-        },
-      },
-    },
+    marketId: 'market-1',
     status: OrderStatus.STATUS_ACTIVE,
   },
 };
@@ -292,7 +260,7 @@ describe('VegaTransactionDetails', () => {
     const { queryByTestId } = render(
       <VegaTransactionDetails tx={unsupportedTransaction} />
     );
-    expect(queryByTestId('vega-tx-details')).toBeNull();
+    expect(queryByTestId('toast-panel')).toBeNull();
   });
   it.each([
     { tx: withdraw, details: 'Withdraw 12.34 $A' },
@@ -307,6 +275,6 @@ describe('VegaTransactionDetails', () => {
     { tx: batch, details: 'Batch market instruction' },
   ])('display details for transaction', ({ tx, details }) => {
     const { queryByTestId } = render(<VegaTransactionDetails tx={tx} />);
-    expect(queryByTestId('vega-tx-details')?.textContent).toEqual(details);
+    expect(queryByTestId('toast-panel')?.textContent).toEqual(details);
   });
 });

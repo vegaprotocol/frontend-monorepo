@@ -25,23 +25,14 @@ export const useVoteEvent = (transaction: VegaTxState) => {
           variables: { partyId },
         })
         .subscribe(({ data }) => {
-          if (!data?.busEvents?.length) {
+          if (!data?.votes) {
             return;
           }
 
-          const matchingVoteEvent = data.busEvents.find((e) => {
-            if (e.event.__typename !== 'Vote') {
-              return false;
-            }
+          const vote = data.votes;
 
-            return e.event.proposalId === proposalId;
-          });
-
-          if (
-            matchingVoteEvent &&
-            matchingVoteEvent.event.__typename === 'Vote'
-          ) {
-            callback(matchingVoteEvent.event);
+          if (vote.proposalId === proposalId) {
+            callback(vote);
             subRef.current?.unsubscribe();
           }
         });

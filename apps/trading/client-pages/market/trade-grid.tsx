@@ -21,7 +21,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '../../components/accounts-container';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { TradeMarketHeader } from './trade-market-header';
 import { NO_MARKET } from './constants';
@@ -63,7 +63,7 @@ const TradingViews = {
 type TradingView = keyof typeof TradingViews;
 
 interface TradeGridProps {
-  market: SingleMarketFieldsFragment | null;
+  market: Market | null;
   onSelect: (marketId: string) => void;
 }
 
@@ -111,7 +111,10 @@ const MainGrid = ({
             <TradeGridChild>
               <Tabs>
                 <Tab id="ticket" name={t('Ticket')}>
-                  <TradingViews.Ticket marketId={marketId} />
+                  <TradingViews.Ticket
+                    marketId={marketId}
+                    onClickCollateral={() => navigate('/portfolio')}
+                  />
                 </Tab>
                 <Tab id="info" name={t('Info')}>
                   <TradingViews.Info
@@ -207,18 +210,24 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 };
 
 interface TradePanelsProps {
-  market: SingleMarketFieldsFragment | null;
+  market: Market | null;
   onSelect: (marketId: string) => void;
   onMarketClick?: (marketId: string) => void;
+  onClickCollateral: () => void;
 }
 
-export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
+export const TradePanels = ({
+  market,
+  onSelect,
+  onClickCollateral,
+}: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
   const renderView = () => {
     const Component = memo<{
       marketId: string;
       onSelect: (marketId: string) => void;
       onMarketClick?: (marketId: string) => void;
+      onClickCollateral: () => void;
     }>(TradingViews[view]);
 
     if (!Component) {
@@ -227,7 +236,13 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
 
     if (!market) return <Splash>{NO_MARKET}</Splash>;
 
-    return <Component marketId={market?.id} onSelect={onSelect} />;
+    return (
+      <Component
+        marketId={market?.id}
+        onSelect={onSelect}
+        onClickCollateral={onClickCollateral}
+      />
+    );
   };
 
   return (

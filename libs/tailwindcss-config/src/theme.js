@@ -99,20 +99,20 @@ module.exports = {
 
       // DARK
       dark: {
-        400: '#161616',
-        300: '#262626',
+        100: '#161616',
+        150: '#262626',
         200: '#404040',
-        150: '#8B8B8B',
-        100: '#C0C0C0',
+        300: '#8B8B8B',
+        400: '#C0C0C0',
       },
 
       // LIGHT
       light: {
-        400: '#F0F0F0',
-        300: '#E9E9E9',
+        100: '#F0F0F0',
+        150: '#E9E9E9',
         200: '#D2D2D2',
-        150: '#939393',
-        100: '#626262',
+        300: '#939393',
+        400: '#626262',
       },
     },
     danger: '#FF077F',
@@ -174,11 +174,16 @@ module.exports = {
       '60%': { transform: 'rotate( 0.0deg)' },
       '100%': { transform: 'rotate( 0.0deg)' },
     },
+    progress: {
+      from: { width: '0' },
+      to: { width: '100%' },
+    },
   },
   animation: {
     rotate: 'rotate 2s linear alternate infinite',
     'rotate-back': 'rotate 2s linear reverse infinite',
     wave: 'wave 2s linear infinite',
+    progress: 'progress 5s cubic-bezier(.39,.58,.57,1) 1',
   },
   data: {
     selected: 'state~="checked"',

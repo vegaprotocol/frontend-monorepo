@@ -4,7 +4,7 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { forwardRef } from 'react';
 
 const itemClass = classNames(
-  'relative flex items-center justify-between rounded-sm p-2 text-sm',
+  'relative flex items-center justify-between rounded-sm',
   'cursor-default hover:cursor-pointer',
   'hover:white dark:hover:white',
   'focus:white dark:focus:white',
@@ -53,7 +53,7 @@ export const NavDropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className="min-w-[290px] bg-neutral-200 dark:bg-neutral-900 mt-4 p-2 rounded-xl border border-neutral-700 text-white"
+    className="bg-vega-dark-100 mt-4 py-4 rounded-xl border border-vega-dark-200 text-white"
     align="start"
     sideOffset={10}
   />

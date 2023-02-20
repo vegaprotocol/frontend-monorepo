@@ -13,11 +13,13 @@ import {
   DropdownMenuTrigger,
   Icon,
   Drawer,
+  DropdownMenuSeparator,
 } from '@vegaprotocol/ui-toolkit';
 import type { PubKey } from '@vegaprotocol/wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { WalletIcon } from '../icons/wallet';
+import { useTransferDialog } from '@vegaprotocol/accounts';
 
 const MobileWalletButton = ({
   isConnected,
@@ -30,6 +32,7 @@ const MobileWalletButton = ({
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
+  const openTransferDialog = useTransferDialog((store) => store.open);
   const { VEGA_ENV } = useEnvironment();
   const isYellow = VEGA_ENV === Networks.TESTNET;
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -115,7 +118,16 @@ const MobileWalletButton = ({
               />
             ))}
           </div>
-          <div className="m-4">
+          <div className="flex flex-col gap-2 m-4">
+            <Button
+              onClick={() => {
+                setDrawerOpen(false);
+                openTransferDialog(true);
+              }}
+              fill
+            >
+              {t('Transfer')}
+            </Button>
             <Button onClick={mobileDisconnect} fill>
               {t('Disconnect')}
             </Button>
@@ -131,6 +143,7 @@ export const VegaWalletConnectButton = () => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
+  const openTransferDialog = useTransferDialog((store) => store.open);
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   const isConnected = pubKey !== null;
 
@@ -171,6 +184,13 @@ export const VegaWalletConnectButton = () => {
                     <KeypairItem key={pk.publicKey} pk={pk} />
                   ))}
                 </DropdownMenuRadioGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  data-testid="wallet-transfer"
+                  onClick={() => openTransferDialog(true)}
+                >
+                  {t('Transfer')}
+                </DropdownMenuItem>
                 <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
                   {t('Disconnect')}
                 </DropdownMenuItem>

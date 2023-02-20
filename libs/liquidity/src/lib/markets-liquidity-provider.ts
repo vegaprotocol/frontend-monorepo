@@ -9,8 +9,7 @@ import {
 
 import type {
   MarketCandles,
-  MarketWithCandles,
-  MarketWithData,
+  MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/market-list';
 
 import {
@@ -37,21 +36,20 @@ export interface FeeLevels {
   fee: string;
 }
 
-export type Market = MarketWithData &
-  MarketWithCandles & {
-    feeLevels: FeeLevels[];
-    target: string;
-    dayVolume: string;
-    liquidityCommitted: number;
-    volumeChange: string;
-    tradableInstrument?: {
-      instrument?: {
-        metadata?: {
-          tags?: string[] | null;
-        };
+export type Market = MarketMaybeWithDataAndCandles & {
+  feeLevels: FeeLevels[];
+  target: string;
+  dayVolume: string;
+  liquidityCommitted: number;
+  volumeChange: string;
+  tradableInstrument?: {
+    instrument?: {
+      metadata?: {
+        tags?: string[] | null;
       };
     };
   };
+};
 
 export interface Markets {
   markets: Market[];
@@ -68,7 +66,7 @@ const getData = (
 };
 
 export const addData = (
-  markets: (MarketWithData & MarketWithCandles)[],
+  markets: MarketMaybeWithDataAndCandles[],
   marketsCandles24hAgo: MarketCandles[],
   marketsLiquidity: LiquidityProvisionMarket[]
 ) => {
@@ -104,7 +102,7 @@ export const liquidityMarketsProvider = makeDataProvider<
   getData,
 });
 
-const liquidityProvisionProvider = makeDerivedDataProvider<Markets, never>(
+const liquidityProvisionProvider = makeDerivedDataProvider<Market[], never>(
   [
     marketListProvider,
     (callback, client, variables) =>
@@ -115,12 +113,11 @@ const liquidityProvisionProvider = makeDerivedDataProvider<Markets, never>(
     liquidityMarketsProvider,
   ],
   (parts) => {
-    const data = addData(
-      parts[0] as (MarketWithData & MarketWithCandles)[],
+    return addData(
+      parts[0] as MarketMaybeWithDataAndCandles[],
       parts[1] as MarketCandles[],
       parts[2] as LiquidityProvisionMarket[]
     );
-    return { markets: data };
   }
 );
 

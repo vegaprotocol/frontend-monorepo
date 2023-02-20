@@ -35,7 +35,7 @@ export const TxDetailsDelegate = ({
     txData.command.delegateSubmission;
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       {d.nodeId ? (
         <TableRow modifier="bordered">

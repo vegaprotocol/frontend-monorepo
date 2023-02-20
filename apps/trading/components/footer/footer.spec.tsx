@@ -42,7 +42,7 @@ describe('Footer', () => {
 
 describe('NodeHealth', () => {
   const cases = [
-    { diff: 0, classname: 'bg-success', text: 'Operational' },
+    { diff: 0, classname: 'bg-vega-green-550', text: 'Operational' },
     { diff: 5, classname: 'bg-warning', text: '5 Blocks behind' },
     { diff: -1, classname: 'bg-danger', text: 'Non operational' },
   ];

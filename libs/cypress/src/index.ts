@@ -5,7 +5,7 @@ import { addMockWalletCommand } from './lib/mock-rest';
 import { addMockWeb3ProviderCommand } from './lib/commands/mock-web3-provider';
 import { addSlackCommand } from './lib/commands/slack';
 import { addHighlightLog } from './lib/commands/highlight-log';
-import { addGetAssetInformation } from './lib/commands/get-asset-information';
+import { addGetAssets } from './lib/commands/get-assets';
 import { addVegaWalletReceiveFaucetedAsset } from './lib/commands/vega-wallet-receive-fauceted-asset';
 import { addContainsExactly } from './lib/commands/contains-exactly';
 import { addGetNetworkParameters } from './lib/commands/get-network-parameters';
@@ -17,6 +17,7 @@ import {
 import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
 import { addCreateMarket } from './lib/commands/create-market';
 import { addConnectPublicKey } from './lib/commands/add-connect-public-key';
+import { addVegaWalletSubmitProposal } from './lib/commands/vega-wallet-submit-proposal';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -26,7 +27,7 @@ addMockWalletCommand();
 addMockWeb3ProviderCommand();
 addHighlightLog();
 addVegaWalletReceiveFaucetedAsset();
-addGetAssetInformation();
+addGetAssets();
 addContainsExactly();
 addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
@@ -35,6 +36,7 @@ addSetVegaWallet();
 addMockTransactionResponse();
 addCreateMarket();
 addConnectPublicKey();
+addVegaWalletSubmitProposal();
 
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
 export type { onMessage } from './lib/mock-ws';

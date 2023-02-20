@@ -9,7 +9,7 @@ import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
@@ -24,14 +24,15 @@ import { getDerivedPrice } from '../utils/get-price';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
-  market: MarketDealTicket
+  market: Market,
+  marketData: MarketData
 ) => {
   const { pubKey } = useVegaWallet();
-  const slippage = useCalculateSlippage({ marketId: market.id, order });
+  const slippage = useCalculateSlippage({ market, order });
 
   const derivedPrice = useMemo(() => {
-    return getDerivedPrice(order, market);
-  }, [order, market]);
+    return getDerivedPrice(order, market, marketData);
+  }, [order, market, marketData]);
 
   // Note this isn't currently used anywhere
   const slippageAdjustedPrice = useMemo(() => {
@@ -51,6 +52,7 @@ export const useFeeDealTicketDetails = (
   const estMargin = useOrderMargin({
     order,
     market,
+    marketData,
     partyId: pubKey || '',
     derivedPrice,
   });
@@ -58,6 +60,7 @@ export const useFeeDealTicketDetails = (
   const estCloseOut = useOrderCloseOut({
     order,
     market,
+    marketData,
   });
 
   const notionalSize = useMemo(() => {
@@ -69,12 +72,13 @@ export const useFeeDealTicketDetails = (
     return null;
   }, [derivedPrice, order.size, market.decimalPlaces]);
 
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const symbol =
+    market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
   return useMemo(() => {
     return {
       market,
-      quoteName,
+      symbol,
       notionalSize,
       estMargin,
       estCloseOut,
@@ -83,7 +87,7 @@ export const useFeeDealTicketDetails = (
     };
   }, [
     market,
-    quoteName,
+    symbol,
     notionalSize,
     estMargin,
     estCloseOut,
@@ -93,8 +97,8 @@ export const useFeeDealTicketDetails = (
 };
 
 export interface FeeDetails {
-  market: MarketDealTicket;
-  quoteName: string;
+  market: Market;
+  symbol: string;
   notionalSize: string | null;
   estMargin: OrderMargin | null;
   estCloseOut: string | null;
@@ -102,7 +106,7 @@ export interface FeeDetails {
 }
 
 export const getFeeDetailsValues = ({
-  quoteName,
+  symbol,
   notionalSize,
   estMargin,
   estCloseOut,
@@ -128,7 +132,7 @@ export const getFeeDetailsValues = ({
     {
       label: t('Notional'),
       value: formatValueWithMarketDp(notionalSize),
-      quoteName,
+      symbol,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
     },
     {
@@ -146,24 +150,24 @@ export const getFeeDetailsValues = ({
           <FeesBreakdown
             fees={estMargin?.fees}
             feeFactors={market.fees.factors}
-            quoteName={quoteName}
+            symbol={symbol}
             decimals={assetDecimals}
           />
         </>
       ),
-      quoteName,
+      symbol,
     },
     {
       label: t('Margin'),
       value:
         estMargin?.margin && `~${formatValueWithAssetDp(estMargin?.margin)}`,
-      quoteName,
+      symbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
     {
       label: t('Liquidation'),
       value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
-      quoteName,
+      symbol: market.tradableInstrument.instrument.product.quoteName,
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
     },
   ];

@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { marketQuery } from '@vegaprotocol/mock';
+import { marketsQuery } from '@vegaprotocol/mock';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 
 describe('markets table', { tags: '@smoke' }, () => {
@@ -13,7 +13,6 @@ describe('markets table', { tags: '@smoke' }, () => {
       );
       cy.mockSubscription();
       cy.visit('/');
-      cy.wait('@Market');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
       cy.wait('@MarketsCandles');
@@ -104,7 +103,8 @@ describe('markets table', { tags: '@smoke' }, () => {
       'have.length',
       10
     );
-    cy.getByTestId('external-link')
+    cy.getByTestId('tab-proposed-markets')
+      .find('[data-testid="external-link"]')
       .should('have.length', 11)
       .last()
       .should('have.text', 'Propose a new market')
@@ -122,17 +122,24 @@ describe('markets table', { tags: '@smoke' }, () => {
     );
     cy.mockGQL((req) => {
       const override = {
-        market: {
-          tradableInstrument: {
-            instrument: {
-              name: `opening auction MARKET`,
+        marketsConnection: {
+          edges: [
+            {
+              node: {
+                tradableInstrument: {
+                  instrument: {
+                    name: `opening auction MARKET`,
+                  },
+                },
+                state: Schema.MarketState.STATE_ACTIVE,
+                tradingMode:
+                  Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+              },
             },
-          },
-          state: Schema.MarketState.STATE_ACTIVE,
-          tradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+          ],
         },
       };
-      const market = marketQuery(override);
+      const market = marketsQuery(override);
       aliasGQLQuery(req, 'Market', market);
       aliasGQLQuery(req, 'ProposalOfMarket', {
         proposal: { terms: { enactmentDatetime: '2023-01-31 12:00:01' } },

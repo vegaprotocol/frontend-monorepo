@@ -6,6 +6,7 @@ import {
   isOrderCancellationTransaction,
   isOrderAmendmentTransaction,
   isBatchMarketInstructionsTransaction,
+  isTransferTransaction,
 } from './connectors';
 import { determineId } from './utils';
 
@@ -15,10 +16,11 @@ import { VegaTxStatus } from './use-vega-transaction';
 import type {
   TransactionEventFieldsFragment,
   WithdrawalBusEventFieldsFragment,
-  OrderBusEventFieldsFragment,
+  OrderTxUpdateFieldsFragment,
 } from './__generated__/TransactionResult';
 
 import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
+import { subscribeWithSelector } from 'zustand/middleware';
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   createdAt: Date;
@@ -27,7 +29,7 @@ export interface VegaStoredTxState extends VegaTxState {
   transactionResult?: TransactionEventFieldsFragment;
   withdrawal?: WithdrawalBusEventFieldsFragment;
   withdrawalApproval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
-  order?: OrderBusEventFieldsFragment;
+  order?: OrderTxUpdateFieldsFragment;
 }
 export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
@@ -44,14 +46,14 @@ export interface VegaTransactionStore {
     withdrawal: NonNullable<VegaStoredTxState['withdrawal']>,
     withdrawalApproval: NonNullable<VegaStoredTxState['withdrawalApproval']>
   ) => void;
-  updateOrder: (order: OrderBusEventFieldsFragment) => void;
+  updateOrder: (order: OrderTxUpdateFieldsFragment) => void;
   updateTransactionResult: (
     transactionResult: TransactionEventFieldsFragment
   ) => void;
 }
 
-export const useVegaTransactionStore = create<VegaTransactionStore>(
-  (set, get) => ({
+export const useVegaTransactionStore = create(
+  subscribeWithSelector<VegaTransactionStore>((set, get) => ({
     transactions: [] as VegaStoredTxState[],
     create: (body: Transaction) => {
       const transactions = get().transactions;
@@ -124,7 +126,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-    updateOrder: (order: OrderBusEventFieldsFragment) => {
+    updateOrder: (order) => {
       set(
         produce((state: VegaTransactionStore) => {
           const transaction = state.transactions.find((transaction) => {
@@ -184,9 +186,14 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           );
           if (transaction) {
             transaction.transactionResult = transactionResult;
-            if (
+
+            const isConfirmedOrderCancellation =
               isOrderCancellationTransaction(transaction.body) &&
-              !transaction.body.orderCancellation.orderId &&
+              !transaction.body.orderCancellation.orderId;
+            const isConfirmedTransfer = isTransferTransaction(transaction.body);
+
+            if (
+              (isConfirmedOrderCancellation || isConfirmedTransfer) &&
               !transactionResult.error &&
               transactionResult.status
             ) {
@@ -198,5 +205,5 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-  })
+  }))
 );

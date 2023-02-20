@@ -37,8 +37,8 @@ context(
         function () {
           cy.reload();
           cy.wait_for_spinner();
-          cy.connectVegaWallet();
           cy.ethereum_wallet_connect();
+          cy.connectVegaWallet();
           cy.vega_wallet_teardown();
           cy.navigate_to('validators');
         }
@@ -57,7 +57,16 @@ context(
         //0005-ETXN-006
         //0005-ETXN-003
         //0005-ETXN-005
-        cy.staking_page_associate_tokens('2');
+        cy.staking_page_associate_tokens('2', { skipConfirmation: true });
+
+        cy.getByTestId('currency-title', txTimeout).should(
+          'have.length.above',
+          3
+        );
+        cy.validate_wallet_currency('Associated', '0.00');
+        cy.validate_wallet_currency('Pending association', '2.00');
+        cy.validate_wallet_currency('Total associated after pending', '2.00');
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
 
         // 0005-ETXN-002
         cy.get(ethWalletAssociatedBalances, txTimeout)
@@ -97,6 +106,15 @@ context(
         cy.get('button').contains('Select a validator to nominate').click();
 
         cy.staking_page_disassociate_tokens('2');
+
+        cy.getByTestId('currency-title', txTimeout).should(
+          'have.length.above',
+          3
+        );
+        cy.validate_wallet_currency('Associated', '2.00');
+        cy.validate_wallet_currency('Pending association', '2.00');
+        cy.validate_wallet_currency('Total associated after pending', '0.00');
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
 
         cy.get(ethWalletAssociatedBalances, txTimeout).should('not.exist');
 
@@ -194,7 +212,19 @@ context(
         // 1004-ASSO-024
         // 1004-ASSO-023
 
-        cy.staking_page_associate_tokens('2', { type: 'contract' });
+        cy.staking_page_associate_tokens('2', {
+          type: 'contract',
+          skipConfirmation: true,
+        });
+
+        cy.getByTestId('currency-title', txTimeout).should(
+          'have.length.above',
+          3
+        );
+        cy.validate_wallet_currency('Associated', '0.00');
+        cy.validate_wallet_currency('Pending association', '2.00');
+        cy.validate_wallet_currency('Total associated after pending', '2.00');
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
@@ -210,7 +240,19 @@ context(
         });
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
-        cy.staking_page_disassociate_tokens('1', { type: 'contract' });
+        cy.staking_page_disassociate_tokens('1', {
+          type: 'contract',
+          skipConfirmation: true,
+        });
+
+        cy.getByTestId('currency-title', txTimeout).should(
+          'have.length.above',
+          3
+        );
+        cy.validate_wallet_currency('Associated', '2.00');
+        cy.validate_wallet_currency('Pending association', '1.00');
+        cy.validate_wallet_currency('Total associated after pending', '1.00');
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
@@ -286,6 +328,35 @@ context(
       });
 
       // 1004-ASSO-004
+
+      it('Pending association outside of app is shown', function () {
+        cy.vega_wallet_associate('2');
+        cy.getByTestId('currency-title', txTimeout).should(
+          'have.length.above',
+          3
+        );
+        cy.validate_wallet_currency('Associated', '0.00');
+        cy.validate_wallet_currency('Pending association', '2.00');
+        cy.validate_wallet_currency('Total associated after pending', '2.00');
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.validate_wallet_currency('Associated', '2.00');
+      });
+
+      it('Disassociation outside of app is shown', function () {
+        cy.staking_page_associate_tokens('2');
+        cy.validate_wallet_currency('Associated', '2.00');
+        cy.vega_wallet_disassociate('2');
+        cy.getByTestId('currency-title', txTimeout).should(
+          'have.length.above',
+          3
+        );
+        cy.validate_wallet_currency('Associated', '2.00');
+        cy.validate_wallet_currency('Pending association', '2.00');
+        cy.validate_wallet_currency('Total associated after pending', '0.00');
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.validate_wallet_currency('Associated', '0.00');
+      });
+
       it('Able to associate tokens to different public key of connected vega wallet', function () {
         cy.get(ethWalletAssociateButton).first().click();
         cy.get(associateWalletRadioButton).click();
@@ -310,6 +381,7 @@ context(
             'vegaWalletPublicKey2Short'
           )} can now participate in governance and nominate a validator with your associated $VEGA.`
         );
+        cy.staking_page_disassociate_all_tokens();
       });
     });
   }

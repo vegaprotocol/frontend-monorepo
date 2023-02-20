@@ -8,7 +8,6 @@ import {
 import { ethers, Wallet } from 'ethers';
 
 const vegaWalletContainer = '[data-testid="vega-wallet"]';
-const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
@@ -41,6 +40,11 @@ before('Vega wallet teardown prep', function () {
       log: false,
     }).as('vestingContract');
   });
+});
+
+beforeEach(function () {
+  cy.wrap(this.stakingBridgeContract).as('stakingBridgeContract');
+  cy.wrap(this.vestingContract).as('vestingContract');
 });
 
 Cypress.Commands.add('deposit_asset', function (assetEthAddress) {
@@ -91,27 +95,23 @@ Cypress.Commands.add('faucet_asset', function (assetEthAddress) {
 });
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
+  cy.get('[data-testid="associated-amount"]')
+    .should('be.visible')
+    .invoke('text')
+    .as('associatedAmount');
+  cy.get('body').then(($body) => {
+    if (
+      $body.find('[data-testid="eth-wallet-associated-balances"]').length ||
+      this.associatedAmount != '0.00'
+    ) {
+      cy.vega_wallet_teardown_vesting(this.vestingContract);
+      cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
+    }
+  });
   cy.get(vegaWalletContainer).within(() => {
-    cy.get(vegaWalletAssociatedBalance)
-      .first()
-      .invoke('text')
-      .then((balance) => {
-        if (balance != '0.00') {
-          cy.vega_wallet_teardown_vesting(this.vestingContract);
-          cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
-        }
-      });
     cy.get('[data-testid="associated-amount"]', { timeout: 30000 }).should(
       'contain.text',
       '0.00'
-    );
-  });
-
-  cy.get(vegaWalletContainer).within(() => {
-    cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
-      'contain',
-      '0.00',
-      { timeout: transactionTimeout }
     );
   });
 });
@@ -173,6 +173,22 @@ Cypress.Commands.add('vega_wallet_teardown_vesting', (vestingContract) => {
         cy.wait_for_transaction(tx);
       });
     }
+  });
+});
+
+Cypress.Commands.add('vega_wallet_associate', (amount) => {
+  amount = amount + '0'.repeat(18);
+  cy.highlight('Associating tokens');
+  cy.get('@stakingBridgeContract').then((stakingBridgeContract) => {
+    stakingBridgeContract.stake(amount, vegaWalletPubKey);
+  });
+});
+
+Cypress.Commands.add('vega_wallet_disassociate', (amount) => {
+  amount = amount + '0'.repeat(18);
+  cy.highlight('Disassociating tokens');
+  cy.get('@stakingBridgeContract').then((stakingBridgeContract) => {
+    stakingBridgeContract.remove_stake(amount, vegaWalletPubKey);
   });
 });
 

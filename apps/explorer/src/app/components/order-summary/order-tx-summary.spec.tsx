@@ -90,6 +90,7 @@ describe('Order TX Summary component', () => {
           market: {
             id: '123',
             decimalPlaces: 2,
+            positionDecimalPlaces: 2,
             state: 'irrelevant-test-data',
             tradableInstrument: {
               instrument: {
@@ -111,13 +112,14 @@ describe('Order TX Summary component', () => {
     const res = renderComponent(o, [mock]);
     expect(res.queryByTestId('order-summary')).toBeInTheDocument();
     expect(res.getByText('Buy')).toBeInTheDocument();
-    expect(res.getByText('10')).toBeInTheDocument();
 
-    // Initially renders price alone
+    // Initially renders price and size unformatted
     expect(res.getByText('333')).toBeInTheDocument();
+    expect(res.getByText('10')).toBeInTheDocument();
 
     // After fetch renders formatted price and asset quotename
     expect(await res.findByText('3.33')).toBeInTheDocument();
     expect(await res.findByText('TEST')).toBeInTheDocument();
+    expect(await res.getByText('0.10')).toBeInTheDocument();
   });
 });

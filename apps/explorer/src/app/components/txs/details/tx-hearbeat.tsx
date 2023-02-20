@@ -60,7 +60,7 @@ export const TxDetailsHeartbeat = ({
   const blockHeight = txData.command.blockHeight || '';
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <TableRow modifier="bordered">
         <TableCell>{t('Node')}</TableCell>

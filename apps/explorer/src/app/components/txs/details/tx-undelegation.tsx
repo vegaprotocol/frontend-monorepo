@@ -46,7 +46,7 @@ export const TxDetailsUndelegate = ({
     txData.command.undelegateSubmission;
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       {u.nodeId ? (
         <TableRow modifier="bordered">

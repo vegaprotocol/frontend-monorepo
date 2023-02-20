@@ -4,12 +4,22 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
+import type { ButtonSize } from '../button';
+import { Button } from '../button';
 
 type NotificationProps = {
   intent: Intent;
-  message: string;
+  message: ReactNode | string;
+  title?: string;
+  buttonProps?: {
+    text: string;
+    action: () => void;
+    className?: string;
+    dataTestId?: string;
+    size?: ButtonSize;
+  };
   testId?: string;
-  children?: ReactNode;
+  className?: string;
 };
 
 const getIcon = (intent: Intent): IconName => {
@@ -26,8 +36,10 @@ const getIcon = (intent: Intent): IconName => {
 export const Notification = ({
   intent,
   message,
+  title,
   testId,
-  children,
+  buttonProps,
+  className,
 }: NotificationProps) => {
   return (
     <div
@@ -36,11 +48,21 @@ export const Notification = ({
         {
           'border-gray-700 dark:border-gray-300': intent === Intent.None,
           'border-vega-blue': intent === Intent.Primary,
-          'border-vega-green dark:border-vega-green': intent === Intent.Success,
-          'border-yellow-500': intent === Intent.Warning,
+          'border-vega-green-550 dark:border-vega-green':
+            intent === Intent.Success,
+          'border-vega-orange': intent === Intent.Warning,
           'border-vega-pink': intent === Intent.Danger,
         },
-        'border rounded px-3 py-1 text-xs mb-1 mr-1'
+        {
+          'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
+          'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
+          'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
+          'bg-vega-orange-300 dark:bg-vega-orange-650':
+            intent === Intent.Warning,
+          'bg-vega-pink-300 dark:bg-vega-pink-650': intent === Intent.Danger,
+        },
+        'border rounded p-2 flex items-start gap-2.5 my-4',
+        className
       )}
     >
       <div
@@ -49,21 +71,32 @@ export const Notification = ({
             'text-gray-700 dark:text-gray-300': intent === Intent.None,
             'text-vega-blue': intent === Intent.Primary,
             'text-vega-green dark:text-vega-green': intent === Intent.Success,
-            'text-yellow-600 dark:text-yellow-500': intent === Intent.Warning,
+            'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
             'text-vega-pink': intent === Intent.Danger,
           },
-          'flex items-start'
+          'flex items-start mt-1'
         )}
       >
-        <Icon size={3} className="mr-1 mt-[2px]" name={getIcon(intent)} />
-        <span
-          title={message}
-          className="whitespace-nowrap overflow-hidden text-ellipsis"
-        >
-          {message}
-        </span>
+        <Icon size={4} name={getIcon(intent)} />
       </div>
-      {children}
+      <div className="flex flex-col flex-grow items-start gap-1.5">
+        {title && (
+          <div className="whitespace-nowrap overflow-hidden text-ellipsis uppercase leading-6">
+            {title}
+          </div>
+        )}
+        <div className="text-sm">{message}</div>
+        {buttonProps && (
+          <Button
+            size={buttonProps.size || 'sm'}
+            onClick={buttonProps.action}
+            className={classNames(buttonProps.className)}
+            data-testid={buttonProps.dataTestId}
+          >
+            {buttonProps.text}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

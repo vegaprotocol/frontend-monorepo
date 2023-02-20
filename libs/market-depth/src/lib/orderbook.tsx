@@ -334,7 +334,7 @@ export const Orderbook = ({
             BigInt(maxPriceLevel) -
             BigInt(offsetTop) * BigInt(resolution)
           ).toString()
-        : rows?.[Math.min(offsetTop, rows.length - 1)].price.toString();
+        : rows?.[Math.min(offsetTop, rows.length - 1)]?.price?.toString();
       if (lockOnMidPrice) {
         setLockOnMidPrice(false);
       }

@@ -866,6 +866,10 @@ context(
 
         cy.get(stakeTokenSubmitButton).should('contain', 'Add 1 $VEGA tokens');
       });
+
+      after('teardown wallet', function () {
+        cy.vega_wallet_teardown();
+      });
     });
   }
 );

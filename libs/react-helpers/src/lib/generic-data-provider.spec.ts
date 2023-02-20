@@ -20,7 +20,11 @@ import type {
   ApolloQueryResult,
   QueryOptions,
 } from '@apollo/client';
+import { ApolloError } from '@apollo/client';
+import type { GraphQLErrors } from '@apollo/client/errors';
+import { GraphQLError } from 'graphql';
 import type { Subscription, Observable } from 'zen-observable-ts';
+import { waitFor } from '@testing-library/react';
 
 type Item = {
   cursor: string;
@@ -58,12 +62,16 @@ const query: Query<QueryData> = {
 };
 const subscriptionQuery: Query<SubscriptionData> = query;
 
+const getData = jest.fn((r: QueryData | null) => r?.data || null);
+
+const getDelta = jest.fn((r: SubscriptionData) => r.data);
+
 const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
   query,
   subscriptionQuery,
   update,
-  getData: (r) => r?.data || null,
-  getDelta: (r) => r.data,
+  getData,
+  getDelta,
 });
 
 const combineData = jest.fn<
@@ -91,14 +99,31 @@ const paginatedSubscribe = makeDataProvider<
   query,
   subscriptionQuery,
   update,
-  getData: (r) => r?.data || null,
-  getDelta: (r) => r.data,
+  getData,
+  getDelta,
   pagination: {
     first,
     append: defaultAppend,
     getPageInfo: (r) => r?.pageInfo ?? null,
     getTotalCount: (r) => r?.totalCount,
   },
+});
+
+const mockErrorPolicyGuard: (errors: GraphQLErrors) => boolean = jest
+  .fn()
+  .mockImplementation(() => true);
+const errorGuardedSubscribe = makeDataProvider<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta
+>({
+  query,
+  subscriptionQuery,
+  update,
+  getData,
+  getDelta,
+  errorPolicyGuard: mockErrorPolicyGuard,
 });
 
 const derivedSubscribe = makeDerivedDataProvider(
@@ -186,9 +211,20 @@ const clearPendingQueries = () => {
 };
 
 describe('data provider', () => {
+  beforeEach(() => {
+    clearPendingQueries();
+    callback.mockClear();
+    getData.mockClear();
+    clientQuery.mockClear();
+    clientSubscribeUnsubscribe.mockClear();
+    clientSubscribeSubscribe.mockClear();
+  });
   it('memoize instance and unsubscribe if no subscribers', () => {
-    const subscription1 = subscribe(jest.fn(), client);
-    const subscription2 = subscribe(jest.fn(), client);
+    const variables = { var: 'val' };
+    const subscription1 = subscribe(jest.fn(), client, variables);
+    const subscription2 = subscribe(jest.fn(), client, { ...variables });
+    // const subscription1 = subscribe(jest.fn(), client);
+    // const subscription2 = subscribe(jest.fn(), client);
     expect(clientSubscribeSubscribe.mock.calls.length).toEqual(1);
     subscription1.unsubscribe();
     expect(clientSubscribeUnsubscribe.mock.calls.length).toEqual(0);
@@ -197,7 +233,6 @@ describe('data provider', () => {
   });
 
   it('calls callback before and after initial fetch', async () => {
-    callback.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     expect(callback.mock.calls.length).toBe(1);
@@ -206,6 +241,49 @@ describe('data provider', () => {
     await resolveQuery({ data });
     expect(callback.mock.calls.length).toBe(2);
     expect(callback.mock.calls[1][0].data).toBe(data);
+    expect(callback.mock.calls[1][0].loading).toBe(false);
+    subscription.unsubscribe();
+  });
+
+  it('calls callback on error', async () => {
+    const subscription = subscribe(callback, client);
+    expect(callback.mock.calls.length).toBe(1);
+    expect(callback.mock.calls[0][0].data).toBe(null);
+    expect(callback.mock.calls[0][0].loading).toBe(true);
+    const error = new Error('Rejected by unit test');
+    await rejectQuery(error);
+    expect(getData).not.toBeCalled();
+    expect(callback.mock.calls.length).toBe(2);
+    expect(callback.mock.calls[1][0].error).toEqual(error);
+    expect(callback.mock.calls[1][0].loading).toBe(false);
+    subscription.unsubscribe();
+  });
+
+  it('calls successful callback on NotFound error on party path', async () => {
+    const subscription = subscribe(callback, client);
+    expect(callback.mock.calls.length).toBe(1);
+    expect(callback.mock.calls[0][0].data).toBe(null);
+    expect(callback.mock.calls[0][0].loading).toBe(true);
+    const error = new Error() as ApolloError;
+    const graphQLError = new GraphQLError(
+      '',
+      undefined,
+      undefined,
+      undefined,
+      ['party'],
+      undefined,
+      {
+        type: 'NotFound',
+      }
+    );
+    error.graphQLErrors = [graphQLError];
+    const data: Data = [];
+    getData.mockReturnValueOnce(data);
+    await rejectQuery(error);
+    expect(getData).toHaveBeenCalledWith(null, undefined);
+    expect(callback.mock.calls.length).toBe(2);
+    expect(callback.mock.calls[1][0].data).toEqual(data);
+    expect(callback.mock.calls[1][0].error).toEqual(undefined);
     expect(callback.mock.calls[1][0].loading).toBe(false);
     subscription.unsubscribe();
   });
@@ -228,8 +306,7 @@ describe('data provider', () => {
     subscription.unsubscribe();
   });
 
-  it("don't calls callback on update if data doesn't", async () => {
-    callback.mockClear();
+  it("don't calls callback on update if data doesn't change", async () => {
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -247,10 +324,6 @@ describe('data provider', () => {
   });
 
   it('refetch data on reload', async () => {
-    clearPendingQueries();
-    clientQuery.mockClear();
-    clientSubscribeUnsubscribe.mockClear();
-    clientSubscribeSubscribe.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -263,9 +336,6 @@ describe('data provider', () => {
   });
 
   it('refetch data and restart subscription on reload with force', async () => {
-    clientQuery.mockClear();
-    clientSubscribeUnsubscribe.mockClear();
-    clientSubscribeSubscribe.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -278,7 +348,6 @@ describe('data provider', () => {
   });
 
   it('calls callback on flush', async () => {
-    callback.mockClear();
     const data: Item[] = [];
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
@@ -289,8 +358,6 @@ describe('data provider', () => {
   });
 
   it('fills data with nulls if pagination is enabled', async () => {
-    callback.mockClear();
-    clearPendingQueries();
     const totalCount = 1000;
     const data: Item[] = new Array(first).fill(null).map((v, i) => ({
       cursor: i.toString(),
@@ -311,7 +378,6 @@ describe('data provider', () => {
   });
 
   it('loads requested data blocks and inserts data with total count', async () => {
-    callback.mockClear();
     const totalCount = 1000;
     const subscription = paginatedSubscribe(callback, client);
     await resolveQuery({
@@ -436,7 +502,6 @@ describe('data provider', () => {
   });
 
   it('loads requested data blocks and inserts data without totalCount', async () => {
-    callback.mockClear();
     const totalCount = undefined;
     const subscription = paginatedSubscribe(callback, client);
     await resolveQuery({
@@ -488,6 +553,34 @@ describe('data provider', () => {
     const lastCallbackArgs =
       callback.mock.calls[callback.mock.calls.length - 1];
     expect(lastCallbackArgs[0].totalCount).toBe(100);
+    subscription.unsubscribe();
+  });
+
+  it('errorPolicyGuard should work properly', async () => {
+    const subscription = errorGuardedSubscribe(callback, client);
+    const graphQLError = new GraphQLError(
+      '',
+      undefined,
+      undefined,
+      undefined,
+      ['market', 'data'],
+      undefined,
+      {
+        type: 'Internal',
+      }
+    );
+    const graphQLErrors = [graphQLError];
+    const error = new ApolloError({ graphQLErrors });
+
+    await rejectQuery(error);
+    const data = generateData(0, 5);
+    await resolveQuery({
+      data,
+    });
+    expect(mockErrorPolicyGuard).toHaveBeenNthCalledWith(1, graphQLErrors);
+    await waitFor(() =>
+      expect(getData).toHaveBeenCalledWith({ data }, undefined)
+    );
     subscription.unsubscribe();
   });
 });

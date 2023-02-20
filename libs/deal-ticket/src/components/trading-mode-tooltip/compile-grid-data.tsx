@@ -13,9 +13,9 @@ import type { Market, MarketData } from '@vegaprotocol/market-list';
 export const compileGridData = (
   market: Pick<
     Market,
-    'tradableInstrument' | 'id' | 'decimalPlaces' | 'positionDecimalPlaces'
+    'id' | 'tradableInstrument' | 'decimalPlaces' | 'positionDecimalPlaces'
   >,
-  marketData: Pick<
+  marketData?: Pick<
     MarketData,
     | 'marketTradingMode'
     | 'auctionStart'
@@ -25,14 +25,14 @@ export const compileGridData = (
     | 'suppliedStake'
     | 'targetStake'
     | 'trigger'
-  >,
+  > | null,
   onSelect?: (id: string) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: DataGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    marketData.marketTradingMode ===
+    marketData?.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    marketData.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+    marketData?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
   const formatStake = (value: string) => {
     const formattedValue = addDecimalsFormatNumber(

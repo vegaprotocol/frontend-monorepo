@@ -2,6 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { NetworkParamsKey } from './use-network-params';
+import { toRealKey } from './use-network-params';
 import {
   NetworkParams,
   useNetworkParam,
@@ -18,7 +19,7 @@ describe('useNetworkParam', () => {
       request: {
         query: NetworkParamDocument,
         variables: {
-          key: arg,
+          key: toRealKey(arg),
         },
       },
       result: {

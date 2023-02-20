@@ -10,7 +10,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 export const JumpToParty = () => {
   const navigate = useNavigate();
 
-  useDocumentTitle(['Parties']);
+  useDocumentTitle(['Public keys']);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -27,8 +27,8 @@ export const JumpToParty = () => {
   };
   return (
     <JumpTo
-      label={t('Go to party')}
-      placeholder={t('Party id')}
+      label={t('Go to public key')}
+      placeholder={t('Public key')}
       inputId="party-input"
       inputType="text"
       inputName="partyId"
@@ -40,7 +40,7 @@ export const JumpToParty = () => {
 const Parties = () => {
   return (
     <section>
-      <RouteTitle data-testid="parties-header">{t('Parties')}</RouteTitle>
+      <RouteTitle data-testid="parties-header">{t('Public keys')}</RouteTitle>
       <JumpToParty />
     </section>
   );

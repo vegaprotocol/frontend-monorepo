@@ -10,9 +10,15 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  ExternalLink,
+  NotificationError,
+  Intent,
+  Notification,
+} from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
@@ -25,7 +31,7 @@ import {
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {
   usePersistedOrderStore,
   usePersistedOrderStoreSubscription,
@@ -34,8 +40,10 @@ import {
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
+  onClickCollateral?: () => void;
 }
 
 export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
@@ -44,7 +52,12 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   summary: string;
 };
 
-export const DealTicket = ({ market, submit }: DealTicketProps) => {
+export const DealTicket = ({
+  market,
+  marketData,
+  submit,
+  onClickCollateral,
+}: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
     (store) => ({
@@ -79,13 +92,51 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     }
   });
 
-  const marketStateError = validateMarketState(market.data.marketState);
+  const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
   const marketTradingModeError = validateMarketTradingMode(
-    market.data.marketTradingMode
+    marketData.marketTradingMode
   );
+
+  const checkForErrors = useCallback(() => {
+    if (!pubKey) {
+      setError('summary', { message: t('No public key selected') });
+      return;
+    }
+
+    if (marketStateError !== true) {
+      setError('summary', {
+        message: marketStateError,
+        type: SummaryValidationType.MarketState,
+      });
+      return;
+    }
+
+    if (hasNoBalance) {
+      setError('summary', {
+        message: SummaryValidationType.NoCollateral,
+        type: SummaryValidationType.NoCollateral,
+      });
+      return;
+    }
+
+    if (marketTradingModeError !== true) {
+      setError('summary', {
+        message: marketTradingModeError,
+        type: SummaryValidationType.TradingMode,
+      });
+      return;
+    }
+  }, [
+    hasNoBalance,
+    marketStateError,
+    marketTradingModeError,
+    pubKey,
+    setError,
+  ]);
+
   useEffect(() => {
     if (
       (!hasNoBalance &&
@@ -97,6 +148,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     ) {
       clearErrors('summary');
     }
+    checkForErrors();
   }, [
     hasNoBalance,
     marketStateError,
@@ -104,39 +156,12 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
     clearErrors,
     errors.summary?.message,
     errors.summary?.type,
+    checkForErrors,
   ]);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
-      if (!pubKey) {
-        setError('summary', { message: t('No public key selected') });
-        return;
-      }
-
-      if (marketStateError !== true) {
-        setError('summary', {
-          message: marketStateError,
-          type: SummaryValidationType.MarketState,
-        });
-        return;
-      }
-
-      if (hasNoBalance) {
-        setError('summary', {
-          message: SummaryValidationType.NoCollateral,
-          type: SummaryValidationType.NoCollateral,
-        });
-        return;
-      }
-
-      if (marketTradingModeError !== true) {
-        setError('summary', {
-          message: marketTradingModeError,
-          type: SummaryValidationType.TradingMode,
-        });
-        return;
-      }
-
+      checkForErrors();
       submit(
         normalizeOrderSubmission(
           order,
@@ -145,16 +170,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         )
       );
     },
-    [
-      submit,
-      pubKey,
-      hasNoBalance,
-      market.positionDecimalPlaces,
-      market.decimalPlaces,
-      marketStateError,
-      marketTradingModeError,
-      setError,
-    ]
+    [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
   return (
@@ -167,13 +183,17 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         name="type"
         control={control}
         rules={{
-          validate: validateType(market),
+          validate: validateType(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
         }}
         render={({ field }) => (
           <TypeSelector
             value={field.value}
             onSelect={field.onChange}
             market={market}
+            marketData={marketData}
             errorMessage={errors.type?.message}
           />
         )}
@@ -188,6 +208,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
       <DealTicketAmount
         orderType={order.type}
         market={market}
+        marketData={marketData}
         register={register}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
@@ -196,7 +217,10 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         name="timeInForce"
         control={control}
         rules={{
-          validate: validateTimeInForce(market),
+          validate: validateTimeInForce(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
         }}
         render={({ field }) => (
           <TimeInForceSelector
@@ -204,6 +228,7 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
             orderType={order.type}
             onSelect={field.onChange}
             market={market}
+            marketData={marketData}
             errorMessage={errors.timeInForce?.message}
           />
         )}
@@ -223,17 +248,24 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
             )}
           />
         )}
+      <SummaryMessage
+        errorMessage={errors.summary?.message}
+        market={market}
+        marketData={marketData}
+        order={order}
+        isReadOnly={isReadOnly}
+        pubKey={pubKey}
+        onClickCollateral={onClickCollateral || (() => null)}
+      />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
-      <SummaryMessage
-        errorMessage={errors.summary?.message}
-        market={market}
+      <DealTicketFeeDetails
         order={order}
-        isReadOnly={isReadOnly}
+        market={market}
+        marketData={marketData}
       />
-      <DealTicketFeeDetails order={order} market={market} />
     </form>
   );
 };
@@ -244,34 +276,74 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: MarketDealTicket;
+  market: Market;
+  marketData: MarketData;
   order: OrderSubmissionBody['orderSubmission'];
   isReadOnly: boolean;
+  pubKey: string | null;
+  onClickCollateral: () => void;
 }
 const SummaryMessage = memo(
-  ({ errorMessage, market, order, isReadOnly }: SummaryMessageProps) => {
+  ({
+    errorMessage,
+    market,
+    marketData,
+    order,
+    isReadOnly,
+    pubKey,
+    onClickCollateral,
+  }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     const asset = market.tradableInstrument.instrument.product.settlementAsset;
+    const assetSymbol = asset.symbol;
     const { balanceError, balance, margin } = useOrderMarginValidation({
       market,
+      marketData,
       order,
     });
+    const openVegaWalletDialog = useVegaWalletDialogStore(
+      (store) => store.openVegaWalletDialog
+    );
     if (isReadOnly) {
       return (
         <div className="mb-4">
-          <InputError data-testid="dealticket-error-message-summary">
+          <NotificationError testId="dealticket-error-message-summary">
             {
               'You need to connect your own wallet to start trading on this market'
             }
-          </InputError>
+          </NotificationError>
         </div>
+      );
+    }
+    if (!pubKey) {
+      return (
+        <Notification
+          testId={'deal-ticket-connect-wallet'}
+          intent={Intent.Warning}
+          message={
+            <p className="text-sm pb-2">
+              You need a{' '}
+              <ExternalLink href="https://vega.xyz/wallet">
+                Vega wallet
+              </ExternalLink>{' '}
+              with {assetSymbol} to start trading in this market.
+            </p>
+          }
+          buttonProps={{
+            text: t('Connect wallet'),
+            action: openVegaWalletDialog,
+            dataTestId: 'order-connect-wallet',
+            size: 'md',
+          }}
+        />
       );
     }
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
         <ZeroBalanceError
           asset={market.tradableInstrument.instrument.product.settlementAsset}
+          onClickCollateral={onClickCollateral}
         />
       );
     }
@@ -281,9 +353,9 @@ const SummaryMessage = memo(
     if (errorMessage) {
       return (
         <div className="mb-4">
-          <InputError data-testid="dealticket-error-message-summary">
+          <NotificationError testId="dealticket-error-message-summary">
             {errorMessage}
-          </InputError>
+          </NotificationError>
         </div>
       );
     }
@@ -300,17 +372,16 @@ const SummaryMessage = memo(
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(market.data.marketTradingMode)
+      ].includes(marketData.marketTradingMode)
     ) {
       return (
-        <div
-          className="text-sm text-warning mb-4"
-          data-testid="dealticket-warning-auction"
-        >
-          <p>
-            {t('Any orders placed now will not trade until the auction ends')}
-          </p>
-        </div>
+        <Notification
+          intent={Intent.Warning}
+          testId={'dealticket-warning-auction'}
+          message={t(
+            'Any orders placed now will not trade until the auction ends'
+          )}
+        />
       );
     }
 
