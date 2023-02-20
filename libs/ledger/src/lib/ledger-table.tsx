@@ -69,15 +69,6 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
         {...props}
       >
         <AgGridColumn
-          headerName={t('Row index')}
-          field="id"
-          cellRenderer={({
-            node,
-          }: VegaICellRendererParams<LedgerEntry, 'node'>) => {
-            return <div>{node.rowIndex}</div>;
-          }}
-        />
-        <AgGridColumn
           headerName={t('Sender')}
           field="fromAccountPartyId"
           cellRenderer={({
