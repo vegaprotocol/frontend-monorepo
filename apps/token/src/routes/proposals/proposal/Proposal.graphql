@@ -137,6 +137,24 @@ query Proposal($proposalId: ID!) {
               }
             }
           }
+          priceMonitoringParameters {
+            triggers {
+              horizonSecs
+              probability
+              auctionExtensionSecs
+            }
+          }
+          liquidityMonitoringParameters {
+            triggeringRatio
+            targetStakeParameters {
+              timeWindow
+              scalingFactor
+            }
+          }
+          positionDecimalPlaces
+          lpPriceRange
+          linearSlippageFactor
+          quadraticSlippageFactor
         }
         ... on UpdateMarket {
           marketId
