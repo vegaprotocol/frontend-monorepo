@@ -1,17 +1,3 @@
-fragment ProposalEventFields on Proposal {
-  id
-  reference
-  state
-  rejectionReason
-  errorDetails
-}
-
-subscription ProposalEvent($partyId: ID!) {
-  proposals(partyId: $partyId) {
-    ...ProposalEventFields
-  }
-}
-
 fragment UpdateNetworkParameterProposal on Proposal {
   id
   state
