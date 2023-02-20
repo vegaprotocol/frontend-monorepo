@@ -18,7 +18,7 @@ export const NavDropDown = ({ navbarTheme }: { navbarTheme: NavbarTheme }) => {
       <AppNavLink
         name={
           <NavDropdownMenuTrigger
-            className="w-auto flex items-center"
+            className="w-auto flex items-center -m-3 p-3 cursor-pointer"
             data-testid="state-trigger"
             onClick={() => setOpen(!isOpen)}
           >
