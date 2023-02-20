@@ -1,4 +1,4 @@
-import { Assets } from './assets';
+import { AssetPage, AssetsPage } from './assets';
 import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
@@ -53,7 +53,16 @@ const assetsRoutes: Route[] = flags.assets
         path: Routes.ASSETS,
         text: t('Assets'),
         name: 'Assets',
-        element: <Assets />,
+        children: [
+          {
+            index: true,
+            element: <AssetsPage />,
+          },
+          {
+            path: ':assetId',
+            element: <AssetPage />,
+          },
+        ],
       },
     ]
   : [];

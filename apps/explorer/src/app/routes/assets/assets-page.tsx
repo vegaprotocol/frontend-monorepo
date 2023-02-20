@@ -6,7 +6,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { AssetsTable } from '../../components/assets/assets-table';
 
-export const Assets = () => {
+export const AssetsPage = () => {
   useDocumentTitle(['Assets']);
   useScrollToLocation();
 

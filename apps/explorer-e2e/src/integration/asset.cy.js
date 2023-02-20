@@ -4,15 +4,6 @@ context('Asset page', { tags: '@regression' }, () => {
   describe('Verify elements on page', () => {
     before('Navigate to assets page', () => {
       cy.visit('/assets');
-
-      // Check we have enough enough assets
-      cy.getAssets().then((assets) => {
-        assert.isAtLeast(
-          Object.keys(assets).length,
-          5,
-          'Ensuring we have at least 5 assets to test'
-        );
-      });
     });
 
     it('should be able to see full assets list', () => {
@@ -40,7 +31,7 @@ context('Asset page', { tags: '@regression' }, () => {
       });
     });
 
-    it('should open details dialog when clicked on "View details"', () => {
+    it('should open details page when clicked on "View details"', () => {
       cy.getAssets().then((assets) => {
         Object.values(assets).forEach((asset) => {
           cy.get(`[row-id="${asset.id}"] [col-id="actions"] button`)
@@ -49,8 +40,8 @@ context('Asset page', { tags: '@regression' }, () => {
           cy.get(`[row-id="${asset.id}"] [col-id="actions"] button`)
             .eq(0)
             .click();
-          cy.getByTestId('dialog-content').should('be.visible');
-          cy.getByTestId('dialog-close').click();
+          cy.getByTestId('asset-header').should('have.text', asset.name);
+          cy.go('back');
         });
       });
     });
