@@ -19,7 +19,13 @@ interface RewardItemProps {
   last?: boolean;
 }
 
-const DisplayReward = (reward: string, percentageOfTotal?: string) => {
+const DisplayReward = ({
+  reward,
+  percentageOfTotal,
+}: {
+  reward: string;
+  percentageOfTotal?: string;
+}) => {
   const { t } = useTranslation();
   const {
     appState: { decimals },
@@ -65,7 +71,7 @@ const RewardItem = ({
   <div data-testid={dataTestId} className={rowGridItemStyles(last)}>
     <div className="h-full w-5 absolute right-0 top-0 bg-gradient-to-r from-transparent to-black pointer-events-none" />
     <div className="overflow-auto p-5">
-      {DisplayReward(value, percentageOfTotal)}
+      <DisplayReward reward={value} percentageOfTotal={percentageOfTotal} />
     </div>
     <div className="h-full w-5 absolute left-0 top-0 bg-gradient-to-l from-transparent to-black pointer-events-none" />
   </div>
@@ -81,7 +87,10 @@ export const EpochIndividualRewardsTable = ({
     >
       {data.rewards.map(({ asset, rewardTypes, totalAmount }, i) => (
         <div className="contents" key={i}>
-          <div data-testid="asset" className={`${rowGridItemStyles()} p-5`}>
+          <div
+            data-testid="individual-rewards-asset"
+            className={`${rowGridItemStyles()} p-5`}
+          >
             {asset}
           </div>
           {Object.entries(rewardTypes).map(

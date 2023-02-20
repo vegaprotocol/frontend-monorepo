@@ -17,7 +17,9 @@ export interface EpochIndividualReward {
   }[];
 }
 
-const emptyRowAccountTypes = Object.keys(RowAccountTypes).map((type) => [
+const accountTypes = Object.keys(RowAccountTypes);
+
+const emptyRowAccountTypes = accountTypes.map((type) => [
   type,
   {
     amount: '0',
@@ -29,7 +31,7 @@ export const generateEpochIndividualRewardsList = (
   rewards: RewardFieldsFragment[]
 ) => {
   // We take the rewards and aggregate them by epoch and asset.
-  const epochsMap = rewards.reduce((map, reward) => {
+  const epochIndividualRewards = rewards.reduce((map, reward) => {
     const epochId = reward.epoch.id;
     const assetName = reward.asset.symbol;
     const rewardType = reward.rewardType;
@@ -37,8 +39,7 @@ export const generateEpochIndividualRewardsList = (
     const percentageOfTotal = reward.percentageOfTotal;
 
     // if the rewardType is not of a type we display in the table, we skip it.
-    // @todo check if this is the correct behaviour
-    if (!Object.keys(RowAccountTypes).includes(rewardType)) {
+    if (!accountTypes.includes(rewardType)) {
       return map;
     }
 
@@ -51,7 +52,11 @@ export const generateEpochIndividualRewardsList = (
     let asset = epoch?.rewards.find((r) => r.asset === assetName);
 
     if (!asset) {
-      asset = { asset: assetName, totalAmount: '0', rewardTypes: {} };
+      asset = {
+        asset: assetName,
+        totalAmount: '0',
+        rewardTypes: Object.fromEntries(emptyRowAccountTypes),
+      };
       epoch?.rewards.push(asset);
     }
 
@@ -68,21 +73,7 @@ export const generateEpochIndividualRewardsList = (
     return map;
   }, new Map<string, EpochIndividualReward>());
 
-  // Lastly, we'll add the empty values in the rewardTypes object along with the actual values
-  const epochIndividualRewards = Array.from(epochsMap.values()).map(
-    (epoch) => ({
-      ...epoch,
-      rewards: epoch.rewards.map((reward) => ({
-        ...reward,
-        rewardTypes: {
-          ...Object.fromEntries(emptyRowAccountTypes),
-          ...reward.rewardTypes,
-        },
-      })),
-    })
-  );
-
-  return epochIndividualRewards.sort(
+  return Array.from(epochIndividualRewards.values()).sort(
     (a, b) => Number(b.epoch) - Number(a.epoch)
   );
 };

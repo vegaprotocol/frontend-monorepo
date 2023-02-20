@@ -31,8 +31,8 @@ export const EpochTotalRewards = () => {
             <NoRewards />
           ) : (
             <>
-              {epochTotalRewardSummaries.map((epochTotalSummary) => (
-                <EpochTotalRewardsTable data={epochTotalSummary} />
+              {epochTotalRewardSummaries.map((epochTotalSummary, index) => (
+                <EpochTotalRewardsTable data={epochTotalSummary} key={index} />
               ))}
             </>
           )}

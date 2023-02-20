@@ -17,7 +17,7 @@ interface RewardItemProps {
   last?: boolean;
 }
 
-const DisplayReward = (reward: string) => {
+const DisplayReward = ({ reward }: { reward: string }) => {
   const {
     appState: { decimals },
   } = useAppState();
@@ -36,7 +36,9 @@ const DisplayReward = (reward: string) => {
 const RewardItem = ({ value, dataTestId, last }: RewardItemProps) => (
   <div data-testid={dataTestId} className={rowGridItemStyles(last)}>
     <div className="h-full w-5 absolute right-0 top-0 bg-gradient-to-r from-transparent to-black pointer-events-none" />
-    <div className="overflow-auto p-5">{DisplayReward(value)}</div>
+    <div className="overflow-auto p-5">
+      <DisplayReward reward={value} />
+    </div>
     <div className="h-full w-5 absolute left-0 top-0 bg-gradient-to-l from-transparent to-black pointer-events-none" />
   </div>
 );

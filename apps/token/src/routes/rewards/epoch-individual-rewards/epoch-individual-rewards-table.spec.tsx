@@ -46,7 +46,7 @@ describe('EpochIndividualRewardsTable', () => {
       </AppStateProvider>
     );
     expect(getByTestId('epoch-individual-rewards-table')).toBeInTheDocument();
-    expect(getByTestId('asset')).toBeInTheDocument();
+    expect(getByTestId('individual-rewards-asset')).toBeInTheDocument();
     expect(getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD')).toBeInTheDocument();
     expect(getByTestId('ACCOUNT_TYPE_FEES_INFRASTRUCTURE')).toBeInTheDocument();
     expect(
