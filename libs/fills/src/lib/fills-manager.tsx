@@ -19,7 +19,7 @@ export const FillsManager = ({
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
-  const { data, error, loading, addNewRows, getRows } = useFillsList({
+  const { data, error, loading, addNewRows, getRows, reload } = useFillsList({
     partyId,
     marketId,
     gridRef,
@@ -55,6 +55,7 @@ export const FillsManager = ({
           data={data}
           noDataMessage={t('No fills')}
           noDataCondition={(data) => !(data && data.length)}
+          reload={reload}
         />
       </div>
     </div>

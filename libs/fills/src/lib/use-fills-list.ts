@@ -78,7 +78,7 @@ export const useFillsList = ({
 
   const variables = useMemo(() => ({ partyId, marketId }), [partyId, marketId]);
 
-  const { data, error, loading, load, totalCount } = useDataProvider<
+  const { data, error, loading, load, totalCount, reload } = useDataProvider<
     (TradeEdge | null)[],
     Trade[]
   >({
@@ -95,5 +95,5 @@ export const useFillsList = ({
     load,
     newRows
   );
-  return { data, error, loading, addNewRows, getRows };
+  return { data, error, loading, addNewRows, getRows, reload };
 };

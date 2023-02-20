@@ -35,6 +35,7 @@ query LedgerEntries(
       node {
         ...LedgerEntry
       }
+      cursor
     }
     pageInfo {
       startCursor

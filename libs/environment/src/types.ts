@@ -1,44 +1,17 @@
 import type z from 'zod';
-
 import type { configSchema } from './utils/validate-configuration';
 import type { envSchema } from './utils/validate-environment';
-import { Networks, ENV_KEYS } from './utils/validate-environment';
 
-export { ENV_KEYS, Networks };
-
-export const CUSTOM_NODE_KEY = 'custom';
-
-export enum ErrorType {
-  INVALID_URL,
-  SUBSCRIPTION_ERROR,
-  CONNECTION_ERROR,
-  CONNECTION_ERROR_ALL,
-  CONFIG_LOAD_ERROR,
-  CONFIG_VALIDATION_ERROR,
+export enum Networks {
+  CUSTOM = 'CUSTOM',
+  SANDBOX = 'SANDBOX',
+  TESTNET = 'TESTNET',
+  STAGNET1 = 'STAGNET1',
+  STAGNET3 = 'STAGNET3',
+  DEVNET = 'DEVNET',
+  MAINNET = 'MAINNET',
+  MIRROR = 'MIRROR',
 }
-
-export type Environment = z.infer<typeof envSchema> & {
-  // provide this manually, zod fails to compile the correct type fot VEGA_NETWORKS
-  VEGA_NETWORKS: Partial<Record<Networks, string>>;
-};
-
-export type EnvKey = keyof Environment;
-
-export type RawEnvironment = Record<EnvKey, string>;
-
+export type Environment = z.infer<typeof envSchema>;
 export type Configuration = z.infer<typeof configSchema>;
-
-type NodeCheck<T> = {
-  isLoading: boolean;
-  hasError: boolean;
-  value?: T;
-};
-
-export type NodeData = {
-  url: string;
-  initialized: boolean;
-  subscription: NodeCheck<boolean>;
-  block: NodeCheck<number>;
-  responseTime: NodeCheck<number>;
-  chain: NodeCheck<string>;
-};
+export const CUSTOM_NODE_KEY = 'custom' as const;

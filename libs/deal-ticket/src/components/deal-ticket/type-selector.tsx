@@ -1,8 +1,4 @@
-import {
-  FormGroup,
-  NotificationError,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { DataGrid, t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
@@ -82,9 +78,9 @@ export const TypeSelector = ({
         onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
       />
       {errorMessage && (
-        <NotificationError testId="dealticket-error-message-type">
+        <InputError testId="dealticket-error-message-type">
           {renderError(errorMessage as MarketModeValidationType)}
-        </NotificationError>
+        </InputError>
       )}
     </FormGroup>
   );
