@@ -29,7 +29,7 @@ export const ProposalsList = () => {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
     };
   }, []);
-  const { data, loading, error } = useDataProvider({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: proposalsDataProvider,
     variables,
   });
