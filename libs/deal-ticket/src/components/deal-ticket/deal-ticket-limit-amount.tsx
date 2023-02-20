@@ -1,4 +1,4 @@
-import { FormGroup, Input, NotificationError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal, validateAmount } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
@@ -20,17 +20,17 @@ export const DealTicketLimitAmount = ({
   const renderError = () => {
     if (sizeError) {
       return (
-        <NotificationError testId="dealticket-error-message-size-limit">
+        <InputError testId="dealticket-error-message-size-limit">
           {sizeError}
-        </NotificationError>
+        </InputError>
       );
     }
 
     if (priceError) {
       return (
-        <NotificationError testId="dealticket-error-message-price-limit">
+        <InputError testId="dealticket-error-message-price-limit">
           {priceError}
-        </NotificationError>
+        </InputError>
       );
     }
 
