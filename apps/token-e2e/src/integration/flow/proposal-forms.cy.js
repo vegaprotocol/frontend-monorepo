@@ -54,11 +54,11 @@ context(
       cy.wait_for_spinner();
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
+      cy.ensure_specified_unstaked_tokens_are_associated('1');
       cy.navigate_to('proposals');
     });
 
     it('Able to submit valid update network parameter proposal', function () {
-      cy.ensure_specified_unstaked_tokens_are_associated('1');
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
       // 3002-PROP-006
       cy.get(newProposalTitle).type('Test update network parameter proposal');
