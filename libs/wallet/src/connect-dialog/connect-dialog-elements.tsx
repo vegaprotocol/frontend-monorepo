@@ -7,7 +7,7 @@ export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
     <h1
       data-testid="wallet-dialog-title"
-      className="text-2xl uppercase mb-6 text-center"
+      className="text-2xl uppercase mb-6 text-center font-alpha"
     >
       {children}
     </h1>

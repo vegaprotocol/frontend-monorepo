@@ -229,6 +229,7 @@ const ConnectorList = ({
             </li>
           )}
           <li className="mb-4 last:mb-0">
+            <div className="my-4 text-center text-vega-dark-400">{t('OR')}</div>
             <ConnectionOption
               type="view"
               text={t('View as vega user')}
@@ -264,6 +265,13 @@ const SelectedForm = ({
     return (
       <>
         <ConnectDialogContent>
+          <button
+            onClick={reset}
+            className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
+            data-testid="back-button"
+          >
+            <Icon name={'chevron-left'} ariaLabel="back" size={4} />
+          </button>
           <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
           <div className="mb-2">
             <RestConnectorForm connector={connector} onConnect={onConnect} />
@@ -315,7 +323,11 @@ const SelectedForm = ({
     return (
       <>
         <ConnectDialogContent>
-          <ViewConnectorForm connector={connector} onConnect={onConnect} />
+          <ViewConnectorForm
+            connector={connector}
+            onConnect={onConnect}
+            reset={reset}
+          />
         </ConnectDialogContent>
         <ConnectDialogFooter />
       </>
