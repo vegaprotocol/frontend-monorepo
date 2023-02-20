@@ -50,101 +50,117 @@ export const StandbyPendingValidatorsTable = ({
   const nodes = useMemo(() => {
     if (!data) return [];
 
-    return data.map(
-      ({
-        id,
-        name,
-        avatarUrl,
-        stakedByDelegates,
-        stakedByOperator,
-        stakedTotal,
-        rankingScore: { stakeScore },
-        pendingStake,
-      }) => {
-        const { rawValidatorScore, performanceScore } =
-          getLastEpochScoreAndPerformance(previousEpochData, id);
-
-        const overstakedAmount = getOverstakedAmount(
-          rawValidatorScore,
-          stakedTotal,
-          totalStake
-        );
-        let individualStakeNeededForPromotion,
-          individualStakeNeededForPromotionDescription;
-
-        if (stakeNeededForPromotion && performanceScore) {
-          const stakedTotalBigNum = new BigNumber(stakedTotal);
-          const stakeNeededBigNum = new BigNumber(stakeNeededForPromotion);
-          const performanceScoreBigNum = new BigNumber(performanceScore);
-
-          const calc = stakeNeededBigNum
-            .dividedBy(performanceScoreBigNum)
-            .minus(stakedTotalBigNum);
-
-          if (calc.isGreaterThan(0)) {
-            individualStakeNeededForPromotion = calc.toString();
-            individualStakeNeededForPromotionDescription = t(
-              stakeNeededForPromotionDescription,
-              {
-                prefix: formatNumber(calc, 2).toString(),
-              }
-            );
-          } else {
-            individualStakeNeededForPromotion = '0';
-            individualStakeNeededForPromotionDescription = t(
-              stakeNeededForPromotionDescription,
-              {
-                prefix: formatNumber(0, 2).toString(),
-              }
-            );
-          }
-        }
+    return data
+      .sort((a, b) => {
+        const aVotingPower = new BigNumber(a.rankingScore.votingPower);
+        const bVotingPower = new BigNumber(b.rankingScore.votingPower);
+        return bVotingPower.minus(aVotingPower).toNumber();
+      })
+      .map((node, index) => {
+        const votingPowerRanking = index + 1;
 
         return {
+          ...node,
+          votingPowerRanking,
+        };
+      })
+      .map(
+        ({
           id,
-          [ValidatorFields.VALIDATOR]: {
-            avatarUrl,
-            name,
-          },
-          [ValidatorFields.STAKE]: formatNumber(
-            toBigNum(stakedTotal, decimals),
-            2
-          ),
-          [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION]:
-            individualStakeNeededForPromotion || null,
-          [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
-            individualStakeNeededForPromotionDescription || t('n/a'),
-          [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
-          [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
-            toBigNum(stakedByDelegates, decimals),
-            2
-          ),
-          [ValidatorFields.STAKED_BY_OPERATOR]: formatNumber(
-            toBigNum(stakedByOperator, decimals),
-            2
-          ),
-          [ValidatorFields.PERFORMANCE_SCORE]:
-            getFormattedPerformanceScore(performanceScore).toString(),
-          [ValidatorFields.PERFORMANCE_PENALTY]:
-            getPerformancePenalty(performanceScore),
-          [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
-          [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
-            overstakedAmount,
-            totalStake
-          ),
-          [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
+          name,
+          avatarUrl,
+          stakedByDelegates,
+          stakedByOperator,
+          stakedTotal,
+          rankingScore: { stakeScore },
+          pendingStake,
+          votingPowerRanking,
+        }) => {
+          const { rawValidatorScore, performanceScore } =
+            getLastEpochScoreAndPerformance(previousEpochData, id);
+
+          const overstakedAmount = getOverstakedAmount(
             rawValidatorScore,
-            performanceScore,
             stakedTotal,
             totalStake
-          ),
-          [ValidatorFields.PENDING_STAKE]: formatNumber(
-            toBigNum(pendingStake, decimals),
-            2
-          ),
-        };
-      }
-    );
+          );
+          let individualStakeNeededForPromotion,
+            individualStakeNeededForPromotionDescription;
+
+          if (stakeNeededForPromotion && performanceScore) {
+            const stakedTotalBigNum = new BigNumber(stakedTotal);
+            const stakeNeededBigNum = new BigNumber(stakeNeededForPromotion);
+            const performanceScoreBigNum = new BigNumber(performanceScore);
+
+            const calc = stakeNeededBigNum
+              .dividedBy(performanceScoreBigNum)
+              .minus(stakedTotalBigNum);
+
+            if (calc.isGreaterThan(0)) {
+              individualStakeNeededForPromotion = calc.toString();
+              individualStakeNeededForPromotionDescription = t(
+                stakeNeededForPromotionDescription,
+                {
+                  prefix: formatNumber(calc, 2).toString(),
+                }
+              );
+            } else {
+              individualStakeNeededForPromotion = '0';
+              individualStakeNeededForPromotionDescription = t(
+                stakeNeededForPromotionDescription,
+                {
+                  prefix: formatNumber(0, 2).toString(),
+                }
+              );
+            }
+          }
+
+          return {
+            id,
+            [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
+            [ValidatorFields.VALIDATOR]: {
+              avatarUrl,
+              name,
+            },
+            [ValidatorFields.STAKE]: formatNumber(
+              toBigNum(stakedTotal, decimals),
+              2
+            ),
+            [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION]:
+              individualStakeNeededForPromotion || null,
+            [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
+              individualStakeNeededForPromotionDescription || t('n/a'),
+            [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
+            [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
+              toBigNum(stakedByDelegates, decimals),
+              2
+            ),
+            [ValidatorFields.STAKED_BY_OPERATOR]: formatNumber(
+              toBigNum(stakedByOperator, decimals),
+              2
+            ),
+            [ValidatorFields.PERFORMANCE_SCORE]:
+              getFormattedPerformanceScore(performanceScore).toString(),
+            [ValidatorFields.PERFORMANCE_PENALTY]:
+              getPerformancePenalty(performanceScore),
+            [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
+            [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
+              overstakedAmount,
+              totalStake
+            ),
+            [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
+              rawValidatorScore,
+              performanceScore,
+              stakedTotal,
+              totalStake
+            ),
+            [ValidatorFields.PENDING_STAKE]: formatNumber(
+              toBigNum(pendingStake, decimals),
+              2
+            ),
+          };
+        }
+      );
   }, [
     data,
     decimals,
@@ -158,6 +174,12 @@ export const StandbyPendingValidatorsTable = ({
   const StandbyPendingTable = forwardRef<AgGridReact>((_, gridRef) => {
     const colDefs = useMemo<ColDef[]>(
       () => [
+        {
+          field: ValidatorFields.RANKING_INDEX,
+          headerName: '#',
+          width: 60,
+          pinned: 'left',
+        },
         {
           field: ValidatorFields.VALIDATOR,
           headerName: t(ValidatorFields.VALIDATOR).toString(),

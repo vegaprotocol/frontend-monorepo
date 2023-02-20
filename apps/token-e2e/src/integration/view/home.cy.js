@@ -63,6 +63,39 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
             .and('have.text', 'Browse, vote, and propose');
         });
       });
+      it('should show open or enacted proposals with proposal summary', function () {
+        cy.get('body').then(($body) => {
+          if (!$body.find('[data-testid="proposals-list-item"]').length) {
+            cy.createMarket();
+            cy.reload();
+            cy.wait_for_spinner();
+          }
+        });
+        cy.getByTestId('proposals-list-item')
+          .should('have.length.at.least', 1)
+          .first()
+          .within(() => {
+            cy.getByTestId('proposal-title')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-type')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-description')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-details')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-status')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('vote-details')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('view-proposal-btn').should('be.visible');
+          });
+      });
       it('should have external link for governance', function () {
         cy.getByTestId('home-proposals').within(() => {
           cy.getByTestId('external-link')

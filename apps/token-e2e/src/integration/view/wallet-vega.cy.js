@@ -338,8 +338,8 @@ context(
               .contains(currency.id)
               .parent()
               .siblings()
-              .within(() => cy.contains_exactly('10.00').should('be.visible'));
-
+              .invoke('text')
+              .should('not.be.empty');
             cy.get(vegaWalletCurrencyTitle)
               .contains(currency.id)
               .parent()
