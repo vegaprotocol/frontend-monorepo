@@ -1,5 +1,4 @@
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { AssetTypeMapping, AssetStatusMapping } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/react-helpers';
 import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
@@ -9,15 +8,14 @@ import { AgGridColumn } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useRef, useLayoutEffect } from 'react';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
+import { useNavigate } from 'react-router-dom';
+import type { RowClickedEvent } from 'ag-grid-community';
 
 type AssetsTableProps = {
   data: AssetFieldsFragment[] | null;
 };
 export const AssetsTable = ({ data }: AssetsTableProps) => {
-  const openAssetDetailsDialog = useAssetDetailsDialogStore(
-    (state) => state.open
-  );
-
+  const navigate = useNavigate();
   const ref = useRef<AgGridReact>(null);
   const showColumnsOnDesktop = () => {
     ref.current?.columnApi.setColumnsVisible(
@@ -49,17 +47,23 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
         autoHeight: true,
       }}
       suppressCellFocus={true}
-      onGridReady={() => {
-        showColumnsOnDesktop();
+      onRowClicked={({ data }: RowClickedEvent) => {
+        navigate(data.id);
       }}
     >
       <AgGridColumn headerName={t('Symbol')} field="symbol" />
       <AgGridColumn headerName={t('Name')} field="name" />
-      <AgGridColumn flex="2" headerName={t('ID')} field="id" />
+      <AgGridColumn
+        flex="2"
+        headerName={t('ID')}
+        field="id"
+        hide={window.innerWidth < BREAKPOINT_MD}
+      />
       <AgGridColumn
         colId="type"
         headerName={t('Type')}
         field="source.__typename"
+        hide={window.innerWidth < BREAKPOINT_MD}
         valueFormatter={({ value }: { value?: string }) =>
           value && AssetTypeMapping[value].value
         }
@@ -67,6 +71,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
       <AgGridColumn
         headerName={t('Status')}
         field="status"
+        hide={window.innerWidth < BREAKPOINT_MD}
         valueFormatter={({ value }: { value?: string }) =>
           value && AssetStatusMapping[value].value
         }
@@ -83,28 +88,13 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
           value,
         }: VegaICellRendererParams<AssetFieldsFragment, 'id'>) =>
           value ? (
-            <div className="pb-1">
-              <ButtonLink
-                onClick={(e) => {
-                  openAssetDetailsDialog(value, e.target as HTMLElement);
-                }}
-              >
-                {t('View details')}
-              </ButtonLink>{' '}
-              <span className="max-md:hidden">
-                <ButtonLink
-                  onClick={(e) => {
-                    openAssetDetailsDialog(
-                      value,
-                      e.target as HTMLElement,
-                      true
-                    );
-                  }}
-                >
-                  {t('View JSON')}
-                </ButtonLink>
-              </span>
-            </div>
+            <ButtonLink
+              onClick={(e) => {
+                navigate(value);
+              }}
+            >
+              {t('View details')}
+            </ButtonLink>
           ) : (
             ''
           )
