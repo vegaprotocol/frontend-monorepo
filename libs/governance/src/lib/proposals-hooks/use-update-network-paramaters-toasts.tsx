@@ -9,11 +9,11 @@ import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
 import { useCallback } from 'react';
-import type { UpdateNetworkParameterFieldsFragment } from './__generated__/Proposal';
+import type { UpdateNetworkParameterProposalFragment } from './__generated__/Proposal';
 import { useOnUpdateNetworkParametersSubscription } from './__generated__/Proposal';
 
 const CLOSE_AFTER = 5000;
-type Proposal = UpdateNetworkParameterFieldsFragment;
+type Proposal = UpdateNetworkParameterProposalFragment;
 
 const UpdateNetworkParameterToastContent = ({
   proposal,

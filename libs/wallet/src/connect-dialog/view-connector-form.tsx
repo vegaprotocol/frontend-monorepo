@@ -1,5 +1,11 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  FormGroup,
+  Icon,
+  Input,
+  InputError,
+} from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { ViewConnector } from '../connectors';
 import { useVegaWallet } from '../use-vega-wallet';
@@ -11,11 +17,13 @@ interface FormFields {
 interface RestConnectorFormProps {
   connector: ViewConnector;
   onConnect: (connector: ViewConnector) => void;
+  reset: () => void;
 }
 
 export function ViewConnectorForm({
   connector,
   onConnect,
+  reset,
 }: RestConnectorFormProps) {
   const { connect } = useVegaWallet();
   const {
@@ -41,24 +49,46 @@ export function ViewConnectorForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
-      <FormGroup label={t('Vega Pubkey')} labelFor="address">
-        <Input
-          {...register('address', {
-            required: t('Required'),
-            validate: validatePubkey,
-          })}
-          id="address"
-          data-testid="address"
-          type="text"
-        />
-        {errors.address?.message && (
-          <InputError intent="danger">{errors.address.message}</InputError>
-        )}
-      </FormGroup>
-      <Button data-testid="connect" variant="primary" type="submit" fill={true}>
-        {t('Connect')}
-      </Button>
-    </form>
+    <>
+      <button
+        onClick={reset}
+        className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
+        data-testid="back-button"
+      >
+        <Icon name={'chevron-left'} ariaLabel="back" size={4} />
+      </button>
+      <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
+        <h1 className="text-2xl uppercase mb-6 text-center font-alpha">
+          {t('VIEW AS VEGA USER')}
+        </h1>
+        <p className="mb-4">
+          {t(
+            'Browse from the perspective of another Vega user in read-only mode.'
+          )}
+        </p>
+        <FormGroup label={t('Vega Pubkey')} labelFor="address">
+          <Input
+            {...register('address', {
+              required: t('Required'),
+              validate: validatePubkey,
+            })}
+            id="address"
+            data-testid="address"
+            type="text"
+          />
+          {errors.address?.message && (
+            <InputError intent="danger">{errors.address.message}</InputError>
+          )}
+        </FormGroup>
+        <Button
+          data-testid="connect"
+          variant="primary"
+          type="submit"
+          fill={true}
+        >
+          {t('Browse network')}
+        </Button>
+      </form>
+    </>
   );
 }

@@ -40,6 +40,21 @@ export const marketUpdateProposal: ProposalListFieldsFragment = {
       totalWeight: '1',
     },
   },
+  requiredMajority: '',
+  party: {
+    __typename: 'Party',
+    id: '',
+  },
+  rationale: {
+    __typename: 'ProposalRationale',
+    description: '',
+    title: '',
+  },
+  requiredParticipation: '',
+  errorDetails: '',
+  rejectionReason: null,
+  requiredLpMajority: '',
+  requiredLpParticipation: '',
   terms: {
     __typename: 'ProposalTerms',
     closingDatetime: '',
@@ -50,7 +65,33 @@ export const marketUpdateProposal: ProposalListFieldsFragment = {
         instrument: {
           code: '',
           product: {
+            __typename: 'UpdateFutureProduct',
             quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
           },
         },
         priceMonitoringParameters: {
@@ -92,10 +133,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-15T12:44:34Z',
       enactmentDatetime: '2022-11-15T12:44:54Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'ETHUSD',
           name: 'ETHUSD',
@@ -104,7 +171,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -136,10 +231,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-15T12:39:41Z',
       enactmentDatetime: '2022-11-15T12:39:51Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'ETHUSD',
           name: 'ETHUSD',
@@ -148,7 +269,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -180,10 +329,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-14T16:24:24Z',
       enactmentDatetime: '2022-11-14T16:24:34Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'LINKUSD',
           name: 'LINKUSD',
@@ -192,7 +367,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
               symbol: 'mUSDT-II',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -224,10 +427,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:32:22Z',
       enactmentDatetime: '2022-11-11T16:32:32Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'LINKUSD',
           name: 'LINKUSD',
@@ -236,7 +465,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
               symbol: 'mUSDT-II',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -268,10 +525,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-14T09:40:57Z',
       enactmentDatetime: '2022-11-14T09:41:17Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'ETHUSD',
           name: 'ETHUSD',
@@ -280,7 +563,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -312,10 +623,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:32:22Z',
       enactmentDatetime: '2022-11-11T16:32:32Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'LINKUSD',
           name: 'LINKUSD',
@@ -324,7 +661,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
               symbol: 'mUSDT-II',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -356,10 +721,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:28:25Z',
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'ETHDAI.MF21',
           name: 'ETHDAI Monthly (Dec 2022)',
@@ -368,7 +759,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -400,10 +819,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:28:25Z',
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'AAPL.MF21',
           name: 'Apple Monthly (Dec 2022)',
@@ -412,7 +857,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
               name: 'tUSDC TEST',
               symbol: 'tUSDC',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -444,10 +917,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:28:25Z',
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'BTCUSD.MF21',
           name: 'BTCUSD Monthly (Dec 2022)',
@@ -456,7 +955,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -488,10 +1015,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:28:25Z',
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'TSLA.QM21',
           name: 'Tesla Quarterly (Feb 2023)',
@@ -500,7 +1053,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: '177e8f6c25a955bd18475084b99b2b1d37f28f3dec393fab7755a7e69c3d8c3b',
               name: 'tEURO TEST',
               symbol: 'tEURO',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -532,10 +1113,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:28:25Z',
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'AAVEDAI.MF21',
           name: 'AAVEDAI Monthly (Dec 2022)',
@@ -544,7 +1151,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -576,10 +1211,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:28:25Z',
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'ETHBTC.QM21',
           name: 'ETHBTC Quarterly (Feb 2023)',
@@ -588,7 +1249,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'cee709223217281d7893b650850ae8ee8a18b7539b5658f9b4cc24de95dd18ad',
               name: 'tBTC TEST',
               symbol: 'tBTC',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },
@@ -620,10 +1309,36 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       },
       __typename: 'ProposalVotes',
     },
+    requiredMajority: '',
+    party: {
+      __typename: 'Party',
+      id: '',
+    },
+    rationale: {
+      __typename: 'ProposalRationale',
+      description: '',
+      title: '',
+    },
+    requiredParticipation: '',
+    errorDetails: '',
+    rejectionReason: null,
+    requiredLpMajority: '',
+    requiredLpParticipation: '',
     terms: {
       closingDatetime: '2022-11-11T16:28:25Z',
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
+        decimalPlaces: 1,
+        lpPriceRange: '',
+        riskParameters: {
+          __typename: 'SimpleRiskModel',
+          params: {
+            __typename: 'SimpleRiskModelParams',
+            factorLong: 0,
+            factorShort: 1,
+          },
+        },
+        metadata: [],
         instrument: {
           code: 'UNIDAI.MF21',
           name: 'UNIDAI Monthly (Dec 2022)',
@@ -632,7 +1347,35 @@ const proposalListFields: ProposalListFieldsFragment[] = [
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
+              decimals: 1,
+              quantum: '1',
               __typename: 'Asset',
+            },
+            quoteName: '',
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              settlementDataProperty: '',
+              tradingTerminationProperty: '',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
+            },
+            dataSourceSpecForTradingTermination: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionInternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfigurationTime',
+                  conditions: [],
+                },
+              },
             },
             __typename: 'FutureProduct',
           },

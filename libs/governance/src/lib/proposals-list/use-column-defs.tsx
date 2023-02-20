@@ -14,17 +14,8 @@ import type {
 } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalStateMapping } from '@vegaprotocol/types';
-import type {
-  ProposalListFieldsFragment,
-  NewMarketFieldsFragment,
-} from '../proposals-data-provider/__generated__/Proposals';
+import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
-
-const instrumentGuard = (
-  change?: ProposalListFieldsFragment['terms']['change']
-): change is NewMarketFieldsFragment => {
-  return change?.__typename === 'NewMarket';
-};
 
 export const useColumnDefs = () => {
   const { VEGA_TOKEN_URL } = useEnvironment();
@@ -53,7 +44,7 @@ export const useColumnDefs = () => {
           'terms.change.instrument.code'
         >) => {
           const { change } = data?.terms || {};
-          if (instrumentGuard(change) && VEGA_TOKEN_URL) {
+          if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
             if (data?.id) {
               const link = `${VEGA_TOKEN_URL}/proposals/${data.id}`;
               return (
