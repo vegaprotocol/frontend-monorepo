@@ -71,7 +71,9 @@ const orderMatchFilters = (
   return true;
 };
 
-const getData = (responseData: OrdersQuery | null) =>
+const getData = (
+  responseData: OrdersQuery | null
+): Edge<OrderFieldsFragment>[] =>
   responseData?.party?.ordersConnection?.edges || [];
 
 const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
@@ -144,7 +146,13 @@ export const update = (
   });
 };
 
-export const ordersProvider = makeDataProvider({
+export const ordersProvider = makeDataProvider<
+  OrdersQuery,
+  ReturnType<typeof getData>,
+  OrdersUpdateSubscription,
+  ReturnType<typeof getDelta>,
+  OrdersQueryVariables
+>({
   query: OrdersDocument,
   subscriptionQuery: OrdersUpdateDocument,
   update,

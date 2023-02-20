@@ -12,16 +12,11 @@ interface Props {
   order: OrderSubmissionBody['orderSubmission'];
 }
 
-export const useOrderMarginValidation = ({
-  market,
-  marketData,
-  order,
-}: Props) => {
+export const useOrderMarginValidation = ({ market, order }: Props) => {
   const { pubKey } = useVegaWallet();
   const estMargin = useOrderMargin({
-    order,
-    market,
-    marketData,
+    ...order,
+    marketId: market.id,
     partyId: pubKey || '',
   });
   const { id: assetId, decimals: assetDecimals } =

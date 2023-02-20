@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t, removeDecimal } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -262,7 +262,11 @@ export const DealTicket = ({
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <DealTicketFeeDetails
-        order={order}
+        order={normalizeOrderSubmission(
+          order,
+          market.decimalPlaces,
+          market.positionDecimalPlaces
+        )}
         market={market}
         marketData={marketData}
       />

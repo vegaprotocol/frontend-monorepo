@@ -4,10 +4,9 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   t,
+  toBigNum,
 } from '@vegaprotocol/react-helpers';
-import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
@@ -15,10 +14,15 @@ import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
   EST_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
+  MARGIN_ACCOUNT_TOOLTIP_TEXT,
+  MARGIN_DIFF_TOOLTIP_TEXT,
 } from '../constants';
-import { useCalculateSlippage } from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';
 import { useOrderMargin } from './use-order-margin';
+import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import { useOpenVolume } from '@vegaprotocol/positions';
+import { usePendingOrdersVolume } from '@vegaprotocol/orders';
+import { useMarketAccountBalance } from '@vegaprotocol/accounts';
 import type { OrderMargin } from './use-order-margin';
 import { getDerivedPrice } from '../utils/get-price';
 
@@ -28,33 +32,56 @@ export const useFeeDealTicketDetails = (
   marketData: MarketData
 ) => {
   const { pubKey } = useVegaWallet();
-  const slippage = useCalculateSlippage({ market, order });
+  const openVolume = useOpenVolume(pubKey, market.id);
+  const pendingOrderVolume = usePendingOrdersVolume(pubKey, market.id);
+  const { accountBalance } = useMarketAccountBalance(market.id);
 
-  const derivedPrice = useMemo(() => {
-    return getDerivedPrice(order, market, marketData);
-  }, [order, market, marketData]);
+  const price = useMemo(() => {
+    return getDerivedPrice(order, marketData);
+  }, [order, marketData]);
 
-  // Note this isn't currently used anywhere
-  const slippageAdjustedPrice = useMemo(() => {
-    if (derivedPrice) {
-      if (slippage && parseFloat(slippage) !== 0) {
-        const isLong = order.side === Schema.Side.SIDE_BUY;
-        const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
-          parseFloat(slippage) / 100
-        );
-        return new BigNumber(derivedPrice).multipliedBy(multiplier).toNumber();
-      }
-      return derivedPrice;
+  const size = useMemo(() => {
+    if (!(openVolume || pendingOrderVolume?.buy || pendingOrderVolume?.sell)) {
+      return;
     }
-    return null;
-  }, [derivedPrice, order.side, slippage]);
+    let size;
+    size = BigInt(openVolume || 0);
+    const totalBuy =
+      BigInt(pendingOrderVolume?.buy || '0') +
+      BigInt((order.side === Side.SIDE_BUY && order.size) || 0);
+    const totalSell =
+      BigInt(pendingOrderVolume?.sell || '0') +
+      BigInt((order.side === Side.SIDE_SELL && order.size) || 0);
+    const zero = BigInt(0);
+    if (size + totalBuy - totalSell > zero) {
+      size += totalBuy;
+    } else {
+      size -= totalSell;
+    }
+    return size;
+  }, [
+    openVolume,
+    pendingOrderVolume?.buy,
+    pendingOrderVolume?.sell,
+    order.size,
+    order.side,
+  ]);
+
+  const estTotalMargin = useOrderMargin({
+    side: size && size < 0 ? Side.SIDE_SELL : Side.SIDE_BUY,
+    size: size ? size.toString().replace(/^-/, '') : '',
+    type: OrderType.TYPE_MARKET,
+    timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+    marketId: market.id,
+    partyId: pubKey || '',
+    price,
+  });
 
   const estMargin = useOrderMargin({
-    order,
-    market,
-    marketData,
+    ...order,
+    marketId: market.id,
     partyId: pubKey || '',
-    derivedPrice,
+    price,
   });
 
   const estCloseOut = useOrderCloseOut({
@@ -64,13 +91,13 @@ export const useFeeDealTicketDetails = (
   });
 
   const notionalSize = useMemo(() => {
-    if (derivedPrice && order.size) {
-      return new BigNumber(order.size)
-        .multipliedBy(addDecimal(derivedPrice, market.decimalPlaces))
+    if (price && order.size) {
+      return toBigNum(order.size, market.positionDecimalPlaces)
+        .multipliedBy(addDecimal(price, market.decimalPlaces))
         .toString();
     }
     return null;
-  }, [derivedPrice, order.size, market.decimalPlaces]);
+  }, [price, order.size, market.decimalPlaces, market.positionDecimalPlaces]);
 
   const symbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
@@ -80,10 +107,12 @@ export const useFeeDealTicketDetails = (
       market,
       symbol,
       notionalSize,
-      estMargin,
+      accountBalance,
+      estMargin: estMargin && {
+        ...estMargin,
+        margin: estTotalMargin?.margin || estMargin?.margin,
+      },
       estCloseOut,
-      slippage,
-      slippageAdjustedPrice,
     };
   }, [
     market,
@@ -91,8 +120,8 @@ export const useFeeDealTicketDetails = (
     notionalSize,
     estMargin,
     estCloseOut,
-    slippage,
-    slippageAdjustedPrice,
+    accountBalance,
+    estTotalMargin?.margin,
   ]);
 };
 
@@ -100,9 +129,9 @@ export interface FeeDetails {
   market: Market;
   symbol: string;
   notionalSize: string | null;
+  accountBalance: string | null;
   estMargin: OrderMargin | null;
   estCloseOut: string | null;
-  slippage: string | null;
 }
 
 export const getFeeDetailsValues = ({
@@ -110,6 +139,7 @@ export const getFeeDetailsValues = ({
   notionalSize,
   estMargin,
   estCloseOut,
+  accountBalance,
   market,
 }: FeeDetails) => {
   const assetDecimals =
@@ -128,7 +158,7 @@ export const getFeeDetailsValues = ({
       ? addDecimalsFormatNumber(value, assetDecimals)
       : '-';
   };
-  return [
+  const details = [
     {
       label: t('Notional'),
       value: formatValueWithMarketDp(notionalSize),
@@ -164,11 +194,29 @@ export const getFeeDetailsValues = ({
       symbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
-    {
-      label: t('Liquidation'),
-      value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
-      symbol: market.tradableInstrument.instrument.product.quoteName,
-      labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
-    },
   ];
+  if (accountBalance && estMargin?.margin) {
+    details.push({
+      label: t('Margin account balance'),
+      value: `~${formatValueWithAssetDp(accountBalance)}`,
+      symbol,
+      labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
+    });
+    details.push({
+      label: t('Margin difference'),
+      value: `~${formatValueWithAssetDp(
+        (BigInt(estMargin.margin) - BigInt(accountBalance)).toString()
+      )}`,
+      symbol,
+      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT,
+    });
+  }
+  details.push({
+    label: t('Liquidation'),
+    value:
+      (estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`) || undefined,
+    symbol: market.tradableInstrument.instrument.product.quoteName,
+    labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
+  });
+  return details;
 };

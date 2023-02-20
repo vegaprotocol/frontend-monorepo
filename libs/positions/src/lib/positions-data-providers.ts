@@ -18,6 +18,7 @@ import type {
   PositionFieldsFragment,
   PositionsSubscriptionSubscription,
   MarginFieldsFragment,
+  PositionsQueryVariables,
 } from './__generated__/Positions';
 import {
   PositionsDocument,
@@ -220,7 +221,8 @@ export const positionsDataProvider = makeDataProvider<
   PositionsQuery,
   PositionFieldsFragment[],
   PositionsSubscriptionSubscription,
-  PositionsSubscriptionSubscription['positions']
+  PositionsSubscriptionSubscription['positions'],
+  PositionsQueryVariables
 >({
   query: PositionsDocument,
   subscriptionQuery: PositionsSubscriptionDocument,
@@ -273,14 +275,10 @@ export const rejoinPositionData = (
   return null;
 };
 
-export interface PositionsMetricsProviderVariables {
-  partyId: string;
-}
-
 export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
   Position[],
-  PositionsMetricsProviderVariables
+  PositionsQueryVariables
 >(
   [
     positionsDataProvider,
