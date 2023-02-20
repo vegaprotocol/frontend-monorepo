@@ -45,12 +45,12 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
   useLayoutEffect(() => {
     const showColumnsOnDesktop = () => {
       gridRef.current?.columnApi.setColumnsVisible(
-        ['voting', 'cDate', 'eDate'],
+        ['voting', 'cDate', 'eDate', 'type'],
         window.innerWidth > BREAKPOINT_MD
       );
       gridRef.current?.columnApi.setColumnWidth(
         'actions',
-        window.innerWidth > BREAKPOINT_MD ? 221 : 155
+        window.innerWidth > BREAKPOINT_MD ? 221 : 80
       );
     };
     window.addEventListener('resize', showColumnsOnDesktop);
@@ -99,10 +99,13 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
           colId="title"
           headerName={t('Title')}
           field="rationale.title"
+          flex={2}
+          wrapText={true}
         />
         <AgGridColumn
           colId="type"
           maxWidth={180}
+          hide={window.innerWidth <= BREAKPOINT_MD}
           headerName={t('Type')}
           field="terms.change.__typename"
         />
@@ -175,7 +178,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         />
         <AgGridColumn
           colId="actions"
-          minWidth={window.innerWidth > BREAKPOINT_MD ? 221 : 155}
+          minWidth={window.innerWidth > BREAKPOINT_MD ? 221 : 80}
           maxWidth={221}
           sortable={false}
           filter={false}
@@ -202,8 +205,11 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
                 >
                   {t('View terms')}
                 </button>{' '}
-                <ExternalLink href={proposalPage}>
+                <ExternalLink className="max-md:hidden" href={proposalPage}>
                   {t('Open in Governance')}
+                </ExternalLink>
+                <ExternalLink className="md:hidden" href={proposalPage}>
+                  {t('Open')}
                 </ExternalLink>
               </div>
             );
