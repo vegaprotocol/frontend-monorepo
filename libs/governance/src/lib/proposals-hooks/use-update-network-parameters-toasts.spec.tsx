@@ -5,7 +5,7 @@ import { ProposalState } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useUpdateNetworkParametersToasts } from './use-update-network-paramaters-toasts';
 import type {
-  UpdateNetworkParameterFieldsFragment,
+  UpdateNetworkParameterProposalFragment,
   OnUpdateNetworkParametersSubscription,
 } from './__generated__/Proposal';
 import { OnUpdateNetworkParametersDocument } from './__generated__/Proposal';
@@ -23,7 +23,7 @@ const generateUpdateNetworkParametersProposal = (
   key: string,
   value: string,
   state: ProposalState = ProposalState.STATE_OPEN
-): UpdateNetworkParameterFieldsFragment => ({
+): UpdateNetworkParameterProposalFragment => ({
   __typename: 'Proposal',
   id: Math.random().toString(),
   datetime: Math.random().toString(),
