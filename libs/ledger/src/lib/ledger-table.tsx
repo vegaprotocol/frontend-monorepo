@@ -12,6 +12,7 @@ import type {
   TypedDataAgGrid,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type * as Types from '@vegaprotocol/types';
@@ -22,6 +23,7 @@ import {
 } from '@vegaprotocol/types';
 import type { LedgerEntry } from './ledger-entries-data-provider';
 import { forwardRef } from 'react';
+import { formatRFC3339, subDays } from 'date-fns';
 
 export const TransferTooltipCellComponent = ({
   value,
@@ -35,6 +37,12 @@ export const TransferTooltipCellComponent = ({
   );
 };
 
+const defaultRangeFilter = { start: formatRFC3339(subDays(Date.now(), 7)) };
+const dateRangeFilterParams = {
+  maxSubDays: 30,
+  maxDaysRange: 7,
+  defaultRangeFilter,
+};
 type LedgerEntryProps = TypedDataAgGrid<LedgerEntry>;
 
 export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
@@ -42,19 +50,33 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={t('No entries')}
         ref={ref}
-        getRowId={({ data }) => data.id}
         tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,
           resizable: true,
           sortable: true,
           tooltipComponent: TransferTooltipCellComponent,
-          filterParams: { buttons: ['reset'] },
+          filterParams: {
+            maxSubDays: 30,
+            maxDaysRange: 7,
+            defaultRangeFilter,
+            buttons: ['reset'],
+          },
         }}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
         {...props}
       >
+        <AgGridColumn
+          headerName={t('Row index')}
+          field="id"
+          cellRenderer={({
+            node,
+          }: VegaICellRendererParams<LedgerEntry, 'node'>) => {
+            return <div>{node.rowIndex}</div>;
+          }}
+        />
         <AgGridColumn
           headerName={t('Sender')}
           field="fromAccountPartyId"
@@ -201,6 +223,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           }: VegaValueFormatterParams<LedgerEntry, 'vegaTime'>) =>
             value ? getDateTimeFormat().format(fromNanoSeconds(value)) : '-'
           }
+          filterParams={dateRangeFilterParams}
           filter={DateRangeFilter}
         />
       </AgGrid>
