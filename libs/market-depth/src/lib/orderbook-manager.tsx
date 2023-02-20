@@ -15,8 +15,8 @@ import type {
 import {
   compactRows,
   updateCompactedRows,
-  mapMarketData,
   getMidPrice,
+  getPriceLevel,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
 import { usePersistedOrderStore } from '@vegaprotocol/orders';
@@ -46,7 +46,12 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     throttle(() => {
       dataRef.current = {
         ...marketDataRef.current,
-        ...mapMarketData(marketDataRef.current, resolutionRef.current),
+        indicativePrice: marketDataRef.current?.indicativePrice
+          ? getPriceLevel(
+              marketDataRef.current.indicativePrice,
+              resolutionRef.current
+            )
+          : undefined,
         midPrice: getMidPrice(
           rawDataRef.current?.depth.sell,
           rawDataRef.current?.depth.buy,
@@ -146,7 +151,10 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     }
     dataRef.current = {
       ...marketDataRef.current,
-      ...mapMarketData(marketDataRef.current, resolution),
+      indicativePrice: getPriceLevel(
+        marketDataRef.current.indicativePrice,
+        resolution
+      ),
       midPrice: getMidPrice(data.depth.sell, data.depth.buy, resolution),
       rows: compactRows(data.depth.sell, data.depth.buy, resolution),
     };

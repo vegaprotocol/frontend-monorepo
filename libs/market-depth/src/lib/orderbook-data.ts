@@ -33,7 +33,6 @@ type OrderbookMarketData = Pick<
   | 'indicativePrice'
   | 'indicativeVolume'
   | 'marketTradingMode'
-  | 'staticMidPrice'
 >;
 
 export type OrderbookData = Partial<OrderbookMarketData> & {
@@ -180,8 +179,15 @@ export const compactRows = (
     }
     orderbookData.push(row);
   });
-  // order by price, it's safe to cast to number price diff should not exceed Number.MAX_SAFE_INTEGER
-  orderbookData.sort((a, b) => Number(BigInt(b.price) - BigInt(a.price)));
+  orderbookData.sort((a, b) => {
+    if (a === b) {
+      return 0;
+    }
+    if (BigInt(a.price) > BigInt(b.price)) {
+      return -1;
+    }
+    return 1;
+  });
   // count cumulative volumes
   if (orderbookData.length > 1) {
     const maxIndex = orderbookData.length - 1;
@@ -276,22 +282,6 @@ export const updateCompactedRows = (
   return data;
 };
 
-export const mapMarketData = (
-  data: OrderbookMarketData | null,
-  resolution: number
-) => ({
-  staticMidPrice:
-    data?.staticMidPrice && getPriceLevel(data?.staticMidPrice, resolution),
-  bestStaticBidPrice:
-    data?.bestStaticBidPrice &&
-    getPriceLevel(data?.bestStaticBidPrice, resolution),
-  bestStaticOfferPrice:
-    data?.bestStaticOfferPrice &&
-    getPriceLevel(data?.bestStaticOfferPrice, resolution),
-  indicativePrice:
-    data?.indicativePrice && getPriceLevel(data?.indicativePrice, resolution),
-});
-
 /**
  * Updates raw data with new data received from subscription - mutates input
  * @param levels
@@ -366,22 +356,20 @@ export const generateMockData = ({
     numberOfOrders: '',
   }));
   const rows = compactRows(sell, buy, resolution);
+  const marketTradingMode =
+    overlap > 0
+      ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+      : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS;
   return {
     rows,
     resolution,
     indicativeVolume: indicativeVolume?.toString(),
-    marketTradingMode:
-      overlap > 0
-        ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-        : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    ...mapMarketData(
-      {
-        staticMidPrice: '',
-        bestStaticBidPrice: bestStaticBidPrice.toString(),
-        bestStaticOfferPrice: bestStaticOfferPrice.toString(),
-        indicativePrice: indicativePrice?.toString() ?? '',
-      },
-      resolution
-    ),
+    marketTradingMode,
+    midPrice: ((bestStaticBidPrice + bestStaticOfferPrice) / 2).toString(),
+    bestStaticBidPrice: bestStaticBidPrice.toString(),
+    bestStaticOfferPrice: bestStaticOfferPrice.toString(),
+    indicativePrice: indicativePrice
+      ? getPriceLevel(indicativePrice.toString(), resolution)
+      : undefined,
   };
 };

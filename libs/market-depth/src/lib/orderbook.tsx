@@ -1,15 +1,7 @@
 import styles from './orderbook.module.scss';
 import colors from 'tailwindcss/colors';
 
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-  Fragment,
-} from 'react';
+import { useEffect, useRef, useState, useCallback, Fragment } from 'react';
 import classNames from 'classnames';
 
 import {
@@ -21,7 +13,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
-import { createRow, getPriceLevel } from './orderbook-data';
+import { createRow } from './orderbook-data';
 import { Checkbox, Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
 
@@ -126,10 +118,10 @@ const getBestStaticBidPriceLinePosition = (
     if (fillGaps) {
       bestStaticBidPriceLinePosition = (
         ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
-          BigInt(resolution) +
-          BigInt(1)) *
+          BigInt(resolution)) *
           BigInt(rowHeight) +
-        BigInt(1)
+        BigInt(headerPadding) -
+        BigInt(3)
       ).toString();
     } else {
       const index = rows?.findIndex(
@@ -165,9 +157,10 @@ const getBestStaticOfferPriceLinePosition = (
       bestStaticOfferPriceLinePosition = (
         ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
           BigInt(resolution) +
-          BigInt(2)) *
+          BigInt(1)) *
           BigInt(rowHeight) +
-        BigInt(1)
+        BigInt(headerPadding) -
+        BigInt(3)
       ).toString();
     } else {
       const index = rows?.findIndex(
@@ -294,28 +287,20 @@ export const Orderbook = ({
   // price level which is rendered in center of viewport, need to preserve price level when rows will be added or removed
   // if undefined then we render mid price in center
   const priceInCenter = useRef<string>();
+  // by default mid price is rendered in center - view locked on mid price
   const [lockOnMidPrice, setLockOnMidPrice] = useState(true);
   const resolutionRef = useRef(resolution);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+  // show price levels with no orders, can lead to enormous number of rows
   const [fillGaps, setFillGaps] = useState(!!initialFillGaps);
+  const [debug, setDebug] = useState(false);
+
   const numberOfRows = fillGaps
     ? getNumberOfRows(rows, resolution)
     : rows?.length ?? 0;
   const maxPriceLevel = rows?.[0]?.price ?? '0';
-  const minPriceLevel = (
-    fillGaps
-      ? BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution))
-      : BigInt(rows?.[rows.length - 1]?.price ?? '0')
-  ).toString();
-  const [debug, setDebug] = useState(false);
-  const updateScrollOffset = useCallback(
-    (scrollTop: number) => {
-      if (Math.abs(scrollOffset - scrollTop) > marginSize) {
-        setScrollOffset(scrollTop);
-      }
-    },
-    [scrollOffset]
-  );
+  const minPriceLevel = rows?.[rows.length - 1]?.price ?? '0';
+
   let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
   const prependingBufferSize = Math.min(bufferSize, offset);
   offset -= prependingBufferSize;
@@ -324,13 +309,22 @@ export const Orderbook = ({
     prependingBufferSize + viewportSize + bufferSize,
     numberOfRows - offset
   );
-  const paddingTop = offset * rowHeight + headerPadding;
-  const paddingBottom =
-    (numberOfRows - offset - limit) * rowHeight + footerPadding;
   const data = fillGaps
     ? getRowsToRender(rows, resolution, offset, limit)
     : rows?.slice(offset, offset + limit) ?? [];
-  const height = data ? data.length * rowHeight - gridGap : 0;
+
+  const paddingTop = offset * rowHeight + headerPadding;
+  const paddingBottom =
+    (numberOfRows - offset - limit) * rowHeight + footerPadding;
+
+  const updateScrollOffset = useCallback(
+    (scrollTop: number) => {
+      if (Math.abs(scrollOffset - scrollTop) > marginSize) {
+        setScrollOffset(scrollTop);
+      }
+    },
+    [scrollOffset]
+  );
 
   const onScroll = useCallback(
     (event: React.UIEvent<HTMLDivElement>) => {
@@ -378,7 +372,6 @@ export const Orderbook = ({
 
   const scrollToPrice = useCallback(
     (price: string) => {
-      // console.log('scrollToPrice');
       if (scrollElement.current && maxPriceLevel !== '0') {
         let scrollTop = 0;
         if (fillGaps) {
@@ -449,31 +442,21 @@ export const Orderbook = ({
   }, [midPrice, scrollToPrice]);
 
   // adjust scroll position to keep selected price in center
-  useLayoutEffect(() => {
-    if (gridElement.current) {
-      gridElement.current.style.height = `${height}px`;
-      gridElement.current.style.borderTopWidth = `${paddingTop}px`;
-      gridElement.current.style.borderBottomWidth = `${paddingBottom}px`;
-    }
-    /*
-    if (resolutionRef.current !== resolution) {
-      priceInCenter.current = undefined;
-      resolutionRef.current = resolution;
-    }
-    */
+  useEffect(() => {
     if (priceInCenter.current) {
       scrollToPrice(priceInCenter.current);
     } else if (lockOnMidPrice && midPrice) {
       scrollToPrice(midPrice);
     }
-  }, [
-    midPrice,
-    scrollToPrice,
-    lockOnMidPrice,
-    height,
-    paddingTop,
-    paddingBottom,
-  ]);
+  }, [midPrice, scrollToPrice, lockOnMidPrice]);
+
+  useEffect(() => {
+    if (resolutionRef.current !== resolution) {
+      priceInCenter.current = undefined;
+      resolutionRef.current = resolution;
+      setLockOnMidPrice(true);
+    }
+  }, [resolution]);
 
   // handles resizing of the Allotment.Pane (x-axis)
   // adjusts the header and footer width
@@ -594,10 +577,10 @@ export const Orderbook = ({
         data-testid="scroll"
       >
         <div
-          className="relative text-right min-h-full overflow-hidden box-content border-transparent border-solid"
+          className="relative text-right min-h-full overflow-hidden"
           style={{
-            borderTopWidth: paddingTop,
-            borderBottomWidth: paddingBottom,
+            paddingTop: `${paddingTop}px`,
+            paddingBottom: `${paddingBottom}px`,
             background: tableBody ? gradientStyles : 'none',
           }}
           ref={gridElement}

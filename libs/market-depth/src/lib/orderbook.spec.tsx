@@ -92,7 +92,7 @@ describe('Orderbook', () => {
     expect(result.getByTestId('scroll').scrollTop).toBe(90 * rowHeight);
   });
 
-  it('should should keep price it the middle', async () => {
+  it('should keep price it the middle', async () => {
     window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
@@ -106,7 +106,7 @@ describe('Orderbook', () => {
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     const scrollElement = result.getByTestId('scroll');
     expect(scrollElement.scrollTop).toBe(91 * rowHeight);
-    scrollElement.scrollTop = 92 * rowHeight;
+    scrollElement.scrollTop = 92 * rowHeight + 0.01;
     fireEvent.scroll(scrollElement);
     result.rerender(
       <Orderbook
@@ -121,10 +121,10 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
-    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
+    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight + 0.01);
   });
 
-  it('should should get back to mid price on click', async () => {
+  it('should get back to mid price on click', async () => {
     window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
@@ -138,15 +138,15 @@ describe('Orderbook', () => {
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     const scrollElement = result.getByTestId('scroll');
     expect(scrollElement.scrollTop).toBe(91 * rowHeight);
-    scrollElement.scrollTop = 0;
+    scrollElement.scrollTop = 1;
     fireEvent.scroll(scrollElement);
-    expect(result.getByTestId('scroll').scrollTop).toBe(0);
+    expect(result.getByTestId('scroll').scrollTop).toBe(1);
     const scrollToMidPriceButton = result.getByTestId('scroll-to-midprice');
     fireEvent.click(scrollToMidPriceButton);
-    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
+    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight + 1);
   });
 
-  it('should should get back to mid price on resolution change', async () => {
+  it('should get back to mid price on resolution change', async () => {
     window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
@@ -160,9 +160,9 @@ describe('Orderbook', () => {
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     const scrollElement = result.getByTestId('scroll');
     expect(scrollElement.scrollTop).toBe(91 * rowHeight);
-    scrollElement.scrollTop = 0;
+    scrollElement.scrollTop = 1;
     fireEvent.scroll(scrollElement);
-    expect(result.getByTestId('scroll').scrollTop).toBe(0);
+    expect(result.getByTestId('scroll').scrollTop).toBe(1);
     const resolutionSelect = result.getByTestId(
       'resolution'
     ) as HTMLSelectElement;
@@ -181,6 +181,6 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    expect(result.getByTestId('scroll').scrollTop).toBe(5 * rowHeight);
+    expect(result.getByTestId('scroll').scrollTop).toBe(6 * rowHeight);
   });
 });
