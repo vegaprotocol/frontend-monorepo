@@ -10,6 +10,7 @@ import {
   addDays,
   differenceInDays,
   formatRFC3339,
+  min,
 } from 'date-fns';
 import { t } from '../i18n';
 
@@ -40,7 +41,10 @@ export const DateRangeFilter = forwardRef(
           : minStartDate;
       const maxEndDate =
         value.start && props?.maxDaysRange
-          ? addDays(new Date(value.start), props.maxDaysRange)
+          ? min([
+              new Date(),
+              addDays(new Date(value.start), props.maxDaysRange),
+            ])
           : maxStartDate;
       return [minStartDate, maxStartDate, minEndDate, maxEndDate];
     }, [props?.maxSubDays, props?.maxDaysRange, value.start]);
@@ -143,10 +147,10 @@ export const DateRangeFilter = forwardRef(
           const endDate = new Date(value.end || new Date());
           if (Math.abs(differenceInDays(date, endDate)) > props.maxDaysRange) {
             update.end = formatRFC3339(
-              addDays(date, props.maxDaysRange)
+              min([new Date(), addDays(date, props.maxDaysRange)])
             ).replace('Z', '000000Z');
           } else if (isBefore(endDate, date)) {
-            update.end = formatRFC3339(addDays(date, 1));
+            update.end = formatRFC3339(min([new Date(), addDays(date, 1)]));
           }
         }
         if (validate(name, date, update)) {
