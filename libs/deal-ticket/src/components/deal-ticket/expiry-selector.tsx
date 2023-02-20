@@ -35,7 +35,7 @@ export const ExpirySelector = ({
         })}
       />
       {errorMessage && (
-        <InputError data-testid="dealticket-error-message-expiry">
+        <InputError testId="dealticket-error-message-expiry">
           {errorMessage}
         </InputError>
       )}

@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type StatisticsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type StatisticsQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', chainId: string, blockHeight: string } };
+export type StatisticsQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', chainId: string, blockHeight: string, vegaTime: any } };
 
 export type BlockTimeSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
 
@@ -19,6 +19,7 @@ export const StatisticsDocument = gql`
   statistics {
     chainId
     blockHeight
+    vegaTime
   }
 }
     `;

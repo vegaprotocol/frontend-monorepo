@@ -142,7 +142,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueGetterParams<Position, 'openVolume'>) => {
             return data?.openVolume === undefined
               ? undefined
-              : toBigNum(data?.openVolume, data.decimals).toNumber();
+              : toBigNum(
+                  data?.openVolume,
+                  data.positionDecimalPlaces
+                ).toNumber();
           }}
           valueFormatter={({
             data,

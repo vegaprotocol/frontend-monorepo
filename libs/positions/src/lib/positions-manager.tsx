@@ -18,7 +18,11 @@ export const PositionsManager = ({
   isReadOnly,
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
+  const { data, error, loading, reload } = usePositionsData(
+    partyId,
+    gridRef,
+    true
+  );
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
     marketId,
@@ -51,9 +55,8 @@ export const PositionsManager = ({
   return (
     <div className="h-full relative">
       <PositionsTable
-        rowModelType="infinite"
+        rowData={error ? [] : data}
         ref={gridRef}
-        datasource={{ getRows }}
         onMarketClick={onMarketClick}
         onClose={onClose}
         noRowsOverlayComponent={() => null}
@@ -66,6 +69,7 @@ export const PositionsManager = ({
           data={data}
           noDataMessage={t('No positions')}
           noDataCondition={(data) => !(data && data.length)}
+          reload={reload}
         />
       </div>
     </div>

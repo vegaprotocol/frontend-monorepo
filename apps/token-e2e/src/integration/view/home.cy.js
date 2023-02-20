@@ -7,26 +7,9 @@ const navWithdraw = '[href="/token/withdraw"]';
 const navGovernance = '[href="/proposals"]';
 const navRedeem = '[href="/token/redeem"]';
 
-const tokenDetailsTable = '.token-details';
-const address = '[data-testid="token-address"]';
-const contract = '[data-testid="token-contract"]';
-const totalSupply = '[data-testid="total-supply"]';
-const circulatingSupply = '[data-testid="circulating-supply"]';
-const staked = '[data-testid="staked"]';
-const tranchesLink = '[data-testid="tranches-link"]';
-const redeemBtn = '[data-testid="check-vesting-page-btn"]';
-const getVegaWalletLink = '[data-testid="get-vega-wallet-link"]';
-const associateVegaLink =
-  '[data-testid="associate-vega-tokens-link-on-homepage"]';
-const stakingBtn = '[data-testid="staking-button-on-homepage"]';
-const governanceBtn = '[data-testid="governance-button-on-homepage"]';
-
-const vegaTokenAddress = Cypress.env('vegaTokenAddress');
-const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
-
 context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
   before('visit token home page', function () {
-    cy.visit('/token');
+    cy.visit('/');
   });
 
   describe('with wallets disconnected', function () {
@@ -54,7 +37,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       describe('Token dropdown', function () {
         before('click on token dropdown', function () {
           cy.get(navSection).within(() => {
-            cy.getByTestId('state-trigger').click();
+            cy.getByTestId('state-trigger').realClick();
           });
         });
         it('should have token dropdown', function () {
@@ -72,80 +55,106 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    describe('THE $VEGA TOKEN table', function () {
-      it('should have TOKEN ADDRESS', function () {
-        cy.get(tokenDetailsTable).within(() => {
-          cy.get(address)
-            .should('be.visible')
-            .invoke('text')
-            .should('be.equal', vegaTokenAddress);
+    describe('Links and buttons', function () {
+      it('should have link for proposal page', function () {
+        cy.getByTestId('home-proposals').within(() => {
+          cy.get('[href="/proposals"]')
+            .should('exist')
+            .and('have.text', 'Browse, vote, and propose');
         });
       });
-      it('should have VESTING CONTRACT', function () {
-        // 1004-ASSO-001
-        cy.get(tokenDetailsTable).within(() => {
-          cy.get(contract)
-            .should('be.visible')
-            .invoke('text')
-            .should('be.equal', vegaTokenContractAddress);
+      it('should show open or enacted proposals with proposal summary', function () {
+        cy.get('body').then(($body) => {
+          if (!$body.find('[data-testid="proposals-list-item"]').length) {
+            cy.createMarket();
+            cy.reload();
+            cy.wait_for_spinner();
+          }
+        });
+        cy.getByTestId('proposals-list-item')
+          .should('have.length.at.least', 1)
+          .first()
+          .within(() => {
+            cy.getByTestId('proposal-title')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-type')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-description')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-details')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('proposal-status')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('vote-details')
+              .invoke('text')
+              .should('not.be.empty');
+            cy.getByTestId('view-proposal-btn').should('be.visible');
+          });
+      });
+      it('should have external link for governance', function () {
+        cy.getByTestId('home-proposals').within(() => {
+          cy.getByTestId('external-link')
+            .should('have.attr', 'href')
+            .and('contain', 'https://vega.xyz/governance');
         });
       });
-      it('should have TOTAL SUPPLY', function () {
-        cy.get(tokenDetailsTable).within(() => {
-          cy.get(totalSupply).should('be.visible');
+      it('should have link for validator page', function () {
+        cy.getByTestId('home-validators').within(() => {
+          cy.get('[href="/validators"]')
+            .first()
+            .should('exist')
+            .and('have.text', 'Browse, and stake');
         });
       });
-      it('should have CIRCULATING SUPPLY', function () {
-        cy.get(tokenDetailsTable).within(() => {
-          cy.get(circulatingSupply).should('be.visible');
+      it('should have external link for validators', function () {
+        cy.getByTestId('home-validators').within(() => {
+          cy.getByTestId('external-link')
+            .should('have.attr', 'href')
+            .and(
+              'contain',
+              'https://community.vega.xyz/c/mainnet-validator-candidates'
+            );
         });
       });
-      it('should have STAKED $VEGA', function () {
-        cy.get(tokenDetailsTable).within(() => {
-          cy.get(staked).should('be.visible');
+      it('should have information on active nodes', function () {
+        cy.getByTestId('node-information')
+          .first()
+          .should('contain.text', '2')
+          .and('contain.text', 'active nodes');
+      });
+      it('should have information on consensus nodes', function () {
+        cy.getByTestId('node-information')
+          .last()
+          .should('contain.text', '2')
+          .and('contain.text', 'consensus nodes');
+      });
+      it('should contain link to specific validators', function () {
+        cy.getByTestId('validators')
+          .should('have.length', '2')
+          .each(($validator) => {
+            cy.wrap($validator).find('a').should('have.attr', 'href');
+          });
+      });
+      it('should have link for rewards page', function () {
+        cy.getByTestId('home-rewards').within(() => {
+          cy.get('[href="/rewards"]')
+            .first()
+            .should('exist')
+            .and('have.text', 'See rewards');
         });
       });
-    });
-
-    describe('links and buttons', function () {
-      it('should have TRANCHES link', function () {
-        cy.get(tranchesLink)
-          .should('be.visible')
-          .and('have.attr', 'href')
-          .and('equal', '/token/tranches');
-      });
-      it('should have REDEEM button', function () {
-        cy.get(redeemBtn)
-          .should('be.visible')
-          .parent()
-          .should('have.attr', 'href')
-          .and('equal', '/token/redeem');
-      });
-      it('should have GET VEGA WALLET link', function () {
-        cy.get(getVegaWalletLink)
-          .should('be.visible')
-          .and('have.attr', 'href')
-          .and('equal', 'https://vega.xyz/wallet');
-      });
-      it('should have ASSOCIATE VEGA TOKENS link', function () {
-        cy.get(associateVegaLink)
-          .should('be.visible')
-          .and('have.attr', 'href')
-          .and('equal', '/token/associate');
-      });
-      it('should have STAKING button', function () {
-        cy.get(stakingBtn)
-          .should('be.visible')
-          .parent()
-          .should('have.attr', 'href')
-          .and('equal', '/validators');
-      });
-      it('should have GOVERNANCE button', function () {
-        cy.get(governanceBtn)
-          .should('be.visible')
-          .parent()
-          .should('have.attr', 'href')
-          .and('equal', '/proposals');
+      it('should have link for withdrawal page', function () {
+        cy.getByTestId('home-vega-token').within(() => {
+          cy.get('[href="/token/withdraw"]')
+            .first()
+            .should('exist')
+            .and('have.text', 'Manage tokens');
+        });
       });
     });
   });

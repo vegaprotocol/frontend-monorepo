@@ -53,7 +53,7 @@ export const NavDropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className="bg-vega-dark-100 mt-4 py-4 rounded-xl border border-vega-dark-200 text-white"
+    className="z-10 bg-vega-dark-100 mt-4 py-4 rounded-xl border border-vega-dark-200 text-white"
     align="start"
     sideOffset={10}
   />

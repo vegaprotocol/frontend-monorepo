@@ -103,7 +103,7 @@ describe('FillsTable', () => {
     });
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-    expect(amountCell).toHaveClass('text-vega-green');
+    expect(amountCell).toHaveClass('text-vega-green-550');
   });
 
   it('should format cells correctly for seller fill', async () => {
