@@ -76,7 +76,7 @@ describe('AccountsTable', () => {
     expect(rows.length).toBe(6);
   });
 
-  it('should add first asset as pinned', async () => {
+  it('should not add first asset as pinned', async () => {
     await act(async () => {
       render(
         <AccountTable
@@ -93,7 +93,7 @@ describe('AccountsTable', () => {
       );
     });
     const rows = await screen.findAllByRole('row');
-    expect(rows.length).toBe(9);
+    expect(rows.length).toBe(6);
   });
 
   it('should get correct account data', () => {
