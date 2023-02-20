@@ -26,9 +26,20 @@ export interface OrderbookRowData {
 
 type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'ask' | 'bid'>;
 
-export type OrderbookData = Partial<
-  Omit<MarketData, '__typename' | 'market'>
-> & { rows: OrderbookRowData[] | null };
+type OrderbookMarketData = Pick<
+  MarketData,
+  | 'bestStaticBidPrice'
+  | 'bestStaticOfferPrice'
+  | 'indicativePrice'
+  | 'indicativeVolume'
+  | 'marketTradingMode'
+  | 'staticMidPrice'
+>;
+
+export type OrderbookData = Partial<OrderbookMarketData> & {
+  rows: OrderbookRowData[] | null;
+  midPrice?: string;
+};
 
 export const getPriceLevel = (price: string | bigint, resolution: number) => {
   const p = BigInt(price);
@@ -39,6 +50,18 @@ export const getPriceLevel = (price: string | bigint, resolution: number) => {
   }
   return priceLevel.toString();
 };
+
+export const getMidPrice = (
+  sell: PriceLevelFieldsFragment[] | null | undefined,
+  buy: PriceLevelFieldsFragment[] | null | undefined,
+  resolution: number
+) =>
+  buy?.length && sell?.length
+    ? getPriceLevel(
+        (BigInt(buy[0].price) + BigInt(sell[0].price)) / BigInt(2),
+        resolution
+      )
+    : undefined;
 
 const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
   bid: Math.max(...orderbookData.map((data) => data.bid)),
@@ -254,13 +277,7 @@ export const updateCompactedRows = (
 };
 
 export const mapMarketData = (
-  data: Pick<
-    MarketData,
-    | 'staticMidPrice'
-    | 'bestStaticBidPrice'
-    | 'bestStaticOfferPrice'
-    | 'indicativePrice'
-  > | null,
+  data: OrderbookMarketData | null,
   resolution: number
 ) => ({
   staticMidPrice:
@@ -283,7 +300,8 @@ export const mapMarketData = (
  */
 export const updateLevels = (
   draft: PriceLevelFieldsFragment[],
-  updates: (PriceLevelFieldsFragment | PriceLevelFieldsFragment)[]
+  updates: (PriceLevelFieldsFragment | PriceLevelFieldsFragment)[],
+  ascending = true
 ) => {
   const levels = [...draft];
   updates.forEach((update) => {
@@ -295,8 +313,10 @@ export const updateLevels = (
         levels[index] = update;
       }
     } else if (update.volume !== '0') {
-      index = levels.findIndex(
-        (level) => BigInt(level.price) > BigInt(update.price)
+      index = levels.findIndex((level) =>
+        ascending
+          ? BigInt(level.price) > BigInt(update.price)
+          : BigInt(level.price) < BigInt(update.price)
       );
       if (index !== -1) {
         levels.splice(index, 0, update);

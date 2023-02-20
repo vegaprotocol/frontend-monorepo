@@ -1,3 +1,4 @@
+import React from 'react';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
@@ -8,12 +9,14 @@ import type { MarketData } from '@vegaprotocol/market-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type {
   MarketDepthUpdateSubscription,
+  MarketDepthQuery,
   PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
 import {
   compactRows,
   updateCompactedRows,
   mapMarketData,
+  getMidPrice,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
 import { usePersistedOrderStore } from '@vegaprotocol/orders';
@@ -31,6 +34,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   });
   const dataRef = useRef<OrderbookData>({ rows: null });
   const marketDataRef = useRef<MarketData | null>(null);
+  const rawDataRef = useRef<MarketDepthQuery['market'] | null>(null);
   const deltaRef = useRef<{
     sell: PriceLevelFieldsFragment[];
     buy: PriceLevelFieldsFragment[];
@@ -43,6 +47,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       dataRef.current = {
         ...marketDataRef.current,
         ...mapMarketData(marketDataRef.current, resolutionRef.current),
+        midPrice: getMidPrice(
+          rawDataRef.current?.depth.sell,
+          rawDataRef.current?.depth.buy,
+          resolution
+        ),
         rows:
           deltaRef.current.buy.length || deltaRef.current.sell.length
             ? updateCompactedRows(
@@ -56,14 +65,16 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       deltaRef.current.buy = [];
       deltaRef.current.sell = [];
       setOrderbookData(dataRef.current);
-    }, 1000)
+    }, 250)
   );
 
   const update = useCallback(
     ({
       delta: deltas,
+      data: rawData,
     }: {
       delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'];
+      data?: MarketDepthQuery['market'];
     }) => {
       if (!dataRef.current.rows) {
         return false;
@@ -78,6 +89,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         if (delta.buy) {
           deltaRef.current.buy.push(...delta.buy);
         }
+        rawDataRef.current = rawData;
         updateOrderbookData.current();
       }
       return true;
@@ -135,8 +147,10 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     dataRef.current = {
       ...marketDataRef.current,
       ...mapMarketData(marketDataRef.current, resolution),
+      midPrice: getMidPrice(data.depth.sell, data.depth.buy, resolution),
       rows: compactRows(data.depth.sell, data.depth.buy, resolution),
     };
+    rawDataRef.current = data;
     setOrderbookData(dataRef.current);
 
     return () => {
@@ -157,19 +171,21 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       error={error || marketDataError || marketError}
       data={data}
     >
-      <Orderbook
-        {...orderbookData}
-        decimalPlaces={market?.decimalPlaces ?? 0}
-        positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
-        resolution={resolution}
-        onResolutionChange={(resolution: number) => setResolution(resolution)}
-        onClick={(price?: string | number) => {
-          if (price) {
-            const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-            updatePrice(marketId, priceValue);
-          }
-        }}
-      />
+      <React.StrictMode>
+        <Orderbook
+          {...orderbookData}
+          decimalPlaces={market?.decimalPlaces ?? 0}
+          positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
+          resolution={resolution}
+          onResolutionChange={(resolution: number) => setResolution(resolution)}
+          onClick={(price?: string | number) => {
+            if (price) {
+              const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
+              updatePrice(marketId, priceValue);
+            }
+          }}
+        />
+      </React.StrictMode>
     </AsyncRenderer>
   );
 };

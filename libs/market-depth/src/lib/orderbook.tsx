@@ -97,6 +97,7 @@ const getRowsToRender = (
 };
 
 // 17px of row height plus 5px gap
+export const gridGap = 5;
 export const rowHeight = 22;
 // top padding to make space for header
 const headerPadding = 30;
@@ -193,7 +194,7 @@ const OrderbookDebugInfo = ({
   bestStaticOfferPrice,
   maxPriceLevel,
   minPriceLevel,
-  resolution,
+  midPrice,
 }: {
   decimalPlaces: number;
   numberOfRows: number;
@@ -204,7 +205,7 @@ const OrderbookDebugInfo = ({
   bestStaticOfferPrice?: string;
   maxPriceLevel: string;
   minPriceLevel: string;
-  resolution: number;
+  midPrice?: string;
 }) => (
   <Fragment>
     <div
@@ -253,16 +254,7 @@ const OrderbookDebugInfo = ({
               decimalPlaces
             ),
             midPrice: addDecimalsFixedFormatNumber(
-              (bestStaticOfferPrice &&
-                bestStaticBidPrice &&
-                getPriceLevel(
-                  BigInt(bestStaticOfferPrice) +
-                    (BigInt(bestStaticBidPrice) -
-                      BigInt(bestStaticOfferPrice)) /
-                      BigInt(2),
-                  resolution
-                )) ??
-                '0',
+              midPrice ?? '0',
               decimalPlaces
             ),
           },
@@ -276,6 +268,7 @@ const OrderbookDebugInfo = ({
 
 export const Orderbook = ({
   rows,
+  midPrice,
   bestStaticBidPrice,
   bestStaticOfferPrice,
   marketTradingMode,
@@ -305,10 +298,9 @@ export const Orderbook = ({
   const resolutionRef = useRef(resolution);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const [fillGaps, setFillGaps] = useState(!!initialFillGaps);
-  const numberOfRows = useMemo(
-    () => (fillGaps ? getNumberOfRows(rows, resolution) : rows?.length ?? 0),
-    [rows, resolution, fillGaps]
-  );
+  const numberOfRows = fillGaps
+    ? getNumberOfRows(rows, resolution)
+    : rows?.length ?? 0;
   const maxPriceLevel = rows?.[0]?.price ?? '0';
   const minPriceLevel = (
     fillGaps
@@ -324,25 +316,50 @@ export const Orderbook = ({
     },
     [scrollOffset]
   );
+  let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
+  const prependingBufferSize = Math.min(bufferSize, offset);
+  offset -= prependingBufferSize;
+  const viewportSize = Math.round(viewportHeight / rowHeight);
+  const limit = Math.min(
+    prependingBufferSize + viewportSize + bufferSize,
+    numberOfRows - offset
+  );
+  const paddingTop = offset * rowHeight + headerPadding;
+  const paddingBottom =
+    (numberOfRows - offset - limit) * rowHeight + footerPadding;
+  const data = fillGaps
+    ? getRowsToRender(rows, resolution, offset, limit)
+    : rows?.slice(offset, offset + limit) ?? [];
+  const height = data ? data.length * rowHeight - gridGap : 0;
+
   const onScroll = useCallback(
     (event: React.UIEvent<HTMLDivElement>) => {
-      const { scrollTop } = event.currentTarget;
+      const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
       updateScrollOffset(scrollTop);
       if (scrollTop === scrollTopRef.current) {
         return;
+      } else if ((scrollTop - scrollTopRef.current) % rowHeight === 0) {
+        if (scrollElement.current) {
+          scrollElement.current.scrollTop = scrollTopRef.current;
+        }
+        return;
       }
-      // top offset in rows to row in the middle
-      const offsetTop = Math.floor(
-        (scrollTop +
-          Math.floor((viewportHeight - footerPadding - headerPadding) / 2)) /
-          rowHeight
-      );
-      priceInCenter.current = fillGaps
-        ? (
-            BigInt(maxPriceLevel) -
-            BigInt(offsetTop) * BigInt(resolution)
-          ).toString()
-        : rows?.[Math.min(offsetTop, rows.length - 1)].price.toString();
+      if (scrollTop === 0 || scrollHeight === clientHeight + scrollTop) {
+        priceInCenter.current = undefined;
+      } else {
+        // top offset in rows to row in the middle
+        const offsetTop = Math.floor(
+          (scrollTop +
+            Math.floor((viewportHeight - footerPadding - headerPadding) / 2)) /
+            rowHeight
+        );
+        priceInCenter.current = fillGaps
+          ? (
+              BigInt(maxPriceLevel) -
+              BigInt(offsetTop) * BigInt(resolution)
+            ).toString()
+          : rows?.[Math.min(offsetTop, rows.length - 1)].price.toString();
+      }
       if (lockOnMidPrice) {
         setLockOnMidPrice(false);
       }
@@ -361,6 +378,7 @@ export const Orderbook = ({
 
   const scrollToPrice = useCallback(
     (price: string) => {
+      // console.log('scrollToPrice');
       if (scrollElement.current && maxPriceLevel !== '0') {
         let scrollTop = 0;
         if (fillGaps) {
@@ -377,11 +395,14 @@ export const Orderbook = ({
           );
           if (index !== -1) {
             scrollTop = rowHeight * (index + 1);
-            const diffToCurrentRow = BigInt(price) - BigInt(rows[index].price);
-            const diffToPreviousRow =
-              BigInt(rows[index - 1].price) - BigInt(price);
-            if (diffToPreviousRow < diffToCurrentRow) {
-              scrollTop -= rowHeight;
+            if (index !== 0) {
+              const diffToCurrentRow =
+                BigInt(price) - BigInt(rows[index].price);
+              const diffToPreviousRow =
+                BigInt(rows[index - 1].price) - BigInt(price);
+              if (diffToPreviousRow < diffToCurrentRow) {
+                scrollTop -= rowHeight;
+              }
             }
           }
         }
@@ -419,72 +440,41 @@ export const Orderbook = ({
   );
 
   const scrollToMidPrice = useCallback(() => {
-    if (!bestStaticOfferPrice || !bestStaticBidPrice) {
+    if (!midPrice) {
       return;
     }
     priceInCenter.current = undefined;
-    let midPrice = getPriceLevel(
-      BigInt(bestStaticOfferPrice) +
-        (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) / BigInt(2),
-      resolution
-    );
-    if (BigInt(midPrice) > BigInt(maxPriceLevel)) {
-      midPrice = maxPriceLevel;
-    } else {
-      if (BigInt(midPrice) < BigInt(minPriceLevel)) {
-        midPrice = minPriceLevel.toString();
-      }
-    }
     scrollToPrice(midPrice);
     setLockOnMidPrice(true);
-  }, [
-    bestStaticOfferPrice,
-    bestStaticBidPrice,
-    scrollToPrice,
-    resolution,
-    maxPriceLevel,
-    minPriceLevel,
-  ]);
+  }, [midPrice, scrollToPrice]);
 
   // adjust scroll position to keep selected price in center
   useLayoutEffect(() => {
+    if (gridElement.current) {
+      gridElement.current.style.height = `${height}px`;
+      gridElement.current.style.borderTopWidth = `${paddingTop}px`;
+      gridElement.current.style.borderBottomWidth = `${paddingBottom}px`;
+    }
+    /*
     if (resolutionRef.current !== resolution) {
       priceInCenter.current = undefined;
       resolutionRef.current = resolution;
     }
+    */
     if (priceInCenter.current) {
       scrollToPrice(priceInCenter.current);
-    } else {
-      scrollToMidPrice();
+    } else if (lockOnMidPrice && midPrice) {
+      scrollToPrice(midPrice);
     }
-  }, [scrollToMidPrice, scrollToPrice, resolution]);
+  }, [
+    midPrice,
+    scrollToPrice,
+    lockOnMidPrice,
+    height,
+    paddingTop,
+    paddingBottom,
+  ]);
 
-  // handles window resize
-  useEffect(() => {
-    function handleResize() {
-      if (rootElement.current) {
-        setViewportHeight(
-          rootElement.current.clientHeight || window.innerHeight
-        );
-      }
-    }
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  // sets the correct width of header and footer
-  useLayoutEffect(() => {
-    if (
-      !gridElement.current ||
-      !headerElement.current ||
-      !footerElement.current
-    ) {
-      return;
-    }
-    const gridWidth = gridElement.current.clientWidth;
-    headerElement.current.style.width = `${gridWidth}px`;
-    footerElement.current.style.width = `${gridWidth}px`;
-  }, [headerElement, footerElement, gridElement]);
   // handles resizing of the Allotment.Pane (x-axis)
   // adjusts the header and footer width
   const gridResizeHandler: ResizeObserverCallback = useCallback(
@@ -518,21 +508,6 @@ export const Orderbook = ({
   useResizeObserver(gridElement.current, gridResizeHandler);
   useResizeObserver(rootElement.current, rootElementResizeHandler);
 
-  let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
-  const prependingBufferSize = Math.min(bufferSize, offset);
-  offset -= prependingBufferSize;
-  const viewportSize = Math.round(viewportHeight / rowHeight);
-  const limit = Math.min(
-    prependingBufferSize + viewportSize + bufferSize,
-    numberOfRows - offset
-  );
-  const data = fillGaps
-    ? getRowsToRender(rows, resolution, offset, limit)
-    : rows?.slice(offset, offset + limit) ?? [];
-
-  const paddingTop = offset * rowHeight + headerPadding;
-  const paddingBottom =
-    (numberOfRows - offset - limit) * rowHeight + footerPadding;
   const tableBody =
     data && data.length !== 0 ? (
       <div
@@ -619,10 +594,10 @@ export const Orderbook = ({
         data-testid="scroll"
       >
         <div
-          className="relative text-right min-h-full"
+          className="relative text-right min-h-full overflow-hidden box-content border-transparent border-solid"
           style={{
-            paddingTop: paddingTop,
-            paddingBottom: paddingBottom,
+            borderTopWidth: paddingTop,
+            borderBottomWidth: paddingBottom,
             background: tableBody ? gradientStyles : 'none',
           }}
           ref={gridElement}
@@ -695,7 +670,7 @@ export const Orderbook = ({
       {debug && (
         <OrderbookDebugInfo
           decimalPlaces={decimalPlaces}
-          resolution={resolution}
+          midPrice={midPrice}
           numberOfRows={numberOfRows}
           viewportHeight={viewportHeight}
           lockOnMidPrice={lockOnMidPrice}
