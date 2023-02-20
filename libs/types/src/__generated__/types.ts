@@ -344,58 +344,12 @@ export type BusEvent = {
 
 /** Event types */
 export enum BusEventType {
-  /** An account has been updated */
-  Account = 'Account',
-  /** An asset has been created or update */
-  Asset = 'Asset',
-  /** A market has either entered or exited auction */
-  Auction = 'Auction',
   /** Collateral has deposited in to this Vega network via the bridge */
   Deposit = 'Deposit',
-  /** A liquidity commitment change occurred */
-  LiquidityProvision = 'LiquidityProvision',
-  /** A position has been closed without sufficient insurance pool balance to cover it */
-  LossSocialization = 'LossSocialization',
-  /** Margin levels have changed for a position */
-  MarginLevels = 'MarginLevels',
-  /** Constant for market events - mainly used for logging */
-  Market = 'Market',
-  /** A new market has been created */
-  MarketCreated = 'MarketCreated',
-  /** Market data has been updated */
-  MarketData = 'MarketData',
-  /** A market has progressed by one tick */
-  MarketTick = 'MarketTick',
-  /** A market has been updated */
-  MarketUpdated = 'MarketUpdated',
-  /** Validator node signatures for an event */
-  NodeSignature = 'NodeSignature',
-  /** An oracle spec has been registered */
-  OracleSpec = 'OracleSpec',
-  /** An order has been created or updated */
-  Order = 'Order',
-  /** A party has been updated */
-  Party = 'Party',
-  /** A position resolution event has occurred */
-  PositionResolution = 'PositionResolution',
-  /** A governance proposal has been created or updated */
-  Proposal = 'Proposal',
-  /** A risk factor adjustment was made */
-  RiskFactor = 'RiskFactor',
-  /** A distressed position has been settled */
-  SettleDistressed = 'SettleDistressed',
-  /** A position has been settled */
-  SettlePosition = 'SettlePosition',
   /** Vega Time has changed */
   TimeUpdate = 'TimeUpdate',
-  /** A trade has been created */
-  Trade = 'Trade',
   /** The results from processing at transaction */
   TransactionResult = 'TransactionResult',
-  /** A balance has been transferred between accounts */
-  TransferResponses = 'TransferResponses',
-  /** A vote has been placed on a governance proposal */
-  Vote = 'Vote',
   /** Collateral has been withdrawn from this Vega network via the bridge */
   Withdrawal = 'Withdrawal'
 }
@@ -1014,7 +968,7 @@ export type EthereumKeyRotationsConnection = {
 };
 
 /** Union type for wrapped events in stream PROPOSAL is mapped to governance data, something to keep in mind */
-export type Event = AccountEvent | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransactionResult | TransferResponses | Vote | Withdrawal;
+export type Event = Deposit | TimeUpdate | TransactionResult | Withdrawal;
 
 export type ExternalData = {
   __typename?: 'ExternalData';
@@ -1100,8 +1054,6 @@ export type FutureProduct = {
 /** A segment of data node history */
 export type HistorySegment = {
   __typename?: 'HistorySegment';
-  /** Chain ID of the history segment */
-  chainID: Scalars['String'];
   /** From block height of the history segment */
   fromHeight: Scalars['Int'];
   /** ID of the history segment */
@@ -1225,6 +1177,8 @@ export type LedgerEntryFilter = {
 /** Configuration of a market liquidity monitoring parameters */
 export type LiquidityMonitoringParameters = {
   __typename?: 'LiquidityMonitoringParameters';
+  /** Specifies by how many seconds an auction should be extended if leaving the auction were to trigger a liquidity auction */
+  auctionExtensionSecs: Scalars['Int'];
   /** Specifies parameters related to target stake calculation */
   targetStakeParameters: TargetStakeParameters;
   /** Specifies the triggering ratio for entering liquidity auction */
@@ -1489,6 +1443,8 @@ export type Market = {
   fees: Fees;
   /** Market ID */
   id: Scalars['ID'];
+  /** Linear slippage factor is used to cap the slippage component of maintainence margin - it is applied to the slippage volume */
+  linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters for the market */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** The list of the liquidity provision commitments for this market */
@@ -1515,6 +1471,8 @@ export type Market = {
   priceMonitoringSettings: PriceMonitoringSettings;
   /** The proposal that initiated this market */
   proposal?: Maybe<Proposal>;
+  /** Quadratic slippage factor is used to cap the slippage component of maintainence margin - it is applied to the square of the slippage volume */
+  quadraticSlippageFactor: Scalars['String'];
   /** Risk factors for the market */
   riskFactors?: Maybe<RiskFactor>;
   /** Current state of the market */
@@ -1870,10 +1828,20 @@ export type NewMarket = {
   decimalPlaces: Scalars['Int'];
   /** New market instrument configuration */
   instrument: InstrumentConfiguration;
+  /** Linear slippage factor is used to cap the slippage component of maintainence margin - it is applied to the slippage volume */
+  linearSlippageFactor: Scalars['String'];
+  /** Liquidity monitoring parameters */
+  liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** Liquidity Provision order price range */
   lpPriceRange: Scalars['String'];
   /** Metadata for this instrument, tags */
   metadata?: Maybe<Array<Scalars['String']>>;
+  /** Decimal places for order sizes, sets what size the smallest order / position on the market can be */
+  positionDecimalPlaces: Scalars['Int'];
+  /** Price monitoring parameters */
+  priceMonitoringParameters: PriceMonitoringParameters;
+  /** Quadratic slippage factor is used to cap the slippage component of maintainence margin - it is applied to the square of the slippage volume */
+  quadraticSlippageFactor: Scalars['String'];
   /** New market risk configuration */
   riskParameters: RiskModel;
 };
@@ -2519,7 +2487,10 @@ export type Party = {
   marginsConnection?: Maybe<MarginConnection>;
   /** Orders relating to a party */
   ordersConnection?: Maybe<OrderConnection>;
-  /** Trading positions relating to a party */
+  /**
+   * Trading positions relating to a party
+   * @deprecated Use root positions query instead of sub-query
+   */
   positionsConnection?: Maybe<PositionConnection>;
   /** All governance proposals in the Vega network */
   proposalsConnection?: Maybe<ProposalsConnection>;
@@ -2610,7 +2581,9 @@ export type PartyrewardSummariesArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyrewardsConnectionArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
+  fromEpoch?: InputMaybe<Scalars['Int']>;
   pagination?: InputMaybe<Pagination>;
+  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -2707,6 +2680,8 @@ export type Position = {
   __typename?: 'Position';
   /** Average entry price for this position */
   averageEntryPrice: Scalars['String'];
+  /** The total amount of profit and loss that was not transferred due to loss socialisation */
+  lossSocializationAmount: Scalars['String'];
   /** Margins of the party for the given position */
   marginsConnection?: Maybe<MarginConnection>;
   /** Market relating to this position */
@@ -2715,6 +2690,8 @@ export type Position = {
   openVolume: Scalars['String'];
   /** The party holding this position */
   party: Party;
+  /** Enum set if the position was closed out or orders were removed because party was distressed */
+  positionStatus: PositionStatus;
   /** Realised Profit and Loss (int64) */
   realisedPNL: Scalars['String'];
   /** Unrealised Profit and Loss (int64) */
@@ -2764,6 +2741,16 @@ export type PositionResolution = {
   marketId: Scalars['ID'];
 };
 
+/** Position status can change if a position is distressed */
+export enum PositionStatus {
+  /** The position was distressed, and had to be closed out entirely - orders were removed from the book, and the open volume was closed out by the network */
+  POSITION_STATUS_CLOSED_OUT = 'POSITION_STATUS_CLOSED_OUT',
+  /** The position was distressed, but removing open orders from the book brought the margin level back to a point where the open position could be maintained */
+  POSITION_STATUS_ORDERS_CLOSED = 'POSITION_STATUS_ORDERS_CLOSED',
+  /** The position is either healthy, or if closed out, was closed out normally */
+  POSITION_STATUS_UNSPECIFIED = 'POSITION_STATUS_UNSPECIFIED'
+}
+
 /**
  * An individual party at any point in time is considered net long or net short. This refers to their Open Volume,
  * calculated using FIFO. This volume is signed as either negative for LONG positions and positive for SHORT positions. A
@@ -2786,6 +2773,12 @@ export type PositionUpdate = {
   unrealisedPNL: Scalars['String'];
   /** RFC3339Nano time the position was updated */
   updatedAt?: Maybe<Scalars['Timestamp']>;
+};
+
+/** Filter to apply to the positions connection query */
+export type PositionsFilter = {
+  marketIds?: InputMaybe<Array<Scalars['ID']>>;
+  partyIds?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 /** Represents a price on either the buy or sell side and all the orders at that price */
@@ -2826,7 +2819,7 @@ export type PriceMonitoringSettings = {
   parameters?: Maybe<PriceMonitoringParameters>;
 };
 
-/** PriceMonitoringParameters holds together price projection horizon τ, probability level p, and auction extension duration */
+/** PriceMonitoringTrigger holds together price projection horizon τ, probability level p, and auction extension duration */
 export type PriceMonitoringTrigger = {
   __typename?: 'PriceMonitoringTrigger';
   /**
@@ -3281,6 +3274,8 @@ export type Query = {
   partiesConnection?: Maybe<PartyConnection>;
   /** An entity that is trading on the Vega network */
   party?: Maybe<Party>;
+  /** Fetch all positions */
+  positions?: Maybe<PositionConnection>;
   /** A governance proposal located by either its ID or reference. If both are set, ID is used. */
   proposal?: Maybe<Proposal>;
   /** All governance proposals in the Vega network */
@@ -3348,9 +3343,8 @@ export type QueryepochArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryepochRewardSummariesArgs = {
-  fromEpoch?: InputMaybe<Scalars['Int']>;
+  filter?: InputMaybe<RewardSummaryFilter>;
   pagination?: InputMaybe<Pagination>;
-  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -3453,6 +3447,7 @@ export type QuerymarketArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerymarketsConnectionArgs = {
   id?: InputMaybe<Scalars['ID']>;
+  includeSettled?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -3543,6 +3538,13 @@ export type QuerypartiesConnectionArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerypartyArgs = {
   id: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerypositionsArgs = {
+  filter?: InputMaybe<PositionsFilter>;
+  pagination?: InputMaybe<Pagination>;
 };
 
 
@@ -3696,6 +3698,14 @@ export type RewardSummaryEdge = {
   cursor: Scalars['String'];
   /** The reward summary */
   node: RewardSummary;
+};
+
+/** Filter for historical reward summary queries */
+export type RewardSummaryFilter = {
+  assetIds?: InputMaybe<Array<Scalars['ID']>>;
+  fromEpoch?: InputMaybe<Scalars['Int']>;
+  marketIds?: InputMaybe<Array<Scalars['ID']>>;
+  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 /** Connection type for retrieving cursor-based paginated rewards information */
@@ -3894,6 +3904,10 @@ export type Statistics = {
   chainVersion: Scalars['String'];
   /** RFC3339Nano current time (real) */
   currentTime: Scalars['Timestamp'];
+  /** Total number of events on the last block */
+  eventCount: Scalars['String'];
+  /** The number of events per second on the last block */
+  eventsPerSecond: Scalars['String'];
   /** RFC3339Nano genesis time of the chain */
   genesisTime: Scalars['Timestamp'];
   /** Number of orders per seconds */

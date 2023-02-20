@@ -1,17 +1,3 @@
-fragment ProposalEventFields on Proposal {
-  id
-  reference
-  state
-  rejectionReason
-  errorDetails
-}
-
-subscription ProposalEvent($partyId: ID!) {
-  proposals(partyId: $partyId) {
-    ...ProposalEventFields
-  }
-}
-
 fragment UpdateNetworkParameterProposal on Proposal {
   id
   state
@@ -27,12 +13,8 @@ fragment UpdateNetworkParameterProposal on Proposal {
 }
 
 subscription OnUpdateNetworkParameters {
-  busEvents(types: [Proposal], batchSize: 0) {
-    event {
-      ... on Proposal {
-        ...UpdateNetworkParameterProposal
-      }
-    }
+  proposals {
+    ...UpdateNetworkParameterProposal
   }
 }
 
