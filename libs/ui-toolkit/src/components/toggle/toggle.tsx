@@ -35,7 +35,7 @@ export const Toggle = ({
   );
   const radioClasses = classnames('sr-only', 'peer');
   const buttonClasses = classnames(
-    'relative inline-block w-full text-center',
+    'relative inline-flex w-full h-full text-center items-center justify-center',
     'peer-checked:rounded-full',
     {
       'peer-checked:bg-neutral-400 dark:peer-checked:bg-white dark:peer-checked:text-black':
@@ -76,7 +76,9 @@ export const Toggle = ({
               }
               className={radioClasses}
             />
-            <span className={buttonClasses}>{label}</span>
+            <span className={buttonClasses}>
+              <span>{label}</span>
+            </span>
           </label>
         );
       })}

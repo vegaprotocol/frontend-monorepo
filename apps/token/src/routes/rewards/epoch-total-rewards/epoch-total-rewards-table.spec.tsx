@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { AppStateProvider } from '../../../contexts/app-state/app-state-provider';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
 import { AccountType } from '@vegaprotocol/types';
 
@@ -11,8 +12,28 @@ const mockData = {
       name: 'tDAI TEST',
       rewards: [
         {
+          rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+          amount: '0',
+        },
+        {
           rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
           amount: '295',
+        },
+        {
+          rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+          amount: '0',
+        },
+        {
+          rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+          amount: '0',
+        },
+        {
+          rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+          amount: '0',
+        },
+        {
+          rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+          amount: '0',
         },
       ],
       totalAmount: '295',
@@ -22,15 +43,25 @@ const mockData = {
 
 describe('EpochTotalRewardsTable', () => {
   it('should render correctly', () => {
-    const { getByTestId } = render(<EpochTotalRewardsTable data={mockData} />);
+    const { getByTestId } = render(
+      <AppStateProvider>
+        <EpochTotalRewardsTable data={mockData} />
+      </AppStateProvider>
+    );
     expect(getByTestId('epoch-total-rewards-table')).toBeInTheDocument();
     expect(getByTestId('asset')).toBeInTheDocument();
-    expect(getByTestId('global')).toBeInTheDocument();
-    expect(getByTestId('infra')).toBeInTheDocument();
-    expect(getByTestId('taker')).toBeInTheDocument();
-    expect(getByTestId('maker')).toBeInTheDocument();
-    expect(getByTestId('liquidity')).toBeInTheDocument();
-    expect(getByTestId('market-maker')).toBeInTheDocument();
+    expect(getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD')).toBeInTheDocument();
+    expect(getByTestId('ACCOUNT_TYPE_FEES_INFRASTRUCTURE')).toBeInTheDocument();
+    expect(
+      getByTestId('ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES')
+    ).toBeInTheDocument();
+    expect(
+      getByTestId('ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES')
+    ).toBeInTheDocument();
+    expect(getByTestId('ACCOUNT_TYPE_FEES_LIQUIDITY')).toBeInTheDocument();
+    expect(
+      getByTestId('ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS')
+    ).toBeInTheDocument();
     expect(getByTestId('total')).toBeInTheDocument();
   });
 });
