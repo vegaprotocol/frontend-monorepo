@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { usePendingBalancesStore } from './use-pending-balances-manager';
 import type { Event } from 'ethers';
 
