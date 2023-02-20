@@ -8,9 +8,13 @@ import { DealTicket } from './deal-ticket';
 
 export interface DealTicketContainerProps {
   marketId: string;
+  onClickCollateral?: () => void;
 }
 
-export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
+export const DealTicketContainer = ({
+  marketId,
+  onClickCollateral,
+}: DealTicketContainerProps) => {
   const {
     data: market,
     error: marketError,
@@ -21,6 +25,7 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
     data: marketData,
     error: marketDataError,
     loading: marketDataLoading,
+    reload,
   } = useThrottledDataProvider(
     {
       dataProvider: marketDataProvider,
@@ -35,12 +40,14 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
       data={market && marketData}
       loading={marketLoading || marketDataLoading}
       error={marketError || marketDataError}
+      reload={reload}
     >
       {market && marketData ? (
         <DealTicket
           market={market}
           marketData={marketData}
           submit={(orderSubmission) => create({ orderSubmission })}
+          onClickCollateral={onClickCollateral || (() => null)}
         />
       ) : (
         <Splash>

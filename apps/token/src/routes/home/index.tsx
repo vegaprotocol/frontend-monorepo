@@ -8,7 +8,7 @@ import {
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { useRefreshValidators } from '../../hooks/use-refresh-validators';
+import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import Routes from '../routes';
 import {
@@ -94,7 +94,10 @@ const HomeNodes = ({
           <div key={index} className="col-span-3">
             <Link to={Routes.VALIDATORS}>
               <RoundedWrapper paddingBottom={true}>
-                <div className="flex flex-col items-center m-[-1rem] px-4 py-6 hover:bg-neutral-800">
+                <div
+                  data-testid="node-information"
+                  className="flex flex-col items-center m-[-1rem] px-4 py-6 hover:bg-neutral-800"
+                >
                   <span className="text-5xl">{length}</span>
                   <span className="text-sm uppercase text-neutral-400">
                     {title}
@@ -106,7 +109,7 @@ const HomeNodes = ({
         ))}
 
         {trimmedActiveNodes.map(({ id, avatarUrl, name }) => (
-          <div key={id} className="col-span-2">
+          <div key={id} data-testid="validators" className="col-span-2">
             <Link to={`${Routes.VALIDATORS}/${id}`}>
               <RoundedWrapper paddingBottom={true} border={false}>
                 <div className="flex items-center justify-center m-[-1rem] p-4 bg-neutral-900 hover:bg-neutral-800">
@@ -156,7 +159,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     refetch,
   } = useNodesQuery();
 
-  useRefreshValidators(validatorsData?.epoch.timestamps.expiry, refetch);
+  useRefreshAfterEpoch(validatorsData?.epoch.timestamps.expiry, refetch);
 
   const proposals = useMemo(
     () =>

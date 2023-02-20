@@ -9,6 +9,7 @@ export * from './get-nodes';
 export * from './grid';
 export * from './i18n';
 export * from './is-asset-erc20';
+export * from './is-valid-url';
 export * from './links';
 export * from './local-logger';
 export * from './market-expires';

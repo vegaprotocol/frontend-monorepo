@@ -38,7 +38,6 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     cy.navigate_to('proposals');
     cy.go_to_make_new_proposal('Freeform');
     cy.enter_unique_freeform_proposal_body('50', 'pub key proposal test');
-    cy.getByTestId('proposal-submit').should('be.visible').click();
     cy.getByTestId('dialog-content').within(() => {
       cy.get('h1').should('have.text', 'Transaction failed');
       cy.getByTestId('Error').should('have.text', expectedErrorTxt);

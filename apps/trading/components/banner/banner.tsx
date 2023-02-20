@@ -4,6 +4,7 @@ import {
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useGlobalStore } from '../../stores';
+import React from 'react';
 
 export const Banner = () => {
   const { update, shouldDisplayAnnouncementBanner } = useGlobalStore(
@@ -28,10 +29,8 @@ export const Banner = () => {
           <Icon name="cross" className="w-6 h-6" ariaLabel="dismiss" />
         </button>
         <div>
-          <span className="pr-4">The Mainnet sims are live!</span>
-          <ExternalLink href="https://fairground.wtf/">
-            Come help stress test the network
-          </ExternalLink>
+          <span className="pr-4">Mainnet sim 2 coming in March!</span>
+          <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
         </div>
       </div>
     </AnnouncementBanner>

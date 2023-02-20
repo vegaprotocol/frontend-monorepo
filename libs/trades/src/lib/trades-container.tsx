@@ -82,7 +82,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     []
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: tradesWithMarketProvider,
     update,
     insert,
@@ -107,7 +107,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={data} reload={reload}>
       <TradesTable
         ref={gridRef}
         rowModelType={data?.length ? 'infinite' : 'clientSide'}

@@ -116,7 +116,10 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!data?.market) {
             return null;
           }
-          return addDecimal(value, data.market.positionDecimalPlaces);
+          return addDecimalsFormatNumber(
+            value,
+            data.market.positionDecimalPlaces
+          );
         }}
       />
       <AgGridColumn

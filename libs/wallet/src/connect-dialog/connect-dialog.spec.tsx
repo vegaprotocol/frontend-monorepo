@@ -18,7 +18,7 @@ import {
   ViewConnector,
   WalletError,
 } from '../connectors';
-import { EnvironmentProvider } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument } from '@vegaprotocol/react-helpers';
 
@@ -29,6 +29,20 @@ const mockStoreObj: Partial<VegaWalletDialogStore> = {
   closeVegaWalletDialog: mockCloseVegaDialog,
   vegaWalletDialogOpen: true,
 };
+
+jest.mock('@vegaprotocol/environment');
+
+// @ts-ignore ignore mock implementation
+useEnvironment.mockImplementation(() => ({
+  VEGA_ENV: 'TESTNET',
+  VEGA_URL: 'https://vega-node.url',
+  VEGA_NETWORKS: JSON.stringify({}),
+  VEGA_WALLET_URL: mockVegaWalletUrl,
+  GIT_BRANCH: 'test',
+  GIT_COMMIT_HASH: 'abcdef',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  HOSTED_WALLET_URL: mockHostedWalletUrl,
+}));
 
 jest.mock('zustand', () => ({
   create: () => (storeGetter: (store: VegaWalletDialogStore) => unknown) =>
@@ -56,16 +70,6 @@ beforeEach(() => {
 
 const mockVegaWalletUrl = 'http://mock.wallet.com';
 const mockHostedWalletUrl = 'http://mock.hosted.com';
-const mockEnvironment = {
-  VEGA_ENV: 'TESTNET',
-  VEGA_URL: 'https://vega-node.url',
-  VEGA_NETWORKS: JSON.stringify({}),
-  VEGA_WALLET_URL: mockVegaWalletUrl,
-  GIT_BRANCH: 'test',
-  GIT_COMMIT_HASH: 'abcdef',
-  GIT_ORIGIN_URL: 'https://github.com/test/repo',
-  HOSTED_WALLET_URL: mockHostedWalletUrl,
-};
 
 const mockChainId = 'chain-id';
 
@@ -83,13 +87,11 @@ function generateJSX(props?: Partial<VegaConnectDialogProps>) {
     },
   };
   return (
-    <EnvironmentProvider definitions={mockEnvironment}>
-      <MockedProvider mocks={[chainIdMock]}>
-        <VegaWalletProvider>
-          <VegaConnectDialog {...defaultProps} {...props} />
-        </VegaWalletProvider>
-      </MockedProvider>
-    </EnvironmentProvider>
+    <MockedProvider mocks={[chainIdMock]}>
+      <VegaWalletProvider>
+        <VegaConnectDialog {...defaultProps} {...props} />
+      </VegaWalletProvider>
+    </MockedProvider>
   );
 }
 

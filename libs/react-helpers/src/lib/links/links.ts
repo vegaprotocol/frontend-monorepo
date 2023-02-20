@@ -8,6 +8,7 @@ export const createDocsLinks = (docsUrl: string) => ({
   AUCTION_TYPE_PRICE_MONITORING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring`,
   AUCTION_TYPE_CLOSING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-closing`,
   STAKING_GUIDE: `${docsUrl}/concepts/vega-chain/#staking-on-vega`,
+  REWARDS_GUIDE: `${docsUrl}/concepts/trading-on-vega/fees-rewards#trading-rewards`,
   VEGA_WALLET_CONCEPTS_URL: `${docsUrl}/concepts/vega-wallet`,
   PROPOSALS_GUIDE: `${docsUrl}/tutorials/proposals`,
   NODE_OPERATORS: `${docsUrl}/node-operators`,

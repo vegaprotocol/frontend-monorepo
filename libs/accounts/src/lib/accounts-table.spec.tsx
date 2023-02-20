@@ -72,52 +72,74 @@ describe('AccountsTable', () => {
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });
+    const rows = await screen.findAllByRole('row');
+    expect(rows.length).toBe(6);
   });
-});
 
-it('should get correct account data', () => {
-  const result = getAccountData([singleRow]);
-  const expected = [
-    {
-      asset: {
-        __typename: 'Asset',
-        decimals: 5,
-        id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-        symbol: 'tBTC',
-      },
-      available: '0',
-      balance: '0',
-      breakdown: [
-        {
-          __typename: 'AccountBalance',
-          asset: {
-            __typename: 'Asset',
+  it('should add first asset as pinned', async () => {
+    await act(async () => {
+      render(
+        <AccountTable
+          rowData={singleRowData}
+          onClickAsset={() => null}
+          isReadOnly={false}
+          pinnedAsset={{
             decimals: 5,
             id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
             symbol: 'tBTC',
-          },
-          available: '0',
-          balance: '125600000',
-          deposited: '125600000',
-          market: {
-            __typename: 'Market',
-            id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
-            tradableInstrument: {
-              __typename: 'TradableInstrument',
-              instrument: {
-                __typename: 'Instrument',
-                name: 'BTCUSD Monthly (30 Jun 2022)',
+            name: 'tBTC',
+          }}
+        />
+      );
+    });
+    const rows = await screen.findAllByRole('row');
+    expect(rows.length).toBe(9);
+  });
+
+  it('should get correct account data', () => {
+    const result = getAccountData([singleRow]);
+    const expected = [
+      {
+        asset: {
+          __typename: 'Asset',
+          decimals: 5,
+          id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+          symbol: 'tBTC',
+        },
+        available: '0',
+        balance: '0',
+        breakdown: [
+          {
+            __typename: 'AccountBalance',
+            asset: {
+              __typename: 'Asset',
+              decimals: 5,
+              id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+              symbol: 'tBTC',
+            },
+            available: '0',
+            balance: '125600000',
+            deposited: '125600000',
+            market: {
+              __typename: 'Market',
+              id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
+              tradableInstrument: {
+                __typename: 'TradableInstrument',
+                instrument: {
+                  __typename: 'Instrument',
+                  name: 'BTCUSD Monthly (30 Jun 2022)',
+                },
               },
             },
+            type: 'ACCOUNT_TYPE_MARGIN',
+            used: '125600000',
           },
-          type: 'ACCOUNT_TYPE_MARGIN',
-          used: '125600000',
-        },
-      ],
-      deposited: '125600000',
-      type: 'ACCOUNT_TYPE_GENERAL',
-      used: '125600000',
-    },
-  ];
-  expect(result).toEqual(expected);
+        ],
+        deposited: '125600000',
+        type: 'ACCOUNT_TYPE_GENERAL',
+        used: '125600000',
+      },
+    ];
+    expect(result).toEqual(expected);
+  });
 });

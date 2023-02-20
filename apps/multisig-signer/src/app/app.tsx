@@ -3,9 +3,9 @@ import classnames from 'classnames';
 import { useEffect, useMemo, useState } from 'react';
 import { BrowserTracing } from '@sentry/tracing';
 import {
-  EnvironmentProvider,
   NetworkLoader,
   useEnvironment,
+  useInitializeEnv,
 } from '@vegaprotocol/environment';
 import { AsyncRenderer, Button, Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
@@ -64,6 +64,7 @@ function App() {
       environment: VEGA_ENV,
     });
   }, [VEGA_ENV]);
+
   const Connectors = useMemo(() => {
     if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
@@ -107,12 +108,11 @@ const Wrapper = () => {
       },
     },
   };
+  useInitializeEnv();
   return (
-    <EnvironmentProvider>
-      <NetworkLoader cache={cache}>
-        <App />
-      </NetworkLoader>
-    </EnvironmentProvider>
+    <NetworkLoader cache={cache}>
+      <App />
+    </NetworkLoader>
   );
 };
 

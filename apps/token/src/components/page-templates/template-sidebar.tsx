@@ -21,10 +21,8 @@ export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
     <>
       <AnnouncementBanner>
         <div className="font-alpha calt uppercase text-center text-lg text-white">
-          <span className="pr-4">The Mainnet sims are live!</span>
-          <ExternalLink href="https://fairground.wtf/">
-            Come help stress test the network
-          </ExternalLink>
+          <span className="pr-4">Mainnet sim 2 coming in March!</span>
+          <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
         </div>
       </AnnouncementBanner>
       <Nav navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
@@ -32,7 +30,9 @@ export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
         <ViewingAsBanner pubKey={pubKey} disconnect={disconnect} />
       ) : null}
       <div className="w-full border-b border-neutral-700 lg:grid lg:grid-rows-[1fr] lg:grid-cols-[1fr_450px]">
-        <main className="col-start-1 p-4">{children}</main>
+        <main className="max-w-[100vw] col-start-1 p-4 overflow-auto">
+          {children}
+        </main>
         <aside className="col-start-2 row-start-1 row-span-2 hidden lg:block p-4 bg-banner bg-contain border-l border-neutral-700">
           {sidebar.map((Component, i) => (
             <section className="mb-4 last:mb-0" key={i}>

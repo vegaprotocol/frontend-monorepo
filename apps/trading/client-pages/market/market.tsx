@@ -96,10 +96,24 @@ export const MarketPage = () => {
 
   const tradeView = useMemo(() => {
     if (w > 960) {
-      return <TradeGrid market={data} onSelect={onSelect} />;
+      return (
+        <TradeGrid
+          market={data}
+          onSelect={onSelect}
+          pinnedAsset={
+            data?.tradableInstrument.instrument.product.settlementAsset
+          }
+        />
+      );
     }
-    return <TradePanels market={data} onSelect={onSelect} />;
-  }, [w, data, onSelect]);
+    return (
+      <TradePanels
+        market={data}
+        onSelect={onSelect}
+        onClickCollateral={() => navigate('/portfolio')}
+      />
+    );
+  }, [w, data, onSelect, navigate]);
   if (!data && marketId) {
     return (
       <Splash>

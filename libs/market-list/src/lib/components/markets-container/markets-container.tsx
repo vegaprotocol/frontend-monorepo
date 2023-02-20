@@ -10,7 +10,7 @@ interface MarketsContainerProps {
 }
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
-  const { data, error, loading } = useDataProvider({
+  const { data, error, loading, reload } = useDataProvider({
     dataProvider,
     skipUpdates: true,
   });
@@ -18,7 +18,8 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   return (
     <div className="h-full relative">
       <MarketListTable
-        rowData={data}
+        rowData={error ? [] : data}
+        noRowsOverlayComponent={() => null}
         onRowClicked={(rowEvent: RowClickedEvent) => {
           const { data, event } = rowEvent;
           // filters out clicks on the symbol column because it should display asset details
@@ -36,6 +37,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           error={error}
           data={data}
           noDataMessage={t('No markets')}
+          reload={reload}
         />
       </div>
     </div>

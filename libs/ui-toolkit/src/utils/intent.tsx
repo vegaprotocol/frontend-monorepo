@@ -23,7 +23,8 @@ export const getIntentBackground = (intent?: Intent) => {
     'bg-vega-pink dark:bg-vega-yellow': intent === Intent.Primary,
     'bg-danger': intent === Intent.Danger,
     'bg-warning': intent === Intent.Warning,
-    'bg-success': intent === Intent.Success,
+    // contrast issues with light mode
+    'bg-vega-green-550 dark:bg-vega-green': intent === Intent.Success,
   };
 };
 
