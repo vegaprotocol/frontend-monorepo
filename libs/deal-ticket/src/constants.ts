@@ -2,22 +2,25 @@ import { t } from '@vegaprotocol/react-helpers';
 
 export const EST_MARGIN_TOOLTIP_TEXT = (settlementAsset: string) =>
   t(
-    `A fraction of the notional position size, in the market's settlement asset ${settlementAsset}, to cover any potential losses that you may incur.
+    `A fraction of the notional position size, in the market's settlement asset %s, to cover any potential losses that you may incur.
 
-  For example, for a notional size of $500, if the margin requirement is 10%, then the estimated margin would be approximately $50.`
+  For example, for a notional size of $500, if the margin requirement is 10%, then the estimated margin would be approximately $50.`,
+    [settlementAsset]
   );
 export const CONTRACTS_MARGIN_TOOLTIP_TEXT = t(
   'The number of contracts determines how many units of the futures contract to buy or sell. For example, this is similar to buying one share of a listed company. The value of 1 contract is equivalent to the price of the contract. For example, if the current price is $50, then one contract is worth $50.'
 );
 export const EST_CLOSEOUT_TOOLTIP_TEXT = (quote: string) =>
   t(
-    `If the price drops below this number, measured in the market price quote unit ${quote}, you will be closed out, based on your current position and account balance.`
+    `If the price drops below this number, measured in the market price quote unit %s, you will be closed out, based on your current position and account balance.`,
+    [quote]
   );
 export const NOTIONAL_SIZE_TOOLTIP_TEXT = (settlementAsset: string) =>
   t(
-    `The notional size represents the position size in the settlement asset ${settlementAsset} of the futures contract. This is calculated by multiplying the number of contracts by the prices of the contract.
+    `The notional size represents the position size in the settlement asset %s of the futures contract. This is calculated by multiplying the number of contracts by the prices of the contract.
 
-  For example 10 contracts traded at a price of $50 has a notional size of $500.`
+  For example 10 contracts traded at a price of $50 has a notional size of $500.`,
+    [settlementAsset]
   );
 export const EST_FEES_TOOLTIP_TEXT = t(
   'When you execute a new buy or sell order, you must pay a small amount of commission to the network for doing so. This fee is used to provide income to the node operates of the network and market makers who make prices on the futures market you are trading.'
