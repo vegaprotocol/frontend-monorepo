@@ -29,6 +29,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(0, 'Mark Price', '0.05749');
     validateMarketDataRow(1, 'Best Bid Price', '6.81765 ');
     validateMarketDataRow(2, 'Best Offer Price', '6.81769 ');
+    validateMarketDataRow(3, 'Quote Unit', 'USD');
   });
 
   it('market volume displayed', () => {
