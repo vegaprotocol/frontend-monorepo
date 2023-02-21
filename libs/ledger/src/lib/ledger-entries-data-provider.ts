@@ -2,10 +2,8 @@ import type { Asset } from '@vegaprotocol/assets';
 import { assetsProvider } from '@vegaprotocol/assets';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import type { PageInfo } from '@vegaprotocol/react-helpers';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/react-helpers';
 import {
-  defaultAppend as append,
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
