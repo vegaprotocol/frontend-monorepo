@@ -202,6 +202,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
 
+  const liquidityPriceRange = formatNumberPercentage(
+    new BigNumber(market.lpPriceRange).times(100)
+  );
+
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -363,31 +367,40 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Liquidity price range'),
       content: (
-        <MarketInfoTable
-          data={{
-            liquidityPriceRange: formatNumberPercentage(
-              new BigNumber(market.lpPriceRange).times(100)
-            ),
-            LPVolumeMin:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .minus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-            LPVolumeMax:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .plus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-          }}
-        ></MarketInfoTable>
+        <>
+          <p className="text-xs mb-4">
+            {`For liquidity orders count towards a commitment they have to be
+            within either the liquidity or price monitoring bounds (whichever is
+            tighter).`}
+          </p>
+          <p className="text-xs mb-4">
+            {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
+            price.`}
+          </p>
+          <MarketInfoTable
+            data={{
+              liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+              lowestPrice:
+                market.data?.midPrice &&
+                `${addDecimalsFormatNumber(
+                  new BigNumber(1)
+                    .minus(market.lpPriceRange)
+                    .times(market.data.midPrice)
+                    .toString(),
+                  market.decimalPlaces
+                )} ${quoteUnit}`,
+              highestPrice:
+                market.data?.midPrice &&
+                `${addDecimalsFormatNumber(
+                  new BigNumber(1)
+                    .plus(market.lpPriceRange)
+                    .times(market.data.midPrice)
+                    .toString(),
+                  market.decimalPlaces
+                )} ${quoteUnit}`,
+            }}
+          ></MarketInfoTable>
+        </>
       ),
     },
     {

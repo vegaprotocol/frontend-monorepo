@@ -99,7 +99,4 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `The market's liquidity requirement which is derived from the maximum open interest observed over a rolling time window.`
   ),
   suppliedStake: t('The current amount of liquidity supplied for this market.'),
-  liquidityPriceRange: t(
-    `Percentage move up and down from the mid price, which specifies the range of price levels over which automated liquidity provision orders will be deployed.`
-  ),
 };
