@@ -27,12 +27,8 @@ fragment UpdateNetworkParameterProposal on Proposal {
 }
 
 subscription OnUpdateNetworkParameters {
-  busEvents(types: [Proposal], batchSize: 0) {
-    event {
-      ... on Proposal {
-        ...UpdateNetworkParameterProposal
-      }
-    }
+  proposals {
+    ...UpdateNetworkParameterProposal
   }
 }
 

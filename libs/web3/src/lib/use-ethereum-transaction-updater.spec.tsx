@@ -1,9 +1,8 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { useEthTransactionUpdater } from './use-ethereum-transaction-updater';
-import waitForNextTick from 'flush-promises';
 import {
   DepositBusEventDocument,
   VegaWalletContext,
@@ -77,9 +76,9 @@ const mockedDepositBusEvent: MockedResponse<DepositBusEventSubscription> = {
 describe('useEthTransactionUpdater', () => {
   it('updates deposit on DepositBusEvents', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
-    const { waitForNextUpdate } = render([mockedDepositBusEvent]);
-    waitForNextUpdate();
-    await waitForNextTick();
-    expect(updateDeposit).toHaveBeenCalledWith(depositBusEvent);
+    render([mockedDepositBusEvent]);
+    await waitFor(() => {
+      expect(updateDeposit).toHaveBeenCalledWith(depositBusEvent);
+    });
   });
 });
