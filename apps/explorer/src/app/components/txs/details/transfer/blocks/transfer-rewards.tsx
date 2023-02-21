@@ -3,9 +3,15 @@ import { AssetLink, MarketLink } from '../../../../links';
 import { headerClasses, wrapperClasses } from '../transfer-details';
 import type { components } from '../../../../../../types/explorer';
 import type { Recurring } from '../transfer-details';
+import { DispatchMetricLabels } from '@vegaprotocol/types';
 
 export type Metric = components['schemas']['vegaDispatchMetric'];
 export type Strategy = components['schemas']['vegaDispatchStrategy'];
+
+const metricLabels = {
+  DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',
+  ...DispatchMetricLabels,
+};
 
 interface TransferRewardsProps {
   recurring: Recurring;
@@ -58,14 +64,6 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
     </div>
   );
 }
-
-const metricLabels: Record<Metric, string> = {
-  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Liquidity Provision fees received',
-  DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
-  DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
-  DISPATCH_METRIC_MARKET_VALUE: 'Total market Value',
-  DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',
-};
 
 interface TransferRecurringStrategyProps {
   strategy: Strategy;
