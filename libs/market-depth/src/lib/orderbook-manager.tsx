@@ -180,21 +180,19 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       data={data}
       reload={reload}
     >
-      <React.StrictMode>
-        <Orderbook
-          {...orderbookData}
-          decimalPlaces={market?.decimalPlaces ?? 0}
-          positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
-          resolution={resolution}
-          onResolutionChange={(resolution: number) => setResolution(resolution)}
-          onClick={(price?: string | number) => {
-            if (price) {
-              const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-              updatePrice(marketId, priceValue);
-            }
-          }}
-        />
-      </React.StrictMode>
+      <Orderbook
+        {...orderbookData}
+        decimalPlaces={market?.decimalPlaces ?? 0}
+        positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
+        resolution={resolution}
+        onResolutionChange={(resolution: number) => setResolution(resolution)}
+        onClick={(price?: string | number) => {
+          if (price) {
+            const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
+            updatePrice(marketId, priceValue);
+          }
+        }}
+      />
     </AsyncRenderer>
   );
 };

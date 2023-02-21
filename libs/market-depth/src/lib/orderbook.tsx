@@ -579,8 +579,8 @@ export const Orderbook = ({
         <div
           className="relative text-right min-h-full overflow-hidden"
           style={{
-            paddingTop: `${paddingTop}px`,
-            paddingBottom: `${paddingBottom}px`,
+            paddingTop,
+            paddingBottom,
             background: tableBody ? gradientStyles : 'none',
           }}
           ref={gridElement}
