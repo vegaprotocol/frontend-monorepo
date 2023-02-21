@@ -34,7 +34,6 @@ import {
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
-import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
 import { PositionStatusMapping } from '@vegaprotocol/types';
 
 interface Props extends TypedDataAgGrid<Position> {
@@ -333,11 +332,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
-<<<<<<< HEAD
-          cellClass="text-right font-mono"
-=======
           cellClass="font-mono text-right"
->>>>>>> de212aa11 (feat: add two new columns for loss socialization and status)
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -362,11 +357,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="unrealisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
-<<<<<<< HEAD
-          cellClass="text-right font-mono"
-=======
           cellClass="font-mono text-right"
->>>>>>> de212aa11 (feat: add two new columns for loss socialization and status)
           filter="agNumberColumnFilter"
           valueGetter={({
             data,

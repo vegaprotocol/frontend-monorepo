@@ -450,7 +450,7 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
 export const PositionStatusMapping: {
   [T in PositionStatus]: string;
 } = {
-  POSITION_STATUS_CLOSED_OUT: 'Closed (distressed)',
-  POSITION_STATUS_ORDERS_CLOSED: 'Maintained (distressed)',
+  POSITION_STATUS_CLOSED_OUT: 'Closed by network',
+  POSITION_STATUS_ORDERS_CLOSED: 'Maintained by network',
   POSITION_STATUS_UNSPECIFIED: 'Normal',
 };
