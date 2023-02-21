@@ -48,7 +48,7 @@ export const DateRangeFilter = forwardRef(
             )
           : maxStartDate;
       return [minStartDate, maxStartDate, minEndDate, maxEndDate];
-    }, [props?.maxSubDays, props?.maxDaysRange, value.start, value.end]);
+    }, [props?.maxSubDays, props?.maxDaysRange, value.start]);
     // expose AG Grid Filter Lifecycle callbacks
     useImperativeHandle(ref, () => {
       return {
