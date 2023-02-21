@@ -16,7 +16,9 @@ export const tooltipMapping: Record<string, ReactNode> = {
   markPrice: t(
     'A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.'
   ),
-  quoteUnit: t(`The unit of the data fed from this market's oracle.`),
+  quoteUnit: t(
+    `The underlying that is being priced by the market, described by the market's oracle.`
+  ),
   openInterest: t(
     'The volume of all open positions in a given market (the sum of the size of all positions greater than 0).'
   ),

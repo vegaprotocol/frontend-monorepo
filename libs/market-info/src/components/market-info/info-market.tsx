@@ -147,7 +147,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           />
           <p className="text-xs">
             {t(
-              'The notional value of a position of size 1 is 1 settlement asset (%s) for every 1 quote unit (%s).',
+              'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
               [assetSymbol, quoteUnit]
             )}
           </p>
@@ -251,7 +251,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           />
           <p className="text-xs">
             {t(
-              'The notional value of a position of size 1 is 1 settlement asset (%s) for every 1 quote unit (%s).',
+              'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
               [assetSymbol, quoteUnit]
             )}
           </p>

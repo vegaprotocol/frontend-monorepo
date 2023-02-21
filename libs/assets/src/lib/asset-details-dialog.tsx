@@ -100,7 +100,7 @@ export const AssetDetailsDialog = ({
       {content}
       <p className="text-sm mb-4">
         {t(
-          'The notional value of a position of size 1 is 1 settlement asset (%s) for every 1 quote unit.',
+          'There is 1 unit of the settlement asset (%s) to every 1 quote unit.',
           [assetSymbol]
         )}
       </p>
