@@ -235,13 +235,20 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Settlement asset'),
       content: asset ? (
-        <AssetDetailsTable
-          asset={asset}
-          inline={true}
-          noBorder={true}
-          dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
-          ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
-        />
+        <>
+          <AssetDetailsTable
+            asset={asset}
+            inline={true}
+            noBorder={true}
+            dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
+            ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
+          />
+          <p className="text-xs">
+            {t(
+              `The notional value of a position of size 1 is 1 settlement asset (${assetSymbol}) for every 1 quote unit (${quoteUnit}).`
+            )}
+          </p>
+        </>
       ) : (
         <Splash>{t('No data')}</Splash>
       ),
