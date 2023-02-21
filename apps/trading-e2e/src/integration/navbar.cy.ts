@@ -1,6 +1,6 @@
 import { mockConnectWallet } from '@vegaprotocol/cypress';
 
-before(() => {
+beforeEach(() => {
   cy.mockTradingPage();
   cy.mockSubscription();
   cy.visit('/');
