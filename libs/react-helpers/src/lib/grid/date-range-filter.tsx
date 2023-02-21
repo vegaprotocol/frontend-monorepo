@@ -144,15 +144,21 @@ export const DateRangeFilter = forwardRef(
       const { value: dateValue, name } = event.target;
       const date = new Date(dateValue || defaultDates[name as 'start' | 'end']);
       const stringedDate = isValid(date) ? formatRFC3339(date) : undefined;
-      const update = { [name]: stringedDate };
+      let update = { [name]: stringedDate };
       if (name === 'start' && props.maxDaysRange) {
         const endDate = new Date(value.end || Date.now());
         if (Math.abs(differenceInDays(date, endDate)) > props.maxDaysRange) {
-          update.end = formatRFC3339(
-            min([new Date(), addDays(date, props.maxDaysRange)])
-          );
+          update = {
+            ...update,
+            end: formatRFC3339(
+              min([new Date(), addDays(date, props.maxDaysRange)])
+            ),
+          };
         } else if (isBefore(endDate, date)) {
-          update.end = formatRFC3339(min([new Date(), addDays(date, 1)]));
+          update = {
+            ...update,
+            end: formatRFC3339(min([new Date(), addDays(date, 1)])),
+          };
         }
       }
       if (validate(name, date, update)) {
