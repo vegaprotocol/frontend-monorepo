@@ -236,7 +236,7 @@ export const DateRangeFilter = forwardRef(
             className="ag-standard-button ag-filter-apply-panel-button"
             onClick={() => {
               setError('');
-              setValue(props.defaultRangeFilter || defaultFilterValue);
+              setValue(defaultDates);
             }}
           >
             {t('Reset')}
