@@ -18,7 +18,7 @@ export type UpdateNetworkParameterProposalFragment = { __typename?: 'Proposal', 
 export type OnUpdateNetworkParametersSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type OnUpdateNetworkParametersSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
+export type OnUpdateNetworkParametersSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } } };
 
 export type ProposalOfMarketQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -83,12 +83,8 @@ export type ProposalEventSubscriptionHookResult = ReturnType<typeof useProposalE
 export type ProposalEventSubscriptionResult = Apollo.SubscriptionResult<ProposalEventSubscription>;
 export const OnUpdateNetworkParametersDocument = gql`
     subscription OnUpdateNetworkParameters {
-  busEvents(types: [Proposal], batchSize: 0) {
-    event {
-      ... on Proposal {
-        ...UpdateNetworkParameterProposal
-      }
-    }
+  proposals {
+    ...UpdateNetworkParameterProposal
   }
 }
     ${UpdateNetworkParameterProposalFragmentDoc}`;
