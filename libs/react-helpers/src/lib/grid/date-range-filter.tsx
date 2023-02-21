@@ -16,7 +16,7 @@ import { t } from '../i18n';
 import { formatForInput } from '../format/date';
 
 const defaultFilterValue: Schema.DateRange = {};
-interface DateRangeFilterProps extends IFilterParams {
+export interface DateRangeFilterProps extends IFilterParams {
   defaultRangeFilter?: Schema.DateRange;
   maxSubDays?: number;
   maxDaysRange?: number;
@@ -213,7 +213,6 @@ export const DateRangeFilter = forwardRef(
                 onChange={onChange}
                 min={minStartDate}
                 max={maxStartDate}
-                placeholder="select date and time"
               />
             </label>
           </fieldset>
