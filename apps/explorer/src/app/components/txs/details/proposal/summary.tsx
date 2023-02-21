@@ -40,7 +40,6 @@ export const ProposalSummary = ({
 
   const openDialog = () => {
     if (!terms) return;
-
     setDialog({
       open: true,
       title: rationale?.title || t('Proposal details'),
