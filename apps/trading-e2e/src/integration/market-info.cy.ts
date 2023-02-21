@@ -169,9 +169,9 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('liquidity price range displayed', () => {
     cy.getByTestId(marketTitle).contains('Liquidity price range').click();
 
-    validateMarketDataRow(0, 'Liquidity Price Range', '2.00%');
-    validateMarketDataRow(1, 'LP Volume Min', '0.05634 tBTC');
-    validateMarketDataRow(2, 'LP Volume Max', '0.05864 tBTC');
+    validateMarketDataRow(0, 'Liquidity Price Range', '2.00% of mid price');
+    validateMarketDataRow(1, 'Lowest price', '0.05634 BTC');
+    validateMarketDataRow(2, 'Highest price', '0.05864 BTC');
   });
 
   it('oracle displayed', () => {

@@ -22,8 +22,6 @@ export const MarketDetails = ({
 }: {
   market: MarketInfoNoCandlesQuery['market'];
 }) => {
-  const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol;
   const quoteUnit = market?.tradableInstrument.instrument.product.quoteName;
   const assetId = useMemo(
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
