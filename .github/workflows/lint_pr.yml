@@ -16,7 +16,7 @@ jobs:
         id: Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.14.0
+          node-version: 16.15.1
       - name: Install root dependencies
         run: yarn install
       - name: Check PR title
