@@ -66,7 +66,7 @@ export function TransferParticipants({
 
         {/* This block of divs is used to render the inset arrow containing the transfer amount */}
         <div className="bg-vega-light-200 dark:vega-dark-200 flex items-center justify-center my-4 relative">
-          <div className="bg-vega-light-200 dark:vega-dark-200 border w-full pt-5 pb-3 px-3 border-vega-light-200 dark:border-vega-dark-150 relative">
+          <div className="bg-vega-light-200 dark:bg-vega-dark-200 border w-full pt-5 pb-3 px-3 border-vega-light-200 dark:border-vega-dark-150 relative">
             <div className="text-xs z-20 relative leading-none">
               {transfer.asset ? (
                 <SizeInAsset assetId={transfer.asset} size={transfer.amount} />
@@ -74,8 +74,28 @@ export function TransferParticipants({
             </div>
 
             {/* Empty divs for the top arrow and the bottom arrow of the transfer inset */}
+            <div className="z-10 absolute top-[-1px] left-1/2 w-4 h-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 9"
+                className="fill-vega-light-100 dark:fill-black"
+              >
+                <path d="M0,0L8,9l8,-9Z" />
+              </svg>
+            </div>
+            <div className="z-10 absolute bottom-[-16px] left-1/2 w-4 h-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 9"
+                className="fill-vega-light-100 dark:fill-vega-dark-200"
+              >
+                <path d="M0,0L8,9l8,-9Z" />
+              </svg>
+            </div>
+            {/*
             <div className="z-10 absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 dark:border-vega-dark-200 border-vega-light-200 bg-white dark:bg-black border-r border-b"></div>
             <div className="z-10 absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 border-vega-light-200 dark:border-vega-dark-200 bg-vega-light-200 dark:bg-vega-dark-200 border-r border-b"></div>
+              */}
           </div>
         </div>
 
