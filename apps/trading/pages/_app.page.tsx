@@ -21,7 +21,6 @@ import {
   useEnvironment,
   useInitializeEnv,
 } from '@vegaprotocol/environment';
-import 'react-datepicker/dist/react-datepicker.css';
 import './styles.css';
 import './gen-styles.scss';
 import { useGlobalStore, usePageTitleStore } from '../stores';

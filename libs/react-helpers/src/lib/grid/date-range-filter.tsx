@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react';
+import type { ChangeEvent } from 'react';
 import { useEffect, useMemo } from 'react';
-import DatePicker from 'react-datepicker';
 import type * as Schema from '@vegaprotocol/types';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
@@ -11,8 +10,10 @@ import {
   differenceInDays,
   formatRFC3339,
   min,
+  isValid,
 } from 'date-fns';
 import { t } from '../i18n';
+import { formatForInput } from '../format/date';
 
 const defaultFilterValue: Schema.DateRange = {};
 interface DateRangeFilterProps extends IFilterParams {
@@ -21,10 +22,6 @@ interface DateRangeFilterProps extends IFilterParams {
   maxDaysRange?: number;
 }
 
-const PickerContainer = ({ children }: { children: ReactNode }) => {
-  return <div className="flex relative">{children}</div>;
-};
-
 export const DateRangeFilter = forwardRef(
   (props: DateRangeFilterProps, ref) => {
     const defaultDates = props?.defaultRangeFilter || defaultFilterValue;
@@ -32,22 +29,26 @@ export const DateRangeFilter = forwardRef(
     const [error, setError] = useState<string>('');
     const [minStartDate, maxStartDate, minEndDate, maxEndDate] = useMemo(() => {
       const minStartDate = props?.maxSubDays
-        ? subDays(Date.now(), props.maxSubDays)
-        : null;
-      const maxStartDate = props?.maxSubDays ? new Date() : null;
+        ? formatForInput(subDays(Date.now(), props.maxSubDays))
+        : undefined;
+      const maxStartDate = props?.maxSubDays
+        ? formatForInput(new Date())
+        : undefined;
       const minEndDate =
         value.start && props?.maxDaysRange
-          ? new Date(value.start)
+          ? formatForInput(new Date(value.start))
           : minStartDate;
       const maxEndDate =
         value.start && props?.maxDaysRange
-          ? min([
-              new Date(),
-              addDays(new Date(value.start), props.maxDaysRange),
-            ])
+          ? formatForInput(
+              min([
+                new Date(),
+                addDays(new Date(value.start), props.maxDaysRange),
+              ])
+            )
           : maxStartDate;
       return [minStartDate, maxStartDate, minEndDate, maxEndDate];
-    }, [props?.maxSubDays, props?.maxDaysRange, value.start]);
+    }, [props?.maxSubDays, props?.maxDaysRange, value.start, value.end]);
     // expose AG Grid Filter Lifecycle callbacks
     useImperativeHandle(ref, () => {
       return {
@@ -103,7 +104,7 @@ export const DateRangeFilter = forwardRef(
     const validate = (
       name: string,
       timeValue: Date,
-      update: Schema.DateRange
+      update?: Schema.DateRange
     ) => {
       if (
         props?.maxSubDays &&
@@ -139,29 +140,28 @@ export const DateRangeFilter = forwardRef(
       setError('');
       return true;
     };
-    const onChange = (date: Date | null, name: string) => {
-      if (date) {
-        const stringedDate = date ? formatRFC3339(date) : '';
-        const update = { [name]: stringedDate };
-        if (name === 'start' && props.maxDaysRange) {
-          const endDate = new Date(value.end || new Date());
-          if (Math.abs(differenceInDays(date, endDate)) > props.maxDaysRange) {
-            update.end = formatRFC3339(
-              min([new Date(), addDays(date, props.maxDaysRange)])
-            ).replace('Z', '000000Z');
-          } else if (isBefore(endDate, date)) {
-            update.end = formatRFC3339(min([new Date(), addDays(date, 1)]));
-          }
-        }
-        if (validate(name, date, update)) {
-          setValue({
-            ...value,
-            ...update,
-          });
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+      const { value: dateValue, name } = event.target;
+      const date = new Date(dateValue || defaultDates[name as 'start' | 'end']);
+      const stringedDate = isValid(date) ? formatRFC3339(date) : undefined;
+      const update = { [name]: stringedDate };
+      if (name === 'start' && props.maxDaysRange) {
+        const endDate = new Date(value.end || Date.now());
+        if (Math.abs(differenceInDays(date, endDate)) > props.maxDaysRange) {
+          update.end = formatRFC3339(
+            min([new Date(), addDays(date, props.maxDaysRange)])
+          );
+        } else if (isBefore(endDate, date)) {
+          update.end = formatRFC3339(min([new Date(), addDays(date, 1)]));
         }
       }
+      if (validate(name, date, update)) {
+        setValue({
+          ...value,
+          ...update,
+        });
+      }
     };
-
     useEffect(() => {
       props?.filterChangedCallback();
     }, [value, props]);
@@ -186,12 +186,13 @@ export const DateRangeFilter = forwardRef(
         </div>
       ) : null;
       return (
-        <div className="ag-filter-apply-panel flex min-h-[1rem]">{not}</div>
+        <div className="ag-filter-apply-panel flex min-h-[2rem]">{not}</div>
       );
     };
 
-    const start = (value.start && new Date(value.start)) || null;
-    const end = (value.end && new Date(value.end)) || null;
+    const start =
+      (value.start && formatForInput(new Date(value.start))) || undefined;
+    const end = (value.end && formatForInput(new Date(value.end))) || '';
     return (
       <div className="ag-filter-body-wrapper inline-block min-w-fit">
         <Notification />
@@ -199,34 +200,29 @@ export const DateRangeFilter = forwardRef(
           <fieldset className="ag-simple-filter-body-wrapper">
             <label className="block" key="start">
               <span className="block mb-1">{t('Start')}</span>
+              <input
+                type="datetime-local"
+                name="start"
+                value={start}
+                onChange={onChange}
+                min={minStartDate}
+                max={maxStartDate}
+                placeholder="select date and time"
+              />
             </label>
-            <DatePicker
-              name="start"
-              showTimeSelect
-              selectsStart
-              selected={start}
-              onChange={(date) => onChange(date, 'start')}
-              minDate={minStartDate}
-              maxDate={maxStartDate}
-              calendarContainer={PickerContainer}
-              inline
-            />
           </fieldset>
           <fieldset className="ag-simple-filter-body-wrapper">
             <label className="block" key="end">
               <span className="block mb-1">{t('End')}</span>
+              <input
+                type="datetime-local"
+                name="end"
+                value={end}
+                onChange={onChange}
+                min={minEndDate}
+                max={maxEndDate}
+              />
             </label>
-            <DatePicker
-              name="end"
-              showTimeSelect
-              selectsEnd
-              selected={end}
-              onChange={(date) => onChange(date, 'end')}
-              minDate={minEndDate}
-              maxDate={maxEndDate}
-              calendarContainer={PickerContainer}
-              inline
-            />
           </fieldset>
         </div>
         <div className="ag-filter-apply-panel">
