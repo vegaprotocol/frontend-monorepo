@@ -48,7 +48,7 @@ export const DealTicketEstimates = ({
         <DataTitle quoteName={quoteName}>{t('Est. Position Size')}</DataTitle>
         <ValueTooltipRow
           value={notionalSize}
-          description={constants.NOTIONAL_SIZE_TOOLTIP_TEXT}
+          description={constants.NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName || '')}
         />
       </div>
     )}
@@ -66,7 +66,7 @@ export const DealTicketEstimates = ({
         <DataTitle quoteName={quoteName}>{t('Est. Margin')}</DataTitle>
         <ValueTooltipRow
           value={estMargin}
-          description={constants.EST_MARGIN_TOOLTIP_TEXT}
+          description={constants.EST_MARGIN_TOOLTIP_TEXT(quoteName || '')}
         />
       </div>
     )}
@@ -75,7 +75,7 @@ export const DealTicketEstimates = ({
         <DataTitle quoteName={quoteName}>{t('Est. Close out')}</DataTitle>
         <ValueTooltipRow
           value={estCloseOut}
-          description={constants.EST_CLOSEOUT_TOOLTIP_TEXT}
+          description={constants.EST_CLOSEOUT_TOOLTIP_TEXT(quoteName || '')}
         />
       </div>
     )}
