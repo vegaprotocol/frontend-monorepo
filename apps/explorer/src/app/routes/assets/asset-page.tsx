@@ -8,6 +8,7 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useParams } from 'react-router-dom';
 import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { useState } from 'react';
+import { PageActions } from '../../components/page-helpers';
 
 export const AssetPage = () => {
   useDocumentTitle(['Assets']);
@@ -29,11 +30,11 @@ export const AssetPage = () => {
           loading={loading}
           error={error}
         >
-          <div className="absolute top-0 right-0">
+          <PageActions>
             <Button size="xs" onClick={() => setDialogOpen(true)}>
               {t('View JSON')}
             </Button>
-          </div>
+          </PageActions>
           <div className="h-full relative">
             <AssetDetailsTable asset={data as AssetFieldsFragment} />
           </div>

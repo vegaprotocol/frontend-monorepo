@@ -9,6 +9,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import compact from 'lodash/compact';
 import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { marketInfoNoCandlesDataProvider } from '@vegaprotocol/market-info';
+import { PageActions } from '../../components/page-helpers';
 
 export const MarketPage = () => {
   useScrollToLocation();
@@ -49,11 +50,11 @@ export const MarketPage = () => {
           loading={loading}
           error={error}
         >
-          <div className="absolute top-0 right-0">
+          <PageActions>
             <Button size="xs" onClick={() => setDialogOpen(true)}>
               {t('View JSON')}
             </Button>
-          </div>
+          </PageActions>
           <MarketDetails market={data?.market} />
         </AsyncRenderer>
       </section>

@@ -9,7 +9,7 @@ import Party from './parties';
 import { Parties } from './parties/home';
 import { Party as PartySingle } from './parties/id';
 import Txs from './txs';
-import Validators from './validators';
+import { ValidatorsPage } from './validators';
 import Genesis from './genesis';
 import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
@@ -125,7 +125,7 @@ const validators: Route[] = flags.validators
         path: Routes.VALIDATORS,
         name: 'Validators',
         text: t('Validators'),
-        element: <Validators />,
+        element: <ValidatorsPage />,
       },
     ]
   : [];
