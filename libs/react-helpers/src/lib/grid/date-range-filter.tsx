@@ -112,7 +112,7 @@ export const DateRangeFilter = forwardRef(
       ) {
         setError(
           t(
-            'The oldest date possible to query is %s days',
+            'The earliest data that can be queried is %s days ago.',
             String(props.maxSubDays)
           )
         );
@@ -130,7 +130,7 @@ export const DateRangeFilter = forwardRef(
         ) {
           setError(
             t(
-              'Max possible days range to query is %s days',
+              'The maximum time range that can be queried is %s days.',
               String(props.maxDaysRange)
             )
           );

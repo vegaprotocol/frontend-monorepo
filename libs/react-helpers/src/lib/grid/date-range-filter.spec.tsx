@@ -12,8 +12,8 @@ describe('DateRangeFilter', () => {
       start: '2023-02-14T13:53:01+01:00',
       end: '2023-02-21T13:53:01+01:00',
     };
-    const displayStartValue = '2023-02-14T13:53:01.000';
-    const displayEndValue = '2023-02-21T13:53:01.000';
+    const displayStartValue = '2023-02-14T12:53:01.000';
+    const displayEndValue = '2023-02-21T12:53:01.000';
     let queryContainer: HTMLElement;
     await act(() => {
       const { container } = render(
