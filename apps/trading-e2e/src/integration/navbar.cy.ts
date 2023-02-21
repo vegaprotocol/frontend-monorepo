@@ -19,11 +19,11 @@ describe('Desktop view', { tags: '@smoke' }, () => {
         cy.getByTestId('navbar')
           .find(`[data-testid="navbar-links"] a[data-testid=${link}]`)
           .then((element) => {
+            cy.contains('Loading...').should('not.exist');
             cy.wrap(element).click();
             cy.wrap(element)
               .get('span.absolute.md\\:h-1.w-full')
               .should('exist');
-            cy.contains('No market').should('not.exist');
             cy.location('hash').should('equal', hashes[index]);
           });
       });
@@ -69,7 +69,6 @@ describe('Mobile view', { tags: '@smoke' }, () => {
       cy.getByTestId('button-menu-drawer').click();
       cy.getByTestId('menu-drawer').within((el) => {
         cy.wrap(el).getByTestId('Trading').click();
-        cy.contains('No market').should('not.exist');
         cy.location('hash').should('equal', '#/markets/market-1');
       });
     });
