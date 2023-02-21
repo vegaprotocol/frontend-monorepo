@@ -1,4 +1,5 @@
 import { truncateByChars } from '@vegaprotocol/react-helpers';
+import { waitForSpinner } from '../../support/common.functions';
 
 const walletContainer = '[data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
@@ -322,7 +323,7 @@ context(
             vegaWalletPublicKey
           );
           cy.reload();
-          cy.wait_for_spinner();
+          waitForSpinner();
           cy.connectVegaWallet();
           cy.ethereum_wallet_connect();
         });

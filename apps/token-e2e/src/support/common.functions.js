@@ -48,10 +48,10 @@ Cypress.Commands.add('verify_page_header', (text) => {
   return cy.get('header h1').should('be.visible').and('have.text', text);
 });
 
-Cypress.Commands.add('wait_for_spinner', () => {
+export function waitForSpinner() {
   cy.get(navigation.pageSpinner, Cypress.env('epochTimeout')).should('exist');
   cy.get(navigation.pageSpinner, { timeout: 20000 }).should('not.exist');
-});
+}
 
 // This is a workaround function to begin tests with associating tokens without failing
 // Should be removed when eth transaction bug is fixed
@@ -77,4 +77,31 @@ export function associateTokenStartOfTests() {
   cy.wait(10000);
   cy.vega_wallet_teardown();
   cy.clearLocalStorage();
+}
+
+export function verifyUnstakedBalance(amount) {
+  cy.getByTestId('vega-wallet-balance-unstaked', txTimeout).should(
+    'contain',
+    amount,
+    txTimeout
+  );
+}
+
+export function verifyStakedBalance(amount) {
+  cy.getByTestId('vega-wallet-balance-staked-validators', txTimeout)
+    .should('contain', amount, txTimeout)
+    .and('contain', '…');
+}
+
+export function verifyEthWalletTotalAssociatedBalance(amount) {
+  cy.getByTestId('currency-locked', txTimeout)
+    .contains(amount, txTimeout)
+    .should('be.visible');
+}
+
+export function verifyEthWalletAssociatedBalance(amount) {
+  cy.getByTestId('eth-wallet-associated-balances', txTimeout)
+    .contains(Cypress.env('vegaWalletPublicKeyShort'), txTimeout)
+    .parent(txTimeout)
+    .should('contain', amount, txTimeout);
 }

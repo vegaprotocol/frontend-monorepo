@@ -1,7 +1,10 @@
+import {
+  verifyEthWalletTotalAssociatedBalance,
+  verifyEthWalletAssociatedBalance,
+  waitForSpinner,
+} from '../../support/common.functions';
+
 const ethWalletContainer = '[data-testid="ethereum-wallet"]';
-const ethWalletAssociatedBalances =
-  '[data-testid="eth-wallet-associated-balances"]';
-const ethWalletTotalAssociatedBalance = '[data-testid="currency-locked"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
@@ -36,7 +39,7 @@ context(
         'teardown wallet & drill into a specific validator',
         function () {
           cy.reload();
-          cy.wait_for_spinner();
+          waitForSpinner();
           cy.ethereum_wallet_connect();
           cy.connectVegaWallet();
           cy.vega_wallet_teardown();
@@ -69,14 +72,9 @@ context(
         cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
 
         // 0005-ETXN-002
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 2.0);
+        verifyEthWalletAssociatedBalance(2.0);
 
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('2.0', txTimeout)
-          .should('be.visible');
+        verifyEthWalletTotalAssociatedBalance('2.0');
 
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
@@ -93,20 +91,10 @@ context(
         // 1004-ASSO-031
 
         cy.staking_page_associate_tokens('2');
-
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 2.0);
-
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('2.0', txTimeout)
-          .should('be.visible');
-
+        verifyEthWalletAssociatedBalance(2.0);
+        verifyEthWalletTotalAssociatedBalance('2.0');
         cy.get('button').contains('Select a validator to nominate').click();
-
         cy.staking_page_disassociate_tokens('2');
-
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
           3
@@ -115,27 +103,17 @@ context(
         cy.validate_wallet_currency('Pending association', '2.00');
         cy.validate_wallet_currency('Total associated after pending', '0.00');
         cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
-
-        cy.get(ethWalletAssociatedBalances, txTimeout).should('not.exist');
-
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('0.00', txTimeout)
-          .should('be.visible');
+        cy.getByTestId('eth-wallet-associated-balances', txTimeout).should(
+          'not.exist'
+        );
+        verifyEthWalletTotalAssociatedBalance('0.00');
       });
 
       it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
         //1004-ASSO-011
         cy.staking_page_associate_tokens('1001', { approve: true });
-
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent()
-          .should('contain', '1,001.00', txTimeout);
-
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('1,001.00', txTimeout)
-          .should('be.visible');
-
+        verifyEthWalletAssociatedBalance('1,001.00');
+        verifyEthWalletTotalAssociatedBalance('1,001.00');
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
@@ -146,25 +124,13 @@ context(
 
       it('Able to disassociate a partial amount of tokens currently associated', function () {
         cy.staking_page_associate_tokens('2');
-
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
         });
 
         cy.get('button').contains('Select a validator to nominate').click();
-
         cy.staking_page_disassociate_tokens('1');
-
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 1.0);
-
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 1.0);
-
+        verifyEthWalletAssociatedBalance(1.0);
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 1.0);
         });
@@ -174,32 +140,24 @@ context(
         // 1004-ASSO-026
         const warningText =
           'Warning: Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.';
-
         cy.staking_page_associate_tokens('2');
-
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
         });
-
         cy.get('button').contains('Select a validator to nominate').click();
-
         cy.get(ethWalletDissociateButton).click();
         cy.get(disassociationWarning).should('contain', warningText);
-
         cy.staking_page_disassociate_all_tokens();
-
         cy.get(ethWalletContainer).within(() => {
           cy.contains(vegaWalletPublicKeyShort, { timeout: 20000 }).should(
             'not.exist'
           );
         });
-
         cy.get(ethWalletContainer).within(() => {
           cy.contains(vegaWalletPublicKeyShort, { timeout: 20000 }).should(
             'not.exist'
           );
         });
-
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 0.0);
         });
@@ -225,26 +183,16 @@ context(
         cy.validate_wallet_currency('Pending association', '2.00');
         cy.validate_wallet_currency('Total associated after pending', '2.00');
         cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
-
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 2.0);
-
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('2.0', txTimeout)
-          .should('be.visible');
-
+        verifyEthWalletAssociatedBalance(2.0);
+        verifyEthWalletTotalAssociatedBalance('2.0');
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
         });
-
         cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
         cy.staking_page_disassociate_tokens('1', {
           type: 'contract',
           skipConfirmation: true,
         });
-
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
           3
@@ -253,15 +201,8 @@ context(
         cy.validate_wallet_currency('Pending association', '1.00');
         cy.validate_wallet_currency('Total associated after pending', '1.00');
         cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
-
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 1.0);
-
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('1.0', txTimeout)
-          .should('be.visible');
+        verifyEthWalletAssociatedBalance(1.0);
+        verifyEthWalletTotalAssociatedBalance('1.0');
       });
 
       it('Able to associate & disassociate both wallet and vesting contract tokens', function () {
@@ -269,11 +210,9 @@ context(
         // 1004-ASSO-020
         // 1004-ASSO-021
         // 1004-ASSO-022
-
         cy.staking_page_associate_tokens('21', { type: 'wallet' });
         cy.get('button').contains('Select a validator to nominate').click();
         cy.staking_page_associate_tokens('37', { type: 'contract' });
-
         cy.get(vestingContractSection).within(() => {
           cy.get(associatedKey).should(
             'contain',
@@ -281,7 +220,6 @@ context(
           );
           cy.get(associatedAmount, txTimeout).should('contain', 37);
         });
-
         cy.get(vegaInWalletSection).within(() => {
           cy.get(associatedKey).should(
             'contain',
@@ -289,27 +227,21 @@ context(
           );
           cy.get(associatedAmount, txTimeout).should('contain', 21);
         });
-
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 58);
         });
-
         cy.staking_page_disassociate_tokens('6', { type: 'contract' });
         cy.get(vestingContractSection).within(() => {
           cy.get(associatedAmount, txTimeout).should('contain', 31);
         });
-
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 52);
         });
-
         cy.navigate_to('validators');
-
         cy.staking_page_disassociate_tokens('9', { type: 'wallet' });
         cy.get(vegaInWalletSection).within(() => {
           cy.get(associatedAmount, txTimeout).should('contain', 12);
         });
-
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 43);
         });
@@ -319,7 +251,6 @@ context(
         // 1004-ASSO-008
         // 1004-ASSO-010
         // No warning visible as described in AC, but the button is disabled
-
         cy.get(ethWalletAssociateButton).first().click();
         cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
         cy.get(tokenSubmitButton, txTimeout).should('be.disabled'); // button disabled with no input

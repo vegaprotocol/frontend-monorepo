@@ -1,3 +1,5 @@
+import { waitForSpinner } from '../../support/common.functions';
+
 const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalLink = '[data-testid="new-proposal-link"]';
@@ -61,7 +63,7 @@ context(
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet');
         cy.navigate_to('proposals');
-        cy.wait_for_spinner();
+        waitForSpinner();
       });
     });
   }

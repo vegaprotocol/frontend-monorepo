@@ -1,3 +1,4 @@
+import { waitForSpinner } from '../../support/common.functions';
 import {
   createFreeformProposal,
   createRawProposal,
@@ -18,7 +19,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
 
   beforeEach('visit proposals tab', function () {
     cy.reload();
-    cy.wait_for_spinner();
+    waitForSpinner();
     cy.connectVegaWallet();
     cy.ethereum_wallet_connect();
     cy.ensure_specified_unstaked_tokens_are_associated(1);

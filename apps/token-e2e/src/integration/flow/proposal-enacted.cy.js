@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+import { waitForSpinner } from '../../support/common.functions';
 import { associateTokenStartOfTests } from '../../support/governance.functions';
 
 import {
@@ -31,7 +32,7 @@ context(
 
     beforeEach('visit proposals', function () {
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.navigate_to('proposals');
@@ -43,7 +44,7 @@ context(
 
       cy.createMarket();
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.get(closedProposals).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil('[data-testid="proposals-list-item"]')
@@ -70,7 +71,7 @@ context(
       cy.VegaWalletSubmitProposal(proposalTx);
       cy.navigate_to('proposals');
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.get(openProposals).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil('[data-testid="proposals-list-item"]')
@@ -103,7 +104,7 @@ context(
       cy.VegaWalletSubmitProposal(proposalTx);
       cy.navigate_to('proposals');
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.get(openProposals).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil('[data-testid="proposals-list-item"]')
@@ -125,7 +126,7 @@ context(
       cy.VegaWalletSubmitProposal(proposalTx);
       cy.navigate_to('proposals');
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.get(openProposals).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil('[data-testid="proposals-list-item"]')

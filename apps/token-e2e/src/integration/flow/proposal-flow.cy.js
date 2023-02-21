@@ -5,10 +5,12 @@ import {
   governanceProposalType,
 } from '../../support/governance.functions';
 
-import { associateTokenStartOfTests } from '../../support/common.functions';
+import {
+  associateTokenStartOfTests,
+  verifyUnstakedBalance,
+  waitForSpinner,
+} from '../../support/common.functions';
 
-const vegaWalletUnstakedBalance =
-  '[data-testid="vega-wallet-balance-unstaked"]';
 const vegaWalletStakedBalances =
   '[data-testid="vega-wallet-balance-staked-validators"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
@@ -59,7 +61,7 @@ context(
 
     beforeEach('visit governance tab', function () {
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.ensure_specified_unstaked_tokens_are_associated(1);
@@ -107,7 +109,7 @@ context(
 
     it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
       cy.ensure_specified_unstaked_tokens_are_associated('2');
-      cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', '2');
+      verifyUnstakedBalance('2');
       cy.navigate_to('validators');
       cy.click_on_validator_from_list(0);
       cy.staking_validator_page_add_stake('2');

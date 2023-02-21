@@ -1,4 +1,7 @@
 /// <reference types="cypress" />
+
+import { waitForSpinner } from '../../support/common.functions';
+
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey2');
 const vegaPubkeyTruncated = Cypress.env('vegaWalletPublicKey2Short');
 const banner = 'view-banner';
@@ -14,7 +17,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
 
   beforeEach('visit home page', function () {
     cy.visit('/');
-    cy.wait_for_spinner();
+    waitForSpinner();
     cy.connectPublicKey(vegaWalletPubKey);
   });
 

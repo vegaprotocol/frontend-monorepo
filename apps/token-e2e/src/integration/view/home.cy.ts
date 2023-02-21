@@ -1,3 +1,5 @@
+import { waitForSpinner } from '../../support/common.functions';
+
 const navSection = 'nav';
 const navSupply = '[href="/token/tranches"]';
 const navToken = '[href="/token"]';
@@ -68,7 +70,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           if (!$body.find('[data-testid="proposals-list-item"]').length) {
             cy.createMarket();
             cy.reload();
-            cy.wait_for_spinner();
+            waitForSpinner();
           }
         });
         cy.getByTestId('proposals-list-item')

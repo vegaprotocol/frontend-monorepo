@@ -1,3 +1,5 @@
+import { waitForSpinner } from '../../support/common.functions';
+
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const openProposals = '[data-testid="open-proposals"]';
 const proposalType = '[data-testid="proposal-type"]';
@@ -51,7 +53,7 @@ context(
 
     beforeEach('visit governance tab', function () {
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.ensure_specified_unstaked_tokens_are_associated('1');

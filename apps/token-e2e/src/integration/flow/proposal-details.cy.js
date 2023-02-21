@@ -1,4 +1,7 @@
-import { associateTokenStartOfTests } from '../../support/common.functions';
+import {
+  associateTokenStartOfTests,
+  waitForSpinner,
+} from '../../support/common.functions';
 import {
   createRawProposal,
   generateFreeFormProposalTitle,
@@ -31,7 +34,7 @@ describe(
 
     beforeEach('visit proposals tab', function () {
       cy.reload();
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.ensure_specified_unstaked_tokens_are_associated(1);

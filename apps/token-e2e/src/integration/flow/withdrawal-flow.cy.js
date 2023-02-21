@@ -1,3 +1,5 @@
+import { waitForSpinner } from '../../support/common.functions';
+
 const withdraw = 'withdraw';
 const selectAsset = 'select-asset';
 const ethAddressInput = 'eth-address-input';
@@ -33,7 +35,7 @@ context(
     beforeEach('Navigate to withdrawal page', function () {
       cy.reload();
       cy.visit('/');
-      cy.wait_for_spinner();
+      waitForSpinner();
       cy.navigate_to('withdraw');
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
