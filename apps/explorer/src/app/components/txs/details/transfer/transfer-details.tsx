@@ -7,9 +7,9 @@ export type Recurring = components['schemas']['v1RecurringTransfer'];
 export type Metric = components['schemas']['vegaDispatchMetric'];
 
 export const wrapperClasses =
-  'border border-zinc-200 dark:border-zinc-800 rounded-md pv-2 mb-5 w-full sm:w-1/4 min-w-[200px] ';
+  'border border-vega-light-150 dark:border-vega-dark-200 rounded-md pv-2 mb-5 w-full sm:w-1/4 min-w-[200px] ';
 export const headerClasses =
-  'bg-solid bg-zinc-200 dark:bg-zinc-800 border-zinc-200 text-center text-xl py-2 font-alpha';
+  'bg-solid bg-vega-light-150 dark:bg-vega-dark-150 border-vega-light-150 text-center text-xl py-2 font-alpha';
 
 export type Transfer = components['schemas']['commandsv1Transfer'];
 

@@ -136,7 +136,8 @@ export function getLabelForChainEvent(
 export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   let type = displayString[orderType] || orderType;
 
-  let colours = 'text-white dark:text-white bg-zinc-800 dark:bg-zinc-800';
+  let colours =
+    'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-150';
 
   // This will get unwieldy and should probably produce a different colour of tag
   if (type === 'Chain Event' && !!command?.chainEvent) {

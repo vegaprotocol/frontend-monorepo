@@ -65,8 +65,8 @@ export function TransferParticipants({
         <br />
 
         {/* This block of divs is used to render the inset arrow containing the transfer amount */}
-        <div className="bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center my-4 relative">
-          <div className="bg-zinc-200 dark:bg-zinc-800 border w-full pt-5 pb-3 px-3 boder-zinc-200 dark:border-zinc-800 relative">
+        <div className="bg-vega-light-200 dark:vega-dark-200 flex items-center justify-center my-4 relative">
+          <div className="bg-vega-light-200 dark:vega-dark-200 border w-full pt-5 pb-3 px-3 border-vega-light-200 dark:border-vega-dark-150 relative">
             <div className="text-xs z-20 relative leading-none">
               {transfer.asset ? (
                 <SizeInAsset assetId={transfer.asset} size={transfer.amount} />
@@ -74,8 +74,8 @@ export function TransferParticipants({
             </div>
 
             {/* Empty divs for the top arrow and the bottom arrow of the transfer inset */}
-            <div className="z-10 absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 dark:border-zinc-800 border-zinc-200 bg-white dark:bg-black border-r border-b"></div>
-            <div className="z-10 absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 border-zing-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-800 border-r border-b"></div>
+            <div className="z-10 absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 dark:border-vega-dark-200 border-vega-light-200 bg-white dark:bg-black border-r border-b"></div>
+            <div className="z-10 absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 border-vega-light-200 dark:border-vega-dark-200 bg-vega-light-200 dark:bg-vega-dark-200 border-r border-b"></div>
           </div>
         </div>
 
