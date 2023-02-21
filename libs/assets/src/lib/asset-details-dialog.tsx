@@ -46,7 +46,6 @@ export interface AssetDetailsDialogProps {
   open: boolean;
   onChange: (open: boolean) => void;
   asJson?: boolean;
-  quoteUnit?: string;
 }
 
 export const AssetDetailsDialog = ({
@@ -55,12 +54,11 @@ export const AssetDetailsDialog = ({
   open,
   onChange,
   asJson = false,
-  quoteUnit,
 }: AssetDetailsDialogProps) => {
   const { data } = useAssetsDataProvider();
 
   const asset = data?.find((a) => a.id === assetId);
-  const assetSymbol = asset?.symbol;
+  const assetSymbol = asset?.symbol || '';
 
   const content = asset ? (
     <div className="my-2">
@@ -102,9 +100,8 @@ export const AssetDetailsDialog = ({
       {content}
       <p className="text-sm mb-4">
         {t(
-          `The notional value of a position of size 1 is 1 settlement asset (${assetSymbol}) for every 1 quote unit ${
-            quoteUnit ? `(${quoteUnit})` : ''
-          }.`
+          'The notional value of a position of size 1 is 1 settlement asset (%s) for every 1 quote unit.',
+          [assetSymbol]
         )}
       </p>
       <div className="w-1/4">

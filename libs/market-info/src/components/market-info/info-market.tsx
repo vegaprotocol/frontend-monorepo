@@ -93,8 +93,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const headerClassName = 'uppercase text-lg';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol;
-  const quoteUnit = market?.tradableInstrument.instrument.product?.quoteName;
+    market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
+  const quoteUnit =
+    market?.tradableInstrument.instrument.product?.quoteName || '';
   const assetId = useMemo(
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
     [market]
@@ -146,7 +147,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           />
           <p className="text-xs">
             {t(
-              `The notional value of a position of size 1 is 1 settlement asset (${assetSymbol}) for every 1 quote unit (${quoteUnit}).`
+              'The notional value of a position of size 1 is 1 settlement asset (%s) for every 1 quote unit (%s).',
+              [assetSymbol, quoteUnit]
             )}
           </p>
         </>
@@ -245,7 +247,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           />
           <p className="text-xs">
             {t(
-              `The notional value of a position of size 1 is 1 settlement asset (${assetSymbol}) for every 1 quote unit (${quoteUnit}).`
+              'The notional value of a position of size 1 is 1 settlement asset (%s) for every 1 quote unit (%s).',
+              [assetSymbol, quoteUnit]
             )}
           </p>
         </>
