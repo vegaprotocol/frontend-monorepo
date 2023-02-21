@@ -34,6 +34,8 @@ import {
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
+import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
+import { PositionStatusMapping } from '@vegaprotocol/types';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -75,6 +77,8 @@ AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
   ({ onClose, onMarketClick, ...props }, ref) => {
+    console.log(props);
+
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -329,7 +333,11 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
+<<<<<<< HEAD
           cellClass="text-right font-mono"
+=======
+          cellClass="font-mono text-right"
+>>>>>>> de212aa11 (feat: add two new columns for loss socialization and status)
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -354,7 +362,11 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="unrealisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
+<<<<<<< HEAD
           cellClass="text-right font-mono"
+=======
+          cellClass="font-mono text-right"
+>>>>>>> de212aa11 (feat: add two new columns for loss socialization and status)
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -373,6 +385,42 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerTooltip={t(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}
+        />
+        <AgGridColumn
+          headerName={t('Loss socialization')}
+          field="lossSocializationAmount"
+          type="rightAligned"
+          cellClass="font-mono text-right"
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'lossSocializationAmount'>) => {
+            return !data
+              ? undefined
+              : toBigNum(
+                  data.lossSocializationAmount,
+                  data.decimals
+                ).toNumber();
+          }}
+          valueFormatter={({
+            data,
+          }: VegaValueFormatterParams<Position, 'lossSocializationAmount'>) =>
+            !data
+              ? '-'
+              : addDecimalsFormatNumber(
+                  data.lossSocializationAmount,
+                  data.decimals
+                )
+          }
+        />
+        <AgGridColumn
+          headerName={t('Status')}
+          field="status"
+          valueFormatter={({
+            value,
+          }: VegaValueFormatterParams<Position, 'status'>) => {
+            if (!value) return '-';
+            return PositionStatusMapping[value];
+          }}
         />
         <AgGridColumn
           headerName={t('Updated')}

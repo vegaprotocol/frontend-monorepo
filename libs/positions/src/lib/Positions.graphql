@@ -4,6 +4,8 @@ fragment PositionFields on Position {
   unrealisedPNL
   averageEntryPrice
   updatedAt
+  positionStatus
+  lossSocializationAmount
   market {
     id
   }

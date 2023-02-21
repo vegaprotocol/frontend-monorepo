@@ -12,6 +12,7 @@ import type {
   OrderStatus,
   OrderTimeInForce,
   OrderType,
+  PositionStatus,
   ProposalRejectionReason,
   ProposalState,
   Side,
@@ -444,4 +445,12 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
   DISPATCH_METRIC_MARKET_VALUE: 'Total market Value',
+};
+
+export const PositionStatusMapping: {
+  [T in PositionStatus]: string;
+} = {
+  POSITION_STATUS_CLOSED_OUT: 'Closed (distressed)',
+  POSITION_STATUS_ORDERS_CLOSED: 'Maintained (distressed)',
+  POSITION_STATUS_UNSPECIFIED: 'Normal',
 };

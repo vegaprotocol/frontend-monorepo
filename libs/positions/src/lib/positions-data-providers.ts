@@ -24,6 +24,7 @@ import {
   PositionsSubscriptionDocument,
 } from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
+import { PositionStatus } from '@vegaprotocol/types';
 
 type PositionMarginLevel = Pick<
   MarginFieldsFragment,
@@ -38,6 +39,8 @@ interface PositionRejoined {
   updatedAt?: string | null;
   market: MarketMaybeWithData | null;
   margins: PositionMarginLevel | null;
+  lossSocializationAmount: string | null;
+  status: PositionStatus;
 }
 
 export interface Position {
@@ -62,6 +65,8 @@ export interface Position {
   unrealisedPNL: string;
   searchPrice: string | undefined;
   updatedAt: string | null;
+  lossSocializationAmount: string;
+  status: PositionStatus;
 }
 
 export interface Data {
@@ -178,6 +183,8 @@ export const getMetrics = (
         ? searchPrice.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
         : undefined,
       updatedAt: position.updatedAt || null,
+      lossSocializationAmount: position.lossSocializationAmount || '0',
+      status: position.status,
     });
   });
   return metrics;
@@ -206,6 +213,9 @@ export const update = (
         draft.unshift({
           ...delta,
           __typename: 'Position',
+          // TODO: these should be contained in delta https://github.com/vegaprotocol/vega/issues/7638
+          lossSocializationAmount: '0',
+          positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
           market: {
             __typename: 'Market',
             id: delta.marketId,
@@ -267,6 +277,8 @@ export const rejoinPositionData = (
         market:
           marketsData?.find((market) => market.id === node.market.id) || null,
         margins: upgradeMarginsConnection(node.market.id, margins),
+        lossSocializationAmount: node.lossSocializationAmount,
+        status: node.positionStatus,
       };
     });
   }
