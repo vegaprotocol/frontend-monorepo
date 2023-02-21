@@ -151,7 +151,7 @@ export const useLedgerEntriesDataProvider = ({
         first: 5000,
       },
     }),
-    [partyId, filter]
+    [partyId, filter?.vegaTime?.value]
   );
 
   const update = useCallback(
