@@ -18,18 +18,46 @@ describe('connect hosted wallet', { tags: '@smoke' }, () => {
 
   it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
-    mockConnectWallet();
+    cy.intercept('POST', 'https://wallet.testnet.vega.xyz/api/v1/auth/token', {
+      body: {
+        token: 'test-token',
+      },
+    });
+    cy.intercept('GET', 'https://wallet.testnet.vega.xyz/api/v1/keys', {
+      body: {
+        keys: [
+          {
+            algorithm: {
+              name: 'algo',
+              version: 1,
+            },
+            index: 0,
+            meta: [],
+            pub: 'HOSTED_PUBKEY',
+            tainted: false,
+          },
+        ],
+      },
+    });
     cy.contains('Connect Vega wallet');
     cy.contains('Hosted Fairground wallet');
 
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-jsonRpc"]')
+      .find('[data-testid="connector-hosted"]')
       .click();
-    cy.wait('@walletReq');
+    cy.getByTestId(form).find('#wallet').click().type('user');
+    cy.getByTestId(form).find('#passphrase').click().type('pass');
+    cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
     cy.getByTestId(manageVegaBtn).should('exist');
   });
 
   it('doesnt connect with invalid credentials', () => {
+    cy.intercept('POST', 'https://wallet.testnet.vega.xyz/api/v1/auth/token', {
+      body: {
+        error: 'No wallet',
+      },
+      statusCode: 403,
+    });
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-hosted"]')
@@ -40,7 +68,7 @@ describe('connect hosted wallet', { tags: '@smoke' }, () => {
     cy.getByTestId('form-error').should('have.text', 'No wallet detected');
   });
 
-  it('doesnt connect with invalid fields', () => {
+  it('doesnt connect with empty fields', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-hosted"]')
