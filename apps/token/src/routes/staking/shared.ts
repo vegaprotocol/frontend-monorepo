@@ -95,3 +95,8 @@ export const getTotalPenalties = (
     2
   );
 };
+
+export const getStakePercentage = (total: BigNumber, stakedOnNode: BigNumber) =>
+  total.isEqualTo(0) || stakedOnNode.isEqualTo(0)
+    ? '0%'
+    : stakedOnNode.dividedBy(total).times(100).dp(2).toString() + '%';

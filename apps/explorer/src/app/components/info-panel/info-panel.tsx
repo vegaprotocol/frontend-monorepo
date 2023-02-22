@@ -44,12 +44,12 @@ export const InfoPanel = ({
                 text={id}
                 startChars={visibleChars}
                 endChars={visibleChars}
-                className="text-black dark:text-zinc-200"
+                className="text-vega-dark-100 dark:text-vega-light-200"
               />
             ) : (
               <p
                 title={id}
-                className="text-black dark:text-zinc-200 truncate ..."
+                className="text-vega-dark-100 dark:text-vega-light-200 truncate ..."
               >
                 {id}
               </p>
@@ -70,7 +70,7 @@ export const InfoPanel = ({
         </div>
         {copy && (
           <CopyWithTooltip text={id}>
-            <button className="bg-zinc-100 dark:bg-zinc-900 rounded-sm py-2 px-3">
+            <button className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-sm py-2 px-3">
               <Icon name="duplicate" />
             </button>
           </CopyWithTooltip>

@@ -37,7 +37,7 @@ describe('connect hosted wallet', { tags: '@smoke' }, () => {
     cy.getByTestId(form).find('#wallet').click().type('invalid name');
     cy.getByTestId(form).find('#passphrase').click().type('invalid password');
     cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
-    cy.getByTestId('form-error').should('have.text', 'Invalid credentials');
+    cy.getByTestId('form-error').should('have.text', 'No wallet detected');
   });
 
   it('doesnt connect with invalid fields', () => {

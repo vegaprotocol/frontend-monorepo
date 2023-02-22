@@ -58,6 +58,7 @@ export const AssetDetailsDialog = ({
   const { data } = useAssetsDataProvider();
 
   const asset = data?.find((a) => a.id === assetId);
+  const assetSymbol = asset?.symbol || '';
 
   const content = asset ? (
     <div className="my-2">
@@ -97,6 +98,12 @@ export const AssetDetailsDialog = ({
       }}
     >
       {content}
+      <p className="text-sm mb-4">
+        {t(
+          'There is 1 unit of the settlement asset (%s) to every 1 quote unit.',
+          [assetSymbol]
+        )}
+      </p>
       <div className="w-1/4">
         <Button
           data-testid="close-asset-details-dialog"

@@ -10,10 +10,12 @@ import { TxDetailsChainEventDeposit } from './tx-erc20-deposit';
 type Deposit = components['schemas']['vegaERC20Deposit'];
 
 const fullMock: Deposit = {
-  vegaAssetId: 'asset123',
+  vegaAssetId:
+    '0000000000000000000000000000000000000000000000000000000000000002',
   amount: 'amount123',
   sourceEthereumAddress: 'eth123',
-  targetPartyId: 'vega123',
+  targetPartyId:
+    '0000000000000000000000000000000000000000000000000000000000000001',
 };
 
 describe('Chain Event: ERC20 asset deposit', () => {

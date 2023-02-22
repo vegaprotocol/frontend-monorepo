@@ -236,6 +236,7 @@ export const StandbyPendingValidatorsTable = ({
           customThemeParams={NODE_LIST_GRID_STYLES}
           rowHeight={52}
           defaultColDef={defaultColDef}
+          tooltipShowDelay={0}
           animateRows={true}
           suppressCellFocus={true}
           overlayNoRowsTemplate={t('noValidators')}

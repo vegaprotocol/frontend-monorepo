@@ -3,7 +3,7 @@ import { useExplorerMarketQuery } from '../links/market-link/__generated__/Marke
 
 export type DecimalSource = 'MARKET';
 
-export type PriceInMarketProps = {
+export type SizeInMarketProps = {
   marketId: string;
   size?: string | number;
   decimalSource?: DecimalSource;
@@ -17,7 +17,7 @@ const SizeInMarket = ({
   marketId,
   size,
   decimalSource = 'MARKET',
-}: PriceInMarketProps) => {
+}: SizeInMarketProps) => {
   const { data } = useExplorerMarketQuery({
     variables: { id: marketId },
     fetchPolicy: 'cache-first',

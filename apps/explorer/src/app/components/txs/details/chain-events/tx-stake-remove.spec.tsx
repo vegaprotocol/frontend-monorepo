@@ -13,7 +13,8 @@ const fullMock: Remove = {
   amount: 'amount123',
   blockTime: 'block123',
   ethereumAddress: 'eth123',
-  vegaPublicKey: 'vega123',
+  vegaPublicKey:
+    '0000000000000000000000000000000000000000000000000000000000000001',
 };
 
 describe('Chain Event: Stake remove', () => {
