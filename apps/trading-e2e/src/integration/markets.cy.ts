@@ -175,9 +175,10 @@ describe('markets table', { tags: '@smoke' }, () => {
 function openMarketDropDown() {
   cy.getByTestId(dialogCloseBtn).then((button) => {
     if (button.is(':visible')) {
+      cy.get('[data-testid^="market-link-"]').should('not.be.empty');
       cy.getByTestId(dialogCloseBtn).click();
     }
   });
-  cy.getByTestId('popover-trigger').click();
+  cy.getByTestId('popover-trigger').click({ force: true });
   cy.contains('Loading market data...').should('not.exist');
 }
