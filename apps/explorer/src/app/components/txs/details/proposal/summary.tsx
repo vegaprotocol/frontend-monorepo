@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { components } from '../../../../../types/explorer';
 import { JsonViewerDialog } from '../../../dialogs/json-viewer-dialog';
 import ProposalLink from '../../../links/proposal-link/proposal-link';
+import truncate from 'lodash/truncate';
 
 type Rationale = components['schemas']['vegaProposalRationale'];
 
@@ -47,7 +48,12 @@ export const ProposalSummary = ({
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5">
       {rationale?.title && <h1 className="text-xl pb-3">{rationale.title}</h1>}
       {rationale?.description && (
-        <p className="pt-2">{rationale.description}</p>
+        <p className="pt-2 text-sm leading-tight">
+          {truncate(rationale.description, {
+            // Limits the description to roughly 5 lines, maximum
+            length: 350,
+          })}
+        </p>
       )}
       <p className="pt-5">
         <button className="underline max-md:hidden mr-5" onClick={openDialog}>

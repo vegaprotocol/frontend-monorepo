@@ -88,7 +88,7 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
           blockData={blockData}
         />
         <TableRow modifier="bordered">
-          <TableCell>{t('Proposal details')}</TableCell>
+          <TableCell>{t('Proposal ID')}</TableCell>
           <TableCell>
             <ProposalLink id={deterministicId} />
           </TableCell>
