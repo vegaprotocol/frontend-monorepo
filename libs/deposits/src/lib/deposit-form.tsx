@@ -25,7 +25,8 @@ import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes } from 'react';
 import { useMemo } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import type { FieldError } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
@@ -106,8 +107,6 @@ export const DepositForm = ({
     }
   };
 
-  const amount = useWatch({ name: 'amount', control });
-
   const maxAmount = useMemo(() => {
     const maxApproved = allowance ? allowance : new BigNumber(0);
     const maxAvailable = balance ? balance : new BigNumber(0);
@@ -138,13 +137,7 @@ export const DepositForm = ({
     return minViableAmount;
   }, [selectedAsset]);
 
-  const approved =
-    allowance &&
-    allowance.isGreaterThan(0) &&
-    new BigNumber(amount || 0).isLessThan(allowance)
-      ? true
-      : false;
-
+  const approved = allowance && allowance.isGreaterThan(0) ? true : false;
   const formState = getFormState(selectedAsset, isActive, approved);
 
   return (
@@ -304,24 +297,35 @@ export const DepositForm = ({
               validate: {
                 required,
                 minSafe: (value) => minSafe(new BigNumber(min))(value),
-                maxSafe: (v) => {
+                approved: (v) => {
+                  const value = new BigNumber(v);
+                  if (value.isGreaterThan(maxAmount.approved)) {
+                    return t('Amount is above approved amount');
+                  }
+                  return true;
+                },
+                limit: (v) => {
+                  const value = new BigNumber(v);
+                  if (value.isGreaterThan(maxAmount.limit)) {
+                    return t('Amount is above deposit limit');
+                  }
+                  return true;
+                },
+                balance: (v) => {
                   const value = new BigNumber(v);
                   if (value.isGreaterThan(maxAmount.available)) {
                     return t('Insufficient amount in Ethereum wallet');
-                  } else if (value.isGreaterThan(maxAmount.limit)) {
-                    return t('Amount is above deposit limit');
-                  } else if (value.isGreaterThan(maxAmount.approved)) {
-                    return t('Amount is above approved amount');
                   }
+                  return true;
+                },
+                maxSafe: (v) => {
                   return maxSafe(maxAmount.amount)(v);
                 },
               },
             })}
           />
           {errors.amount?.message && (
-            <InputError intent="danger" forInput="amount">
-              {errors.amount.message}
-            </InputError>
+            <AmountError error={errors.amount} submitApprove={submitApprove} />
           )}
           {selectedAsset && balance && (
             <UseButton
@@ -337,6 +341,30 @@ export const DepositForm = ({
       )}
       <FormButton selectedAsset={selectedAsset} formState={formState} />
     </form>
+  );
+};
+
+const AmountError = ({
+  error,
+  submitApprove,
+}: {
+  error: FieldError;
+  submitApprove: () => void;
+}) => {
+  if (error.type === 'approved') {
+    return (
+      <InputError intent="danger" forInput="amount">
+        {error.message}.
+        <button onClick={submitApprove} className="underline ml-2">
+          {t('Update approve amount')}
+        </button>
+      </InputError>
+    );
+  }
+  return (
+    <InputError intent="danger" forInput="amount">
+      {error.message}
+    </InputError>
   );
 };
 

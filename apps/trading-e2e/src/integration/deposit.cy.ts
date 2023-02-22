@@ -11,7 +11,7 @@ const formFieldError = 'input-error-text';
 const ASSET_EURO = 1;
 
 describe('deposit form validation', { tags: '@smoke' }, () => {
-  before(() => {
+  function openDepositForm() {
     cy.mockWeb3Provider();
     cy.mockSubscription();
     cy.mockTradingPage();
@@ -22,10 +22,14 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.getByTestId('deposit-button').click();
     cy.wait('@Assets');
     connectEthereumWallet('MetaMask');
-    cy.getByTestId('deposit-submit').click();
+  }
+
+  before(() => {
+    openDepositForm();
   });
 
   it('handles empty fields', () => {
+    cy.getByTestId('deposit-submit').click();
     cy.getByTestId(formFieldError).should('contain.text', 'Required');
     cy.getByTestId(formFieldError).should('have.length', 2);
   });
@@ -48,7 +52,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   it('invalid amount', () => {
     mockWeb3DepositCalls({
       allowance: '1000',
-      depositLifetimeLimit: '600',
+      depositLifetimeLimit: '1000',
       balance: '800',
       deposited: '0',
       dps: 5,
@@ -67,7 +71,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   it('insufficient funds', () => {
     mockWeb3DepositCalls({
       allowance: '1000',
-      depositLifetimeLimit: '600',
+      depositLifetimeLimit: '1000',
       balance: '800',
       deposited: '0',
       dps: 5,
@@ -80,6 +84,8 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   });
 
   it('above deposit limit', () => {
+    // reload form with new web3 mocks
+    openDepositForm();
     mockWeb3DepositCalls({
       allowance: '1000',
       depositLifetimeLimit: '600',
@@ -87,11 +93,13 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
       deposited: '0',
       dps: 5,
     });
-    cy.get(amountField)
-      .clear()
-      .type('650')
-      .next(`[data-testid="${formFieldError}"]`)
-      .should('have.text', 'Amount is above deposit limit');
+    selectAsset(ASSET_EURO);
+    cy.get(amountField).clear().type('650');
+    cy.getByTestId('deposit-submit').click();
+    cy.get(`[data-testid="${formFieldError}"]`).should(
+      'have.text',
+      'Amount is above deposit limit'
+    );
   });
 });
 
