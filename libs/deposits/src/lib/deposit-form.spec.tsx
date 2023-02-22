@@ -145,7 +145,7 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Insufficient amount in Ethereum wallet')
+        await screen.findByText('Amount is above deposit limit')
       ).toBeInTheDocument();
     });
 
@@ -166,7 +166,7 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Amount is above approved amount')
+        await screen.findByText('Amount is above approved amount.')
       ).toBeInTheDocument();
     });
 
