@@ -21,28 +21,37 @@ type Entry = Edge['node'];
 
 interface LossSocializationDialogProps {
   close: () => void;
-  marketId: string | null;
+  market: { id: string; openTimestamp: string } | null;
 }
 
 export const LossSocializationDialog = ({
-  marketId,
+  market,
   close,
 }: LossSocializationDialogProps) => {
+  console.log(market);
   return (
-    <Dialog open={Boolean(marketId)} onChange={() => close()} size="medium">
-      {marketId && <Container marketId={marketId} />}
+    <Dialog open={Boolean(market)} onChange={() => close()} size="medium">
+      {market && (
+        <Container marketId={market.id} openTimestamp={market.openTimestamp} />
+      )}
     </Dialog>
   );
 };
 
-const Container = ({ marketId }: { marketId: string }) => {
+const Container = ({
+  marketId,
+  openTimestamp,
+}: {
+  marketId: string;
+  openTimestamp: string;
+}) => {
   const { pubKey } = useVegaWallet();
   const { data, loading, error } = useLossSocializationQuery({
     variables: {
       partyId: pubKey || '',
       marketId,
-      pagination: {
-        first: 1000, // TODO: use date range to get entries since market started
+      dateRange: {
+        start: openTimestamp,
       },
     },
     skip: !pubKey || !marketId,
@@ -84,6 +93,7 @@ const Table = ({ entries }: { entries: Entry[] | undefined }) => {
       }}
     >
       <AgGridColumn
+        headerName={t('Type')}
         field="transferType"
         valueFormatter={({
           value,
@@ -93,6 +103,7 @@ const Table = ({ entries }: { entries: Entry[] | undefined }) => {
         }}
       />
       <AgGridColumn
+        headerName={t('From')}
         field="fromAccountPartyId"
         valueFormatter={({
           value,
@@ -103,6 +114,7 @@ const Table = ({ entries }: { entries: Entry[] | undefined }) => {
         }}
       />
       <AgGridColumn
+        headerName={t('From account')}
         field="fromAccountType"
         valueFormatter={({
           value,
@@ -112,6 +124,7 @@ const Table = ({ entries }: { entries: Entry[] | undefined }) => {
         }}
       />
       <AgGridColumn
+        headerName={t('To')}
         field="toAccountPartyId"
         valueFormatter={({
           value,
@@ -122,6 +135,7 @@ const Table = ({ entries }: { entries: Entry[] | undefined }) => {
         }}
       />
       <AgGridColumn
+        headerName={t('To account')}
         field="toAccountType"
         valueFormatter={({
           value,

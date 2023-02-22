@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type LossSocializationQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   marketId: Types.Scalars['ID'];
-  pagination?: Types.InputMaybe<Types.Pagination>;
+  dateRange?: Types.InputMaybe<Types.DateRange>;
 }>;
 
 
@@ -14,10 +14,10 @@ export type LossSocializationQuery = { __typename?: 'Query', ledgerEntries: { __
 
 
 export const LossSocializationDocument = gql`
-    query LossSocialization($partyId: ID!, $marketId: ID!, $pagination: Pagination) {
+    query LossSocialization($partyId: ID!, $marketId: ID!, $dateRange: DateRange) {
   ledgerEntries(
     filter: {FromAccountFilter: {partyIds: [$partyId], marketIds: [$marketId], accountTypes: [ACCOUNT_TYPE_MARGIN, ACCOUNT_TYPE_GENERAL]}, ToAccountFilter: {partyIds: [$partyId], marketIds: [$marketId], accountTypes: [ACCOUNT_TYPE_MARGIN, ACCOUNT_TYPE_GENERAL]}}
-    pagination: $pagination
+    dateRange: $dateRange
   ) {
     edges {
       node {
@@ -53,7 +53,7 @@ export const LossSocializationDocument = gql`
  *   variables: {
  *      partyId: // value for 'partyId'
  *      marketId: // value for 'marketId'
- *      pagination: // value for 'pagination'
+ *      dateRange: // value for 'dateRange'
  *   },
  * });
  */

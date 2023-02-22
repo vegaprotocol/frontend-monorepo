@@ -1,8 +1,4 @@
-query LossSocialization(
-  $partyId: ID!
-  $marketId: ID!
-  $pagination: Pagination
-) {
+query LossSocialization($partyId: ID!, $marketId: ID!, $dateRange: DateRange) {
   ledgerEntries(
     filter: {
       FromAccountFilter: {
@@ -22,7 +18,7 @@ query LossSocialization(
       #  ...
       # ]
     }
-    pagination: $pagination
+    dateRange: $dateRange
   ) {
     edges {
       node {
