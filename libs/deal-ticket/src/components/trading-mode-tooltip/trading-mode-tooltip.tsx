@@ -9,6 +9,7 @@ import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/react-helpers';
 import { compileGridData } from './compile-grid-data';
 import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
+import BigNumber from 'bignumber.js';
 
 type TradingModeTooltipProps = {
   marketId?: string;
@@ -115,13 +116,21 @@ export const TradingModeTooltip = ({
     case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (trigger) {
         case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
+          const notEnoughLiquidity = new BigNumber(
+            marketData.suppliedStake || 0
+          ).isLessThan(marketData.targetStake || 0);
           return (
             <section data-testid="trading-mode-tooltip">
               <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
-                <span>
-                  {t(
-                    'This market is in auction until it reaches sufficient liquidity.'
-                  )}
+                <span className="mb-2">
+                  {notEnoughLiquidity &&
+                    t(
+                      'This market is in auction until it reaches sufficient liquidity.'
+                    )}
+                  {!notEnoughLiquidity &&
+                    t(
+                      'This market may have sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.'
+                    )}
                 </span>{' '}
                 {VEGA_DOCS_URL && (
                   <ExternalLink

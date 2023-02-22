@@ -72,13 +72,13 @@ export const useFeeDealTicketDetails = (
     return null;
   }, [derivedPrice, order.size, market.decimalPlaces]);
 
-  const symbol =
+  const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
   return useMemo(() => {
     return {
       market,
-      symbol,
+      assetSymbol,
       notionalSize,
       estMargin,
       estCloseOut,
@@ -87,7 +87,7 @@ export const useFeeDealTicketDetails = (
     };
   }, [
     market,
-    symbol,
+    assetSymbol,
     notionalSize,
     estMargin,
     estCloseOut,
@@ -98,7 +98,7 @@ export const useFeeDealTicketDetails = (
 
 export interface FeeDetails {
   market: Market;
-  symbol: string;
+  assetSymbol: string;
   notionalSize: string | null;
   estMargin: OrderMargin | null;
   estCloseOut: string | null;
@@ -106,7 +106,7 @@ export interface FeeDetails {
 }
 
 export const getFeeDetailsValues = ({
-  symbol,
+  assetSymbol,
   notionalSize,
   estMargin,
   estCloseOut,
@@ -114,6 +114,7 @@ export const getFeeDetailsValues = ({
 }: FeeDetails) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const formatValueWithMarketDp = (
     value: string | number | null | undefined
   ): string => {
@@ -132,8 +133,8 @@ export const getFeeDetailsValues = ({
     {
       label: t('Notional'),
       value: formatValueWithMarketDp(notionalSize),
-      symbol,
-      labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
+      symbol: assetSymbol,
+      labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol),
     },
     {
       label: t('Fees'),
@@ -144,31 +145,31 @@ export const getFeeDetailsValues = ({
         <>
           <span>
             {t(
-              'The most you would be expected to pay in fees, the actual amount may vary.'
+              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
             )}
           </span>
           <FeesBreakdown
             fees={estMargin?.fees}
             feeFactors={market.fees.factors}
-            symbol={symbol}
+            symbol={assetSymbol}
             decimals={assetDecimals}
           />
         </>
       ),
-      symbol,
+      symbol: assetSymbol,
     },
     {
       label: t('Margin'),
       value:
         estMargin?.margin && `~${formatValueWithAssetDp(estMargin?.margin)}`,
-      symbol,
-      labelDescription: EST_MARGIN_TOOLTIP_TEXT,
+      symbol: assetSymbol,
+      labelDescription: EST_MARGIN_TOOLTIP_TEXT(assetSymbol),
     },
     {
       label: t('Liquidation'),
       value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
       symbol: market.tradableInstrument.instrument.product.quoteName,
-      labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
+      labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT(quoteName),
     },
   ];
 };

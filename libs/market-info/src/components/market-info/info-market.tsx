@@ -93,7 +93,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const headerClassName = 'uppercase text-lg';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol;
+    market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
+  const quoteUnit =
+    market?.tradableInstrument.instrument.product?.quoteName || '';
   const assetId = useMemo(
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
     [market]
@@ -129,16 +131,27 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Market price'),
       content: (
-        <MarketInfoTable
-          data={pick(
-            market.data,
-            'name',
-            'markPrice',
-            'bestBidPrice',
-            'bestOfferPrice'
-          )}
-          decimalPlaces={market.decimalPlaces}
-        />
+        <>
+          <MarketInfoTable
+            data={{
+              ...pick(
+                market.data,
+                'name',
+                'markPrice',
+                'bestBidPrice',
+                'bestOfferPrice'
+              ),
+              quoteUnit: market.tradableInstrument.instrument.product.quoteName,
+            }}
+            decimalPlaces={market.decimalPlaces}
+          />
+          <p className="text-xs">
+            {t(
+              'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
+              [assetSymbol, quoteUnit]
+            )}
+          </p>
+        </>
       ),
     },
     {
@@ -189,6 +202,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
 
+  const liquidityPriceRange = formatNumberPercentage(
+    new BigNumber(market.lpPriceRange).times(100)
+  );
+
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -224,13 +241,21 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Settlement asset'),
       content: asset ? (
-        <AssetDetailsTable
-          asset={asset}
-          inline={true}
-          noBorder={true}
-          dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
-          ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
-        />
+        <>
+          <AssetDetailsTable
+            asset={asset}
+            inline={true}
+            noBorder={true}
+            dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
+            ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
+          />
+          <p className="text-xs">
+            {t(
+              'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
+              [assetSymbol, quoteUnit]
+            )}
+          </p>
+        </>
       ) : (
         <Splash>{t('No data')}</Splash>
       ),
@@ -342,31 +367,40 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Liquidity price range'),
       content: (
-        <MarketInfoTable
-          data={{
-            liquidityPriceRange: formatNumberPercentage(
-              new BigNumber(market.lpPriceRange).times(100)
-            ),
-            LPVolumeMin:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .minus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-            LPVolumeMax:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .plus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-          }}
-        ></MarketInfoTable>
+        <>
+          <p className="text-xs mb-4">
+            {`For liquidity orders count towards a commitment they have to be
+            within either the liquidity or price monitoring bounds (whichever is
+            tighter).`}
+          </p>
+          <p className="text-xs mb-4">
+            {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
+            price.`}
+          </p>
+          <MarketInfoTable
+            data={{
+              liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+              lowestPrice:
+                market.data?.midPrice &&
+                `${addDecimalsFormatNumber(
+                  new BigNumber(1)
+                    .minus(market.lpPriceRange)
+                    .times(market.data.midPrice)
+                    .toString(),
+                  market.decimalPlaces
+                )} ${quoteUnit}`,
+              highestPrice:
+                market.data?.midPrice &&
+                `${addDecimalsFormatNumber(
+                  new BigNumber(1)
+                    .plus(market.lpPriceRange)
+                    .times(market.data.midPrice)
+                    .toString(),
+                  market.decimalPlaces
+                )} ${quoteUnit}`,
+            }}
+          ></MarketInfoTable>
+        </>
       ),
     },
     {

@@ -22,8 +22,7 @@ export const MarketDetails = ({
 }: {
   market: MarketInfoNoCandlesQuery['market'];
 }) => {
-  const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol;
+  const quoteUnit = market?.tradableInstrument.instrument.product.quoteName;
   const assetId = useMemo(
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
     [market]
@@ -38,6 +37,10 @@ export const MarketDetails = ({
   };
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
+
+  const liquidityPriceRange = formatNumberPercentage(
+    new BigNumber(market.lpPriceRange).times(100)
+  );
 
   const panels = [
     {
@@ -179,32 +182,41 @@ export const MarketDetails = ({
     {
       title: t('Liquidity price range'),
       content: (
-        <MarketInfoTable
-          noBorder={false}
-          data={{
-            liquidityPriceRange: formatNumberPercentage(
-              new BigNumber(market.lpPriceRange).times(100)
-            ),
-            LPVolumeMin:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .minus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-            LPVolumeMax:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .plus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-          }}
-        ></MarketInfoTable>
+        <>
+          <p className="text-xs mb-4">
+            {`For liquidity orders count towards a commitment they have to be
+        within either the liquidity or price monitoring bounds (whichever is
+        tighter).`}
+          </p>
+          <p className="text-xs mb-4">
+            {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
+        price.`}
+          </p>
+          <MarketInfoTable
+            noBorder={false}
+            data={{
+              liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+              lowestPrice:
+                market.data?.midPrice &&
+                `${addDecimalsFormatNumber(
+                  new BigNumber(1)
+                    .minus(market.lpPriceRange)
+                    .times(market.data.midPrice)
+                    .toString(),
+                  market.decimalPlaces
+                )} ${quoteUnit}`,
+              highestPrice:
+                market.data?.midPrice &&
+                `${addDecimalsFormatNumber(
+                  new BigNumber(1)
+                    .plus(market.lpPriceRange)
+                    .times(market.data.midPrice)
+                    .toString(),
+                  market.decimalPlaces
+                )} ${quoteUnit}`,
+            }}
+          ></MarketInfoTable>
+        </>
       ),
     },
     {
