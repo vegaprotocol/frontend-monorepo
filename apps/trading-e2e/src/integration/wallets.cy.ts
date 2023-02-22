@@ -17,12 +17,13 @@ describe('connect hosted wallet', { tags: '@smoke' }, () => {
   });
 
   it('can connect', () => {
-    cy.getByTestId(connectVegaBtn).click();
+    // Mock authentication
     cy.intercept('POST', 'https://wallet.testnet.vega.xyz/api/v1/auth/token', {
       body: {
         token: 'test-token',
       },
     });
+    // Mock getting keys from wallet
     cy.intercept('GET', 'https://wallet.testnet.vega.xyz/api/v1/keys', {
       body: {
         keys: [
@@ -39,6 +40,7 @@ describe('connect hosted wallet', { tags: '@smoke' }, () => {
         ],
       },
     });
+    cy.getByTestId(connectVegaBtn).click();
     cy.contains('Connect Vega wallet');
     cy.contains('Hosted Fairground wallet');
 
@@ -52,11 +54,12 @@ describe('connect hosted wallet', { tags: '@smoke' }, () => {
   });
 
   it('doesnt connect with invalid credentials', () => {
+    // Mock incorrect username/password
     cy.intercept('POST', 'https://wallet.testnet.vega.xyz/api/v1/auth/token', {
       body: {
         error: 'No wallet',
       },
-      statusCode: 403,
+      statusCode: 403, // 403 forbidden invalid crednetials
     });
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
@@ -65,7 +68,7 @@ describe('connect hosted wallet', { tags: '@smoke' }, () => {
     cy.getByTestId(form).find('#wallet').click().type('invalid name');
     cy.getByTestId(form).find('#passphrase').click().type('invalid password');
     cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
-    cy.getByTestId('form-error').should('have.text', 'No wallet detected');
+    cy.getByTestId('form-error').should('have.text', 'Invalid credentials');
   });
 
   it('doesnt connect with empty fields', () => {
