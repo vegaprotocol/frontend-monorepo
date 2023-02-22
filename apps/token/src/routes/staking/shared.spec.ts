@@ -154,9 +154,9 @@ describe('getStakePercentage', () => {
     ).toEqual('25.75%');
   });
 
-  it('should return "-" if the total stake is 0', () => {
+  it('should return "0%" if the total stake is 0', () => {
     expect(getStakePercentage(new BigNumber('0'), new BigNumber('0'))).toEqual(
-      '-'
+      '0%'
     );
   });
 });
