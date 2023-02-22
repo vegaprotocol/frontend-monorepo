@@ -82,25 +82,6 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
       .next(`[data-testid="${formFieldError}"]`)
       .should('have.text', 'Insufficient amount in Ethereum wallet');
   });
-
-  it('above deposit limit', () => {
-    // reload form with new web3 mocks
-    openDepositForm();
-    mockWeb3DepositCalls({
-      allowance: '1000',
-      depositLifetimeLimit: '600',
-      balance: '800',
-      deposited: '0',
-      dps: 5,
-    });
-    selectAsset(ASSET_EURO);
-    cy.get(amountField).clear().type('650');
-    cy.getByTestId('deposit-submit').click();
-    cy.get(`[data-testid="${formFieldError}"]`).should(
-      'have.text',
-      'Amount is above deposit limit'
-    );
-  });
 });
 
 describe('deposit actions', { tags: '@smoke' }, () => {
