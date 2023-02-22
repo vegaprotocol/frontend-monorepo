@@ -8,6 +8,7 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "outputPath": "dist/libs/ui-toolkit",
         "tsConfig": "libs/ui-toolkit/tsconfig.lib.json",
         "project": "libs/ui-toolkit/package.json",
