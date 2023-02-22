@@ -94,7 +94,7 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="transactions-list">
-      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-zinc-500 uppercase">
+      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-vega-dark-300 uppercase">
         <div className="col-span-3">
           <span className="hidden xl:inline">Transaction &nbsp;</span>
           <span>ID</span>
