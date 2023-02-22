@@ -25,12 +25,38 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
       totalWeight: '',
     },
   },
+  requiredMajority: '',
+  party: {
+    __typename: 'Party',
+    id: '',
+  },
+  rationale: {
+    __typename: 'ProposalRationale',
+    description: '',
+    title: '',
+  },
+  requiredParticipation: '',
+  errorDetails: '',
+  rejectionReason: null,
+  requiredLpMajority: '',
+  requiredLpParticipation: '',
   terms: {
     __typename: 'ProposalTerms',
     closingDatetime: '',
     enactmentDatetime: undefined,
     change: {
       __typename: 'NewMarket',
+      decimalPlaces: 1,
+      lpPriceRange: '',
+      riskParameters: {
+        __typename: 'SimpleRiskModel',
+        params: {
+          __typename: 'SimpleRiskModelParams',
+          factorLong: 0,
+          factorShort: 1,
+        },
+      },
+      metadata: [],
       instrument: {
         __typename: 'InstrumentConfiguration',
         code: code,
@@ -42,6 +68,34 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
             id: 'A',
             name: 'A',
             symbol: 'A',
+            decimals: 1,
+            quantum: '',
+          },
+          quoteName: '',
+          dataSourceSpecBinding: {
+            __typename: 'DataSourceSpecToFutureBinding',
+            settlementDataProperty: '',
+            tradingTerminationProperty: '',
+          },
+          dataSourceSpecForSettlementData: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionInternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfigurationTime',
+                conditions: [],
+              },
+            },
+          },
+          dataSourceSpecForTradingTermination: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionInternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfigurationTime',
+                conditions: [],
+              },
+            },
           },
         },
       },

@@ -1,1 +1,2 @@
-export * from './assets';
+export * from './assets-page';
+export * from './asset-page';

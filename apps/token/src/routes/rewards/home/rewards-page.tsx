@@ -1,34 +1,30 @@
 // @ts-ignore No types available for duration-js
 import Duration from 'duration-js';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { formatDistance } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
   Callout,
   Intent,
   AsyncRenderer,
   Toggle,
   ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   useNetworkParams,
   NetworkParams,
   createDocsLinks,
 } from '@vegaprotocol/react-helpers';
-import {
-  AppStateActionType,
-  useAppState,
-} from '../../../contexts/app-state/app-state-context';
 import { useEpochQuery } from './__generated__/Rewards';
 
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading, SubHeading } from '../../../components/heading';
-import { RewardInfo } from '../epoch-individual-awards/reward-info';
-import { EpochRewards } from '../epoch-total-rewards/epoch-rewards';
+import { EpochIndividualRewards } from '../epoch-individual-rewards/epoch-individual-rewards';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { ConnectToSeeRewards } from '../connect-to-see-rewards';
+import { EpochTotalRewards } from '../epoch-total-rewards/epoch-total-rewards';
 
 type RewardsView = 'total' | 'individual';
 
@@ -39,24 +35,20 @@ export const RewardsPage = () => {
   const [toggleRewardsView, setToggleRewardsView] =
     useState<RewardsView>('total');
 
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
-  const { appDispatch } = useAppState();
-
-  const {
-    params,
-    loading: paramsLoading,
-    error: paramsError,
-  } = useNetworkParams([NetworkParams.reward_staking_delegation_payoutDelay]);
-
   const {
     data: epochData,
     loading: epochLoading,
     error: epochError,
     refetch,
   } = useEpochQuery();
+
   useRefreshAfterEpoch(epochData?.epoch.timestamps.expiry, refetch);
+
+  const {
+    params,
+    loading: paramsLoading,
+    error: paramsError,
+  } = useNetworkParams([NetworkParams.reward_staking_delegation_payoutDelay]);
 
   const payoutDuration = useMemo(() => {
     if (!params) {
@@ -103,8 +95,8 @@ export const RewardsPage = () => {
             </div>
           ) : null}
 
-          {epochData &&
-            epochData.epoch.id &&
+          {epochData?.epoch &&
+            epochData.epoch?.id &&
             epochData.epoch.timestamps.start &&
             epochData.epoch.timestamps.expiry && (
               <section className="mb-16">
@@ -148,26 +140,13 @@ export const RewardsPage = () => {
           </section>
 
           {toggleRewardsView === 'total' ? (
-            <EpochRewards />
+            <EpochTotalRewards />
           ) : (
             <section>
               {pubKey && pubKeys?.length ? (
-                <RewardInfo />
+                <EpochIndividualRewards />
               ) : (
-                <div>
-                  <Button
-                    data-testid="connect-to-vega-wallet-btn"
-                    onClick={() => {
-                      appDispatch({
-                        type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
-                        isOpen: true,
-                      });
-                      openVegaWalletDialog();
-                    }}
-                  >
-                    {t('connectVegaWallet')}
-                  </Button>
-                </div>
+                <ConnectToSeeRewards />
               )}
             </section>
           )}

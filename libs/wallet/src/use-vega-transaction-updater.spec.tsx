@@ -1,9 +1,8 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { useVegaTransactionUpdater } from './use-vega-transaction-updater';
-import waitForNextTick from 'flush-promises';
 import {
   OrderTxUpdateDocument,
   TransactionEventDocument,
@@ -112,14 +111,13 @@ const mockedTransactionResultBusEvent: MockedResponse<TransactionEventSubscripti
       data: {
         busEvents: [
           {
-            type: BusEventType.Order,
+            type: BusEventType.TransactionResult,
             event: transactionResultBusEvent,
           },
         ],
       },
     },
   };
-
 const withdrawalBusEvent: WithdrawalBusEventFieldsFragment = {
   id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
   status: WithdrawalStatus.STATUS_OPEN,
@@ -167,20 +165,16 @@ const mockedWithdrawalBusEvent: MockedResponse<WithdrawalBusEventSubscription> =
 describe('useVegaTransactionManager', () => {
   it('updates order on OrderTxUpdate', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
-    const { waitForNextUpdate } = render([mockedOrderUpdate]);
-    await act(async () => {
-      waitForNextUpdate();
-      await waitForNextTick();
+    render([mockedOrderUpdate]);
+    await waitFor(() => {
       expect(updateOrder).toHaveBeenCalledWith(orderUpdate);
     });
   });
 
   it('updates transaction on TransactionResultBusEvents', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
-    const { waitForNextUpdate } = render([mockedTransactionResultBusEvent]);
-    await act(async () => {
-      waitForNextUpdate();
-      await waitForNextTick();
+    render([mockedTransactionResultBusEvent]);
+    await waitFor(() => {
       expect(updateTransactionResult).toHaveBeenCalledWith(
         transactionResultBusEvent
       );
@@ -193,10 +187,8 @@ describe('useVegaTransactionManager', () => {
     mockWaitForWithdrawalApproval.mockResolvedValueOnce(
       erc20WithdrawalApproval
     );
-    const { waitForNextUpdate } = render([mockedWithdrawalBusEvent]);
-    await act(async () => {
-      waitForNextUpdate();
-      await waitForNextTick();
+    render([mockedWithdrawalBusEvent]);
+    await waitFor(() => {
       expect(updateWithdrawal).toHaveBeenCalledWith(
         withdrawalBusEvent,
         erc20WithdrawalApproval

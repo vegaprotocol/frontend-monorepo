@@ -7,13 +7,18 @@ import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
-import compact from 'lodash/compact';
 import { useCallback } from 'react';
-import type { UpdateNetworkParameterFieldsFragment } from './__generated__/Proposal';
+import type { UpdateNetworkParameterProposalFragment } from './__generated__/Proposal';
 import { useOnUpdateNetworkParametersSubscription } from './__generated__/Proposal';
 
+export const PROPOSAL_STATES_TO_TOAST = [
+  ProposalState.STATE_DECLINED,
+  ProposalState.STATE_ENACTED,
+  ProposalState.STATE_OPEN,
+  ProposalState.STATE_PASSED,
+];
 const CLOSE_AFTER = 5000;
-type Proposal = UpdateNetworkParameterFieldsFragment;
+type Proposal = UpdateNetworkParameterProposalFragment;
 
 const UpdateNetworkParameterToastContent = ({
   proposal,
@@ -75,26 +80,16 @@ export const useUpdateNetworkParametersToasts = () => {
     [remove]
   );
 
-  useOnUpdateNetworkParametersSubscription({
-    onData: (options) => {
-      const events = compact(options.data.data?.busEvents);
-      if (!events || events.length === 0) return;
-      const validProposals = events
-        .filter(
-          (ev) =>
-            ev.event.__typename === 'Proposal' &&
-            ev.event.terms.__typename === 'ProposalTerms' &&
-            ev.event.terms.change.__typename === 'UpdateNetworkParameter' &&
-            [
-              ProposalState.STATE_DECLINED,
-              ProposalState.STATE_ENACTED,
-              ProposalState.STATE_OPEN,
-              ProposalState.STATE_PASSED,
-            ].includes(ev.event.state)
-        )
-        .map((ev) => ev.event as Proposal);
-      if (validProposals.length < 5) {
-        validProposals.forEach((p) => setToast(fromProposal(p)));
+  return useOnUpdateNetworkParametersSubscription({
+    onData: ({ data }) => {
+      // note proposals is poorly named, it is actually a single proposal
+      const proposal = data.data?.proposals;
+      if (!proposal) return;
+      if (proposal.terms.change.__typename !== 'UpdateNetworkParameter') return;
+
+      // if one of the following states show a toast
+      if (PROPOSAL_STATES_TO_TOAST.includes(proposal.state)) {
+        setToast(fromProposal(proposal));
       }
     },
   });

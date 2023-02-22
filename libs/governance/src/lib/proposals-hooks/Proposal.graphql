@@ -12,7 +12,7 @@ subscription ProposalEvent($partyId: ID!) {
   }
 }
 
-fragment UpdateNetworkParameterFields on Proposal {
+fragment UpdateNetworkParameterProposal on Proposal {
   id
   state
   datetime
@@ -20,22 +20,15 @@ fragment UpdateNetworkParameterFields on Proposal {
     enactmentDatetime
     change {
       ... on UpdateNetworkParameter {
-        networkParameter {
-          key
-          value
-        }
+        ...UpdateNetworkParameterFiels
       }
     }
   }
 }
 
 subscription OnUpdateNetworkParameters {
-  busEvents(types: [Proposal], batchSize: 0) {
-    event {
-      ... on Proposal {
-        ...UpdateNetworkParameterFields
-      }
-    }
+  proposals {
+    ...UpdateNetworkParameterProposal
   }
 }
 

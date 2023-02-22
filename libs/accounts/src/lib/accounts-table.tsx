@@ -58,7 +58,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           };
         }
       }
-      return currentPinnedAssetRow;
+      return undefined;
     }, [pinnedAssetId, props.pinnedAsset, props.rowData]);
 
     return (

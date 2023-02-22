@@ -33,4 +33,7 @@ export const ENV = {
     parties: truthy.includes(windowOrDefault('NX_EXPLORER_PARTIES')),
     validators: truthy.includes(windowOrDefault('NX_EXPLORER_VALIDATORS')),
   },
+  addresses: {
+    feedback: windowOrDefault('NX_GITHUB_FEEDBACK_URL'),
+  },
 };

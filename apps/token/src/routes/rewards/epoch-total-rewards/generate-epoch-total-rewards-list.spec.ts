@@ -61,7 +61,7 @@ describe('generateEpochAssetRewardsList', () => {
     expect(result).toEqual([]);
   });
 
-  it('should return an array of unnamed assets if no assets are provided (should not happen)', () => {
+  it('should return an array of unnamed assets if no asset names are provided (should not happen)', () => {
     const epochData = {
       assetsConnection: {
         edges: [],
@@ -72,16 +72,8 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 1,
               assetId: '1',
-              rewardType: AccountType.ACCOUNT_TYPE_INSURANCE,
+              rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
               amount: '123',
-            },
-          },
-          {
-            node: {
-              epoch: 2,
-              assetId: '1',
-              rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-              amount: '5',
             },
           },
         ],
@@ -104,27 +96,31 @@ describe('generateEpochAssetRewardsList', () => {
             name: '',
             rewards: [
               {
-                rewardType: AccountType.ACCOUNT_TYPE_INSURANCE,
+                rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
                 amount: '123',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                amount: '0',
               },
             ],
             totalAmount: '123',
-          },
-        ],
-      },
-      {
-        epoch: 2,
-        assetRewards: [
-          {
-            assetId: '1',
-            name: '',
-            rewards: [
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-                amount: '5',
-              },
-            ],
-            totalAmount: '5',
           },
         ],
       },
@@ -155,7 +151,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 1,
               assetId: '1',
-              rewardType: AccountType.ACCOUNT_TYPE_INSURANCE,
+              rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
               amount: '123',
             },
           },
@@ -165,22 +161,6 @@ describe('generateEpochAssetRewardsList', () => {
               assetId: '1',
               rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
               amount: '100',
-            },
-          },
-          {
-            node: {
-              epoch: 1,
-              assetId: '2',
-              rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-              amount: '17.9873',
-            },
-          },
-          {
-            node: {
-              epoch: 1,
-              assetId: '2',
-              rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-              amount: '1',
             },
           },
           {
@@ -211,30 +191,31 @@ describe('generateEpochAssetRewardsList', () => {
             name: 'Asset 1',
             rewards: [
               {
-                rewardType: AccountType.ACCOUNT_TYPE_INSURANCE,
-                amount: '123',
+                rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                amount: '0',
               },
               {
                 rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
                 amount: '100',
               },
-            ],
-            totalAmount: '223',
-          },
-          {
-            assetId: '2',
-            name: 'Asset 2',
-            rewards: [
               {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                amount: '17.9873',
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                amount: '123',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                amount: '0',
               },
               {
                 rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-                amount: '1',
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                amount: '0',
               },
             ],
-            totalAmount: '18.9873',
+            totalAmount: '223',
           },
         ],
       },
@@ -246,8 +227,28 @@ describe('generateEpochAssetRewardsList', () => {
             name: 'Asset 1',
             rewards: [
               {
+                rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                amount: '0',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                amount: '0',
+              },
+              {
                 rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
                 amount: '5',
+              },
+              {
+                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                amount: '0',
               },
             ],
             totalAmount: '5',

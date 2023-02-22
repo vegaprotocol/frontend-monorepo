@@ -48,7 +48,8 @@ export const Checkbox = ({
           ) : (
             <Icon
               name="tick"
-              className="relative w-[10px] h-[10px] text-white dark:text-black"
+              size={3}
+              className="relative text-white dark:text-black"
             />
           )}
         </CheckboxPrimitive.CheckboxIndicator>

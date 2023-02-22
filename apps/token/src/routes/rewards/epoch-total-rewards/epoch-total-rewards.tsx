@@ -5,7 +5,7 @@ import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-li
 import { NoRewards } from '../no-rewards';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
 
-export const EpochRewards = () => {
+export const EpochTotalRewards = () => {
   const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
     variables: {
       epochRewardSummariesPagination: {
@@ -15,7 +15,7 @@ export const EpochRewards = () => {
   });
   useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
 
-  const epochRewardSummaries = generateEpochTotalRewardsList(data) || [];
+  const epochTotalRewardSummaries = generateEpochTotalRewardsList(data) || [];
 
   return (
     <AsyncRenderer
@@ -27,12 +27,12 @@ export const EpochRewards = () => {
           className="max-w-full overflow-auto"
           data-testid="epoch-rewards-total"
         >
-          {epochRewardSummaries.length === 0 ? (
+          {epochTotalRewardSummaries.length === 0 ? (
             <NoRewards />
           ) : (
             <>
-              {epochRewardSummaries.map((aggregatedEpochSummary) => (
-                <EpochTotalRewardsTable data={aggregatedEpochSummary} />
+              {epochTotalRewardSummaries.map((epochTotalSummary, index) => (
+                <EpochTotalRewardsTable data={epochTotalSummary} key={index} />
               ))}
             </>
           )}

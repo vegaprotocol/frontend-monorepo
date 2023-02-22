@@ -3,6 +3,8 @@ import type {
   EpochRewardSummaryFieldsFragment,
 } from '../home/__generated__/Rewards';
 import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
+import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
+import type { AccountType } from '@vegaprotocol/types';
 
 interface EpochSummaryWithNamedReward extends EpochRewardSummaryFieldsFragment {
   name: string;
@@ -18,10 +20,15 @@ export interface AggregatedEpochRewardSummary {
   totalAmount: string;
 }
 
-export interface AggregatedEpochSummary {
+export interface EpochTotalSummary {
   epoch: EpochRewardSummaryFieldsFragment['epoch'];
   assetRewards: AggregatedEpochRewardSummary[];
 }
+
+const emptyRowAccountTypes = Object.keys(RowAccountTypes).map((type) => ({
+  rewardType: type as AccountType,
+  amount: '0',
+}));
 
 export const generateEpochTotalRewardsList = (
   epochData: EpochAssetsRewardsQuery | undefined
@@ -58,7 +65,7 @@ export const generateEpochTotalRewardsList = (
     }, [] as EpochSummaryWithNamedReward[][]);
 
   // Now aggregate the array of arrays of epoch summaries by asset rewards.
-  const aggregatedEpochSummaries: AggregatedEpochSummary[] =
+  const epochTotalRewards: EpochTotalSummary[] =
     aggregatedEpochSummariesByEpochNumber.map((epochSummaries) => {
       const assetRewards = epochSummaries.reduce((acc, epochSummary) => {
         const assetRewardIndex = acc.findIndex(
@@ -72,18 +79,36 @@ export const generateEpochTotalRewardsList = (
             assetId: epochSummary.assetId,
             name: epochSummary.name,
             rewards: [
-              {
-                rewardType: epochSummary.rewardType,
-                amount: epochSummary.amount,
-              },
+              ...emptyRowAccountTypes.map((emptyRowAccountType) => {
+                if (
+                  emptyRowAccountType.rewardType === epochSummary.rewardType
+                ) {
+                  return {
+                    rewardType: epochSummary.rewardType,
+                    amount: epochSummary.amount,
+                  };
+                } else {
+                  return emptyRowAccountType;
+                }
+              }),
             ],
             totalAmount: epochSummary.amount,
           });
         } else {
-          acc[assetRewardIndex].rewards.push({
-            rewardType: epochSummary.rewardType,
-            amount: epochSummary.amount,
-          });
+          acc[assetRewardIndex].rewards = acc[assetRewardIndex].rewards.map(
+            (reward) => {
+              if (reward.rewardType === epochSummary.rewardType) {
+                return {
+                  rewardType: epochSummary.rewardType,
+                  amount: (
+                    Number(reward.amount) + Number(epochSummary.amount)
+                  ).toString(),
+                };
+              } else {
+                return reward;
+              }
+            }
+          );
           acc[assetRewardIndex].totalAmount = (
             Number(acc[assetRewardIndex].totalAmount) +
             Number(epochSummary.amount)
@@ -99,5 +124,5 @@ export const generateEpochTotalRewardsList = (
       };
     });
 
-  return aggregatedEpochSummaries;
+  return epochTotalRewards;
 };

@@ -1,16 +1,19 @@
+import merge from 'lodash/merge';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { renderHook } from '@testing-library/react-hooks';
 import { ProposalState } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
-import { useUpdateNetworkParametersToasts } from './use-update-network-paramaters-toasts';
+import {
+  PROPOSAL_STATES_TO_TOAST,
+  useUpdateNetworkParametersToasts,
+} from './use-update-network-paramaters-toasts';
 import type {
-  UpdateNetworkParameterFieldsFragment,
+  UpdateNetworkParameterProposalFragment,
   OnUpdateNetworkParametersSubscription,
 } from './__generated__/Proposal';
 import { OnUpdateNetworkParametersDocument } from './__generated__/Proposal';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
-import { waitFor } from '@testing-library/react';
+import { waitFor, renderHook } from '@testing-library/react';
 
 const render = (mocks?: MockedResponse[]) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
@@ -23,7 +26,7 @@ const generateUpdateNetworkParametersProposal = (
   key: string,
   value: string,
   state: ProposalState = ProposalState.STATE_OPEN
-): UpdateNetworkParameterFieldsFragment => ({
+): UpdateNetworkParameterProposalFragment => ({
   __typename: 'Proposal',
   id: Math.random().toString(),
   datetime: Math.random().toString(),
@@ -42,56 +45,6 @@ const generateUpdateNetworkParametersProposal = (
   },
 });
 
-const mockedWrongEvent: MockedResponse<OnUpdateNetworkParametersSubscription> =
-  {
-    request: {
-      query: OnUpdateNetworkParametersDocument,
-    },
-    result: {
-      data: {
-        __typename: 'Subscription',
-        busEvents: [
-          {
-            __typename: 'BusEvent',
-            event: {
-              __typename: 'Asset',
-            },
-          },
-        ],
-      },
-    },
-  };
-
-const mockedEmptyEvent: MockedResponse<OnUpdateNetworkParametersSubscription> =
-  {
-    request: {
-      query: OnUpdateNetworkParametersDocument,
-    },
-    result: {
-      data: {
-        __typename: 'Subscription',
-        busEvents: [],
-      },
-    },
-  };
-
-const mockedEvent: MockedResponse<OnUpdateNetworkParametersSubscription> = {
-  request: {
-    query: OnUpdateNetworkParametersDocument,
-  },
-  result: {
-    data: {
-      __typename: 'Subscription',
-      busEvents: [
-        {
-          __typename: 'BusEvent',
-          event: generateUpdateNetworkParametersProposal('abc.def', '123.456'),
-        },
-      ],
-    },
-  },
-};
-
 const INITIAL = useToasts.getState();
 
 const clear = () => {
@@ -102,23 +55,113 @@ describe('useUpdateNetworkParametersToasts', () => {
   beforeEach(clear);
   afterAll(clear);
 
-  it('returns toast for update network parameters bus event', async () => {
-    render([mockedEvent]);
-    await waitFor(() => {
-      expect(useToasts.getState().count).toBe(1);
-    });
-  });
+  it.each(PROPOSAL_STATES_TO_TOAST)(
+    'toasts for %s network param proposals',
+    async (state) => {
+      const mockOpenProposal: MockedResponse<OnUpdateNetworkParametersSubscription> =
+        {
+          request: {
+            query: OnUpdateNetworkParametersDocument,
+          },
+          result: {
+            data: {
+              proposals: generateUpdateNetworkParametersProposal(
+                'abc.def',
+                '123.456',
+                state
+              ),
+            },
+          },
+        };
+      const { result } = render([mockOpenProposal]);
+      expect(result.current.loading).toBe(true);
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(useToasts.getState().count).toBe(1);
+      });
+    }
+  );
 
-  it('does not return toast for empty event', async () => {
-    render([mockedEmptyEvent]);
+  const IGNORE_STATES = Object.keys(ProposalState).filter((state) => {
+    return !PROPOSAL_STATES_TO_TOAST.includes(state as ProposalState);
+  }) as ProposalState[];
+  it.each(IGNORE_STATES)('does not toast for %s proposals', async (state) => {
+    const mockFailedProposal: MockedResponse<OnUpdateNetworkParametersSubscription> =
+      {
+        request: {
+          query: OnUpdateNetworkParametersDocument,
+        },
+        result: {
+          data: {
+            proposals: generateUpdateNetworkParametersProposal(
+              'abc.def',
+              '123.456',
+              state
+            ),
+          },
+        },
+      };
+    const { result } = render([mockFailedProposal]);
+    expect(result.current.loading).toBe(true);
     await waitFor(() => {
+      expect(result.current.loading).toBe(false);
       expect(useToasts.getState().count).toBe(0);
     });
   });
 
-  it('does not return toast for wrong event', async () => {
-    render([mockedWrongEvent]);
+  it('does not return toast for empty propsal', async () => {
+    const error = console.error;
+    console.error = () => {
+      /* no op */
+    };
+    const mockEmptyProposal: MockedResponse<OnUpdateNetworkParametersSubscription> =
+      {
+        request: {
+          query: OnUpdateNetworkParametersDocument,
+        },
+        result: {
+          data: {
+            proposals:
+              undefined as unknown as UpdateNetworkParameterProposalFragment,
+          },
+        },
+      };
+
+    const { result } = render([mockEmptyProposal]);
+    expect(result.current.loading).toBe(true);
     await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(useToasts.getState().count).toBe(0);
+    });
+    console.error = error;
+  });
+
+  it('does not return toast for wrong proposal type', async () => {
+    const wrongProposalType = merge(
+      generateUpdateNetworkParametersProposal('a', 'b'),
+      {
+        terms: {
+          change: {
+            __typename: 'NewMarket',
+          },
+        },
+      }
+    );
+    const mockWrongProposalType: MockedResponse<OnUpdateNetworkParametersSubscription> =
+      {
+        request: {
+          query: OnUpdateNetworkParametersDocument,
+        },
+        result: {
+          data: {
+            proposals: wrongProposalType,
+          },
+        },
+      };
+    const { result } = render([mockWrongProposalType]);
+    expect(result.current.loading).toBe(true);
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
       expect(useToasts.getState().count).toBe(0);
     });
   });
