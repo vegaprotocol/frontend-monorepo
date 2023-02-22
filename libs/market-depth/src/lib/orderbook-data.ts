@@ -26,9 +26,19 @@ export interface OrderbookRowData {
 
 type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'ask' | 'bid'>;
 
-export type OrderbookData = Partial<
-  Omit<MarketData, '__typename' | 'market'>
-> & { rows: OrderbookRowData[] | null };
+type OrderbookMarketData = Pick<
+  MarketData,
+  | 'bestStaticBidPrice'
+  | 'bestStaticOfferPrice'
+  | 'indicativePrice'
+  | 'indicativeVolume'
+  | 'marketTradingMode'
+>;
+
+export type OrderbookData = Partial<OrderbookMarketData> & {
+  rows: OrderbookRowData[] | null;
+  midPrice?: string;
+};
 
 export const getPriceLevel = (price: string | bigint, resolution: number) => {
   const p = BigInt(price);
@@ -39,6 +49,18 @@ export const getPriceLevel = (price: string | bigint, resolution: number) => {
   }
   return priceLevel.toString();
 };
+
+export const getMidPrice = (
+  sell: PriceLevelFieldsFragment[] | null | undefined,
+  buy: PriceLevelFieldsFragment[] | null | undefined,
+  resolution: number
+) =>
+  buy?.length && sell?.length
+    ? getPriceLevel(
+        (BigInt(buy[0].price) + BigInt(sell[0].price)) / BigInt(2),
+        resolution
+      )
+    : undefined;
 
 const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
   bid: Math.max(...orderbookData.map((data) => data.bid)),
@@ -157,8 +179,15 @@ export const compactRows = (
     }
     orderbookData.push(row);
   });
-  // order by price, it's safe to cast to number price diff should not exceed Number.MAX_SAFE_INTEGER
-  orderbookData.sort((a, b) => Number(BigInt(b.price) - BigInt(a.price)));
+  orderbookData.sort((a, b) => {
+    if (a === b) {
+      return 0;
+    }
+    if (BigInt(a.price) > BigInt(b.price)) {
+      return -1;
+    }
+    return 1;
+  });
   // count cumulative volumes
   if (orderbookData.length > 1) {
     const maxIndex = orderbookData.length - 1;
@@ -253,28 +282,6 @@ export const updateCompactedRows = (
   return data;
 };
 
-export const mapMarketData = (
-  data: Pick<
-    MarketData,
-    | 'staticMidPrice'
-    | 'bestStaticBidPrice'
-    | 'bestStaticOfferPrice'
-    | 'indicativePrice'
-  > | null,
-  resolution: number
-) => ({
-  staticMidPrice:
-    data?.staticMidPrice && getPriceLevel(data?.staticMidPrice, resolution),
-  bestStaticBidPrice:
-    data?.bestStaticBidPrice &&
-    getPriceLevel(data?.bestStaticBidPrice, resolution),
-  bestStaticOfferPrice:
-    data?.bestStaticOfferPrice &&
-    getPriceLevel(data?.bestStaticOfferPrice, resolution),
-  indicativePrice:
-    data?.indicativePrice && getPriceLevel(data?.indicativePrice, resolution),
-});
-
 /**
  * Updates raw data with new data received from subscription - mutates input
  * @param levels
@@ -283,7 +290,8 @@ export const mapMarketData = (
  */
 export const updateLevels = (
   draft: PriceLevelFieldsFragment[],
-  updates: (PriceLevelFieldsFragment | PriceLevelFieldsFragment)[]
+  updates: (PriceLevelFieldsFragment | PriceLevelFieldsFragment)[],
+  ascending = true
 ) => {
   const levels = [...draft];
   updates.forEach((update) => {
@@ -295,8 +303,10 @@ export const updateLevels = (
         levels[index] = update;
       }
     } else if (update.volume !== '0') {
-      index = levels.findIndex(
-        (level) => BigInt(level.price) > BigInt(update.price)
+      index = levels.findIndex((level) =>
+        ascending
+          ? BigInt(level.price) > BigInt(update.price)
+          : BigInt(level.price) < BigInt(update.price)
       );
       if (index !== -1) {
         levels.splice(index, 0, update);
@@ -346,22 +356,20 @@ export const generateMockData = ({
     numberOfOrders: '',
   }));
   const rows = compactRows(sell, buy, resolution);
+  const marketTradingMode =
+    overlap > 0
+      ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+      : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS;
   return {
     rows,
     resolution,
     indicativeVolume: indicativeVolume?.toString(),
-    marketTradingMode:
-      overlap > 0
-        ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-        : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    ...mapMarketData(
-      {
-        staticMidPrice: '',
-        bestStaticBidPrice: bestStaticBidPrice.toString(),
-        bestStaticOfferPrice: bestStaticOfferPrice.toString(),
-        indicativePrice: indicativePrice?.toString() ?? '',
-      },
-      resolution
-    ),
+    marketTradingMode,
+    midPrice: ((bestStaticBidPrice + bestStaticOfferPrice) / 2).toString(),
+    bestStaticBidPrice: bestStaticBidPrice.toString(),
+    bestStaticOfferPrice: bestStaticOfferPrice.toString(),
+    indicativePrice: indicativePrice
+      ? getPriceLevel(indicativePrice.toString(), resolution)
+      : undefined,
   };
 };

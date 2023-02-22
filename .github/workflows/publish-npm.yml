@@ -1,0 +1,47 @@
+name: Publish libs to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Monorepo project to publish'
+        required: true
+        type: choice
+        options:
+          - ui-toolkit
+          - react-helpers
+          - tailwindcss-config
+          - types
+
+jobs:
+  publish:
+    name: Build & Publish - Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      actions: 'read'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: User Node.js 16
+        id: Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.1
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build project
+        run: yarn nx build ${{inputs.project}}
+      - name: Publish project to @vegaprotocol
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: dist/libs/${{inputs.project}}/package.json
+          access: public
