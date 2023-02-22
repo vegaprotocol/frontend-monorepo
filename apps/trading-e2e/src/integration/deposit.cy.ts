@@ -69,7 +69,6 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
 
 describe('deposit actions', { tags: '@smoke' }, () => {
   before(() => {
-    cy.clearLocalStorage();
     cy.mockWeb3Provider();
     cy.mockTradingPage();
     cy.mockSubscription();
