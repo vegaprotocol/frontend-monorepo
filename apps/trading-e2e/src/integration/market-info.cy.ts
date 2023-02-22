@@ -29,7 +29,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(0, 'Mark Price', '0.05749');
     validateMarketDataRow(1, 'Best Bid Price', '6.81765 ');
     validateMarketDataRow(2, 'Best Offer Price', '6.81769 ');
-    validateMarketDataRow(3, 'Quote Unit', 'USD');
+    validateMarketDataRow(3, 'Quote Unit', 'BTC');
   });
 
   it('market volume displayed', () => {
@@ -170,8 +170,8 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.getByTestId(marketTitle).contains('Liquidity price range').click();
 
     validateMarketDataRow(0, 'Liquidity Price Range', '2.00% of mid price');
-    validateMarketDataRow(1, 'Lowest price', '0.05634 BTC');
-    validateMarketDataRow(2, 'Highest price', '0.05864 BTC');
+    validateMarketDataRow(1, 'Lowest Price', '0.05634 BTC');
+    validateMarketDataRow(2, 'Highest Price', '0.05864 BTC');
   });
 
   it('oracle displayed', () => {
