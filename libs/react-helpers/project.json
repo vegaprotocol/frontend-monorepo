@@ -8,6 +8,7 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "buildableProjectDepsInPackageJsonType": "dependencies",
         "outputPath": "dist/libs/react-helpers",
         "tsConfig": "libs/react-helpers/tsconfig.lib.json",
         "project": "libs/react-helpers/package.json",

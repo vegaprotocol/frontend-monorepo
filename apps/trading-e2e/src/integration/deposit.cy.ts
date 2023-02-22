@@ -66,3 +66,25 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
       .should('have.text', 'Insufficient amount in Ethereum wallet');
   });
 });
+
+describe('deposit actions', { tags: '@smoke' }, () => {
+  before(() => {
+    cy.mockWeb3Provider();
+    cy.mockTradingPage();
+    cy.mockSubscription();
+    cy.setVegaWallet();
+    cy.visit('/');
+    cy.wait('@MarketsCandles');
+    cy.getByTestId('dialog-close').click();
+  });
+
+  it('Deposit to trade is visble', () => {
+    cy.getByTestId('Collateral').click();
+    cy.contains('[data-testid="deposit"]', 'Deposit to trade').should(
+      'be.visible'
+    );
+    cy.contains('[data-testid="deposit"]', 'Deposit to trade').click();
+    connectEthereumWallet('MetaMask');
+    cy.getByTestId('deposit-submit').should('be.visible');
+  });
+});
