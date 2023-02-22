@@ -9,7 +9,9 @@ import type { Tranche } from '../../../lib/tranches/tranches-store';
  * @param decimals decimal places for the formatted result
  * @return The total circulating tokens from all tranches
  */
-export function sumCirculatingTokens(tranches: Tranche[] | null): BigNumber {
+export function sumCirculatingTokens(
+  tranches: { total_added: BigNumber; locked_amount: BigNumber }[] | null
+): BigNumber {
   let totalCirculating: BigNumber = new BigNumber(0);
 
   tranches?.forEach(
