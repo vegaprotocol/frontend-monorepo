@@ -19,7 +19,12 @@ export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
  * with a link to the assets modal. If the name does not come back
  * it will use the ID instead.
  */
-export const AssetLink = ({ assetId, asDialog, showAssetSymbol = false, ...props }: AssetLinkProps) => {
+export const AssetLink = ({
+  assetId,
+  asDialog,
+  showAssetSymbol = false,
+  ...props
+}: AssetLinkProps) => {
   const { data: asset } = useAssetDataProvider(assetId);
 
   const open = useAssetDetailsDialogStore((state) => state.open);
@@ -29,7 +34,7 @@ export const AssetLink = ({ assetId, asDialog, showAssetSymbol = false, ...props
       ? asset?.symbol
       : asset?.name
     : assetId;
-    
+
   return (
     <ButtonLink
       data-testid="asset-link"
