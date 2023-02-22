@@ -123,7 +123,7 @@ export const MarketLiquiditySupplied = ({
       {showMessage && (
         <p className="mt-4">
           {t(
-            'The market is in an auction because there are no priced limit orders, which are required to deploy liquidity commitment pegged orders. This means the order book is empty on one or both sides.'
+            'The market has sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.'
           )}
         </p>
       )}
