@@ -290,6 +290,7 @@ export const DepositForm = ({
             deposited={deposited}
             balance={balance}
             asset={selectedAsset}
+            allowance={allowance}
           />
         </div>
       )}
@@ -308,7 +309,7 @@ export const DepositForm = ({
                   if (value.isGreaterThan(maxAmount.available)) {
                     return t('Insufficient amount in Ethereum wallet');
                   } else if (value.isGreaterThan(maxAmount.limit)) {
-                    return t('Amount is above temporary deposit limit');
+                    return t('Amount is above deposit limit');
                   } else if (value.isGreaterThan(maxAmount.approved)) {
                     return t('Amount is above approved amount');
                   }
