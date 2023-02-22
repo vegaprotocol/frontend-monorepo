@@ -109,7 +109,11 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
   AggregatedLedgerEntriesNode[],
   LedgerEntriesQueryVariables
 >(
-  [ledgerEntriesOnlyProvider, assetsProvider, marketsProvider],
+  [
+    ledgerEntriesOnlyProvider,
+    (callback, client) => assetsProvider(callback, client),
+    marketsProvider,
+  ],
   ([entries, assets, markets]) => {
     return entries.map((edge: AggregatedLedgerEntriesEdge) => {
       const entry = edge.node;

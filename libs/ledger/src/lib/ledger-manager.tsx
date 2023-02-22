@@ -32,17 +32,10 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
     gridRef,
   });
 
-  const onFilterChanged = useCallback(
-    (event: FilterChangedEvent) => {
-      const updatedFilter = event.api.getFilterModel();
-      if (Object.keys(updatedFilter).length) {
-        setFilter(updatedFilter);
-      } else if (filter) {
-        setFilter(defaultFilter);
-      }
-    },
-    [filter]
-  );
+  const onFilterChanged = useCallback((event: FilterChangedEvent) => {
+    const updatedFilter = { ...defaultFilter, ...event.api.getFilterModel() };
+    setFilter(updatedFilter);
+  }, []);
   const extractNodesDecorator = useCallback(
     (data: AggregatedLedgerEntriesNode[] | null) =>
       data ? data.map((item) => item.node) : null,

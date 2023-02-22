@@ -10,6 +10,7 @@ import {
   differenceInDays,
   formatRFC3339,
   min,
+  max,
   isValid,
 } from 'date-fns';
 import { t } from '../i18n';
@@ -19,6 +20,7 @@ const defaultFilterValue: Schema.DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {
   defaultRangeFilter?: Schema.DateRange;
   maxSubDays?: number;
+  maxNextDays?: number;
   maxDaysRange?: number;
 }
 
@@ -28,27 +30,32 @@ export const DateRangeFilter = forwardRef(
     const [value, setValue] = useState<Schema.DateRange>(defaultDates);
     const [error, setError] = useState<string>('');
     const [minStartDate, maxStartDate, minEndDate, maxEndDate] = useMemo(() => {
-      const minStartDate = props?.maxSubDays
-        ? formatForInput(subDays(Date.now(), props.maxSubDays))
-        : undefined;
-      const maxStartDate = props?.maxSubDays
-        ? formatForInput(new Date())
-        : undefined;
+      const minStartDate =
+        props?.maxSubDays !== undefined
+          ? formatForInput(subDays(Date.now(), props.maxSubDays))
+          : '';
+      const maxStartDate =
+        props?.maxNextDays !== undefined
+          ? formatForInput(addDays(Date.now(), props.maxNextDays))
+          : '';
       const minEndDate =
-        value.start && props?.maxDaysRange
+        value.start && props?.maxDaysRange !== undefined
           ? formatForInput(new Date(value.start))
-          : minStartDate;
+          : minStartDate || value.start
+          ? formatForInput(new Date(value.start))
+          : '';
       const maxEndDate =
-        value.start && props?.maxDaysRange
+        value.start &&
+        (props?.maxNextDays !== undefined || props.maxDaysRange !== undefined)
           ? formatForInput(
               min([
-                new Date(),
-                addDays(new Date(value.start), props.maxDaysRange),
+                addDays(new Date(), props.maxNextDays || 0),
+                addDays(new Date(value.start), props.maxDaysRange || 0),
               ])
             )
           : maxStartDate;
       return [minStartDate, maxStartDate, minEndDate, maxEndDate];
-    }, [props?.maxSubDays, props?.maxDaysRange, value.start]);
+    }, [props.maxSubDays, props.maxDaysRange, props.maxNextDays, value.start]);
     // expose AG Grid Filter Lifecycle callbacks
     useImperativeHandle(ref, () => {
       return {
@@ -140,39 +147,53 @@ export const DateRangeFilter = forwardRef(
       setError('');
       return true;
     };
+
+    const checkForEndDate = (endDate: Date | undefined, startDate: Date) => {
+      return endDate
+        ? formatRFC3339(
+            max([
+              startDate,
+              min([
+                endDate,
+                props.maxDaysRange
+                  ? addDays(startDate, props.maxDaysRange)
+                  : endDate,
+                props.maxNextDays
+                  ? addDays(Date.now(), props.maxNextDays)
+                  : endDate,
+              ]),
+            ])
+          )
+        : '';
+    };
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
       const { value: dateValue, name } = event.target;
       const date = new Date(dateValue || defaultDates[name as 'start' | 'end']);
-      const stringedDate = isValid(date) ? formatRFC3339(date) : undefined;
-      let update = { [name]: stringedDate };
-      if (name === 'start' && props.maxDaysRange) {
-        const endDate = new Date(value.end || Date.now());
-        if (Math.abs(differenceInDays(date, endDate)) > props.maxDaysRange) {
-          update = {
-            ...update,
-            end: formatRFC3339(
-              min([new Date(), addDays(date, props.maxDaysRange)])
-            ),
-          };
-        } else if (isBefore(endDate, date)) {
-          update = {
-            ...update,
-            end: formatRFC3339(min([new Date(), addDays(date, 1)])),
-          };
-        }
+      let update = { [name]: isValid(date) ? formatRFC3339(date) : undefined };
+      const startDate = name === 'start' ? date : new Date(value.start);
+      if (isValid(startDate)) {
+        const endCheckDate =
+          name === 'start'
+            ? new Date(value.end || maxEndDate)
+            : isValid(date)
+            ? date
+            : new Date(maxEndDate);
+        const endDate = isValid(endCheckDate) ? endCheckDate : undefined;
+        update = { ...update, end: checkForEndDate(endDate, startDate) };
       }
+
       if (validate(name, date, update)) {
-        setValue({
-          ...value,
+        setValue((curr) => ({
+          ...curr,
           ...update,
-        });
+        }));
       }
     };
     useEffect(() => {
       props?.filterChangedCallback();
     }, [value, props]);
 
-    const Notification = () => {
+    const notification = useMemo(() => {
       const not = error ? (
         <div className="border-vega-pink bg-vega-pink-300 dark:bg-vega-pink-650 border rounded p-2 flex items-start gap-2.5 m-4 w-full">
           <div className="text-vega-pink flex items-start mt-1">
@@ -194,14 +215,13 @@ export const DateRangeFilter = forwardRef(
       return (
         <div className="ag-filter-apply-panel flex min-h-[2rem]">{not}</div>
       );
-    };
+    }, [error]);
 
-    const start =
-      (value.start && formatForInput(new Date(value.start))) || undefined;
+    const start = (value.start && formatForInput(new Date(value.start))) || '';
     const end = (value.end && formatForInput(new Date(value.end))) || '';
     return (
       <div className="ag-filter-body-wrapper inline-block min-w-fit">
-        <Notification />
+        {notification}
         <div className="ag-filter-apply-panel">
           <fieldset className="ag-simple-filter-body-wrapper">
             <label className="block" key="start">
@@ -209,7 +229,7 @@ export const DateRangeFilter = forwardRef(
               <input
                 type="datetime-local"
                 name="start"
-                value={start}
+                value={start || ''}
                 onChange={onChange}
                 min={minStartDate}
                 max={maxStartDate}
@@ -222,7 +242,7 @@ export const DateRangeFilter = forwardRef(
               <input
                 type="datetime-local"
                 name="end"
-                value={end}
+                value={end || ''}
                 onChange={onChange}
                 min={minEndDate}
                 max={maxEndDate}

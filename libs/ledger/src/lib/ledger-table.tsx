@@ -39,7 +39,7 @@ export const TransferTooltipCellComponent = ({
 
 const defaultRangeFilter = { start: formatRFC3339(subDays(Date.now(), 7)) };
 const dateRangeFilterParams = {
-  maxSubDays: 30,
+  maxNextDays: 0,
   maxDaysRange: 7,
   defaultRangeFilter,
 };
@@ -58,9 +58,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           sortable: true,
           tooltipComponent: TransferTooltipCellComponent,
           filterParams: {
-            maxSubDays: 30,
-            maxDaysRange: 7,
-            defaultRangeFilter,
+            ...dateRangeFilterParams,
             buttons: ['reset'],
           },
         }}
