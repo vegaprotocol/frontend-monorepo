@@ -74,6 +74,7 @@ describe('deposit actions', { tags: '@smoke' }, () => {
     cy.mockSubscription();
     cy.setVegaWallet();
     cy.visit('/');
+    cy.wait('@MarketsCandles');
     cy.getByTestId('dialog-close').click();
   });
 
