@@ -42,10 +42,18 @@ export const update: Update<
       },
     };
     if (delta.buy) {
-      updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
+      updatedData.depth.buy = updateLevels(
+        data.depth.buy ?? [],
+        delta.buy,
+        false
+      );
     }
     if (delta.sell) {
-      updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
+      updatedData.depth.sell = updateLevels(
+        data.depth.sell ?? [],
+        delta.sell,
+        true
+      );
     }
     updatedData.depth.sequenceNumber = delta.sequenceNumber;
     return updatedData;
