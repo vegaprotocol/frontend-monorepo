@@ -6,6 +6,7 @@ beforeEach(() => {
   cy.visit('/');
   cy.wait('@Markets');
   cy.wait('@MarketsData');
+  cy.wait('@MarketsCandles');
   cy.getByTestId('dialog-close').click();
 });
 
