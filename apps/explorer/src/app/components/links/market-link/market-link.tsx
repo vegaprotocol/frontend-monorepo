@@ -48,7 +48,7 @@ const MarketLink = ({
       <Link
         className="underline"
         {...props}
-        to={`/${Routes.MARKETS}#${id}`}
+        to={`/${Routes.MARKETS}/${id}`}
         title={id}
       >
         {label}
@@ -56,7 +56,7 @@ const MarketLink = ({
     );
   } else {
     return (
-      <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
+      <Link className="underline" {...props} to={`/${Routes.MARKETS}/${id}`}>
         <Hash text={id} />
       </Link>
     );
