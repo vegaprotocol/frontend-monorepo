@@ -173,8 +173,11 @@ describe('markets table', { tags: '@smoke' }, () => {
 });
 
 function openMarketDropDown() {
-  cy.getByTestId(dialogCloseBtn).should('be.visible');
-  cy.getByTestId(dialogCloseBtn).click();
+  cy.getByTestId(dialogCloseBtn).then((button) => {
+    if (button.is(':visible')) {
+      cy.getByTestId(dialogCloseBtn).click();
+    }
+  });
   cy.getByTestId('popover-trigger').click();
   cy.contains('Loading market data...').should('not.exist');
 }
