@@ -1,11 +1,13 @@
 import { mockConnectWallet } from '@vegaprotocol/cypress';
 
 beforeEach(() => {
+  cy.clearLocalStorage();
   cy.mockTradingPage();
   cy.mockSubscription();
   cy.visit('/');
   cy.wait('@Markets');
   cy.wait('@MarketsData');
+  cy.wait('@MarketsCandles');
   cy.getByTestId('dialog-close').click();
 });
 
