@@ -34,7 +34,6 @@ export const MarketProposalNotification = ({
           intent={Intent.Warning}
           message={message}
           testId="market-proposal-notification"
-          className="px-2 py-1"
         />
       </div>
     );

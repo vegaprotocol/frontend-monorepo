@@ -27,12 +27,13 @@ export const AssetProposalNotification = ({
       </>
     );
     return (
-      <Notification
-        intent={Intent.Warning}
-        message={message}
-        testId="asset-proposal-notification"
-        className="mb-2"
-      />
+      <div className="mb-2">
+        <Notification
+          intent={Intent.Warning}
+          message={message}
+          testId="asset-proposal-notification"
+        />
+      </div>
     );
   }
 
