@@ -6,6 +6,7 @@ import {
   formatNumber,
   formatNumberPercentage,
   isNumeric,
+  toDecimal,
   toNumberParts,
 } from './number';
 
@@ -196,4 +197,14 @@ describe('compactNumber', () => {
       expect(compactNumber(input, decimals, 'long')).toEqual(output);
     }
   );
+});
+
+describe('toDecimal', () => {
+  it.each([
+    { v: 7, o: '0.0000001' },
+    { v: 8, o: '0.00000001' },
+    { v: 0, o: '0' },
+  ])('formats with toNumber given number correctly', ({ v, o }) => {
+    expect(toDecimal(v)).toStrictEqual(o);
+  });
 });

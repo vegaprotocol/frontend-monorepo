@@ -22,7 +22,7 @@ export const KeyValueTable = ({
   return (
     <React.Fragment>
       {title && <TitleTag className={`text-xl my-2`}>{title}</TitleTag>}
-      <div data-testid="key-value-table" {...rest} className="mb-4">
+      <div data-testid="key-value-table" {...rest}>
         <div>
           {children &&
             React.Children.map(
