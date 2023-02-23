@@ -1,4 +1,13 @@
 /// <reference types="cypress" />
+
+import {
+  navigateTo,
+  navigation,
+  verifyPageHeader,
+  verifyTabHighlighted,
+} from '../../support/common.functions';
+import { clickOnValidatorFromList } from '../../support/staking.functions';
+
 const guideLink = '[data-testid="staking-guide-link"]';
 const validatorTitle = '[data-testid="validator-node-title"]';
 const validatorId = '[data-testid="validator-id"]';
@@ -23,19 +32,20 @@ const totalPenaltyToolTip = "[data-testid='total-penalty-tooltip']";
 const epochCountDown = '[data-testid="epoch-countdown"]';
 const stakeNumberRegex = /^\d*\.?\d*$/;
 
-context('Staking Page - verify elements on page', function () {
-  before('navigate to staking page', function () {
-    cy.visit('/').navigate_to('validators');
+context('Validators Page - verify elements on page', function () {
+  before('navigate to validators page', function () {
+    cy.visit('/');
+    navigateTo(navigation.validators);
   });
 
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
     describe('description section', function () {
       it('Should have validators tab highlighted', function () {
-        cy.verify_tab_highlighted('validators');
+        verifyTabHighlighted(navigation.validators);
       });
 
       it('Should have validators ON VEGA header visible', function () {
-        cy.verify_page_header('Validators');
+        verifyPageHeader('Validators');
       });
 
       it('Should have Staking Guide link visible', function () {
@@ -147,7 +157,7 @@ context('Staking Page - verify elements on page', function () {
     function () {
       before('connect wallets and click on validator', function () {
         cy.connectVegaWallet();
-        cy.click_on_validator_from_list(0);
+        clickOnValidatorFromList(0);
       });
 
       // 2001-STKE-006

@@ -1,11 +1,21 @@
 /// <reference types="cypress" />
-import { waitForSpinner } from '../../support/common.functions';
-import { associateTokenStartOfTests } from '../../support/governance.functions';
+import {
+  navigateTo,
+  navigation,
+  waitForSpinner,
+} from '../../support/common.functions';
+import {
+  getProposalInformationFromTable,
+  voteForProposal,
+} from '../../support/governance.functions';
 
 import {
   createUpdateNetworkProposalTxBody,
   createFreeFormProposalTxBody,
 } from '../../support/proposal.functions';
+import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
+import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
+import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
 
 const closedProposals = '[data-testid="closed-proposals"]';
 const proposalStatus = '[data-testid="proposal-status"]';
@@ -22,11 +32,10 @@ context(
   function () {
     before('Connect wallets and set approval', function () {
       cy.visit('/');
-      cy.vega_wallet_set_specified_approval_amount('1000');
-      associateTokenStartOfTests();
+      vegaWalletSetSpecifiedApprovalAmount('1000');
       cy.connectVegaWallet();
-      cy.ethereum_wallet_connect();
-      cy.ensure_specified_unstaked_tokens_are_associated(1);
+      ethereumWalletConnect();
+      ensureSpecifiedUnstakedTokensAreAssociated('1');
       cy.clearLocalStorage();
     });
 
@@ -34,8 +43,8 @@ context(
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
-      cy.ethereum_wallet_connect();
-      cy.navigate_to('proposals');
+      ethereumWalletConnect();
+      navigateTo(navigation.proposals);
     });
 
     // 3001-VOTE-006
@@ -54,7 +63,7 @@ context(
           });
       });
       cy.getByTestId('proposal-type').should('have.text', 'New market');
-      cy.get_proposal_information_from_table('State')
+      getProposalInformationFromTable('State')
         .contains('Enacted')
         .and('be.visible');
       cy.get(votesTable).within(() => {
@@ -69,7 +78,7 @@ context(
       const proposalTx = createUpdateNetworkProposalTxBody();
 
       cy.VegaWalletSubmitProposal(proposalTx);
-      cy.navigate_to('proposals');
+      navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
       cy.get(openProposals).within(() => {
@@ -77,14 +86,14 @@ context(
           .parentsUntil('[data-testid="proposals-list-item"]')
           .within(() => cy.get(viewProposalButton).click());
       });
-      cy.get_proposal_information_from_table('State')
+      getProposalInformationFromTable('State')
         .contains('Open')
         .and('be.visible');
-      cy.vote_for_proposal('for');
-      cy.get_proposal_information_from_table('State') // 3001-VOTE-047
+      voteForProposal('for');
+      getProposalInformationFromTable('State') // 3001-VOTE-047
         .contains('Passed', proposalTimeout)
         .and('be.visible');
-      cy.get_proposal_information_from_table('State')
+      getProposalInformationFromTable('State')
         .contains('Enacted', proposalTimeout)
         .and('be.visible');
       cy.get(votesTable).within(() => {
@@ -102,7 +111,7 @@ context(
       const proposalTx = createFreeFormProposalTxBody();
 
       cy.VegaWalletSubmitProposal(proposalTx);
-      cy.navigate_to('proposals');
+      navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
       cy.get(openProposals).within(() => {
@@ -110,11 +119,11 @@ context(
           .parentsUntil('[data-testid="proposals-list-item"]')
           .within(() => cy.get(viewProposalButton).click());
       });
-      cy.get_proposal_information_from_table('State')
+      getProposalInformationFromTable('State')
         .contains('Open')
         .and('be.visible');
-      cy.vote_for_proposal('for');
-      cy.get_proposal_information_from_table('State')
+      voteForProposal('for');
+      getProposalInformationFromTable('State')
         .contains('Enacted', proposalTimeout)
         .and('be.visible');
     });
@@ -124,7 +133,7 @@ context(
       const proposalTitle = 'Add New free form proposal with short enactment';
       const proposalTx = createFreeFormProposalTxBody();
       cy.VegaWalletSubmitProposal(proposalTx);
-      cy.navigate_to('proposals');
+      navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
       cy.get(openProposals).within(() => {
@@ -132,13 +141,13 @@ context(
           .parentsUntil('[data-testid="proposals-list-item"]')
           .within(() => cy.get(viewProposalButton).click());
       });
-      cy.get_proposal_information_from_table('State')
+      getProposalInformationFromTable('State')
         .contains('Open')
         .and('be.visible');
-      cy.get_proposal_information_from_table('State') // 3001-VOTE-047
+      getProposalInformationFromTable('State') // 3001-VOTE-047
         .contains('Declined', proposalTimeout)
         .and('be.visible');
-      cy.get_proposal_information_from_table('Rejection reason')
+      getProposalInformationFromTable('Rejection reason')
         .contains('PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED')
         .and('be.visible');
     });

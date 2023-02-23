@@ -3,7 +3,7 @@ declare global {
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      get_network_parameters(): void;
+      get_network_parameters(): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
@@ -38,7 +38,7 @@ export function addGetNetworkParameters() {
           r[key] = value;
           return r;
         }, {});
-        return object;
+        return cy.wrap(object);
       });
   });
 }

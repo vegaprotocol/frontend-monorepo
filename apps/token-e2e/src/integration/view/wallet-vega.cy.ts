@@ -1,5 +1,8 @@
 import { truncateByChars } from '@vegaprotocol/react-helpers';
 import { waitForSpinner } from '../../support/common.functions';
+import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
+import { vegaWalletTeardown } from '../../support/wallet-teardown.functions';
+import { vegaWalletFacetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
 const walletContainer = '[data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
@@ -151,7 +154,7 @@ context(
       before('connect vega wallet', function () {
         cy.visit('/');
         cy.connectVegaWallet();
-        cy.vega_wallet_teardown();
+        vegaWalletTeardown();
       });
 
       // 0002-WCON-007
@@ -302,22 +305,22 @@ context(
       // 2002-SINC-016
       describe('when assets exist in vegawallet', function () {
         before('send-faucet assets to connected vega wallet', function () {
-          cy.vega_wallet_faucet_assets_without_check(
+          vegaWalletFacetAssetsWithoutCheck(
             faucetAssets.USDCFake,
             '1000000',
             vegaWalletPublicKey
           );
-          cy.vega_wallet_faucet_assets_without_check(
+          vegaWalletFacetAssetsWithoutCheck(
             faucetAssets.BTCFake,
             '600000',
             vegaWalletPublicKey
           );
-          cy.vega_wallet_faucet_assets_without_check(
+          vegaWalletFacetAssetsWithoutCheck(
             faucetAssets.EUROFake,
             '800000',
             vegaWalletPublicKey
           );
-          cy.vega_wallet_faucet_assets_without_check(
+          vegaWalletFacetAssetsWithoutCheck(
             faucetAssets.DAIFake,
             '200000',
             vegaWalletPublicKey
@@ -325,11 +328,11 @@ context(
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();
-          cy.ethereum_wallet_connect();
+          ethereumWalletConnect();
         });
 
         it('should see fUSDC assets - within vega wallet', function () {
-          let currency = { id: faucetAssets.USDCFake, name: 'USDC (fake)' };
+          const currency = { id: faucetAssets.USDCFake, name: 'USDC (fake)' };
           cy.get(walletContainer).within(() => {
             cy.get(vegaWalletCurrencyTitle)
               .contains(currency.id, txTimeout)
@@ -349,7 +352,7 @@ context(
         });
 
         it('should see fBTC assets - within vega wallet', function () {
-          let currency = { id: faucetAssets.BTCFake, name: 'BTC (fake)' };
+          const currency = { id: faucetAssets.BTCFake, name: 'BTC (fake)' };
           cy.get(walletContainer).within(() => {
             cy.get(vegaWalletCurrencyTitle)
               .contains(currency.id, txTimeout)
@@ -369,7 +372,7 @@ context(
         });
 
         it('should see fEURO assets - within vega wallet', function () {
-          let currency = { id: faucetAssets.EUROFake, name: 'EURO (fake)' };
+          const currency = { id: faucetAssets.EUROFake, name: 'EURO (fake)' };
           cy.get(walletContainer).within(() => {
             cy.get(vegaWalletCurrencyTitle)
               .contains(currency.id, txTimeout)
@@ -389,7 +392,7 @@ context(
         });
 
         it('should see fDAI assets - within vega wallet', function () {
-          let currency = { id: faucetAssets.DAIFake, name: 'DAI (fake)' };
+          const currency = { id: faucetAssets.DAIFake, name: 'DAI (fake)' };
           cy.get(walletContainer).within(() => {
             cy.get(vegaWalletCurrencyTitle)
               .contains(currency.id, txTimeout)

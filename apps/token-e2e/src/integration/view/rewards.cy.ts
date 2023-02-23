@@ -1,3 +1,9 @@
+import {
+  navigateTo,
+  navigation,
+  verifyPageHeader,
+} from '../../support/common.functions';
+
 const viewToggle = '[data-testid="epoch-reward-view-toggle-total"]';
 const warning = '[data-testid="callout"]';
 
@@ -6,16 +12,17 @@ context(
   { tags: '@regression' },
   function () {
     before('navigate to rewards page', function () {
-      cy.visit('/').navigate_to('rewards');
+      cy.visit('/');
+      navigateTo(navigation.rewards);
     });
 
     describe('with wallets disconnected', function () {
       it('should have REWARDS tab highlighted', function () {
-        cy.verify_tab_highlighted('rewards');
+        verifyPageHeader('Rewards and fees');
       });
 
       it('should have rewards header visible', function () {
-        cy.verify_page_header('Rewards and fees');
+        verifyPageHeader('Rewards and fees');
       });
 
       it('should have epoch warning', function () {

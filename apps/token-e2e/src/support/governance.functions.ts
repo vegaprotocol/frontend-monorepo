@@ -1,3 +1,6 @@
+import { navigateTo, navigation } from './common.functions';
+import { ensureSpecifiedUnstakedTokensAreAssociated } from './staking.functions';
+
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const proposalListItem = '[data-testid="proposals-list-item"]';
@@ -13,83 +16,87 @@ const dialogCloseButton = '[data-testid="dialog-close"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
-Cypress.Commands.add(
-  'convert_unix_timestamp_to_governance_data_table_date_format',
-  (unixTimestamp, monthTextLength = 'longMonth') => {
-    let dateSupplied = new Date(unixTimestamp * 1000),
-      year = dateSupplied.getFullYear(),
-      months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ],
-      month = months[dateSupplied.getMonth()],
-      shortMonth = months[dateSupplied.getMonth()].substring(0, 3),
-      date = dateSupplied.getDate();
+export function convertUnixTimestampToDateformat(
+  unixTimestamp: number,
+  monthTextLength = 'longMonth'
+) {
+  console.log(unixTimestamp);
+  console.log(monthTextLength);
+  const dateSupplied = new Date(unixTimestamp * 1000);
+  console.log(dateSupplied);
+  const year = dateSupplied.getFullYear();
+  console.log(year);
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const month = months[dateSupplied.getMonth()];
+  console.log(month);
+  const shortMonth = months[dateSupplied.getMonth()].substring(0, 3),
+    date = dateSupplied.getDate();
 
-    if (monthTextLength === 'longMonth') return `${date} ${month} ${year}`;
-    else return `${date} ${shortMonth} ${year}`;
-  }
-);
+  if (monthTextLength === 'longMonth') {
+    return cy.wrap(`${date} ${month} ${year}`);
+  } else return cy.wrap(`${date} ${shortMonth} ${year}`);
+}
 
-Cypress.Commands.add(
-  'create_ten_digit_unix_timestamp_for_specified_days',
-  (durationDays) => {
-    let today = new Date();
-    let timestamp = today.setDate(today.getDate() + parseInt(durationDays));
-    timestamp = Math.floor(timestamp / 1000);
+export function createTenDigitUnixTimeStampForSpecifiedDays(
+  durationDays: number
+) {
+  const today = new Date();
+  let timestamp = today.setDate(today.getDate() + durationDays);
+  console.log(`ten digit timestamp: ${timestamp}`);
+  return (timestamp = Math.floor(timestamp / 1000));
+}
 
-    return timestamp;
-  }
-);
-
-Cypress.Commands.add('enter_raw_proposal_body', (timestamp) => {
+export function enterRawProposalBody(timestamp: number) {
   cy.fixture('/proposals/raw.json').then((rawProposal) => {
+    console.log(timestamp);
     rawProposal.terms.closingTimestamp = timestamp;
     rawProposal.rationale.title += timestamp;
-    let proposalPayload = JSON.stringify(rawProposal);
+    const proposalPayload = JSON.stringify(rawProposal);
 
     cy.get(rawProposalData).type(proposalPayload, {
       parseSpecialCharSequences: false,
       delay: 2,
     });
     cy.get(newProposalSubmitButton).should('be.visible').click();
-    cy.wrap(rawProposal);
+    cy.wrap(rawProposal).as('rawProposal');
   });
-});
+}
 
-Cypress.Commands.add(
-  'enter_unique_freeform_proposal_body',
-  (timestamp, proposalTitle) => {
-    cy.get(newProposalTitle).type(proposalTitle);
-    cy.get(newProposalDescription).type(
-      'this is a e2e freeform proposal description'
-    );
-    cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-    cy.getByTestId('proposal-submit').should('be.visible').click();
-  }
-);
+export function enterUniqueFreeFormProposalBody(
+  timestamp: string,
+  proposalTitle: string
+) {
+  cy.get(newProposalTitle).type(proposalTitle);
+  cy.get(newProposalDescription).type(
+    'this is a e2e freeform proposal description'
+  );
+  cy.get(proposalVoteDeadline).clear().click().type(timestamp);
+  cy.getByTestId('proposal-submit').should('be.visible').click();
+}
 
-Cypress.Commands.add(
-  'get_submitted_proposal_from_proposal_list',
-  (proposalTitle) => {
-    cy.get_proposal_id_from_list(proposalTitle);
-    cy.get('@proposalIdText').then((proposalId) => {
-      return cy.get(`#${proposalId}`);
-    });
-  }
-);
+export function getSubmittedProposalFromProposalList(proposalTitle: string) {
+  getProposalIdFromList(proposalTitle);
+  // return cy.get(`#${cy.get('@proposalIdText')}`);
+  cy.get('@proposalIdText').then((proposalId) => {
+    cy.get(`#${proposalId}`).as('submittedProposal');
+  });
+  return cy.get('@submittedProposal');
+}
 
-Cypress.Commands.add('get_proposal_id_from_list', (proposalTitle) => {
+export function getProposalIdFromList(proposalTitle: string) {
   cy.contains(proposalTitle)
     .parentsUntil(proposalListItem)
     .within(() => {
@@ -103,34 +110,30 @@ Cypress.Commands.add('get_proposal_id_from_list', (proposalTitle) => {
           cy.wrap(newProposalId).as('proposalIdText');
         });
     });
-});
+}
 
-Cypress.Commands.add(
-  'get_governance_proposal_date_format_for_specified_days',
-  (days, shortOrLong) => {
-    cy.create_ten_digit_unix_timestamp_for_specified_days(days).then((date) => {
-      cy.convert_unix_timestamp_to_governance_data_table_date_format(
-        date,
-        shortOrLong
-      ).then((convertedDate) => {
-        return convertedDate;
-      });
-    });
-  }
-);
+export function getGovernanceProposalDateFormatForSpecifiedDays(
+  days: number,
+  shortOrLong?: string
+) {
+  return convertUnixTimestampToDateformat(
+    createTenDigitUnixTimeStampForSpecifiedDays(days),
+    shortOrLong
+  );
+}
 
-Cypress.Commands.add('get_proposal_information_from_table', (heading) => {
-  cy.get(proposalInformationTableRows).contains(heading).siblings();
-});
+export function getProposalInformationFromTable(heading: string) {
+  return cy.get(proposalInformationTableRows).contains(heading).siblings();
+}
 
-Cypress.Commands.add('vote_for_proposal', (vote) => {
+export function voteForProposal(vote: string) {
   cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
   cy.get(voteButtons).contains(vote).click();
   cy.get(dialogTitle).should('have.text', 'Transaction complete');
   cy.get(dialogCloseButton).click();
-});
+}
 
-Cypress.Commands.add('wait_for_proposal_sync', () => {
+export function waitForProposalSync() {
   // This is a workaround function required because after posting a proposal
   // and waiting for the ProposalEvent network call to respond there can still be a few seconds
   // before proposal appears in the list - so rather than hard coded wait - we just wait on the
@@ -151,17 +154,9 @@ Cypress.Commands.add('wait_for_proposal_sync', () => {
       req.continue();
     }
   });
-});
+}
 
-Cypress.Commands.add('navigate_to_page_if_not_already_loaded', (section) => {
-  cy.url().then((url) => {
-    if (url != `http://localhost:4210/${section}`) {
-      cy.navigate_to(section);
-    }
-  });
-});
-
-Cypress.Commands.add('get_sort_order_of_supplied_array', (suppliedArray) => {
+export function getSortOrderOfSuppliedArray(suppliedArray: string[]) {
   const tempArray = [];
   for (let index = 1; index < suppliedArray.length; index++) {
     tempArray.push(
@@ -171,36 +166,34 @@ Cypress.Commands.add('get_sort_order_of_supplied_array', (suppliedArray) => {
   if (tempArray.every((n) => n <= 0)) return 'ascending';
   else if (tempArray.every((n) => n >= 0)) return 'descending';
   else return 'unsorted';
-});
+}
 
-Cypress.Commands.add('go_to_make_new_proposal', (proposalType) => {
-  cy.navigate_to_page_if_not_already_loaded('proposals');
+export function goToMakeNewProposal(proposalType: string) {
+  navigateTo(navigation.proposals);
   cy.get(newProposalButton).should('be.visible').click();
   cy.url().should('include', '/proposals/propose');
   cy.get('li').should('contain.text', proposalType).and('be.visible');
   cy.get('li').contains(proposalType).click();
-});
+}
 
-Cypress.Commands.add('wait_for_proposal_submitted', () => {
+export function waitForProposalSubmitted() {
   cy.contains('Awaiting network confirmation', epochTimeout).should(
     'be.visible'
   );
   cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
   cy.get(dialogCloseButton).click();
-});
+}
 
-export function createRawProposal(proposerBalance) {
-  if (proposerBalance)
-    cy.ensure_specified_unstaked_tokens_are_associated(proposerBalance);
-  cy.go_to_make_new_proposal('raw proposal');
-  cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
-    (closingDateTimestamp) => {
-      cy.enter_raw_proposal_body(closingDateTimestamp).as('rawProposal');
-    }
-  );
-  cy.wait_for_proposal_submitted();
-  cy.wait_for_proposal_sync();
-  cy.navigate_to('proposals');
+export function createRawProposal(proposerBalance?: string) {
+  if (proposerBalance) {
+    ensureSpecifiedUnstakedTokensAreAssociated(proposerBalance);
+  }
+
+  goToMakeNewProposal(governanceProposalType.RAW);
+  enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
+  waitForProposalSubmitted();
+  waitForProposalSync();
+  navigateTo(navigation.proposals);
 }
 
 export function generateFreeFormProposalTitle() {
@@ -208,13 +201,13 @@ export function generateFreeFormProposalTitle() {
   return randomNum + ': Freeform e2e proposal';
 }
 
-export function createFreeformProposal(proposalTitle) {
-  cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-  cy.enter_unique_freeform_proposal_body('50', proposalTitle);
-  cy.wait_for_proposal_submitted();
-  cy.wait_for_proposal_sync();
+export function createFreeformProposal(proposalTitle: string) {
+  goToMakeNewProposal(governanceProposalType.FREEFORM);
+  enterUniqueFreeFormProposalBody('50', proposalTitle);
+  waitForProposalSubmitted();
+  waitForProposalSync();
   cy.getByTestId('proposal-title').invoke('text').as('proposalTitle');
-  cy.navigate_to('proposals');
+  navigateTo(navigation.proposals);
 }
 
 export const governanceProposalType = {

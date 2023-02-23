@@ -1,3 +1,6 @@
+import { convertTokenValueToNumber } from '../../support/common.functions';
+import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
+
 const walletContainer = '[data-testid="ethereum-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectToEthButton = '[data-testid="connect-to-eth-wallet-button"]';
@@ -86,7 +89,7 @@ context(
     // 0004-EWAL-001 0004-EWAL-002
     describe('when Ethereum wallet connected', function () {
       before('connect to Ethereum wallet', function () {
-        cy.ethereum_wallet_connect();
+        ethereumWalletConnect();
       });
 
       it('should have ETHEREUM KEY header visible', function () {
@@ -177,22 +180,25 @@ context(
             .within(() => {
               cy.get(currencyValue)
                 .invoke('text')
-                .convert_token_value_to_number()
-                .as('value');
+                .then((currencyValueTxt) => {
+                  convertTokenValueToNumber(currencyValueTxt).as('value');
+                });
               cy.get(currencyLocked)
                 .invoke('text')
-                .convert_token_value_to_number()
-                .as('locked');
+                .then((currencyLockedTxt) => {
+                  convertTokenValueToNumber(currencyLockedTxt).as('locked');
+                });
               cy.get(currencyUnlocked)
                 .invoke('text')
-                .convert_token_value_to_number()
-                .as('unlocked');
+                .then((currencyUnlockedTxt) => {
+                  convertTokenValueToNumber(currencyUnlockedTxt).as('unlocked');
+                });
             })
             .then(function () {
               expect(parseFloat(this.value).toFixed(1)).to.equal(
-                parseFloat(
-                  Math.round((this.locked + this.unlocked) * 100) / 100
-                ).toFixed(1)
+                (Math.round((this.locked + this.unlocked) * 100) / 100).toFixed(
+                  1
+                )
               );
             });
         });
@@ -246,16 +252,19 @@ context(
             .within(() => {
               cy.get(currencyValue)
                 .invoke('text')
-                .convert_token_value_to_number()
-                .as('value');
+                .then((currencyValueTxt) => {
+                  convertTokenValueToNumber(currencyValueTxt).as('value');
+                });
               cy.get(currencyLocked)
                 .invoke('text')
-                .convert_token_value_to_number()
-                .as('locked');
+                .then((currencyLockedTxt) => {
+                  convertTokenValueToNumber(currencyLockedTxt).as('locked');
+                });
               cy.get(currencyUnlocked)
                 .invoke('text')
-                .convert_token_value_to_number()
-                .as('unlocked');
+                .then((currencyUnlockedTxt) => {
+                  convertTokenValueToNumber(currencyUnlockedTxt).as('unlocked');
+                });
             })
             .then(function () {
               expect(this.value).to.equal(this.locked + this.unlocked);

@@ -1,3 +1,10 @@
+import {
+  navigateTo,
+  navigation,
+  verifyPageHeader,
+  verifyTabHighlighted,
+} from '../../support/common.functions';
+
 const connectToVegaBtn = '[data-testid="connect-to-vega-wallet-btn"]';
 
 context(
@@ -5,16 +12,17 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to withdrawals page', function () {
-      cy.visit('/').navigate_to('withdraw');
+      cy.visit('/');
+      navigateTo(navigation.withdraw);
     });
 
     describe('with wallets disconnected', function () {
       it('should have withdraw tab highlighted', function () {
-        cy.verify_tab_highlighted('token');
+        verifyTabHighlighted(navigation.token);
       });
 
       it('should have WITHDRAW header visible', function () {
-        cy.verify_page_header('Withdrawals');
+        verifyPageHeader('Withdrawals');
       });
 
       it('should have connect Vega wallet button', function () {

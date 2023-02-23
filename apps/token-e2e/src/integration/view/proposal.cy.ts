@@ -1,4 +1,10 @@
-import { waitForSpinner } from '../../support/common.functions';
+import {
+  navigateTo,
+  navigation,
+  verifyPageHeader,
+  verifyTabHighlighted,
+  waitForSpinner,
+} from '../../support/common.functions';
 
 const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
@@ -11,16 +17,17 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to governance page', function () {
-      cy.visit('/').navigate_to('proposals');
+      cy.visit('/');
+      navigateTo(navigation.proposals);
     });
 
     describe('with no network change proposals', function () {
       it('should have governance tab highlighted', function () {
-        cy.verify_tab_highlighted('proposals');
+        verifyTabHighlighted(navigation.proposals);
       });
 
       it('should have GOVERNANCE header visible', function () {
-        cy.verify_page_header('Proposals');
+        verifyPageHeader('Proposals');
       });
 
       it('should be able to see a working link for - find out more about Vega governance', function () {
@@ -62,7 +69,7 @@ context(
         cy.get(connectToVegaWalletButton)
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet');
-        cy.navigate_to('proposals');
+        navigateTo(navigation.proposals);
         waitForSpinner();
       });
     });

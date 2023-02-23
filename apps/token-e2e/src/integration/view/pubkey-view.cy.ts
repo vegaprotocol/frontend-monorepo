@@ -1,6 +1,15 @@
 /// <reference types="cypress" />
 
-import { waitForSpinner } from '../../support/common.functions';
+import {
+  navigateTo,
+  navigation,
+  waitForSpinner,
+} from '../../support/common.functions';
+import {
+  enterUniqueFreeFormProposalBody,
+  goToMakeNewProposal,
+} from '../../support/governance.functions';
+import { vegaWalletFacetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey2');
 const vegaPubkeyTruncated = Cypress.env('vegaWalletPublicKey2Short');
@@ -8,11 +17,7 @@ const banner = 'view-banner';
 
 context('View functionality with public key', { tags: '@smoke' }, function () {
   before('send asset to wallet', function () {
-    cy.vega_wallet_faucet_assets_without_check(
-      'fUSDC',
-      '1000000',
-      vegaWalletPubKey
-    );
+    vegaWalletFacetAssetsWithoutCheck('fUSDC', '1000000', vegaWalletPubKey);
   });
 
   beforeEach('visit home page', function () {
@@ -38,9 +43,9 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
   it('Unable to submit proposal with public key', function () {
     const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
-    cy.navigate_to('proposals');
-    cy.go_to_make_new_proposal('Freeform');
-    cy.enter_unique_freeform_proposal_body('50', 'pub key proposal test');
+    navigateTo(navigation.proposals);
+    goToMakeNewProposal('Freeform');
+    enterUniqueFreeFormProposalBody('50', 'pub key proposal test');
     cy.getByTestId('dialog-content').within(() => {
       cy.get('h1').should('have.text', 'Transaction failed');
       cy.getByTestId('Error').should('have.text', expectedErrorTxt);

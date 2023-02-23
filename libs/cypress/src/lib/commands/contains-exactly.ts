@@ -3,7 +3,7 @@ declare global {
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      contains_exactly(expected_result: string): void;
+      contains_exactly(expected_result: string): Chainable<Subject>;
     }
   }
 }

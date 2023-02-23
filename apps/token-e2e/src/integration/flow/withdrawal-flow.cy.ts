@@ -1,4 +1,13 @@
-import { waitForSpinner } from '../../support/common.functions';
+import {
+  navigateTo,
+  navigation,
+  waitForSpinner,
+} from '../../support/common.functions';
+import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
+import {
+  depositAsset,
+  vegaWalletTeardown,
+} from '../../support/wallet-teardown.functions';
 
 const withdraw = 'withdraw';
 const selectAsset = 'select-asset';
@@ -28,18 +37,18 @@ context(
   { tags: '@slow' },
   function () {
     before('visit withdrawals and connect vega wallet', function () {
-      cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
-      cy.deposit_asset(usdcEthAddress);
+      // cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
+      depositAsset(usdcEthAddress);
     });
 
     beforeEach('Navigate to withdrawal page', function () {
       cy.reload();
       cy.visit('/');
       waitForSpinner();
-      cy.navigate_to('withdraw');
+      navigateTo(navigation.withdraw);
       cy.connectVegaWallet();
-      cy.ethereum_wallet_connect();
-      cy.vega_wallet_teardown();
+      ethereumWalletConnect();
+      vegaWalletTeardown();
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
@@ -193,7 +202,7 @@ context(
       });
     });
 
-    function waitForAssetsDisplayed(expectedAsset) {
+    function waitForAssetsDisplayed(expectedAsset: string) {
       cy.contains(expectedAsset, txTimeout).should('be.visible');
     }
   }
