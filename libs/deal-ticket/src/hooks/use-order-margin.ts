@@ -6,6 +6,7 @@ import { useMarketPositions } from './use-market-positions';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { getDerivedPrice } from '../utils/get-price';
+import type { MarginLevels } from './use-fee-deal-ticket-details';
 
 export interface Props {
   order: OrderSubmissionBody['orderSubmission'];
@@ -23,6 +24,7 @@ export interface OrderMargin {
     liquidityFee: string;
     infrastructureFee: string;
   };
+  marginLevels: MarginLevels;
 }
 
 export const useOrderMargin = ({
@@ -50,7 +52,12 @@ export const useOrderMargin = ({
   });
   const { makerFee, liquidityFee, infrastructureFee } = data?.estimateOrder
     .fee || { makerFee: '', liquidityFee: '', infrastructureFee: '' };
-  const { initialLevel } = data?.estimateOrder.marginLevels ?? {};
+  const {
+    initialLevel,
+    searchLevel,
+    maintenanceLevel,
+    collateralReleaseLevel,
+  } = data?.estimateOrder.marginLevels ?? {};
   return useMemo(() => {
     if (initialLevel) {
       const margin = BigNumber.maximum(
@@ -63,6 +70,12 @@ export const useOrderMargin = ({
         .toString();
       return {
         margin,
+        marginLevels: {
+          searchLevel,
+          maintenanceLevel,
+          collateralReleaseLevel,
+          initialLevel,
+        },
         totalFees: fees,
         fees: {
           makerFee,
@@ -72,5 +85,14 @@ export const useOrderMargin = ({
       };
     }
     return null;
-  }, [initialLevel, makerFee, liquidityFee, infrastructureFee, balance]);
+  }, [
+    initialLevel,
+    balance,
+    makerFee,
+    liquidityFee,
+    infrastructureFee,
+    searchLevel,
+    maintenanceLevel,
+    collateralReleaseLevel,
+  ]);
 };

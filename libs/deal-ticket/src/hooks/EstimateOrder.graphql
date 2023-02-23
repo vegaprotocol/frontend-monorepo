@@ -24,7 +24,35 @@ query EstimateOrder(
       liquidityFee
     }
     marginLevels {
+      market {
+        id
+        state
+        tradableInstrument {
+          instrument {
+            code
+            name
+          }
+          marginCalculator {
+            scalingFactors {
+              searchLevel
+              initialMargin
+              collateralRelease
+            }
+          }
+        }
+      }
+      asset {
+        id
+        name
+      }
+      party {
+        id
+      }
       initialLevel
+      searchLevel
+      maintenanceLevel
+      collateralReleaseLevel
+      timestamp
     }
     totalFeeAmount
   }

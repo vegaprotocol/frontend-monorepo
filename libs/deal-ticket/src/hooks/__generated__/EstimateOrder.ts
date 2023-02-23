@@ -15,7 +15,7 @@ export type EstimateOrderQueryVariables = Types.Exact<{
 }>;
 
 
-export type EstimateOrderQuery = { __typename?: 'Query', estimateOrder: { __typename?: 'OrderEstimate', totalFeeAmount: string, fee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, marginLevels: { __typename?: 'MarginLevels', initialLevel: string } } };
+export type EstimateOrderQuery = { __typename?: 'Query', estimateOrder: { __typename?: 'OrderEstimate', totalFeeAmount: string, fee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, marginLevels: { __typename?: 'MarginLevels', initialLevel: string, searchLevel: string, maintenanceLevel: string, collateralReleaseLevel: string, timestamp: any, market: { __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string }, marginCalculator?: { __typename?: 'MarginCalculator', scalingFactors: { __typename?: 'ScalingFactors', searchLevel: number, initialMargin: number, collateralRelease: number } } | null } }, asset: { __typename?: 'Asset', id: string, name: string }, party: { __typename?: 'Party', id: string } } } };
 
 
 export const EstimateOrderDocument = gql`
@@ -36,7 +36,35 @@ export const EstimateOrderDocument = gql`
       liquidityFee
     }
     marginLevels {
+      market {
+        id
+        state
+        tradableInstrument {
+          instrument {
+            code
+            name
+          }
+          marginCalculator {
+            scalingFactors {
+              searchLevel
+              initialMargin
+              collateralRelease
+            }
+          }
+        }
+      }
+      asset {
+        id
+        name
+      }
+      party {
+        id
+      }
       initialLevel
+      searchLevel
+      maintenanceLevel
+      collateralReleaseLevel
+      timestamp
     }
     totalFeeAmount
   }
