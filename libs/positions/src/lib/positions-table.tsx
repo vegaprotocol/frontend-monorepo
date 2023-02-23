@@ -417,7 +417,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
 
 export default PositionsTable;
 
-const PNLCell = ({
+export const PNLCell = ({
   valueFormatted,
   data,
 }: VegaICellRendererParams<Position, 'realisedPNL'>) => {
@@ -446,7 +446,7 @@ const PNLCell = ({
           </p>
           {VEGA_DOCS_URL && (
             <ExternalLink href={VEGA_DOCS_URL}>
-              {t('Reade more about loss socialisation')}
+              {t('Read more about loss socialisation')}
             </ExternalLink>
           )}
         </>
@@ -457,7 +457,7 @@ const PNLCell = ({
   );
 };
 
-const OpenVolumeCell = ({
+export const OpenVolumeCell = ({
   valueFormatted,
   data,
 }: VegaICellRendererParams<Position, 'openVolume'>) => {
