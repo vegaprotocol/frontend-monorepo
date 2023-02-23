@@ -67,10 +67,6 @@ export interface Position {
   updatedAt: string | null;
   lossSocializationAmount: string;
   status: PositionStatus;
-  marketTimestamps: {
-    open: string;
-    close: string | null;
-  };
 }
 
 export interface Data {
@@ -189,7 +185,6 @@ export const getMetrics = (
       updatedAt: position.updatedAt || null,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       status: position.status,
-      marketTimestamps: market.marketTimestamps,
     });
   });
   return metrics;

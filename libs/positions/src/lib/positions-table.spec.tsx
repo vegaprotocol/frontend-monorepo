@@ -3,6 +3,7 @@ import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
+import { PositionStatus } from '@vegaprotocol/types';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
@@ -26,6 +27,8 @@ const singleRow: Position = {
   searchPrice: '0',
   updatedAt: '2022-07-27T15:02:58.400Z',
   marginAccountBalance: '12345600',
+  status: PositionStatus.POSITION_STATUS_UNSPECIFIED,
+  lossSocializationAmount: '0',
 };
 
 const singleRowData = [singleRow];
