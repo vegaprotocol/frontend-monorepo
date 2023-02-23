@@ -43,7 +43,7 @@ export const Vol = React.memo(
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
             opacity: type === VolumeType.bid ? 0.6 : 0.6,
           }}
-        ></div>
+        />
         <PriceCell value={value} valueFormatted={valueFormatted} />
       </div>
     );

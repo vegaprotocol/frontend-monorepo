@@ -1,6 +1,4 @@
-import React from 'react';
-import type { ICellRendererParams } from 'ag-grid-community';
-import classNames from 'classnames';
+import { memo } from 'react';
 import { BID_COLOR, ASK_COLOR } from './vol-cell';
 import { addDecimalsFormatNumber } from '../format';
 
@@ -15,11 +13,7 @@ export interface CumulativeVolProps {
   positionDecimalPlaces: number;
 }
 
-export interface ICumulativeVolCellProps extends ICellRendererParams {
-  value: CumulativeVolProps;
-}
-
-export const CumulativeVol = React.memo(
+export const CumulativeVol = memo(
   ({
     relativeAsk,
     relativeBid,
@@ -27,7 +21,6 @@ export const CumulativeVol = React.memo(
     bid,
     indicativeVolume,
     testId,
-    className,
     positionDecimalPlaces,
   }: CumulativeVolProps) => {
     const askBar = relativeAsk ? (
@@ -40,7 +33,7 @@ export const CumulativeVol = React.memo(
           backgroundColor: ASK_COLOR,
           opacity: 0.6,
         }}
-      ></div>
+      />
     ) : null;
     const bidBar = relativeBid ? (
       <div
@@ -53,7 +46,7 @@ export const CumulativeVol = React.memo(
           backgroundColor: BID_COLOR,
           opacity: 0.6,
         }}
-      ></div>
+      />
     ) : null;
 
     const volume = indicativeVolume ? (
@@ -71,7 +64,7 @@ export const CumulativeVol = React.memo(
 
     return (
       <div
-        className={classNames('h-full relative', className)}
+        className="h-full relative font-mono pr-1"
         data-testid={testId || 'cumulative-vol'}
       >
         {askBar}
@@ -83,9 +76,3 @@ export const CumulativeVol = React.memo(
 );
 
 CumulativeVol.displayName = 'CumulativeVol';
-
-export const CumulativeVolCell = ({ value }: ICumulativeVolCellProps) => (
-  <CumulativeVol {...value} />
-);
-
-CumulativeVolCell.displayName = 'CumulativeVolCell';
