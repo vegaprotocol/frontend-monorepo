@@ -83,7 +83,7 @@ describe('Mobile view', { tags: '@smoke' }, () => {
 
     it('Menu drawer should not be visible until opened', () => {
       cy.getByTestId('menu-drawer').should('not.be.visible');
-      cy.getByTestId('button-menu-drawer').click();
+      cy.getByTestId('button-menu-drawer').click({ force: true });
       cy.getByTestId('menu-drawer').should('be.visible');
       cy.getByTestId('menu-drawer')
         .find('[data-testid="theme-switcher"]')

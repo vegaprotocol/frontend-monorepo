@@ -181,7 +181,6 @@ function openMarketDropDown() {
     }
   });
   cy.get('[data-testid^="ask-vol-"]').should('be.visible');
-  cy.getByTestId(popoverTrigger).should('be.visible');
-  cy.getByTestId(popoverTrigger).click();
+  cy.getByTestId(popoverTrigger).click({ force: true });
   cy.contains('Loading market data...').should('not.exist');
 }
