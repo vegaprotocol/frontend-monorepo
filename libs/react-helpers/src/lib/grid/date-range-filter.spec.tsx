@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import type { DateRangeFilterProps } from './date-range-filter';
 import { DateRangeFilter } from './date-range-filter';
 
@@ -21,10 +21,8 @@ describe('DateRangeFilter', () => {
       />
     );
 
-    await waitFor(() => {
-      expect(screen.getByLabelText('Start')).toHaveValue(displayStartValue);
-      expect(screen.getByLabelText('End')).toHaveValue(displayEndValue);
-    });
+    expect(screen.getByLabelText('Start')).toHaveValue(displayStartValue);
+    expect(screen.getByLabelText('End')).toHaveValue(displayEndValue);
 
     expect(commonProps.filterChangedCallback).toHaveBeenCalled();
   });
