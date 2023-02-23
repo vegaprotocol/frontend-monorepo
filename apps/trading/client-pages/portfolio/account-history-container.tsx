@@ -135,15 +135,10 @@ const AccountHistoryManager = ({
         ?.filter((item: Account) => Boolean(item && item.market))
         .map<Market>((item) => item.market as Market) ?? null;
     return arr
-      ? uniqBy(
-          arr
-            .filter(marketFilterCb)
-            .sort((a, b) =>
-              a.tradableInstrument.instrument.code.localeCompare(
-                b.tradableInstrument.instrument.code
-              )
-            ),
-          'id'
+      ? uniqBy(arr.filter(marketFilterCb), 'id').sort((a, b) =>
+          a.tradableInstrument.instrument.code.localeCompare(
+            b.tradableInstrument.instrument.code
+          )
         )
       : null;
   }, [accounts, marketFilterCb]);
@@ -240,6 +235,11 @@ const AccountHistoryManager = ({
         }
       >
         <DropdownMenuContent>
+          {market && (
+            <DropdownMenuItem key="0" onClick={() => setMarket(null)}>
+              {t('All markets')}
+            </DropdownMenuItem>
+          )}
           {markets?.map((m) => (
             <DropdownMenuItem key={m.id} onClick={() => resolveMarket(m)}>
               {m.tradableInstrument.instrument.code}
@@ -253,14 +253,12 @@ const AccountHistoryManager = ({
   useEffect(() => {
     if (
       accountType !== Schema.AccountType.ACCOUNT_TYPE_MARGIN ||
-      (asset &&
-        market &&
-        market.tradableInstrument.instrument.product.settlementAsset.id !==
-          asset.id)
+      market?.tradableInstrument.instrument.product.settlementAsset.id !==
+        asset?.id
     ) {
       setMarket(null);
     }
-  }, [accountType, asset, market]);
+  }, [accountType, asset?.id, market]);
 
   return (
     <div className="h-full w-full flex flex-col gap-8">
