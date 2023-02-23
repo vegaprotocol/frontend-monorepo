@@ -44,16 +44,18 @@ export const DateRangeFilter = forwardRef(
           : minStartDate || value.start
           ? formatForInput(new Date(value.start))
           : '';
-      const maxEndDate =
-        value.start &&
-        (props?.maxNextDays !== undefined || props.maxDaysRange !== undefined)
-          ? formatForInput(
-              min([
-                addDays(new Date(), props.maxNextDays || 0),
-                addDays(new Date(value.start), props.maxDaysRange || 0),
-              ])
-            )
-          : maxStartDate;
+      const endDateCandidates = [];
+      if (props.maxNextDays !== undefined) {
+        endDateCandidates.push(addDays(new Date(), props.maxNextDays));
+      }
+      if (props.maxDaysRange !== undefined && value.start) {
+        endDateCandidates.push(
+          addDays(new Date(value.start), props.maxDaysRange)
+        );
+      }
+      const maxEndDate = endDateCandidates.length
+        ? formatForInput(min(endDateCandidates))
+        : maxStartDate;
       return [minStartDate, maxStartDate, minEndDate, maxEndDate];
     }, [props.maxSubDays, props.maxDaysRange, props.maxNextDays, value.start]);
     // expose AG Grid Filter Lifecycle callbacks
@@ -148,39 +150,38 @@ export const DateRangeFilter = forwardRef(
       return true;
     };
 
-    const checkForEndDate = (endDate: Date | undefined, startDate: Date) => {
-      return endDate
-        ? formatRFC3339(
-            max([
-              startDate,
-              min([
-                endDate,
-                props.maxDaysRange
-                  ? addDays(startDate, props.maxDaysRange)
-                  : endDate,
-                props.maxNextDays
-                  ? addDays(Date.now(), props.maxNextDays)
-                  : endDate,
-              ]),
-            ])
-          )
-        : '';
+    const checkForEndDate = (
+      endDate: Date | undefined,
+      startDate: Date | undefined
+    ) => {
+      const endDateCandidates: Date[] = [];
+      if (props.maxDaysRange !== undefined && isValid(startDate)) {
+        endDateCandidates.push(addDays(startDate as Date, props.maxDaysRange));
+      }
+      if (props.maxNextDays !== undefined) {
+        endDateCandidates.push(addDays(Date.now(), props.maxNextDays));
+      }
+      if (isValid(endDate)) {
+        endDateCandidates.push(endDate as Date);
+      }
+      return endDate && startDate
+        ? formatRFC3339(max([startDate, min(endDateCandidates)]))
+        : undefined;
     };
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
       const { value: dateValue, name } = event.target;
       const date = new Date(dateValue || defaultDates[name as 'start' | 'end']);
       let update = { [name]: isValid(date) ? formatRFC3339(date) : undefined };
-      const startDate = name === 'start' ? date : new Date(value.start);
-      if (isValid(startDate)) {
-        const endCheckDate =
-          name === 'start'
-            ? new Date(value.end || maxEndDate)
-            : isValid(date)
-            ? date
-            : new Date(maxEndDate);
-        const endDate = isValid(endCheckDate) ? endCheckDate : undefined;
-        update = { ...update, end: checkForEndDate(endDate, startDate) };
-      }
+      const startCheckDate = name === 'start' ? date : new Date(value.start);
+      const endCheckDate =
+        name === 'start'
+          ? new Date(value.end)
+          : isValid(date)
+          ? date
+          : new Date(maxEndDate);
+      const endDate = isValid(endCheckDate) ? endCheckDate : undefined;
+      const startDate = isValid(startCheckDate) ? startCheckDate : undefined;
+      update = { ...update, end: checkForEndDate(endDate, startDate) };
 
       if (validate(name, date, update)) {
         setValue((curr) => ({

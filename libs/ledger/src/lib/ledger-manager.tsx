@@ -3,7 +3,7 @@ import type * as Schema from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
 import type { AggregatedLedgerEntriesNode } from './ledger-entries-data-provider';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
@@ -25,6 +25,7 @@ const defaultFilter = {
 export const LedgerManager = ({ partyId }: { partyId: string }) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
+  const [dataCount, setDataCount] = useState(0);
 
   const { data, error, loading, reload } = useLedgerEntriesDataProvider({
     partyId,
@@ -37,11 +38,15 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
     setFilter(updatedFilter);
   }, []);
   const extractNodesDecorator = useCallback(
-    (data: AggregatedLedgerEntriesNode[] | null) =>
-      data ? data.map((item) => item.node) : null,
+    (data: AggregatedLedgerEntriesNode[] | null, loading: boolean) =>
+      data && !loading ? data.map((item) => item.node) : null,
     []
   );
-  const extractedData = extractNodesDecorator(data);
+
+  const extractedData = extractNodesDecorator(data, loading);
+  useEffect(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, [extractedData]);
 
   return (
     <div className="h-full relative">
@@ -56,7 +61,7 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
           error={error}
           data={data}
           noDataMessage={t('No entries')}
-          noDataCondition={(data) => !(data && data.length)}
+          noDataCondition={() => !dataCount}
           reload={reload}
         />
       </div>

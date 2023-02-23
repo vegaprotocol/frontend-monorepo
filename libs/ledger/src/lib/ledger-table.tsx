@@ -12,7 +12,6 @@ import type {
   TypedDataAgGrid,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type * as Types from '@vegaprotocol/types';
@@ -40,7 +39,6 @@ export const TransferTooltipCellComponent = ({
 const defaultRangeFilter = { start: formatRFC3339(subDays(Date.now(), 7)) };
 const dateRangeFilterParams = {
   maxNextDays: 0,
-  maxDaysRange: 7,
   defaultRangeFilter,
 };
 type LedgerEntryProps = TypedDataAgGrid<LedgerEntry>;
