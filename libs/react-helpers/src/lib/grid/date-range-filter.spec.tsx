@@ -1,4 +1,4 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import type { DateRangeFilterProps } from './date-range-filter';
 import { DateRangeFilter } from './date-range-filter';
 
