@@ -1,6 +1,6 @@
-import { useEtherscanLink } from '@vegaprotocol/environment';
+import { t } from '@vegaprotocol/react-helpers';
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { t } from './i18n';
+import { useEtherscanLink } from '../hooks';
 
 export const ContractAddressLink = ({ address }: { address: string }) => {
   const etherscanLink = useEtherscanLink();

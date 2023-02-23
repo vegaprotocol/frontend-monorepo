@@ -1,5 +1,4 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { RouteTitle } from '../../components/route-title';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
@@ -8,7 +7,7 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useParams } from 'react-router-dom';
 import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { useState } from 'react';
-import { PageActions } from '../../components/page-helpers';
+import { PageTitle } from '../../components/page-helpers/page-title';
 
 export const AssetPage = () => {
   useDocumentTitle(['Assets']);
@@ -23,18 +22,25 @@ export const AssetPage = () => {
   return (
     <>
       <section className="relative">
-        <RouteTitle data-testid="asset-header">{title}</RouteTitle>
+        <PageTitle
+          data-testid="asset-header"
+          title={title}
+          actions={
+            <Button
+              disabled={!data}
+              size="xs"
+              onClick={() => setDialogOpen(true)}
+            >
+              {t('View JSON')}
+            </Button>
+          }
+        />
         <AsyncRenderer
           noDataMessage={t('Asset not found')}
           data={data}
           loading={loading}
           error={error}
         >
-          <PageActions>
-            <Button size="xs" onClick={() => setDialogOpen(true)}>
-              {t('View JSON')}
-            </Button>
-          </PageActions>
           <div className="h-full relative">
             <AssetDetailsTable asset={data as AssetFieldsFragment} />
           </div>

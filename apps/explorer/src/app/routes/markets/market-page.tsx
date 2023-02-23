@@ -9,7 +9,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import compact from 'lodash/compact';
 import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { marketInfoNoCandlesDataProvider } from '@vegaprotocol/market-info';
-import { PageActions } from '../../components/page-helpers';
+import { PageTitle } from '../../components/page-helpers/page-title';
 
 export const MarketPage = () => {
   useScrollToLocation();
@@ -41,20 +41,25 @@ export const MarketPage = () => {
   return (
     <>
       <section className="relative">
-        <RouteTitle data-testid="markets-heading">
-          {data?.market?.tradableInstrument.instrument.name}
-        </RouteTitle>
+        <PageTitle
+          data-testid="markets-heading"
+          title={data?.market?.tradableInstrument.instrument.name || ''}
+          actions={
+            <Button
+              disabled={!data?.market}
+              size="xs"
+              onClick={() => setDialogOpen(true)}
+            >
+              {t('View JSON')}
+            </Button>
+          }
+        />
         <AsyncRenderer
           noDataMessage={t('This chain has no markets')}
           data={data}
           loading={loading}
           error={error}
         >
-          <PageActions>
-            <Button size="xs" onClick={() => setDialogOpen(true)}>
-              {t('View JSON')}
-            </Button>
-          </PageActions>
           <MarketDetails market={data?.market} />
         </AsyncRenderer>
       </section>

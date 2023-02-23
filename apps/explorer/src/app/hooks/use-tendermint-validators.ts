@@ -1,4 +1,5 @@
 import { useFetch } from '@vegaprotocol/react-helpers';
+import { useEffect, useRef } from 'react';
 import { DATA_SOURCES } from '../config';
 
 type PubKey = {
@@ -26,7 +27,7 @@ type TendermintValidatorsResponse = {
   result: Result;
 };
 
-export const useTendermintValidators = () => {
+export const useTendermintValidators = (pollInterval?: number) => {
   const {
     state: { data, loading, error },
     refetch,
@@ -34,5 +35,21 @@ export const useTendermintValidators = () => {
     `${DATA_SOURCES.tendermintUrl}/validators`
   );
 
-  return { data, loading, error, refetch };
+  const ref = useRef<TendermintValidatorsResponse | undefined>(undefined);
+  useEffect(() => {
+    if (data) ref.current = data;
+  }, [data]);
+
+  useEffect(() => {
+    const interval =
+      pollInterval &&
+      setInterval(() => {
+        refetch();
+      }, pollInterval);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [pollInterval, refetch]);
+
+  return { data: ref.current, loading, error, refetch };
 };
