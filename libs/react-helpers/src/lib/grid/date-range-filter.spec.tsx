@@ -14,31 +14,18 @@ describe('DateRangeFilter', () => {
     };
     const displayStartValue = '2023-02-14T12:53:01.000';
     const displayEndValue = '2023-02-21T12:53:01.000';
-    let queryContainer: HTMLElement;
-    await act(() => {
-      const { container } = render(
-        <DateRangeFilter
-          {...(commonProps as unknown as DateRangeFilterProps)}
-          defaultRangeFilter={defaultRangeFilter}
-        />
-      );
-      queryContainer = container;
-    });
+    render(
+      <DateRangeFilter
+        {...(commonProps as unknown as DateRangeFilterProps)}
+        defaultRangeFilter={defaultRangeFilter}
+      />
+    );
 
     await waitFor(() => {
-      expect(queryContainer).toBeVisible();
+      expect(screen.getByLabelText('Start')).toHaveValue(displayStartValue);
+      expect(screen.getByLabelText('End')).toHaveValue(displayEndValue);
+    });
 
-      expect(screen.getByLabelText('Start')).toBeInTheDocument();
-      expect(screen.getByLabelText('End')).toBeInTheDocument();
-    });
-    await waitFor(() => {
-      expect(queryContainer.querySelector('input[name="start"]')).toHaveValue(
-        displayStartValue
-      );
-      expect(queryContainer.querySelector('input[name="end"]')).toHaveValue(
-        displayEndValue
-      );
-    });
     expect(commonProps.filterChangedCallback).toHaveBeenCalled();
   });
 });
