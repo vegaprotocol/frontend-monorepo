@@ -6,6 +6,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import compact from 'lodash/compact';
+import uniqBy from 'lodash/uniqBy';
 import type { ChangeEvent } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { AccountHistoryQuery } from './__generated__/AccountHistory';
@@ -134,15 +135,9 @@ const AccountHistoryManager = ({
         ?.filter((item: Account) => Boolean(item && item.market))
         .map<Market>((item) => item.market as Market) ?? null;
     return arr
-      ? Array.from(
-          new Set(
-            arr
-              .filter(marketFilterCb)
-              .sort((a, b) =>
-                a.tradableInstrument.instrument.code.localeCompare(
-                  b.tradableInstrument.instrument.code
-                )
-              )
+      ? uniqBy(arr.filter(marketFilterCb), 'id').sort((a, b) =>
+          a.tradableInstrument.instrument.code.localeCompare(
+            b.tradableInstrument.instrument.code
           )
         )
       : null;
@@ -240,6 +235,11 @@ const AccountHistoryManager = ({
         }
       >
         <DropdownMenuContent>
+          {market && (
+            <DropdownMenuItem key="0" onClick={() => setMarket(null)}>
+              {t('All markets')}
+            </DropdownMenuItem>
+          )}
           {markets?.map((m) => (
             <DropdownMenuItem key={m.id} onClick={() => resolveMarket(m)}>
               {m.tradableInstrument.instrument.code}
@@ -253,14 +253,12 @@ const AccountHistoryManager = ({
   useEffect(() => {
     if (
       accountType !== Schema.AccountType.ACCOUNT_TYPE_MARGIN ||
-      (asset &&
-        market &&
-        market.tradableInstrument.instrument.product.settlementAsset.id !==
-          asset.id)
+      market?.tradableInstrument.instrument.product.settlementAsset.id !==
+        asset?.id
     ) {
       setMarket(null);
     }
-  }, [accountType, asset, market]);
+  }, [accountType, asset?.id, market]);
 
   return (
     <div className="h-full w-full flex flex-col gap-8">
