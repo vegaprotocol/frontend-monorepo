@@ -60,6 +60,7 @@ describe(
     // 3001-VOTE-055
     it('Newly created raw proposal details - shows proposal title and full description', function () {
       createRawProposal();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.get('@rawProposal').then((rawProposal: any) => {
         getProposalIdFromList(rawProposal.rationale.title);
         cy.get('@proposalIdText').then((proposalId) => {
@@ -91,10 +92,7 @@ describe(
       const proposalTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
 
       goToMakeNewProposal(governanceProposalType.FREEFORM);
-
-      console.log(`closing date time: ${proposalTimeStamp}`);
       enterUniqueFreeFormProposalBody(closingVoteHrs, proposalTitle);
-
       waitForProposalSubmitted();
       waitForProposalSync();
       navigateTo(navigation.proposals);
@@ -122,6 +120,7 @@ describe(
       // 3001-VOTE-040
       // 3001-VOTE-067
       createRawProposal();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.get('@rawProposal').then((rawProposal: any) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
@@ -148,6 +147,7 @@ describe(
     // 3001-VOTE-080 3001-VOTE-090 3001-VOTE-069 3001-VOTE-072 3001-VOTE-073
     it('Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated', function () {
       createRawProposal();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.get('@rawProposal').then((rawProposal: any) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
@@ -218,6 +218,7 @@ describe(
     // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060
     it('Newly created proposal details - ability to increase associated tokens - by voting again after association', function () {
       createRawProposal();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.get('@rawProposal').then((rawProposal: any) => {
         getSubmittedProposalFromProposalList(rawProposal.rationale.title)
           .as('submittedProposal')

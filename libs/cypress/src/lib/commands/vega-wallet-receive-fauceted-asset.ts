@@ -22,7 +22,6 @@ export function addVegaWalletReceiveFaucetedAsset() {
       );
       // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
       cy.getAssets().then((assets) => {
-        console.log(assets);
         const asset = assets[assetName];
         if (assets[assetName] !== undefined) {
           for (let i = 0; i < asset.decimals; i++) amount += '0';

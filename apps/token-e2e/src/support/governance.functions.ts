@@ -20,12 +20,8 @@ export function convertUnixTimestampToDateformat(
   unixTimestamp: number,
   monthTextLength = 'longMonth'
 ) {
-  console.log(unixTimestamp);
-  console.log(monthTextLength);
   const dateSupplied = new Date(unixTimestamp * 1000);
-  console.log(dateSupplied);
   const year = dateSupplied.getFullYear();
-  console.log(year);
   const months = [
     'January',
     'February',
@@ -41,7 +37,6 @@ export function convertUnixTimestampToDateformat(
     'December',
   ];
   const month = months[dateSupplied.getMonth()];
-  console.log(month);
   const shortMonth = months[dateSupplied.getMonth()].substring(0, 3),
     date = dateSupplied.getDate();
 
@@ -55,13 +50,11 @@ export function createTenDigitUnixTimeStampForSpecifiedDays(
 ) {
   const today = new Date();
   let timestamp = today.setDate(today.getDate() + durationDays);
-  console.log(`ten digit timestamp: ${timestamp}`);
   return (timestamp = Math.floor(timestamp / 1000));
 }
 
 export function enterRawProposalBody(timestamp: number) {
   cy.fixture('/proposals/raw.json').then((rawProposal) => {
-    console.log(timestamp);
     rawProposal.terms.closingTimestamp = timestamp;
     rawProposal.rationale.title += timestamp;
     const proposalPayload = JSON.stringify(rawProposal);
