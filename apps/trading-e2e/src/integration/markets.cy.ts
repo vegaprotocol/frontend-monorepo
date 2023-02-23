@@ -4,6 +4,7 @@ import { marketsQuery } from '@vegaprotocol/mock';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 
 const dialogCloseBtn = 'dialog-close';
+const popoverTrigger = 'popover-trigger';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -173,8 +174,13 @@ describe('markets table', { tags: '@smoke' }, () => {
 });
 
 function openMarketDropDown() {
-  cy.getByTestId(dialogCloseBtn).should('be.visible');
-  cy.getByTestId(dialogCloseBtn).click();
-  cy.getByTestId('popover-trigger').click();
-  cy.contains('Loading market data...').should('not.exist');
+  cy.getByTestId(dialogCloseBtn).then((button) => {
+    if (button.is(':visible')) {
+      cy.get('[data-testid^="market-link-"]').should('not.be.empty');
+      cy.getByTestId(dialogCloseBtn).click();
+      cy.get('[data-testid^="ask-vol-"]').should('be.visible');
+      cy.getByTestId(popoverTrigger).click({ force: true });
+      cy.contains('Loading market data...').should('not.exist');
+    }
+  });
 }

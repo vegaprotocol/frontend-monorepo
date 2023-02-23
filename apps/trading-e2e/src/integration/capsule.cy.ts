@@ -72,7 +72,11 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
     cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
-    cy.getByTestId('deposit-approve-submit').click();
+    cy.getByTestId('approve-warning').should(
+      'contain.text',
+      `Deposits of ${btcSymbol} not approved`
+    );
+    cy.getByTestId('deposit-submit').click();
     cy.getByTestId('dialog-title').should('contain.text', 'Approve complete');
     cy.get('[data-testid="Return to deposit"]').click();
     cy.get(amountField).clear().type('10');
@@ -407,7 +411,7 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
     cy.get(assetSelectField, txTimeout).select(vegaName, { force: true });
-    cy.getByTestId('deposit-approve-submit').click();
+    cy.getByTestId('deposit-submit').click();
     cy.getByTestId('dialog-title').should('contain.text', 'Approve complete');
     cy.get('[data-testid="Return to deposit"]').click();
     cy.get(amountField).clear().type('10000');
