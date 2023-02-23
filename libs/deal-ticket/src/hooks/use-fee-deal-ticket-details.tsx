@@ -21,7 +21,8 @@ import { useOrderCloseOut } from './use-order-closeout';
 import { useOrderMargin } from './use-order-margin';
 import type { OrderMargin } from './use-order-margin';
 import { getDerivedPrice } from '../utils/get-price';
-import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Icon } from '@vegaprotocol/ui-toolkit';
+import { MarginBreakdown } from '../components/margin-levels/margin-levels';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
@@ -189,72 +190,4 @@ export const getFeeDetailsValues = ({
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT(quoteName),
     },
   ];
-};
-
-export interface MarginLevels {
-  initialLevel?: string;
-  searchLevel?: string;
-  maintenanceLevel?: string;
-  collateralReleaseLevel?: string;
-}
-
-export const MarginBreakdown = ({
-  marginLevels,
-  assetDecimalPlaces,
-  assetSymbol,
-}: {
-  marginLevels?: MarginLevels;
-  assetDecimalPlaces: number;
-  assetSymbol: string;
-}) => {
-  if (!marginLevels) return null;
-  const formatNumberWithAssetDp = (value: string | number | null | undefined) =>
-    value && !isNaN(Number(value))
-      ? `${addDecimalsFormatNumber(value, assetDecimalPlaces)} ${assetSymbol}`
-      : '-';
-
-  return (
-    <dl className="grid grid-cols-2 gap-x-2">
-      <Tooltip
-        description={t(
-          'This is the minimum margin required for a party to place a new order on the network'
-        )}
-      >
-        {<dt>{t('Initial level')}</dt>}
-      </Tooltip>
-      <dd className="text-right">
-        {formatNumberWithAssetDp(marginLevels.initialLevel)}
-      </dd>
-      <Tooltip
-        description={t(
-          'If the margin is between maintenance and search, the network will initiate a collateral search'
-        )}
-      >
-        {<dt>{t('Search level')}</dt>}
-      </Tooltip>
-      <dd className="text-right">
-        {formatNumberWithAssetDp(marginLevels.searchLevel)}
-      </dd>
-      <Tooltip
-        description={t(
-          'Minimal margin for the position to be maintained in the network'
-        )}
-      >
-        {<dt>{t('Maintenance level')}</dt>}
-      </Tooltip>
-      <dd className="text-right">
-        {formatNumberWithAssetDp(marginLevels.maintenanceLevel)}
-      </dd>
-      <Tooltip
-        description={t(
-          'If the margin of the party is greater than this level, then collateral will be released from the margin account into the general account of the party for the given asset.'
-        )}
-      >
-        {<dt>{t('Collateral release level')}</dt>}
-      </Tooltip>
-      <dd className="text-right">
-        {formatNumberWithAssetDp(marginLevels.collateralReleaseLevel)}
-      </dd>
-    </dl>
-  );
 };
