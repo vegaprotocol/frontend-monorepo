@@ -116,7 +116,7 @@ export const DateRangeFilter = forwardRef(
       update?: Schema.DateRange
     ) => {
       if (
-        props?.maxSubDays &&
+        props.maxSubDays !== undefined &&
         isBefore(new Date(timeValue), subDays(Date.now(), props.maxSubDays + 1))
       ) {
         setError(
@@ -127,7 +127,7 @@ export const DateRangeFilter = forwardRef(
         );
         return false;
       }
-      if (props?.maxDaysRange) {
+      if (props?.maxDaysRange !== undefined) {
         const contrvalue =
           name === 'start'
             ? update?.end || value.end
@@ -196,21 +196,11 @@ export const DateRangeFilter = forwardRef(
 
     const notification = useMemo(() => {
       const not = error ? (
-        <div className="border-vega-pink bg-vega-pink-300 dark:bg-vega-pink-650 border rounded p-2 flex items-start gap-2.5 m-4 w-full">
-          <div className="text-vega-pink flex items-start mt-1">
-            <svg
-              role="img"
-              className="fill-current w-3 h-3"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M7.99-.01c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13h-2v-2h2v2zm0-3h-2v-7h2v7z"
-              />
-            </svg>
-          </div>
-          <div className="text-sm">{error}</div>
+        <div
+          className="text-sm flex items-center first-letter:uppercase mt-2 border-danger text-danger"
+          role="alert"
+        >
+          {error}
         </div>
       ) : null;
       return (
