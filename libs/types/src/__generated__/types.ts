@@ -2761,12 +2761,16 @@ export type PositionUpdate = {
   __typename?: 'PositionUpdate';
   /** Average entry price for this position */
   averageEntryPrice: Scalars['String'];
+  /** The total amount of profit and loss that was not transferred due to loss socialisation */
+  lossSocializationAmount: Scalars['String'];
   /** Market relating to this position */
   marketId: Scalars['ID'];
   /** Open volume (int64) */
   openVolume: Scalars['String'];
   /** The party holding this position */
   partyId: Scalars['ID'];
+  /** Enum set if the position was closed out or orders were removed because party was distressed */
+  positionStatus: PositionStatus;
   /** Realised Profit and Loss (int64) */
   realisedPNL: Scalars['String'];
   /** Unrealised Profit and Loss (int64) */

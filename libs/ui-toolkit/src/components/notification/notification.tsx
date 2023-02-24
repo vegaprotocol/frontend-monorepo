@@ -19,7 +19,6 @@ type NotificationProps = {
     size?: ButtonSize;
   };
   testId?: string;
-  className?: string;
 };
 
 const getIcon = (intent: Intent): IconName => {
@@ -39,7 +38,6 @@ export const Notification = ({
   title,
   testId,
   buttonProps,
-  className,
 }: NotificationProps) => {
   return (
     <div
@@ -61,8 +59,7 @@ export const Notification = ({
             intent === Intent.Warning,
           'bg-vega-pink-300 dark:bg-vega-pink-650': intent === Intent.Danger,
         },
-        'border rounded p-2 flex items-start gap-2.5 my-4',
-        className
+        'border rounded p-2 flex items-start gap-2.5'
       )}
     >
       <div

@@ -1,0 +1,50 @@
+query ExplorerEpoch($id: ID!) {
+  epoch(id: $id) {
+    id
+    timestamps {
+      start
+      end
+      firstBlock
+      lastBlock
+    }
+  }
+}
+
+query ExplorerFutureEpoch {
+  networkParameter(key: "validators.epoch.length") {
+    value
+  }
+
+  epoch {
+    id
+    timestamps {
+      start
+    }
+  }
+}
+
+# query ExplorerEpoch($id: ID!) {
+#
+##### This could be useful for calculating roughly when a future epoch will
+##### occur, but epoch not exist results in a total error
+#  networkParameter(key: "validators.epoch.length") {
+#    value
+# }
+#
+##### This could be useful for relating where we are in time, but as above
+##### the total failure caused by epoch(id) not existing
+##### means this is useful
+#  currentEpoch: epoch {
+#    id
+#  }
+#
+#  epoch(id: $id) {
+#    id
+#    timestamps {
+#      start
+#      end
+#      firstBlock
+#      lastBlock
+#    }
+#  }
+#}

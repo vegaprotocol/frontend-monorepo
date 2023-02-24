@@ -28,7 +28,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === activeTab;
             const triggerClass = classNames(
-              'relative px-4 py-2 border-r border-default',
+              'relative px-4 py-1 border-r border-default',
               'uppercase',
               {
                 'cursor-default': isActive,

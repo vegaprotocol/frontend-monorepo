@@ -1,8 +1,8 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { AssetOption } from '@vegaprotocol/assets';
 import {
-  ethereumAddress,
   t,
+  ethereumAddress,
   required,
   vegaPublicKey,
   minSafe,
@@ -14,17 +14,19 @@ import {
 import {
   Button,
   FormGroup,
-  Icon,
   Input,
   InputError,
   RichSelect,
+  Notification,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 import { useMemo } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import type { FieldError } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
@@ -72,7 +74,8 @@ export const DepositForm = ({
   isFaucetable,
 }: DepositFormProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
-  const { account } = useWeb3React();
+  const openDialog = useWeb3ConnectStore((store) => store.open);
+  const { isActive, account } = useWeb3React();
   const { pubKey } = useVegaWallet();
   const {
     register,
@@ -83,25 +86,26 @@ export const DepositForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      from: account,
       to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id || '',
     },
   });
 
-  const onDeposit = async (fields: FormFields) => {
+  const onSubmit = async (fields: FormFields) => {
     if (!selectedAsset || selectedAsset.source.__typename !== 'ERC20') {
       throw new Error('Invalid asset');
     }
 
-    submitDeposit({
-      assetSource: selectedAsset.source.contractAddress,
-      amount: fields.amount,
-      vegaPublicKey: fields.to,
-    });
+    if (approved) {
+      submitDeposit({
+        assetSource: selectedAsset.source.contractAddress,
+        amount: fields.amount,
+        vegaPublicKey: fields.to,
+      });
+    } else {
+      submitApprove();
+    }
   };
-
-  const amount = useWatch({ name: 'amount', control });
 
   const maxAmount = useMemo(() => {
     const maxApproved = allowance ? allowance : new BigNumber(0);
@@ -133,9 +137,12 @@ export const DepositForm = ({
     return minViableAmount;
   }, [selectedAsset]);
 
+  const approved = allowance && allowance.isGreaterThan(0) ? true : false;
+  const formState = getFormState(selectedAsset, isActive, approved);
+
   return (
     <form
-      onSubmit={handleSubmit(onDeposit)}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate={true}
       data-testid="deposit-form"
     >
@@ -143,19 +150,54 @@ export const DepositForm = ({
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
       >
-        <Input
-          id="ethereum-address"
-          {...register('from', {
+        <Controller
+          name="from"
+          control={control}
+          rules={{
             validate: {
-              required,
+              required: (value) => {
+                if (!value) return t('Connect Ethereum wallet');
+                return true;
+              },
               ethereumAddress,
             },
-          })}
-        />
-        <EthereumButton
-          clearAddress={() => {
-            setValue('from', '');
-            clearErrors('from');
+          }}
+          defaultValue={account}
+          render={() => {
+            if (isActive && account) {
+              return (
+                <>
+                  <Input
+                    id="ethereum-address"
+                    value={account}
+                    readOnly={true}
+                    disabled={true}
+                    {...register('from', {
+                      validate: {
+                        required,
+                        ethereumAddress,
+                      },
+                    })}
+                  />
+                  <DisconnectEthereumButton
+                    onDisconnect={() => {
+                      setValue('from', ''); // clear from value so required ethereum connection validation works
+                    }}
+                  />
+                </>
+              );
+            }
+            return (
+              <Button
+                onClick={openDialog}
+                variant="primary"
+                fill={true}
+                type="button"
+                data-testid="connect-eth-wallet-btn"
+              >
+                {t('Connect')}
+              </Button>
+            );
           }}
         />
         {errors.from?.message && (
@@ -241,148 +283,136 @@ export const DepositForm = ({
             deposited={deposited}
             balance={balance}
             asset={selectedAsset}
+            allowance={allowance}
           />
         </div>
       )}
-      <FormGroup label={t('Amount')} labelFor="amount">
-        <Input
-          type="number"
-          autoComplete="off"
-          id="amount"
-          {...register('amount', {
-            validate: {
-              required,
-              minSafe: (value) => minSafe(new BigNumber(min))(value),
-              maxSafe: (v) => {
-                const value = new BigNumber(v);
-                if (value.isGreaterThan(maxAmount.available)) {
-                  return t('Insufficient amount in Ethereum wallet');
-                } else if (value.isGreaterThan(maxAmount.limit)) {
-                  return t('Amount is above temporary deposit limit');
-                } else if (value.isGreaterThan(maxAmount.approved)) {
-                  return t('Amount is above approved amount');
-                }
-                return maxSafe(maxAmount.amount)(v);
+      {formState === 'deposit' && (
+        <FormGroup label={t('Amount')} labelFor="amount">
+          <Input
+            type="number"
+            autoComplete="off"
+            id="amount"
+            {...register('amount', {
+              validate: {
+                required,
+                minSafe: (value) => minSafe(new BigNumber(min))(value),
+                approved: (v) => {
+                  const value = new BigNumber(v);
+                  if (value.isGreaterThan(maxAmount.approved)) {
+                    return t('Amount is above approved amount');
+                  }
+                  return true;
+                },
+                limit: (v) => {
+                  const value = new BigNumber(v);
+                  if (value.isGreaterThan(maxAmount.limit)) {
+                    return t('Amount is above deposit limit');
+                  }
+                  return true;
+                },
+                balance: (v) => {
+                  const value = new BigNumber(v);
+                  if (value.isGreaterThan(maxAmount.available)) {
+                    return t('Insufficient amount in Ethereum wallet');
+                  }
+                  return true;
+                },
+                maxSafe: (v) => {
+                  return maxSafe(maxAmount.amount)(v);
+                },
               },
-            },
-          })}
-        />
-        {errors.amount?.message && (
-          <InputError intent="danger" forInput="amount">
-            {errors.amount.message}
-          </InputError>
-        )}
-        {selectedAsset && balance && (
-          <UseButton
-            onClick={() => {
-              setValue('amount', balance.toFixed(selectedAsset.decimals));
-              clearErrors('amount');
-            }}
-          >
-            {t('Use maximum')}
-          </UseButton>
-        )}
-      </FormGroup>
-      <FormButton
-        selectedAsset={selectedAsset}
-        amount={new BigNumber(amount || 0)}
-        allowance={allowance}
-        onApproveClick={submitApprove}
-      />
+            })}
+          />
+          {errors.amount?.message && (
+            <AmountError error={errors.amount} submitApprove={submitApprove} />
+          )}
+          {selectedAsset && balance && (
+            <UseButton
+              onClick={() => {
+                setValue('amount', balance.toFixed(selectedAsset.decimals));
+                clearErrors('amount');
+              }}
+            >
+              {t('Use maximum')}
+            </UseButton>
+          )}
+        </FormGroup>
+      )}
+      <FormButton selectedAsset={selectedAsset} formState={formState} />
     </form>
+  );
+};
+
+const AmountError = ({
+  error,
+  submitApprove,
+}: {
+  error: FieldError;
+  submitApprove: () => void;
+}) => {
+  if (error.type === 'approved') {
+    return (
+      <InputError intent="danger" forInput="amount">
+        {error.message}.
+        <button onClick={submitApprove} className="underline ml-2">
+          {t('Update approve amount')}
+        </button>
+      </InputError>
+    );
+  }
+  return (
+    <InputError intent="danger" forInput="amount">
+      {error.message}
+    </InputError>
   );
 };
 
 interface FormButtonProps {
   selectedAsset?: Asset;
-  amount: BigNumber;
-  allowance: BigNumber | undefined;
-  onApproveClick: () => void;
+  formState: ReturnType<typeof getFormState>;
 }
 
-const FormButton = ({
-  selectedAsset,
-  amount,
-  allowance,
-  onApproveClick,
-}: FormButtonProps) => {
-  const { open, desiredChainId } = useWeb3ConnectStore((store) => ({
-    open: store.open,
-    desiredChainId: store.desiredChainId,
-  }));
+const FormButton = ({ selectedAsset, formState }: FormButtonProps) => {
   const { isActive, chainId } = useWeb3React();
-  const approved =
-    allowance && allowance.isGreaterThan(0) && amount.isLessThan(allowance);
-  let button = null;
-  let message: ReactNode = '';
-
-  if (!isActive) {
-    button = (
-      <Button onClick={open} data-testid="connect-eth-wallet-btn">
-        {t('Connect Ethereum wallet')}
-      </Button>
-    );
-  } else if (chainId !== desiredChainId) {
-    const chainName = getChainName(desiredChainId);
-    message = t(`This app only works on ${chainName}.`);
-    button = (
-      <Button
-        type="submit"
-        data-testid="deposit-submit"
-        variant="primary"
-        fill={true}
-        disabled={true}
-      >
-        {t('Deposit')}
-      </Button>
-    );
-  } else if (!selectedAsset) {
-    button = (
-      <Button
-        type="submit"
-        data-testid="deposit-submit"
-        variant="primary"
-        fill={true}
-      >
-        {t('Deposit')}
-      </Button>
-    );
-  } else if (approved) {
-    message = (
-      <>
-        <Icon name="tick" className="mr-2" />
-        <span>{t('Approved')}</span>
-      </>
-    );
-    button = (
-      <Button
-        type="submit"
-        data-testid="deposit-submit"
-        variant="primary"
-        fill={true}
-      >
-        {t('Deposit')}
-      </Button>
-    );
-  } else {
-    message = t(`Deposits of ${selectedAsset.symbol} not approved`);
-    button = (
-      <Button
-        onClick={onApproveClick}
-        data-testid="deposit-approve-submit"
-        variant="primary"
-        fill={true}
-      >
-        {t(`Approve ${selectedAsset.symbol}`)}
-      </Button>
-    );
-  }
-
+  const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
+  const submitText =
+    formState === 'approve'
+      ? t(`Approve ${selectedAsset ? selectedAsset.symbol : ''}`)
+      : t('Deposit');
+  const invalidChain = isActive && chainId !== desiredChainId;
   return (
-    <div className="flex flex-col gap-4">
-      {message && <p className="text-center">{message}</p>}
-      {button}
-    </div>
+    <>
+      {formState === 'approve' && (
+        <div className="mb-2">
+          <Notification
+            intent={Intent.Warning}
+            testId="approve-warning"
+            message={t(`Deposits of ${selectedAsset?.symbol} not approved`)}
+          />
+        </div>
+      )}
+      {invalidChain && (
+        <div className="mb-2">
+          <Notification
+            intent={Intent.Danger}
+            testId="chain-error"
+            message={t(
+              `This app only works on ${getChainName(desiredChainId)}.`
+            )}
+          />
+        </div>
+      )}
+      <Button
+        type="submit"
+        data-testid="deposit-submit"
+        variant={isActive ? 'primary' : 'default'}
+        fill={true}
+        disabled={invalidChain}
+      >
+        {submitText}
+      </Button>
+    </>
   );
 };
 
@@ -398,25 +428,35 @@ const UseButton = (props: UseButtonProps) => {
   );
 };
 
-const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
-  const openDialog = useWeb3ConnectStore((state) => state.open);
-  const { isActive, connector } = useWeb3React();
+const DisconnectEthereumButton = ({
+  onDisconnect,
+}: {
+  onDisconnect: () => void;
+}) => {
+  const { connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
-
-  if (!isActive) {
-    return <UseButton onClick={openDialog}>{t('Connect')}</UseButton>;
-  }
 
   return (
     <UseButton
       onClick={() => {
         connector.deactivate();
-        clearAddress();
         removeEagerConnector();
+        onDisconnect();
       }}
       data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
     </UseButton>
   );
+};
+
+const getFormState = (
+  selectedAsset: Asset | undefined,
+  isActive: boolean,
+  approved: boolean
+) => {
+  if (!selectedAsset) return 'deposit';
+  if (!isActive) return 'deposit';
+  if (approved) return 'deposit';
+  return 'approve';
 };

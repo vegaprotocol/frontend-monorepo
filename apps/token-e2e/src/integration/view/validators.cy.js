@@ -201,12 +201,21 @@ context('Staking Page - verify elements on page', function () {
         cy.get(stakeShare)
           .invoke('text')
           .then(($stakePercentage) => {
-            if ($stakePercentage != '-') {
-              cy.wrap($stakePercentage).should(
-                'match',
-                /\b(?<!\.)(?!0+(?:\.0+)?%)(?:\d|[1-9]\d|100)(?:(?<!100)\.\d+)?%/
-              );
-            }
+            // The pattern must start at a word boundary (\b).
+            // The pattern cannot be immediately preceded by a dot ((?<!\.)).
+            // The pattern can be one of the following:
+            // A percentage value of zero (0%), or
+            // A non-zero percentage value that can be:
+            // A single digit (\d) between 0 and 9, or
+            // A two-digit number between 0 and 99 (\d{1,2}), or
+            // The number 100.
+            // The pattern can optionally include a decimal point and one or more digits after the decimal point ((?:(?<!100)\.\d+)?). However, if the number is 100, it cannot have a decimal point.
+            // The pattern must end with a percentage sign (%).
+
+            cy.wrap($stakePercentage).should(
+              'match',
+              /\b(?<!\.)(?:0+(?:\.0+)?%|(?:\d|\d{1,2}|100)(?:(?<!100)\.\d+)?)%/
+            );
           });
       });
 

@@ -22,6 +22,7 @@ module.exports = defineConfig({
     viewportHeight: 900,
     responseTimeout: 50000,
     requestTimeout: 20000,
+    retries: 2,
   },
   env: {
     ETHERSCAN_URL: 'https://sepolia.etherscan.io',

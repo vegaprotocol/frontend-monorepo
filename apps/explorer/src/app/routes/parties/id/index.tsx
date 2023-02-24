@@ -68,7 +68,7 @@ const Party = () => {
   return (
     <section>
       <h1
-        className="font-alpha uppercase font-xl mb-4 text-zinc-800 dark:text-zinc-200"
+        className="font-alpha uppercase font-xl mb-4 text-vega-dark-100 dark:text-vega-light-100"
         data-testid="parties-header"
       >
         {t('Public key')}

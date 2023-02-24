@@ -10,7 +10,9 @@ const MIN_FRACTION_DIGITS = 2;
 const MAX_FRACTION_DIGITS = 20;
 
 export function toDecimal(numberOfDecimals: number) {
-  return 1 / Math.pow(10, numberOfDecimals);
+  return new BigNumber(1)
+    .dividedBy(Math.pow(10, numberOfDecimals))
+    .toString(10);
 }
 
 export function toBigNum(

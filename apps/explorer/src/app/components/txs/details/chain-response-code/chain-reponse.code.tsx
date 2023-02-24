@@ -36,7 +36,7 @@ export const ChainResponseCode = ({
     error && error.length > 100 ? error.replace(/,/g, ',\r\n') : error;
 
   return (
-    <div title={`Response code: ${code} - ${label}`}>
+    <div title={`Response code: ${code} - ${label}`} className="inline-block">
       <span
         className="mr-2"
         aria-label={isSuccess ? 'Success' : 'Warning'}

@@ -16,6 +16,9 @@ export const tooltipMapping: Record<string, ReactNode> = {
   markPrice: t(
     'A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.'
   ),
+  quoteUnit: t(
+    `The underlying that is being priced by the market, described by the market's oracle.`
+  ),
   openInterest: t(
     'The volume of all open positions in a given market (the sum of the size of all positions greater than 0).'
   ),
@@ -98,7 +101,4 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `The market's liquidity requirement which is derived from the maximum open interest observed over a rolling time window.`
   ),
   suppliedStake: t('The current amount of liquidity supplied for this market.'),
-  liquidityPriceRange: t(
-    `Percentage move up and down from the mid price, which specifies the range of price levels over which automated liquidity provision orders will be deployed.`
-  ),
 };

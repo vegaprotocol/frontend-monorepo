@@ -11,6 +11,7 @@ interface DepositLimitsProps {
   deposited: BigNumber;
   asset: Asset;
   balance?: BigNumber;
+  allowance?: BigNumber;
 }
 
 export const DepositLimits = ({
@@ -18,6 +19,7 @@ export const DepositLimits = ({
   deposited,
   asset,
   balance,
+  allowance,
 }: DepositLimitsProps) => {
   const limits = [
     {
@@ -43,6 +45,12 @@ export const DepositLimits = ({
       label: t('Remaining'),
       rawValue: max.minus(deposited),
       value: compactNumber(max.minus(deposited), asset.decimals),
+    },
+    {
+      key: 'ALLOWANCE',
+      label: t('Approved'),
+      rawValue: allowance,
+      value: allowance ? compactNumber(allowance, asset.decimals) : '-',
     },
   ];
 

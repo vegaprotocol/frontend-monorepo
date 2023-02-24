@@ -6,8 +6,9 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import compact from 'lodash/compact';
+import uniqBy from 'lodash/uniqBy';
 import type { ChangeEvent } from 'react';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { AccountHistoryQuery } from './__generated__/AccountHistory';
 import { useAccountHistoryQuery } from './__generated__/AccountHistory';
 import * as Schema from '@vegaprotocol/types';
@@ -25,8 +26,10 @@ import {
 import { AccountTypeMapping } from '@vegaprotocol/types';
 import { PriceChart } from 'pennant';
 import 'pennant/dist/style.css';
-import { accountsOnlyDataProvider } from '@vegaprotocol/accounts';
+import type { Account } from '@vegaprotocol/accounts';
+import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
+import type { Market } from '@vegaprotocol/market-list';
 
 const DateRange = {
   RANGE_1D: '1D',
@@ -97,7 +100,7 @@ const AccountHistoryManager = ({
   );
 
   const { data: accounts } = useDataProvider({
-    dataProvider: accountsOnlyDataProvider,
+    dataProvider: accountsDataProvider,
     variables: variablesForOneTimeQuery,
     skip: !pubKey,
   });
@@ -118,6 +121,39 @@ const AccountHistoryManager = ({
   const [range, setRange] = useState<typeof DateRange[keyof typeof DateRange]>(
     DateRange.RANGE_1M
   );
+  const [market, setMarket] = useState<Market | null>(null);
+  const marketFilterCb = useCallback(
+    (item: Market) =>
+      !asset?.id ||
+      item.tradableInstrument.instrument.product.settlementAsset.id ===
+        asset?.id,
+    [asset?.id]
+  );
+  const markets = useMemo<Market[] | null>(() => {
+    const arr =
+      accounts
+        ?.filter((item: Account) => Boolean(item && item.market))
+        .map<Market>((item) => item.market as Market) ?? null;
+    return arr
+      ? uniqBy(arr.filter(marketFilterCb), 'id').sort((a, b) =>
+          a.tradableInstrument.instrument.code.localeCompare(
+            b.tradableInstrument.instrument.code
+          )
+        )
+      : null;
+  }, [accounts, marketFilterCb]);
+  const resolveMarket = useCallback(
+    (m: Market) => {
+      setMarket(m);
+      const newAssetId =
+        m.tradableInstrument.instrument.product.settlementAsset.id;
+      const newAsset = assets.find((item) => item.id === newAssetId);
+      if ((!asset || (assets && newAssetId !== asset.id)) && newAsset) {
+        setAsset(newAsset);
+      }
+    },
+    [asset, assets]
+  );
 
   const variables = useMemo(
     () => ({
@@ -126,62 +162,113 @@ const AccountHistoryManager = ({
       accountTypes: accountType ? [accountType] : undefined,
       dateRange:
         range === 'All' ? undefined : { start: calculateStartDate(range) },
+      marketIds: market?.id ? [market.id] : undefined,
     }),
-    [pubKey, asset, accountType, range]
+    [pubKey, asset, accountType, range, market?.id]
   );
-
   const { data } = useAccountHistoryQuery({
     variables,
     skip: !asset || !pubKey,
   });
 
+  const accountTypeMenu = useMemo(() => {
+    return (
+      <DropdownMenu
+        trigger={
+          <DropdownMenuTrigger>
+            {accountType
+              ? `${
+                  AccountTypeMapping[
+                    accountType as keyof typeof Schema.AccountType
+                  ]
+                } Account`
+              : t('Select account type')}
+          </DropdownMenuTrigger>
+        }
+      >
+        <DropdownMenuContent>
+          {[
+            Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+            Schema.AccountType.ACCOUNT_TYPE_BOND,
+            Schema.AccountType.ACCOUNT_TYPE_MARGIN,
+          ].map((type) => (
+            <DropdownMenuItem
+              key={type}
+              onClick={() => setAccountType(type as Schema.AccountType)}
+            >
+              {AccountTypeMapping[type as keyof typeof Schema.AccountType]}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }, [accountType]);
+  const assetsMenu = useMemo(() => {
+    return (
+      <DropdownMenu
+        trigger={
+          <DropdownMenuTrigger>
+            {asset ? asset.symbol : t('Select asset')}
+          </DropdownMenuTrigger>
+        }
+      >
+        <DropdownMenuContent>
+          {assets.map((a) => (
+            <DropdownMenuItem key={a.id} onClick={() => setAsset(a)}>
+              {a.symbol}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }, [assets, asset]);
+  const marketsMenu = useMemo(() => {
+    return accountType === Schema.AccountType.ACCOUNT_TYPE_MARGIN &&
+      markets?.length ? (
+      <DropdownMenu
+        trigger={
+          <DropdownMenuTrigger>
+            {market
+              ? market.tradableInstrument.instrument.code
+              : t('Select market')}
+          </DropdownMenuTrigger>
+        }
+      >
+        <DropdownMenuContent>
+          {market && (
+            <DropdownMenuItem key="0" onClick={() => setMarket(null)}>
+              {t('All markets')}
+            </DropdownMenuItem>
+          )}
+          {markets?.map((m) => (
+            <DropdownMenuItem key={m.id} onClick={() => resolveMarket(m)}>
+              {m.tradableInstrument.instrument.code}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ) : null;
+  }, [markets, market, accountType, resolveMarket]);
+
+  useEffect(() => {
+    if (
+      accountType !== Schema.AccountType.ACCOUNT_TYPE_MARGIN ||
+      market?.tradableInstrument.instrument.product.settlementAsset.id !==
+        asset?.id
+    ) {
+      setMarket(null);
+    }
+  }, [accountType, asset?.id, market]);
+
   return (
     <div className="h-full w-full flex flex-col gap-8">
       <div className="w-full flex flex-col-reverse lg:flex-row items-start lg:items-center justify-between gap-4 px-2">
         <div className="flex items-center gap-4 shrink-0">
-          <DropdownMenu
-            trigger={
-              <DropdownMenuTrigger>
-                {accountType
-                  ? `${
-                      AccountTypeMapping[
-                        accountType as keyof typeof Schema.AccountType
-                      ]
-                    } Account`
-                  : t('Select account type')}
-              </DropdownMenuTrigger>
-            }
-          >
-            <DropdownMenuContent>
-              {[
-                Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-                Schema.AccountType.ACCOUNT_TYPE_BOND,
-                Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-              ].map((type) => (
-                <DropdownMenuItem
-                  key={type}
-                  onClick={() => setAccountType(type as Schema.AccountType)}
-                >
-                  {AccountTypeMapping[type as keyof typeof Schema.AccountType]}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DropdownMenu
-            trigger={
-              <DropdownMenuTrigger>
-                {asset ? asset.symbol : t('Select asset')}
-              </DropdownMenuTrigger>
-            }
-          >
-            <DropdownMenuContent>
-              {assets.map((a) => (
-                <DropdownMenuItem key={a.id} onClick={() => setAsset(a)}>
-                  {a.symbol}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <>
+            {accountTypeMenu}
+            {assetsMenu}
+            {marketsMenu}
+          </>
         </div>
         <div className="pt-1 justify-items-end">
           <Toggle

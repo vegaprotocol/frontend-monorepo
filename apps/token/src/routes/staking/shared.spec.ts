@@ -8,6 +8,7 @@ import {
   getFormattedPerformanceScore,
   getPerformancePenalty,
   getTotalPenalties,
+  getStakePercentage,
 } from './shared';
 
 describe('getLastEpochScoreAndPerformance', () => {
@@ -137,5 +138,25 @@ describe('getTotalPenalties', () => {
 
   it('should return 0 if the total penalties is negative', () => {
     expect(getTotalPenalties('0.25', '0.5', '1000', '10000')).toEqual('0.00%');
+  });
+});
+
+describe('getStakePercentage', () => {
+  it('should return the stake percentage', () => {
+    expect(
+      getStakePercentage(new BigNumber('1000'), new BigNumber('100'))
+    ).toEqual('10%');
+    expect(
+      getStakePercentage(new BigNumber('1000'), new BigNumber('500'))
+    ).toEqual('50%');
+    expect(
+      getStakePercentage(new BigNumber('1000'), new BigNumber('257.5'))
+    ).toEqual('25.75%');
+  });
+
+  it('should return "0%" if the total stake is 0', () => {
+    expect(getStakePercentage(new BigNumber('0'), new BigNumber('0'))).toEqual(
+      '0%'
+    );
   });
 });

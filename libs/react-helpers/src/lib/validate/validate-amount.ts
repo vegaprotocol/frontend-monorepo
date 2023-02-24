@@ -1,6 +1,6 @@
 import { t } from '../i18n';
 
-export const validateAmount = (step: number, field: string) => {
+export const validateAmount = (step: number | string, field: string) => {
   const [, stepDecimals = ''] = String(step).split('.');
 
   return (value: string) => {
