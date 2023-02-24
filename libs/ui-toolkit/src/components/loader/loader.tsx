@@ -1,5 +1,13 @@
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+const pseudoRandom = (seed: number) => {
+  let value = seed;
+  return () => {
+    value = (value * 16807) % 2147483647;
+    return value / 1000000000;
+  };
+};
 
 export interface LoaderProps {
   size?: 'small' | 'large';
@@ -35,6 +43,8 @@ export const Loader = ({
     size === 'small' ? 'w-[15px] h-[15px]' : 'w-[50px] h-[50px]';
   const items = size === 'small' ? 9 : 16;
 
+  const generate = useMemo(() => pseudoRandom(1), []);
+
   return (
     <div
       className="flex flex-col items-center pre-loader-center"
@@ -47,7 +57,7 @@ export const Loader = ({
               className={itemClasses}
               key={i}
               style={{
-                opacity: Math.random() > 0.75 ? 1 : 0,
+                opacity: generate() > 1.5 ? 1 : 0,
               }}
             />
           );
