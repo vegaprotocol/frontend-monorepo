@@ -424,12 +424,13 @@ export const PNLCell = ({
   const { VEGA_DOCS_URL } = useEnvironment();
 
   if (!data) {
-    return '-';
+    return <>-</>;
   }
 
   const losses = parseInt(data?.lossSocializationAmount ?? '0');
   if (losses <= 0) {
-    return valueFormatted;
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{valueFormatted}</>;
   }
 
   const lossesFormatted = addDecimalsFormatNumber(
@@ -464,11 +465,12 @@ export const OpenVolumeCell = ({
   const { VEGA_DOCS_URL } = useEnvironment();
 
   if (!data) {
-    return '-';
+    return <>-</>;
   }
 
   if (data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED) {
-    return valueFormatted;
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{valueFormatted}</>;
   }
 
   return (
@@ -479,7 +481,12 @@ export const OpenVolumeCell = ({
             {t('Your positions was affected by market conditions')}
           </p>
           <p className="mb-2">
-            {t('Status: %s', PositionStatusMapping[data.status])}
+            {t(
+              'Status: %s',
+              PositionStatusMapping[
+                PositionStatus.POSITION_STATUS_ORDERS_CLOSED
+              ]
+            )}
           </p>
           {VEGA_DOCS_URL && (
             <ExternalLink href={VEGA_DOCS_URL}>
