@@ -45,8 +45,9 @@ export const FillsManager = ({
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
-        noRowsOverlayComponent={() => null}
         onMarketClick={onMarketClick}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

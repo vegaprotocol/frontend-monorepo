@@ -152,6 +152,8 @@ export const OrderListManager = ({
             isReadOnly={isReadOnly}
             hasActiveOrder={hasActiveOrder}
             blockLoadDebounceMillis={100}
+            suppressLoadingOverlay
+            suppressNoRowsOverlay
           />
           <div className="pointer-events-none absolute inset-0">
             <AsyncRenderer

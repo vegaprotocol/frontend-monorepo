@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
+import { t } from '../i18n';
 
 export const SetFilter = forwardRef((props: IFilterParams, ref) => {
   const [value, setValue] = useState<string[]>([]);
@@ -16,18 +17,19 @@ export const SetFilter = forwardRef((props: IFilterParams, ref) => {
       doesFilterPass(params: IDoesFilterPassParams) {
         const { api, colDef, column, columnApi, context } = props;
         const { node } = params;
-        return (
-          props.valueGetter({
-            api,
-            colDef,
-            column,
-            columnApi,
-            context,
-            data: node.data,
-            getValue: (field) => node.data[field],
-            node,
-          }) === value
-        );
+        const getValue = props.valueGetter({
+          api,
+          colDef,
+          column,
+          columnApi,
+          context,
+          data: node.data,
+          getValue: (field) => node.data[field],
+          node,
+        });
+        return Array.isArray(value)
+          ? value.includes(getValue)
+          : getValue === value;
       },
 
       isFilterActive() {
@@ -83,7 +85,7 @@ export const SetFilter = forwardRef((props: IFilterParams, ref) => {
           className="ag-standard-button ag-filter-apply-panel-button"
           onClick={() => setValue([])}
         >
-          Reset
+          {t('Reset')}
         </button>
       </div>
     </div>
