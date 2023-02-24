@@ -12,6 +12,8 @@ export default function Document() {
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* eslint-disable-next-line @next/next/no-css-tags */}
+        <link rel="stylesheet" href="/preloader.css" media="all" />
         <link
           rel="icon"
           type="image/x-icon"
