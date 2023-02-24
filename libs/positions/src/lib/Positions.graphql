@@ -32,6 +32,8 @@ subscription PositionsSubscription($partyId: ID!) {
     averageEntryPrice
     updatedAt
     marketId
+    lossSocializationAmount
+    positionStatus
   }
 }
 

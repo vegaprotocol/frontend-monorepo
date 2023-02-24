@@ -24,7 +24,7 @@ import {
   PositionsSubscriptionDocument,
 } from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
-import { PositionStatus } from '@vegaprotocol/types';
+import type { PositionStatus } from '@vegaprotocol/types';
 
 type PositionMarginLevel = Pick<
   MarginFieldsFragment,
@@ -208,14 +208,13 @@ export const update = (
           openVolume: delta.openVolume,
           averageEntryPrice: delta.averageEntryPrice,
           updatedAt: delta.updatedAt,
+          lossSocializationAmount: delta.lossSocializationAmount,
+          positionStatus: delta.positionStatus,
         };
       } else {
         draft.unshift({
           ...delta,
           __typename: 'Position',
-          // TODO: these should be contained in delta https://github.com/vegaprotocol/vega/issues/7638
-          lossSocializationAmount: '0',
-          positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
           market: {
             __typename: 'Market',
             id: delta.marketId,

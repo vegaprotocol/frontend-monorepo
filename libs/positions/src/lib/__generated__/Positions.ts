@@ -17,7 +17,7 @@ export type PositionsSubscriptionSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type PositionsSubscriptionSubscription = { __typename?: 'Subscription', positions: Array<{ __typename?: 'PositionUpdate', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, marketId: string }> };
+export type PositionsSubscriptionSubscription = { __typename?: 'Subscription', positions: Array<{ __typename?: 'PositionUpdate', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, marketId: string, lossSocializationAmount: string, positionStatus: Types.PositionStatus }> };
 
 export type MarginFieldsFragment = { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, asset: { __typename?: 'Asset', id: string }, market: { __typename?: 'Market', id: string } };
 
@@ -114,6 +114,8 @@ export const PositionsSubscriptionDocument = gql`
     averageEntryPrice
     updatedAt
     marketId
+    lossSocializationAmount
+    positionStatus
   }
 }
     `;
