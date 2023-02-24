@@ -62,3 +62,11 @@ const checkSortChange = (tabsArr: string[], column: string) => {
     });
   });
 };
+
+type Edges = { node: unknown }[];
+export function edgesToList(edges: Edges) {
+  // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
+  return edges.map((edge) => {
+    return edge.node;
+  });
+}

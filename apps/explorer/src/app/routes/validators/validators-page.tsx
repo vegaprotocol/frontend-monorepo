@@ -8,6 +8,7 @@ import {
   KeyValueTable,
   KeyValueTableRow,
   Tooltip,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useExplorerNodesQuery } from './__generated__/Nodes';
@@ -171,16 +172,22 @@ export const ValidatorsPage = () => {
               const validatorPage = tokenLink(
                 TOKEN_VALIDATOR.replace(':id', v.id)
               );
+              const validatorName =
+                v.name && v.name.length > 0 ? v.name : truncateMiddle(v.id);
               return (
                 <li className="mb-5" key={v.id}>
-                  <div className="border border-vega-light-200 dark:border-vega-dark-200 rounded p-2 overflow-hidden relative flex gap-2 items-start justify-between">
+                  <div
+                    data-testid="validator-tile"
+                    validator-id={v.id}
+                    className="border border-vega-light-200 dark:border-vega-dark-200 rounded p-2 overflow-hidden relative flex gap-2 items-start justify-between"
+                  >
                     {v.avatarUrl && (
                       <div className="w-20">
                         <ExternalLink href={validatorPage}>
                           <img
                             className="w-full"
                             src={v.avatarUrl}
-                            alt={v.name}
+                            alt={validatorName}
                           />
                         </ExternalLink>
                       </div>
@@ -188,7 +195,7 @@ export const ValidatorsPage = () => {
                     <div className="w-full">
                       <h2 className="font-alpha text-2xl">
                         <ExternalLink href={validatorPage}>
-                          {v.name}
+                          {validatorName}
                         </ExternalLink>
                       </h2>
                       <KeyValueTable>
