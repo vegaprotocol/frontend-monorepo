@@ -3,7 +3,6 @@ import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MarketDetails } from '../../components/markets/market-details';
-import { RouteTitle } from '../../components/route-title';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import compact from 'lodash/compact';
