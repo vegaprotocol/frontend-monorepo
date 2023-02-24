@@ -1,4 +1,4 @@
-import { countryCodeToFlagEmoji, t } from '@vegaprotocol/react-helpers';
+import { countryCodeToFlagEmoji, t } from '@vegaprotocol/utils';
 import {
   AsyncRenderer,
   Button,

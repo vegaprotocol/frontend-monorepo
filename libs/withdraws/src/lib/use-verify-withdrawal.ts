@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { captureException } from '@sentry/react';
 import BigNumber from 'bignumber.js';
-import { addDecimal, t } from '@vegaprotocol/react-helpers';
+import { addDecimal, t } from '@vegaprotocol/utils';
 import {
   useGetWithdrawThreshold,
   useGetWithdrawDelay,

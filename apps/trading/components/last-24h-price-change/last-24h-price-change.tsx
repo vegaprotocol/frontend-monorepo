@@ -5,7 +5,7 @@ import {
   isNumeric,
   useThrottledDataProvider,
   useYesterday,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';

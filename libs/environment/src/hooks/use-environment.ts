@@ -1,4 +1,4 @@
-import { isValidUrl, LocalStorage, t } from '@vegaprotocol/react-helpers';
+import { isValidUrl, LocalStorage, t } from '@vegaprotocol/utils';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';

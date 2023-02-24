@@ -9,7 +9,7 @@ import {
   useThrottledDataProvider,
   useYesterday,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { useMemo } from 'react';
 import type { Candle } from '@vegaprotocol/market-list';

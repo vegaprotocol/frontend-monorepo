@@ -1,4 +1,4 @@
-import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
+import { formatNumber, t, toBigNum } from '@vegaprotocol/utils';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';

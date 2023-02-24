@@ -10,7 +10,7 @@ import {
   useResizeObserver,
   formatNumberFixed,
   useThemeSwitcher,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow } from './orderbook-data';

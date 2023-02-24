@@ -6,7 +6,7 @@ import {
   PriceCell,
   useThrottledDataProvider,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,

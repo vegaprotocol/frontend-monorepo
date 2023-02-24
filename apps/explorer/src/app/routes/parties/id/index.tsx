@@ -1,4 +1,4 @@
-import { getNodes, t, useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { getNodes, t, useScreenDimensions } from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';

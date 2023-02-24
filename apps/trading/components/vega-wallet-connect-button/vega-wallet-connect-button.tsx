@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classNames from 'classnames';
-import { t, truncateByChars } from '@vegaprotocol/react-helpers';
+import { t, truncateByChars } from '@vegaprotocol/utils';
 import {
   Button,
   DropdownMenu,

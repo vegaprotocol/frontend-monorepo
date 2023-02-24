@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import BigNumber from 'bignumber.js';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 
 export enum ProposalUserAction {
   CREATE = 'CREATE',

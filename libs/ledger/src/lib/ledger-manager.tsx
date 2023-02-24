@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import type * as Schema from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';

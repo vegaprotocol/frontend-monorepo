@@ -1,9 +1,9 @@
-import type { DataGridProps } from '@vegaprotocol/react-helpers';
+import type { DataGridProps } from '@vegaprotocol/utils';
 import {
   t,
   getDateTimeFormat,
   addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';

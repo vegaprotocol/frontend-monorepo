@@ -1,7 +1,7 @@
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { isOrderActive, ordersWithMarketProvider } from '@vegaprotocol/orders';
 import type { OrdersQueryVariables } from '@vegaprotocol/orders';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 
 export const useRequestClosePositionData = (

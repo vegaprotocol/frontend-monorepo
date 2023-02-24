@@ -10,7 +10,7 @@ import {
 import { AsyncRenderer, Button, Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useEthereumConfig, Web3Provider } from '@vegaprotocol/web3';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { ENV } from './config/env';
 import { ContractsProvider } from './config/contracts/contracts-provider';
 import {

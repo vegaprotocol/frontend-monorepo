@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import get from 'lodash/get';
 import { Select } from '@vegaprotocol/ui-toolkit';
 

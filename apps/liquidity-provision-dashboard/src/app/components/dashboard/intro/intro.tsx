@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 // TODO: add mainnet links once docs have been updated

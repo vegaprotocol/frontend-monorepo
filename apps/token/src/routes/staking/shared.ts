@@ -1,7 +1,7 @@
 import {
   formatNumberPercentage,
   removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { PreviousEpochQuery } from './__generated___/PreviousEpoch';
 import { BigNumber } from '../../lib/bignumber';
 

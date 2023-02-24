@@ -6,7 +6,7 @@ import {
   truncateByChars,
   useDataProvider,
   useNetworkParam,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';

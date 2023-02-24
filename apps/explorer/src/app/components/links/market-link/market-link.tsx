@@ -3,7 +3,7 @@ import { useExplorerMarketQuery } from './__generated__/Market';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import Hash from '../hash';
 
 export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {

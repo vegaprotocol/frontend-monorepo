@@ -1,6 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
-import { t, truncateByChars } from '@vegaprotocol/react-helpers';
+import { t, truncateByChars } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { TransactionResult, VegaTxState } from '@vegaprotocol/wallet';

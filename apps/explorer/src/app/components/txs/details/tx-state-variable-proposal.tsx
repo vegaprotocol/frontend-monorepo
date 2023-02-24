@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { MarketLink } from '../../links';

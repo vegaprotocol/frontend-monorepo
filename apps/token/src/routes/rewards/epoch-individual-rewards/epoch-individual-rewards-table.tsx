@@ -1,4 +1,4 @@
-import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import {

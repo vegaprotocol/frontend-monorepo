@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { TransferContainer } from './transfer-container';

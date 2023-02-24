@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Button, Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { isEthereumError } from '../ethereum-error';
 import type { EthTxState, TxError } from '../use-ethereum-transaction';

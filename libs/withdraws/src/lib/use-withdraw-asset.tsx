@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/react';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/utils';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Links, Routes } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';

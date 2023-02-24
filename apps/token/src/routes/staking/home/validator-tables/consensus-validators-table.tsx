@@ -32,7 +32,7 @@ import {
   formatNumber,
   formatNumberPercentage,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 
 interface CanonisedConsensusNodeProps {
   id: string;

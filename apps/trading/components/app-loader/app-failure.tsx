@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useGlobalStore } from '../../stores';
 

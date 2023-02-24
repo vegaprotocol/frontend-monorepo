@@ -4,7 +4,7 @@ import {
   t,
   useDataProvider,
   makeDerivedDataProvider,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 import {

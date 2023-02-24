@@ -7,7 +7,7 @@ import {
   getNumberFormat,
   useThemeSwitcher,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { marketDepthProvider } from './market-depth-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';

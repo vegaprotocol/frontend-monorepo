@@ -1,7 +1,7 @@
 import {
   useDataProvider,
   makeInfiniteScrollGetRows,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';

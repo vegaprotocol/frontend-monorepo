@@ -8,7 +8,7 @@ import {
   formatNumber,
   toBigNum,
   useThrottledDataProvider,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 
 interface Props {
   market: Market;

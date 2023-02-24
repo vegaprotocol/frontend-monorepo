@@ -4,7 +4,7 @@ import {
   EthExplorerLinkTypes,
 } from '../../../components/links/eth-explorer-link/eth-explorer-link';
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
-import { remove0x } from '@vegaprotocol/react-helpers';
+import { remove0x } from '@vegaprotocol/utils';
 
 import type { SourceType } from './oracle';
 

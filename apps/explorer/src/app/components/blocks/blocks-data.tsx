@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import React from 'react';
 import type { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from './block-data';

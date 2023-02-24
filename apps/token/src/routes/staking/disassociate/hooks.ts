@@ -1,4 +1,4 @@
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/utils';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import React from 'react';
 

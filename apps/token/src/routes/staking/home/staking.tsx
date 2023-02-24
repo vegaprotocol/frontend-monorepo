@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { EpochData } from './epoch-data';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { createDocsLinks } from '@vegaprotocol/react-helpers';
+import { createDocsLinks } from '@vegaprotocol/utils';
 import { Heading } from '../../../components/heading';
 import React from 'react';
 

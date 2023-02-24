@@ -6,7 +6,7 @@ import { useAppState } from '../../../contexts/app-state/app-state-context';
 import type { BigNumber } from '../../../lib/bignumber';
 import type { UndelegateSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/utils';
 
 interface PendingStakeProps {
   pendingAmount: BigNumber;

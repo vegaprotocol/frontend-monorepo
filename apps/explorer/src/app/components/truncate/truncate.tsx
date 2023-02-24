@@ -1,4 +1,4 @@
-import { truncateByChars } from '@vegaprotocol/react-helpers';
+import { truncateByChars } from '@vegaprotocol/utils';
 import * as React from 'react';
 
 interface TruncateInlineProps {

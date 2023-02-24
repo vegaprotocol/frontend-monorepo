@@ -1,4 +1,4 @@
-import { makeDataProvider, useDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider, useDataProvider } from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 
 import type { AssetQuery, AssetFieldsFragment } from './__generated__/Asset';

@@ -17,9 +17,9 @@ import {
   isAssetTypeERC20,
   removePaginationWrapper,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { useAppState } from '../../contexts/app-state/app-state-context';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import type {
   DelegationsQuery,
   DelegationsQueryVariables,

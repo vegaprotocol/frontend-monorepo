@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import {
   DApp,
   TOKEN_NEW_MARKET_PROPOSAL,

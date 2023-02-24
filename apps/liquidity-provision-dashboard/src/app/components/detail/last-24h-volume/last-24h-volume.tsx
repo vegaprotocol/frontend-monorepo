@@ -4,7 +4,7 @@ import {
   useYesterday,
   useDataProvider,
   addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   calcDayVolume,

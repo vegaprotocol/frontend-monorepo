@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';

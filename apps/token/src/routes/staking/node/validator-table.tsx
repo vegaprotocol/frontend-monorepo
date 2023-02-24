@@ -1,11 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEnvironment } from '@vegaprotocol/environment';
-import {
-  createDocsLinks,
-  ExternalLinks,
-  toBigNum,
-} from '@vegaprotocol/react-helpers';
+import { createDocsLinks, ExternalLinks, toBigNum } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   Link as UTLink,

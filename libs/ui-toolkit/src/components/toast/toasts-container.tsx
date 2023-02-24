@@ -1,4 +1,4 @@
-import { t, usePrevious } from '@vegaprotocol/react-helpers';
+import { t, usePrevious } from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';

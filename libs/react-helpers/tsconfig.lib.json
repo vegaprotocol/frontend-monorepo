@@ -19,5 +19,30 @@
     "**/*.test.jsx",
     "jest.config.ts"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "../utils/src/lib/is-valid-url.ts",
+    "../utils/src/lib/i18n.ts",
+    "../utils/src/lib/remove-pagination-wrapper.ts",
+    "../utils/src/lib/is-asset-erc20.ts",
+    "../utils/src/lib/remove-0x.ts",
+    "../utils/src/lib/local-logger.ts",
+    "../utils/src/lib/generic-data-provider.spec.ts",
+    "../utils/src/lib/apollo-client.ts",
+    "../utils/src/lib/local-storage.ts",
+    "../utils/src/lib/links.ts",
+    "../utils/src/lib/format/date.ts",
+    "../utils/src/lib/format/strings.ts",
+    "../utils/src/lib/format/strings.spec.ts",
+    "../utils/src/lib/format/size.ts",
+    "../utils/src/lib/format/utils.ts",
+    "../utils/src/lib/get-nodes.ts",
+    "../utils/src/lib/pagination.ts",
+    "../utils/src/lib/time.ts",
+    "../ui-toolkit/src/utils/cell-class-rules.ts",
+    "../utils/src/lib/flag-emoji.spec.ts"
+  ]
 }

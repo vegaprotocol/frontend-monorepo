@@ -4,7 +4,7 @@ import {
   formatNumberPercentage,
   getDateTimeFormat,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   VegaValueFormatterParams,
   TypedDataAgGrid,

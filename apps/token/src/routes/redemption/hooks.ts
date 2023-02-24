@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranches } from '../../lib/tranches/tranches-store';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import BigNumber from 'bignumber.js';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 
 export const useUserTrancheBalances = (address: string | undefined) => {

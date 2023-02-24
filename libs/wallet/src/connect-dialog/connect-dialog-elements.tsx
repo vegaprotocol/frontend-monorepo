@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { createDocsLinks, ExternalLinks, t } from '@vegaprotocol/react-helpers';
+import { createDocsLinks, ExternalLinks, t } from '@vegaprotocol/utils';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 

@@ -13,8 +13,7 @@ import {
   max,
   isValid,
 } from 'date-fns';
-import { t } from '../i18n';
-import { formatForInput } from '../format/date';
+import { t, formatForInput } from '@vegaprotocol/utils';
 
 const defaultFilterValue: Schema.DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {

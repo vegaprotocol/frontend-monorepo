@@ -1,4 +1,4 @@
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/utils';
 import isUndefined from 'lodash/isUndefined';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 import get from 'lodash/get';

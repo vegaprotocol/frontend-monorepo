@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { LedgerManager } from './ledger-manager';

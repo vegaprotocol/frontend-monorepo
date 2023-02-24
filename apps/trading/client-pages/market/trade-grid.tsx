@@ -19,7 +19,7 @@ import {
   ResizableGridPanel,
   Splash,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { AccountsContainer } from '../../components/accounts-container';
 import type { Market } from '@vegaprotocol/market-list';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';

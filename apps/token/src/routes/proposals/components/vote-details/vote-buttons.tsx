@@ -3,7 +3,8 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
+import { addDecimal, toBigNum } from '@vegaprotocol/utils';
+import { useVoteSubmit } from '@vegaprotocol/governance';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
 import {
   AppStateActionType,

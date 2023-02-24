@@ -6,7 +6,7 @@ import {
   Input,
   InputError,
 } from '@vegaprotocol/ui-toolkit';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { addHours } from 'date-fns';
 import {
   addTwoMinutes,

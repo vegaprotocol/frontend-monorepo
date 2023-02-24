@@ -3,7 +3,7 @@ import {
   formatNumber,
   formatNumberPercentage,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   KeyValueTable,
   KeyValueTableRow,

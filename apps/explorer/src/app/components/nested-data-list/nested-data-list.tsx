@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/utils';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import { VegaColours } from '@vegaprotocol/tailwindcss-config';

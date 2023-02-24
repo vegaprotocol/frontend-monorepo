@@ -6,7 +6,7 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
-import { DataGrid, t } from '@vegaprotocol/react-helpers';
+import { DataGrid, t } from '@vegaprotocol/utils';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';

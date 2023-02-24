@@ -1,7 +1,7 @@
 import React from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { t, useScreenDimensions } from '@vegaprotocol/utils';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import EmptyList from '../empty-list/empty-list';

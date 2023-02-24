@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { RouteTitle } from '../../components/route-title';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';

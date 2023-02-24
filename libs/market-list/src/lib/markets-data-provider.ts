@@ -1,7 +1,7 @@
 import {
   makeDataProvider,
   marketDataErrorPolicyGuard,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { MarketsDataQuery } from './__generated__/markets-data';
 import { MarketsDataDocument } from './__generated__/markets-data';
 import type { MarketData } from './market-data-provider';

@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { useInView } from 'react-intersection-observer';
 import * as Schema from '@vegaprotocol/types';

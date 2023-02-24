@@ -16,8 +16,8 @@ import type { EthTransactionStore } from './use-ethereum-transaction-store';
 import { WithdrawalApprovalDocument } from '@vegaprotocol/wallet';
 import type { WithdrawalApprovalQuery } from '@vegaprotocol/wallet';
 
-import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
-import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/utils';
+import type { NetworkParamsQuery } from '@vegaprotocol/utils';
 
 const mockWeb3Provider = jest.fn();
 

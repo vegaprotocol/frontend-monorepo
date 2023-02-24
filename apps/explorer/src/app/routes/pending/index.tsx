@@ -3,7 +3,7 @@ import { DATA_SOURCES } from '../../config';
 import type { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermint-unconfirmed-transactions-response.d';
 import { TxList } from '../../components/txs';
 import { RouteTitle } from '../../components/route-title';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/utils';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const PendingTxs = () => {

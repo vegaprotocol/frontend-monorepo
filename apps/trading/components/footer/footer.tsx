@@ -1,5 +1,6 @@
 import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
-import { t, useNavigatorOnline } from '@vegaprotocol/react-helpers';
+import { useNavigatorOnline } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';

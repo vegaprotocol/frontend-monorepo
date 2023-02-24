@@ -25,7 +25,7 @@ import {
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import type { ValidatorsTableProps } from './shared';
-import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 
 interface StandbyPendingValidatorsTableProps extends ValidatorsTableProps {
   stakeNeededForPromotion: string | undefined;

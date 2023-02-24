@@ -1,4 +1,4 @@
-import { t } from '../i18n';
+import { t } from '../../../../utils/src/lib/i18n';
 
 export const validateAmount = (step: number | string, field: string) => {
   const [, stepDecimals = ''] = String(step).split('.');

@@ -1,6 +1,6 @@
 import { DisassociateTransaction } from '../disassociate-transaction';
 import { formatNumber } from '../../../../../lib/format-number';
-import { remove0x, toBigNum } from '@vegaprotocol/react-helpers';
+import { remove0x, toBigNum } from '@vegaprotocol/utils';
 import { Select } from '@vegaprotocol/ui-toolkit';
 import { StakingMethod } from '../../../../../components/staking-method-radio';
 import { TokenInput } from '../../../../../components/token-input';

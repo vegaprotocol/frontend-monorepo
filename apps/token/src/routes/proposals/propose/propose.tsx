@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../../components/heading';
-import { createDocsLinks } from '@vegaprotocol/react-helpers';
+import { createDocsLinks } from '@vegaprotocol/utils';
 
 export const Propose = () => {
   const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();

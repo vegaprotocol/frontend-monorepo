@@ -4,7 +4,7 @@ import {
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import dynamic from 'next/dynamic';

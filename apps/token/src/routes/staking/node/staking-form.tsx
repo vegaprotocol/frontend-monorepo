@@ -22,7 +22,7 @@ import {
   removeDecimal,
   addDecimal,
   removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { useBalances } from '../../../lib/balances/balances-store';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { SubHeading } from '../../../components/heading';

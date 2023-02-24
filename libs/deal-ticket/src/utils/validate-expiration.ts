@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import type { Validate } from 'react-hook-form';
 
 export const validateExpiration: Validate<string | undefined> = (

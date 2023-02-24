@@ -1,5 +1,5 @@
 import type { MarketFieldsFragment } from '@vegaprotocol/market-list';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import type {
   VegaICellRendererParams,
   VegaValueGetterParams,

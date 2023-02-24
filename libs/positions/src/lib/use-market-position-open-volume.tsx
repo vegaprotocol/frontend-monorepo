@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { positionsDataProvider } from './positions-data-providers';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/utils';
 import type { PositionFieldsFragment } from './__generated__/Positions';
 
 export const useMarketPositionOpenVolume = (marketId: string) => {

@@ -3,7 +3,7 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 

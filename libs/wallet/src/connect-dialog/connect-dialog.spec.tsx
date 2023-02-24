@@ -19,8 +19,8 @@ import {
   WalletError,
 } from '../connectors';
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
-import { ChainIdDocument } from '@vegaprotocol/react-helpers';
+import type { ChainIdQuery } from '@vegaprotocol/utils';
+import { ChainIdDocument } from '@vegaprotocol/utils';
 
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();

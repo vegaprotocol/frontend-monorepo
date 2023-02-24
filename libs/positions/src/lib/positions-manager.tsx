@@ -4,7 +4,7 @@ import { usePositionsData, PositionsTable } from '../';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 
 interface PositionsManagerProps {
   partyId: string;

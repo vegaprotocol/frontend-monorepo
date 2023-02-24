@@ -1,5 +1,5 @@
 import uniqBy from 'lodash/uniqBy';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   WithdrawalsDocument,
@@ -11,10 +11,7 @@ import type {
   WithdrawalEventSubscription,
   WithdrawalEventSubscriptionVariables,
 } from './__generated__/Withdrawal';
-import {
-  removePaginationWrapper,
-  getEvents,
-} from '@vegaprotocol/react-helpers';
+import { removePaginationWrapper, getEvents } from '@vegaprotocol/utils';
 
 const sortWithdrawals = (data: WithdrawalFieldsFragment[]) =>
   data.sort((a, b) => {

@@ -1,6 +1,6 @@
 import { Button } from '../button';
 import React from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 
 export function truncateMiddle(address: string) {
   if (address.length < 11) return address;

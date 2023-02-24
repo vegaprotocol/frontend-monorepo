@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 
 import { Intro } from './intro';
 import { MarketList } from './market-list';

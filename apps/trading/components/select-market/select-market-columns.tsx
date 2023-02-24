@@ -10,7 +10,7 @@ import {
   PriceCell,
   signedNumberCssClass,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
 import type { CandleClose } from '@vegaprotocol/types';

@@ -11,10 +11,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import Routes from '../routes';
-import {
-  ExternalLinks,
-  removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+import { ExternalLinks, removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated___/Nodes';
 import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
 import { getNotRejectedProposals } from '../proposals/proposals/proposals-container';

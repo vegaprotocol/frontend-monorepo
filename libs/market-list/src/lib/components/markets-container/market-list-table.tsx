@@ -4,7 +4,7 @@ import {
   addDecimalsFormatNumber,
   t,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   VegaValueGetterParams,
   VegaValueFormatterParams,

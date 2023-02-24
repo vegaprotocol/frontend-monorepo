@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useFetch } from '@vegaprotocol/react-helpers';
+import { useFetch } from '@vegaprotocol/utils';
 import type {
   BlockExplorerTransactionResult,
   BlockExplorerTransactions,

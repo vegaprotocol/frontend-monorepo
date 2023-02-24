@@ -4,7 +4,7 @@ import {
   addDecimalsFormatNumber,
   t,
   useDataProvider,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,

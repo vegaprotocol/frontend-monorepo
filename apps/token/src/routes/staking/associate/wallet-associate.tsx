@@ -8,7 +8,7 @@ import { TxState } from '../../../hooks/transaction-reducer';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
-import { removeDecimal, toBigNum } from '@vegaprotocol/react-helpers';
+import { removeDecimal, toBigNum } from '@vegaprotocol/utils';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useBalances } from '../../../lib/balances/balances-store';
 

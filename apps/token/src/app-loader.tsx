@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
 import { useEnvironment } from '@vegaprotocol/environment';

@@ -5,9 +5,9 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateAsset } from './propose-update-asset';
-import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import type { NetworkParamsQuery } from '@vegaprotocol/utils';
 import type { MockedResponse } from '@apollo/client/testing';
-import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/utils';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({

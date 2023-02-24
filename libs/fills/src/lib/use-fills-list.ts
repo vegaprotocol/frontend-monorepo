@@ -5,7 +5,7 @@ import {
   makeInfiniteScrollGetRows,
   useDataProvider,
   updateGridData,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { Trade, TradeEdge } from './fills-data-provider';
 import { fillsWithMarketProvider } from './fills-data-provider';
 

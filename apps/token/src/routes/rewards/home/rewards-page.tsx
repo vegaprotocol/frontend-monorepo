@@ -15,7 +15,7 @@ import {
   useNetworkParams,
   NetworkParams,
   createDocsLinks,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { useEpochQuery } from './__generated__/Rewards';
 
 import { EpochCountdown } from '../../../components/epoch-countdown';

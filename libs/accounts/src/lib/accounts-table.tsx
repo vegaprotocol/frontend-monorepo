@@ -1,9 +1,5 @@
 import { forwardRef, useMemo, useState } from 'react';
-import {
-  addDecimalsFormatNumber,
-  isNumeric,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, isNumeric, t } from '@vegaprotocol/utils';
 import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';

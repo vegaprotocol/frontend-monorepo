@@ -2,7 +2,7 @@ import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
 import reverse from 'lodash/reverse';
 import cloneDeep from 'lodash/cloneDeep';
-import { VolumeType } from '@vegaprotocol/react-helpers';
+import { VolumeType } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';

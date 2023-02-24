@@ -3,7 +3,7 @@ import {
   addDecimalsFormatNumber,
   t,
   truncateByChars,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   Button,
   KeyValueTable,

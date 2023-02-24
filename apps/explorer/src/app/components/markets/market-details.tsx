@@ -3,7 +3,7 @@ import {
   formatNumberPercentage,
   getMarketExpiryDateFormatted,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { MarketInfoNoCandlesQuery } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
 import pick from 'lodash/pick';

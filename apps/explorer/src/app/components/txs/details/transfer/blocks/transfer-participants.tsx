@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { PartyLink } from '../../../../links';
 import {

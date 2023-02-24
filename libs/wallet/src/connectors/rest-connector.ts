@@ -3,7 +3,7 @@ import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 import { WalletError } from './vega-connector';
 import { z } from 'zod';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 
 type TransactionError =
   | {

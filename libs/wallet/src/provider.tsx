@@ -1,4 +1,4 @@
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { WalletClientError } from '@vegaprotocol/wallet-client';

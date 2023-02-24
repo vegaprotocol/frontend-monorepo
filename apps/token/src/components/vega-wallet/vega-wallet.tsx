@@ -24,7 +24,7 @@ import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import { usePendingBalancesStore } from '../../hooks/use-pending-balances-manager';
 import { StakingEventType } from '../../hooks/use-get-association-breakdown';
 

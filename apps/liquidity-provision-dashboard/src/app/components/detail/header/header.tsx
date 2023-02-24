@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Link } from 'react-router-dom';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 

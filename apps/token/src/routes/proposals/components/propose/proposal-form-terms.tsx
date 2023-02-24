@@ -5,7 +5,7 @@ import {
   ExternalLink,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import { createDocsLinks } from '@vegaprotocol/react-helpers';
+import { createDocsLinks } from '@vegaprotocol/utils';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 

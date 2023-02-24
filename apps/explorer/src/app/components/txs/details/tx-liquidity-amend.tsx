@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { MarketLink } from '../../links';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';

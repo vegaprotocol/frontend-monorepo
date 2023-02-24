@@ -4,7 +4,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
 import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../proposal/__generated__/Proposal';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 
 export const useVoteInformation = ({
   proposal,

@@ -5,7 +5,7 @@ import {
   useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';

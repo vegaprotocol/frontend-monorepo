@@ -5,10 +5,7 @@ import {
   Thumbs,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  formatNumber,
-  formatNumberPercentage,
-} from '@vegaprotocol/react-helpers';
+import { formatNumber, formatNumberPercentage } from '@vegaprotocol/utils';
 import { SubHeading } from '../../../../components/heading';
 import { useVoteInformation } from '../../hooks';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';

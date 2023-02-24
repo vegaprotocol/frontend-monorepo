@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';

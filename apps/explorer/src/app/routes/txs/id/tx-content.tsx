@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { StatusMessage } from '../../../components/status-message';
 import { NestedDataList } from '../../../components/nested-data-list';
 import type { UnknownObject } from '../../../components/nested-data-list';

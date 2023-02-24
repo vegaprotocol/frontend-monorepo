@@ -1,5 +1,5 @@
 import { ProposalState } from '@vegaprotocol/types';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 

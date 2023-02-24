@@ -1,10 +1,10 @@
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { memo, forwardRef } from 'react';
-import { signedNumberCssClass } from '@vegaprotocol/react-helpers';
+import { signedNumberCssClass } from '@vegaprotocol/utils';
 import { Arrow } from '../arrows/arrow';
 
 export interface PriceChangeCellProps {

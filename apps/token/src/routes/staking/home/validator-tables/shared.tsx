@@ -4,7 +4,7 @@ import {
   formatNumber,
   formatNumberPercentage,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   Button,
   Tooltip,

@@ -19,7 +19,7 @@ import {
   signedNumberCssClassRules,
   DateRangeFilter,
   addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';

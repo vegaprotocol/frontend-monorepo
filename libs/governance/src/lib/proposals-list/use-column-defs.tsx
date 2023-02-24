@@ -7,7 +7,7 @@ import {
   NetworkParams,
   useNetworkParams,
   getDateTimeFormat,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,

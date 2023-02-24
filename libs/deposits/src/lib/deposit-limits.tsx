@@ -1,5 +1,5 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { compactNumber, t } from '@vegaprotocol/react-helpers';
+import { compactNumber, t } from '@vegaprotocol/utils';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
 

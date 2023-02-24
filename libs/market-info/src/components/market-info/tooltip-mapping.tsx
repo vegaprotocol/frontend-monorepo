@@ -1,4 +1,4 @@
-import { ExternalLinks, t } from '@vegaprotocol/react-helpers';
+import { ExternalLinks, t } from '@vegaprotocol/utils';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 

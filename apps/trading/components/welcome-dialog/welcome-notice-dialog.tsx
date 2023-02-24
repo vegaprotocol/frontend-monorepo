@@ -1,5 +1,5 @@
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import {
   BLOG,
   DApp,

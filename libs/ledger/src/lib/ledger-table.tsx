@@ -6,7 +6,7 @@ import {
   SetFilter,
   t,
   truncateByChars,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   VegaValueFormatterParams,
   TypedDataAgGrid,

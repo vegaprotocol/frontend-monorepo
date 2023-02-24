@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 
 import { Dashboard } from '../components/dashboard';
 import { Detail } from '../components/detail';

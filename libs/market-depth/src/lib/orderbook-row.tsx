@@ -1,9 +1,9 @@
 import React from 'react';
+import { addDecimal, addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import {
   PriceCell,
   VolCell,
   CumulativeVol,
-  addDecimalsFormatNumber,
   VolumeType,
 } from '@vegaprotocol/react-helpers';
 

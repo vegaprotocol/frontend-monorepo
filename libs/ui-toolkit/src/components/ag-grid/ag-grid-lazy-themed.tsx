@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/utils';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 
 const AgGridLightTheme = React.lazy(() =>

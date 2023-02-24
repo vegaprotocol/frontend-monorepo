@@ -6,7 +6,7 @@ import {
   titlefy,
   useDataProvider,
   useThrottledDataProvider,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import type {
   MarketData,

@@ -4,7 +4,7 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';

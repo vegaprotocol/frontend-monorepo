@@ -9,7 +9,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import { ExternalLinks } from '@vegaprotocol/react-helpers';
+import { ExternalLinks } from '@vegaprotocol/utils';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {

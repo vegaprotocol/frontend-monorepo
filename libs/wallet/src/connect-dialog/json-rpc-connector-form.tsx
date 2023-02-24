@@ -1,5 +1,5 @@
 import capitalize from 'lodash/capitalize';
-import { createDocsLinks, t } from '@vegaprotocol/react-helpers';
+import { createDocsLinks, t } from '@vegaprotocol/utils';
 import {
   ButtonLink,
   Diamond,

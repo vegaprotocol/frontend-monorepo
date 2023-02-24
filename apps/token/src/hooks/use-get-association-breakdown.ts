@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import type {
   StakingBridge,
   TokenVesting,

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Intent, Lozenge } from '@vegaprotocol/ui-toolkit';
-import { shorten } from '@vegaprotocol/react-helpers';
+import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';

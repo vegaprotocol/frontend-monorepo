@@ -9,10 +9,7 @@ import { useGetAssociationBreakdown } from '../../../hooks/use-get-association-b
 import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import {
-  removeDecimal,
-  removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+import { removeDecimal, removePaginationWrapper } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type {
   LinkingsFieldsFragment,

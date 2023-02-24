@@ -15,6 +15,9 @@
     "**/*.test.jsx",
     "**/*.spec.jsx",
     "**/*.d.ts",
-    "jest.config.ts"
+    "jest.config.ts",
+    "../utils/src/lib/generic-data-provider.spec.ts",
+    "../utils/src/lib/format/strings.spec.ts",
+    "../utils/src/lib/flag-emoji.spec.ts"
   ]
 }

@@ -5,7 +5,7 @@ import {
   truncateByChars,
   addDecimalsFormatNumber,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,

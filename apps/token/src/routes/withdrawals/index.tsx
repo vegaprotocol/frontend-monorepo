@@ -10,7 +10,7 @@ import {
   WithdrawalsTable,
 } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/utils';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '../index';
 

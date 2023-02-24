@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import filter from 'recursive-key-filter';
 import type { ExplorerOracleDataConnectionFragment } from '../__generated__/Oracles';

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
 import Hash from '../hash';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { isValidPartyId } from '../../../routes/parties/id/components/party-id-error';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 

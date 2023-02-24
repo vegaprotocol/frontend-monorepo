@@ -1,4 +1,4 @@
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import { useLocalStorage } from '@vegaprotocol/utils';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import type { Connector } from '@web3-react/types';

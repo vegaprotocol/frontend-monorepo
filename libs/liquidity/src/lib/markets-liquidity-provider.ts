@@ -5,7 +5,7 @@ import {
   makeDerivedDataProvider,
   useDataProvider,
   useYesterday,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 
 import type {
   MarketCandles,

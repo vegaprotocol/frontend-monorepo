@@ -3,7 +3,7 @@ import { AppStateProvider } from '../../../contexts/app-state/app-state-provider
 import { ValidatorTable } from './validator-table';
 import { ValidatorStatus } from '@vegaprotocol/types';
 import countryData from '../../../components/country-selector/country-data';
-import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 
 const mockNode = {
   id: 'bb1822715aa86ce0e205aa4c78e9b71cdeaec94596ce72d366f0d50589eb1bf5',

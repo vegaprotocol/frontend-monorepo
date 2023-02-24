@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';

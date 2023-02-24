@@ -3,7 +3,7 @@ import {
   t,
   toDecimal,
   validateAmount,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '../../utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';

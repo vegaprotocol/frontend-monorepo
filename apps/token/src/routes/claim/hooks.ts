@@ -1,7 +1,7 @@
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useTransaction } from '../../hooks/use-transaction';
 import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts';
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/utils';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 
 export const useClaim = (claimData: IClaimTokenParams, address: string) => {

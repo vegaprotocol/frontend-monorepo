@@ -1,6 +1,6 @@
 import type { HTMLInputTypeAttribute, SyntheticEvent } from 'react';
 import { Input, Button } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 
 interface JumpToProps {
   label: string;

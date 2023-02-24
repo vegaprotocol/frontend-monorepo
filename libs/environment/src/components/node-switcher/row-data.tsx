@@ -1,6 +1,6 @@
 import type { ApolloError } from '@apollo/client';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
-import { isValidUrl, t } from '@vegaprotocol/react-helpers';
+import { isValidUrl, t } from '@vegaprotocol/utils';
 import { Radio } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';

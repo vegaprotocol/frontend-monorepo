@@ -15,7 +15,7 @@ import {
   NetworkParams,
   t,
   useNetworkParams,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';

@@ -2,7 +2,7 @@ import React from 'react';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
-import { addDecimal, useDataProvider } from '@vegaprotocol/react-helpers';
+import { addDecimal, useDataProvider } from '@vegaprotocol/utils';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';

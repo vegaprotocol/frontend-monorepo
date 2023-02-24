@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import {
   Link,
   DropdownMenu,

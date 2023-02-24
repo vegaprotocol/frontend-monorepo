@@ -4,7 +4,7 @@ import {
   isNumeric,
   PriceCell,
   t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   AgGridDynamic as AgGrid,
   Intent,

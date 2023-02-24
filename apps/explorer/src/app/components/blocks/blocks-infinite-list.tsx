@@ -1,7 +1,7 @@
 import React from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from './block-data';
 import EmptyList from '../empty-list/empty-list';

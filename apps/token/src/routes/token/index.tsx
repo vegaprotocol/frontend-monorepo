@@ -3,14 +3,14 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Heading, SubHeading } from '../../components/heading';
-import { ExternalLinks } from '@vegaprotocol/react-helpers';
+import { ExternalLinks } from '@vegaprotocol/utils';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import Routes from '../routes';
 import { TokenDetails } from './token-details';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import { useNodeDataQuery } from './__generated___/NodeData';
 
 const Home = ({ name }: RouteChildProps) => {

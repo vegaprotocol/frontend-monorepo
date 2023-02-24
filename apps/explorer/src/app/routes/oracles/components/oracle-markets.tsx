@@ -1,4 +1,4 @@
-import { getNodes, t } from '@vegaprotocol/react-helpers';
+import { getNodes, t } from '@vegaprotocol/utils';
 import { MarketLink } from '../../../components/links';
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
 import type { ExplorerOracleForMarketsMarketFragment } from '../__generated__/OraclesForMarkets';

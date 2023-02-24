@@ -1,4 +1,4 @@
-import { t, useLocalStorage } from '@vegaprotocol/react-helpers';
+import { t, useLocalStorage } from '@vegaprotocol/utils';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';

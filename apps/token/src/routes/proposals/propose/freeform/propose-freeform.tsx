@@ -22,7 +22,7 @@ import {
   createDocsLinks,
   NetworkParams,
   useNetworkParams,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { ProposalUserAction } from '../../components/shared';
 import { downloadJson } from '../../../../lib/download-json';
 

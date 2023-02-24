@@ -3,7 +3,7 @@ import { RenderFetched } from '../render-fetched';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { TxOrderType } from './tx-order-type';
 import { Table, TableRow, TableCell } from '../table';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/utils';
 import type { BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
 import isNumber from 'lodash/isNumber';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';

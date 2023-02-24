@@ -1,4 +1,4 @@
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider } from '@vegaprotocol/utils';
 import type {
   ProposalsListQuery,
   ProposalListFieldsFragment,

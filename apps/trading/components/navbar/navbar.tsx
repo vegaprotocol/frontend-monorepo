@@ -7,7 +7,7 @@ import {
   TOKEN_GOVERNANCE,
   useLinks,
 } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {

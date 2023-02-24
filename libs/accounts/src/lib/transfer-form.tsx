@@ -6,7 +6,7 @@ import {
   vegaPublicKey,
   addDecimal,
   formatNumber,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   Button,
   FormGroup,

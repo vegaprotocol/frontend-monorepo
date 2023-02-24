@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { NestedDataList } from '../../../nested-data-list';
 import { OpenOraclePrices } from './open-oracle/open-oracle-prices';
 

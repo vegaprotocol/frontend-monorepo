@@ -1,7 +1,7 @@
 import type { MarketData, Market } from '@vegaprotocol/market-list';
 import type { Order } from '@vegaprotocol/orders';
 import { timeInForceLabel } from '@vegaprotocol/orders';
-import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 import type { ClosingOrder as IClosingOrder } from '../use-close-position';
 

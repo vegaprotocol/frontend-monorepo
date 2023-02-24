@@ -1,4 +1,4 @@
-import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
+import { formatNumber, t, toBigNum } from '@vegaprotocol/utils';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import {

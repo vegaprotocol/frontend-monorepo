@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '@vegaprotocol/utils';
 import { RISK_ACCEPTED_KEY } from '../constants';
 
 interface Props {

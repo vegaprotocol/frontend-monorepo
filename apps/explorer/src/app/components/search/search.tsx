@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';

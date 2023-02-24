@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderMargin } from './use-order-margin';

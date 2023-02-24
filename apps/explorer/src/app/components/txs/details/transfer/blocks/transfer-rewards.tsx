@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { AssetLink, MarketLink } from '../../../../links';
 import { headerClasses, wrapperClasses } from '../transfer-details';
 import type { components } from '../../../../../../types/explorer';

@@ -7,7 +7,7 @@ import {
   addDecimal,
   removePaginationWrapper,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { Link } from 'react-router-dom';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import { EpochCountdown } from '../../../components/epoch-countdown';

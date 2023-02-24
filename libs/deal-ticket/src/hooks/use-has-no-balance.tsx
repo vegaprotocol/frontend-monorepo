@@ -1,5 +1,5 @@
 import { useAccountBalance } from '@vegaprotocol/accounts';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 
 export const useHasNoBalance = (assetId: string) => {
   const { accountBalance, accountDecimals } = useAccountBalance(assetId);

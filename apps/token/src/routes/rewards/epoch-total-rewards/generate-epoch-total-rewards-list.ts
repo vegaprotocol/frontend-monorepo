@@ -2,7 +2,7 @@ import type {
   EpochAssetsRewardsQuery,
   EpochRewardSummaryFieldsFragment,
 } from '../home/__generated__/Rewards';
-import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { AccountType } from '@vegaprotocol/types';
 import { BigNumber } from '../../../lib/bignumber';

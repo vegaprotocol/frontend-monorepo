@@ -1,4 +1,4 @@
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t, useDataProvider } from '@vegaprotocol/utils';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, memo } from 'react';

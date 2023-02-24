@@ -13,7 +13,7 @@ import {
   negativeClassNames,
   t,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
 import type {

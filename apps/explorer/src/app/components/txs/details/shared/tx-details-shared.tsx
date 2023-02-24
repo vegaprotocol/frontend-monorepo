@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { TableRow, TableCell } from '../../../table';
 import { BlockLink, PartyLink } from '../../../links/';
 import { TimeAgo } from '../../../time-ago';

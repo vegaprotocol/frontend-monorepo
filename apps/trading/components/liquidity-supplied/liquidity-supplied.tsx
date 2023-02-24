@@ -6,7 +6,7 @@ import {
   t,
   useDataProvider,
   useNetworkParams,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
@@ -16,7 +16,7 @@ import { HeaderStat } from '../header';
 import { Indicator, Link } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
-import { DataGrid } from '@vegaprotocol/react-helpers';
+import { DataGrid } from '@vegaprotocol/utils';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 
 interface Props {

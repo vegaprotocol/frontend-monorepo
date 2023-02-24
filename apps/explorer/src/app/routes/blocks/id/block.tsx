@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { DATA_SOURCES } from '../../../config';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import type { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
 import { TimeAgo } from '../../../components/time-ago';
@@ -15,7 +15,7 @@ import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../route-names';
 import { RenderFetched } from '../../../components/render-fetched';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/utils';
 import { NodeLink } from '../../../components/links';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';

@@ -1,4 +1,4 @@
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/utils';
 import { RouteTitle } from '../../components/route-title';
 import { Loader, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';

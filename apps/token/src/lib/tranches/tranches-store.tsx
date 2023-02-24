@@ -1,4 +1,4 @@
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import type { TrancheServiceResponse } from '@vegaprotocol/smart-contracts';
 import type BigNumber from 'bignumber.js';
 import create from 'zustand';

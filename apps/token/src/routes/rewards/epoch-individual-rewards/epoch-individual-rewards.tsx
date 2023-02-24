@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useRewardsQuery } from '../home/__generated__/Rewards';
 import { ENV } from '../../../config';
 import { useVegaWallet } from '@vegaprotocol/wallet';

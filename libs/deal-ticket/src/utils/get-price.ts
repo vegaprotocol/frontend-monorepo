@@ -1,4 +1,4 @@
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { isMarketInAuction } from './is-market-in-auction';
 import type { MarketData, Market } from '@vegaprotocol/market-list';

@@ -35,6 +35,7 @@
     "trading-e2e": "apps/trading-e2e",
     "types": "libs/types",
     "ui-toolkit": "libs/ui-toolkit",
+    "utils": "libs/utils",
     "wallet": "libs/wallet",
     "web3": "libs/web3",
     "withdraws": "libs/withdraws"

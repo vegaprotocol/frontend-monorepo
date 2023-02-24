@@ -8,7 +8,7 @@ import {
   createDocsLinks,
   removePaginationWrapper,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { Link as UTLink } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
 import { useEnvironment } from '@vegaprotocol/environment';

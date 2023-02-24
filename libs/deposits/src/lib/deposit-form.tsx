@@ -10,7 +10,7 @@ import {
   addDecimal,
   useLocalStorage,
   isAssetTypeERC20,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   Button,
   FormGroup,

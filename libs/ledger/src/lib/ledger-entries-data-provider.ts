@@ -2,13 +2,13 @@ import type { Asset } from '@vegaprotocol/assets';
 import { assetsProvider } from '@vegaprotocol/assets';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import { makeInfiniteScrollGetRows } from '@vegaprotocol/react-helpers';
+import { makeInfiniteScrollGetRows } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
   updateGridData,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type * as Schema from '@vegaprotocol/types';
 import type { AgGridReact } from 'ag-grid-react';
 import produce from 'immer';

@@ -1,5 +1,5 @@
 import once from 'lodash/once';
-import { getUserLocale } from './utils';
+import { getUserLocale } from '../get-user-locale';
 
 export const isValidDate = (date: Date) =>
   date instanceof Date && !isNaN(date.getTime());

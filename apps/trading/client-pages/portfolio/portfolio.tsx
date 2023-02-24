@@ -1,4 +1,4 @@
-import { t, titlefy } from '@vegaprotocol/react-helpers';
+import { t, titlefy } from '@vegaprotocol/utils';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';

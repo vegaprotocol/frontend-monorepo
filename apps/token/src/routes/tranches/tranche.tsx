@@ -9,7 +9,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
-import { formatNumber } from '@vegaprotocol/react-helpers';
+import { formatNumber } from '@vegaprotocol/utils';
 
 import { useEnvironment } from '@vegaprotocol/environment';
 import { TrancheItem } from '../redemption/tranche-item';

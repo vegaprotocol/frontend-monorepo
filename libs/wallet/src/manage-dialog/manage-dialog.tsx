@@ -1,4 +1,4 @@
-import { t, truncateByChars } from '@vegaprotocol/react-helpers';
+import { t, truncateByChars } from '@vegaprotocol/utils';
 import {
   Button,
   Dialog,

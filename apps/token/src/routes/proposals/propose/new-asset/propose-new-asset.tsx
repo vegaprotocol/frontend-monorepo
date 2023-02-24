@@ -13,7 +13,7 @@ import {
   NetworkParams,
   useNetworkParams,
   validateJson,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   ProposalFormDescription,
   ProposalFormSubheader,

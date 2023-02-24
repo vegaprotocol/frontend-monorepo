@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 
 export const validateMarketTradingMode = (

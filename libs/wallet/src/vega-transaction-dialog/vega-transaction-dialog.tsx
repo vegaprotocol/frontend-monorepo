@@ -1,5 +1,5 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { WalletClientError } from '@vegaprotocol/wallet-client';

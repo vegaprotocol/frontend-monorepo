@@ -1,5 +1,5 @@
 import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
-import { t, toDecimal, validateAmount } from '@vegaprotocol/react-helpers';
+import { t, toDecimal, validateAmount } from '@vegaprotocol/utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
 export type DealTicketLimitAmountProps = Omit<

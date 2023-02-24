@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 export const THROTTLE_UPDATE_TIME = 500;
 export const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 export const MAINNET_WELCOME_HEADER = t(

@@ -1,5 +1,5 @@
 import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { DataGrid, t } from '@vegaprotocol/react-helpers';
+import { DataGrid, t } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { Market, MarketData } from '@vegaprotocol/market-list';

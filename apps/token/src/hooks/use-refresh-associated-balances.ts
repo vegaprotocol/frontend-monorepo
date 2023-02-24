@@ -1,4 +1,4 @@
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import React from 'react';
 
 import { useAppState } from '../contexts/app-state/app-state-context';

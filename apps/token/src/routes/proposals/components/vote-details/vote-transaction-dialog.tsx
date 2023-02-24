@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { VoteState } from './use-user-vote';
 import type { DialogProps } from '@vegaprotocol/wallet';
 

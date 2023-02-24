@@ -4,7 +4,7 @@ import { JumpTo } from '../../../components/jump-to';
 
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../route-names';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 export const JumpToParty = () => {

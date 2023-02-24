@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../routes/route-names';

@@ -2,7 +2,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useOrderListData } from './use-order-list-data';
-import type { Edge } from '@vegaprotocol/react-helpers';
+import type { Edge } from '@vegaprotocol/utils';
 import type { OrderFieldsFragment } from '../order-data-provider/__generated__/Orders';
 import type { IGetRowsParams } from 'ag-grid-community';
 

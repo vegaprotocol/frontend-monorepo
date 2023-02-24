@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList } from '../../../components/txs';

@@ -1,4 +1,4 @@
-import { truncateByChars } from '@vegaprotocol/react-helpers';
+import { truncateByChars } from '@vegaprotocol/utils';
 
 const walletContainer = '[data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';

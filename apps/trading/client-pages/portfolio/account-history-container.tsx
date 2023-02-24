@@ -3,7 +3,7 @@ import {
   fromNanoSeconds,
   t,
   useThemeSwitcher,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import compact from 'lodash/compact';
 import uniqBy from 'lodash/uniqBy';
@@ -28,7 +28,7 @@ import { PriceChart } from 'pennant';
 import 'pennant/dist/style.css';
 import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/market-list';
 
 const DateRange = {

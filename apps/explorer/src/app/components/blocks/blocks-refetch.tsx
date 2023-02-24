@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTendermintWebsocket } from '../../hooks/use-tendermint-websocket';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 interface BlocksRefetchProps {

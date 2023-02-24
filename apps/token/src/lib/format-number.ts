@@ -1,5 +1,5 @@
 import type { BigNumber } from './bignumber';
-import { formatNumber as format } from '@vegaprotocol/react-helpers';
+import { formatNumber as format } from '@vegaprotocol/utils';
 
 export const formatNumber = (value: BigNumber, decimals?: number) => {
   return format(

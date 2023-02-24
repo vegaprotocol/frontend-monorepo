@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/utils';
 import { accountsDataProvider } from './accounts-data-provider';
 import type { Account } from './accounts-data-provider';
 import { getMarketAccount } from './get-market-account';

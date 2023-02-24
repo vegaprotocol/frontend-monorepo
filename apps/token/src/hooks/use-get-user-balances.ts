@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import * as Sentry from '@sentry/react';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import { useContracts } from '../contexts/contracts/contracts-context';
 import { useAppState } from '../contexts/app-state/app-state-context';
 import { useEthereumConfig } from '@vegaprotocol/web3';

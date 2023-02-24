@@ -13,7 +13,7 @@ import {
   useDataProvider,
   useNetworkParams,
   updateGridData,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,

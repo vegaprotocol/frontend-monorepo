@@ -1,6 +1,6 @@
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { ExternalLinks } from '@vegaprotocol/react-helpers';
+import { ExternalLinks } from '@vegaprotocol/utils';
 
 export const DownloadWalletPrompt = () => {
   const { t } = useTranslation();

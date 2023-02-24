@@ -6,8 +6,8 @@ import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
 import { useProposalsQuery } from './__generated__/Proposals';
 import type { ProposalFieldsFragment } from './__generated__/Proposals';
-import type { NodeConnection, NodeEdge } from '@vegaprotocol/react-helpers';
-import { getNodes } from '@vegaprotocol/react-helpers';
+import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
+import { getNodes } from '@vegaprotocol/utils';
 import flow from 'lodash/flow';
 import { ProposalState } from '@vegaprotocol/types';
 

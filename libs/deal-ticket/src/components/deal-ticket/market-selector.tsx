@@ -20,7 +20,7 @@ import {
   useScreenDimensions,
   useOutsideClick,
   useDataProvider,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import { IconNames } from '@blueprintjs/icons';
 import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';

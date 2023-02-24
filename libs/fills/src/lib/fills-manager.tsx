@@ -1,7 +1,7 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/utils';
 import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { useFillsList } from './use-fills-list';

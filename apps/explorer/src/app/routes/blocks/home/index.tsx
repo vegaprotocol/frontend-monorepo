@@ -8,7 +8,7 @@ import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { BlocksInfiniteList } from '../../../components/blocks/blocks-infinite-list';
 import { JumpToBlock } from '../../../components/jump-to-block';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/utils';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 // This constant should only be changed if Tendermint API changes the max blocks returned

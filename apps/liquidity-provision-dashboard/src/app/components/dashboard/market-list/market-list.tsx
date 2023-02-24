@@ -10,7 +10,7 @@ import {
   formatNumberPercentage,
   t,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import type * as Schema from '@vegaprotocol/types';
 import {
@@ -30,7 +30,7 @@ import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
-import { getExpiryDate } from '@vegaprotocol/react-helpers';
+import { getExpiryDate } from '@vegaprotocol/utils';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
