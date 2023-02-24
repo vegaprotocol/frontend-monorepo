@@ -11,7 +11,7 @@ const CONFIG = [
     contract: '0x23d1bfe8fa50a167816fbd79d7932577c06011f4',
     provider: 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     startBlock: 12834524,
-  }
+  },
 ];
 
 const vestingAbi = [
