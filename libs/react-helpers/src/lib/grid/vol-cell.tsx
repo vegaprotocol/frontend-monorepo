@@ -1,8 +1,8 @@
 import React from 'react';
 import type { ICellRendererParams } from 'ag-grid-community';
-import { PriceCell } from './price-cell';
 import classNames from 'classnames';
 import * as tailwind from '@vegaprotocol/tailwindcss-config';
+import { NumericCell } from './numeric-cell';
 
 export enum VolumeType {
   bid,
@@ -43,17 +43,11 @@ export const Vol = React.memo(
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
             opacity: type === VolumeType.bid ? 0.6 : 0.6,
           }}
-        ></div>
-        <PriceCell value={value} valueFormatted={valueFormatted} />
+        />
+        <NumericCell value={value} valueFormatted={valueFormatted} />
       </div>
     );
   }
 );
 
 Vol.displayName = 'Vol';
-
-export const VolCell = ({ value, valueFormatted }: IVolCellProps) => (
-  <Vol value={value} {...valueFormatted} />
-);
-
-VolCell.displayName = 'VolCell';

@@ -201,26 +201,8 @@ const OrderbookDebugInfo = ({
   midPrice?: string;
 }) => (
   <Fragment>
-    <div
-      style={{
-        position: 'absolute',
-        top: '50%',
-        left: '0',
-        borderTop: '1px solid rgba(255,0,0,0.5)',
-        background: 'black',
-        width: '100%',
-        transform: 'translateY(-50%)',
-      }}
-    ></div>
-    <div
-      className="absolute left-0 bottom-0 font-mono"
-      style={{
-        fontSize: '10px',
-        color: '#FFF',
-        background: '#000',
-        padding: '2px',
-      }}
-    >
+    <div className="absolute top-1/2 left-0 border-t border-t-black w-full" />
+    <div className="text-xs p-2 bg-black/80 text-white absolute left-0 bottom-6 font-mono">
       <pre>
         {JSON.stringify(
           {
@@ -493,12 +475,7 @@ export const Orderbook = ({
 
   const tableBody =
     data && data.length !== 0 ? (
-      <div
-        className="grid grid-cols-4 gap-[0.3125rem] text-right"
-        style={{
-          gridAutoRows: '17px',
-        }}
-      >
+      <div className="grid grid-cols-4 gap-1 text-right auto-rows-[17px]">
         {data.map((data, i) => (
           <OrderbookRow
             key={data.price}
@@ -559,14 +536,13 @@ export const Orderbook = ({
       onDoubleClick={() => setDebug(!debug)}
     >
       <div
-        className="absolute top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-default w-full"
-        style={{ gridAutoRows: '17px' }}
+        className="absolute top-0 grid grid-cols-4 auto-rows-[17px] gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-default w-full"
         ref={headerElement}
       >
         <div>{t('Bid vol')}</div>
         <div>{t('Ask vol')}</div>
         <div>{t('Price')}</div>
-        <div className="pr-[2px] whitespace-nowrap overflow-hidden text-ellipsis">
+        <div className="pr-1 whitespace-nowrap overflow-hidden text-ellipsis">
           {t('Cumulative vol')}
         </div>
       </div>
@@ -605,8 +581,7 @@ export const Orderbook = ({
         )}
       </div>
       <div
-        className="absolute bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-default mt-2 z-10 bg-white dark:bg-black w-full"
-        style={{ gridAutoRows: '20px' }}
+        className="absolute bottom-0 grid grid-cols-4 gap-2 border-t border-default mt-2 z-10 bg-white dark:bg-black w-full"
         ref={footerElement}
       >
         <div className="col-span-2">
