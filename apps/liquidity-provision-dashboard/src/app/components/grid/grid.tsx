@@ -36,7 +36,7 @@ export const Grid = ({ isRowClickable, children, ...props }: Props) => {
 
   return (
     <AgGridReact
-      className={classNames('ag-theme-alpine h-full font-alpha', {
+      className={classNames('ag-theme-alpine h-full font-alpha calt', {
         'row-hover': isRowClickable,
       })}
       rowHeight={92}
