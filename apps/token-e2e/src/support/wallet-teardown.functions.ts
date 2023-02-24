@@ -36,23 +36,27 @@ const vestingContract = new TokenVesting(vegaTokenContractAddress, signer);
 
 export async function depositAsset(assetEthAddress: string) {
   // Approve asset
-
   const faucet = new TokenFaucetable(assetEthAddress, signer);
-  await promiseWithTimeout(
-    faucet.approve(Erc20BridgeAddress, '10000000000'),
-    10 * 60 * 1000,
-    'approve faucet tx'
-  );
-  const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
-  await promiseWithTimeout(
-    collateralBridge.deposit_asset(
-      assetEthAddress,
-      '1000000000',
-      '0x' + vegaWalletPubKey
-    ),
-    10 * 60 * 1000,
-    'deposit asset'
-  );
+  cy.wrap(faucet.approve(Erc20BridgeAddress, '10000000000'), {
+    timeout: transactionTimeout,
+    log: false,
+  })
+    .then((tx) => {
+      waitForTransaction(tx);
+    })
+    .then(() => {
+      const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
+      cy.wrap(
+        collateralBridge.deposit_asset(
+          assetEthAddress,
+          '1000000000',
+          '0x' + vegaWalletPubKey
+        ),
+        { timeout: transactionTimeout, log: false }
+      ).then((tx) => {
+        waitForTransaction(tx);
+      });
+    });
 }
 
 export async function faucetAsset(assetEthAddress: string) {
@@ -137,25 +141,15 @@ async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
 }
 
 export async function vegaWalletAssociate(amount: string) {
-  amount = amount + '0'.repeat(18);
   cy.highlight('Associating tokens');
-  cy.wrap(stakingBridgeContract.stake(String(amount), vegaWalletPubKey), {
-    timeout: transactionTimeout,
-    log: false,
-  }).then((tx) => {
-    waitForTransaction(tx);
-  });
+  amount = amount + '0'.repeat(18);
+  stakingBridgeContract.stake(amount, vegaWalletPubKey);
 }
 
 export async function vegaWalletDisassociate(amount: string) {
-  amount = amount + '0'.repeat(18);
   cy.highlight('Disassociating tokens');
-  cy.wrap(
-    stakingBridgeContract.remove_stake(String(amount), vegaWalletPubKey),
-    { timeout: transactionTimeout, log: false }
-  ).then((tx) => {
-    waitForTransaction(tx);
-  });
+  amount = amount + '0'.repeat(18);
+  stakingBridgeContract.remove_stake(amount, vegaWalletPubKey);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -58,7 +58,6 @@ context(
           cy.connectVegaWallet();
           ethereumWalletConnect();
           vegaWalletTeardown();
-          navigateTo(navigation.validators);
         }
       );
 
@@ -288,11 +287,11 @@ context(
         validateWalletCurrency('Associated', '2.00');
       });
 
-      it.only('Disassociation outside of app is shown', function () {
-        cy.pause();
+      it('Disassociation outside of app is shown', function () {
         stakingPageAssociateTokens('2');
-        validateWalletCurrency('Associated', '2.00');
-        vegaWalletDisassociate('2');
+        cy.wrap(validateWalletCurrency('Associated', '2.00')).then(() => {
+          vegaWalletDisassociate('2');
+        });
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
           3
