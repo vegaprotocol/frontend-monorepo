@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { BID_COLOR, ASK_COLOR } from './vol-cell';
+import { NumericCell } from './numeric-cell';
 import { addDecimalsFormatNumber } from '../format';
 
 export interface CumulativeVolProps {
@@ -50,21 +51,44 @@ export const CumulativeVol = memo(
     ) : null;
 
     const volume = indicativeVolume ? (
-      <span className="relative">
-        ({addDecimalsFormatNumber(indicativeVolume, positionDecimalPlaces ?? 0)}
+      <span>
+        (
+        <NumericCell
+          value={Number(indicativeVolume)}
+          valueFormatted={addDecimalsFormatNumber(
+            indicativeVolume,
+            positionDecimalPlaces ?? 0
+          )}
+        />
         )
       </span>
     ) : (
-      <span className="relative">
-        {ask ? addDecimalsFormatNumber(ask, positionDecimalPlaces ?? 0) : null}
+      <span>
+        {ask ? (
+          <NumericCell
+            value={ask}
+            valueFormatted={addDecimalsFormatNumber(
+              ask,
+              positionDecimalPlaces ?? 0
+            )}
+          />
+        ) : null}
         {ask && bid ? '/' : null}
-        {bid ? addDecimalsFormatNumber(bid, positionDecimalPlaces ?? 0) : null}
+        {bid ? (
+          <NumericCell
+            value={ask}
+            valueFormatted={addDecimalsFormatNumber(
+              bid,
+              positionDecimalPlaces ?? 0
+            )}
+          />
+        ) : null}
       </span>
     );
 
     return (
       <div
-        className="h-full relative font-mono pr-1"
+        className="relative font-mono pr-1"
         data-testid={testId || 'cumulative-vol'}
       >
         {askBar}
