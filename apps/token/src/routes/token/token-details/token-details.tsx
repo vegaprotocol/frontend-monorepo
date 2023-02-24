@@ -7,7 +7,7 @@ import {
   KeyValueTableRow,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
-import { useTranches } from '../../../hooks/use-tranches';
+import { useTranches } from '../../../lib/tranches/tranches-store';
 import type { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
@@ -25,7 +25,11 @@ export const TokenDetails = ({
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
-  const { tranches, loading, error } = useTranches();
+  const { tranches, loading, error } = useTranches((state) => ({
+    loading: state.loading,
+    error: state.error,
+    tranches: state.tranches,
+  }));
   const { config } = useEthereumConfig();
   const { token } = useContracts();
 

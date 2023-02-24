@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import type { Tranche } from '@vegaprotocol/smart-contracts';
 
 import { DATE_FORMAT_LONG } from '../../lib/date-formats';
+import type { Tranche } from '../../lib/tranches/tranches-store';
 
 interface ClaimInfoProps {
   tranche: Tranche;
