@@ -1,17 +1,5 @@
-import { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
-import {
-  getUserLocale,
-  toNumberParts,
-  formatNumber,
-} from '@vegaprotocol/utils';
-
-export const useNumberParts = (
-  value: BigNumber | null | undefined,
-  decimals: number
-): [integers: string, decimalPlaces: string] => {
-  return useMemo(() => toNumberParts(value, decimals), [decimals, value]);
-};
+import { getUserLocale, formatNumber } from '@vegaprotocol/utils';
 
 const INFINITY = '∞';
 const DEFAULT_COMPACT_ABOVE = 1_000_000;
@@ -24,20 +12,29 @@ const DEFAULT_COMPACT_CAP = new BigNumber(1e24);
  * @param compactAbove Compact number above threshold
  * @param cap Use scientific notation above threshold
  */
-export const compactNumber = (
-  number: BigNumber,
-  decimals: number | 'infer' = 'infer',
-  compactDisplay: 'short' | 'long' = 'short',
-  compactAbove = DEFAULT_COMPACT_ABOVE,
-  cap = DEFAULT_COMPACT_CAP
-) => {
-  if (!number.isFinite()) return `${number.isNegative() ? '-' : ''}${INFINITY}`;
+export const CompactNumber = ({
+  number,
+  decimals = 'infer',
+  compactDisplay = 'short',
+}: {
+  number: BigNumber;
+  decimals?: number | 'infer';
+  compactDisplay?: 'short' | 'long';
+}) => {
+  if (!number.isFinite()) {
+    return (
+      <span>
+        {number.isNegative() ? '-' : ''}
+        {INFINITY}
+      </span>
+    );
+  }
 
   const decimalPlaces =
     (decimals === 'infer' ? number.decimalPlaces() : decimals) || 0;
 
   if (number.isLessThan(DEFAULT_COMPACT_ABOVE)) {
-    return formatNumber(number, decimalPlaces);
+    return <span>{formatNumber(number, decimalPlaces)}</span>;
   }
 
   /**
@@ -74,5 +71,5 @@ export const compactNumber = (
     }
   }
 
-  return compactNumFormat.format(Number(number));
+  return <span>{compactNumFormat.format(Number(number))}</span>;
 };

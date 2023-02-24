@@ -1,5 +1,6 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { compactNumber, t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
 
@@ -26,31 +27,44 @@ export const DepositLimits = ({
       key: 'BALANCE_AVAILABLE',
       label: t('Balance available'),
       rawValue: balance,
-      value: balance ? compactNumber(balance, asset.decimals) : '-',
+      value: balance ? (
+        <CompactNumber number={balance} decimals={asset.decimals} />
+      ) : (
+        '-'
+      ),
     },
     {
       key: 'MAX_LIMIT',
       label: t('Maximum total deposit amount'),
       rawValue: max,
-      value: compactNumber(max, asset.decimals),
+      value: <CompactNumber number={max} decimals={asset.decimals} />,
     },
     {
       key: 'DEPOSITED',
       label: t('Deposited'),
       rawValue: deposited,
-      value: compactNumber(deposited, asset.decimals),
+      value: <CompactNumber number={deposited} decimals={asset.decimals} />,
     },
     {
       key: 'REMAINING',
       label: t('Remaining'),
       rawValue: max.minus(deposited),
-      value: compactNumber(max.minus(deposited), asset.decimals),
+      value: (
+        <CompactNumber
+          number={max.minus(deposited)}
+          decimals={asset.decimals}
+        />
+      ),
     },
     {
       key: 'ALLOWANCE',
       label: t('Approved'),
       rawValue: allowance,
-      value: allowance ? compactNumber(allowance, asset.decimals) : '-',
+      value: allowance ? (
+        <CompactNumber number={allowance} decimals={asset.decimals} />
+      ) : (
+        '-'
+      ),
     },
   ];
 
