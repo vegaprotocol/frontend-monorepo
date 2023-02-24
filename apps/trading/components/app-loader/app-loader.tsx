@@ -12,7 +12,7 @@ import type { ReactNode } from 'react';
 import { AppFailure } from './app-failure';
 import { Web3Provider } from './web3-provider';
 
-const DynamicLoader = dynamic(() => import('../preloader/preloader'), {
+export const DynamicLoader = dynamic(() => import('../preloader/preloader'), {
   loading: () => <>Loading...</>,
 });
 
