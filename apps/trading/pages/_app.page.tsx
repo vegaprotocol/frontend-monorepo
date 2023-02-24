@@ -25,7 +25,7 @@ import './styles.css';
 import './gen-styles.scss';
 import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useMemo, useState} from 'react';
+import { useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
@@ -34,7 +34,6 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import classNames from 'classnames';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
-
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
