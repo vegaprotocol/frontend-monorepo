@@ -14,6 +14,7 @@ import {
   isValid,
 } from 'date-fns';
 import { t, formatForInput } from '@vegaprotocol/utils';
+import { InputError } from '../../input-error';
 
 const defaultFilterValue: Schema.DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {
@@ -194,14 +195,7 @@ export const DateRangeFilter = forwardRef(
     }, [value, props]);
 
     const notification = useMemo(() => {
-      const not = error ? (
-        <div
-          className="text-sm flex items-center first-letter:uppercase mt-2 border-danger text-danger"
-          role="alert"
-        >
-          {error}
-        </div>
-      ) : null;
+      const not = error ? <InputError>{error}</InputError> : null;
       return (
         <div className="ag-filter-apply-panel flex min-h-[2rem]">{not}</div>
       );
