@@ -6,9 +6,9 @@ import {
   t,
   removeDecimal,
   required,
-  useLocalStorage,
   isAssetTypeERC20,
 } from '@vegaprotocol/utils';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,

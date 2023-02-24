@@ -10,7 +10,7 @@
 
 import { memo, useRef, useEffect } from 'react';
 import { theme } from '@vegaprotocol/tailwindcss-config';
-import { splitAt } from '../format';
+import { splitAt } from '@vegaprotocol/utils';
 
 const FLASH_DURATION = 800; // Duration of flash animation in milliseconds
 

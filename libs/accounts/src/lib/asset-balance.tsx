@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { addDecimalsFormatNumber, useDataProvider } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { accountsDataProvider } from './accounts-data-provider';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 interface AssetBalanceProps {
   partyId: string;

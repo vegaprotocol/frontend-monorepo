@@ -2,12 +2,8 @@ import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
 import { useEnvironment } from '@vegaprotocol/environment';
-import {
-  t,
-  NetworkParams,
-  useNetworkParams,
-  getDateTimeFormat,
-} from '@vegaprotocol/utils';
+import { t, getDateTimeFormat } from '@vegaprotocol/utils';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,

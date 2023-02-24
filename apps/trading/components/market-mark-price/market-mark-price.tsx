@@ -1,12 +1,9 @@
 import type { RefObject } from 'react';
 import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import {
-  addDecimalsFormatNumber,
-  PriceCell,
-  useThrottledDataProvider,
-  isNumeric,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
+import { PriceCell } from '@vegaprotocol/ui-toolkit';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,

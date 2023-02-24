@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { BID_COLOR, ASK_COLOR } from './vol-cell';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from './numeric-cell';
-import { addDecimalsFormatNumber } from '../format';
 
 export interface CumulativeVolProps {
   ask?: number;

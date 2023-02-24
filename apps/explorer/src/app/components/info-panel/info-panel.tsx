@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { TruncateInline } from '../truncate/truncate';
-import { useScreenDimensions } from '@vegaprotocol/utils';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 interface InfoPanelProps {
   children?: ReactNode | ReactNode[];

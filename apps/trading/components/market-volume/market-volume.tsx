@@ -1,10 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
-import {
-  addDecimalsFormatNumber,
-  t,
-  useDataProvider,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,

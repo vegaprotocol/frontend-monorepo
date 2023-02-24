@@ -4,15 +4,11 @@ import classNames from 'classnames';
 import * as tailwind from '@vegaprotocol/tailwindcss-config';
 import { NumericCell } from './numeric-cell';
 
-export enum VolumeType {
-  bid,
-  ask,
-}
 export interface VolCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
   relativeValue?: number;
-  type: VolumeType;
+  type: 'ask' | 'bid';
   testId?: string;
 }
 export interface IVolCellProps extends ICellRendererParams {
@@ -35,14 +31,14 @@ export const VolCell = React.memo(
           className={classNames(
             'h-full absolute top-0 opacity-40 dark:opacity-100',
             {
-              'left-0': type === VolumeType.bid,
-              'right-0': type === VolumeType.ask,
+              'left-0': type === 'bid',
+              'right-0': type === 'ask',
             }
           )}
           style={{
             width: relativeValue ? `${relativeValue}%` : '0%',
-            backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
-            opacity: type === VolumeType.bid ? 0.6 : 0.6,
+            backgroundColor: type === 'bid' ? BID_COLOR : ASK_COLOR,
+            opacity: 0.6,
           }}
         />
         <NumericCell value={value} valueFormatted={valueFormatted} />

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { accountsDataProvider } from './accounts-data-provider';
 import type { Account } from './accounts-data-provider';
 import { getSettlementAccount } from './get-settlement-account';

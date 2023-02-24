@@ -1,14 +1,10 @@
 import { forwardRef } from 'react';
-import {
-  addDecimalsFormatNumber,
-  isNumeric,
-  PriceCell,
-  t,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isNumeric, t } from '@vegaprotocol/utils';
 import {
   AgGridDynamic as AgGrid,
   Intent,
   progressBarCellRendererSelector,
+  PriceCell,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';

@@ -2,7 +2,7 @@ import type { ReactNode, FunctionComponent } from 'react';
 import dynamic from 'next/dynamic';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
-import { useThemeSwitcher } from '@vegaprotocol/utils';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 
 interface GridProps {

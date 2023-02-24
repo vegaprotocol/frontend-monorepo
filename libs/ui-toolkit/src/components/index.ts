@@ -8,6 +8,7 @@ export * from './button';
 export * from './callout';
 export * from './checkbox';
 export * from './copy-with-tooltip';
+export * from './data-grid';
 export * from './dialog';
 export * from './drawer';
 export * from './dropdown-menu';

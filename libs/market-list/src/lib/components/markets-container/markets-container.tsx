@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/utils';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
-import { useDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
 import type { MarketMaybeWithData } from '../../markets-provider';

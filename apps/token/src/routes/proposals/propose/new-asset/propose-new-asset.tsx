@@ -8,12 +8,8 @@ import {
   doesValueEquateToParam,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
-import {
-  createDocsLinks,
-  NetworkParams,
-  useNetworkParams,
-  validateJson,
-} from '@vegaprotocol/utils';
+import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import {
   ProposalFormDescription,
   ProposalFormSubheader,

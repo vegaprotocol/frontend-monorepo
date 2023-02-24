@@ -1,7 +1,8 @@
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useDepositDialog, DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
-import { t, useDataProvider } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const DepositsContainer = () => {

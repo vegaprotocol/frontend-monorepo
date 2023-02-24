@@ -11,13 +11,9 @@ import {
   ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  useNetworkParams,
-  NetworkParams,
-  createDocsLinks,
-} from '@vegaprotocol/utils';
+import { createDocsLinks } from '@vegaprotocol/utils';
+import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
 import { useEpochQuery } from './__generated__/Rewards';
-
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading, SubHeading } from '../../../components/heading';
 import { EpochIndividualRewards } from '../epoch-individual-rewards/epoch-individual-rewards';

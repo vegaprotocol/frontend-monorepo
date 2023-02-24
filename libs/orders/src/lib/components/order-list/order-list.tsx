@@ -4,7 +4,6 @@ import {
   isNumeric,
   t,
 } from '@vegaprotocol/utils';
-import { SetFilter, DateRangeFilter } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   AgGridDynamic as AgGrid,
@@ -12,6 +11,8 @@ import {
   Link,
   negativeClassNames,
   positiveClassNames,
+  SetFilter,
+  DateRangeFilter,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';

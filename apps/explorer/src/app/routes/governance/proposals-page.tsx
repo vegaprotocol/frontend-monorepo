@@ -1,5 +1,6 @@
 import { proposalsDataProvider } from '@vegaprotocol/governance';
-import { t, useDataProvider } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ProposalsTable } from '../../components/proposals/proposals-table';
 import { RouteTitle } from '../../components/route-title';

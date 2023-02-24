@@ -5,7 +5,8 @@ import {
   WithdrawalsTable,
 } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { t, useDataProvider } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 
 export const WithdrawalsContainer = () => {

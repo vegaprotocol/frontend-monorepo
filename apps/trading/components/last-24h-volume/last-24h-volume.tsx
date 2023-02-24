@@ -4,12 +4,11 @@ import {
   calcCandleVolume,
   marketCandlesProvider,
 } from '@vegaprotocol/market-list';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import {
-  addDecimalsFormatNumber,
   useThrottledDataProvider,
   useYesterday,
-  isNumeric,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { useMemo } from 'react';
 import type { Candle } from '@vegaprotocol/market-list';

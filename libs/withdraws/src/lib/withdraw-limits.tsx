@@ -1,5 +1,6 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { compactNumber, t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { compactNumber } from '@vegaprotocol/react-helpers';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';

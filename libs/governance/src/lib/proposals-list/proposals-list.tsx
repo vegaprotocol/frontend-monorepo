@@ -2,7 +2,7 @@ import {
   AgGridDynamic as AgGrid,
   AsyncRenderer,
 } from '@vegaprotocol/ui-toolkit';
-import { useDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Types from '@vegaprotocol/types';
 import { proposalsDataProvider } from '../proposals-data-provider';
 import { useCallback, useMemo, useRef } from 'react';

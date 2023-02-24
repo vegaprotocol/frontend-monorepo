@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { getDecimalSeparator, isNumeric } from '../format';
+import { getDecimalSeparator, isNumeric } from '@vegaprotocol/utils';
 
 interface NumericCellProps {
   value: number | bigint | null | undefined;

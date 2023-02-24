@@ -17,12 +17,11 @@ import {
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
 import {
-  useNetworkParam,
-  NetworkParams,
   removeDecimal,
   addDecimal,
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
+import { useNetworkParam, NetworkParams } from '@vegaprotocol/react-helpers';
 import { useBalances } from '../../../lib/balances/balances-store';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { SubHeading } from '../../../components/heading';

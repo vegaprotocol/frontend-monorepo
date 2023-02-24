@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { useAnimateValue } from '../../hooks/use-animate-value';
 import type { BigNumber } from '../../lib/bignumber';
-import { useNumberParts } from '@vegaprotocol/utils';
+import { useNumberParts } from '@vegaprotocol/react-helpers';
 
 interface WalletCardProps {
   children: React.ReactNode;

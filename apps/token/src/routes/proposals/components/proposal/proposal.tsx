@@ -1,4 +1,4 @@
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/utils';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';

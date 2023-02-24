@@ -1,11 +1,11 @@
 import type { RefObject } from 'react';
 import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { isNumeric } from '@vegaprotocol/utils';
 import {
-  isNumeric,
   useThrottledDataProvider,
   useYesterday,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/react-helpers';
 import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';

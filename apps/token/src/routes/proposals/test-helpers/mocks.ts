@@ -1,6 +1,6 @@
-import { NetworkParamsDocument } from '@vegaprotocol/utils';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 import type { MockedResponse } from '@apollo/client/testing';
-import type { NetworkParamsQuery } from '@vegaprotocol/utils';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import type { PubKey } from '@vegaprotocol/wallet';
 
 export const mockPubkey: PubKey = {

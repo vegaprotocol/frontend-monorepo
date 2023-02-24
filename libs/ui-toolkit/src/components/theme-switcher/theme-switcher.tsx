@@ -1,4 +1,5 @@
-import { useThemeSwitcher, t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { SunIcon, MoonIcon } from './icons';
 import { Toggle } from '../toggle';
 

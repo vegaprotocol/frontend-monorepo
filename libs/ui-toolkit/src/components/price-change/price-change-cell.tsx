@@ -4,7 +4,7 @@ import {
 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { memo, forwardRef } from 'react';
-import { signedNumberCssClass } from '@vegaprotocol/utils';
+import { signedNumberCssClass } from '../../utils/cell-class-rules';
 import { Arrow } from '../arrows/arrow';
 
 export interface PriceChangeCellProps {

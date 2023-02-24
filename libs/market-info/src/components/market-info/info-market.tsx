@@ -7,9 +7,8 @@ import {
   formatNumberPercentage,
   removePaginationWrapper,
   t,
-  useDataProvider,
-  useYesterday,
 } from '@vegaprotocol/utils';
+import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   Accordion,

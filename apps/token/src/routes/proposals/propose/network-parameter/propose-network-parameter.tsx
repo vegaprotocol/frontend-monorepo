@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import {
   createDocsLinks,
   suitableForSyntaxHighlighter,
-  useNetworkParams,
 } from '@vegaprotocol/utils';
+import { useNetworkParams } from '@vegaprotocol/react-helpers';
 import {
   getClosingTimestamp,
   getEnactmentTimestamp,

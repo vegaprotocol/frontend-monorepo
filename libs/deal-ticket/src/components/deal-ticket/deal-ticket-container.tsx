@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/utils';
-import { useThrottledDataProvider } from '@vegaprotocol/utils';
+import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { useMarket, marketDataProvider } from '@vegaprotocol/market-list';
 import { DealTicket } from './deal-ticket';

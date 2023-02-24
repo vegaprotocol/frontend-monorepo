@@ -3,7 +3,8 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import { RouteTitle } from '../../components/route-title';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t, useDataProvider } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { MarketsTable } from '../../components/markets/markets-table';
 
 export const MarketsPage = () => {

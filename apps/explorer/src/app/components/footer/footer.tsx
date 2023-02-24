@@ -1,5 +1,6 @@
 import { NodeSwitcherDialog, useEnvironment } from '@vegaprotocol/environment';
-import { t, useScreenDimensions } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
 import { useMemo, useState } from 'react';
 import { ENV } from '../../config/env';

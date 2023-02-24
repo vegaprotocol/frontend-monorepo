@@ -10,12 +10,8 @@ import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { RowClickedEvent } from 'ag-grid-community';
-import {
-  getDateTimeFormat,
-  NetworkParams,
-  t,
-  useNetworkParams,
-} from '@vegaprotocol/utils';
+import { getDateTimeFormat, t } from '@vegaprotocol/utils';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';

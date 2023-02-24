@@ -1,12 +1,10 @@
 import * as Schema from '@vegaprotocol/types';
+import { addDecimal, t, truncateByChars } from '@vegaprotocol/utils';
 import {
-  addDecimal,
   NetworkParams,
-  t,
-  truncateByChars,
   useDataProvider,
   useNetworkParam,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/react-helpers';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';

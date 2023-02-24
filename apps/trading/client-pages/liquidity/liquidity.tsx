@@ -8,12 +8,14 @@ import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  NetworkParams,
   t,
+} from '@vegaprotocol/utils';
+import {
+  NetworkParams,
   useDataProvider,
   useNetworkParams,
   updateGridData,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,

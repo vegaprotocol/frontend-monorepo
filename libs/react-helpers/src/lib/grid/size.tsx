@@ -1,7 +1,7 @@
 import * as Schema from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import classNames from 'classnames';
-import { addDecimalsFormatNumber } from '../format';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 export const Size = ({
   value,

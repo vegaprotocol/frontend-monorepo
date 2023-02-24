@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash/debounce';
+import { addDecimalsFormatNumber, t, titlefy } from '@vegaprotocol/utils';
 import {
-  addDecimalsFormatNumber,
-  t,
-  titlefy,
   useDataProvider,
   useThrottledDataProvider,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import type {
   MarketData,

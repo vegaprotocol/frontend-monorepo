@@ -1,5 +1,5 @@
 import { memo, forwardRef } from 'react';
-import { isNumeric } from '../format';
+import { isNumeric } from '@vegaprotocol/utils';
 import { NumericCell } from './numeric-cell';
 export interface IPriceCellProps {
   value: number | bigint | null | undefined;

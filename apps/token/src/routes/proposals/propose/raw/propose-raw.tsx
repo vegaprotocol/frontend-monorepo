@@ -9,12 +9,8 @@ import {
   InputError,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  createDocsLinks,
-  NetworkParams,
-  useNetworkParams,
-  validateJson,
-} from '@vegaprotocol/utils';
+import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
   ProposalFormSubmit,

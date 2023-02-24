@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { useDataProvider, t, toBigNum } from '@vegaprotocol/utils';
+import { t, toBigNum } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';

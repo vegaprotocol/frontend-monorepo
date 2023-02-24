@@ -1,17 +1,16 @@
 import { forwardRef } from 'react';
-import {
-  PriceFlashCell,
-  addDecimalsFormatNumber,
-  t,
-  toBigNum,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, t, toBigNum } from '@vegaprotocol/utils';
 import type {
   VegaValueGetterParams,
   VegaValueFormatterParams,
   VegaICellRendererParams,
   TypedDataAgGrid,
 } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  PriceFlashCell,
+  AgGridDynamic as AgGrid,
+  ButtonLink,
+} from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';

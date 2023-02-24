@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { DATA_SOURCES } from '../../../config';
-import { t, useFetch } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/utils';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import { TxDetailsOrder } from './tx-order';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
