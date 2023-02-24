@@ -141,39 +141,21 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   // 3001-VOTE-071
   it('Newly created freeform proposals list - shows proposal participation - both met and not', function () {
     const proposalTitle = generateFreeFormProposalTitle();
-    const requiredParticipation = 0.001;
 
     createFreeformProposal(proposalTitle);
-
-    getSubmittedProposalFromProposalList(proposalTitle)
-      .as('submittedProposal')
-      .within(() => {
-        // 3001-VOTE-039
-        cy.get(voteStatus).should('have.text', 'Participation not reached');
-        cy.get(viewProposalButton).click();
-      });
+    getSubmittedProposalFromProposalList(proposalTitle).within(() => {
+      // 3001-VOTE-039
+      cy.get(voteStatus).should('have.text', 'Participation not reached');
+      cy.get(viewProposalButton).click();
+    });
     voteForProposal('for');
-    getProposalInformationFromTable('Total Supply')
-      .invoke('text')
-      .then((totalSupply) => {
-        const tokensRequiredToAchieveResult = (
-          (Number(totalSupply.replace(/,/g, '')) * requiredParticipation) /
-          100
-        ).toFixed(2);
-        ensureSpecifiedUnstakedTokensAreAssociated(
-          tokensRequiredToAchieveResult
-        );
-        navigateTo(navigation.proposals);
-        cy.get('@submittedProposal').within(() =>
-          cy.get(viewProposalButton).click()
-        );
-        getProposalInformationFromTable('Token participation met')
-          .contains('👍')
-          .should('be.visible');
-        navigateTo(navigation.proposals);
-        cy.get('@submittedProposal').within(() =>
-          cy.get(voteStatus).should('have.text', 'Set to pass')
-        );
-      });
+    navigateTo(navigation.proposals);
+    getSubmittedProposalFromProposalList(proposalTitle).within(() => {
+      cy.get(voteStatus).should('have.text', 'Set to pass');
+      cy.get(viewProposalButton).click();
+    });
+    getProposalInformationFromTable('Token participation met')
+      .contains('👍')
+      .should('be.visible');
   });
 });

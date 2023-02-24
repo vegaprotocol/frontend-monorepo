@@ -139,13 +139,23 @@ async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
 export async function vegaWalletAssociate(amount: string) {
   amount = amount + '0'.repeat(18);
   cy.highlight('Associating tokens');
-  stakingBridgeContract.stake(amount, vegaWalletPubKey);
+  cy.wrap(stakingBridgeContract.stake(String(amount), vegaWalletPubKey), {
+    timeout: transactionTimeout,
+    log: false,
+  }).then((tx) => {
+    waitForTransaction(tx);
+  });
 }
 
 export async function vegaWalletDisassociate(amount: string) {
   amount = amount + '0'.repeat(18);
   cy.highlight('Disassociating tokens');
-  stakingBridgeContract.remove_stake(amount, vegaWalletPubKey);
+  cy.wrap(
+    stakingBridgeContract.remove_stake(String(amount), vegaWalletPubKey),
+    { timeout: transactionTimeout, log: false }
+  ).then((tx) => {
+    waitForTransaction(tx);
+  });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

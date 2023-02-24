@@ -79,7 +79,7 @@ context(
       // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
-      cy.get(proposalParameterSelect).find('option').should('have.length', 116);
+      cy.get(proposalParameterSelect).find('option').should('have.length', 117);
       cy.get(proposalParameterSelect).select(
         // 3007-PNEC-002
         'governance_proposal_asset_minEnact'
@@ -207,6 +207,9 @@ context(
     });
 
     it('Unable to submit new market proposal with missing/invalid fields', function () {
+      const errorMsg =
+        'Invalid params: the transaction is not a valid Vega command: unknown field "filters" in vega.DataSourceDefinition';
+
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.get(inputError).should('have.length', 3);
@@ -221,10 +224,7 @@ context(
       });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should(
-        'have.text',
-        'Invalid params: the transaction is malformed'
-      );
+      cy.get(feedbackError).should('have.text', errorMsg);
     });
 
     it.skip('Able to submit update market proposal', function () {

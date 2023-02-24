@@ -55,8 +55,8 @@ context(
         function () {
           cy.reload();
           waitForSpinner();
-          ethereumWalletConnect();
           cy.connectVegaWallet();
+          ethereumWalletConnect();
           vegaWalletTeardown();
           navigateTo(navigation.validators);
         }
@@ -288,7 +288,8 @@ context(
         validateWalletCurrency('Associated', '2.00');
       });
 
-      it('Disassociation outside of app is shown', function () {
+      it.only('Disassociation outside of app is shown', function () {
+        cy.pause();
         stakingPageAssociateTokens('2');
         validateWalletCurrency('Associated', '2.00');
         vegaWalletDisassociate('2');

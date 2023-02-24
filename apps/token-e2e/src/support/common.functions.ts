@@ -28,7 +28,6 @@ const topLevelRoutes = [
 
 export function navigateTo(page: navigation) {
   const tokenDropDown = 'state-trigger';
-  cy.log(page);
 
   if (!topLevelRoutes.includes(page)) {
     cy.getByTestId(tokenDropDown, { timeout: 10000 }).click();

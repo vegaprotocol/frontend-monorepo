@@ -202,6 +202,8 @@ context(
 
     // 0005-ETXN-004
     it('Unable to create a proposal - when no tokens are associated', function () {
+      const errorMsg =
+        'Network error: the network blocked the transaction through the spam protection: party has insufficient associated governance tokens in their staking account to submit proposal request (ABCI code 89)';
       vegaWalletTeardown();
       cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
         '0.00',
@@ -210,27 +212,27 @@ context(
       goToMakeNewProposal(governanceProposalType.RAW);
       enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should(
-        'have.text',
-        'Network error: the network blocked the transaction through the spam protection'
-      );
+      cy.get(feedbackError).should('have.text', errorMsg);
       cy.get(dialogCloseButton).click();
     });
 
     // 3002-PROP-009
     it('Unable to create a proposal - when some but not enough tokens are associated', function () {
+      const errorMsg =
+        'Network error: the network blocked the transaction through the spam protection: party has insufficient associated governance tokens in their staking account to submit proposal request (ABCI code 89)';
+
       ensureSpecifiedUnstakedTokensAreAssociated('0.000001');
       goToMakeNewProposal(governanceProposalType.RAW);
       enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should(
-        'have.text',
-        'Network error: the network blocked the transaction through the spam protection'
-      );
+      cy.get(feedbackError).should('have.text', errorMsg);
       cy.get(dialogCloseButton).click();
     });
 
     it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
+      const errorMsg =
+        'Invalid params: the transaction is not a valid Vega command: unknown field "unexpected" in vega.commands.v1.ProposalSubmission';
+
       // 3001-VOTE-038 3002-PROP-013 3002-PROP-014
       goToMakeNewProposal(governanceProposalType.RAW);
 
@@ -247,10 +249,7 @@ context(
       cy.get(newProposalSubmitButton).should('be.visible').click();
 
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should(
-        'have.text',
-        'Invalid params: the transaction is malformed'
-      );
+      cy.get(feedbackError).should('have.text', errorMsg);
       cy.get(dialogCloseButton).click();
       cy.get(rawProposalData)
         .invoke('val')
@@ -259,6 +258,9 @@ context(
 
     it('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
       // 3001-VOTE-038
+      const errorMsg =
+        'Invalid params: the transaction is not a valid Vega command: unknown field "unexpectedField" in vega.ProposalTerms';
+
       goToMakeNewProposal(governanceProposalType.RAW);
 
       cy.fixture('/proposals/raw.json').then((rawProposal) => {
@@ -275,10 +277,7 @@ context(
       cy.get(newProposalSubmitButton).should('be.visible').click();
 
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should(
-        'have.text',
-        'Invalid params: the transaction is malformed'
-      );
+      cy.get(feedbackError).should('have.text', errorMsg);
       cy.get(dialogCloseButton).click();
     });
 

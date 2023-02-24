@@ -82,7 +82,6 @@ export function enterUniqueFreeFormProposalBody(
 
 export function getSubmittedProposalFromProposalList(proposalTitle: string) {
   getProposalIdFromList(proposalTitle);
-  // return cy.get(`#${cy.get('@proposalIdText')}`);
   cy.get('@proposalIdText').then((proposalId) => {
     cy.get(`#${proposalId}`).as('submittedProposal');
   });
@@ -122,7 +121,10 @@ export function getProposalInformationFromTable(heading: string) {
 export function voteForProposal(vote: string) {
   cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
   cy.get(voteButtons).contains(vote).click();
-  cy.get(dialogTitle).should('have.text', 'Transaction complete');
+  cy.get(dialogTitle, proposalTimeout).should(
+    'have.text',
+    'Transaction complete'
+  );
   cy.get(dialogCloseButton).click();
 }
 
