@@ -7,11 +7,12 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.calt': {
       fontFeatureSettings: "'calt'",
     },
-    '.liga-0-calt-0': {
-      fontFeatureSettings: "'liga' 0, 'calt' 0",
-    },
     '.liga': {
       fontFeatureSettings: "'liga'",
+    },
+    // Firefox will not inherit font-feature-settings unless you tell it so
+    'button, input, optgroup, select, textarea': {
+      fontFeatureSettings: 'inherit',
     },
     '.syntax-highlighter-wrapper .hljs': {
       fontSize: '1rem',

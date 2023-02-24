@@ -52,7 +52,7 @@ export default {
     },
     alternatives: {
       name: 'Font features',
-      options: ['none', 'calt', 'liga', 'liga-0-calt-0'],
+      options: ['none', 'calt', 'liga'],
       control: { type: 'select' },
     },
   },
@@ -61,5 +61,5 @@ export default {
 export const Default = Template;
 Default.args = {
   isAlpha: true,
-  alternatives: 'liga-0-calt-0',
+  alternatives: 'none',
 };
