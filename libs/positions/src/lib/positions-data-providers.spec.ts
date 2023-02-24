@@ -6,6 +6,7 @@ import type {
   MarginFieldsFragment,
 } from './__generated__/Positions';
 import { getMetrics, rejoinPositionData } from './positions-data-providers';
+import { PositionStatus } from '@vegaprotocol/types';
 
 const accounts = [
   {
@@ -78,6 +79,8 @@ const positions: PositionFieldsFragment[] = [
       __typename: 'Market',
       id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
     },
+    lossSocializationAmount: '0',
+    positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
   },
   {
     __typename: 'Position',
@@ -90,6 +93,8 @@ const positions: PositionFieldsFragment[] = [
       __typename: 'Market',
       id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
     },
+    lossSocializationAmount: '100',
+    positionStatus: PositionStatus.POSITION_STATUS_ORDERS_CLOSED,
   },
 ];
 
@@ -225,6 +230,10 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[0].totalBalance).toEqual('926178496');
     expect(metrics[0].unrealisedPNL).toEqual('43804770');
     expect(metrics[0].updatedAt).toEqual('2022-07-28T14:53:54.725477Z');
+    expect(metrics[0].lossSocializationAmount).toEqual(
+      positions[0].lossSocializationAmount
+    );
+    expect(metrics[0].status).toEqual(positions[0].positionStatus);
 
     expect(metrics[1].assetSymbol).toEqual('tDAI');
     expect(metrics[1].averageEntryPrice).toEqual('840158');
@@ -248,5 +257,9 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[1].totalBalance).toEqual('896098819');
     expect(metrics[1].unrealisedPNL).toEqual('-9112700');
     expect(metrics[1].updatedAt).toEqual('2022-07-28T15:09:34.441143Z');
+    expect(metrics[1].lossSocializationAmount).toEqual(
+      positions[1].lossSocializationAmount
+    );
+    expect(metrics[1].status).toEqual(positions[1].positionStatus);
   });
 });
