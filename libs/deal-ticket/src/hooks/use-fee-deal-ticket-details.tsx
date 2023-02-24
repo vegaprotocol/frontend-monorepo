@@ -5,10 +5,12 @@ import {
   formatNumber,
   t,
   toBigNum,
+  useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
+import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
@@ -19,9 +21,7 @@ import {
 } from '../constants';
 import { useOrderCloseOut } from './use-order-closeout';
 import { useOrderMargin } from './use-order-margin';
-import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
-import { useOpenVolume } from '@vegaprotocol/positions';
-import { usePendingOrdersVolume } from '@vegaprotocol/orders';
+import { volumeAndMarginProvider } from '@vegaprotocol/positions';
 import { useMarketAccountBalance } from '@vegaprotocol/accounts';
 import type { OrderMargin } from './use-order-margin';
 import { getDerivedPrice } from '../utils/get-price';
@@ -32,50 +32,16 @@ export const useFeeDealTicketDetails = (
   marketData: MarketData
 ) => {
   const { pubKey } = useVegaWallet();
-  const openVolume = useOpenVolume(pubKey, market.id);
-  const pendingOrderVolume = usePendingOrdersVolume(pubKey, market.id);
+  const { data: activeVolumeAndMargin } = useDataProvider({
+    dataProvider: volumeAndMarginProvider,
+    variables: { marketId: market.id, partyId: pubKey || '' },
+    skip: !pubKey,
+  });
   const { accountBalance } = useMarketAccountBalance(market.id);
 
   const price = useMemo(() => {
     return getDerivedPrice(order, marketData);
   }, [order, marketData]);
-
-  const size = useMemo(() => {
-    if (!(openVolume || pendingOrderVolume?.buy || pendingOrderVolume?.sell)) {
-      return;
-    }
-    let size;
-    size = BigInt(openVolume || 0);
-    const totalBuy =
-      BigInt(pendingOrderVolume?.buy || '0') +
-      BigInt((order.side === Side.SIDE_BUY && order.size) || 0);
-    const totalSell =
-      BigInt(pendingOrderVolume?.sell || '0') +
-      BigInt((order.side === Side.SIDE_SELL && order.size) || 0);
-    const zero = BigInt(0);
-    if (size + totalBuy - totalSell > zero) {
-      size += totalBuy;
-    } else {
-      size -= totalSell;
-    }
-    return size;
-  }, [
-    openVolume,
-    pendingOrderVolume?.buy,
-    pendingOrderVolume?.sell,
-    order.size,
-    order.side,
-  ]);
-
-  const estTotalMargin = useOrderMargin({
-    side: size && size < 0 ? Side.SIDE_SELL : Side.SIDE_BUY,
-    size: size ? size.toString().replace(/^-/, '') : '',
-    type: OrderType.TYPE_MARKET,
-    timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-    marketId: market.id,
-    partyId: pubKey || '',
-    price,
-  });
 
   const estMargin = useOrderMargin({
     ...order,
@@ -83,6 +49,22 @@ export const useFeeDealTicketDetails = (
     partyId: pubKey || '',
     price,
   });
+
+  if (activeVolumeAndMargin && estMargin) {
+    let sellMargin = BigInt(activeVolumeAndMargin.sellInitialMargin);
+    let buyMargin = BigInt(activeVolumeAndMargin.buyInitialMargin);
+    const margin = BigInt(estMargin.margin);
+    if (order.side === Side.SIDE_SELL) {
+      activeVolumeAndMargin.sellVolume = (
+        BigInt(activeVolumeAndMargin.sellVolume) + BigInt(order.size)
+      ).toString();
+      sellMargin += margin;
+    } else {
+      buyMargin += margin;
+    }
+    estMargin.margin =
+      sellMargin > buyMargin ? sellMargin.toString() : buyMargin.toString();
+  }
 
   const estCloseOut = useOrderCloseOut({
     order,
@@ -108,21 +90,10 @@ export const useFeeDealTicketDetails = (
       symbol,
       notionalSize,
       accountBalance,
-      estMargin: estMargin && {
-        ...estMargin,
-        margin: estTotalMargin?.margin || estMargin?.margin,
-      },
+      estMargin: estMargin,
       estCloseOut,
     };
-  }, [
-    market,
-    symbol,
-    notionalSize,
-    estMargin,
-    estCloseOut,
-    accountBalance,
-    estTotalMargin?.margin,
-  ]);
+  }, [market, symbol, notionalSize, estMargin, estCloseOut, accountBalance]);
 };
 
 export interface FeeDetails {

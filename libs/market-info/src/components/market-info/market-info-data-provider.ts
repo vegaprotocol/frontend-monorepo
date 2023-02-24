@@ -1,5 +1,8 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { MarketInfoQuery } from './__generated__/MarketInfo';
+import type {
+  MarketInfoQuery,
+  MarketInfoQueryVariables,
+} from './__generated__/MarketInfo';
 import { MarketInfoDocument } from './__generated__/MarketInfo';
 import type { MarketInfoNoCandlesQuery } from './__generated__/MarketInfoNoCandles';
 import { MarketInfoNoCandlesDocument } from './__generated__/MarketInfoNoCandles';
@@ -8,7 +11,8 @@ export const marketInfoDataProvider = makeDataProvider<
   MarketInfoQuery,
   MarketInfoQuery,
   never,
-  never
+  never,
+  MarketInfoQueryVariables
 >({
   query: MarketInfoDocument,
   getData: (responseData: MarketInfoQuery | null) => responseData,

@@ -58,7 +58,7 @@ export interface Subscribe<
   (
     callback: UpdateCallback<Data, Delta>,
     client: ApolloClient<object>,
-    variables?: Variables
+    variables: Variables
   ): {
     unsubscribe: () => void;
     reload: Reload;
@@ -598,7 +598,7 @@ export type CombineDerivedData<
   Variables extends OperationVariables = OperationVariables
 > = (
   data: DerivedPart<Variables>['data'][],
-  variables: Variables | undefined,
+  variables: Variables,
   prevData: Data | null
 ) => Data | null;
 

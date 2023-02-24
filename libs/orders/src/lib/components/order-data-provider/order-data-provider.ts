@@ -139,7 +139,6 @@ export const update = (
             __typename: 'Order',
           },
           cursor: '',
-          __typename: 'OrderEdge',
         });
       }
     });

@@ -14,6 +14,7 @@ import type {
   MarketDataFieldsFragment,
   MarketDataUpdateSubscription,
   MarketDataUpdateFieldsFragment,
+  MarketDataQueryVariables,
 } from './__generated__/market-data';
 
 export type MarketData = MarketDataFieldsFragment;
@@ -42,7 +43,8 @@ export const marketDataProvider = makeDataProvider<
   MarketDataQuery,
   MarketData,
   MarketDataUpdateSubscription,
-  MarketDataUpdateFieldsFragment
+  MarketDataUpdateFieldsFragment,
+  MarketDataQueryVariables
 >({
   query: MarketDataDocument,
   subscriptionQuery: MarketDataUpdateDocument,
@@ -50,6 +52,12 @@ export const marketDataProvider = makeDataProvider<
   getData,
   getDelta,
 });
+
+export const markPriceProvider = makeDerivedDataProvider<
+  string,
+  never,
+  MarketDataQueryVariables
+>([marketDataProvider], ([marketData]) => (marketData as MarketData).markPrice);
 
 export type StaticMarketData = Pick<
   MarketData,

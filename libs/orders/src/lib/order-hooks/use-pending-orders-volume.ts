@@ -21,24 +21,28 @@ const sumVolume = (orders: (Edge<OrderFieldsFragment> | null)[], side: Side) =>
     )
     .toString();
 
-export const usePendingOrdersVolume = (
+export const useActiveOrdersVolumeAndMargin = (
   partyId: string | null | undefined,
   marketId: string
 ) => {
-  const [pendingBuyVolume, setPendingBuyVolume] = useState<
+  const [buyVolume, setBuyVolume] = useState<string | undefined>();
+  const [sellVolume, setSellVolume] = useState<string | undefined>();
+  const [buyInitialMargin, setBuyInitialMargin] = useState<
     string | undefined
   >();
-  const [pendingSellVolume, setPendingSellVolume] = useState<
+  const [sellInitialMargin, setSellInitialMargin] = useState<
     string | undefined
   >();
   const update = useCallback(
     ({ data }: { data: (Edge<OrderFieldsFragment> | null)[] | null }) => {
       if (!data) {
-        setPendingBuyVolume(undefined);
-        setPendingSellVolume(undefined);
+        setBuyVolume(undefined);
+        setSellVolume(undefined);
+        setBuyInitialMargin(undefined);
+        setSellInitialMargin(undefined);
       } else {
-        setPendingBuyVolume(sumVolume(data, Side.SIDE_BUY));
-        setPendingSellVolume(sumVolume(data, Side.SIDE_SELL));
+        setBuyVolume(sumVolume(data, Side.SIDE_BUY));
+        setSellVolume(sumVolume(data, Side.SIDE_SELL));
       }
       return true;
     },
@@ -59,10 +63,12 @@ export const usePendingOrdersVolume = (
     },
     skip: !partyId,
   });
-  return pendingBuyVolume || pendingSellVolume
+  return buyVolume || sellVolume
     ? {
-        buy: pendingBuyVolume,
-        sell: pendingSellVolume,
+        buyVolume,
+        sellVolume,
+        buyInitialMargin,
+        sellInitialMargin,
       }
     : undefined;
 };

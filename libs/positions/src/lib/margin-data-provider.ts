@@ -1,6 +1,7 @@
 import produce from 'immer';
 import {
   makeDataProvider,
+  makeDerivedDataProvider,
   removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import {
@@ -11,6 +12,7 @@ import type {
   MarginsQuery,
   MarginFieldsFragment,
   MarginsSubscriptionSubscription,
+  MarginsQueryVariables,
 } from './__generated__/Positions';
 
 const update = (
@@ -59,7 +61,8 @@ export const marginsDataProvider = makeDataProvider<
   MarginsQuery,
   MarginFieldsFragment[],
   MarginsSubscriptionSubscription,
-  MarginsSubscriptionSubscription['margins']
+  MarginsSubscriptionSubscription['margins'],
+  MarginsQueryVariables
 >({
   query: MarginsDocument,
   subscriptionQuery: MarginsSubscriptionDocument,
@@ -67,3 +70,15 @@ export const marginsDataProvider = makeDataProvider<
   getData,
   getDelta,
 });
+
+export const marketMarginDataProvider = makeDerivedDataProvider<
+  MarginFieldsFragment,
+  never,
+  MarginsQueryVariables & { marketId: string }
+>(
+  [marginsDataProvider],
+  (data, { marketId }) =>
+    (data[0] as MarginFieldsFragment[]).find(
+      (margin) => margin.market.id === marketId
+    ) || null
+);

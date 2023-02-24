@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { PositionFieldsFragment } from './__generated__/Positions';
-import { positionsDataProvider } from './positions-data-providers';
+import { openVolumeDataProvider } from './positions-data-providers';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 export const useOpenVolume = (
@@ -8,19 +7,14 @@ export const useOpenVolume = (
   marketId: string
 ) => {
   const [openVolume, setOpenVolume] = useState<string | undefined>(undefined);
-  const update = useCallback(
-    ({ data }: { data: PositionFieldsFragment[] | null }) => {
-      setOpenVolume(
-        data?.find((position) => position.market.id === marketId)?.openVolume
-      );
-      return true;
-    },
-    [marketId]
-  );
+  const update = useCallback(({ data }: { data: string | null }) => {
+    setOpenVolume(data ?? undefined);
+    return true;
+  }, []);
   useDataProvider({
-    dataProvider: positionsDataProvider,
+    dataProvider: openVolumeDataProvider,
     update,
-    variables: { partyId: partyId || '' },
+    variables: { partyId: partyId || '', marketId },
     skip: !partyId,
   });
   return openVolume;

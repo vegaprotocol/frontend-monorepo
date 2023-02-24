@@ -31,6 +31,7 @@ import {
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
+import { useInitialMargin } from '../../hooks/use-initial-margin';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {
   usePersistedOrderStore,
@@ -50,6 +51,15 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   // This is not a field used in the form but allows us to set a
   // summary error message
   summary: string;
+};
+
+const MarginInfo = ({
+  order,
+}: {
+  order: OrderSubmissionBody['orderSubmission'];
+}) => {
+  const marginInfo = useInitialMargin(order);
+  return <pre>{JSON.stringify(marginInfo, null, 2)}</pre>;
 };
 
 export const DealTicket = ({
@@ -256,6 +266,13 @@ export const DealTicket = ({
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onClickCollateral={onClickCollateral || (() => null)}
+      />
+      <MarginInfo
+        order={normalizeOrderSubmission(
+          order,
+          market.decimalPlaces,
+          market.positionDecimalPlaces
+        )}
       />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
