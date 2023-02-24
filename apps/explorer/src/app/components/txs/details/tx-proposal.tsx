@@ -3,11 +3,11 @@ import type { BlockExplorerTransactionResult } from '../../../routes/types/block
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { sharedHeaderProps, TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import ProposalLink from '../../links/proposal-link/proposal-link';
 import type { components } from '../../../../types/explorer';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import has from 'lodash/has';
 import { ProposalSummary } from './proposal/summary';
+import Hash from '../../links/hash';
 
 export type Proposal = components['schemas']['v1ProposalSubmission'];
 export type ProposalTerms = components['schemas']['vegaProposalTerms'];
@@ -86,11 +86,12 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
           txData={txData}
           pubKey={pubKey}
           blockData={blockData}
+          hideTypeRow={true}
         />
         <TableRow modifier="bordered">
           <TableCell>{t('Proposal ID')}</TableCell>
           <TableCell>
-            <ProposalLink id={deterministicId} />
+            <Hash text={deterministicId} />
           </TableCell>
         </TableRow>
       </TableWithTbody>

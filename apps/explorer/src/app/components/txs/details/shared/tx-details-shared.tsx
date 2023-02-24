@@ -55,7 +55,7 @@ export const TxDetailsShared = ({
       <TableRow modifier="bordered">
         <TableCell {...sharedHeaderProps}>{t('Hash')}</TableCell>
         <TableCell>
-          <Hash text={txData.hash} />
+          <Hash text={txData.hash.toLowerCase()} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

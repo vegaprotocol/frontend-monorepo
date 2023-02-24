@@ -5,6 +5,9 @@ import type { components } from '../../../../../types/explorer';
 import { JsonViewerDialog } from '../../../dialogs/json-viewer-dialog';
 import ProposalLink from '../../../links/proposal-link/proposal-link';
 import truncate from 'lodash/truncate';
+import { ProposalStatusIcon } from './proposal-status-icon';
+import ReactMarkdown from 'react-markdown';
+import { ProposalDate } from './proposal-date';
 
 type Rationale = components['schemas']['vegaProposalRationale'];
 
@@ -37,6 +40,7 @@ export const ProposalSummary = ({
 
   const openDialog = () => {
     if (!terms) return;
+
     setDialog({
       open: true,
       title: rationale?.title || t('Proposal details'),
@@ -44,15 +48,28 @@ export const ProposalSummary = ({
     });
   };
 
+  const md =
+    rationale && rationale.description
+      ? truncate(rationale.description, {
+          // Limits the description to roughly 5 lines, maximum
+          length: 350,
+        })
+      : '';
+
   return (
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5">
-      {rationale?.title && <h1 className="text-xl pb-3">{rationale.title}</h1>}
+      {id && <ProposalStatusIcon id={id} />}
+      {rationale?.title && <h1 className="text-xl pb-1">{rationale.title}</h1>}
       {rationale?.description && (
         <p className="pt-2 text-sm leading-tight">
-          {truncate(rationale.description, {
-            // Limits the description to roughly 5 lines, maximum
-            length: 350,
-          })}
+          <ReactMarkdown
+            className="react-markdown-container"
+            skipHtml={true}
+            disallowedElements={['img']}
+            linkTarget="_blank"
+          >
+            {md}
+          </ReactMarkdown>
         </p>
       )}
       <p className="pt-5">
@@ -60,6 +77,7 @@ export const ProposalSummary = ({
           {t('View terms')}
         </button>{' '}
         <ProposalLink id={id} text={t('Full details')} />
+        {terms && <ProposalDate terms={terms} id={id} />}
       </p>
       <JsonViewerDialog
         open={dialog.open}
