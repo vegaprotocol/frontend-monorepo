@@ -1,12 +1,11 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { WalletClient, WalletClientError } from '@vegaprotocol/wallet-client';
+import type { WalletClientError } from '@vegaprotocol/wallet-client';
+import { WalletClient } from '@vegaprotocol/wallet-client';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 import { WalletError } from './vega-connector';
 
-const VERSION = 'v2';
-
-export const ClientErrors = {
+export const BrowserClientErrors = {
   NO_SERVICE: new WalletError(t('No service'), 100),
   INVALID_WALLET: new WalletError(t('Wallet version invalid'), 103),
   WRONG_NETWORK: new WalletError(
@@ -22,62 +21,45 @@ export const ClientErrors = {
   NO_CLIENT: new WalletError(t('No client found.'), 106),
 } as const;
 
-export class JsonRpcConnector implements VegaConnector {
-  version = VERSION;
-  private _url: string | null = null;
-  token: string | null = null;
+export class BrowserConnector implements VegaConnector {
+  url: null;
   reqId = 0;
   client?: WalletClient;
 
   constructor() {
+    this.url = null;
     const cfg = getConfig();
 
-    this.token = cfg?.token ?? null;
-
-    if (cfg && cfg.url) {
-      this.url = cfg.url;
-      this.client = new WalletClient({
-        type: 'http',
-        address: cfg.url,
-        token: cfg.token ?? undefined,
-        onTokenChange: (token) => {
-          setConfig({
-            token,
-            connector: 'jsonRpc',
-            url: this._url,
-          });
-        },
-      });
+    if (cfg && cfg.connector === 'browser') {
+      this.initialize();
+      this.connectWallet();
     }
   }
 
-  set url(url: string) {
-    this._url = url;
-    this.client = new WalletClient({
-      type: 'http',
-      address: url,
-      token: this.token ?? undefined,
-      onTokenChange: (token) =>
-        setConfig({
-          token,
-          url,
-          connector: 'jsonRpc',
-        }),
-    });
+  initialize() {
+    if (!this.client) {
+      try {
+        this.client = new WalletClient({
+          type: 'browser',
+          firefoxId: '62739efdd16a15a5ff4527bcd08fe6302b18b752@temporary-addon',
+          chromeId: 'pebgkinfegfpnkamklihgpeolleghngl',
+        });
+      } catch (err) {
+        throw BrowserClientErrors.NO_SERVICE;
+      }
+    }
   }
-  get url() {
-    return this._url || '';
-  }
+
   async getChainId() {
     if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
+      throw BrowserClientErrors.NO_CLIENT;
     }
     try {
       return await this.client.GetChainId();
     } catch (err) {
       const {
-        code = ClientErrors.UNKNOWN.code,
-        message = ClientErrors.UNKNOWN.message,
+        code = BrowserClientErrors.UNKNOWN.code,
+        message = BrowserClientErrors.UNKNOWN.message,
         title,
       } = err as WalletClientError;
       throw new WalletError(title, code, message);
@@ -86,7 +68,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async connectWallet() {
     if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
+      throw BrowserClientErrors.NO_CLIENT;
     }
 
     try {
@@ -94,8 +76,8 @@ export class JsonRpcConnector implements VegaConnector {
       return null;
     } catch (err) {
       const {
-        code = ClientErrors.UNKNOWN.code,
-        message = ClientErrors.UNKNOWN.message,
+        code = BrowserClientErrors.UNKNOWN.code,
+        message = BrowserClientErrors.UNKNOWN.message,
         title,
       } = err as WalletClientError;
       throw new WalletError(title, code, message);
@@ -106,7 +88,7 @@ export class JsonRpcConnector implements VegaConnector {
   // which retrieves the session token
   async connect() {
     if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
+      throw BrowserClientErrors.NO_CLIENT;
     }
 
     try {
@@ -114,8 +96,8 @@ export class JsonRpcConnector implements VegaConnector {
       return result.keys;
     } catch (err) {
       const {
-        code = ClientErrors.UNKNOWN.code,
-        message = ClientErrors.UNKNOWN.message,
+        code = BrowserClientErrors.UNKNOWN.code,
+        message = BrowserClientErrors.UNKNOWN.message,
         title,
       } = err as WalletClientError;
       throw new WalletError(title, code, message);
@@ -124,7 +106,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async disconnect() {
     if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
+      throw BrowserClientErrors.NO_CLIENT;
     }
 
     await this.client.DisconnectWallet();
@@ -133,7 +115,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async sendTx(pubKey: string, transaction: Transaction) {
     if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
+      throw BrowserClientErrors.NO_CLIENT;
     }
 
     const result = await this.client.SendTransaction({
@@ -151,28 +133,6 @@ export class JsonRpcConnector implements VegaConnector {
   }
 
   async checkCompat() {
-    try {
-      const result = await fetch(`${this._url}/api/${this.version}/methods`);
-      if (!result.ok) {
-        const sent1 = t(
-          'The version of the wallet service running at %s is not supported.',
-          this._url as string
-        );
-        const sent2 = t(
-          'Update the wallet software to a version that expose the API %s.',
-          this.version
-        );
-        const data = `${sent1}\n ${sent2}`;
-        const title = t('Wallet version invalid');
-        throw new WalletError(title, ClientErrors.INVALID_WALLET.code, data);
-      }
-      return true;
-    } catch (err) {
-      if (err instanceof WalletClientError) {
-        throw err;
-      }
-
-      throw ClientErrors.NO_SERVICE;
-    }
+    return true;
   }
 }

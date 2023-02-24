@@ -13,9 +13,14 @@ import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { ExternalLinks, t, useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { ViewConnector } from '../connectors';
-import { JsonRpcConnector, RestConnector } from '../connectors';
+import {
+  JsonRpcConnector,
+  RestConnector,
+  BrowserConnector,
+} from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
+import { BrowserConnectorForm } from './browser-connector-form';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import {
   ConnectDialogContent,
@@ -24,11 +29,12 @@ import {
 } from './connect-dialog-elements';
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
+import { useBrowserConnect } from '../use-browser-connect';
 import { ViewConnectorForm } from './view-connector-form';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'jsonRpc' | 'hosted' | 'view';
+type WalletType = 'jsonRpc' | 'hosted' | 'view' | 'browser';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -117,7 +123,7 @@ export const VegaConnectDialog = ({
       size="small"
       onChange={updateVegaWalletDialog}
     >
-      {renderContent()}
+      <div id="wallet-dialog-000">{renderContent()}</div>
     </Dialog>
   );
 };
@@ -148,6 +154,8 @@ const ConnectDialogContainer = ({
   }, [closeDialog]);
 
   const { connect, ...jsonRpcState } = useJsonRpcConnect(delayedOnConnect);
+  const { connect: connectBW, ...browserState } =
+    useBrowserConnect(delayedOnConnect);
 
   const handleSelect = (type: WalletType, isHosted = false) => {
     let connector;
@@ -174,6 +182,10 @@ const ConnectDialogContainer = ({
     if (connector instanceof JsonRpcConnector) {
       connect(connector, appChainId);
     }
+
+    if (connector instanceof BrowserConnector) {
+      connectBW(connector, appChainId);
+    }
   };
 
   return selectedConnector !== undefined && walletType !== undefined ? (
@@ -181,6 +193,7 @@ const ConnectDialogContainer = ({
       type={walletType}
       connector={selectedConnector}
       jsonRpcState={jsonRpcState}
+      browserState={browserState}
       onConnect={closeDialog}
       appChainId={appChainId}
       reset={reset}
@@ -212,6 +225,13 @@ const ConnectorList = ({
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
         <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
         <ul data-testid="connectors-list" className="mb-6">
+          <li className="mb-4 last:mb-0">
+            <ConnectionOption
+              type="browser"
+              text={t('Connect Browser wallet')}
+              onClick={() => onSelect('browser')}
+            />
+          </li>
           <li className="mb-4 last:mb-0">
             <ConnectionOption
               type="jsonRpc"
@@ -247,6 +267,7 @@ const SelectedForm = ({
   connector,
   appChainId,
   jsonRpcState,
+  browserState,
   reset,
   onConnect,
 }: {
@@ -254,6 +275,10 @@ const SelectedForm = ({
   connector: VegaConnector;
   appChainId: string;
   jsonRpcState: {
+    status: Status;
+    error: WalletClientError | null;
+  };
+  browserState: {
     status: Status;
     error: WalletClientError | null;
   };
@@ -322,6 +347,24 @@ const SelectedForm = ({
     );
   }
 
+  if (connector instanceof BrowserConnector) {
+    return (
+      <>
+        <ConnectDialogContent>
+          <BrowserConnectorForm
+            connector={connector}
+            status={browserState.status}
+            error={browserState.error}
+            onConnect={onConnect}
+            appChainId={appChainId}
+            reset={reset}
+          />
+        </ConnectDialogContent>
+        <ConnectDialogFooter />
+      </>
+    );
+  }
+
   throw new Error('No connector selected');
 };
 
@@ -334,6 +377,7 @@ const ConnectionOption = ({
   text: string;
   onClick: () => void;
 }) => {
+  const id = type === 'browser' ? 'vega-wallet-connect' : undefined;
   return (
     <Button
       onClick={onClick}
@@ -341,6 +385,7 @@ const ConnectionOption = ({
       fill={true}
       variant={['hosted', 'view'].includes(type) ? 'default' : 'primary'}
       data-testid={`connector-${type}`}
+      id={id}
     >
       <span className="-mx-6 flex text-left justify-between items-center">
         {text}

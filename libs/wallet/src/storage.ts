@@ -2,7 +2,7 @@ import { LocalStorage } from '@vegaprotocol/react-helpers';
 
 interface ConnectorConfig {
   token: string | null;
-  connector: 'rest' | 'jsonRpc' | 'view';
+  connector: 'rest' | 'jsonRpc' | 'view' | 'browser';
   url: string | null;
 }
 

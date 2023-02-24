@@ -2,10 +2,12 @@ import {
   RestConnector,
   JsonRpcConnector,
   ViewConnector,
+  BrowserConnector,
 } from '@vegaprotocol/wallet';
 
 export const rest = new RestConnector();
 export const jsonRpc = new JsonRpcConnector();
+export const browser = new BrowserConnector();
 
 let view: ViewConnector;
 if (typeof window !== 'undefined') {
@@ -19,4 +21,5 @@ export const Connectors = {
   rest,
   jsonRpc,
   view,
+  browser,
 };
