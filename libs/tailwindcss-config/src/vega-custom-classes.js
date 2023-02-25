@@ -10,7 +10,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.liga': {
       fontFeatureSettings: "'liga'",
     },
-    // Firefox will not inherit font-feature-settings unless you tell it so
+    // Fix for Firefox to make it inherit font-feature-settings from the default theme
     'button, input, optgroup, select, textarea': {
       fontFeatureSettings: 'inherit',
     },
