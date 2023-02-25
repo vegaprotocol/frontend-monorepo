@@ -20,7 +20,7 @@ const TextSample = ({ alternatives, isAlpha, type }: Args) => {
       <div
         className={classNames(
           'flex-grow flex flex-col justify-end text-left items-start',
-          { 'font-alpha': isAlpha },
+          { 'font-alpha calt': isAlpha },
           [alternatives, type]
         )}
       >

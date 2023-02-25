@@ -209,7 +209,7 @@ export const MaintenancePage = () => {
         </div>
       </div>
       <div className="flex mb-2">
-        <span className="font-alpha uppercase text-xl text-center">
+        <span className="font-alpha calt uppercase text-xl text-center">
           {t("We're doing some maintenance right now, check back later")}
         </span>
       </div>
