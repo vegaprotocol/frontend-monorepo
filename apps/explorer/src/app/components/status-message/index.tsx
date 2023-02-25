@@ -11,7 +11,7 @@ export const StatusMessage = ({
   className,
   ...props
 }: StatusMessageProps) => {
-  const classes = classnames('font-alpha text-2xl mb-28', className);
+  const classes = classnames('font-alpha calt text-2xl mb-28', className);
   return (
     <h3 className={classes} {...props}>
       {children}
