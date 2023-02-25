@@ -122,10 +122,10 @@ module.exports = {
   fontFamily: {
     mono: ['Roboto Mono', 'monospace'],
     sans: [
-      '"Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      '"Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
     ],
     alpha: [
-      'AlphaLyrae, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      'AlphaLyrae, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
       { fontFeatureSettings: '"calt" 0, "liga" 0' },
     ],
   },
