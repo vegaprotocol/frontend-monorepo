@@ -304,4 +304,11 @@ describe('home', { tags: '@regression' }, () => {
       });
     });
   });
+
+  describe('footer', () => {
+    it('shows current block height', () => {
+      cy.visit('/');
+      cy.getByTestId('app-footer').contains('Operational').contains('100');
+    });
+  });
 });
