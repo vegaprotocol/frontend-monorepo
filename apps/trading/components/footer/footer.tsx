@@ -1,6 +1,8 @@
 import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
 import { t, useNavigatorOnline } from '@vegaprotocol/react-helpers';
-import { ButtonLink, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
+import { Indicator, Intent } from '@vegaprotocol/ui-toolkit';
+import classNames from 'classnames';
+import type { ButtonHTMLAttributes } from 'react';
 import { useGlobalStore } from '../../stores';
 
 export const Footer = () => {
@@ -8,45 +10,62 @@ export const Footer = () => {
   const setNodeSwitcher = useGlobalStore(
     (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
   );
-  const { blockDiff } = useNodeHealth();
+  const { blockDiff, datanodeBlockHeight } = useNodeHealth();
 
   return (
-    <footer className="px-4 py-1 text-xs border-t border-default">
-      <div className="flex justify-between">
-        <div className="flex gap-2">
-          {VEGA_URL && (
-            <>
-              <NodeHealth
-                blockDiff={blockDiff}
-                openNodeSwitcher={() => setNodeSwitcher(true)}
-              />
-              {' | '}
-              <NodeUrl
-                url={VEGA_URL}
-                openNodeSwitcher={() => setNodeSwitcher(true)}
-              />
-            </>
-          )}
-        </div>
+    <footer className="px-4 py-1 text-xs border-t border-default text-vega-light-300 dark:text-vega-dark-300">
+      {/* Pull left to align with top nav, due to button padding */}
+      <div className="-ml-2">
+        {VEGA_URL && (
+          <NodeHealth
+            url={VEGA_URL}
+            blockHeight={datanodeBlockHeight}
+            blockDiff={blockDiff}
+            onClick={() => setNodeSwitcher(true)}
+          />
+        )}
       </div>
     </footer>
+  );
+};
+interface NodeHealthProps {
+  url: string;
+  blockHeight: number | undefined;
+  blockDiff: number | null;
+  onClick: () => void;
+}
+
+export const NodeHealth = ({
+  url,
+  blockHeight,
+  blockDiff,
+  onClick,
+}: NodeHealthProps) => {
+  return (
+    <FooterButton onClick={onClick}>
+      <span className="mr-2 pr-2 border-r border-vega-light-300 dark:border-vega-dark-300">
+        <HealthIndicator blockDiff={blockDiff} />
+      </span>
+      <span className="mr-2 pr-2 border-r border-vega-light-300 dark:border-vega-dark-300">
+        <NodeUrl url={url} />
+      </span>
+      <span title={t('Block height')}>{blockHeight}</span>
+    </FooterButton>
   );
 };
 
 interface NodeUrlProps {
   url: string;
-  openNodeSwitcher: () => void;
 }
 
-export const NodeUrl = ({ url, openNodeSwitcher }: NodeUrlProps) => {
+export const NodeUrl = ({ url }: NodeUrlProps) => {
   // get base url from api url, api sub domain
   const urlObj = new URL(url);
   const nodeUrl = urlObj.origin.replace(/^[^.]+\./g, '');
-  return <ButtonLink onClick={openNodeSwitcher}>{nodeUrl}</ButtonLink>;
+  return <span title={t('Connected node')}>{nodeUrl}</span>;
 };
 
-interface NodeHealthProps {
-  openNodeSwitcher: () => void;
+interface HealthIndicatorProps {
   blockDiff: number | null;
 }
 
@@ -54,10 +73,7 @@ interface NodeHealthProps {
 // deemed acceptable for "Good" status
 const BLOCK_THRESHOLD = 3;
 
-export const NodeHealth = ({
-  blockDiff,
-  openNodeSwitcher,
-}: NodeHealthProps) => {
+export const HealthIndicator = ({ blockDiff }: HealthIndicatorProps) => {
   const online = useNavigatorOnline();
 
   let intent = Intent.Success;
@@ -76,9 +92,20 @@ export const NodeHealth = ({
   }
 
   return (
-    <>
+    <span title={t('Node health')}>
       <Indicator variant={intent} />
-      <ButtonLink onClick={openNodeSwitcher}>{text}</ButtonLink>
-    </>
+      {text}
+    </span>
   );
+};
+
+type FooterButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+
+const FooterButton = (props: FooterButtonProps) => {
+  const buttonClasses = classNames(
+    'px-2 py-0.5 rounded-md',
+    'enabled:hover:bg-vega-light-150',
+    'dark:enabled:hover:bg-vega-dark-150'
+  );
+  return <button {...props} className={buttonClasses} />;
 };
