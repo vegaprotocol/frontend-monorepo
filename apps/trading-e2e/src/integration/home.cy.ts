@@ -308,7 +308,14 @@ describe('home', { tags: '@regression' }, () => {
   describe('footer', () => {
     it('shows current block height', () => {
       cy.visit('/');
-      cy.getByTestId('app-footer').contains('Operational').contains('100');
+      cy.getByTestId('node-health')
+        .children()
+        .first()
+        .should('contain.text', 'Operational')
+        .next()
+        .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+        .next()
+        .should('contain.text', '100'); // all mocked queries have x-block-height header set to 100
     });
   });
 });

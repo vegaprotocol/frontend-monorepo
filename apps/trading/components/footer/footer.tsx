@@ -13,10 +13,7 @@ export const Footer = () => {
   const { blockDiff, datanodeBlockHeight } = useNodeHealth();
 
   return (
-    <footer
-      data-testid="app-footer"
-      className="px-4 py-1 text-xs border-t border-default text-vega-light-300 dark:text-vega-dark-300"
-    >
+    <footer className="px-4 py-1 text-xs border-t border-default text-vega-light-300 dark:text-vega-dark-300">
       {/* Pull left to align with top nav, due to button padding */}
       <div className="-ml-2">
         {VEGA_URL && (
@@ -45,7 +42,7 @@ export const NodeHealth = ({
   onClick,
 }: NodeHealthProps) => {
   return (
-    <FooterButton onClick={onClick}>
+    <FooterButton onClick={onClick} data-testid="node-health">
       <span className="mr-2 pr-2 border-r border-vega-light-300 dark:border-vega-dark-300">
         <HealthIndicator blockDiff={blockDiff} />
       </span>
