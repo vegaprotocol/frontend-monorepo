@@ -2,7 +2,7 @@ import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
 import { t, useNavigatorOnline } from '@vegaprotocol/react-helpers';
 import { Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useGlobalStore } from '../../stores';
 
 export const Footer = () => {
@@ -43,13 +43,15 @@ export const NodeHealth = ({
 }: NodeHealthProps) => {
   return (
     <FooterButton onClick={onClick} data-testid="node-health">
-      <span className="mr-2 pr-2 border-r border-vega-light-300 dark:border-vega-dark-300">
+      <FooterButtonPart>
         <HealthIndicator blockDiff={blockDiff} />
-      </span>
-      <span className="mr-2 pr-2 border-r border-vega-light-300 dark:border-vega-dark-300">
+      </FooterButtonPart>
+      <FooterButtonPart>
         <NodeUrl url={url} />
-      </span>
-      <span title={t('Block height')}>{blockHeight}</span>
+      </FooterButtonPart>
+      <FooterButtonPart>
+        <span title={t('Block height')}>{blockHeight}</span>
+      </FooterButtonPart>
     </FooterButton>
   );
 };
@@ -108,4 +110,20 @@ const FooterButton = (props: FooterButtonProps) => {
     'dark:enabled:hover:bg-vega-dark-150'
   );
   return <button {...props} className={buttonClasses} />;
+};
+
+const FooterButtonPart = ({ children }: { children: ReactNode }) => {
+  return (
+    <span
+      className={classNames(
+        'relative inline-block mr-2 last:mr-0 pr-2 last:pr-0',
+        'last:after:hidden',
+        'after:content after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2',
+        'after:h-3 after:w-1 after:border-r',
+        'after:border-vega-light-300 dark:after:border-vega-dark-300'
+      )}
+    >
+      {children}
+    </span>
+  );
 };
