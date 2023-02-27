@@ -50,7 +50,7 @@ export const Nav = ({
   title,
 }: NavbarProps) => {
   const themeWrapperClasses = classNames(
-    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha lg:text-lg',
+    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha calt lg:text-lg',
     {
       dark: navbarTheme === 'dark',
     }
@@ -73,7 +73,7 @@ export const Nav = ({
           {icon}
           <h1
             className={classNames(
-              'h-full flex flex-col my-0 justify-center font-alpha uppercase',
+              'h-full flex flex-col my-0 justify-center font-alpha calt uppercase',
               { 'text-black': isYellow, 'text-white': !isYellow }
             )}
           >

@@ -12,7 +12,7 @@ export const SubHeading = ({
   ...props
 }: SubHeadingProps) => {
   const classes = classnames(
-    'font-alpha',
+    'font-alpha calt',
     'text-2xl',
     'uppercase',
     'mt-8 mb-2',

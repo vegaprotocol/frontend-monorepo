@@ -13,7 +13,7 @@ export const RouteTitle = ({
   ...props
 }: RouteTitleProps) => {
   const classes = classnames(
-    'font-alpha',
+    'font-alpha calt',
     'text-4xl',
     'uppercase',
     'mb-8',
