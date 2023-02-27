@@ -7,6 +7,7 @@ export interface KeyValueTableProps
   children: React.ReactNode;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   numerical?: boolean;
+  className?: string;
 }
 
 export const KeyValueTable = ({
@@ -14,6 +15,7 @@ export const KeyValueTable = ({
   children,
   numerical,
   headingLevel,
+  className,
   ...rest
 }: KeyValueTableProps) => {
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
@@ -22,7 +24,11 @@ export const KeyValueTable = ({
   return (
     <React.Fragment>
       {title && <TitleTag className={`text-xl my-2`}>{title}</TitleTag>}
-      <div data-testid="key-value-table" {...rest} className="mb-4">
+      <div
+        data-testid="key-value-table"
+        {...rest}
+        className={classNames('mb-4', className)}
+      >
         <div>
           {children &&
             React.Children.map(

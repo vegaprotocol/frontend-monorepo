@@ -18,6 +18,7 @@ import { addMockTransactionResponse } from './lib/commands/mock-transaction-resp
 import { addCreateMarket } from './lib/commands/create-market';
 import { addConnectPublicKey } from './lib/commands/add-connect-public-key';
 import { addVegaWalletSubmitProposal } from './lib/commands/vega-wallet-submit-proposal';
+import { addGetNodes } from './lib/commands/get-nodes';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -28,6 +29,7 @@ addMockWeb3ProviderCommand();
 addHighlightLog();
 addVegaWalletReceiveFaucetedAsset();
 addGetAssets();
+addGetNodes();
 addContainsExactly();
 addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
