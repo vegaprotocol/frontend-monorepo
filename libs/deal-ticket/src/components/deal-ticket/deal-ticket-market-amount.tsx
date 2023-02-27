@@ -31,7 +31,7 @@ export const DealTicketMarketAmount = ({
   return (
     <div className="mb-4">
       <div className="flex items-end gap-4 mb-2">
-        <div className="flex-1 text-sm">Size</div>
+        <div className="flex-1 text-sm">{t('Size')}</div>
         <div />
         <div className="flex-2 text-sm text-right">
           {isMarketInAuction(marketData.marketTradingMode) && (
