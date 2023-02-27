@@ -319,7 +319,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
                 <p className="col-span-1">
                   {t('%s% probability of trading', [
                     formatNumber(trigger.probability * 100),
-                    formatNumber(trigger.horizonSecs),
                   ])}
                 </p>
                 <p className="col-span-1 text-right">
