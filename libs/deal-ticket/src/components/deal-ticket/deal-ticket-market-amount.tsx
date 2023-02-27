@@ -29,7 +29,7 @@ export const DealTicketMarketAmount = ({
     : undefined;
 
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <div className="flex items-end gap-4 mb-2">
         <div className="flex-1 text-sm">{t('Size')}</div>
         <div />
