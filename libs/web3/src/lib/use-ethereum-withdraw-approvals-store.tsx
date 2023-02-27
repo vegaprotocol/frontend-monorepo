@@ -72,6 +72,7 @@ export const useEthWithdrawApprovalsStore = create(
       if (vegaTransaction) {
         useVegaTransactionStore.getState().dismiss(vegaTransaction.id);
       }
+      console.log('transaction', transaction);
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
     },
