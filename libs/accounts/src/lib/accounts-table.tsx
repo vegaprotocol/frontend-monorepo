@@ -154,7 +154,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }
             maxWidth={300}
           />
-          {!props.isReadOnly && (
+          {
             <AgGridColumn
               colId="breakdown"
               headerName=""
@@ -193,29 +193,33 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                         {t('Breakdown')}
                       </ButtonLink>
                       <span className="mx-1" />
-                      <ButtonLink
-                        data-testid="deposit"
-                        onClick={() => {
-                          onClickDeposit && onClickDeposit(data.asset.id);
-                        }}
-                      >
-                        {t('Deposit')}
-                      </ButtonLink>
+                      {!props.isReadOnly && (
+                        <ButtonLink
+                          data-testid="deposit"
+                          onClick={() => {
+                            onClickDeposit && onClickDeposit(data.asset.id);
+                          }}
+                        >
+                          {t('Deposit')}
+                        </ButtonLink>
+                      )}
                       <span className="mx-1" />
-                      <ButtonLink
-                        data-testid="withdraw"
-                        onClick={() =>
-                          onClickWithdraw && onClickWithdraw(data.asset.id)
-                        }
-                      >
-                        {t('Withdraw')}
-                      </ButtonLink>
+                      {!props.isReadOnly && (
+                        <ButtonLink
+                          data-testid="withdraw"
+                          onClick={() =>
+                            onClickWithdraw && onClickWithdraw(data.asset.id)
+                          }
+                        >
+                          {t('Withdraw')}
+                        </ButtonLink>
+                      )}
                     </>
                   );
                 }
               }}
             />
-          )}
+          }
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">
