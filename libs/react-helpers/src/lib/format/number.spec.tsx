@@ -201,9 +201,16 @@ describe('compactNumber', () => {
 
 describe('toDecimal', () => {
   it.each([
+    { v: 0, o: '1' },
+    { v: 1, o: '0.1' },
+    { v: 2, o: '0.01' },
+    { v: 3, o: '0.001' },
+    { v: 4, o: '0.0001' },
+    { v: 5, o: '0.00001' },
+    { v: 6, o: '0.000001' },
     { v: 7, o: '0.0000001' },
     { v: 8, o: '0.00000001' },
-    { v: 0, o: '0' },
+    { v: 9, o: '0.000000001' },
   ])('formats with toNumber given number correctly', ({ v, o }) => {
     expect(toDecimal(v)).toStrictEqual(o);
   });

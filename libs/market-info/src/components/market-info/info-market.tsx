@@ -315,12 +315,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           title: t(`Price monitoring bounds ${i + 1}`),
           content: (
             <div className="text-xs">
-              {/* <MarketInfoTable data={trigger} /> */}
               <div className="grid grid-cols-2 text-xs mb-4">
                 <p className="col-span-1">
                   {t('%s% probability of trading', [
                     formatNumber(trigger.probability * 100),
-                    formatNumber(trigger.horizonSecs),
                   ])}
                 </p>
                 <p className="col-span-1 text-right">
