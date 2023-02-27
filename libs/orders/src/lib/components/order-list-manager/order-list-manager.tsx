@@ -1,6 +1,6 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t, truncateByChars } from '@vegaprotocol/react-helpers';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type {
   BodyScrollEvent,
   BodyScrollEndEvent,
@@ -9,6 +9,7 @@ import type {
 } from 'ag-grid-community';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
+import type { GridReadyEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
@@ -93,38 +94,69 @@ export const OrderListManager = ({
       scrolledToTop,
     });
 
-  const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
-    if (event.top === 0) {
-      addNewRows();
-    }
-  };
+  const onBodyScrollEnd = useCallback(
+    (event: BodyScrollEndEvent) => {
+      if (event.top === 0) {
+        addNewRows();
+      }
+    },
+    [addNewRows]
+  );
 
-  const onBodyScroll = (event: BodyScrollEvent) => {
+  const onBodyScroll = useCallback((event: BodyScrollEvent) => {
     scrolledToTop.current = event.top <= 0;
-  };
+  }, []);
 
-  const onFilterChanged = (event: FilterChangedEvent) => {
-    const updatedFilter = event.api.getFilterModel();
-    if (Object.keys(updatedFilter).length) {
-      setFilter(updatedFilter);
-    } else if (filter) {
-      setFilter(undefined);
-    }
-  };
+  const onFilterChanged = useCallback(
+    (event: FilterChangedEvent) => {
+      const updatedFilter = event.api.getFilterModel();
+      if (Object.keys(updatedFilter).length) {
+        setFilter(updatedFilter);
+      } else {
+        setFilter(undefined);
+      }
+    },
+    [setFilter]
+  );
 
-  const onSortChange = (event: SortChangedEvent) => {
-    const sort = event.columnApi
-      .getColumnState()
-      .sort((a, b) => (a.sortIndex || 0) - (b.sortIndex || 0))
-      .reduce((acc, col) => {
-        if (col.sort) {
-          const { colId, sort } = col;
-          acc.push({ colId, sort });
-        }
-        return acc;
-      }, [] as { colId: string; sort: string }[]);
-    setSort(sort.length > 0 ? sort : undefined);
-  };
+  const onSortChange = useCallback(
+    (event: SortChangedEvent) => {
+      const sort = event.columnApi
+        .getColumnState()
+        .sort((a, b) => (a.sortIndex || 0) - (b.sortIndex || 0))
+        .reduce((acc, col) => {
+          if (col.sort) {
+            const { colId, sort } = col;
+            acc.push({ colId, sort });
+          }
+          return acc;
+        }, [] as { colId: string; sort: string }[]);
+      setSort(sort.length > 0 ? sort : undefined);
+    },
+    [setSort]
+  );
+
+  const onCancel = useCallback(
+    (order: Order) => {
+      if (!order.market) return;
+      create({
+        orderCancellation: {
+          orderId: order.id,
+          marketId: order.market.id,
+        },
+      });
+    },
+    [create]
+  );
+
+  const onGridReady = useCallback(
+    (event: GridReadyEvent) => {
+      event.api.setDatasource({
+        getRows,
+      });
+    },
+    [getRows]
+  );
 
   return (
     <>
@@ -133,20 +165,12 @@ export const OrderListManager = ({
           <OrderListTable
             ref={gridRef}
             rowModelType="infinite"
-            datasource={{ getRows }}
+            onGridReady={onGridReady}
             onBodyScrollEnd={onBodyScrollEnd}
             onBodyScroll={onBodyScroll}
             onFilterChanged={onFilterChanged}
             onSortChanged={onSortChange}
-            cancel={(order: Order) => {
-              if (!order.market) return;
-              create({
-                orderCancellation: {
-                  orderId: order.id,
-                  marketId: order.market.id,
-                },
-              });
-            }}
+            cancel={onCancel}
             setEditOrder={setEditOrder}
             onMarketClick={onMarketClick}
             isReadOnly={isReadOnly}
