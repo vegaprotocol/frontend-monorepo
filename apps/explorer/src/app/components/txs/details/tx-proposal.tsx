@@ -8,6 +8,7 @@ import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import has from 'lodash/has';
 import { ProposalSummary } from './proposal/summary';
 import Hash from '../../links/hash';
+import { ProposalSignatureBundle } from './proposal/signature-bundle';
 
 export type Proposal = components['schemas']['v1ProposalSubmission'];
 export type ProposalTerms = components['schemas']['vegaProposalTerms'];
@@ -25,9 +26,12 @@ interface TxProposalProps {
  * @param t The details of the proposal
  * @returns boolean True if a signature bundle is required. Used to fetch a signature bundle
  */
-export function proposalRequiresSignatureBundle(terms: ProposalTerms): boolean {
+export function proposalRequiresSignatureBundle(proposal?: Proposal): boolean {
+  if (!proposal?.terms) {
+    return false;
+  }
   return !!['newAsset', 'updateAsset'].filter((requiredIfExists) =>
-    has(terms, requiredIfExists)
+    has(proposal.terms, requiredIfExists)
   );
 }
 
@@ -100,6 +104,12 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
         rationale={proposal.rationale}
         terms={proposal?.terms}
       />
+      {proposalRequiresSignatureBundle(proposal) && (
+        <ProposalSignatureBundle
+          id={deterministicId}
+          type={proposal.terms?.newAsset ? 'NewAsset' : 'UpdateAsset'}
+        />
+      )}
     </>
   );
 };

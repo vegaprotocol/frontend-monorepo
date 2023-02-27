@@ -27,7 +27,10 @@ export function getDate(
     case 'STATE_DECLINED':
       return `${t('Rejected on')}: ${format(terms.closingTimestamp, DEFAULT)}`;
     case 'STATE_ENACTED':
-      return `${t('Enacted on')}: ${format(terms.enactmentTimestamp, DEFAULT)}`;
+      return `${t('Vote passed on')}: ${format(
+        terms.enactmentTimestamp,
+        DEFAULT
+      )}`;
     case 'STATE_FAILED':
       return `${t('Failed on')}: ${format(terms.validationTimestamp, DEFAULT)}`;
     case 'STATE_OPEN':
