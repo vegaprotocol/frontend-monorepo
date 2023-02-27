@@ -84,7 +84,7 @@ export const TradeMarketHeader = ({
         heading={t('Volume (24h)')}
         testId="market-volume"
         description={t(
-          'The total amount of assets traded in the last 24 hours.'
+          'The total number of contracts traded in the last 24 hours.'
         )}
       >
         <Last24hVolume
