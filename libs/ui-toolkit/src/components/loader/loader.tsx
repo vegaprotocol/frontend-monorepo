@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const pseudoRandom = (seed: number) => {
   let value = seed;
@@ -12,9 +12,26 @@ const pseudoRandom = (seed: number) => {
 export interface LoaderProps {
   size?: 'small' | 'large';
   forceTheme?: 'dark' | 'light';
+  preloader?: boolean;
 }
 
-export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
+export const Loader = ({
+  size = 'large',
+  forceTheme,
+  preloader,
+}: LoaderProps) => {
+  const [, forceRender] = useState(false);
+
+  useEffect(() => {
+    const interval = preloader
+      ? undefined
+      : setInterval(() => {
+          forceRender((x) => !x);
+        }, 100);
+
+    return () => clearInterval(interval);
+  }, [preloader]);
+
   const itemClasses = classNames('loader-item', {
     'dark:bg-white bg-black': !forceTheme,
     'bg-white': forceTheme === 'dark',
