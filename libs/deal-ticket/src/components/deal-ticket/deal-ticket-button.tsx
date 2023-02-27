@@ -12,7 +12,7 @@ export const DealTicketButton = ({ disabled, variant }: Props) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const isDisabled = !pubKey || isReadOnly || disabled;
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <Button
         variant={variant}
         fill
