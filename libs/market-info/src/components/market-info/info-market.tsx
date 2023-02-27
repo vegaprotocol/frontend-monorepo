@@ -315,7 +315,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           title: t(`Price monitoring bounds ${i + 1}`),
           content: (
             <div className="text-xs">
-              {/* <MarketInfoTable data={trigger} /> */}
               <div className="grid grid-cols-2 text-xs mb-4">
                 <p className="col-span-1">
                   {t('%s% probability of trading', [
@@ -345,22 +344,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         };
       }
     ),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <>
-          <MarketInfoTable
-            data={trigger}
-            decimalPlaces={market.decimalPlaces}
-            omits={['referencePrice', '__typename']}
-          />
-          <MarketInfoTable
-            data={{ referencePrice: trigger.referencePrice }}
-            decimalPlaces={assetDecimals}
-          />
-        </>
-      ),
-    })),
     {
       title: t('Liquidity monitoring parameters'),
       content: (
