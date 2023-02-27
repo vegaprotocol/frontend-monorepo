@@ -1,9 +1,8 @@
-import { useEtherscanLink } from '@vegaprotocol/environment';
+import { ContractAddressLink } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
 import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';
-import { Link } from '@vegaprotocol/ui-toolkit';
 import {
   KeyValueTable,
   KeyValueTableRow,
@@ -274,18 +273,5 @@ export const AssetDetailsTable = ({
           </KeyValueTableRow>
         ))}
     </KeyValueTable>
-  );
-};
-
-// Separate component for the link as otherwise eslint will complain
-// about useEnvironment being used in a component
-// named with a lowercase 'value'
-const ContractAddressLink = ({ address }: { address: string }) => {
-  const etherscanLink = useEtherscanLink();
-  const href = etherscanLink(`/address/${address}`);
-  return (
-    <Link href={href} target="_blank" title={t('View on etherscan')}>
-      {address}
-    </Link>
   );
 };

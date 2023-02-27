@@ -92,7 +92,7 @@ export const Detail = () => {
             )}
           </div>
           <div>
-            <h2 className="font-alpha text-2xl mb-4">
+            <h2 className="font-alpha calt text-2xl mb-4">
               {t('Current Liquidity Provision')}
             </h2>
             <LPProvidersGrid

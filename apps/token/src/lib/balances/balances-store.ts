@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { create } from 'zustand';
-import type { UserTrancheBalance } from '../../contexts/app-state/app-state-context';
+
+interface UserTrancheBalance {
+  id: number;
+  locked: BigNumber;
+  vested: BigNumber;
+}
 
 export interface AssociationBreakdown {
   stakingAssociations: { [vegaKey: string]: BigNumber };
@@ -13,8 +18,8 @@ export type BalancesStore = {
   balanceFormatted: BigNumber;
   totalVestedBalance: BigNumber;
   totalLockedBalance: BigNumber;
-  walletBalance: BigNumber;
   trancheBalances: UserTrancheBalance[];
+  walletBalance: BigNumber;
   lien: BigNumber;
   walletAssociatedBalance: BigNumber;
   vestingAssociatedBalance: BigNumber;
@@ -38,8 +43,8 @@ export const useBalances = create<BalancesStore>((set) => ({
     stakingAssociations: {},
     vestingAssociations: {},
   },
-  trancheBalances: [],
   allowance: new BigNumber(0),
+  trancheBalances: [],
   totalVestedBalance: new BigNumber(0),
   totalLockedBalance: new BigNumber(0),
   balanceFormatted: new BigNumber(0),

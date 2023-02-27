@@ -20,7 +20,7 @@ const TextSample = ({ alternatives, isAlpha, type }: Args) => {
       <div
         className={classNames(
           'flex-grow flex flex-col justify-end text-left items-start',
-          { 'font-alpha': isAlpha },
+          { 'font-alpha calt': isAlpha },
           [alternatives, type]
         )}
       >
@@ -52,7 +52,7 @@ export default {
     },
     alternatives: {
       name: 'Font features',
-      options: ['none', 'calt', 'liga', 'liga-0-calt-0'],
+      options: ['none', 'calt', 'liga'],
       control: { type: 'select' },
     },
   },
@@ -61,5 +61,5 @@ export default {
 export const Default = Template;
 Default.args = {
   isAlpha: true,
-  alternatives: 'liga-0-calt-0',
+  alternatives: 'none',
 };

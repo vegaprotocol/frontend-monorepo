@@ -178,9 +178,9 @@ function openMarketDropDown() {
     if (button.is(':visible')) {
       cy.get('[data-testid^="market-link-"]').should('not.be.empty');
       cy.getByTestId(dialogCloseBtn).click();
-      cy.get('[data-testid^="ask-vol-"]').should('be.visible');
-      cy.getByTestId(popoverTrigger).click({ force: true });
-      cy.contains('Loading market data...').should('not.exist');
     }
+    cy.get('[data-testid^="ask-vol-"]').should('be.visible');
+    cy.getByTestId(popoverTrigger).click({ force: true });
+    cy.contains('Loading market data...').should('not.exist');
   });
 }

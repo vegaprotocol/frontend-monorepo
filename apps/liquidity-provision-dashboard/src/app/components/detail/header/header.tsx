@@ -14,13 +14,13 @@ export const Header = ({
       <div className="mb-6">
         <Link to="/">
           <Icon name="chevron-left" className="mr-2" />
-          <span className="underline font-alpha text-lg font-medium">
+          <span className="underline font-alpha calt text-lg font-medium">
             {t('Liquidity opportunities')}
           </span>
         </Link>
       </div>
-      <h1 className="font-alpha text-5xl mb-6">{name}</h1>
-      <p className="font-alpha text-4xl">{symbol}</p>
+      <h1 className="font-alpha calt text-5xl mb-6">{name}</h1>
+      <p className="font-alpha calt text-4xl">{symbol}</p>
     </div>
   );
 };

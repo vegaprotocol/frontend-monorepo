@@ -44,7 +44,7 @@ export const Market = ({
         <table className="w-full">
           <thead>
             <tr
-              className="text-sm text-greys-light-400 text-left font-alpha"
+              className="text-sm text-greys-light-400 text-left font-alpha calt"
               style={{ fontFeatureSettings: "'liga' off, 'calt' off" }}
             >
               <th className="font-medium px-4">{t('Volume (24h)')}</th>

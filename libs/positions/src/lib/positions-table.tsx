@@ -323,6 +323,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
+          cellClass="text-right font-mono"
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -347,6 +348,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="unrealisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
+          cellClass="text-right font-mono"
           filter="agNumberColumnFilter"
           valueGetter={({
             data,

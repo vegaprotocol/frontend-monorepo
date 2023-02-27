@@ -13,7 +13,7 @@ const Remainder = () => (
 );
 
 const COPY_CLASS =
-  'text-sm font-medium whitespace-nowrap text-white font-alpha';
+  'text-sm font-medium whitespace-nowrap text-white font-alpha calt';
 
 const Tooltip = ({
   children,

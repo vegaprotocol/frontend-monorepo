@@ -6,27 +6,22 @@ import {
   useAppState,
 } from '../../contexts/app-state/app-state-context';
 
-interface EthConnectPrompProps {
-  children?: React.ReactNode;
-}
-
-export const EthConnectPrompt = ({ children }: EthConnectPrompProps) => {
+export const EthConnectPrompt = () => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
   return (
-    <>
-      {children}
-      <Button
-        onClick={() =>
-          appDispatch({
-            type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
-            isOpen: true,
-          })
-        }
-        data-testid="connect-to-eth-btn"
-      >
-        {t('connectEthWallet')}
-      </Button>
-    </>
+    <Button
+      variant="primary"
+      onClick={() =>
+        appDispatch({
+          type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
+          isOpen: true,
+        })
+      }
+      fill={true}
+      data-testid="connect-to-eth-btn"
+    >
+      {t('connectEthWallet')}
+    </Button>
   );
 };

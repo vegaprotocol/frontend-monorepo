@@ -1,47 +1,31 @@
-import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Link,
+  RoundedWrapper,
+} from '@vegaprotocol/ui-toolkit';
+import { Link as RouterLink } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
+import { formatNumber } from '@vegaprotocol/react-helpers';
 
-import { useOutletContext } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { BigNumber } from '../../lib/bignumber';
-import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
-
-const TrancheProgressContents = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => (
-  <div className="flex justify-between gap-4 font-mono py-2 px-4">
-    {children}
-  </div>
-);
+import { useTranches } from '../../lib/tranches/tranches-store';
 
 export const Tranche = () => {
-  const tranches = useOutletContext<ITranche[]>();
+  const tranches = useTranches((state) => state.tranches);
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
-  const { trancheId } = useParams<{ trancheId: string }>();
+  const { trancheId } = useParams<{ trancheId: string; address: string }>();
   const { chainId } = useWeb3React();
-  const tranche = tranches.find(
+  const tranche = tranches?.find(
     (tranche) => trancheId && parseInt(trancheId) === tranche.tranche_id
   );
-
-  const lockedData = React.useMemo(() => {
-    if (!tranche) return null;
-    const locked = tranche.locked_amount.div(tranche.total_added);
-    return {
-      locked,
-      unlocked: new BigNumber(1).minus(locked),
-    };
-  }, [tranche]);
 
   if (!tranche) {
     return <Navigate to={Routes.NOT_FOUND} />;
@@ -67,33 +51,36 @@ export const Tranche = () => {
       </div>
       <h2>{t('Holders')}</h2>
       {tranche.users.length ? (
-        <ul role="list">
-          {tranche.users.map((user, i) => {
-            const unlocked = user.remaining_tokens.times(
-              lockedData?.unlocked || 0
-            );
-            const locked = user.remaining_tokens.times(lockedData?.locked || 0);
-            return (
-              <li className="pb-4" key={i}>
-                <Link
-                  title={t('View on Etherscan (opens in a new tab)')}
-                  href={`${ETHERSCAN_URL}/tx/${user.address}`}
-                  target="_blank"
-                >
-                  {user.address}
-                </Link>
-                <TrancheProgressContents>
-                  <span>{t('Locked')}</span>
-                  <span>{t('Unlocked')}</span>
-                </TrancheProgressContents>
-                <TrancheProgressContents>
-                  <span>{formatNumber(locked)}</span>
-                  <span>{formatNumber(unlocked)}</span>
-                </TrancheProgressContents>
-              </li>
-            );
-          })}
-        </ul>
+        <RoundedWrapper>
+          <KeyValueTable>
+            <KeyValueTableRow>
+              <h1>{t('Ethereum Address')}</h1>
+              <h1>{t('View tranche data')}</h1>
+            </KeyValueTableRow>
+            {tranche.users.map((user) => (
+              <KeyValueTableRow key={user}>
+                {
+                  <Link
+                    title={t('View on Etherscan (opens in a new tab)')}
+                    href={`${ETHERSCAN_URL}/address/${user}`}
+                    target="_blank"
+                  >
+                    {user}
+                  </Link>
+                }
+                {
+                  <RouterLink
+                    className="underline"
+                    title={t('View vesting information')}
+                    to={`${Routes.REDEEM}/${user}`}
+                  >
+                    {t('View vesting information')}
+                  </RouterLink>
+                }
+              </KeyValueTableRow>
+            ))}
+          </KeyValueTable>
+        </RoundedWrapper>
       ) : (
         <p>{t('No users')}</p>
       )}

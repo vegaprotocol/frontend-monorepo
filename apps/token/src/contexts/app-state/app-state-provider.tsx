@@ -14,11 +14,9 @@ const initialAppState: AppState = {
   totalAssociated: new BigNumber(0),
   decimals: 0,
   totalSupply: new BigNumber(0),
-  tranches: null,
   vegaWalletOverlay: false,
   vegaWalletManageOverlay: false,
   ethConnectOverlay: false,
-  trancheError: null,
   drawerOpen: false,
   transactionOverlay: false,
   bannerMessage: '',
@@ -32,17 +30,6 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
         decimals: action.decimals,
         totalSupply: action.totalSupply,
         totalAssociated: action.totalAssociated,
-      };
-    }
-    case AppStateActionType.SET_TRANCHE_DATA:
-      return {
-        ...state,
-        tranches: action.tranches,
-      };
-    case AppStateActionType.SET_TRANCHE_ERROR: {
-      return {
-        ...state,
-        trancheError: action.error,
       };
     }
     case AppStateActionType.SET_VEGA_WALLET_OVERLAY: {

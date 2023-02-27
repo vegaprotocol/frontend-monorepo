@@ -1,4 +1,5 @@
 /* eslint-disable */
+process.env.TZ = 'UTC';
 export default {
   displayName: 'react-helpers',
   preset: '../../jest.preset.js',

@@ -248,7 +248,7 @@ export const MarketDetails = ({
     <>
       {panels.map((p) => (
         <div className="mb-3">
-          <h2 className="font-alpha text-xl">{p.title}</h2>
+          <h2 className="font-alpha calt text-xl">{p.title}</h2>
           {p.content}
         </div>
       ))}

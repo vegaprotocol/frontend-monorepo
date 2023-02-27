@@ -94,6 +94,7 @@ export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =
 export const TOKEN_GOVERNANCE = '/proposals';
 export const TOKEN_PROPOSALS = '/proposals';
 export const TOKEN_PROPOSAL = '/proposals/:id';
+export const TOKEN_VALIDATOR = '/validators/:id';
 
 // Explorer pages
 export const EXPLORER_TX = '/txs/:hash';

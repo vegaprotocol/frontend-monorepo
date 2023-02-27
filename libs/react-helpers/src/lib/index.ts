@@ -19,3 +19,4 @@ export * from './remove-pagination-wrapper';
 export * from './storage';
 export * from './time';
 export * from './validate';
+export * from './flag-emoji';

@@ -1,7 +1,7 @@
 import { useBalances } from '../../../lib/balances/balances-store';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link, useParams, useOutletContext } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
@@ -9,32 +9,36 @@ import {
   TransactionActionType,
   TxState,
 } from '../../../hooks/transaction-reducer';
-import { useGetUserTrancheBalances } from '../../../hooks/use-get-user-tranche-balances';
 import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import Routes from '../../routes';
-import type { RedemptionState } from '../redemption-reducer';
 import { TrancheTable } from '../tranche-table';
+import { useTranches } from '../../../lib/tranches/tranches-store';
+import { useWeb3React } from '@web3-react/core';
+import { EthConnectPrompt } from '../../../components/eth-connect-prompt';
+import { useUserTrancheBalances } from '../hooks';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 export const RedeemFromTranche = () => {
-  const { state, address } = useOutletContext<{
-    state: RedemptionState;
-    address: string;
-  }>();
+  const { account: address } = useWeb3React();
   const { vesting } = useContracts();
   const { t } = useTranslation();
-  const { lien, totalVestedBalance, trancheBalances, totalLockedBalance } =
-    useBalances();
-  const refreshBalances = useRefreshBalances(address);
-  const getUserTrancheBalances = useGetUserTrancheBalances(address, vesting);
+  const {
+    appState: { decimals },
+  } = useAppState();
+  const { lien, totalVestedBalance, totalLockedBalance } = useBalances();
+  const refreshBalances = useRefreshBalances(address || '');
+  const { tranches, getTranches } = useTranches((state) => ({
+    tranches: state.tranches,
+    getTranches: state.getTranches,
+  }));
   const { id } = useParams<{ id: string }>();
   const numberId = Number(id);
-  const { userTranches } = state;
   const tranche = React.useMemo(
-    () => userTranches.find(({ tranche_id }) => tranche_id === numberId),
-    [numberId, userTranches]
+    () => tranches?.find(({ tranche_id }) => tranche_id === numberId) || null,
+    [numberId, tranches]
   );
   const {
     state: txState,
@@ -42,7 +46,7 @@ export const RedeemFromTranche = () => {
     dispatch: txDispatch,
   } = useTransaction(() => vesting.withdraw_from_tranche(numberId));
   const { token } = useContracts();
-
+  const trancheBalances = useUserTrancheBalances(address || '');
   const redeemedAmount = React.useMemo(() => {
     return (
       trancheBalances.find(({ id: bId }) => bId.toString() === id?.toString())
@@ -55,16 +59,20 @@ export const RedeemFromTranche = () => {
   // If the claim has been committed refetch the new VEGA balance
   React.useEffect(() => {
     if (txState.txState === TxState.Complete && address) {
-      getUserTrancheBalances();
       refreshBalances();
+      getTranches(decimals);
     }
-  }, [address, getUserTrancheBalances, refreshBalances, txState.txState]);
+  }, [address, decimals, getTranches, refreshBalances, txState.txState]);
 
   const trancheBalance = React.useMemo(() => {
     return trancheBalances.find(
       ({ id: bId }) => bId.toString() === id?.toString()
     );
   }, [id, trancheBalances]);
+
+  if (!address) {
+    return <EthConnectPrompt />;
+  }
 
   if (
     !tranche ||
@@ -147,6 +155,7 @@ export const RedeemFromTranche = () => {
           locked={trancheBalance.locked}
           vested={trancheBalance.vested}
           onClick={perform}
+          address={address || ''}
         />
       )}
     </section>

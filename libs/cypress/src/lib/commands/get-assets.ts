@@ -1,13 +1,14 @@
 import { gql } from '@apollo/client';
 import { print } from 'graphql';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import { edgesToList } from '../utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      getAssets(): Chainable<Record<string, AssetFieldsFragment>>;
+      getAssets(): Chainable<Array<AssetFieldsFragment>>;
     }
   }
 }
@@ -72,12 +73,6 @@ export function addGetAssets() {
       headers: { 'content-type': 'application/json' },
     })
       .its('body.data.assetsConnection.edges')
-      .then((edges) => {
-        // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
-        return edges.reduce((list, edge) => {
-          list[edge.node.name] = edge.node;
-          return list;
-        }, {});
-      });
+      .then(edgesToList);
   });
 }

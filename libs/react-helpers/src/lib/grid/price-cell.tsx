@@ -1,5 +1,6 @@
 import { memo, forwardRef } from 'react';
-import { getDecimalSeparator, isNumeric } from '../format';
+import { isNumeric } from '../format';
+import { NumericCell } from './numeric-cell';
 export interface IPriceCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
@@ -17,41 +18,23 @@ export const PriceCell = memo(
           </span>
         );
       }
-      const decimalSeparator = getDecimalSeparator();
-      const valueSplit: string[] = decimalSeparator
-        ? valueFormatted.split(decimalSeparator).map((v) => `${v}`)
-        : [`${value}`];
       return onClick ? (
         <button
           onClick={() => onClick(value)}
-          className="hover:dark:bg-neutral-800 hover:bg-neutral-200"
+          className="hover:dark:bg-neutral-800 hover:bg-neutral-200 text-right"
         >
-          <span
-            ref={ref}
-            className="font-mono relative text-black dark:text-white whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir"
-            data-testid={testId || 'price'}
-            title={valueFormatted}
-          >
-            {valueSplit[0]}
-            {valueSplit[1] ? decimalSeparator : null}
-            {valueSplit[1] ? (
-              <span className="opacity-60">{valueSplit[1]}</span>
-            ) : null}
-          </span>
+          <NumericCell
+            value={value}
+            valueFormatted={valueFormatted}
+            testId={testId || 'price'}
+          />
         </button>
       ) : (
-        <span
-          ref={ref}
-          className="font-mono relative text-black dark:text-white whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir"
-          data-testid={testId || 'price'}
-          title={valueFormatted}
-        >
-          {valueSplit[0]}
-          {valueSplit[1] ? decimalSeparator : null}
-          {valueSplit[1] ? (
-            <span className="opacity-60">{valueSplit[1]}</span>
-          ) : null}
-        </span>
+        <NumericCell
+          value={value}
+          valueFormatted={valueFormatted}
+          testId={testId || 'price'}
+        />
       );
     }
   )

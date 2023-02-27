@@ -1,6 +1,6 @@
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
-import type { Tranche } from '@vegaprotocol/smart-contracts';
+import type { Tranche } from '../../../lib/tranches/tranches-store';
 
 /**
  * Add together the circulating tokens from all tranches
@@ -9,7 +9,9 @@ import type { Tranche } from '@vegaprotocol/smart-contracts';
  * @param decimals decimal places for the formatted result
  * @return The total circulating tokens from all tranches
  */
-export function sumCirculatingTokens(tranches: Tranche[] | null): BigNumber {
+export function sumCirculatingTokens(
+  tranches: { total_added: BigNumber; locked_amount: BigNumber }[] | null
+): BigNumber {
   let totalCirculating: BigNumber = new BigNumber(0);
 
   tranches?.forEach(

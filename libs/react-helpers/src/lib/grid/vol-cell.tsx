@@ -1,14 +1,14 @@
 import React from 'react';
 import type { ICellRendererParams } from 'ag-grid-community';
-import { PriceCell } from './price-cell';
 import classNames from 'classnames';
 import * as tailwind from '@vegaprotocol/tailwindcss-config';
+import { NumericCell } from './numeric-cell';
 
 export enum VolumeType {
   bid,
   ask,
 }
-export interface VolProps {
+export interface VolCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
   relativeValue?: number;
@@ -17,20 +17,21 @@ export interface VolProps {
 }
 export interface IVolCellProps extends ICellRendererParams {
   value: number | bigint | null | undefined;
-  valueFormatted: Omit<VolProps, 'value'>;
+  valueFormatted: Omit<VolCellProps, 'value'>;
 }
 
 export const BID_COLOR = tailwind.theme.colors.vega.green.DEFAULT;
 export const ASK_COLOR = tailwind.theme.colors.vega.pink.DEFAULT;
 
-export const Vol = React.memo(
-  ({ value, valueFormatted, relativeValue, type, testId }: VolProps) => {
+export const VolCell = React.memo(
+  ({ value, valueFormatted, relativeValue, type, testId }: VolCellProps) => {
     if ((!value && value !== 0) || isNaN(Number(value))) {
-      return <div data-testid="vol">-</div>;
+      return <div data-testid={testId || 'vol'}>-</div>;
     }
     return (
       <div className="relative" data-testid={testId || 'vol'}>
         <div
+          data-testid="vol-bar"
           className={classNames(
             'h-full absolute top-0 opacity-40 dark:opacity-100',
             {
@@ -43,17 +44,11 @@ export const Vol = React.memo(
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
             opacity: type === VolumeType.bid ? 0.6 : 0.6,
           }}
-        ></div>
-        <PriceCell value={value} valueFormatted={valueFormatted} />
+        />
+        <NumericCell value={value} valueFormatted={valueFormatted} />
       </div>
     );
   }
-);
-
-Vol.displayName = 'Vol';
-
-export const VolCell = ({ value, valueFormatted }: IVolCellProps) => (
-  <Vol value={value} {...valueFormatted} />
 );
 
 VolCell.displayName = 'VolCell';

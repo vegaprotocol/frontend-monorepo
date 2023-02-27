@@ -1,4 +1,3 @@
-const connectPrompt = '[data-testid="eth-connect-prompt"]';
 const connectButton = '[data-testid="connect-to-eth-btn"]';
 
 context(
@@ -18,7 +17,7 @@ context(
       });
 
       it('should have connect Eth wallet info', function () {
-        cy.get(connectPrompt).should('be.visible');
+        cy.get(connectButton).should('be.visible');
       });
 
       it('should have connect Eth wallet button', function () {
