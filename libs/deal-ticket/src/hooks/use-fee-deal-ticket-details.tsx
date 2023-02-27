@@ -174,12 +174,12 @@ export const getFeeDetailsValues = ({
       labelDescription: (
         <>
           <span>{EST_MARGIN_TOOLTIP_TEXT(assetSymbol)}</span>
-          <span></span>
+          {/* <span></span>
           <MarginBreakdown
             marginLevels={estMargin?.marginLevels}
             assetDecimalPlaces={assetDecimals}
             assetSymbol={assetSymbol}
-          />
+          /> */}
         </>
       ),
     },
