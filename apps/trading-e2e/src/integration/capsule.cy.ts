@@ -190,6 +190,24 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.setVegaWallet();
   });
 
+  it('shows node health', function () {
+    const market = this.market;
+    cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId('node-health')
+      .children()
+      .first()
+      .should('contain.text', 'Operational')
+      .next()
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+      .next()
+      .then(($el) => {
+        const blockHeight = parseInt($el.text());
+        // block height will increase over the course of the test run so best
+        // we can do here is check that its showing something sensible
+        expect(blockHeight).to.be.greaterThan(0);
+      });
+  });
+
   it('can place and receive an order', function () {
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
