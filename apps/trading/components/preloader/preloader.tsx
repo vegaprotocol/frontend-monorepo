@@ -13,7 +13,7 @@ export const Preloader = () => {
         `}
       </style>
       <div className="pre-loader">
-        <Loader forceTheme="light" />
+        <Loader forceTheme="light" preloader />
       </div>
     </>
   );
