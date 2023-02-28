@@ -126,7 +126,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('price monitoring bound displayed', () => {
-    cy.getByTestId(marketTitle).contains('Price monitoring bound 1').click();
+    cy.getByTestId(marketTitle).contains('Price monitoring bounds 1').click();
 
     validateMarketDataRow(0, 'Highest Price', '6.54701 BTC');
     validateMarketDataRow(1, 'Lowest Price', '7.97323 BTC');
