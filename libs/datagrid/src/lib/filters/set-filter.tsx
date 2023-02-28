@@ -1,10 +1,5 @@
 import type { ChangeEvent } from 'react';
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
 
