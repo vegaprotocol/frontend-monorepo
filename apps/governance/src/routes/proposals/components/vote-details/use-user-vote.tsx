@@ -4,7 +4,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
-import type { FinalizedVote } from '@vegaprotocol/governance';
+import type { FinalizedVote } from '@vegaprotocol/proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 export enum VoteState {
