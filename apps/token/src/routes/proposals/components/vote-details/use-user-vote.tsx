@@ -5,7 +5,7 @@ import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
 import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
-import { VoteEventFieldsFragment } from '../../../../../../../libs/governance/src/lib/voting-hooks/__generated__/VoteSubsciption';
+import type { FinalizedVote } from '@vegaprotocol/governance';
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -28,7 +28,7 @@ export type Vote = {
  */
 export function useUserVote(
   proposalId: string | null | undefined,
-  finalizedVote?: VoteEventFieldsFragment | null
+  finalizedVote?: FinalizedVote | null
 ) {
   const { pubKey } = useVegaWallet();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,7 +40,7 @@ export function useUserVote(
     variables: { partyId: pubKey || '' },
     skip: !pubKey || !proposalId,
   });
-  const [userVote, setUserVote] = useState<VoteEventFieldsFragment | undefined>(
+  const [userVote, setUserVote] = useState<FinalizedVote | undefined>(
     undefined
   );
 
@@ -55,7 +55,12 @@ export function useUserVote(
         )
       );
     }
-  }, [finalizedVote?.vote.value, data?.party?.votesConnection?.edges]);
+  }, [
+    finalizedVote?.vote.value,
+    data?.party?.votesConnection?.edges,
+    finalizedVote,
+    proposalId,
+  ]);
 
   // If user vote changes update the vote state
   useEffect(() => {
