@@ -127,7 +127,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('price monitoring trigger displayed', () => {
     cy.getByTestId(marketTitle).contains('Price monitoring bounds 1').click();
-    cy.get('p.col-span-1').contains('100% probability of trading');
+    cy.get('p.col-span-1').contains('100% probability price bounds');
     cy.get('p.col-span-1').contains('Within 43,200 seconds');
     validateMarketDataRow(0, 'Highest Price', '7.97323 ');
     validateMarketDataRow(1, 'Lowest Price', '6.54701 ');

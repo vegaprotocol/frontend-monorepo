@@ -317,8 +317,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             <div className="text-xs">
               <div className="grid grid-cols-2 text-xs mb-4">
                 <p className="col-span-1">
-                  {t('%s% probability of trading', [
-                    formatNumber(trigger.probability * 100),
+                  {t('%s% probability price bounds', [
+                    (trigger.probability * 100).toString(),
                   ])}
                 </p>
                 <p className="col-span-1 text-right">
@@ -338,6 +338,11 @@ export const Info = ({ market, onSelect }: InfoProps) => {
                   />
                 )}
               </div>
+              <p className="mt-4">
+                {t('Results in %s seconds auction if breached', [
+                  trigger.auctionExtensionSecs.toString(),
+                ])}
+              </p>
             </div>
           ),
         };
