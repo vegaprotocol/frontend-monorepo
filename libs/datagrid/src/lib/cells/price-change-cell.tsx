@@ -4,8 +4,8 @@ import {
 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { memo, forwardRef } from 'react';
-import { signedNumberCssClass } from '../../utils/cell-class-rules';
-import { Arrow } from '../arrows/arrow';
+import { Arrow } from '@vegaprotocol/ui-toolkit';
+import { signedNumberCssClass } from '../cell-class-rules';
 
 export interface PriceChangeCellProps {
   /** either candle `close`or `open` values to be filtered and used here in order to calculate the price change  */
@@ -36,7 +36,7 @@ export const priceChange = (candles: string[]) => {
     : 0;
 };
 
-export const PriceCellChange = memo(
+export const PriceChangeCell = memo(
   forwardRef<HTMLSpanElement, PriceChangeCellProps>(
     ({ candles, decimalPlaces }: PriceChangeCellProps, ref) => {
       const change = priceChange(candles);
@@ -65,4 +65,4 @@ export const PriceCellChange = memo(
   )
 );
 
-PriceCellChange.displayName = 'PriceCellChange';
+PriceChangeCell.displayName = 'PriceChangeCell';

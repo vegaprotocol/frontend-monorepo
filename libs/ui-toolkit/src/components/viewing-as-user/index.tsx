@@ -1,5 +1,4 @@
 import { Button } from '../button';
-import React from 'react';
 import { t } from '@vegaprotocol/utils';
 
 export function truncateMiddle(address: string) {

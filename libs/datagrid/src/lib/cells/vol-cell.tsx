@@ -1,7 +1,7 @@
-import React from 'react';
+import { memo } from 'react';
 import type { ICellRendererParams } from 'ag-grid-community';
 import classNames from 'classnames';
-import * as tailwind from '@vegaprotocol/tailwindcss-config';
+import { theme } from '@vegaprotocol/tailwindcss-config';
 import { NumericCell } from './numeric-cell';
 
 export interface VolCellProps {
@@ -16,10 +16,10 @@ export interface IVolCellProps extends ICellRendererParams {
   valueFormatted: Omit<VolCellProps, 'value'>;
 }
 
-export const BID_COLOR = tailwind.theme.colors.vega.green.DEFAULT;
-export const ASK_COLOR = tailwind.theme.colors.vega.pink.DEFAULT;
+export const BID_COLOR = theme.colors.vega.green.DEFAULT;
+export const ASK_COLOR = theme.colors.vega.pink.DEFAULT;
 
-export const VolCell = React.memo(
+export const VolCell = memo(
   ({ value, valueFormatted, relativeValue, type, testId }: VolCellProps) => {
     if ((!value && value !== 0) || isNaN(Number(value))) {
       return <div data-testid={testId || 'vol'}>-</div>;

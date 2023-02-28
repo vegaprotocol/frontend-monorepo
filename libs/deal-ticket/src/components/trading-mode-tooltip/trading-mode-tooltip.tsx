@@ -3,9 +3,9 @@ import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
 import { useProposalOfMarketQuery } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { DataGrid, getDateTimeFormat, t } from '@vegaprotocol/utils';
+import { getDateTimeFormat, t } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, SimpleGrid } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/utils';
 import { compileGridData } from './compile-grid-data';
 import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
@@ -109,7 +109,7 @@ export const TradingModeTooltip = ({
               </ExternalLink>
             )}
           </p>
-          {compiledGrid && <DataGrid grid={compiledGrid} />}
+          {compiledGrid && <SimpleGrid grid={compiledGrid} />}
         </section>
       );
     }
@@ -143,7 +143,7 @@ export const TradingModeTooltip = ({
                   </ExternalLink>
                 )}
               </p>
-              {compiledGrid && <DataGrid grid={compiledGrid} />}
+              {compiledGrid && <SimpleGrid grid={compiledGrid} />}
             </section>
           );
         }
@@ -165,7 +165,7 @@ export const TradingModeTooltip = ({
                   </ExternalLink>
                 )}
               </p>
-              {compiledGrid && <DataGrid grid={compiledGrid} />}
+              {compiledGrid && <SimpleGrid grid={compiledGrid} />}
             </section>
           );
         }

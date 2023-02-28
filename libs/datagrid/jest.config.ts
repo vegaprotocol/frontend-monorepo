@@ -7,4 +7,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/datagrid',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

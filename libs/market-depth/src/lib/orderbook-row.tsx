@@ -1,6 +1,6 @@
 import React from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { PriceCell, VolCell, CumulativeVol } from '@vegaprotocol/ui-toolkit';
+import { PriceCell, VolCell, CumulativeVol } from '@vegaprotocol/datagrid';
 
 interface OrderbookRowProps {
   ask: number;

@@ -5,12 +5,8 @@ import {
   calcCandleLow,
   calcCandleVolume,
 } from '@vegaprotocol/market-list';
-import {
-  addDecimalsFormatNumber,
-  PriceCell,
-  signedNumberCssClass,
-  t,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/utils';
+import { PriceCell, signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
 import type { CandleClose } from '@vegaprotocol/types';

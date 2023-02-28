@@ -1,4 +1,3 @@
-import type { DataGridProps } from '@vegaprotocol/utils';
 import {
   t,
   getDateTimeFormat,
@@ -6,6 +5,7 @@ import {
 } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
+import type { SimpleGridProps } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
@@ -28,7 +28,7 @@ export const compileGridData = (
   > | null,
   onSelect?: (id: string) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
-  const grid: DataGridProps['grid'] = [];
+  const grid: SimpleGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
     marketData?.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&

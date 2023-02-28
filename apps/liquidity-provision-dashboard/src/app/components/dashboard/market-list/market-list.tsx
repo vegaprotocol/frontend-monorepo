@@ -12,11 +12,11 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
+import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import type * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Icon,
-  PriceCellChange,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
 import type { GetRowIdParams, RowClickedEvent } from 'ag-grid-community';
@@ -134,7 +134,7 @@ export const MarketList = () => {
               if (data && data.candles) {
                 const prices = data.candles.map((candle) => candle.close);
                 return (
-                  <PriceCellChange
+                  <PriceChangeCell
                     candles={prices}
                     decimalPlaces={data?.decimalPlaces}
                   />

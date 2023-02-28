@@ -1,5 +1,10 @@
-import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { DataGrid, t } from '@vegaprotocol/utils';
+import {
+  FormGroup,
+  InputError,
+  SimpleGrid,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
@@ -37,7 +42,7 @@ export const TypeSelector = ({
           {t('This market is in auction until it reaches')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, marketData)} />
+              <SimpleGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('sufficient liquidity')}</span>
@@ -54,7 +59,7 @@ export const TypeSelector = ({
           {t('This market is in auction due to')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, marketData)} />
+              <SimpleGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('high price volatility')}</span>

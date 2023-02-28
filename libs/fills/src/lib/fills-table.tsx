@@ -14,12 +14,12 @@ import {
 } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import {
-  Link,
+  AgGridDynamic as AgGrid,
   positiveClassNames,
   negativeClassNames,
-} from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+} from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,

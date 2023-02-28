@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import { PriceCellChange } from '..';
+import { PriceChangeCell } from './price-change-cell';
 
 describe('PriceChangeCell', () => {
   it('renders correctly and calculates the price change', () => {
     render(
-      <PriceCellChange
+      <PriceChangeCell
         candles={['45556', '678678', '23456']}
         decimalPlaces={3}
       />
@@ -14,7 +14,7 @@ describe('PriceChangeCell', () => {
   });
 
   it('renders correctly and calculates the price change without decimals', () => {
-    render(<PriceCellChange candles={['45556', '678678', '23456']} />);
+    render(<PriceChangeCell candles={['45556', '678678', '23456']} />);
     expect(screen.getByText('-48.51%')).toBeInTheDocument();
     expect(screen.getByText('-22,100.00')).toBeInTheDocument();
   });

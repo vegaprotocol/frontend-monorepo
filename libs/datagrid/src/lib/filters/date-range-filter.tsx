@@ -14,7 +14,7 @@ import {
   isValid,
 } from 'date-fns';
 import { t, formatForInput } from '@vegaprotocol/utils';
-import { InputError } from '../../input-error';
+import { InputError } from '@vegaprotocol/ui-toolkit';
 
 const defaultFilterValue: Schema.DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {

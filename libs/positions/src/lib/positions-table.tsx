@@ -12,6 +12,8 @@ import {
   AgGridDynamic as AgGrid,
   DateRangeFilter,
   PriceFlashCell,
+  signedNumberCssClass,
+  signedNumberCssClassRules,
 } from '@vegaprotocol/datagrid';
 import {
   volumePrefix,
@@ -26,8 +28,6 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
 import {
-  signedNumberCssClass,
-  signedNumberCssClassRules,
   ButtonLink,
   Link,
   ProgressBarCell,

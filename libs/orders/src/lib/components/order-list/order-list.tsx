@@ -5,12 +5,7 @@ import {
   t,
 } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import {
-  ButtonLink,
-  Link,
-  negativeClassNames,
-  positiveClassNames,
-} from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { forwardRef } from 'react';
@@ -18,6 +13,8 @@ import {
   AgGridDynamic as AgGrid,
   SetFilter,
   DateRangeFilter,
+  negativeClassNames,
+  positiveClassNames,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
