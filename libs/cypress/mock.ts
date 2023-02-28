@@ -8,7 +8,7 @@ export * from '../deal-ticket/src/hooks/estimate-order.mock';
 export * from '../deposits/src/lib/deposit.mock';
 export * from '../environment/src/utils/node.mock';
 export * from '../fills/src/lib/fills.mock';
-export * from '../governance/src/lib/proposals-data-provider/proposals.mock';
+export * from '../proposals/src/lib/proposals-data-provider/proposals.mock';
 export * from '../ledger/src/lib/ledger-entries.mock';
 export * from '../market-depth/src/lib/market-depth.mock';
 export * from '../market-info/src/components/market-info/market-info.mock';
