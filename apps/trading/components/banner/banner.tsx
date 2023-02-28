@@ -29,7 +29,7 @@ export const Banner = () => {
           <Icon name="cross" className="w-6 h-6" ariaLabel="dismiss" />
         </button>
         <div>
-          <span className="pr-4">Mainnet sim 2 coming in March!</span>
+          <span className="pr-4">Mainnet sim 2 is live!</span>
           <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
         </div>
       </div>
