@@ -5,12 +5,12 @@ import type {
   VegaValueFormatterParams,
   VegaICellRendererParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import {
-  PriceFlashCell,
   AgGridDynamic as AgGrid,
-  ButtonLink,
-} from '@vegaprotocol/ui-toolkit';
+  PriceFlashCell,
+} from '@vegaprotocol/datagrid';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';

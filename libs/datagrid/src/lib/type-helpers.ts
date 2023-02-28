@@ -4,12 +4,8 @@ import type {
   ValueFormatterParams,
   ValueGetterParams,
 } from 'ag-grid-community';
-
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';
-
-export * from './ag-grid-lazy';
-export * from './ag-grid-dynamic';
 
 type Field = string | readonly string[];
 

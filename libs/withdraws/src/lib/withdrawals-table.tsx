@@ -6,19 +6,19 @@ import {
   addDecimalsFormatNumber,
   isNumeric,
 } from '@vegaprotocol/utils';
-import type {
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
 import {
   Link,
   ButtonLink,
-  AgGridDynamic as AgGrid,
   Intent,
   Icon,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import type {
+  TypedDataAgGrid,
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/datagrid';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';

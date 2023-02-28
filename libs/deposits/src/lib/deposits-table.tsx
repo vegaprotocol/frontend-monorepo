@@ -7,13 +7,14 @@ import {
   truncateByChars,
   isNumeric,
 } from '@vegaprotocol/utils';
+import type { AgGridReact } from 'ag-grid-react';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact } from 'ag-grid-react';
-import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import type { DepositFieldsFragment } from './__generated__/Deposit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';

@@ -6,22 +6,24 @@ import {
 } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
-  AgGridDynamic as AgGrid,
   ButtonLink,
   Link,
   negativeClassNames,
   positiveClassNames,
-  SetFilter,
-  DateRangeFilter,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { forwardRef } from 'react';
+import {
+  AgGridDynamic as AgGrid,
+  SetFilter,
+  DateRangeFilter,
+} from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
 

@@ -2,7 +2,8 @@ import type { Dispatch, SetStateAction } from 'react';
 import { forwardRef, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {

@@ -6,28 +6,34 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import { ProgressBarCell } from '@vegaprotocol/ui-toolkit';
+  VegaICellRendererParams,
+} from '@vegaprotocol/datagrid';
 import {
+  AgGridDynamic as AgGrid,
+  DateRangeFilter,
   PriceFlashCell,
+} from '@vegaprotocol/datagrid';
+import {
   volumePrefix,
   t,
   toBigNum,
   formatNumber,
   getDateTimeFormat,
-  signedNumberCssClass,
-  signedNumberCssClassRules,
-  DateRangeFilter,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
-import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
-import { ButtonLink, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import {
+  signedNumberCssClass,
+  signedNumberCssClassRules,
+  ButtonLink,
+  Link,
+  ProgressBarCell,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
-import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;

@@ -6,6 +6,7 @@
     "assets": "libs/assets",
     "candles-chart": "libs/candles-chart",
     "cypress": "libs/cypress",
+    "datagrid": "libs/datagrid",
     "deal-ticket": "libs/deal-ticket",
     "deposits": "libs/deposits",
     "environment": "libs/environment",

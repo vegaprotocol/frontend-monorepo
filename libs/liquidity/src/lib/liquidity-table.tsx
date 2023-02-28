@@ -8,11 +8,9 @@ import {
 import type {
   VegaValueFormatterParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import {
-  AgGridDynamic as AgGrid,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type { ValueFormatterParams } from 'ag-grid-community';

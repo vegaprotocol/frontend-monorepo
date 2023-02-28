@@ -11,7 +11,7 @@ import {
   t,
   toBigNum,
 } from '@vegaprotocol/utils';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import type * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,

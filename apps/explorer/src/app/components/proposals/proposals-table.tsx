@@ -2,12 +2,12 @@ import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
 import { VoteProgress } from '@vegaprotocol/governance';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { getDateTimeFormat, t } from '@vegaprotocol/utils';

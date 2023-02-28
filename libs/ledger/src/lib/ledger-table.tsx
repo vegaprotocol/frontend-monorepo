@@ -1,17 +1,19 @@
 import {
   addDecimalsFormatNumber,
-  DateRangeFilter,
   fromNanoSeconds,
   getDateTimeFormat,
-  SetFilter,
   t,
   truncateByChars,
 } from '@vegaprotocol/utils';
 import type {
   VegaValueFormatterParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
+import {
+  AgGridDynamic as AgGrid,
+  DateRangeFilter,
+  SetFilter,
+} from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type * as Types from '@vegaprotocol/types';

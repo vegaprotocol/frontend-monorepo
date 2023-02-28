@@ -1,13 +1,15 @@
 import { forwardRef, useMemo, useState } from 'react';
 import { addDecimalsFormatNumber, isNumeric, t } from '@vegaprotocol/utils';
-import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/datagrid';
 import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
