@@ -267,24 +267,24 @@ const FeesBreakdownTooltip = ({
       data-testid="fee-breakdown-tooltip"
       className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
-      <dl className="grid grid-cols-2 gap-x-2">
-        <dt>{t('Infrastructure fee')}</dt>
-        <dd className="text-right">
+      <dl className="grid grid-cols-3 gap-x-1">
+        <dt className="col-span-1">{t('Infrastructure fee')}</dt>
+        <dd className="text-right col-span-2">
           {addDecimalsFormatNumber(feesObj.infrastructureFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
-        <dt>{t('Liquidity fee')}</dt>
-        <dd className="text-right">
+        <dt className="col-span-1">{t('Liquidity fee')}</dt>
+        <dd className="text-right col-span-2">
           {addDecimalsFormatNumber(feesObj.liquidityFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
-        <dt>{t('Maker fee')}</dt>
-        <dd className="text-right">
+        <dt className="col-span-1">{t('Maker fee')}</dt>
+        <dd className="text-right col-span-2">
           {addDecimalsFormatNumber(feesObj.makerFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
-        <dt>{t('Total fees')}</dt>
-        <dd className="text-right">{valueFormatted}</dd>
+        <dt className="col-span-1">{t('Total fees')}</dt>
+        <dd className="text-right col-span-2">{valueFormatted}</dd>
       </dl>
     </div>
   );
