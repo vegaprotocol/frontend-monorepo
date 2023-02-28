@@ -1,4 +1,5 @@
 {
+  "root": "libs/tailwindcss-config",
   "sourceRoot": "libs/tailwindcss-config/src",
   "projectType": "library",
   "targets": {

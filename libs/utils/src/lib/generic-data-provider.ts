@@ -280,7 +280,7 @@ function makeDataProviderInternal<
         }
       });
 
-  const load = async (start?: number, end?: number) => {
+  const load = async (start?: number) => {
     if (!pagination) {
       return Promise.reject();
     }

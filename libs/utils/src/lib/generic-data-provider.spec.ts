@@ -311,7 +311,7 @@ describe('data provider', () => {
     const subscription = subscribe(callback, client);
     await resolveQuery({ data });
     const delta: Item[] = [];
-    update.mockImplementationOnce((data, delta) => data || []);
+    update.mockImplementationOnce((data) => data || []);
     const callbackCallsLength = callback.mock.calls.length;
     // calling onNext from client.subscribe({ query }).subscribe(onNext)
     await clientSubscribeSubscribe.mock.calls[
