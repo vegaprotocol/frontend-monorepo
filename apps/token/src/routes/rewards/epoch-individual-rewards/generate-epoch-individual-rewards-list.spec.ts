@@ -8,7 +8,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '100',
     percentageOfTotal: '0.1',
     receivedAt: new Date(),
-    asset: { id: 'usd', symbol: 'USD' },
+    asset: { id: 'usd', symbol: 'USD', name: 'USD' },
     party: { id: 'blah' },
     epoch: { id: '1' },
   };
@@ -18,7 +18,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '50',
     percentageOfTotal: '0.05',
     receivedAt: new Date(),
-    asset: { id: 'eur', symbol: 'EUR' },
+    asset: { id: 'eur', symbol: 'EUR', name: 'EUR' },
     party: { id: 'blah' },
     epoch: { id: '2' },
   };
@@ -28,7 +28,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '200',
     percentageOfTotal: '0.2',
     receivedAt: new Date(),
-    asset: { id: 'gbp', symbol: 'GBP' },
+    asset: { id: 'gbp', symbol: 'GBP', name: 'GBP' },
     party: { id: 'blah' },
     epoch: { id: '2' },
   };
@@ -38,7 +38,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '100',
     percentageOfTotal: '0.1',
     receivedAt: new Date(),
-    asset: { id: 'usd', symbol: 'USD' },
+    asset: { id: 'usd', symbol: 'USD', name: 'USD' },
     party: { id: 'blah' },
     epoch: { id: '1' },
   };
@@ -48,7 +48,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '50',
     percentageOfTotal: '0.05',
     receivedAt: new Date(),
-    asset: { id: 'eur', symbol: 'EUR' },
+    asset: { id: 'eur', symbol: 'EUR', name: 'EUR' },
     party: { id: 'blah' },
     epoch: { id: '2' },
   };
@@ -134,20 +134,20 @@ describe('generateEpochIndividualRewardsList', () => {
         epoch: '2',
         rewards: [
           {
-            asset: 'EUR',
-            totalAmount: '50',
+            asset: 'GBP',
+            totalAmount: '200',
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
                 percentageOfTotal: '0',
               },
               [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
-                amount: '0',
-                percentageOfTotal: '0',
+                amount: '200',
+                percentageOfTotal: '0.2',
               },
               [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
-                amount: '50',
-                percentageOfTotal: '0.05',
+                amount: '0',
+                percentageOfTotal: '0',
               },
               [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
                 amount: '0',
@@ -164,20 +164,20 @@ describe('generateEpochIndividualRewardsList', () => {
             },
           },
           {
-            asset: 'GBP',
-            totalAmount: '200',
+            asset: 'EUR',
+            totalAmount: '50',
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
                 percentageOfTotal: '0',
               },
               [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
-                amount: '200',
-                percentageOfTotal: '0.2',
-              },
-              [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
                 amount: '0',
                 percentageOfTotal: '0',
+              },
+              [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
+                amount: '50',
+                percentageOfTotal: '0.05',
               },
               [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
                 amount: '0',
