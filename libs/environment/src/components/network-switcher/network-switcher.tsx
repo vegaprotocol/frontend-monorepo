@@ -13,6 +13,7 @@ import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
 
 export const envNameMapping: Record<Networks, string> = {
+  [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
   [Networks.CUSTOM]: t('Custom'),
   [Networks.DEVNET]: t('Devnet'),
   [Networks.SANDBOX]: t('Sandbox'),
@@ -31,6 +32,7 @@ export const envTriggerMapping: Record<Networks, string> = {
 export const envDescriptionMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: '',
   [Networks.SANDBOX]: t('A playground test environment'),
+  [Networks.VALIDATOR_TESTNET]: t('The validator deployed testnet'),
   [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
   [Networks.STAGNET1]: t('A release candidate for the staging environment'),
   [Networks.STAGNET3]: t('A staging environment with trading'),

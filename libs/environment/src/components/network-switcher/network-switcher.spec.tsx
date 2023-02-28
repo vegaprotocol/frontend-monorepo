@@ -136,6 +136,7 @@ describe('Network switcher', () => {
       [Networks.CUSTOM]: undefined,
       [Networks.MAINNET]: 'https://main.net',
       [Networks.TESTNET]: 'https://test.net',
+      [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
@@ -175,6 +176,7 @@ describe('Network switcher', () => {
     const VEGA_NETWORKS: Record<Networks, string | undefined> = {
       [Networks.CUSTOM]: undefined,
       [Networks.MAINNET]: 'https://main.net',
+      [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
       [Networks.DEVNET]: 'https://dev.net',
@@ -208,6 +210,7 @@ describe('Network switcher', () => {
     const VEGA_NETWORKS: Record<Networks, string | undefined> = {
       [Networks.CUSTOM]: undefined,
       [Networks.MAINNET]: undefined,
+      [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
       [Networks.DEVNET]: 'https://dev.net',
