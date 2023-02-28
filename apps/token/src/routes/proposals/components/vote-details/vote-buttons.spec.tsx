@@ -22,6 +22,8 @@ describe('Vote buttons', () => {
               minVoterBalance={null}
               spamProtectionMinTokens={null}
               currentStakeAvailable={new BigNumber(1)}
+              dialog={() => <div>Blah</div>}
+              submit={() => Promise.resolve()}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -43,6 +45,8 @@ describe('Vote buttons', () => {
               minVoterBalance={null}
               spamProtectionMinTokens={null}
               currentStakeAvailable={new BigNumber(1)}
+              dialog={() => <div>Blah</div>}
+              submit={() => Promise.resolve()}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -75,6 +79,8 @@ describe('Vote buttons', () => {
               minVoterBalance={null}
               spamProtectionMinTokens={null}
               currentStakeAvailable={new BigNumber(1)}
+              dialog={() => <div>Blah</div>}
+              submit={() => Promise.resolve()}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -97,6 +103,8 @@ describe('Vote buttons', () => {
               minVoterBalance={null}
               spamProtectionMinTokens={null}
               currentStakeAvailable={new BigNumber(0)}
+              dialog={() => <div>Blah</div>}
+              submit={() => Promise.resolve()}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -120,6 +128,8 @@ describe('Vote buttons', () => {
               minVoterBalance="2000000000000000000"
               spamProtectionMinTokens="1000000000000000000"
               currentStakeAvailable={new BigNumber(1)}
+              dialog={() => <div>Blah</div>}
+              submit={() => Promise.resolve()}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -145,6 +155,8 @@ describe('Vote buttons', () => {
               minVoterBalance="2000000000000000000"
               spamProtectionMinTokens="1000000000000000000"
               currentStakeAvailable={new BigNumber(10)}
+              dialog={() => <div>Blah</div>}
+              submit={() => Promise.resolve()}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -167,6 +179,8 @@ describe('Vote buttons', () => {
               minVoterBalance="2000000000000000000"
               spamProtectionMinTokens="1000000000000000000"
               currentStakeAvailable={new BigNumber(10)}
+              dialog={() => <div>Blah</div>}
+              submit={() => Promise.resolve()}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
