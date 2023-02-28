@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { VolCell, VolumeType } from './vol-cell';
+import { VolCell } from './vol-cell';
 import * as tailwind from '@vegaprotocol/tailwindcss-config';
 
 describe('VolCell', () => {
@@ -8,7 +8,7 @@ describe('VolCell', () => {
   const props = {
     value: 1234567,
     valueFormatted: `${significantPart}.${decimalPart}`,
-    type: VolumeType.ask,
+    type: 'ask' as const,
     testId: 'cell',
   };
 
@@ -32,7 +32,7 @@ describe('VolCell', () => {
   });
 
   it('renders bid volume bar', () => {
-    render(<VolCell {...props} type={VolumeType.bid} />);
+    render(<VolCell {...props} type="bid" />);
     expect(screen.getByTestId('vol-bar')).toHaveClass('left-0'); // renders bid bars from the left
     expect(screen.getByTestId('vol-bar')).toHaveStyle({
       backgroundColor: tailwind.theme.colors.vega.green.DEFAULT,
@@ -40,7 +40,7 @@ describe('VolCell', () => {
   });
 
   it('renders ask volume bar', () => {
-    render(<VolCell {...props} type={VolumeType.ask} />);
+    render(<VolCell {...props} type="ask" />);
     expect(screen.getByTestId('vol-bar')).toHaveClass('right-0'); // renders ask bars from the right
     expect(screen.getByTestId('vol-bar')).toHaveStyle({
       backgroundColor: tailwind.theme.colors.vega.pink.DEFAULT,

@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { useLocalStorage } from './local-storage';
+import { useLocalStorage } from './use-local-storage';
 
 describe('useLocalStorage', () => {
   afterEach(() => window.localStorage.clear());

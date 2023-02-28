@@ -1,6 +1,6 @@
 import { render, screen, act } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
-import * as useDataProviderHook from '@vegaprotocol/utils';
+import * as useDataProviderHook from '@vegaprotocol/react-helpers';
 import type { OrderFieldsFragment } from '../';
 import * as orderListMock from '../order-list/order-list';
 import { forwardRef } from 'react';

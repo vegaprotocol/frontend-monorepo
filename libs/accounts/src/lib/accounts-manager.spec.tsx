@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import * as helpers from '@vegaprotocol/utils';
+import * as helpers from '@vegaprotocol/react-helpers';
 import { AccountManager } from './accounts-manager';
 
 const mockedUseDataProvider = jest.fn();

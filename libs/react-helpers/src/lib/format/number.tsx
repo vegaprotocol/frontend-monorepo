@@ -16,14 +16,16 @@ export const CompactNumber = ({
   number,
   decimals = 'infer',
   compactDisplay = 'short',
+  testId = 'compact-number',
 }: {
   number: BigNumber;
   decimals?: number | 'infer';
   compactDisplay?: 'short' | 'long';
+  testId?: string;
 }) => {
   if (!number.isFinite()) {
     return (
-      <span>
+      <span data-testid={testId}>
         {number.isNegative() ? '-' : ''}
         {INFINITY}
       </span>
@@ -34,7 +36,9 @@ export const CompactNumber = ({
     (decimals === 'infer' ? number.decimalPlaces() : decimals) || 0;
 
   if (number.isLessThan(DEFAULT_COMPACT_ABOVE)) {
-    return <span>{formatNumber(number, decimalPlaces)}</span>;
+    return (
+      <span data-testid={testId}>{formatNumber(number, decimalPlaces)}</span>
+    );
   }
 
   /**
@@ -60,7 +64,7 @@ export const CompactNumber = ({
     if (eNotation && eNotation.length > 1) {
       const power = eNotation[1];
       return (
-        <span>
+        <span data-testid={testId}>
           {formatted.replace(r, '')}{' '}
           <span>
             &times; 10
@@ -71,5 +75,7 @@ export const CompactNumber = ({
     }
   }
 
-  return <span>{compactNumFormat.format(Number(number))}</span>;
+  return (
+    <span data-testid={testId}>{compactNumFormat.format(Number(number))}</span>
+  );
 };
