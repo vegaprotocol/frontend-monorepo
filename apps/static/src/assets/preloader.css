@@ -21,75 +21,75 @@
   display: flex;
   flex-wrap: wrap;
 }
-.loader-item:nth-child(0) {
+.pre-loader .loader-item:nth-child(0) {
   animation-delay: 0ms;
   animation-direction: reverse;
 }
-.loader-item:first-child {
-  animation-delay: -0.2s;
+.pre-loader .loader-item:first-child {
+  animation-delay: -50ms;
   animation-direction: alternate;
 }
-.loader-item:nth-child(2) {
+.pre-loader .loader-item:nth-child(2) {
+  animation-delay: 0.2s;
+  animation-direction: reverse;
+}
+.pre-loader .loader-item:nth-child(3) {
+  animation-delay: -0.6s;
+  animation-direction: alternate;
+}
+.pre-loader .loader-item:nth-child(4) {
   animation-delay: 0.4s;
   animation-direction: reverse;
 }
-.loader-item:nth-child(3) {
-  animation-delay: -0.15s;
+.pre-loader .loader-item:nth-child(5) {
+  animation-delay: -0.5s;
   animation-direction: alternate;
 }
-.loader-item:nth-child(4) {
-  animation-delay: 0.6s;
-  animation-direction: reverse;
-}
-.loader-item:nth-child(5) {
-  animation-delay: -1s;
-  animation-direction: alternate;
-}
-.loader-item:nth-child(6) {
+.pre-loader .loader-item:nth-child(6) {
   animation-delay: 0.3s;
   animation-direction: reverse;
 }
-.loader-item:nth-child(7) {
-  animation-delay: -0.35s;
+.pre-loader .loader-item:nth-child(7) {
+  animation-delay: -1.4s;
   animation-direction: alternate;
 }
-.loader-item:nth-child(8) {
+.pre-loader .loader-item:nth-child(8) {
   animation-delay: 2s;
   animation-direction: reverse;
 }
-.loader-item:nth-child(9) {
-  animation-delay: -0.45s;
+.pre-loader .loader-item:nth-child(9) {
+  animation-delay: -0.9s;
   animation-direction: alternate;
 }
-.loader-item:nth-child(10) {
-  animation-delay: 2s;
+.pre-loader .loader-item:nth-child(10) {
+  animation-delay: 1.5s;
   animation-direction: reverse;
 }
-.loader-item:nth-child(11) {
+.pre-loader .loader-item:nth-child(11) {
   animation-delay: -0.55s;
   animation-direction: alternate;
 }
-.loader-item:nth-child(12) {
+.pre-loader .loader-item:nth-child(12) {
   animation-delay: 1.2s;
   animation-direction: reverse;
 }
-.loader-item:nth-child(13) {
-  animation-delay: -2.6s;
+.pre-loader .loader-item:nth-child(13) {
+  animation-delay: -0.65s;
   animation-direction: alternate;
 }
-.loader-item:nth-child(14) {
-  animation-delay: 2.8s;
+.pre-loader .loader-item:nth-child(14) {
+  animation-delay: 0.7s;
   animation-direction: reverse;
 }
-.loader-item:nth-child(15) {
-  animation-delay: -3s;
+.pre-loader .loader-item:nth-child(15) {
+  animation-delay: -3.75s;
   animation-direction: alternate;
 }
-.loader-item:nth-child(16) {
+.pre-loader .loader-item:nth-child(16) {
   animation-delay: 1.6s;
   animation-direction: reverse;
 }
-.loader-item {
+.pre-loader .loader-item {
   animation: flickering 0.4s linear infinite alternate;
 }
 @keyframes flickering {
@@ -105,4 +105,7 @@
   to {
     opacity: 0;
   }
+}
+html.dark .pre-loader .loader-item {
+  background: #fff;
 }

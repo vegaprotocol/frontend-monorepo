@@ -9,11 +9,15 @@ export const Preloader = () => {
             display: block;
             width: 100%;
             height: 100%;
+            margin: 0;
           }
+           html.dark body{
+             background: #000;
+           }
         `}
       </style>
       <div className="pre-loader">
-        <Loader forceTheme="light" />
+        <Loader />
       </div>
     </>
   );

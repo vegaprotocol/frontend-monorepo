@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
+import styles from './loader.module.scss';
 
 const pseudoRandom = (seed: number) => {
   let value = seed;
@@ -15,7 +16,7 @@ export interface LoaderProps {
 }
 
 export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
-  const itemClasses = classNames('loader-item', {
+  const itemClasses = classNames('loader-item', styles['loader-item'], {
     'dark:bg-white bg-black': !forceTheme,
     'bg-white': forceTheme === 'dark',
     'bg-black': forceTheme === 'light',
