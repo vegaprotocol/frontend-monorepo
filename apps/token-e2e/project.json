@@ -7,11 +7,11 @@
       "executor": "@nrwl/cypress:cypress",
       "options": {
         "cypressConfig": "apps/token-e2e/cypress.config.js",
-        "devServerTarget": "token:serve"
+        "devServerTarget": "governance:serve"
       },
       "configurations": {
         "production": {
-          "devServerTarget": "token:serve:production"
+          "devServerTarget": "governance:serve:production"
         }
       }
     },
@@ -31,5 +31,5 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["token"]
+  "implicitDependencies": ["governance"]
 }
