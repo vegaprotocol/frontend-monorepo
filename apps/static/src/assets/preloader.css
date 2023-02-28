@@ -21,11 +21,6 @@
   display: flex;
   flex-wrap: wrap;
 }
-@media (prefers-color-scheme: light) {
-  .pre-loader .loader-item {
-    background: #000;
-  }
-}
 .pre-loader .loader-item:nth-child(0) {
   animation-delay: 0ms;
   animation-direction: reverse;

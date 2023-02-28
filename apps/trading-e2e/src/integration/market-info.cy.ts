@@ -126,18 +126,11 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('price monitoring trigger displayed', () => {
-    cy.getByTestId(marketTitle).contains('Price monitoring trigger 1').click();
-
-    validateMarketDataRow(0, 'Horizon Secs', '43,200');
-    validateMarketDataRow(1, 'Probability', '1');
-    validateMarketDataRow(2, 'Auction Extension Secs', '600');
-  });
-
-  it('price monitoring bound displayed', () => {
-    cy.getByTestId(marketTitle).contains('Price monitoring bound 1').click();
-
-    validateMarketDataRow(0, 'Min Valid Price', '6.54701 ');
-    validateMarketDataRow(1, 'Max Valid Price', '7.97323 ');
+    cy.getByTestId(marketTitle).contains('Price monitoring bounds 1').click();
+    cy.get('p.col-span-1').contains('100% probability of trading');
+    cy.get('p.col-span-1').contains('Within 43,200 seconds');
+    validateMarketDataRow(0, 'Highest Price', '7.97323 ');
+    validateMarketDataRow(1, 'Lowest Price', '6.54701 ');
     validateMarketDataRow(2, 'Reference Price', '7.22625 ');
   });
 
