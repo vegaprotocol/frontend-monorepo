@@ -1,8 +1,8 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ProposalFormVoteAndEnactmentDeadline } from './proposal-form-vote-and-enactment-deadline';
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
+jest.mock('@vegaprotocol/utils', () => ({
+  ...jest.requireActual('@vegaprotocol/utils'),
   getDateTimeFormat: jest.fn(() => ({
     format: (date: Date) => date.toISOString(),
   })),
