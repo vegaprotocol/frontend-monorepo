@@ -295,7 +295,7 @@ describe('OpenVolumeCell', () => {
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
-  it('renders statsu with warning tooltip if not normal', async () => {
+  it('renders status with warning tooltip if not normal', async () => {
     const props = {
       data: {
         ...singleRow,

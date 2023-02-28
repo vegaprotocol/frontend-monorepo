@@ -478,7 +478,7 @@ export const OpenVolumeCell = ({
       tooltipContent={
         <>
           <p className="mb-2">
-            {t('Your positions was affected by market conditions')}
+            {t('Your position was affected by market conditions')}
           </p>
           <p className="mb-2">
             {t(
@@ -490,7 +490,7 @@ export const OpenVolumeCell = ({
           </p>
           {VEGA_DOCS_URL && (
             <ExternalLink href={VEGA_DOCS_URL}>
-              {t('Reade more about position resolution')}
+              {t('Read more about position resolution')}
             </ExternalLink>
           )}
         </>
