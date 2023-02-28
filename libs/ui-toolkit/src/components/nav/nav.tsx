@@ -50,7 +50,7 @@ export const Nav = ({
   title,
 }: NavbarProps) => {
   const themeWrapperClasses = classNames(
-    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha calt lg:text-lg',
+    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha lg:text-lg',
     {
       dark: navbarTheme === 'dark',
     }
