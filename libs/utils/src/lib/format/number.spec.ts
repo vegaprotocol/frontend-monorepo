@@ -9,7 +9,7 @@ import {
   toNumberParts,
 } from './number';
 
-describe('number react-helpers', () => {
+describe('number utils', () => {
   it.each([
     { v: new BigNumber(123000), d: 5, o: '1.23' },
     { v: new BigNumber(123000), d: 3, o: '123.00' },
