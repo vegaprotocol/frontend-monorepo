@@ -317,8 +317,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             <div className="text-xs">
               <div className="grid grid-cols-2 text-xs mb-4">
                 <p className="col-span-1">
-                  {t('%s% probability price bounds', [
-                    (trigger.probability * 100).toString(),
+                  {t('%s probability price bounds', [
+                    formatNumberPercentage(
+                      new BigNumber(trigger.probability).times(100)
+                    ),
                   ])}
                 </p>
                 <p className="col-span-1 text-right">
