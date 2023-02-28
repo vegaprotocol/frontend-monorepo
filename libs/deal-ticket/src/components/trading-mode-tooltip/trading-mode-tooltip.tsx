@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
-import { useProposalOfMarketQuery } from '@vegaprotocol/governance';
+import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { createDocsLinks, getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';

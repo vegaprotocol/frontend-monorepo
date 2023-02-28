@@ -11,7 +11,7 @@ import {
   getEnactmentTimestamp,
   useProposalSubmit,
   doesValueEquateToParam,
-} from '@vegaprotocol/governance';
+} from '@vegaprotocol/proposals';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormDescription,

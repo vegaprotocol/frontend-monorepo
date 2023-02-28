@@ -6,7 +6,7 @@ import {
   getEnactmentTimestamp,
   useProposalSubmit,
   doesValueEquateToParam,
-} from '@vegaprotocol/governance';
+} from '@vegaprotocol/proposals';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';

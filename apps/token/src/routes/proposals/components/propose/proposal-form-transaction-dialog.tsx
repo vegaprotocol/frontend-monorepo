@@ -2,8 +2,8 @@ import {
   getProposalDialogIcon,
   getProposalDialogIntent,
   getProposalDialogTitle,
-} from '@vegaprotocol/governance';
-import type { ProposalEventFieldsFragment } from '@vegaprotocol/governance';
+} from '@vegaprotocol/proposals';
+import type { ProposalEventFieldsFragment } from '@vegaprotocol/proposals';
 import type { DialogProps } from '@vegaprotocol/wallet';
 
 interface ProposalFormTransactionDialogProps {

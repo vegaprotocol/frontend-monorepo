@@ -1,5 +1,5 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
+import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { marketsDataQuery } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 

@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
-import { useProposalSubmit } from '@vegaprotocol/governance';
+import { useProposalSubmit } from '@vegaprotocol/proposals';
 import {
   ProposalFormSubmit,
   ProposalFormTransactionDialog,

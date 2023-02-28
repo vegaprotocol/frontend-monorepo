@@ -4,7 +4,7 @@ import {
   TOKEN_NEW_MARKET_PROPOSAL,
   useLinks,
 } from '@vegaprotocol/environment';
-import { ProposalsList } from '@vegaprotocol/governance';
+import { ProposalsList } from '@vegaprotocol/proposals';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 export const Proposed = () => {

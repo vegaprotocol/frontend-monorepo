@@ -7,8 +7,8 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import * as Schema from '@vegaprotocol/types';
 import { ProposeRaw } from './propose-raw';
-import { ProposalEventDocument } from '@vegaprotocol/governance';
-import type { ProposalEventSubscription } from '@vegaprotocol/governance';
+import { ProposalEventDocument } from '@vegaprotocol/proposals';
+import type { ProposalEventSubscription } from '@vegaprotocol/proposals';
 
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';

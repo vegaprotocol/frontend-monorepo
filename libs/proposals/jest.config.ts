@@ -1,11 +1,11 @@
 /* eslint-disable */
 export default {
-  displayName: 'governance',
+  displayName: 'proposals',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/governance',
+  coverageDirectory: '../../coverage/libs/proposals',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

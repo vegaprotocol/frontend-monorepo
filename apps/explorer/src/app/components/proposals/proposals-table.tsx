@@ -1,5 +1,5 @@
-import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
-import { VoteProgress } from '@vegaprotocol/governance';
+import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
+import { VoteProgress } from '@vegaprotocol/proposals';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';

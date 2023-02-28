@@ -1,4 +1,4 @@
-import { proposalsDataProvider } from '@vegaprotocol/governance';
+import { proposalsDataProvider } from '@vegaprotocol/proposals';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';

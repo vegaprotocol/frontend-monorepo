@@ -13,7 +13,7 @@ import {
   deadlineToSeconds,
   secondsToRoundedHours,
   subtractTwoSeconds,
-} from '@vegaprotocol/governance';
+} from '@vegaprotocol/proposals';
 import { ProposalFormSubheader } from './proposal-form-subheader';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 

@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
-import { AssetProposalNotification } from '@vegaprotocol/governance';
+import { AssetProposalNotification } from '@vegaprotocol/proposals';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;

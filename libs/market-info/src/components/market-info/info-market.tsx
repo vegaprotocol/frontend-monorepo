@@ -28,7 +28,7 @@ import { MarketInfoTable } from './info-key-value-table';
 import { marketInfoDataProvider } from './market-info-data-provider';
 
 import type { MarketInfoQuery } from './__generated__/MarketInfo';
-import { MarketProposalNotification } from '@vegaprotocol/governance';
+import { MarketProposalNotification } from '@vegaprotocol/proposals';
 
 export interface InfoProps {
   market: MarketInfoQuery['market'];
