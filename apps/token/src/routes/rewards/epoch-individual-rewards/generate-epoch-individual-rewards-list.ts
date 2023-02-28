@@ -33,7 +33,7 @@ export const generateEpochIndividualRewardsList = (
   // We take the rewards and aggregate them by epoch and asset.
   const epochIndividualRewards = rewards.reduce((map, reward) => {
     const epochId = reward.epoch.id;
-    const assetName = reward.asset.symbol;
+    const assetName = reward.asset.name;
     const rewardType = reward.rewardType;
     const amount = reward.amount;
     const percentageOfTotal = reward.percentageOfTotal;
@@ -69,6 +69,12 @@ export const generateEpochIndividualRewardsList = (
       },
       '0'
     );
+
+    if (epoch) {
+      epoch.rewards = epoch.rewards.sort((a, b) => {
+        return new BigNumber(b.totalAmount).comparedTo(a.totalAmount);
+      });
+    }
 
     return map;
   }, new Map<string, EpochIndividualReward>());

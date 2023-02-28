@@ -307,7 +307,7 @@ const SummaryMessage = memo(
     );
     if (isReadOnly) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <InputError testId="dealticket-error-message-summary">
             {
               'You need to connect your own wallet to start trading on this market'
@@ -318,7 +318,7 @@ const SummaryMessage = memo(
     }
     if (!pubKey) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <Notification
             testId={'deal-ticket-connect-wallet'}
             intent={Intent.Warning}
@@ -343,7 +343,7 @@ const SummaryMessage = memo(
     }
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <ZeroBalanceError
             asset={market.tradableInstrument.instrument.product.settlementAsset}
             onClickCollateral={onClickCollateral}
@@ -356,7 +356,7 @@ const SummaryMessage = memo(
     // submission render that first
     if (errorMessage) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <InputError testId="dealticket-error-message-summary">
             {errorMessage}
           </InputError>
@@ -368,7 +368,7 @@ const SummaryMessage = memo(
     // balance render the margin warning, but still allow submission
     if (balanceError) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <MarginWarning balance={balance} margin={margin} asset={asset} />;
         </div>
       );
@@ -383,7 +383,7 @@ const SummaryMessage = memo(
       ].includes(marketData.marketTradingMode)
     ) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <Notification
             intent={Intent.Warning}
             testId={'dealticket-warning-auction'}

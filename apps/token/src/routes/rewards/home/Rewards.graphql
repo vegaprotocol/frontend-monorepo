@@ -3,6 +3,7 @@ fragment RewardFields on Reward {
   asset {
     id
     symbol
+    name
   }
   party {
     id
