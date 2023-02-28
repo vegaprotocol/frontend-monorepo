@@ -43,7 +43,7 @@ export const update = (
   data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getData>,
   reload: () => void,
-  variables?: LedgerEntriesQueryVariables
+  variables: LedgerEntriesQueryVariables
 ) => {
   if (!data) {
     return data;
@@ -117,7 +117,11 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
   AggregatedLedgerEntriesEdge[],
   LedgerEntriesQueryVariables
 >(
-  [ledgerEntriesOnlyProvider, assetsProvider, marketsProvider],
+  [
+    ledgerEntriesOnlyProvider,
+    (callback, client) => assetsProvider(callback, client, undefined),
+    (callback, client) => marketsProvider(callback, client, undefined),
+  ],
   ([entries, assets, markets]) => {
     return entries.map((edge: AggregatedLedgerEntriesEdge) => {
       const entry = edge?.node;

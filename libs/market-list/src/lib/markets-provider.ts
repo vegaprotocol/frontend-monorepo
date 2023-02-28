@@ -8,6 +8,8 @@ import type {
   MarketsQuery,
   MarketFieldsFragment,
 } from './__generated__/markets';
+import type { MarketsCandlesQueryVariables } from './__generated__/markets-candles';
+
 import { marketsDataProvider } from './markets-data-provider';
 import { marketDataProvider } from './market-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
@@ -41,7 +43,7 @@ export const marketProvider = makeDerivedDataProvider<
   never,
   { marketId: string }
 >(
-  [marketsProvider],
+  [(callback, client) => marketsProvider(callback, client, undefined)],
   ([markets], variables) =>
     ((markets as ReturnType<typeof getData>) || []).find(
       (market) => market.id === variables?.marketId
@@ -88,10 +90,11 @@ const addCandles = <T extends Market>(
 
 export const marketsWithCandlesProvider = makeDerivedDataProvider<
   MarketMaybeWithCandles[],
-  never
+  never,
+  MarketsCandlesQueryVariables
 >(
   [
-    (callback, client) => activeMarketsProvider(callback, client),
+    (callback, client) => activeMarketsProvider(callback, client, undefined),
     marketsCandlesProvider,
   ],
   (parts) => addCandles(parts[0] as Market[], parts[1] as MarketCandles[])
@@ -117,10 +120,11 @@ export type MarketMaybeWithDataAndCandles = MarketMaybeWithData &
 
 export const marketListProvider = makeDerivedDataProvider<
   MarketMaybeWithDataAndCandles[],
-  never
+  never,
+  MarketsCandlesQueryVariables
 >(
   [
-    (callback, client) => marketsWithDataProvider(callback, client),
+    (callback, client) => marketsWithDataProvider(callback, client, undefined),
     marketsCandlesProvider,
   ],
   (parts) =>

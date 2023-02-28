@@ -13,6 +13,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const { data, error, loading, reload } = useDataProvider({
     dataProvider,
     skipUpdates: true,
+    variables: undefined,
   });
 
   return (

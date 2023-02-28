@@ -29,12 +29,14 @@ import {
 } from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
 import { calculateMargins } from './margin-calculator';
-
+import type { Edge } from '@vegaprotocol/react-helpers';
 import { OrderStatus, Side } from '@vegaprotocol/types';
 import { marketInfoDataProvider } from '@vegaprotocol/market-info';
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';
 import { marketDataProvider } from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/market-list';
 import { ordersProvider } from '@vegaprotocol/orders';
+import type { OrderFieldsFragment } from '@vegaprotocol/orders';
 
 type PositionMarginLevel = Pick<
   MarginFieldsFragment,
@@ -368,7 +370,7 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
     openVolumeDataProvider,
   ],
   (data) => {
-    const orders = data[0] as ReturnType<typeof getData> | null;
+    const orders = data[0] as (Edge<OrderFieldsFragment> | null)[] | null;
     const marketData = data[1] as MarketData | null;
     const marketInfo = data[2] as MarketInfoQuery | null;
     let openVolume = (data[3] as string | null) || '0';
@@ -410,6 +412,9 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
         }
       }
       orders?.forEach((order) => {
+        if (!order) {
+          return;
+        }
         const { side, remaining: size } = order.node;
         const initialMargin = BigInt(
           calculateMargins({

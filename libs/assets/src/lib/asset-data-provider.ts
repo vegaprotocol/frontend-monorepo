@@ -1,7 +1,10 @@
 import { makeDataProvider, useDataProvider } from '@vegaprotocol/react-helpers';
-import { useMemo } from 'react';
 
-import type { AssetQuery, AssetFieldsFragment } from './__generated__/Asset';
+import type {
+  AssetQuery,
+  AssetFieldsFragment,
+  AssetQueryVariables,
+} from './__generated__/Asset';
 import { AssetDocument } from './__generated__/Asset';
 
 export type Asset = AssetFieldsFragment;
@@ -14,21 +17,21 @@ export const getData = (responseData: AssetQuery | null | undefined) => {
   return null;
 };
 
-export const assetProvider = makeDataProvider<AssetQuery, Asset, never, never>({
+export const assetProvider = makeDataProvider<
+  AssetQuery,
+  Asset,
+  never,
+  never,
+  AssetQueryVariables
+>({
   query: AssetDocument,
   getData,
 });
 
 export const useAssetDataProvider = (assetId: string) => {
-  const variables = useMemo(
-    () => ({
-      assetId,
-    }),
-    [assetId]
-  );
   return useDataProvider({
     dataProvider: assetProvider,
-    variables,
+    variables: { assetId: assetId || '' },
     skip: !assetId,
   });
 };

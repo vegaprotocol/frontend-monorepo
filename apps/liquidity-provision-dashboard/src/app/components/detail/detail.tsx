@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { useMemo } from 'react';
 import {
   t,
   useDataProvider,
@@ -45,7 +44,7 @@ const useMarketDetails = (marketId: string | undefined) => {
   const { data, loading, error } = useDataProvider({
     dataProvider: lpDataProvider,
     skipUpdates: true,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
   });
 
   const liquidityProviders = data?.liquidityProviders || [];

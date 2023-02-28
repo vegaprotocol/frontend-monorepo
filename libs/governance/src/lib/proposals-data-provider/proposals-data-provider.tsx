@@ -1,6 +1,7 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   ProposalsListQuery,
+  ProposalsListQueryVariables,
   ProposalListFieldsFragment,
 } from './__generated__/Proposals';
 import { ProposalsListDocument } from './__generated__/Proposals';
@@ -14,5 +15,6 @@ export const proposalsDataProvider = makeDataProvider<
   ProposalsListQuery,
   ProposalListFieldsFragment[],
   never,
-  never
+  never,
+  ProposalsListQueryVariables
 >({ query: ProposalsListDocument, getData });

@@ -1,6 +1,6 @@
+import { useMemo } from 'react';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useMemo } from 'react';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import {
   calculateMargins,
@@ -9,16 +9,13 @@ import {
 } from '@vegaprotocol/positions';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
 import { marketInfoDataProvider } from '@vegaprotocol/market-info';
-import { marketMarginDataProvider } from '@vegaprotocol/positions';
-import { useMarketAccountBalance } from '@vegaprotocol/accounts';
 
 export const useInitialMargin = (
   order: OrderSubmissionBody['orderSubmission']
 ) => {
   const { pubKey: partyId } = useVegaWallet();
-  const { size, side, timeInForce, type, marketId } = order;
+  const { size, side, marketId } = order;
   const commonVariables = { marketId, partyId: partyId || '' };
   const { data: marketData } = useDataProvider({
     dataProvider: marketDataProvider,
@@ -33,31 +30,9 @@ export const useInitialMargin = (
     dataProvider: marketInfoDataProvider,
     variables: commonVariables,
   });
-  const { data: currentMargin } = useDataProvider({
-    dataProvider: marketMarginDataProvider,
-    variables: commonVariables,
-    skip: !partyId,
-  });
-  const { accountBalance } = useMarketAccountBalance(marketId);
+  let totalMargin = '0';
+  let margin = '0';
 
-  const price = marketData && getDerivedPrice(order, marketData);
-  const { data: estimatedOrder } = useEstimateOrderQuery({
-    variables: {
-      ...commonVariables,
-      price,
-      size,
-      side,
-      timeInForce,
-      type,
-    },
-    skip: !partyId || !size || !price,
-  });
-  let estimatedMargin: string | undefined = undefined;
-  let totalEstimatedMargin: string | undefined = undefined;
-  // let totalApiEstimatedMargin: string | undefined = undefined;
-  let estimatedInitialMargin: string | undefined = undefined;
-  const apiEstimatedMargin =
-    estimatedOrder && estimatedOrder.estimateOrder.marginLevels.initialLevel;
   if (marketInfo?.market && marketInfo?.market.riskFactors && marketData) {
     const {
       positionDecimalPlaces,
@@ -67,7 +42,7 @@ export const useInitialMargin = (
     } = marketInfo.market;
     const { marginCalculator, instrument } = tradableInstrument;
     const { decimals } = instrument.product.settlementAsset;
-    const { initialMargin } = calculateMargins({
+    margin = totalMargin = calculateMargins({
       side,
       size,
       price: getDerivedPrice(order, marketData),
@@ -76,45 +51,23 @@ export const useInitialMargin = (
       decimals,
       scalingFactors: marginCalculator?.scalingFactors,
       riskFactors,
-    });
-    estimatedMargin = initialMargin;
+    }).initialMargin;
   }
 
-  if (activeVolumeAndMargin && apiEstimatedMargin) {
+  if (activeVolumeAndMargin) {
     let sellMargin = BigInt(activeVolumeAndMargin.sellInitialMargin);
     let buyMargin = BigInt(activeVolumeAndMargin.buyInitialMargin);
-    const margin = BigInt(
-      estimatedOrder.estimateOrder.marginLevels.initialLevel
-    );
-    estimatedInitialMargin =
-      sellMargin > buyMargin ? sellMargin.toString() : buyMargin.toString();
     if (order.side === Side.SIDE_SELL) {
       activeVolumeAndMargin.sellVolume = (
         BigInt(activeVolumeAndMargin.sellVolume) + BigInt(order.size)
       ).toString();
-      sellMargin += margin;
+      sellMargin += BigInt(totalMargin);
     } else {
-      buyMargin += margin;
+      buyMargin += BigInt(totalMargin);
     }
-    totalEstimatedMargin =
+    totalMargin =
       sellMargin > buyMargin ? sellMargin.toString() : buyMargin.toString();
   }
 
-  return useMemo(() => {
-    return {
-      estimatedMargin,
-      apiEstimatedMargin,
-      estimatedInitialMargin,
-      apiInitialMargin: currentMargin?.initialLevel,
-      totalEstimatedMargin,
-      accountBalance,
-    };
-  }, [
-    estimatedMargin,
-    apiEstimatedMargin,
-    currentMargin?.initialLevel,
-    estimatedInitialMargin,
-    totalEstimatedMargin,
-    accountBalance,
-  ]);
+  return useMemo(() => ({ totalMargin, margin }), [totalMargin, margin]);
 };

@@ -10,6 +10,7 @@ import {
 import type {
   MarketCandles,
   MarketMaybeWithDataAndCandles,
+  MarketsCandlesQueryVariables,
 } from '@vegaprotocol/market-list';
 
 import {
@@ -17,7 +18,10 @@ import {
   marketListProvider,
 } from '@vegaprotocol/market-list';
 
-import type { LiquidityProvisionMarketsQuery } from './__generated__/MarketsLiquidity';
+import type {
+  LiquidityProvisionMarketsQuery,
+  LiquidityProvisionMarketsQueryVariables,
+} from './__generated__/MarketsLiquidity';
 import { LiquidityProvisionMarketsDocument } from './__generated__/MarketsLiquidity';
 
 import {
@@ -102,15 +106,18 @@ export const liquidityMarketsProvider = makeDataProvider<
   getData,
 });
 
-const liquidityProvisionProvider = makeDerivedDataProvider<Market[], never>(
+const liquidityProvisionProvider = makeDerivedDataProvider<
+  Market[],
+  never,
+  Exclude<MarketsCandlesQueryVariables, 'interval'>
+>(
   [
-    marketListProvider,
     (callback, client, variables) =>
-      marketsCandlesProvider(callback, client, {
-        ...variables,
+      marketListProvider(callback, client, {
+        since: variables.since,
         interval: Schema.Interval.INTERVAL_I1D,
       }),
-    liquidityMarketsProvider,
+    (callback, client) => liquidityMarketsProvider(callback, client, undefined),
   ],
   (parts) => {
     return addData(

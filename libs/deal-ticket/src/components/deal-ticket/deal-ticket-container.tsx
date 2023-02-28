@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
@@ -29,7 +28,7 @@ export const DealTicketContainer = ({
   } = useThrottledDataProvider(
     {
       dataProvider: marketDataProvider,
-      variables: useMemo(() => ({ marketId }), [marketId]),
+      variables: { marketId },
     },
     1000
   );

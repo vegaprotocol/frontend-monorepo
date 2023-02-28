@@ -1,4 +1,4 @@
-import { t, removeDecimal } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -19,8 +19,7 @@ import {
   Intent,
   Notification,
 } from '@vegaprotocol/ui-toolkit';
-import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
-import { MarginWarning } from '../deal-ticket-validation/margin-warning';
+
 import {
   getDefaultOrder,
   validateMarketState,
@@ -30,13 +29,17 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
-import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import { useInitialMargin } from '../../hooks/use-initial-margin';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {
   usePersistedOrderStore,
   usePersistedOrderStoreSubscription,
 } from '@vegaprotocol/orders';
+import { MarginWarning } from '../deal-ticket-validation/margin-warning';
+import {
+  useMarketAccountBalance,
+  useAccountBalance,
+} from '@vegaprotocol/accounts';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -51,15 +54,6 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   // This is not a field used in the form but allows us to set a
   // summary error message
   summary: string;
-};
-
-const MarginInfo = ({
-  order,
-}: {
-  order: OrderSubmissionBody['orderSubmission'];
-}) => {
-  const marginInfo = useInitialMargin(order);
-  return <pre>{JSON.stringify(marginInfo, null, 2)}</pre>;
 };
 
 export const DealTicket = ({
@@ -102,10 +96,25 @@ export const DealTicket = ({
     }
   });
 
-  const marketStateError = validateMarketState(marketData.marketState);
-  const hasNoBalance = useHasNoBalance(
-    market.tradableInstrument.instrument.product.settlementAsset.id
+  const asset = market.tradableInstrument.instrument.product.settlementAsset;
+
+  const { margin, totalMargin } = useInitialMargin(
+    normalizeOrderSubmission(
+      order,
+      market.decimalPlaces,
+      market.positionDecimalPlaces
+    )
   );
+  const { accountBalance: marginAccountBalance } = useMarketAccountBalance(
+    order.marketId
+  );
+  const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
+  const balance = (
+    BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
+  ).toString();
+
+  const marketStateError = validateMarketState(marketData.marketState);
+  const hasNoBalance = generalAccountBalance === '0';
   const marketTradingModeError = validateMarketTradingMode(
     marketData.marketTradingMode
   );
@@ -260,19 +269,13 @@ export const DealTicket = ({
         )}
       <SummaryMessage
         errorMessage={errors.summary?.message}
-        market={market}
-        marketData={marketData}
-        order={order}
+        asset={asset}
+        marketTradingMode={marketData.marketTradingMode}
+        balance={balance}
+        margin={totalMargin}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onClickCollateral={onClickCollateral || (() => null)}
-      />
-      <MarginInfo
-        order={normalizeOrderSubmission(
-          order,
-          market.decimalPlaces,
-          market.positionDecimalPlaces
-        )}
       />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
@@ -286,6 +289,9 @@ export const DealTicket = ({
         )}
         market={market}
         marketData={marketData}
+        margin={margin}
+        totalMargin={totalMargin}
+        balance={marginAccountBalance}
       />
     </form>
   );
@@ -297,9 +303,10 @@ export const DealTicket = ({
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: Market;
-  marketData: MarketData;
-  order: OrderSubmissionBody['orderSubmission'];
+  asset: { id: string; symbol: string; name: string; decimals: number };
+  marketTradingMode: MarketData['marketTradingMode'];
+  balance: string;
+  margin: string;
   isReadOnly: boolean;
   pubKey: string | null;
   onClickCollateral: () => void;
@@ -307,22 +314,17 @@ interface SummaryMessageProps {
 const SummaryMessage = memo(
   ({
     errorMessage,
-    market,
-    marketData,
-    order,
+    asset,
+    marketTradingMode,
+    balance,
+    margin,
     isReadOnly,
     pubKey,
     onClickCollateral,
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
-    const asset = market.tradableInstrument.instrument.product.settlementAsset;
     const assetSymbol = asset.symbol;
-    const { balanceError, balance, margin } = useOrderMarginValidation({
-      market,
-      marketData,
-      order,
-    });
     const openVegaWalletDialog = useVegaWalletDialogStore(
       (store) => store.openVegaWalletDialog
     );
@@ -362,10 +364,7 @@ const SummaryMessage = memo(
     }
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
-        <ZeroBalanceError
-          asset={market.tradableInstrument.instrument.product.settlementAsset}
-          onClickCollateral={onClickCollateral}
-        />
+        <ZeroBalanceError asset={asset} onClickCollateral={onClickCollateral} />
       );
     }
 
@@ -383,17 +382,16 @@ const SummaryMessage = memo(
 
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
-    if (balanceError) {
+    if (BigInt(balance) < BigInt(margin)) {
       return <MarginWarning balance={balance} margin={margin} asset={asset} />;
     }
-
     // Show auction mode warning
     if (
       [
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(marketData.marketTradingMode)
+      ].includes(marketTradingMode)
     ) {
       return (
         <Notification

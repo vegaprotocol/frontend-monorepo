@@ -15,6 +15,7 @@ import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
   EST_MARGIN_TOOLTIP_TEXT,
+  EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
   MARGIN_DIFF_TOOLTIP_TEXT,
@@ -97,21 +98,25 @@ export const useFeeDealTicketDetails = (
 };
 
 export interface FeeDetails {
-  market: Market;
-  symbol: string;
-  notionalSize: string | null;
-  accountBalance: string | null;
-  estMargin: OrderMargin | null;
+  balance: string;
   estCloseOut: string | null;
+  estMargin: OrderMargin | null;
+  margin: string;
+  market: Market;
+  notionalSize: string | null;
+  symbol: string;
+  totalMargin: string;
 }
 
 export const getFeeDetailsValues = ({
-  symbol,
-  notionalSize,
-  estMargin,
+  balance,
   estCloseOut,
-  accountBalance,
+  estMargin,
+  margin,
   market,
+  notionalSize,
+  symbol,
+  totalMargin,
 }: FeeDetails) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
@@ -160,23 +165,30 @@ export const getFeeDetailsValues = ({
     },
     {
       label: t('Margin'),
-      value:
-        estMargin?.margin && `~${formatValueWithAssetDp(estMargin?.margin)}`,
+      value: margin && `~${formatValueWithAssetDp(margin)}`,
       symbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
   ];
-  if (accountBalance && estMargin?.margin) {
+  if (totalMargin !== margin) {
+    details.push({
+      label: t('Total margin'),
+      value: `~${formatValueWithAssetDp(totalMargin)}`,
+      symbol,
+      labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
+    });
+  }
+  if (balance && totalMargin) {
     details.push({
       label: t('Margin account balance'),
-      value: `~${formatValueWithAssetDp(accountBalance)}`,
+      value: `~${formatValueWithAssetDp(balance)}`,
       symbol,
       labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
     });
     details.push({
       label: t('Margin difference'),
       value: `~${formatValueWithAssetDp(
-        (BigInt(estMargin.margin) - BigInt(accountBalance)).toString()
+        (BigInt(totalMargin) - BigInt(balance)).toString()
       )}`,
       symbol,
       labelDescription: MARGIN_DIFF_TOOLTIP_TEXT,
@@ -184,8 +196,7 @@ export const getFeeDetailsValues = ({
   }
   details.push({
     label: t('Liquidation'),
-    value:
-      (estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`) || undefined,
+    value: (estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`) || '',
     symbol: market.tradableInstrument.instrument.product.quoteName,
     labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
   });

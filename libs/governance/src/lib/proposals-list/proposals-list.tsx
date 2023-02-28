@@ -24,14 +24,11 @@ export const ProposalsList = () => {
   const handleOnGridReady = useCallback(() => {
     gridRef.current?.api?.sizeColumnsToFit();
   }, [gridRef]);
-  const variables = useMemo(() => {
-    return {
-      proposalType: Types.ProposalType.TYPE_NEW_MARKET,
-    };
-  }, []);
   const { data, loading, error, reload } = useDataProvider({
     dataProvider: proposalsDataProvider,
-    variables,
+    variables: {
+      proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+    },
   });
   const filteredData = getNewMarketProposals(data || []);
   const { columnDefs, defaultColDef } = useColumnDefs();

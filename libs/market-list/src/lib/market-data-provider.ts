@@ -74,7 +74,8 @@ export type StaticMarketData = Pick<
 
 export const staticMarketDataProvider = makeDerivedDataProvider<
   StaticMarketData,
-  never
+  never,
+  MarketDataQueryVariables
 >([marketDataProvider], (parts, variables, prevData) => {
   const marketData = parts[0] as ReturnType<typeof getData>;
   if (!marketData) {
@@ -100,10 +101,9 @@ export const staticMarketDataProvider = makeDerivedDataProvider<
 });
 
 export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
-  const variables = useMemo(() => ({ marketId }), [marketId]);
   return useDataProvider({
     dataProvider: staticMarketDataProvider,
-    variables,
+    variables: { marketId: marketId || '' },
     skip: skip || !marketId,
   });
 };

@@ -17,11 +17,14 @@ import {
 
 import type {
   MarketLpQuery,
+  MarketLpQueryVariables,
   LiquidityProviderFeeShareFieldsFragment,
   LiquidityProviderFeeShareQuery,
+  LiquidityProviderFeeShareQueryVariables,
   LiquidityProviderFeeShareUpdateSubscription,
   LiquidityProvisionFieldsFragment,
   LiquidityProvisionsQuery,
+  LiquidityProvisionsQueryVariables,
   LiquidityProvisionsUpdateSubscription,
 } from './__generated__/MarketLiquidity';
 import type { IterableElement } from 'type-fest';
@@ -30,7 +33,8 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
   LiquidityProvisionFieldsFragment[],
   LiquidityProvisionsUpdateSubscription,
-  LiquidityProvisionsUpdateSubscription['liquidityProvisions']
+  LiquidityProvisionsUpdateSubscription['liquidityProvisions'],
+  LiquidityProvisionsQueryVariables
 >({
   query: LiquidityProvisionsDocument,
   subscriptionQuery: LiquidityProvisionsUpdateDocument,
@@ -102,7 +106,8 @@ export const marketLiquidityDataProvider = makeDataProvider<
   MarketLpQuery,
   MarketLpQuery,
   never,
-  never
+  never,
+  MarketLpQueryVariables
 >({
   query: MarketLpDocument,
   getData: (responseData: MarketLpQuery | null) => {
@@ -114,7 +119,8 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
   LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareFieldsFragment[],
   LiquidityProviderFeeShareUpdateSubscription,
-  LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare']
+  LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare'],
+  LiquidityProviderFeeShareQueryVariables
 >({
   query: LiquidityProviderFeeShareDocument,
   subscriptionQuery: LiquidityProviderFeeShareUpdateDocument,
@@ -150,7 +156,11 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
   },
 });
 
-export const lpAggregatedDataProvider = makeDerivedDataProvider(
+export const lpAggregatedDataProvider = makeDerivedDataProvider<
+  ReturnType<typeof getLiquidityProvision>,
+  never,
+  MarketLpQueryVariables
+>(
   [
     liquidityProvisionsDataProvider,
     marketLiquidityDataProvider,

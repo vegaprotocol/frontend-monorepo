@@ -2,7 +2,6 @@ import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, memo } from 'react';
-import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
@@ -27,10 +26,7 @@ export const AccountManager = ({
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
-  const { data, loading, error, reload } = useDataProvider<
-    AccountFields[],
-    never
-  >({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
