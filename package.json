@@ -14,7 +14,7 @@
     "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl"
   },
   "engines": {
-    "node": ">=16.14.0"
+    "node": ">=16.15.1"
   },
   "private": true,
   "dependencies": {
