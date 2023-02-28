@@ -68,6 +68,32 @@ describe('AccountsTable', () => {
       '1,256.00',
       'Breakdown',
       'Deposit',
+      'Withdraw',
+    ];
+    cells.forEach((cell, i) => {
+      expect(cell).toHaveTextContent(expectedValues[i]);
+    });
+    const rows = await screen.findAllByRole('row');
+    expect(rows.length).toBe(6);
+  });
+
+  it('should apply correct formatting in view as user mode', async () => {
+    await act(async () => {
+      render(
+        <AccountTable
+          rowData={singleRowData}
+          onClickAsset={() => null}
+          isReadOnly={true}
+        />
+      );
+    });
+    const cells = await screen.findAllByRole('gridcell');
+    const expectedValues = [
+      'tBTC',
+      '1,256.00',
+      '1,256.00',
+      '1,256.00',
+      'Breakdown',
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
