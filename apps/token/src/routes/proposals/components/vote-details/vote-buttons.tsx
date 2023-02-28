@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
-import { useVoteSubmit } from '@vegaprotocol/governance';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
 import {
   AppStateActionType,
@@ -16,6 +15,7 @@ import { VoteState } from './use-user-vote';
 import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { useVoteButtonsQuery } from './__generated__/Stake';
+import type { DialogProps } from '@vegaprotocol/wallet';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -24,6 +24,8 @@ interface VoteButtonsContainerProps {
   proposalState: ProposalState;
   minVoterBalance: string | null;
   spamProtectionMinTokens: string | null;
+  submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
+  dialog: (props: DialogProps) => JSX.Element;
   className?: string;
 }
 
@@ -62,11 +64,12 @@ export const VoteButtons = ({
   currentStakeAvailable,
   minVoterBalance,
   spamProtectionMinTokens,
+  submit,
+  dialog: Dialog,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
   const { pubKey } = useVegaWallet();
-  const { submit, Dialog } = useVoteSubmit();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));

@@ -5,6 +5,7 @@ import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
 import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
+import { VoteEventFieldsFragment } from '../../../../../../../libs/governance/src/lib/voting-hooks/__generated__/VoteSubsciption';
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -21,25 +22,14 @@ export type Vote = {
   party: { id: string };
 };
 
-export type Votes = Array<Vote | null>;
-
-export function getUserVote(pubkey: string, yesVotes?: Votes, noVotes?: Votes) {
-  const yesVote = yesVotes?.find((v) => v && v.party.id === pubkey);
-  const noVote = noVotes?.find((v) => v && v.party.id === pubkey);
-  if (yesVote) {
-    return yesVote;
-  } else if (noVote) {
-    return noVote;
-  } else {
-    return null;
-  }
-}
-
 /**
  * Finds the status of a users given vote in a given proposal and provides
  * a function to send a vote transaction to your wallet
  */
-export function useUserVote(proposalId: string | null | undefined) {
+export function useUserVote(
+  proposalId: string | null | undefined,
+  finalizedVote?: VoteEventFieldsFragment | null
+) {
   const { pubKey } = useVegaWallet();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [timeout, setTimeoutValue] = useState<any>(null);
@@ -50,10 +40,22 @@ export function useUserVote(proposalId: string | null | undefined) {
     variables: { partyId: pubKey || '' },
     skip: !pubKey || !proposalId,
   });
+  const [userVote, setUserVote] = useState<VoteEventFieldsFragment | undefined>(
+    undefined
+  );
 
-  const userVote = removePaginationWrapper(
-    data?.party?.votesConnection?.edges
-  ).find(({ proposalId: pId }) => proposalId === pId);
+  useEffect(() => {
+    if (finalizedVote?.vote.value) {
+      setUserVote(finalizedVote);
+    } else if (data?.party?.votesConnection?.edges) {
+      // This sets the vote (if any) when the user first loads the page
+      setUserVote(
+        removePaginationWrapper(data?.party?.votesConnection?.edges).find(
+          ({ proposalId: pId }) => proposalId === pId
+        )
+      );
+    }
+  }, [finalizedVote?.vote.value, data?.party?.votesConnection?.edges]);
 
   // If user vote changes update the vote state
   useEffect(() => {
