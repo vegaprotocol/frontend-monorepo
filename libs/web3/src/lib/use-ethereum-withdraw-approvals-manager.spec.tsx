@@ -69,7 +69,7 @@ const mockUseEthereumConfig = {
   collateral_bridge_contract: {
     address: 'address',
   },
-  chain_id: '111111'
+  chain_id: '111111',
 };
 
 jest.mock('./use-ethereum-config', () => ({
@@ -315,6 +315,8 @@ describe('useEthWithdrawApprovalsManager', () => {
     });
     render();
     expect(update.mock.calls[0][1].status).toEqual(ApprovalStatus.Error);
-    expect(update.mock.calls[0][1].message).toEqual('You are on the wrong network');
-  })
+    expect(update.mock.calls[0][1].message).toEqual(
+      'You are on the wrong network'
+    );
+  });
 });
