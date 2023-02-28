@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
-import { VoteProgress } from '@vegaprotocol/governance';
+import { useVoteSubmit, VoteProgress } from '@vegaprotocol/governance';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
@@ -44,7 +44,8 @@ export const VoteDetails = ({
   } = useVoteInformation({ proposal });
 
   const { t } = useTranslation();
-  const { voteState, voteDatetime } = useUserVote(proposal?.id);
+  const { submit, Dialog, finalizedVote } = useVoteSubmit();
+  const { voteState, voteDatetime } = useUserVote(proposal?.id, finalizedVote);
   const defaultDecimals = 2;
   const daysLeft = t('daysLeft', {
     daysLeft: formatDistanceToNow(new Date(proposal?.terms.closingDatetime)),
@@ -188,6 +189,8 @@ export const VoteDetails = ({
                 minVoterBalance={minVoterBalance}
                 spamProtectionMinTokens={spamProtectionMinTokens}
                 className="flex"
+                submit={submit}
+                dialog={Dialog}
               />
             )}
           </section>
