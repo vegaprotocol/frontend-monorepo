@@ -60,7 +60,7 @@ export const useEthWithdrawApprovalsManager = () => {
     if (chainId?.toString() !== config?.chain_id) {
       update(transaction.id, {
         status: ApprovalStatus.Error,
-        message: t(`You are on not correct network`),
+        message: t(`You are on the wrong network`),
       });
       return;
     }
