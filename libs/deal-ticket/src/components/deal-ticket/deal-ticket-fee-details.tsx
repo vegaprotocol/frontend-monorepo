@@ -31,7 +31,7 @@ export const DealTicketFeeDetails = ({
     <div>
       {details.map(({ label, value, labelDescription, symbol }) => (
         <div
-          key={label}
+          key={typeof label === 'string' ? label : 'value-dropdown'}
           className="text-xs mt-2 flex justify-between items-center gap-4 flex-wrap"
         >
           <div>

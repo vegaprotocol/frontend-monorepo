@@ -184,9 +184,8 @@ export const MarketDetails = ({
       content: (
         <>
           <p className="text-xs mb-4">
-            {`For liquidity orders count towards a commitment they have to be
-        within either the liquidity or price monitoring bounds (whichever is
-        tighter).`}
+            {`For liquidity orders to count towards a commitment, they must be
+            within the liquidity monitoring bounds.`}
           </p>
           <p className="text-xs mb-4">
             {`The liquidity price range is a ${liquidityPriceRange} difference from the mid

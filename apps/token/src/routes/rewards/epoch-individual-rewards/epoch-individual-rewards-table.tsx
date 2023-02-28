@@ -50,10 +50,11 @@ const DisplayReward = ({
     >
       <button>
         <div className="flex flex-col items-start">
-          <span>{formatNumber(toBigNum(reward, decimals))}</span>
+          <span>{formatNumber(toBigNum(reward, decimals), 4)}</span>
           {percentageOfTotal && (
             <span className="text-vega-dark-300">
-              ({formatNumber(toBigNum(percentageOfTotal, 4)).toString()}%)
+              ({formatNumber(percentageOfTotal, 4).toString()}
+              %)
             </span>
           )}
         </div>

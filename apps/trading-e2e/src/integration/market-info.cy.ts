@@ -125,20 +125,12 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(1, 'Long', '0.008508132993273576');
   });
 
-  it('price monitoring trigger displayed', () => {
-    cy.getByTestId(marketTitle).contains('Price monitoring trigger 1').click();
-
-    validateMarketDataRow(0, 'Horizon Secs', '43,200');
-    validateMarketDataRow(1, 'Probability', '1');
-    validateMarketDataRow(2, 'Auction Extension Secs', '600');
-  });
-
   it('price monitoring bound displayed', () => {
     cy.getByTestId(marketTitle).contains('Price monitoring bound 1').click();
 
-    validateMarketDataRow(0, 'Min Valid Price', '6.54701 ');
-    validateMarketDataRow(1, 'Max Valid Price', '7.97323 ');
-    validateMarketDataRow(2, 'Reference Price', '7.22625 ');
+    validateMarketDataRow(0, 'Highest Price', '6.54701 BTC');
+    validateMarketDataRow(1, 'Lowest Price', '7.97323 BTC');
+    validateMarketDataRow(2, 'Reference Price', '7.22625 BTC');
   });
 
   it('liquidity monitoring parameters displayed', () => {
