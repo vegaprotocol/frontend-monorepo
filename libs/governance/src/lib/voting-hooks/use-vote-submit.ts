@@ -5,6 +5,8 @@ import { useVoteEvent } from './use-vote-event';
 import type { VoteValue } from '@vegaprotocol/types';
 import type { VoteEventFieldsFragment } from './__generated__/VoteSubsciption';
 
+export type FinalizedVote = VoteEventFieldsFragment;
+
 export const useVoteSubmit = () => {
   const { pubKey } = useVegaWallet();
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();

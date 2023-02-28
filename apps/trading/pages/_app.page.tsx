@@ -22,7 +22,6 @@ import {
   useInitializeEnv,
 } from '@vegaprotocol/environment';
 import './styles.css';
-import './gen-styles.scss';
 import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useMemo, useState } from 'react';
