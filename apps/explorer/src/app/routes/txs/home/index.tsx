@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList } from '../../../components/txs';

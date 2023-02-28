@@ -1,8 +1,8 @@
 import {
-  t,
   getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { SimpleGridProps } from '@vegaprotocol/ui-toolkit';

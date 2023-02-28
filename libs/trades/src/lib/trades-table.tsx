@@ -4,15 +4,14 @@ import { forwardRef } from 'react';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
+import { AgGridDynamic as AgGrid, NumericCell } from '@vegaprotocol/datagrid';
 import {
   addDecimal,
   addDecimalsFormatNumber,
   getDateTimeFormat,
-  NumericCell,
-  t,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { CellClassParams } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';

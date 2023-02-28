@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import type { NetworkParamsQuery } from '@vegaprotocol/utils';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { NetworkParametersTable } from './network-parameters';
 
 describe('NetworkParametersTable', () => {

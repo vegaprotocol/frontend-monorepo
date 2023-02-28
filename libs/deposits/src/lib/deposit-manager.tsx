@@ -18,7 +18,7 @@ import {
   useBridgeContract,
   useEthereumConfig,
 } from '@vegaprotocol/web3';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 interface DepositManagerProps {
   assetId?: string;

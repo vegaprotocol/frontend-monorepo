@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 // TODO: add mainnet links once docs have been updated

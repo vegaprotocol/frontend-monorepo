@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 export const THROTTLE_UPDATE_TIME = 500;
 export const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 export const MAINNET_WELCOME_HEADER = t(

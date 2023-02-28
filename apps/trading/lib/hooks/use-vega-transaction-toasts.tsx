@@ -32,11 +32,10 @@ import { Button, ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
-  Size,
-  t,
   toBigNum,
   truncateByChars,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
@@ -45,6 +44,7 @@ import { useMarketList } from '@vegaprotocol/market-list';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatus } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
+import { Size } from '@vegaprotocol/react-helpers';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
   Default: Intent.Primary,

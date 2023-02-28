@@ -8,8 +8,8 @@ import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  t,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
   useDataProvider,

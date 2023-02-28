@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
-import { formatNumber, t, toBigNum } from '@vegaprotocol/utils';
+import { formatNumber, toBigNum } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';

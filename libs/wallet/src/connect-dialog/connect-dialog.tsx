@@ -10,7 +10,8 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
-import { ExternalLinks, t } from '@vegaprotocol/utils';
+import { ExternalLinks } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { ViewConnector } from '../connectors';

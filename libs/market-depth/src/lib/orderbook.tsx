@@ -4,9 +4,9 @@ import { useEffect, useRef, useState, useCallback, Fragment } from 'react';
 import classNames from 'classnames';
 import {
   addDecimalsFixedFormatNumber,
-  t,
   formatNumberFixed,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   useResizeObserver,
   useThemeSwitcher,

@@ -7,8 +7,9 @@ import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { ChainIdQuery } from '@vegaprotocol/utils';
-import { ChainIdDocument, addDecimal } from '@vegaprotocol/utils';
+import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
+import { ChainIdDocument } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 
 const market = generateMarket();
 const marketData = generateMarketData();

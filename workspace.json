@@ -14,6 +14,7 @@
     "explorer-e2e": "apps/explorer-e2e",
     "fills": "libs/fills",
     "governance": "libs/governance",
+    "i18n": "libs/i18n",
     "ledger": "libs/ledger",
     "liquidity": "libs/liquidity",
     "liquidity-provision-dashboard": "apps/liquidity-provision-dashboard",

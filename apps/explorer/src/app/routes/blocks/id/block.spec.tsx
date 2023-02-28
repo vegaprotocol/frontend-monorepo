@@ -2,7 +2,7 @@ import { Block } from './block';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Routes as RouteNames } from '../../route-names';
-import { useFetch } from '@vegaprotocol/utils';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import { MockedProvider } from '@apollo/client/testing';
 
 jest.mock('@vegaprotocol/react-helpers', () => {

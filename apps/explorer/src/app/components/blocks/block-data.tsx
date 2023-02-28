@@ -6,7 +6,7 @@ import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { TimeAgo } from '../time-ago';
 import { TableWithTbody, TableRow, TableCell } from '../table';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 interface BlockProps {
   block: BlockMeta;

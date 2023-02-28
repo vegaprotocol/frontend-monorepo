@@ -1,11 +1,11 @@
 import { AgGridColumn } from 'ag-grid-react';
 import {
   getDateTimeFormat,
-  t,
   truncateByChars,
   addDecimalsFormatNumber,
   isNumeric,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Link,
   ButtonLink,

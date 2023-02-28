@@ -1,6 +1,7 @@
 import { RouteTitle } from '../../../components/route-title';
 import { RenderFetched } from '../../../components/render-fetched';
-import { t, truncateByChars } from '@vegaprotocol/utils';
+import { truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import { useParams } from 'react-router-dom';
 import { useExplorerOracleSpecByIdQuery } from '../__generated__/Oracles';

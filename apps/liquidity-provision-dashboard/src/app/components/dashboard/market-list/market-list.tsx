@@ -8,9 +8,10 @@ import {
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  t,
+  getExpiryDate,
   toBigNum,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import type * as Schema from '@vegaprotocol/types';
@@ -30,7 +31,6 @@ import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
-import { getExpiryDate } from '@vegaprotocol/utils';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();

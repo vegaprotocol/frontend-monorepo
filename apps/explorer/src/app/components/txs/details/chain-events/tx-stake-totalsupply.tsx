@@ -1,4 +1,5 @@
-import { formatNumber, t, toBigNum } from '@vegaprotocol/utils';
+import { formatNumber, toBigNum } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import {

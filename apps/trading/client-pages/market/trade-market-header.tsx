@@ -3,7 +3,8 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
 import type { Market } from '@vegaprotocol/market-list';
-import { getExpiryDate, getMarketExpiryDate, t } from '@vegaprotocol/utils';
+import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   ColumnKind,
   SelectMarketPopover,

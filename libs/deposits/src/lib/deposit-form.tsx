@@ -1,16 +1,16 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { AssetOption } from '@vegaprotocol/assets';
 import {
-  t,
   ethereumAddress,
   required,
   vegaPublicKey,
   minSafe,
   maxSafe,
   addDecimal,
-  useLocalStorage,
   isAssetTypeERC20,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,

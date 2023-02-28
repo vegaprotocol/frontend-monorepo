@@ -1,6 +1,6 @@
 import { useExplorerEpochQuery } from './__generated__/Epoch';
 
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { BlockLink } from '../links';
 import { Time } from '../time';
 import { TimeAgo } from '../time-ago';

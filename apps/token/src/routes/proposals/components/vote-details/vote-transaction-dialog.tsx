@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { VoteState } from './use-user-vote';
 import type { DialogProps } from '@vegaprotocol/wallet';
 

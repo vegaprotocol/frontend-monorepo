@@ -1,6 +1,6 @@
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AssetTypeMapping, AssetStatusMapping } from '@vegaprotocol/assets';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';

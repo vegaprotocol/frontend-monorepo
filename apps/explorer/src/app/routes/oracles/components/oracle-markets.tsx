@@ -1,4 +1,5 @@
-import { getNodes, t } from '@vegaprotocol/utils';
+import { getNodes } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { MarketLink } from '../../../components/links';
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
 import type { ExplorerOracleForMarketsMarketFragment } from '../__generated__/OraclesForMarkets';

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { t, titlefy } from '@vegaprotocol/utils';
+import { titlefy } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Tabs, Tab } from '@vegaprotocol/ui-toolkit';
 import { Markets } from './markets';
 import { Proposed } from './proposed';

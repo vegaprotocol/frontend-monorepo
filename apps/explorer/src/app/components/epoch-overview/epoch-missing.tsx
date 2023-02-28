@@ -4,8 +4,7 @@ import addSeconds from 'date-fns/addSeconds';
 import formatDistance from 'date-fns/formatDistance';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isFuture from 'date-fns/isFuture';
-import { isValidDate } from '@vegaprotocol/utils';
-import { getSecondsFromInterval } from '@vegaprotocol/utils';
+import { getSecondsFromInterval, isValidDate } from '@vegaprotocol/utils';
 
 export type EpochMissingOverviewProps = {
   missingEpochId?: string;

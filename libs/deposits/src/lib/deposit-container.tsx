@@ -1,7 +1,7 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { DepositManager } from './deposit-manager';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { enabledAssetsProvider } from '@vegaprotocol/assets';
 import type { DepositDialogStylePropsSetter } from './deposit-dialog';

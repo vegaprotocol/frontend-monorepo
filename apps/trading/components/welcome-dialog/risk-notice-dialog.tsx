@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { LocalStorage } from '@vegaprotocol/utils';
 import { RISK_ACCEPTED_KEY } from '../constants';

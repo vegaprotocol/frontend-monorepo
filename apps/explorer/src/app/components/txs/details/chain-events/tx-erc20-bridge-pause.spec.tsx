@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { TxDetailsChainEventErc20BridgePause } from './tx-erc20-bridge-pause';
 
 describe('Chain Event: ERC20 bridge pause', () => {

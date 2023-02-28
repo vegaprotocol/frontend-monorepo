@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { ReactNode } from 'react';
 import { Time } from '../time';
 import { useExplorerWithdrawalQuery } from './__generated__/Withdrawal';

@@ -1,5 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
-import { addDecimal, t, truncateByChars } from '@vegaprotocol/utils';
+import { addDecimal, truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
   useDataProvider,

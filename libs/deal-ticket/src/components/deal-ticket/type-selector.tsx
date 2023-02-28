@@ -4,7 +4,7 @@ import {
   SimpleGrid,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { Market, MarketData } from '@vegaprotocol/market-list';

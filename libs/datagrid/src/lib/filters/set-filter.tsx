@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 export const SetFilter = forwardRef((props: IFilterParams, ref) => {
   const [value, setValue] = useState<string[]>([]);

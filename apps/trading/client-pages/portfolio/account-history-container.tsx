@@ -1,4 +1,5 @@
-import { addDecimal, fromNanoSeconds, t } from '@vegaprotocol/utils';
+import { addDecimal, fromNanoSeconds } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import compact from 'lodash/compact';
 import uniqBy from 'lodash/uniqBy';

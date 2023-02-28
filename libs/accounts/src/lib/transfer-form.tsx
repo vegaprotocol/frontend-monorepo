@@ -1,5 +1,4 @@
 import {
-  t,
   minSafe,
   maxSafe,
   required,
@@ -7,6 +6,7 @@ import {
   addDecimal,
   formatNumber,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   FormGroup,

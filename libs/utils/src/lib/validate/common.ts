@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
-import { t } from '../../../../utils/src/lib/i18n';
+import { t } from '@vegaprotocol/i18n';
 
 export const required = (value: string) => {
   if (value === null || value === undefined || value === '') {

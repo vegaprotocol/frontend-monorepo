@@ -9,8 +9,8 @@ import {
   formatNumber,
   removePaginationWrapper,
   suitableForSyntaxHighlighter,
-  t,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../components/route-title';
 import orderBy from 'lodash/orderBy';
 import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';

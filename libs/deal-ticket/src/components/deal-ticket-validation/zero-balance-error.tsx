@@ -1,6 +1,6 @@
 import { Intent, Notification, Link } from '@vegaprotocol/ui-toolkit';
 import { useDepositDialog } from '@vegaprotocol/deposits';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 interface ZeroBalanceErrorProps {
   asset: {

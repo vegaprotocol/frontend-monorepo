@@ -1,6 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
-import { t, truncateByChars } from '@vegaprotocol/utils';
+import type { OrderFieldsFragment } from '@vegaprotocol/orders';
+import { truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { TransactionResult, VegaTxState } from '@vegaprotocol/wallet';
@@ -13,7 +14,7 @@ interface CompleteProps {
   transaction: VegaTxState;
   transactionResult?: TransactionResult;
   closingOrder?: IClosingOrder;
-  closingOrderResult?: OrderEventFieldsFragment;
+  closingOrderResult?: OrderFieldsFragment;
 }
 
 export const Complete = ({
@@ -89,7 +90,7 @@ const Error = ({
   closingOrderResult,
 }: {
   transactionResult: TransactionResult;
-  closingOrderResult: OrderEventFieldsFragment;
+  closingOrderResult: OrderFieldsFragment;
 }) => {
   const reason =
     closingOrderResult.rejectionReason &&

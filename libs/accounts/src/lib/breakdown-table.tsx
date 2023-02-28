@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
-import { addDecimalsFormatNumber, isNumeric, t } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Intent,
   progressBarCellRendererSelector,

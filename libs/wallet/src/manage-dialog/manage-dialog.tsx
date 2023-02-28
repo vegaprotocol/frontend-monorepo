@@ -1,4 +1,5 @@
-import { t, truncateByChars } from '@vegaprotocol/utils';
+import { truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   Dialog,

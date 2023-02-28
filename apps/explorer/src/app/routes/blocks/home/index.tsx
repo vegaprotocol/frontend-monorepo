@@ -8,7 +8,7 @@ import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { BlocksInfiniteList } from '../../../components/blocks/blocks-infinite-list';
 import { JumpToBlock } from '../../../components/jump-to-block';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 

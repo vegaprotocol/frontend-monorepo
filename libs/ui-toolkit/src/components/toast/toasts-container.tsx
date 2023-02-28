@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { Ref } from 'react';

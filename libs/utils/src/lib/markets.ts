@@ -1,7 +1,7 @@
 import { MarketState } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/i18n';
 import { isValid, parseISO } from 'date-fns';
 import { getDateTimeFormat } from './format';
-import { t } from './i18n';
 
 export const getMarketExpiryDate = (
   tags?: ReadonlyArray<string> | null

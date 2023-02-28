@@ -1,12 +1,12 @@
 import { forwardRef } from 'react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
-  t,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   truncateByChars,
   isNumeric,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { AgGridReact } from 'ag-grid-react';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';

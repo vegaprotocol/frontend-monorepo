@@ -1,5 +1,6 @@
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
-import { getDateTimeFormat, t } from '@vegaprotocol/utils';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { UpdateNetworkParameter } from '@vegaprotocol/types';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import { ProposalState } from '@vegaprotocol/types';

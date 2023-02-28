@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { AgGridColumn } from 'ag-grid-react';
 
 import type { GetRowIdParams } from 'ag-grid-community';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 import type {
   LiquidityProviderFeeShareFieldsFragment,

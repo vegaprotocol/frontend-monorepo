@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { isValidUrl, t } from '@vegaprotocol/utils';
+import { isValidUrl } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   ButtonLink,

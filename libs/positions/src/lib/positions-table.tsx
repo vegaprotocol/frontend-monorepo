@@ -17,12 +17,12 @@ import {
 } from '@vegaprotocol/datagrid';
 import {
   volumePrefix,
-  t,
   toBigNum,
   formatNumber,
   getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';

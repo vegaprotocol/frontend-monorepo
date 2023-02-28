@@ -22,8 +22,8 @@ import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  t,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 interface Props {
   marketId?: string;

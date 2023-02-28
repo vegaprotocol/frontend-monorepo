@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { t, getDateTimeFormat } from '@vegaprotocol/utils';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';

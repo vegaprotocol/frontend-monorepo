@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { proposalsDataProvider } from '@vegaprotocol/governance';
 import take from 'lodash/take';

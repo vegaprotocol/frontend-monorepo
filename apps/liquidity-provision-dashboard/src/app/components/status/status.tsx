@@ -2,7 +2,7 @@ import { Lozenge, Tooltip } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 
 import * as Schema from '@vegaprotocol/types';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 import { Indicator } from '../indicator';
 

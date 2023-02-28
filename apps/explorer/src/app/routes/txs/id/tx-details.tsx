@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { TxDetailsWrapper } from '../../../components/txs/details/tx-details-wrapper';
 

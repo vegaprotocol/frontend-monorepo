@@ -6,8 +6,8 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateMarket } from './propose-update-market';
-import type { NetworkParamsQuery } from '@vegaprotocol/utils';
-import { NetworkParamsDocument } from '@vegaprotocol/utils';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 import type { ProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
 import { ProposalMarketsQueryDocument } from './__generated___/UpdateMarket';
 

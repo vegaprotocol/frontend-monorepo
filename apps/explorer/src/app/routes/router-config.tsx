@@ -17,7 +17,7 @@ import { Tx } from './txs/id';
 import { TxsList } from './txs/home';
 import { PendingTxs } from './pending';
 import flags from '../config/flags';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Routes } from './route-names';
 import { NetworkParameters } from './network-parameters';
 import type { RouteObject } from 'react-router-dom';

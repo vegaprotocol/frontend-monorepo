@@ -1,4 +1,5 @@
-import { countryCodeToFlagEmoji, t } from '@vegaprotocol/utils';
+import { countryCodeToFlagEmoji } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   AsyncRenderer,
   Button,

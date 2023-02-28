@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash/debounce';
-import { addDecimalsFormatNumber, t, titlefy } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   useDataProvider,
   useThrottledDataProvider,

@@ -2,8 +2,8 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
-  t,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   KeyValueTable,
   KeyValueTableRow,

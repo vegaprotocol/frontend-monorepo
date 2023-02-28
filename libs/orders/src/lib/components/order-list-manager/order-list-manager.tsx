@@ -1,5 +1,6 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t, truncateByChars } from '@vegaprotocol/utils';
+import { truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useRef, useState } from 'react';
 import type {
   BodyScrollEvent,

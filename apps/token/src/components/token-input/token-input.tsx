@@ -7,7 +7,7 @@ import {
   Lozenge,
   ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

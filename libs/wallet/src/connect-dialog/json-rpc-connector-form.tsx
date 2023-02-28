@@ -1,5 +1,6 @@
 import capitalize from 'lodash/capitalize';
-import { createDocsLinks, t } from '@vegaprotocol/utils';
+import { createDocsLinks } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   ButtonLink,
   Diamond,

@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useAssetsDataProvider } from './assets-data-provider';
 import {
   Button,

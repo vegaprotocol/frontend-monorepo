@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/react';
 import { useOrderUpdate } from './use-order-update';
 import * as Schema from '@vegaprotocol/types';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 export const getOrderDialogTitle = (

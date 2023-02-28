@@ -27,6 +27,7 @@
       "@vegaprotocol/environment": ["libs/environment/src/index.ts"],
       "@vegaprotocol/fills": ["libs/fills/src/index.ts"],
       "@vegaprotocol/governance": ["libs/governance/src/index.ts"],
+      "@vegaprotocol/i18n": ["libs/i18n/src/index.ts"],
       "@vegaprotocol/ledger": ["libs/ledger/src/index.ts"],
       "@vegaprotocol/liquidity": ["libs/liquidity/src/index.ts"],
       "@vegaprotocol/market-depth": ["libs/market-depth/src/index.ts"],

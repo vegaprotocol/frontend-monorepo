@@ -14,12 +14,12 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import * as Schema from '@vegaprotocol/types';
 import {
+  addDecimal,
   isAssetTypeERC20,
   removePaginationWrapper,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { useAppState } from '../../contexts/app-state/app-state-context';
-import { addDecimal } from '@vegaprotocol/utils';
 import type {
   DelegationsQuery,
   DelegationsQueryVariables,

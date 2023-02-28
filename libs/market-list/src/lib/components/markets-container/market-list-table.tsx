@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
-import { addDecimalsFormatNumber, t, toBigNum } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type {
   VegaValueGetterParams,
   VegaValueFormatterParams,

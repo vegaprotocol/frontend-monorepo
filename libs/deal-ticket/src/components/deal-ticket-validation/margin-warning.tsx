@@ -1,4 +1,5 @@
-import { formatNumber, t } from '@vegaprotocol/utils';
+import { formatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Notification, Intent } from '@vegaprotocol/ui-toolkit';
 import { DepositDialog, useDepositDialog } from '@vegaprotocol/deposits';
 

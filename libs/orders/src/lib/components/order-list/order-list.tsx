@@ -2,8 +2,8 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
-  t,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';

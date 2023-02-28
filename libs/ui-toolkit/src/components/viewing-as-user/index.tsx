@@ -1,5 +1,5 @@
 import { Button } from '../button';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 export function truncateMiddle(address: string) {
   if (address.length < 11) return address;

@@ -1,6 +1,6 @@
 import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { UseFormRegister } from 'react-hook-form';
 import { validateExpiration } from '../../utils/validate-expiration';
 import type { DealTicketFormFields } from '.';

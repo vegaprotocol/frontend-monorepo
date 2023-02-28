@@ -10,7 +10,8 @@ import type {
 } from '@vegaprotocol/datagrid';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { RowClickedEvent } from 'ag-grid-community';
-import { getDateTimeFormat, t } from '@vegaprotocol/utils';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';

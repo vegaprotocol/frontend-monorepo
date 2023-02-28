@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { NestedDataList } from '../../../nested-data-list';
 import { OpenOraclePrices } from './open-oracle/open-oracle-prices';
 

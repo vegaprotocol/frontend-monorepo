@@ -6,8 +6,10 @@ import {
   formatNumber,
   formatNumberPercentage,
   removePaginationWrapper,
-  t,
+  TokenLinks,
+  getMarketExpiryDateFormatted,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -24,7 +26,6 @@ import { generatePath, Link } from 'react-router-dom';
 
 import { MarketInfoTable } from './info-key-value-table';
 import { marketInfoDataProvider } from './market-info-data-provider';
-import { TokenLinks, getMarketExpiryDateFormatted } from '@vegaprotocol/utils';
 
 import type { MarketInfoQuery } from './__generated__/MarketInfo';
 import { MarketProposalNotification } from '@vegaprotocol/governance';

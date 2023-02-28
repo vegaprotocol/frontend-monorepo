@@ -9,9 +9,9 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   getDateTimeFormat,
-  t,
   isNumeric,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
 import { Link } from '@vegaprotocol/ui-toolkit';

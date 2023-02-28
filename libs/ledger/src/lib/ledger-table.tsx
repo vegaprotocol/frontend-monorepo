@@ -2,9 +2,9 @@ import {
   addDecimalsFormatNumber,
   fromNanoSeconds,
   getDateTimeFormat,
-  t,
   truncateByChars,
 } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type {
   VegaValueFormatterParams,
   TypedDataAgGrid,

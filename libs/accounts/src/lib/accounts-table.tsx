@@ -1,5 +1,6 @@
 import { forwardRef, useMemo, useState } from 'react';
-import { addDecimalsFormatNumber, isNumeric, t } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,

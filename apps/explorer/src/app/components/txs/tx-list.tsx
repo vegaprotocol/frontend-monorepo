@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { TendermintUnconfirmedTransactionsResponse } from '../../routes/txs/tendermint-unconfirmed-transactions-response.d';
 
 interface TxsProps {
