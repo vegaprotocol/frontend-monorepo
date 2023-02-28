@@ -3,13 +3,13 @@
 To run the UI automation tests with Vega Capsule, run:
 
 ```bash
-yarn nx run token-e2e:e2e
+yarn nx run governance-e2e:e2e
 ```
 
 To open Cypress and run in interactive mode, run:
 
 ```bash
-yarn nx run token-e2e:e2e --watch
+yarn nx run governance-e2e:e2e --watch
 ```
 
 ## Vega Capsule Setup
@@ -36,4 +36,4 @@ vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/con
 
 You can then refer to (or run) `frontend-monorepo/vegacapsule/setup-vegawallet.sh`. This will initialise and configure your wallet to have the correct public keys and network config to run against capsule.
 
-Go to the .env file in `apps/token-e2e` and set the `CYPRESS_VEGA_WALLET_API_TOKEN` environment variable by pasting in your wallets long lived api token
+Go to the .env file in `apps/governance-e2e` and set the `CYPRESS_VEGA_WALLET_API_TOKEN` environment variable by pasting in your wallets long lived api token
