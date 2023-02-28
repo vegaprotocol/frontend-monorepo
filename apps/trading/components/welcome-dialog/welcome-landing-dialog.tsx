@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { OnCellClickHandler } from '../select-market';

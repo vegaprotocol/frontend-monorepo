@@ -9,19 +9,21 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   getDateTimeFormat,
-  positiveClassNames,
-  negativeClassNames,
-  t,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import {
+  AgGridDynamic as AgGrid,
+  positiveClassNames,
+  negativeClassNames,
+} from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
-import { Link } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';

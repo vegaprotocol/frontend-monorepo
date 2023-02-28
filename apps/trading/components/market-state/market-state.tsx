@@ -5,7 +5,8 @@ import type {
   Market,
 } from '@vegaprotocol/market-list';
 import { marketDataProvider } from '@vegaprotocol/market-list';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
 import { useCallback, useMemo, useRef, useState } from 'react';

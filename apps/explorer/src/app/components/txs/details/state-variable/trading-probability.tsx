@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../../../types/explorer';
 import { Table, TableRow, TableHeader, TableCell } from '../../../table';
 import { getValues } from './bound-factors';

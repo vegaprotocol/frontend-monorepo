@@ -1,10 +1,7 @@
 import produce from 'immer';
 import { useMemo } from 'react';
-import {
-  makeDerivedDataProvider,
-  useDataProvider,
-} from '@vegaprotocol/react-helpers';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   MarketDataDocument,
   MarketDataUpdateDocument,

@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { SELL_CLASS, TradesTable, BUY_CLASS } from './trades-table';
 import type { Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';

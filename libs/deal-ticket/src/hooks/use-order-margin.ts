@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/utils';
 import { useMarketPositions } from './use-market-positions';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
 import type { Market, MarketData } from '@vegaprotocol/market-list';

@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import type * as Schema from '@vegaprotocol/types';
-import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
 import type { ReactNode } from 'react';
 

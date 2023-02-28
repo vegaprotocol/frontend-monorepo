@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { ExternalLink } from '../link';
 import { BackgroundVideo } from '../background-video';
 

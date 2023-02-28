@@ -1,14 +1,14 @@
 import styles from './orderbook.module.scss';
 import colors from 'tailwindcss/colors';
-
 import { useEffect, useRef, useState, useCallback, Fragment } from 'react';
 import classNames from 'classnames';
-
 import {
   addDecimalsFixedFormatNumber,
-  t,
-  useResizeObserver,
   formatNumberFixed,
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import {
+  useResizeObserver,
   useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';

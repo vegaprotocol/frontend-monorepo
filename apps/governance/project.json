@@ -1,0 +1,90 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/governance/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "./tools/executors/webpack:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/governance",
+        "index": "apps/governance/src/index.html",
+        "baseHref": "/",
+        "main": "apps/governance/src/main.tsx",
+        "polyfills": "apps/governance/src/polyfills.ts",
+        "tsConfig": "apps/governance/tsconfig.app.json",
+        "assets": [
+          "apps/governance/src/favicon.ico",
+          "apps/governance/src/assets"
+        ],
+        "styles": ["apps/governance/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "apps/governance/webpack.config.js"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/governance/src/environments/environment.ts",
+              "with": "apps/governance/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": true,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "./tools/executors/webpack:serve",
+      "options": {
+        "port": 4210,
+        "buildTarget": "governance:build:development",
+        "hmr": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "governance:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/governance/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/governance"],
+      "options": {
+        "jestConfig": "apps/governance/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "build-netlify": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "cp apps/governance/netlify.toml netlify.toml",
+          "nx build token"
+        ]
+      }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/governance/tsconfig.spec.json"
+      }
+    }
+  },
+  "tags": []
+}

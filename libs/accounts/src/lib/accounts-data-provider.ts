@@ -4,7 +4,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import produce from 'immer';
 

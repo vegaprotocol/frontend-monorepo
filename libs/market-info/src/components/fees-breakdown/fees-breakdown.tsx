@@ -2,8 +2,8 @@ import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 

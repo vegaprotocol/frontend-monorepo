@@ -1,5 +1,4 @@
 {
-  "root": "libs/liquidity",
   "sourceRoot": "libs/liquidity/src",
   "projectType": "library",
   "tags": [],

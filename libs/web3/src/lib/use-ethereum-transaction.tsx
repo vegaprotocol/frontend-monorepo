@@ -1,4 +1,4 @@
-import { formatLabel } from '@vegaprotocol/react-helpers';
+import { formatLabel } from '@vegaprotocol/utils';
 import type { ethers } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import type { EthereumError } from './ethereum-error';

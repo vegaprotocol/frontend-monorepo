@@ -2,8 +2,8 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
   getMarketExpiryDateFormatted,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoNoCandlesQuery } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
 import pick from 'lodash/pick';

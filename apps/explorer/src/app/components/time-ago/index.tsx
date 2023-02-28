@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useEffect, useState } from 'react';
 
 interface TimeAgoProps {

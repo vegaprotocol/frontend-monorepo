@@ -1,7 +1,7 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketsQuery } from '@vegaprotocol/mock';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 
 const dialogCloseBtn = 'dialog-close';
 const popoverTrigger = 'popover-trigger';

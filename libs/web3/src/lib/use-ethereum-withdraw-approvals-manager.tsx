@@ -1,10 +1,10 @@
 import { useApolloClient } from '@apollo/client';
 import BigNumber from 'bignumber.js';
 import { useRef, useEffect } from 'react';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 

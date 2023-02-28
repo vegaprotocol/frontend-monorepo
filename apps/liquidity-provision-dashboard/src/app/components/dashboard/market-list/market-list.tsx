@@ -8,15 +8,16 @@ import {
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  t,
+  getExpiryDate,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
+import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import type * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Icon,
-  PriceCellChange,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
 import type { GetRowIdParams, RowClickedEvent } from 'ag-grid-community';
@@ -30,7 +31,6 @@ import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
-import { getExpiryDate } from '@vegaprotocol/react-helpers';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
@@ -134,7 +134,7 @@ export const MarketList = () => {
               if (data && data.candles) {
                 const prices = data.candles.map((candle) => candle.close);
                 return (
-                  <PriceCellChange
+                  <PriceChangeCell
                     candles={prices}
                     decimalPlaces={data?.decimalPlaces}
                   />

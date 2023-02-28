@@ -1,4 +1,5 @@
-import { remove0x, t } from '@vegaprotocol/react-helpers';
+import { remove0x } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { ApolloError } from '@apollo/client';
 
 export function isValidPartyId(rawId: string) {

@@ -1,21 +1,18 @@
-import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
-import { VoteProgress } from '@vegaprotocol/governance';
+import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
+import { VoteProgress } from '@vegaprotocol/proposals';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { RowClickedEvent } from 'ag-grid-community';
-import {
-  getDateTimeFormat,
-  NetworkParams,
-  t,
-  useNetworkParams,
-} from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';

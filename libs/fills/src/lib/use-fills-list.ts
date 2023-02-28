@@ -1,11 +1,8 @@
 import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';
-import {
-  makeInfiniteScrollGetRows,
-  useDataProvider,
-  updateGridData,
-} from '@vegaprotocol/react-helpers';
+import { makeInfiniteScrollGetRows } from '@vegaprotocol/utils';
+import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import type { Trade, TradeEdge } from './fills-data-provider';
 import { fillsWithMarketProvider } from './fills-data-provider';
 

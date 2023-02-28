@@ -1,116 +1,10 @@
+import { render, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 
-import {
-  addDecimalsFormatNumber,
-  compactNumber,
-  formatNumber,
-  formatNumberPercentage,
-  isNumeric,
-  toDecimal,
-  toNumberParts,
-} from './number';
+import { CompactNumber } from './number';
 
-describe('number react-helpers', () => {
-  it.each([
-    { v: new BigNumber(123000), d: 5, o: '1.23' },
-    { v: new BigNumber(123000), d: 3, o: '123.00' },
-    { v: new BigNumber(123000), d: 1, o: '12,300.0' },
-    { v: new BigNumber(123001), d: 2, o: '1,230.01' },
-    { v: new BigNumber(123001000), d: 2, o: '1,230,010.00' },
-  ])(
-    'formats with addDecimalsFormatNumber given number correctly',
-    ({ v, d, o }) => {
-      expect(addDecimalsFormatNumber(v.toString(), d)).toStrictEqual(o);
-    }
-  );
-
-  it.each([
-    { v: new BigNumber(123), d: 3, o: '123.00' },
-    { v: new BigNumber(123.123), d: 3, o: '123.123' },
-    { v: new BigNumber(123.6666), d: 3, o: '123.667' },
-    { v: new BigNumber(123.123), d: 6, o: '123.123' },
-    { v: new BigNumber(123.123), d: 0, o: '123' },
-    { v: new BigNumber(123), d: undefined, o: '123' },
-    { v: new BigNumber(30000), d: undefined, o: '30,000' },
-    { v: new BigNumber(3.000001), d: undefined, o: '3' },
-  ])('formats with formatNumber given number correctly', ({ v, d, o }) => {
-    expect(formatNumber(v, d)).toStrictEqual(o);
-  });
-
-  it.each([
-    { v: new BigNumber(123), d: 3, o: '123.00%' },
-    { v: new BigNumber(123.123), d: 3, o: '123.123%' },
-    { v: new BigNumber(123.123), d: 6, o: '123.123%' },
-    { v: new BigNumber(123.123), d: 0, o: '123%' },
-    { v: new BigNumber(123), d: undefined, o: '123.00%' }, // it default to 2 decimal places
-    { v: new BigNumber(30000), d: undefined, o: '30,000.00%' },
-    { v: new BigNumber(3.000001), d: undefined, o: '3.000001%' },
-  ])('formats given number correctly', ({ v, d, o }) => {
-    expect(formatNumberPercentage(v, d)).toStrictEqual(o);
-  });
-});
-
-describe('toNumberParts', () => {
-  it.each([
-    { v: null, d: 3, o: ['0', '000'] },
-    { v: undefined, d: 3, o: ['0', '000'] },
-    { v: new BigNumber(123), d: 3, o: ['123', '00'] },
-    { v: new BigNumber(123.123), d: 3, o: ['123', '123'] },
-    { v: new BigNumber(123.123), d: 6, o: ['123', '123'] },
-    { v: new BigNumber(123.123), d: 0, o: ['123', ''] },
-    { v: new BigNumber(123), d: undefined, o: ['123', '00'] },
-    {
-      v: new BigNumber(30000),
-      d: undefined,
-      o: ['30,000', '00'],
-    },
-  ])('returns correct tuple given the different arguments', ({ v, d, o }) => {
-    expect(toNumberParts(v, d)).toStrictEqual(o);
-  });
-});
-
-describe('isNumeric', () => {
-  it.each([
-    { i: null, o: false },
-    { i: undefined, o: false },
-    { i: 1, o: true },
-    { i: '1', o: true },
-    { i: '-1', o: true },
-    { i: 0.1, o: true },
-    { i: '.1', o: true },
-    { i: '-.1', o: true },
-    { i: 123, o: true },
-    { i: -123, o: true },
-    { i: '123', o: true },
-    { i: '123.01', o: true },
-    { i: '-123.01', o: true },
-    { i: '--123.01', o: false },
-    { i: '123.', o: false },
-    { i: '123.1.1', o: false },
-    { i: BigInt(123), o: true },
-    { i: BigInt(-1), o: true },
-    { i: new BigNumber(123), o: true },
-    { i: new BigNumber(123.123), o: true },
-    { i: new BigNumber(123.123).toString(), o: true },
-    { i: new BigNumber(123), o: true },
-    { i: Infinity, o: false },
-    { i: NaN, o: false },
-  ])(
-    'returns correct results',
-    ({
-      i,
-      o,
-    }: {
-      i: number | string | undefined | null | BigNumber | bigint;
-      o: boolean;
-    }) => {
-      expect(isNumeric(i)).toStrictEqual(o);
-    }
-  );
-});
-
-describe('compactNumber', () => {
-  const short: [BigNumber, string | JSX.Element, number | 'infer'][] = [
+describe('CompactNumber', () => {
+  const short: [BigNumber, string, number | 'infer'][] = [
     [new BigNumber(Infinity), '∞', 'infer'],
     [new BigNumber(-Infinity), '-∞', 'infer'],
     [new BigNumber(0), '0', 'infer'],
@@ -125,36 +19,18 @@ describe('compactNumber', () => {
     [new BigNumber(1_000_000_000_000), '1T', 'infer'],
     [new BigNumber(3.23e12), '3.23T', 2],
     [new BigNumber(3.23e12), '3.23000T', 5],
-    [
-      new BigNumber(3.23e24),
-      <span>
-        3.23000{' '}
-        <span>
-          &times; 10<sup>24</sup>
-        </span>
-      </span>,
-      5,
-    ],
-    [
-      new BigNumber(1.579208923731619e59),
-      <span>
-        1.57921{' '}
-        <span>
-          &times; 10
-          <sup>59</sup>
-        </span>
-      </span>,
-      5,
-    ],
+    [new BigNumber(3.23e24), '3.23000 \u00d7 1024', 5], // \u00d7 is times 'x'
+    [new BigNumber(1.579208923731619e59), '1.57921 \u00d7 1059', 5],
   ];
   it.each(short)(
     'compacts %d to %p (decimal places: %p)',
     (input, output, decimals) => {
-      expect(compactNumber(input, decimals)).toEqual(output);
+      render(<CompactNumber number={input} decimals={decimals} />);
+      expect(screen.getByTestId('compact-number')).toHaveTextContent(output);
     }
   );
 
-  const long: [BigNumber, string | JSX.Element, number | 'infer'][] = [
+  const long: [BigNumber, string, number | 'infer'][] = [
     [new BigNumber(Infinity), '∞', 'infer'],
     [new BigNumber(-Infinity), '-∞', 'infer'],
     [new BigNumber(0), '0', 'infer'],
@@ -169,49 +45,20 @@ describe('compactNumber', () => {
     [new BigNumber(1_000_000_000_000), '1 trillion', 'infer'],
     [new BigNumber(3.23e12), '3.23 trillion', 2],
     [new BigNumber(3.23e12), '3.23000 trillion', 5],
-    [
-      new BigNumber(3.23e24),
-      <span>
-        3.23000{' '}
-        <span>
-          &times; 10<sup>24</sup>
-        </span>
-      </span>,
-      5,
-    ],
-    [
-      new BigNumber(1.579208923731619e59),
-      <span>
-        1.57921{' '}
-        <span>
-          &times; 10
-          <sup>59</sup>
-        </span>
-      </span>,
-      5,
-    ],
+    [new BigNumber(3.23e24), '3.23000 \u00d7 1024', 5], // \u00d7 is times 'x'
+    [new BigNumber(1.579208923731619e59), '1.57921 \u00d7 1059', 5], // \u00d7 is times 'x'
   ];
   it.each(long)(
     'compacts %d to %p (decimal places: %p)',
     (input, output, decimals) => {
-      expect(compactNumber(input, decimals, 'long')).toEqual(output);
+      render(
+        <CompactNumber
+          number={input}
+          decimals={decimals}
+          compactDisplay="long"
+        />
+      );
+      expect(screen.getByTestId('compact-number')).toHaveTextContent(output);
     }
   );
-});
-
-describe('toDecimal', () => {
-  it.each([
-    { v: 0, o: '1' },
-    { v: 1, o: '0.1' },
-    { v: 2, o: '0.01' },
-    { v: 3, o: '0.001' },
-    { v: 4, o: '0.0001' },
-    { v: 5, o: '0.00001' },
-    { v: 6, o: '0.000001' },
-    { v: 7, o: '0.0000001' },
-    { v: 8, o: '0.00000001' },
-    { v: 9, o: '0.000000001' },
-  ])('formats with toNumber given number correctly', ({ v, o }) => {
-    expect(toDecimal(v)).toStrictEqual(o);
-  });
 });

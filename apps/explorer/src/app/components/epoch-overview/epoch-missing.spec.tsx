@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render } from '@testing-library/react';
 import EpochMissingOverview, { calculateEpochData } from './epoch-missing';
-import { getSecondsFromInterval } from '@vegaprotocol/react-helpers';
+import { getSecondsFromInterval } from '@vegaprotocol/utils';
 const START_DATE_PAST = 'Monday, 17 February 2022 11:44:09';
 
 describe('getSecondsFromInterval', () => {

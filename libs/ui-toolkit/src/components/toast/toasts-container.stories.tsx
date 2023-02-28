@@ -10,7 +10,7 @@ import uniqueId from 'lodash/uniqueId';
 import { useToasts } from './use-toasts';
 import { create } from 'zustand';
 import { useEffect } from '@storybook/addons';
-import { formatNumber } from '@vegaprotocol/react-helpers';
+import { formatNumber } from '@vegaprotocol/utils';
 
 export default {
   title: 'ToastContainer',

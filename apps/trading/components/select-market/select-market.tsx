@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import type { RefObject } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { ExternalLink, Icon, Loader, Popover } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {

@@ -4,11 +4,8 @@ import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { BigNumber } from 'bignumber.js';
-import {
-  formatNumber,
-  toBigNum,
-  useThrottledDataProvider,
-} from '@vegaprotocol/react-helpers';
+import { formatNumber, toBigNum } from '@vegaprotocol/utils';
+import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
 
 interface Props {
   market: Market;

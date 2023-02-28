@@ -9,7 +9,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';

@@ -1,4 +1,4 @@
-import { toDecimal } from '@vegaprotocol/react-helpers';
+import { toDecimal } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 

@@ -1,5 +1,5 @@
 import { useExplorerSettlementAssetForMarketQuery } from '../__generated__/Explorer-settlement-asset';
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { ExplorerSettlementAssetForMarketQuery } from '../__generated__/Explorer-settlement-asset';
 import type { VegaSide } from './liquidity-provision-details-row';
 

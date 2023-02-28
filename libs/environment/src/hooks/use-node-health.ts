@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useStatisticsQuery } from '../utils/__generated__/Node';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { useEnvironment } from './use-environment';
-import { fromNanoSeconds } from '@vegaprotocol/react-helpers';
+import { fromNanoSeconds } from '@vegaprotocol/utils';
 
 const POLL_INTERVAL = 1000;
 

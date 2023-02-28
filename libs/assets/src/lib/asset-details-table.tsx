@@ -1,5 +1,6 @@
 import { ContractAddressLink } from '@vegaprotocol/environment';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
 import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';

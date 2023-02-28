@@ -1,13 +1,10 @@
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
-import { MarketProposalNotification } from '@vegaprotocol/governance';
+import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import type { Market } from '@vegaprotocol/market-list';
-import {
-  getExpiryDate,
-  getMarketExpiryDate,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   ColumnKind,
   SelectMarketPopover,

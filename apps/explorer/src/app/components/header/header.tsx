@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 import { ThemeSwitcher, Icon } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Search } from '../search';
 import { Routes } from '../../routes/route-names';
 import { NetworkSwitcher } from '@vegaprotocol/environment';

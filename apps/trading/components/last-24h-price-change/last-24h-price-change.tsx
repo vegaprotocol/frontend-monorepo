@@ -1,12 +1,12 @@
 import type { RefObject } from 'react';
 import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { isNumeric } from '@vegaprotocol/utils';
 import {
-  isNumeric,
   useThrottledDataProvider,
   useYesterday,
 } from '@vegaprotocol/react-helpers';
-import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
+import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
 import type { Candle } from '@vegaprotocol/market-list';
@@ -57,7 +57,7 @@ export const Last24hPriceChange = ({
     return <span ref={ref}>-</span>;
   }
   return (
-    <PriceCellChange
+    <PriceChangeCell
       candles={candles || []}
       decimalPlaces={decimalPlaces}
       ref={ref}

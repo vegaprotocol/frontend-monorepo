@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
 import { TableRow } from '../../../../table';
 import { TruncateInline } from '../../../../truncate/truncate';

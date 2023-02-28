@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 

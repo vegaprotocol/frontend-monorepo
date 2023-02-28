@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
 import classNames from 'classnames';

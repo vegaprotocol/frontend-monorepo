@@ -1,11 +1,8 @@
 import React, { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import {
-  t,
-  useDataProvider,
-  useLocalStorage,
-} from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider, useLocalStorage } from '@vegaprotocol/react-helpers';
 import { activeMarketsProvider } from '@vegaprotocol/market-list';
 import { useEnvironment, Networks } from '@vegaprotocol/environment';
 import * as constants from '../constants';

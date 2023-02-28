@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Link, Lozenge } from '@vegaprotocol/ui-toolkit';
 import { NodeSwitcherDialog, useEnvironment } from '@vegaprotocol/environment';
 
