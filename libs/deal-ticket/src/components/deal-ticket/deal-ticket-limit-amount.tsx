@@ -2,6 +2,7 @@ import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { toDecimal, validateAmount } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
+import { Controller } from 'react-hook-form';
 
 export type DealTicketLimitAmountProps = Omit<
   Omit<DealTicketAmountProps, 'marketData'>,
@@ -9,10 +10,13 @@ export type DealTicketLimitAmountProps = Omit<
 >;
 
 export const DealTicketLimitAmount = ({
-  register,
+  control,
   market,
   sizeError,
   priceError,
+  update,
+  price,
+  size,
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
@@ -47,22 +51,32 @@ export const DealTicketLimitAmount = ({
             labelFor="input-order-size-limit"
             className="!mb-1"
           >
-            <Input
-              id="input-order-size-limit"
-              className="w-full"
-              type="number"
-              step={sizeStep}
-              min={sizeStep}
-              data-testid="order-size"
-              onWheel={(e) => e.currentTarget.blur()}
-              {...register('size', {
+            <Controller
+              name="size"
+              control={control}
+              rules={{
                 required: t('You need to provide a size'),
                 min: {
                   value: sizeStep,
                   message: t('Size cannot be lower than ' + sizeStep),
                 },
                 validate: validateAmount(sizeStep, 'Size'),
-              })}
+              }}
+              render={() => (
+                <Input
+                  id="input-order-size-limit"
+                  className="w-full"
+                  type="number"
+                  value={size}
+                  onChange={(e) =>
+                    update({ marketId: market.id, size: e.target.value })
+                  }
+                  step={sizeStep}
+                  min={sizeStep}
+                  data-testid="order-size"
+                  onWheel={(e) => e.currentTarget.blur()}
+                />
+              )}
             />
           </FormGroup>
         </div>
@@ -77,14 +91,10 @@ export const DealTicketLimitAmount = ({
             labelAlign="right"
             className="!mb-1"
           >
-            <Input
-              id="input-price-quote"
-              className="w-full"
-              type="number"
-              step={priceStep}
-              data-testid="order-price"
-              onWheel={(e) => e.currentTarget.blur()}
-              {...register('price', {
+            <Controller
+              name="price"
+              control={control}
+              rules={{
                 required: t('You need provide a price'),
                 min: {
                   value: priceStep,
@@ -92,7 +102,21 @@ export const DealTicketLimitAmount = ({
                 },
                 // @ts-ignore this fulfills the interface but still errors
                 validate: validateAmount(priceStep, 'Price'),
-              })}
+              }}
+              render={() => (
+                <Input
+                  id="input-price-quote"
+                  className="w-full"
+                  type="number"
+                  value={price}
+                  onChange={(e) =>
+                    update({ marketId: market.id, price: e.target.value })
+                  }
+                  step={priceStep}
+                  data-testid="order-price"
+                  onWheel={(e) => e.currentTarget.blur()}
+                />
+              )}
             />
           </FormGroup>
         </div>

@@ -8,6 +8,7 @@ import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '../../utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { getMarketPrice } from '../../utils/get-price';
+import { Controller } from 'react-hook-form';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
@@ -15,10 +16,12 @@ export type DealTicketMarketAmountProps = Omit<
 >;
 
 export const DealTicketMarketAmount = ({
-  register,
+  control,
   market,
   marketData,
   sizeError,
+  update,
+  size,
 }: DealTicketMarketAmountProps) => {
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
@@ -47,22 +50,32 @@ export const DealTicketMarketAmount = ({
       </div>
       <div className="flex items-center gap-4">
         <div className="flex-1">
-          <Input
-            id="input-order-size-market"
-            className="w-full"
-            type="number"
-            step={sizeStep}
-            min={sizeStep}
-            onWheel={(e) => e.currentTarget.blur()}
-            data-testid="order-size"
-            {...register('size', {
+          <Controller
+            name="size"
+            control={control}
+            rules={{
               required: t('You need to provide a size'),
               min: {
                 value: sizeStep,
                 message: t('Size cannot be lower than ' + sizeStep),
               },
               validate: validateAmount(sizeStep, 'Size'),
-            })}
+            }}
+            render={() => (
+              <Input
+                id="input-order-size-market"
+                className="w-full"
+                type="number"
+                value={size}
+                onChange={(e) =>
+                  update({ marketId: market.id, size: e.target.value })
+                }
+                step={sizeStep}
+                min={sizeStep}
+                onWheel={(e) => e.currentTarget.blur()}
+                data-testid="order-size"
+              />
+            )}
           />
         </div>
         <div>@</div>

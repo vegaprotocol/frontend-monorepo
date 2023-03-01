@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
@@ -36,7 +36,8 @@ import {
   usePersistedOrderStore,
   usePersistedOrderStoreSubscription,
 } from '@vegaprotocol/orders';
-import { OrderType } from '@vegaprotocol/types';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { useOrderForm } from '../../hooks/use-order-form';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -60,44 +61,20 @@ export const DealTicket = ({
   onClickCollateral,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
-    (store) => ({
-      getPersistedOrder: store.getOrder,
-      setPersistedOrder: store.setOrder,
-    })
-  );
-
+  // store last used tif for market
+  const [lastTIF, setLastTIF] = useState({
+    [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
+    [OrderType.TYPE_LIMIT]: OrderTimeInForce.TIME_IN_FORCE_GTC,
+  });
   const {
-    register,
     control,
-    handleSubmit,
-    watch,
+    errors,
+    order,
     setError,
     clearErrors,
-    formState: { errors },
-    setValue,
-  } = useForm<DealTicketFormFields>({
-    defaultValues: getPersistedOrder(market.id) || getDefaultOrder(market),
-  });
-
-  const order = watch();
-
-  watch((orderData) => {
-    const persistable = !(
-      orderData.type === OrderType.TYPE_LIMIT && orderData.price === ''
-    );
-    if (persistable) {
-      setPersistedOrder(orderData as DealTicketFormFields);
-    }
-  });
-
-  usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
-    if (order.price !== storedOrder.price) {
-      clearErrors('price');
-      setValue('price', storedOrder.price);
-    }
-  });
-
+    update,
+    handleSubmit,
+  } = useOrderForm(market.id);
   const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
@@ -179,9 +156,13 @@ export const DealTicket = ({
     [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
+  console.log('render');
+
+  if (!order) return null;
+
   return (
     <form
-      onSubmit={isReadOnly ? () => null : handleSubmit(onSubmit)}
+      onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
       className="p-4"
       noValidate
     >
@@ -194,10 +175,17 @@ export const DealTicket = ({
             marketData.trigger
           ),
         }}
-        render={({ field }) => (
+        render={() => (
           <TypeSelector
-            value={field.value}
-            onSelect={field.onChange}
+            value={order.type}
+            onSelect={(type) => {
+              if (type === OrderType.TYPE_NETWORK) return;
+              update({
+                marketId: market.id,
+                type,
+                timeInForce: lastTIF[type] || order.timeInForce,
+              });
+            }}
             market={market}
             marketData={marketData}
             errorMessage={errors.type?.message}
@@ -207,17 +195,25 @@ export const DealTicket = ({
       <Controller
         name="side"
         control={control}
-        render={({ field }) => (
-          <SideSelector value={field.value} onSelect={field.onChange} />
+        render={() => (
+          <SideSelector
+            value={order.side}
+            onSelect={(side) => {
+              update({ marketId: market.id, side });
+            }}
+          />
         )}
       />
       <DealTicketAmount
+        control={control}
         orderType={order.type}
         market={market}
         marketData={marketData}
-        register={register}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
+        update={update}
+        size={order.size}
+        price={order.price}
       />
       <Controller
         name="timeInForce"
@@ -228,11 +224,14 @@ export const DealTicket = ({
             marketData.trigger
           ),
         }}
-        render={({ field }) => (
+        render={() => (
           <TimeInForceSelector
-            value={field.value}
+            value={order.timeInForce}
             orderType={order.type}
-            onSelect={field.onChange}
+            onSelect={(timeInForce) => {
+              update({ marketId: market.id, timeInForce });
+              setLastTIF((curr) => ({ ...curr, [order.type]: timeInForce }));
+            }}
             market={market}
             marketData={marketData}
             errorMessage={errors.timeInForce?.message}
@@ -244,12 +243,16 @@ export const DealTicket = ({
           <Controller
             name="expiresAt"
             control={control}
-            render={({ field }) => (
+            render={() => (
               <ExpirySelector
-                value={field.value}
-                onSelect={field.onChange}
+                value={order.expiresAt}
+                onSelect={(expiresAt) =>
+                  update({
+                    marketId: market.id,
+                    expiresAt: expiresAt || undefined,
+                  })
+                }
                 errorMessage={errors.expiresAt?.message}
-                register={register}
               />
             )}
           />
