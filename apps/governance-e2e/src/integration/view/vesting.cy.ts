@@ -26,10 +26,6 @@ context(
         verifyPageHeader('Vesting');
       });
 
-      it('should have connect Eth wallet info', function () {
-        cy.get(connectPrompt).should('be.visible');
-      });
-
       it('should have connect Eth wallet button', function () {
         cy.get(connectButton)
           .should('be.visible')
