@@ -22,7 +22,11 @@ import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
 } from '@vegaprotocol/wallet';
-import type { VegaTxState, TransactionResult } from '@vegaprotocol/wallet';
+import type {
+  VegaTxState,
+  TransactionResult,
+  OrderTxUpdateFieldsFragment,
+} from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { OrderSubFieldsFragment } from '../../order-hooks';
 import * as Schema from '@vegaprotocol/types';
@@ -203,7 +207,19 @@ export const OrderListManager = ({
               fields.limitPrice,
               fields.size
             );
-            create({ orderAmendment });
+            const originalOrder: OrderTxUpdateFieldsFragment = {
+              type: editOrder.type,
+              id: editOrder.id,
+              status: editOrder.status,
+              createdAt: editOrder.createdAt,
+              size: editOrder.size,
+              price: editOrder.price,
+              timeInForce: editOrder.timeInForce,
+              expiresAt: editOrder.expiresAt,
+              side: editOrder.side,
+              marketId: editOrder.market.id,
+            };
+            create({ orderAmendment }, originalOrder);
             setEditOrder(null);
           }}
         />
