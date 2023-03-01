@@ -2,7 +2,6 @@ import type { ApolloError } from '@apollo/client';
 import type { GraphQLErrors } from '@apollo/client/errors';
 
 const NOT_FOUND = 'NotFound';
-const INTERNAL = 'Internal';
 
 const isApolloGraphQLError = (
   error: ApolloError | Error | undefined
