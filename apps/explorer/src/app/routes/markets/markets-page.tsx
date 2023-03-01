@@ -12,6 +12,7 @@ export const MarketsPage = () => {
 
   const { data, loading, error } = useDataProvider({
     dataProvider: marketsProvider,
+    variables: undefined,
     skipUpdates: true,
   });
 

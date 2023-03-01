@@ -2,17 +2,23 @@ fragment MarketDataUpdateFields on ObservableMarketData {
   marketId
   bestBidPrice
   bestOfferPrice
-  markPrice
-  trigger
-  staticMidPrice
-  marketTradingMode
-  marketState
-  indicativeVolume
-  indicativePrice
   bestStaticBidPrice
   bestStaticOfferPrice
-  targetStake
+  indicativePrice
+  indicativeVolume
+  marketState
+  marketTradingMode
+  markPrice
+  midPrice
+  priceMonitoringBounds {
+    maxValidPrice
+    minValidPrice
+    referencePrice
+  }
+  staticMidPrice
   suppliedStake
+  targetStake
+  trigger
 }
 
 subscription MarketDataUpdate($marketId: ID!) {
@@ -25,21 +31,28 @@ fragment MarketDataFields on MarketData {
   market {
     id
   }
+  auctionEnd
+  auctionStart
   bestBidPrice
   bestOfferPrice
-  markPrice
-  trigger
-  staticMidPrice
-  marketTradingMode
-  marketState
-  indicativeVolume
-  indicativePrice
   bestStaticBidPrice
   bestStaticOfferPrice
-  targetStake
+  indicativePrice
+  indicativeVolume
+  marketState
+  marketTradingMode
+  marketValueProxy
+  markPrice
+  midPrice
+  priceMonitoringBounds {
+    maxValidPrice
+    minValidPrice
+    referencePrice
+  }
+  staticMidPrice
   suppliedStake
-  auctionStart
-  auctionEnd
+  targetStake
+  trigger
 }
 
 query MarketData($marketId: ID!) {

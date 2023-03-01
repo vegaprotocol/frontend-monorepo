@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { useMemo } from 'react';
 import {
   makeDerivedDataProvider,
   useDataProvider,
@@ -33,7 +32,7 @@ const update = (
 };
 
 const getData = (responseData: MarketDataQuery | null): MarketData | null =>
-  responseData?.marketsConnection?.edges[0].node.data || null;
+  responseData?.marketsConnection?.edges[0]?.node?.data || null;
 
 const getDelta = (
   subscriptionData: MarketDataUpdateSubscription

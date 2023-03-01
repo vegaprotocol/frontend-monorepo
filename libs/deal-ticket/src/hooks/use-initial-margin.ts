@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/positions';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { marketInfoDataProvider } from '@vegaprotocol/market-info';
+import { marketInfoProvider } from '@vegaprotocol/market-info';
 
 export const useInitialMargin = (
   order: OrderSubmissionBody['orderSubmission']
@@ -27,19 +27,19 @@ export const useInitialMargin = (
     skip: !partyId,
   });
   const { data: marketInfo } = useDataProvider({
-    dataProvider: marketInfoDataProvider,
+    dataProvider: marketInfoProvider,
     variables: commonVariables,
   });
   let totalMargin = '0';
   let margin = '0';
 
-  if (marketInfo?.market && marketInfo?.market.riskFactors && marketData) {
+  if (marketInfo?.riskFactors && marketData) {
     const {
       positionDecimalPlaces,
       decimalPlaces,
       tradableInstrument,
       riskFactors,
-    } = marketInfo.market;
+    } = marketInfo;
     const { marginCalculator, instrument } = tradableInstrument;
     const { decimals } = instrument.product.settlementAsset;
     margin = totalMargin = calculateMargins({

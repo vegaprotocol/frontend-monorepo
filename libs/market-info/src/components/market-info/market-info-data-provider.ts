@@ -1,29 +1,71 @@
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
 import type {
   MarketInfoQuery,
   MarketInfoQueryVariables,
 } from './__generated__/MarketInfo';
+import {
+  marketDataProvider,
+  marketCandlesProvider,
+} from '@vegaprotocol/market-list';
+import type {
+  MarketData,
+  Candle,
+  MarketCandlesQueryVariables,
+} from '@vegaprotocol/market-list';
 import { MarketInfoDocument } from './__generated__/MarketInfo';
-import type { MarketInfoNoCandlesQuery } from './__generated__/MarketInfoNoCandles';
-import { MarketInfoNoCandlesDocument } from './__generated__/MarketInfoNoCandles';
 
-export const marketInfoDataProvider = makeDataProvider<
+export type MarketInfo = NonNullable<MarketInfoQuery['market']>;
+export type MarketInfoWithData = MarketInfo & { data?: MarketData };
+
+export type MarketInfoWithDataAndCandles = MarketInfoWithData & {
+  candles?: Candle[];
+};
+
+const getData = (responseData: MarketInfoQuery | null) =>
+  responseData?.market || null;
+
+export const marketInfoProvider = makeDataProvider<
   MarketInfoQuery,
-  MarketInfoQuery,
+  MarketInfoQuery['market'],
   never,
   never,
   MarketInfoQueryVariables
 >({
   query: MarketInfoDocument,
-  getData: (responseData: MarketInfoQuery | null) => responseData,
+  getData,
 });
 
-export const marketInfoNoCandlesDataProvider = makeDataProvider<
-  MarketInfoNoCandlesQuery,
-  MarketInfoNoCandlesQuery,
+export const marketInfoWithDataProvider = makeDerivedDataProvider<
+  MarketInfoWithData,
   never,
-  never
->({
-  query: MarketInfoNoCandlesDocument,
-  getData: (responseData: MarketInfoNoCandlesQuery | null) => responseData,
+  MarketInfoQueryVariables
+>([marketInfoProvider, marketDataProvider], (parts) => {
+  const market: MarketInfo | null = parts[0];
+  const marketData: MarketData | null = parts[1];
+  return (
+    market && {
+      ...market,
+      data: marketData || undefined,
+    }
+  );
+});
+
+export const marketInfoWithDataAndCandlesProvider = makeDerivedDataProvider<
+  MarketInfoWithDataAndCandles,
+  never,
+  MarketCandlesQueryVariables
+>([marketInfoProvider, marketDataProvider, marketCandlesProvider], (parts) => {
+  const market: MarketInfo | null = parts[0];
+  const marketData: MarketData | null = parts[1];
+  const candles: Candle[] | null = parts[2];
+  return (
+    market && {
+      ...market,
+      data: marketData || undefined,
+      candles: candles || undefined,
+    }
+  );
 });

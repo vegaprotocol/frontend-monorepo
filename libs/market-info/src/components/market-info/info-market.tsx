@@ -1,6 +1,7 @@
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
+import type { Candle } from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -24,29 +25,19 @@ import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
 import { MarketInfoTable } from './info-key-value-table';
-import { marketInfoDataProvider } from './market-info-data-provider';
+import { marketInfoWithDataProvider } from './market-info-data-provider';
 import {
   TokenLinks,
   getMarketExpiryDateFormatted,
 } from '@vegaprotocol/react-helpers';
 
-import type { MarketInfoQuery } from './__generated__/MarketInfo';
+import type { MarketInfoWithData } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
 
 export interface InfoProps {
-  market: MarketInfoQuery['market'];
+  market: MarketInfoWithData;
   onSelect: (id: string) => void;
 }
-
-export const calcCandleVolume = (
-  m: MarketInfoQuery['market']
-): string | undefined => {
-  return m?.candlesConnection?.edges
-    ?.reduce((acc: BigNumber, c) => {
-      return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-    }, new BigNumber(m?.candlesConnection?.edges[0]?.node.volume ?? 0))
-    ?.toString();
-};
 
 export interface MarketInfoContainerProps {
   marketId: string;
@@ -70,15 +61,15 @@ export const MarketInfoContainer = ({
   );
 
   const { data, loading, error, reload } = useDataProvider({
-    dataProvider: marketInfoDataProvider,
+    dataProvider: marketInfoWithDataProvider,
     skipUpdates: true,
     variables,
   });
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
-      {data && data.market ? (
-        <Info market={data.market} onSelect={(id) => onSelect?.(id)} />
+      {data ? (
+        <Info market={data} onSelect={(id) => onSelect?.(id)} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -91,7 +82,6 @@ export const MarketInfoContainer = ({
 export const Info = ({ market, onSelect }: InfoProps) => {
   const { VEGA_TOKEN_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
-  const dayVolume = calcCandleVolume(market);
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol;
   const assetId = useMemo(
@@ -129,16 +119,19 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Market price'),
       content: (
-        <MarketInfoTable
-          data={pick(
-            market.data,
-            'name',
-            'markPrice',
-            'bestBidPrice',
-            'bestOfferPrice'
-          )}
-          decimalPlaces={market.decimalPlaces}
-        />
+        <>
+          <p>123</p>
+          <MarketInfoTable
+            data={pick(
+              market.data,
+              'name',
+              'markPrice',
+              'bestBidPrice',
+              'bestOfferPrice'
+            )}
+            decimalPlaces={market.decimalPlaces}
+          />
+        </>
       ),
     },
     {
@@ -146,8 +139,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            '24hourVolume':
-              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
             ...pick(
               market.data,
               'openInterest',

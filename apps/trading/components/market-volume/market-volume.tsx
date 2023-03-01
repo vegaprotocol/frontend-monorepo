@@ -5,22 +5,14 @@ import {
   t,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-} from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
 export const MarketVolume = ({ marketId }: { marketId: string }) => {
   const [marketVolume, setMarketVolume] = useState<string>('-');
-  const variables = useMemo(
-    () => ({
-      marketId: marketId,
-    }),
-    [marketId]
-  );
+  const variables = { marketId };
   const { data } = useDataProvider({
     dataProvider: marketProvider,
     variables,
@@ -48,7 +40,7 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
     [data?.positionDecimalPlaces, throttledSetMarketVolume]
   );
 
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+  useDataProvider({
     dataProvider: marketDataProvider,
     update,
     variables,

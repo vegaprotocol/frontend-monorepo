@@ -16,11 +16,10 @@ interface Props {
 }
 
 export const useCalculateSlippage = ({ market, order }: Props) => {
-  const variables = useMemo(() => ({ marketId: market.id }), [market.id]);
   const { data } = useThrottledDataProvider(
     {
       dataProvider: marketDepthProvider,
-      variables,
+      variables: { marketId: market.id },
     },
     1000
   );

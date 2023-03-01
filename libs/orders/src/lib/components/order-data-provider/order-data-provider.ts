@@ -170,7 +170,10 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
   Order[],
   OrdersQueryVariables
 >(
-  [ordersProvider, marketsProvider],
+  [
+    ordersProvider,
+    (callback, client) => marketsProvider(callback, client, undefined),
+  ],
   (partsData): OrderEdge[] =>
     ((partsData[0] as ReturnType<typeof getData>) || []).map((edge) => ({
       cursor: edge.cursor,

@@ -32,14 +32,10 @@ export const MarketState = ({ market }: { market: Market | null }) => {
     [throttledSetMarketState]
   );
 
-  const variables = useMemo(
-    () => ({ marketId: market?.id || '' }),
-    [market?.id]
-  );
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+  useDataProvider({
     dataProvider: marketDataProvider,
     update,
-    variables,
+    variables: { marketId: market?.id || '' },
     skip: !market?.id,
   });
 

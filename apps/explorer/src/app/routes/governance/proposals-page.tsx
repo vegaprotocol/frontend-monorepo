@@ -11,6 +11,7 @@ export const Proposals = () => {
 
   const { data, loading, error } = useDataProvider({
     dataProvider: proposalsDataProvider,
+    variables: {},
   });
 
   useDocumentTitle([t('Governance Proposals')]);

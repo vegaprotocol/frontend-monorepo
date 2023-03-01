@@ -93,40 +93,6 @@ export const marketInfoQuery = (
         long: '0.008508132993273576',
       },
       lpPriceRange: '0.02',
-      data: {
-        __typename: 'MarketData',
-        market: {
-          __typename: 'Market',
-          id: '54b78c1b877e106842ae156332ccec740ad98d6bad43143ac6a029501dd7c6e0',
-        },
-        midPrice: '5749',
-        markPrice: '5749',
-        suppliedStake: '56767',
-        marketValueProxy: '677678',
-        targetStake: '56789',
-        bestBidVolume: '5',
-        bestOfferVolume: '1',
-        bestStaticBidVolume: '5',
-        bestStaticOfferVolume: '1',
-        openInterest: '0',
-        bestBidPrice: '681765',
-        bestOfferPrice: '681769',
-        trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        priceMonitoringBounds: [
-          {
-            minValidPrice: '654701',
-            maxValidPrice: '797323',
-            trigger: {
-              horizonSecs: 43200,
-              probability: 0.9999999,
-              auctionExtensionSecs: 600,
-              __typename: 'PriceMonitoringTrigger',
-            },
-            referencePrice: '722625',
-            __typename: 'PriceMonitoringBounds',
-          },
-        ],
-      },
       liquidityMonitoringParameters: {
         triggeringRatio: '0',
         targetStakeParameters: {
@@ -136,7 +102,6 @@ export const marketInfoQuery = (
         },
         __typename: 'LiquidityMonitoringParameters',
       },
-      candlesConnection: null,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -190,13 +155,6 @@ export const marketInfoQuery = (
             sigma: 0.3,
             mu: 0,
           },
-        },
-      },
-      depth: {
-        __typename: 'MarketDepth',
-        lastTrade: {
-          __typename: 'Trade',
-          price: '100',
         },
       },
     },

@@ -76,16 +76,11 @@ export const useFillsList = ({
     [gridRef]
   );
 
-  const variables = useMemo(() => ({ partyId, marketId }), [partyId, marketId]);
-
-  const { data, error, loading, load, totalCount, reload } = useDataProvider<
-    (TradeEdge | null)[],
-    Trade[]
-  >({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: fillsWithMarketProvider,
     update,
     insert,
-    variables,
+    variables: { partyId, marketId: marketId || '' },
   });
   totalCountRef.current = totalCount;
 

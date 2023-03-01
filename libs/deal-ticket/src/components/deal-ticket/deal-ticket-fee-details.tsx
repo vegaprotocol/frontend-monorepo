@@ -59,7 +59,7 @@ export const DealTicketFeeDetails = ({
   return (
     <div>
       {details.map((detail) => (
-        <DealTicketFeeDetail {...detail} key={label} />
+        <DealTicketFeeDetail {...detail} key={detail.label} />
       ))}
     </div>
   );

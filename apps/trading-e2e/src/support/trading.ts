@@ -69,18 +69,6 @@ const marketsDataOverride = (
   },
 });
 
-const marketInfoOverride = (
-  data: MarketPageMockData
-): PartialDeep<MarketInfoQuery> => ({
-  market: {
-    state: data.state,
-    tradingMode: data.tradingMode,
-    data: {
-      trigger: data.trigger,
-    },
-  },
-});
-
 const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
   state: Schema.MarketState = Schema.MarketState.STATE_ACTIVE,
@@ -109,11 +97,7 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Margins', marginsQuery());
   aliasGQLQuery(req, 'Assets', assetsQuery());
   aliasGQLQuery(req, 'Asset', assetQuery());
-  aliasGQLQuery(
-    req,
-    'MarketInfo',
-    marketInfoQuery(marketInfoOverride({ state, tradingMode, trigger }))
-  );
+  aliasGQLQuery(req, 'MarketInfo', marketInfoQuery());
   aliasGQLQuery(req, 'Trades', tradesQuery());
   aliasGQLQuery(req, 'Chart', chartQuery());
   aliasGQLQuery(req, 'Candles', candlesQuery());

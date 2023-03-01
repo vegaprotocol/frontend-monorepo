@@ -14,7 +14,7 @@ import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
-  EST_MARGIN_TOOLTIP_TEXT,
+  // EST_MARGIN_TOOLTIP_TEXT,
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
@@ -163,37 +163,39 @@ export const getFeeDetailsValues = ({
       ),
       symbol,
     },
-    {
+    /*{
       label: t('Margin'),
       value: margin && `~${formatValueWithAssetDp(margin)}`,
       symbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
+    },*/
+    {
+      label: t('Margin required'),
+      value: `~${formatValueWithAssetDp(
+        balance
+          ? (BigInt(totalMargin) - BigInt(balance)).toString()
+          : totalMargin
+      )}`,
+      symbol,
+      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT + ' (' + symbol + ').',
     },
   ];
-  if (totalMargin !== margin) {
+  if (balance) {
     details.push({
-      label: t('Total margin'),
+      label: t('Projected margin'),
       value: `~${formatValueWithAssetDp(totalMargin)}`,
       symbol,
       labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
     });
   }
-  if (balance && totalMargin) {
-    details.push({
-      label: t('Margin account balance'),
-      value: `~${formatValueWithAssetDp(balance)}`,
-      symbol,
-      labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
-    });
-    details.push({
-      label: t('Margin difference'),
-      value: `~${formatValueWithAssetDp(
-        (BigInt(totalMargin) - BigInt(balance)).toString()
-      )}`,
-      symbol,
-      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT,
-    });
-  }
+  details.push({
+    label: t('Current margin allocation'),
+    value: balance
+      ? `~${formatValueWithAssetDp(balance)}`
+      : `${formatValueWithAssetDp(balance)}`,
+    symbol,
+    labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
+  });
   details.push({
     label: t('Liquidation'),
     value: (estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`) || '',

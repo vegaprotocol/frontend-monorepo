@@ -3,7 +3,7 @@ import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import { positionsMetricsProvider } from './positions-data-providers';
-import type { PositionsMetricsProviderVariables } from './positions-data-providers';
+import type { PositionsQueryVariables } from './__generated__/Positions';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import type { GetRowsParams } from '@vegaprotocol/ui-toolkit';
 
@@ -14,7 +14,7 @@ export const usePositionsData = (
   gridRef: RefObject<AgGridReact>,
   clientSideModel?: boolean
 ) => {
-  const variables = useMemo<PositionsMetricsProviderVariables>(
+  const variables = useMemo<PositionsQueryVariables>(
     () => ({ partyId }),
     [partyId]
   );

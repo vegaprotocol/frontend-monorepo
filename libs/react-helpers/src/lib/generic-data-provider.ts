@@ -490,6 +490,8 @@ function makeDataProviderInternal<
       if (v) {
         variables = v;
       }
+      initialize();
+    } else {
       notify(callback);
     }
     return {
@@ -593,7 +595,7 @@ export type CombineDerivedData<
   Variables extends OperationVariables | undefined = undefined
 > = (
   data: DerivedPart<Variables>['data'][],
-  variables: Variables | undefined,
+  variables: Variables,
   prevData: Data | null
 ) => Data | null;
 

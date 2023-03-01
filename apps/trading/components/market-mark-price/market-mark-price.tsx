@@ -30,15 +30,10 @@ export const MarketMarkPrice = ({
   asPriceCell,
 }: Props) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });
-  const variables = useMemo(() => ({ marketId }), [marketId]);
-
-  const { data } = useThrottledDataProvider<
-    MarketData,
-    MarketDataUpdateFieldsFragment
-  >(
+  const { data } = useThrottledDataProvider(
     {
       dataProvider: marketDataProvider,
-      variables,
+      variables: { marketId: marketId || '' },
       skip: !inView,
     },
     THROTTLE_UPDATE_TIME

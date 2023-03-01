@@ -31,7 +31,7 @@ import { marginsDataProvider } from './margin-data-provider';
 import { calculateMargins } from './margin-calculator';
 import type { Edge } from '@vegaprotocol/react-helpers';
 import { OrderStatus, Side } from '@vegaprotocol/types';
-import { marketInfoDataProvider } from '@vegaprotocol/market-info';
+import { marketInfoProvider } from '@vegaprotocol/market-info';
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
@@ -321,7 +321,7 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
   [
     positionsDataProvider,
     accountsDataProvider,
-    marketsWithDataProvider,
+    (callback, client) => marketsWithDataProvider(callback, client, undefined),
     marginsDataProvider,
   ],
   ([positions, accounts, marketsData, margins], variables) => {
@@ -366,13 +366,13 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
       }),
     (callback, client, variables) =>
       marketDataProvider(callback, client, { marketId: variables.marketId }),
-    marketInfoDataProvider,
+    marketInfoProvider,
     openVolumeDataProvider,
   ],
   (data) => {
     const orders = data[0] as (Edge<OrderFieldsFragment> | null)[] | null;
     const marketData = data[1] as MarketData | null;
-    const marketInfo = data[2] as MarketInfoQuery | null;
+    const marketInfo = data[2] as MarketInfoQuery['market'];
     let openVolume = (data[3] as string | null) || '0';
     const shortPosition = openVolume?.startsWith('-');
     if (shortPosition) {
@@ -382,13 +382,13 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
     let sellVolume = BigInt(shortPosition ? openVolume : 0);
     let buyInitialMargin = BigInt(0);
     let sellInitialMargin = BigInt(0);
-    if (marketInfo?.market && marketInfo?.market.riskFactors && marketData) {
+    if (marketInfo?.riskFactors && marketData) {
       const {
         positionDecimalPlaces,
         decimalPlaces,
         tradableInstrument,
         riskFactors,
-      } = marketInfo.market;
+      } = marketInfo;
       const { marginCalculator, instrument } = tradableInstrument;
       const { decimals } = instrument.product.settlementAsset;
       const calculatorParams = {

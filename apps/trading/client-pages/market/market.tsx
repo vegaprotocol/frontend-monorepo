@@ -8,10 +8,6 @@ import {
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-} from '@vegaprotocol/market-list';
 
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
@@ -36,13 +32,10 @@ const TitleUpdater = ({
 }) => {
   const pageTitle = usePageTitleStore((store) => store.pageTitle);
   const updateTitle = usePageTitleStore((store) => store.updateTitle);
-  const { data: marketData } = useThrottledDataProvider<
-    MarketData,
-    MarketDataUpdateFieldsFragment
-  >(
+  const { data: marketData } = useThrottledDataProvider(
     {
       dataProvider: marketDataProvider,
-      variables: useMemo(() => ({ marketId }), [marketId]),
+      variables: { marketId: marketId || '' },
       skip: !marketId,
     },
     1000
