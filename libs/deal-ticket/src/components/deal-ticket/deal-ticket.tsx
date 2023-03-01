@@ -82,7 +82,9 @@ export const DealTicket = ({
   const order = watch();
 
   watch((orderData) => {
-    setPersistedOrder(orderData as DealTicketFormFields);
+    if (orderData.price !== '') {
+      setPersistedOrder(orderData as DealTicketFormFields);
+    }
   });
 
   usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
