@@ -25,6 +25,7 @@ export const usePersistedOrderStore = create<PersistedOrderStore>()(
         return persisted;
       },
       setOrder: (order: OrderData) => {
+        console.log('persiting old');
         set(
           produce((store: PersistedOrderStore) => {
             const persisted = store.orders.find(
