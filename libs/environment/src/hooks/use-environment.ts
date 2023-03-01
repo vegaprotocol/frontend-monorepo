@@ -31,7 +31,7 @@ type Actions = {
 export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
 
-const STORAGE_KEY = 'vega_url';
+export const STORAGE_KEY = 'vega_url';
 const SUBSCRIPTION_TIMEOUT = 3000;
 
 export const useEnvironment = create<EnvStore>((set, get) => ({
