@@ -31,7 +31,7 @@ type Actions = {
 export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
 
-const STORAGE_KEY = 'vega_url';
+export const STORAGE_KEY = 'vega_url';
 const SUBSCRIPTION_TIMEOUT = 3000;
 
 export const useEnvironment = create<EnvStore>((set, get) => ({
@@ -168,9 +168,15 @@ const fetchConfig = async (url?: string) => {
  * Find a suitable node by running a test query and test
  * subscription, against a list of clients, first to resolve wins
  */
-const findNode = (clients: ClientCollection): Promise<string | null> => {
+const findNode = async (clients: ClientCollection): Promise<string | null> => {
   const tests = Object.entries(clients).map((args) => testNode(...args));
-  return Promise.race(tests);
+  try {
+    const url = await Promise.any(tests);
+    return url;
+  } catch {
+    // All tests rejected, no suitable node found
+    return null;
+  }
 };
 
 /**
@@ -180,19 +186,21 @@ const testNode = async (
   url: string,
   client: Client
 ): Promise<string | null> => {
-  try {
-    const results = await Promise.all([
-      testQuery(client),
-      testSubscription(client),
-    ]);
-    if (results[0] && results[1]) {
-      return url;
-    }
-    return null;
-  } catch (err) {
-    console.warn(`Tests failed for ${url}`);
-    return null;
+  const results = await Promise.all([
+    // these promises will only resolve with true/false
+    testQuery(client),
+    testSubscription(client),
+  ]);
+  if (results[0] && results[1]) {
+    return url;
   }
+
+  const message = `Tests failed for node: ${url}`;
+  console.warn(message);
+
+  // throwing here will mean this tests is ignored and a different
+  // node that hopefully does resolve will fulfill the Promise.any
+  throw new Error(message);
 };
 
 /**
