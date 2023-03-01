@@ -49,10 +49,10 @@ export class LocalLogger {
     return LocalLogger.levelLogMap[this._logLevel];
   }
   private tags: string[] = [];
-  private application = 'trading';
+  private _application = 'trading';
   constructor(conf: LoggerConf) {
     if (conf.application) {
-      this.application = conf.application;
+      this._application = conf.application;
     }
     this.tags = [...(conf.tags || [])];
     this._logLevel = conf.logLevel || this._logLevel;
@@ -85,7 +85,7 @@ export class LocalLogger {
   ) {
     if (this.numberLogLevel <= LocalLogger.levelLogMap[level]) {
       console[logMethod].apply(console, [
-        `${this.application}:${level}: `,
+        `${this._application}:${level}: `,
         ...args,
       ]);
     }
@@ -148,13 +148,23 @@ export class LocalLogger {
   public get logLevel() {
     return this._logLevel;
   }
+  public get application() {
+    return this._application;
+  }
 }
 
-let singleLoggerInstance: LocalLogger;
+let singleLoggerInstances: LocalLogger[];
 
 export const localLoggerFactory = (conf: LoggerConf) => {
+  if (!singleLoggerInstances) {
+    singleLoggerInstances = [];
+  }
+  let singleLoggerInstance = singleLoggerInstances.find(
+    (instance) => instance.application === conf.application
+  );
   if (!singleLoggerInstance) {
     singleLoggerInstance = new LocalLogger(conf);
+    singleLoggerInstances.push(singleLoggerInstance);
   }
   if (conf.logLevel && singleLoggerInstance.logLevel !== conf.logLevel) {
     singleLoggerInstance.setLogLevel(conf.logLevel);
