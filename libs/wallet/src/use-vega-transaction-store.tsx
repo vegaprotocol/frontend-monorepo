@@ -33,10 +33,7 @@ export interface VegaStoredTxState extends VegaTxState {
 }
 export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
-  create: (
-    tx: Transaction,
-    originalOrder?: OrderTxUpdateFieldsFragment
-  ) => number;
+  create: (tx: Transaction, order?: OrderTxUpdateFieldsFragment) => number;
   update: (
     index: number,
     update: Partial<
@@ -58,10 +55,7 @@ export interface VegaTransactionStore {
 export const useVegaTransactionStore = create(
   subscribeWithSelector<VegaTransactionStore>((set, get) => ({
     transactions: [] as VegaStoredTxState[],
-    create: (
-      body: Transaction,
-      originalOrder?: OrderTxUpdateFieldsFragment
-    ) => {
+    create: (body: Transaction, order?: OrderTxUpdateFieldsFragment) => {
       const transactions = get().transactions;
       const now = new Date();
       const transaction: VegaStoredTxState = {
@@ -74,7 +68,7 @@ export const useVegaTransactionStore = create(
         signature: null,
         status: VegaTxStatus.Requested,
         dialogOpen: true,
-        order: originalOrder,
+        order,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
@@ -175,7 +169,7 @@ export const useVegaTransactionStore = create(
             transaction.order =
               isOrderAmendmentTransaction(transaction?.body) &&
               transaction.order
-                ? transaction.order
+                ? transaction.order // the transaction.order would be the original order amended
                 : order;
             transaction.status = VegaTxStatus.Complete;
             transaction.dialogOpen = true;
