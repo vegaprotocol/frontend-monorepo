@@ -216,7 +216,7 @@ export const getVerifyDialogProps = (status: ApprovalStatus) => {
 
 export const VerificationStatus = ({ state }: { state: VerifyState }) => {
   if (state.status === ApprovalStatus.Error) {
-    return <p>{t('Something went wrong')}</p>;
+    return <p>{state.message || t('Something went wrong')}</p>;
   }
 
   if (state.status === ApprovalStatus.Pending) {
