@@ -161,7 +161,7 @@ In order to setup and run vegawallet for e2e capsule tests, in a separate termin
 bash setup-vegawallet.sh
 ```
 
-3. copy generated `api-token` and paste the token into `CYPRESS_VEGA_WALLET_API_TOKEN` environment variable in either `apps/token-e2e/.env` or `apps/explorer-e2e/.env` depending on which project needs testing.
+3. copy generated `api-token` and paste the token into `CYPRESS_VEGA_WALLET_API_TOKEN` environment variable in either `apps/governance-e2e/.env` or `apps/explorer-e2e/.env` depending on which project needs testing.
 
 Note: The script is only needed if capsule was built for first time or fresh. To run existing wallet service for capsule:
 
