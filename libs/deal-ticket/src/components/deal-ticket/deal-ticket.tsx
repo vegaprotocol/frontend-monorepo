@@ -36,6 +36,7 @@ import {
   usePersistedOrderStore,
   usePersistedOrderStoreSubscription,
 } from '@vegaprotocol/orders';
+import { OrderType } from '@vegaprotocol/types';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -82,7 +83,7 @@ export const DealTicket = ({
   const order = watch();
 
   watch((orderData) => {
-    if (orderData.price !== '') {
+    if (orderData.type === OrderType.TYPE_LIMIT && orderData.price === '') {
       setPersistedOrder(orderData as DealTicketFormFields);
     }
   });
