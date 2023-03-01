@@ -2,9 +2,16 @@ import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './use-vega-transaction';
 import type { VegaStoredTxState } from './use-vega-transaction-store';
 import type {
+  OrderAmendmentBody,
   OrderCancellationBody,
   WithdrawSubmissionBody,
 } from './connectors/vega-connector';
+import {
+  OrderStatus,
+  OrderTimeInForce,
+  OrderType,
+  Side,
+} from '@vegaprotocol/types';
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -24,6 +31,33 @@ describe('useVegaTransactionStore', () => {
       },
     },
   };
+
+  const orderAmendment: OrderAmendmentBody = {
+    orderAmendment: {
+      orderId:
+        '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64',
+      marketId:
+        '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
+      price: '1122',
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      sizeDelta: 0,
+    },
+  };
+
+  const originalOrder = {
+    type: OrderType.TYPE_LIMIT,
+    id: '6902dea1fa01f0b98cceb382cb9c95df244747fa27ba591de084cdd876d2f7c2',
+    status: OrderStatus.STATUS_ACTIVE,
+    createdAt: '2023-03-01T14:08:13.48478Z',
+    size: '12',
+    price: '1125',
+    timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+    expiresAt: null,
+    side: Side.SIDE_BUY,
+    marketId:
+      '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
+  };
+
   const processedTransactionUpdate = {
     status: VegaTxStatus.Pending,
     txHash: 'txHash',
@@ -63,6 +97,35 @@ describe('useVegaTransactionStore', () => {
       VegaTxStatus.Requested,
     ]);
   });
+
+  it('updates an order with order amendment', () => {
+    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
+    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
+    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
+    const transaction = useVegaTransactionStore.getState().transactions[1];
+    useVegaTransactionStore
+      .getState()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .update(transaction!.id, { status: VegaTxStatus.Pending });
+    expect(
+      useVegaTransactionStore.getState().transactions.map((t) => t?.status)
+    ).toEqual([
+      VegaTxStatus.Requested,
+      VegaTxStatus.Pending,
+      VegaTxStatus.Requested,
+    ]);
+    expect(
+      useVegaTransactionStore
+        .getState()
+        .transactions.map((t) => t?.order?.price)
+    ).toEqual(['1125', '1125', '1125']);
+    expect(
+      useVegaTransactionStore
+        .getState()
+        .transactions.map((t) => t?.body.orderAmendment.price)
+    ).toEqual(['1122', '1122', '1122']);
+  });
+
   it('sets dialogOpen to false on dismiss', () => {
     useVegaTransactionStore.getState().create(orderCancellation);
     useVegaTransactionStore.getState().dismiss(0);
@@ -70,6 +133,7 @@ describe('useVegaTransactionStore', () => {
       useVegaTransactionStore.getState().transactions[0]?.dialogOpen
     ).toEqual(false);
   });
+
   it('updates transaction result', () => {
     useVegaTransactionStore.getState().create(withdrawSubmission);
     useVegaTransactionStore.getState().update(0, processedTransactionUpdate);
@@ -80,6 +144,7 @@ describe('useVegaTransactionStore', () => {
       useVegaTransactionStore.getState().transactions[0]?.transactionResult
     ).toEqual(transactionResult);
   });
+
   it('updates withdrawal', () => {
     useVegaTransactionStore.getState().create(withdrawSubmission);
     useVegaTransactionStore.getState().update(0, processedTransactionUpdate);

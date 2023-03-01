@@ -33,7 +33,10 @@ export interface VegaStoredTxState extends VegaTxState {
 }
 export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
-  create: (tx: Transaction) => number;
+  create: (
+    tx: Transaction,
+    originalOrder?: OrderTxUpdateFieldsFragment
+  ) => number;
   update: (
     index: number,
     update: Partial<
@@ -55,7 +58,10 @@ export interface VegaTransactionStore {
 export const useVegaTransactionStore = create(
   subscribeWithSelector<VegaTransactionStore>((set, get) => ({
     transactions: [] as VegaStoredTxState[],
-    create: (body: Transaction) => {
+    create: (
+      body: Transaction,
+      originalOrder?: OrderTxUpdateFieldsFragment
+    ) => {
       const transactions = get().transactions;
       const now = new Date();
       const transaction: VegaStoredTxState = {
@@ -68,6 +74,7 @@ export const useVegaTransactionStore = create(
         signature: null,
         status: VegaTxStatus.Requested,
         dialogOpen: true,
+        order: originalOrder,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
@@ -165,7 +172,11 @@ export const useVegaTransactionStore = create(
             // TODO: handle multiple orders from batch market instructions
             // Note: If multiple orders are submitted the first order ID is determined by hashing the signature of the transaction
             // (see determineId function). For each subsequent order's ID, a hash of the previous orders ID is used
-            transaction.order = order;
+            transaction.order =
+              isOrderAmendmentTransaction(transaction?.body) &&
+              transaction.order
+                ? transaction.order
+                : order;
             transaction.status = VegaTxStatus.Complete;
             transaction.dialogOpen = true;
             transaction.updatedAt = new Date();
