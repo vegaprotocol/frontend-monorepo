@@ -19,7 +19,7 @@ export function useResizeObserver(
   callback: ResizeObserverCallback,
   options: ResizeObserverConfiguration = DEFAULT_OPTIONS
 ) {
-  const cb = useCallback(
+  const wrappedCb = useCallback(
     (entries: ResizeObserverEntry[], observer: ResizeObserver) =>
       window.requestAnimationFrame(() => {
         options.debounceTime > 0
@@ -30,8 +30,8 @@ export function useResizeObserver(
   );
 
   const observer = useMemo(() => {
-    return new ResizeObserver(cb);
-  }, [cb]);
+    return new ResizeObserver(wrappedCb);
+  }, [wrappedCb]);
 
   useEffect(() => {
     if (!observer || !target) return;
