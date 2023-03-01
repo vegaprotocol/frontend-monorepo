@@ -6,7 +6,6 @@ import {
 } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 
-const connectPrompt = '[data-testid="eth-connect-prompt"]';
 const connectButton = '[data-testid="connect-to-eth-btn"]';
 
 context(

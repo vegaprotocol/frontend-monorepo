@@ -11,7 +11,6 @@ import {
 
 const withdraw = 'withdraw';
 const withdrawalForm = 'withdraw-form';
-const selectAsset = 'select-asset';
 const ethAddressInput = 'eth-address-input';
 const amountInput = 'amount-input';
 const balanceAvailable = 'BALANCE_AVAILABLE_value';

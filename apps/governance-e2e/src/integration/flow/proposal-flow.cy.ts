@@ -180,6 +180,7 @@ context(
       waitForProposalSync();
       navigateTo(navigation.proposals);
       cy.get(rejectProposalsLink).click();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.get('@rawProposal').then((rawProposal: any) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
@@ -319,6 +320,7 @@ context(
       createRawProposal();
       cy.get('[data-testid="manage-vega-wallet"]').click();
       cy.get('[data-testid="disconnect"]').click();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.get('@rawProposal').then((rawProposal: any) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
