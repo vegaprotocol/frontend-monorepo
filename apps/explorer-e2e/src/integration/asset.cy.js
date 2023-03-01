@@ -8,7 +8,7 @@ context('Asset page', { tags: '@regression' }, () => {
 
     it('should be able to see full assets list', () => {
       cy.getAssets().then((assets) => {
-        Object.values(assets).forEach((asset) => {
+        assets.forEach((asset) => {
           cy.get(`[row-id="${asset.id}"]`).should('be.visible');
         });
       });
@@ -25,7 +25,7 @@ context('Asset page', { tags: '@regression' }, () => {
       });
 
       cy.getAssets().then((assets) => {
-        Object.values(assets).forEach((asset) => {
+        assets.forEach((asset) => {
           cy.get(`[row-id="${asset.id}"]`).should('be.visible');
         });
       });
@@ -33,7 +33,7 @@ context('Asset page', { tags: '@regression' }, () => {
 
     it('should open details page when clicked on "View details"', () => {
       cy.getAssets().then((assets) => {
-        Object.values(assets).forEach((asset) => {
+        assets.forEach((asset) => {
           cy.get(`[row-id="${asset.id}"] [col-id="actions"] button`)
             .eq(0)
             .should('contain.text', 'View details');

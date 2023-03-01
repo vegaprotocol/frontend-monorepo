@@ -1,6 +1,6 @@
 import { DepositForm } from './deposit-form';
 import type { DepositFormProps } from './deposit-form';
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/utils';
 import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
@@ -18,7 +18,7 @@ import {
   useBridgeContract,
   useEthereumConfig,
 } from '@vegaprotocol/web3';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 interface DepositManagerProps {
   assetId?: string;

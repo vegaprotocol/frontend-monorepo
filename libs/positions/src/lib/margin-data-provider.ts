@@ -1,8 +1,5 @@
 import produce from 'immer';
-import {
-  makeDataProvider,
-  removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+import { makeDataProvider, removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   MarginsSubscriptionDocument,
   MarginsDocument,

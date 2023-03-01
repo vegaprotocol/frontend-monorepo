@@ -9,19 +9,21 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   getDateTimeFormat,
-  positiveClassNames,
-  negativeClassNames,
-  t,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import {
+  AgGridDynamic as AgGrid,
+  positiveClassNames,
+  negativeClassNames,
+} from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
-import { Link } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
@@ -267,24 +269,24 @@ const FeesBreakdownTooltip = ({
       data-testid="fee-breakdown-tooltip"
       className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
-      <dl className="grid grid-cols-2 gap-x-2">
-        <dt>{t('Infrastructure fee')}</dt>
-        <dd className="text-right">
+      <dl className="grid grid-cols-3 gap-x-1">
+        <dt className="col-span-1">{t('Infrastructure fee')}</dt>
+        <dd className="text-right col-span-2">
           {addDecimalsFormatNumber(feesObj.infrastructureFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
-        <dt>{t('Liquidity fee')}</dt>
-        <dd className="text-right">
+        <dt className="col-span-1">{t('Liquidity fee')}</dt>
+        <dd className="text-right col-span-2">
           {addDecimalsFormatNumber(feesObj.liquidityFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
-        <dt>{t('Maker fee')}</dt>
-        <dd className="text-right">
+        <dt className="col-span-1">{t('Maker fee')}</dt>
+        <dd className="text-right col-span-2">
           {addDecimalsFormatNumber(feesObj.makerFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
-        <dt>{t('Total fees')}</dt>
-        <dd className="text-right">{valueFormatted}</dd>
+        <dt className="col-span-1">{t('Total fees')}</dt>
+        <dd className="text-right col-span-2">{valueFormatted}</dd>
       </dl>
     </div>
   );

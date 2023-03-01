@@ -1,4 +1,6 @@
-import { getNodes, t, useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { getNodes } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
@@ -68,7 +70,7 @@ const Party = () => {
   return (
     <section>
       <h1
-        className="font-alpha uppercase font-xl mb-4 text-vega-dark-100 dark:text-vega-light-100"
+        className="font-alpha calt uppercase font-xl mb-4 text-vega-dark-100 dark:text-vega-light-100"
         data-testid="parties-header"
       >
         {t('Public key')}

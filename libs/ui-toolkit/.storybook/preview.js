@@ -1,4 +1,4 @@
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import { useEffect } from 'react';
 import '../src/styles.css';

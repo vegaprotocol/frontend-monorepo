@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import { AddressField, TransferFee, TransferForm } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
-import { formatNumber, removeDecimal } from '@vegaprotocol/react-helpers';
+import { formatNumber, removeDecimal } from '@vegaprotocol/utils';
 
 describe('TransferForm', () => {
   const submit = () => fireEvent.submit(screen.getByTestId('transfer-form'));

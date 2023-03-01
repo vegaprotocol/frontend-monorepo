@@ -3,8 +3,8 @@ import {
   getDateTimeFormat,
   getTimeFormat,
   isValidDate,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { Stats, StatFields } from './types';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values

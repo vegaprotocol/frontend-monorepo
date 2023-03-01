@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import {
   useEagerConnect as useVegaEagerConnect,
   useVegaTransactionManager,
@@ -22,7 +22,6 @@ import {
   useInitializeEnv,
 } from '@vegaprotocol/environment';
 import './styles.css';
-import './gen-styles.scss';
 import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useMemo, useState } from 'react';

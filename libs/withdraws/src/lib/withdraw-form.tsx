@@ -3,12 +3,12 @@ import { AssetOption } from '@vegaprotocol/assets';
 import {
   ethereumAddress,
   minSafe,
-  t,
   removeDecimal,
   required,
-  useLocalStorage,
   isAssetTypeERC20,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,

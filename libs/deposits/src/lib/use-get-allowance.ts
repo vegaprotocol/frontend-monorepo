@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 
 export const useGetAllowance = (
   contract: Token | null,

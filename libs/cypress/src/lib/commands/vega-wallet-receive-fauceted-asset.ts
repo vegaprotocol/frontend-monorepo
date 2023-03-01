@@ -37,15 +37,9 @@ export function addVegaWalletReceiveFaucetedAsset() {
               );
             });
         } else {
-          const validAssets = Object.keys(assets)
-            .filter((key) => key.includes('fake'))
-            .reduce((obj, key) => {
-              return Object.assign(obj, {
-                [key]: assets[key],
-              });
-            }, {});
+          const validAssets = assets.filter((a) => a.name.includes('fake'));
           assert.exists(
-            assets[assetName],
+            asset,
             `${assetName} is not a faucet-able asset, only the following assets can be faucet-ed: ${validAssets}`
           );
         }

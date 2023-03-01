@@ -1,12 +1,12 @@
 import {
-  t,
   minSafe,
   maxSafe,
   required,
   vegaPublicKey,
   addDecimal,
   formatNumber,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   FormGroup,

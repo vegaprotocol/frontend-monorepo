@@ -1,6 +1,6 @@
 import { update } from './order-data-provider';
 import type { OrderUpdateFieldsFragment, OrderFieldsFragment } from '../';
-import type { Edge } from '@vegaprotocol/react-helpers';
+import type { Edge } from '@vegaprotocol/utils';
 describe('order data provider', () => {
   it('puts incoming data in proper place', () => {
     const data = [

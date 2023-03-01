@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import get from 'lodash/get';
 import AssetBalance from '../../../../components/asset-balance/asset-balance';
 import { AssetLink, MarketLink } from '../../../../components/links';

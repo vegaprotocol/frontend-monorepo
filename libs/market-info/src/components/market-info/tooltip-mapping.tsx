@@ -1,5 +1,6 @@
-import { ExternalLinks, t } from '@vegaprotocol/react-helpers';
+import { ExternalLinks } from '@vegaprotocol/utils';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/i18n';
 import type { ReactNode } from 'react';
 
 export const tooltipMapping: Record<string, ReactNode> = {

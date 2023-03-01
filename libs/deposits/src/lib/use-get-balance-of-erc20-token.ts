@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 
 export const useGetBalanceOfERC20Token = (
   contract: Token | null,

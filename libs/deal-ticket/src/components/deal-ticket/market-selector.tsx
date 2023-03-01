@@ -16,11 +16,11 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import {
-  t,
   useScreenDimensions,
   useOutsideClick,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';

@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 
 export const validateMarketState = (state: Schema.MarketState) => {

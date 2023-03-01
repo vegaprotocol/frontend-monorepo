@@ -6,10 +6,11 @@ import {
   formatNumber,
   formatNumberPercentage,
   removePaginationWrapper,
-  t,
-  useDataProvider,
-  useYesterday,
-} from '@vegaprotocol/react-helpers';
+  TokenLinks,
+  getMarketExpiryDateFormatted,
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   Accordion,
@@ -25,13 +26,9 @@ import { generatePath, Link } from 'react-router-dom';
 
 import { MarketInfoTable } from './info-key-value-table';
 import { marketInfoDataProvider } from './market-info-data-provider';
-import {
-  TokenLinks,
-  getMarketExpiryDateFormatted,
-} from '@vegaprotocol/react-helpers';
 
 import type { MarketInfoQuery } from './__generated__/MarketInfo';
-import { MarketProposalNotification } from '@vegaprotocol/governance';
+import { MarketProposalNotification } from '@vegaprotocol/proposals';
 
 export interface InfoProps {
   market: MarketInfoQuery['market'];
@@ -145,7 +142,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             }}
             decimalPlaces={market.decimalPlaces}
           />
-          <p className="text-xs">
+          <p className="text-xs mt-4">
             {t(
               'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
               [assetSymbol, quoteUnit]
@@ -249,7 +246,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
             ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
           />
-          <p className="text-xs">
+          <p className="text-xs mt-4">
             {t(
               'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
               [assetSymbol, quoteUnit]
@@ -309,27 +306,47 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       ),
     },
     ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-      (trigger, i) => ({
-        title: t(`Price monitoring trigger ${i + 1}`),
-        content: <MarketInfoTable data={trigger} />,
-      })
+      (trigger, i) => {
+        const bounds = market.data?.priceMonitoringBounds?.[i];
+        return {
+          title: t(`Price monitoring bounds ${i + 1}`),
+          content: (
+            <div className="text-xs">
+              <div className="grid grid-cols-2 text-xs mb-4">
+                <p className="col-span-1">
+                  {t('%s probability price bounds', [
+                    formatNumberPercentage(
+                      new BigNumber(trigger.probability).times(100)
+                    ),
+                  ])}
+                </p>
+                <p className="col-span-1 text-right">
+                  {t('Within %s seconds', [formatNumber(trigger.horizonSecs)])}
+                </p>
+              </div>
+              <div className="pl-2 pb-0 text-xs border-l-2">
+                {bounds && (
+                  <MarketInfoTable
+                    data={{
+                      highestPrice: bounds.maxValidPrice,
+                      lowestPrice: bounds.minValidPrice,
+                      referencePrice: bounds.referencePrice,
+                    }}
+                    decimalPlaces={assetDecimals}
+                    assetSymbol={quoteUnit}
+                  />
+                )}
+              </div>
+              <p className="mt-4">
+                {t('Results in %s seconds auction if breached', [
+                  trigger.auctionExtensionSecs.toString(),
+                ])}
+              </p>
+            </div>
+          ),
+        };
+      }
     ),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <>
-          <MarketInfoTable
-            data={trigger}
-            decimalPlaces={market.decimalPlaces}
-            omits={['referencePrice', '__typename']}
-          />
-          <MarketInfoTable
-            data={{ referencePrice: trigger.referencePrice }}
-            decimalPlaces={assetDecimals}
-          />
-        </>
-      ),
-    })),
     {
       title: t('Liquidity monitoring parameters'),
       content: (
@@ -369,37 +386,38 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <>
           <p className="text-xs mb-4">
-            {`For liquidity orders count towards a commitment they have to be
-            within either the liquidity or price monitoring bounds (whichever is
-            tighter).`}
+            {`For liquidity orders to count towards a commitment, they must be
+            within the liquidity monitoring bounds.`}
           </p>
           <p className="text-xs mb-4">
             {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
             price.`}
           </p>
-          <MarketInfoTable
-            data={{
-              liquidityPriceRange: `${liquidityPriceRange} of mid price`,
-              lowestPrice:
-                market.data?.midPrice &&
-                `${addDecimalsFormatNumber(
-                  new BigNumber(1)
-                    .minus(market.lpPriceRange)
-                    .times(market.data.midPrice)
-                    .toString(),
-                  market.decimalPlaces
-                )} ${quoteUnit}`,
-              highestPrice:
-                market.data?.midPrice &&
-                `${addDecimalsFormatNumber(
-                  new BigNumber(1)
-                    .plus(market.lpPriceRange)
-                    .times(market.data.midPrice)
-                    .toString(),
-                  market.decimalPlaces
-                )} ${quoteUnit}`,
-            }}
-          ></MarketInfoTable>
+          <div className="pl-2 pb-0 text-xs border-l-2">
+            <MarketInfoTable
+              data={{
+                liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+                lowestPrice:
+                  market.data?.midPrice &&
+                  `${addDecimalsFormatNumber(
+                    new BigNumber(1)
+                      .minus(market.lpPriceRange)
+                      .times(market.data.midPrice)
+                      .toString(),
+                    market.decimalPlaces
+                  )} ${quoteUnit}`,
+                highestPrice:
+                  market.data?.midPrice &&
+                  `${addDecimalsFormatNumber(
+                    new BigNumber(1)
+                      .plus(market.lpPriceRange)
+                      .times(market.data.midPrice)
+                      .toString(),
+                    market.decimalPlaces
+                  )} ${quoteUnit}`,
+              }}
+            ></MarketInfoTable>
+          </div>
         </>
       ),
     },

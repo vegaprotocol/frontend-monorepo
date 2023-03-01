@@ -1,5 +1,5 @@
 import { useAssetDataProvider } from '@vegaprotocol/assets';
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { AssetLink } from '../links';
 
 export type AssetBalanceProps = {

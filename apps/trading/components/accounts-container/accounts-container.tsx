@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';

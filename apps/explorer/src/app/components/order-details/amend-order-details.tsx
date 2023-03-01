@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useExplorerDeterministicOrderQuery } from './__generated__/Order';
 import { MarketLink } from '../links';
 import PriceInMarket from '../price-in-market/price-in-market';

@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 export const EST_MARGIN_TOOLTIP_TEXT = (settlementAsset: string) =>
   t(

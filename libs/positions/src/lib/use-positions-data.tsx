@@ -5,7 +5,7 @@ import type { Position } from './positions-data-providers';
 import { positionsMetricsProvider } from './positions-data-providers';
 import type { PositionsMetricsProviderVariables } from './positions-data-providers';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
-import type { GetRowsParams } from '@vegaprotocol/ui-toolkit';
+import type { GetRowsParams } from '@vegaprotocol/datagrid';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 

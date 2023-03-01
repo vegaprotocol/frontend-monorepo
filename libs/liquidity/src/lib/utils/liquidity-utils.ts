@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 import type { MarketNodeFragment } from './../__generated__/MarketsLiquidity';
 import { Intent } from '@vegaprotocol/ui-toolkit';

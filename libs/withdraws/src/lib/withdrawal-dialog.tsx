@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useCompleteWithdraw } from './use-complete-withdraw';

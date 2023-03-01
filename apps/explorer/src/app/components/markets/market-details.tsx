@@ -2,8 +2,8 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
   getMarketExpiryDateFormatted,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoNoCandlesQuery } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
 import pick from 'lodash/pick';
@@ -184,9 +184,8 @@ export const MarketDetails = ({
       content: (
         <>
           <p className="text-xs mb-4">
-            {`For liquidity orders count towards a commitment they have to be
-        within either the liquidity or price monitoring bounds (whichever is
-        tighter).`}
+            {`For liquidity orders to count towards a commitment, they must be
+            within the liquidity monitoring bounds.`}
           </p>
           <p className="text-xs mb-4">
             {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
@@ -249,7 +248,7 @@ export const MarketDetails = ({
     <>
       {panels.map((p) => (
         <div className="mb-3">
-          <h2 className="font-alpha text-xl">{p.title}</h2>
+          <h2 className="font-alpha calt text-xl">{p.title}</h2>
           {p.content}
         </div>
       ))}

@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import { BrowserTracing } from '@sentry/tracing';
 import * as Sentry from '@sentry/browser';
-import type { LocalLogger } from '../lib/local-logger';
-import { localLoggerFactory } from '../lib/local-logger';
+import type { LocalLogger } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/utils';
 
 interface Props {
   dsn?: string;

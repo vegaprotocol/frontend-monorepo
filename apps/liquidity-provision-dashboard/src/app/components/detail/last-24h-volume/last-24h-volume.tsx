@@ -1,10 +1,7 @@
 import { useState, useMemo, useRef, useCallback } from 'react';
 import throttle from 'lodash/throttle';
-import {
-  useYesterday,
-  useDataProvider,
-  addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { useYesterday, useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   calcDayVolume,

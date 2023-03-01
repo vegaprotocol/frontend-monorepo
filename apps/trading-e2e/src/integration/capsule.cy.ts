@@ -40,6 +40,7 @@ const newPrice = '200';
 const completeWithdrawalBtn = 'complete-withdrawal';
 const submitTransferBtn = '[type="submit"]';
 const transferForm = 'transfer-form';
+const depositSubmit = 'deposit-submit';
 
 // Because the tests are run on a live network to optimize time, the tests are interdependent and must be run in the given order.
 describe('capsule - without MultiSign', { tags: '@slow' }, () => {
@@ -76,11 +77,11 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
       'contain.text',
       `Deposits of ${btcSymbol} not approved`
     );
-    cy.getByTestId('deposit-submit').click();
+    cy.getByTestId(depositSubmit).click();
     cy.getByTestId('dialog-title').should('contain.text', 'Approve complete');
     cy.get('[data-testid="Return to deposit"]').click();
     cy.get(amountField).clear().type('10');
-    cy.getByTestId('deposit-submit').click();
+    cy.getByTestId(depositSubmit).click();
     cy.getByTestId(toastContent, txTimeout).should(
       'contain.text',
       `Transaction confirmedYour transaction has been confirmed.View on EtherscanDeposit 10.00 ${btcSymbol}`,
@@ -179,15 +180,33 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
 describe('capsule', { tags: '@slow' }, () => {
   before(() => {
-    cy.createMarket();
-    cy.get('@markets').then((markets) => {
-      cy.wrap(markets[0]).as('market');
-    });
     cy.updateCapsuleMultiSig();
   });
 
   beforeEach(() => {
+    cy.createMarket();
+    cy.get('@markets').then((markets) => {
+      cy.wrap(markets[0]).as('market');
+    });
     cy.setVegaWallet();
+  });
+
+  it('shows node health', function () {
+    const market = this.market;
+    cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId('node-health')
+      .children()
+      .first()
+      .should('contain.text', 'Operational')
+      .next()
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+      .next()
+      .then(($el) => {
+        const blockHeight = parseInt($el.text());
+        // block height will increase over the course of the test run so best
+        // we can do here is check that its showing something sensible
+        expect(blockHeight).to.be.greaterThan(0);
+      });
   });
 
   it('can place and receive an order', function () {
@@ -202,7 +221,6 @@ describe('capsule', { tags: '@slow' }, () => {
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
     };
     const rawPrice = removeDecimal(order.price, market.decimalPlaces);
-    const rawSize = removeDecimal(order.size, market.positionDecimalPlaces);
 
     cy.getByTestId('Collateral').click();
     cy.getByTestId('asset', txTimeout).should('contain.text', usdcSymbol);
@@ -220,7 +238,7 @@ describe('capsule', { tags: '@slow' }, () => {
       .get(`[data-testid="price-${rawPrice}"]`)
       .should('contain.text', order.price)
       .get(`[data-testid="bid-vol-${rawPrice}"]`)
-      .should('contain.text', rawSize);
+      .should('contain.text', order.size);
 
     cy.getByTestId(ordersTab).click();
     cy.getByTestId('edit', txTimeout).should('contain.text', 'Edit');
@@ -392,12 +410,18 @@ describe('capsule', { tags: '@slow' }, () => {
 
   it('approved amount is less than deposit', function () {
     // 1001-DEPO-006
-
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
+    cy.contains('Deposits of tBTC not approved').should('not.exist');
+    cy.contains('Use maximum').should('be.visible');
     cy.get(amountField).clear().type('20000000');
-    cy.getByTestId('deposit-approve-submit').should('be.visible');
+    cy.getByTestId(depositSubmit).should('be.visible');
+    cy.getByTestId(depositSubmit).click();
+    cy.getByTestId('input-error-text').should(
+      'contain.text',
+      'Amount is above approved amount.Update approve amount'
+    );
   });
 
   it('withdraw - delay verification', function () {

@@ -3,8 +3,8 @@ import {
   addDecimal,
   addDecimalsFormatNumber,
   formatNumber,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';

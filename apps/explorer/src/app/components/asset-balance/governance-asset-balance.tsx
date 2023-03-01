@@ -1,4 +1,4 @@
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useExplorerGovernanceAssetQuery } from './__generated__/Governance-asset';
 import AssetBalance from './asset-balance';
 

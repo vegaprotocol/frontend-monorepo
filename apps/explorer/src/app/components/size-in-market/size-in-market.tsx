@@ -1,4 +1,4 @@
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 
 export type DecimalSource = 'MARKET';

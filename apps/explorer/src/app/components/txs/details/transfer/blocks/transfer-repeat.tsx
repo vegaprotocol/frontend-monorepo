@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import EpochOverview from '../../../../epoch-overview/epoch';
 import { useExplorerFutureEpochQuery } from '../../../../epoch-overview/__generated__/Epoch';
