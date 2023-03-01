@@ -369,7 +369,7 @@ const SummaryMessage = memo(
     if (balanceError) {
       return (
         <div className="mb-4">
-          <MarginWarning balance={balance} margin={margin} asset={asset} />;
+          <MarginWarning balance={balance} margin={margin} asset={asset} />
         </div>
       );
     }
