@@ -101,7 +101,7 @@ const DeterministicOrderDetails = ({
                   {t('Remaining')}
                 </h2>
                 <h5 className="text-lg font-medium text-gray-500 mb-0">
-                  {o.remaining}
+                  <SizeInMarket size={o.remaining} marketId={o.market.id} />
                 </h5>
               </div>
             )}
