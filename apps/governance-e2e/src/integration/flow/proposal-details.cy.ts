@@ -19,10 +19,10 @@ import {
   voteForProposal,
   waitForProposalSubmitted,
   waitForProposalSync,
-} from '../../support/governance.functions';
-import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
-import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
+} from '../../../../governance-e2e/src/support/governance.functions';
+import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../../../governance-e2e/src/support/staking.functions';
+import { ethereumWalletConnect } from '../../../../governance-e2e/src/support/wallet-eth.functions';
+import { vegaWalletSetSpecifiedApprovalAmount } from '../../../../governance-e2e/src/support/wallet-teardown.functions';
 
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
@@ -187,11 +187,11 @@ describe(
         .and('be.visible');
       // 3001-VOTE-061
       getProposalInformationFromTable('Participation required')
-        .contains(0.001)
+        .contains('0.00%')
         .should('be.visible');
       // 3001-VOTE-066
       getProposalInformationFromTable('Majority Required') // 3001-VOTE-073
-        .contains(`${(100).toFixed(2)}%`)
+        .contains(`${(66).toFixed(2)}%`)
         .should('be.visible');
       getProposalInformationFromTable('Number of voting parties')
         .should('have.text', '1')
@@ -239,9 +239,12 @@ describe(
             tokensRequiredToAchieveResult
           );
           navigateTo(navigation.proposals);
-          cy.get('@submittedProposal').within(() =>
-            cy.get(viewProposalButton).click()
-          );
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          cy.get('@rawProposal').then((rawProposal: any) => {
+            getSubmittedProposalFromProposalList(rawProposal.rationale.title)
+              .as('submittedProposal')
+              .within(() => cy.get(viewProposalButton).click());
+          });
           cy.get(proposalVoteProgressForPercentage)
             .contains('100.00%')
             .and('be.visible');
