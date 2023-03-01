@@ -83,7 +83,10 @@ export const DealTicket = ({
   const order = watch();
 
   watch((orderData) => {
-    if (orderData.type === OrderType.TYPE_LIMIT && orderData.price === '') {
+    const persistable = !(
+      orderData.type === OrderType.TYPE_LIMIT && orderData.price === ''
+    );
+    if (persistable) {
       setPersistedOrder(orderData as DealTicketFormFields);
     }
   });
