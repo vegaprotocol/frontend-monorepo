@@ -64,7 +64,7 @@ export function getIconAndLabelForStatus(
       };
     case 'STATE_FAILED':
       return {
-        icon: 'ban-circle',
+        icon: 'thumbs-down',
         label: t('Proposal became invalid and was not processed'),
       };
     case 'STATE_OPEN':
@@ -82,8 +82,8 @@ export function getIconAndLabelForStatus(
       };
     case 'STATE_REJECTED':
       return {
-        icon: 'thumbs-down',
-        label: t('Voting is complete and this proposal was rejected'),
+        icon: 'disable',
+        label: t('The proposal was invalid'),
       };
     case 'STATE_WAITING_FOR_NODE_VOTE':
       return {
