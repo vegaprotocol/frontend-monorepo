@@ -82,7 +82,7 @@ export const Notification = ({
             {title}
           </div>
         )}
-        <div className="text-sm">{message}</div>
+        <div className="text-sm [word-break:break-word]">{message}</div>
         {buttonProps && (
           <Button
             size={buttonProps.size || 'sm'}
