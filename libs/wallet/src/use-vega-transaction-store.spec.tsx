@@ -119,11 +119,21 @@ describe('useVegaTransactionStore', () => {
         .getState()
         .transactions.map((t) => t?.order?.price)
     ).toEqual(['1125', '1125', '1125']);
+
+    const result = {
+      orderAmendment: {
+        marketId:
+          '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
+        orderId:
+          '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64',
+        price: '1122',
+        sizeDelta: 0,
+        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      },
+    };
     expect(
-      useVegaTransactionStore
-        .getState()
-        .transactions.map((t) => t?.body.orderAmendment.price)
-    ).toEqual(['1122', '1122', '1122']);
+      useVegaTransactionStore.getState().transactions.map((t) => t?.body)
+    ).toStrictEqual([result, result, result]);
   });
 
   it('sets dialogOpen to false on dismiss', () => {
