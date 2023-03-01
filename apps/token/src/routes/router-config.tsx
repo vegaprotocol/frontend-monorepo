@@ -52,10 +52,18 @@ const LazyRedemptionTranche = React.lazy(
       /* webpackChunkName: "route-redemption-tranche", webpackPrefetch: true */ './redemption/tranche'
     )
 );
-const LazyStaking = React.lazy(
+
+const LazyStakingIndex = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-staking", webpackPrefetch: true */ './staking'
+    )
+);
+
+const LazyStakingList = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-staking-index", webpackPrefetch: true */ './staking/staking'
     )
 );
 
@@ -73,24 +81,10 @@ const LazyStakingDisassociate = React.lazy(
     )
 );
 
-const LazyStakingIndex = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-staking-index", webpackPrefetch: true */ './staking/staking'
-    )
-);
-
 const LazyStakingNode = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-staking-node", webpackPrefetch: true */ './staking/staking-node'
-    )
-);
-
-const LazyStakingNodes = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-staking-nodes", webpackPrefetch: true */ './staking/staking-nodes-container'
     )
 );
 
@@ -174,18 +168,14 @@ const routerConfig = [
   {
     path: Routes.STAKING,
     name: 'Staking',
-    component: LazyStaking,
+    component: LazyStakingIndex,
     children: [
       { path: 'associate', element: <LazyStakingAssociate /> },
       { path: 'disassociate', element: <LazyStakingDisassociate /> },
       { path: ':node', element: <LazyStakingNode /> },
       {
         index: true,
-        element: (
-          <LazyStakingNodes>
-            {({ data }) => <LazyStakingIndex data={data} />}
-          </LazyStakingNodes>
-        ),
+        element: <LazyStakingList />,
       },
     ],
   },
