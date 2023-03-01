@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/react-helpers';
 import type { ProposalTerms } from '../tx-proposal';
 import { useState } from 'react';
 import type { components } from '../../../../../types/explorer';
@@ -8,6 +7,7 @@ import truncate from 'lodash/truncate';
 import { ProposalStatusIcon } from './proposal-status-icon';
 import ReactMarkdown from 'react-markdown';
 import { ProposalDate } from './proposal-date';
+import { t } from '@vegaprotocol/i18n';
 
 type Rationale = components['schemas']['vegaProposalRationale'];
 

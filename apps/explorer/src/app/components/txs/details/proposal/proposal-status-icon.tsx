@@ -2,9 +2,9 @@ import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { IconProps } from '@vegaprotocol/ui-toolkit';
 import { useExplorerProposalStatusQuery } from './__generated__/Proposal';
 import type { ExplorerProposalStatusQuery } from './__generated__/Proposal';
-import { t } from '@vegaprotocol/react-helpers';
 import type * as Apollo from '@apollo/client';
 import type * as Types from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/i18n';
 
 type ProposalQueryResult = Apollo.QueryResult<
   ExplorerProposalStatusQuery,

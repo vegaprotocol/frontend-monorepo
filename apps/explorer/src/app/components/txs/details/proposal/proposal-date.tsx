@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { components } from '../../../../../types/explorer';
 import type { ExplorerProposalStatusQuery } from './__generated__/Proposal';

@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { sharedHeaderProps, TxDetailsShared } from './shared/tx-details-shared';
@@ -9,6 +8,7 @@ import has from 'lodash/has';
 import { ProposalSummary } from './proposal/summary';
 import Hash from '../../links/hash';
 import { ProposalSignatureBundle } from './proposal/signature-bundle';
+import { t } from '@vegaprotocol/i18n';
 
 export type Proposal = components['schemas']['v1ProposalSubmission'];
 export type ProposalTerms = components['schemas']['vegaProposalTerms'];

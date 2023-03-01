@@ -1,13 +1,10 @@
-import { t } from '@vegaprotocol/react-helpers';
-import { Button, Icon } from '@vegaprotocol/ui-toolkit';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import ProposalLink from '../../../links/proposal-link/proposal-link';
 import {
   useExplorerNewAssetSignatureBundleQuery,
   useExplorerUpdateAssetSignatureBundleQuery,
 } from './__generated__/SignatureBundle';
-import { JsonViewerDialog } from '../../../dialogs/json-viewer-dialog';
-import { useState } from 'react';
-import Hash from '../../../links/hash';
+import { t } from '@vegaprotocol/i18n';
 
 export function format(date: string | undefined, def: string) {
   if (!date) {
@@ -40,11 +37,6 @@ interface ProposalSignatureBundleByTypeProps {
   id: string;
 }
 
-type ProposalSignatureDialog = {
-  open: boolean;
-  title: string;
-  content: unknown;
-};
 export const ProposalSignatureBundleNewAsset = ({
   id,
 }: ProposalSignatureBundleByTypeProps) => {
