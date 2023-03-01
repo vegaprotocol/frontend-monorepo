@@ -371,7 +371,7 @@ const SummaryMessage = memo(
     // balance render the margin warning, but still allow submission
     if (balanceError) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <MarginWarning balance={balance} margin={margin} asset={asset} />
         </div>
       );
