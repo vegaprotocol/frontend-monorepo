@@ -687,6 +687,7 @@ const FaucetNotification = ({ selectedAsset, tx }: FaucetNotificationProps) => {
         <Notification
           intent={Intent.Danger}
           testId="faucet-error"
+          // @ts-ignore tx.error not typed correctly
           message={t(`Faucet failed: ${tx.error?.reason}`)}
         />
       </div>
