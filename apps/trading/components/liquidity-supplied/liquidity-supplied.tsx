@@ -1,20 +1,26 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
-  addDecimalsFormatNumber,
-  formatNumberPercentage,
   NetworkParams,
-  t,
   useDataProvider,
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import type { MarketData } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
-import { Indicator, Link } from '@vegaprotocol/ui-toolkit';
+import {
+  Indicator,
+  KeyValueTable,
+  KeyValueTableRow,
+  Link,
+} from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
-import { DataGrid } from '@vegaprotocol/react-helpers';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 interface Props {
   marketId?: string;
@@ -83,27 +89,6 @@ export const MarketLiquiditySupplied = ({
     triggeringRatio,
   });
 
-  const compiledGrid = [
-    {
-      label: t('Supplied stake'),
-      value: market?.suppliedStake
-        ? addDecimalsFormatNumber(
-            new BigNumber(market?.suppliedStake).toString(),
-            assetDecimals
-          )
-        : '-',
-    },
-    {
-      label: t('Target stake'),
-      value: market?.targetStake
-        ? addDecimalsFormatNumber(
-            new BigNumber(market?.targetStake).toString(),
-            assetDecimals
-          )
-        : '-',
-    },
-  ];
-
   const showMessage =
     percentage.gte(100) &&
     market?.marketTradingMode ===
@@ -112,7 +97,30 @@ export const MarketLiquiditySupplied = ({
 
   const description = marketId ? (
     <section>
-      {compiledGrid && <DataGrid grid={compiledGrid} />}
+      <KeyValueTable>
+        <KeyValueTableRow>
+          <span>{t('Supplied stake')}</span>
+          <span>
+            {market?.suppliedStake
+              ? addDecimalsFormatNumber(
+                  new BigNumber(market?.suppliedStake).toString(),
+                  assetDecimals
+                )
+              : '-'}
+          </span>
+        </KeyValueTableRow>
+        <KeyValueTableRow>
+          <span>{t('Target stake')}</span>
+          <span>
+            {market?.targetStake
+              ? addDecimalsFormatNumber(
+                  new BigNumber(market?.targetStake).toString(),
+                  assetDecimals
+                )
+              : '-'}
+          </span>
+        </KeyValueTableRow>
+      </KeyValueTable>
       <br />
       <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
@@ -120,7 +128,7 @@ export const MarketLiquiditySupplied = ({
       {showMessage && (
         <p className="mt-4">
           {t(
-            'The market is in an auction because there are no priced limit orders, which are required to deploy liquidity commitment pegged orders. This means the order book is empty on one or both sides.'
+            'The market has sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.'
           )}
         </p>
       )}

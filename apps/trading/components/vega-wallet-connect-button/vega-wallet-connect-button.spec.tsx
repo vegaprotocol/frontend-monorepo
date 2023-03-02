@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
-import { truncateByChars } from '@vegaprotocol/react-helpers';
+import { truncateByChars } from '@vegaprotocol/utils';
 import userEvent from '@testing-library/user-event';
 
 const mockUpdateDialogOpen = jest.fn();

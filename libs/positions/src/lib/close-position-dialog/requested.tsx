@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import type { ClosingOrder as IClosingOrder } from '../use-close-position';
 import { useRequestClosePositionData } from '../use-request-close-position-data';
 import { ActiveOrders, ClosingOrder } from './shared';

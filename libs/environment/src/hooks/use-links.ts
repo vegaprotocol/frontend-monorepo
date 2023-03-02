@@ -15,6 +15,7 @@ type DAppLinks = {
 };
 
 const EmptyLinks: DAppLinks = {
+  [Networks.VALIDATOR_TESTNET]: '',
   [Networks.DEVNET]: '',
   [Networks.STAGNET1]: '',
   [Networks.STAGNET3]: '',
@@ -26,6 +27,7 @@ const EmptyLinks: DAppLinks = {
 const ExplorerLinks = {
   ...EmptyLinks,
   [Networks.TESTNET]: 'https://explorer.fairground.wtf',
+  [Networks.VALIDATOR_TESTNET]: 'https://validator-testnet.explorer.vega.xyz',
   [Networks.MAINNET]: 'https://explorer.vega.xyz',
 };
 
@@ -41,6 +43,7 @@ const TokenLinks = {
   [Networks.DEVNET]: 'https://dev.token.vega.xyz',
   [Networks.STAGNET3]: 'https://stagnet3.token.vega.xyz',
   [Networks.TESTNET]: 'https://token.fairground.wtf',
+  [Networks.VALIDATOR_TESTNET]: 'https://validator-testnet.governance.vega.xyz',
   [Networks.MAINNET]: 'https://token.vega.xyz',
 };
 
@@ -94,6 +97,7 @@ export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =
 export const TOKEN_GOVERNANCE = '/proposals';
 export const TOKEN_PROPOSALS = '/proposals';
 export const TOKEN_PROPOSAL = '/proposals/:id';
+export const TOKEN_VALIDATOR = '/validators/:id';
 
 // Explorer pages
 export const EXPLORER_TX = '/txs/:hash';

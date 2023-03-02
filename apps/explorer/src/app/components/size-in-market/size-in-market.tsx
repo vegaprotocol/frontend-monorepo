@@ -1,9 +1,9 @@
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 
 export type DecimalSource = 'MARKET';
 
-export type PriceInMarketProps = {
+export type SizeInMarketProps = {
   marketId: string;
   size?: string | number;
   decimalSource?: DecimalSource;
@@ -17,7 +17,7 @@ const SizeInMarket = ({
   marketId,
   size,
   decimalSource = 'MARKET',
-}: PriceInMarketProps) => {
+}: SizeInMarketProps) => {
   const { data } = useExplorerMarketQuery({
     variables: { id: marketId },
     fetchPolicy: 'cache-first',

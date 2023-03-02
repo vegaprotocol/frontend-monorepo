@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 import { Intro } from './intro';
 import { MarketList } from './market-list';
@@ -8,7 +8,7 @@ export function Dashboard() {
     <>
       <div className="px-16 pt-20 pb-12 bg-greys-light-100">
         <div className="max-w-screen-xl mx-auto">
-          <h1 className="font-alpha uppercase text-5xl mb-8">
+          <h1 className="font-alpha calt uppercase text-5xl mb-8">
             {t('Top liquidity opportunities')}
           </h1>
 

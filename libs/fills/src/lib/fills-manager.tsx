@@ -1,7 +1,7 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { useFillsList } from './use-fills-list';
@@ -45,8 +45,9 @@ export const FillsManager = ({
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
-        noRowsOverlayComponent={() => null}
         onMarketClick={onMarketClick}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

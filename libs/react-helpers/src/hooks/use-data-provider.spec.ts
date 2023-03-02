@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { useDataProvider, useThrottledDataProvider } from './use-data-provider';
 import type { useDataProviderParams } from './use-data-provider';
-import type { Subscribe, UpdateCallback } from '../lib/generic-data-provider';
+import type { Subscribe, UpdateCallback } from '@vegaprotocol/utils';
 import { MockedProvider } from '@apollo/client/testing';
 
 type Data = number;

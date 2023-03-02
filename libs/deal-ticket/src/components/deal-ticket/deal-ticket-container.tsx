@@ -1,5 +1,5 @@
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { useMarket, marketDataProvider } from '@vegaprotocol/market-list';

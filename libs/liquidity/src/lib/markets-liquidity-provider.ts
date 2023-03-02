@@ -1,27 +1,16 @@
 import { useMemo } from 'react';
 import * as Schema from '@vegaprotocol/types';
-import {
-  makeDataProvider,
-  makeDerivedDataProvider,
-  useDataProvider,
-  useYesterday,
-} from '@vegaprotocol/react-helpers';
-
+import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import type {
   MarketCandles,
   MarketMaybeWithDataAndCandles,
   MarketsCandlesQueryVariables,
 } from '@vegaprotocol/market-list';
 
-import {
-  marketsCandlesProvider,
-  marketListProvider,
-} from '@vegaprotocol/market-list';
+import { marketListProvider } from '@vegaprotocol/market-list';
 
-import type {
-  LiquidityProvisionMarketsQuery,
-  LiquidityProvisionMarketsQueryVariables,
-} from './__generated__/MarketsLiquidity';
+import type { LiquidityProvisionMarketsQuery } from './__generated__/MarketsLiquidity';
 import { LiquidityProvisionMarketsDocument } from './__generated__/MarketsLiquidity';
 
 import {

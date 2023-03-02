@@ -58,8 +58,20 @@ export const DealTicketFeeDetails = ({
   });
   return (
     <div>
-      {details.map((detail) => (
-        <DealTicketFeeDetail {...detail} key={detail.label} />
+      {details.map(({ label, value, labelDescription, symbol }) => (
+        <div
+          key={typeof label === 'string' ? label : 'value-dropdown'}
+          className="text-xs mt-2 flex justify-between items-center gap-4 flex-wrap"
+        >
+          <div>
+            <Tooltip description={labelDescription}>
+              <div>{label}</div>
+            </Tooltip>
+          </div>
+          <div className="text-neutral-500 dark:text-neutral-300">{`${
+            value ?? '-'
+          } ${symbol || ''}`}</div>
+        </div>
       ))}
     </div>
   );

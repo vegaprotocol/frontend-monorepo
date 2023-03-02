@@ -4,9 +4,10 @@ import {
   InputError,
   Select,
   Tooltip,
+  SimpleGrid,
 } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
-import { DataGrid, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
@@ -82,7 +83,7 @@ export const TimeInForceSelector = ({
           {t('This market is in auction until it reaches')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, marketData)} />
+              <SimpleGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('sufficient liquidity')}</span>
@@ -101,7 +102,7 @@ export const TimeInForceSelector = ({
           {t('This market is in auction due to')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, marketData)} />
+              <SimpleGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('high price volatility')}</span>

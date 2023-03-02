@@ -1,9 +1,9 @@
 import {
   addDecimalsFormatNumber,
-  t,
   toDecimal,
   validateAmount,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '../../utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
@@ -29,9 +29,9 @@ export const DealTicketMarketAmount = ({
     : undefined;
 
   return (
-    <div className="mb-6">
+    <div className="mb-2">
       <div className="flex items-end gap-4 mb-2">
-        <div className="flex-1 text-sm">Size</div>
+        <div className="flex-1 text-sm">{t('Size')}</div>
         <div />
         <div className="flex-2 text-sm text-right">
           {isMarketInAuction(marketData.marketTradingMode) && (

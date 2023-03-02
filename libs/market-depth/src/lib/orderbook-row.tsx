@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  PriceCell,
-  Vol,
-  CumulativeVol,
-  addDecimalsFormatNumber,
-  VolumeType,
-  addDecimal,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { PriceCell, VolCell, CumulativeVol } from '@vegaprotocol/datagrid';
 
 interface OrderbookRowProps {
   ask: number;
@@ -42,19 +36,19 @@ export const OrderbookRow = React.memo(
   }: OrderbookRowProps) => {
     return (
       <>
-        <Vol
+        <VolCell
           testId={`bid-vol-${price}`}
           value={bid}
-          valueFormatted={addDecimal(bid, positionDecimalPlaces)}
+          valueFormatted={addDecimalsFormatNumber(bid, positionDecimalPlaces)}
           relativeValue={relativeBid}
-          type={VolumeType.bid}
+          type="bid"
         />
-        <Vol
+        <VolCell
           testId={`ask-vol-${price}`}
           value={ask}
-          valueFormatted={addDecimal(ask, positionDecimalPlaces)}
+          valueFormatted={addDecimalsFormatNumber(ask, positionDecimalPlaces)}
           relativeValue={relativeAsk}
-          type={VolumeType.ask}
+          type="ask"
         />
         <PriceCell
           testId={`price-${price}`}
@@ -70,7 +64,6 @@ export const OrderbookRow = React.memo(
           relativeAsk={cumulativeRelativeAsk}
           relativeBid={cumulativeRelativeBid}
           indicativeVolume={indicativeVolume}
-          className="pr-4 text-black dark:text-white"
         />
       </>
     );

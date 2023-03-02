@@ -20,6 +20,7 @@ import type {
   ValidatorStatus,
   VoteValue,
   WithdrawalStatus,
+  DispatchMetric,
 } from './__generated__/types';
 
 export const AccountTypeMapping: {
@@ -433,4 +434,14 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_CLEAR_ACCOUNT: `Market-related accounts emptied, and balances moved, because the market has closed`,
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
   TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: `Balances are being restored to the user's account following a checkpoint restart of the network`,
+};
+
+type DispatchMetricLabel = {
+  [T in DispatchMetric]: string;
+};
+export const DispatchMetricLabels: DispatchMetricLabel = {
+  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Liquidity Provision fees received',
+  DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
+  DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
+  DISPATCH_METRIC_MARKET_VALUE: 'Total market Value',
 };

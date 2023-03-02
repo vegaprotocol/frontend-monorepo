@@ -1,5 +1,6 @@
 import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
-import { t, toDecimal, validateAmount } from '@vegaprotocol/react-helpers';
+import { toDecimal, validateAmount } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
 export type DealTicketLimitAmountProps = Omit<
@@ -38,7 +39,7 @@ export const DealTicketLimitAmount = ({
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-2">
       <div className="flex items-center gap-4">
         <div className="flex-1">
           <FormGroup

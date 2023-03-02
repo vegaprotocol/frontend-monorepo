@@ -1,6 +1,7 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t, truncateByChars } from '@vegaprotocol/react-helpers';
-import { useCallback, useRef, useState } from 'react';
+import { truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useRef, useState, useCallback } from 'react';
 import type {
   BodyScrollEvent,
   BodyScrollEndEvent,
@@ -22,7 +23,11 @@ import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
 } from '@vegaprotocol/wallet';
-import type { VegaTxState, TransactionResult } from '@vegaprotocol/wallet';
+import type {
+  VegaTxState,
+  TransactionResult,
+  OrderTxUpdateFieldsFragment,
+} from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { OrderSubFieldsFragment } from '../../order-hooks';
 import * as Schema from '@vegaprotocol/types';
@@ -176,6 +181,8 @@ export const OrderListManager = ({
             isReadOnly={isReadOnly}
             hasActiveOrder={hasActiveOrder}
             blockLoadDebounceMillis={100}
+            suppressLoadingOverlay
+            suppressNoRowsOverlay
           />
           <div className="pointer-events-none absolute inset-0">
             <AsyncRenderer
@@ -188,7 +195,7 @@ export const OrderListManager = ({
             />
           </div>
         </div>
-        {hasActiveOrder && (
+        {!isReadOnly && hasActiveOrder && (
           <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
             <Button
               size="sm"
@@ -224,7 +231,19 @@ export const OrderListManager = ({
               fields.limitPrice,
               fields.size
             );
-            create({ orderAmendment });
+            const originalOrder: OrderTxUpdateFieldsFragment = {
+              type: editOrder.type,
+              id: editOrder.id,
+              status: editOrder.status,
+              createdAt: editOrder.createdAt,
+              size: editOrder.size,
+              price: editOrder.price,
+              timeInForce: editOrder.timeInForce,
+              expiresAt: editOrder.expiresAt,
+              side: editOrder.side,
+              marketId: editOrder.market.id,
+            };
+            create({ orderAmendment }, originalOrder);
             setEditOrder(null);
           }}
         />

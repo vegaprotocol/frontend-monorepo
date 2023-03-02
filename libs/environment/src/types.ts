@@ -3,6 +3,7 @@ import type { configSchema } from './utils/validate-configuration';
 import type { envSchema } from './utils/validate-environment';
 
 export enum Networks {
+  VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
   CUSTOM = 'CUSTOM',
   SANDBOX = 'SANDBOX',
   TESTNET = 'TESTNET',

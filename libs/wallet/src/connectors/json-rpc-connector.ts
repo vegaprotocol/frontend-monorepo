@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { WalletClient, WalletClientError } from '@vegaprotocol/wallet-client';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';

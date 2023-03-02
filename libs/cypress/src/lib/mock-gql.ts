@@ -32,7 +32,8 @@ export const aliasGQLQuery = (
   operationName: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any,
-  errors?: Partial<GraphQLError>[]
+  errors?: Partial<GraphQLError>[],
+  headers?: Record<string, string>
 ) => {
   if (hasOperationName(req, operationName)) {
     req.alias = operationName;
@@ -40,6 +41,13 @@ export const aliasGQLQuery = (
       req.reply({
         statusCode: 200,
         body: { ...(data && { data }), ...(errors && { errors }) },
+        headers: {
+          ...req.headers,
+          // basic default block height header response
+          'x-block-height': '100',
+          'x-block-timestamp': Date.now().toString() + '0'.repeat(6),
+          ...headers,
+        },
       });
     }
   }

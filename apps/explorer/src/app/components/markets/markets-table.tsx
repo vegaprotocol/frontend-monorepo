@@ -1,13 +1,13 @@
 import type { MarketFieldsFragment } from '@vegaprotocol/market-list';
-import { t } from '@vegaprotocol/react-helpers';
-import type {
-  VegaICellRendererParams,
-  VegaValueGetterParams,
-} from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import type {
+  VegaICellRendererParams,
+  VegaValueGetterParams,
+} from '@vegaprotocol/datagrid';
 import { useRef, useLayoutEffect } from 'react';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { MarketStateMapping } from '@vegaprotocol/types';

@@ -1,17 +1,16 @@
 import { forwardRef, useMemo, useState } from 'react';
-import {
-  addDecimalsFormatNumber,
-  isNumeric,
-  t,
-} from '@vegaprotocol/react-helpers';
-import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/datagrid';
 import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
@@ -154,7 +153,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }
             maxWidth={300}
           />
-          {!props.isReadOnly && (
+          {
             <AgGridColumn
               colId="breakdown"
               headerName=""
@@ -193,29 +192,33 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                         {t('Breakdown')}
                       </ButtonLink>
                       <span className="mx-1" />
-                      <ButtonLink
-                        data-testid="deposit"
-                        onClick={() => {
-                          onClickDeposit && onClickDeposit(data.asset.id);
-                        }}
-                      >
-                        {t('Deposit')}
-                      </ButtonLink>
+                      {!props.isReadOnly && (
+                        <ButtonLink
+                          data-testid="deposit"
+                          onClick={() => {
+                            onClickDeposit && onClickDeposit(data.asset.id);
+                          }}
+                        >
+                          {t('Deposit')}
+                        </ButtonLink>
+                      )}
                       <span className="mx-1" />
-                      <ButtonLink
-                        data-testid="withdraw"
-                        onClick={() =>
-                          onClickWithdraw && onClickWithdraw(data.asset.id)
-                        }
-                      >
-                        {t('Withdraw')}
-                      </ButtonLink>
+                      {!props.isReadOnly && (
+                        <ButtonLink
+                          data-testid="withdraw"
+                          onClick={() =>
+                            onClickWithdraw && onClickWithdraw(data.asset.id)
+                          }
+                        >
+                          {t('Withdraw')}
+                        </ButtonLink>
+                      )}
                     </>
                   );
                 }
               }}
             />
-          )}
+          }
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">

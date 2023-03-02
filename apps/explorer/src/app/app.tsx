@@ -40,9 +40,9 @@ function App() {
       <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
         <AnnouncementBanner>
           <div className="font-alpha calt uppercase text-center text-lg text-white">
-            <span className="pr-4">Mainnet sim 2 coming in March!</span>
+            <span className="pr-4">Mainnet sim 2 is live!</span>
             <ExternalLink href="https://fairground.wtf/">
-              Learn more
+              Come help stress test the network
             </ExternalLink>
           </div>
         </AnnouncementBanner>

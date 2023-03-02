@@ -1,9 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import {
-  addDecimalsFormatNumber,
-  t,
-  truncateByChars,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   KeyValueTable,

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import classnames from 'classnames';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 type LayoutCellProps = {
   label?: string;

@@ -1,13 +1,10 @@
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
-import { MarketProposalNotification } from '@vegaprotocol/governance';
+import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import type { Market } from '@vegaprotocol/market-list';
-import {
-  getExpiryDate,
-  getMarketExpiryDate,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   ColumnKind,
   SelectMarketPopover,
@@ -84,7 +81,7 @@ export const TradeMarketHeader = ({
         heading={t('Volume (24h)')}
         testId="market-volume"
         description={t(
-          'The total amount of assets traded in the last 24 hours.'
+          'The total number of contracts traded in the last 24 hours.'
         )}
       >
         <Last24hVolume

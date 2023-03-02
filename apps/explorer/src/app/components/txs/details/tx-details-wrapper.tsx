@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { DATA_SOURCES } from '../../../config';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import { TxDetailsOrder } from './tx-order';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
@@ -23,6 +24,7 @@ import { TxDetailsProtocolUpgrade } from './tx-details-protocol-upgrade';
 import { TxDetailsIssueSignatures } from './tx-issue-signatures';
 import { TxDetailsNodeAnnounce } from './tx-node-announce';
 import { TxDetailsStateVariable } from './tx-state-variable-proposal';
+import { TxDetailsTransfer } from './tx-transfer';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -108,6 +110,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsUndelegate;
     case 'State Variable Proposal':
       return TxDetailsStateVariable;
+    case 'Transfer Funds':
+      return TxDetailsTransfer;
     default:
       return TxDetailsGeneric;
   }

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 import type { components } from '../../../../../types/explorer';
 import omit from 'lodash/omit';

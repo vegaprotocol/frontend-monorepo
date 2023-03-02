@@ -1,12 +1,12 @@
 import {
-  t,
   toDecimal,
-  Size,
   getDateTimeFormat,
   addDecimal,
   addDecimalsFormatNumber,
   validateAmount,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { Size } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   FormGroup,

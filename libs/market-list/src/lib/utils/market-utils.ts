@@ -1,4 +1,4 @@
-import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
+import { formatNumberPercentage } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';

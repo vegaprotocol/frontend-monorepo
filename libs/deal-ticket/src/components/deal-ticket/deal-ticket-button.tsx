@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import type { ButtonVariant } from '@vegaprotocol/ui-toolkit';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -12,7 +12,7 @@ export const DealTicketButton = ({ disabled, variant }: Props) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const isDisabled = !pubKey || isReadOnly || disabled;
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <Button
         variant={variant}
         fill

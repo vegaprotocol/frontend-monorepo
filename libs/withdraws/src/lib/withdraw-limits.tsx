@@ -1,5 +1,6 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { compactNumber, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
@@ -29,13 +30,17 @@ export const WithdrawLimits = ({
       key: 'BALANCE_AVAILABLE',
       label: t('Balance available'),
       rawValue: balance,
-      value: balance ? compactNumber(balance, asset.decimals) : '-',
+      value: balance ? (
+        <CompactNumber number={balance} decimals={asset.decimals} />
+      ) : (
+        '-'
+      ),
     },
     {
       key: 'WITHDRAWAL_THRESHOLD',
       label: t('Delayed withdrawal threshold'),
       rawValue: threshold,
-      value: compactNumber(threshold, asset.decimals),
+      value: <CompactNumber number={threshold} decimals={asset.decimals} />,
     },
     {
       key: 'DELAY_TIME',

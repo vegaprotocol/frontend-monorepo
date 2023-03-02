@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -40,6 +40,7 @@ import {
   useMarketAccountBalance,
   useAccountBalance,
 } from '@vegaprotocol/accounts';
+import { OrderType } from '@vegaprotocol/types';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -86,7 +87,12 @@ export const DealTicket = ({
   const order = watch();
 
   watch((orderData) => {
-    setPersistedOrder(orderData as DealTicketFormFields);
+    const persistable = !(
+      orderData.type === OrderType.TYPE_LIMIT && orderData.price === ''
+    );
+    if (persistable) {
+      setPersistedOrder(orderData as DealTicketFormFields);
+    }
   });
 
   usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
@@ -329,7 +335,7 @@ const SummaryMessage = memo(
     );
     if (isReadOnly) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <InputError testId="dealticket-error-message-summary">
             {
               'You need to connect your own wallet to start trading on this market'
@@ -340,30 +346,37 @@ const SummaryMessage = memo(
     }
     if (!pubKey) {
       return (
-        <Notification
-          testId={'deal-ticket-connect-wallet'}
-          intent={Intent.Warning}
-          message={
-            <p className="text-sm pb-2">
-              You need a{' '}
-              <ExternalLink href="https://vega.xyz/wallet">
-                Vega wallet
-              </ExternalLink>{' '}
-              with {assetSymbol} to start trading in this market.
-            </p>
-          }
-          buttonProps={{
-            text: t('Connect wallet'),
-            action: openVegaWalletDialog,
-            dataTestId: 'order-connect-wallet',
-            size: 'md',
-          }}
-        />
+        <div className="mb-2">
+          <Notification
+            testId={'deal-ticket-connect-wallet'}
+            intent={Intent.Warning}
+            message={
+              <p className="text-sm pb-2">
+                You need a{' '}
+                <ExternalLink href="https://vega.xyz/wallet">
+                  Vega wallet
+                </ExternalLink>{' '}
+                with {assetSymbol} to start trading in this market.
+              </p>
+            }
+            buttonProps={{
+              text: t('Connect wallet'),
+              action: openVegaWalletDialog,
+              dataTestId: 'order-connect-wallet',
+              size: 'md',
+            }}
+          />
+        </div>
       );
     }
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
-        <ZeroBalanceError asset={asset} onClickCollateral={onClickCollateral} />
+        <div className="mb-2">
+          <ZeroBalanceError
+            asset={asset}
+            onClickCollateral={onClickCollateral}
+          />
+        </div>
       );
     }
 
@@ -371,7 +384,7 @@ const SummaryMessage = memo(
     // submission render that first
     if (errorMessage) {
       return (
-        <div className="mb-4">
+        <div className="mb-2">
           <InputError testId="dealticket-error-message-summary">
             {errorMessage}
           </InputError>
@@ -393,13 +406,15 @@ const SummaryMessage = memo(
       ].includes(marketTradingMode)
     ) {
       return (
-        <Notification
-          intent={Intent.Warning}
-          testId={'dealticket-warning-auction'}
-          message={t(
-            'Any orders placed now will not trade until the auction ends'
-          )}
-        />
+        <div className="mb-2">
+          <Notification
+            intent={Intent.Warning}
+            testId={'dealticket-warning-auction'}
+            message={t(
+              'Any orders placed now will not trade until the auction ends'
+            )}
+          />
+        </div>
       );
     }
 
