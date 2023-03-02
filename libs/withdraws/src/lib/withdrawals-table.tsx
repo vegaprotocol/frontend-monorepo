@@ -45,8 +45,7 @@ export const WithdrawalsTable = (
         EtherscanLinkCell,
         CompleteCell,
       }}
-      suppressCellFocus={true}
-      domLayout="autoHeight"
+      suppressCellFocus
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />

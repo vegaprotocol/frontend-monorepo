@@ -36,7 +36,7 @@ export const AccountsContainer = ({
   }
 
   return (
-    <div className="h-full relative grid grid-rows-[1fr,min-content]">
+    <div className="h-full relative grid grid-rows-[1fr]">
       <div>
         <AccountManager
           partyId={pubKey}
@@ -48,15 +48,20 @@ export const AccountsContainer = ({
         />
       </div>
       {!isReadOnly && (
-        <div className="flex gap-2 justify-end p-2 px-[11px]">
+        <div className="flex gap-2 justify-end p-2 px-[11px] fixed bottom-0 right-1 dark:bg-black/75 bg-white/75 rounded">
           <Button
+            variant="primary"
             size="sm"
             data-testid="open-transfer-dialog"
             onClick={() => openTransferDialog()}
           >
             {t('Transfer')}
           </Button>
-          <Button size="sm" onClick={() => openDepositDialog()}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => openDepositDialog()}
+          >
             {t('Deposit')}
           </Button>
         </div>

@@ -20,7 +20,7 @@ export const WithdrawalsContainer = () => {
 
   return (
     <VegaWalletContainer>
-      <div className="h-full relative grid grid-rows-[1fr,min-content]">
+      <div className="h-full relative grid grid-rows-[1fr]">
         <div className="h-full relative">
           <WithdrawalsTable
             data-testid="withdrawals-history"
@@ -39,8 +39,9 @@ export const WithdrawalsContainer = () => {
           </div>
         </div>
         {!isReadOnly && (
-          <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
+          <div className="h-auto flex justify-end px-[11px] py-2 bottom-0 right-1 absolute dark:bg-black/75 bg-white/75 rounded">
             <Button
+              variant="primary"
               size="sm"
               onClick={() => openWithdrawDialog()}
               data-testid="withdraw-dialog-button"

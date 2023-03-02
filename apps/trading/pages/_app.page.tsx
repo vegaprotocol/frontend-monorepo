@@ -72,7 +72,7 @@ function AppBody({ Component }: AppProps) {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[repeat(3,min-content),1fr,min-content]'
+    'grid-rows-[repeat(3,min-content),1fr]'
   );
 
   return (

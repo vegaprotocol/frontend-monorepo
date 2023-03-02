@@ -133,8 +133,8 @@ export const OrderListManager = ({
 
   return (
     <>
-      <div className="h-full relative grid grid-rows-[1fr,min-content]">
-        <div className="relative">
+      <div className="h-full relative grid grid-rows-[1fr]">
+        <div className="h-full relative">
           <OrderListTable
             ref={gridRef}
             rowModelType="infinite"
@@ -155,7 +155,6 @@ export const OrderListManager = ({
             setEditOrder={setEditOrder}
             onMarketClick={onMarketClick}
             isReadOnly={isReadOnly}
-            hasActiveOrder={hasActiveOrder}
             blockLoadDebounceMillis={100}
             suppressLoadingOverlay
             suppressNoRowsOverlay
@@ -172,8 +171,9 @@ export const OrderListManager = ({
           </div>
         </div>
         {!isReadOnly && hasActiveOrder && (
-          <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
+          <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-1 rounded">
             <Button
+              variant="primary"
               size="sm"
               onClick={() => {
                 create({
