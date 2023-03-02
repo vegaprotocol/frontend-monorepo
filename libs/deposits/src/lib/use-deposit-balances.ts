@@ -7,7 +7,6 @@ import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
 import { isAssetTypeERC20 } from '@vegaprotocol/utils';
-import { usePrevious } from '@vegaprotocol/react-helpers';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 
@@ -65,6 +64,7 @@ export const useDepositBalances = (
       });
     } catch (err) {
       Sentry.captureException(err);
+      setState(null);
     }
   }, [asset, getAllowance, getBalance, getDepositMaximum, getDepositedAmount]);
 

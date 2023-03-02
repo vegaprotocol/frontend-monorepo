@@ -7,6 +7,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import type { DepositBalances } from './use-deposit-balances';
 
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@vegaprotocol/web3');
@@ -38,27 +39,34 @@ function generateAsset(): AssetFieldsFragment {
 
 let asset: AssetFieldsFragment;
 let props: DepositFormProps;
+let balances: DepositBalances;
 const MOCK_ETH_ADDRESS = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 const MOCK_VEGA_KEY =
   '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680';
 
 beforeEach(() => {
   asset = generateAsset();
+  balances = {
+    balance: new BigNumber(5),
+    max: new BigNumber(20),
+    allowance: new BigNumber(30),
+    deposited: new BigNumber(10),
+  };
   props = {
     assets: [asset],
     selectedAsset: undefined,
     onSelectAsset: jest.fn(),
-    balance: new BigNumber(5),
+    balances,
     submitApprove: jest.fn(),
     submitDeposit: jest.fn(),
-    requestFaucet: jest.fn(),
-    max: new BigNumber(20),
-    deposited: new BigNumber(10),
-    allowance: new BigNumber(30),
+    submitFaucet: jest.fn(),
+    onDisconnect: jest.fn(),
+    approveTxId: null,
+    faucetTxId: null,
     isFaucetable: true,
   };
 
-  (useVegaWallet as jest.Mock).mockReturnValue({ pubKey: null });
+  (useVegaWallet as jest.Mock).mockReturnValue({ pubKey: null, pubKeys: [] });
   (useWeb3React as jest.Mock).mockReturnValue({
     isActive: true,
     account: MOCK_ETH_ADDRESS,
@@ -71,7 +79,8 @@ describe('Deposit form', () => {
     render(<DepositForm {...props} />);
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
-    expect(screen.getByLabelText('From (Ethereum address)')).toHaveValue(
+    expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
+    expect(screen.getByTestId('ethereum-account')).toHaveTextContent(
       MOCK_ETH_ADDRESS
     );
     expect(screen.getByLabelText('Asset')).toHaveValue('');
@@ -145,7 +154,7 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Amount is above deposit limit')
+        await screen.findByText('Amount is above lifetime deposit limit')
       ).toBeInTheDocument();
     });
 
@@ -153,9 +162,12 @@ describe('Deposit form', () => {
       render(
         <DepositForm
           {...props}
-          balance={new BigNumber(100)}
-          max={new BigNumber(100)}
-          deposited={new BigNumber(10)}
+          balances={{
+            ...balances,
+            balance: BigNumber(100),
+            max: new BigNumber(100),
+            deposited: new BigNumber(10),
+          }}
         />
       );
 
@@ -166,7 +178,7 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Amount is above approved amount.')
+        await screen.findByText('Amount is above approved amount')
       ).toBeInTheDocument();
     });
 
@@ -214,14 +226,17 @@ describe('Deposit form', () => {
     render(
       <DepositForm
         {...props}
-        allowance={new BigNumber(0)}
+        balances={{
+          ...balances,
+          allowance: new BigNumber(0),
+        }}
         selectedAsset={asset}
       />
     );
 
     expect(screen.queryByLabelText('Amount')).not.toBeInTheDocument();
-    expect(screen.getByTestId('approve-warning')).toHaveTextContent(
-      `Deposits of ${asset.symbol} not approved`
+    expect(screen.getByTestId('approve-default')).toHaveTextContent(
+      `Before you can make a deposit of your chosen asset, ${asset.symbol}, you need to approve its use in your Ethereum wallet`
     );
 
     fireEvent.click(
@@ -253,10 +268,12 @@ describe('Deposit form', () => {
     render(
       <DepositForm
         {...props}
-        allowance={new BigNumber(100)}
-        balance={balance}
-        max={max}
-        deposited={deposited}
+        balances={{
+          allowance: new BigNumber(100),
+          balance,
+          max,
+          deposited,
+        }}
         selectedAsset={asset}
       />
     );
@@ -320,10 +337,10 @@ describe('Deposit form', () => {
     expect(
       screen.queryByRole('button', { name: 'Connect' })
     ).not.toBeInTheDocument();
-    const fromInput = screen.getByLabelText('From (Ethereum address)');
-    expect(fromInput).toHaveValue(MOCK_ETH_ADDRESS);
-    expect(fromInput).toBeDisabled();
-    expect(fromInput).toHaveAttribute('readonly');
+    expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
+    expect(screen.getByTestId('ethereum-account')).toHaveTextContent(
+      MOCK_ETH_ADDRESS
+    );
   });
 
   it('prevents submission if you are on the wrong chain', () => {

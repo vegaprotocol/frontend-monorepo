@@ -158,7 +158,9 @@ export const DepositForm = ({
             if (isActive && account) {
               return (
                 <div className="text-sm">
-                  <p className="mb-1">{account}</p>
+                  <p className="mb-1" data-testid="ethereum-account">
+                    {account}
+                  </p>
                   <DisconnectEthereumButton
                     onDisconnect={() => {
                       setValue('from', ''); // clear from value so required ethereum connection validation works
