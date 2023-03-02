@@ -80,7 +80,13 @@ const NetworkLabel = ({
   </span>
 );
 
-export const NetworkSwitcher = () => {
+type NetworkSwitcherProps = {
+  /**
+   * The current network identifier, defaults to the `VEGA_ENV` if unset.
+   */
+  currentNetwork?: Networks;
+};
+export const NetworkSwitcher = ({ currentNetwork }: NetworkSwitcherProps) => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
   const [isOpen, setOpen] = useState(false);
@@ -97,6 +103,8 @@ export const NetworkSwitcher = () => {
   );
   const menuRef = useRef<HTMLButtonElement | null>(null);
 
+  const current = currentNetwork || VEGA_ENV;
+
   return (
     <DropdownMenu
       open={isOpen}
@@ -106,7 +114,7 @@ export const NetworkSwitcher = () => {
           ref={menuRef}
           className="flex justify-between items-center"
         >
-          {envTriggerMapping[VEGA_ENV]}
+          {envTriggerMapping[current]}
         </DropdownMenuTrigger>
       }
     >
@@ -125,7 +133,7 @@ export const NetworkSwitcher = () => {
                 <a href={VEGA_NETWORKS[key]}>
                   {envNameMapping[key]}
                   <NetworkLabel
-                    isCurrent={VEGA_ENV === key}
+                    isCurrent={current === key}
                     isAvailable={!!VEGA_NETWORKS[key]}
                   />
                 </a>
@@ -150,7 +158,7 @@ export const NetworkSwitcher = () => {
                 <div className="mr-4">
                   <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
                   <NetworkLabel
-                    isCurrent={VEGA_ENV === key}
+                    isCurrent={current === key}
                     isAvailable={!!VEGA_NETWORKS[key]}
                   />
                 </div>

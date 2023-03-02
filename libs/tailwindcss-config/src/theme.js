@@ -165,5 +165,6 @@ module.exports = {
   },
   data: {
     selected: 'state~="checked"',
+    open: 'state~="open"',
   },
 };
