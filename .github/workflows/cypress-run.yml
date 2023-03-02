@@ -16,6 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # run copies of the current job in parallel
+        containers: [1, 2]
         project: ${{ fromJSON(inputs.projects) }}
     runs-on: self-hosted-runner
     timeout-minutes: 30
