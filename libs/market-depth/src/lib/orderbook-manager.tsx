@@ -191,7 +191,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         onClick={(price?: string | number) => {
           if (price) {
             const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-            updatePrice({ marketId, price: priceValue });
+            updatePrice(marketId, { price: priceValue });
           }
         }}
       />

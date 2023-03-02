@@ -76,6 +76,47 @@ describe('DealTicket', () => {
     );
   });
 
+  it.only('should use local storage state', async () => {
+    const storedOrderState = {
+      state: {
+        orders: {
+          [market.id]: {
+            marketId: market.id,
+            type: Schema.OrderType.TYPE_LIMIT,
+            side: Schema.Side.SIDE_SELL,
+            size: '0.1',
+            price: '300.22',
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+          },
+        },
+      },
+      version: 0,
+    };
+    localStorage.setItem('vega_order_store', JSON.stringify(storedOrderState));
+    console.log(localStorage.getItem('vega_order_store'));
+    const order = storedOrderState.state.orders[market.id];
+    await act(async () => {
+      render(generateJsx());
+    });
+
+    // Assert defaults are used
+    expect(
+      screen
+        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
+        .querySelector('input')
+    ).toBeChecked();
+    // screen.debug(container, Infinity);
+    expect(
+      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
+    ).toBeChecked();
+    expect(
+      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
+    ).not.toBeChecked();
+    expect(screen.getByTestId('order-size')).toHaveDisplayValue(order.size);
+    expect(screen.getByTestId('order-tif')).toHaveValue(order.timeInForce);
+    expect(screen.getByTestId('order-price')).toHaveDisplayValue(order.price);
+  });
+
   it('handles TIF select box dependent on order type', () => {
     render(generateJsx());
 
