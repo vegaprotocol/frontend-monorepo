@@ -1,32 +1,133 @@
 [Admin]
-  [Admin.Server]
-    SocketPath = "/tmp/vega-{{.NodeNumber}}.sock"
-    Enabled = true
+    [Admin.Server]
+      SocketPath = "{{.NodeHomeDir}}/vega.sock"
+      Enabled = true
 
 [API]
-	Port = {{add 300 .NodeNumber}}2
+	Level = "Info"
+	Port = 3{{ printf "%02d" .NodeNumber }}2
 	[API.REST]
-			Port = {{add 300 .NodeNumber}}3
+			Port = 3{{ printf "%02d" .NodeNumber }}3
 
 [Blockchain]
+	Level = "Info"
 	[Blockchain.Tendermint]
-		RPCAddr = "tcp://127.0.0.1:{{add 2660 .NodeNumber}}7"
+		Level = "Info"
+		RPCAddr = "tcp://127.0.0.1:26{{ printf "%02d" (add .NodeNumber 60) }}7"
 	[Blockchain.Null]
-		Port = {{add 310 .NodeNumber}}1
+		Level = "Info"
+		Port = 3{{ printf "%02d" (add .NodeNumber 10) }}1
+
+[Collateral]
+		Level = "Info"
+
+[CoreAPI]
+	LogLevel = "Info"
+
+[Execution]
+	Level = "Info"
+	[Execution.Matching]
+		Level = "Info"
+	[Execution.Risk]
+		Level = "Info"
+	[Execution.Position]
+		Level = "Info"
+		LogPositionUpdate = true
+	[Execution.Settlement]
+		Level = "Info"
+	[Execution.Fee]
+		Level = "Info"
+	[Execution.Liquidity]
+		Level = "Info"
 
 [EvtForward]
 	Level = "Info"
 	RetryRate = "1s"
+	[EvtForward.Ethereum]
+		Level = "Info"
 
 [Ethereum]
   RPCEndpoint = "{{.ETHEndpoint}}"
 
+[NodeWallet]
+		Level = "Info"
+	[NodeWallet.ETH]
+		Level = "Info"
+
 [Processor]
+	Level = "Info"
 	[Processor.Ratelimit]
 		Requests = 10000
 		PerNBlocks = 1
 
+[Oracles]
+	Level = "Info"
+
+[Time]
+	Level = "Info"
+
+[Epoch]
+	Level = "Info"
+
+[Monitoring]
+	Level = "Info"
+
+[Metrics]
+	Level = "Info"
+
+[Governance]
+	Level = "Info"
+[Assets]
+	Level = "Info"
+
+[Notary]
+	Level = "Info"
+
+[Genesis]
+	Level = "Info"
+
+[Validators]
+	Level = "Info"
+
+[Banking]
+	Level = "Info"
+
+[Stats]
+	Level = "Info"
+
+[NetworkParameters]
+	Level = "Info"
+
+[Limits]
+	Level = "Info"
+
+[Checkpoint]
+	Level = "Info"
+
+[Staking]
+	Level = "Info"
+
 [Broker]
-  [Broker.Socket]
-    Port = {{add 300 .NodeNumber}}5
-    Enabled = true
+	Level = "Info"
+	[Broker.Socket]
+		Port = 3{{ printf "%02d" .NodeNumber }}5
+		Enabled = true
+
+
+[Rewards]
+	Level = "Info"
+
+[Delegation]
+	Level = "Info"
+
+[Spam]
+	Level = "Info"
+
+[Snapshot]
+	Level = "Info"
+
+[StateVar]
+	Level = "Info"
+
+[Pprof]
+	Level = "Info"
