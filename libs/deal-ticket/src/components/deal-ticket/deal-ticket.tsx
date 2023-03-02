@@ -52,7 +52,11 @@ export const DealTicket = ({
   onClickCollateral,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
+<<<<<<< HEAD
   // store last used tif for market so that when changing OrderType the previous TIF
+=======
+  // store last used tif for market so that when chaning OrderType the previous TIF
+>>>>>>> beadef6ae (feat: add additional hook to handle order creation if not existing)
   // selection for that type is used when switching back
   const [lastTIF, setLastTIF] = useState({
     [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
@@ -148,7 +152,11 @@ export const DealTicket = ({
     [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
+<<<<<<< HEAD
   // if an order doesn't exist one will be created by the store immediately
+=======
+  // just return null, if an order doesn't exist one will be created by the store
+>>>>>>> beadef6ae (feat: add additional hook to handle order creation if not existing)
   if (!order) return null;
 
   return (
