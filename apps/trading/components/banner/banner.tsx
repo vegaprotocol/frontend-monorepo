@@ -24,6 +24,7 @@ export const Banner = () => {
     <AnnouncementBanner>
       <div className="grid grid-cols-[auto_1fr] gap-4 font-alpha calt uppercase text-center text-lg text-white">
         <button
+          className="flex items-center"
           onClick={() => update({ shouldDisplayAnnouncementBanner: false })}
         >
           <Icon name="cross" className="w-6 h-6" ariaLabel="dismiss" />
