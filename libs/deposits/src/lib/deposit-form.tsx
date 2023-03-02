@@ -8,6 +8,7 @@ import {
   maxSafe,
   addDecimal,
   isAssetTypeERC20,
+  truncateByChars,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -19,21 +20,29 @@ import {
   RichSelect,
   Notification,
   Intent,
+  ButtonLink,
+  Select,
+  Link,
+  ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { useState } from 'react';
 import { useMemo } from 'react';
 import type { FieldError } from 'react-hook-form';
 import { Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import type { EthTxState } from '@vegaprotocol/web3';
+import { EthTxStatus } from '@vegaprotocol/web3';
 import {
   ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectStore,
   getChainName,
 } from '@vegaprotocol/web3';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface FormFields {
   asset: string;
@@ -48,6 +57,7 @@ export interface DepositFormProps {
   onSelectAsset: (assetId: string) => void;
   balance: BigNumber | undefined;
   submitApprove: () => void;
+  approveStatus: EthTxState;
   submitDeposit: (args: {
     assetSource: string;
     amount: string;
@@ -68,6 +78,7 @@ export const DepositForm = ({
   max,
   deposited,
   submitApprove,
+  approveStatus,
   submitDeposit,
   requestFaucet,
   allowance,
@@ -76,7 +87,7 @@ export const DepositForm = ({
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { isActive, account } = useWeb3React();
-  const { pubKey } = useVegaWallet();
+  const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const {
     register,
     handleSubmit,
@@ -96,15 +107,14 @@ export const DepositForm = ({
       throw new Error('Invalid asset');
     }
 
-    if (approved) {
-      submitDeposit({
-        assetSource: selectedAsset.source.contractAddress,
-        amount: fields.amount,
-        vegaPublicKey: fields.to,
-      });
-    } else {
-      submitApprove();
-    }
+    if (formState === 'approve') throw new Error('Deposits not approved');
+    if (!approved) throw new Error('Deposits not approved');
+
+    submitDeposit({
+      assetSource: selectedAsset.source.contractAddress,
+      amount: fields.amount,
+      vegaPublicKey: fields.to,
+    });
   };
 
   const maxAmount = useMemo(() => {
@@ -137,8 +147,13 @@ export const DepositForm = ({
     return minViableAmount;
   }, [selectedAsset]);
 
+  const pubKeys = useMemo(() => {
+    return _pubKeys ? _pubKeys.map((pk) => pk.publicKey) : [];
+  }, [_pubKeys]);
+
   const approved = allowance && allowance.isGreaterThan(0) ? true : false;
   const formState = getFormState(selectedAsset, isActive, approved);
+  console.log(formState, approved, allowance?.toString());
 
   return (
     <form
@@ -166,32 +181,20 @@ export const DepositForm = ({
           render={() => {
             if (isActive && account) {
               return (
-                <>
-                  <Input
-                    id="ethereum-address"
-                    value={account}
-                    readOnly={true}
-                    disabled={true}
-                    {...register('from', {
-                      validate: {
-                        required,
-                        ethereumAddress,
-                      },
-                    })}
-                  />
+                <div className="text-sm">
+                  <p className="mb-1">{account}</p>
                   <DisconnectEthereumButton
                     onDisconnect={() => {
                       setValue('from', ''); // clear from value so required ethereum connection validation works
                     }}
                   />
-                </>
+                </div>
               );
             }
             return (
               <Button
                 onClick={openDialog}
                 variant="primary"
-                fill={true}
                 type="button"
                 data-testid="connect-eth-wallet-btn"
               >
@@ -256,24 +259,41 @@ export const DepositForm = ({
         )}
       </FormGroup>
       <FormGroup label={t('To (Vega key)')} labelFor="to">
-        <Input
-          {...register('to', { validate: { required, vegaPublicKey } })}
-          id="to"
+        <AddressField
+          pubKeys={pubKeys}
+          onChange={() => setValue('to', '')}
+          select={
+            <Select {...register('to')} id="to" defaultValue="">
+              <option value="" disabled={true}>
+                {t('Please select')}
+              </option>
+              {pubKeys?.length &&
+                pubKeys.map((pk) => (
+                  <option key={pk} value={pk}>
+                    {pk}
+                  </option>
+                ))}
+            </Select>
+          }
+          input={
+            <Input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={true} // focus input immediately after is shown
+              id="to"
+              type="text"
+              {...register('to', {
+                validate: {
+                  required,
+                  vegaPublicKey,
+                },
+              })}
+            />
+          }
         />
         {errors.to?.message && (
           <InputError intent="danger" forInput="to">
             {errors.to.message}
           </InputError>
-        )}
-        {pubKey && (
-          <UseButton
-            onClick={() => {
-              setValue('to', pubKey);
-              clearErrors('to');
-            }}
-          >
-            {t('Use connected')}
-          </UseButton>
         )}
       </FormGroup>
       {selectedAsset && max && deposited && (
@@ -339,7 +359,13 @@ export const DepositForm = ({
           )}
         </FormGroup>
       )}
-      <FormButton selectedAsset={selectedAsset} formState={formState} />
+      <FormButton
+        selectedAsset={selectedAsset}
+        formState={formState}
+        onApprove={submitApprove}
+        approveStatus={approveStatus}
+        approved={approved}
+      />
     </form>
   );
 };
@@ -371,27 +397,32 @@ const AmountError = ({
 interface FormButtonProps {
   selectedAsset?: Asset;
   formState: ReturnType<typeof getFormState>;
+  onApprove: () => void;
+  approveStatus: EthTxState;
+  approved: boolean;
 }
 
-const FormButton = ({ selectedAsset, formState }: FormButtonProps) => {
+const FormButton = ({
+  selectedAsset,
+  formState,
+  onApprove,
+  approveStatus,
+  approved,
+}: FormButtonProps) => {
   const { isActive, chainId } = useWeb3React();
   const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
-  const submitText =
-    formState === 'approve'
-      ? t(`Approve ${selectedAsset ? selectedAsset.symbol : ''}`)
-      : t('Deposit');
   const invalidChain = isActive && chainId !== desiredChainId;
   return (
     <>
-      {formState === 'approve' && (
-        <div className="mb-2">
-          <Notification
-            intent={Intent.Warning}
-            testId="approve-warning"
-            message={t(`Deposits of ${selectedAsset?.symbol} not approved`)}
-          />
-        </div>
-      )}
+      <div className="mb-2">
+        <ApproveNotification
+          selectedAsset={selectedAsset}
+          onApprove={onApprove}
+          tx={approveStatus}
+          formState={formState}
+          approved={approved}
+        />
+      </div>
       {invalidChain && (
         <div className="mb-2">
           <Notification
@@ -408,9 +439,9 @@ const FormButton = ({ selectedAsset, formState }: FormButtonProps) => {
         data-testid="deposit-submit"
         variant={isActive ? 'primary' : 'default'}
         fill={true}
-        disabled={invalidChain}
+        disabled={formState === 'approve' || invalidChain}
       >
-        {submitText}
+        {t('Deposit')}
       </Button>
     </>
   );
@@ -437,7 +468,7 @@ const DisconnectEthereumButton = ({
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
 
   return (
-    <UseButton
+    <ButtonLink
       onClick={() => {
         connector.deactivate();
         removeEagerConnector();
@@ -446,7 +477,7 @@ const DisconnectEthereumButton = ({
       data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
-    </UseButton>
+    </ButtonLink>
   );
 };
 
@@ -455,8 +486,164 @@ const getFormState = (
   isActive: boolean,
   approved: boolean
 ) => {
-  if (!selectedAsset) return 'deposit';
-  if (!isActive) return 'deposit';
+  if (!isActive) return 'idle';
+  if (!selectedAsset) return 'idle';
   if (approved) return 'deposit';
   return 'approve';
+};
+
+interface AddressInputProps {
+  pubKeys: string[] | null;
+  select: ReactNode;
+  input: ReactNode;
+  onChange: () => void;
+}
+
+export const AddressField = ({
+  pubKeys,
+  select,
+  input,
+  onChange,
+}: AddressInputProps) => {
+  const [isInput, setIsInput] = useState(() => {
+    if (pubKeys && pubKeys.length <= 1) {
+      return true;
+    }
+    return false;
+  });
+
+  return (
+    <>
+      {isInput ? input : select}
+      {pubKeys && pubKeys.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            setIsInput((curr) => !curr);
+            onChange();
+          }}
+          className="ml-auto text-sm absolute top-0 right-0 underline"
+        >
+          {isInput ? t('Select from wallet') : t('Enter manually')}
+        </button>
+      )}
+    </>
+  );
+};
+
+interface ApproveNotificationProps {
+  selectedAsset?: Asset;
+  tx: EthTxState;
+  onApprove: () => void;
+  approved: boolean;
+}
+
+const ApproveNotification = ({
+  selectedAsset,
+  tx,
+  onApprove,
+  approved,
+}: ApproveNotificationProps) => {
+  const { ETHERSCAN_URL } = useEnvironment();
+  console.log(selectedAsset?.symbol, tx.status, approved);
+
+  if (!selectedAsset) {
+    return null;
+  }
+
+  if (approved && tx.status === EthTxStatus.Default) {
+    return null;
+  }
+
+  if (
+    tx.status === EthTxStatus.Default ||
+    // if the user rejected show the prompt again so they can re-attempt
+    // @ts-ignore code will exist
+    (tx.status === EthTxStatus.Error && tx.error?.code === 'ACTION_REJECTED')
+  ) {
+    return (
+      <Notification
+        intent={Intent.Warning}
+        testId="approve-default"
+        message={t(
+          `Before you can make a deposit of your chosen asset, ${selectedAsset?.symbol}, you need to approve its use in your Ethereum wallet`
+        )}
+        buttonProps={{
+          size: 'sm',
+          text: `Approve ${selectedAsset?.symbol}`,
+          action: onApprove,
+        }}
+      />
+    );
+  }
+
+  if (tx.status === EthTxStatus.Error) {
+    return (
+      <Notification
+        intent={Intent.Danger}
+        testId="approve-error"
+        message={t(`Approval failed: ${tx.error?.message}`)}
+      />
+    );
+  }
+
+  if (tx.status === EthTxStatus.Requested) {
+    return (
+      <Notification
+        intent={Intent.Warning}
+        testId="approve-requested"
+        message={t(
+          `Got to your Ethereum wallet and approve the transaction to enable the use of ${selectedAsset?.symbol}`
+        )}
+      />
+    );
+  }
+
+  if (tx.status === EthTxStatus.Pending) {
+    return (
+      <Notification
+        intent={Intent.Primary}
+        testId="approve-pending"
+        message={
+          <>
+            <p>
+              {t(
+                `Your ${selectedAsset?.symbol} is being confirmed by the Ethereum network. When this is complete, you can continue your deposit`
+              )}
+            </p>
+            {tx.txHash && (
+              <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
+                {truncateByChars(tx.txHash)}
+              </ExternalLink>
+            )}
+          </>
+        }
+      />
+    );
+  }
+
+  if (tx.status === EthTxStatus.Confirmed) {
+    return (
+      <Notification
+        intent={Intent.Success}
+        testId="approve-confirmed"
+        message={
+          <>
+            <p>
+              {t(
+                `Asset approved. You can now make deposits of up to XXX ${selectedAsset?.symbol}.`
+              )}
+            </p>
+            {tx.txHash && (
+              <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
+                {truncateByChars(tx.txHash)}
+              </ExternalLink>
+            )}
+          </>
+        }
+      />
+    );
+  }
+
+  throw new Error('Invalid state for approval ui');
 };

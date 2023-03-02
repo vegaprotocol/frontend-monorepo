@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import { useDepositDialog } from './deposit-dialog';
 import type { Asset } from '@vegaprotocol/assets';
-import type { DepositDialogStylePropsSetter } from './deposit-dialog';
 import pick from 'lodash/pick';
 import type { EthTransaction } from '@vegaprotocol/web3';
 import {
@@ -24,17 +23,12 @@ interface DepositManagerProps {
   assetId?: string;
   assets: Asset[];
   isFaucetable: boolean;
-  setDialogStyleProps?: DepositDialogStylePropsSetter;
 }
-
-const getProps = (txContent?: EthTransaction['TxContent']) =>
-  txContent ? pick(txContent, ['title', 'icon', 'intent']) : undefined;
 
 export const DepositManager = ({
   assetId: initialAssetId,
   assets,
   isFaucetable,
-  setDialogStyleProps,
 }: DepositManagerProps) => {
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const { config } = useEthereumConfig();
@@ -54,13 +48,13 @@ export const DepositManager = ({
   // Set up faucet transaction
   const faucet = useSubmitFaucet(asset);
 
-  const transactionInProgress = [approve.TxContent, faucet.TxContent].filter(
-    (t) => t.status !== EthTxStatus.Default
-  )[0];
+  // const transactionInProgress = [approve.TxContent, faucet.TxContent].filter(
+  //   (t) => t.status !== EthTxStatus.Default
+  // )[0];
 
-  useEffect(() => {
-    setDialogStyleProps?.(getProps(transactionInProgress));
-  }, [setDialogStyleProps, transactionInProgress]);
+  // useEffect(() => {
+  //   setDialogStyleProps?.(getProps(transactionInProgress));
+  // }, [setDialogStyleProps, transactionInProgress]);
 
   const returnLabel = t('Return to deposit');
 
@@ -87,29 +81,32 @@ export const DepositManager = ({
 
   return (
     <>
-      {!transactionInProgress && (
-        <DepositForm
-          balance={balance}
-          selectedAsset={asset}
-          onSelectAsset={setAssetId}
-          assets={sortBy(assets, 'name')}
-          submitApprove={async () => {
-            await approve.perform();
-            refresh();
-          }}
-          submitDeposit={submitDeposit}
-          requestFaucet={async () => {
-            await faucet.perform();
-            refresh();
-          }}
-          deposited={deposited}
-          max={max}
-          allowance={allowance}
-          isFaucetable={isFaucetable}
-        />
-      )}
+      <DepositForm
+        balance={balance}
+        selectedAsset={asset}
+        onSelectAsset={(id) => {
+          setAssetId(id);
+          faucet.reset();
+          approve.reset();
+        }}
+        assets={sortBy(assets, 'name')}
+        submitApprove={async () => {
+          await approve.perform();
+          refresh();
+        }}
+        approveStatus={approve.transaction}
+        submitDeposit={submitDeposit}
+        requestFaucet={async () => {
+          await faucet.perform();
+          refresh();
+        }}
+        deposited={deposited}
+        max={max}
+        allowance={allowance}
+        isFaucetable={isFaucetable}
+      />
 
-      <approve.TxContent.Content returnLabel={returnLabel} />
+      {/* <approve.TxContent.Content returnLabel={returnLabel} /> */}
       <faucet.TxContent.Content returnLabel={returnLabel} />
     </>
   );
