@@ -1,5 +1,5 @@
 import type { OrderObj } from '@vegaprotocol/orders';
-import { createOrder, useOrderStore } from '@vegaprotocol/orders';
+import { createOrder, useOrder } from '@vegaprotocol/orders';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -8,9 +8,7 @@ export type OrderFormFields = OrderObj & {
 };
 
 export const useOrderForm = (marketId: string) => {
-  const [order, update] = useOrderStore((store) => {
-    return [store.orders[marketId], store.update];
-  });
+  const [order, update] = useOrder(marketId);
   const {
     control,
     formState: { errors },
@@ -23,15 +21,9 @@ export const useOrderForm = (marketId: string) => {
     defaultValues: order || createOrder(marketId),
   });
 
-  // add new order to store if it doesn exist
-  useEffect(() => {
-    if (!order) {
-      console.log('update here');
-      update(createOrder(marketId));
-    }
-  }, [order, marketId, update]);
-
-  // update useForm field state with values on change of html input
+  // Keep form fields in sync with the store values,
+  // inputs are updating the store, fields need updating
+  // to ensure validation rules are applied
   useEffect(() => {
     const currOrder = getValues();
     for (const k in order) {

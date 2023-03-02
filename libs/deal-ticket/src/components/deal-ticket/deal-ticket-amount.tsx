@@ -13,7 +13,7 @@ export interface DealTicketAmountProps {
   market: Market;
   sizeError?: string;
   priceError?: string;
-  update: (obj: Partial<OrderObj> & { marketId: string }) => void;
+  update: (obj: Partial<OrderObj>) => void;
   size: string;
   price: string;
 }

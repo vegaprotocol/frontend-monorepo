@@ -61,7 +61,8 @@ export const DealTicket = ({
   onClickCollateral,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  // store last used tif for market
+  // store last used tif for market so that when chaning OrderType the previous TIF
+  // selection for that type is used when switching back
   const [lastTIF, setLastTIF] = useState({
     [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
     [OrderType.TYPE_LIMIT]: OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -156,8 +157,7 @@ export const DealTicket = ({
     [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
-  console.log('render');
-
+  // just return null, if an order doesn't exist one will be created by the store
   if (!order) return null;
 
   return (
@@ -181,7 +181,6 @@ export const DealTicket = ({
             onSelect={(type) => {
               if (type === OrderType.TYPE_NETWORK) return;
               update({
-                marketId: market.id,
                 type,
                 timeInForce: lastTIF[type] || order.timeInForce,
               });
@@ -199,7 +198,7 @@ export const DealTicket = ({
           <SideSelector
             value={order.side}
             onSelect={(side) => {
-              update({ marketId: market.id, side });
+              update({ side });
             }}
           />
         )}
@@ -229,7 +228,7 @@ export const DealTicket = ({
             value={order.timeInForce}
             orderType={order.type}
             onSelect={(timeInForce) => {
-              update({ marketId: market.id, timeInForce });
+              update({ timeInForce });
               setLastTIF((curr) => ({ ...curr, [order.type]: timeInForce }));
             }}
             market={market}
@@ -248,7 +247,6 @@ export const DealTicket = ({
                 value={order.expiresAt}
                 onSelect={(expiresAt) =>
                   update({
-                    marketId: market.id,
                     expiresAt: expiresAt || undefined,
                   })
                 }

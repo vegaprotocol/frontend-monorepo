@@ -67,9 +67,7 @@ export const DealTicketMarketAmount = ({
                 className="w-full"
                 type="number"
                 value={size}
-                onChange={(e) =>
-                  update({ marketId: market.id, size: e.target.value })
-                }
+                onChange={(e) => update({ size: e.target.value })}
                 step={sizeStep}
                 min={sizeStep}
                 onWheel={(e) => e.currentTarget.blur()}
