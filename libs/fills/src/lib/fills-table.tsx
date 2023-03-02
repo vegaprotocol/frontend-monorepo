@@ -27,6 +27,10 @@ import type {
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
+import type { FillFieldsFragment } from './__generated__/Fills';
+
+const TAKER = t('Taker');
+const MAKER = t('Maker');
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
@@ -101,6 +105,18 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Role')}
           field="aggressor"
           valueFormatter={formatRole(partyId)}
+        />
+        <AgGridColumn
+          headerName={t('Trading mode')}
+          field="market.tradingMode"
+          valueFormatter={({
+            data,
+          }: VegaValueFormatterParams<Trade, 'tradingMode'>) => {
+            if (!data?.market) {
+              return '-';
+            }
+            return Schema.MarketTradingModeMapping[data.market.tradingMode];
+          }}
         />
         <AgGridColumn
           headerName={t('Fee')}
@@ -228,66 +244,155 @@ const formatFee = (partyId: string) => {
       return '-';
     }
     const asset = value.settlementAsset;
-    let feesObj;
-    if (data?.buyer.id === partyId) {
-      feesObj = data?.buyerFee;
-    } else if (data?.seller.id === partyId) {
-      feesObj = data?.sellerFee;
-    } else {
-      return '-';
-    }
+    const { fees: feesObj, role } = getRoleAndFees({ data, partyId });
+    if (!feesObj) return '-';
 
-    const fee = new BigNumber(feesObj.makerFee)
-      .plus(feesObj.infrastructureFee)
-      .plus(feesObj.liquidityFee);
-    const totalFees = addDecimalsFormatNumber(fee.toString(), asset.decimals);
+    const { totalFee } = getFeeBreakdown(data, role, feesObj);
+    const totalFees = addDecimalsFormatNumber(totalFee, asset.decimals);
     return `${totalFees} ${asset.symbol}`;
   };
+};
+
+export const getRoleAndFees = ({
+  data,
+  partyId,
+}: {
+  data: Pick<
+    FillFieldsFragment,
+    'buyerFee' | 'sellerFee' | 'buyer' | 'seller' | 'aggressor'
+  >;
+  partyId?: string;
+}) => {
+  let role;
+  let feesObj;
+  if (data?.buyer.id === partyId) {
+    role = data.aggressor === Schema.Side.SIDE_BUY ? TAKER : MAKER;
+    feesObj = role === TAKER ? data?.buyerFee : data.sellerFee;
+  } else if (data?.seller.id === partyId) {
+    role = data.aggressor === Schema.Side.SIDE_SELL ? TAKER : MAKER;
+    feesObj = role === TAKER ? data?.sellerFee : data.buyerFee;
+  } else {
+    return { role: '-', feesObj: '-' };
+  }
+  return { role, fees: feesObj };
 };
 
 const FeesBreakdownTooltip = ({
   data,
   value,
-  valueFormatted,
   partyId,
 }: ITooltipParams & { partyId?: string }) => {
   if (!value?.settlementAsset || !data) {
     return null;
   }
+
   const asset = value.settlementAsset;
-  let feesObj;
-  if (data?.buyer.id === partyId) {
-    feesObj = data?.buyerFee;
-  } else if (data?.seller.id === partyId) {
-    feesObj = data?.sellerFee;
-  } else {
-    return null;
-  }
+
+  const { role, fees: feesObj } = getRoleAndFees({ data, partyId }) ?? {};
+  if (!feesObj) return null;
+  const {
+    isMarketInMonitoringAuction,
+    infrastructureFee,
+    liquidityFee,
+    makerFee,
+    totalFee,
+  } = getFeeBreakdown(data, role, feesObj);
 
   return (
     <div
       data-testid="fee-breakdown-tooltip"
       className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
-      <dl className="grid grid-cols-3 gap-x-1">
+      {role === MAKER && (
+        <>
+          <p className="mb-1">{t('The maker will receive the maker fee.')}</p>
+          <p className="mb-1">
+            {t(
+              'If the market is in monitoring auction the maker will pay half of the infrastructure and liquidity fees.'
+            )}
+          </p>
+        </>
+      )}
+      {role === TAKER && (
+        <>
+          <p className="mb-1">{t('Fees to be paid by the taker.')}</p>
+          <p className="mb-1">
+            {t(
+              'If the market is in monitoring auction the taker will pay half of the infrastructure and liquidity fees.'
+            )}
+          </p>
+        </>
+      )}
+      {isMarketInMonitoringAuction && (
+        <p className="mb-1">
+          {t(
+            'The market was in monitoring auction. The infrastructure and liquidity fee are split between the maker and the taker.'
+          )}
+        </p>
+      )}
+      <dl className="grid grid-cols-2 gap-x-1">
         <dt className="col-span-1">{t('Infrastructure fee')}</dt>
-        <dd className="text-right col-span-2">
-          {addDecimalsFormatNumber(feesObj.infrastructureFee, asset.decimals)}{' '}
+        <dd className="text-right col-span-1">
+          {addDecimalsFormatNumber(infrastructureFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
         <dt className="col-span-1">{t('Liquidity fee')}</dt>
-        <dd className="text-right col-span-2">
-          {addDecimalsFormatNumber(feesObj.liquidityFee, asset.decimals)}{' '}
-          {asset.symbol}
+        <dd className="text-right col-span-1">
+          {addDecimalsFormatNumber(liquidityFee, asset.decimals)} {asset.symbol}
         </dd>
         <dt className="col-span-1">{t('Maker fee')}</dt>
-        <dd className="text-right col-span-2">
-          {addDecimalsFormatNumber(feesObj.makerFee, asset.decimals)}{' '}
-          {asset.symbol}
+        <dd className="text-right col-span-1">
+          {addDecimalsFormatNumber(makerFee, asset.decimals)} {asset.symbol}
         </dd>
         <dt className="col-span-1">{t('Total fees')}</dt>
-        <dd className="text-right col-span-2">{valueFormatted}</dd>
+        <dd className="text-right col-span-1">
+          {addDecimalsFormatNumber(totalFee, asset.decimals)} {asset.symbol}
+        </dd>
       </dl>
     </div>
   );
 };
+function getFeeBreakdown(
+  data: Trade,
+  role: string,
+  feesObj: {
+    __typename?: 'TradeFee' | undefined;
+    makerFee: string;
+    infrastructureFee: string;
+    liquidityFee: string;
+  }
+) {
+  const isMarketInMonitoringAuction =
+    data?.market?.tradingMode ===
+    Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION;
+
+  const getFee = (value: string) => {
+    const fee = role === MAKER ? new BigNumber(value).div(2).toString() : value;
+    const feeAmount =
+      data.market?.tradingMode ===
+        Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS && role === MAKER
+        ? 0
+        : fee;
+    return feeAmount;
+  };
+
+  const getMakerFee = (value: string) => {
+    return role === MAKER ? new BigNumber(value).times(-1).toString() : value;
+  };
+
+  const makerFee = getMakerFee(feesObj.makerFee);
+  const infrastructureFee = getFee(feesObj.infrastructureFee);
+  const liquidityFee = getFee(feesObj.liquidityFee);
+
+  const totalFee = new BigNumber(infrastructureFee)
+    .plus(makerFee)
+    .plus(liquidityFee)
+    .toString();
+  return {
+    isMarketInMonitoringAuction,
+    infrastructureFee,
+    liquidityFee,
+    makerFee,
+    totalFee,
+  };
+}

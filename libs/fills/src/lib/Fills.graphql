@@ -2,6 +2,7 @@ fragment FillFields on Trade {
   id
   market {
     id
+    tradingMode
   }
   createdAt
   price
