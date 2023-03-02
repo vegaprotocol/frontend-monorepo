@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
+import { createContext } from 'react';
 import classNames from 'classnames';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { Icon } from '../icon';
+import { create } from 'zustand';
 
 interface DrawerProps {
   children: ReactNode;
@@ -14,6 +16,19 @@ interface DrawerProps {
   showClose?: boolean;
   trigger?: ReactNode;
 }
+
+export const DrawerContext = createContext<true | undefined>(undefined);
+
+type DrawerStore = {
+  drawerOpen: boolean;
+  setDrawerOpen: (isOpen: boolean) => void;
+};
+export const useDrawer = create<DrawerStore>((set) => ({
+  drawerOpen: false,
+  setDrawerOpen: (isOpen) => {
+    set({ drawerOpen: isOpen });
+  },
+}));
 
 export function Drawer({
   children,

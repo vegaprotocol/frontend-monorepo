@@ -1,14 +1,9 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 import { MemoryRouter, Route, Routes, useMatch } from 'react-router-dom';
-import {
-  Button,
-  ExternalLink,
-  Icon,
-  NavigationBreakpoint,
-  ThemeSwitcher,
-} from '..';
+import { Button, ExternalLink, Icon, ThemeSwitcher } from '..';
 import {
   Navigation,
+  NavigationBreakpoint,
   NavigationContent,
   NavigationItem,
   NavigationLink,

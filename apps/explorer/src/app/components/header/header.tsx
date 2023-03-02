@@ -43,14 +43,6 @@ export const Header = () => {
   );
 
   const { pathname } = useLocation();
-
-  /**
-   * Because the grouped items are displayed in a sub menu under an "Other" item
-   * we need to determine whether any underlying item is active to highlight the
-   * trigger in the same fashion as any other top-level `NavigationLink`.
-   * This function checks whether the current location pathname is one of the
-   * underlying NavigationLinks.
-   */
   const isOnOther = useMemo(() => {
     for (const path of groupedItems.map((r) => r.path)) {
       const matched = matchPath(`${path}/*`, pathname);
@@ -63,23 +55,13 @@ export const Header = () => {
     <Navigation
       appName="Explorer"
       theme="system"
-      breakpoints={[490, 900]}
+      breakpoints={[400, 800]}
       actions={
         <>
           <ThemeSwitcher />
           <Search />
         </>
       }
-      onResize={(width, el) => {
-        if (width < 1157) {
-          // switch to magnifying glass trigger when width < 1157
-          el.classList.remove('nav-search-full');
-          el.classList.add('nav-search-compact');
-        } else {
-          el.classList.remove('nav-search-compact');
-          el.classList.add('nav-search-full');
-        }
-      }}
     >
       <NavigationList hide={[NavigationBreakpoint.Small]}>
         <NavigationItem>

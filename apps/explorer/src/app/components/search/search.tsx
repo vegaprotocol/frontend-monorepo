@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { Button, Icon, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { getSearchType, SearchTypes, toHex } from './detect-search';
@@ -70,7 +70,7 @@ export const Search = () => {
   );
 
   const searchForm = (
-    <form className="block min-w-[290px]" onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex relative items-stretch gap-2 text-xs">
         <label htmlFor="search" className="sr-only">
           {t('Search by block number or transaction hash')}
@@ -81,7 +81,7 @@ export const Search = () => {
             'text-vega-light-300 dark:text-vega-dark-300'
           )}
         >
-          <MagnifyingGlass />
+          <Icon name="search" />
         </button>
         <Input
           {...register('search')}
@@ -126,38 +126,34 @@ export const Search = () => {
     </form>
   );
 
-  const searchTrigger = (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button className="text-vega-light-300 dark:text-vega-dark-300 data-open:text-black dark:data-open:text-white flex items-center">
-          <MagnifyingGlass />
-        </button>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className={classNames(
-            'search-dropdown',
-            'p-2 min-w-[290px] z-20',
-            'text-vega-light-300 dark:text-vega-dark-300',
-            'bg-white dark:bg-black',
-            'border rounded border-vega-light-200 dark:border-vega-dark-200',
-            'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]'
-          )}
-          align="end"
-          sideOffset={10}
-        >
-          {searchForm}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
-  );
-
   return (
     <>
-      <div className="hidden [.nav-search-full_&]:block">{searchForm}</div>
-      <div className="hidden [.nav-search-compact_&]:block">
-        {searchTrigger}
+      <div className="[.nav-size-narrow_&]:hidden [.nav-size-small_&]:hidden min-w-[290px]">
+        {searchForm}
       </div>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild>
+          <button className="mt-[-1px] text-vega-light-300 dark:text-vega-dark-300 data-open:text-black dark:data-open:text-white [.nav-size-full_&]:hidden">
+            <Icon name="search" size={4} />
+          </button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            className={classNames(
+              'search-dropdown',
+              'p-2 min-w-[290px] z-20',
+              'text-vega-light-300 dark:text-vega-dark-300',
+              'bg-white dark:bg-black',
+              'border rounded border-vega-light-200 dark:border-vega-dark-200',
+              'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]'
+            )}
+            align="end"
+            sideOffset={10}
+          >
+            {searchForm}
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
     </>
   );
 };
