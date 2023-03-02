@@ -48,16 +48,6 @@ export const DepositManager = ({
   // Set up faucet transaction
   const faucet = useSubmitFaucet(asset);
 
-  // const transactionInProgress = [approve.TxContent, faucet.TxContent].filter(
-  //   (t) => t.status !== EthTxStatus.Default
-  // )[0];
-
-  // useEffect(() => {
-  //   setDialogStyleProps?.(getProps(transactionInProgress));
-  // }, [setDialogStyleProps, transactionInProgress]);
-
-  const returnLabel = t('Return to deposit');
-
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
   ) => {
@@ -80,34 +70,30 @@ export const DepositManager = ({
   };
 
   return (
-    <>
-      <DepositForm
-        balance={balance}
-        selectedAsset={asset}
-        onSelectAsset={(id) => {
-          setAssetId(id);
-          faucet.reset();
-          approve.reset();
-        }}
-        assets={sortBy(assets, 'name')}
-        submitApprove={async () => {
-          await approve.perform();
-          refresh();
-        }}
-        approveStatus={approve.transaction}
-        submitDeposit={submitDeposit}
-        requestFaucet={async () => {
-          await faucet.perform();
-          refresh();
-        }}
-        deposited={deposited}
-        max={max}
-        allowance={allowance}
-        isFaucetable={isFaucetable}
-      />
-
-      {/* <approve.TxContent.Content returnLabel={returnLabel} /> */}
-      <faucet.TxContent.Content returnLabel={returnLabel} />
-    </>
+    <DepositForm
+      balance={balance}
+      selectedAsset={asset}
+      onSelectAsset={(id) => {
+        setAssetId(id);
+        faucet.reset();
+        approve.reset();
+      }}
+      assets={sortBy(assets, 'name')}
+      submitApprove={async () => {
+        await approve.perform();
+        refresh();
+      }}
+      approveTx={approve.transaction}
+      submitDeposit={submitDeposit}
+      requestFaucet={async () => {
+        await faucet.perform();
+        refresh();
+      }}
+      faucetTx={faucet.transaction}
+      deposited={deposited}
+      max={max}
+      allowance={allowance}
+      isFaucetable={isFaucetable}
+    />
   );
 };
