@@ -1,5 +1,6 @@
 import { OrderTimeInForce, Side } from '@vegaprotocol/types';
 import { OrderType } from '@vegaprotocol/types';
+import { useCallback, useEffect } from 'react';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 
@@ -13,10 +14,13 @@ export interface OrderObj {
   expiresAt: string | undefined;
 }
 
+type UpdateOrder = (order: Partial<OrderObj> & { marketId: string }) => void;
+
 interface Store {
-  orders: { [marketId: string]: OrderObj };
-  update: (order: Partial<OrderObj> & { marketId: string }) => void;
+  orders: { [marketId: string]: OrderObj | undefined };
+  update: UpdateOrder;
 }
+
 export const useOrderStore = create<Store>()(
   persist(
     subscribeWithSelector((set) => ({
@@ -41,6 +45,36 @@ export const useOrderStore = create<Store>()(
     }
   )
 );
+
+/**
+ * Retrieves an order from the store and creates one if it doesn't
+ * exist
+ */
+export const useOrder = (marketId: string) => {
+  const [order, _update] = useOrderStore((store) => {
+    return [store.orders[marketId], store.update];
+  });
+
+  const update = useCallback(
+    (o: Partial<OrderObj>) => {
+      _update({
+        marketId,
+        ...o,
+      });
+    },
+    [marketId, _update]
+  );
+
+  // add new order to store if it doesn exist
+  useEffect(() => {
+    if (!order) {
+      console.log('update here');
+      update(createOrder(marketId));
+    }
+  }, [order, marketId, update]);
+
+  return [order, update] as const; // make result a tuple
+};
 
 export const createOrder = (marketId: string): OrderObj => ({
   marketId,

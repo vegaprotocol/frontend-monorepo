@@ -68,9 +68,7 @@ export const DealTicketLimitAmount = ({
                   className="w-full"
                   type="number"
                   value={size}
-                  onChange={(e) =>
-                    update({ marketId: market.id, size: e.target.value })
-                  }
+                  onChange={(e) => update({ size: e.target.value })}
                   step={sizeStep}
                   min={sizeStep}
                   data-testid="order-size"
@@ -109,9 +107,7 @@ export const DealTicketLimitAmount = ({
                   className="w-full"
                   type="number"
                   value={price}
-                  onChange={(e) =>
-                    update({ marketId: market.id, price: e.target.value })
-                  }
+                  onChange={(e) => update({ price: e.target.value })}
                   step={priceStep}
                   data-testid="order-price"
                   onWheel={(e) => e.currentTarget.blur()}
