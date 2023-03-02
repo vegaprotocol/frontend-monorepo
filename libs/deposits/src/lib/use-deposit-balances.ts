@@ -11,17 +11,14 @@ import { usePrevious } from '@vegaprotocol/react-helpers';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 
-type DepositBalances = {
-  balance: BigNumber;
-  allowance: BigNumber;
-  deposited: BigNumber;
-  max: BigNumber;
-  refresh: () => void;
-};
+export interface DepositBalances {
+  balance: BigNumber; // amount in Ethereum wallet
+  allowance: BigNumber; // amount approved
+  deposited: BigNumber; // total amounted deposited over lifetime
+  max: BigNumber; // life time deposit cap
+}
 
-type DepositBalancesState = Omit<DepositBalances, 'refresh'>;
-
-const initialState: DepositBalancesState = {
+const initialState: DepositBalances = {
   balance: new BigNumber(0),
   allowance: new BigNumber(0),
   deposited: new BigNumber(0),
@@ -35,7 +32,7 @@ const initialState: DepositBalancesState = {
 export const useDepositBalances = (
   asset: Asset | undefined,
   isFaucetable: boolean
-): DepositBalances => {
+) => {
   const tokenContract = useTokenContract(
     isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
     isFaucetable
@@ -45,21 +42,14 @@ export const useDepositBalances = (
   const getBalance = useGetBalanceOfERC20Token(tokenContract, asset);
   const getDepositMaximum = useGetDepositMaximum(bridgeContract, asset);
   const getDepositedAmount = useGetDepositedAmount(asset);
-  const prevAsset = usePrevious(asset);
-  const [state, setState] = useState<DepositBalancesState>(initialState);
-
-  useEffect(() => {
-    if (asset?.id !== prevAsset?.id) {
-      // reset values to initial state when asset changes
-      setState(initialState);
-    }
-  }, [asset?.id, prevAsset?.id]);
+  const [state, setState] = useState<DepositBalances | null>(null);
 
   const { accountBalance } = useAccountBalance(asset?.id);
 
   const getBalances = useCallback(async () => {
     if (!asset) return;
     try {
+      setState(null);
       const [max, deposited, balance, allowance] = await Promise.all([
         getDepositMaximum(),
         getDepositedAmount(),
@@ -78,9 +68,13 @@ export const useDepositBalances = (
     }
   }, [asset, getAllowance, getBalance, getDepositMaximum, getDepositedAmount]);
 
+  const reset = useCallback(() => {
+    setState(null);
+  }, []);
+
   useEffect(() => {
     getBalances();
   }, [asset, getBalances, accountBalance]);
 
-  return { ...state, refresh: getBalances };
+  return { balances: state, getBalances, reset };
 };

@@ -8,7 +8,7 @@ import {
   maxSafe,
   addDecimal,
   isAssetTypeERC20,
-  truncateByChars,
+  formatNumber,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -42,6 +42,7 @@ import {
   getChainName,
 } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
+import type { DepositBalances } from './use-deposit-balances';
 
 interface FormFields {
   asset: string;
@@ -53,8 +54,9 @@ interface FormFields {
 export interface DepositFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
+  balances: DepositBalances | null;
   onSelectAsset: (assetId: string) => void;
-  balance: BigNumber | undefined;
+  onDisconnect: () => void;
   submitApprove: () => void;
   approveTx: EthTxState;
   submitDeposit: (args: {
@@ -64,25 +66,20 @@ export interface DepositFormProps {
   }) => void;
   requestFaucet: () => void;
   faucetTx: EthTxState;
-  max: BigNumber | undefined;
-  deposited: BigNumber | undefined;
-  allowance: BigNumber | undefined;
   isFaucetable?: boolean;
 }
 
 export const DepositForm = ({
   assets,
   selectedAsset,
+  balances,
   onSelectAsset,
-  balance,
-  max,
-  deposited,
+  onDisconnect,
   submitApprove,
   approveTx,
   submitDeposit,
   requestFaucet,
   faucetTx,
-  allowance,
   isFaucetable,
 }: DepositFormProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
@@ -118,27 +115,6 @@ export const DepositForm = ({
     });
   };
 
-  const maxAmount = useMemo(() => {
-    const maxApproved = allowance ? allowance : new BigNumber(0);
-    const maxAvailable = balance ? balance : new BigNumber(0);
-
-    // limits.max is a lifetime deposit limit, so the actual max value for form
-    // input is the max minus whats already been deposited
-    let maxLimit = new BigNumber(Infinity);
-
-    // A max limit of zero indicates that there is no limit
-    if (max && deposited && max.isGreaterThan(0)) {
-      maxLimit = max.minus(deposited);
-    }
-
-    return {
-      approved: maxApproved,
-      available: maxAvailable,
-      limit: maxLimit,
-      amount: BigNumber.minimum(maxLimit, maxApproved, maxAvailable),
-    };
-  }, [max, deposited, allowance, balance]);
-
   const min = useMemo(() => {
     // Min viable amount given asset decimals EG for WEI 0.000000000000000001
     const minViableAmount = selectedAsset
@@ -152,7 +128,11 @@ export const DepositForm = ({
     return _pubKeys ? _pubKeys.map((pk) => pk.publicKey) : [];
   }, [_pubKeys]);
 
-  const approved = allowance && allowance.isGreaterThan(0) ? true : false;
+  const approved = balances
+    ? balances.allowance.isGreaterThan(0)
+      ? true
+      : false
+    : false;
 
   return (
     <form
@@ -185,6 +165,7 @@ export const DepositForm = ({
                   <DisconnectEthereumButton
                     onDisconnect={() => {
                       setValue('from', ''); // clear from value so required ethereum connection validation works
+                      onDisconnect();
                     }}
                   />
                 </div>
@@ -257,7 +238,11 @@ export const DepositForm = ({
           </button>
         )}
       </FormGroup>
-      <FaucetNotification selectedAsset={selectedAsset} tx={faucetTx} />
+      <FaucetNotification
+        isActive={isActive}
+        selectedAsset={selectedAsset}
+        tx={faucetTx}
+      />
       <FormGroup label={t('To (Vega key)')} labelFor="to">
         <AddressField
           pubKeys={pubKeys}
@@ -296,15 +281,9 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      {selectedAsset && max && deposited && (
+      {selectedAsset && balances && (
         <div className="mb-6">
-          <DepositLimits
-            max={max}
-            deposited={deposited}
-            balance={balance}
-            asset={selectedAsset}
-            allowance={allowance}
-          />
+          <DepositLimits {...balances} asset={selectedAsset} />
         </div>
       )}
       {approved && (
@@ -319,27 +298,36 @@ export const DepositForm = ({
                 minSafe: (value) => minSafe(new BigNumber(min))(value),
                 approved: (v) => {
                   const value = new BigNumber(v);
-                  if (value.isGreaterThan(maxAmount.approved)) {
+                  if (value.isGreaterThan(balances?.allowance || 0)) {
                     return t('Amount is above approved amount');
                   }
                   return true;
                 },
                 limit: (v) => {
                   const value = new BigNumber(v);
-                  if (value.isGreaterThan(maxAmount.limit)) {
-                    return t('Amount is above deposit limit');
+                  if (!balances) {
+                    return t('Could not verify balances of account'); // this should never happen
+                  }
+
+                  let lifetimeLimit = new BigNumber(Infinity);
+                  if (balances.max.isGreaterThan(0)) {
+                    lifetimeLimit = balances.max.minus(balances.deposited);
+                  }
+
+                  if (value.isGreaterThan(lifetimeLimit)) {
+                    return t('Amount is above lifetime deposit limit');
                   }
                   return true;
                 },
                 balance: (v) => {
                   const value = new BigNumber(v);
-                  if (value.isGreaterThan(maxAmount.available)) {
+                  if (value.isGreaterThan(balances?.balance || 0)) {
                     return t('Insufficient amount in Ethereum wallet');
                   }
                   return true;
                 },
                 maxSafe: (v) => {
-                  return maxSafe(maxAmount.amount)(v);
+                  return maxSafe(balances?.balance || new BigNumber(0))(v);
                 },
               },
             })}
@@ -349,10 +337,13 @@ export const DepositForm = ({
               {errors.amount.message}
             </InputError>
           )}
-          {selectedAsset && balance && (
+          {selectedAsset && balances && (
             <UseButton
               onClick={() => {
-                setValue('amount', balance.toFixed(selectedAsset.decimals));
+                setValue(
+                  'amount',
+                  balances.balance.toFixed(selectedAsset.decimals)
+                );
                 clearErrors('amount');
               }}
             >
@@ -362,33 +353,20 @@ export const DepositForm = ({
         </FormGroup>
       )}
       <ApproveNotification
+        isActive={isActive}
         selectedAsset={selectedAsset}
         onApprove={submitApprove}
         tx={approveTx}
+        balances={balances}
         approved={approved}
-        allowance={allowance}
         amount={amount}
       />
-      <FormButton
-        selectedAsset={selectedAsset}
-        onApprove={submitApprove}
-        approveStatus={approveTx}
-        approved={approved}
-        allowance={allowance ? allowance.toString() : '0'}
-      />
+      <FormButton />
     </form>
   );
 };
 
-interface FormButtonProps {
-  selectedAsset?: Asset;
-  onApprove: () => void;
-  approveStatus: EthTxState;
-  approved: boolean;
-  allowance: string;
-}
-
-const FormButton = ({ approved }: FormButtonProps) => {
+const FormButton = () => {
   const { isActive, chainId } = useWeb3React();
   const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
   const invalidChain = isActive && chainId !== desiredChainId;
@@ -410,7 +388,7 @@ const FormButton = ({ approved }: FormButtonProps) => {
         data-testid="deposit-submit"
         variant={isActive ? 'primary' : 'default'}
         fill={true}
-        disabled={!approved || invalidChain}
+        disabled={invalidChain}
       >
         {t('Deposit')}
       </Button>
@@ -492,23 +470,33 @@ export const AddressField = ({
 };
 
 interface ApproveNotificationProps {
+  isActive: boolean;
   selectedAsset?: Asset;
   tx: EthTxState;
   onApprove: () => void;
   approved: boolean;
-  allowance?: BigNumber;
+  balances: DepositBalances | null;
   amount: string;
 }
 
 const ApproveNotification = ({
+  isActive,
   selectedAsset,
   tx,
   onApprove,
-  approved,
-  allowance,
   amount,
+  balances,
+  approved,
 }: ApproveNotificationProps) => {
+  if (!isActive) {
+    return null;
+  }
+
   if (!selectedAsset) {
+    return null;
+  }
+
+  if (!balances) {
     return null;
   }
 
@@ -534,7 +522,9 @@ const ApproveNotification = ({
         intent={Intent.Warning}
         testId="reapprove-default"
         message={t(
-          `Approve again to deposit more than ${allowance?.toString()}`
+          `Approve again to deposit more than ${formatNumber(
+            balances.allowance.toString()
+          )}`
         )}
         buttonProps={{
           size: 'sm',
@@ -548,7 +538,7 @@ const ApproveNotification = ({
     <ApprovalTxFeedback
       tx={tx}
       selectedAsset={selectedAsset}
-      allowance={allowance}
+      allowance={balances.allowance}
     />
   );
 
@@ -565,7 +555,7 @@ const ApproveNotification = ({
     return approvePrompt;
   }
 
-  if (new BigNumber(amount).isGreaterThan(allowance || 0)) {
+  if (new BigNumber(amount).isGreaterThan(balances.allowance)) {
     return reApprovePrompt;
   }
 
@@ -590,7 +580,7 @@ const ApprovalTxFeedback = ({
 
   const txLink = tx.txHash && (
     <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-      {truncateByChars(tx.txHash)}
+      {t('View on Etherscan')}
     </ExternalLink>
   );
 
@@ -617,7 +607,7 @@ const ApprovalTxFeedback = ({
           intent={Intent.Warning}
           testId="approve-requested"
           message={t(
-            `Got to your Ethereum wallet and approve the transaction to enable the use of ${selectedAsset?.symbol}`
+            `Go to your Ethereum wallet and approve the transaction to enable the use of ${selectedAsset?.symbol}`
           )}
         />
       </div>
@@ -657,7 +647,9 @@ const ApprovalTxFeedback = ({
                 {t(
                   `You can now make deposits in ${
                     selectedAsset?.symbol
-                  }, up to a maximum of ${allowance?.toString()}`
+                  }, up to a maximum of ${formatNumber(
+                    allowance?.toString() || 0
+                  )}`
                 )}
               </p>
               {txLink && <p>{txLink}</p>}
@@ -671,11 +663,20 @@ const ApprovalTxFeedback = ({
 };
 
 interface FaucetNotificationProps {
+  isActive: boolean;
   selectedAsset?: Asset;
   tx: EthTxState;
 }
-const FaucetNotification = ({ selectedAsset, tx }: FaucetNotificationProps) => {
+const FaucetNotification = ({
+  isActive,
+  selectedAsset,
+  tx,
+}: FaucetNotificationProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
+
+  if (!isActive) {
+    return null;
+  }
 
   if (!selectedAsset) {
     return null;
@@ -701,7 +702,7 @@ const FaucetNotification = ({ selectedAsset, tx }: FaucetNotificationProps) => {
           intent={Intent.Warning}
           testId="faucet-requested"
           message={t(
-            `Got to your Ethereum wallet and approve the transaction to faucet ${selectedAsset?.symbol}`
+            `Go to your Ethereum wallet and approve the transaction to faucet ${selectedAsset?.symbol}`
           )}
         />
       </div>
@@ -719,7 +720,7 @@ const FaucetNotification = ({ selectedAsset, tx }: FaucetNotificationProps) => {
               {t('Waiting...')}{' '}
               {tx.txHash && (
                 <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-                  {truncateByChars(tx.txHash)}
+                  {t('View on Etherscan')}
                 </ExternalLink>
               )}
             </p>
@@ -740,7 +741,7 @@ const FaucetNotification = ({ selectedAsset, tx }: FaucetNotificationProps) => {
               {t('Faucet successful')}{' '}
               {tx.txHash && (
                 <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-                  {truncateByChars(tx.txHash)}
+                  {t('View on Etherscan')}
                 </ExternalLink>
               )}
             </p>

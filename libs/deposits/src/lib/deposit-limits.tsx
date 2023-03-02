@@ -35,7 +35,7 @@ export const DepositLimits = ({
     },
     {
       key: 'MAX_LIMIT',
-      label: t('Maximum total deposit amount'),
+      label: t('Lifetime deposit allowance'),
       rawValue: max,
       value: <CompactNumber number={max} decimals={asset.decimals} />,
     },

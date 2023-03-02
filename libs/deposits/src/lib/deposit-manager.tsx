@@ -5,19 +5,15 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import { useDepositDialog } from './deposit-dialog';
 import type { Asset } from '@vegaprotocol/assets';
-import pick from 'lodash/pick';
-import type { EthTransaction } from '@vegaprotocol/web3';
 import {
-  EthTxStatus,
   useEthTransactionStore,
   useBridgeContract,
   useEthereumConfig,
 } from '@vegaprotocol/web3';
-import { t } from '@vegaprotocol/i18n';
 
 interface DepositManagerProps {
   assetId?: string;
@@ -37,7 +33,7 @@ export const DepositManager = ({
   const bridgeContract = useBridgeContract();
   const closeDepositDialog = useDepositDialog((state) => state.close);
 
-  const { balance, allowance, deposited, max, refresh } = useDepositBalances(
+  const { getBalances, reset, balances } = useDepositBalances(
     asset,
     isFaucetable
   );
@@ -71,8 +67,8 @@ export const DepositManager = ({
 
   return (
     <DepositForm
-      balance={balance}
       selectedAsset={asset}
+      onDisconnect={reset}
       onSelectAsset={(id) => {
         setAssetId(id);
         faucet.reset();
@@ -81,18 +77,16 @@ export const DepositManager = ({
       assets={sortBy(assets, 'name')}
       submitApprove={async () => {
         await approve.perform();
-        refresh();
+        getBalances();
       }}
       approveTx={approve.transaction}
       submitDeposit={submitDeposit}
       requestFaucet={async () => {
         await faucet.perform();
-        refresh();
+        getBalances();
       }}
       faucetTx={faucet.transaction}
-      deposited={deposited}
-      max={max}
-      allowance={allowance}
+      balances={balances}
       isFaucetable={isFaucetable}
     />
   );
