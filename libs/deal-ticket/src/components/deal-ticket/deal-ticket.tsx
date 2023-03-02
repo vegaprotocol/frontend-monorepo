@@ -36,6 +36,7 @@ import {
   usePersistedOrderStore,
   usePersistedOrderStoreSubscription,
 } from '@vegaprotocol/orders';
+import { OrderType } from '@vegaprotocol/types';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -82,7 +83,12 @@ export const DealTicket = ({
   const order = watch();
 
   watch((orderData) => {
-    setPersistedOrder(orderData as DealTicketFormFields);
+    const persistable = !(
+      orderData.type === OrderType.TYPE_LIMIT && orderData.price === ''
+    );
+    if (persistable) {
+      setPersistedOrder(orderData as DealTicketFormFields);
+    }
   });
 
   usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
@@ -369,7 +375,7 @@ const SummaryMessage = memo(
     if (balanceError) {
       return (
         <div className="mb-2">
-          <MarginWarning balance={balance} margin={margin} asset={asset} />;
+          <MarginWarning balance={balance} margin={margin} asset={asset} />
         </div>
       );
     }

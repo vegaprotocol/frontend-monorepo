@@ -1,5 +1,6 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {
@@ -26,7 +27,7 @@ export const DealTicketFeeDetails = ({
   marketData,
 }: DealTicketFeeDetailsProps) => {
   const feeDetails = useFeeDealTicketDetails(order, market, marketData);
-  const details = getFeeDetailsValues(feeDetails);
+  const details = useMemo(() => getFeeDetailsValues(feeDetails), [feeDetails]);
   return (
     <div>
       {details.map(({ label, value, labelDescription, symbol }) => (
