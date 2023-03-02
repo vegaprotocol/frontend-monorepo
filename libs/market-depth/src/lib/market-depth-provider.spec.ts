@@ -31,7 +31,7 @@ describe('market depth provider update', () => {
       sequenceNumber: '',
       previousSequenceNumber: '',
     };
-    const updatedData = update(data, [delta], reload);
+    const updatedData = update(data, [delta], reload, { marketId: '1' });
     expect(updatedData).toBe(data);
   });
 
@@ -54,8 +54,12 @@ describe('market depth provider update', () => {
         previousSequenceNumber: '',
       },
     ];
-    expect(update(data, delta.slice(0, 1), reload)).toBe(data);
-    expect(update(data, delta.slice(1, 2), reload)).toBe(data);
+    expect(update(data, delta.slice(0, 1), reload, { marketId: '1' })).toBe(
+      data
+    );
+    expect(update(data, delta.slice(1, 2), reload, { marketId: '1' })).toBe(
+      data
+    );
   });
 
   it('restarts and captureException when there is gap in updates', () => {
@@ -72,7 +76,7 @@ describe('market depth provider update', () => {
         previousSequenceNumber: '12',
       },
     ];
-    const updatedData = update(data, delta, reload);
+    const updatedData = update(data, delta, reload, { marketId: '1' });
     expect(updatedData).toBe(data);
     expect(reload).toBeCalled();
     expect(mockCaptureException).toBeCalled();

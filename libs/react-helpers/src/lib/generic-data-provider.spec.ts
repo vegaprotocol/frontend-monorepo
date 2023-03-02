@@ -45,10 +45,11 @@ type CombinedData = {
 
 type SubscriptionData = QueryData;
 type Delta = Data;
+type Variables = { var: string };
 
 const update = jest.fn<
-  ReturnType<Update<Data, Delta>>,
-  Parameters<Update<Data, Delta>>
+  ReturnType<Update<Data, Delta, Variables>>,
+  Parameters<Update<Data, Delta, Variables>>
 >();
 
 const callback = jest.fn<
@@ -66,7 +67,13 @@ const getData = jest.fn((r: QueryData | null) => r?.data || null);
 
 const getDelta = jest.fn((r: SubscriptionData) => r.data);
 
-const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
+const subscribe = makeDataProvider<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta,
+  Variables
+>({
   query,
   subscriptionQuery,
   update,
@@ -75,18 +82,18 @@ const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
 });
 
 const combineData = jest.fn<
-  ReturnType<CombineDerivedData<CombinedData>>,
-  Parameters<CombineDerivedData<CombinedData>>
+  ReturnType<CombineDerivedData<CombinedData, Variables>>,
+  Parameters<CombineDerivedData<CombinedData, Variables>>
 >();
 
 const combineDelta = jest.fn<
-  ReturnType<CombineDerivedDelta<CombinedData, CombinedData>>,
-  Parameters<CombineDerivedDelta<CombinedData, CombinedData>>
+  ReturnType<CombineDerivedDelta<CombinedData, CombinedData, Variables>>,
+  Parameters<CombineDerivedDelta<CombinedData, CombinedData, Variables>>
 >();
 
 const combineInsertionData = jest.fn<
-  ReturnType<CombineInsertionData<CombinedData>>,
-  Parameters<CombineInsertionData<CombinedData>>
+  ReturnType<CombineInsertionData<CombinedData, Variables>>,
+  Parameters<CombineInsertionData<CombinedData, Variables>>
 >();
 
 const first = 100;
@@ -94,7 +101,8 @@ const paginatedSubscribe = makeDataProvider<
   QueryData,
   Data,
   SubscriptionData,
-  Delta
+  Delta,
+  Variables
 >({
   query,
   subscriptionQuery,
@@ -116,7 +124,8 @@ const errorGuardedSubscribe = makeDataProvider<
   QueryData,
   Data,
   SubscriptionData,
-  Delta
+  Delta,
+  Variables
 >({
   query,
   subscriptionQuery,
@@ -210,6 +219,8 @@ const clearPendingQueries = () => {
   }
 };
 
+const variables = { var: 'val' };
+
 describe('data provider', () => {
   beforeEach(() => {
     clearPendingQueries();
@@ -220,7 +231,6 @@ describe('data provider', () => {
     clientSubscribeSubscribe.mockClear();
   });
   it('memoize instance and unsubscribe if no subscribers', () => {
-    const variables = { var: 'val' };
     const subscription1 = subscribe(jest.fn(), client, variables);
     const subscription2 = subscribe(jest.fn(), client, { ...variables });
     // const subscription1 = subscribe(jest.fn(), client);
@@ -234,7 +244,7 @@ describe('data provider', () => {
 
   it('calls callback before and after initial fetch', async () => {
     const data: Item[] = [];
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     expect(callback.mock.calls.length).toBe(1);
     expect(callback.mock.calls[0][0].data).toBe(null);
     expect(callback.mock.calls[0][0].loading).toBe(true);
@@ -246,7 +256,7 @@ describe('data provider', () => {
   });
 
   it('calls callback on error', async () => {
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     expect(callback.mock.calls.length).toBe(1);
     expect(callback.mock.calls[0][0].data).toBe(null);
     expect(callback.mock.calls[0][0].loading).toBe(true);
@@ -260,7 +270,7 @@ describe('data provider', () => {
   });
 
   it('calls successful callback on NotFound error on party path', async () => {
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     expect(callback.mock.calls.length).toBe(1);
     expect(callback.mock.calls[0][0].data).toBe(null);
     expect(callback.mock.calls[0][0].loading).toBe(true);
@@ -280,7 +290,7 @@ describe('data provider', () => {
     const data: Data = [];
     getData.mockReturnValueOnce(data);
     await rejectQuery(error);
-    expect(getData).toHaveBeenCalledWith(null, undefined);
+    expect(getData).toHaveBeenCalledWith(null, variables);
     expect(callback.mock.calls.length).toBe(2);
     expect(callback.mock.calls[1][0].data).toEqual(data);
     expect(callback.mock.calls[1][0].error).toEqual(undefined);
@@ -290,7 +300,7 @@ describe('data provider', () => {
 
   it('calls update and callback on each update', async () => {
     const data: Item[] = [];
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     await resolveQuery({ data });
     const delta: Item[] = [];
     update.mockImplementationOnce((data, delta) => [...(data || []), ...delta]);
@@ -308,7 +318,7 @@ describe('data provider', () => {
 
   it("don't calls callback on update if data doesn't change", async () => {
     const data: Item[] = [];
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     await resolveQuery({ data });
     const delta: Item[] = [];
     update.mockImplementationOnce((data, delta) => data || []);
@@ -325,7 +335,7 @@ describe('data provider', () => {
 
   it('refetch data on reload', async () => {
     const data: Item[] = [];
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     await resolveQuery({ data });
     subscription.reload();
     await resolveQuery({ data });
@@ -337,7 +347,7 @@ describe('data provider', () => {
 
   it('refetch data and restart subscription on reload with force', async () => {
     const data: Item[] = [];
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     await resolveQuery({ data });
     subscription.reload(true);
     await resolveQuery({ data });
@@ -349,7 +359,7 @@ describe('data provider', () => {
 
   it('calls callback on flush', async () => {
     const data: Item[] = [];
-    const subscription = subscribe(callback, client);
+    const subscription = subscribe(callback, client, variables);
     await resolveQuery({ data });
     const callbackCallsLength = callback.mock.calls.length;
     subscription.flush();
@@ -365,7 +375,7 @@ describe('data provider', () => {
         id: i.toString(),
       },
     }));
-    const subscription = paginatedSubscribe(callback, client);
+    const subscription = paginatedSubscribe(callback, client, variables);
     await resolveQuery({
       data,
       totalCount,
@@ -379,7 +389,7 @@ describe('data provider', () => {
 
   it('loads requested data blocks and inserts data with total count', async () => {
     const totalCount = 1000;
-    const subscription = paginatedSubscribe(callback, client);
+    const subscription = paginatedSubscribe(callback, client, variables);
     await resolveQuery({
       data: generateData(),
       totalCount,
@@ -503,7 +513,7 @@ describe('data provider', () => {
 
   it('loads requested data blocks and inserts data without totalCount', async () => {
     const totalCount = undefined;
-    const subscription = paginatedSubscribe(callback, client);
+    const subscription = paginatedSubscribe(callback, client, variables);
     await resolveQuery({
       data: generateData(),
       totalCount,
@@ -542,7 +552,7 @@ describe('data provider', () => {
   });
 
   it('sets total count when first page has no next page', async () => {
-    const subscription = paginatedSubscribe(callback, client);
+    const subscription = paginatedSubscribe(callback, client, variables);
     await resolveQuery({
       data: generateData(),
       pageInfo: {
@@ -556,8 +566,8 @@ describe('data provider', () => {
     subscription.unsubscribe();
   });
 
-  it('errorPolicyGuard should work properly', async () => {
-    const subscription = errorGuardedSubscribe(callback, client);
+  it('should retry with ignore error policy if errorPolicyGuard returns true', async () => {
+    const subscription = errorGuardedSubscribe(callback, client, variables);
     const graphQLError = new GraphQLError(
       '',
       undefined,
@@ -579,7 +589,7 @@ describe('data provider', () => {
     });
     expect(mockErrorPolicyGuard).toHaveBeenNthCalledWith(1, graphQLErrors);
     await waitFor(() =>
-      expect(getData).toHaveBeenCalledWith({ data }, undefined)
+      expect(getData).toHaveBeenCalledWith({ data }, variables)
     );
     subscription.unsubscribe();
   });
@@ -589,7 +599,6 @@ describe('derived data provider', () => {
   it('memoize instance and unsubscribe if no subscribers', () => {
     clientSubscribeSubscribe.mockClear();
     clientSubscribeUnsubscribe.mockClear();
-    const variables = {};
     const subscription1 = derivedSubscribe(jest.fn(), client, variables);
     const subscription2 = derivedSubscribe(jest.fn(), client, variables);
     expect(clientSubscribeSubscribe.mock.calls.length).toEqual(2);
@@ -615,7 +624,7 @@ describe('derived data provider', () => {
       ReturnType<UpdateCallback<CombinedData, CombinedData>>,
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
-    const subscription = derivedSubscribe(callback, client);
+    const subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     expect(callback.mock.calls.length).toBe(0);
@@ -642,7 +651,7 @@ describe('derived data provider', () => {
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
     expect(callback.mock.calls.length).toBe(0);
-    const subscription = derivedSubscribe(callback, client);
+    const subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     expect(callback.mock.calls.length).toBe(0);
@@ -677,7 +686,7 @@ describe('derived data provider', () => {
       ReturnType<UpdateCallback<CombinedData, CombinedData>>,
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
-    const subscription = derivedSubscribe(callback, client);
+    const subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     await resolveQuery({ data: part1 });
@@ -709,7 +718,7 @@ describe('derived data provider', () => {
       ReturnType<UpdateCallback<CombinedData, CombinedData>>,
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
-    const subscription = derivedSubscribe(callback, client);
+    const subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     await resolveQuery({
