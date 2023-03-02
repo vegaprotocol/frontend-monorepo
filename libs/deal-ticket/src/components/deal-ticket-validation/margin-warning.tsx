@@ -14,7 +14,6 @@ interface Props {
 
 export const MarginWarning = ({ margin, balance, asset }: Props) => {
   const openDepositDialog = useDepositDialog((state) => state.open);
-  console.log({ margin, balance, asset });
   return (
     <>
       <Notification

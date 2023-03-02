@@ -5,27 +5,24 @@ import {
   formatNumber,
   t,
   toBigNum,
-  useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
-import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
-  // EST_MARGIN_TOOLTIP_TEXT,
+  EST_MARGIN_TOOLTIP_TEXT,
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
   MARGIN_DIFF_TOOLTIP_TEXT,
 } from '../constants';
 import { useOrderCloseOut } from './use-order-closeout';
-import { useOrderMargin } from './use-order-margin';
-import { volumeAndMarginProvider } from '@vegaprotocol/positions';
 import { useMarketAccountBalance } from '@vegaprotocol/accounts';
-import type { OrderMargin } from './use-order-margin';
 import { getDerivedPrice } from '../utils/get-price';
+import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
+import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
@@ -33,39 +30,24 @@ export const useFeeDealTicketDetails = (
   marketData: MarketData
 ) => {
   const { pubKey } = useVegaWallet();
-  const { data: activeVolumeAndMargin } = useDataProvider({
-    dataProvider: volumeAndMarginProvider,
-    variables: { marketId: market.id, partyId: pubKey || '' },
-    skip: !pubKey,
-  });
   const { accountBalance } = useMarketAccountBalance(market.id);
 
   const price = useMemo(() => {
     return getDerivedPrice(order, marketData);
   }, [order, marketData]);
 
-  const estMargin = useOrderMargin({
-    ...order,
-    marketId: market.id,
-    partyId: pubKey || '',
-    price,
+  const { data: estMargin } = useEstimateOrderQuery({
+    variables: {
+      marketId: market.id,
+      partyId: pubKey || '',
+      price,
+      size: order.size,
+      side: order.side,
+      timeInForce: order.timeInForce,
+      type: order.type,
+    },
+    skip: !pubKey || !market || !order.size || !price,
   });
-
-  if (activeVolumeAndMargin && estMargin) {
-    let sellMargin = BigInt(activeVolumeAndMargin.sellInitialMargin);
-    let buyMargin = BigInt(activeVolumeAndMargin.buyInitialMargin);
-    const margin = BigInt(estMargin.margin);
-    if (order.side === Side.SIDE_SELL) {
-      activeVolumeAndMargin.sellVolume = (
-        BigInt(activeVolumeAndMargin.sellVolume) + BigInt(order.size)
-      ).toString();
-      sellMargin += margin;
-    } else {
-      buyMargin += margin;
-    }
-    estMargin.margin =
-      sellMargin > buyMargin ? sellMargin.toString() : buyMargin.toString();
-  }
 
   const estCloseOut = useOrderCloseOut({
     order,
@@ -91,7 +73,7 @@ export const useFeeDealTicketDetails = (
       symbol,
       notionalSize,
       accountBalance,
-      estMargin: estMargin,
+      estimateOrder: estMargin?.estimateOrder,
       estCloseOut,
     };
   }, [market, symbol, notionalSize, estMargin, estCloseOut, accountBalance]);
@@ -100,7 +82,7 @@ export const useFeeDealTicketDetails = (
 export interface FeeDetails {
   balance: string;
   estCloseOut: string | null;
-  estMargin: OrderMargin | null;
+  estimateOrder: EstimateOrderQuery['estimateOrder'] | undefined;
   margin: string;
   market: Market;
   notionalSize: string | null;
@@ -111,7 +93,7 @@ export interface FeeDetails {
 export const getFeeDetailsValues = ({
   balance,
   estCloseOut,
-  estMargin,
+  estimateOrder,
   margin,
   market,
   notionalSize,
@@ -144,8 +126,8 @@ export const getFeeDetailsValues = ({
     {
       label: t('Fees'),
       value:
-        estMargin?.totalFees &&
-        `~${formatValueWithAssetDp(estMargin?.totalFees)}`,
+        estimateOrder?.totalFeeAmount &&
+        `~${formatValueWithAssetDp(estimateOrder?.totalFeeAmount)}`,
       labelDescription: (
         <>
           <span>
@@ -154,7 +136,7 @@ export const getFeeDetailsValues = ({
             )}
           </span>
           <FeesBreakdown
-            fees={estMargin?.fees}
+            fees={estimateOrder?.fee}
             feeFactors={market.fees.factors}
             symbol={symbol}
             decimals={assetDecimals}
@@ -163,12 +145,12 @@ export const getFeeDetailsValues = ({
       ),
       symbol,
     },
-    /*{
-      label: t('Margin'),
+    {
+      label: t('Initial margin'),
       value: margin && `~${formatValueWithAssetDp(margin)}`,
       symbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
-    },*/
+    },
     {
       label: t('Margin required'),
       value: `~${formatValueWithAssetDp(

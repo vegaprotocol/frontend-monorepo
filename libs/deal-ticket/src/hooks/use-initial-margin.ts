@@ -4,7 +4,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import {
   calculateMargins,
-  getDerivedPrice,
+  // getDerivedPrice,
   volumeAndMarginProvider,
 } from '@vegaprotocol/positions';
 import { Side } from '@vegaprotocol/types';
@@ -32,7 +32,6 @@ export const useInitialMargin = (
   });
   let totalMargin = '0';
   let margin = '0';
-
   if (marketInfo?.riskFactors && marketData) {
     const {
       positionDecimalPlaces,
@@ -45,7 +44,7 @@ export const useInitialMargin = (
     margin = totalMargin = calculateMargins({
       side,
       size,
-      price: getDerivedPrice(order, marketData),
+      price: marketData.markPrice, // getDerivedPrice(order, marketData), same in positions-data-providers
       positionDecimalPlaces,
       decimalPlaces,
       decimals,

@@ -323,7 +323,6 @@ const SummaryMessage = memo(
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
-    console.log({ asset });
     const assetSymbol = asset.symbol;
     const openVegaWalletDialog = useVegaWalletDialogStore(
       (store) => store.openVegaWalletDialog

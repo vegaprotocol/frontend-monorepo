@@ -420,7 +420,7 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
           calculateMargins({
             side,
             size,
-            price: marketData.markPrice, //getDerivedPrice(order.node, marketData),
+            price: marketData.markPrice, //getDerivedPrice(order.node, marketData), same use-initial-margin
             ...calculatorParams,
           }).initialMargin
         );
@@ -433,11 +433,13 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
         }
       });
     }
-    return {
+    const r = {
       buyVolume: buyVolume.toString(),
       sellVolume: sellVolume.toString(),
       buyInitialMargin: buyInitialMargin.toString(),
       sellInitialMargin: sellInitialMargin.toString(),
     };
+    console.log(r);
+    return r;
   }
 );
