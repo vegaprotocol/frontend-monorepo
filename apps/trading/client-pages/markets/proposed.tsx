@@ -1,10 +1,10 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import {
   DApp,
   TOKEN_NEW_MARKET_PROPOSAL,
   useLinks,
 } from '@vegaprotocol/environment';
-import { ProposalsList } from '@vegaprotocol/governance';
+import { ProposalsList } from '@vegaprotocol/proposals';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 export const Proposed = () => {

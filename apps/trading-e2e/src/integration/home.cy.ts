@@ -1,5 +1,5 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
+import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { marketsDataQuery } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 
@@ -302,6 +302,20 @@ describe('home', { tags: '@regression' }, () => {
         cy.location('hash').should('equal', '#/markets/market-not-existing');
         cy.getByTestId('dialog-content').should('not.exist');
       });
+    });
+  });
+
+  describe('footer', () => {
+    it('shows current block height', () => {
+      cy.visit('/');
+      cy.getByTestId('node-health')
+        .children()
+        .first()
+        .should('contain.text', 'Operational')
+        .next()
+        .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+        .next()
+        .should('contain.text', '100'); // all mocked queries have x-block-height header set to 100
     });
   });
 });

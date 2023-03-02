@@ -4,7 +4,7 @@ import {
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import dynamic from 'next/dynamic';
@@ -12,7 +12,7 @@ import type { ReactNode } from 'react';
 import { AppFailure } from './app-failure';
 import { Web3Provider } from './web3-provider';
 
-const DynamicLoader = dynamic(() => import('../preloader/preloader'), {
+export const DynamicLoader = dynamic(() => import('../preloader/preloader'), {
   loading: () => <>Loading...</>,
 });
 

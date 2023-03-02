@@ -3,7 +3,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import {
   MarginsSubscriptionDocument,
   MarginsDocument,

@@ -28,7 +28,6 @@ import {
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
 import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/market-list';
-import type { MarketInfoQuery } from '@vegaprotocol/market-info';
 
 type MarketPageMockData = {
   state: Schema.MarketState;

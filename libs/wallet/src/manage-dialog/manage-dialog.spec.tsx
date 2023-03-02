@@ -4,7 +4,7 @@ import { VegaWalletContext } from '../context';
 import type { VegaWalletContextShape } from '../context';
 import type { VegaManageDialogProps } from '.';
 import { VegaManageDialog } from '.';
-import { truncateByChars } from '@vegaprotocol/react-helpers';
+import { truncateByChars } from '@vegaprotocol/utils';
 
 let props: VegaManageDialogProps;
 let context: Partial<VegaWalletContextShape>;

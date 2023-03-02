@@ -3,8 +3,8 @@ import type { TradeFee, FeeFactors } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
@@ -66,7 +66,7 @@ export const FeesBreakdown = ({
       : '-';
   };
   return (
-    <dl className="grid grid-cols-5">
+    <dl className="grid grid-cols-6">
       <dt className="col-span-2">{t('Infrastructure fee')}</dt>
       {feeFactors && (
         <dd className="text-right col-span-1">
@@ -75,7 +75,7 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
-      <dd className="text-right col-span-2">
+      <dd className="text-right col-span-3">
         {formatValue(fees.infrastructureFee)} {symbol || ''}
       </dd>
       <dt className="col-span-2">{t('Liquidity fee')}</dt>
@@ -86,7 +86,7 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
-      <dd className="text-right col-span-2">
+      <dd className="text-right col-span-3">
         {formatValue(fees.liquidityFee)} {symbol || ''}
       </dd>
       <dt className="col-span-2">{t('Maker fee')}</dt>
@@ -97,7 +97,7 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
-      <dd className="text-right col-span-2">
+      <dd className="text-right col-span-3">
         {formatValue(fees.makerFee)} {symbol || ''}
       </dd>
       <dt className="col-span-2">{t('Total fees')}</dt>
@@ -106,7 +106,7 @@ export const FeesBreakdown = ({
           {totalFeesPercentage(feeFactors)}
         </dd>
       )}
-      <dd className="text-right col-span-2">
+      <dd className="text-right col-span-3">
         {formatValue(totalFees)} {symbol || ''}
       </dd>
     </dl>

@@ -4,11 +4,7 @@ import isEqual from 'lodash/isEqual';
 import { useApolloClient } from '@apollo/client';
 import { usePrevious } from './use-previous';
 import type { OperationVariables } from '@apollo/client';
-import type {
-  Subscribe,
-  Load,
-  UpdateCallback,
-} from '../lib/generic-data-provider';
+import type { Subscribe, Load, UpdateCallback } from '@vegaprotocol/utils';
 
 export interface useDataProviderParams<
   Data,

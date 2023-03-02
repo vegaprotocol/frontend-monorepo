@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useAssetsDataProvider } from './assets-data-provider';
 import {
   Button,
@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
-import { AssetProposalNotification } from '@vegaprotocol/governance';
+import { AssetProposalNotification } from '@vegaprotocol/proposals';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
@@ -58,6 +58,7 @@ export const AssetDetailsDialog = ({
   const { data } = useAssetsDataProvider();
 
   const asset = data?.find((a) => a.id === assetId);
+  const assetSymbol = asset?.symbol || '';
 
   const content = asset ? (
     <div className="my-2">
@@ -97,6 +98,12 @@ export const AssetDetailsDialog = ({
       }}
     >
       {content}
+      <p className="text-sm my-4">
+        {t(
+          'There is 1 unit of the settlement asset (%s) to every 1 quote unit.',
+          [assetSymbol]
+        )}
+      </p>
       <div className="w-1/4">
         <Button
           data-testid="close-asset-details-dialog"

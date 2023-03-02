@@ -1,14 +1,20 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
+import type { ClientOptions } from '@vegaprotocol/apollo-client';
+import { createClient } from '@vegaprotocol/apollo-client';
 import { Networks } from '../types';
-import { useEnvironment } from './use-environment';
+import { STORAGE_KEY, useEnvironment } from './use-environment';
 
 const noop = () => {
   /* no op*/
 };
 
-jest.mock('@vegaprotocol/apollo-client', () => ({
-  createClient: () => ({
+jest.mock('@vegaprotocol/apollo-client');
+jest.mock('zustand');
+
+const mockCreateClient = createClient as jest.Mock;
+const createDefaultMockClient = () => {
+  return () => ({
     query: () =>
       Promise.resolve({
         data: {
@@ -25,12 +31,10 @@ jest.mock('@vegaprotocol/apollo-client', () => ({
         obj.next();
       },
     }),
-  }),
-}));
-jest.mock('zustand');
+  });
+};
 
 global.fetch = jest.fn();
-
 // eslint-disable-next-line
 const setupFetch = (result: any) => {
   return () => {
@@ -56,6 +60,17 @@ const mockEnvVars = {
 
 describe('useEnvironment', () => {
   const env = process.env;
+  // eslint-disable-next-line
+  let warn: any;
+
+  beforeAll(() => {
+    warn = console.warn;
+    console.warn = noop;
+  });
+
+  afterAll(() => {
+    console.warn = warn;
+  });
 
   beforeEach(() => {
     jest.resetModules();
@@ -73,6 +88,9 @@ describe('useEnvironment', () => {
 
     // @ts-ignore clear mocked node config fetch
     fetch.mockClear();
+
+    // reset default apollo client behaviour
+    mockCreateClient.mockImplementation(createDefaultMockClient());
   });
 
   afterEach(() => {
@@ -92,6 +110,7 @@ describe('useEnvironment', () => {
     ];
     // @ts-ignore: typscript doesn't recognise the mock implementation
     global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+
     const { result } = setup();
 
     expect(result.current.status).toBe('default');
@@ -107,10 +126,169 @@ describe('useEnvironment', () => {
     });
 
     // resulting VEGA_URL should be one of the nodes from the config
-    expect(
-      result.current.VEGA_URL === nodes[0] ||
-        result.current.VEGA_URL === nodes[1]
-    ).toBe(true);
+    expect(nodes.includes(result.current.VEGA_URL as string)).toBe(true);
+    expect(result.current).toMatchObject({
+      ...mockEnvVars,
+      nodes,
+    });
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(configUrl);
+  });
+
+  it('uses the first successfully responding node', async () => {
+    jest.useFakeTimers();
+    const configUrl = 'https://vega.xyz/testnet-config.json';
+    process.env['NX_VEGA_CONFIG_URL'] = configUrl;
+
+    const slowNode = 'https://api.n00.foo.vega.xyz';
+    const slowWait = 2000;
+    const fastNode = 'https://api.n01.foo.vega.xyz';
+    const fastWait = 1000;
+    const nodes = [slowNode, fastNode];
+    // @ts-ignore: typscript doesn't recognise the mock implementation
+    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+
+    mockCreateClient.mockImplementation((obj: ClientOptions) => ({
+      query: () =>
+        new Promise((resolve) => {
+          const wait = obj.url === fastNode ? fastWait : slowWait;
+          setTimeout(() => {
+            resolve({
+              data: {
+                statistics: {
+                  chainId: 'chain-id',
+                  blockHeight: '100',
+                  vegaTime: new Date().toISOString(),
+                },
+              },
+            });
+          }, wait);
+        }),
+      subscribe: () => ({
+        // eslint-disable-next-line
+        subscribe: (obj: any) => {
+          obj.next();
+        },
+      }),
+    }));
+    const { result } = setup();
+
+    expect(result.current.status).toBe('default');
+
+    act(() => {
+      result.current.initialize();
+    });
+
+    expect(result.current.status).toBe('pending');
+
+    // wait for nodes request to finish before running timer
+    await waitFor(() => {
+      expect(result.current.nodes).toEqual(nodes);
+    });
+
+    jest.runAllTimers();
+
+    await waitFor(() => {
+      expect(result.current.status).toEqual('success');
+    });
+
+    expect(result.current.VEGA_URL).toBe(fastNode);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(fastNode);
+    expect(result.current).toMatchObject({
+      ...mockEnvVars,
+      nodes,
+    });
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(configUrl);
+    jest.useRealTimers();
+  });
+
+  it('passes a node if both queries and subscriptions working', async () => {
+    const configUrl = 'https://vega.xyz/testnet-config.json';
+    process.env['NX_VEGA_CONFIG_URL'] = configUrl;
+    const successNode = 'https://api.n01.foo.vega.xyz';
+    const failNode = 'https://api.n00.foo.vega.xyz';
+    const nodes = [failNode, successNode];
+    // @ts-ignore: typscript doesn't recognise the mock implementation
+    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+    mockCreateClient.mockImplementation((clientOptions: ClientOptions) => ({
+      query: () =>
+        Promise.resolve({
+          data: {
+            statistics: {
+              chainId: 'chain-id',
+              blockHeight: '100',
+              vegaTime: new Date().toISOString(),
+            },
+          },
+        }),
+      subscribe: () => ({
+        // eslint-disable-next-line
+        subscribe: (obj: any) => {
+          if (clientOptions.url === failNode) {
+            // make n00 fail the subscription
+            obj.error();
+          } else {
+            obj.next();
+          }
+        },
+      }),
+    }));
+
+    const { result } = setup();
+
+    expect(result.current.status).toBe('default');
+
+    act(() => {
+      result.current.initialize();
+    });
+
+    expect(result.current.status).toBe('pending');
+
+    await waitFor(() => {
+      expect(result.current.status).toBe('success');
+    });
+
+    expect(result.current.VEGA_URL).toBe(successNode);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(successNode);
+  });
+
+  it('fails initialization if no suitable node is found', async () => {
+    const configUrl = 'https://vega.xyz/testnet-config.json';
+    process.env['NX_VEGA_CONFIG_URL'] = configUrl;
+    const nodes = [
+      'https://api.n00.foo.vega.xyz',
+      'https://api.n01.foo.vega.xyz',
+    ];
+    // @ts-ignore: typscript doesn't recognise the mock implementation
+    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+
+    // set all clients to fail both query and subscription
+    mockCreateClient.mockImplementation(() => ({
+      query: () => Promise.reject(),
+      subscribe: () => ({
+        // eslint-disable-next-line
+        subscribe: (obj: any) => {
+          obj.error();
+        },
+      }),
+    }));
+
+    const { result } = setup();
+
+    expect(result.current.status).toBe('default');
+
+    act(() => {
+      result.current.initialize();
+    });
+
+    expect(result.current.status).toBe('pending');
+
+    await waitFor(() => {
+      expect(result.current.status).toBe('failed');
+    });
+
+    expect(result.current.VEGA_URL).toBe(undefined); // VEGA_URL is unset, app should handle some UI
     expect(result.current).toMatchObject({
       ...mockEnvVars,
       nodes,
@@ -154,8 +332,11 @@ describe('useEnvironment', () => {
     process.env['NX_VEGA_URL'] = url;
     process.env['NX_VEGA_CONFIG_URL'] = undefined;
     const { result } = setup();
-    await act(async () => {
+    act(() => {
       result.current.initialize();
+    });
+    await waitFor(() => {
+      expect(result.current.status).toBe('success');
     });
     expect(result.current).toMatchObject({
       VEGA_URL: url,
@@ -174,16 +355,16 @@ describe('useEnvironment', () => {
     // @ts-ignore setup mock fetch for config url
     global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
     const { result } = setup();
-    await act(async () => {
+    act(() => {
       result.current.initialize();
     });
-    expect(typeof result.current.VEGA_URL).toEqual('string');
-    expect(result.current.VEGA_URL).not.toBeFalsy();
+    await waitFor(() => {
+      expect(result.current.status).toBe('success');
+    });
+    expect(nodes.includes(result.current.VEGA_URL as string)).toBe(true);
   });
 
   it('handles error if node config cannot be fetched', async () => {
-    const warn = console.warn;
-    console.warn = noop;
     const configUrl = 'https://vega.xyz/testnet-config.json';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     process.env['NX_VEGA_URL'] = undefined;
@@ -196,16 +377,14 @@ describe('useEnvironment', () => {
       result.current.initialize();
     });
     expect(result.current.status).toEqual('failed');
-    expect(typeof result.current.error).toBe('string');
-    expect(result.current.error).toBeTruthy();
+    expect(result.current.error).toBe(
+      `Failed to fetch node config from ${configUrl}`
+    );
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(configUrl);
-    console.warn = warn;
   });
 
   it('handles an invalid node config', async () => {
-    const warn = console.warn;
-    console.warn = noop;
     const configUrl = 'https://vega.xyz/testnet-config.json';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     process.env['NX_VEGA_URL'] = undefined;
@@ -216,11 +395,11 @@ describe('useEnvironment', () => {
       result.current.initialize();
     });
     expect(result.current.status).toEqual('failed');
-    expect(typeof result.current.error).toBe('string');
-    expect(result.current.error).toBeTruthy();
+    expect(result.current.error).toBe(
+      `Failed to fetch node config from ${configUrl}`
+    );
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(configUrl);
-    console.warn = warn;
   });
 
   it('uses stored url', async () => {
@@ -231,7 +410,7 @@ describe('useEnvironment', () => {
       setupFetch({ hosts: ['http://foo.bar.com'] })
     );
     const url = 'https://api.n00.foo.com';
-    localStorage.setItem('vega_url', url);
+    localStorage.setItem(STORAGE_KEY, url);
     const { result } = setup();
     await act(async () => {
       result.current.initialize();
@@ -254,6 +433,6 @@ describe('useEnvironment', () => {
       result.current.setUrl(newUrl);
     });
     expect(result.current.VEGA_URL).toBe(newUrl);
-    expect(localStorage.getItem('vega_url')).toBe(newUrl);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(newUrl);
   });
 });

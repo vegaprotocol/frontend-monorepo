@@ -1,6 +1,6 @@
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';

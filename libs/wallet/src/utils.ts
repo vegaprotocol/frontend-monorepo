@@ -1,4 +1,4 @@
-import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
+import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import type { Market, Order } from '@vegaprotocol/types';
 import { OrderTimeInForce, OrderType, AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';

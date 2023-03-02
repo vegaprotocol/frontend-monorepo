@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import {

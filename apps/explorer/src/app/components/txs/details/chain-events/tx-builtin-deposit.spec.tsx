@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { TxDetailsChainEventBuiltinDeposit } from './tx-builtin-deposit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 import type { components } from '../../../../../types/explorer';
 import omit from 'lodash/omit';
@@ -10,7 +10,7 @@ import { MemoryRouter } from 'react-router-dom';
 type Deposit = components['schemas']['vegaBuiltinAssetDeposit'];
 
 const fullMock: Deposit = {
-  partyId: 'party123',
+  partyId: '0000000000000000000000000000000000000000000000000000000000000001',
   vegaAssetId: 'asset123',
   amount: 'amount123',
 };

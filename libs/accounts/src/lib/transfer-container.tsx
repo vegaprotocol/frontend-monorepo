@@ -1,9 +1,8 @@
 import * as Schema from '@vegaprotocol/types';
+import { addDecimal, truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
-  addDecimal,
   NetworkParams,
-  t,
-  truncateByChars,
   useDataProvider,
   useNetworkParam,
 } from '@vegaprotocol/react-helpers';

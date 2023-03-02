@@ -1,13 +1,9 @@
 import { DepthChart } from 'pennant';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import {
-  useDataProvider,
-  addDecimal,
-  getNumberFormat,
-  useThemeSwitcher,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { addDecimal, getNumberFormat } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';

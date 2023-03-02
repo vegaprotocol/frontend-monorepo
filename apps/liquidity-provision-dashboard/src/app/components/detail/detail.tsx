@@ -1,9 +1,7 @@
 import { useParams } from 'react-router-dom';
-import {
-  t,
-  useDataProvider,
-  makeDerivedDataProvider,
-} from '@vegaprotocol/react-helpers';
+import { makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -91,7 +89,7 @@ export const Detail = () => {
             )}
           </div>
           <div>
-            <h2 className="font-alpha text-2xl mb-4">
+            <h2 className="font-alpha calt text-2xl mb-4">
               {t('Current Liquidity Provision')}
             </h2>
             <LPProvidersGrid

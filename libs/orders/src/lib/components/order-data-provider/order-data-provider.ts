@@ -7,10 +7,10 @@ import {
   defaultAppend as append,
   paginatedCombineDelta as combineDelta,
   paginatedCombineInsertionData as combineInsertionData,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import type { PageInfo, Edge } from '@vegaprotocol/react-helpers';
+import type { PageInfo, Edge } from '@vegaprotocol/utils';
 import type {
   OrderFieldsFragment,
   OrderUpdateFieldsFragment,

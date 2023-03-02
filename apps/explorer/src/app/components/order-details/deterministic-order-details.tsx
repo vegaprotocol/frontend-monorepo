@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useExplorerDeterministicOrderQuery } from './__generated__/Order';
 import { MarketLink } from '../links';
 import PriceInMarket from '../price-in-market/price-in-market';
@@ -13,7 +13,7 @@ export interface DeterministicOrderDetailsProps {
 }
 
 export const wrapperClasses =
-  'grid lg:grid-cols-1 flex items-center max-w-xl border border-zinc-200 dark:border-zinc-800 rounded-md pv-2 ph-5 mb-5';
+  'grid lg:grid-cols-1 flex items-center max-w-xl border border-vega-light-200 dark:border-vega-dark-150 rounded-md pv-2 ph-5 mb-5';
 
 /**
  * This component renders the *current* details for an order
@@ -42,7 +42,7 @@ const DeterministicOrderDetails = ({
             <h2 className="text-3xl font-bold mb-4 display-5">
               {t('Order not found')}
             </h2>
-            <p className="text-gray-500 mb-12">
+            <p className="text-vega-light-400 mb-12">
               {t('No order created from this transaction')}
             </p>
           </div>
@@ -101,7 +101,7 @@ const DeterministicOrderDetails = ({
                   {t('Remaining')}
                 </h2>
                 <h5 className="text-lg font-medium text-gray-500 mb-0">
-                  {o.remaining}
+                  <SizeInMarket size={o.remaining} marketId={o.market.id} />
                 </h5>
               </div>
             )}

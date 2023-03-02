@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import {
   useEagerConnect as useVegaEagerConnect,
   useVegaTransactionManager,
@@ -22,7 +22,6 @@ import {
   useInitializeEnv,
 } from '@vegaprotocol/environment';
 import './styles.css';
-import './gen-styles.scss';
 import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useMemo, useState } from 'react';
@@ -33,7 +32,7 @@ import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import classNames from 'classnames';
-import { AppLoader } from '../components/app-loader';
+import { AppLoader, DynamicLoader } from '../components/app-loader';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -115,7 +114,7 @@ function VegaTradingApp(props: AppProps) {
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
   if (status === 'default') {
-    return null;
+    return <DynamicLoader />;
   }
 
   return (

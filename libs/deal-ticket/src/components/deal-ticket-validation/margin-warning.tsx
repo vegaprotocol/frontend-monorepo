@@ -1,4 +1,5 @@
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Notification, Intent } from '@vegaprotocol/ui-toolkit';
 import { DepositDialog, useDepositDialog } from '@vegaprotocol/deposits';
 

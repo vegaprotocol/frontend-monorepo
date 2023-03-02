@@ -73,7 +73,7 @@ export const Nav = ({
           {icon}
           <h1
             className={classNames(
-              'h-full flex flex-col my-0 justify-center font-alpha uppercase',
+              'h-full flex flex-col my-0 justify-center font-alpha calt uppercase',
               { 'text-black': isYellow, 'text-white': !isYellow }
             )}
           >

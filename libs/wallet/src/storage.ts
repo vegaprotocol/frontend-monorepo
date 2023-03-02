@@ -1,4 +1,4 @@
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '@vegaprotocol/utils';
 
 interface ConnectorConfig {
   token: string | null;

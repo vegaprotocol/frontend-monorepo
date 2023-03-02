@@ -1,7 +1,5 @@
-import {
-  removePaginationWrapper,
-  useNetworkParamsQuery,
-} from '@vegaprotocol/react-helpers';
+import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 
 export interface EthereumConfig {

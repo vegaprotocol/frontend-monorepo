@@ -1,4 +1,4 @@
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
 import { Side, MarketTradingMode, OrderType } from '@vegaprotocol/types';
 import type { ScalingFactors, RiskFactor } from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';

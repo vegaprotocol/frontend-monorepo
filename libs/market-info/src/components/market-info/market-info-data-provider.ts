@@ -1,7 +1,4 @@
-import {
-  makeDataProvider,
-  makeDerivedDataProvider,
-} from '@vegaprotocol/react-helpers';
+import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
 import type {
   MarketInfoQuery,
   MarketInfoQueryVariables,

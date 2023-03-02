@@ -20,7 +20,7 @@ export const FormGroup = ({
   labelAlign = 'left',
   hideLabel = false,
 }: FormGroupProps) => {
-  const wrapperClasses = classNames('relative mb-6', className);
+  const wrapperClasses = classNames('relative mb-2', className);
   const labelClasses = classNames('block mb-2 text-sm', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,

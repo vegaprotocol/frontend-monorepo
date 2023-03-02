@@ -1,7 +1,8 @@
 import React from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import EmptyList from '../empty-list/empty-list';
@@ -94,7 +95,7 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="transactions-list">
-      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-zinc-500 uppercase">
+      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-vega-dark-300 uppercase">
         <div className="col-span-3">
           <span className="hidden xl:inline">Transaction &nbsp;</span>
           <span>ID</span>

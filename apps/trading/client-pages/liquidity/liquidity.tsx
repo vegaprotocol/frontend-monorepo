@@ -8,8 +8,10 @@ import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import {
   NetworkParams,
-  t,
   useDataProvider,
   useNetworkParams,
   updateGridData,

@@ -3,16 +3,14 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
   getDateTimeFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type {
   VegaValueFormatterParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import {
-  AgGridDynamic as AgGrid,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type { ValueFormatterParams } from 'ag-grid-community';

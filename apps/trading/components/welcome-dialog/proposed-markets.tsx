@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import { proposalsDataProvider } from '@vegaprotocol/governance';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { proposalsDataProvider } from '@vegaprotocol/proposals';
 import take from 'lodash/take';
 import * as Types from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';

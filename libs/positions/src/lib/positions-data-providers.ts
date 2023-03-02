@@ -9,7 +9,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type {
   MarketMaybeWithData,
@@ -29,7 +29,7 @@ import {
 } from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
 import { calculateMargins } from './margin-calculator';
-import type { Edge } from '@vegaprotocol/react-helpers';
+import type { Edge } from '@vegaprotocol/utils';
 import { OrderStatus, Side } from '@vegaprotocol/types';
 import { marketInfoProvider } from '@vegaprotocol/market-info';
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';

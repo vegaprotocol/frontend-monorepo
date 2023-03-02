@@ -1,24 +1,24 @@
 import { AgGridColumn } from 'ag-grid-react';
 import {
   getDateTimeFormat,
-  t,
   truncateByChars,
   addDecimalsFormatNumber,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
-import type {
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   Link,
   ButtonLink,
-  AgGridDynamic as AgGrid,
   Intent,
   Icon,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import type {
+  TypedDataAgGrid,
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/datagrid';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
@@ -216,7 +216,7 @@ export const getVerifyDialogProps = (status: ApprovalStatus) => {
 
 export const VerificationStatus = ({ state }: { state: VerifyState }) => {
   if (state.status === ApprovalStatus.Error) {
-    return <p>{t('Something went wrong')}</p>;
+    return <p>{state.message || t('Something went wrong')}</p>;
   }
 
   if (state.status === ApprovalStatus.Pending) {

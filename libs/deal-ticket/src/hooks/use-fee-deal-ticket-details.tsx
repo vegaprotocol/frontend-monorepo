@@ -3,9 +3,9 @@ import {
   addDecimal,
   addDecimalsFormatNumber,
   formatNumber,
-  t,
   toBigNum,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
@@ -64,44 +64,52 @@ export const useFeeDealTicketDetails = (
     return null;
   }, [price, order.size, market.decimalPlaces, market.positionDecimalPlaces]);
 
-  const symbol =
+  const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
   return useMemo(() => {
     return {
       market,
-      symbol,
+      assetSymbol,
       notionalSize,
       accountBalance,
       estimateOrder: estMargin?.estimateOrder,
       estCloseOut,
     };
-  }, [market, symbol, notionalSize, estMargin, estCloseOut, accountBalance]);
+  }, [
+    market,
+    assetSymbol,
+    notionalSize,
+    accountBalance,
+    estMargin,
+    estCloseOut,
+  ]);
 };
 
 export interface FeeDetails {
   balance: string;
+  market: Market;
+  assetSymbol: string;
+  notionalSize: string | null;
   estCloseOut: string | null;
   estimateOrder: EstimateOrderQuery['estimateOrder'] | undefined;
   margin: string;
-  market: Market;
-  notionalSize: string | null;
-  symbol: string;
   totalMargin: string;
 }
 
 export const getFeeDetailsValues = ({
   balance,
+  assetSymbol,
   estCloseOut,
   estimateOrder,
   margin,
   market,
   notionalSize,
-  symbol,
   totalMargin,
 }: FeeDetails) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const formatValueWithMarketDp = (
     value: string | number | null | undefined
   ): string => {
@@ -116,12 +124,17 @@ export const getFeeDetailsValues = ({
       ? addDecimalsFormatNumber(value, assetDecimals)
       : '-';
   };
-  const details = [
+  const details: {
+    label: string;
+    value?: string | null;
+    symbol: string;
+    labelDescription: React.ReactNode;
+  }[] = [
     {
       label: t('Notional'),
       value: formatValueWithMarketDp(notionalSize),
-      symbol,
-      labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
+      symbol: assetSymbol,
+      labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol),
     },
     {
       label: t('Fees'),
@@ -132,24 +145,24 @@ export const getFeeDetailsValues = ({
         <>
           <span>
             {t(
-              'The most you would be expected to pay in fees, the actual amount may vary.'
+              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
             )}
           </span>
           <FeesBreakdown
             fees={estimateOrder?.fee}
             feeFactors={market.fees.factors}
-            symbol={symbol}
+            symbol={assetSymbol}
             decimals={assetDecimals}
           />
         </>
       ),
-      symbol,
+      symbol: assetSymbol,
     },
     {
       label: t('Initial margin'),
       value: margin && `~${formatValueWithAssetDp(margin)}`,
-      symbol,
-      labelDescription: EST_MARGIN_TOOLTIP_TEXT,
+      symbol: assetSymbol,
+      labelDescription: EST_MARGIN_TOOLTIP_TEXT(assetSymbol),
     },
     {
       label: t('Margin required'),
@@ -158,15 +171,15 @@ export const getFeeDetailsValues = ({
           ? (BigInt(totalMargin) - BigInt(balance)).toString()
           : totalMargin
       )}`,
-      symbol,
-      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT + ' (' + symbol + ').',
+      symbol: assetSymbol,
+      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
     },
   ];
   if (balance) {
     details.push({
       label: t('Projected margin'),
       value: `~${formatValueWithAssetDp(totalMargin)}`,
-      symbol,
+      symbol: assetSymbol,
       labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
     });
   }
@@ -175,14 +188,14 @@ export const getFeeDetailsValues = ({
     value: balance
       ? `~${formatValueWithAssetDp(balance)}`
       : `${formatValueWithAssetDp(balance)}`,
-    symbol,
+    symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
   });
   details.push({
     label: t('Liquidation'),
-    value: (estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`) || '',
+    value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
     symbol: market.tradableInstrument.instrument.product.quoteName,
-    labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
+    labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT(quoteName),
   });
   return details;
 };

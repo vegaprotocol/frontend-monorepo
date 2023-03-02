@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   FormGroup,
@@ -58,7 +58,7 @@ export function ViewConnectorForm({
         <Icon name={'chevron-left'} ariaLabel="back" size={4} />
       </button>
       <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
-        <h1 className="text-2xl uppercase mb-6 text-center font-alpha">
+        <h1 className="text-2xl uppercase mb-6 text-center font-alpha calt">
           {t('VIEW AS VEGA USER')}
         </h1>
         <p className="mb-4">

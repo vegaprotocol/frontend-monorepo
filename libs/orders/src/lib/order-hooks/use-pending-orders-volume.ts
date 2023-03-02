@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { OrderStatus, Side } from '@vegaprotocol/types';
 import { ordersProvider } from '../components/order-data-provider/order-data-provider';
 import type { OrderFieldsFragment } from '../components/order-data-provider/__generated__/Orders';
-import type { Edge } from '@vegaprotocol/react-helpers';
+import type { Edge } from '@vegaprotocol/utils';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 const sumVolume = (orders: (Edge<OrderFieldsFragment> | null)[], side: Side) =>

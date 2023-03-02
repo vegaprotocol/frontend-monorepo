@@ -1,4 +1,4 @@
-import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
+import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import { useState, useCallback } from 'react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import type { OrderSubFieldsFragment } from './';

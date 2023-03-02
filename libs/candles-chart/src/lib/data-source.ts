@@ -2,7 +2,7 @@ import type { ApolloClient } from '@apollo/client';
 import type { Candle, DataSource } from 'pennant';
 import { Interval as PennantInterval } from 'pennant';
 
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import { ChartDocument } from './__generated__/Chart';
 import type { ChartQuery, ChartQueryVariables } from './__generated__/Chart';
 import {

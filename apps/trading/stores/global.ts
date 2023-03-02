@@ -1,4 +1,4 @@
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '@vegaprotocol/utils';
 import { create } from 'zustand';
 import produce from 'immer';
 
