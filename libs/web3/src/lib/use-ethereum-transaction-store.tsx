@@ -26,7 +26,7 @@ export interface EthStoredTxState extends EthTxState {
   methodName: ContractMethod;
   args: string[];
   requiredConfirmations: number;
-  requiresConfirmation: boolean;
+  requiresConfirmation: boolean; // whether or not the tx needs external confirmation (IE from a subscription even)
   assetId?: string;
   deposit?: DepositBusEventFieldsFragment;
 }

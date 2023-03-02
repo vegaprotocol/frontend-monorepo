@@ -8,7 +8,6 @@ import {
   maxSafe,
   addDecimal,
   isAssetTypeERC20,
-  formatNumber,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -22,7 +21,6 @@ import {
   Intent,
   ButtonLink,
   Select,
-  ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -34,15 +32,14 @@ import { useWatch } from 'react-hook-form';
 import { Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import type { EthTxState } from '@vegaprotocol/web3';
-import { EthTxStatus } from '@vegaprotocol/web3';
 import {
   ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectStore,
   getChainName,
 } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/environment';
 import type { DepositBalances } from './use-deposit-balances';
+import { FaucetNotification } from './faucet-notification';
+import { ApproveNotification } from './approve-notification';
 
 interface FormFields {
   asset: string;
@@ -58,14 +55,14 @@ export interface DepositFormProps {
   onSelectAsset: (assetId: string) => void;
   onDisconnect: () => void;
   submitApprove: () => void;
-  approveTx: EthTxState;
+  approveTxId: number | null;
+  submitFaucet: () => void;
+  faucetTxId: number | null;
   submitDeposit: (args: {
     assetSource: string;
     amount: string;
     vegaPublicKey: string;
   }) => void;
-  requestFaucet: () => void;
-  faucetTx: EthTxState;
   isFaucetable?: boolean;
 }
 
@@ -76,10 +73,10 @@ export const DepositForm = ({
   onSelectAsset,
   onDisconnect,
   submitApprove,
-  approveTx,
   submitDeposit,
-  requestFaucet,
-  faucetTx,
+  submitFaucet,
+  faucetTxId,
+  approveTxId,
   isFaucetable,
 }: DepositFormProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
@@ -221,7 +218,7 @@ export const DepositForm = ({
           </InputError>
         )}
         {isFaucetable && selectedAsset && (
-          <UseButton onClick={requestFaucet}>
+          <UseButton onClick={submitFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>
         )}
@@ -241,7 +238,7 @@ export const DepositForm = ({
       <FaucetNotification
         isActive={isActive}
         selectedAsset={selectedAsset}
-        tx={faucetTx}
+        faucetTxId={faucetTxId}
       />
       <FormGroup label={t('To (Vega key)')} labelFor="to">
         <AddressField
@@ -354,9 +351,9 @@ export const DepositForm = ({
       )}
       <ApproveNotification
         isActive={isActive}
+        approveTxId={approveTxId}
         selectedAsset={selectedAsset}
         onApprove={submitApprove}
-        tx={approveTx}
         balances={balances}
         approved={approved}
         amount={amount}
@@ -467,289 +464,4 @@ export const AddressField = ({
       )}
     </>
   );
-};
-
-interface ApproveNotificationProps {
-  isActive: boolean;
-  selectedAsset?: Asset;
-  tx: EthTxState;
-  onApprove: () => void;
-  approved: boolean;
-  balances: DepositBalances | null;
-  amount: string;
-}
-
-const ApproveNotification = ({
-  isActive,
-  selectedAsset,
-  tx,
-  onApprove,
-  amount,
-  balances,
-  approved,
-}: ApproveNotificationProps) => {
-  if (!isActive) {
-    return null;
-  }
-
-  if (!selectedAsset) {
-    return null;
-  }
-
-  if (!balances) {
-    return null;
-  }
-
-  const approvePrompt = (
-    <div className="mb-4">
-      <Notification
-        intent={Intent.Warning}
-        testId="approve-default"
-        message={t(
-          `Before you can make a deposit of your chosen asset, ${selectedAsset?.symbol}, you need to approve its use in your Ethereum wallet`
-        )}
-        buttonProps={{
-          size: 'sm',
-          text: `Approve ${selectedAsset?.symbol}`,
-          action: onApprove,
-        }}
-      />
-    </div>
-  );
-  const reApprovePrompt = (
-    <div className="mb-4">
-      <Notification
-        intent={Intent.Warning}
-        testId="reapprove-default"
-        message={t(
-          `Approve again to deposit more than ${formatNumber(
-            balances.allowance.toString()
-          )}`
-        )}
-        buttonProps={{
-          size: 'sm',
-          text: `Approve ${selectedAsset?.symbol}`,
-          action: onApprove,
-        }}
-      />
-    </div>
-  );
-  const approvalFeedback = (
-    <ApprovalTxFeedback
-      tx={tx}
-      selectedAsset={selectedAsset}
-      allowance={balances.allowance}
-    />
-  );
-
-  // always show requested and pending states
-  if (
-    [EthTxStatus.Requested, EthTxStatus.Pending, EthTxStatus.Complete].includes(
-      tx.status
-    )
-  ) {
-    return approvalFeedback;
-  }
-
-  if (!approved) {
-    return approvePrompt;
-  }
-
-  if (new BigNumber(amount).isGreaterThan(balances.allowance)) {
-    return reApprovePrompt;
-  }
-
-  // @ts-ignore tx.error not typed correctly
-  if (tx.status === EthTxStatus.Error && tx.error.code === 'ACTION_REJECTED') {
-    return approvePrompt;
-  }
-
-  return approvalFeedback;
-};
-
-const ApprovalTxFeedback = ({
-  tx,
-  selectedAsset,
-  allowance,
-}: {
-  tx: EthTxState;
-  selectedAsset: Asset;
-  allowance?: BigNumber;
-}) => {
-  const { ETHERSCAN_URL } = useEnvironment();
-
-  const txLink = tx.txHash && (
-    <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-      {t('View on Etherscan')}
-    </ExternalLink>
-  );
-
-  if (tx.status === EthTxStatus.Error) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Danger}
-          testId="approve-error"
-          message={
-            <p>
-              {t('Approval failed')} {txLink}
-            </p>
-          }
-        />
-      </div>
-    );
-  }
-
-  if (tx.status === EthTxStatus.Requested) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Warning}
-          testId="approve-requested"
-          message={t(
-            `Go to your Ethereum wallet and approve the transaction to enable the use of ${selectedAsset?.symbol}`
-          )}
-        />
-      </div>
-    );
-  }
-
-  if (tx.status === EthTxStatus.Pending) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Primary}
-          testId="approve-pending"
-          message={
-            <>
-              <p>
-                {t(
-                  `Your ${selectedAsset?.symbol} is being confirmed by the Ethereum network. When this is complete, you can continue your deposit`
-                )}{' '}
-              </p>
-              {txLink && <p>{txLink}</p>}
-            </>
-          }
-        />
-      </div>
-    );
-  }
-
-  if (tx.status === EthTxStatus.Confirmed) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Success}
-          testId="approve-confirmed"
-          message={
-            <>
-              <p>
-                {t(
-                  `You can now make deposits in ${
-                    selectedAsset?.symbol
-                  }, up to a maximum of ${formatNumber(
-                    allowance?.toString() || 0
-                  )}`
-                )}
-              </p>
-              {txLink && <p>{txLink}</p>}
-            </>
-          }
-        />
-      </div>
-    );
-  }
-  return null;
-};
-
-interface FaucetNotificationProps {
-  isActive: boolean;
-  selectedAsset?: Asset;
-  tx: EthTxState;
-}
-const FaucetNotification = ({
-  isActive,
-  selectedAsset,
-  tx,
-}: FaucetNotificationProps) => {
-  const { ETHERSCAN_URL } = useEnvironment();
-
-  if (!isActive) {
-    return null;
-  }
-
-  if (!selectedAsset) {
-    return null;
-  }
-
-  if (tx.status === EthTxStatus.Error) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Danger}
-          testId="faucet-error"
-          // @ts-ignore tx.error not typed correctly
-          message={t(`Faucet failed: ${tx.error?.reason}`)}
-        />
-      </div>
-    );
-  }
-
-  if (tx.status === EthTxStatus.Requested) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Warning}
-          testId="faucet-requested"
-          message={t(
-            `Go to your Ethereum wallet and approve the transaction to faucet ${selectedAsset?.symbol}`
-          )}
-        />
-      </div>
-    );
-  }
-
-  if (tx.status === EthTxStatus.Pending) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Primary}
-          testId="faucet-pending"
-          message={
-            <p>
-              {t('Waiting...')}{' '}
-              {tx.txHash && (
-                <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-                  {t('View on Etherscan')}
-                </ExternalLink>
-              )}
-            </p>
-          }
-        />
-      </div>
-    );
-  }
-
-  if (tx.status === EthTxStatus.Confirmed) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Success}
-          testId="faucet-confirmed"
-          message={
-            <p>
-              {t('Faucet successful')}{' '}
-              {tx.txHash && (
-                <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-                  {t('View on Etherscan')}
-                </ExternalLink>
-              )}
-            </p>
-          }
-        />
-      </div>
-    );
-  }
-
-  return null;
 };

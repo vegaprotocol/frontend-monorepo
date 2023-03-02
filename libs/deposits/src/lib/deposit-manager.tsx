@@ -39,10 +39,10 @@ export const DepositManager = ({
   );
 
   // Set up approve transaction
-  const approve = useSubmitApproval(asset);
+  const approve = useSubmitApproval(asset, getBalances);
 
   // Set up faucet transaction
-  const faucet = useSubmitFaucet(asset);
+  const faucet = useSubmitFaucet(asset, getBalances);
 
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
@@ -71,21 +71,13 @@ export const DepositManager = ({
       onDisconnect={reset}
       onSelectAsset={(id) => {
         setAssetId(id);
-        faucet.reset();
-        approve.reset();
       }}
       assets={sortBy(assets, 'name')}
-      submitApprove={async () => {
-        await approve.perform();
-        getBalances();
-      }}
-      approveTx={approve.transaction}
+      submitApprove={approve.perform}
       submitDeposit={submitDeposit}
-      requestFaucet={async () => {
-        await faucet.perform();
-        getBalances();
-      }}
-      faucetTx={faucet.transaction}
+      submitFaucet={faucet.perform}
+      faucetTxId={faucet.id}
+      approveTxId={approve.id}
       balances={balances}
       isFaucetable={isFaucetable}
     />
