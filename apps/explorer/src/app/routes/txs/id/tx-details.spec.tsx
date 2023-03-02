@@ -9,7 +9,7 @@ import type {
 // Note: Long enough that there is a truncated output and a full output
 const pubKey =
   '67755549e43e95f0697f83b2bf419c6ccc18eee32a8a61b8ba6f59471b86fbef';
-const hash = '7416753A30622A9E24A06F0172D6C33A95186B36806D96345C6DC5A23FA3F283';
+const hash = '7416753a30622a9e24a06f0172d6c33a95186b36806d96345c6dc5a23fa3f283';
 const height = '52987';
 
 const txData: BlockExplorerTransactionResult = {
