@@ -9,6 +9,7 @@ export interface FormGroupProps {
   hideLabel?: boolean;
   labelDescription?: string;
   labelAlign?: 'left' | 'right';
+  compact?: boolean;
 }
 
 export const FormGroup = ({
@@ -19,8 +20,16 @@ export const FormGroup = ({
   labelDescription,
   labelAlign = 'left',
   hideLabel = false,
+  compact = false,
 }: FormGroupProps) => {
-  const wrapperClasses = classNames('relative mb-2', className);
+  const wrapperClasses = classNames(
+    'relative',
+    {
+      'mb-2': compact,
+      'mb-4': !compact,
+    },
+    className
+  );
   const labelClasses = classNames('block mb-2 text-sm', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
