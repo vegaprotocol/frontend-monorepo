@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -22,7 +22,6 @@ import {
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
-  getDefaultOrder,
   validateMarketState,
   validateMarketTradingMode,
   validateTimeInForce,
@@ -32,10 +31,6 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
-import {
-  usePersistedOrderStore,
-  usePersistedOrderStoreSubscription,
-} from '@vegaprotocol/orders';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 
@@ -75,7 +70,7 @@ export const DealTicket = ({
     clearErrors,
     update,
     handleSubmit,
-  } = useOrderForm(market.id);
+  } = useOrderForm(market);
   const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id

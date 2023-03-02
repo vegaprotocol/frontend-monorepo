@@ -1,5 +1,5 @@
 import type { OrderObj } from '@vegaprotocol/orders';
-import { createOrder, useOrder } from '@vegaprotocol/orders';
+import { getDefaultOrder, useOrder } from '@vegaprotocol/orders';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -7,8 +7,11 @@ export type OrderFormFields = OrderObj & {
   summary: string;
 };
 
-export const useOrderForm = (marketId: string) => {
-  const [order, update] = useOrder(marketId);
+export const useOrderForm = (market: {
+  id: string;
+  positionDecimalPlaces: number;
+}) => {
+  const [order, update] = useOrder(market);
   const {
     control,
     formState: { errors },
@@ -18,7 +21,9 @@ export const useOrderForm = (marketId: string) => {
     clearErrors,
     getValues,
   } = useForm<OrderFormFields>({
-    defaultValues: order || createOrder(marketId),
+    // order can be undefined if there is nothing in the store, it
+    // will be created but the form still needs some default values
+    defaultValues: order || getDefaultOrder(market),
   });
 
   // Keep form fields in sync with the store values,
