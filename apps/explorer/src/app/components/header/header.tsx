@@ -55,13 +55,23 @@ export const Header = () => {
     <Navigation
       appName="Explorer"
       theme="system"
-      breakpoints={[400, 800]}
+      breakpoints={[490, 900]}
       actions={
         <>
           <ThemeSwitcher />
           <Search />
         </>
       }
+      onResize={(width, ref) => {
+        if (width < 1157) {
+          // switch to magnifying glass trigger when widht < 1157
+          ref.current?.classList.remove('nav-search-full');
+          ref.current?.classList.add('nav-search-compact');
+        } else {
+          ref.current?.classList.remove('nav-search-compact');
+          ref.current?.classList.add('nav-search-full');
+        }
+      }}
     >
       <NavigationList hide={[NavigationBreakpoint.Small]}>
         <NavigationItem>

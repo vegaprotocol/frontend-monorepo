@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps, ReactNode, RefObject } from 'react';
+import type { MutableRefObject } from 'react';
 import { createContext } from 'react';
 import { useContext } from 'react';
 import { useRef } from 'react';
@@ -37,6 +38,7 @@ type NavigationProps = {
    * Size variants breakpoints
    */
   breakpoints?: [number, number];
+  onResize?: (width: number, ref: RefObject<HTMLElement>) => void;
 };
 
 export enum NavigationBreakpoint {
@@ -80,7 +82,7 @@ const Logo = ({
   appName,
   homeLink,
 }: Pick<NavigationProps, 'theme' | 'appName' | 'homeLink'>) => {
-  const theme = useContext(NavigationThemeContext);
+  const { theme } = useContext(NavigationContext);
   return (
     <div className="flex h-full gap-4 items-center">
       {homeLink ? (
@@ -166,7 +168,7 @@ export const NavigationTrigger = ({
 }: ComponentProps<typeof NavigationMenu.Trigger> & {
   isActive?: boolean;
 } & NavigationElementProps) => {
-  const theme = useContext(NavigationThemeContext);
+  const { theme } = useContext(NavigationContext);
   return (
     <NavigationMenu.Trigger
       className={classNames(
@@ -210,7 +212,7 @@ export const NavigationContent = ({
   className,
   ...props
 }: ComponentProps<typeof NavigationMenu.Content>) => {
-  const theme = useContext(NavigationThemeContext);
+  const { theme } = useContext(NavigationContext);
   const insideDrawer = useContext(DrawerContext);
 
   const content = (
@@ -254,7 +256,7 @@ export const NavigationLink = ({
   to,
   ...props
 }: ComponentProps<typeof Link>) => {
-  const theme = useContext(NavigationThemeContext);
+  const { theme } = useContext(NavigationContext);
   const setDrawerOpen = useDrawer((state) => state.setDrawerOpen);
   return (
     <NavigationMenu.Link
@@ -304,8 +306,9 @@ export const NavigationLink = ({
   );
 };
 
-const NavigationThemeContext =
-  createContext<NavigationProps['theme']>('system');
+export const NavigationContext = createContext<{
+  theme: NavigationProps['theme'];
+}>({ theme: 'system' });
 
 export const Navigation = ({
   appName,
@@ -314,27 +317,47 @@ export const Navigation = ({
   actions,
   theme = 'system',
   breakpoints = [478, 1000],
+  onResize,
 }: NavigationProps) => {
-  const navigationRef = useRef<HTMLElement>(null);
+  const navigationRef = useRef<HTMLElement>(
+    null
+  ) as MutableRefObject<HTMLElement>;
   const actionsRef = useRef<HTMLDivElement>(null);
   useResizeObserver(navigationRef.current, (entries) => {
-    if (entries.length === 0 && !navigationRef.current) return;
+    if (entries.length === 0 || !navigationRef.current) return;
 
-    const width = entries[0].borderBoxSize[0].inlineSize;
-    navigationRef.current?.classList.remove(
-      NavigationBreakpoint.Full,
-      NavigationBreakpoint.Narrow,
-      NavigationBreakpoint.Small
-    );
-
-    if (width <= breakpoints[0]) {
-      navigationRef.current?.classList.add(NavigationBreakpoint.Small);
+    const w = entries[0].borderBoxSize[0].inlineSize;
+    if (onResize) onResize(w, navigationRef);
+    if (
+      w <= breakpoints[0] &&
+      !navigationRef.current.classList.contains(NavigationBreakpoint.Small)
+    ) {
+      navigationRef.current.classList.remove(
+        NavigationBreakpoint.Full,
+        NavigationBreakpoint.Narrow
+      );
+      navigationRef.current.classList.add(NavigationBreakpoint.Small);
     }
-    if (width > breakpoints[0] && width <= breakpoints[1]) {
-      navigationRef.current?.classList.add(NavigationBreakpoint.Narrow);
+    if (
+      w > breakpoints[0] &&
+      w <= breakpoints[1] &&
+      !navigationRef.current.classList.contains(NavigationBreakpoint.Narrow)
+    ) {
+      navigationRef.current.classList.remove(
+        NavigationBreakpoint.Full,
+        NavigationBreakpoint.Small
+      );
+      navigationRef.current.classList.add(NavigationBreakpoint.Narrow);
     }
-    if (width > breakpoints[1]) {
-      navigationRef.current?.classList.add(NavigationBreakpoint.Full);
+    if (
+      w > breakpoints[1] &&
+      !navigationRef.current.classList.contains(NavigationBreakpoint.Full)
+    ) {
+      navigationRef.current.classList.remove(
+        NavigationBreakpoint.Narrow,
+        NavigationBreakpoint.Small
+      );
+      navigationRef.current.classList.add(NavigationBreakpoint.Full);
     }
   });
 
@@ -425,9 +448,10 @@ export const Navigation = ({
   );
 
   return (
-    <NavigationThemeContext.Provider value={theme}>
+    <NavigationContext.Provider value={{ theme }}>
       <NavigationMenu.Root
         ref={navigationRef}
+        id="navigation"
         className={classNames(
           'h-12',
           'group flex gap-4 items-center',
@@ -486,6 +510,6 @@ export const Navigation = ({
           </div>
         )}
       </NavigationMenu.Root>
-    </NavigationThemeContext.Provider>
+    </NavigationContext.Provider>
   );
 };
