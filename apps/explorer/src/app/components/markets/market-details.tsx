@@ -28,7 +28,9 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
 
   const keyDetails = {
-    ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
+    decimalPlaces: market.decimalPlaces,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+    tradingMode: market.tradingMode,
     state: MarketStateMapping[market.state],
   };
   const assetDecimals =

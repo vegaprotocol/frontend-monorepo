@@ -120,13 +120,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <>
           <MarketInfoTable
             data={{
-              ...pick(
-                market.data,
-                'name',
-                'markPrice',
-                'bestBidPrice',
-                'bestOfferPrice'
-              ),
+              markPrice: market.data?.markPrice,
+              bestBidPrice: market.data?.bestBidPrice,
+              bestOfferPrice: market.data?.bestOfferPrice,
               quoteUnit: market.tradableInstrument.instrument.product.quoteName,
             }}
             decimalPlaces={market.decimalPlaces}
@@ -145,15 +141,11 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            ...pick(
-              market.data,
-              'openInterest',
-              'name',
-              'bestBidVolume',
-              'bestOfferVolume',
-              'bestStaticBidVolume',
-              'bestStaticOfferVolume'
-            ),
+            openInterest: market.data?.openInterest,
+            bestBidVolume: market.data?.bestBidVolume,
+            bestOfferVolume: market.data?.bestOfferVolume,
+            bestStaticBidVolume: market.data?.bestStaticBidVolume,
+            bestStaticOfferVolume: market.data?.bestStaticBidVolume,
           }}
           decimalPlaces={market.positionDecimalPlaces}
         />
@@ -179,7 +171,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   ];
 
   const keyDetails = {
-    ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
+    decimalPlaces: market.decimalPlaces,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+    tradingMode: market.tradingMode,
     state: Schema.MarketStateMapping[market.state],
   };
 
