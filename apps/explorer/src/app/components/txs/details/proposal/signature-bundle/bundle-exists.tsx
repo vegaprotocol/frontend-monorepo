@@ -1,14 +1,16 @@
 import { t } from '@vegaprotocol/i18n';
-import type { AssetStatus } from '@vegaprotocol/types';
 import ProposalLink from '../../../../links/proposal-link/proposal-link';
 import { IconForBundleStatus } from './bundle-icon';
 import { ProposalSignatureBundleDetails } from './details';
+import type { AssetStatus } from '@vegaprotocol/types';
+import type { ProposalTerms } from '../../tx-proposal';
 
 export interface BundleExistsProps {
   signatures: string;
   nonce: string;
   status?: AssetStatus;
   proposalId: string;
+  tx?: ProposalTerms
 }
 
 /**
@@ -21,6 +23,7 @@ export const BundleExists = ({
   nonce,
   status,
   proposalId,
+  tx
 }: BundleExistsProps) => {
   return (
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
@@ -31,7 +34,7 @@ export const BundleExists = ({
           : t('Signature bundle generated')}
       </h1>
 
-      <ProposalSignatureBundleDetails signatures={signatures} nonce={nonce} />
+      <ProposalSignatureBundleDetails signatures={signatures} nonce={nonce} tx={tx} />
 
       {status !== 'STATUS_ENABLED' ? (
         <p className="mt-5">

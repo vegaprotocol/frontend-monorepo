@@ -13,6 +13,7 @@ import { useExplorerUpdateAssetSignatureBundleQuery } from './__generated__/Sign
  */
 export const ProposalSignatureBundleUpdateAsset = ({
   id,
+  tx
 }: ProposalSignatureBundleByTypeProps) => {
   const { data, error, loading } = useExplorerUpdateAssetSignatureBundleQuery({
     variables: {

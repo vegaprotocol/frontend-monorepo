@@ -107,6 +107,7 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
       {proposalRequiresSignatureBundle(proposal) && (
         <ProposalSignatureBundle
           id={deterministicId}
+          tx={proposal.terms?.newAsset | proposal.terms?.updateAsset}
           type={proposal.terms?.newAsset ? 'NewAsset' : 'UpdateAsset'}
         />
       )}

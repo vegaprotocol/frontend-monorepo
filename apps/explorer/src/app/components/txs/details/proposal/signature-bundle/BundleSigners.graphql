@@ -1,0 +1,16 @@
+query ExplorerBundleSigners {
+    networkParameter(key: "blockchains.ethereumConfig") {
+        value
+    }
+    nodesConnection(pagination: { first: 25 }) {
+        edges {
+            node {
+                name
+                status
+                ethereumAddress
+                pubkey
+                tmPubkey
+            }
+        }
+    }
+}

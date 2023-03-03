@@ -1,17 +1,11 @@
 import { ProposalSignatureBundleNewAsset } from './signature-bundle-new';
 import { ProposalSignatureBundleUpdateAsset } from './signature-bundle-update';
-
-export function format(date: string | undefined, def: string) {
-  if (!date) {
-    return def;
-  }
-
-  return new Date().toLocaleDateString() || def;
-}
+import type { Proposal, ProposalTerms } from '../tx-proposal';
 
 interface ProposalSignatureBundleProps {
   id: string;
   type: 'NewAsset' | 'UpdateAsset';
+  tx: ProposalTerms
 }
 
 /**
@@ -22,10 +16,11 @@ interface ProposalSignatureBundleProps {
 export const ProposalSignatureBundle = ({
   id,
   type,
+  tx
 }: ProposalSignatureBundleProps) => {
   return type === 'NewAsset' ? (
-    <ProposalSignatureBundleNewAsset id={id} />
+    <ProposalSignatureBundleNewAsset id={id} tx={tx} />
   ) : (
-    <ProposalSignatureBundleUpdateAsset id={id} />
+    <ProposalSignatureBundleUpdateAsset id={id} tx={tx} />
   );
 };

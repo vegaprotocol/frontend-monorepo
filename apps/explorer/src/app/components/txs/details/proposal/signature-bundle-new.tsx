@@ -1,10 +1,12 @@
 import { Loader } from '@vegaprotocol/ui-toolkit';
+import type { ProposalTerms } from '../tx-proposal';
 import { BundleError } from './signature-bundle/bundle-error';
 import { BundleExists } from './signature-bundle/bundle-exists';
 import { useExplorerNewAssetSignatureBundleQuery } from './__generated__/SignatureBundle';
 
 export interface ProposalSignatureBundleByTypeProps {
   id: string;
+  tx?: ProposalTerms
 }
 
 /**
@@ -16,10 +18,11 @@ export interface ProposalSignatureBundleByTypeProps {
  */
 export const ProposalSignatureBundleNewAsset = ({
   id,
+  tx
 }: ProposalSignatureBundleByTypeProps) => {
   const { data, error, loading } = useExplorerNewAssetSignatureBundleQuery({
     variables: {
-      id,
+      id
     },
   });
 
@@ -34,6 +37,7 @@ export const ProposalSignatureBundleNewAsset = ({
         nonce={data.erc20ListAssetBundle.nonce}
         status={data.asset?.status}
         proposalId={id}
+        tx={tx}
       />
     );
   } else {
