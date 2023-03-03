@@ -86,8 +86,12 @@ type NetworkSwitcherProps = {
    * The current network identifier, defaults to the `VEGA_ENV` if unset.
    */
   currentNetwork?: Networks;
+  className?: string;
 };
-export const NetworkSwitcher = ({ currentNetwork }: NetworkSwitcherProps) => {
+export const NetworkSwitcher = ({
+  currentNetwork,
+  className,
+}: NetworkSwitcherProps) => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
   const [isOpen, setOpen] = useState(false);

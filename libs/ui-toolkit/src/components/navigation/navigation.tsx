@@ -148,8 +148,8 @@ export const NavigationList = ({
   <NavigationMenu.List
     className={classNames(
       'flex gap-4 items-center',
-      '[.navigation-content_&]:flex-col [.navigation-content_&]:items-start [.navigation-content_&]:gap-2',
-      '[.drawer-content_&]:flex-col [.drawer-content_&]:items-start [.drawer-content_&]:gap-2 [.drawer-content_&]:mt-2',
+      '[.navigation-content_&]:flex-col [.navigation-content_&]:items-start [.navigation-content_&]:mt-6',
+      '[.drawer-content_&]:flex-col [.drawer-content_&]:items-start [.drawer-content_&]:gap-6 [.drawer-content_&]:mt-2',
       determineIfHidden({ hide, hideInDrawer }),
       className
     )}
@@ -169,6 +169,7 @@ export const NavigationTrigger = ({
   isActive?: boolean;
 } & NavigationElementProps) => {
   const { theme } = useContext(NavigationContext);
+  const insideDrawer = useContext(DrawerContext);
   return (
     <NavigationMenu.Trigger
       className={classNames(
@@ -177,7 +178,7 @@ export const NavigationTrigger = ({
           'text-black dark:text-white': isActive && theme === 'system',
           'text-black': isActive && theme === 'light',
           'text-white': isActive && theme === 'dark',
-          'text-black [.navigation-content_&]:text-white [.drawer-content_&]:text-white':
+          'text-black dark:[.drawer-content_&]:text-white':
             isActive && theme === 'yellow',
         },
         determineIfHidden({ hide, hideInDrawer }),
@@ -185,6 +186,7 @@ export const NavigationTrigger = ({
       )}
       onPointerMove={(e) => e.preventDefault()} // disables hover
       onPointerLeave={(e) => e.preventDefault()} // disables hover
+      disabled={insideDrawer}
       {...props}
     >
       <span>{children}</span>
@@ -231,9 +233,9 @@ export const NavigationContent = ({
           'border rounded border-vega-light-200 dark:border-vega-dark-200',
           'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
           {
-            'bg-white dark:bg-black': theme === 'system',
+            'bg-white dark:bg-black': theme === 'system' || theme === 'yellow',
             'bg-white': theme === 'light',
-            'bg-black': theme === 'dark' || theme === 'yellow',
+            'bg-black': theme === 'dark',
           }
         )}
       >
@@ -279,7 +281,7 @@ export const NavigationLink = ({
                 'text-black dark:text-white': isActive && theme === 'system',
                 'text-black': isActive && theme === 'light',
                 'text-white': isActive && theme === 'dark',
-                'text-black [.navigation-content_&]:text-white [.drawer-content_&]:text-white':
+                'text-black dark:[.navigation-content_&]:text-white dark:[.drawer-content_&]:text-white':
                   isActive && theme === 'yellow',
               })}
             >
@@ -370,7 +372,10 @@ export const Navigation = ({
     setSizeVariantClasses(breakpoints, currentWidth, target);
 
     const handler = () => {
-      const currentWidth = target.getBoundingClientRect().width;
+      const currentWidth = Math.min(
+        target.getBoundingClientRect().width,
+        window.innerWidth
+      );
       setSizeVariantClasses(breakpoints, currentWidth, target);
       onResize?.(currentWidth, target);
     };
@@ -402,8 +407,8 @@ export const Navigation = ({
         className={classNames('stroke-[1px] transition-transform', {
           'stroke-black dark:stroke-white': theme === 'system',
           'stroke-black': theme === 'light' || theme === 'yellow',
-          'stroke-white':
-            theme === 'dark' || (drawerOpen && theme === 'yellow'),
+          'stroke-white': theme === 'dark',
+          'dark:stroke-white': drawerOpen && theme === 'yellow',
         })}
         width="16"
         height="16"
@@ -441,22 +446,23 @@ export const Navigation = ({
           'px-4 pb-8 font-alpha',
           // text
           {
-            'text-vega-light-300 dark:text-vega-dark-300': theme === 'system',
+            'text-vega-light-300 dark:text-vega-dark-300':
+              theme === 'system' || theme === 'yellow',
             'text-vega-light-300': theme === 'light',
-            'text-vega-dark-300': theme === 'dark' || theme === 'yellow',
+            'text-vega-dark-300': theme === 'dark',
           },
           // border
           {
             'border-l-vega-light-200 dark:border-l-vega-dark-200':
-              theme === 'system',
+              theme === 'system' || theme === 'yellow',
             'border-l-vega-light-200': theme === 'light',
-            'border-l-vega-dark-200': theme === 'dark' || theme === 'yellow',
+            'border-l-vega-dark-200': theme === 'dark',
           },
           // background
           {
-            'bg-white dark:bg-black': theme === 'system',
+            'bg-white dark:bg-black': theme === 'system' || theme === 'yellow',
             'bg-white': theme === 'light',
-            'bg-black': theme === 'dark' || theme === 'yellow',
+            'bg-black': theme === 'dark',
           }
         )}
         style={{
