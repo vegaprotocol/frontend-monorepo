@@ -5,6 +5,7 @@ import { addDecimal } from '@vegaprotocol/utils';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { t } from '@vegaprotocol/i18n';
+import { localLoggerFactory } from '@vegaprotocol/utils';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
@@ -128,7 +129,16 @@ export const useEthWithdrawApprovalsManager = () => {
           approval.signatures,
         ]
       );
-    })();
+    })().catch((err) => {
+      localLoggerFactory({ application: 'web3' }).error(
+        'create withdrawal transaction',
+        err
+      );
+      update(transaction.id, {
+        status: ApprovalStatus.Error,
+        message: t('Something went wrong'),
+      });
+    });
   }, [
     getThreshold,
     getDelay,

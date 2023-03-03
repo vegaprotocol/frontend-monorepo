@@ -1,5 +1,5 @@
 import { useEthWithdrawApprovalsManager } from './use-ethereum-withdraw-approvals-manager';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
@@ -318,5 +318,25 @@ describe('useEthWithdrawApprovalsManager', () => {
     expect(update.mock.calls[0][1].message).toEqual(
       'You are on the wrong network'
     );
+    mockChainId = 111111;
+  });
+
+  it('catch ethereum errors', async () => {
+    const transaction = createWithdrawTransaction();
+    mockUseGetWithdrawThreshold.mockReturnValueOnce(() => {
+      throw new Error('call revert exception');
+    });
+
+    mockEthTransactionStoreState.mockReturnValue({ create });
+    mockEthWithdrawApprovalsStoreState.mockReturnValue({
+      transactions: [transaction],
+      update,
+    });
+    render();
+    await waitFor(() => {
+      const lastCall = update.mock.calls.pop();
+      expect(lastCall[1].status).toEqual(ApprovalStatus.Error);
+      expect(lastCall[1].message).toEqual('Something went wrong');
+    });
   });
 });
