@@ -80,7 +80,7 @@ describe('Deposit form', () => {
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
     expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
-    expect(screen.getByTestId('ethereum-account')).toHaveTextContent(
+    expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
       MOCK_ETH_ADDRESS
     );
     expect(screen.getByLabelText('Asset')).toHaveValue('');
@@ -338,7 +338,7 @@ describe('Deposit form', () => {
       screen.queryByRole('button', { name: 'Connect' })
     ).not.toBeInTheDocument();
     expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
-    expect(screen.getByTestId('ethereum-account')).toHaveTextContent(
+    expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
       MOCK_ETH_ADDRESS
     );
   });
