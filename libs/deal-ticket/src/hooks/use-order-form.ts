@@ -1,17 +1,17 @@
+import omit from 'lodash/omit';
 import type { OrderObj } from '@vegaprotocol/orders';
 import { getDefaultOrder, useOrder } from '@vegaprotocol/orders';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import type { OrderSubmission } from '@vegaprotocol/wallet';
+import type { Exact } from 'type-fest';
 
 export type OrderFormFields = OrderObj & {
   summary: string;
 };
 
-export const useOrderForm = (market: {
-  id: string;
-  positionDecimalPlaces: number;
-}) => {
-  const [order, update] = useOrder(market);
+export const useOrderForm = (marketId: string) => {
+  const [order, update] = useOrder(marketId);
   const {
     control,
     formState: { errors },
@@ -23,7 +23,7 @@ export const useOrderForm = (market: {
   } = useForm<OrderFormFields>({
     // order can be undefined if there is nothing in the store, it
     // will be created but the form still needs some default values
-    defaultValues: order || getDefaultOrder(market),
+    defaultValues: order || getDefaultOrder(marketId),
   });
 
   // Keep form fields in sync with the store values,
@@ -45,6 +45,12 @@ export const useOrderForm = (market: {
     }
   }, [order, getValues, setValue]);
 
+  const onSubmit = (cb: <T>(o: Exact<OrderSubmission, T>) => void) => {
+    return handleSubmit(() => {
+      cb(omit(order, 'persist'));
+    });
+  };
+
   return {
     order,
     update,
@@ -52,6 +58,6 @@ export const useOrderForm = (market: {
     errors,
     setError,
     clearErrors,
-    handleSubmit,
+    handleSubmit: onSubmit,
   };
 };

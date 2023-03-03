@@ -9,10 +9,12 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import type { OrderSubmission } from '@vegaprotocol/wallet';
+import {
+  normalizeOrderSubmission,
+  useVegaWallet,
+  useVegaWalletDialogStore,
+} from '@vegaprotocol/wallet';
 import {
   ExternalLink,
   InputError,
@@ -33,17 +35,18 @@ import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
+import type { OrderObj } from '@vegaprotocol/orders';
 
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
-  submit: (order: OrderSubmissionBody['orderSubmission']) => void;
+  submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
 }
 
-export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
+export type DealTicketFormFields = OrderSubmission & {
   // This is not a field used in the form but allows us to set a
   // summary error message
   summary: string;
@@ -70,7 +73,7 @@ export const DealTicket = ({
     clearErrors,
     update,
     handleSubmit,
-  } = useOrderForm(market);
+  } = useOrderForm(market.id);
   const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
@@ -139,7 +142,7 @@ export const DealTicket = ({
   ]);
 
   const onSubmit = useCallback(
-    (order: OrderSubmissionBody['orderSubmission']) => {
+    (order: OrderSubmission) => {
       checkForErrors();
       submit(
         normalizeOrderSubmission(
@@ -152,7 +155,7 @@ export const DealTicket = ({
     [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
-  // just return null, if an order doesn't exist one will be created by the store
+  // if an order doesn't exist one will be created by the store immediately
   if (!order) return null;
 
   return (
@@ -280,7 +283,7 @@ interface SummaryMessageProps {
   errorMessage?: string;
   market: Market;
   marketData: MarketData;
-  order: OrderSubmissionBody['orderSubmission'];
+  order: OrderObj;
   isReadOnly: boolean;
   pubKey: string | null;
   onClickCollateral: () => void;
