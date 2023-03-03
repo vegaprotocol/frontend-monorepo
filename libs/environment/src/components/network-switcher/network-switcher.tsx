@@ -11,6 +11,7 @@ import {
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
+import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
@@ -85,8 +86,12 @@ type NetworkSwitcherProps = {
    * The current network identifier, defaults to the `VEGA_ENV` if unset.
    */
   currentNetwork?: Networks;
+  className?: string;
 };
-export const NetworkSwitcher = ({ currentNetwork }: NetworkSwitcherProps) => {
+export const NetworkSwitcher = ({
+  currentNetwork,
+  className,
+}: NetworkSwitcherProps) => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
   const [isOpen, setOpen] = useState(false);
@@ -112,7 +117,7 @@ export const NetworkSwitcher = ({ currentNetwork }: NetworkSwitcherProps) => {
       trigger={
         <DropdownMenuTrigger
           ref={menuRef}
-          className="flex justify-between items-center"
+          className={classNames('flex justify-between items-center', className)}
         >
           {envTriggerMapping[current]}
         </DropdownMenuTrigger>
