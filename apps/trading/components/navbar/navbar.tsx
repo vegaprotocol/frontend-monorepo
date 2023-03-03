@@ -43,34 +43,26 @@ export const Navbar = ({
           <VegaWalletConnectButton />
         </>
       }
-      breakpoints={[521, 1067]}
+      breakpoints={[500, 1050]}
     >
-      <NavigationList
-        className="[.drawer-content_&]:border-b [.drawer-content_&]:border-b-vega-light-200 dark:[.drawer-content_&]:border-b-vega-dark-200 [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"
-        hide={[NavigationBreakpoint.Small]}
-      >
-        <NavigationItem className="[.drawer-content_&]:w-full">
-          <NetworkSwitcher className="[.drawer-content_&]:w-full" />
+      <NavigationList hide={[NavigationBreakpoint.Small]}>
+        <NavigationItem>
+          <NetworkSwitcher />
         </NavigationItem>
       </NavigationList>
       <NavigationList
         hide={[NavigationBreakpoint.Narrow, NavigationBreakpoint.Small]}
       >
         <NavigationItem>
-          <NavigationLink data-testid="Markets" to={Links[Routes.MARKETS]()}>
+          <NavigationLink to={Links[Routes.MARKETS]()}>
             {t('Markets')}
           </NavigationLink>
         </NavigationItem>
         <NavigationItem>
-          <NavigationLink data-testid="Trading" to={tradingPath}>
-            {t('Trading')}
-          </NavigationLink>
+          <NavigationLink to={tradingPath}>{t('Trading')}</NavigationLink>
         </NavigationItem>
         <NavigationItem>
-          <NavigationLink
-            data-testid="Portfolio"
-            to={Links[Routes.PORTFOLIO]()}
-          >
+          <NavigationLink to={Links[Routes.PORTFOLIO]()}>
             {t('Portfolio')}
           </NavigationLink>
         </NavigationItem>
@@ -81,18 +73,6 @@ export const Navbar = ({
               <Icon name="arrow-top-right" size={3} />
             </span>
           </ExternalLink>
-        </NavigationItem>
-      </NavigationList>
-      <NavigationList
-        className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
-        hide={[
-          NavigationBreakpoint.Small,
-          NavigationBreakpoint.Narrow,
-          NavigationBreakpoint.Full,
-        ]}
-      >
-        <NavigationItem className="[.drawer-content_&]:w-full text-black dark:text-white">
-          <ThemeSwitcher withMobile />
         </NavigationItem>
       </NavigationList>
     </Navigation>

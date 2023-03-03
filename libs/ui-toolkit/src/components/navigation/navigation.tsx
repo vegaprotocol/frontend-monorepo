@@ -1,12 +1,11 @@
 import classNames from 'classnames';
-import type { ComponentProps, ReactNode, RefObject } from 'react';
-import type { MutableRefObject } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
+import { useLayoutEffect } from 'react';
 import { createContext } from 'react';
 import { useContext } from 'react';
 import { useRef } from 'react';
 import { VegaLogo } from '../vega-logo';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import { useResizeObserver } from '@vegaprotocol/react-helpers';
 import { Icon } from '../icon';
 import { Drawer, DrawerContext, useDrawer } from '../drawer';
 import type { Link } from 'react-router-dom';
@@ -38,7 +37,8 @@ type NavigationProps = {
    * Size variants breakpoints
    */
   breakpoints?: [number, number];
-  onResize?: (width: number, ref: RefObject<HTMLElement>) => void;
+  fullWidth?: boolean;
+  onResize?: (width: number, navigationElement: HTMLElement) => void;
 };
 
 export enum NavigationBreakpoint {
@@ -310,6 +310,44 @@ export const NavigationContext = createContext<{
   theme: NavigationProps['theme'];
 }>({ theme: 'system' });
 
+const setSizeVariantClasses = (
+  breakpoints: [number, number],
+  currentWidth: number,
+  target: HTMLElement
+) => {
+  if (
+    currentWidth <= breakpoints[0] &&
+    !target.classList.contains(NavigationBreakpoint.Small)
+  ) {
+    target.classList.remove(
+      NavigationBreakpoint.Full,
+      NavigationBreakpoint.Narrow
+    );
+    target.classList.add(NavigationBreakpoint.Small);
+  }
+  if (
+    currentWidth > breakpoints[0] &&
+    currentWidth <= breakpoints[1] &&
+    !target.classList.contains(NavigationBreakpoint.Narrow)
+  ) {
+    target.classList.remove(
+      NavigationBreakpoint.Full,
+      NavigationBreakpoint.Small
+    );
+    target.classList.add(NavigationBreakpoint.Narrow);
+  }
+  if (
+    currentWidth > breakpoints[1] &&
+    !target.classList.contains(NavigationBreakpoint.Full)
+  ) {
+    target.classList.remove(
+      NavigationBreakpoint.Narrow,
+      NavigationBreakpoint.Small
+    );
+    target.classList.add(NavigationBreakpoint.Full);
+  }
+};
+
 export const Navigation = ({
   appName,
   homeLink = '/',
@@ -319,47 +357,28 @@ export const Navigation = ({
   breakpoints = [478, 1000],
   onResize,
 }: NavigationProps) => {
-  const navigationRef = useRef<HTMLElement>(
-    null
-  ) as MutableRefObject<HTMLElement>;
+  const navigationRef = useRef<HTMLElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
-  useResizeObserver(navigationRef.current, (entries) => {
-    if (entries.length === 0 || !navigationRef.current) return;
 
-    const w = entries[0].borderBoxSize[0].inlineSize;
-    if (onResize) onResize(w, navigationRef);
-    if (
-      w <= breakpoints[0] &&
-      !navigationRef.current.classList.contains(NavigationBreakpoint.Small)
-    ) {
-      navigationRef.current.classList.remove(
-        NavigationBreakpoint.Full,
-        NavigationBreakpoint.Narrow
-      );
-      navigationRef.current.classList.add(NavigationBreakpoint.Small);
-    }
-    if (
-      w > breakpoints[0] &&
-      w <= breakpoints[1] &&
-      !navigationRef.current.classList.contains(NavigationBreakpoint.Narrow)
-    ) {
-      navigationRef.current.classList.remove(
-        NavigationBreakpoint.Full,
-        NavigationBreakpoint.Small
-      );
-      navigationRef.current.classList.add(NavigationBreakpoint.Narrow);
-    }
-    if (
-      w > breakpoints[1] &&
-      !navigationRef.current.classList.contains(NavigationBreakpoint.Full)
-    ) {
-      navigationRef.current.classList.remove(
-        NavigationBreakpoint.Narrow,
-        NavigationBreakpoint.Small
-      );
-      navigationRef.current.classList.add(NavigationBreakpoint.Full);
-    }
-  });
+  useLayoutEffect(() => {
+    if (!navigationRef.current) return;
+    const target = navigationRef.current;
+    const currentWidth = Math.min(
+      target.getBoundingClientRect().width,
+      window.innerWidth
+    );
+    setSizeVariantClasses(breakpoints, currentWidth, target);
+
+    const handler = () => {
+      const currentWidth = target.getBoundingClientRect().width;
+      setSizeVariantClasses(breakpoints, currentWidth, target);
+      onResize?.(currentWidth, target);
+    };
+    window.addEventListener('resize', handler);
+    return () => {
+      window.removeEventListener('resize', handler);
+    };
+  }, [breakpoints, onResize]);
 
   const [drawerOpen, setDrawerOpen] = useDrawer((state) => [
     state.drawerOpen,
@@ -368,9 +387,13 @@ export const Navigation = ({
 
   const drawerTrigger = (
     <button
-      className={classNames('px-2', `group-[.nav-size-full]:hidden`, {
-        'z-20': drawerOpen,
-      })}
+      className={classNames(
+        'px-2',
+        `hidden group-[.nav-size-narrow]:block group-[.nav-size-small]:block`,
+        {
+          'z-[21]': drawerOpen,
+        }
+      )}
       onClick={() => {
         setDrawerOpen(!drawerOpen);
       }}
@@ -415,7 +438,7 @@ export const Navigation = ({
         className={classNames(
           'drawer-content',
           'border-l h-full relative overflow-auto',
-          'px-4 font-alpha',
+          'px-4 pb-8 font-alpha',
           // text
           {
             'text-vega-light-300 dark:text-vega-dark-300': theme === 'system',
@@ -442,7 +465,7 @@ export const Navigation = ({
           }px`,
         }}
       >
-        <div className="flex flex-col gap-2 pr-10">{children}</div>
+        <div className="flex flex-col gap-2 pr-10 text-lg">{children}</div>
       </div>
     </DrawerContext.Provider>
   );

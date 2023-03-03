@@ -62,14 +62,14 @@ export const Header = () => {
           <Search />
         </>
       }
-      onResize={(width, ref) => {
+      onResize={(width, el) => {
         if (width < 1157) {
           // switch to magnifying glass trigger when widht < 1157
-          ref.current?.classList.remove('nav-search-full');
-          ref.current?.classList.add('nav-search-compact');
+          el.classList.remove('nav-search-full');
+          el.classList.add('nav-search-compact');
         } else {
-          ref.current?.classList.remove('nav-search-compact');
-          ref.current?.classList.add('nav-search-full');
+          el.classList.remove('nav-search-compact');
+          el.classList.add('nav-search-full');
         }
       }}
     >
