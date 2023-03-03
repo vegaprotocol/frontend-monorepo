@@ -1,6 +1,9 @@
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { totalFeesPercentage } from '@vegaprotocol/market-list';
+import {
+  totalFeesPercentage,
+  calcCandleVolume,
+} from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -20,18 +23,17 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
-import pick from 'lodash/pick';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
 import { MarketInfoTable } from './info-key-value-table';
-import { marketInfoWithDataProvider } from './market-info-data-provider';
+import { marketInfoWithDataAndCandlesProvider } from './market-info-data-provider';
 
-import type { MarketInfoWithData } from './market-info-data-provider';
+import type { MarketInfoWithDataAndCandles } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 
 export interface InfoProps {
-  market: MarketInfoWithData;
+  market: MarketInfoWithDataAndCandles;
   onSelect: (id: string) => void;
 }
 
@@ -57,7 +59,7 @@ export const MarketInfoContainer = ({
   );
 
   const { data, loading, error, reload } = useDataProvider({
-    dataProvider: marketInfoWithDataProvider,
+    dataProvider: marketInfoWithDataAndCandlesProvider,
     skipUpdates: true,
     variables,
   });
@@ -93,6 +95,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const marketAccounts = removePaginationWrapper(
     market.accountsConnection?.edges
   );
+
+  const last24hourVolume = market.candles && calcCandleVolume(market.candles);
 
   const marketDataPanels = [
     {
@@ -141,6 +145,13 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
+            '24hourVolume':
+              last24hourVolume && last24hourVolume !== '0'
+                ? addDecimalsFormatNumber(
+                    last24hourVolume,
+                    market.positionDecimalPlaces
+                  )
+                : '-',
             openInterest: market.data?.openInterest,
             bestBidVolume: market.data?.bestBidVolume,
             bestOfferVolume: market.data?.bestOfferVolume,

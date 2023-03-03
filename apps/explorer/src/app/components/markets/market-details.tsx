@@ -6,7 +6,6 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
-import pick from 'lodash/pick';
 import {
   MarketStateMapping,
   MarketTradingModeMapping,
