@@ -43,6 +43,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           flex: 1,
           resizable: true,
           filterParams: { buttons: ['reset'] },
+          autoHeight: true,
         }}
         style={{
           width: '100%',

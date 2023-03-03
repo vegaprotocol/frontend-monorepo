@@ -22,6 +22,7 @@ import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
 
 export type Order = Omit<OrderFieldsFragment, 'market'> & {
   market?: Market;
+  isLastPlaceholder?: boolean;
 };
 export type OrderEdge = Edge<Order>;
 

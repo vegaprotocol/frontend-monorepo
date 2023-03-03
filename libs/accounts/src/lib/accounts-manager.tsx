@@ -1,9 +1,9 @@
-import { useRef, useMemo, memo, useCallback, useState, useEffect } from 'react';
+import { useRef, useMemo, memo, useCallback, useEffect } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { GridReadyEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
+import { useBottomPlaceholder } from '@vegaprotocol/utils';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
@@ -36,12 +36,16 @@ export const AccountManager = ({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
-  const onGridReady = useCallback((params: GridReadyEvent) => {
-    gridRef.current?.api.sizeColumnsToFit();
+  const onGridReady = useCallback(() => {
+    setTimeout(() => {
+      gridRef.current?.api.sizeColumnsToFit();
+    }, 500);
   }, []);
   useEffect(() => {
     gridRef.current?.api?.sizeColumnsToFit();
   }, [data]);
+  const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
+
   return (
     <div className="relative h-full">
       <AccountTable
@@ -54,6 +58,7 @@ export const AccountManager = ({
         noRowsOverlayComponent={() => null}
         pinnedAsset={pinnedAsset}
         onGridReady={onGridReady}
+        {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

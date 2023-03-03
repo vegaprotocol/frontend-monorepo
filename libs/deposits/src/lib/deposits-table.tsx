@@ -72,7 +72,9 @@ export const DepositsTable = forwardRef<
         field="txHash"
         cellRenderer={({
           value,
+          data,
         }: VegaICellRendererParams<DepositFieldsFragment, 'txHash'>) => {
+          if (!data) return null;
           if (!value) return '-';
           return (
             <Link

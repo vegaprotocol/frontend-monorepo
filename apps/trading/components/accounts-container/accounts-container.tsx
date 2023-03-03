@@ -48,7 +48,7 @@ export const AccountsContainer = ({
         />
       </div>
       {!isReadOnly && (
-        <div className="flex gap-2 justify-end p-2 px-[11px] fixed bottom-0 right-1 dark:bg-black/75 bg-white/75 rounded">
+        <div className="flex gap-2 justify-end p-2 px-[11px] fixed bottom-0 right-2 dark:bg-black/75 bg-white/75 rounded">
           <Button
             variant="primary"
             size="sm"

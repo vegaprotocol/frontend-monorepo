@@ -51,6 +51,18 @@ export const useOrderListData = ({
   const dataRef = useRef<(OrderEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
+  const placeholderAdded = useRef(false);
+
+  const addBottomPlaceholders = useCallback((order: Order, count = 1) => {
+    if (!placeholderAdded.current && order) {
+      new Array(count).fill(null).forEach((_null, i) => {
+        dataRef.current?.push({
+          node: { ...order, id: `${order?.id}-${i}`, isLastPlaceholder: true },
+        });
+      });
+      placeholderAdded.current = true;
+    }
+  }, []);
 
   const variables = useMemo<
     OrdersQueryVariables & OrdersUpdateSubscriptionVariables
@@ -130,5 +142,13 @@ export const useOrderListData = ({
     load,
     newRows
   );
-  return { loading, error, data, addNewRows, getRows, reload };
+  return {
+    loading,
+    error,
+    data,
+    addNewRows,
+    getRows,
+    reload,
+    addBottomPlaceholders,
+  };
 };
