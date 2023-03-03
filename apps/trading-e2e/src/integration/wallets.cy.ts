@@ -151,7 +151,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('MetaMask');
-    cy.getByTestId('ethereum-address').should('have.value', ethWalletAddress);
+    cy.getByTestId('ethereum-address').should('have.text', ethWalletAddress);
     cy.getByTestId('disconnect-ethereum-wallet')
       .should('have.text', 'Disconnect')
       .click();
