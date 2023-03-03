@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
+import { hexlify } from 'ethers/lib/utils';
 import abi from '../abis/claim_abi.json';
-import { asciiToHex } from '../utils';
 
 export const UNSPENT_CODE = '0x0000000000000000000000000000000000000000';
 export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
@@ -71,7 +71,7 @@ export class Claim {
           tranche,
           expiry,
         },
-        asciiToHex(country),
+        hexlify(country),
         target,
       ].filter(Boolean)
     );
@@ -109,9 +109,7 @@ export class Claim {
    * @return {Promise<boolean>}
    */
   async isCountryBlocked(country: string): Promise<boolean> {
-    const isAllowed = await this.contract.allowed_countries(
-      asciiToHex(country)
-    );
+    const isAllowed = await this.contract.allowed_countries(hexlify(country));
     return !isAllowed;
   }
 }

@@ -27,6 +27,7 @@ export const RowData = ({
   highestBlock,
   onBlockHeight,
 }: RowDataProps) => {
+  const [subFailed, setSubFailed] = useState(false);
   const [time, setTime] = useState<number>();
   // no use of data here as we need the data nodes reference to block height
   const { data, error, loading, startPolling, stopPolling } =
@@ -46,9 +47,18 @@ export const RowData = ({
   } = useBlockTimeSubscription();
 
   useEffect(() => {
-    // stop polling if row has errored
-  }, [error, stopPolling]);
+    const timeout = setTimeout(() => {
+      if (!subData) {
+        setSubFailed(true);
+      }
+    }, 3000);
 
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [subData]);
+
+  // handle polling
   useEffect(() => {
     const handleStartPoll = () => startPolling(POLL_INTERVAL);
     const handleStopPoll = () => stopPolling();
@@ -68,6 +78,7 @@ export const RowData = ({
     };
   }, [startPolling, stopPolling, error]);
 
+  // measure response time
   useEffect(() => {
     if (!isValidUrl(url)) return;
     // every time we get data measure response speed
@@ -131,6 +142,15 @@ export const RowData = ({
     return false;
   };
 
+  const getSubFailed = (
+    subError: ApolloError | undefined,
+    subFailed: boolean
+  ) => {
+    if (subError) return true;
+    if (subFailed) return true;
+    return false;
+  };
+
   return (
     <>
       {id !== CUSTOM_NODE_KEY && (
@@ -161,11 +181,11 @@ export const RowData = ({
       </LayoutCell>
       <LayoutCell
         label={t('Subscription')}
-        isLoading={subLoading}
-        hasError={Boolean(subError)}
+        isLoading={subFailed ? false : subLoading}
+        hasError={getSubFailed(subError, subFailed)}
         dataTestId="subscription-cell"
       >
-        {getSubscriptionDisplayValue(subData?.busEvents, subError)}
+        {getSubscriptionDisplayValue(subFailed, subData?.busEvents, subError)}
       </LayoutCell>
     </>
   );
@@ -195,10 +215,11 @@ const getBlockDisplayValue = (block?: number, error?: ApolloError) => {
 };
 
 const getSubscriptionDisplayValue = (
+  subFailed: boolean,
   events?: { id: string }[] | null,
   error?: ApolloError
 ) => {
-  if (error) {
+  if (subFailed || error) {
     return t('No');
   }
   if (events?.length) {
