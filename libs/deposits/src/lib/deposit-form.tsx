@@ -460,6 +460,7 @@ export const AddressField = ({
             onChange();
           }}
           className="ml-auto text-sm absolute top-0 right-0 underline"
+          data-testid="enter-pubkey-manually"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}
         </button>
