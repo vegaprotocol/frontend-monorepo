@@ -4,13 +4,14 @@ import { ENV } from '../../../config/env';
 import Hash from '../hash';
 export type ProposalLinkProps = {
   id: string;
+  text?: string;
 };
 
 /**
  * Given a proposal ID, generates an external link over to
  * the Governance page for more information
  */
-const ProposalLink = ({ id }: ProposalLinkProps) => {
+const ProposalLink = ({ id, text }: ProposalLinkProps) => {
   const { data } = useExplorerProposalQuery({
     variables: { id },
   });
@@ -20,7 +21,7 @@ const ProposalLink = ({ id }: ProposalLinkProps) => {
 
   return (
     <ExternalLink href={`${base}/proposals/${id}`}>
-      <Hash text={label} />
+      {text ? text : <Hash text={label} />}
     </ExternalLink>
   );
 };
