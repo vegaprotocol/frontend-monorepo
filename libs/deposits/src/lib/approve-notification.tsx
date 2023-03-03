@@ -55,6 +55,7 @@ export const ApproveNotification = ({
           size: 'sm',
           text: `Approve ${selectedAsset?.symbol}`,
           action: onApprove,
+          dataTestId: 'approve-submit',
         }}
       />
     </div>
@@ -73,6 +74,7 @@ export const ApproveNotification = ({
           size: 'sm',
           text: `Approve ${selectedAsset?.symbol}`,
           action: onApprove,
+          dataTestId: 'reapprove-submit',
         }}
       />
     </div>
