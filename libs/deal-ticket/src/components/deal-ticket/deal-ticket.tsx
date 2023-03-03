@@ -180,6 +180,7 @@ export const DealTicket = ({
               if (type === OrderType.TYPE_NETWORK) return;
               update({
                 type,
+                // when changing type also update the tif to what was last used of new type
                 timeInForce: lastTIF[type] || order.timeInForce,
               });
             }}

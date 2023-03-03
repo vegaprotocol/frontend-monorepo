@@ -27,6 +27,8 @@ interface Store {
   update: UpdateOrder;
 }
 
+export const STORAGE_KEY = 'vega_order_store';
+
 export const useOrderStore = create<Store>()(
   persist(
     subscribeWithSelector((set) => ({
@@ -51,7 +53,7 @@ export const useOrderStore = create<Store>()(
       },
     })),
     {
-      name: 'vega_order_store',
+      name: STORAGE_KEY,
       partialize: (state) => {
         // only store the order in localStorage if user has edited, this avoids
         // bloating localStorage if a user just visits the page but does not
