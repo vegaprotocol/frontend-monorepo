@@ -61,10 +61,9 @@ export const SetFilter = forwardRef((props: IFilterParams, ref) => {
     <div className="ag-filter-body-wrapper">
       <fieldset className="ag-simple-filter-body-wrapper">
         {Object.keys(props.colDef.filterParams.set).map((key) => (
-          <label className="flex">
+          <label className="flex" key={key}>
             <input
               type="checkbox"
-              key={key}
               value={key}
               className="mr-1"
               checked={value.includes(key)}
