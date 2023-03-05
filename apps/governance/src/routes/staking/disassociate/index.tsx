@@ -15,7 +15,12 @@ export const DisassociateContainer = () => {
     <>
       <Heading title={t('pageTitleDisassociate')} />
       {!account ? (
-        <EthConnectPrompt />
+        <>
+          <p className="mb-8">{t('DisassociateVegaTokensFromWallet')}</p>
+          <div className="max-w-[400px]">
+            <EthConnectPrompt />
+          </div>
+        </>
       ) : (
         <DisassociatePage address={account} vegaKey={pubKey ?? ''} />
       )}

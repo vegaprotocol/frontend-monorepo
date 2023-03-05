@@ -366,7 +366,8 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
       }),
     (callback, client, variables) =>
       marketDataProvider(callback, client, { marketId: variables.marketId }),
-    marketInfoProvider,
+    (callback, client, variables) =>
+      marketInfoProvider(callback, client, { marketId: variables.marketId }),
     openVolumeDataProvider,
   ],
   (data) => {
