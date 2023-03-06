@@ -72,11 +72,11 @@ export const OrderListManager = ({
       const lastRowIndex = gridRef.current?.api?.getLastDisplayedRow();
       if (lastRowIndex && rowCont - 1 === lastRowIndex) {
         const lastrow =
-          gridRef.current!.api.getDisplayedRowAtIndex(lastRowIndex);
-        lastrow!.setRowHeight(50);
-        addBottomPlaceholders(lastrow!.data);
-        gridRef.current!.api.onRowHeightChanged();
-        gridRef.current!.api.refreshInfiniteCache();
+          gridRef.current?.api.getDisplayedRowAtIndex(lastRowIndex);
+        lastrow?.setRowHeight(50);
+        addBottomPlaceholders(lastrow?.data);
+        gridRef.current?.api.onRowHeightChanged();
+        gridRef.current?.api.refreshInfiniteCache();
       }
     }
   }, [isReadOnly, hasActiveOrder, addBottomPlaceholders]);
