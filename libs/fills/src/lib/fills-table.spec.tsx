@@ -46,6 +46,7 @@ describe('FillsTable', () => {
       'Price',
       'Notional',
       'Role',
+      'Trading mode',
       'Fee',
       'Date',
     ];
@@ -75,7 +76,8 @@ describe('FillsTable', () => {
       '1.00 BTC',
       '3.00 BTC',
       'Maker',
-      '0.06 BTC',
+      'Continuous',
+      '2.00 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
     ];
     cells.forEach((cell, i) => {
@@ -109,6 +111,7 @@ describe('FillsTable', () => {
       '1.00 BTC',
       '3.00 BTC',
       'Taker',
+      'Continuous',
       '0.03 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
     ];
@@ -176,36 +179,36 @@ describe('FillsTable', () => {
       await screen.findByTestId('fee-breakdown-tooltip')
     ).toBeInTheDocument();
   });
-});
 
-describe('getFeesBreakdown', () => {
-  it('should return correct fees breakdown for a taker', () => {
-    const fees = {
-      makerFee: '1000',
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-    };
-    const expectedBreakdown = {
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-      makerFee: '1000',
-      totalFee: '6000',
-    };
-    expect(getFeesBreakdown('TAKER', fees)).toEqual(expectedBreakdown);
-  });
+  describe('getFeesBreakdown', () => {
+    it('should return correct fees breakdown for a taker', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '1000',
+        totalFee: '6000',
+      };
+      expect(getFeesBreakdown('TAKER', fees)).toEqual(expectedBreakdown);
+    });
 
-  it('should return correct fees breakdown for a maker', () => {
-    const fees = {
-      makerFee: '1000',
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-    };
-    const expectedBreakdown = {
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-      makerFee: '-1000',
-      totalFee: '4000',
-    };
-    expect(getFeesBreakdown('MAKER', fees)).toEqual(expectedBreakdown);
+    it('should return correct fees breakdown for a maker', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '-1000',
+        totalFee: '4000',
+      };
+      expect(getFeesBreakdown('MAKER', fees)).toEqual(expectedBreakdown);
+    });
   });
 });
