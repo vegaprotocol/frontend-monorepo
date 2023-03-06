@@ -76,8 +76,8 @@ export const useOrderStore = create<Store>()(
 );
 
 /**
- * Retrieves an order from the store and creates one if it doesn't
- * exist
+ * Retrieves an order from the store for a market and
+ * creates one if it doesn't already exist
  */
 export const useOrder = (marketId: string) => {
   const [order, _update] = useOrderStore((store) => {
@@ -95,7 +95,10 @@ export const useOrder = (marketId: string) => {
   // persist until user has edited
   useEffect(() => {
     if (!order) {
-      update(getDefaultOrder(marketId), false);
+      update(
+        getDefaultOrder(marketId),
+        false // dont persist the order
+      );
     }
   }, [order, marketId, update]);
 
