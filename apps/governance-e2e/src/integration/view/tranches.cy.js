@@ -24,19 +24,21 @@ context(
         .should('have.length', 2)
         .first()
         .within(() => {
-          cy.get('a').should('have.attr', 'href', '/token/tranches/2');
-          cy.get('span').eq(1).should('have.text', '111.30');
-          cy.contains('Unlocking starts')
+          cy.get('a')
+            .should('have.text', 'Tranche 2') // 1005-VEST-003
+            .and('have.attr', 'href', '/token/tranches/2');
+          cy.get('span').eq(1).should('have.text', '111.30'); // 1005-VEST-005
+          cy.contains('Unlocking starts') // 1005-VEST-008
             .parent()
             .should('contain.text', '28 Feb 2023');
           cy.contains('Fully unlocked')
             .parent()
             .should('contain.text', '23 Aug 2023');
           cy.getByTestId('progress-bar').should('exist');
-          cy.getByTestId('currency-locked')
+          cy.getByTestId('currency-locked') // 1005-VEST-006
             .invoke('text')
             .should('not.be.empty');
-          cy.getByTestId('currency-unlocked')
+          cy.getByTestId('currency-unlocked') // 1005-VEST-007
             .invoke('text')
             .should('not.be.empty');
         });
@@ -72,7 +74,9 @@ context(
         .should('have.length', 8)
         .first()
         .within(() => {
-          cy.get('a').should('have.attr', 'href', '/token/tranches/0');
+          cy.get('a')
+            .should('have.text', 'Tranche 0')
+            .and('have.attr', 'href', '/token/tranches/0');
           cy.get('span').eq(1).should('have.text', '0.00');
           cy.contains('Unlocking starts')
             .parent()
