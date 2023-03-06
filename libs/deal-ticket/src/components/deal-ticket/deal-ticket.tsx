@@ -38,8 +38,6 @@ import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import type { OrderObj } from '@vegaprotocol/orders';
 
-export type TransactionStatus = 'default' | 'pending';
-
 export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
