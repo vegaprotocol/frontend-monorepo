@@ -14,7 +14,6 @@ import { OrderListTable } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
 import { useHasActiveOrder } from '../../order-hooks/use-has-active-order';
 import type { Filter, Sort } from './use-order-list-data';
-
 import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
@@ -91,32 +90,52 @@ export const OrderListManager = ({
     [addNewRows, checkBottomPlaceholder]
   );
 
-  const onBodyScroll = (event: BodyScrollEvent) => {
+  const onBodyScroll = useCallback((event: BodyScrollEvent) => {
     scrolledToTop.current = event.top <= 0;
-  };
+  }, []);
 
-  const onFilterChanged = (event: FilterChangedEvent) => {
-    const updatedFilter = event.api.getFilterModel();
-    if (Object.keys(updatedFilter).length) {
-      setFilter(updatedFilter);
-    } else if (filter) {
-      setFilter(undefined);
-    }
-  };
+  const onFilterChanged = useCallback(
+    (event: FilterChangedEvent) => {
+      const updatedFilter = event.api.getFilterModel();
+      if (Object.keys(updatedFilter).length) {
+        setFilter(updatedFilter);
+      } else {
+        setFilter(undefined);
+      }
+    },
+    [setFilter]
+  );
 
-  const onSortChange = (event: SortChangedEvent) => {
-    const sort = event.columnApi
-      .getColumnState()
-      .sort((a, b) => (a.sortIndex || 0) - (b.sortIndex || 0))
-      .reduce((acc, col) => {
-        if (col.sort) {
-          const { colId, sort } = col;
-          acc.push({ colId, sort });
-        }
-        return acc;
-      }, [] as { colId: string; sort: string }[]);
-    setSort(sort.length > 0 ? sort : undefined);
-  };
+  const onSortChange = useCallback(
+    (event: SortChangedEvent) => {
+      const sort = event.columnApi
+        .getColumnState()
+        .sort((a, b) => (a.sortIndex || 0) - (b.sortIndex || 0))
+        .reduce((acc, col) => {
+          if (col.sort) {
+            const { colId, sort } = col;
+            acc.push({ colId, sort });
+          }
+          return acc;
+        }, [] as { colId: string; sort: string }[]);
+      setSort(sort.length > 0 ? sort : undefined);
+    },
+    [setSort]
+  );
+
+  const onCancel = useCallback(
+    (order: Order) => {
+      if (!order.market) return;
+      create({
+        orderCancellation: {
+          orderId: order.id,
+          marketId: order.market.id,
+        },
+      });
+    },
+    [create]
+  );
+
   const isFullWidthRow = useCallback(
     (params: IsFullWidthRowParams) => params.rowNode.data?.isLastPlaceholder,
     []
@@ -133,15 +152,7 @@ export const OrderListManager = ({
             onBodyScroll={onBodyScroll}
             onFilterChanged={onFilterChanged}
             onSortChanged={onSortChange}
-            cancel={(order: Order) => {
-              if (!order.market) return;
-              create({
-                orderCancellation: {
-                  orderId: order.id,
-                  marketId: order.market.id,
-                },
-              });
-            }}
+            cancel={onCancel}
             setEditOrder={setEditOrder}
             onMarketClick={onMarketClick}
             isReadOnly={isReadOnly}

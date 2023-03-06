@@ -91,6 +91,9 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             data,
             node,
           }: VegaValueFormatterParams<Order, 'size'>) => {
+            if (!data) {
+              return undefined;
+            }
             if (!data?.market || !isNumeric(value)) {
               return '-';
             }
@@ -116,6 +119,9 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             node,
           }: VegaValueFormatterParams<Order, 'type'>) => {
+            if (!order) {
+              return undefined;
+            }
             if (!value) return '-';
             if (order?.peggedOrder) return t('Pegged');
             if (order?.liquidityProvision) return t('Liquidity provision');
@@ -162,6 +168,9 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             node,
           }: VegaValueFormatterParams<Order, 'remaining'>) => {
+            if (!data) {
+              return undefined;
+            }
             if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
               return '-';
             }
@@ -184,6 +193,9 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             data,
             node,
           }: VegaValueFormatterParams<Order, 'price'>) => {
+            if (!data) {
+              return undefined;
+            }
             if (
               !data?.market ||
               data.type === Schema.OrderType.TYPE_MARKET ||
@@ -237,6 +249,9 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             data,
             value,
           }: VegaICellRendererParams<Order, 'updatedAt'>) => {
+            if (!data) {
+              return undefined;
+            }
             return (
               <span data-value={value}>
                 {value ? getDateTimeFormat().format(new Date(value)) : '-'}
