@@ -104,6 +104,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           />
           <AgGridColumn
             headerName={t('Total')}
+            type="rightAligned"
             field="deposited"
             headerTooltip={t(
               'This is the total amount of collateral used plus the amount available in your general account.'
@@ -121,6 +122,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           />
           <AgGridColumn
             headerName={t('Used')}
+            type="rightAligned"
             field="used"
             headerTooltip={t(
               'This is the amount of collateral used from your general account.'
@@ -139,6 +141,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           <AgGridColumn
             headerName={t('Available')}
             field="available"
+            type="rightAligned"
             headerTooltip={t(
               'This is the amount of collateral available in your general account.'
             )}

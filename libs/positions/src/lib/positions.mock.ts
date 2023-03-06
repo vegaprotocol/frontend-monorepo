@@ -1,3 +1,4 @@
+import { PositionStatus } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
@@ -58,6 +59,8 @@ const positionFields: PositionFieldsFragment[] = [
       id: 'market-0',
       __typename: 'Market',
     },
+    lossSocializationAmount: '0',
+    positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
   },
   {
     __typename: 'Position',
@@ -70,8 +73,11 @@ const positionFields: PositionFieldsFragment[] = [
       id: 'market-1',
       __typename: 'Market',
     },
+    lossSocializationAmount: '0',
+    positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
   },
   {
+    __typename: 'Position',
     realisedPNL: '230000',
     openVolume: '1',
     unrealisedPNL: '-22519',
@@ -81,7 +87,8 @@ const positionFields: PositionFieldsFragment[] = [
       id: 'market-2',
       __typename: 'Market',
     },
-    __typename: 'Position',
+    lossSocializationAmount: '0',
+    positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
   },
 ];
 
