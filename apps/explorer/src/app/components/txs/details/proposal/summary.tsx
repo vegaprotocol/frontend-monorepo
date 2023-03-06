@@ -61,7 +61,7 @@ export const ProposalSummary = ({
       {id && <ProposalStatusIcon id={id} />}
       {rationale?.title && <h1 className="text-xl pb-1">{rationale.title}</h1>}
       {rationale?.description && (
-        <p className="pt-2 text-sm leading-tight">
+        <div className="pt-2 text-sm leading-tight">
           <ReactMarkdown
             className="react-markdown-container"
             skipHtml={true}
@@ -70,15 +70,15 @@ export const ProposalSummary = ({
           >
             {md}
           </ReactMarkdown>
-        </p>
+        </div>
       )}
-      <p className="pt-5">
+      <div className="pt-5">
         <button className="underline max-md:hidden mr-5" onClick={openDialog}>
           {t('View terms')}
         </button>{' '}
         <ProposalLink id={id} text={t('Full details')} />
         {terms && <ProposalDate terms={terms} id={id} />}
-      </p>
+      </div>
       <JsonViewerDialog
         open={dialog.open}
         onChange={(isOpen) => setDialog({ ...dialog, open: isOpen })}

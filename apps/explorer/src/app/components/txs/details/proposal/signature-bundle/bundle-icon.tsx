@@ -12,19 +12,18 @@ export interface IconForBundleStatusProps {
  * asset should not exist
  */
 export const IconForBundleStatus = ({ status }: IconForBundleStatusProps) => {
-  const i = getIcon(status)
-  
+  const i = getIcon(status);
+
   return <Icon className="float-left mt-2 mr-3" name={i} ariaLabel={status} />;
 };
 
-
 export function getIcon(status?: AssetStatus): IconName {
-   switch(status) {
-    case 'STATUS_ENABLED': 
+  switch (status) {
+    case 'STATUS_ENABLED':
       return 'tick-circle';
     case undefined:
-      return 'disable'
+      return 'disable';
     default:
       return 'clean';
-   }
+  }
 }

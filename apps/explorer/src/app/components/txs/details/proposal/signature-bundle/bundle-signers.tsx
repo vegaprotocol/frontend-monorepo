@@ -1,72 +1,163 @@
-import { encodeListAssetBridgeTx } from '../../../../../lib/decoders/abis/list-asset';
+import { encodeListAssetBridgeTx } from '../../../../../lib/encoders/abis/list-asset';
 import { recoverAddress } from 'ethers/lib/utils';
 import { useExplorerBundleSignersQuery } from './__generated__/BundleSigners';
 import type { ProposalTerms } from '../../tx-proposal';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { DApp, TOKEN_VALIDATOR, useLinks } from '@vegaprotocol/environment';
+import { ExternalLink, Icon } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/i18n';
+import { IconNames } from '@blueprintjs/icons';
+import { prepend0x } from '@vegaprotocol/smart-contracts';
+import { encodeUpdateAssetBridgeTx } from '../../../../../lib/encoders/abis/update-asset';
 
-function getSigners(
-  unprefixedBundle: string,
-  assetERC20: string,
-  assetId: string,
-  limit: string,
-  threshold: string,
-  nonce: string,
-  func: string
-) {
-  const BRIDGE_ADDRESS = '0x7fe27d970bc8Afc3B11Cc8d9737bfB66B1efd799';
+export interface BundleSignersProps {
+  signatures: string;
+  assetAddress: string;
+  nonce: string;
+  tx?: ProposalTerms['updateAsset'] | ProposalTerms['newAsset'];
+  id: string;
+}
 
-  const digest = encodeListAssetBridgeTx(
-    {
-      assetERC20,
-      assetId,
-      limit,
-      threshold,
-      nonce,
-    },
-    BRIDGE_ADDRESS
+/**
+ * A logic-heavy component that takes in a signature bundle and returns
+ * the list of validators that signed the bundle. To do this it requires
+ * data from quite a few places - a network parameter, the signature bundle,
+ * the asset that has been modified
+ */
+export const BundleSigners = ({
+  signatures,
+  nonce,
+  assetAddress,
+  tx,
+  id,
+}: BundleSignersProps) => {
+  const tokenLink = useLinks(DApp.Token);
+
+  const bridgeFunction =
+    tx?.changes?.erc20 && 'contractAddress' in tx.changes.erc20
+      ? 'list_asset'
+      : 'set_asset_limits';
+
+  const { data } = useExplorerBundleSignersQuery();
+
+  if (!id || !tx || !tx.changes?.erc20) {
+    return null;
+  }
+
+  const bridgeAddress = getBridgeAddressFromNetworkParameter(
+    data?.networkParameter?.value
   );
 
-  const sigs = unprefixedBundle.match(/.{1,130}/g);
+  const allEthereumKeys =
+    data?.nodesConnection?.edges
+      ?.filter((n) => n?.node.status === 'NODE_STATUS_VALIDATOR')
+      .map((s) => s?.node) || [];
+
+  const { lifetimeLimit, withdrawThreshold } = tx.changes.erc20;
+
+  if (
+    allEthereumKeys.length === 0 ||
+    bridgeAddress === null ||
+    !lifetimeLimit ||
+    !withdrawThreshold
+  ) {
+    return null;
+  }
+
+  const digest =
+    bridgeFunction === 'list_asset'
+      ? encodeListAssetBridgeTx(
+          {
+            assetERC20: assetAddress,
+            assetId: prepend0x(id),
+            limit: lifetimeLimit,
+            threshold: withdrawThreshold,
+            nonce,
+          },
+          bridgeAddress
+        )
+      : encodeUpdateAssetBridgeTx(
+          {
+            assetERC20: assetAddress,
+            limit: lifetimeLimit,
+            threshold: withdrawThreshold,
+            nonce,
+          },
+          bridgeAddress
+        );
+
+  const signersLowerCase = recoverAddressesFromDigest(digest, signatures);
+
+  return (
+    <>
+      <h2 className="mt-4 mb-2 text-lg">{t('Signed by validators')}</h2>
+      <ul>
+        {allEthereumKeys?.map((n) => {
+          if (!n) {
+            return null;
+          }
+
+          const validatorPage = tokenLink(TOKEN_VALIDATOR.replace(':id', n.id));
+          return signersLowerCase?.indexOf(
+            n?.ethereumAddress.toLowerCase() || '??'
+          ) !== -1 ? (
+            <li key={n?.pubkey}>
+              <ExternalLink href={validatorPage}>
+                <Icon name={IconNames.ENDORSED} className="ml-1 mr-2" />
+                {n?.name}
+                <Icon size={3} name={IconNames.SHARE} className="ml-2" />
+              </ExternalLink>
+            </li>
+          ) : (
+            <li>
+              <ExternalLink href={validatorPage}>
+                <Icon name={IconNames.MINUS} className="ml-1 mr-2" />
+                {n?.name}
+                <Icon size={3} name={IconNames.SHARE} className="ml-2" />
+              </ExternalLink>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+};
+
+/**
+ * Querying for the network parameter value gets us all of the contract details for this network
+ * encoded as a JSON object. This function pulls out the address for the bridge, or returns null
+ * in any of the many cases where it may fail
+ *
+ * @param networkParameterAsString the stringified JSON object
+ * @returns null or bridge address as a string
+ */
+function getBridgeAddressFromNetworkParameter(
+  networkParameterAsString: string | undefined
+): string | null {
+  if (!networkParameterAsString) {
+    return null;
+  }
+
+  try {
+    const networkParameter = JSON.parse(networkParameterAsString);
+    return networkParameter.collateral_bridge_contract.address;
+  } catch (e) {
+    // There is no good recovery state so return null
+    return null;
+  }
+}
+
+function recoverAddressesFromDigest(digest: string, unprefixedBundle: string) {
+  // Remove 0x from bundle, then split it in to signatures
+  const sigs = unprefixedBundle.substring(2).match(/.{1,130}/g);
+
+  // Convert each of the signatures from hex to a string
   const hexSigs = sigs?.map((s) => `0x${s.toString()}`);
 
   if (!hexSigs) {
     return null;
   }
 
-  return hexSigs.map((h) => recoverAddress(digest, h));
+  // toLowerCase is a hack - something somewhere is lowercasing some
+  // pubkeys
+  return hexSigs.map((h) => recoverAddress(digest, h).toLowerCase());
 }
-
-export interface BundleSignersProps {
-  signatures: string;
-  nonce: string;
-  tx?: ProposalTerms
-  id: string
-}
-
-export const BundleSigners = ({
-  signatures,
-  nonce,
-  tx,
-  id
-}: BundleSignersProps) => {
-  const { data, loading, error } = useExplorerBundleSignersQuery()
-
-  if (!id || !tx) {
-    return null
-  }
-  const sigBundle = signatures.substring(2);
-
-  const signers = getSigners(
-    sigBundle,
-    tx.newAsset?.changes?.erc20?.contractAddress || '',
-    id,
-    tx.newAsset?.changes?.erc20?.lifetimeLimit || '',
-    tx.newAsset?.changes?.erc20?.withdrawThreshold || '',
-    nonce,
-    'list_asset'
-  )
-
-  return (
-    <SyntaxHighlighter data={signatures} />
-  );
-};

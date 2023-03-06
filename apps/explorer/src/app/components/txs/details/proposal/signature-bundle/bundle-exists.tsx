@@ -1,16 +1,17 @@
 import { t } from '@vegaprotocol/i18n';
 import ProposalLink from '../../../../links/proposal-link/proposal-link';
 import { IconForBundleStatus } from './bundle-icon';
-import { ProposalSignatureBundleDetails } from './details';
 import type { AssetStatus } from '@vegaprotocol/types';
 import type { ProposalTerms } from '../../tx-proposal';
+import { BundleSigners } from './bundle-signers';
 
 export interface BundleExistsProps {
   signatures: string;
   nonce: string;
   status?: AssetStatus;
+  assetAddress: string;
   proposalId: string;
-  tx?: ProposalTerms
+  tx?: ProposalTerms['newAsset'] | ProposalTerms['updateAsset'];
 }
 
 /**
@@ -23,8 +24,11 @@ export const BundleExists = ({
   nonce,
   status,
   proposalId,
-  tx
+  assetAddress,
+  tx,
 }: BundleExistsProps) => {
+  // Note if this is wrong, the wrong decoder will be used which will give incorrect data
+
   return (
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
       <IconForBundleStatus status={status} />
@@ -34,7 +38,42 @@ export const BundleExists = ({
           : t('Signature bundle generated')}
       </h1>
 
-      <ProposalSignatureBundleDetails signatures={signatures} nonce={nonce} tx={tx} />
+      <details className="mt-5">
+        <summary>{t('Signature bundle details')}</summary>
+
+        <div className="ml-4">
+          <h2 className="text-lg mt-2 mb-2">{t('Signatures')}</h2>
+          <p>
+            <textarea
+              className="font-mono bg-neutral-300 text-[11px] leading-3 text-gray-900 w-full p-2 max-w-[615px]"
+              readOnly={true}
+              rows={12}
+              cols={120}
+              value={signatures}
+            />
+          </p>
+
+          <h2 className="text-lg mt-5 mb-2">{t('Nonce')}</h2>
+
+          <p>
+            <textarea
+              className="font-mono bg-neutral-300 text-[11px] leading-3 text-gray-900 w-full p-2 max-w-[615px]"
+              readOnly={true}
+              rows={2}
+              cols={120}
+              value={nonce}
+            />
+          </p>
+        </div>
+      </details>
+
+      <BundleSigners
+        signatures={signatures}
+        nonce={nonce}
+        tx={tx}
+        id={proposalId}
+        assetAddress={assetAddress}
+      />
 
       {status !== 'STATUS_ENABLED' ? (
         <p className="mt-5">

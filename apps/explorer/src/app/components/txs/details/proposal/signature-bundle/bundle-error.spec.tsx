@@ -9,7 +9,7 @@ describe('Bundle Error', () => {
   const NON_ENABLED_STATUS: AssetStatus[] = [
     AssetStatus.STATUS_PENDING_LISTING,
     AssetStatus.STATUS_PROPOSED,
-    AssetStatus.STATUS_REJECTED
+    AssetStatus.STATUS_REJECTED,
   ];
 
   const ENABLED_STATUS: AssetStatus[] = [AssetStatus.STATUS_ENABLED];

@@ -20,14 +20,18 @@ export const BundleError = ({ status, error }: BundleErrorProps) => {
   if (!status || status === 'STATUS_PROPOSED' || status === 'STATUS_REJECTED') {
     // If there is no status, there is no asset and no bundle - ProposalDetails will make it clear why.
     // If the asset exists but is just proposed, or rejected, there won't be a signature bundle yet
-    return null
+    return null;
   }
   return (
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
       <IconForBundleStatus status={status} />
       <h1 className="text-xl pb-1">{t('No signature bundle')}</h1>
 
-      <p className='my-4'>{t('No signature bundle was generated as a result of this proposal, or the signature bundle could not be found.')}</p>
+      <p className="my-4">
+        {t(
+          'No signature bundle was generated as a result of this proposal, or the signature bundle could not be found.'
+        )}
+      </p>
 
       <p>
         {status === 'STATUS_ENABLED' ? (

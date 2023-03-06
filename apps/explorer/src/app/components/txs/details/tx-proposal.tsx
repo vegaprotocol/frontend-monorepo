@@ -7,8 +7,9 @@ import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import has from 'lodash/has';
 import { ProposalSummary } from './proposal/summary';
 import Hash from '../../links/hash';
-import { ProposalSignatureBundle } from './proposal/signature-bundle';
 import { t } from '@vegaprotocol/i18n';
+import { ProposalSignatureBundleNewAsset } from './proposal/signature-bundle-new';
+import { ProposalSignatureBundleUpdateAsset } from './proposal/signature-bundle-update';
 
 export type Proposal = components['schemas']['v1ProposalSubmission'];
 export type ProposalTerms = components['schemas']['vegaProposalTerms'];
@@ -78,6 +79,12 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
     deterministicId = txSignatureToDeterministicId(sig);
   }
 
+  const tx = proposal.terms?.newAsset || proposal.terms?.updateAsset;
+
+  const SignatureBundleComponent = proposal.terms?.newAsset
+    ? ProposalSignatureBundleNewAsset
+    : ProposalSignatureBundleUpdateAsset;
+
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
@@ -105,11 +112,7 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
         terms={proposal?.terms}
       />
       {proposalRequiresSignatureBundle(proposal) && (
-        <ProposalSignatureBundle
-          id={deterministicId}
-          tx={proposal.terms?.newAsset | proposal.terms?.updateAsset}
-          type={proposal.terms?.newAsset ? 'NewAsset' : 'UpdateAsset'}
-        />
+        <SignatureBundleComponent id={deterministicId} tx={tx} />
       )}
     </>
   );
