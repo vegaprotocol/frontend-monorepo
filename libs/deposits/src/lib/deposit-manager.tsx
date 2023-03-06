@@ -71,6 +71,10 @@ export const DepositManager = ({
       onDisconnect={reset}
       onSelectAsset={(id) => {
         setAssetId(id);
+        // When we change asset, also clear the tracked faucet/approve transactions so
+        // we dont render stale UI
+        approve.reset();
+        faucet.reset();
       }}
       assets={sortBy(assets, 'name')}
       submitApprove={approve.perform}

@@ -30,6 +30,9 @@ export const useSubmitFaucet = (
 
   return {
     id,
+    reset: () => {
+      setId(null);
+    },
     perform: () => {
       const id = createEthTransaction(contract, 'faucet', []);
       setId(id);

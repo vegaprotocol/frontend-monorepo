@@ -32,6 +32,9 @@ export const useSubmitApproval = (
 
   return {
     id,
+    reset: () => {
+      setId(null);
+    },
     perform: () => {
       if (!asset || !config) return;
       const amount = removeDecimal('1000000', asset.decimals);
