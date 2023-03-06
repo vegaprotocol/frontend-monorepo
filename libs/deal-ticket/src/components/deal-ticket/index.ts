@@ -3,7 +3,6 @@ export * from './deal-ticket-container';
 export * from './deal-ticket-limit-amount';
 export * from './deal-ticket-market-amount';
 export * from './deal-ticket';
-export * from './deal-ticket-2';
 export * from './expiry-selector';
 export * from './market-selector';
 export * from './side-selector';

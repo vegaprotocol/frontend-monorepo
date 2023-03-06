@@ -5,7 +5,6 @@ import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { useMarket, marketDataProvider } from '@vegaprotocol/market-list';
 import { DealTicket } from './deal-ticket';
-import { DealTicket2 } from './deal-ticket-2';
 
 export interface DealTicketContainerProps {
   marketId: string;
