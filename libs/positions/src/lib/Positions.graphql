@@ -4,6 +4,8 @@ fragment PositionFields on Position {
   unrealisedPNL
   averageEntryPrice
   updatedAt
+  positionStatus
+  lossSocializationAmount
   market {
     id
   }
@@ -30,6 +32,8 @@ subscription PositionsSubscription($partyId: ID!) {
     averageEntryPrice
     updatedAt
     marketId
+    lossSocializationAmount
+    positionStatus
   }
 }
 
