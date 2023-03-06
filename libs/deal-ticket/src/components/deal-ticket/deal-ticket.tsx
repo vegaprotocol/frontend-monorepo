@@ -24,6 +24,7 @@ import {
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
+  validateExpiration,
   validateMarketState,
   validateMarketTradingMode,
   validateTimeInForce,
@@ -45,12 +46,6 @@ export interface DealTicketProps {
   submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
 }
-
-export type DealTicketFormFields = OrderSubmission & {
-  // This is not a field used in the form but allows us to set a
-  // summary error message
-  summary: string;
-};
 
 export const DealTicket = ({
   market,
@@ -241,6 +236,9 @@ export const DealTicket = ({
           <Controller
             name="expiresAt"
             control={control}
+            rules={{
+              validate: validateExpiration,
+            }}
             render={() => (
               <ExpirySelector
                 value={order.expiresAt}
