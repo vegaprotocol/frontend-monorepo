@@ -11,7 +11,9 @@ export type OrderFormFields = OrderObj & {
 };
 
 /**
- * Connects the order store to a react-hook-form instance
+ * Connects the order store to a react-hook-form instance. Any time a field
+ * changes in the store the form will be updated so that validation rules
+ * for those fields are applied
  */
 export const useOrderForm = (marketId: string) => {
   const [order, update] = useOrder(marketId);

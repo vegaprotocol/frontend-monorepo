@@ -172,8 +172,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     flush();
   }, [resolution, flush]);
 
-  // const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
-  const updatePrice = useOrderStore((store) => store.update);
+  const updateOrder = useOrderStore((store) => store.update);
 
   return (
     <AsyncRenderer
@@ -191,7 +190,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         onClick={(price?: string | number) => {
           if (price) {
             const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-            updatePrice(marketId, { price: priceValue });
+            updateOrder(marketId, { price: priceValue });
           }
         }}
       />
