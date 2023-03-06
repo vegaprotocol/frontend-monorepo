@@ -5,7 +5,7 @@ import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';
 
-import { FillsTable } from './fills-table';
+import { FillsTable, getFeesBreakdown } from './fills-table';
 import { generateFill } from './test-helpers';
 
 describe('FillsTable', () => {
@@ -175,5 +175,37 @@ describe('FillsTable', () => {
     expect(
       await screen.findByTestId('fee-breakdown-tooltip')
     ).toBeInTheDocument();
+  });
+});
+
+describe('getFeesBreakdown', () => {
+  it('should return correct fees breakdown for a taker', () => {
+    const fees = {
+      makerFee: '1000',
+      infrastructureFee: '2000',
+      liquidityFee: '3000',
+    };
+    const expectedBreakdown = {
+      infrastructureFee: '2000',
+      liquidityFee: '3000',
+      makerFee: '1000',
+      totalFee: '6000',
+    };
+    expect(getFeesBreakdown('TAKER', fees)).toEqual(expectedBreakdown);
+  });
+
+  it('should return correct fees breakdown for a maker', () => {
+    const fees = {
+      makerFee: '1000',
+      infrastructureFee: '2000',
+      liquidityFee: '3000',
+    };
+    const expectedBreakdown = {
+      infrastructureFee: '2000',
+      liquidityFee: '3000',
+      makerFee: '-1000',
+      totalFee: '4000',
+    };
+    expect(getFeesBreakdown('MAKER', fees)).toEqual(expectedBreakdown);
   });
 });

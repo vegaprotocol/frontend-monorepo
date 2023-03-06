@@ -29,8 +29,8 @@ import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
 import type { FillFieldsFragment } from './__generated__/Fills';
 
-const TAKER = t('Taker');
-const MAKER = t('Maker');
+const TAKER = 'TAKER';
+const MAKER = 'MAKER';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
@@ -247,7 +247,7 @@ const formatFee = (partyId: string) => {
     const { fees: feesObj, role } = getRoleAndFees({ data, partyId });
     if (!feesObj) return '-';
 
-    const { totalFee } = getFeeBreakdown(data, role, feesObj);
+    const { totalFee } = getFeesBreakdown(role, feesObj);
     const totalFees = addDecimalsFormatNumber(totalFee, asset.decimals);
     return `${totalFees} ${asset.symbol}`;
   };
@@ -290,13 +290,8 @@ const FeesBreakdownTooltip = ({
 
   const { role, fees: feesObj } = getRoleAndFees({ data, partyId }) ?? {};
   if (!feesObj) return null;
-  const {
-    isMarketInMonitoringAuction,
-    infrastructureFee,
-    liquidityFee,
-    makerFee,
-    totalFee,
-  } = getFeeBreakdown(data, role, feesObj);
+  const { infrastructureFee, liquidityFee, makerFee, totalFee } =
+    getFeesBreakdown(role, feesObj);
 
   return (
     <div
@@ -311,6 +306,11 @@ const FeesBreakdownTooltip = ({
               'If the market is in monitoring auction the maker will pay half of the infrastructure and liquidity fees.'
             )}
           </p>
+          <p className="mb-1">
+            {t(
+              'If the market is active the maker will pay zero infrastructure and liquidity fees.'
+            )}
+          </p>
         </>
       )}
       {role === TAKER && (
@@ -322,13 +322,6 @@ const FeesBreakdownTooltip = ({
             )}
           </p>
         </>
-      )}
-      {isMarketInMonitoringAuction && (
-        <p className="mb-1">
-          {t(
-            'The market was in monitoring auction. The infrastructure and liquidity fee are split between the maker and the taker.'
-          )}
-        </p>
       )}
       <dl className="grid grid-cols-2 gap-x-1">
         <dt className="col-span-1">{t('Infrastructure fee')}</dt>
@@ -352,8 +345,8 @@ const FeesBreakdownTooltip = ({
     </div>
   );
 };
-function getFeeBreakdown(
-  data: Trade,
+
+export const getFeesBreakdown = (
   role: string,
   feesObj: {
     __typename?: 'TradeFee' | undefined;
@@ -361,38 +354,22 @@ function getFeeBreakdown(
     infrastructureFee: string;
     liquidityFee: string;
   }
-) {
-  const isMarketInMonitoringAuction =
-    data?.market?.tradingMode ===
-    Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION;
-
-  const getFee = (value: string) => {
-    const fee = role === MAKER ? new BigNumber(value).div(2).toString() : value;
-    const feeAmount =
-      data.market?.tradingMode ===
-        Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS && role === MAKER
-        ? 0
-        : fee;
-    return feeAmount;
-  };
-
-  const getMakerFee = (value: string) => {
-    return role === MAKER ? new BigNumber(value).times(-1).toString() : value;
-  };
-
-  const makerFee = getMakerFee(feesObj.makerFee);
-  const infrastructureFee = getFee(feesObj.infrastructureFee);
-  const liquidityFee = getFee(feesObj.liquidityFee);
+) => {
+  const makerFee =
+    role === MAKER
+      ? new BigNumber(feesObj.makerFee).times(-1).toString()
+      : feesObj.makerFee;
+  const infrastructureFee = feesObj.infrastructureFee;
+  const liquidityFee = feesObj.liquidityFee;
 
   const totalFee = new BigNumber(infrastructureFee)
     .plus(makerFee)
     .plus(liquidityFee)
     .toString();
   return {
-    isMarketInMonitoringAuction,
     infrastructureFee,
     liquidityFee,
     makerFee,
     totalFee,
   };
-}
+};
