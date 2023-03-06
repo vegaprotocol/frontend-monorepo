@@ -86,10 +86,6 @@ describe('AccountManager', () => {
     await waitFor(() => {
       expect(container).toBeInTheDocument();
     });
-    expect(
-      getAllByRole(container as HTMLDivElement, 'row').filter(
-        (elem) => elem.getAttribute('row-id') !== 'rowGroupFooter_ROOT_NODE_ID'
-      )
-    ).toHaveLength(2);
+    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
   });
 });

@@ -1,4 +1,4 @@
-import { useRef, useMemo, memo } from 'react';
+import { useRef, useMemo, memo, useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
@@ -35,7 +35,17 @@ export const AccountManager = ({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
-  const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
+  const setId = useCallback(
+    (data: AccountFields) => ({
+      ...data,
+      asset: { ...data.asset, id: `${data.asset.id}-1` },
+    }),
+    []
+  );
+  const bottomPlaceholderProps = useBottomPlaceholder<AccountFields>({
+    gridRef,
+    setId,
+  });
 
   return (
     <div className="relative h-full">

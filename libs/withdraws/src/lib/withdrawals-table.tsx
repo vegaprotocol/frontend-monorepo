@@ -32,10 +32,6 @@ export const WithdrawalsTable = (
     (store) => store.create
   );
 
-  const onGridReady = useCallback(() => {
-    gridRef.current?.api.sizeColumnsToFit();
-  }, []);
-
   const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
   return (
     <AgGrid
@@ -50,7 +46,6 @@ export const WithdrawalsTable = (
       }}
       suppressCellFocus
       ref={gridRef}
-      onGridReady={onGridReady}
       {...bottomPlaceholderProps}
       {...props}
     >
