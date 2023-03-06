@@ -223,6 +223,8 @@ export const DealTicket = ({
             orderType={order.type}
             onSelect={(timeInForce) => {
               update({ timeInForce });
+              // Set tif value for the given order type, so that when switching
+              // types we know the last used TIF for the given order type
               setLastTIF((curr) => ({ ...curr, [order.type]: timeInForce }));
             }}
             market={market}
