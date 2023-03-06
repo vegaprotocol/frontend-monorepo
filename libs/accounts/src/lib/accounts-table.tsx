@@ -153,72 +153,70 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }
             maxWidth={300}
           />
-          {
-            <AgGridColumn
-              colId="breakdown"
-              headerName=""
-              sortable={false}
-              minWidth={200}
-              type="rightAligned"
-              cellRenderer={({
-                data,
-              }: VegaICellRendererParams<AccountFields>) => {
-                if (!data) return null;
-                else {
-                  if (
-                    data.asset.id === pinnedAssetId &&
-                    new BigNumber(data.deposited).isLessThanOrEqualTo(0)
-                  ) {
-                    return (
+          <AgGridColumn
+            colId="breakdown"
+            headerName=""
+            sortable={false}
+            minWidth={200}
+            type="rightAligned"
+            cellRenderer={({
+              data,
+            }: VegaICellRendererParams<AccountFields>) => {
+              if (!data) return null;
+              else {
+                if (
+                  data.asset.id === pinnedAssetId &&
+                  new BigNumber(data.deposited).isLessThanOrEqualTo(0)
+                ) {
+                  return (
+                    <ButtonLink
+                      data-testid="deposit"
+                      onClick={() => {
+                        onClickDeposit && onClickDeposit(data.asset.id);
+                      }}
+                    >
+                      {t('Deposit to trade')}
+                    </ButtonLink>
+                  );
+                }
+                return (
+                  <>
+                    <ButtonLink
+                      data-testid="breakdown"
+                      onClick={() => {
+                        setOpenBreakdown(!openBreakdown);
+                        setBreakdown(data.breakdown || null);
+                      }}
+                    >
+                      {t('Breakdown')}
+                    </ButtonLink>
+                    <span className="mx-1" />
+                    {!props.isReadOnly && (
                       <ButtonLink
                         data-testid="deposit"
                         onClick={() => {
                           onClickDeposit && onClickDeposit(data.asset.id);
                         }}
                       >
-                        {t('Deposit to trade')}
+                        {t('Deposit')}
                       </ButtonLink>
-                    );
-                  }
-                  return (
-                    <>
+                    )}
+                    <span className="mx-1" />
+                    {!props.isReadOnly && (
                       <ButtonLink
-                        data-testid="breakdown"
-                        onClick={() => {
-                          setOpenBreakdown(!openBreakdown);
-                          setBreakdown(data.breakdown || null);
-                        }}
+                        data-testid="withdraw"
+                        onClick={() =>
+                          onClickWithdraw && onClickWithdraw(data.asset.id)
+                        }
                       >
-                        {t('Breakdown')}
+                        {t('Withdraw')}
                       </ButtonLink>
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="deposit"
-                          onClick={() => {
-                            onClickDeposit && onClickDeposit(data.asset.id);
-                          }}
-                        >
-                          {t('Deposit')}
-                        </ButtonLink>
-                      )}
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="withdraw"
-                          onClick={() =>
-                            onClickWithdraw && onClickWithdraw(data.asset.id)
-                          }
-                        >
-                          {t('Withdraw')}
-                        </ButtonLink>
-                      )}
-                    </>
-                  );
-                }
-              }}
-            />
-          }
+                    )}
+                  </>
+                );
+              }
+            }}
+          />
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">

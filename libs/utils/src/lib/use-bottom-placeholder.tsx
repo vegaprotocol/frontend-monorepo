@@ -13,9 +13,9 @@ export const useBottomPlaceholder = ({ gridRef }: Props) => {
     const rowCont = gridRef.current?.api.getModel().getRowCount() ?? 0;
     const lastRowIndex = gridRef.current?.api.getLastDisplayedRow() ?? 0;
     if (lastRowIndex && rowCont - 1 === lastRowIndex) {
-      const lastRow = gridRef.current!.api.getDisplayedRowAtIndex(lastRowIndex);
-      lastRow!.setRowHeight(50);
-      gridRef.current!.api.onRowHeightChanged();
+      const lastRow = gridRef.current?.api.getDisplayedRowAtIndex(lastRowIndex);
+      lastRow?.setRowHeight(50);
+      gridRef.current?.api.onRowHeightChanged();
     }
   }, []);
 

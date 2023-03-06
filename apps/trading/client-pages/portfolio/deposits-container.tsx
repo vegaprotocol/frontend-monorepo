@@ -22,7 +22,7 @@ export const DepositsContainer = () => {
     setTimeout(() => gridRef.current?.api.sizeColumnsToFit(), 500);
   }, []);
   return (
-    <div className="h-full grid grid-rows-[1fr]">
+    <div className="h-full">
       <div className="h-full relative">
         <DepositsTable
           rowData={data || []}
@@ -43,7 +43,7 @@ export const DepositsContainer = () => {
         </div>
       </div>
       {!isReadOnly && (
-        <div className="h-auto flex justify-end px-[11px] py-2 bottom-0 right-2 absolute dark:bg-black/75 bg-white/75 rounded">
+        <div className="h-auto flex justify-end px-[11px] py-2 bottom-0 right-3 absolute dark:bg-black/75 bg-white/75 rounded">
           <Button
             variant="primary"
             size="sm"

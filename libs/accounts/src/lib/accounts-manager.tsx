@@ -1,4 +1,4 @@
-import { useRef, useMemo, memo, useCallback, useEffect } from 'react';
+import { useRef, useMemo, memo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
@@ -28,7 +28,6 @@ export const AccountManager = ({
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-
   const { data, loading, error, reload } = useDataProvider<
     AccountFields[],
     never
@@ -36,14 +35,6 @@ export const AccountManager = ({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
-  const onGridReady = useCallback(() => {
-    setTimeout(() => {
-      gridRef.current?.api.sizeColumnsToFit();
-    }, 500);
-  }, []);
-  useEffect(() => {
-    gridRef.current?.api?.sizeColumnsToFit();
-  }, [data]);
   const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
 
   return (
@@ -57,7 +48,6 @@ export const AccountManager = ({
         isReadOnly={isReadOnly}
         noRowsOverlayComponent={() => null}
         pinnedAsset={pinnedAsset}
-        onGridReady={onGridReady}
         {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">

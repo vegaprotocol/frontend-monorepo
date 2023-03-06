@@ -23,7 +23,7 @@ import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
 import type { IsFullWidthRowParams } from 'ag-grid-community';
 
-const NO_HOVER_CSS_RULE = { 'no-hover': 'data.isLastPlaceholder' };
+const NO_HOVER_CSS_RULE = { 'no-hover': 'data?.isLastPlaceholder' };
 
 const fullWidthCellRenderer = () => null;
 
@@ -142,58 +142,55 @@ export const OrderListManager = ({
   );
   return (
     <>
-      <div className="h-full relative grid grid-rows-[1fr]">
-        <div className="h-full relative">
-          <OrderListTable
-            ref={gridRef}
-            rowModelType="infinite"
-            datasource={{ getRows }}
-            onBodyScrollEnd={onBodyScrollEnd}
-            onBodyScroll={onBodyScroll}
-            onFilterChanged={onFilterChanged}
-            onSortChanged={onSortChange}
-            cancel={onCancel}
-            setEditOrder={setEditOrder}
-            onMarketClick={onMarketClick}
-            isReadOnly={isReadOnly}
-            blockLoadDebounceMillis={100}
-            suppressLoadingOverlay
-            suppressNoRowsOverlay
-            isFullWidthRow={isFullWidthRow}
-            fullWidthCellRenderer={fullWidthCellRenderer}
-            rowClassRules={NO_HOVER_CSS_RULE}
+      <div className="h-full relative">
+        <OrderListTable
+          ref={gridRef}
+          rowModelType="infinite"
+          datasource={{ getRows }}
+          onBodyScrollEnd={onBodyScrollEnd}
+          onBodyScroll={onBodyScroll}
+          onFilterChanged={onFilterChanged}
+          onSortChanged={onSortChange}
+          cancel={onCancel}
+          setEditOrder={setEditOrder}
+          onMarketClick={onMarketClick}
+          isReadOnly={isReadOnly}
+          blockLoadDebounceMillis={100}
+          suppressLoadingOverlay
+          suppressNoRowsOverlay
+          isFullWidthRow={isFullWidthRow}
+          fullWidthCellRenderer={fullWidthCellRenderer}
+          rowClassRules={NO_HOVER_CSS_RULE}
+        />
+        <div className="pointer-events-none absolute inset-0">
+          <AsyncRenderer
+            loading={loading}
+            error={error}
+            data={data}
+            noDataMessage={t('No orders')}
+            noDataCondition={(data) => !(data && data.length)}
+            reload={reload}
           />
-          <div className="pointer-events-none absolute inset-0">
-            <AsyncRenderer
-              loading={loading}
-              error={error}
-              data={data}
-              noDataMessage={t('No orders')}
-              noDataCondition={(data) => !(data && data.length)}
-              reload={reload}
-            />
-          </div>
         </div>
-        {!isReadOnly && hasActiveOrder && (
-          <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-2 rounded">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => {
-                create({
-                  orderCancellation: {
-                    marketId,
-                  },
-                });
-              }}
-              data-testid="cancelAll"
-            >
-              {t('Cancel all')}
-            </Button>
-          </div>
-        )}
       </div>
-
+      {!isReadOnly && hasActiveOrder && (
+        <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => {
+              create({
+                orderCancellation: {
+                  marketId,
+                },
+              });
+            }}
+            data-testid="cancelAll"
+          >
+            {t('Cancel all')}
+          </Button>
+        </div>
+      )}
       {editOrder && (
         <OrderEditDialog
           isOpen={Boolean(editOrder)}
