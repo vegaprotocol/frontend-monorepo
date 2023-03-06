@@ -33,6 +33,7 @@ export const useOrderForm = (marketId: string) => {
   // inputs are updating the store, fields need updating
   // to ensure validation rules are applied
   useEffect(() => {
+    if (!order) return;
     const currOrder = getValues();
     for (const k in order) {
       const key = k as keyof typeof order;
