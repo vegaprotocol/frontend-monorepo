@@ -360,12 +360,16 @@ export const DepositForm = ({
         approved={approved}
         amount={amount}
       />
-      <FormButton />
+      <FormButton approved={approved} />
     </form>
   );
 };
 
-const FormButton = () => {
+interface FormButtonProps {
+  approved: boolean;
+}
+
+const FormButton = ({ approved }: FormButtonProps) => {
   const { isActive, chainId } = useWeb3React();
   const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
   const invalidChain = isActive && chainId !== desiredChainId;
@@ -387,7 +391,7 @@ const FormButton = () => {
         data-testid="deposit-submit"
         variant={isActive ? 'primary' : 'default'}
         fill={true}
-        disabled={invalidChain}
+        disabled={!approved || invalidChain}
       >
         {t('Deposit')}
       </Button>
