@@ -40,7 +40,6 @@ import {
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
 import { ApproveNotification } from './approve-notification';
-import { PartialOnUndefinedDeepOptions } from 'type-fest';
 
 interface FormFields {
   asset: string;
