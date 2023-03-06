@@ -1,4 +1,4 @@
-import type { Asset } from '@vegaprotocol/assets';
+import type { Asset, AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AssetOption } from '@vegaprotocol/assets';
 import {
   ethereumAddress,
@@ -40,6 +40,7 @@ import {
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
 import { ApproveNotification } from './approve-notification';
+import { PartialOnUndefinedDeepOptions } from 'type-fest';
 
 interface FormFields {
   asset: string;
@@ -360,16 +361,17 @@ export const DepositForm = ({
         approved={approved}
         amount={amount}
       />
-      <FormButton approved={approved} />
+      <FormButton approved={approved} selectedAsset={selectedAsset} />
     </form>
   );
 };
 
 interface FormButtonProps {
   approved: boolean;
+  selectedAsset: AssetFieldsFragment | undefined;
 }
 
-const FormButton = ({ approved }: FormButtonProps) => {
+const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
   const { isActive, chainId } = useWeb3React();
   const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
   const invalidChain = isActive && chainId !== desiredChainId;
@@ -391,7 +393,7 @@ const FormButton = ({ approved }: FormButtonProps) => {
         data-testid="deposit-submit"
         variant={isActive ? 'primary' : 'default'}
         fill={true}
-        disabled={!approved || invalidChain}
+        disabled={invalidChain || (selectedAsset && !approved)}
       >
         {t('Deposit')}
       </Button>
