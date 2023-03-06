@@ -19,8 +19,13 @@ fragment MarketDataUpdateFields on ObservableMarketData {
   midPrice
   openInterest
   priceMonitoringBounds {
-    maxValidPrice
     minValidPrice
+    maxValidPrice
+    trigger {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
     referencePrice
   }
   staticMidPrice
@@ -58,8 +63,13 @@ fragment MarketDataFields on MarketData {
   midPrice
   openInterest
   priceMonitoringBounds {
-    maxValidPrice
     minValidPrice
+    maxValidPrice
+    trigger {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
     referencePrice
   }
   staticMidPrice

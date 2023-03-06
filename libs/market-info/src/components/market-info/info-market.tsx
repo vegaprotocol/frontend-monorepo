@@ -156,7 +156,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             bestBidVolume: market.data?.bestBidVolume,
             bestOfferVolume: market.data?.bestOfferVolume,
             bestStaticBidVolume: market.data?.bestStaticBidVolume,
-            bestStaticOfferVolume: market.data?.bestStaticBidVolume,
+            bestStaticOfferVolume: market.data?.bestStaticOfferVolume,
           }}
           decimalPlaces={market.positionDecimalPlaces}
         />
