@@ -48,7 +48,9 @@ export const useOrderForm = (marketId: string) => {
     }
   }, [order, getValues, setValue]);
 
-  const onSubmit = (cb: <T>(o: Exact<OrderSubmission, T>) => void) => {
+  const handleSubmitWrapper = (
+    cb: <T>(o: Exact<OrderSubmission, T>) => void
+  ) => {
     return handleSubmit(() => {
       // remove the persist key from the order in the store, the wallet will reject
       // an order that contains unrecognized additional keys
@@ -63,6 +65,7 @@ export const useOrderForm = (marketId: string) => {
     errors,
     setError,
     clearErrors,
-    handleSubmit: onSubmit,
+    getValues, // returned for test purposes only
+    handleSubmit: handleSubmitWrapper,
   };
 };
