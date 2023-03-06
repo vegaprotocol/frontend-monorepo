@@ -21,11 +21,7 @@ import {
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
-import type { IsFullWidthRowParams } from 'ag-grid-community';
-
-const NO_HOVER_CSS_RULE = { 'no-hover': 'data?.isLastPlaceholder' };
-
-const fullWidthCellRenderer = () => null;
+import { useBottomPlaceholder } from '@vegaprotocol/utils';
 
 export interface OrderListManagerProps {
   partyId: string;
@@ -135,11 +131,11 @@ export const OrderListManager = ({
     },
     [create]
   );
+  const { isFullWidthRow, fullWidthCellRenderer, rowClassRules } =
+    useBottomPlaceholder<Order>({
+      gridRef,
+    });
 
-  const isFullWidthRow = useCallback(
-    (params: IsFullWidthRowParams) => params.rowNode.data?.isLastPlaceholder,
-    []
-  );
   return (
     <>
       <div className="h-full relative">
@@ -160,7 +156,7 @@ export const OrderListManager = ({
           suppressNoRowsOverlay
           isFullWidthRow={isFullWidthRow}
           fullWidthCellRenderer={fullWidthCellRenderer}
-          rowClassRules={NO_HOVER_CSS_RULE}
+          rowClassRules={rowClassRules}
         />
         <div className="pointer-events-none absolute inset-0">
           <AsyncRenderer

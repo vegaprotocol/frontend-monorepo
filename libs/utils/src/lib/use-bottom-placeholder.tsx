@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { IsFullWidthRowParams } from 'ag-grid-community';
 
-const NO_HOVER_CSS_RULE = { 'no-hover': 'data.isLastPlaceholder' };
+const NO_HOVER_CSS_RULE = { 'no-hover': 'data?.isLastPlaceholder' };
 
 interface Props<T> {
   gridRef: RefObject<AgGridReact>;
@@ -25,7 +25,7 @@ export const useBottomPlaceholder = <T extends {}>({
           : {
               ...lastRow.data,
               isLastPlaceholder: true,
-              id: `${lastRow.data?.id || '-'}-${1}`,
+              id: `${lastRow.data?.id || '-'}-1`,
             };
         const add = [newData];
         gridRef.current?.api.applyTransaction({
