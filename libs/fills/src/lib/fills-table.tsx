@@ -107,18 +107,6 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={formatRole(partyId)}
         />
         <AgGridColumn
-          headerName={t('Trading mode')}
-          field="market.tradingMode"
-          valueFormatter={({
-            data,
-          }: VegaValueFormatterParams<Trade, 'tradingMode'>) => {
-            if (!data?.market) {
-              return '-';
-            }
-            return Schema.MarketTradingModeMapping[data.market.tradingMode];
-          }}
-        />
-        <AgGridColumn
           headerName={t('Fee')}
           field="market.tradableInstrument.instrument.product"
           valueFormatter={formatFee(partyId)}

@@ -46,7 +46,6 @@ describe('FillsTable', () => {
       'Price',
       'Notional',
       'Role',
-      'Trading mode',
       'Fee',
       'Date',
     ];
@@ -76,7 +75,6 @@ describe('FillsTable', () => {
       '1.00 BTC',
       '3.00 BTC',
       'Maker',
-      'Continuous',
       '2.00 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
     ];
@@ -111,7 +109,6 @@ describe('FillsTable', () => {
       '1.00 BTC',
       '3.00 BTC',
       'Taker',
-      'Continuous',
       '0.03 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
     ];
