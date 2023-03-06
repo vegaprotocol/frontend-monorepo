@@ -259,7 +259,7 @@ export const DealTicket = ({
         order={order}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
-        onClickCollateral={onClickCollateral || (() => null)}
+        onClickCollateral={onClickCollateral}
       />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
@@ -285,7 +285,7 @@ interface SummaryMessageProps {
   order: OrderObj;
   isReadOnly: boolean;
   pubKey: string | null;
-  onClickCollateral: () => void;
+  onClickCollateral?: () => void;
 }
 const SummaryMessage = memo(
   ({
