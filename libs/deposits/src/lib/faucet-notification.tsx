@@ -55,7 +55,7 @@ export const FaucetNotification = ({
           intent={Intent.Warning}
           testId="faucet-requested"
           message={t(
-            `Go to your Ethereum wallet and approve the transaction to faucet ${selectedAsset?.symbol}`
+            `Go to your Ethereum wallet and approve the faucet transaction for ${selectedAsset?.symbol}`
           )}
         />
       </div>
@@ -70,7 +70,7 @@ export const FaucetNotification = ({
           testId="faucet-pending"
           message={
             <p>
-              {t('Waiting...')}{' '}
+              {t('Faucet pending...')}{' '}
               {tx.txHash && (
                 <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
                   {t('View on Etherscan')}
