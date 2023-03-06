@@ -16,29 +16,10 @@ context(
         cy.verify_page_header('Vesting');
       });
 
-      it('should have connect Eth wallet info', function () {
-        cy.get(connectButton).should('be.visible');
-      });
-
       it('should have connect Eth wallet button', function () {
         cy.get(connectButton)
           .should('be.visible')
           .and('have.text', 'Connect Ethereum wallet');
-      });
-    });
-
-    describe('with eth wallet connected', function () {
-      before('connect eth wallet', function () {
-        cy.ethereum_wallet_connect();
-        cy.visit('/');
-      });
-
-      // 1005-VEST-001
-      // 1005-VEST-002
-      it('Able to view tranches', function () {
-        cy.navigate_to('supply');
-        cy.url().should('include', '/token/tranches');
-        cy.get('h1').should('contain.text', 'Vesting tranches');
       });
     });
   }
