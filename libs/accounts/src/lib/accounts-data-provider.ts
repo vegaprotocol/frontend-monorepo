@@ -97,7 +97,7 @@ export const accountsOnlyDataProvider = makeDataProvider<
 export interface AccountFields extends Account {
   available: string;
   used: string;
-  deposited: string;
+  total: string;
   balance: string;
   breakdown?: AccountFields[];
 }
@@ -143,7 +143,7 @@ const getAssetAccountAggregation = (
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     available: available.toString(),
     used: used.toString(),
-    deposited: (available + used).toString(),
+    total: (available + used).toString(),
   };
 
   const breakdown = accounts
@@ -153,7 +153,7 @@ const getAssetAccountAggregation = (
     .map((a) => ({
       ...a,
       asset: accounts[0].asset,
-      deposited: balanceAccount.deposited,
+      total: balanceAccount.total,
       available: balanceAccount.available,
       used: a.balance,
     }))

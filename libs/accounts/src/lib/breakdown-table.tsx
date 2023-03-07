@@ -23,7 +23,7 @@ export const progressBarValueFormatter = ({
   }
   const min = BigInt(data.used);
   const mid = BigInt(data.available);
-  const max = BigInt(data.deposited);
+  const max = BigInt(data.total);
   const range = max > min ? max : min;
   return {
     low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),

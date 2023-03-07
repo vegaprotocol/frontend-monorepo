@@ -78,7 +78,7 @@ describe('accounts', { tags: '@smoke' }, () => {
         '1,000.00001',
       ];
       checkSorting(
-        'deposited',
+        'total',
         marketsSortedDefault,
         marketsSortedAsc,
         marketsSortedDesc

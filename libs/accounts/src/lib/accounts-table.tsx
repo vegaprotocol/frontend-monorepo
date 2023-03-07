@@ -118,7 +118,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }: VegaICellRendererParams<AccountFields, 'used'>) => {
               if (!data) return null;
               const percentageUsed = new BigNumber(value || 0)
-                .dividedBy(data.deposited || 1)
+                .dividedBy(data.total || 1)
                 .multipliedBy(100)
                 .toNumber();
 
@@ -140,7 +140,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                       setRow(data);
                     }}
                   >
-                    <span className="mr-2">
+                    <span className="">
                       {' '}
                       {data &&
                         data.asset &&
@@ -148,7 +148,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                         addDecimalsFormatNumber(value, data.asset.decimals)}
                     </span>
                   </ButtonLink>
-                  <span className={colorClass(percentageUsed)}>
+                  <span
+                    className={classNames(colorClass(percentageUsed), 'pl-2')}
+                  >
                     {percentageUsed.toFixed(2)}%
                   </span>
                 </>
@@ -178,10 +180,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               data,
             }: VegaICellRendererParams<AccountFields, 'available'>) => {
               const percentageUsed = new BigNumber(data?.used || 0)
-                .dividedBy(data?.deposited || 1)
+                .dividedBy(data?.total || 1)
                 .multipliedBy(100)
                 .toNumber();
-              console.log('percentageUsed', percentageUsed);
               const colorClass = (percentageUsed: number) => {
                 return classNames({
                   'text-vega-orange':
@@ -203,14 +204,14 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           <AgGridColumn
             headerName={t('Total')}
             type="rightAligned"
-            field="deposited"
+            field="total"
             headerTooltip={t(
               'The full amount associated with this key. Total of used and available collateral.'
             )}
             valueFormatter={({
               value,
               data,
-            }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
+            }: VegaValueFormatterParams<AccountFields, 'total'>) =>
               data &&
               data.asset &&
               isNumeric(value) &&
@@ -231,7 +232,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 else {
                   if (
                     data.asset.id === pinnedAssetId &&
-                    new BigNumber(data.deposited).isLessThanOrEqualTo(0)
+                    new BigNumber(data.total).isLessThanOrEqualTo(0)
                   ) {
                     return (
                       <ButtonLink
@@ -283,7 +284,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             {row && (
               <p className="mb-2 text-sm">
                 {t('You have %s %s in total.', [
-                  addDecimalsFormatNumber(row.deposited, row.asset.decimals),
+                  addDecimalsFormatNumber(row.total, row.asset.decimals),
                   row.asset.symbol,
                 ])}
               </p>
