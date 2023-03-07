@@ -220,7 +220,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           />
           {
             <AgGridColumn
-              colId="breakdown"
+              colId="accounts-actions"
               headerName=""
               sortable={false}
               minWidth={200}

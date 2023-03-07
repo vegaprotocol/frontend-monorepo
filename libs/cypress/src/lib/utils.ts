@@ -53,11 +53,39 @@ export const checkSorting = (
   });
   checkSortChange(orderTabDesc, column);
 };
+
+export const checkSortingContain = (
+  column: string,
+  orderTabDefault: string[],
+  orderTabAsc: string[],
+  orderTabDesc: string[]
+) => {
+  checkSortContainChange(orderTabDefault, column);
+  cy.get('.ag-header-container').within(() => {
+    cy.get(`[col-id="${column}"]`).click();
+  });
+  checkSortContainChange(orderTabAsc, column);
+  cy.get('.ag-header-container').within(() => {
+    cy.get(`[col-id="${column}"]`).click();
+  });
+  checkSortContainChange(orderTabDesc, column);
+};
+
 const checkSortChange = (tabsArr: string[], column: string) => {
   cy.get('.ag-center-cols-container').within(() => {
     tabsArr.forEach((entry, i) => {
       cy.get(`[row-index="${i}"]`).within(() => {
         cy.get(`[col-id="${column}"]`).should('have.text', tabsArr[i]);
+      });
+    });
+  });
+};
+
+const checkSortContainChange = (tabsArr: string[], column: string) => {
+  cy.get('.ag-center-cols-container').within(() => {
+    tabsArr.forEach((entry, i) => {
+      cy.get(`[row-index="${i}"]`).within(() => {
+        cy.get(`[col-id="${column}"]`).should('contain.text', tabsArr[i]);
       });
     });
   });

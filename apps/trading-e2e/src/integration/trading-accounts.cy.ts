@@ -1,4 +1,4 @@
-import { checkSorting } from '@vegaprotocol/cypress';
+import { checkSorting, checkSortingContain } from '@vegaprotocol/cypress';
 
 beforeEach(() => {
   cy.mockTradingPage();
@@ -22,22 +22,22 @@ describe('accounts', { tags: '@smoke' }, () => {
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="breakdown"] [data-testid="breakdown"]')
-      .should('have.text', 'Breakdown');
+      .find('[data-testid="accounts-actions"]')
+      .should('have.text', '');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="breakdown"] [data-testid="deposit"]')
+      .find('[data-testid="deposit"]')
       .should('have.text', 'Deposit');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="breakdown"] [data-testid="withdraw"]')
+      .find('[col-id="accounts-actions"] [data-testid="withdraw"]')
       .should('have.text', 'Withdraw');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="deposited"]')
+      .find('[col-id="total"]')
       .should('have.text', '1,001.00');
   });
   describe('sorting by ag-grid columns should work well', () => {
@@ -90,7 +90,7 @@ describe('accounts', { tags: '@smoke' }, () => {
       const marketsSortedDefault = ['0.00', '1.00', '0.01', '0.01', '0.00'];
       const marketsSortedAsc = ['0.00', '0.00', '0.01', '0.01', '1.00'];
       const marketsSortedDesc = ['1.00', '0.01', '0.01', '0.00', '0.00'];
-      checkSorting(
+      checkSortingContain(
         'used',
         marketsSortedDefault,
         marketsSortedAsc,
