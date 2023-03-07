@@ -51,7 +51,7 @@ export const OrderListManager = ({
     addNewRows,
     getRows,
     reload,
-    addBottomPlaceholders,
+    makeBottomPlaceholders,
   } = useOrderListData({
     partyId,
     marketId,
@@ -69,12 +69,12 @@ export const OrderListManager = ({
         const lastrow =
           gridRef.current?.api.getDisplayedRowAtIndex(lastRowIndex);
         lastrow?.setRowHeight(50);
-        addBottomPlaceholders(lastrow?.data);
+        makeBottomPlaceholders(lastrow?.data);
         gridRef.current?.api.onRowHeightChanged();
         gridRef.current?.api.refreshInfiniteCache();
       }
     }
-  }, [isReadOnly, hasActiveOrder, addBottomPlaceholders]);
+  }, [isReadOnly, hasActiveOrder, makeBottomPlaceholders]);
 
   const onBodyScrollEnd = useCallback(
     (event: BodyScrollEndEvent) => {
@@ -92,18 +92,21 @@ export const OrderListManager = ({
 
   const onFilterChanged = useCallback(
     (event: FilterChangedEvent) => {
+      makeBottomPlaceholders();
       const updatedFilter = event.api.getFilterModel();
       if (Object.keys(updatedFilter).length) {
         setFilter(updatedFilter);
       } else {
         setFilter(undefined);
       }
+      checkBottomPlaceholder();
     },
-    [setFilter]
+    [setFilter, makeBottomPlaceholders, checkBottomPlaceholder]
   );
 
   const onSortChange = useCallback(
     (event: SortChangedEvent) => {
+      makeBottomPlaceholders();
       const sort = event.columnApi
         .getColumnState()
         .sort((a, b) => (a.sortIndex || 0) - (b.sortIndex || 0))
@@ -115,8 +118,9 @@ export const OrderListManager = ({
           return acc;
         }, [] as { colId: string; sort: string }[]);
       setSort(sort.length > 0 ? sort : undefined);
+      checkBottomPlaceholder();
     },
-    [setSort]
+    [setSort, makeBottomPlaceholders, checkBottomPlaceholder]
   );
 
   const onCancel = useCallback(

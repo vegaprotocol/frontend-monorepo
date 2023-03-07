@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { IsFullWidthRowParams } from 'ag-grid-community';
 
@@ -29,13 +29,13 @@ export const useBottomPlaceholder = <T extends {}>({
               id: `${lastRow.data?.id || '-'}-1`,
             };
         const add = [newData];
+        const newIndex = lastRowIndex + 1;
         gridRef.current?.api.applyTransaction({
           add,
-          addIndex: lastRowIndex + 1,
+          addIndex: newIndex,
         });
-        const newLastRow = gridRef.current?.api.getDisplayedRowAtIndex(
-          lastRowIndex + 1
-        );
+        const newLastRow =
+          gridRef.current?.api.getDisplayedRowAtIndex(newIndex);
         newLastRow?.setRowHeight(50);
         gridRef.current?.api.onRowHeightChanged();
       }
@@ -47,13 +47,28 @@ export const useBottomPlaceholder = <T extends {}>({
     []
   );
 
+  const onRowsChanged = useCallback(() => {
+    const remove: T[] = [];
+    gridRef.current?.api.forEachNodeAfterFilterAndSort((rowNode) => {
+      if (rowNode.data.isLastPlaceholder) {
+        remove.push(rowNode.data);
+      }
+    });
+    gridRef.current?.api.applyTransaction({
+      remove,
+    });
+    onBodyScrollEnd();
+  }, [gridRef, onBodyScrollEnd]);
+
   return useMemo(
     () => ({
       onBodyScrollEnd,
       rowClassRules: NO_HOVER_CSS_RULE,
       isFullWidthRow,
       fullWidthCellRenderer,
+      onSortChanged: onRowsChanged,
+      onFilterChange: onRowsChanged,
     }),
-    [onBodyScrollEnd, isFullWidthRow]
+    [onBodyScrollEnd, isFullWidthRow, onRowsChanged]
   );
 };

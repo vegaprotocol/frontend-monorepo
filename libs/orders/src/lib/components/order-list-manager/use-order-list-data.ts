@@ -51,16 +51,19 @@ export const useOrderListData = ({
   const dataRef = useRef<(OrderEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
-  const placeholderAdded = useRef(false);
+  const placeholderAdded = useRef(-1);
 
-  const addBottomPlaceholders = useCallback((order: Order, count = 1) => {
-    if (!placeholderAdded.current && order) {
-      new Array(count).fill(null).forEach((_null, i) => {
-        dataRef.current?.push({
-          node: { ...order, id: `${order?.id}-${i}`, isLastPlaceholder: true },
-        });
+  const makeBottomPlaceholders = useCallback((order?: Order) => {
+    if (!order) {
+      if (placeholderAdded.current >= 0) {
+        dataRef.current?.splice(placeholderAdded.current, 1);
+      }
+      placeholderAdded.current = -1;
+    } else if (placeholderAdded.current === -1) {
+      dataRef.current?.push({
+        node: { ...order, id: `${order?.id}-1`, isLastPlaceholder: true },
       });
-      placeholderAdded.current = true;
+      placeholderAdded.current = (dataRef.current?.length || 0) - 1;
     }
   }, []);
 
@@ -149,6 +152,6 @@ export const useOrderListData = ({
     addNewRows,
     getRows,
     reload,
-    addBottomPlaceholders,
+    makeBottomPlaceholders,
   };
 };
