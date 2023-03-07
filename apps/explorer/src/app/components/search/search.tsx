@@ -12,6 +12,24 @@ interface FormFields {
   search: string;
 }
 
+const MagnifyingGlass = () => (
+  <svg
+    className="w-4 h-4"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <line
+      x1="12.8202"
+      y1="13.1798"
+      x2="17.0629"
+      y2="17.4224"
+      stroke="currentColor"
+    />
+    <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
+  </svg>
+);
+
 export const Search = () => {
   const { register, handleSubmit } = useForm<FormFields>();
   const navigate = useNavigate();
@@ -63,7 +81,7 @@ export const Search = () => {
             'text-vega-light-300 dark:text-vega-dark-300'
           )}
         >
-          <Icon name="search" />
+          <MagnifyingGlass />
         </button>
         <Input
           {...register('search')}
@@ -111,8 +129,8 @@ export const Search = () => {
   const searchTrigger = (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="text-vega-light-300 dark:text-vega-dark-300 data-open:text-black dark:data-open:text-white w-8 h-8 relative">
-          <Icon name="search" size={4} className="absolute top-2 left-2" />
+        <button className="text-vega-light-300 dark:text-vega-dark-300 data-open:text-black dark:data-open:text-white flex items-center">
+          <MagnifyingGlass />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
