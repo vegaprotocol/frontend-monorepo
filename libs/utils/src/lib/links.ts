@@ -12,6 +12,8 @@ export const createDocsLinks = (docsUrl: string) => ({
   VEGA_WALLET_CONCEPTS_URL: `${docsUrl}/concepts/vega-wallet`,
   PROPOSALS_GUIDE: `${docsUrl}/tutorials/proposals`,
   NODE_OPERATORS: `${docsUrl}/node-operators`,
+  LOSS_SOCIALIZATION: `${docsUrl}/concepts/trading-on-vega/market-protections#loss-socialisation`,
+  POSITION_RESOLUTION: `${docsUrl}/concepts/trading-on-vega/market-protections#position-resolution`,
 });
 
 export const ExternalLinks = {
