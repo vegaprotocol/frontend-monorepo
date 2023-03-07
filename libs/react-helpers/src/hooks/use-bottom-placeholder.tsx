@@ -39,7 +39,7 @@ export const useBottomPlaceholder = <T extends {}>({
         gridRef.current?.api.onRowHeightChanged();
       }
     }
-  }, []);
+  }, [gridRef, setId]);
 
   const isFullWidthRow = useCallback(
     (params: IsFullWidthRowParams) => params.rowNode.data?.isLastPlaceholder,
@@ -54,6 +54,6 @@ export const useBottomPlaceholder = <T extends {}>({
       isFullWidthRow,
       fullWidthCellRenderer,
     }),
-    []
+    [onBodyScrollEnd, isFullWidthRow, fullWidthCellRenderer]
   );
 };
