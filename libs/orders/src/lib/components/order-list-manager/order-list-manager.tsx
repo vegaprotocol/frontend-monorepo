@@ -9,7 +9,6 @@ import type {
 } from 'ag-grid-community';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-
 import { OrderListTable } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
 import { useHasActiveOrder } from '../../order-hooks/use-has-active-order';
@@ -29,6 +28,27 @@ export interface OrderListManagerProps {
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
 }
+
+const CancelAllOrdersButton = ({
+  onClick,
+  marketId,
+}: {
+  onClick: (marketId?: string) => void;
+  marketId?: string;
+}) => {
+  const hasActiveOrder = useHasActiveOrder(marketId);
+  return hasActiveOrder ? (
+    <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
+      <Button
+        size="sm"
+        onClick={() => onClick(marketId)}
+        data-testid="cancelAll"
+      >
+        {t('Cancel all')}
+      </Button>
+    </div>
+  ) : null;
+};
 
 export const OrderListManager = ({
   partyId,
@@ -123,13 +143,23 @@ export const OrderListManager = ({
     [setSort, makeBottomPlaceholders, checkBottomPlaceholder]
   );
 
-  const onCancel = useCallback(
+  const cancel = useCallback(
     (order: Order) => {
       if (!order.market) return;
       create({
         orderCancellation: {
           orderId: order.id,
           marketId: order.market.id,
+        },
+      });
+    },
+    [create]
+  );
+  const cancelAll = useCallback(
+    (marketId?: string) => {
+      create({
+        orderCancellation: {
+          marketId,
         },
       });
     },
@@ -151,7 +181,7 @@ export const OrderListManager = ({
           onBodyScroll={onBodyScroll}
           onFilterChanged={onFilterChanged}
           onSortChanged={onSortChange}
-          cancel={onCancel}
+          cancel={cancel}
           setEditOrder={setEditOrder}
           onMarketClick={onMarketClick}
           isReadOnly={isReadOnly}
@@ -173,23 +203,8 @@ export const OrderListManager = ({
           />
         </div>
       </div>
-      {!isReadOnly && hasActiveOrder && (
-        <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              create({
-                orderCancellation: {
-                  marketId,
-                },
-              });
-            }}
-            data-testid="cancelAll"
-          >
-            {t('Cancel all')}
-          </Button>
-        </div>
+      {!isReadOnly && (
+        <CancelAllOrdersButton onClick={cancelAll} marketId={marketId} />
       )}
       {editOrder && (
         <OrderEditDialog
