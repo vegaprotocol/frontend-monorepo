@@ -119,7 +119,11 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
+    <FormGroup
+      label={t('Time in force')}
+      labelFor="select-time-in-force"
+      compact={true}
+    >
       <Select
         id="select-time-in-force"
         value={value}

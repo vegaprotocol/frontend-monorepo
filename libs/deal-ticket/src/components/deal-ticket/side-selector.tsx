@@ -26,7 +26,11 @@ export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
   };
 
   return (
-    <FormGroup label={t('Direction')} labelFor="order-side-toggle">
+    <FormGroup
+      label={t('Direction')}
+      labelFor="order-side-toggle"
+      compact={true}
+    >
       <Toggle
         id="order-side-toggle"
         name="order-side"
