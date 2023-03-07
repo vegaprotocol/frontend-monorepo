@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import type { CSSProperties, HTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 import { createContext } from 'react';
 import { create } from 'zustand';
 import type { NavigationProps } from './navigation-utils';
@@ -51,9 +52,10 @@ export const BurgerIcon = ({
   </svg>
 );
 
-export const NavigationDrawerTrigger = ({
-  theme,
-}: Pick<NavigationProps, 'theme'>) => {
+export const NavigationDrawerTrigger = forwardRef<
+  HTMLButtonElement,
+  Pick<NavigationProps, 'theme'>
+>(({ theme }, ref) => {
   const { drawerOpen, setDrawerOpen } = useNavigationDrawer((state) => ({
     drawerOpen: state.drawerOpen,
     setDrawerOpen: state.setDrawerOpen,
@@ -61,6 +63,7 @@ export const NavigationDrawerTrigger = ({
 
   return (
     <button
+      ref={ref}
       className={classNames(
         'px-2',
         `hidden group-[.nav-size-narrow]:block group-[.nav-size-small]:block`,
@@ -83,7 +86,7 @@ export const NavigationDrawerTrigger = ({
       />
     </button>
   );
-};
+});
 
 export const NavigationDrawerContent = ({
   theme,
