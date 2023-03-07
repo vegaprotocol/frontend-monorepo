@@ -73,6 +73,7 @@ export const Tranche = () => {
                     className="underline"
                     title={t('View vesting information')}
                     to={`${Routes.REDEEM}/${user}`}
+                    data-testid="redeem-link"
                   >
                     {t('View vesting information')}
                   </RouterLink>

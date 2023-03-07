@@ -50,7 +50,10 @@ export const Tranches = () => {
       )}
 
       <section className="text-center mt-4">
-        <ButtonLink onClick={() => setShowAll(!showAll)}>
+        <ButtonLink
+          data-testid="show-all-tranches"
+          onClick={() => setShowAll(!showAll)}
+        >
           {showAll
             ? t(
                 'Showing tranches with <{{trancheMinimum}} VEGA, click to hide these tranches',
