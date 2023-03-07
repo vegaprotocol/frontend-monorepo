@@ -50,8 +50,8 @@ function App() {
           )}
         >
           <div>
-            <MainnetSimAd />
             <Header />
+            <MainnetSimAd />
           </div>
           <div>
             <Main />

@@ -13,8 +13,7 @@ import type {
   NavigationProps,
 } from './navigation-utils';
 import { setSizeVariantClasses } from './navigation-utils';
-import { NavigationContext } from './navigation-utils';
-import { determineIfHidden } from './navigation-utils';
+import { NavigationBreakpoint, NavigationContext } from './navigation-utils';
 import {
   NavigationDrawerTrigger,
   NavigationDrawerContext,
@@ -58,6 +57,21 @@ const Logo = ({
     </div>
   );
 };
+
+const determineIfHidden = ({ hide, hideInDrawer }: NavigationElementProps) => [
+  {
+    '[.nav-size-full_.navbar_&]:hidden': hide?.includes(
+      NavigationBreakpoint.Full
+    ),
+    '[.nav-size-narrow_.navbar_&]:hidden': hide?.includes(
+      NavigationBreakpoint.Narrow
+    ),
+    '[.nav-size-small_.navbar_&]:hidden': hide?.includes(
+      NavigationBreakpoint.Small
+    ),
+    '[.drawer-content_&]:hidden': hideInDrawer,
+  },
+];
 
 const Spacer = () => <div className="w-full" aria-hidden="true"></div>;
 
@@ -273,13 +287,13 @@ export const Navigation = ({
       window.innerWidth
     );
     setSizeVariantClasses(breakpoints, currentWidth, target);
+    onResize?.(currentWidth, target);
 
     const handler = () => {
       const currentWidth = Math.min(
         target.getBoundingClientRect().width,
         window.innerWidth
       );
-      console.log(currentWidth);
       setSizeVariantClasses(breakpoints, currentWidth, target);
       onResize?.(currentWidth, target);
     };
