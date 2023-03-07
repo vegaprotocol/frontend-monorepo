@@ -17,12 +17,14 @@ import type { RouteChildProps } from '../index';
 const Withdrawals = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
+  const { pubKey } = useVegaWallet();
 
   return (
     <>
       <Heading title={t('withdrawalsTitle')} />
+      {!pubKey && <p className="mb-8">{t('withdrawalsSubtitle')}</p>}
       <VegaWalletContainer>
-        {(currVegaKey) => <WithdrawPendingContainer />}
+        {() => <WithdrawPendingContainer />}
       </VegaWalletContainer>
     </>
   );

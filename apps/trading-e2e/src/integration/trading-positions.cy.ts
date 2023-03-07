@@ -20,45 +20,77 @@ describe('positions', { tags: '@smoke' }, () => {
     cy.getByTestId('Positions').click();
     validatePositionsDisplayed();
   });
-
-  it('renders position among some graphql errors', () => {
-    const errors = [
-      {
-        message: 'no market data for market: market-2',
-        path: ['market', 'data'],
-        extensions: {
-          code: 13,
-          type: 'Internal',
+  describe('renders position among some graphql errors', () => {
+    it('rows should be displayed despite errors', () => {
+      const errors = [
+        {
+          message:
+            'no market data for market: 9c55fb644c6f7de5422d40d691a62bffd5898384c70135bab29ba1e3e2e5280a',
+          path: ['marketsConnection', 'edges'],
+          extensions: {
+            code: 13,
+            type: 'Internal',
+          },
         },
-      },
-    ];
-    const marketData = marketsDataQuery();
-    const edges = marketData.marketsConnection?.edges.map((market) => {
-      const replace =
-        market.node.data?.market.id === 'market-2' ? null : market.node.data;
-      return { ...market, node: { ...market.node, data: replace } };
-    });
-    const overrides = {
-      ...marketData,
-      marketsConnection: { ...marketData.marketsConnection, edges },
-    };
-    cy.mockGQL((req) => {
-      aliasGQLQuery(req, 'MarketsData', overrides, errors);
-    });
-    cy.visit('/#/markets/market-0');
-    const emptyCells = [
-      'notional',
-      'markPrice',
-      'liquidationPrice',
-      'currentLeverage',
-      'averageEntryPrice',
-    ];
-    cy.getByTestId('tab-positions').within(() => {
-      cy.get('[row-id="market-2"]').within(() => {
-        emptyCells.forEach((cell) => {
-          cy.get(`[col-id="${cell}"]`).should('contain.text', '-');
+      ];
+      const marketData = marketsDataQuery();
+      const edges = marketData.marketsConnection?.edges.map((market) => {
+        const replace =
+          market.node.data?.market.id === 'market-2' ? null : market.node.data;
+        return { ...market, node: { ...market.node, data: replace } };
+      });
+      const overrides = {
+        ...marketData,
+        marketsConnection: { ...marketData.marketsConnection, edges },
+      };
+      cy.mockGQL((req) => {
+        aliasGQLQuery(req, 'MarketsData', overrides, errors);
+      });
+      cy.visit('/#/markets/market-0');
+      const emptyCells = [
+        'notional',
+        'markPrice',
+        'liquidationPrice',
+        'currentLeverage',
+        'averageEntryPrice',
+      ];
+      cy.getByTestId('tab-positions').within(() => {
+        cy.get('[row-id="market-2"]').within(() => {
+          emptyCells.forEach((cell) => {
+            cy.get(`[col-id="${cell}"]`).should('contain.text', '-');
+          });
         });
       });
+    });
+    it('error message should be displayed', () => {
+      const errors = [
+        {
+          message:
+            'no market data for asset: 9c55fb644c6f7de5422d40d691a62bffd5898384c70135bab29ba1e3e2e5280a',
+          path: ['assets', 'edges'],
+          extensions: {
+            code: 13,
+            type: 'Internal',
+          },
+        },
+      ];
+      const marketData = marketsDataQuery();
+      const edges = marketData.marketsConnection?.edges.map((market) => {
+        const replace =
+          market.node.data?.market.id === 'market-2' ? null : market.node.data;
+        return { ...market, node: { ...market.node, data: replace } };
+      });
+      const overrides = {
+        ...marketData,
+        marketsConnection: { ...marketData.marketsConnection, edges },
+      };
+      cy.mockGQL((req) => {
+        aliasGQLQuery(req, 'MarketsData', overrides, errors);
+      });
+      cy.visit('/#/markets/market-0');
+      cy.get('.pointer-events-none.absolute.inset-0').contains(
+        'Something went wrong:'
+      );
     });
   });
 

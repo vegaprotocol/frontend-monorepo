@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { CellRendererSelectorResult } from 'ag-grid-community';
 import type {
   VegaValueFormatterParams,
@@ -16,6 +16,15 @@ import {
   signedNumberCssClassRules,
 } from '@vegaprotocol/datagrid';
 import {
+  ButtonLink,
+  Tooltip,
+  TooltipCellComponent,
+  Link,
+  ExternalLink,
+  Icon,
+  ProgressBarCell,
+} from '@vegaprotocol/ui-toolkit';
+import {
   volumePrefix,
   toBigNum,
   formatNumber,
@@ -27,13 +36,9 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
-import {
-  ButtonLink,
-  Link,
-  ProgressBarCell,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
+import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -167,6 +172,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                   )
                 );
           }}
+          cellRenderer={OpenVolumeCell}
         />
         <AgGridColumn
           headerName={t('Mark price')}
@@ -311,7 +317,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'marginAccountBalance'>):
             | string
             | undefined => {
@@ -329,7 +334,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
-          cellClass="text-right font-mono"
+          cellClass="font-mono text-right"
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -348,13 +353,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerTooltip={t(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
           )}
+          cellRenderer={PNLCell}
         />
         <AgGridColumn
           headerName={t('Unrealised PNL')}
           field="unrealisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
-          cellClass="text-right font-mono"
+          cellClass="font-mono text-right"
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -373,6 +379,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerTooltip={t(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}
+          cellRenderer={PNLCell}
         />
         <AgGridColumn
           headerName={t('Updated')}
@@ -409,3 +416,106 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
 );
 
 export default PositionsTable;
+
+export const PNLCell = ({
+  valueFormatted,
+  data,
+}: VegaICellRendererParams<Position, 'realisedPNL'>) => {
+  const { VEGA_DOCS_URL } = useEnvironment();
+
+  if (!data) {
+    return <>-</>;
+  }
+
+  const losses = parseInt(data?.lossSocializationAmount ?? '0');
+  if (losses <= 0) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{valueFormatted}</>;
+  }
+
+  const lossesFormatted = addDecimalsFormatNumber(
+    data.lossSocializationAmount,
+    data.decimals
+  );
+
+  return (
+    <WarningCell
+      tooltipContent={
+        <>
+          <p className="mb-2">
+            {t('Lifetime loss socialisation deductions: %s', lossesFormatted)}
+          </p>
+          {VEGA_DOCS_URL && (
+            <ExternalLink href={VEGA_DOCS_URL}>
+              {t('Read more about loss socialisation')}
+            </ExternalLink>
+          )}
+        </>
+      }
+    >
+      {valueFormatted}
+    </WarningCell>
+  );
+};
+
+export const OpenVolumeCell = ({
+  valueFormatted,
+  data,
+}: VegaICellRendererParams<Position, 'openVolume'>) => {
+  const { VEGA_DOCS_URL } = useEnvironment();
+
+  if (!data) {
+    return <>-</>;
+  }
+
+  if (data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{valueFormatted}</>;
+  }
+
+  return (
+    <WarningCell
+      tooltipContent={
+        <>
+          <p className="mb-2">
+            {t('Your position was affected by market conditions')}
+          </p>
+          <p className="mb-2">
+            {t(
+              'Status: %s',
+              PositionStatusMapping[
+                PositionStatus.POSITION_STATUS_ORDERS_CLOSED
+              ]
+            )}
+          </p>
+          {VEGA_DOCS_URL && (
+            <ExternalLink href={VEGA_DOCS_URL}>
+              {t('Read more about position resolution')}
+            </ExternalLink>
+          )}
+        </>
+      }
+    >
+      {valueFormatted}
+    </WarningCell>
+  );
+};
+
+const WarningCell = ({
+  children,
+  tooltipContent,
+}: {
+  children: ReactNode;
+  tooltipContent: ReactNode;
+}) => {
+  return (
+    <Tooltip description={tooltipContent}>
+      <div className="w-full flex items-center justify-between underline decoration-dashed underline-offest-2">
+        <span className="text-black dark:text-white mr-1">
+          <Icon name="warning-sign" size={3} />
+        </span>
+        <span className="text-ellipsis overflow-hidden">{children}</span>
+      </div>
+    </Tooltip>
+  );
+};

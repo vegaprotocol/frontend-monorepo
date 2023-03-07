@@ -2,7 +2,6 @@ import type { ApolloError } from '@apollo/client';
 import type { GraphQLErrors } from '@apollo/client/errors';
 
 const NOT_FOUND = 'NotFound';
-const INTERNAL = 'Internal';
 
 const isApolloGraphQLError = (
   error: ApolloError | Error | undefined
@@ -29,12 +28,5 @@ export const isNotFoundGraphQLError = (
   );
 };
 
-export const marketDataErrorPolicyGuard = (errors: GraphQLErrors) => {
-  const path = ['market', 'data'];
-  return errors.every(
-    (e) =>
-      e.extensions &&
-      e.extensions['type'] === INTERNAL &&
-      (!path || path.every((item, i) => item === e?.path?.[i]))
-  );
-};
+export const marketDataErrorPolicyGuard = (errors: GraphQLErrors) =>
+  errors.every((e) => e.message.match(/no market data for market:/i));

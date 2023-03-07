@@ -41,6 +41,7 @@ const completeWithdrawalBtn = 'complete-withdrawal';
 const submitTransferBtn = '[type="submit"]';
 const transferForm = 'transfer-form';
 const depositSubmit = 'deposit-submit';
+const approveSubmit = 'approve-submit';
 
 // Because the tests are run on a live network to optimize time, the tests are interdependent and must be run in the given order.
 describe('capsule - without MultiSign', { tags: '@slow' }, () => {
@@ -73,13 +74,13 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
     cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
-    cy.getByTestId('approve-warning').should(
+    cy.getByTestId('approve-default').should(
       'contain.text',
-      `Deposits of ${btcSymbol} not approved`
+      `Before you can make a deposit of your chosen asset, ${btcSymbol}, you need to approve its use in your Ethereum wallet`
     );
-    cy.getByTestId(depositSubmit).click();
-    cy.getByTestId('dialog-title').should('contain.text', 'Approve complete');
-    cy.get('[data-testid="Return to deposit"]').click();
+    cy.getByTestId(approveSubmit).click();
+    cy.getByTestId('approve-pending').should('exist');
+    cy.getByTestId('approve-confirmed').should('exist');
     cy.get(amountField).clear().type('10');
     cy.getByTestId(depositSubmit).click();
     cy.getByTestId(toastContent, txTimeout).should(

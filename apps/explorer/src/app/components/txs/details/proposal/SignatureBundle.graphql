@@ -1,0 +1,19 @@
+query ExplorerNewAssetSignatureBundle($id: ID!) {
+  erc20ListAssetBundle(assetId: $id) {
+    signatures
+    nonce
+  }
+  asset(id: $id) {
+    status
+  }
+}
+
+query ExplorerUpdateAssetSignatureBundle($id: ID!) {
+  erc20SetAssetLimitsBundle(proposalId: $id) {
+    signatures
+    nonce
+  }
+  asset(id: $id) {
+    status
+  }
+}
