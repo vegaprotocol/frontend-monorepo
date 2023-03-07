@@ -147,7 +147,9 @@ const getAssetAccountAggregation = (
   };
 
   const breakdown = accounts
-    .filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
+    .filter((a) =>
+      [...USE_ACCOUNT_TYPES, AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type)
+    )
     .map((a) => ({
       ...a,
       asset: accounts[0].asset,

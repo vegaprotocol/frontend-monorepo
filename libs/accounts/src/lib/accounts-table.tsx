@@ -15,6 +15,7 @@ import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
+import classNames from 'classnames';
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
@@ -39,7 +40,9 @@ export interface AccountTableProps extends AgGridReactProps {
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
   ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
-    const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
+    // const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
+    // const [asset, setAsset] = useState<AssetFieldsFragment>();
+    const [row, setRow] = useState<AccountFields>();
     const pinnedAssetId = props.pinnedAsset?.id;
 
     const pinnedAssetRow = useMemo(() => {
@@ -103,11 +106,106 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             maxWidth={300}
           />
           <AgGridColumn
+            headerName={t('Used')}
+            type="rightAligned"
+            field="used"
+            headerTooltip={t(
+              'Currently allocated to a market as margin or bond. Check the breakdown for details.'
+            )}
+            cellRenderer={({
+              data,
+              value,
+            }: VegaICellRendererParams<AccountFields, 'used'>) => {
+              if (!data) return null;
+              const percentageUsed = new BigNumber(value || 0)
+                .dividedBy(data.deposited || 1)
+                .multipliedBy(100)
+                .toNumber();
+
+              const colorClass = (percentageUsed: number) => {
+                return classNames({
+                  'text-neutral-500 dark:text-neutral-400': percentageUsed < 75,
+                  'text-vega-orange':
+                    percentageUsed >= 75 && percentageUsed < 90,
+                  'text-vega-pink': percentageUsed >= 90,
+                });
+              };
+
+              return data.breakdown ? (
+                <>
+                  <ButtonLink
+                    data-testid="breakdown"
+                    onClick={() => {
+                      setOpenBreakdown(!openBreakdown);
+                      setRow(data);
+                    }}
+                  >
+                    <span className="mr-2">
+                      {' '}
+                      {data &&
+                        data.asset &&
+                        isNumeric(value) &&
+                        addDecimalsFormatNumber(value, data.asset.decimals)}
+                    </span>
+                  </ButtonLink>
+                  <span className={colorClass(percentageUsed)}>
+                    {percentageUsed.toFixed(2)}%
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="mr-2">
+                    {data &&
+                      data.asset &&
+                      isNumeric(value) &&
+                      addDecimalsFormatNumber(value, data.asset.decimals)}
+                  </span>
+                  <span>0.00%</span>
+                </>
+              );
+            }}
+          />
+
+          <AgGridColumn
+            headerName={t('Available')}
+            field="available"
+            type="rightAligned"
+            headerTooltip={t(
+              'Deposited on the network, but not allocated to a market. Free for use in new markets or orders.'
+            )}
+            cellRenderer={({
+              value,
+              data,
+            }: VegaICellRendererParams<AccountFields, 'available'>) => {
+              const percentageUsed = new BigNumber(data?.used || 0)
+                .dividedBy(data?.deposited || 1)
+                .multipliedBy(100)
+                .toNumber();
+              console.log('percentageUsed', percentageUsed);
+              const colorClass = (percentageUsed: number) => {
+                return classNames({
+                  'text-vega-orange':
+                    percentageUsed >= 75 && percentageUsed < 90,
+                  'text-vega-pink': percentageUsed >= 90,
+                });
+              };
+
+              return (
+                <span className={colorClass(percentageUsed)}>
+                  {data &&
+                    data.asset &&
+                    isNumeric(value) &&
+                    addDecimalsFormatNumber(value, data.asset.decimals)}
+                </span>
+              );
+            }}
+          />
+          <AgGridColumn
             headerName={t('Total')}
             type="rightAligned"
             field="deposited"
             headerTooltip={t(
-              'This is the total amount of collateral used plus the amount available in your general account.'
+              'The full amount associated with this key. Total of used and available collateral.'
             )}
             valueFormatter={({
               value,
@@ -118,43 +216,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               isNumeric(value) &&
               addDecimalsFormatNumber(value, data.asset.decimals)
             }
-            maxWidth={300}
-          />
-          <AgGridColumn
-            headerName={t('Used')}
-            type="rightAligned"
-            field="used"
-            headerTooltip={t(
-              'This is the amount of collateral used from your general account.'
-            )}
-            valueFormatter={({
-              value,
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'used'>) =>
-              data &&
-              data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
-            }
-            maxWidth={300}
-          />
-          <AgGridColumn
-            headerName={t('Available')}
-            field="available"
-            type="rightAligned"
-            headerTooltip={t(
-              'This is the amount of collateral available in your general account.'
-            )}
-            valueFormatter={({
-              value,
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'available'>) =>
-              data &&
-              data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
-            }
-            maxWidth={300}
           />
           {
             <AgGridColumn
@@ -185,15 +246,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                   }
                   return (
                     <>
-                      <ButtonLink
-                        data-testid="breakdown"
-                        onClick={() => {
-                          setOpenBreakdown(!openBreakdown);
-                          setBreakdown(data.breakdown || null);
-                        }}
-                      >
-                        {t('Breakdown')}
-                      </ButtonLink>
                       <span className="mx-1" />
                       {!props.isReadOnly && (
                         <ButtonLink
@@ -225,8 +277,21 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">
-            <h1 className="text-xl mb-4">{t('Collateral breakdown')}</h1>
-            <BreakdownTable data={breakdown} domLayout="autoHeight" />
+            <h1 className="text-xl mb-4">
+              {row?.asset?.symbol} {t('usage breakdown')}
+            </h1>
+            {row && (
+              <p className="mb-2 text-sm">
+                {t('You have %s %s in total.', [
+                  addDecimalsFormatNumber(row.deposited, row.asset.decimals),
+                  row.asset.symbol,
+                ])}
+              </p>
+            )}
+            <BreakdownTable
+              data={row?.breakdown || null}
+              domLayout="autoHeight"
+            />
           </div>
         </Dialog>
       </>

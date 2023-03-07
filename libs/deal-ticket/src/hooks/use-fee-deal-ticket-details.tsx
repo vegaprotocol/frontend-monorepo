@@ -12,12 +12,10 @@ import { useMemo } from 'react';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
-  EST_CLOSEOUT_TOOLTIP_TEXT,
   EST_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
 } from '../constants';
 import { useCalculateSlippage } from './use-calculate-slippage';
-import { useOrderCloseOut } from './use-order-closeout';
 import { useOrderMargin } from './use-order-margin';
 import type { OrderMargin } from './use-order-margin';
 import { getDerivedPrice } from '../utils/get-price';
@@ -57,12 +55,6 @@ export const useFeeDealTicketDetails = (
     derivedPrice,
   });
 
-  const estCloseOut = useOrderCloseOut({
-    order,
-    market,
-    marketData,
-  });
-
   const notionalSize = useMemo(() => {
     if (derivedPrice && order.size) {
       return new BigNumber(order.size)
@@ -81,7 +73,6 @@ export const useFeeDealTicketDetails = (
       assetSymbol,
       notionalSize,
       estMargin,
-      estCloseOut,
       slippage,
       slippageAdjustedPrice,
     };
@@ -90,7 +81,6 @@ export const useFeeDealTicketDetails = (
     assetSymbol,
     notionalSize,
     estMargin,
-    estCloseOut,
     slippage,
     slippageAdjustedPrice,
   ]);
@@ -101,7 +91,6 @@ export interface FeeDetails {
   assetSymbol: string;
   notionalSize: string | null;
   estMargin: OrderMargin | null;
-  estCloseOut: string | null;
   slippage: string | null;
 }
 
@@ -109,12 +98,10 @@ export const getFeeDetailsValues = ({
   assetSymbol,
   notionalSize,
   estMargin,
-  estCloseOut,
   market,
 }: FeeDetails) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const formatValueWithMarketDp = (
     value: string | number | null | undefined
   ): string => {
@@ -164,12 +151,6 @@ export const getFeeDetailsValues = ({
         estMargin?.margin && `~${formatValueWithAssetDp(estMargin?.margin)}`,
       symbol: assetSymbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT(assetSymbol),
-    },
-    {
-      label: t('Liquidation'),
-      value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
-      symbol: market.tradableInstrument.instrument.product.quoteName,
-      labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT(quoteName),
     },
   ];
 };
