@@ -77,7 +77,7 @@ const randomToast = (): Toast => {
 };
 
 type PriceStore = { price: number; setPrice: (p: number) => void };
-const usePrice = create<PriceStore>((set) => ({
+const usePrice = create<PriceStore>()((set) => ({
   price: 0,
   setPrice: (p) => set((state) => ({ price: p })),
 }));

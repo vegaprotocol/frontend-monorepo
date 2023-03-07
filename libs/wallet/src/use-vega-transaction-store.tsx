@@ -52,8 +52,8 @@ export interface VegaTransactionStore {
   ) => void;
 }
 
-export const useVegaTransactionStore = create(
-  subscribeWithSelector<VegaTransactionStore>((set, get) => ({
+export const useVegaTransactionStore = create<VegaTransactionStore>()(
+  subscribeWithSelector((set, get) => ({
     transactions: [] as VegaStoredTxState[],
     create: (body: Transaction, order?: OrderTxUpdateFieldsFragment) => {
       const transactions = get().transactions;

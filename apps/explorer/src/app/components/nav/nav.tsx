@@ -21,7 +21,7 @@ type NavStore = {
   hide: () => void;
 };
 
-export const useNavStore = create<NavStore>((set, get) => ({
+export const useNavStore = create<NavStore>()((set, get) => ({
   open: false,
   toggle: () => set({ open: !get().open }),
   hide: () => set({ open: false }),

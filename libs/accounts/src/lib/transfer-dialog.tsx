@@ -11,7 +11,7 @@ interface Actions {
   open: (open?: boolean) => void;
 }
 
-export const useTransferDialog = create<State & Actions>((set) => ({
+export const useTransferDialog = create<State & Actions>()((set) => ({
   isOpen: false,
   open: (open = true) => {
     set(() => ({ isOpen: open }));
