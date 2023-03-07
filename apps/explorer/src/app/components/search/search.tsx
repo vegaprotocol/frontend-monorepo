@@ -129,8 +129,8 @@ export const Search = () => {
   const searchTrigger = (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="mt-[-1px] text-vega-light-300 dark:text-vega-dark-300 data-open:text-black dark:data-open:text-white">
-          <Icon name="search" size={4} />
+        <button className="text-vega-light-300 dark:text-vega-dark-300 data-open:text-black dark:data-open:text-white w-8 h-8 relative">
+          <Icon name="search" size={4} className="absolute top-2 left-2" />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>

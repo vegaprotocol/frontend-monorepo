@@ -60,24 +60,6 @@ export type NavigationElementProps = {
   hideInDrawer?: boolean;
 };
 
-export const determineIfHidden = ({
-  hide,
-  hideInDrawer,
-}: NavigationElementProps) => [
-  {
-    '[.nav-size-full_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Full
-    ),
-    '[.nav-size-narrow_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Narrow
-    ),
-    '[.nav-size-small_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Small
-    ),
-    '[.drawer-content_&]:hidden': hideInDrawer,
-  },
-];
-
 export const NavigationContext = createContext<{
   theme: NavigationProps['theme'];
 }>({ theme: 'system' });
