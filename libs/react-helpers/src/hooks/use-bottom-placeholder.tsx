@@ -4,6 +4,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { IsFullWidthRowParams } from 'ag-grid-community';
 
 const NO_HOVER_CSS_RULE = { 'no-hover': 'data?.isLastPlaceholder' };
+const fullWidthCellRenderer = () => null;
 
 interface Props<T> {
   gridRef: RefObject<AgGridReact>;
@@ -45,7 +46,6 @@ export const useBottomPlaceholder = <T extends {}>({
     (params: IsFullWidthRowParams) => params.rowNode.data?.isLastPlaceholder,
     []
   );
-  const fullWidthCellRenderer = () => null;
 
   return useMemo(
     () => ({
@@ -54,6 +54,6 @@ export const useBottomPlaceholder = <T extends {}>({
       isFullWidthRow,
       fullWidthCellRenderer,
     }),
-    [onBodyScrollEnd, isFullWidthRow, fullWidthCellRenderer]
+    [onBodyScrollEnd, isFullWidthRow]
   );
 };
