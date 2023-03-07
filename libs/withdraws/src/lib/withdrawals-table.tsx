@@ -6,8 +6,8 @@ import {
   truncateByChars,
   addDecimalsFormatNumber,
   isNumeric,
-  useBottomPlaceholder,
 } from '@vegaprotocol/utils';
+import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
 import { Link, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';

@@ -1,9 +1,11 @@
 import { useRef, useMemo, memo, useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  useDataProvider,
+  useBottomPlaceholder,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import { useBottomPlaceholder } from '@vegaprotocol/utils';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';

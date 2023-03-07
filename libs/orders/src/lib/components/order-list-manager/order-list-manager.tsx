@@ -21,7 +21,7 @@ import {
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
-import { useBottomPlaceholder } from '@vegaprotocol/utils';
+import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 
 export interface OrderListManagerProps {
   partyId: string;
