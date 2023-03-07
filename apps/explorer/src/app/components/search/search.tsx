@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { Button, Icon, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { getSearchType, SearchTypes, toHex } from './detect-search';
