@@ -6,6 +6,9 @@ import {
 } from './use-order-store';
 import { act, renderHook } from '@testing-library/react';
 import { OrderType } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/i18n';
+
+jest.mock('zustand');
 
 jest.mock('zustand');
 
