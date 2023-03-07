@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { IsFullWidthRowParams } from 'ag-grid-community';
 
