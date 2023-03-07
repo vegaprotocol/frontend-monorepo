@@ -177,22 +177,14 @@ export const useEthereumTransactionToasts = () => {
     store.remove,
   ]);
 
-  const [dismissTx, deleteTx] = useEthTransactionStore((state) => [
-    state.dismiss,
-    state.delete,
-  ]);
+  const dismissTx = useEthTransactionStore((state) => state.dismiss);
 
   const onClose = useCallback(
     (tx: EthStoredTxState) => () => {
-      const safeToDelete = isFinal(tx);
-      if (safeToDelete) {
-        deleteTx(tx.id);
-      } else {
-        dismissTx(tx.id);
-      }
+      dismissTx(tx.id);
       removeToast(`eth-${tx.id}`);
     },
-    [deleteTx, dismissTx, removeToast]
+    [dismissTx, removeToast]
   );
 
   const fromEthTransaction = useCallback(
