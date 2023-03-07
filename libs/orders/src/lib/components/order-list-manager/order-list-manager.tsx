@@ -40,6 +40,7 @@ const CancelAllOrdersButton = ({
   return hasActiveOrder ? (
     <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
       <Button
+        variant="primary"
         size="sm"
         onClick={() => onClick(marketId)}
         data-testid="cancelAll"
