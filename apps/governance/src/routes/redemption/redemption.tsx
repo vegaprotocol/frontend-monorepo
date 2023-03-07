@@ -84,6 +84,7 @@ const RedemptionRouter = () => {
             fill={true}
             variant="primary"
             onClick={() => navigate(`${RoutesConfig.REDEEM}/${account}`)}
+            data-testid="view-connected-eth-btn"
           >
             {t('View connected Eth Wallet')}
           </Button>
