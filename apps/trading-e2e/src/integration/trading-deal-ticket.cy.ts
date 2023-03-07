@@ -581,7 +581,24 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_SUSPENDED,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+      (accounts) => {
+        if (accounts.party?.accountsConnection?.edges) {
+          const marginAccount = accounts.party.accountsConnection.edges.find(
+            (edge) => edge?.node.market?.id === 'market-0'
+          );
+          if (marginAccount) {
+            const generalAccount = accounts.party.accountsConnection.edges.find(
+              (edge) =>
+                edge?.node.asset.id === marginAccount.node.asset.id &&
+                !edge?.node.market
+            );
+            if (generalAccount) {
+              generalAccount.node.balance += '0';
+            }
+          }
+        }
+      }
     );
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');

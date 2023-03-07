@@ -43,10 +43,6 @@ export const accountFields: AccountFieldsFragment[] = [
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '100000000',
-    market: {
-      id: 'market-0',
-      __typename: 'Market',
-    },
     asset: {
       __typename: 'Asset',
       id: 'asset-id-2',
@@ -75,7 +71,7 @@ export const accountFields: AccountFieldsFragment[] = [
     },
     asset: {
       __typename: 'Asset',
-      id: 'asset-id-2',
+      id: 'asset-0',
     },
   },
   {
