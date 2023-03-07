@@ -12,6 +12,8 @@ on:
           - react-helpers
           - tailwindcss-config
           - types
+          - utils
+          - i18n
 
 jobs:
   publish:

@@ -1,6 +1,6 @@
-import { captureException } from '@sentry/react';
 import debounce from 'lodash/debounce';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import { localLoggerFactory } from '@vegaprotocol/utils';
 
 type ResizeObserverConfiguration = {
   debounceTime: number;
@@ -19,20 +19,26 @@ export function useResizeObserver(
   callback: ResizeObserverCallback,
   options: ResizeObserverConfiguration = DEFAULT_OPTIONS
 ) {
+  const wrappedCb = useCallback(
+    (entries: ResizeObserverEntry[], observer: ResizeObserver) =>
+      window.requestAnimationFrame(() => {
+        options.debounceTime > 0
+          ? debounce(callback, options.debounceTime)(entries, observer)
+          : callback(entries, observer);
+      }),
+    [callback, options.debounceTime]
+  );
+
   const observer = useMemo(() => {
-    return new ResizeObserver(
-      options.debounceTime > 0
-        ? debounce(callback, options.debounceTime)
-        : callback
-    );
-  }, [callback, options.debounceTime]);
+    return new ResizeObserver(wrappedCb);
+  }, [wrappedCb]);
 
   useEffect(() => {
     if (!observer || !target) return;
     try {
       observer.observe(target, options.config);
     } catch (err) {
-      captureException(err);
+      localLoggerFactory({ application: 'react-helpers' }).debug(err as Error);
     }
     return () => observer?.disconnect();
   }, [observer, options.config, target]);

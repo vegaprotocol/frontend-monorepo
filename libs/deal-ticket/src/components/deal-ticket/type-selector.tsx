@@ -74,7 +74,7 @@ export const TypeSelector = ({
   };
 
   return (
-    <FormGroup label={t('Order type')} labelFor="order-type">
+    <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
       <Toggle
         id="order-type"
         name="order-type"

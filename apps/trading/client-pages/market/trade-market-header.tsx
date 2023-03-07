@@ -111,11 +111,11 @@ export const TradeMarketHeader = ({
           </div>
         </HeaderStat>
       ) : null}
-      <MarketProposalNotification marketId={market?.id} />
       <MarketLiquiditySupplied
         marketId={market?.id}
         assetDecimals={asset?.decimals || 0}
       />
+      <MarketProposalNotification marketId={market?.id} />
     </Header>
   );
 };

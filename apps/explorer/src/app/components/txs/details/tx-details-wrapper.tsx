@@ -24,6 +24,7 @@ import { TxDetailsProtocolUpgrade } from './tx-details-protocol-upgrade';
 import { TxDetailsIssueSignatures } from './tx-issue-signatures';
 import { TxDetailsNodeAnnounce } from './tx-node-announce';
 import { TxDetailsStateVariable } from './tx-state-variable-proposal';
+import { TxProposal } from './tx-proposal';
 import { TxDetailsTransfer } from './tx-transfer';
 
 interface TxDetailsWrapperProps {
@@ -88,6 +89,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
+    case 'Proposal':
+      return TxProposal;
     case 'Vote on Proposal':
       return TxProposalVote;
     case 'Batch Market Instructions':

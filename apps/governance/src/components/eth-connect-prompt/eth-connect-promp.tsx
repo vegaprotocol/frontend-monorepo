@@ -11,7 +11,7 @@ export const EthConnectPrompt = () => {
   const { appDispatch } = useAppState();
   return (
     <Button
-      variant="primary"
+      variant="default"
       onClick={() =>
         appDispatch({
           type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
