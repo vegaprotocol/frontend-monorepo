@@ -52,7 +52,7 @@ export const DealTicket = ({
   onClickCollateral,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  // store last used tif for market so that when chaning OrderType the previous TIF
+  // store last used tif for market so that when changing OrderType the previous TIF
   // selection for that type is used when switching back
   const [lastTIF, setLastTIF] = useState({
     [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
