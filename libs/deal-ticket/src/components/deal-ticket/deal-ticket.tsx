@@ -9,10 +9,12 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import type { OrderSubmission } from '@vegaprotocol/wallet';
+import {
+  normalizeOrderSubmission,
+  useVegaWallet,
+  useVegaWalletDialogStore,
+} from '@vegaprotocol/wallet';
 import {
   ExternalLink,
   InputError,
@@ -22,6 +24,7 @@ import {
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
+  validateExpiration,
   validateMarketState,
   validateMarketTradingMode,
   validateTimeInForce,
@@ -33,21 +36,14 @@ import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
-
-export type TransactionStatus = 'default' | 'pending';
+import type { OrderObj } from '@vegaprotocol/orders';
 
 export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
-  submit: (order: OrderSubmissionBody['orderSubmission']) => void;
+  submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
 }
-
-export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
-  // This is not a field used in the form but allows us to set a
-  // summary error message
-  summary: string;
-};
 
 export const DealTicket = ({
   market,
@@ -70,7 +66,7 @@ export const DealTicket = ({
     clearErrors,
     update,
     handleSubmit,
-  } = useOrderForm(market);
+  } = useOrderForm(market.id);
   const marketStateError = validateMarketState(marketData.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
@@ -139,7 +135,7 @@ export const DealTicket = ({
   ]);
 
   const onSubmit = useCallback(
-    (order: OrderSubmissionBody['orderSubmission']) => {
+    (order: OrderSubmission) => {
       checkForErrors();
       submit(
         normalizeOrderSubmission(
@@ -152,7 +148,7 @@ export const DealTicket = ({
     [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
-  // just return null, if an order doesn't exist one will be created by the store
+  // if an order doesn't exist one will be created by the store immediately
   if (!order) return null;
 
   return (
@@ -177,6 +173,7 @@ export const DealTicket = ({
               if (type === OrderType.TYPE_NETWORK) return;
               update({
                 type,
+                // when changing type also update the tif to what was last used of new type
                 timeInForce: lastTIF[type] || order.timeInForce,
               });
             }}
@@ -224,6 +221,8 @@ export const DealTicket = ({
             orderType={order.type}
             onSelect={(timeInForce) => {
               update({ timeInForce });
+              // Set tif value for the given order type, so that when switching
+              // types we know the last used TIF for the given order type
               setLastTIF((curr) => ({ ...curr, [order.type]: timeInForce }));
             }}
             market={market}
@@ -237,6 +236,9 @@ export const DealTicket = ({
           <Controller
             name="expiresAt"
             control={control}
+            rules={{
+              validate: validateExpiration,
+            }}
             render={() => (
               <ExpirySelector
                 value={order.expiresAt}
@@ -257,7 +259,7 @@ export const DealTicket = ({
         order={order}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
-        onClickCollateral={onClickCollateral || (() => null)}
+        onClickCollateral={onClickCollateral}
       />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
@@ -280,10 +282,10 @@ interface SummaryMessageProps {
   errorMessage?: string;
   market: Market;
   marketData: MarketData;
-  order: OrderSubmissionBody['orderSubmission'];
+  order: OrderObj;
   isReadOnly: boolean;
   pubKey: string | null;
-  onClickCollateral: () => void;
+  onClickCollateral?: () => void;
 }
 const SummaryMessage = memo(
   ({

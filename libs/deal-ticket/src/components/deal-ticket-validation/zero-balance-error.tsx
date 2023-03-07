@@ -7,7 +7,7 @@ interface ZeroBalanceErrorProps {
     id: string;
     symbol: string;
   };
-  onClickCollateral: () => void;
+  onClickCollateral?: () => void;
 }
 
 export const ZeroBalanceError = ({
@@ -21,8 +21,12 @@ export const ZeroBalanceError = ({
       testId="dealticket-error-message-zero-balance"
       message={
         <>
-          You need {asset.symbol} in your wallet to trade in this market. See
-          all your <Link onClick={onClickCollateral}>collateral</Link>.
+          You need {asset.symbol} in your wallet to trade in this market.
+          {onClickCollateral && (
+            <>
+              See all your <Link onClick={onClickCollateral}>collateral</Link>.
+            </>
+          )}
         </>
       }
       buttonProps={{

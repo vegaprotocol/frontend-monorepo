@@ -15,7 +15,7 @@ export interface DealTicketAmountProps {
   priceError?: string;
   update: (obj: Partial<OrderObj>) => void;
   size: string;
-  price: string;
+  price?: string;
 }
 
 export const DealTicketAmount = ({
