@@ -1,81 +1,81 @@
-import { Link } from 'react-router-dom';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
-import { useEffect, useState } from 'react';
-import { TOP_LEVEL_ROUTES } from '../../routes/routes';
+import { TOKEN_DROPDOWN_ROUTES, TOP_LEVEL_ROUTES } from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
-import logoWhiteText from '../../images/logo-white-text.png';
-import logoBlackText from '../../images/logo-black-text.png';
-import debounce from 'lodash/debounce';
-import { NavDrawer } from './nav-draw';
-import { Nav as ToolkitNav } from '@vegaprotocol/ui-toolkit';
-import { AppNavLink } from './nav-link';
-import { NavDropDown } from './nav-dropdown';
+import type { NavigationProps } from '@vegaprotocol/ui-toolkit';
+import { useNavigationDrawer } from '@vegaprotocol/ui-toolkit';
+import {
+  HIDE_ALL,
+  Navigation,
+  NavigationBreakpoint,
+  NavigationContent,
+  NavigationItem,
+  NavigationLink,
+  NavigationList,
+  NavigationTrigger,
+} from '@vegaprotocol/ui-toolkit';
+import { EthWallet } from '../eth-wallet';
+import { VegaWallet } from '../vega-wallet';
+import { useLocation, useMatch } from 'react-router-dom';
+import { useEffect } from 'react';
 
-const useDebouncedResize = () => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResizeDebounced = debounce(() => {
-      setWindowWidth(window.innerWidth);
-    }, 300);
-
-    window.addEventListener('resize', handleResizeDebounced);
-
-    return () => {
-      window.removeEventListener('resize', handleResizeDebounced);
-    };
-  }, []);
-  return {
-    windowWidth,
-  };
-};
-
-type NavbarTheme = 'inherit' | 'dark' | 'yellow';
-interface NavbarProps {
-  navbarTheme?: NavbarTheme;
-}
-
-export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
-  const { windowWidth } = useDebouncedResize();
-  const isDesktop = windowWidth > 995;
-
+export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
   const { t } = useTranslation();
-  const isYellow = navbarTheme === 'yellow';
+  const setDrawerOpen = useNavigationDrawer((state) => state.setDrawerOpen);
+
+  const location = useLocation();
+  const isOnToken = useMatch('token/*');
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [location, setDrawerOpen]);
+
+  const topLevel = TOP_LEVEL_ROUTES.map(({ name, path }) => (
+    <NavigationItem key={name}>
+      <NavigationLink to={path}>{name}</NavigationLink>
+    </NavigationItem>
+  ));
+
+  const secondLevel = TOKEN_DROPDOWN_ROUTES.map(({ name, path, end }) => (
+    <NavigationItem key={name}>
+      <NavigationLink to={path} end={Boolean(end)}>
+        {name}
+      </NavigationLink>
+    </NavigationItem>
+  ));
 
   return (
-    <ToolkitNav
-      navbarTheme={navbarTheme}
-      icon={
-        <Link to="/" data-testid="logo-link">
-          <img
-            alt="Vega"
-            src={navbarTheme === 'yellow' ? logoBlackText : logoWhiteText}
-            height={30}
-            width={250}
-          />
-        </Link>
-      }
-      title={undefined}
-      titleContent={<NetworkSwitcher />}
-    >
-      {isDesktop ? (
-        <nav className="flex items-center flex-1 px-4">
-          {TOP_LEVEL_ROUTES.map((r) => (
-            <AppNavLink
-              key={r.path}
-              testId={r.name}
-              name={t(r.name)}
-              path={r.path}
-              navbarTheme={navbarTheme}
-            />
-          ))}
-          <NavDropDown navbarTheme={navbarTheme} />
-        </nav>
-      ) : (
-        <nav className="flex items-center flex-1 px-2 justify-end">
-          <NavDrawer inverted={isYellow} routes={TOP_LEVEL_ROUTES} />
-        </nav>
-      )}
-    </ToolkitNav>
+    <Navigation appName="Governance" theme={theme} breakpoints={[458, 959]}>
+      <NavigationList
+        className="[.drawer-content_&]:border-b [.drawer-content_&]:border-b-vega-light-200 dark:[.drawer-content_&]:border-b-vega-dark-200 [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"
+        hide={[NavigationBreakpoint.Small]}
+      >
+        <NavigationItem className="[.drawer-content_&]:w-full">
+          <NetworkSwitcher className="[.drawer-content_&]:w-full" />
+        </NavigationItem>
+      </NavigationList>
+      <NavigationList
+        hide={[NavigationBreakpoint.Narrow, NavigationBreakpoint.Small]}
+      >
+        {topLevel}
+        <NavigationItem>
+          <NavigationTrigger isActive={Boolean(isOnToken)}>
+            {t('Token')}
+          </NavigationTrigger>
+          <NavigationContent>
+            <NavigationList>{secondLevel}</NavigationList>
+          </NavigationContent>
+        </NavigationItem>
+      </NavigationList>
+      <NavigationList
+        hide={HIDE_ALL}
+        className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
+      >
+        <NavigationItem className="[.drawer-content_&]:w-full">
+          <EthWallet />
+        </NavigationItem>
+        <NavigationItem className="[.drawer-content_&]:w-full">
+          <VegaWallet />
+        </NavigationItem>
+      </NavigationList>
+    </Navigation>
   );
 };

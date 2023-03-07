@@ -43,6 +43,14 @@ export const Header = () => {
   );
 
   const { pathname } = useLocation();
+
+  /**
+   * Because the grouped items are displayed in a sub menu under an "Other" item
+   * we need to determine whether any underlying item is active to highlight the
+   * trigger in the same fashion as any other top-level `NavigationLink`.
+   * This function checks whether the current location pathname is one of the
+   * underlying NavigationLinks.
+   */
   const isOnOther = useMemo(() => {
     for (const path of groupedItems.map((r) => r.path)) {
       const matched = matchPath(`${path}/*`, pathname);

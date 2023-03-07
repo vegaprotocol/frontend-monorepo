@@ -86,7 +86,7 @@ export const Navbar = ({
           NavigationBreakpoint.Full,
         ]}
       >
-        <NavigationItem className="[.drawer-content_&]:w-full">
+        <NavigationItem className="[.drawer-content_&]:w-full text-black dark:text-white">
           <ThemeSwitcher withMobile />
         </NavigationItem>
       </NavigationList>
