@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import type { CSSProperties, HTMLAttributes } from 'react';
-import { forwardRef } from 'react';
 import { createContext } from 'react';
 import { create } from 'zustand';
 import type { NavigationProps } from './navigation-utils';
@@ -52,10 +51,9 @@ export const BurgerIcon = ({
   </svg>
 );
 
-export const NavigationDrawerTrigger = forwardRef<
-  HTMLButtonElement,
-  Pick<NavigationProps, 'theme'>
->(({ theme }, ref) => {
+export const NavigationDrawerTrigger = ({
+  theme,
+}: Pick<NavigationProps, 'theme'>) => {
   const { drawerOpen, setDrawerOpen } = useNavigationDrawer((state) => ({
     drawerOpen: state.drawerOpen,
     setDrawerOpen: state.setDrawerOpen,
@@ -63,8 +61,6 @@ export const NavigationDrawerTrigger = forwardRef<
 
   return (
     <button
-      data-testid="button-menu-drawer"
-      ref={ref}
       className={classNames(
         'px-2',
         `hidden group-[.nav-size-narrow]:block group-[.nav-size-small]:block`,
@@ -87,7 +83,7 @@ export const NavigationDrawerTrigger = forwardRef<
       />
     </button>
   );
-});
+};
 
 export const NavigationDrawerContent = ({
   theme,
@@ -124,12 +120,7 @@ export const NavigationDrawerContent = ({
         )}
         style={style}
       >
-        <div
-          data-testid="menu-drawer"
-          className="flex flex-col gap-2 pr-10 text-lg"
-        >
-          {children}
-        </div>
+        <div className="flex flex-col gap-2 pr-10 text-lg">{children}</div>
       </div>
     </NavigationDrawerContext.Provider>
   );

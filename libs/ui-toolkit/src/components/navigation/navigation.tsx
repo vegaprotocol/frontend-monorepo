@@ -1,82 +1,26 @@
 import classNames from 'classnames';
 import type { ComponentProps, ReactNode } from 'react';
 import { useLayoutEffect } from 'react';
-import { createContext } from 'react';
 import { useContext } from 'react';
 import { useRef } from 'react';
 import { VegaLogo } from '../vega-logo';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { Icon } from '../icon';
-import { Drawer, DrawerContext, useDrawer } from '../drawer';
-import type { Link } from 'react-router-dom';
+import { Drawer } from '../drawer';
 import { NavLink } from 'react-router-dom';
-
-type NavigationProps = {
-  /**
-   * The display name of the dApp, e.g. "Console", "Explorer"
-   */
-  appName: string;
-  /**
-   * URL pointing to the home page.
-   */
-  homeLink?: string;
-  /**
-   * The theme of the navigation.
-   * @default "system"
-   */
-  theme: 'system' | 'light' | 'dark' | 'yellow';
-  /**
-   * The navigation items (links, buttons, dropdowns, etc.)
-   */
-  children?: ReactNode;
-  /**
-   * The navigation actions (e.g. theme switcher, wallet connector)
-   */
-  actions?: ReactNode;
-  /**
-   * Size variants breakpoints
-   */
-  breakpoints?: [number, number];
-  fullWidth?: boolean;
-  onResize?: (width: number, navigationElement: HTMLElement) => void;
-};
-
-export enum NavigationBreakpoint {
-  /**
-   * Full width navigation
-   * `width > breakpoints[1]`
-   */
-  Full = 'nav-size-full',
-  /**
-   * Narrow variant
-   * `width > breakpoints[0] && width <= breakpoints[1]`
-   */
-  Narrow = 'nav-size-narrow',
-  /**
-   * Small variant
-   * `width <= breakpoints[0]`
-   */
-  Small = 'nav-size-small',
-}
-type NavigationElementProps = {
-  hide?: NavigationBreakpoint[];
-  hideInDrawer?: boolean;
-};
-
-const determineIfHidden = ({ hide, hideInDrawer }: NavigationElementProps) => [
-  {
-    '[.nav-size-full_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Full
-    ),
-    '[.nav-size-narrow_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Narrow
-    ),
-    '[.nav-size-small_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Small
-    ),
-    '[.drawer-content_&]:hidden': hideInDrawer,
-  },
-];
+import type {
+  NavigationElementProps,
+  NavigationProps,
+} from './navigation-utils';
+import { setSizeVariantClasses } from './navigation-utils';
+import { NavigationContext } from './navigation-utils';
+import { determineIfHidden } from './navigation-utils';
+import {
+  NavigationDrawerTrigger,
+  NavigationDrawerContext,
+  useNavigationDrawer,
+  NavigationDrawerContent,
+} from './navigation-drawer';
 
 const Logo = ({
   appName,
@@ -124,7 +68,7 @@ export const NavigationItem = ({
   hideInDrawer,
   ...props
 }: ComponentProps<typeof NavigationMenu.Item> & NavigationElementProps) => {
-  const insideDrawer = useContext(DrawerContext);
+  const insideDrawer = useContext(NavigationDrawerContext);
   return (
     <NavigationMenu.Item
       className={classNames(
@@ -148,8 +92,9 @@ export const NavigationList = ({
   <NavigationMenu.List
     className={classNames(
       'flex gap-4 items-center',
-      '[.navigation-content_&]:flex-col [.navigation-content_&]:items-start [.navigation-content_&]:mt-6',
+      '[.navigation-content_&]:flex-col [.navigation-content_&]:items-start',
       '[.drawer-content_&]:flex-col [.drawer-content_&]:items-start [.drawer-content_&]:gap-6 [.drawer-content_&]:mt-2',
+      '[.drawer-content_.navigation-content_&]:mt-6',
       determineIfHidden({ hide, hideInDrawer }),
       className
     )}
@@ -169,7 +114,7 @@ export const NavigationTrigger = ({
   isActive?: boolean;
 } & NavigationElementProps) => {
   const { theme } = useContext(NavigationContext);
-  const insideDrawer = useContext(DrawerContext);
+  const insideDrawer = useContext(NavigationDrawerContext);
   return (
     <NavigationMenu.Trigger
       className={classNames(
@@ -215,7 +160,7 @@ export const NavigationContent = ({
   ...props
 }: ComponentProps<typeof NavigationMenu.Content>) => {
   const { theme } = useContext(NavigationContext);
-  const insideDrawer = useContext(DrawerContext);
+  const insideDrawer = useContext(NavigationDrawerContext);
 
   const content = (
     <NavigationMenu.Content
@@ -257,9 +202,9 @@ export const NavigationLink = ({
   children,
   to,
   ...props
-}: ComponentProps<typeof Link>) => {
+}: ComponentProps<typeof NavLink>) => {
   const { theme } = useContext(NavigationContext);
-  const setDrawerOpen = useDrawer((state) => state.setDrawerOpen);
+  const setDrawerOpen = useNavigationDrawer((state) => state.setDrawerOpen);
   return (
     <NavigationMenu.Link
       asChild
@@ -285,7 +230,7 @@ export const NavigationLink = ({
                   isActive && theme === 'yellow',
               })}
             >
-              {children}
+              {children as ReactNode}
             </span>
             <div
               aria-hidden="true"
@@ -306,48 +251,6 @@ export const NavigationLink = ({
       </NavLink>
     </NavigationMenu.Link>
   );
-};
-
-export const NavigationContext = createContext<{
-  theme: NavigationProps['theme'];
-}>({ theme: 'system' });
-
-const setSizeVariantClasses = (
-  breakpoints: [number, number],
-  currentWidth: number,
-  target: HTMLElement
-) => {
-  if (
-    currentWidth <= breakpoints[0] &&
-    !target.classList.contains(NavigationBreakpoint.Small)
-  ) {
-    target.classList.remove(
-      NavigationBreakpoint.Full,
-      NavigationBreakpoint.Narrow
-    );
-    target.classList.add(NavigationBreakpoint.Small);
-  }
-  if (
-    currentWidth > breakpoints[0] &&
-    currentWidth <= breakpoints[1] &&
-    !target.classList.contains(NavigationBreakpoint.Narrow)
-  ) {
-    target.classList.remove(
-      NavigationBreakpoint.Full,
-      NavigationBreakpoint.Small
-    );
-    target.classList.add(NavigationBreakpoint.Narrow);
-  }
-  if (
-    currentWidth > breakpoints[1] &&
-    !target.classList.contains(NavigationBreakpoint.Full)
-  ) {
-    target.classList.remove(
-      NavigationBreakpoint.Narrow,
-      NavigationBreakpoint.Small
-    );
-    target.classList.add(NavigationBreakpoint.Full);
-  }
 };
 
 export const Navigation = ({
@@ -376,6 +279,7 @@ export const Navigation = ({
         target.getBoundingClientRect().width,
         window.innerWidth
       );
+      console.log(currentWidth);
       setSizeVariantClasses(breakpoints, currentWidth, target);
       onResize?.(currentWidth, target);
     };
@@ -385,96 +289,10 @@ export const Navigation = ({
     };
   }, [breakpoints, onResize]);
 
-  const [drawerOpen, setDrawerOpen] = useDrawer((state) => [
-    state.drawerOpen,
-    state.setDrawerOpen,
-  ]);
-
-  const drawerTrigger = (
-    <button
-      className={classNames(
-        'px-2',
-        `hidden group-[.nav-size-narrow]:block group-[.nav-size-small]:block`,
-        {
-          'z-[21]': drawerOpen,
-        }
-      )}
-      onClick={() => {
-        setDrawerOpen(!drawerOpen);
-      }}
-    >
-      <svg
-        className={classNames('stroke-[1px] transition-transform', {
-          'stroke-black dark:stroke-white': theme === 'system',
-          'stroke-black': theme === 'light' || theme === 'yellow',
-          'stroke-white': theme === 'dark',
-          'dark:stroke-white': drawerOpen && theme === 'yellow',
-        })}
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-      >
-        <line
-          x1={0.5}
-          x2={15.5}
-          y1={3.5}
-          y2={3.5}
-          className={classNames('transition-transform duration-75', {
-            'rotate-45 translate-y-[4px] origin-[8px_3.5px]': drawerOpen,
-          })}
-        />
-        <line
-          x1={0.5}
-          x2={15.5}
-          y1={11.5}
-          y2={11.5}
-          className={classNames('transition-transform duration-75', {
-            'rotate-[-45deg] translate-y-[-4px] origin-[8px_11.5px]':
-              drawerOpen,
-          })}
-        />
-      </svg>
-    </button>
-  );
-
-  const drawerContent = (
-    <DrawerContext.Provider value={true}>
-      <div
-        className={classNames(
-          'drawer-content',
-          'border-l h-full relative overflow-auto',
-          'px-4 pb-8 font-alpha',
-          // text
-          {
-            'text-vega-light-300 dark:text-vega-dark-300':
-              theme === 'system' || theme === 'yellow',
-            'text-vega-light-300': theme === 'light',
-            'text-vega-dark-300': theme === 'dark',
-          },
-          // border
-          {
-            'border-l-vega-light-200 dark:border-l-vega-dark-200':
-              theme === 'system' || theme === 'yellow',
-            'border-l-vega-light-200': theme === 'light',
-            'border-l-vega-dark-200': theme === 'dark',
-          },
-          // background
-          {
-            'bg-white dark:bg-black': theme === 'system' || theme === 'yellow',
-            'bg-white': theme === 'light',
-            'bg-black': theme === 'dark',
-          }
-        )}
-        style={{
-          paddingTop: `${
-            navigationRef.current?.getBoundingClientRect().bottom
-          }px`,
-        }}
-      >
-        <div className="flex flex-col gap-2 pr-10 text-lg">{children}</div>
-      </div>
-    </DrawerContext.Provider>
-  );
+  const { drawerOpen, setDrawerOpen } = useNavigationDrawer((state) => ({
+    drawerOpen: state.drawerOpen,
+    setDrawerOpen: state.setDrawerOpen,
+  }));
 
   return (
     <NavigationContext.Provider value={{ theme }}>
@@ -530,11 +348,20 @@ export const Navigation = ({
             {actions}
             <Drawer
               open={drawerOpen}
-              onChange={setDrawerOpen}
-              trigger={drawerTrigger}
+              onChange={(isOpen) => setDrawerOpen(isOpen)}
+              trigger={<NavigationDrawerTrigger theme={theme} />}
               container={actionsRef.current}
             >
-              {drawerContent}
+              <NavigationDrawerContent
+                theme={theme}
+                style={{
+                  paddingTop: `${
+                    navigationRef?.current?.getBoundingClientRect().bottom || 0
+                  }px`,
+                }}
+              >
+                {children}
+              </NavigationDrawerContent>
             </Drawer>
           </div>
         )}
