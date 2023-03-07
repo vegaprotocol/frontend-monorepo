@@ -88,9 +88,9 @@ const getRowsToRender = (
   return selectedRows;
 };
 
-// 17px of row height plus 5px gap
-export const gridGap = 5;
-export const rowHeight = 22;
+// 17px of row height plus 4px gap
+export const gridGap = 4;
+export const rowHeight = 21;
 // top padding to make space for header
 const headerPadding = 30;
 // bottom padding to make space for footer
@@ -393,7 +393,8 @@ export const Orderbook = ({
             numberOfRows * rowHeight +
               headerPadding +
               footerPadding +
-              -viewportHeight
+              -viewportHeight -
+              gridGap
           )
         );
         if (scrollTopRef.current !== priceCenterScrollOffset) {

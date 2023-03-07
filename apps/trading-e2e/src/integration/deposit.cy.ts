@@ -31,7 +31,13 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   it('handles empty fields', () => {
     cy.getByTestId('deposit-submit').click();
     cy.getByTestId(formFieldError).should('contain.text', 'Required');
-    cy.getByTestId(formFieldError).should('have.length', 2);
+    // once Ethereum wallet is connected and key selected the only field that will
+    // error is the asset select
+    cy.getByTestId(formFieldError).should('have.length', 1);
+    cy.get('[data-testid="input-error-text"][aria-describedby="asset"]').should(
+      'have.length',
+      1
+    );
   });
 
   it('unable to select assets not enabled', () => {
@@ -41,12 +47,13 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.get(assetSelectField + ' option:contains(Asset 4)').should('not.exist');
   });
 
-  it('invalid public key', () => {
-    cy.get(toAddressField)
-      .clear()
-      .type('INVALID_DEPOSIT_TO_ADDRESS')
-      .next(`[data-testid="${formFieldError}"]`)
-      .should('have.text', 'Invalid Vega key');
+  it('invalid public key when entering address manually', () => {
+    cy.getByTestId('enter-pubkey-manually').click();
+    cy.get(toAddressField).clear().type('INVALID_DEPOSIT_TO_ADDRESS');
+    cy.get(`[data-testid="${formFieldError}"][aria-describedby="to"]`).should(
+      'have.text',
+      'Invalid Vega key'
+    );
   });
 
   it('invalid amount', () => {
