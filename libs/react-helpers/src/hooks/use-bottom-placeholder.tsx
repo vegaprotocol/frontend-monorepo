@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import type { RefObject } from 'react';
 import { useCallback, useMemo } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
@@ -5,6 +6,8 @@ import type { IsFullWidthRowParams } from 'ag-grid-community';
 
 const NO_HOVER_CSS_RULE = { 'no-hover': 'data?.isLastPlaceholder' };
 const fullWidthCellRenderer = () => null;
+const isFullWidthRow = (params: IsFullWidthRowParams) =>
+  params.rowNode.data?.isLastPlaceholder;
 
 interface Props<T> {
   gridRef: RefObject<AgGridReact>;
@@ -42,11 +45,6 @@ export const useBottomPlaceholder = <T extends {}>({
     }
   }, [gridRef, setId]);
 
-  const isFullWidthRow = useCallback(
-    (params: IsFullWidthRowParams) => params.rowNode.data?.isLastPlaceholder,
-    []
-  );
-
   const onRowsChanged = useCallback(() => {
     const remove: T[] = [];
     gridRef.current?.api.forEachNodeAfterFilterAndSort((rowNode) => {
@@ -69,6 +67,6 @@ export const useBottomPlaceholder = <T extends {}>({
       onSortChanged: onRowsChanged,
       onFilterChange: onRowsChanged,
     }),
-    [onBodyScrollEnd, isFullWidthRow, onRowsChanged]
+    [onBodyScrollEnd, onRowsChanged]
   );
 };

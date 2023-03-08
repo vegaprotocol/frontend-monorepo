@@ -1,6 +1,7 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import type {
   BodyScrollEvent,
   BodyScrollEndEvent,
@@ -13,6 +14,7 @@ import { OrderListTable } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
 import { useHasActiveOrder } from '../../order-hooks/use-has-active-order';
 import type { Filter, Sort } from './use-order-list-data';
+import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
@@ -20,7 +22,6 @@ import {
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
-import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 
 export interface OrderListManagerProps {
   partyId: string;
@@ -57,6 +58,8 @@ export const OrderListManager = ({
   onMarketClick,
   isReadOnly,
 }: OrderListManagerProps) => {
+  const params = useParams();
+  const hideButtons = 'marketId' in params;
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const [sort, setSort] = useState<Sort[] | undefined>();
@@ -204,7 +207,7 @@ export const OrderListManager = ({
           />
         </div>
       </div>
-      {!isReadOnly && (
+      {!isReadOnly && !hideButtons && (
         <CancelAllOrdersButton onClick={cancelAll} marketId={marketId} />
       )}
       {editOrder && (
