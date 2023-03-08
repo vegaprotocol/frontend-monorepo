@@ -192,7 +192,13 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
   combineInsertionData<Order>
 );
 
-const hasActiveOrderProviderInternal = makeDataProvider({
+const hasActiveOrderProviderInternal = makeDataProvider<
+  OrdersQuery,
+  boolean,
+  OrdersUpdateSubscription,
+  ReturnType<typeof getDelta>,
+  OrdersQueryVariables
+>({
   query: OrdersDocument,
   subscriptionQuery: OrdersUpdateDocument,
   update: (
