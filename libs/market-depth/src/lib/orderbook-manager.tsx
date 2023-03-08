@@ -20,7 +20,7 @@ import {
   getPriceLevel,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
-import { usePersistedOrderStore } from '@vegaprotocol/orders';
+import { useOrderStore } from '@vegaprotocol/orders';
 
 interface OrderbookManagerProps {
   marketId: string;
@@ -172,7 +172,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     flush();
   }, [resolution, flush]);
 
-  const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
+  const updateOrder = useOrderStore((store) => store.update);
 
   return (
     <AsyncRenderer
@@ -190,7 +190,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         onClick={(price?: string | number) => {
           if (price) {
             const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-            updatePrice(marketId, priceValue);
+            updateOrder(marketId, { price: priceValue });
           }
         }}
       />

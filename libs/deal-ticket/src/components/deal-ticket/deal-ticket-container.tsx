@@ -47,7 +47,7 @@ export const DealTicketContainer = ({
           market={market}
           marketData={marketData}
           submit={(orderSubmission) => create({ orderSubmission })}
-          onClickCollateral={onClickCollateral || (() => null)}
+          onClickCollateral={onClickCollateral}
         />
       ) : (
         <Splash>
