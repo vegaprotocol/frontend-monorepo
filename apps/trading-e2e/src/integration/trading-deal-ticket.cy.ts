@@ -657,7 +657,7 @@ describe('account validation', { tags: '@regression' }, () => {
         'have.text',
         'You need ' +
           'tDAI' +
-          ' in your wallet to trade in this market. See all your collateral.Make a deposit'
+          ' in your wallet to trade in this market.See all your collateral.Make a deposit'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
     });

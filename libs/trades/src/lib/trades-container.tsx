@@ -7,7 +7,7 @@ import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import type { Trade, TradeEdge } from './trades-data-provider';
-import { usePersistedOrderStore } from '@vegaprotocol/orders';
+import { useOrderStore } from '@vegaprotocol/orders';
 
 interface TradesContainerProps {
   marketId: string;
@@ -19,7 +19,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
-  const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
+  const updateOrder = useOrderStore((store) => store.update);
 
   const addNewRows = useCallback(() => {
     if (newRows.current === 0) {
@@ -109,7 +109,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
         onBodyScroll={onBodyScroll}
         onClick={(price?: string) => {
           if (price) {
-            updatePrice(marketId, price);
+            updateOrder(marketId, { price });
           }
         }}
       />

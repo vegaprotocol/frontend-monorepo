@@ -7,8 +7,7 @@ export const useHasActiveOrder = (marketId?: string) => {
   const { pubKey } = useVegaWallet();
   const [hasActiveOrder, setHasActiveOrder] = useState(false);
   const update = useCallback(({ data }: { data: boolean | null }) => {
-    console.log({ data });
-    setHasActiveOrder(!!data);
+    setHasActiveOrder(Boolean(data));
     return true;
   }, []);
   useDataProvider({
