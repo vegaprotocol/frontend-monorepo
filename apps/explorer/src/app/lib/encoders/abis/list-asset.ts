@@ -1,4 +1,4 @@
-import { defaultAbiCoder } from 'ethers/lib/utils';
+import { defaultAbiCoder, isAddress, isHexString } from 'ethers/lib/utils';
 import { encodeBridgeCommand } from './bridge-command';
 import type { AbiType } from './abi-types';
 
@@ -33,7 +33,13 @@ export interface EncodeListAssetParameters {
 }
 
 /**
- * Generates an ABI encoded function call to list an asset
+ * Generates an ABI encoded function call to list an asset. This is
+ * used in the Signature Bundle view on some proposals to recover
+ * which validators signed a multisig bundle. It does this by recovering
+ * the ERC20 addresses of the signers, then comparing those to the list
+ * of signers on the bundle. In order to do this, we recreate the signed
+ * data from the values we know from the transaction. That last part
+ * is what this function does.
  *
  * @param EncodeListAssetParameters The arguments for the ABI call
  * @returns string   encoded message
@@ -45,7 +51,7 @@ export function encodeListAsset({
   threshold,
   nonce,
 }: EncodeListAssetParameters) {
-  if (assetERC20.substring(0, 2) !== '0x' || assetId.substring(0, 2) !== '0x') {
+  if (!isAddress(assetERC20) || !isHexString(assetId)) {
     throw new Error('Asset ERC20 and assetID must be hex values');
   }
 

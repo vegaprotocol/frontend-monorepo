@@ -1,4 +1,4 @@
-import { keccak256, defaultAbiCoder } from 'ethers/lib/utils';
+import { keccak256, defaultAbiCoder, isAddress } from 'ethers/lib/utils';
 import type { AbiType } from './abi-types';
 
 export const BRIDGE_COMMAND: AbiType[] = [
@@ -14,14 +14,13 @@ export const BRIDGE_COMMAND: AbiType[] = [
  * @param bytes The packed bytes of the command for the bridge
  * @param address the Ethereum address of the ERC20 bridge
  * @param raw defaults to false. If set, does not keccak256 the output
- * @returns
  */
 export function encodeBridgeCommand(
   bytes: string,
   address: string,
   raw = false
 ) {
-  if (address.substring(0, 2) !== '0x') {
+  if (!isAddress(address)) {
     throw new Error('Bridge address must be a hex value');
   }
 

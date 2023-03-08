@@ -33,7 +33,7 @@ export const BundleError = ({ status, error }: BundleErrorProps) => {
         )}
       </p>
 
-      <p>
+      <div>
         {status === 'STATUS_ENABLED' ? (
           t('Asset already enabled')
         ) : (
@@ -43,7 +43,7 @@ export const BundleError = ({ status, error }: BundleErrorProps) => {
             <SyntaxHighlighter data={error} size="smaller" />
           </details>
         )}
-      </p>
+      </div>
     </div>
   );
 };

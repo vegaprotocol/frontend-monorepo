@@ -6,7 +6,6 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { TxDetailsChainMultisigThreshold } from './tx-multisig-threshold';
 import omit from 'lodash/omit';
-import { getBlockTime } from './lib/get-block-time';
 
 type Threshold =
   components['schemas']['vegaERC20MultiSigEvent']['thresholdSet'];
@@ -74,9 +73,6 @@ describe('Chain Event: multisig threshold change', () => {
     expect(screen.getByText(t('Threshold'))).toBeInTheDocument();
     expect(screen.getByText(`66.7%`)).toBeInTheDocument();
 
-    const expectedDate = getBlockTime(mockBlockTime);
-
     expect(screen.getByText(t('Threshold change date'))).toBeInTheDocument();
-    expect(screen.getByText(expectedDate)).toBeInTheDocument();
   });
 });

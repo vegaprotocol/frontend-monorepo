@@ -1,4 +1,4 @@
-import { defaultAbiCoder } from 'ethers/lib/utils';
+import { defaultAbiCoder, isAddress } from 'ethers/lib/utils';
 import { encodeBridgeCommand } from './bridge-command';
 import type { AbiType } from './abi-types';
 
@@ -40,8 +40,8 @@ export function encodeUpdateAsset({
   threshold,
   nonce,
 }: EncodeUpdateAssetParameters) {
-  if (assetERC20.substring(0, 2) !== '0x') {
-    throw new Error('Asset ERC20 must be hex values');
+  if (!isAddress(assetERC20)) {
+    throw new Error('Asset ERC20 must be a valid address');
   }
 
   const values = [assetERC20, limit, threshold, nonce, METHOD_NAME];
