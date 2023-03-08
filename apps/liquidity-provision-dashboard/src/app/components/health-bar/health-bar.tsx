@@ -15,11 +15,9 @@ const Remainder = () => (
 
 const Target = ({
   target,
-  targetPercent,
   decimals,
   isLarge,
 }: {
-  targetPercent: number;
   isLarge: boolean;
   target: string;
   decimals: number;
@@ -41,7 +39,7 @@ const Target = ({
         className={classNames(
           'absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-1/2 px-1.5 group'
         )}
-        style={{ left: `${targetPercent}%` }}
+        style={{ left: '50%' }}
       >
         <div
           className={classNames(
@@ -59,7 +57,7 @@ const Target = ({
 
 const Level = ({
   commitmentAmount,
-  total,
+  rangeLimit,
   backgroundColor,
   opacity,
   status,
@@ -68,7 +66,7 @@ const Level = ({
   decimals,
 }: {
   commitmentAmount: number;
-  total: number;
+  rangeLimit: number;
   backgroundColor: string;
   opacity: number;
   status: Schema.MarketTradingMode;
@@ -77,7 +75,7 @@ const Level = ({
   decimals: number;
 }) => {
   const width = new BigNumber(commitmentAmount)
-    .div(total)
+    .div(rangeLimit)
     .multipliedBy(100)
     .toNumber();
 
@@ -141,18 +139,23 @@ export const HealthBar = ({
   size?: 'small' | 'large';
 }) => {
   const targetNumber = parseInt(target, 10);
+  const rangeLimit = targetNumber * 2;
 
+  let lastVisibleLevel = 0;
   const committedNumber = levels
-    .reduce((total, current) => {
-      return total.plus(current.commitmentAmount);
+    .reduce((total, current, index) => {
+      const newTotal = total.plus(current.commitmentAmount);
+      if (total.isLessThan(rangeLimit) && newTotal.isGreaterThan(rangeLimit)) {
+        lastVisibleLevel = index;
+      }
+      return newTotal;
     }, new BigNumber(0))
     .toNumber();
 
-  const total =
-    targetNumber * 2 >= committedNumber ? targetNumber * 2 : committedNumber;
-  const targetPercent = (targetNumber / total) * 100;
   const isLarge = size === 'large';
   const backgroundColor = getColorForStatus(status);
+  const showRemainder = committedNumber < rangeLimit || levels.length === 0;
+  const showOverflow = !showRemainder && lastVisibleLevel < levels.length - 1;
 
   return (
     <div className="w-full">
@@ -172,34 +175,35 @@ export const HealthBar = ({
 
           <div className="health-bars h-[inherit] flex w-full gap-0.5">
             {levels.map((p, index) => {
-              console.log('level: ', p);
               const { commitmentAmount, fee } = p;
               const prevLevel = levels[index - 1]?.commitmentAmount;
               const opacity = 1 - 0.2 * index;
-              return (
+              return index <= lastVisibleLevel ? (
                 <Level
                   commitmentAmount={commitmentAmount}
-                  total={total}
+                  rangeLimit={rangeLimit}
                   backgroundColor={backgroundColor}
                   opacity={opacity}
                   status={status}
                   fee={fee}
                   prevLevel={prevLevel}
-                  decimals={decimals}
+                  decimals={0}
                 />
-              );
+              ) : null;
             })}
-            {(total !== committedNumber || levels.length === 0) && (
-              <Remainder />
+            {showRemainder && <Remainder />}
+            {showOverflow && (
+              <Tooltip
+                description={t(
+                  'Providers greater than 2x target stake not shown'
+                )}
+              >
+                <div className="h-[inherit] relative flex-1 leading-4">...</div>
+              </Tooltip>
             )}
           </div>
         </div>
-        <Target
-          targetPercent={targetPercent}
-          isLarge={isLarge}
-          target={target}
-          decimals={decimals}
-        />
+        <Target isLarge={isLarge} target={target} decimals={decimals} />
       </div>
     </div>
   );
