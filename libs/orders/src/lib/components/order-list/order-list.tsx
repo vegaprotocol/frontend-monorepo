@@ -31,11 +31,10 @@ export type OrderListTableProps = OrderListProps & {
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
-  hasActiveOrder?: boolean;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, setEditOrder, onMarketClick, hasActiveOrder, ...props }, ref) => {
+  ({ cancel, setEditOrder, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -47,7 +46,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         }}
         style={{
           width: '100%',
-          height: hasActiveOrder ? 'calc(100% - 46px)' : '100%',
+          height: '100%',
         }}
         getRowId={({ data }) => data.id}
         {...props}

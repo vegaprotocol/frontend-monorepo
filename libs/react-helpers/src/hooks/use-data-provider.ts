@@ -62,7 +62,6 @@ export const useDataProvider = <
   const flushRef = useRef<(() => void) | undefined>(undefined);
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
   const loadRef = useRef<Load<Data> | undefined>(undefined);
-  const initialized = useRef<boolean>(false);
   const prevVariables = usePrevious(props.variables);
   const [variables, setVariables] = useState(props.variables);
   useEffect(() => {
@@ -76,7 +75,6 @@ export const useDataProvider = <
     }
   }, []);
   const reload = useCallback((force = false) => {
-    initialized.current = false;
     if (reloadRef.current) {
       reloadRef.current(force);
     }
@@ -118,11 +116,8 @@ export const useDataProvider = <
       }
       setTotalCount(totalCount);
       setData(data);
-      if (!loading && !initialized.current) {
-        initialized.current = true;
-        if (update) {
-          update({ data });
-        }
+      if (!loading && !isUpdate && update) {
+        update({ data });
       }
     },
     [update, insert, skipUpdates]
@@ -131,10 +126,9 @@ export const useDataProvider = <
     setData(null);
     setError(undefined);
     setTotalCount(undefined);
-    if (initialized.current && update) {
+    if (update) {
       update({ data: null });
     }
-    initialized.current = false;
     if (skip) {
       setLoading(false);
       if (update) {
@@ -157,7 +151,7 @@ export const useDataProvider = <
       loadRef.current = undefined;
       return unsubscribe();
     };
-  }, [client, initialized, dataProvider, callback, variables, skip, update]);
+  }, [client, dataProvider, callback, variables, skip, update]);
   return {
     data,
     loading,

@@ -75,6 +75,27 @@ export const TransactionComplete = ({
   );
 };
 
+const CancelAllOrdersButton = ({
+  onClick,
+  marketId,
+}: {
+  onClick: (marketId?: string) => void;
+  marketId?: string;
+}) => {
+  const hasActiveOrder = useHasActiveOrder(marketId);
+  return hasActiveOrder ? (
+    <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
+      <Button
+        size="sm"
+        onClick={() => onClick(marketId)}
+        data-testid="cancelAll"
+      >
+        {t('Cancel all')}
+      </Button>
+    </div>
+  ) : null;
+};
+
 export const OrderListManager = ({
   partyId,
   marketId,
@@ -87,7 +108,6 @@ export const OrderListManager = ({
   const [filter, setFilter] = useState<Filter | undefined>();
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
-  const hasActiveOrder = useHasActiveOrder(marketId);
 
   const { data, error, loading, addNewRows, getRows, reload } =
     useOrderListData({
@@ -141,7 +161,7 @@ export const OrderListManager = ({
     [setSort]
   );
 
-  const onCancel = useCallback(
+  const cancel = useCallback(
     (order: Order) => {
       if (!order.market) return;
       create({
@@ -163,6 +183,17 @@ export const OrderListManager = ({
     [getRows]
   );
 
+  const cancelAll = useCallback(
+    (marketId?: string) => {
+      create({
+        orderCancellation: {
+          marketId,
+        },
+      });
+    },
+    [create]
+  );
+
   return (
     <>
       <div className="h-full relative grid grid-rows-[1fr,min-content]">
@@ -175,11 +206,10 @@ export const OrderListManager = ({
             onBodyScroll={onBodyScroll}
             onFilterChanged={onFilterChanged}
             onSortChanged={onSortChange}
-            cancel={onCancel}
+            cancel={cancel}
             setEditOrder={setEditOrder}
             onMarketClick={onMarketClick}
             isReadOnly={isReadOnly}
-            hasActiveOrder={hasActiveOrder}
             blockLoadDebounceMillis={100}
             suppressLoadingOverlay
             suppressNoRowsOverlay
@@ -195,22 +225,8 @@ export const OrderListManager = ({
             />
           </div>
         </div>
-        {!isReadOnly && hasActiveOrder && (
-          <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
-            <Button
-              size="sm"
-              onClick={() => {
-                create({
-                  orderCancellation: {
-                    marketId,
-                  },
-                });
-              }}
-              data-testid="cancelAll"
-            >
-              {t('Cancel all')}
-            </Button>
-          </div>
+        {!isReadOnly && (
+          <CancelAllOrdersButton onClick={cancelAll} marketId={marketId} />
         )}
       </div>
 
