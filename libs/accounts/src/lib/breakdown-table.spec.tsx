@@ -51,7 +51,7 @@ describe('BreakdownTable', () => {
     const expectedValues = [
       'BTCUSD Monthly (30 Jun 2022)',
       'Margin',
-      '1,256.00 (50.00)%',
+      '1,256.00 (50)%',
       '1,256.00',
       '1,256.00',
     ];
