@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import type { RefObject } from 'react';
 import { useCallback, useMemo } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
