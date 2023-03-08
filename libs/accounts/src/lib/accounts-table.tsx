@@ -1,9 +1,14 @@
 import { forwardRef, useMemo, useState } from 'react';
-import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  isNumeric,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
+  VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
 import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
@@ -109,14 +114,20 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'This is the total amount of collateral used plus the amount available in your general account.'
             )}
+            valueGetter={({
+              data,
+            }: VegaValueGetterParams<AccountFields, 'deposited'>) => {
+              return !data?.deposited
+                ? undefined
+                : toBigNum(data.deposited, data.asset.decimals).toNumber();
+            }}
             valueFormatter={({
-              value,
               data,
             }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
               data &&
               data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
+              isNumeric(data.deposited) &&
+              addDecimalsFormatNumber(data.deposited, data.asset.decimals)
             }
             maxWidth={300}
           />
@@ -127,14 +138,21 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'This is the amount of collateral used from your general account.'
             )}
+            valueGetter={({
+              data,
+            }: VegaValueGetterParams<AccountFields, 'used'>) => {
+              return !data?.used
+                ? undefined
+                : toBigNum(data.used, data.asset.decimals).toNumber();
+            }}
             valueFormatter={({
               value,
               data,
             }: VegaValueFormatterParams<AccountFields, 'used'>) =>
               data &&
               data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
+              isNumeric(data.used) &&
+              addDecimalsFormatNumber(data.used, data.asset.decimals)
             }
             maxWidth={300}
           />
@@ -145,14 +163,20 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'This is the amount of collateral available in your general account.'
             )}
+            valueGetter={({
+              data,
+            }: VegaValueGetterParams<AccountFields, 'available'>) => {
+              return !data?.available
+                ? undefined
+                : toBigNum(data.available, data.asset.decimals).toNumber();
+            }}
             valueFormatter={({
-              value,
               data,
             }: VegaValueFormatterParams<AccountFields, 'available'>) =>
               data &&
               data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
+              isNumeric(data.available) &&
+              addDecimalsFormatNumber(data.available, data.asset.decimals)
             }
             maxWidth={300}
           />

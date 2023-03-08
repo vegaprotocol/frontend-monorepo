@@ -38,7 +38,7 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="deposited"]')
-      .should('have.text', '1,001.01');
+      .should('have.text', '100,001.01');
   });
   describe('sorting by ag-grid columns should work well', () => {
     it('sorting by asset', () => {
@@ -58,7 +58,7 @@ describe('accounts', { tags: '@smoke' }, () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
         '1,000.00002',
-        '1,001.01',
+        '100,001.01',
         '1,000.01',
         '1,000.00',
         '1,000.00001',
@@ -68,10 +68,10 @@ describe('accounts', { tags: '@smoke' }, () => {
         '1,000.00001',
         '1,000.00002',
         '1,000.01',
-        '1,001.01',
+        '100,001.01',
       ];
       const marketsSortedDesc = [
-        '1,001.01',
+        '100,001.01',
         '1,000.01',
         '1,000.00002',
         '1,000.00001',
@@ -102,7 +102,7 @@ describe('accounts', { tags: '@smoke' }, () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
         '1,000.00002',
-        '1,000.00',
+        '100,000.00',
         '1,000.00',
         '1,000.00',
         '1,000.00001',
@@ -110,14 +110,14 @@ describe('accounts', { tags: '@smoke' }, () => {
       const marketsSortedAsc = [
         '1,000.00',
         '1,000.00',
-        '1,000.00',
         '1,000.00001',
         '1,000.00002',
+        '100,000.00',
       ];
       const marketsSortedDesc = [
+        '100,000.00',
         '1,000.00002',
         '1,000.00001',
-        '1,000.00',
         '1,000.00',
         '1,000.00',
       ];

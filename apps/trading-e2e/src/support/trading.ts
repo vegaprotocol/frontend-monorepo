@@ -72,8 +72,7 @@ const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
   state: Schema.MarketState = Schema.MarketState.STATE_ACTIVE,
   tradingMode?: Schema.MarketTradingMode,
-  trigger?: Schema.AuctionTrigger,
-  amendAccounts?: (accounts: ReturnType<typeof accountsQuery>) => void
+  trigger?: Schema.AuctionTrigger
 ) => {
   aliasGQLQuery(req, 'ChainId', chainIdQuery());
   aliasGQLQuery(req, 'Statistics', statisticsQuery());
@@ -92,11 +91,7 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'MarketCandles', marketCandlesQuery());
   aliasGQLQuery(req, 'MarketDepth', marketDepthQuery());
   aliasGQLQuery(req, 'Orders', ordersQuery());
-  const accounts = accountsQuery();
-  if (amendAccounts) {
-    amendAccounts(accounts);
-  }
-  aliasGQLQuery(req, 'Accounts', accounts);
+  aliasGQLQuery(req, 'Accounts', accountsQuery());
   aliasGQLQuery(req, 'Positions', positionsQuery());
   aliasGQLQuery(req, 'Margins', marginsQuery());
   aliasGQLQuery(req, 'Assets', assetsQuery());
@@ -120,8 +115,7 @@ declare global {
       mockTradingPage(
         state?: Schema.MarketState,
         tradingMode?: Schema.MarketTradingMode,
-        trigger?: Schema.AuctionTrigger,
-        amendAccounts?: (accounts: ReturnType<typeof accountsQuery>) => void
+        trigger?: Schema.AuctionTrigger
       ): void;
     }
   }
@@ -129,14 +123,9 @@ declare global {
 export const addMockTradingPage = () => {
   Cypress.Commands.add(
     'mockTradingPage',
-    (
-      state = Schema.MarketState.STATE_ACTIVE,
-      tradingMode,
-      trigger,
-      mapAccounts
-    ) => {
+    (state = Schema.MarketState.STATE_ACTIVE, tradingMode, trigger) => {
       cy.mockGQL((req) => {
-        mockTradingPage(req, state, tradingMode, trigger, mapAccounts);
+        mockTradingPage(req, state, tradingMode, trigger);
       });
     }
   );

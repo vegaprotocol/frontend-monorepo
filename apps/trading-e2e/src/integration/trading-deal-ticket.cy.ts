@@ -2,7 +2,11 @@ import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { testOrderSubmission } from '../support/order-validation';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import { accountsQuery, estimateOrderQuery } from '@vegaprotocol/mock';
+import {
+  accountsQuery,
+  estimateOrderQuery,
+  amendGeneralAccountBalance,
+} from '@vegaprotocol/mock';
 import { createOrder } from '../support/create-order';
 
 const orderSizeField = 'order-size';
@@ -581,25 +585,12 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_SUSPENDED,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
-      (accounts) => {
-        if (accounts.party?.accountsConnection?.edges) {
-          const marginAccount = accounts.party.accountsConnection.edges.find(
-            (edge) => edge?.node.market?.id === 'market-0'
-          );
-          if (marginAccount) {
-            const generalAccount = accounts.party.accountsConnection.edges.find(
-              (edge) =>
-                edge?.node.asset.id === marginAccount.node.asset.id &&
-                !edge?.node.market
-            );
-            if (generalAccount) {
-              generalAccount.node.balance += '0';
-            }
-          }
-        }
-      }
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
+    const accounts = accountsQuery();
+    cy.mockGQL((req) => {
+      aliasGQLQuery(req, 'Accounts', accounts);
+    });
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
@@ -649,30 +640,10 @@ describe('account validation', { tags: '@regression' }, () => {
     beforeEach(() => {
       cy.setVegaWallet();
       cy.mockTradingPage();
+      const accounts = accountsQuery();
+      amendGeneralAccountBalance(accounts, 'market-0', '0');
       cy.mockGQL((req) => {
-        aliasGQLQuery(
-          req,
-          'Accounts',
-          accountsQuery({
-            party: {
-              accountsConnection: {
-                edges: [
-                  {
-                    node: {
-                      type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-                      balance: '0',
-                      market: null,
-                      asset: {
-                        __typename: 'Asset',
-                        id: 'asset-0',
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          })
-        );
+        aliasGQLQuery(req, 'Accounts', accounts);
       });
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -696,19 +667,13 @@ describe('account validation', { tags: '@regression' }, () => {
     beforeEach(() => {
       cy.setVegaWallet();
       cy.mockTradingPage();
+      const accounts = accountsQuery();
+      amendGeneralAccountBalance(accounts, 'market-0', '100000000');
       cy.mockGQL((req) => {
-        aliasGQLQuery(
-          req,
-          'EstimateOrder',
-          estimateOrderQuery({
-            estimateOrder: {
-              marginLevels: {
-                __typename: 'MarginLevels',
-                initialLevel: '1000000000',
-              },
-            },
-          })
-        );
+        aliasGQLQuery(req, 'Accounts', accounts);
+      });
+      cy.mockGQL((req) => {
+        aliasGQLQuery(req, 'EstimateOrder', estimateOrderQuery());
       });
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
