@@ -203,7 +203,7 @@ context(
       cy.get(newProposalTitle).type('Test new market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
       cy.fixture('/proposals/new-market').then((newMarketProposal) => {
-        newMarketProposal.invalid = "I am an invalid field"
+        newMarketProposal.invalid = 'I am an invalid field';
         let newMarketPayload = JSON.stringify(newMarketProposal);
         cy.get(newProposalTerms).type(newMarketPayload, {
           parseSpecialCharSequences: false,
@@ -219,6 +219,7 @@ context(
     });
 
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
+    // 3002-PROP-022
     it('Unable to submit update market proposal without equity-like share in the market', function () {
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
       cy.get(newProposalTitle).type('Test update market proposal - rejected');
@@ -236,8 +237,37 @@ context(
       cy.getByTestId('dialog-content')
         .find('p')
         .should('have.text', 'PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE');
+      cy.ensure_specified_unstaked_tokens_are_associated('1');
     });
 
+    // 3002-PROP-020
+    it('Unable to submit update market proposal without minimum amount of tokens', function () {
+      cy.vega_wallet_teardown();
+      cy.vega_wallet_faucet_assets_without_check(
+        'fUSDC',
+        '1000000',
+        vegaWalletPublicKey
+      );
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
+      cy.get(newProposalTitle).type('Test update market proposal - rejected');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.get(proposalMarketSelect).select('Test market 1');
+      cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
+        let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
+        cy.get(newProposalTerms).type(newUpdateMarketProposal, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Transaction failed', proposalTimeout).should('be.visible');
+      cy.get(feedbackError).should(
+        'have.text',
+        'Network error: the network blocked the transaction through the spam protection: party has insufficient associated governance tokens in their staking account to submit proposal request (ABCI code 89)'
+      );
+    });
+
+    // 3001-VOTE-092
     it('Able to submit update market proposal and vote for proposal', function () {
       cy.vega_wallet_faucet_assets_without_check(
         'fUSDC',
