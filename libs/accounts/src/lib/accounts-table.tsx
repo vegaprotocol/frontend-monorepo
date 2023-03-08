@@ -40,8 +40,6 @@ export interface AccountTableProps extends AgGridReactProps {
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
   ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
-    // const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
-    // const [asset, setAsset] = useState<AssetFieldsFragment>();
     const [row, setRow] = useState<AccountFields>();
     const pinnedAssetId = props.pinnedAsset?.id;
 
@@ -55,7 +53,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             asset: props.pinnedAsset,
             available: '0',
             used: '0',
-            deposited: '0',
+            total: '0',
             balance: '0',
           };
         }
@@ -149,25 +147,29 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     </span>
                   </ButtonLink>
                   <span
-                    className={classNames(colorClass(percentageUsed), 'pl-2')}
+                    className={classNames(
+                      colorClass(percentageUsed),
+                      'ml-2 inline-block w-14'
+                    )}
                   >
                     {percentageUsed.toFixed(2)}%
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="mr-2">
+                  <span>
                     {data &&
                       data.asset &&
                       isNumeric(value) &&
                       addDecimalsFormatNumber(value, data.asset.decimals)}
                   </span>
-                  <span>0.00%</span>
+                  <span className="ml-2 inline-block w-14 text-neutral-500 dark:text-neutral-400">
+                    0.00%
+                  </span>
                 </>
               );
             }}
           />
-
           <AgGridColumn
             headerName={t('Available')}
             field="available"
