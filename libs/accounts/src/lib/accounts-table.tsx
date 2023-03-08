@@ -1,5 +1,9 @@
 import { forwardRef, useMemo, useState } from 'react';
-import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import {
+  addDecimal,
+  addDecimalsFormatNumber,
+  isNumeric,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
@@ -74,6 +78,12 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             resizable: true,
             tooltipComponent: TooltipCellComponent,
             sortable: true,
+            comparator: (valueA, valueB, nodeA, nodeB) => {
+              const a = addDecimal(valueA, nodeA.data.asset?.decimals);
+              const b = addDecimal(valueB, nodeB.data.asset?.decimals);
+              if (a === b) return 0;
+              return a > b ? 1 : -1;
+            },
           }}
           {...props}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}

@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimal, addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   Intent,
@@ -33,14 +33,6 @@ export const progressBarValueFormatter = ({
   };
 };
 
-export const progressBarHeaderComponentParams = {
-  template:
-    '<div class="ag-cell-label-container" role="presentation">' +
-    `  <span></span>` +
-    '  <span ref="eText" class="ag-header-cell-text"></span>' +
-    '</div>',
-};
-
 interface BreakdownTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
 }
@@ -62,6 +54,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         defaultColDef={{
           flex: 1,
           resizable: true,
+          sortable: true,
         }}
       >
         <AgGridColumn
@@ -96,9 +89,22 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           field="used"
           flex={2}
           maxWidth={500}
-          headerComponentParams={progressBarHeaderComponentParams}
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
+          comparator={(
+            valueA: string,
+            valueB: string,
+            nodeA: { data: AccountFields },
+            nodeB: { data: AccountFields }
+          ) => {
+            let a = valueA,
+              b = valueB;
+            a = addDecimal(nodeA.data.balance, nodeA.data.asset?.decimals);
+            b = addDecimal(nodeB.data.balance, nodeB.data.asset?.decimals);
+
+            if (a === b) return 0;
+            return a > b ? 1 : -1;
+          }}
         />
       </AgGrid>
     );
