@@ -5,11 +5,12 @@ import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
 import type {
-  OrderAmendmentBody,
-  OrderSubmissionBody,
+  OrderAmendment,
+  OrderSubmission,
   Transaction,
   Transfer,
 } from './connectors';
+import type { Exact } from 'type-fest';
 
 /**
  * Creates an ID in the same way that core does on the backend. This way we
@@ -28,11 +29,11 @@ export const encodeTransaction = (tx: Transaction): string => {
   );
 };
 
-export const normalizeOrderSubmission = (
-  order: OrderSubmissionBody['orderSubmission'],
+export const normalizeOrderSubmission = <T extends Exact<OrderSubmission, T>>(
+  order: T,
   decimalPlaces: number,
   positionDecimalPlaces: number
-): OrderSubmissionBody['orderSubmission'] => ({
+): OrderSubmission => ({
   ...order,
   price:
     order.type === OrderType.TYPE_LIMIT && order.price
@@ -45,12 +46,12 @@ export const normalizeOrderSubmission = (
       : undefined,
 });
 
-export const normalizeOrderAmendment = (
+export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
   order: Pick<Order, 'id' | 'timeInForce' | 'size' | 'expiresAt'>,
   market: Pick<Market, 'id' | 'decimalPlaces' | 'positionDecimalPlaces'>,
   price: string,
   size: string
-): OrderAmendmentBody['orderAmendment'] => ({
+): OrderAmendment => ({
   orderId: order.id,
   marketId: market.id,
   price: removeDecimal(price, market.decimalPlaces),
@@ -65,7 +66,7 @@ export const normalizeOrderAmendment = (
     : undefined,
 });
 
-export const normalizeTransfer = (
+export const normalizeTransfer = <T extends Exact<Transfer, T>>(
   address: string,
   amount: string,
   asset: {

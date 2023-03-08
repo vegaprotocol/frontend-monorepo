@@ -21,7 +21,8 @@
     "**/*.stories.js",
     "**/*.stories.jsx",
     "**/*.stories.tsx",
-    "jest.config.ts"
+    "jest.config.ts",
+    "__mocks__"
   ],
   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }
