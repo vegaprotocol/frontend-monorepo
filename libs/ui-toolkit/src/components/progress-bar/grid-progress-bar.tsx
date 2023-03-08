@@ -21,7 +21,7 @@ export const ProgressBarCell = ({ valueFormatted }: ValueProps) => {
     <>
       <div className="flex justify-between leading-tight font-mono">
         <div>
-          {valueFormatted.low} ({valueFormatted.value?.toFixed(2)})%
+          {valueFormatted.low} ({valueFormatted.value}%)
         </div>
       </div>
       <ProgressBar
