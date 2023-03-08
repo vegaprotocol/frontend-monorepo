@@ -7,7 +7,7 @@ import {
   useBottomPlaceholder,
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 
 export const DepositsContainer = () => {
@@ -20,9 +20,6 @@ export const DepositsContainer = () => {
   });
   const openDepositDialog = useDepositDialog((state) => state.open);
   const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
-  const onGridReady = useCallback(() => {
-    setTimeout(() => gridRef.current?.api.sizeColumnsToFit(), 500);
-  }, []);
   return (
     <div className="h-full">
       <div className="h-full relative">
@@ -30,7 +27,6 @@ export const DepositsContainer = () => {
           rowData={data || []}
           noRowsOverlayComponent={() => null}
           ref={gridRef}
-          onGridReady={onGridReady}
           {...bottomPlaceholderProps}
         />
         <div className="pointer-events-none absolute inset-0">
