@@ -689,7 +689,7 @@ describe('account validation', { tags: '@regression' }, () => {
       );
       cy.getByTestId('dealticket-warning-margin').should(
         'contain.text',
-        '2,747.17663 tDAI is currently required. You have only 1,000.01 tDAI available.Deposit tDAI'
+        'You may not have enough margin available to open this position. 2,354.72283 tDAI is currently required. You have only 1,000.01 tDAI available.'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').click();
       cy.getByTestId('dialog-content')
