@@ -117,28 +117,25 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'This is the total amount of collateral used plus the amount available in your general account.'
             )}
-            valueFormatter={({
-              value,
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
-              data &&
-              data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
-            }
             maxWidth={300}
             cellRenderer={({
+              data,
               value,
               node,
-            }: VegaICellRendererParams<AccountFields, 'deposited'>) =>
-              node.rowPinned ? (
+            }: VegaICellRendererParams<AccountFields, 'deposited'>) => {
+              const valueFormatted =
+                data &&
+                data.asset &&
+                isNumeric(value) &&
+                addDecimalsFormatNumber(value, data.asset.decimals);
+              return node.rowPinned ? (
                 <CenteredGridCellWrapper className="h-[30px] justify-end">
-                  {value}
+                  {valueFormatted}
                 </CenteredGridCellWrapper>
               ) : (
-                value
-              )
-            }
+                valueFormatted
+              );
+            }}
           />
           <AgGridColumn
             headerName={t('Used')}
@@ -147,28 +144,25 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'This is the amount of collateral used from your general account.'
             )}
-            valueFormatter={({
-              value,
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'used'>) =>
-              data &&
-              data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
-            }
             maxWidth={300}
             cellRenderer={({
+              data,
               value,
               node,
-            }: VegaICellRendererParams<AccountFields, 'used'>) =>
-              node.rowPinned ? (
+            }: VegaICellRendererParams<AccountFields, 'used'>) => {
+              const valueFormatted =
+                data &&
+                data.asset &&
+                isNumeric(value) &&
+                addDecimalsFormatNumber(value, data.asset.decimals);
+              return node.rowPinned ? (
                 <CenteredGridCellWrapper className="h-[30px] justify-end">
-                  {value}
+                  {valueFormatted}
                 </CenteredGridCellWrapper>
               ) : (
-                value
-              )
-            }
+                valueFormatted
+              );
+            }}
           />
           <AgGridColumn
             headerName={t('Available')}
@@ -188,17 +182,23 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }
             maxWidth={300}
             cellRenderer={({
+              data,
               value,
               node,
-            }: VegaICellRendererParams<AccountFields, 'available'>) =>
-              node.rowPinned ? (
+            }: VegaICellRendererParams<AccountFields, 'available'>) => {
+              const valueFormatted =
+                data &&
+                data.asset &&
+                isNumeric(value) &&
+                addDecimalsFormatNumber(value, data.asset.decimals);
+              return node.rowPinned ? (
                 <CenteredGridCellWrapper className="h-[30px] justify-end">
-                  {value}
+                  {valueFormatted}
                 </CenteredGridCellWrapper>
               ) : (
-                value
-              )
-            }
+                valueFormatted
+              );
+            }}
           />
           <AgGridColumn
             colId="breakdown"
