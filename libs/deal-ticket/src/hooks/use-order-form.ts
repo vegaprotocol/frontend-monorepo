@@ -19,7 +19,7 @@ export const useOrderForm = (marketId: string) => {
   const [order, update] = useOrder(marketId);
   const {
     control,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     handleSubmit,
     setError,
     setValue,
@@ -43,13 +43,13 @@ export const useOrderForm = (marketId: string) => {
       const value = order[key];
       if (value !== curr) {
         setValue(key, value, {
-          shouldValidate: true,
+          shouldValidate: isSubmitted, // only apply validation after the form has been submitted and failed
           shouldDirty: true,
           shouldTouch: true,
         });
       }
     }
-  }, [order, getValues, setValue]);
+  }, [order, isSubmitted, getValues, setValue]);
 
   const handleSubmitWrapper = (
     cb: <T>(o: Exact<OrderSubmission, T>) => void
