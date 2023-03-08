@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { addDecimal, addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   Intent,
@@ -97,13 +97,11 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             nodeA: { data: AccountFields },
             nodeB: { data: AccountFields }
           ) => {
-            let a = valueA,
-              b = valueB;
-            a = addDecimal(nodeA.data.balance, nodeA.data.asset?.decimals);
-            b = addDecimal(nodeB.data.balance, nodeB.data.asset?.decimals);
+            const a = toBigNum(valueA, nodeA.data.asset?.decimals);
+            const b = toBigNum(valueB, nodeB.data.asset?.decimals);
 
-            if (a === b) return 0;
-            return a > b ? 1 : -1;
+            if (a.isEqualTo(b)) return 0;
+            return a.isGreaterThan(b) ? 1 : -1;
           }}
         />
       </AgGrid>

@@ -1,22 +1,22 @@
 import { forwardRef, useMemo, useState } from 'react';
 import {
-  addDecimal,
   addDecimalsFormatNumber,
   isNumeric,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   CenteredGridCellWrapper,
 } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
-import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
+import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
@@ -81,11 +81,21 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             resizable: true,
             tooltipComponent: TooltipCellComponent,
             sortable: true,
-            comparator: (valueA, valueB, nodeA, nodeB) => {
-              const a = addDecimal(valueA, nodeA.data.asset?.decimals);
-              const b = addDecimal(valueB, nodeB.data.asset?.decimals);
-              if (a === b) return 0;
-              return a > b ? 1 : -1;
+            comparator: (
+              valueA: string,
+              valueB: string,
+              nodeA: RowNode,
+              nodeB: RowNode
+            ) => {
+              if (isNumeric(valueA) && isNumeric(valueB)) {
+                const a = toBigNum(valueA, nodeA.data.asset?.decimals);
+                const b = toBigNum(valueB, nodeB.data.asset?.decimals);
+
+                if (a.isEqualTo(b)) return 0;
+                return a.isGreaterThan(b) ? 1 : -1;
+              }
+              if (valueA === valueB) return 0;
+              return valueA > valueB ? 1 : -1;
             },
           }}
           {...props}
