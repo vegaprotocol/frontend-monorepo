@@ -5,9 +5,12 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import {
+  AgGridDynamic as AgGrid,
+  CenteredGridCellWrapper,
+} from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
@@ -86,18 +89,23 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               value,
               data,
+              node,
             }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
               return value ? (
-                <ButtonLink
-                  data-testid="asset"
-                  onClick={() => {
-                    if (data) {
-                      onClickAsset(data.asset.id);
-                    }
-                  }}
+                <CenteredGridCellWrapper
+                  className={node.rowPinned ? 'h-[30px]' : undefined}
                 >
-                  {value}
-                </ButtonLink>
+                  <ButtonLink
+                    data-testid="asset"
+                    onClick={() => {
+                      if (data) {
+                        onClickAsset(data.asset.id);
+                      }
+                    }}
+                  >
+                    {value}
+                  </ButtonLink>
+                </CenteredGridCellWrapper>
               ) : null;
             }}
             maxWidth={300}
@@ -109,16 +117,25 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'This is the total amount of collateral used plus the amount available in your general account.'
             )}
-            valueFormatter={({
-              value,
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
-              data &&
-              data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
-            }
             maxWidth={300}
+            cellRenderer={({
+              data,
+              value,
+              node,
+            }: VegaICellRendererParams<AccountFields, 'deposited'>) => {
+              const valueFormatted =
+                data &&
+                data.asset &&
+                isNumeric(value) &&
+                addDecimalsFormatNumber(value, data.asset.decimals);
+              return node.rowPinned ? (
+                <CenteredGridCellWrapper className="h-[30px] justify-end">
+                  {valueFormatted}
+                </CenteredGridCellWrapper>
+              ) : (
+                valueFormatted
+              );
+            }}
           />
           <AgGridColumn
             headerName={t('Used')}
@@ -127,16 +144,25 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'This is the amount of collateral used from your general account.'
             )}
-            valueFormatter={({
-              value,
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'used'>) =>
-              data &&
-              data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
-            }
             maxWidth={300}
+            cellRenderer={({
+              data,
+              value,
+              node,
+            }: VegaICellRendererParams<AccountFields, 'used'>) => {
+              const valueFormatted =
+                data &&
+                data.asset &&
+                isNumeric(value) &&
+                addDecimalsFormatNumber(value, data.asset.decimals);
+              return node.rowPinned ? (
+                <CenteredGridCellWrapper className="h-[30px] justify-end">
+                  {valueFormatted}
+                </CenteredGridCellWrapper>
+              ) : (
+                valueFormatted
+              );
+            }}
           />
           <AgGridColumn
             headerName={t('Available')}
@@ -155,73 +181,93 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               addDecimalsFormatNumber(value, data.asset.decimals)
             }
             maxWidth={300}
+            cellRenderer={({
+              data,
+              value,
+              node,
+            }: VegaICellRendererParams<AccountFields, 'available'>) => {
+              const valueFormatted =
+                data &&
+                data.asset &&
+                isNumeric(value) &&
+                addDecimalsFormatNumber(value, data.asset.decimals);
+              return node.rowPinned ? (
+                <CenteredGridCellWrapper className="h-[30px] justify-end">
+                  {valueFormatted}
+                </CenteredGridCellWrapper>
+              ) : (
+                valueFormatted
+              );
+            }}
           />
-          {
-            <AgGridColumn
-              colId="breakdown"
-              headerName=""
-              sortable={false}
-              minWidth={200}
-              type="rightAligned"
-              cellRenderer={({
-                data,
-              }: VegaICellRendererParams<AccountFields>) => {
-                if (!data) return null;
-                else {
-                  if (
-                    data.asset.id === pinnedAssetId &&
-                    new BigNumber(data.deposited).isLessThanOrEqualTo(0)
-                  ) {
-                    return (
-                      <ButtonLink
+          <AgGridColumn
+            colId="breakdown"
+            headerName=""
+            sortable={false}
+            minWidth={200}
+            type="rightAligned"
+            cellRenderer={({
+              data,
+            }: VegaICellRendererParams<AccountFields>) => {
+              if (!data) return null;
+              else {
+                if (
+                  data.asset.id === pinnedAssetId &&
+                  new BigNumber(data.deposited).isLessThanOrEqualTo(0)
+                ) {
+                  return (
+                    <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
+                      <Button
+                        size="xs"
+                        variant="primary"
                         data-testid="deposit"
                         onClick={() => {
                           onClickDeposit && onClickDeposit(data.asset.id);
                         }}
                       >
                         {t('Deposit to trade')}
-                      </ButtonLink>
-                    );
-                  }
-                  return (
-                    <>
-                      <ButtonLink
-                        data-testid="breakdown"
-                        onClick={() => {
-                          setOpenBreakdown(!openBreakdown);
-                          setBreakdown(data.breakdown || null);
-                        }}
-                      >
-                        {t('Breakdown')}
-                      </ButtonLink>
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="deposit"
-                          onClick={() => {
-                            onClickDeposit && onClickDeposit(data.asset.id);
-                          }}
-                        >
-                          {t('Deposit')}
-                        </ButtonLink>
-                      )}
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="withdraw"
-                          onClick={() =>
-                            onClickWithdraw && onClickWithdraw(data.asset.id)
-                          }
-                        >
-                          {t('Withdraw')}
-                        </ButtonLink>
-                      )}
-                    </>
+                      </Button>
+                    </CenteredGridCellWrapper>
                   );
                 }
-              }}
-            />
-          }
+                return (
+                  <>
+                    <ButtonLink
+                      data-testid="breakdown"
+                      onClick={() => {
+                        setOpenBreakdown(!openBreakdown);
+                        setBreakdown(data.breakdown || null);
+                      }}
+                    >
+                      {t('Breakdown')}
+                    </ButtonLink>
+                    <span className="mx-1" />
+                    {!props.isReadOnly && (
+                      <ButtonLink
+                        data-testid="deposit"
+                        onClick={() => {
+                          onClickDeposit && onClickDeposit(data.asset.id);
+                        }}
+                      >
+                        {t('Deposit')}
+                      </ButtonLink>
+                    )}
+                    <span className="mx-1" />
+                    {!props.isReadOnly && (
+                      <ButtonLink
+                        data-testid="withdraw"
+                        onClick={() =>
+                          onClickWithdraw && onClickWithdraw(data.asset.id)
+                        }
+                      >
+                        {t('Withdraw')}
+                      </ButtonLink>
+                    )}
+                  </>
+                );
+              }
+            }}
+          />
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">
