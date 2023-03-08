@@ -1,7 +1,6 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import type {
   BodyScrollEvent,
   BodyScrollEndEvent,
@@ -58,8 +57,6 @@ export const OrderListManager = ({
   onMarketClick,
   isReadOnly,
 }: OrderListManagerProps) => {
-  const params = useParams();
-  const hideButtons = 'marketId' in params;
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const [sort, setSort] = useState<Sort[] | undefined>();
@@ -207,7 +204,7 @@ export const OrderListManager = ({
           />
         </div>
       </div>
-      {!isReadOnly && !hideButtons && (
+      {!isReadOnly && (
         <CancelAllOrdersButton onClick={cancelAll} marketId={marketId} />
       )}
       {editOrder && (
