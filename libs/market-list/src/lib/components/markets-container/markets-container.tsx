@@ -15,7 +15,6 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
     skipUpdates: true,
     variables: undefined,
   });
-  console.log({ data, loading });
   return (
     <div className="h-full relative">
       <MarketListTable
