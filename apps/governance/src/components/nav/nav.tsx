@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import type { NavigationProps } from '@vegaprotocol/ui-toolkit';
 import { useNavigationDrawer } from '@vegaprotocol/ui-toolkit';
 import {
-  HIDE_ALL,
   Navigation,
   NavigationBreakpoint,
   NavigationContent,
@@ -57,16 +56,21 @@ export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
       >
         {topLevel}
         <NavigationItem>
-          <NavigationTrigger isActive={Boolean(isOnToken)}>
+          <NavigationTrigger
+            data-testid="state-trigger"
+            isActive={Boolean(isOnToken)}
+          >
             {t('Token')}
           </NavigationTrigger>
           <NavigationContent>
-            <NavigationList>{secondLevel}</NavigationList>
+            <NavigationList data-testid="token-dropdown">
+              {secondLevel}
+            </NavigationList>
           </NavigationContent>
         </NavigationItem>
       </NavigationList>
       <NavigationList
-        hide={HIDE_ALL}
+        hide={true}
         className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
       >
         <NavigationItem className="[.drawer-content_&]:w-full">

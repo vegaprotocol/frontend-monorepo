@@ -49,14 +49,8 @@ export enum NavigationBreakpoint {
   Small = 'nav-size-small',
 }
 
-export const HIDE_ALL = [
-  NavigationBreakpoint.Full,
-  NavigationBreakpoint.Narrow,
-  NavigationBreakpoint.Small,
-];
-
 export type NavigationElementProps = {
-  hide?: NavigationBreakpoint[];
+  hide?: NavigationBreakpoint[] | true;
   hideInDrawer?: boolean;
 };
 
