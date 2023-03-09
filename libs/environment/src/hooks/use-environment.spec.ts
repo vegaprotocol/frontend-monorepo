@@ -435,4 +435,39 @@ describe('useEnvironment', () => {
     expect(result.current.VEGA_URL).toBe(newUrl);
     expect(localStorage.getItem(STORAGE_KEY)).toBe(newUrl);
   });
+
+  it('can fetch and parse toml network files', async () => {
+    process.env['NX_VEGA_CONFIG_URL'] =
+      'https://raw.githubusercontent.com/mainnet1.toml';
+    const textContent1 = `
+    [API]
+        [API.GraphQL]
+            Hosts = [
+              "http://t1.vega.community",
+              "http://t2.vega.community",
+            ]
+    `;
+
+    const jsonSpy = jest.fn();
+    const textSpy = jest.fn(() => Promise.resolve(textContent1));
+    (global.fetch as jest.Mock).mockImplementation(() => {
+      return Promise.resolve({
+        ok: true,
+        json: jsonSpy,
+        text: textSpy,
+      });
+    });
+    const { result } = setup();
+    await act(async () => {
+      result.current.initialize();
+    });
+    await waitFor(() => {
+      expect(jsonSpy).not.toHaveBeenCalled();
+      expect(textSpy).toHaveBeenCalled();
+      expect(result.current.nodes).toEqual([
+        'http://t1.vega.community',
+        'http://t2.vega.community',
+      ]);
+    });
+  });
 });

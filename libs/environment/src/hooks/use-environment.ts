@@ -68,7 +68,6 @@ export const useEnvironment = create<EnvStore>((set, get) => ({
 
     let nodes: string[] | undefined;
     try {
-      console.log('state.VEGA_CONFIG_URL', state.VEGA_CONFIG_URL);
       nodes = await fetchConfig(state.VEGA_CONFIG_URL);
       set({ nodes });
     } catch (err) {
@@ -265,7 +264,6 @@ const testSubscription = (client: Client) => {
  */
 function compileEnvVars() {
   const VEGA_ENV = process.env['NX_VEGA_ENV'] as Networks;
-  console.log('NX_VEGA_CONFIG_URL', process.env['NX_VEGA_CONFIG_URL']);
   const env: Environment = {
     VEGA_URL: process.env['NX_VEGA_URL'],
     VEGA_ENV,
