@@ -12,11 +12,11 @@ import { useParams } from 'react-router-dom';
 
 export const AccountsContainer = ({
   pinnedAsset,
+  hideButtons,
 }: {
   pinnedAsset?: PinnedAsset;
+  hideButtons?: boolean;
 }) => {
-  const params = useParams();
-  const hideButtons = 'marketId' in params;
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
@@ -49,7 +49,7 @@ export const AccountsContainer = ({
         pinnedAsset={pinnedAsset}
       />
       {!isReadOnly && !hideButtons && (
-        <div className="flex gap-2 justify-end p-2 px-[11px] fixed bottom-0 right-2 dark:bg-black/75 bg-white/75 rounded">
+        <div className="flex gap-2 justify-end p-2 px-[11px] fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">
           <Button
             variant="primary"
             size="sm"

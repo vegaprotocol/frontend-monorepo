@@ -56,7 +56,10 @@ const update = (
   });
 };
 
-export type Trade = Omit<FillFieldsFragment, 'market'> & { market?: Market };
+export type Trade = Omit<FillFieldsFragment, 'market'> & {
+  market?: Market;
+  isLastPlaceholder?: boolean;
+};
 export type TradeEdge = Edge<Trade>;
 
 const getData = (responseData: FillsQuery | null): FillEdgeFragment[] =>
