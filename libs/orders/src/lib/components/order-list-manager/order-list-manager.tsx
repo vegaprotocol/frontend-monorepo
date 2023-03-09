@@ -16,6 +16,7 @@ import { useOrderListData } from './use-order-list-data';
 import { useHasActiveOrder } from '../../order-hooks/use-has-active-order';
 import type { Filter, Sort } from './use-order-list-data';
 import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
+import { OrderStatus } from '@vegaprotocol/types';
 import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
@@ -53,6 +54,12 @@ const CancelAllOrdersButton = ({
   ) : null;
 };
 
+const initialFilter: Filter = {
+  status: {
+    value: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
+  },
+};
+
 export const OrderListManager = ({
   partyId,
   marketId,
@@ -62,7 +69,7 @@ export const OrderListManager = ({
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const [sort, setSort] = useState<Sort[] | undefined>();
-  const [filter, setFilter] = useState<Filter | undefined>();
+  const [filter, setFilter] = useState<Filter | undefined>(initialFilter);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasActiveOrder = useHasActiveOrder(marketId);
@@ -160,10 +167,11 @@ export const OrderListManager = ({
   );
 
   const onGridReady = useCallback(
-    (event: GridReadyEvent) => {
-      event.api.setDatasource({
+    ({ api }: GridReadyEvent) => {
+      api.setDatasource({
         getRows,
       });
+      api.setFilterModel(initialFilter);
     },
     [getRows]
   );
