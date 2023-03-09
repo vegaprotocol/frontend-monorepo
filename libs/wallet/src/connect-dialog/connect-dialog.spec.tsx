@@ -13,7 +13,6 @@ import {
   CLOSE_DELAY,
   useVegaWalletDialogStore,
 } from './connect-dialog';
-import type { VegaWalletDialogStore } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
