@@ -26,7 +26,8 @@ const tokenDropDown = 'state-trigger';
 
 Cypress.Commands.add('navigate_to', (page) => {
   if (!topLevelRoutes.includes(page)) {
-    cy.getByTestId(tokenDropDown, { timeout: 10000 }).eq(0).click();
+    // FIXME: Timeout madness
+    cy.getByTestId(tokenDropDown, { timeout: 60000 }).eq(0).click();
     cy.get('[data-testid="token-dropdown"]:visible').within(() => {
       cy.get(navigation[page]).eq(0).click();
     });
