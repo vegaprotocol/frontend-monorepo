@@ -40,4 +40,5 @@ export const enabledAssetsProvider = makeDerivedDataProvider<
 export const useAssetsDataProvider = () =>
   useDataProvider({
     dataProvider: assetsProvider,
+    variables: undefined,
   });

@@ -1,4 +1,4 @@
-import { formatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { Notification, Intent } from '@vegaprotocol/ui-toolkit';
 import { useDepositDialog } from '@vegaprotocol/deposits';
@@ -19,14 +19,14 @@ export const MarginWarning = ({ margin, balance, asset }: Props) => {
     <Notification
       intent={Intent.Warning}
       testId="dealticket-warning-margin"
-      message={`You may not have enough margin available to open this position. ${formatNumber(
+      message={`You may not have enough margin available to open this position. ${addDecimalsFormatNumber(
         margin,
         asset.decimals
       )} ${asset.symbol} ${t(
         'is currently required. You have only'
-      )} ${formatNumber(balance, asset.decimals)} ${asset.symbol} ${t(
-        'available.'
-      )}`}
+      )} ${addDecimalsFormatNumber(balance, asset.decimals)} ${
+        asset.symbol
+      } ${t('available.')}`}
       buttonProps={{
         text: t(`Deposit ${asset.symbol}`),
         action: () => openDepositDialog(asset.id),

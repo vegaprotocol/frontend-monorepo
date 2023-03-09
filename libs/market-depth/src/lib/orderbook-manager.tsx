@@ -7,12 +7,13 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   MarketDepthUpdateSubscription,
   MarketDepthQuery,
-  PriceLevelFieldsFragment,
+  MarketDepthQueryVariables,
 } from './__generated__/MarketDepth';
+import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import {
   compactRows,
   updateCompactedRows,
@@ -28,7 +29,7 @@ interface OrderbookManagerProps {
 
 export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const [resolution, setResolution] = useState(1);
-  const variables = useMemo(() => ({ marketId }), [marketId]);
+  const variables = { marketId };
   const resolutionRef = useRef(resolution);
   const [orderbookData, setOrderbookData] = useState<OrderbookData>({
     rows: null,
@@ -79,8 +80,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       delta: deltas,
       data: rawData,
     }: {
-      delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'];
-      data?: MarketDepthQuery['market'];
+      delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'] | null;
+      data: NonNullable<MarketDepthQuery['market']> | null | undefined;
     }) => {
       if (!dataRef.current.rows) {
         return false;
@@ -103,7 +104,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     [marketId, updateOrderbookData]
   );
 
-  const { data, error, loading, flush, reload } = useDataProvider({
+  const { data, error, loading, flush, reload } = useDataProvider<
+    MarketDepthQuery['market'] | undefined,
+    MarketDepthUpdateSubscription['marketsDepthUpdate'] | null,
+    MarketDepthQueryVariables
+  >({
     dataProvider: marketDepthProvider,
     update,
     variables,

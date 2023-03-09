@@ -76,7 +76,9 @@ const orderMatchFilters = (
   return true;
 };
 
-const getData = (responseData: OrdersQuery | null) =>
+const getData = (
+  responseData: OrdersQuery | null
+): Edge<OrderFieldsFragment>[] =>
   responseData?.party?.ordersConnection?.edges || [];
 
 const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
@@ -142,14 +144,19 @@ export const update = (
             __typename: 'Order',
           },
           cursor: '',
-          __typename: 'OrderEdge',
         });
       }
     });
   });
 };
 
-export const ordersProvider = makeDataProvider({
+export const ordersProvider = makeDataProvider<
+  OrdersQuery,
+  ReturnType<typeof getData>,
+  OrdersUpdateSubscription,
+  ReturnType<typeof getDelta>,
+  OrdersQueryVariables
+>({
   query: OrdersDocument,
   subscriptionQuery: OrdersUpdateDocument,
   update,
@@ -168,7 +175,10 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
   Order[],
   OrdersQueryVariables
 >(
-  [ordersProvider, marketsProvider],
+  [
+    ordersProvider,
+    (callback, client) => marketsProvider(callback, client, undefined),
+  ],
   (partsData): OrderEdge[] =>
     ((partsData[0] as ReturnType<typeof getData>) || []).map((edge) => ({
       cursor: edge.cursor,
@@ -183,7 +193,13 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
   combineInsertionData<Order>
 );
 
-const hasActiveOrderProviderInternal = makeDataProvider({
+const hasActiveOrderProviderInternal = makeDataProvider<
+  OrdersQuery,
+  boolean,
+  OrdersUpdateSubscription,
+  ReturnType<typeof getDelta>,
+  OrdersQueryVariables
+>({
   query: OrdersDocument,
   subscriptionQuery: OrdersUpdateDocument,
   update: (

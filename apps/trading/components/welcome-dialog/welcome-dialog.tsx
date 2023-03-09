@@ -20,6 +20,7 @@ export const WelcomeDialog = () => {
   const [riskAccepted] = useLocalStorage(constants.RISK_ACCEPTED_KEY);
   const { data } = useDataProvider({
     dataProvider: activeMarketsProvider,
+    variables: undefined,
   });
 
   const { update, shouldDisplayWelcomeDialog } = useGlobalStore((store) => ({

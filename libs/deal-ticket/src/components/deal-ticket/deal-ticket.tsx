@@ -21,8 +21,7 @@ import {
   Intent,
   Notification,
 } from '@vegaprotocol/ui-toolkit';
-import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
-import { MarginWarning } from '../deal-ticket-validation/margin-warning';
+
 import {
   validateExpiration,
   validateMarketState,
@@ -32,11 +31,16 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
-import { useHasNoBalance } from '../../hooks/use-has-no-balance';
+import { useInitialMargin } from '../../hooks/use-initial-margin';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
+import { MarginWarning } from '../deal-ticket-validation/margin-warning';
+import {
+  useMarketAccountBalance,
+  useAccountBalance,
+} from '@vegaprotocol/accounts';
+
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
-import type { OrderObj } from '@vegaprotocol/orders';
 
 export interface DealTicketProps {
   market: Market;
@@ -67,17 +71,41 @@ export const DealTicket = ({
     update,
     handleSubmit,
   } = useOrderForm(market.id);
-  const marketStateError = validateMarketState(marketData.marketState);
-  const hasNoBalance = useHasNoBalance(
-    market.tradableInstrument.instrument.product.settlementAsset.id
+  const asset = market.tradableInstrument.instrument.product.settlementAsset;
+  const { accountBalance: marginAccountBalance } = useMarketAccountBalance(
+    market.id
   );
+  const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
+  const balance = (
+    BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
+  ).toString();
+
+  const marketStateError = validateMarketState(marketData.marketState);
+  const hasNoBalance = generalAccountBalance === '0';
   const marketTradingModeError = validateMarketTradingMode(
     marketData.marketTradingMode
   );
 
+  const normalizedOrder =
+    order &&
+    normalizeOrderSubmission(
+      order,
+      market.decimalPlaces,
+      market.positionDecimalPlaces
+    );
+
+  const { margin, totalMargin } = useInitialMargin(
+    market.id,
+    normalizedOrder?.size,
+    order?.side
+  );
+
   const checkForErrors = useCallback(() => {
     if (!pubKey) {
-      setError('summary', { message: t('No public key selected') });
+      setError('summary', {
+        message: t('No public key selected'),
+        type: SummaryValidationType.NoPubKey,
+      });
       return;
     }
 
@@ -114,6 +142,7 @@ export const DealTicket = ({
 
   useEffect(() => {
     if (
+      (pubKey && errors.summary?.type === SummaryValidationType.NoPubKey) ||
       (!hasNoBalance &&
         errors.summary?.type === SummaryValidationType.NoCollateral) ||
       (marketStateError === true &&
@@ -125,6 +154,7 @@ export const DealTicket = ({
     }
     checkForErrors();
   }, [
+    pubKey,
     hasNoBalance,
     marketStateError,
     marketTradingModeError,
@@ -254,9 +284,10 @@ export const DealTicket = ({
         )}
       <SummaryMessage
         errorMessage={errors.summary?.message}
-        market={market}
-        marketData={marketData}
-        order={order}
+        asset={asset}
+        marketTradingMode={marketData.marketTradingMode}
+        balance={balance}
+        margin={totalMargin}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onClickCollateral={onClickCollateral}
@@ -266,9 +297,16 @@ export const DealTicket = ({
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <DealTicketFeeDetails
-        order={order}
+        order={normalizeOrderSubmission(
+          order,
+          market.decimalPlaces,
+          market.positionDecimalPlaces
+        )}
         market={market}
         marketData={marketData}
+        margin={margin}
+        totalMargin={totalMargin}
+        balance={marginAccountBalance}
       />
     </form>
   );
@@ -280,9 +318,10 @@ export const DealTicket = ({
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: Market;
-  marketData: MarketData;
-  order: OrderObj;
+  asset: { id: string; symbol: string; name: string; decimals: number };
+  marketTradingMode: MarketData['marketTradingMode'];
+  balance: string;
+  margin: string;
   isReadOnly: boolean;
   pubKey: string | null;
   onClickCollateral?: () => void;
@@ -290,22 +329,17 @@ interface SummaryMessageProps {
 const SummaryMessage = memo(
   ({
     errorMessage,
-    market,
-    marketData,
-    order,
+    asset,
+    marketTradingMode,
+    balance,
+    margin,
     isReadOnly,
     pubKey,
     onClickCollateral,
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
-    const asset = market.tradableInstrument.instrument.product.settlementAsset;
     const assetSymbol = asset.symbol;
-    const { balanceError, balance, margin } = useOrderMarginValidation({
-      market,
-      marketData,
-      order,
-    });
     const openVegaWalletDialog = useVegaWalletDialogStore(
       (store) => store.openVegaWalletDialog
     );
@@ -349,7 +383,7 @@ const SummaryMessage = memo(
       return (
         <div className="mb-2">
           <ZeroBalanceError
-            asset={market.tradableInstrument.instrument.product.settlementAsset}
+            asset={asset}
             onClickCollateral={onClickCollateral}
           />
         </div>
@@ -370,21 +404,16 @@ const SummaryMessage = memo(
 
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
-    if (balanceError) {
-      return (
-        <div className="mb-2">
-          <MarginWarning balance={balance} margin={margin} asset={asset} />
-        </div>
-      );
+    if (BigInt(balance) < BigInt(margin)) {
+      return <MarginWarning balance={balance} margin={margin} asset={asset} />;
     }
-
     // Show auction mode warning
     if (
       [
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(marketData.marketTradingMode)
+      ].includes(marketTradingMode)
     ) {
       return (
         <div className="mb-2">

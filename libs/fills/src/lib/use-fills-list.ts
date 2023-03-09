@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/utils';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import type { Trade, TradeEdge } from './fills-data-provider';
@@ -73,16 +73,11 @@ export const useFillsList = ({
     [gridRef]
   );
 
-  const variables = useMemo(() => ({ partyId, marketId }), [partyId, marketId]);
-
-  const { data, error, loading, load, totalCount, reload } = useDataProvider<
-    (TradeEdge | null)[],
-    Trade[]
-  >({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: fillsWithMarketProvider,
     update,
     insert,
-    variables,
+    variables: { partyId, marketId: marketId || '' },
   });
   totalCountRef.current = totalCount;
 

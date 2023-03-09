@@ -55,6 +55,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   const { data, loading, error } = useDataProvider({
     dataProvider: marketsProvider,
+    variables: undefined,
     skipUpdates: true,
   });
 

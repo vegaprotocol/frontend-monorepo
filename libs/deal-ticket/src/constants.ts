@@ -7,6 +7,15 @@ export const EST_MARGIN_TOOLTIP_TEXT = (settlementAsset: string) =>
   For example, for a notional size of $500, if the margin requirement is 10%, then the estimated margin would be approximately $50.`,
     [settlementAsset]
   );
+export const EST_TOTAL_MARGIN_TOOLTIP_TEXT = t(
+  'Estimated total margin that will cover open position, active orders and this order.'
+);
+export const MARGIN_ACCOUNT_TOOLTIP_TEXT = t('Margin account balance');
+export const MARGIN_DIFF_TOOLTIP_TEXT = (settlementAsset: string) =>
+  t(
+    "The additional margin required for your new position (taking into account volume and open orders), compared to your current margin. Measured in the market's settlement asset ($s).",
+    [settlementAsset]
+  );
 export const CONTRACTS_MARGIN_TOOLTIP_TEXT = t(
   'The number of contracts determines how many units of the futures contract to buy or sell. For example, this is similar to buying one share of a listed company. The value of 1 contract is equivalent to the price of the contract. For example, if the current price is $50, then one contract is worth $50.'
 );
@@ -41,6 +50,7 @@ export enum MarketModeValidationType {
 }
 
 export enum SummaryValidationType {
+  NoPubKey = 'NoPubKey',
   NoCollateral = 'NoCollateral',
   TradingMode = 'MarketTradingMode',
   MarketState = 'MarketState',

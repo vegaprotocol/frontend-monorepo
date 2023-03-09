@@ -1,6 +1,9 @@
 import { makeDataProvider } from '@vegaprotocol/utils';
 import { MarketsCandlesDocument } from './__generated__/markets-candles';
-import type { MarketsCandlesQuery } from './__generated__/markets-candles';
+import type {
+  MarketsCandlesQuery,
+  MarketsCandlesQueryVariables,
+} from './__generated__/markets-candles';
 import type { Candle } from './market-candles-provider';
 
 export interface MarketCandles {
@@ -22,7 +25,8 @@ export const marketsCandlesProvider = makeDataProvider<
   MarketsCandlesQuery,
   MarketCandles[],
   never,
-  never
+  never,
+  MarketsCandlesQueryVariables
 >({
   query: MarketsCandlesDocument,
   getData,

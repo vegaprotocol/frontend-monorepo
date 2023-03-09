@@ -3,7 +3,7 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Types from '@vegaprotocol/types';
 import { proposalsDataProvider } from '../proposals-data-provider';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
@@ -22,14 +22,11 @@ export const ProposalsList = () => {
   const handleOnGridReady = useCallback(() => {
     gridRef.current?.api?.sizeColumnsToFit();
   }, [gridRef]);
-  const variables = useMemo(() => {
-    return {
-      proposalType: Types.ProposalType.TYPE_NEW_MARKET,
-    };
-  }, []);
   const { data, loading, error, reload } = useDataProvider({
     dataProvider: proposalsDataProvider,
-    variables,
+    variables: {
+      proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+    },
   });
   const filteredData = getNewMarketProposals(data || []);
   const { columnDefs, defaultColDef } = useColumnDefs();

@@ -1,13 +1,8 @@
 import type { RefObject } from 'react';
-import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
 import { PriceCell } from '@vegaprotocol/datagrid';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-} from '@vegaprotocol/market-list';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import { THROTTLE_UPDATE_TIME } from '../constants';
 
@@ -27,15 +22,10 @@ export const MarketMarkPrice = ({
   asPriceCell,
 }: Props) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });
-  const variables = useMemo(() => ({ marketId }), [marketId]);
-
-  const { data } = useThrottledDataProvider<
-    MarketData,
-    MarketDataUpdateFieldsFragment
-  >(
+  const { data } = useThrottledDataProvider(
     {
       dataProvider: marketDataProvider,
-      variables,
+      variables: { marketId: marketId || '' },
       skip: !inView,
     },
     THROTTLE_UPDATE_TIME

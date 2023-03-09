@@ -1,4 +1,5 @@
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
+import type { TradeFee, FeeFactors } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
@@ -7,12 +8,7 @@ import { t } from '@vegaprotocol/i18n';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
-import type { Market } from '@vegaprotocol/market-list';
-export const FeesCell = ({
-  feeFactors,
-}: {
-  feeFactors: Market['fees']['factors'];
-}) => (
+export const FeesCell = ({ feeFactors }: { feeFactors: FeeFactors }) => (
   <Tooltip description={<FeesBreakdownPercentage feeFactors={feeFactors} />}>
     <span>{totalFeesPercentage(feeFactors) ?? '-'}</span>
   </Tooltip>
@@ -21,7 +17,7 @@ export const FeesCell = ({
 export const FeesBreakdownPercentage = ({
   feeFactors,
 }: {
-  feeFactors?: Market['fees']['factors'];
+  feeFactors?: FeeFactors;
 }) => {
   if (!feeFactors) return null;
   return (
@@ -54,12 +50,8 @@ export const FeesBreakdown = ({
   symbol,
   decimals,
 }: {
-  fees?: {
-    infrastructureFee: string;
-    liquidityFee: string;
-    makerFee: string;
-  };
-  feeFactors?: Market['fees']['factors'];
+  fees?: TradeFee;
+  feeFactors?: FeeFactors;
   symbol?: string;
   decimals: number;
 }) => {
