@@ -22,25 +22,31 @@ const navigation = {
 };
 
 const topLevelRoutes = ['proposals', 'validators', 'rewards'];
+const tokenDropDown = 'state-trigger';
 
 Cypress.Commands.add('navigate_to', (page) => {
-  const tokenDropDown = 'state-trigger';
-
   if (!topLevelRoutes.includes(page)) {
-    cy.getByTestId(tokenDropDown, { timeout: 10000 }).click();
-    cy.getByTestId('token-dropdown').within(() => {
-      cy.get(navigation[page]).click();
+    cy.getByTestId(tokenDropDown, { timeout: 10000 }).eq(0).click();
+    cy.get('[data-testid="token-dropdown"]:visible').within(() => {
+      cy.get(navigation[page]).eq(0).click();
     });
   } else {
     return cy.get(navigation.section, { timeout: 10000 }).within(() => {
-      cy.get(navigation[page]).click();
+      cy.get(navigation[page]).eq(0).click();
     });
   }
 });
 
 Cypress.Commands.add('verify_tab_highlighted', (page) => {
   return cy.get(navigation.section).within(() => {
-    cy.get(navigation[page]).should('have.attr', 'aria-current');
+    if (!topLevelRoutes.includes(page)) {
+      cy.getByTestId(tokenDropDown, { timeout: 10000 }).eq(0).click();
+      cy.get('[data-testid="token-dropdown"]:visible').within(() => {
+        cy.get(navigation[page]).should('have.attr', 'aria-current');
+      });
+    } else {
+      cy.get(navigation[page]).should('have.attr', 'aria-current');
+    }
   });
 });
 
@@ -59,7 +65,7 @@ export function associateTokenStartOfTests() {
   cy.highlight(`Associating tokens for first time`);
   cy.ethereum_wallet_connect();
   cy.connectVegaWallet();
-  cy.get('[href="/token/associate"]').first().click();
+  cy.get('[href="/token/associate"]:visible').first().click();
   cy.getByTestId('associate-radio-wallet', { timeout: 30000 }).click();
   cy.getByTestId('token-amount-input', epochTimeout).type('1');
   cy.getByTestId('token-input-submit-button', txTimeout)

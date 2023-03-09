@@ -1,6 +1,6 @@
 import { truncateByChars } from '@vegaprotocol/utils';
 
-const walletContainer = '[data-testid="vega-wallet"]';
+const walletContainer = '[data-testid="vega-wallet"]:visible';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = '[data-testid="connect-vega-wallet"]';
 const getVegaLink = '[data-testid="link"]';

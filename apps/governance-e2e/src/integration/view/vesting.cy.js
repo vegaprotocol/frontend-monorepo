@@ -11,7 +11,7 @@ context(
 
     describe('with wallets disconnected', function () {
       it('should have vesting tab highlighted', function () {
-        cy.verify_tab_highlighted('token');
+        cy.verify_tab_highlighted('vesting');
       });
 
       it('should have VESTING header visible', function () {
@@ -38,15 +38,18 @@ context(
           cy.getByTestId('currency-title')
             .should('contain.text', 'VEGA')
             .and('contain.text', 'In vesting contract');
-          cy.getByTestId('currency-value').should(
+          cy.get('[data-testid="currency-value"]:visible').should(
             'have.text',
             lockedTokensInVestingContract
           );
-          cy.getByTestId('currency-locked').should(
+          cy.get('[data-testid="currency-locked"]:visible').should(
             'have.text',
             lockedTokensInVestingContract
           );
-          cy.getByTestId('currency-unlocked').should('have.text', '0.00');
+          cy.get('[data-testid="currency-unlocked"]:visible').should(
+            'have.text',
+            '0.00'
+          );
         });
       });
       // 1005-VEST-022 1005-VEST-023

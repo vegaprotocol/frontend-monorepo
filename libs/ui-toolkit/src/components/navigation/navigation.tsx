@@ -60,15 +60,12 @@ const Logo = ({
 
 const determineIfHidden = ({ hide, hideInDrawer }: NavigationElementProps) => [
   {
-    '[.nav-size-full_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Full
-    ),
-    '[.nav-size-narrow_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Narrow
-    ),
-    '[.nav-size-small_.navbar_&]:hidden': hide?.includes(
-      NavigationBreakpoint.Small
-    ),
+    '[.nav-size-full_.navbar_&]:hidden':
+      Array.isArray(hide) && hide?.includes(NavigationBreakpoint.Full),
+    '[.nav-size-narrow_.navbar_&]:hidden':
+      Array.isArray(hide) && hide?.includes(NavigationBreakpoint.Narrow),
+    '[.nav-size-small_.navbar_&]:hidden':
+      Array.isArray(hide) && hide?.includes(NavigationBreakpoint.Small),
     '[.drawer-content_&]:hidden': hideInDrawer,
   },
 ];
@@ -102,21 +99,27 @@ export const NavigationList = ({
   hide,
   hideInDrawer,
   ...props
-}: ComponentProps<typeof NavigationMenu.List> & NavigationElementProps) => (
-  <NavigationMenu.List
-    className={classNames(
-      'flex gap-4 items-center',
-      '[.navigation-content_&]:flex-col [.navigation-content_&]:items-start',
-      '[.drawer-content_&]:flex-col [.drawer-content_&]:items-start [.drawer-content_&]:gap-6 [.drawer-content_&]:mt-2',
-      '[.drawer-content_.navigation-content_&]:mt-6',
-      determineIfHidden({ hide, hideInDrawer }),
-      className
-    )}
-    {...props}
-  >
-    {children}
-  </NavigationMenu.List>
-);
+}: ComponentProps<typeof NavigationMenu.List> & NavigationElementProps) => {
+  const insideDrawer = useContext(NavigationDrawerContext);
+  if (!insideDrawer && hide === true) {
+    return null;
+  }
+  return (
+    <NavigationMenu.List
+      className={classNames(
+        'flex gap-4 items-center',
+        '[.navigation-content_&]:flex-col [.navigation-content_&]:items-start',
+        '[.drawer-content_&]:flex-col [.drawer-content_&]:items-start [.drawer-content_&]:gap-6 [.drawer-content_&]:mt-2',
+        '[.drawer-content_.navigation-content_&]:mt-6',
+        determineIfHidden({ hide, hideInDrawer }),
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </NavigationMenu.List>
+  );
+};
 export const NavigationTrigger = ({
   children,
   className,
