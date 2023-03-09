@@ -57,15 +57,20 @@ export const Navbar = ({
         hide={[NavigationBreakpoint.Narrow, NavigationBreakpoint.Small]}
       >
         <NavigationItem>
-          <NavigationLink to={Links[Routes.MARKETS]()}>
+          <NavigationLink data-testid="Markets" to={Links[Routes.MARKETS]()}>
             {t('Markets')}
           </NavigationLink>
         </NavigationItem>
         <NavigationItem>
-          <NavigationLink to={tradingPath}>{t('Trading')}</NavigationLink>
+          <NavigationLink data-testid="Trading" to={tradingPath}>
+            {t('Trading')}
+          </NavigationLink>
         </NavigationItem>
         <NavigationItem>
-          <NavigationLink to={Links[Routes.PORTFOLIO]()}>
+          <NavigationLink
+            data-testid="Portfolio"
+            to={Links[Routes.PORTFOLIO]()}
+          >
             {t('Portfolio')}
           </NavigationLink>
         </NavigationItem>
