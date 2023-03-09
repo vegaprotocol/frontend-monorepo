@@ -1,28 +1,27 @@
 import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
-import { formatForInput } from '@vegaprotocol/react-helpers';
-import { t } from '@vegaprotocol/react-helpers';
-import type { UseFormRegister } from 'react-hook-form';
-import { validateExpiration } from '../../utils/validate-expiration';
-import type { DealTicketFormFields } from '.';
+import { formatForInput } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 interface ExpirySelectorProps {
   value?: string;
   onSelect: (expiration: string | null) => void;
   errorMessage?: string;
-  register?: UseFormRegister<DealTicketFormFields>;
 }
 
 export const ExpirySelector = ({
   value,
   onSelect,
   errorMessage,
-  register,
 }: ExpirySelectorProps) => {
   const date = value ? new Date(value) : new Date();
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
   return (
-    <FormGroup label={t('Expiry time/date')} labelFor="expiration">
+    <FormGroup
+      label={t('Expiry time/date')}
+      labelFor="expiration"
+      compact={true}
+    >
       <Input
         data-testid="date-picker-field"
         id="expiration"
@@ -30,12 +29,9 @@ export const ExpirySelector = ({
         value={dateFormatted}
         onChange={(e) => onSelect(e.target.value)}
         min={minDate}
-        {...register?.('expiresAt', {
-          validate: validateExpiration,
-        })}
       />
       {errorMessage && (
-        <InputError data-testid="dealticket-error-message-expiry">
+        <InputError testId="dealticket-error-message-expiry">
           {errorMessage}
         </InputError>
       )}

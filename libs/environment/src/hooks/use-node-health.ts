@@ -1,88 +1,54 @@
-import compact from 'lodash/compact';
-import shuffle from 'lodash/shuffle';
-import type { createClient } from '@vegaprotocol/apollo-client';
-import { useEffect, useState } from 'react';
-import type { StatisticsQuery } from '../utils/__generated__/Node';
-import { StatisticsDocument } from '../utils/__generated__/Node';
-import type { ClientCollection } from './use-nodes';
+import { useEffect, useMemo } from 'react';
+import { useStatisticsQuery } from '../utils/__generated__/Node';
+import { useHeaderStore } from '@vegaprotocol/apollo-client';
+import { useEnvironment } from './use-environment';
+import { fromNanoSeconds } from '@vegaprotocol/utils';
 
-// How often to query other nodes
-export const INTERVAL_TIME = 30 * 1000;
-// Number of nodes to query against
-export const NODE_SUBSET_COUNT = 5;
+const POLL_INTERVAL = 1000;
 
-// Queries all nodes from the environment provider via an interval
-// to calculate and return the difference between the most advanced block
-// and the block height of the current node
-export const useNodeHealth = (clients: ClientCollection, vegaUrl?: string) => {
-  const [blockDiff, setBlockDiff] = useState(0);
+export const useNodeHealth = () => {
+  const url = useEnvironment((store) => store.VEGA_URL);
+  const headerStore = useHeaderStore();
+  const headers = url ? headerStore[url] : undefined;
+  const { data, error, loading, startPolling, stopPolling } =
+    useStatisticsQuery({
+      fetchPolicy: 'no-cache',
+    });
+
+  const blockDiff = useMemo(() => {
+    if (!data?.statistics.blockHeight) {
+      return null;
+    }
+
+    if (!headers) {
+      return 0;
+    }
+
+    return Number(data.statistics.blockHeight) - headers.blockHeight;
+  }, [data, headers]);
 
   useEffect(() => {
-    if (!clients || !vegaUrl) return;
+    if (error) {
+      stopPolling();
+      return;
+    }
 
-    const fetchBlockHeight = async (
-      client?: ReturnType<typeof createClient>
-    ) => {
-      try {
-        const result = await client?.query<StatisticsQuery>({
-          query: StatisticsDocument,
-          fetchPolicy: 'no-cache', // always fetch and never cache
-        });
+    if (!('Cypress' in window)) {
+      startPolling(POLL_INTERVAL);
+    }
+  }, [error, startPolling, stopPolling]);
 
-        if (!result) return null;
-        if (result.error) return null;
-        return result;
-      } catch {
-        return null;
-      }
-    };
-
-    const getBlockHeights = async () => {
-      const nodes = Object.keys(clients).filter((key) => key !== vegaUrl);
-      // make sure that your current vega url is always included
-      // so we can compare later
-      const testNodes = [vegaUrl, ...randomSubset(nodes, NODE_SUBSET_COUNT)];
-      const result = await Promise.all(
-        testNodes.map((node) => fetchBlockHeight(clients[node]))
-      );
-      const blockHeights: { [node: string]: number | null } = {};
-      testNodes.forEach((node, i) => {
-        const data = result[i];
-        const blockHeight = data
-          ? Number(data?.data.statistics.blockHeight)
-          : null;
-        blockHeights[node] = blockHeight;
-      });
-      return blockHeights;
-    };
-
-    // Every INTERVAL_TIME get block heights of a random subset
-    // of nodes and determine if your current node is falling behind
-    const interval = setInterval(async () => {
-      const blockHeights = await getBlockHeights();
-      const highestBlock = Math.max.apply(
-        null,
-        compact(Object.values(blockHeights))
-      );
-      const currNodeBlock = blockHeights[vegaUrl];
-
-      if (!currNodeBlock) {
-        // Block height query failed and null was returned
-        setBlockDiff(-1);
-      } else {
-        setBlockDiff(highestBlock - currNodeBlock);
-      }
-    }, INTERVAL_TIME);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [clients, vegaUrl]);
-
-  return blockDiff;
-};
-
-const randomSubset = (arr: string[], size: number) => {
-  const shuffled = shuffle(arr);
-  return shuffled.slice(0, size);
+  return {
+    error,
+    loading,
+    coreBlockHeight: data?.statistics
+      ? Number(data.statistics.blockHeight)
+      : undefined,
+    coreVegaTime: data?.statistics
+      ? fromNanoSeconds(data?.statistics.vegaTime)
+      : undefined,
+    datanodeBlockHeight: headers?.blockHeight,
+    datanodeVegaTime: headers?.timestamp,
+    blockDiff,
+  };
 };

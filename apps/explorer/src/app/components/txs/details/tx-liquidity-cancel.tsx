@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { MarketLink } from '../../links';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
@@ -37,7 +37,7 @@ export const TxDetailsLiquidityCancellation = ({
   const marketId: string = cancel.marketId || '-';
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <TableRow modifier="bordered">
         <TableCell>{t('Market')}</TableCell>

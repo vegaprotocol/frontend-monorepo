@@ -2,6 +2,7 @@ import type { components } from '../../../types/explorer';
 
 import PriceInMarket from '../price-in-market/price-in-market';
 import { sideText } from '../order-details/lib/order-labels';
+import SizeInMarket from '../size-in-market/size-in-market';
 
 export type OrderSummaryProps = {
   order: components['schemas']['v1OrderSubmission'];
@@ -29,7 +30,12 @@ const OrderTxSummary = ({ order }: OrderSummaryProps) => {
   return (
     <div data-testid="order-summary">
       <span>{sideText[order.side]}</span>&nbsp;
-      <span>{order.size}</span>&nbsp;<i className="text-xs">@</i>&nbsp;
+      {order.size ? (
+        <SizeInMarket size={order.size} marketId={order.marketId} />
+      ) : (
+        '-'
+      )}
+      &nbsp;<i className="text-xs">@</i>&nbsp;
       <PriceInMarket
         marketId={order.marketId}
         price={order.price}

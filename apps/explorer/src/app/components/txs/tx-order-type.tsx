@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../types/explorer';
 
 interface TxOrderTypeProps {
@@ -14,14 +14,17 @@ interface StringMap {
 // Using https://github.com/vegaprotocol/protos/blob/e0f646ce39aab1fc66a9200ceec0262306d3beb3/commands/transaction.go#L93 as a reference
 const displayString: StringMap = {
   OrderSubmission: 'Order Submission',
+  'Submit Order': 'Order',
   OrderCancellation: 'Order Cancellation',
   OrderAmendment: 'Order Amendment',
   VoteSubmission: 'Vote Submission',
   WithdrawSubmission: 'Withdraw Submission',
   Withdraw: 'Withdraw Request',
-  LiquidityProvisionSubmission: 'Liquidity Provision',
-  LiquidityProvisionCancellation: 'Liquidity Cancellation',
-  LiquidityProvisionAmendment: 'Liquidity Amendment',
+  LiquidityProvisionSubmission: 'LP order',
+  'Liquidity Provision Order': 'LP order',
+  LiquidityProvisionCancellation: 'LP cancel',
+  LiquidityProvisionAmendment: 'LP update',
+  'Amend LiquidityProvision Order': 'Amend LP',
   ProposalSubmission: 'Governance Proposal',
   AnnounceNode: 'Node Announcement',
   NodeVote: 'Node Vote',
@@ -31,10 +34,11 @@ const displayString: StringMap = {
   DelegateSubmission: 'Delegation',
   UndelegateSubmission: 'Undelegation',
   KeyRotateSubmission: 'Key Rotation',
-  StateVariableProposal: 'State Variable Proposal',
+  StateVariableProposal: 'State Variable',
   Transfer: 'Transfer',
   CancelTransfer: 'Cancel Transfer',
-  ValidatorHeartbeat: 'Validator Heartbeat',
+  ValidatorHeartbeat: 'Heartbeat',
+  'Batch Market Instructions': 'Batch',
 };
 
 /**
@@ -132,7 +136,8 @@ export function getLabelForChainEvent(
 export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   let type = displayString[orderType] || orderType;
 
-  let colours = 'text-white dark:text-white bg-zinc-800 dark:bg-zinc-800';
+  let colours =
+    'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-150';
 
   // This will get unwieldy and should probably produce a different colour of tag
   if (type === 'Chain Event' && !!command?.chainEvent) {

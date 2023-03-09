@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
-import { useProposalOfMarketQuery } from '@vegaprotocol/governance';
+import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { DataGrid, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
+import { createDocsLinks, getDateTimeFormat } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { createDocsLinks } from '@vegaprotocol/react-helpers';
+import { ExternalLink, SimpleGrid } from '@vegaprotocol/ui-toolkit';
 import { compileGridData } from './compile-grid-data';
 import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
+import BigNumber from 'bignumber.js';
 
 type TradingModeTooltipProps = {
   marketId?: string;
@@ -22,15 +23,16 @@ export const TradingModeTooltip = ({
   skip,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
-  const market = useMarket(marketId);
-  const marketData = useStaticMarketData(marketId, skip);
-  const { marketTradingMode: tradingMode, trigger } = marketData || {};
+  const { data: market } = useMarket(marketId);
+  const { data: marketData } = useStaticMarketData(marketId, skip);
+  const { marketTradingMode, trigger } = marketData || {};
   const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
   const { data: proposalData } = useProposalOfMarketQuery({
     variables,
     skip:
-      !tradingMode ||
-      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION !== tradingMode,
+      !marketTradingMode ||
+      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION !==
+        marketTradingMode,
   });
 
   if (!market || !marketData) {
@@ -43,7 +45,7 @@ export const TradingModeTooltip = ({
   const compiledGrid =
     onSelect && compileGridData(market, marketData, onSelect);
 
-  switch (tradingMode) {
+  switch (marketTradingMode) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
         <section data-testid="trading-mode-tooltip">
@@ -67,7 +69,7 @@ export const TradingModeTooltip = ({
                   className="justify-center font-bold my-2"
                   data-testid="opening-auction-sub-status"
                 >
-                  {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
+                  {`${Schema.MarketTradingModeMapping[marketTradingMode]}: ${t(
                     'Not enough liquidity to open'
                   )}`}
                 </span>
@@ -84,7 +86,9 @@ export const TradingModeTooltip = ({
                     className="justify-center font-bold my-2"
                     data-testid="opening-auction-sub-status"
                   >
-                    {`${Schema.MarketTradingModeMapping[tradingMode]}: ${t(
+                    {`${
+                      Schema.MarketTradingModeMapping[marketTradingMode]
+                    }: ${t(
                       'Closing on %s',
                       getDateTimeFormat().format(enactmentDate)
                     )}`}
@@ -105,20 +109,28 @@ export const TradingModeTooltip = ({
               </ExternalLink>
             )}
           </p>
-          {compiledGrid && <DataGrid grid={compiledGrid} />}
+          {compiledGrid && <SimpleGrid grid={compiledGrid} />}
         </section>
       );
     }
     case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (trigger) {
         case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
+          const notEnoughLiquidity = new BigNumber(
+            marketData.suppliedStake || 0
+          ).isLessThan(marketData.targetStake || 0);
           return (
             <section data-testid="trading-mode-tooltip">
               <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
-                <span>
-                  {t(
-                    'This market is in auction until it reaches sufficient liquidity.'
-                  )}
+                <span className="mb-2">
+                  {notEnoughLiquidity &&
+                    t(
+                      'This market is in auction until it reaches sufficient liquidity.'
+                    )}
+                  {!notEnoughLiquidity &&
+                    t(
+                      'This market may have sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.'
+                    )}
                 </span>{' '}
                 {VEGA_DOCS_URL && (
                   <ExternalLink
@@ -131,7 +143,7 @@ export const TradingModeTooltip = ({
                   </ExternalLink>
                 )}
               </p>
-              {compiledGrid && <DataGrid grid={compiledGrid} />}
+              {compiledGrid && <SimpleGrid grid={compiledGrid} />}
             </section>
           );
         }
@@ -153,7 +165,7 @@ export const TradingModeTooltip = ({
                   </ExternalLink>
                 )}
               </p>
-              {compiledGrid && <DataGrid grid={compiledGrid} />}
+              {compiledGrid && <SimpleGrid grid={compiledGrid} />}
             </section>
           );
         }

@@ -1,22 +1,14 @@
 import { useMemo } from 'react';
 import * as Schema from '@vegaprotocol/types';
-import {
-  makeDataProvider,
-  makeDerivedDataProvider,
-  useDataProvider,
-  useYesterday,
-} from '@vegaprotocol/react-helpers';
-
+import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import type {
   MarketCandles,
-  MarketWithCandles,
-  MarketWithData,
+  MarketMaybeWithDataAndCandles,
+  MarketsCandlesQueryVariables,
 } from '@vegaprotocol/market-list';
 
-import {
-  marketsCandlesProvider,
-  marketListProvider,
-} from '@vegaprotocol/market-list';
+import { marketListProvider } from '@vegaprotocol/market-list';
 
 import type { LiquidityProvisionMarketsQuery } from './__generated__/MarketsLiquidity';
 import { LiquidityProvisionMarketsDocument } from './__generated__/MarketsLiquidity';
@@ -37,21 +29,20 @@ export interface FeeLevels {
   fee: string;
 }
 
-export type Market = MarketWithData &
-  MarketWithCandles & {
-    feeLevels: FeeLevels[];
-    target: string;
-    dayVolume: string;
-    liquidityCommitted: number;
-    volumeChange: string;
-    tradableInstrument?: {
-      instrument?: {
-        metadata?: {
-          tags?: string[] | null;
-        };
+export type Market = MarketMaybeWithDataAndCandles & {
+  feeLevels: FeeLevels[];
+  target: string;
+  dayVolume: string;
+  liquidityCommitted: number;
+  volumeChange: string;
+  tradableInstrument?: {
+    instrument?: {
+      metadata?: {
+        tags?: string[] | null;
       };
     };
   };
+};
 
 export interface Markets {
   markets: Market[];
@@ -68,7 +59,7 @@ const getData = (
 };
 
 export const addData = (
-  markets: (MarketWithData & MarketWithCandles)[],
+  markets: MarketMaybeWithDataAndCandles[],
   marketsCandles24hAgo: MarketCandles[],
   marketsLiquidity: LiquidityProvisionMarket[]
 ) => {
@@ -104,23 +95,25 @@ export const liquidityMarketsProvider = makeDataProvider<
   getData,
 });
 
-const liquidityProvisionProvider = makeDerivedDataProvider<Markets, never>(
+const liquidityProvisionProvider = makeDerivedDataProvider<
+  Market[],
+  never,
+  Exclude<MarketsCandlesQueryVariables, 'interval'>
+>(
   [
-    marketListProvider,
     (callback, client, variables) =>
-      marketsCandlesProvider(callback, client, {
-        ...variables,
+      marketListProvider(callback, client, {
+        since: variables.since,
         interval: Schema.Interval.INTERVAL_I1D,
       }),
-    liquidityMarketsProvider,
+    (callback, client) => liquidityMarketsProvider(callback, client, undefined),
   ],
   (parts) => {
-    const data = addData(
-      parts[0] as (MarketWithData & MarketWithCandles)[],
+    return addData(
+      parts[0] as MarketMaybeWithDataAndCandles[],
       parts[1] as MarketCandles[],
       parts[2] as LiquidityProvisionMarket[]
     );
-    return { markets: data };
   }
 );
 

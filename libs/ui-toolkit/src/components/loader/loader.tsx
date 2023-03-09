@@ -1,30 +1,22 @@
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
+import styles from './loader.module.scss';
+
+const pseudoRandom = (seed: number) => {
+  let value = seed;
+  return () => {
+    value = (value * 16807) % 2147483647;
+    return value / 1000000000;
+  };
+};
 
 export interface LoaderProps {
   size?: 'small' | 'large';
   forceTheme?: 'dark' | 'light';
-  preloader?: boolean;
 }
 
-export const Loader = ({
-  size = 'large',
-  forceTheme,
-  preloader,
-}: LoaderProps) => {
-  const [, forceRender] = useState(false);
-
-  useEffect(() => {
-    const interval = preloader
-      ? undefined
-      : setInterval(() => {
-          forceRender((x) => !x);
-        }, 100);
-
-    return () => clearInterval(interval);
-  }, [preloader]);
-
-  const itemClasses = classNames('loader-item', {
+export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
+  const itemClasses = classNames('loader-item', styles['loader-item'], {
     'dark:bg-white bg-black': !forceTheme,
     'bg-white': forceTheme === 'dark',
     'bg-black': forceTheme === 'light',
@@ -34,6 +26,8 @@ export const Loader = ({
   const wrapperClasses =
     size === 'small' ? 'w-[15px] h-[15px]' : 'w-[50px] h-[50px]';
   const items = size === 'small' ? 9 : 16;
+
+  const generate = useMemo(() => pseudoRandom(1), []);
 
   return (
     <div
@@ -47,7 +41,7 @@ export const Loader = ({
               className={itemClasses}
               key={i}
               style={{
-                opacity: Math.random() > 0.75 ? 1 : 0,
+                opacity: generate() > 1.5 ? 1 : 0,
               }}
             />
           );

@@ -2,15 +2,12 @@ import type { Asset } from '@vegaprotocol/assets';
 import { assetsProvider } from '@vegaprotocol/assets';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import type { PageInfo } from '@vegaprotocol/react-helpers';
-import { makeInfiniteScrollGetRows } from '@vegaprotocol/react-helpers';
 import {
-  defaultAppend as append,
   makeDataProvider,
   makeDerivedDataProvider,
-  useDataProvider,
-  updateGridData,
-} from '@vegaprotocol/react-helpers';
+  makeInfiniteScrollGetRows,
+} from '@vegaprotocol/utils';
+import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import type * as Schema from '@vegaprotocol/types';
 import type { AgGridReact } from 'ag-grid-react';
 import produce from 'immer';
@@ -27,13 +24,15 @@ import type {
 import { LedgerEntriesDocument } from './__generated__/LedgerEntries';
 
 export type LedgerEntry = LedgerEntryFragment & {
-  id: number;
   asset: Asset | null | undefined;
   marketSender: Market | null | undefined;
   marketReceiver: Market | null | undefined;
 };
 
 export type AggregatedLedgerEntriesEdge = Schema.AggregatedLedgerEntriesEdge;
+export type AggregatedLedgerEntriesNode = AggregatedLedgerEntriesEdge & {
+  node: LedgerEntry;
+};
 
 const getData = (responseData: LedgerEntriesQuery | null) => {
   return responseData?.ledgerEntries?.edges || [];
@@ -43,7 +42,7 @@ export const update = (
   data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getData>,
   reload: () => void,
-  variables?: LedgerEntriesQueryVariables
+  variables: LedgerEntriesQueryVariables
 ) => {
   if (!data) {
     return data;
@@ -94,33 +93,29 @@ export const update = (
   });
 };
 
-const getPageInfo = (responseData: LedgerEntriesQuery): PageInfo | null =>
-  responseData.ledgerEntries?.pageInfo || null;
-
 const ledgerEntriesOnlyProvider = makeDataProvider({
   query: LedgerEntriesDocument,
   getData,
   getDelta: getData,
   update,
-  pagination: {
-    getPageInfo,
-    append,
-    first: 100,
-  },
   additionalContext: {
     isEnlargedTimeout: true,
   },
 });
 
 export const ledgerEntriesProvider = makeDerivedDataProvider<
-  (AggregatedLedgerEntriesEdge | null)[],
-  AggregatedLedgerEntriesEdge[],
+  AggregatedLedgerEntriesNode[],
+  AggregatedLedgerEntriesNode[],
   LedgerEntriesQueryVariables
 >(
-  [ledgerEntriesOnlyProvider, assetsProvider, marketsProvider],
+  [
+    ledgerEntriesOnlyProvider,
+    (callback, client) => assetsProvider(callback, client, undefined),
+    (callback, client) => marketsProvider(callback, client, undefined),
+  ],
   ([entries, assets, markets]) => {
     return entries.map((edge: AggregatedLedgerEntriesEdge) => {
-      const entry = edge?.node;
+      const entry = edge.node;
       const asset = assets.find((asset: Asset) => asset.id === entry.assetId);
       const marketSender = markets.find(
         (market: Market) => market.id === entry.fromAccountMarketId
@@ -128,7 +123,11 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
       const marketReceiver = markets.find(
         (market: Market) => market.id === entry.toAccountMarketId
       );
-      return { node: { ...entry, asset, marketSender, marketReceiver } };
+      const cursor = edge?.cursor;
+      return {
+        node: { ...entry, asset, marketSender, marketReceiver },
+        cursor,
+      };
     });
   }
 );
@@ -144,21 +143,22 @@ export const useLedgerEntriesDataProvider = ({
   filter,
   gridRef,
 }: Props) => {
-  const dataRef = useRef<(AggregatedLedgerEntriesEdge | null)[] | null>(null);
+  const dataRef = useRef<AggregatedLedgerEntriesEdge[] | null>(null);
   const totalCountRef = useRef<number>();
 
   const variables = useMemo<LedgerEntriesQueryVariables>(
     () => ({
       partyId,
       dateRange: filter?.vegaTime?.value,
-      fromAccountType: filter?.fromAccountType?.value ?? null,
-      toAccountType: filter?.toAccountType?.value ?? null,
+      pagination: {
+        first: 5000,
+      },
     }),
-    [partyId, filter]
+    [partyId, filter?.vegaTime?.value]
   );
 
   const update = useCallback(
-    ({ data }: { data: (AggregatedLedgerEntriesEdge | null)[] | null }) => {
+    ({ data }: { data: AggregatedLedgerEntriesEdge[] | null }) => {
       return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
@@ -169,17 +169,16 @@ export const useLedgerEntriesDataProvider = ({
       data,
       totalCount,
     }: {
-      data: (AggregatedLedgerEntriesEdge | null)[] | null;
+      data: AggregatedLedgerEntriesEdge[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current = data;
       totalCountRef.current = totalCount;
       return updateGridData(dataRef, data, gridRef);
     },
     [gridRef]
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: ledgerEntriesProvider,
     update,
     insert,
@@ -193,5 +192,5 @@ export const useLedgerEntriesDataProvider = ({
     totalCountRef,
     load
   );
-  return { loading, error, data, getRows };
+  return { loading, error, data, getRows, reload };
 };

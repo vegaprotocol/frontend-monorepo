@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { TableRow, TableCell } from '../../../table';
 import { BlockLink, PartyLink } from '../../../links/';
 import { TimeAgo } from '../../../time-ago';
@@ -14,10 +14,14 @@ interface TxDetailsSharedProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
+
+  // A transitional property used in some complex TX types to display more detailed type information
+  // than the shared component can derive
+  hideTypeRow?: boolean;
 }
 
 // Applied to all header cells
-const sharedHeaderProps = {
+export const sharedHeaderProps = {
   // Ensures that multi line contents still have the header aligned to the first line
   className: 'align-top',
 };
@@ -31,6 +35,7 @@ export const TxDetailsShared = ({
   txData,
   pubKey,
   blockData,
+  hideTypeRow = false,
 }: TxDetailsSharedProps) => {
   if (!txData) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
@@ -41,14 +46,16 @@ export const TxDetailsShared = ({
 
   return (
     <>
-      <TableRow modifier="bordered">
-        <TableCell {...sharedHeaderProps}>{t('Type')}</TableCell>
-        <TableCell>{txData.type}</TableCell>
-      </TableRow>
+      {hideTypeRow === false ? (
+        <TableRow modifier="bordered">
+          <TableCell {...sharedHeaderProps}>{t('Type')}</TableCell>
+          <TableCell>{txData.type}</TableCell>
+        </TableRow>
+      ) : null}
       <TableRow modifier="bordered">
         <TableCell {...sharedHeaderProps}>{t('Hash')}</TableCell>
         <TableCell>
-          <Hash text={txData.hash} />
+          <Hash text={txData.hash.toLowerCase()} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

@@ -1,39 +1,32 @@
-import { useEffect, useState } from 'react';
 import {
   FormGroup,
   InputError,
   Select,
   Tooltip,
+  SimpleGrid,
 } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
-import { DataGrid, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { timeInForceLabel } from '@vegaprotocol/orders';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
+import type { Market, StaticMarketData } from '@vegaprotocol/market-list';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
-  market: MarketDealTicket;
+  market: Market;
+  marketData: StaticMarketData;
   errorMessage?: string;
 }
-
-type OrderType = Schema.OrderType.TYPE_MARKET | Schema.OrderType.TYPE_LIMIT;
-type PreviousTimeInForce = {
-  [key in OrderType]: Schema.OrderTimeInForce;
-};
-const DEFAULT_TIME_IN_FORCE: PreviousTimeInForce = {
-  [Schema.OrderType.TYPE_MARKET]: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-  [Schema.OrderType.TYPE_LIMIT]: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-};
 
 export const TimeInForceSelector = ({
   value,
   orderType,
   onSelect,
   market,
+  marketData,
   errorMessage,
 }: TimeInForceSelectorProps) => {
   const options =
@@ -44,28 +37,6 @@ export const TimeInForceSelector = ({
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
         );
-  const [previousOrderType, setPreviousOrderType] = useState(
-    Schema.OrderType.TYPE_MARKET
-  );
-  const [previousTimeInForce, setPreviousTimeInForce] =
-    useState<PreviousTimeInForce>({
-      ...DEFAULT_TIME_IN_FORCE,
-      [orderType]: value,
-    });
-
-  useEffect(() => {
-    if (previousOrderType !== orderType) {
-      setPreviousOrderType(orderType);
-      const prev = previousTimeInForce[orderType as OrderType];
-      onSelect(prev);
-    }
-  }, [
-    onSelect,
-    orderType,
-    previousTimeInForce,
-    previousOrderType,
-    setPreviousOrderType,
-  ]);
 
   const renderError = (errorType: string) => {
     if (errorType === MarketModeValidationType.Auction) {
@@ -80,7 +51,7 @@ export const TimeInForceSelector = ({
           {t('This market is in auction until it reaches')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, market.data)} />
+              <SimpleGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('sufficient liquidity')}</span>
@@ -99,7 +70,7 @@ export const TimeInForceSelector = ({
           {t('This market is in auction due to')}{' '}
           <Tooltip
             description={
-              <DataGrid grid={compileGridData(market, market.data)} />
+              <SimpleGrid grid={compileGridData(market, marketData)} />
             }
           >
             <span>{t('high price volatility')}</span>
@@ -116,15 +87,25 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
+    <FormGroup
+      label={t('Time in force')}
+      labelFor="select-time-in-force"
+      compact={true}
+    >
       <Select
         id="select-time-in-force"
         value={value}
         onChange={(e) => {
-          setPreviousTimeInForce({
-            ...previousTimeInForce,
-            [orderType]: e.target.value,
-          });
+          // setPreviousTimeInForce({
+          //   ...previousTimeInForce,
+          //   [orderType]: e.target.value,
+          // });
+
+          // if (previousOrderType !== orderType) {
+          //   setPreviousOrderType(orderType);
+          //   const prev = previousTimeInForce[orderType as OrderType];
+          //   onSelect(prev);
+          // }
           onSelect(e.target.value as Schema.OrderTimeInForce);
         }}
         className="w-full"
@@ -137,7 +118,7 @@ export const TimeInForceSelector = ({
         ))}
       </Select>
       {errorMessage && (
-        <InputError data-testid="dealticket-error-message-tif">
+        <InputError testId="dealticket-error-message-tif">
           {renderError(errorMessage)}
         </InputError>
       )}

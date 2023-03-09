@@ -1,36 +1,48 @@
-import { isAssetTypeERC20, removeDecimal } from '@vegaprotocol/react-helpers';
-import * as Sentry from '@sentry/react';
-import type { Token } from '@vegaprotocol/smart-contracts';
+import { isAssetTypeERC20, removeDecimal } from '@vegaprotocol/utils';
 import {
+  EthTxStatus,
   useEthereumConfig,
-  useEthereumTransaction,
+  useEthTransactionStore,
   useTokenContract,
 } from '@vegaprotocol/web3';
 import type { Asset } from '@vegaprotocol/assets';
+import { useEffect, useState } from 'react';
 
-export const useSubmitApproval = (asset?: Asset) => {
+export const useSubmitApproval = (
+  asset: Asset | undefined,
+  getBalances: () => void
+) => {
+  const [id, setId] = useState<number | null>(null);
+  const createEthTransaction = useEthTransactionStore((state) => state.create);
+  const tx = useEthTransactionStore((state) => {
+    return state.transactions.find((t) => t?.id === id);
+  });
   const { config } = useEthereumConfig();
   const contract = useTokenContract(
     isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
     true
   );
-  const transaction = useEthereumTransaction<Token, 'approve'>(
-    contract,
-    'approve'
-  );
+
+  // When tx is confirmed refresh balances
+  useEffect(() => {
+    if (tx?.status === EthTxStatus.Confirmed) {
+      getBalances();
+    }
+  }, [tx?.status, getBalances]);
+
   return {
-    ...transaction,
-    perform: async () => {
+    id,
+    reset: () => {
+      setId(null);
+    },
+    perform: () => {
       if (!asset || !config) return;
-      try {
-        const amount = removeDecimal('1000000', asset.decimals);
-        await transaction.perform(
-          config.collateral_bridge_contract.address,
-          amount
-        );
-      } catch (err) {
-        Sentry.captureException(err);
-      }
+      const amount = removeDecimal('1000000', asset.decimals);
+      const id = createEthTransaction(contract, 'approve', [
+        config?.collateral_bridge_contract.address,
+        amount,
+      ]);
+      setId(id);
     },
   };
 };

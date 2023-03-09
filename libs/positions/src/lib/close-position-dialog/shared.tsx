@@ -1,10 +1,9 @@
-import type {
-  MarketDataFieldsFragment,
-  SingleMarketFieldsFragment,
-} from '@vegaprotocol/market-list';
+import type { MarketData, Market } from '@vegaprotocol/market-list';
 import type { Order } from '@vegaprotocol/orders';
 import { timeInForceLabel } from '@vegaprotocol/orders';
-import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { Size } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
 import type { ClosingOrder as IClosingOrder } from '../use-close-position';
 
@@ -14,8 +13,8 @@ export const ClosingOrder = ({
   marketData,
 }: {
   order: IClosingOrder;
-  market: SingleMarketFieldsFragment;
-  marketData: MarketDataFieldsFragment;
+  market: Market;
+  marketData: MarketData;
 }) => {
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
   const estimatedPrice =
@@ -50,7 +49,7 @@ export const ActiveOrders = ({
   market,
   orders,
 }: {
-  market: SingleMarketFieldsFragment;
+  market: Market;
   orders: Order[];
 }) => {
   const asset = market.tradableInstrument.instrument.product.settlementAsset;

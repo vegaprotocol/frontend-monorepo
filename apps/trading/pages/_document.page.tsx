@@ -12,17 +12,20 @@ export default function Document() {
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* eslint-disable-next-line @next/next/no-css-tags */}
+        <link rel="stylesheet" href="/preloader.css" media="all" />
         <link
           rel="icon"
           type="image/x-icon"
           href="https://static.vega.xyz/favicon.ico"
         />
+        <script src="/theme-setter.js" type="text/javascript" async />
         {['1', 'true'].includes(process.env['NX_USE_ENV_OVERRIDES'] || '') ? (
           /* eslint-disable-next-line @next/next/no-sync-scripts */
           <script src="/assets/env-config.js" type="text/javascript" />
         ) : null}
       </Head>
-      <body className="font-alpha liga-0-calt-0">
+      <body className="font-alpha dark:bg-black dark:text-white">
         <Main />
         <NextScript />
       </body>

@@ -4,10 +4,13 @@ import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import type { DepositBalances } from './use-deposit-balances';
 
 jest.mock('@vegaprotocol/wallet');
+jest.mock('@vegaprotocol/web3');
 jest.mock('@web3-react/core');
 
 const mockConnector = { deactivate: jest.fn() };
@@ -36,25 +39,34 @@ function generateAsset(): AssetFieldsFragment {
 
 let asset: AssetFieldsFragment;
 let props: DepositFormProps;
+let balances: DepositBalances;
 const MOCK_ETH_ADDRESS = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
+const MOCK_VEGA_KEY =
+  '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680';
 
 beforeEach(() => {
   asset = generateAsset();
+  balances = {
+    balance: new BigNumber(5),
+    max: new BigNumber(20),
+    allowance: new BigNumber(30),
+    deposited: new BigNumber(10),
+  };
   props = {
     assets: [asset],
     selectedAsset: undefined,
     onSelectAsset: jest.fn(),
-    balance: new BigNumber(5),
+    balances,
     submitApprove: jest.fn(),
     submitDeposit: jest.fn(),
-    requestFaucet: jest.fn(),
-    max: new BigNumber(20),
-    deposited: new BigNumber(10),
-    allowance: new BigNumber(30),
+    submitFaucet: jest.fn(),
+    onDisconnect: jest.fn(),
+    approveTxId: null,
+    faucetTxId: null,
     isFaucetable: true,
   };
 
-  (useVegaWallet as jest.Mock).mockReturnValue({ pubKey: null });
+  (useVegaWallet as jest.Mock).mockReturnValue({ pubKey: null, pubKeys: [] });
   (useWeb3React as jest.Mock).mockReturnValue({
     isActive: true,
     account: MOCK_ETH_ADDRESS,
@@ -67,7 +79,8 @@ describe('Deposit form', () => {
     render(<DepositForm {...props} />);
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
-    expect(screen.getByLabelText('From (Ethereum address)')).toHaveValue(
+    expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
+    expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
       MOCK_ETH_ADDRESS
     );
     expect(screen.getByLabelText('Asset')).toHaveValue('');
@@ -89,14 +102,17 @@ describe('Deposit form', () => {
       });
     });
 
-    it('fails when submitted with invalid ethereum address', async () => {
-      (useWeb3React as jest.Mock).mockReturnValue({ account: '123' });
+    it('fails when Ethereum wallet not connected', async () => {
+      (useWeb3React as jest.Mock).mockReturnValue({
+        isActive: false,
+        account: '',
+      });
       render(<DepositForm {...props} />);
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Invalid Ethereum address')
+        await screen.findByText('Connect Ethereum wallet')
       ).toBeInTheDocument();
     });
 
@@ -138,7 +154,7 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Insufficient amount in Ethereum wallet')
+        await screen.findByText('Amount is above lifetime deposit limit')
       ).toBeInTheDocument();
     });
 
@@ -146,9 +162,12 @@ describe('Deposit form', () => {
       render(
         <DepositForm
           {...props}
-          balance={new BigNumber(100)}
-          max={new BigNumber(100)}
-          deposited={new BigNumber(10)}
+          balances={{
+            ...balances,
+            balance: BigNumber(100),
+            max: new BigNumber(100),
+            deposited: new BigNumber(10),
+          }}
         />
       );
 
@@ -193,9 +212,9 @@ describe('Deposit form', () => {
     });
   });
 
-  it('handles deposit approvals', () => {
+  it('handles deposit approvals', async () => {
     const mockUseVegaWallet = useVegaWallet as jest.Mock;
-    mockUseVegaWallet.mockReturnValue({ pubKey: null });
+    mockUseVegaWallet.mockReturnValue({ pubKey: MOCK_VEGA_KEY });
 
     const mockUseWeb3React = useWeb3React as jest.Mock;
     mockUseWeb3React.mockReturnValue({
@@ -207,18 +226,26 @@ describe('Deposit form', () => {
     render(
       <DepositForm
         {...props}
-        allowance={new BigNumber(0)}
+        balances={{
+          ...balances,
+          allowance: new BigNumber(0),
+        }}
         selectedAsset={asset}
       />
     );
 
-    fireEvent.click(
-      screen.getByText(`Approve ${asset.symbol}`, {
-        selector: '[type="button"]',
-      })
+    expect(screen.queryByLabelText('Amount')).not.toBeInTheDocument();
+    expect(screen.getByTestId('approve-default')).toHaveTextContent(
+      `Before you can make a deposit of your chosen asset, ${asset.symbol}, you need to approve its use in your Ethereum wallet`
     );
 
-    expect(props.submitApprove).toHaveBeenCalled();
+    fireEvent.click(
+      screen.getByRole('button', { name: `Approve ${asset.symbol}` })
+    );
+
+    await waitFor(() => {
+      expect(props.submitApprove).toHaveBeenCalled();
+    });
   });
 
   it('handles submitting a deposit', async () => {
@@ -241,10 +268,12 @@ describe('Deposit form', () => {
     render(
       <DepositForm
         {...props}
-        allowance={new BigNumber(100)}
-        balance={balance}
-        max={max}
-        deposited={deposited}
+        balances={{
+          allowance: new BigNumber(100),
+          balance,
+          max,
+          deposited,
+        }}
         selectedAsset={asset}
       />
     );
@@ -283,5 +312,56 @@ describe('Deposit form', () => {
   it('does not shows "View asset details" button when no asset is selected', async () => {
     render(<DepositForm {...props} />);
     expect(await screen.queryAllByTestId('view-asset-details')).toHaveLength(0);
+  });
+
+  it('renders a connect button if Ethereum wallet is not connected', () => {
+    (useWeb3React as jest.Mock).mockReturnValue({
+      isActive: false,
+      account: '',
+    });
+    render(<DepositForm {...props} />);
+
+    expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('From (Ethereum address)')
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders a disabled input if Ethereum wallet is connected', () => {
+    (useWeb3React as jest.Mock).mockReturnValue({
+      isActive: true,
+      account: MOCK_ETH_ADDRESS,
+    });
+    render(<DepositForm {...props} />);
+
+    expect(
+      screen.queryByRole('button', { name: 'Connect' })
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
+    expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
+      MOCK_ETH_ADDRESS
+    );
+  });
+
+  it('prevents submission if you are on the wrong chain', () => {
+    (useWeb3React as jest.Mock).mockReturnValue({
+      isActive: true,
+      account: MOCK_ETH_ADDRESS,
+      chainId: 1,
+    });
+    (useWeb3ConnectStore as unknown as jest.Mock).mockImplementation(
+      // eslint-disable-next-line
+      (selector: (result: ReturnType<typeof useWeb3ConnectStore>) => any) => {
+        return selector({
+          desiredChainId: 11155111,
+          open: jest.fn(),
+          foo: 'asdf',
+        });
+      }
+    );
+    render(<DepositForm {...props} />);
+    expect(screen.getByTestId('chain-error')).toHaveTextContent(
+      /this app only works on/i
+    );
   });
 });

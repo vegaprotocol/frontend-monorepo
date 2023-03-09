@@ -1,11 +1,9 @@
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import {
   useEagerConnect as useVegaEagerConnect,
-  VegaWalletProvider,
   useVegaTransactionManager,
   useVegaTransactionUpdater,
   useVegaWallet,
@@ -17,17 +15,16 @@ import {
   useEthWithdrawApprovalsManager,
 } from '@vegaprotocol/web3';
 import {
-  EnvironmentProvider,
   envTriggerMapping,
   Networks,
+  NodeSwitcherDialog,
   useEnvironment,
+  useInitializeEnv,
 } from '@vegaprotocol/environment';
-import { AppLoader, Web3Provider } from '../components/app-loader';
 import './styles.css';
-import './gen-styles.scss';
-import { usePageTitleStore } from '../stores';
+import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
@@ -35,6 +32,7 @@ import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import classNames from 'classnames';
+import { AppLoader, DynamicLoader } from '../components/app-loader';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -74,7 +72,7 @@ function AppBody({ Component }: AppProps) {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[repeat(3,min-content),1fr,min-content]'
+    'grid-rows-[repeat(3,min-content),1fr]'
   );
 
   return (
@@ -84,57 +82,47 @@ function AppBody({ Component }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Title />
-      <VegaWalletProvider>
-        <AppLoader>
-          <Web3Provider>
-            <div className={gridClasses}>
-              <Navbar
-                navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
-              />
-              <Banner />
-              <ViewingBanner />
-              <main data-testid={location.pathname}>
-                <Component />
-              </main>
-              <Footer />
-            </div>
-            <DialogsContainer />
-            <ToastsManager />
-            <TransactionsHandler />
-            <MaybeConnectEagerly />
-          </Web3Provider>
-        </AppLoader>
-      </VegaWalletProvider>
+      <div className={gridClasses}>
+        <Navbar
+          navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
+        />
+        <Banner />
+        <ViewingBanner />
+        <main data-testid={location.pathname}>
+          <Component />
+        </main>
+        <Footer />
+      </div>
+      <DialogsContainer />
+      <ToastsManager />
+      <TransactionsHandler />
+      <MaybeConnectEagerly />
     </div>
   );
 }
 
-const DynamicLoader = dynamic(
-  () => import('../components/preloader/preloader'),
-  {
-    loading: () => <>Loading...</>,
-  }
-);
-
 function VegaTradingApp(props: AppProps) {
-  const [mounted, setMounted] = useState(false);
+  const status = useEnvironment((store) => store.status);
+  const { nodeSwitcherOpen, setNodeSwitcher } = useGlobalStore((store) => ({
+    nodeSwitcherOpen: store.nodeSwitcherDialog,
+    setNodeSwitcher: (open: boolean) =>
+      store.update({ nodeSwitcherDialog: open }),
+  }));
 
-  // Hash router requires access to the document object. At compile time that doesn't exist
-  // so we need to ensure client side rendering only from this point onwards in
-  // the component tree
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useInitializeEnv();
 
-  if (!mounted) {
+  // Prevent HashRouter from being server side rendered as it
+  // relies on presence of document object
+  if (status === 'default') {
     return <DynamicLoader />;
   }
 
   return (
     <HashRouter>
-      <EnvironmentProvider>
+      <AppLoader>
         <AppBody {...props} />
-      </EnvironmentProvider>
+      </AppLoader>
+      <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </HashRouter>
   );
 }

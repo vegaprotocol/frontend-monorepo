@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import get from 'lodash/get';
 import AssetBalance from '../../../../components/asset-balance/asset-balance';
 import { AssetLink, MarketLink } from '../../../../components/links';
@@ -71,7 +71,7 @@ export const PartyAccounts = ({ accounts }: PartyAccountsProps) => {
                 />
               </td>
               <td className="text-md">
-                <AssetLink id={account.asset.id} />
+                <AssetLink assetId={account.asset.id} />
               </td>
             </TableRow>
           );

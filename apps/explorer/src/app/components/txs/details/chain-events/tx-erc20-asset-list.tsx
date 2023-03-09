@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink } from '../../../links';
@@ -41,7 +41,7 @@ export const TxDetailsChainEventErc20AssetList = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Added Vega asset')}</TableCell>
         <TableCell>
-          <AssetLink id={assetList.vegaAssetId} />
+          <AssetLink assetId={assetList.vegaAssetId} />
         </TableCell>
       </TableRow>
     </>

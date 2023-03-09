@@ -1,26 +1,41 @@
-import type { TokenFaucetable } from '@vegaprotocol/smart-contracts';
-import * as Sentry from '@sentry/react';
-import { useEthereumTransaction, useTokenContract } from '@vegaprotocol/web3';
-import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import {
+  EthTxStatus,
+  useEthTransactionStore,
+  useTokenContract,
+} from '@vegaprotocol/web3';
+import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import type { Asset } from '@vegaprotocol/assets';
+import { useEffect, useState } from 'react';
 
-export const useSubmitFaucet = (asset?: Asset) => {
+export const useSubmitFaucet = (
+  asset: Asset | undefined,
+  getBalances: () => void
+) => {
+  const [id, setId] = useState<number | null>(null);
+  const createEthTransaction = useEthTransactionStore((state) => state.create);
+  const tx = useEthTransactionStore((state) => {
+    return state.transactions.find((t) => t?.id === id);
+  });
   const contract = useTokenContract(
     isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
     true
   );
-  const transaction = useEthereumTransaction<TokenFaucetable, 'faucet'>(
-    contract,
-    'faucet'
-  );
+
+  // When tx is confirmed refresh balances
+  useEffect(() => {
+    if (tx?.status === EthTxStatus.Confirmed) {
+      getBalances();
+    }
+  }, [tx?.status, getBalances]);
+
   return {
-    ...transaction,
-    perform: async () => {
-      try {
-        await transaction.perform();
-      } catch (err) {
-        Sentry.captureException(err);
-      }
+    id,
+    reset: () => {
+      setId(null);
+    },
+    perform: () => {
+      const id = createEthTransaction(contract, 'faucet', []);
+      setId(id);
     },
   };
 };

@@ -1,16 +1,19 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef } from 'react';
-import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/datagrid';
+import { AgGridDynamic as AgGrid, NumericCell } from '@vegaprotocol/datagrid';
 import {
   addDecimal,
   addDecimalsFormatNumber,
   getDateTimeFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
-import type { CellClassParams, ValueFormatterParams } from 'ag-grid-community';
+import type { CellClassParams } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';
 import type { Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
@@ -44,21 +47,15 @@ interface Props extends AgGridReactProps {
   onClick?: (price?: string) => void;
 }
 
-type TradesTableValueFormatterParams = Omit<
-  ValueFormatterParams,
-  'data' | 'value'
-> & {
-  data: Trade | null;
-};
-
 export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', background: 'red' }}
       overlayNoRowsTemplate={t('No trades')}
       getRowId={({ data }) => data.id}
       ref={ref}
       defaultColDef={{
+        flex: 1,
         resizable: true,
       }}
       {...props}
@@ -72,10 +69,8 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         valueFormatter={({
           value,
           data,
-        }: TradesTableValueFormatterParams & {
-          value: Trade['price'];
-        }) => {
-          if (!data?.market) {
+        }: VegaValueFormatterParams<Trade, 'price'>) => {
+          if (!value || !data?.market) {
             return null;
           }
           return addDecimalsFormatNumber(value, data.market.decimalPlaces);
@@ -110,24 +105,26 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         valueFormatter={({
           value,
           data,
-        }: TradesTableValueFormatterParams & {
-          value: Trade['size'];
-        }) => {
-          if (!data?.market) {
+        }: VegaValueFormatterParams<Trade, 'size'>) => {
+          if (!value || !data?.market) {
             return null;
           }
-          return addDecimal(value, data.market.positionDecimalPlaces);
+          return addDecimalsFormatNumber(
+            value,
+            data.market.positionDecimalPlaces
+          );
         }}
+        cellRenderer={NumericCell}
       />
       <AgGridColumn
         headerName={t('Created at')}
         field="createdAt"
+        type="rightAligned"
         width={170}
+        cellClass="text-right"
         valueFormatter={({
           value,
-        }: TradesTableValueFormatterParams & {
-          value: Trade['createdAt'];
-        }) => {
+        }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
           return value && getDateTimeFormat().format(new Date(value));
         }}
       />

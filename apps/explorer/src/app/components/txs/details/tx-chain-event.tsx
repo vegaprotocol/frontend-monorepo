@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody } from '../../table';
 
@@ -32,7 +32,7 @@ export const TxDetailsChainEvent = ({
   }
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <ChainEvent txData={txData} />
     </TableWithTbody>

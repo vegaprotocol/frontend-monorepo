@@ -9,21 +9,35 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketWithData } from '@vegaprotocol/market-list';
+import type {
+  MarketMaybeWithData,
+  MarketDataQueryVariables,
+} from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
 import type {
   PositionsQuery,
   PositionFieldsFragment,
   PositionsSubscriptionSubscription,
   MarginFieldsFragment,
+  PositionsQueryVariables,
 } from './__generated__/Positions';
 import {
   PositionsDocument,
   PositionsSubscriptionDocument,
 } from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
+import { calculateMargins } from './margin-calculator';
+import type { Edge } from '@vegaprotocol/utils';
+import { OrderStatus, Side } from '@vegaprotocol/types';
+import { marketInfoProvider } from '@vegaprotocol/market-info';
+import type { MarketInfoQuery } from '@vegaprotocol/market-info';
+import { marketDataProvider } from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/market-list';
+import { ordersProvider } from '@vegaprotocol/orders';
+import type { OrderFieldsFragment } from '@vegaprotocol/orders';
+import type { PositionStatus } from '@vegaprotocol/types';
 
 type PositionMarginLevel = Pick<
   MarginFieldsFragment,
@@ -36,8 +50,10 @@ interface PositionRejoined {
   unrealisedPNL: string;
   averageEntryPrice: string;
   updatedAt?: string | null;
-  market: MarketWithData | null;
+  market: MarketMaybeWithData | null;
   margins: PositionMarginLevel | null;
+  lossSocializationAmount: string | null;
+  status: PositionStatus;
 }
 
 export interface Position {
@@ -45,23 +61,25 @@ export interface Position {
   averageEntryPrice: string;
   marginAccountBalance: string;
   capitalUtilisation: number;
-  currentLeverage: number;
+  currentLeverage: number | undefined;
   decimals: number;
   marketDecimalPlaces: number;
   positionDecimalPlaces: number;
   totalBalance: string;
   assetSymbol: string;
-  liquidationPrice: string;
+  liquidationPrice: string | undefined;
   lowMarginLevel: boolean;
   marketId: string;
   marketTradingMode: Schema.MarketTradingMode;
-  markPrice: string;
-  notional: string;
+  markPrice: string | undefined;
+  notional: string | undefined;
   openVolume: string;
   realisedPNL: string;
   unrealisedPNL: string;
-  searchPrice: string;
+  searchPrice: string | undefined;
   updatedAt: string | null;
+  lossSocializationAmount: string;
+  status: PositionStatus;
 }
 
 export interface Data {
@@ -84,7 +102,7 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    if (!marginAccount || !marginLevel || !market || !marketData) {
+    if (!marginAccount || !marginLevel || !market) {
       return;
     }
     const generalAccount = accounts?.find(
@@ -102,15 +120,22 @@ export const getMetrics = (
       generalAccount?.balance ?? 0,
       decimals
     );
-    const markPrice = toBigNum(marketData.markPrice, marketDecimalPlaces);
 
-    const notional = (
-      openVolume.isGreaterThan(0) ? openVolume : openVolume.multipliedBy(-1)
-    ).multipliedBy(markPrice);
+    const markPrice = marketData
+      ? toBigNum(marketData.markPrice, marketDecimalPlaces)
+      : undefined;
+    const notional = markPrice
+      ? (openVolume.isGreaterThan(0)
+          ? openVolume
+          : openVolume.multipliedBy(-1)
+        ).multipliedBy(markPrice)
+      : undefined;
     const totalBalance = marginAccountBalance.plus(generalAccountBalance);
-    const currentLeverage = totalBalance.isEqualTo(0)
-      ? new BigNumber(0)
-      : notional.dividedBy(totalBalance);
+    const currentLeverage = notional
+      ? totalBalance.isEqualTo(0)
+        ? new BigNumber(0)
+        : notional.dividedBy(totalBalance)
+      : undefined;
     const capitalUtilisation = totalBalance.isEqualTo(0)
       ? new BigNumber(0)
       : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
@@ -119,19 +144,23 @@ export const getMetrics = (
     const marginSearch = toBigNum(marginLevel.searchLevel, decimals);
     const marginInitial = toBigNum(marginLevel.initialLevel, decimals);
 
-    const searchPrice = marginSearch
-      .minus(marginAccountBalance)
-      .dividedBy(openVolume)
-      .plus(markPrice);
+    const searchPrice = markPrice
+      ? marginSearch
+          .minus(marginAccountBalance)
+          .dividedBy(openVolume)
+          .plus(markPrice)
+      : undefined;
 
-    const liquidationPrice = BigNumber.maximum(
-      0,
-      marginMaintenance
-        .minus(marginAccountBalance)
-        .minus(generalAccountBalance)
-        .dividedBy(openVolume)
-        .plus(markPrice)
-    );
+    const liquidationPrice = markPrice
+      ? BigNumber.maximum(
+          0,
+          marginMaintenance
+            .minus(marginAccountBalance)
+            .minus(generalAccountBalance)
+            .dividedBy(openVolume)
+            .plus(markPrice)
+        )
+      : undefined;
 
     const lowMarginLevel =
       marginAccountBalance.isLessThan(
@@ -143,7 +172,7 @@ export const getMetrics = (
       averageEntryPrice: position.averageEntryPrice,
       marginAccountBalance: marginAccount.balance,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
-      currentLeverage: currentLeverage.toNumber(),
+      currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
       marketDecimalPlaces,
       positionDecimalPlaces,
       decimals,
@@ -152,19 +181,23 @@ export const getMetrics = (
       totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       lowMarginLevel,
       liquidationPrice: liquidationPrice
-        .multipliedBy(10 ** marketDecimalPlaces)
-        .toFixed(0),
+        ? liquidationPrice.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
+        : undefined,
       marketId: market.id,
       marketTradingMode: market.tradingMode,
-      markPrice: marketData.markPrice,
-      notional: notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0),
+      markPrice: marketData ? marketData.markPrice : undefined,
+      notional: notional
+        ? notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
+        : undefined,
       openVolume: position.openVolume,
       realisedPNL: position.realisedPNL,
       unrealisedPNL: position.unrealisedPNL,
       searchPrice: searchPrice
-        .multipliedBy(10 ** marketDecimalPlaces)
-        .toFixed(0),
+        ? searchPrice.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
+        : undefined,
       updatedAt: position.updatedAt || null,
+      lossSocializationAmount: position.lossSocializationAmount || '0',
+      status: position.status,
     });
   });
   return metrics;
@@ -188,6 +221,8 @@ export const update = (
           openVolume: delta.openVolume,
           averageEntryPrice: delta.averageEntryPrice,
           updatedAt: delta.updatedAt,
+          lossSocializationAmount: delta.lossSocializationAmount,
+          positionStatus: delta.positionStatus,
         };
       } else {
         draft.unshift({
@@ -207,7 +242,8 @@ export const positionsDataProvider = makeDataProvider<
   PositionsQuery,
   PositionFieldsFragment[],
   PositionsSubscriptionSubscription,
-  PositionsSubscriptionSubscription['positions']
+  PositionsSubscriptionSubscription['positions'],
+  PositionsQueryVariables
 >({
   query: PositionsDocument,
   subscriptionQuery: PositionsSubscriptionDocument,
@@ -238,9 +274,35 @@ const upgradeMarginsConnection = (
   return null;
 };
 
+export const positionDataProvider = makeDerivedDataProvider<
+  PositionFieldsFragment,
+  never,
+  PositionsQueryVariables & MarketDataQueryVariables
+>(
+  [
+    (callback, client, variables) =>
+      positionsDataProvider(callback, client, {
+        partyId: variables?.partyId || '',
+      }),
+  ],
+  (data, variables) =>
+    (data[0] as PositionFieldsFragment[] | null)?.find(
+      (p) => p.market.id === variables?.marketId
+    ) || null
+);
+
+export const openVolumeDataProvider = makeDerivedDataProvider<
+  string,
+  never,
+  PositionsQueryVariables & MarketDataQueryVariables
+>(
+  [positionDataProvider],
+  (data) => (data[0] as PositionFieldsFragment | null)?.openVolume || null
+);
+
 export const rejoinPositionData = (
   positions: PositionFieldsFragment[] | null,
-  marketsData: MarketWithData[] | null,
+  marketsData: MarketMaybeWithData[] | null,
   margins: MarginFieldsFragment[] | null
 ): PositionRejoined[] | null => {
   if (positions && marketsData && margins) {
@@ -254,25 +316,23 @@ export const rejoinPositionData = (
         market:
           marketsData?.find((market) => market.id === node.market.id) || null,
         margins: upgradeMarginsConnection(node.market.id, margins),
+        lossSocializationAmount: node.lossSocializationAmount,
+        status: node.positionStatus,
       };
     });
   }
   return null;
 };
 
-export interface PositionsMetricsProviderVariables {
-  partyId: string;
-}
-
 export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
   Position[],
-  PositionsMetricsProviderVariables
+  PositionsQueryVariables
 >(
   [
     positionsDataProvider,
     accountsDataProvider,
-    marketsWithDataProvider,
+    (callback, client) => marketsWithDataProvider(callback, client, undefined),
     marginsDataProvider,
   ],
   ([positions, accounts, marketsData, margins], variables) => {
@@ -292,4 +352,104 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
       );
       return !(previousRow && isEqual(previousRow, row));
     })
+);
+
+export const volumeAndMarginProvider = makeDerivedDataProvider<
+  {
+    buyVolume: string;
+    sellVolume: string;
+    buyInitialMargin: string;
+    sellInitialMargin: string;
+  },
+  never,
+  PositionsQueryVariables & MarketDataQueryVariables
+>(
+  [
+    (callback, client, variables) =>
+      ordersProvider(callback, client, {
+        ...variables,
+        filter: {
+          status: [
+            OrderStatus.STATUS_ACTIVE,
+            OrderStatus.STATUS_PARTIALLY_FILLED,
+          ],
+        },
+      }),
+    (callback, client, variables) =>
+      marketDataProvider(callback, client, { marketId: variables.marketId }),
+    (callback, client, variables) =>
+      marketInfoProvider(callback, client, { marketId: variables.marketId }),
+    openVolumeDataProvider,
+  ],
+  (data) => {
+    const orders = data[0] as (Edge<OrderFieldsFragment> | null)[] | null;
+    const marketData = data[1] as MarketData | null;
+    const marketInfo = data[2] as MarketInfoQuery['market'];
+    let openVolume = (data[3] as string | null) || '0';
+    const shortPosition = openVolume?.startsWith('-');
+    if (shortPosition) {
+      openVolume = openVolume.substring(1);
+    }
+    let buyVolume = BigInt(shortPosition ? 0 : openVolume);
+    let sellVolume = BigInt(shortPosition ? openVolume : 0);
+    let buyInitialMargin = BigInt(0);
+    let sellInitialMargin = BigInt(0);
+    if (marketInfo?.riskFactors && marketData) {
+      const {
+        positionDecimalPlaces,
+        decimalPlaces,
+        tradableInstrument,
+        riskFactors,
+      } = marketInfo;
+      const { marginCalculator, instrument } = tradableInstrument;
+      const { decimals } = instrument.product.settlementAsset;
+      const calculatorParams = {
+        positionDecimalPlaces,
+        decimalPlaces,
+        decimals,
+        scalingFactors: marginCalculator?.scalingFactors,
+        riskFactors,
+      };
+      if (openVolume !== '0') {
+        const { initialMargin } = calculateMargins({
+          side: shortPosition ? Side.SIDE_SELL : Side.SIDE_BUY,
+          size: openVolume,
+          price: marketData.markPrice,
+          ...calculatorParams,
+        });
+        if (shortPosition) {
+          sellInitialMargin += BigInt(initialMargin);
+        } else {
+          buyInitialMargin += BigInt(initialMargin);
+        }
+      }
+      orders?.forEach((order) => {
+        if (!order) {
+          return;
+        }
+        const { side, remaining: size } = order.node;
+        const initialMargin = BigInt(
+          calculateMargins({
+            side,
+            size,
+            price: marketData.markPrice, //getDerivedPrice(order.node, marketData), same use-initial-margin
+            ...calculatorParams,
+          }).initialMargin
+        );
+        if (order.node.side === Side.SIDE_BUY) {
+          buyVolume += BigInt(size);
+          buyInitialMargin += initialMargin;
+        } else {
+          sellVolume += BigInt(size);
+          sellInitialMargin += initialMargin;
+        }
+      });
+    }
+    return {
+      buyVolume: buyVolume.toString(),
+      sellVolume: sellVolume.toString(),
+      buyInitialMargin: buyInitialMargin.toString(),
+      sellInitialMargin: sellInitialMargin.toString(),
+    };
+  }
 );

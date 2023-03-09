@@ -43,10 +43,6 @@ export const accountFields: AccountFieldsFragment[] = [
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '100000000',
-    market: {
-      id: 'market-0',
-      __typename: 'Market',
-    },
     asset: {
       __typename: 'Asset',
       id: 'asset-id-2',
@@ -75,13 +71,26 @@ export const accountFields: AccountFieldsFragment[] = [
     },
     asset: {
       __typename: 'Asset',
-      id: 'asset-id-2',
+      id: 'asset-0',
+    },
+  },
+  {
+    __typename: 'AccountBalance',
+    type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
+    balance: '100000',
+    market: {
+      __typename: 'Market',
+      id: 'market-3',
+    },
+    asset: {
+      __typename: 'Asset',
+      id: 'asset-0',
     },
   },
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
+    balance: '10000000000',
     market: null,
     asset: {
       __typename: 'Asset',
@@ -92,7 +101,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
+    balance: '100000001',
     market: null,
     asset: {
       __typename: 'Asset',
@@ -102,7 +111,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
+    balance: '100000002',
     market: null,
     asset: {
       __typename: 'Asset',
@@ -127,4 +136,26 @@ export const accountEventsSubscription = (
     ],
   };
   return merge(defaultResult, override);
+};
+
+export const amendGeneralAccountBalance = (
+  accounts: AccountsQuery,
+  marketId: string,
+  balance: string
+) => {
+  if (accounts.party?.accountsConnection?.edges) {
+    const marginAccount = accounts.party.accountsConnection.edges.find(
+      (edge) => edge?.node.market?.id === marketId
+    );
+    if (marginAccount) {
+      const generalAccount = accounts.party.accountsConnection.edges.find(
+        (edge) =>
+          edge?.node.asset.id === marginAccount.node.asset.id &&
+          !edge?.node.market
+      );
+      if (generalAccount) {
+        generalAccount.node.balance = balance;
+      }
+    }
+  }
 };

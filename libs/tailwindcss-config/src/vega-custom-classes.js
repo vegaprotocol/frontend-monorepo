@@ -7,21 +7,26 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.calt': {
       fontFeatureSettings: "'calt'",
     },
-    '.liga-0-calt-0': {
-      fontFeatureSettings: "'liga' 0, 'calt' 0",
-    },
     '.liga': {
       fontFeatureSettings: "'liga'",
     },
+    // Fix for Firefox to make it inherit font-feature-settings from the default theme
+    'button, input, optgroup, select, textarea': {
+      fontFeatureSettings: 'inherit',
+    },
     '.syntax-highlighter-wrapper .hljs': {
       fontSize: '1rem',
-      fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
+      fontFamily: "'Roboto Mono', monospace",
       display: 'block',
       overflowX: 'auto',
       padding: '1em',
       background: colors.white,
       color: colors.neutral[700],
       border: `1px solid ${colors.neutral[300]}`,
+    },
+    '.syntax-highlighter-wrapper-sm .hljs': {
+      fontSize: '0.875rem',
+      lineHeight: '1.25rem',
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: colors.neutral[800],

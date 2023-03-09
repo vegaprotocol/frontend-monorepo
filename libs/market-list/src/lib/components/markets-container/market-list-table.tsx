@@ -1,21 +1,21 @@
 import { forwardRef } from 'react';
-import {
-  PriceFlashCell,
-  addDecimalsFormatNumber,
-  t,
-  toBigNum,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type {
   VegaValueGetterParams,
   VegaValueFormatterParams,
   VegaICellRendererParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid, ButtonLink } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
+import {
+  AgGridDynamic as AgGrid,
+  PriceFlashCell,
+} from '@vegaprotocol/datagrid';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketFieldsFragment, MarketWithData } from '../../';
+import type { MarketMaybeWithData, MarketFieldsFragment } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
@@ -24,7 +24,7 @@ export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
 export const MarketListTable = forwardRef<
   AgGridReact,
-  TypedDataAgGrid<MarketWithData>
+  TypedDataAgGrid<MarketMaybeWithData>
 >((props, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
@@ -51,7 +51,7 @@ export const MarketListTable = forwardRef<
           value,
           data,
         }: VegaICellRendererParams<
-          MarketWithData,
+          MarketMaybeWithData,
           'tradableInstrument.instrument.code'
         >) => {
           if (!data) return null;
@@ -68,7 +68,7 @@ export const MarketListTable = forwardRef<
         minWidth={170}
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketWithData, 'data'>) => {
+        }: VegaValueGetterParams<MarketMaybeWithData, 'data'>) => {
           if (!data?.data) return undefined;
           const { trigger } = data.data;
           const { tradingMode } = data;
@@ -98,14 +98,17 @@ export const MarketListTable = forwardRef<
         filter="agNumberColumnFilter"
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketWithData, 'data.bestBidPrice'>) => {
+        }: VegaValueGetterParams<MarketMaybeWithData, 'data.bestBidPrice'>) => {
           return data?.data?.bestBidPrice === undefined
             ? undefined
             : toBigNum(data?.data?.bestBidPrice, data.decimalPlaces).toNumber();
         }}
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<MarketWithData, 'data.bestBidPrice'>) =>
+        }: VegaValueFormatterParams<
+          MarketMaybeWithData,
+          'data.bestBidPrice'
+        >) =>
           data?.data?.bestBidPrice === undefined
             ? undefined
             : addDecimalsFormatNumber(
@@ -122,7 +125,10 @@ export const MarketListTable = forwardRef<
         filter="agNumberColumnFilter"
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketWithData, 'data.bestOfferPrice'>) => {
+        }: VegaValueGetterParams<
+          MarketMaybeWithData,
+          'data.bestOfferPrice'
+        >) => {
           return data?.data?.bestOfferPrice === undefined
             ? undefined
             : toBigNum(
@@ -132,7 +138,10 @@ export const MarketListTable = forwardRef<
         }}
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<MarketWithData, 'data.bestOfferPrice'>) =>
+        }: VegaValueFormatterParams<
+          MarketMaybeWithData,
+          'data.bestOfferPrice'
+        >) =>
           data?.data?.bestOfferPrice === undefined
             ? undefined
             : addDecimalsFormatNumber(
@@ -149,14 +158,14 @@ export const MarketListTable = forwardRef<
         filter="agNumberColumnFilter"
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketWithData, 'data.markPrice'>) => {
+        }: VegaValueGetterParams<MarketMaybeWithData, 'data.markPrice'>) => {
           return data?.data?.markPrice === undefined
             ? undefined
             : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();
         }}
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<MarketWithData, 'data.markPrice'>) =>
+        }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) =>
           data?.data?.bestOfferPrice === undefined
             ? undefined
             : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)
@@ -168,7 +177,7 @@ export const MarketListTable = forwardRef<
         cellRenderer={({
           value,
         }: VegaICellRendererParams<
-          MarketWithData,
+          MarketMaybeWithData,
           'tradableInstrument.instrument.product.settlementAsset'
         >) =>
           value ? (

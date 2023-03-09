@@ -4,7 +4,7 @@ import { ViewConnector } from './connectors';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 import { VegaWalletProvider } from './provider';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 import { WALLET_KEY } from './storage';
 

@@ -1,0 +1,24 @@
+query ExplorerEpoch($id: ID!) {
+  epoch(id: $id) {
+    id
+    timestamps {
+      start
+      end
+      firstBlock
+      lastBlock
+    }
+  }
+}
+
+query ExplorerFutureEpoch {
+  networkParameter(key: "validators.epoch.length") {
+    value
+  }
+
+  epoch {
+    id
+    timestamps {
+      start
+    }
+  }
+}

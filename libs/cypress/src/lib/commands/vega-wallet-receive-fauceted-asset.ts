@@ -21,10 +21,10 @@ export function addVegaWalletReceiveFaucetedAsset() {
         `Topping up vega wallet with ${assetName}, amount: ${amount}`
       );
       // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
-      cy.get_asset_information().then((assets) => {
+      cy.getAssets().then((assets) => {
         console.log(assets);
-        const asset = assets[assetName];
-        if (assets[assetName] !== undefined) {
+        const asset = assets.find((a) => a.name === assetName);
+        if (asset) {
           for (let i = 0; i < asset.decimals; i++) amount += '0';
           cy.exec(
             `curl -X POST -d '{"amount": "${amount}", "asset": "${asset.id}", "party": "${vegaWalletPublicKey}"}' http://localhost:1790/api/v1/mint`
@@ -38,15 +38,9 @@ export function addVegaWalletReceiveFaucetedAsset() {
               );
             });
         } else {
-          const validAssets = Object.keys(assets)
-            .filter((key) => key.includes('fake'))
-            .reduce((obj, key) => {
-              return Object.assign(obj, {
-                [key]: assets[key],
-              });
-            }, {});
+          const validAssets = assets.filter((a) => a.name.includes('fake'));
           assert.exists(
-            assets[assetName],
+            asset,
             `${assetName} is not a faucet-able asset, only the following assets can be faucet-ed: ${validAssets}`
           );
         }

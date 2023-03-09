@@ -1,10 +1,6 @@
 import produce from 'immer';
-import { useMemo } from 'react';
-import {
-  makeDerivedDataProvider,
-  useDataProvider,
-} from '@vegaprotocol/react-helpers';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   MarketDataDocument,
   MarketDataUpdateDocument,
@@ -14,6 +10,7 @@ import type {
   MarketDataFieldsFragment,
   MarketDataUpdateSubscription,
   MarketDataUpdateFieldsFragment,
+  MarketDataQueryVariables,
 } from './__generated__/market-data';
 
 export type MarketData = MarketDataFieldsFragment;
@@ -32,7 +29,7 @@ const update = (
 };
 
 const getData = (responseData: MarketDataQuery | null): MarketData | null =>
-  responseData?.marketsConnection?.edges[0].node.data || null;
+  responseData?.marketsConnection?.edges[0]?.node?.data || null;
 
 const getDelta = (
   subscriptionData: MarketDataUpdateSubscription
@@ -42,7 +39,8 @@ export const marketDataProvider = makeDataProvider<
   MarketDataQuery,
   MarketData,
   MarketDataUpdateSubscription,
-  MarketDataUpdateFieldsFragment
+  MarketDataUpdateFieldsFragment,
+  MarketDataQueryVariables
 >({
   query: MarketDataDocument,
   subscriptionQuery: MarketDataUpdateDocument,
@@ -51,9 +49,16 @@ export const marketDataProvider = makeDataProvider<
   getDelta,
 });
 
+export const markPriceProvider = makeDerivedDataProvider<
+  string,
+  never,
+  MarketDataQueryVariables
+>([marketDataProvider], ([marketData]) => (marketData as MarketData).markPrice);
+
 export type StaticMarketData = Pick<
   MarketData,
   | 'marketTradingMode'
+  | 'marketState'
   | 'auctionStart'
   | 'auctionEnd'
   | 'indicativePrice'
@@ -65,7 +70,8 @@ export type StaticMarketData = Pick<
 
 export const staticMarketDataProvider = makeDerivedDataProvider<
   StaticMarketData,
-  never
+  never,
+  MarketDataQueryVariables
 >([marketDataProvider], (parts, variables, prevData) => {
   const marketData = parts[0] as ReturnType<typeof getData>;
   if (!marketData) {
@@ -73,6 +79,7 @@ export const staticMarketDataProvider = makeDerivedDataProvider<
   }
   const data: StaticMarketData = {
     marketTradingMode: marketData.marketTradingMode,
+    marketState: marketData.marketState,
     auctionStart: marketData.auctionStart,
     auctionEnd: marketData.auctionEnd,
     indicativePrice: marketData.indicativePrice,
@@ -90,11 +97,9 @@ export const staticMarketDataProvider = makeDerivedDataProvider<
 });
 
 export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
-  const variables = useMemo(() => ({ marketId }), [marketId]);
-  const { data } = useDataProvider({
+  return useDataProvider({
     dataProvider: staticMarketDataProvider,
-    variables,
+    variables: { marketId: marketId || '' },
     skip: skip || !marketId,
   });
-  return data;
 };

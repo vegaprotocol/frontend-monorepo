@@ -1,9 +1,9 @@
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '@vegaprotocol/utils';
 import { create } from 'zustand';
 import produce from 'immer';
 
 interface GlobalStore {
-  networkSwitcherDialog: boolean;
+  nodeSwitcherDialog: boolean;
   marketId: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
   shouldDisplayWelcomeDialog: boolean;
@@ -16,7 +16,7 @@ interface PageTitleStore {
 }
 
 export const useGlobalStore = create<GlobalStore>((set) => ({
-  networkSwitcherDialog: false,
+  nodeSwitcherDialog: false,
   marketId: LocalStorage.getItem('marketId') || null,
   shouldDisplayWelcomeDialog: false,
   shouldDisplayAnnouncementBanner: true,

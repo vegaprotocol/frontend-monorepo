@@ -1,8 +1,7 @@
-import Assets from './assets';
+import { AssetPage, AssetsPage } from './assets';
 import BlockPage from './blocks';
-import Governance from './governance';
+import { Proposals } from './governance';
 import Home from './home';
-import Markets from './markets';
 import OraclePage from './oracles';
 import Oracles from './oracles/home';
 import { Oracle } from './oracles/id';
@@ -10,7 +9,7 @@ import Party from './parties';
 import { Parties } from './parties/home';
 import { Party as PartySingle } from './parties/id';
 import Txs from './txs';
-import Validators from './validators';
+import { ValidatorsPage } from './validators';
 import Genesis from './genesis';
 import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
@@ -18,11 +17,16 @@ import { Tx } from './txs/id';
 import { TxsList } from './txs/home';
 import { PendingTxs } from './pending';
 import flags from '../config/flags';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Routes } from './route-names';
 import { NetworkParameters } from './network-parameters';
+import type { RouteObject } from 'react-router-dom';
+import { MarketPage, MarketsPage } from './markets';
 
-const partiesRoutes = flags.parties
+export type Navigable = { path: string; name: string; text: string };
+type Route = RouteObject & Navigable;
+
+const partiesRoutes: Route[] = flags.parties
   ? [
       {
         path: Routes.PARTIES,
@@ -43,18 +47,27 @@ const partiesRoutes = flags.parties
     ]
   : [];
 
-const assetsRoutes = flags.assets
+const assetsRoutes: Route[] = flags.assets
   ? [
       {
         path: Routes.ASSETS,
         text: t('Assets'),
         name: 'Assets',
-        element: <Assets />,
+        children: [
+          {
+            index: true,
+            element: <AssetsPage />,
+          },
+          {
+            path: ':assetId',
+            element: <AssetPage />,
+          },
+        ],
       },
     ]
   : [];
 
-const genesisRoutes = flags.genesis
+const genesisRoutes: Route[] = flags.genesis
   ? [
       {
         path: Routes.GENESIS,
@@ -65,29 +78,38 @@ const genesisRoutes = flags.genesis
     ]
   : [];
 
-const governanceRoutes = flags.governance
+const governanceRoutes: Route[] = flags.governance
   ? [
       {
         path: Routes.GOVERNANCE,
         name: 'Governance proposals',
         text: t('Governance Proposals'),
-        element: <Governance />,
+        element: <Proposals />,
       },
     ]
   : [];
 
-const marketsRoutes = flags.markets
+const marketsRoutes: Route[] = flags.markets
   ? [
       {
         path: Routes.MARKETS,
         name: 'Markets',
         text: t('Markets'),
-        element: <Markets />,
+        children: [
+          {
+            index: true,
+            element: <MarketsPage />,
+          },
+          {
+            path: ':marketId',
+            element: <MarketPage />,
+          },
+        ],
       },
     ]
   : [];
 
-const networkParametersRoutes = flags.networkParameters
+const networkParametersRoutes: Route[] = flags.networkParameters
   ? [
       {
         path: Routes.NETWORK_PARAMETERS,
@@ -97,18 +119,18 @@ const networkParametersRoutes = flags.networkParameters
       },
     ]
   : [];
-const validators = flags.validators
+const validators: Route[] = flags.validators
   ? [
       {
         path: Routes.VALIDATORS,
         name: 'Validators',
         text: t('Validators'),
-        element: <Validators />,
+        element: <ValidatorsPage />,
       },
     ]
   : [];
 
-const routerConfig = [
+const routerConfig: Route[] = [
   {
     path: Routes.HOME,
     name: 'Home',

@@ -63,7 +63,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
     <div className={classes}>
       <h3
         data-testid="stats-environment"
-        className="font-alpha uppercase text-2xl pb-8 col-span-full"
+        className="font-alpha calt uppercase text-2xl pb-8 col-span-full"
       >
         {(error && `/ ${error}`) ||
           (data ? `/ ${VEGA_ENV}` : '/ Connecting...')}

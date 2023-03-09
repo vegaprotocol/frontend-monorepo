@@ -1,12 +1,11 @@
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-
 import type { OrderListTableProps } from '../';
 import { OrderListTable } from '../';
 import {
@@ -14,6 +13,15 @@ import {
   limitOrder,
   marketOrder,
 } from '../mocks/generate-orders';
+
+// Mock theme switcher to get around inconsistent mocking of zustand
+// stores
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  ...jest.requireActual('@vegaprotocol/react-helpers'),
+  useThemeSwitcher: () => ({
+    theme: 'light',
+  }),
+}));
 
 const defaultProps: OrderListTableProps = {
   rowData: [],

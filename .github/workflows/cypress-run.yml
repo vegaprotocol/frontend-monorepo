@@ -84,6 +84,10 @@ jobs:
             mv "${file}" "$(echo ${file} | sed 's|:|-|g')"
           done< <(find /home/runner/.vegacapsule/testnet/logs -type f)
 
+      - name: Print logs files
+        if: ${{ always() }}
+        run: ls -alsh /home/runner/.vegacapsule/testnet/logs/
+
       - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:

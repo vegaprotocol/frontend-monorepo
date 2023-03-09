@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink, PartyLink } from '../../../links';
@@ -39,8 +39,8 @@ export const TxDetailsChainEventBuiltinWithdrawal = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={withdrawal.vegaAssetId || ''} /> ({t('built in asset')}
-          )
+          <AssetLink assetId={withdrawal.vegaAssetId || ''} /> (
+          {t('built in asset')})
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

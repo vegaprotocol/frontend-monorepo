@@ -1,22 +1,27 @@
+import React from 'react';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
-import { addDecimal, useDataProvider } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   MarketDepthUpdateSubscription,
-  PriceLevelFieldsFragment,
+  MarketDepthQuery,
+  MarketDepthQueryVariables,
 } from './__generated__/MarketDepth';
+import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import {
   compactRows,
   updateCompactedRows,
-  mapMarketData,
+  getMidPrice,
+  getPriceLevel,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
-import { usePersistedOrderStore } from '@vegaprotocol/orders';
+import { useOrderStore } from '@vegaprotocol/orders';
 
 interface OrderbookManagerProps {
   marketId: string;
@@ -24,13 +29,14 @@ interface OrderbookManagerProps {
 
 export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const [resolution, setResolution] = useState(1);
-  const variables = useMemo(() => ({ marketId }), [marketId]);
+  const variables = { marketId };
   const resolutionRef = useRef(resolution);
   const [orderbookData, setOrderbookData] = useState<OrderbookData>({
     rows: null,
   });
   const dataRef = useRef<OrderbookData>({ rows: null });
   const marketDataRef = useRef<MarketData | null>(null);
+  const rawDataRef = useRef<MarketDepthQuery['market'] | null>(null);
   const deltaRef = useRef<{
     sell: PriceLevelFieldsFragment[];
     buy: PriceLevelFieldsFragment[];
@@ -42,7 +48,17 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     throttle(() => {
       dataRef.current = {
         ...marketDataRef.current,
-        ...mapMarketData(marketDataRef.current, resolutionRef.current),
+        indicativePrice: marketDataRef.current?.indicativePrice
+          ? getPriceLevel(
+              marketDataRef.current.indicativePrice,
+              resolutionRef.current
+            )
+          : undefined,
+        midPrice: getMidPrice(
+          rawDataRef.current?.depth.sell,
+          rawDataRef.current?.depth.buy,
+          resolution
+        ),
         rows:
           deltaRef.current.buy.length || deltaRef.current.sell.length
             ? updateCompactedRows(
@@ -56,14 +72,16 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       deltaRef.current.buy = [];
       deltaRef.current.sell = [];
       setOrderbookData(dataRef.current);
-    }, 1000)
+    }, 250)
   );
 
   const update = useCallback(
     ({
       delta: deltas,
+      data: rawData,
     }: {
-      delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'];
+      delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'] | null;
+      data: NonNullable<MarketDepthQuery['market']> | null | undefined;
     }) => {
       if (!dataRef.current.rows) {
         return false;
@@ -78,6 +96,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         if (delta.buy) {
           deltaRef.current.buy.push(...delta.buy);
         }
+        rawDataRef.current = rawData;
         updateOrderbookData.current();
       }
       return true;
@@ -85,7 +104,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     [marketId, updateOrderbookData]
   );
 
-  const { data, error, loading, flush } = useDataProvider({
+  const { data, error, loading, flush, reload } = useDataProvider<
+    MarketDepthQuery['market'] | undefined,
+    MarketDepthUpdateSubscription['marketsDepthUpdate'] | null,
+    MarketDepthQueryVariables
+  >({
     dataProvider: marketDepthProvider,
     update,
     variables,
@@ -134,9 +157,14 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     }
     dataRef.current = {
       ...marketDataRef.current,
-      ...mapMarketData(marketDataRef.current, resolution),
+      indicativePrice: getPriceLevel(
+        marketDataRef.current.indicativePrice,
+        resolution
+      ),
+      midPrice: getMidPrice(data.depth.sell, data.depth.buy, resolution),
       rows: compactRows(data.depth.sell, data.depth.buy, resolution),
     };
+    rawDataRef.current = data;
     setOrderbookData(dataRef.current);
 
     return () => {
@@ -149,13 +177,14 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     flush();
   }, [resolution, flush]);
 
-  const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
+  const updateOrder = useOrderStore((store) => store.update);
 
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
       error={error || marketDataError || marketError}
       data={data}
+      reload={reload}
     >
       <Orderbook
         {...orderbookData}
@@ -166,7 +195,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         onClick={(price?: string | number) => {
           if (price) {
             const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-            updatePrice(marketId, priceValue);
+            updateOrder(marketId, { price: priceValue });
           }
         }}
       />

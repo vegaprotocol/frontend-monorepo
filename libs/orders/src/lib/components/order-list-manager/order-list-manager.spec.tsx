@@ -8,6 +8,10 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 
+// @ts-ignore OrderList is read only but we need to override with the forwardRef to
+// avoid warnings about padding refs
+orderListMock.OrderListTable = forwardRef(() => <div>OrderList</div>);
+
 const generateJsx = () => {
   const pubKey = '0x123';
   return (
@@ -56,9 +60,6 @@ describe('OrderListManager', () => {
   });
 
   it('should render the order list if orders provided', async () => {
-    // @ts-ignore OrderList is read only but we need to override with the forwardRef to
-    // avoid warnings about padding refs
-    orderListMock.OrderListTable = forwardRef(() => <div>OrderList</div>);
     jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
       data: [{ id: '1' } as OrderFieldsFragment],
       loading: false,

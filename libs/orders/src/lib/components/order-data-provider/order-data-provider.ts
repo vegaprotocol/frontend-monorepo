@@ -7,10 +7,11 @@ import {
   defaultAppend as append,
   paginatedCombineDelta as combineDelta,
   paginatedCombineInsertionData as combineInsertionData,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import type { PageInfo, Edge } from '@vegaprotocol/react-helpers';
+import type { PageInfo, Edge } from '@vegaprotocol/utils';
+import { OrderStatus } from '@vegaprotocol/types';
 import type {
   OrderFieldsFragment,
   OrderUpdateFieldsFragment,
@@ -22,6 +23,7 @@ import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
 
 export type Order = Omit<OrderFieldsFragment, 'market'> & {
   market?: Market;
+  isLastPlaceholder?: boolean;
 };
 export type OrderEdge = Edge<Order>;
 
@@ -50,6 +52,9 @@ const orderMatchFilters = (
   ) {
     return false;
   }
+  if (variables?.filter?.excludeLiquidity && order.liquidityProvisionId) {
+    return false;
+  }
   if (
     variables?.dateRange?.start &&
     !(
@@ -71,7 +76,9 @@ const orderMatchFilters = (
   return true;
 };
 
-const getData = (responseData: OrdersQuery | null) =>
+const getData = (
+  responseData: OrdersQuery | null
+): Edge<OrderFieldsFragment>[] =>
   responseData?.party?.ordersConnection?.edges || [];
 
 const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
@@ -137,14 +144,19 @@ export const update = (
             __typename: 'Order',
           },
           cursor: '',
-          __typename: 'OrderEdge',
         });
       }
     });
   });
 };
 
-export const ordersProvider = makeDataProvider({
+export const ordersProvider = makeDataProvider<
+  OrdersQuery,
+  ReturnType<typeof getData>,
+  OrdersUpdateSubscription,
+  ReturnType<typeof getDelta>,
+  OrdersQueryVariables
+>({
   query: OrdersDocument,
   subscriptionQuery: OrdersUpdateDocument,
   update,
@@ -155,6 +167,7 @@ export const ordersProvider = makeDataProvider({
     append,
     first: 100,
   },
+  additionalContext: { isEnlargedTimeout: true },
 });
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
@@ -162,7 +175,10 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
   Order[],
   OrdersQueryVariables
 >(
-  [ordersProvider, marketsProvider],
+  [
+    ordersProvider,
+    (callback, client) => marketsProvider(callback, client, undefined),
+  ],
   (partsData): OrderEdge[] =>
     ((partsData[0] as ReturnType<typeof getData>) || []).map((edge) => ({
       cursor: edge.cursor,
@@ -175,4 +191,64 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
     })),
   combineDelta<Order, ReturnType<typeof getDelta>['0']>,
   combineInsertionData<Order>
+);
+
+const hasActiveOrderProviderInternal = makeDataProvider<
+  OrdersQuery,
+  boolean,
+  OrdersUpdateSubscription,
+  ReturnType<typeof getDelta>,
+  OrdersQueryVariables
+>({
+  query: OrdersDocument,
+  subscriptionQuery: OrdersUpdateDocument,
+  update: (
+    data: boolean | null,
+    delta: ReturnType<typeof getDelta>,
+    reload: () => void
+  ) => {
+    const orders = delta?.filter(
+      (order) => !(order.peggedOrder || order.liquidityProvisionId)
+    );
+    if (!orders?.length) {
+      return data;
+    }
+    const hasActiveOrders = orders.some(
+      (order) => order.status === OrderStatus.STATUS_ACTIVE
+    );
+    if (hasActiveOrders) {
+      return true;
+    } else if (data && !hasActiveOrders) {
+      reload();
+    }
+    return data;
+  },
+  getData: (responseData: OrdersQuery | null) => {
+    const hasActiveOrder = !!responseData?.party?.ordersConnection?.edges?.some(
+      (order) => !(order.node.peggedOrder || order.node.liquidityProvision)
+    );
+    return hasActiveOrder;
+  },
+  getDelta,
+});
+
+export const hasActiveOrderProvider = makeDerivedDataProvider<
+  boolean,
+  never,
+  { partyId: string; marketId?: string }
+>(
+  [
+    (callback, client, variables) =>
+      hasActiveOrderProviderInternal(callback, client, {
+        filter: {
+          status: [OrderStatus.STATUS_ACTIVE],
+          excludeLiquidity: true,
+        },
+        pagination: {
+          first: 1,
+        },
+        ...variables,
+      } as OrdersQueryVariables),
+  ],
+  (parts) => parts[0]
 );

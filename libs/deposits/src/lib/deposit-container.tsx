@@ -1,23 +1,18 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { DepositManager } from './deposit-manager';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { enabledAssetsProvider } from '@vegaprotocol/assets';
-import type { DepositDialogStylePropsSetter } from './deposit-dialog';
 
 /**
  *  Fetches data required for the Deposit page
  */
-export const DepositContainer = ({
-  assetId,
-  setDialogStyleProps,
-}: {
-  assetId?: string;
-  setDialogStyleProps?: DepositDialogStylePropsSetter;
-}) => {
+export const DepositContainer = ({ assetId }: { assetId?: string }) => {
   const { VEGA_ENV } = useEnvironment();
   const { data, loading, error } = useDataProvider({
     dataProvider: enabledAssetsProvider,
+    variables: undefined,
   });
 
   return (
@@ -27,7 +22,6 @@ export const DepositContainer = ({
           assetId={assetId}
           assets={data}
           isFaucetable={VEGA_ENV !== Networks.MAINNET}
-          setDialogStyleProps={setDialogStyleProps}
         />
       ) : (
         <Splash>

@@ -8,32 +8,40 @@ import { createClient } from '@vegaprotocol/apollo-client';
 type NetworkLoaderProps = {
   children?: ReactNode;
   skeleton?: ReactNode;
+  failure?: ReactNode;
   cache?: InMemoryCacheConfig;
 };
 
 export function NetworkLoader({
   skeleton,
+  failure,
   children,
   cache,
 }: NetworkLoaderProps) {
-  const { VEGA_URL } = useEnvironment();
+  const { status, VEGA_URL } = useEnvironment((store) => ({
+    status: store.status,
+    VEGA_URL: store.VEGA_URL,
+  }));
 
   const client = useMemo(() => {
-    if (VEGA_URL) {
+    if (status === 'success' && VEGA_URL) {
       return createClient({
         url: VEGA_URL,
         cacheConfig: cache,
       });
     }
     return undefined;
-  }, [VEGA_URL, cache]);
+  }, [VEGA_URL, status, cache]);
 
-  if (!client) {
-    return (
-      <div className="h-full min-h-screen flex items-center justify-center">
-        {skeleton}
-      </div>
-    );
+  const nonIdealWrapperClasses =
+    'h-full min-h-screen flex items-center justify-center';
+
+  if (status === 'failed') {
+    return <div className={nonIdealWrapperClasses}>{failure}</div>;
+  }
+
+  if (status === 'default' || status === 'pending' || !client) {
+    return <div className={nonIdealWrapperClasses}>{skeleton}</div>;
   }
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

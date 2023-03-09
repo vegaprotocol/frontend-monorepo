@@ -1,25 +1,12 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';
 
-import { FillsTable } from './fills-table';
+import { FillsTable, getFeesBreakdown } from './fills-table';
 import { generateFill } from './test-helpers';
-
-const waitForGridToBeInTheDOM = () => {
-  return waitFor(() => {
-    expect(document.querySelector('.ag-root-wrapper')).toBeInTheDocument();
-  });
-};
-
-// since our grid starts with no data, when the overlay has gone, data has loaded
-const waitForDataToHaveLoaded = () => {
-  return waitFor(() => {
-    expect(document.querySelector('.ag-overlay-no-rows-center')).toBeNull();
-  });
-};
 
 describe('FillsTable', () => {
   let defaultFill: PartialDeep<Trade>;
@@ -51,8 +38,6 @@ describe('FillsTable', () => {
     await act(async () => {
       render(<FillsTable partyId="party-id" rowData={[generateFill()]} />);
     });
-    await waitForGridToBeInTheDOM();
-    await waitForDataToHaveLoaded();
 
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
@@ -82,12 +67,7 @@ describe('FillsTable', () => {
         liquidityFee: '2',
       },
     });
-    await act(async () => {
-      render(<FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />);
-    });
-    await waitForGridToBeInTheDOM();
-    await waitForDataToHaveLoaded();
-
+    render(<FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />);
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       buyerFill.market?.tradableInstrument.instrument.name || '',
@@ -95,7 +75,7 @@ describe('FillsTable', () => {
       '1.00 BTC',
       '3.00 BTC',
       'Maker',
-      '0.06 BTC',
+      '2.00 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
     ];
     cells.forEach((cell, i) => {
@@ -103,7 +83,7 @@ describe('FillsTable', () => {
     });
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-    expect(amountCell).toHaveClass('text-vega-green');
+    expect(amountCell).toHaveClass('text-vega-green-550');
   });
 
   it('should format cells correctly for seller fill', async () => {
@@ -120,11 +100,7 @@ describe('FillsTable', () => {
         liquidityFee: '1',
       },
     });
-    await act(async () => {
-      render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
-    });
-    await waitForGridToBeInTheDOM();
-    await waitForDataToHaveLoaded();
+    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
@@ -152,16 +128,9 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_SELL,
     });
-    let rerenderer: (ui: React.ReactElement) => void;
-    await act(async () => {
-      const { rerender } = render(
-        <FillsTable partyId={partyId} rowData={[takerFill]} />
-      );
-      rerenderer = rerender;
-    });
-    await waitForGridToBeInTheDOM();
-    await waitForDataToHaveLoaded();
-
+    const { rerender } = render(
+      <FillsTable partyId={partyId} rowData={[takerFill]} />
+    );
     expect(
       screen
         .getAllByRole('gridcell')
@@ -174,11 +143,7 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_BUY,
     });
-    await act(async () => {
-      rerenderer(<FillsTable partyId={partyId} rowData={[makerFill]} />);
-    });
-    await waitForGridToBeInTheDOM();
-    await waitForDataToHaveLoaded();
+    rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);
 
     expect(
       screen
@@ -195,11 +160,7 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_SELL,
     });
-    await act(async () => {
-      render(<FillsTable partyId={partyId} rowData={[takerFill]} />);
-    });
-    await waitForGridToBeInTheDOM();
-    await waitForDataToHaveLoaded();
+    render(<FillsTable partyId={partyId} rowData={[takerFill]} />);
 
     const feeCell = screen
       .getAllByRole('gridcell')
@@ -209,16 +170,42 @@ describe('FillsTable', () => {
           'market.tradableInstrument.instrument.product'
       );
 
-    await waitFor(() => {
-      expect(feeCell).toBeInTheDocument();
-    });
-    await act(async () => {
-      userEvent.hover(feeCell as HTMLElement);
-      await new Promise((res) => setTimeout(() => res(true), 1000));
+    expect(feeCell).toBeInTheDocument();
+    await userEvent.hover(feeCell as HTMLElement);
+    expect(
+      await screen.findByTestId('fee-breakdown-tooltip')
+    ).toBeInTheDocument();
+  });
+
+  describe('getFeesBreakdown', () => {
+    it('should return correct fees breakdown for a taker', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '1000',
+        totalFee: '6000',
+      };
+      expect(getFeesBreakdown('TAKER', fees)).toEqual(expectedBreakdown);
     });
 
-    await act(async () => {
-      expect(screen.getByTestId('fee-breakdown-tooltip')).toBeInTheDocument();
+    it('should return correct fees breakdown for a maker', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '-1000',
+        totalFee: '4000',
+      };
+      expect(getFeesBreakdown('MAKER', fees)).toEqual(expectedBreakdown);
     });
   });
 });

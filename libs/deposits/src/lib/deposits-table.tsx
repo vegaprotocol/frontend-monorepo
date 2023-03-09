@@ -1,19 +1,20 @@
 import { forwardRef } from 'react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
-  t,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   truncateByChars,
   isNumeric,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import type { AgGridReact } from 'ag-grid-react';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact } from 'ag-grid-react';
-import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/datagrid';
 import type { DepositFieldsFragment } from './__generated__/Deposit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
@@ -71,7 +72,9 @@ export const DepositsTable = forwardRef<
         field="txHash"
         cellRenderer={({
           value,
+          data,
         }: VegaICellRendererParams<DepositFieldsFragment, 'txHash'>) => {
+          if (!data) return null;
           if (!value) return '-';
           return (
             <Link

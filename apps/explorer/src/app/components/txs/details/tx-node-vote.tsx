@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
@@ -42,7 +42,7 @@ export const TxDetailsNodeVote = ({
   }
 
   return (
-    <TableWithTbody className="mb-8">
+    <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       {data && !!data.deposit
         ? TxDetailsNodeVoteDeposit({ deposit: data })

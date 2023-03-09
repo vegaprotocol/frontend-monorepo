@@ -1,13 +1,10 @@
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
-import { MarketProposalNotification } from '@vegaprotocol/governance';
-import {
-  getExpiryDate,
-  getMarketExpiryDate,
-  t,
-} from '@vegaprotocol/react-helpers';
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import { MarketProposalNotification } from '@vegaprotocol/proposals';
+import type { Market } from '@vegaprotocol/market-list';
+import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
   ColumnKind,
   SelectMarketPopover,
@@ -24,7 +21,7 @@ import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { MarketState as State } from '@vegaprotocol/types';
 
 interface TradeMarketHeaderProps {
-  market: SingleMarketFieldsFragment | null;
+  market: Market | null;
   onSelect: (marketId: string) => void;
 }
 
@@ -84,7 +81,7 @@ export const TradeMarketHeader = ({
         heading={t('Volume (24h)')}
         testId="market-volume"
         description={t(
-          'The total amount of assets traded in the last 24 hours.'
+          'The total number of contracts traded in the last 24 hours.'
         )}
       >
         <Last24hVolume
@@ -114,17 +111,17 @@ export const TradeMarketHeader = ({
           </div>
         </HeaderStat>
       ) : null}
-      <MarketProposalNotification marketId={market?.id} />
       <MarketLiquiditySupplied
         marketId={market?.id}
         assetDecimals={asset?.decimals || 0}
       />
+      <MarketProposalNotification marketId={market?.id} />
     </Header>
   );
 };
 
 type ExpiryLabelProps = {
-  market: SingleMarketFieldsFragment | null;
+  market: Market | null;
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
@@ -140,7 +137,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
 };
 
 type ExpiryTooltipContentProps = {
-  market: SingleMarketFieldsFragment;
+  market: Market;
   explorerUrl?: string;
 };
 

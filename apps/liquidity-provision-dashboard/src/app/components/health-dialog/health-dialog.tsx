@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
 import classNames from 'classnames';
@@ -59,10 +59,10 @@ const ROWS = [
 export const HealthDialog = ({ onChange, isOpen }: HealthDialogProps) => {
   return (
     <Dialog size="medium" open={isOpen} onChange={onChange}>
-      <h1 className="text-2xl mb-5 pr-2 font-medium font-alpha uppercase liga-0-calt-0">
+      <h1 className="text-2xl mb-5 pr-2 font-medium font-alpha uppercase">
         {t('Health')}
       </h1>
-      <p className="text-lg font-medium font-alpha mb-8 liga-0-calt-0">
+      <p className="text-lg font-medium font-alpha mb-8">
         {t(
           'Market health is a representation of market and liquidity status and how close that market is to moving from one fee level to another.'
         )}
@@ -70,10 +70,10 @@ export const HealthDialog = ({ onChange, isOpen }: HealthDialogProps) => {
 
       <table className="table-fixed">
         <thead className="border-b border-greys-light-300">
-          <th className="w-1/2 text-left font-medium font-alpha text-base pb-4 uppercase liga-0-calt-0">
+          <th className="w-1/2 text-left font-medium font-alpha text-base pb-4 uppercase">
             {t('Market status')}
           </th>
-          <th className="w-1/2 text-lef font-medium font-alpha text-base pb-4 uppercase liga-0-calt-0">
+          <th className="w-1/2 text-lef font-medium font-alpha text-base pb-4 uppercase">
             {t('Liquidity status')}
           </th>
         </thead>
@@ -85,12 +85,10 @@ export const HealthDialog = ({ onChange, isOpen }: HealthDialogProps) => {
                 <td
                   className={classNames('pr-4 pb-10', { 'pt-8': isFirstRow })}
                 >
-                  <h2 className="font-medium font-alpha uppercase text-base liga-0-calt-0">
+                  <h2 className="font-medium font-alpha uppercase text-base">
                     {t(r.title)}
                   </h2>
-                  <p className="font-medium font-alpha text-lg liga-0-calt-0">
-                    {t(r.copy)}
-                  </p>
+                  <p className="font-medium font-alpha text-lg">{t(r.copy)}</p>
                 </td>
                 <td
                   className={classNames('pl-4 pb-10', { 'pt-8': isFirstRow })}

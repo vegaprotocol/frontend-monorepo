@@ -4,12 +4,13 @@ import {
   defaultAppend as append,
   paginatedCombineDelta as combineDelta,
   paginatedCombineInsertionData as combineInsertionData,
-} from '@vegaprotocol/react-helpers';
-import type { PageInfo, Edge } from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/utils';
+import type { PageInfo, Edge } from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import type {
   TradesQuery,
+  TradesQueryVariables,
   TradeFieldsFragment,
   TradesUpdateSubscription,
 } from './__generated__/Trades';
@@ -67,10 +68,16 @@ const update = (
 export type Trade = Omit<TradeFieldsFragment, 'market'> & { market?: Market };
 export type TradeEdge = Edge<Trade>;
 
-const getPageInfo = (responseData: TradesQuery): PageInfo | null =>
-  responseData.market?.tradesConnection?.pageInfo || null;
+const getPageInfo = (responseData: TradesQuery | null): PageInfo | null =>
+  responseData?.market?.tradesConnection?.pageInfo || null;
 
-export const tradesProvider = makeDataProvider({
+export const tradesProvider = makeDataProvider<
+  Parameters<typeof getData>['0'],
+  ReturnType<typeof getData>,
+  Parameters<typeof getDelta>['0'],
+  ReturnType<typeof getDelta>,
+  TradesQueryVariables
+>({
   query: TradesDocument,
   subscriptionQuery: TradesUpdateDocument,
   update,
@@ -85,9 +92,13 @@ export const tradesProvider = makeDataProvider({
 
 export const tradesWithMarketProvider = makeDerivedDataProvider<
   (TradeEdge | null)[],
-  Trade[]
+  Trade[],
+  TradesQueryVariables
 >(
-  [tradesProvider, marketsProvider],
+  [
+    tradesProvider,
+    (callback, client) => marketsProvider(callback, client, undefined),
+  ],
   (partsData): (TradeEdge | null)[] | null => {
     const edges = partsData[0] as ReturnType<typeof getData>;
     return edges.map((edge) => {

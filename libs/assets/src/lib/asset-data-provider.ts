@@ -1,12 +1,16 @@
-import { makeDataProvider, useDataProvider } from '@vegaprotocol/react-helpers';
-import { useMemo } from 'react';
+import { makeDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 
-import type { AssetQuery, AssetFieldsFragment } from './__generated__/Asset';
+import type {
+  AssetQuery,
+  AssetFieldsFragment,
+  AssetQueryVariables,
+} from './__generated__/Asset';
 import { AssetDocument } from './__generated__/Asset';
 
 export type Asset = AssetFieldsFragment;
 
-const getData = (responseData: AssetQuery | null) => {
+export const getData = (responseData: AssetQuery | null | undefined) => {
   const foundAssets = responseData?.assetsConnection?.edges
     ?.filter((e) => Boolean(e?.node))
     .map((e) => e?.node as Asset);
@@ -14,21 +18,21 @@ const getData = (responseData: AssetQuery | null) => {
   return null;
 };
 
-export const assetProvider = makeDataProvider<AssetQuery, Asset, never, never>({
+export const assetProvider = makeDataProvider<
+  AssetQuery,
+  Asset,
+  never,
+  never,
+  AssetQueryVariables
+>({
   query: AssetDocument,
   getData,
 });
 
 export const useAssetDataProvider = (assetId: string) => {
-  const variables = useMemo(
-    () => ({
-      assetId,
-    }),
-    [assetId]
-  );
   return useDataProvider({
     dataProvider: assetProvider,
-    variables,
+    variables: { assetId: assetId || '' },
     skip: !assetId,
   });
 };

@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
-import { useDataProvider, t, toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';
@@ -17,10 +19,9 @@ export const WithdrawFormContainer = ({
   partyId,
   submit,
 }: WithdrawFormContainerProps) => {
-  const variables = useMemo(() => ({ partyId }), [partyId]);
   const { data, loading, error } = useDataProvider({
     dataProvider: accountsDataProvider,
-    variables,
+    variables: { partyId: partyId || '' },
   });
 
   const filteredAsset = useMemo(

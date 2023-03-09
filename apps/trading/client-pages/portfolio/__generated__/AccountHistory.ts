@@ -8,6 +8,7 @@ export type AccountHistoryQueryVariables = Types.Exact<{
   assetId: Types.Scalars['ID'];
   accountTypes?: Types.InputMaybe<Array<Types.AccountType> | Types.AccountType>;
   dateRange?: Types.InputMaybe<Types.DateRange>;
+  marketIds?: Types.InputMaybe<Array<Types.Scalars['ID']> | Types.Scalars['ID']>;
 }>;
 
 
@@ -23,9 +24,9 @@ export type AccountsWithBalanceQuery = { __typename?: 'Query', balanceChanges: {
 
 
 export const AccountHistoryDocument = gql`
-    query AccountHistory($partyId: ID!, $assetId: ID!, $accountTypes: [AccountType!], $dateRange: DateRange) {
+    query AccountHistory($partyId: ID!, $assetId: ID!, $accountTypes: [AccountType!], $dateRange: DateRange, $marketIds: [ID!]) {
   balanceChanges(
-    filter: {partyIds: [$partyId], accountTypes: $accountTypes, assetId: $assetId}
+    filter: {partyIds: [$partyId], accountTypes: $accountTypes, assetId: $assetId, marketIds: $marketIds}
     dateRange: $dateRange
   ) {
     edges {
@@ -58,6 +59,7 @@ export const AccountHistoryDocument = gql`
  *      assetId: // value for 'assetId'
  *      accountTypes: // value for 'accountTypes'
  *      dateRange: // value for 'dateRange'
+ *      marketIds: // value for 'marketIds'
  *   },
  * });
  */

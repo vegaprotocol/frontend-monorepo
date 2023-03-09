@@ -1,11 +1,8 @@
 import { useCallback, useMemo, useRef } from 'react';
 import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import {
-  makeInfiniteScrollGetRows,
-  useDataProvider,
-  updateGridData,
-} from '@vegaprotocol/react-helpers';
+import { makeInfiniteScrollGetRows } from '@vegaprotocol/utils';
+import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import type {
   OrderEdge,
@@ -54,6 +51,21 @@ export const useOrderListData = ({
   const dataRef = useRef<(OrderEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
+  const placeholderAdded = useRef(-1);
+
+  const makeBottomPlaceholders = useCallback((order?: Order) => {
+    if (!order) {
+      if (placeholderAdded.current >= 0) {
+        dataRef.current?.splice(placeholderAdded.current, 1);
+      }
+      placeholderAdded.current = -1;
+    } else if (placeholderAdded.current === -1) {
+      dataRef.current?.push({
+        node: { ...order, id: `${order?.id}-1`, isLastPlaceholder: true },
+      });
+      placeholderAdded.current = (dataRef.current?.length || 0) - 1;
+    }
+  }, []);
 
   const variables = useMemo<
     OrdersQueryVariables & OrdersUpdateSubscriptionVariables
@@ -119,7 +131,7 @@ export const useOrderListData = ({
     [gridRef]
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     update,
     insert,
@@ -127,11 +139,16 @@ export const useOrderListData = ({
   });
   totalCountRef.current = totalCount;
 
-  const getRows = makeInfiniteScrollGetRows<OrderEdge>(
-    dataRef,
-    totalCountRef,
-    load,
-    newRows
+  const getRows = useRef(
+    makeInfiniteScrollGetRows<OrderEdge>(dataRef, totalCountRef, load, newRows)
   );
-  return { loading, error, data, addNewRows, getRows };
+  return {
+    loading,
+    error,
+    data,
+    addNewRows,
+    getRows: getRows.current,
+    reload,
+    makeBottomPlaceholders,
+  };
 };

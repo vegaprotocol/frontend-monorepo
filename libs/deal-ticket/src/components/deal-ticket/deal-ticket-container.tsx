@@ -1,45 +1,52 @@
-import { useMemo } from 'react';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import type {
-  MarketDataUpdateFieldsFragment,
-  MarketDealTicket,
-} from '@vegaprotocol/market-list';
+import { t } from '@vegaprotocol/i18n';
+import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
-import { marketDealTicketProvider } from '@vegaprotocol/market-list';
+import { useMarket, marketDataProvider } from '@vegaprotocol/market-list';
 import { DealTicket } from './deal-ticket';
 
 export interface DealTicketContainerProps {
   marketId: string;
+  onClickCollateral?: () => void;
 }
 
-export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
-  const variables = useMemo(
-    () => ({
-      marketId: marketId || '',
-    }),
-    [marketId]
+export const DealTicketContainer = ({
+  marketId,
+  onClickCollateral,
+}: DealTicketContainerProps) => {
+  const {
+    data: market,
+    error: marketError,
+    loading: marketLoading,
+  } = useMarket(marketId);
+
+  const {
+    data: marketData,
+    error: marketDataError,
+    loading: marketDataLoading,
+    reload,
+  } = useThrottledDataProvider(
+    {
+      dataProvider: marketDataProvider,
+      variables: { marketId },
+    },
+    1000
   );
-  const { data, error, loading } = useDataProvider<
-    MarketDealTicket,
-    MarketDataUpdateFieldsFragment
-  >({
-    dataProvider: marketDealTicketProvider,
-    variables,
-    skip: !marketId,
-  });
   const create = useVegaTransactionStore((state) => state.create);
 
   return (
-    <AsyncRenderer<MarketDealTicket>
-      data={data || undefined}
-      loading={loading}
-      error={error}
+    <AsyncRenderer
+      data={market && marketData}
+      loading={marketLoading || marketDataLoading}
+      error={marketError || marketDataError}
+      reload={reload}
     >
-      {data ? (
+      {market && marketData ? (
         <DealTicket
-          market={data}
+          market={market}
+          marketData={marketData}
           submit={(orderSubmission) => create({ orderSubmission })}
+          onClickCollateral={onClickCollateral}
         />
       ) : (
         <Splash>

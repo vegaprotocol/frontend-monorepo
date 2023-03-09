@@ -1,7 +1,10 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { marketQuery } from '@vegaprotocol/mock';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { marketsQuery } from '@vegaprotocol/mock';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
+
+const dialogCloseBtn = 'dialog-close';
+const popoverTrigger = 'popover-trigger';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -13,7 +16,6 @@ describe('markets table', { tags: '@smoke' }, () => {
       );
       cy.mockSubscription();
       cy.visit('/');
-      cy.wait('@Market');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
       cy.wait('@MarketsCandles');
@@ -123,24 +125,32 @@ describe('markets table', { tags: '@smoke' }, () => {
     );
     cy.mockGQL((req) => {
       const override = {
-        market: {
-          tradableInstrument: {
-            instrument: {
-              name: `opening auction MARKET`,
+        marketsConnection: {
+          edges: [
+            {
+              node: {
+                tradableInstrument: {
+                  instrument: {
+                    name: `opening auction MARKET`,
+                  },
+                },
+                state: Schema.MarketState.STATE_ACTIVE,
+                tradingMode:
+                  Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+              },
             },
-          },
-          state: Schema.MarketState.STATE_ACTIVE,
-          tradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+          ],
         },
       };
-      const market = marketQuery(override);
+      const market = marketsQuery(override);
       aliasGQLQuery(req, 'Market', market);
       aliasGQLQuery(req, 'ProposalOfMarket', {
         proposal: { terms: { enactmentDatetime: '2023-01-31 12:00:01' } },
       });
     });
-    cy.visit('/');
     cy.visit('#/markets/market-0');
+    cy.url().should('contain', 'market-0');
+    cy.getByTestId(dialogCloseBtn).click();
     cy.getByTestId('item-value').contains('Opening auction').realHover();
     cy.getByTestId('opening-auction-sub-status').should(
       'contain.text',
@@ -149,8 +159,7 @@ describe('markets table', { tags: '@smoke' }, () => {
 
     const now = new Date(Date.parse('2023-01-30 12:00:01')).getTime();
     cy.clock(now, ['Date']); // Set "now" to BEFORE reservation
-    cy.visit('/');
-    cy.visit('#/markets/market-0');
+    cy.reload();
     cy.getByTestId('item-value').contains('Opening auction').realHover();
     cy.getByTestId('opening-auction-sub-status').should(
       'contain.text',
@@ -165,7 +174,13 @@ describe('markets table', { tags: '@smoke' }, () => {
 });
 
 function openMarketDropDown() {
-  cy.getByTestId('dialog-close').click();
-  cy.getByTestId('popover-trigger').click();
-  cy.contains('Loading market data...').should('not.exist');
+  cy.getByTestId(dialogCloseBtn).then((button) => {
+    if (button.is(':visible')) {
+      cy.get('[data-testid^="market-link-"]').should('not.be.empty');
+      cy.getByTestId(dialogCloseBtn).click();
+    }
+    cy.get('[data-testid^="ask-vol-"]').should('be.visible');
+    cy.getByTestId(popoverTrigger).click({ force: true });
+    cy.contains('Loading market data...').should('not.exist');
+  });
 }

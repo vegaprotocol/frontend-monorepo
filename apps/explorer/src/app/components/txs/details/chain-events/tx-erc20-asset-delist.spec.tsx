@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 import type { components } from '../../../../../types/explorer';
 import omit from 'lodash/omit';
@@ -63,9 +63,7 @@ describe('Chain Event: ERC20 Asset Delist', () => {
     if (!assetLink.parentElement) {
       throw new Error('Asset link does not exist');
     }
-    expect(assetLink.parentElement.tagName).toEqual('A');
-    expect(assetLink.parentElement.getAttribute('href')).toEqual(
-      `/assets#${fullMock.vegaAssetId}`
-    );
+    expect(assetLink.parentElement.tagName).toEqual('BUTTON');
+    expect(assetLink.parentElement.textContent).toEqual(fullMock.vegaAssetId);
   });
 });

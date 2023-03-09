@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { DATA_SOURCES } from '../../../config';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import { TxDetailsOrder } from './tx-order';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
@@ -21,6 +22,10 @@ import { TxDetailsDataSubmission } from './tx-data-submission';
 import { TxProposalVote } from './tx-proposal-vote';
 import { TxDetailsProtocolUpgrade } from './tx-details-protocol-upgrade';
 import { TxDetailsIssueSignatures } from './tx-issue-signatures';
+import { TxDetailsNodeAnnounce } from './tx-node-announce';
+import { TxDetailsStateVariable } from './tx-state-variable-proposal';
+import { TxProposal } from './tx-proposal';
+import { TxDetailsTransfer } from './tx-transfer';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -68,6 +73,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
 
   // These come from https://github.com/vegaprotocol/vega/blob/develop/core/txn/command.go#L72-L98
   switch (txData.type) {
+    case 'Register new Node':
+      return TxDetailsNodeAnnounce;
     case 'Issue Signatures':
       return TxDetailsIssueSignatures;
     case 'Submit Order':
@@ -82,6 +89,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
+    case 'Proposal':
+      return TxProposal;
     case 'Vote on Proposal':
       return TxProposalVote;
     case 'Batch Market Instructions':
@@ -102,6 +111,10 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsDelegate;
     case 'Undelegate':
       return TxDetailsUndelegate;
+    case 'State Variable Proposal':
+      return TxDetailsStateVariable;
+    case 'Transfer Funds':
+      return TxDetailsTransfer;
     default:
       return TxDetailsGeneric;
   }

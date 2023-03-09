@@ -1,10 +1,7 @@
 import { useParams } from 'react-router-dom';
-import { useMemo } from 'react';
-import {
-  t,
-  useDataProvider,
-  makeDerivedDataProvider,
-} from '@vegaprotocol/react-helpers';
+import { makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -45,7 +42,7 @@ const useMarketDetails = (marketId: string | undefined) => {
   const { data, loading, error } = useDataProvider({
     dataProvider: lpDataProvider,
     skipUpdates: true,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
   });
 
   const liquidityProviders = data?.liquidityProviders || [];
@@ -92,7 +89,7 @@ export const Detail = () => {
             )}
           </div>
           <div>
-            <h2 className="font-alpha text-2xl mb-4">
+            <h2 className="font-alpha calt text-2xl mb-4">
               {t('Current Liquidity Provision')}
             </h2>
             <LPProvidersGrid

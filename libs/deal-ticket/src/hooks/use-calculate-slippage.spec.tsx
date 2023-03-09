@@ -1,6 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
+import type { Market } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useCalculateSlippage } from './use-calculate-slippage';
 
@@ -74,12 +75,17 @@ describe('useCalculateSlippage Hook', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
+    const market = {
+      id: 'marketId',
+      decimalPlaces: 0,
+      positionDecimalPlaces: 0,
+    } as Market;
 
     it('long order', () => {
       const { result } = renderHook(
         () =>
           useCalculateSlippage({
-            marketId: 'marketId',
+            market,
             order: {
               size: '10',
               side: Schema.Side.SIDE_BUY,
@@ -96,7 +102,7 @@ describe('useCalculateSlippage Hook', () => {
       const { result } = renderHook(
         () =>
           useCalculateSlippage({
-            marketId: 'marketId',
+            market,
             order: {
               size: '10',
               side: Schema.Side.SIDE_SELL,
@@ -122,7 +128,7 @@ describe('useCalculateSlippage Hook', () => {
       const { result } = renderHook(
         () =>
           useCalculateSlippage({
-            marketId: 'marketId',
+            market,
             order: {
               size: '10',
               side: Schema.Side.SIDE_SELL,

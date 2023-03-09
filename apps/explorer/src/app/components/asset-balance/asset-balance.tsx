@@ -1,6 +1,6 @@
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { useAssetDataProvider } from '@vegaprotocol/assets';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { AssetLink } from '../links';
-import { useExplorerAssetQuery } from '../links/asset-link/__generated__/Asset';
 
 export type AssetBalanceProps = {
   assetId: string;
@@ -17,21 +17,17 @@ const AssetBalance = ({
   price,
   showAssetLink = true,
 }: AssetBalanceProps) => {
-  const { data } = useExplorerAssetQuery({
-    variables: { id: assetId },
-  });
+  const { data: asset } = useAssetDataProvider(assetId);
 
   const label =
-    data && data.asset?.decimals
-      ? addDecimalsFormatNumber(price, data.asset.decimals)
+    asset && asset.decimals
+      ? addDecimalsFormatNumber(price, asset.decimals)
       : price;
 
   return (
     <div className="inline-block">
       <span>{label}</span>{' '}
-      {showAssetLink && data?.asset?.id ? (
-        <AssetLink id={data.asset.id} />
-      ) : null}
+      {showAssetLink && asset?.id ? <AssetLink assetId={assetId} /> : null}
     </div>
   );
 };

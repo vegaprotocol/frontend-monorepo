@@ -1,16 +1,13 @@
-import {
-  useDataProvider,
-  makeInfiniteScrollGetRows,
-} from '@vegaprotocol/react-helpers';
+import { makeInfiniteScrollGetRows } from '@vegaprotocol/utils';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
-import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
+import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import type { Trade, TradeEdge } from './trades-data-provider';
-import type { TradesQueryVariables } from './__generated__/Trades';
-import { usePersistedOrderStore } from '@vegaprotocol/orders';
+import { useOrderStore } from '@vegaprotocol/orders';
 
 interface TradesContainerProps {
   marketId: string;
@@ -22,12 +19,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
-  const updatePrice = usePersistedOrderStore((store) => store.updatePrice);
-
-  const variables = useMemo<TradesQueryVariables>(
-    () => ({ marketId, maxTrades: MAX_TRADES }),
-    [marketId]
-  );
+  const updateOrder = useOrderStore((store) => store.update);
 
   const addNewRows = useCallback(() => {
     if (newRows.current === 0) {
@@ -82,11 +74,11 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     []
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: tradesWithMarketProvider,
     update,
     insert,
-    variables,
+    variables: { marketId },
   });
   totalCountRef.current = totalCount;
   const getRows = makeInfiniteScrollGetRows<TradeEdge>(
@@ -107,7 +99,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={data} reload={reload}>
       <TradesTable
         ref={gridRef}
         rowModelType={data?.length ? 'infinite' : 'clientSide'}
@@ -117,7 +109,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
         onBodyScroll={onBodyScroll}
         onClick={(price?: string) => {
           if (price) {
-            updatePrice(marketId, price);
+            updateOrder(marketId, { price });
           }
         }}
       />

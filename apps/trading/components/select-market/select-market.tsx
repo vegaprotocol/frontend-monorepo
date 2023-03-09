@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import type { RefObject } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { ExternalLink, Icon, Loader, Popover } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
@@ -17,10 +18,7 @@ import {
   SelectMarketTableRowSplash,
 } from './select-market-table';
 import type { ReactNode } from 'react';
-import type {
-  MarketWithCandles,
-  MarketWithData,
-} from '@vegaprotocol/market-list';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
 import {
@@ -29,8 +27,6 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { HeaderTitle } from '../header';
-
-export type Market = MarketWithCandles & MarketWithData;
 
 export const SelectAllMarketsTableBody = ({
   markets,
@@ -41,14 +37,14 @@ export const SelectAllMarketsTableBody = ({
   headers = columnHeaders,
   tableColumns = (market) => columns(market, onSelect, onCellClick, inViewRoot),
 }: {
-  markets?: Market[] | null;
+  markets?: MarketMaybeWithDataAndCandles[] | null;
   positions?: PositionFieldsFragment[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
   headers?: Column[];
   tableColumns?: (
-    market: Market,
+    market: MarketMaybeWithDataAndCandles,
     inViewRoot?: RefObject<HTMLDivElement>,
     openVolume?: string
   ) => Column[];
@@ -110,14 +106,13 @@ export const SelectMarketPopover = ({
     loading: marketsLoading,
     reload: marketListReload,
   } = useMarketList();
-  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
   const {
     data: positions,
     loading: positionsLoading,
     reload,
   } = useDataProvider({
     dataProvider: positionsDataProvider,
-    variables,
+    variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
   const onSelectMarket = useCallback(

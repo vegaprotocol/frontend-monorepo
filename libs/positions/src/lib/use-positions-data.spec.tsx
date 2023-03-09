@@ -69,6 +69,7 @@ describe('usePositionData Hook', () => {
       api: {
         refreshInfiniteCache: mockRefreshInfiniteCache,
         getRowNode: mockGetRowNode,
+        getModel: () => ({ getType: () => 'infinite' }),
       },
     } as unknown as AgGridReact,
   };

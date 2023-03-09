@@ -1,6 +1,7 @@
 import { Splash } from '../splash';
 import type { ReactNode } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { Button } from '../button';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
@@ -12,6 +13,7 @@ interface AsyncRendererProps<T> {
   children?: ReactNode | null;
   render?: (data: T) => ReactNode;
   noDataCondition?(data?: T): boolean;
+  reload?: () => void;
 }
 
 export function AsyncRenderer<T = object>({
@@ -24,15 +26,30 @@ export function AsyncRenderer<T = object>({
   noDataCondition,
   children,
   render,
+  reload,
 }: AsyncRendererProps<T>) {
   if (error) {
     if (!data) {
       return (
-        <Splash>
-          {errorMessage
-            ? errorMessage
-            : t(`Something went wrong: ${error.message}`)}
-        </Splash>
+        <div className="h-full flex items-center justify-center">
+          <div className="h-12 flex flex-col  items-center">
+            <Splash>
+              {errorMessage
+                ? errorMessage
+                : t(`Something went wrong: ${error.message}`)}
+            </Splash>
+            {reload && error.message === 'Timeout exceeded' && (
+              <Button
+                size="sm"
+                className="pointer-events-auto"
+                type="button"
+                onClick={reload}
+              >
+                {t('Try again')}
+              </Button>
+            )}
+          </div>
+        </div>
       );
     }
   }

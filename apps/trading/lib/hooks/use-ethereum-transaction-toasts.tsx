@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
-import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
+import { formatNumber, toBigNum } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
@@ -176,22 +177,14 @@ export const useEthereumTransactionToasts = () => {
     store.remove,
   ]);
 
-  const [dismissTx, deleteTx] = useEthTransactionStore((state) => [
-    state.dismiss,
-    state.delete,
-  ]);
+  const dismissTx = useEthTransactionStore((state) => state.dismiss);
 
   const onClose = useCallback(
     (tx: EthStoredTxState) => () => {
-      const safeToDelete = isFinal(tx);
-      if (safeToDelete) {
-        deleteTx(tx.id);
-      } else {
-        dismissTx(tx.id);
-      }
+      dismissTx(tx.id);
       removeToast(`eth-${tx.id}`);
     },
-    [deleteTx, dismissTx, removeToast]
+    [dismissTx, removeToast]
   );
 
   const fromEthTransaction = useCallback(

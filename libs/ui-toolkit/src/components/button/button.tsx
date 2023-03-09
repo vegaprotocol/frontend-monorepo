@@ -9,7 +9,7 @@ import { Icon } from '../icon';
 import classnames from 'classnames';
 
 export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'ternary';
-type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
+export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
 const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
 const xs = 'px-2 py-0 text-sm';

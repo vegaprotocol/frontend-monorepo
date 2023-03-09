@@ -12,7 +12,9 @@ export const updateGridData = (
 ) => {
   const rerender = isXOrWasEmpty(dataRef.current, data);
   dataRef.current = data;
-  gridRef.current?.api?.refreshInfiniteCache();
+  if (gridRef.current?.api?.getModel().getType() === 'infinite') {
+    gridRef.current?.api?.refreshInfiniteCache();
+  }
   return !rerender;
 };
 

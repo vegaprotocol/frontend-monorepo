@@ -1,55 +1,44 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { Footer, NodeHealth } from './footer';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { NodeHealth, NodeUrl, HealthIndicator } from './footer';
 
-jest.mock('@vegaprotocol/environment');
-
-describe('Footer', () => {
-  it('can open node switcher by clicking the node url', () => {
-    const mockOpenNodeSwitcher = jest.fn();
-    const node = 'n99.somenetwork.vega.xyz';
-
-    // @ts-ignore mock env hook
-    useEnvironment.mockImplementation(() => ({
-      VEGA_URL: `https://api.${node}/graphql`,
-      blockDifference: 0,
-      setNodeSwitcherOpen: mockOpenNodeSwitcher,
-    }));
-
-    render(<Footer />);
-
-    fireEvent.click(screen.getByText(node));
-    expect(mockOpenNodeSwitcher).toHaveBeenCalled();
-  });
-
-  it('can open node switcher by clicking health', () => {
-    const mockOpenNodeSwitcher = jest.fn();
-    const node = 'n99.somenetwork.vega.xyz';
-
-    // @ts-ignore mock env hook
-    useEnvironment.mockImplementation(() => ({
-      VEGA_URL: `https://api.${node}/graphql`,
-      blockDifference: 0,
-      setNodeSwitcherOpen: mockOpenNodeSwitcher,
-    }));
-
-    render(<Footer />);
-
-    fireEvent.click(screen.getByText('Operational'));
-    expect(mockOpenNodeSwitcher).toHaveBeenCalled();
+describe('NodeHealth', () => {
+  it('controls the node switcher dialog', async () => {
+    const mockOnClick = jest.fn();
+    render(
+      <NodeHealth
+        onClick={mockOnClick}
+        url={'https://api.n99.somenetwork.vega.xyz'}
+        blockHeight={100}
+        blockDiff={0}
+      />
+    );
+    await userEvent.click(screen.getByRole('button'));
+    expect(mockOnClick).toHaveBeenCalled();
   });
 });
 
-describe('NodeHealth', () => {
+describe('NodeUrl', () => {
+  it('renders correct part of node url', () => {
+    const node = 'https://api.n99.somenetwork.vega.xyz';
+    const expectedText = node.split('.').slice(1).join('.');
+
+    render(<NodeUrl url={node} />);
+
+    expect(screen.getByText(expectedText)).toBeInTheDocument();
+  });
+});
+
+describe('HealthIndicator', () => {
   const cases = [
-    { diff: 0, classname: 'bg-success', text: 'Operational' },
+    { diff: 0, classname: 'bg-vega-green-550', text: 'Operational' },
     { diff: 5, classname: 'bg-warning', text: '5 Blocks behind' },
-    { diff: -1, classname: 'bg-danger', text: 'Non operational' },
+    { diff: null, classname: 'bg-danger', text: 'Non operational' },
   ];
   it.each(cases)(
     'renders correct text and indicator color for $diff block difference',
     (elem) => {
-      render(<NodeHealth blockDiff={elem.diff} openNodeSwitcher={jest.fn()} />);
+      render(<HealthIndicator blockDiff={elem.diff} />);
       expect(screen.getByTestId('indicator')).toHaveClass(elem.classname);
       expect(screen.getByText(elem.text)).toBeInTheDocument();
     }

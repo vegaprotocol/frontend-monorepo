@@ -8,8 +8,10 @@ import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import {
   NetworkParams,
-  t,
   useDataProvider,
   useNetworkParams,
   updateGridData,
@@ -45,7 +47,8 @@ export const Liquidity = () => {
 const useReloadLiquidityData = (marketId: string | undefined) => {
   const { reload } = useDataProvider({
     dataProvider: liquidityProvisionsDataProvider,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
+    skip: !marketId,
   });
   useEffect(() => {
     const interval = setInterval(reload, 10000);
@@ -59,7 +62,7 @@ export const LiquidityContainer = ({
   marketId: string | undefined;
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const market = useMarket(marketId);
+  const { data: market } = useMarket(marketId);
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
   // To be removed when liquidityProvision subscriptions are working
@@ -75,7 +78,8 @@ export const LiquidityContainer = ({
   const { data, loading, error } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
+    skip: !marketId,
   });
 
   const assetDecimalPlaces =
@@ -129,8 +133,8 @@ export const LiquidityViewContainer = ({
 }) => {
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
-  const market = useMarket(marketId);
-  const marketData = useStaticMarketData(marketId);
+  const { data: market } = useMarket(marketId);
+  const { data: marketData } = useStaticMarketData(marketId);
 
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
@@ -159,7 +163,8 @@ export const LiquidityViewContainer = ({
   } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
+    skip: !marketId,
   });
 
   const targetStake = marketData?.targetStake;

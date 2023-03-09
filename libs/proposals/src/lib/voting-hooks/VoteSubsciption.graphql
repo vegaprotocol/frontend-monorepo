@@ -1,0 +1,13 @@
+fragment VoteEventFields on ProposalVote {
+  proposalId
+  vote {
+    value
+    datetime
+  }
+}
+
+subscription VoteEvent($partyId: ID!) {
+  votes(partyId: $partyId) {
+    ...VoteEventFields
+  }
+}

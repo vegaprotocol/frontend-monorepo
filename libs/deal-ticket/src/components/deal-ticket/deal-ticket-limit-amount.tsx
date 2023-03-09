@@ -1,17 +1,22 @@
 import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
-import { t, toDecimal, validateAmount } from '@vegaprotocol/react-helpers';
+import { toDecimal, validateAmount } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
+import { Controller } from 'react-hook-form';
 
 export type DealTicketLimitAmountProps = Omit<
-  DealTicketAmountProps,
+  Omit<DealTicketAmountProps, 'marketData'>,
   'orderType'
 >;
 
 export const DealTicketLimitAmount = ({
-  register,
+  control,
   market,
   sizeError,
   priceError,
+  update,
+  price,
+  size,
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
@@ -20,7 +25,7 @@ export const DealTicketLimitAmount = ({
   const renderError = () => {
     if (sizeError) {
       return (
-        <InputError data-testid="dealticket-error-message-size-limit">
+        <InputError testId="dealticket-error-message-size-limit">
           {sizeError}
         </InputError>
       );
@@ -28,7 +33,7 @@ export const DealTicketLimitAmount = ({
 
     if (priceError) {
       return (
-        <InputError data-testid="dealticket-error-message-price-limit">
+        <InputError testId="dealticket-error-message-price-limit">
           {priceError}
         </InputError>
       );
@@ -38,7 +43,7 @@ export const DealTicketLimitAmount = ({
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-2">
       <div className="flex items-center gap-4">
         <div className="flex-1">
           <FormGroup
@@ -46,22 +51,30 @@ export const DealTicketLimitAmount = ({
             labelFor="input-order-size-limit"
             className="!mb-1"
           >
-            <Input
-              id="input-order-size-limit"
-              className="w-full"
-              type="number"
-              step={sizeStep}
-              min={sizeStep}
-              data-testid="order-size"
-              onWheel={(e) => e.currentTarget.blur()}
-              {...register('size', {
+            <Controller
+              name="size"
+              control={control}
+              rules={{
                 required: t('You need to provide a size'),
                 min: {
                   value: sizeStep,
                   message: t('Size cannot be lower than ' + sizeStep),
                 },
                 validate: validateAmount(sizeStep, 'Size'),
-              })}
+              }}
+              render={() => (
+                <Input
+                  id="input-order-size-limit"
+                  className="w-full"
+                  type="number"
+                  value={size}
+                  onChange={(e) => update({ size: e.target.value })}
+                  step={sizeStep}
+                  min={sizeStep}
+                  data-testid="order-size"
+                  onWheel={(e) => e.currentTarget.blur()}
+                />
+              )}
             />
           </FormGroup>
         </div>
@@ -76,14 +89,10 @@ export const DealTicketLimitAmount = ({
             labelAlign="right"
             className="!mb-1"
           >
-            <Input
-              id="input-price-quote"
-              className="w-full"
-              type="number"
-              step={priceStep}
-              data-testid="order-price"
-              onWheel={(e) => e.currentTarget.blur()}
-              {...register('price', {
+            <Controller
+              name="price"
+              control={control}
+              rules={{
                 required: t('You need provide a price'),
                 min: {
                   value: priceStep,
@@ -91,7 +100,19 @@ export const DealTicketLimitAmount = ({
                 },
                 // @ts-ignore this fulfills the interface but still errors
                 validate: validateAmount(priceStep, 'Price'),
-              })}
+              }}
+              render={() => (
+                <Input
+                  id="input-price-quote"
+                  className="w-full"
+                  type="number"
+                  value={price}
+                  onChange={(e) => update({ price: e.target.value })}
+                  step={priceStep}
+                  data-testid="order-price"
+                  onWheel={(e) => e.currentTarget.blur()}
+                />
+              )}
             />
           </FormGroup>
         </div>

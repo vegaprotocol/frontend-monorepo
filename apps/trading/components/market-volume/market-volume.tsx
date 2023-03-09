@@ -1,28 +1,17 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
-import {
-  addDecimalsFormatNumber,
-  t,
-  useDataProvider,
-} from '@vegaprotocol/react-helpers';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-  SingleMarketFieldsFragment,
-} from '@vegaprotocol/market-list';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+import type { MarketData } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
 export const MarketVolume = ({ marketId }: { marketId: string }) => {
   const [marketVolume, setMarketVolume] = useState<string>('-');
-  const variables = useMemo(
-    () => ({
-      marketId: marketId,
-    }),
-    [marketId]
-  );
-  const { data } = useDataProvider<SingleMarketFieldsFragment, never>({
+  const variables = { marketId };
+  const { data } = useDataProvider({
     dataProvider: marketProvider,
     variables,
     skip: !marketId,
@@ -49,7 +38,7 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
     [data?.positionDecimalPlaces, throttledSetMarketVolume]
   );
 
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+  useDataProvider({
     dataProvider: marketDataProvider,
     update,
     variables,

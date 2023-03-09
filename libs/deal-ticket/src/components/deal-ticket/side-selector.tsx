@@ -1,6 +1,6 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 
 interface SideSelectorProps {
@@ -26,7 +26,11 @@ export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
   };
 
   return (
-    <FormGroup label={t('Direction')} labelFor="order-side-toggle">
+    <FormGroup
+      label={t('Direction')}
+      labelFor="order-side-toggle"
+      compact={true}
+    >
       <Toggle
         id="order-side-toggle"
         name="order-side"

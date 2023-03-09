@@ -1,6 +1,6 @@
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider } from '@vegaprotocol/utils';
 import { updateLevels } from './orderbook-data';
-import type { Update } from '@vegaprotocol/react-helpers';
+import type { Update } from '@vegaprotocol/utils';
 import { captureException } from '@sentry/react';
 
 import {
@@ -9,12 +9,14 @@ import {
 } from './__generated__/MarketDepth';
 import type {
   MarketDepthQuery,
+  MarketDepthQueryVariables,
   MarketDepthUpdateSubscription,
 } from './__generated__/MarketDepth';
 
 export const update: Update<
   ReturnType<typeof getData>,
-  ReturnType<typeof getDelta>
+  ReturnType<typeof getDelta>,
+  MarketDepthQueryVariables
 > = (data, deltas, reload) => {
   if (!data) {
     return data;
@@ -42,10 +44,18 @@ export const update: Update<
       },
     };
     if (delta.buy) {
-      updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
+      updatedData.depth.buy = updateLevels(
+        data.depth.buy ?? [],
+        delta.buy,
+        false
+      );
     }
     if (delta.sell) {
-      updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
+      updatedData.depth.sell = updateLevels(
+        data.depth.sell ?? [],
+        delta.sell,
+        true
+      );
     }
     updatedData.depth.sequenceNumber = delta.sequenceNumber;
     return updatedData;
@@ -53,12 +63,19 @@ export const update: Update<
   return data;
 };
 
-const getData = (responseData: MarketDepthQuery | null) => responseData?.market;
+const getData = (responseData: MarketDepthQuery | null) =>
+  responseData?.market || null;
 
 const getDelta = (subscriptionData: MarketDepthUpdateSubscription) =>
   subscriptionData.marketsDepthUpdate;
 
-export const marketDepthProvider = makeDataProvider({
+export const marketDepthProvider = makeDataProvider<
+  MarketDepthQuery,
+  ReturnType<typeof getData>,
+  MarketDepthUpdateSubscription,
+  ReturnType<typeof getDelta>,
+  MarketDepthQueryVariables
+>({
   query: MarketDepthDocument,
   subscriptionQuery: MarketDepthUpdateDocument,
   update,

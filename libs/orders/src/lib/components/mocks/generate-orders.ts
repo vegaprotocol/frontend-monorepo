@@ -46,6 +46,10 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
               id: 'asset-id',
               decimals: 1,
               symbol: 'XYZ',
+              name: 'XYZ',
+            },
+            dataSourceSpecForTradingTermination: {
+              id: '',
             },
           },
         },

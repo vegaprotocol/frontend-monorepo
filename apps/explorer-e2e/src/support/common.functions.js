@@ -21,6 +21,10 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add('switchToMobile', () => {
+  cy.viewport('iphone-x');
+});
+
 Cypress.Commands.add('common_switch_to_mobile_and_click_toggle', function () {
   cy.viewport('iphone-x');
   cy.visit('/');

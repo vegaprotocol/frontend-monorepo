@@ -1,19 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash/debounce';
+import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
-  addDecimalsFormatNumber,
-  t,
-  titlefy,
   useDataProvider,
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
-import type {
-  SingleMarketFieldsFragment,
-  MarketData,
-  Candle,
-  MarketDataUpdateFieldsFragment,
-} from '@vegaprotocol/market-list';
 
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
@@ -27,11 +20,6 @@ const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
     : '-';
 };
 
-export interface SingleMarketData extends SingleMarketFieldsFragment {
-  candles: Candle[];
-  data: MarketData;
-}
-
 const TitleUpdater = ({
   marketId,
   marketName,
@@ -43,13 +31,10 @@ const TitleUpdater = ({
 }) => {
   const pageTitle = usePageTitleStore((store) => store.pageTitle);
   const updateTitle = usePageTitleStore((store) => store.updateTitle);
-  const { data: marketData } = useThrottledDataProvider<
-    MarketData,
-    MarketDataUpdateFieldsFragment
-  >(
+  const { data: marketData } = useThrottledDataProvider(
     {
       dataProvider: marketDataProvider,
-      variables: useMemo(() => ({ marketId }), [marketId]),
+      variables: { marketId: marketId || '' },
       skip: !marketId,
     },
     1000
@@ -89,12 +74,9 @@ export const MarketPage = () => {
     [marketId, navigate]
   );
 
-  const { data, error, loading } = useDataProvider<
-    SingleMarketFieldsFragment,
-    never
-  >({
+  const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,
-    variables: useMemo(() => ({ marketId: marketId || '' }), [marketId]),
+    variables: { marketId: marketId || '' },
     skip: !marketId,
   });
 
@@ -106,16 +88,30 @@ export const MarketPage = () => {
 
   const tradeView = useMemo(() => {
     if (w > 960) {
-      return <TradeGrid market={data} onSelect={onSelect} />;
+      return (
+        <TradeGrid
+          market={data}
+          onSelect={onSelect}
+          pinnedAsset={
+            data?.tradableInstrument.instrument.product.settlementAsset
+          }
+        />
+      );
     }
-    return <TradePanels market={data} onSelect={onSelect} />;
-  }, [w, data, onSelect]);
+    return (
+      <TradePanels
+        market={data}
+        onSelect={onSelect}
+        onClickCollateral={() => navigate('/portfolio')}
+      />
+    );
+  }, [w, data, onSelect, navigate]);
   if (!data && marketId) {
     return (
       <Splash>
         <span className="flex flex-col items-center gap-2">
           <p className="text-sm justify-center">
-            {t('This market URL is not available anymore.')}
+            {t('This market URL is not available any more.')}
           </p>
           <p className="text-sm justify-center">
             {t(`Please choose another market from the`)}{' '}
@@ -129,7 +125,7 @@ export const MarketPage = () => {
   }
 
   return (
-    <AsyncRenderer<SingleMarketFieldsFragment>
+    <AsyncRenderer
       loading={loading}
       error={error}
       data={data || undefined}

@@ -1,9 +1,8 @@
 import * as Schema from '@vegaprotocol/types';
+import { addDecimal, truncateByChars } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import {
-  addDecimal,
   NetworkParams,
-  t,
-  truncateByChars,
   useDataProvider,
   useNetworkParam,
 } from '@vegaprotocol/react-helpers';
@@ -21,7 +20,7 @@ export const TransferContainer = () => {
   const { param } = useNetworkParam(NetworkParams.transfer_fee_factor);
   const { data } = useDataProvider({
     dataProvider: accountsDataProvider,
-    variables: { partyId: pubKey },
+    variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
   const create = useVegaTransactionStore((store) => store.create);
@@ -51,7 +50,7 @@ export const TransferContainer = () => {
 
   return (
     <>
-      <p className="text-sm mb-4">
+      <p className="text-sm mb-4" data-testid="dialog-transfer-text">
         {t('Transfer funds to another Vega key from')}{' '}
         <Lozenge className="font-mono">{truncateByChars(pubKey || '')}</Lozenge>{' '}
         {t('If you are at all unsure, stop and seek advice.')}

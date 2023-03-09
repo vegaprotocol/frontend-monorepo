@@ -1,51 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  fireEvent,
-  render,
-  screen,
-  act,
-  waitFor,
-} from '@testing-library/react';
-import { generateMarket } from '../../test-helpers';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
-import { ChainIdDocument, addDecimal } from '@vegaprotocol/react-helpers';
-import * as utils from '../../utils';
+import { addDecimal } from '@vegaprotocol/utils';
+import { useOrderStore } from '@vegaprotocol/orders';
 
-let mockHasNoBalance = false;
-jest.mock('../../hooks/use-has-no-balance', () => {
-  return {
-    useHasNoBalance: () => mockHasNoBalance,
-  };
-});
+jest.mock('zustand');
+jest.mock('./deal-ticket-fee-details', () => ({
+  DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
+}));
 
+const pubKey = 'pubKey';
 const market = generateMarket();
+const marketData = generateMarketData();
 const submit = jest.fn();
 
-const mockChainId = 'chain-id';
-
-function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
-  const chainIdMock: MockedResponse<ChainIdQuery> = {
-    request: {
-      query: ChainIdDocument,
-    },
-    result: {
-      data: {
-        statistics: {
-          chainId: mockChainId,
-        },
-      },
-    },
-  };
+function generateJsx() {
   return (
-    <MockedProvider mocks={[chainIdMock]}>
-      <VegaWalletContext.Provider value={{ pubKey: mockChainId } as any}>
-        <DealTicket market={market} submit={submit} />
+    <MockedProvider>
+      <VegaWalletContext.Provider value={{ pubKey, isReadOnly: false } as any}>
+        <DealTicket market={market} marketData={marketData} submit={submit} />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
@@ -53,10 +31,11 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
 
 describe('DealTicket', () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    localStorage.clear();
   });
+
   afterEach(() => {
-    window.localStorage.clear();
+    localStorage.clear();
     jest.clearAllMocks();
   });
 
@@ -73,23 +52,62 @@ describe('DealTicket', () => {
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
     ).not.toBeChecked();
-    expect(screen.getByTestId('order-size')).toHaveDisplayValue(
-      String(1 / Math.pow(10, market.positionDecimalPlaces))
-    );
+    expect(screen.getByTestId('order-size')).toHaveDisplayValue('0');
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
-
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(market!.data.markPrice, market.decimalPlaces)} ${
+      `~${addDecimal(marketData.markPrice, market.decimalPlaces)} ${
         market.tradableInstrument.instrument.product.quoteName
       }`
     );
   });
 
-  it('handles TIF select box dependent on order type', () => {
+  it('should use local storage state for initial values', () => {
+    const expectedOrder = {
+      marketId: market.id,
+      type: Schema.OrderType.TYPE_LIMIT,
+      side: Schema.Side.SIDE_SELL,
+      size: '0.1',
+      price: '300.22',
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+      persist: true,
+    };
+
+    useOrderStore.setState({
+      orders: {
+        [expectedOrder.marketId]: expectedOrder,
+      },
+    });
+
+    render(generateJsx());
+
+    // Assert correct defaults are used from store
+    expect(
+      screen
+        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
+        .querySelector('input')
+    ).toBeChecked();
+    expect(
+      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
+    ).toBeChecked();
+    expect(
+      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
+    ).not.toBeChecked();
+    expect(screen.getByTestId('order-size')).toHaveDisplayValue(
+      expectedOrder.size
+    );
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      expectedOrder.timeInForce
+    );
+    expect(screen.getByTestId('order-price')).toHaveDisplayValue(
+      expectedOrder.price
+    );
+  });
+
+  it('handles TIF select box dependent on order type', async () => {
     render(generateJsx());
 
     // Only FOK and IOC should be present by default (type market order)
@@ -99,97 +117,75 @@ describe('DealTicket', () => {
       )
     ).toEqual(['Fill or Kill (FOK)', 'Immediate or Cancel (IOC)']);
 
+    // IOC should be default
+    expect(screen.getByTestId('order-tif')).toHaveDisplayValue(
+      'Immediate or Cancel (IOC)'
+    );
+
+    // Select FOK - FOK should be selected
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
+    );
+    expect(screen.getByTestId('order-tif')).toHaveDisplayValue(
+      'Fill or Kill (FOK)'
+    );
+
     // Switch to type limit order -> all TIF options should be shown
-    fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
     );
 
-    // Select GTC -> GTC should be selected
-    fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC },
-    });
-    expect(screen.getByTestId('order-tif')).toHaveValue(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
-    );
-
-    // Switch to type market order -> IOC should be selected (default)
-    fireEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
-    expect(screen.getByTestId('order-tif')).toHaveValue(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
-    );
-
-    // Select IOC -> IOC should be selected
-    fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC },
-    });
-    expect(screen.getByTestId('order-tif')).toHaveValue(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
-    );
-
-    // Switch to type limit order -> GTC should be selected
-    fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    // expect GTC as LIMIT default
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
 
     // Select GTT -> GTT should be selected
-    fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT },
-    });
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+    );
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
     );
 
-    // Switch to type market order -> IOC should be selected
-    fireEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    // Switch back to type market order -> FOK should be preserved from previous selection
+    await userEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
+    );
+
+    // Select IOC -> IOC should be selected
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+    );
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
-  });
 
-  it('validation should be reset', async () => {
-    mockHasNoBalance = true;
-    jest.spyOn(utils, 'validateMarketState').mockReturnValue('Wrong state');
-    jest
-      .spyOn(utils, 'validateMarketTradingMode')
-      .mockReturnValue('Wrong trading mode');
-    const { rerender } = render(generateJsx());
+    // Switch back type limit order -> GTT should be preserved
+    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+    );
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('place-order'));
-    });
-    await waitFor(async () => {
-      expect(
-        await screen.getByTestId('dealticket-error-message-summary')
-      ).toHaveTextContent('Wrong state');
-    });
+    // Select GFN -> GFN should be selected
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GFN
+    );
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GFN
+    );
 
-    jest.spyOn(utils, 'validateMarketState').mockReturnValue(true);
-    await act(async () => {
-      rerender(generateJsx());
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('place-order'));
-    });
-    await waitFor(async () => {
-      expect(
-        await screen.getByTestId('dealticket-error-message-zero-balance')
-      ).toHaveTextContent('Insufficient balance.');
-    });
-
-    mockHasNoBalance = false;
-    await act(async () => {
-      rerender(generateJsx());
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('place-order'));
-    });
-    await waitFor(async () => {
-      expect(
-        await screen.getByTestId('dealticket-error-message-summary')
-      ).toHaveTextContent('Wrong trading mode');
-    });
+    // Switch to type market order -> IOC should be preserved
+    await userEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+    );
   });
 
   it('can edit deal ticket', async () => {
@@ -200,23 +196,20 @@ describe('DealTicket', () => {
       screen.getByTestId('order-side-SIDE_BUY')?.querySelector('input')
     ).toBeChecked();
 
-    await act(async () => {
-      fireEvent.change(screen.getByTestId('order-size'), {
-        target: { value: '200' },
-      });
-    });
+    await userEvent.type(screen.getByTestId('order-size'), '200');
 
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('200');
 
-    fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC },
-    });
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+    );
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
 
     // Switch to limit order
-    fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
 
     // Check all TIF options shown
     expect(screen.getByTestId('order-tif').children).toHaveLength(

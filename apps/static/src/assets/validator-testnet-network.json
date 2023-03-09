@@ -1,0 +1,3 @@
+{
+  "hosts": ["https://api.validators-testnet.vega.xyz/graphql"]
+}

@@ -8,7 +8,7 @@ interface PanelProps {
 export const Panel = ({ children, className }: PanelProps) => (
   <div
     className={classNames(
-      'border border-zinc-200 dark:border-zinc-800 rounded-md p-5 mb-5',
+      'border border-vega-light-150 dark:border-vega-dark-150 rounded-md p-5 mb-5',
       className
     )}
   >

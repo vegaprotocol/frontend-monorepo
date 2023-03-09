@@ -3,7 +3,7 @@ import { useExplorerMarketQuery } from './__generated__/Market';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import Hash from '../hash';
 
 export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
@@ -48,7 +48,7 @@ const MarketLink = ({
       <Link
         className="underline"
         {...props}
-        to={`/${Routes.MARKETS}#${id}`}
+        to={`/${Routes.MARKETS}/${id}`}
         title={id}
       >
         {label}
@@ -56,7 +56,7 @@ const MarketLink = ({
     );
   } else {
     return (
-      <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
+      <Link className="underline" {...props} to={`/${Routes.MARKETS}/${id}`}>
         <Hash text={id} />
       </Link>
     );

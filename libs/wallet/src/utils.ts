@@ -1,15 +1,16 @@
-import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
+import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import type { Market, Order } from '@vegaprotocol/types';
 import { OrderTimeInForce, OrderType, AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
 import type {
-  OrderAmendmentBody,
-  OrderSubmissionBody,
+  OrderAmendment,
+  OrderSubmission,
   Transaction,
   Transfer,
 } from './connectors';
+import type { Exact } from 'type-fest';
 
 /**
  * Creates an ID in the same way that core does on the backend. This way we
@@ -29,11 +30,15 @@ export const encodeTransaction = (tx: Transaction): string => {
 };
 
 export const normalizeOrderSubmission = (
-  order: OrderSubmissionBody['orderSubmission'],
+  order: OrderSubmission,
   decimalPlaces: number,
   positionDecimalPlaces: number
-): OrderSubmissionBody['orderSubmission'] => ({
-  ...order,
+): OrderSubmission => ({
+  marketId: order.marketId,
+  reference: order.reference,
+  type: order.type,
+  side: order.side,
+  timeInForce: order.timeInForce,
   price:
     order.type === OrderType.TYPE_LIMIT && order.price
       ? removeDecimal(order.price, decimalPlaces)
@@ -45,12 +50,12 @@ export const normalizeOrderSubmission = (
       : undefined,
 });
 
-export const normalizeOrderAmendment = (
+export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
   order: Pick<Order, 'id' | 'timeInForce' | 'size' | 'expiresAt'>,
   market: Pick<Market, 'id' | 'decimalPlaces' | 'positionDecimalPlaces'>,
   price: string,
   size: string
-): OrderAmendmentBody['orderAmendment'] => ({
+): OrderAmendment => ({
   orderId: order.id,
   marketId: market.id,
   price: removeDecimal(price, market.decimalPlaces),
@@ -65,7 +70,7 @@ export const normalizeOrderAmendment = (
     : undefined,
 });
 
-export const normalizeTransfer = (
+export const normalizeTransfer = <T extends Exact<Transfer, T>>(
   address: string,
   amount: string,
   asset: {

@@ -1,10 +1,10 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 
 export const validateMarketTradingMode = (
-  tradingMode: Schema.MarketTradingMode
+  marketTradingMode: Schema.MarketTradingMode
 ) => {
-  if (tradingMode === Schema.MarketTradingMode.TRADING_MODE_NO_TRADING) {
+  if (marketTradingMode === Schema.MarketTradingMode.TRADING_MODE_NO_TRADING) {
     return t('Trading terminated');
   }
 

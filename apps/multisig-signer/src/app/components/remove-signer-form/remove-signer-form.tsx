@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { gql, useLazyQuery } from '@apollo/client';
 import { captureException } from '@sentry/react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
 import {
   FormGroup,

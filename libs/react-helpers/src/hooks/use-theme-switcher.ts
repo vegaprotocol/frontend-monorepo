@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { LocalStorage } from '../lib/storage';
+import { LocalStorage } from '@vegaprotocol/utils';
 
 const THEME_STORAGE_KEY = 'theme';
 const Themes = {

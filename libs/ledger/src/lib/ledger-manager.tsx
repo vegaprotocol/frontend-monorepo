@@ -1,9 +1,11 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { subDays, formatRFC3339 } from 'date-fns';
+import type { AggregatedLedgerEntriesNode } from './ledger-entries-data-provider';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
 import type * as Types from '@vegaprotocol/types';
@@ -15,36 +17,42 @@ export interface Filter {
   fromAccountType?: { value: Types.AccountType[] };
   toAccountType?: { value: Types.AccountType[] };
 }
-
-type LedgerManagerProps = { partyId: string };
-export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
+const defaultFilter = {
+  vegaTime: {
+    value: { start: formatRFC3339(subDays(Date.now(), 7)) },
+  },
+};
+export const LedgerManager = ({ partyId }: { partyId: string }) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [filter, setFilter] = useState<Filter | undefined>();
+  const [filter, setFilter] = useState<Filter>(defaultFilter);
+  const [dataCount, setDataCount] = useState(0);
 
-  const { data, error, loading, getRows } = useLedgerEntriesDataProvider({
+  const { data, error, loading, reload } = useLedgerEntriesDataProvider({
     partyId,
     filter,
     gridRef,
   });
 
-  const onFilterChanged = useCallback(
-    (event: FilterChangedEvent) => {
-      const updatedFilter = event.api.getFilterModel();
-      if (Object.keys(updatedFilter).length) {
-        setFilter(updatedFilter);
-      } else if (filter) {
-        setFilter(undefined);
-      }
-    },
-    [filter]
+  const onFilterChanged = useCallback((event: FilterChangedEvent) => {
+    const updatedFilter = { ...defaultFilter, ...event.api.getFilterModel() };
+    setFilter(updatedFilter);
+  }, []);
+  const extractNodesDecorator = useCallback(
+    (data: AggregatedLedgerEntriesNode[] | null, loading: boolean) =>
+      data && !loading ? data.map((item) => item.node) : null,
+    []
   );
+
+  const extractedData = extractNodesDecorator(data, loading);
+  useEffect(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, [extractedData]);
 
   return (
     <div className="h-full relative">
       <LedgerTable
         ref={gridRef}
-        rowModelType="infinite"
-        datasource={{ getRows }}
+        rowData={extractedData}
         onFilterChanged={onFilterChanged}
       />
       <div className="pointer-events-none absolute inset-0">
@@ -53,7 +61,8 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
           error={error}
           data={data}
           noDataMessage={t('No entries')}
-          noDataCondition={(data) => !(data && data.length)}
+          noDataCondition={() => !dataCount}
+          reload={reload}
         />
       </div>
     </div>

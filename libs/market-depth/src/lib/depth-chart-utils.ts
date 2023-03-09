@@ -1,4 +1,4 @@
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 
 interface PriceLevel {
   price: number;

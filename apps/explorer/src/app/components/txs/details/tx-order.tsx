@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
@@ -39,7 +39,7 @@ export const TxDetailsOrder = ({
 
   return (
     <>
-      <TableWithTbody className="mb-8">
+      <TableWithTbody className="mb-8" allowWrap={true}>
         <TxDetailsShared
           txData={txData}
           pubKey={pubKey}

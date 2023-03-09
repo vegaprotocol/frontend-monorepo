@@ -1,5 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { createDocsLinks, ExternalLinks, t } from '@vegaprotocol/react-helpers';
+import { createDocsLinks, ExternalLinks } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 
@@ -7,7 +8,7 @@ export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
     <h1
       data-testid="wallet-dialog-title"
-      className="text-2xl uppercase mb-6 text-center"
+      className="text-2xl uppercase mb-6 text-center font-alpha calt"
     >
       {children}
     </h1>

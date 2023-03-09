@@ -1,14 +1,13 @@
-import {
-  makeDataProvider,
-  makeDerivedDataProvider,
-  useDataProvider,
-  useYesterday,
-} from '@vegaprotocol/react-helpers';
+import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import type {
   MarketsQuery,
   MarketFieldsFragment,
 } from './__generated__/markets';
+import type { MarketsCandlesQueryVariables } from './__generated__/markets-candles';
+
 import { marketsDataProvider } from './markets-data-provider';
+import { marketDataProvider } from './market-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
 import type { MarketCandles } from './markets-candles-provider';
@@ -35,12 +34,12 @@ export const marketsProvider = makeDataProvider<
   fetchPolicy: 'cache-first',
 });
 
-const marketProvider = makeDerivedDataProvider<
+export const marketProvider = makeDerivedDataProvider<
   Market,
   never,
   { marketId: string }
 >(
-  [marketsProvider],
+  [(callback, client) => marketsProvider(callback, client, undefined)],
   ([markets], variables) =>
     ((markets as ReturnType<typeof getData>) || []).find(
       (market) => market.id === variables?.marketId
@@ -49,20 +48,31 @@ const marketProvider = makeDerivedDataProvider<
 
 export const useMarket = (marketId?: string) => {
   const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
-  const { data } = useDataProvider({
+  return useDataProvider({
     dataProvider: marketProvider,
     variables,
     skip: !marketId,
   });
-  return data;
 };
+export type MarketWithData = Market & { data: MarketData };
+
+export const marketWithDataProvider = makeDerivedDataProvider<
+  MarketWithData,
+  never,
+  { marketId: string }
+>([marketProvider, marketDataProvider], ([market, marketData]) => {
+  return {
+    ...market,
+    data: marketData,
+  };
+});
 
 export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
   ([markets]) => filterAndSortMarkets(markets)
 );
 
-export type MarketWithCandles = Market & { candles?: Candle[] };
+export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
 
 const addCandles = <T extends Market>(
   markets: T[],
@@ -75,17 +85,18 @@ const addCandles = <T extends Market>(
   }));
 
 export const marketsWithCandlesProvider = makeDerivedDataProvider<
-  MarketWithCandles[],
-  never
+  MarketMaybeWithCandles[],
+  never,
+  MarketsCandlesQueryVariables
 >(
   [
-    (callback, client) => activeMarketsProvider(callback, client),
+    (callback, client) => activeMarketsProvider(callback, client, undefined),
     marketsCandlesProvider,
   ],
   (parts) => addCandles(parts[0] as Market[], parts[1] as MarketCandles[])
 );
 
-export type MarketWithData = Market & { data?: MarketData };
+export type MarketMaybeWithData = Market & { data?: MarketData };
 
 const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
   markets.map((market) => ({
@@ -94,22 +105,26 @@ const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
   }));
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
-  MarketWithData[],
+  MarketMaybeWithData[],
   never
 >([activeMarketsProvider, marketsDataProvider], (parts) =>
   addData(parts[0] as Market[], parts[1] as MarketData[])
 );
 
+export type MarketMaybeWithDataAndCandles = MarketMaybeWithData &
+  MarketMaybeWithCandles;
+
 export const marketListProvider = makeDerivedDataProvider<
-  (MarketWithData & MarketWithCandles)[],
-  never
+  MarketMaybeWithDataAndCandles[],
+  never,
+  MarketsCandlesQueryVariables
 >(
   [
-    (callback, client) => marketsWithDataProvider(callback, client),
+    (callback, client) => marketsWithDataProvider(callback, client, undefined),
     marketsCandlesProvider,
   ],
   (parts) =>
-    addCandles(parts[0] as MarketWithCandles[], parts[1] as MarketCandles[])
+    addCandles(parts[0] as MarketMaybeWithData[], parts[1] as MarketCandles[])
 );
 
 export const useMarketList = () => {

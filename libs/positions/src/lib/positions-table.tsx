@@ -1,33 +1,45 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { CellRendererSelectorResult } from 'ag-grid-community';
 import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
   TypedDataAgGrid,
-} from '@vegaprotocol/ui-toolkit';
-import { ProgressBarCell } from '@vegaprotocol/ui-toolkit';
+  VegaICellRendererParams,
+} from '@vegaprotocol/datagrid';
 import {
+  AgGridDynamic as AgGrid,
+  DateRangeFilter,
   PriceFlashCell,
+  signedNumberCssClass,
+  signedNumberCssClassRules,
+} from '@vegaprotocol/datagrid';
+import {
+  ButtonLink,
+  Tooltip,
+  TooltipCellComponent,
+  Link,
+  ExternalLink,
+  Icon,
+  ProgressBarCell,
+} from '@vegaprotocol/ui-toolkit';
+import {
   volumePrefix,
-  t,
   toBigNum,
   formatNumber,
   getDateTimeFormat,
-  signedNumberCssClass,
-  signedNumberCssClassRules,
-  DateRangeFilter,
   addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
+  createDocsLinks,
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
-import { ButtonLink, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
-import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
+import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -49,7 +61,7 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
   }
   const { openVolume, positionDecimalPlaces, marketDecimalPlaces, notional } =
     valueFormatted;
-  return valueFormatted ? (
+  return valueFormatted && notional ? (
     <div className="leading-tight font-mono">
       <div
         className={classNames('text-right', signedNumberCssClass(openVolume))}
@@ -115,15 +127,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueGetter={({
             data,
           }: VegaValueGetterParams<Position, 'notional'>) => {
-            return data?.notional === undefined
+            return !data?.notional
               ? undefined
-              : toBigNum(data?.notional, data.marketDecimalPlaces).toNumber();
+              : toBigNum(data.notional, data.marketDecimalPlaces).toNumber();
           }}
           valueFormatter={({
             data,
           }: VegaValueFormatterParams<Position, 'notional'>) => {
-            return !data
-              ? undefined
+            return !data || !data.notional
+              ? '-'
               : addDecimalsFormatNumber(
                   data.notional,
                   data.marketDecimalPlaces
@@ -142,7 +154,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueGetterParams<Position, 'openVolume'>) => {
             return data?.openVolume === undefined
               ? undefined
-              : toBigNum(data?.openVolume, data.decimals).toNumber();
+              : toBigNum(
+                  data?.openVolume,
+                  data.positionDecimalPlaces
+                ).toNumber();
           }}
           valueFormatter={({
             data,
@@ -158,6 +173,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                   )
                 );
           }}
+          cellRenderer={OpenVolumeCell}
         />
         <AgGridColumn
           headerName={t('Mark price')}
@@ -173,6 +189,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             data,
           }: VegaValueGetterParams<Position, 'markPrice'>) => {
             return !data ||
+              !data.markPrice ||
               data.marketTradingMode ===
                 Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
               ? undefined
@@ -180,14 +197,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'markPrice'>) => {
             if (!data) {
               return undefined;
             }
             if (
+              !data.markPrice ||
               data.marketTradingMode ===
-              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+                Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
             ) {
               return '-';
             }
@@ -220,7 +237,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'averageEntryPrice'>):
             | string
             | undefined => {
@@ -258,7 +274,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'liquidationPrice'>):
             | string
             | undefined => {
-            if (!data) {
+            if (!data || data?.liquidationPrice === undefined) {
               return undefined;
             }
             return addDecimalsFormatNumber(
@@ -302,7 +318,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             data,
-            node,
           }: VegaValueFormatterParams<Position, 'marginAccountBalance'>):
             | string
             | undefined => {
@@ -320,6 +335,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
+          cellClass="font-mono text-right"
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -338,12 +354,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerTooltip={t(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
           )}
+          cellRenderer={PNLCell}
         />
         <AgGridColumn
           headerName={t('Unrealised PNL')}
           field="unrealisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
+          cellClass="font-mono text-right"
           filter="agNumberColumnFilter"
           valueGetter={({
             data,
@@ -362,6 +380,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerTooltip={t(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}
+          cellRenderer={PNLCell}
         />
         <AgGridColumn
           headerName={t('Updated')}
@@ -398,3 +417,111 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
 );
 
 export default PositionsTable;
+
+export const PNLCell = ({
+  valueFormatted,
+  data,
+}: VegaICellRendererParams<Position, 'realisedPNL'>) => {
+  const { VEGA_DOCS_URL } = useEnvironment();
+  const LOSS_SOCIALIZATION_LINK =
+    VEGA_DOCS_URL && createDocsLinks(VEGA_DOCS_URL).LOSS_SOCIALIZATION;
+
+  if (!data) {
+    return <>-</>;
+  }
+
+  const losses = parseInt(data?.lossSocializationAmount ?? '0');
+  if (losses <= 0) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{valueFormatted}</>;
+  }
+
+  const lossesFormatted = addDecimalsFormatNumber(
+    data.lossSocializationAmount,
+    data.decimals
+  );
+
+  return (
+    <WarningCell
+      tooltipContent={
+        <>
+          <p className="mb-2">
+            {t('Lifetime loss socialisation deductions: %s', lossesFormatted)}
+          </p>
+          {VEGA_DOCS_URL && (
+            <ExternalLink href={LOSS_SOCIALIZATION_LINK}>
+              {t('Read more about loss socialisation')}
+            </ExternalLink>
+          )}
+        </>
+      }
+    >
+      {valueFormatted}
+    </WarningCell>
+  );
+};
+
+export const OpenVolumeCell = ({
+  valueFormatted,
+  data,
+}: VegaICellRendererParams<Position, 'openVolume'>) => {
+  const { VEGA_DOCS_URL } = useEnvironment();
+
+  if (!data) {
+    return <>-</>;
+  }
+
+  if (data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{valueFormatted}</>;
+  }
+
+  const POSITION_RESOLUTION_LINK =
+    VEGA_DOCS_URL && createDocsLinks(VEGA_DOCS_URL).POSITION_RESOLUTION;
+
+  return (
+    <WarningCell
+      tooltipContent={
+        <>
+          <p className="mb-2">
+            {t('Your position was affected by market conditions')}
+          </p>
+          <p className="mb-2">
+            {t(
+              'Status: %s',
+              PositionStatusMapping[
+                PositionStatus.POSITION_STATUS_ORDERS_CLOSED
+              ]
+            )}
+          </p>
+          {VEGA_DOCS_URL && (
+            <ExternalLink href={POSITION_RESOLUTION_LINK}>
+              {t('Read more about position resolution')}
+            </ExternalLink>
+          )}
+        </>
+      }
+    >
+      {valueFormatted}
+    </WarningCell>
+  );
+};
+
+const WarningCell = ({
+  children,
+  tooltipContent,
+}: {
+  children: ReactNode;
+  tooltipContent: ReactNode;
+}) => {
+  return (
+    <Tooltip description={tooltipContent}>
+      <div className="w-full flex items-center justify-between underline decoration-dashed underline-offest-2">
+        <span className="text-black dark:text-white mr-1">
+          <Icon name="warning-sign" size={3} />
+        </span>
+        <span className="text-ellipsis overflow-hidden">{children}</span>
+      </div>
+    </Tooltip>
+  );
+};

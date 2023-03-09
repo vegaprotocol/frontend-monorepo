@@ -3,28 +3,29 @@ import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import { positionsMetricsProvider } from './positions-data-providers';
-import type { PositionsMetricsProviderVariables } from './positions-data-providers';
+import type { PositionsQueryVariables } from './__generated__/Positions';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
-import type { GetRowsParams } from '@vegaprotocol/ui-toolkit';
+import type { GetRowsParams } from '@vegaprotocol/datagrid';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
 export const usePositionsData = (
   partyId: string,
-  gridRef: RefObject<AgGridReact>
+  gridRef: RefObject<AgGridReact>,
+  clientSideModel?: boolean
 ) => {
-  const variables = useMemo<PositionsMetricsProviderVariables>(
+  const variables = useMemo<PositionsQueryVariables>(
     () => ({ partyId }),
     [partyId]
   );
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
-      return updateGridData(dataRef, data, gridRef);
+      return clientSideModel ? false : updateGridData(dataRef, data, gridRef);
     },
-    [gridRef]
+    [gridRef, clientSideModel]
   );
-  const { data, error, loading } = useDataProvider({
+  const { data, error, loading, reload } = useDataProvider({
     dataProvider: positionsMetricsProvider,
     update,
     variables,
@@ -44,5 +45,6 @@ export const usePositionsData = (
     error,
     loading,
     getRows,
+    reload,
   };
 };

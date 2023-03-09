@@ -1,15 +1,19 @@
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { totalFeesPercentage } from '@vegaprotocol/market-list';
+import {
+  totalFeesPercentage,
+  calcCandleVolume,
+} from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
   removePaginationWrapper,
-  t,
-  useDataProvider,
-  useYesterday,
-} from '@vegaprotocol/react-helpers';
+  TokenLinks,
+  getMarketExpiryDateFormatted,
+} from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   Accordion,
@@ -19,34 +23,19 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
-import pick from 'lodash/pick';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
 import { MarketInfoTable } from './info-key-value-table';
-import { marketInfoDataProvider } from './market-info-data-provider';
-import {
-  TokenLinks,
-  getMarketExpiryDateFormatted,
-} from '@vegaprotocol/react-helpers';
+import { marketInfoWithDataAndCandlesProvider } from './market-info-data-provider';
 
-import type { MarketInfoQuery } from './__generated__/MarketInfo';
-import { MarketProposalNotification } from '@vegaprotocol/governance';
+import type { MarketInfoWithDataAndCandles } from './market-info-data-provider';
+import { MarketProposalNotification } from '@vegaprotocol/proposals';
 
 export interface InfoProps {
-  market: MarketInfoQuery['market'];
+  market: MarketInfoWithDataAndCandles;
   onSelect: (id: string) => void;
 }
-
-export const calcCandleVolume = (
-  m: MarketInfoQuery['market']
-): string | undefined => {
-  return m?.candlesConnection?.edges
-    ?.reduce((acc: BigNumber, c) => {
-      return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-    }, new BigNumber(m?.candlesConnection?.edges[0]?.node.volume ?? 0))
-    ?.toString();
-};
 
 export interface MarketInfoContainerProps {
   marketId: string;
@@ -69,16 +58,16 @@ export const MarketInfoContainer = ({
     [marketId, yTimestamp]
   );
 
-  const { data, loading, error } = useDataProvider({
-    dataProvider: marketInfoDataProvider,
+  const { data, loading, error, reload } = useDataProvider({
+    dataProvider: marketInfoWithDataAndCandlesProvider,
     skipUpdates: true,
     variables,
   });
 
   return (
-    <AsyncRenderer data={data} loading={loading} error={error}>
-      {data && data.market ? (
-        <Info market={data.market} onSelect={(id) => onSelect?.(id)} />
+    <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
+      {data ? (
+        <Info market={data} onSelect={(id) => onSelect?.(id)} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -91,9 +80,10 @@ export const MarketInfoContainer = ({
 export const Info = ({ market, onSelect }: InfoProps) => {
   const { VEGA_TOKEN_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
-  const dayVolume = calcCandleVolume(market);
   const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol;
+    market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
+  const quoteUnit =
+    market?.tradableInstrument.instrument.product?.quoteName || '';
   const assetId = useMemo(
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
     [market]
@@ -105,6 +95,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const marketAccounts = removePaginationWrapper(
     market.accountsConnection?.edges
   );
+
+  const last24hourVolume = market.candles && calcCandleVolume(market.candles);
 
   const marketDataPanels = [
     {
@@ -129,16 +121,23 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Market price'),
       content: (
-        <MarketInfoTable
-          data={pick(
-            market.data,
-            'name',
-            'markPrice',
-            'bestBidPrice',
-            'bestOfferPrice'
-          )}
-          decimalPlaces={market.decimalPlaces}
-        />
+        <>
+          <MarketInfoTable
+            data={{
+              markPrice: market.data?.markPrice,
+              bestBidPrice: market.data?.bestBidPrice,
+              bestOfferPrice: market.data?.bestOfferPrice,
+              quoteUnit: market.tradableInstrument.instrument.product.quoteName,
+            }}
+            decimalPlaces={market.decimalPlaces}
+          />
+          <p className="text-xs mt-4">
+            {t(
+              'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
+              [assetSymbol, quoteUnit]
+            )}
+          </p>
+        </>
       ),
     },
     {
@@ -147,16 +146,17 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <MarketInfoTable
           data={{
             '24hourVolume':
-              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
-            ...pick(
-              market.data,
-              'openInterest',
-              'name',
-              'bestBidVolume',
-              'bestOfferVolume',
-              'bestStaticBidVolume',
-              'bestStaticOfferVolume'
-            ),
+              last24hourVolume && last24hourVolume !== '0'
+                ? addDecimalsFormatNumber(
+                    last24hourVolume,
+                    market.positionDecimalPlaces
+                  )
+                : '-',
+            openInterest: market.data?.openInterest,
+            bestBidVolume: market.data?.bestBidVolume,
+            bestOfferVolume: market.data?.bestOfferVolume,
+            bestStaticBidVolume: market.data?.bestStaticBidVolume,
+            bestStaticOfferVolume: market.data?.bestStaticOfferVolume,
           }}
           decimalPlaces={market.positionDecimalPlaces}
         />
@@ -182,12 +182,18 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   ];
 
   const keyDetails = {
-    ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
+    decimalPlaces: market.decimalPlaces,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+    tradingMode: market.tradingMode,
     state: Schema.MarketStateMapping[market.state],
   };
 
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
+
+  const liquidityPriceRange = formatNumberPercentage(
+    new BigNumber(market.lpPriceRange).times(100)
+  );
 
   const marketSpecPanels = [
     {
@@ -224,13 +230,21 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Settlement asset'),
       content: asset ? (
-        <AssetDetailsTable
-          asset={asset}
-          inline={true}
-          noBorder={true}
-          dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
-          ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
-        />
+        <>
+          <AssetDetailsTable
+            asset={asset}
+            inline={true}
+            noBorder={true}
+            dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
+            ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
+          />
+          <p className="text-xs mt-4">
+            {t(
+              'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
+              [assetSymbol, quoteUnit]
+            )}
+          </p>
+        </>
       ) : (
         <Splash>{t('No data')}</Splash>
       ),
@@ -284,27 +298,47 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       ),
     },
     ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-      (trigger, i) => ({
-        title: t(`Price monitoring trigger ${i + 1}`),
-        content: <MarketInfoTable data={trigger} />,
-      })
+      (trigger, i) => {
+        const bounds = market.data?.priceMonitoringBounds?.[i];
+        return {
+          title: t(`Price monitoring bounds ${i + 1}`),
+          content: (
+            <div className="text-xs">
+              <div className="grid grid-cols-2 text-xs mb-4">
+                <p className="col-span-1">
+                  {t('%s probability price bounds', [
+                    formatNumberPercentage(
+                      new BigNumber(trigger.probability).times(100)
+                    ),
+                  ])}
+                </p>
+                <p className="col-span-1 text-right">
+                  {t('Within %s seconds', [formatNumber(trigger.horizonSecs)])}
+                </p>
+              </div>
+              <div className="pl-2 pb-0 text-xs border-l-2">
+                {bounds && (
+                  <MarketInfoTable
+                    data={{
+                      highestPrice: bounds.maxValidPrice,
+                      lowestPrice: bounds.minValidPrice,
+                      referencePrice: bounds.referencePrice,
+                    }}
+                    decimalPlaces={assetDecimals}
+                    assetSymbol={quoteUnit}
+                  />
+                )}
+              </div>
+              <p className="mt-4">
+                {t('Results in %s seconds auction if breached', [
+                  trigger.auctionExtensionSecs.toString(),
+                ])}
+              </p>
+            </div>
+          ),
+        };
+      }
     ),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <>
-          <MarketInfoTable
-            data={trigger}
-            decimalPlaces={market.decimalPlaces}
-            omits={['referencePrice', '__typename']}
-          />
-          <MarketInfoTable
-            data={{ referencePrice: trigger.referencePrice }}
-            decimalPlaces={assetDecimals}
-          />
-        </>
-      ),
-    })),
     {
       title: t('Liquidity monitoring parameters'),
       content: (
@@ -342,31 +376,41 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Liquidity price range'),
       content: (
-        <MarketInfoTable
-          data={{
-            liquidityPriceRange: formatNumberPercentage(
-              new BigNumber(market.lpPriceRange).times(100)
-            ),
-            LPVolumeMin:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .minus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-            LPVolumeMax:
-              market.data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .plus(market.lpPriceRange)
-                  .times(market.data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${assetSymbol}`,
-          }}
-        ></MarketInfoTable>
+        <>
+          <p className="text-xs mb-4">
+            {`For liquidity orders to count towards a commitment, they must be
+            within the liquidity monitoring bounds.`}
+          </p>
+          <p className="text-xs mb-4">
+            {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
+            price.`}
+          </p>
+          <div className="pl-2 pb-0 text-xs border-l-2">
+            <MarketInfoTable
+              data={{
+                liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+                lowestPrice:
+                  market.data?.midPrice &&
+                  `${addDecimalsFormatNumber(
+                    new BigNumber(1)
+                      .minus(market.lpPriceRange)
+                      .times(market.data.midPrice)
+                      .toString(),
+                    market.decimalPlaces
+                  )} ${quoteUnit}`,
+                highestPrice:
+                  market.data?.midPrice &&
+                  `${addDecimalsFormatNumber(
+                    new BigNumber(1)
+                      .plus(market.lpPriceRange)
+                      .times(market.data.midPrice)
+                      .toString(),
+                    market.decimalPlaces
+                  )} ${quoteUnit}`,
+              }}
+            ></MarketInfoTable>
+          </div>
+        </>
       ),
     },
     {

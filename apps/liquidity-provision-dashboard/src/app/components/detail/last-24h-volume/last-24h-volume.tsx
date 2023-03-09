@@ -1,10 +1,7 @@
 import { useState, useMemo, useRef, useCallback } from 'react';
 import throttle from 'lodash/throttle';
-import {
-  useYesterday,
-  useDataProvider,
-  addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { useYesterday, useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   calcDayVolume,
@@ -42,14 +39,11 @@ export const Last24hVolume = ({
     [marketId, yTimestamp]
   );
 
-  const variables24hAgo = useMemo(
-    () => ({
-      marketId: marketId,
-      interval: Schema.Interval.INTERVAL_I1D,
-      since: yTimestamp,
-    }),
-    [marketId, yTimestamp]
-  );
+  const variables24hAgo = {
+    marketId: marketId,
+    interval: Schema.Interval.INTERVAL_I1D,
+    since: yTimestamp,
+  };
 
   const throttledSetCandles = useRef(
     throttle((data: Candle[]) => {
@@ -67,7 +61,7 @@ export const Last24hVolume = ({
     [throttledSetCandles]
   );
 
-  const { data, error } = useDataProvider<Candle[], Candle>({
+  const { data, error } = useDataProvider({
     dataProvider: marketCandlesProvider,
     variables: variables,
     update,
@@ -91,7 +85,7 @@ export const Last24hVolume = ({
     [throttledSetVolumeChange]
   );
 
-  useDataProvider<Candle[], Candle>({
+  useDataProvider({
     dataProvider: marketCandlesProvider,
     update: updateCandle24hAgo,
     variables: variables24hAgo,

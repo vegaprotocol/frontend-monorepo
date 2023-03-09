@@ -15,7 +15,6 @@ import {
   marketDataQuery,
   marketDepthQuery,
   marketInfoQuery,
-  marketQuery,
   marketsCandlesQuery,
   marketsDataQuery,
   marketsQuery,
@@ -28,8 +27,7 @@ import {
   withdrawalsQuery,
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
-import type { MarketDataQuery, MarketQuery } from '@vegaprotocol/market-list';
-import type { MarketInfoQuery } from '@vegaprotocol/market-info';
+import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/market-list';
 
 type MarketPageMockData = {
   state: Schema.MarketState;
@@ -55,29 +53,18 @@ const marketDataOverride = (
   },
 });
 
-const marketQueryOverride = (
+const marketsDataOverride = (
   data: MarketPageMockData
-): PartialDeep<MarketQuery> => ({
-  market: {
-    tradableInstrument: {
-      instrument: {
-        name: `${data.state?.toUpperCase()} MARKET`,
+): PartialDeep<MarketsQuery> => ({
+  marketsConnection: {
+    edges: [
+      {
+        node: {
+          tradingMode: data.tradingMode,
+          state: data.state,
+        },
       },
-    },
-    state: data.state,
-    tradingMode: data.tradingMode,
-  },
-});
-
-const marketInfoOverride = (
-  data: MarketPageMockData
-): PartialDeep<MarketInfoQuery> => ({
-  market: {
-    state: data.state,
-    tradingMode: data.tradingMode,
-    data: {
-      trigger: data.trigger,
-    },
+    ],
   },
 });
 
@@ -91,10 +78,9 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Statistics', statisticsQuery());
   aliasGQLQuery(
     req,
-    'Market',
-    marketQuery(marketQueryOverride({ state, tradingMode, trigger }))
+    'Markets',
+    marketsQuery(marketsDataOverride({ state, tradingMode, trigger }))
   );
-  aliasGQLQuery(req, 'Markets', marketsQuery());
   aliasGQLQuery(
     req,
     'MarketData',
@@ -110,11 +96,7 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Margins', marginsQuery());
   aliasGQLQuery(req, 'Assets', assetsQuery());
   aliasGQLQuery(req, 'Asset', assetQuery());
-  aliasGQLQuery(
-    req,
-    'MarketInfo',
-    marketInfoQuery(marketInfoOverride({ state, tradingMode, trigger }))
-  );
+  aliasGQLQuery(req, 'MarketInfo', marketInfoQuery());
   aliasGQLQuery(req, 'Trades', tradesQuery());
   aliasGQLQuery(req, 'Chart', chartQuery());
   aliasGQLQuery(req, 'Candles', candlesQuery());

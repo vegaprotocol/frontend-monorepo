@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useBridgeContract } from './use-bridge-contract';
 import BigNumber from 'bignumber.js';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';
 
 /**

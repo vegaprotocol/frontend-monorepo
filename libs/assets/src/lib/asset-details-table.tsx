@@ -1,8 +1,9 @@
-import { useEtherscanLink } from '@vegaprotocol/environment';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { ContractAddressLink } from '@vegaprotocol/environment';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';
 import {
   KeyValueTable,
   KeyValueTableRow,
@@ -105,7 +106,16 @@ export const rows: Rows = [
         return;
       }
 
-      return <ContractAddressLink address={asset.source.contractAddress} />;
+      return (
+        <>
+          <ContractAddressLink address={asset.source.contractAddress} />{' '}
+          <CopyWithTooltip text={asset.source.contractAddress}>
+            <button title={t('Copy address to clipboard')}>
+              <Icon size={3} name="duplicate" />
+            </button>
+          </CopyWithTooltip>
+        </>
+      );
     },
   },
   {
@@ -180,7 +190,7 @@ export const rows: Rows = [
   },
 ];
 
-const AssetStatusMapping: Mapping = {
+export const AssetStatusMapping: Mapping = {
   STATUS_ENABLED: {
     value: t('Enabled'),
     tooltip: t('Asset can be used on the Vega network'),
@@ -199,7 +209,7 @@ const AssetStatusMapping: Mapping = {
   },
 };
 
-const AssetTypeMapping: Mapping = {
+export const AssetTypeMapping: Mapping = {
   BuiltinAsset: {
     value: 'Builtin asset',
     tooltip: t('A Vega builtin asset'),
@@ -264,18 +274,5 @@ export const AssetDetailsTable = ({
           </KeyValueTableRow>
         ))}
     </KeyValueTable>
-  );
-};
-
-// Separate component for the link as otherwise eslint will complain
-// about useEnvironment being used in a component
-// named with a lowercase 'value'
-const ContractAddressLink = ({ address }: { address: string }) => {
-  const etherscanLink = useEtherscanLink();
-  const href = etherscanLink(`/address/${address}`);
-  return (
-    <Link href={href} target="_blank">
-      {address}
-    </Link>
   );
 };

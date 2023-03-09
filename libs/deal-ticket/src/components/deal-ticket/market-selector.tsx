@@ -16,19 +16,18 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import {
-  t,
   useScreenDimensions,
   useOutsideClick,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: MarketDealTicket;
+  market: Market;
   setMarket: (marketId: string) => void;
   ItemRenderer?: React.FC<{
     market: Market;
@@ -56,6 +55,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   const { data, loading, error } = useDataProvider({
     dataProvider: marketsProvider,
+    variables: undefined,
     skipUpdates: true,
   });
 

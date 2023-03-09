@@ -1,5 +1,5 @@
 import { useEthWithdrawApprovalsManager } from './use-ethereum-withdraw-approvals-manager';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
@@ -21,9 +21,11 @@ import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 
 const mockWeb3Provider = jest.fn();
 
+let mockChainId = 111111;
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({
     provider: mockWeb3Provider(),
+    chainId: mockChainId,
   }),
 }));
 
@@ -63,15 +65,16 @@ jest.mock('./use-get-withdraw-delay', () => ({
   useGetWithdrawDelay: () => mockUseGetWithdrawDelay(),
 }));
 
-const mockUseEthereumConfig = jest.fn(() => ({
+const mockUseEthereumConfig = {
   collateral_bridge_contract: {
     address: 'address',
   },
-}));
+  chain_id: '111111',
+};
 
 jest.mock('./use-ethereum-config', () => ({
   useEthereumConfig: () => ({
-    config: mockUseEthereumConfig(),
+    config: mockUseEthereumConfig,
   }),
 }));
 
@@ -123,14 +126,15 @@ mockUseGetWithdrawThreshold.mockReturnValue(() =>
 
 let dateNowSpy: jest.SpyInstance<number, []>;
 
-const erc20WithdrawalApproval = {
-  assetSource: 'asset-source',
-  amount: '100',
-  nonce: '1',
-  creation: '1',
-  signatures: 'signatures',
-  targetAddress: 'target-address',
-};
+const erc20WithdrawalApproval: WithdrawalApprovalQuery['erc20WithdrawalApproval'] =
+  {
+    assetSource: 'asset-source',
+    amount: '100',
+    nonce: '1',
+    creation: '1',
+    signatures: 'signatures',
+    targetAddress: 'target-address',
+  };
 
 const mockedNetworkParams: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -299,5 +303,40 @@ describe('useEthWithdrawApprovalsManager', () => {
       erc20WithdrawalApproval.nonce,
       erc20WithdrawalApproval.signatures,
     ]);
+  });
+
+  it('detect wrong chainId', () => {
+    mockChainId = 1;
+    const transaction = createWithdrawTransaction();
+    mockEthTransactionStoreState.mockReturnValue({ create });
+    mockEthWithdrawApprovalsStoreState.mockReturnValue({
+      transactions: [transaction],
+      update,
+    });
+    render();
+    expect(update.mock.calls[0][1].status).toEqual(ApprovalStatus.Error);
+    expect(update.mock.calls[0][1].message).toEqual(
+      'You are on the wrong network'
+    );
+    mockChainId = 111111;
+  });
+
+  it('catch ethereum errors', async () => {
+    const transaction = createWithdrawTransaction();
+    mockUseGetWithdrawThreshold.mockReturnValueOnce(() => {
+      throw new Error('call revert exception');
+    });
+
+    mockEthTransactionStoreState.mockReturnValue({ create });
+    mockEthWithdrawApprovalsStoreState.mockReturnValue({
+      transactions: [transaction],
+      update,
+    });
+    render();
+    await waitFor(() => {
+      const lastCall = update.mock.calls.pop();
+      expect(lastCall[1].status).toEqual(ApprovalStatus.Error);
+      expect(lastCall[1].message).toEqual('Something went wrong');
+    });
   });
 });

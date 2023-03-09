@@ -1,6 +1,6 @@
 import { Loader, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../../components/route-title';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useExplorerOracleSpecsQuery } from '../__generated__/Oracles';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import { OracleDetails } from '../components/oracle';

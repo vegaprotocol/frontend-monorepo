@@ -1,5 +1,5 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
+import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { marketsDataQuery } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 
@@ -25,12 +25,38 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
       totalWeight: '',
     },
   },
+  requiredMajority: '',
+  party: {
+    __typename: 'Party',
+    id: '',
+  },
+  rationale: {
+    __typename: 'ProposalRationale',
+    description: '',
+    title: '',
+  },
+  requiredParticipation: '',
+  errorDetails: '',
+  rejectionReason: null,
+  requiredLpMajority: '',
+  requiredLpParticipation: '',
   terms: {
     __typename: 'ProposalTerms',
     closingDatetime: '',
     enactmentDatetime: undefined,
     change: {
       __typename: 'NewMarket',
+      decimalPlaces: 1,
+      lpPriceRange: '',
+      riskParameters: {
+        __typename: 'SimpleRiskModel',
+        params: {
+          __typename: 'SimpleRiskModelParams',
+          factorLong: 0,
+          factorShort: 1,
+        },
+      },
+      metadata: [],
       instrument: {
         __typename: 'InstrumentConfiguration',
         code: code,
@@ -42,6 +68,34 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
             id: 'A',
             name: 'A',
             symbol: 'A',
+            decimals: 1,
+            quantum: '',
+          },
+          quoteName: '',
+          dataSourceSpecBinding: {
+            __typename: 'DataSourceSpecToFutureBinding',
+            settlementDataProperty: '',
+            tradingTerminationProperty: '',
+          },
+          dataSourceSpecForSettlementData: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionInternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfigurationTime',
+                conditions: [],
+              },
+            },
+          },
+          dataSourceSpecForTradingTermination: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionInternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfigurationTime',
+                conditions: [],
+              },
+            },
           },
         },
       },
@@ -59,11 +113,9 @@ describe('home', { tags: '@regression' }, () => {
   describe('default market found', () => {
     it('redirects to a default market with the landing dialog open', () => {
       cy.visit('/');
-      cy.wait('@Market');
+      cy.wait('@Markets');
 
-      cy.get('main', { timeout: 20000 }).then((el) => {
-        expect(el.attr('data-testid')?.startsWith('/market')).to.equal(true);
-      }); // Wait for page to be rendered to before checking url
+      cy.get('main[data-testid^="/markets/"]');
 
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
@@ -101,7 +153,7 @@ describe('home', { tags: '@regression' }, () => {
       // the choose market overlay is no longer showing
       cy.contains('Select a market to get started').should('not.exist');
       cy.contains('Loading...').should('not.exist');
-      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-0');
+      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-1');
     });
   });
 
@@ -125,7 +177,7 @@ describe('home', { tags: '@regression' }, () => {
         aliasGQLQuery(req, 'MarketsData', data);
       });
       cy.visit('/');
-      cy.wait('@Market');
+      cy.wait('@Markets');
       cy.getByTestId(selectMarketOverlay)
         .get('table')
         .invoke('outerWidth')
@@ -233,7 +285,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.window().then((window) => {
         window.localStorage.setItem('marketId', 'market-1');
         cy.visit('/');
-        cy.wait('@Market');
+        cy.wait('@Markets');
         cy.location('hash').should('equal', '#/markets/market-1');
         cy.getByTestId('dialog-content').should('not.exist');
       });
@@ -246,10 +298,24 @@ describe('home', { tags: '@regression' }, () => {
           aliasGQLQuery(req, 'Market', null);
         });
         cy.visit('/');
-        cy.wait('@Market');
+        cy.wait('@Markets');
         cy.location('hash').should('equal', '#/markets/market-not-existing');
         cy.getByTestId('dialog-content').should('not.exist');
       });
+    });
+  });
+
+  describe('footer', () => {
+    it('shows current block height', () => {
+      cy.visit('/');
+      cy.getByTestId('node-health')
+        .children()
+        .first()
+        .should('contain.text', 'Operational')
+        .next()
+        .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+        .next()
+        .should('contain.text', '100'); // all mocked queries have x-block-height header set to 100
     });
   });
 });

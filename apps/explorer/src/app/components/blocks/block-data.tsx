@@ -2,11 +2,11 @@ import React from 'react';
 import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { Routes } from '../../routes/route-names';
 import { Link } from 'react-router-dom';
-import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { TimeAgo } from '../time-ago';
 import { TableWithTbody, TableRow, TableCell } from '../table';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 
 interface BlockProps {
   block: BlockMeta;

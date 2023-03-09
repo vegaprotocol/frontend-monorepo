@@ -1,6 +1,7 @@
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { DepositDialog, useDepositDialog } from '@vegaprotocol/deposits';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
+import { Notification, Intent } from '@vegaprotocol/ui-toolkit';
+import { useDepositDialog } from '@vegaprotocol/deposits';
 
 interface Props {
   margin: string;
@@ -15,29 +16,22 @@ interface Props {
 export const MarginWarning = ({ margin, balance, asset }: Props) => {
   const openDepositDialog = useDepositDialog((state) => state.open);
   return (
-    <>
-      <div
-        className="text-xs text-warning mb-4"
-        data-testid="dealticket-warning-margin"
-      >
-        <p className="mb-2">
-          {t('You may not have enough margin available to open this position.')}{' '}
-          <ButtonLink
-            data-testid="deal-ticket-deposit-dialog-button"
-            onClick={() => openDepositDialog(asset.id)}
-          >
-            {t(`Deposit ${asset.symbol}`)}
-          </ButtonLink>
-        </p>
-        <p>
-          {`${formatNumber(margin, asset.decimals)} ${asset.symbol} ${t(
-            'currently required'
-          )}, ${formatNumber(balance, asset.decimals)} ${asset.symbol} ${t(
-            'available'
-          )}`}
-        </p>
-      </div>
-      <DepositDialog />
-    </>
+    <Notification
+      intent={Intent.Warning}
+      testId="dealticket-warning-margin"
+      message={`You may not have enough margin available to open this position. ${addDecimalsFormatNumber(
+        margin,
+        asset.decimals
+      )} ${asset.symbol} ${t(
+        'is currently required. You have only'
+      )} ${addDecimalsFormatNumber(balance, asset.decimals)} ${
+        asset.symbol
+      } ${t('available.')}`}
+      buttonProps={{
+        text: t(`Deposit ${asset.symbol}`),
+        action: () => openDepositDialog(asset.id),
+        dataTestId: 'deal-ticket-deposit-dialog-button',
+      }}
+    />
   );
 };

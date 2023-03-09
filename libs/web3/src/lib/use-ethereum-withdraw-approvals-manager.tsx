@@ -1,10 +1,11 @@
 import { useApolloClient } from '@apollo/client';
 import BigNumber from 'bignumber.js';
 import { useRef, useEffect } from 'react';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal } from '@vegaprotocol/utils';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
+import { localLoggerFactory } from '@vegaprotocol/utils';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
@@ -28,7 +29,7 @@ export const useEthWithdrawApprovalsManager = () => {
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
   const { query } = useApolloClient();
-  const { provider } = useWeb3React();
+  const { provider, chainId } = useWeb3React();
   const { config } = useEthereumConfig();
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const update = useEthWithdrawApprovalsStore((state) => state.update);
@@ -54,6 +55,13 @@ export const useEthWithdrawApprovalsManager = () => {
         message: t(
           `Invalid asset source: ${withdrawal.asset.source.__typename}`
         ),
+      });
+      return;
+    }
+    if (chainId?.toString() !== config?.chain_id) {
+      update(transaction.id, {
+        status: ApprovalStatus.Error,
+        message: t(`You are on the wrong network`),
       });
       return;
     }
@@ -121,7 +129,16 @@ export const useEthWithdrawApprovalsManager = () => {
           approval.signatures,
         ]
       );
-    })();
+    })().catch((err) => {
+      localLoggerFactory({ application: 'web3' }).error(
+        'create withdrawal transaction',
+        err
+      );
+      update(transaction.id, {
+        status: ApprovalStatus.Error,
+        message: t('Something went wrong'),
+      });
+    });
   }, [
     getThreshold,
     getDelay,
@@ -131,5 +148,6 @@ export const useEthWithdrawApprovalsManager = () => {
     query,
     transaction,
     update,
+    chainId,
   ]);
 };
