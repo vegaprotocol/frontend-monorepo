@@ -31,10 +31,7 @@ export const AccountManager = ({
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const { data, loading, error, reload } = useDataProvider<
-    AccountFields[],
-    never
-  >({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });

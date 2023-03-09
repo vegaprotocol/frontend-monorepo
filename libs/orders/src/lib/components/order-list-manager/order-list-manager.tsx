@@ -9,6 +9,8 @@ import type {
 } from 'ag-grid-community';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
+import type { GridReadyEvent } from 'ag-grid-community';
+
 import { OrderListTable } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
 import { useHasActiveOrder } from '../../order-hooks/use-has-active-order';
@@ -156,6 +158,16 @@ export const OrderListManager = ({
     },
     [create]
   );
+
+  const onGridReady = useCallback(
+    (event: GridReadyEvent) => {
+      event.api.setDatasource({
+        getRows,
+      });
+    },
+    [getRows]
+  );
+
   const cancelAll = useCallback(
     (marketId?: string) => {
       create({
@@ -177,7 +189,7 @@ export const OrderListManager = ({
         <OrderListTable
           ref={gridRef}
           rowModelType="infinite"
-          datasource={{ getRows }}
+          onGridReady={onGridReady}
           onBodyScrollEnd={onBodyScrollEnd}
           onBodyScroll={onBodyScroll}
           onFilterChanged={onFilterChanged}

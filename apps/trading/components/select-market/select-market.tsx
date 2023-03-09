@@ -106,14 +106,13 @@ export const SelectMarketPopover = ({
     loading: marketsLoading,
     reload: marketListReload,
   } = useMarketList();
-  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
   const {
     data: positions,
     loading: positionsLoading,
     reload,
   } = useDataProvider({
     dataProvider: positionsDataProvider,
-    variables,
+    variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
   const onSelectMarket = useCallback(

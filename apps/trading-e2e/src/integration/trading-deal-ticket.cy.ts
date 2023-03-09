@@ -2,7 +2,11 @@ import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { testOrderSubmission } from '../support/order-validation';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import { accountsQuery, estimateOrderQuery } from '@vegaprotocol/mock';
+import {
+  accountsQuery,
+  estimateOrderQuery,
+  amendGeneralAccountBalance,
+} from '@vegaprotocol/mock';
 import { createOrder } from '../support/create-order';
 
 const orderSizeField = 'order-size';
@@ -583,6 +587,10 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
+    const accounts = accountsQuery();
+    cy.mockGQL((req) => {
+      aliasGQLQuery(req, 'Accounts', accounts);
+    });
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
@@ -632,30 +640,10 @@ describe('account validation', { tags: '@regression' }, () => {
     beforeEach(() => {
       cy.setVegaWallet();
       cy.mockTradingPage();
+      const accounts = accountsQuery();
+      amendGeneralAccountBalance(accounts, 'market-0', '0');
       cy.mockGQL((req) => {
-        aliasGQLQuery(
-          req,
-          'Accounts',
-          accountsQuery({
-            party: {
-              accountsConnection: {
-                edges: [
-                  {
-                    node: {
-                      type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-                      balance: '0',
-                      market: null,
-                      asset: {
-                        __typename: 'Asset',
-                        id: 'asset-0',
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          })
-        );
+        aliasGQLQuery(req, 'Accounts', accounts);
       });
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -679,19 +667,13 @@ describe('account validation', { tags: '@regression' }, () => {
     beforeEach(() => {
       cy.setVegaWallet();
       cy.mockTradingPage();
+      const accounts = accountsQuery();
+      amendGeneralAccountBalance(accounts, 'market-0', '100000000');
       cy.mockGQL((req) => {
-        aliasGQLQuery(
-          req,
-          'EstimateOrder',
-          estimateOrderQuery({
-            estimateOrder: {
-              marginLevels: {
-                __typename: 'MarginLevels',
-                initialLevel: '1000000000',
-              },
-            },
-          })
-        );
+        aliasGQLQuery(req, 'Accounts', accounts);
+      });
+      cy.mockGQL((req) => {
+        aliasGQLQuery(req, 'EstimateOrder', estimateOrderQuery());
       });
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -707,7 +689,7 @@ describe('account validation', { tags: '@regression' }, () => {
       );
       cy.getByTestId('dealticket-warning-margin').should(
         'contain.text',
-        '9,999.99 tDAI is currently required. You have only 1,000.00 tDAI available.Deposit tDAI'
+        'You may not have enough margin available to open this position. 2,354.72283 tDAI is currently required. You have only 1,000.01 tDAI available.'
       );
       cy.getByTestId('deal-ticket-deposit-dialog-button').click();
       cy.getByTestId('dialog-content')

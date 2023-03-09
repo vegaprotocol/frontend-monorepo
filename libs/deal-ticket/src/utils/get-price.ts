@@ -1,7 +1,6 @@
-import { removeDecimal } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import { isMarketInAuction } from './is-market-in-auction';
-import type { MarketData, Market } from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/market-list';
 
 /**
  * Get the market price based on market mode (auction or not auction)
@@ -34,7 +33,6 @@ export const getDerivedPrice = (
     type: Schema.OrderType;
     price?: string | undefined;
   },
-  market: Market,
   marketData: MarketData
 ) => {
   // If order type is market we should use either the mark price
@@ -44,7 +42,7 @@ export const getDerivedPrice = (
   // Use the market price if order is a market order
   let price;
   if (order.type === Schema.OrderType.TYPE_LIMIT && order.price) {
-    price = removeDecimal(order.price, market.decimalPlaces);
+    price = order.price;
   } else {
     price = getMarketPrice(marketData);
   }

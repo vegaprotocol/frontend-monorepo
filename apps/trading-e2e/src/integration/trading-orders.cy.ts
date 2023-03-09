@@ -31,7 +31,7 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledTwice;
+      expect(subscriptionMocks.OrdersUpdate).to.be.calledThrice;
     });
     cy.wait('@Markets');
   });
@@ -136,7 +136,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledTwice;
+      expect(subscriptionMocks.OrdersUpdate).to.be.calledThrice;
     });
   });
   const orderId = '1234567890';
@@ -354,7 +354,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledTwice;
+      expect(subscriptionMocks.OrdersUpdate).to.be.calledThrice;
     });
     cy.mockVegaWalletTransaction();
   });
