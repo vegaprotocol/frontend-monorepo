@@ -11,11 +11,7 @@ export const Footer = () => {
   const setNodeSwitcher = useGlobalStore(
     (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
   );
-  // const { blockDiff, datanodeBlockHeight } = useNodeHealth();
-  const { blockDiff, datanodeBlockHeight } = {
-    blockDiff: 0,
-    datanodeBlockHeight: 0,
-  };
+  const { blockDiff, datanodeBlockHeight } = useNodeHealth();
 
   return (
     <footer className="px-4 py-1 text-xs border-t border-default text-vega-light-300 dark:text-vega-dark-300 fixed bottom-0 left-0 border-r bg-white dark:bg-black">

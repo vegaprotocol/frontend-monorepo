@@ -8,7 +8,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
-import { useParams } from 'react-router-dom';
 
 export const AccountsContainer = ({
   pinnedAsset,
