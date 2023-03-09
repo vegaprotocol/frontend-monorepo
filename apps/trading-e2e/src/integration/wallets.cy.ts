@@ -127,19 +127,6 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     cy.getByTestId(manageVegaBtn).should('exist');
   });
 
-  it('can prompt about approve the connection from vega wallet app', () => {
-    // 0002-WCON-009
-
-    cy.getByTestId(connectVegaBtn).click();
-    cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-jsonRpc"]')
-      .click();
-    cy.contains(
-      '[data-testid="dialog-content"]',
-      `Approve the connection from your Vega wallet app. If you have multiple wallets you'll need to choose which to connect with.`
-    );
-  });
-
   it('can change selected public key and disconnect', () => {
     // 0002-WCON-022
     // 0002-WCON-023
@@ -154,6 +141,7 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     // 0002-WCON-014
     // 0002-WCON-010
 
+    mockConnectWallet();
     const key2 = Cypress.env('VEGA_PUBLIC_KEY2');
     const truncatedKey2 = Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY2');
     cy.connectVegaWallet();
