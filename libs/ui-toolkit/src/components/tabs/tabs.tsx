@@ -2,22 +2,48 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useState } from 'react';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 
 interface TabsProps {
   children: ReactElement<TabProps>[];
   active?: string;
+  persistId?: string;
 }
 
-export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
+export const Tabs = ({
+  children,
+  active: activeDefaultId,
+  persistId: persistIdLocalStorageKey,
+}: TabsProps) => {
+  const [activePersistId, setActivePersistId] = useLocalStorage(
+    'active-tab-' + persistIdLocalStorageKey
+  );
   const [activeTab, setActiveTab] = useState<string>(() => {
-    return activeDefaultId ?? children[0].props.id;
+    if (activeDefaultId) {
+      return activeDefaultId;
+    }
+    if (
+      persistIdLocalStorageKey &&
+      activePersistId &&
+      children.some((child) => child.props.id === activePersistId)
+    ) {
+      return activePersistId;
+    }
+    return children[0].props.id;
   });
+
+  const onValueChange = (value: string) => {
+    if (persistIdLocalStorageKey) {
+      setActivePersistId(value);
+    }
+    setActiveTab(value);
+  };
 
   return (
     <TabsPrimitive.Root
       value={activeTab}
       className="h-full grid grid-rows-[min-content_1fr]"
-      onValueChange={(value) => setActiveTab(value)}
+      onValueChange={onValueChange}
     >
       <div className="border-b border-default">
         <TabsPrimitive.List
