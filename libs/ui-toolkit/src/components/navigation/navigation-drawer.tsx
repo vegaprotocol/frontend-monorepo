@@ -63,6 +63,7 @@ export const NavigationDrawerTrigger = forwardRef<
 
   return (
     <button
+      data-testid="button-menu-drawer"
       ref={ref}
       className={classNames(
         'px-2',
@@ -123,7 +124,12 @@ export const NavigationDrawerContent = ({
         )}
         style={style}
       >
-        <div className="flex flex-col gap-2 pr-10 text-lg">{children}</div>
+        <div
+          data-testid="menu-drawer"
+          className="flex flex-col gap-2 pr-10 text-lg"
+        >
+          {children}
+        </div>
       </div>
     </NavigationDrawerContext.Provider>
   );
