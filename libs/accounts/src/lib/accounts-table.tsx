@@ -12,7 +12,10 @@ import type {
 } from '@vegaprotocol/datagrid';
 import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import {
+  AgGridDynamic as AgGrid,
+  CenteredGridCellWrapper,
+} from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
@@ -220,9 +223,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }}
             valueFormatter={({
               data,
-              value,
             }: VegaValueFormatterParams<AccountFields, 'total'>) =>
-              formatValue(data, value)
+              data &&
+              data.asset &&
+              isNumeric(data.total) &&
+              addDecimalsFormatNumber(data.total, data.asset.decimals)
             }
           />
           {
@@ -242,16 +247,18 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     new BigNumber(data.total).isLessThanOrEqualTo(0)
                   ) {
                     return (
-                      <Button
-                        size="xs"
-                        variant="primary"
-                        data-testid="deposit"
-                        onClick={() => {
-                          onClickDeposit && onClickDeposit(data.asset.id);
-                        }}
-                      >
-                        {t('Deposit to trade')}
-                      </Button>
+                      <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
+                        <Button
+                          size="xs"
+                          variant="primary"
+                          data-testid="deposit"
+                          onClick={() => {
+                            onClickDeposit && onClickDeposit(data.asset.id);
+                          }}
+                        >
+                          {t('Deposit to trade')}
+                        </Button>
+                      </CenteredGridCellWrapper>
                     );
                   }
                   return (
