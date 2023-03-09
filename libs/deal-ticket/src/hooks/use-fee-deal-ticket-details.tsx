@@ -12,7 +12,7 @@ import type { Market, MarketData } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
-  EST_MARGIN_TOOLTIP_TEXT,
+  // EST_MARGIN_TOOLTIP_TEXT,
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
@@ -158,12 +158,14 @@ export const getFeeDetailsValues = ({
       ),
       symbol: assetSymbol,
     },
+    /*
     {
       label: t('Initial margin'),
       value: margin && `~${formatValueWithAssetDp(margin)}`,
       symbol: assetSymbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT(assetSymbol),
     },
+    */
     {
       label: t('Margin required'),
       value: `~${formatValueWithAssetDp(

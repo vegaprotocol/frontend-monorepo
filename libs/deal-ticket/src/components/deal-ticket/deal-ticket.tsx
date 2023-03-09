@@ -102,7 +102,10 @@ export const DealTicket = ({
 
   const checkForErrors = useCallback(() => {
     if (!pubKey) {
-      setError('summary', { message: t('No public key selected') });
+      setError('summary', {
+        message: t('No public key selected'),
+        type: SummaryValidationType.NoPubKey,
+      });
       return;
     }
 
@@ -139,6 +142,7 @@ export const DealTicket = ({
 
   useEffect(() => {
     if (
+      (pubKey && errors.summary?.type === SummaryValidationType.NoPubKey) ||
       (!hasNoBalance &&
         errors.summary?.type === SummaryValidationType.NoCollateral) ||
       (marketStateError === true &&
@@ -150,6 +154,7 @@ export const DealTicket = ({
     }
     checkForErrors();
   }, [
+    pubKey,
     hasNoBalance,
     marketStateError,
     marketTradingModeError,
