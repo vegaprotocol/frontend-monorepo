@@ -49,7 +49,10 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <PositionsContainer onMarketClick={onMarketClick} />
+                  <PositionsContainer
+                    onMarketClick={onMarketClick}
+                    noBottomPlaceholder
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
