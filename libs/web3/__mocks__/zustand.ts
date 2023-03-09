@@ -19,3 +19,6 @@ export const create =
 beforeEach(() => {
   act(() => storeResetFns.forEach((resetFn) => resetFn()));
 });
+
+// also export default as web3-react internals import and use zustand as the default import
+export default create;
