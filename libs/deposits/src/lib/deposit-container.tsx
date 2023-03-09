@@ -12,6 +12,7 @@ export const DepositContainer = ({ assetId }: { assetId?: string }) => {
   const { VEGA_ENV } = useEnvironment();
   const { data, loading, error } = useDataProvider({
     dataProvider: enabledAssetsProvider,
+    variables: undefined,
   });
 
   return (

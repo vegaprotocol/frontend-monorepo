@@ -6,6 +6,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 type Data = number;
 type Delta = number;
+type Variables = { partyId: string };
 
 const unsubscribe = jest.fn();
 const reload = jest.fn();
@@ -23,8 +24,8 @@ const updateCallbackPayload: Parameters<UpdateCallback<Data, Delta>>['0'] = {
 };
 
 const dataProvider = jest.fn<
-  ReturnType<Subscribe<Data, Delta>>,
-  Parameters<Subscribe<Data, Delta>>
+  ReturnType<Subscribe<Data, Delta, Variables>>,
+  Parameters<Subscribe<Data, Delta, Variables>>
 >();
 
 dataProvider.mockReturnValue({
@@ -37,10 +38,12 @@ dataProvider.mockReturnValue({
 jest.useFakeTimers();
 
 describe('useDataProvider hook', () => {
-  const render = (initialProps?: useDataProviderParams<Data, Delta>) =>
+  const render = (
+    initialProps?: useDataProviderParams<Data, Delta, Variables>
+  ) =>
     renderHook<
       ReturnType<typeof useDataProvider>,
-      useDataProviderParams<Data, Delta>
+      useDataProviderParams<Data, Delta, Variables>
     >((props) => useDataProvider(props), {
       wrapper: MockedProvider,
       initialProps,
@@ -224,6 +227,7 @@ describe('useThrottledDataProvider hook', () => {
         useThrottledDataProvider(
           {
             dataProvider,
+            variables,
           },
           wait
         ),

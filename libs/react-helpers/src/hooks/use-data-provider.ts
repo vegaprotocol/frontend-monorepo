@@ -9,7 +9,7 @@ import type { Subscribe, Load, UpdateCallback } from '@vegaprotocol/utils';
 export interface useDataProviderParams<
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > {
   dataProvider: Subscribe<Data, Delta, Variables>;
   update?: ({
@@ -30,7 +30,7 @@ export interface useDataProviderParams<
     data: Data | null;
     totalCount?: number;
   }) => boolean;
-  variables?: Variables;
+  variables: Variables;
   skipUpdates?: boolean;
   skip?: boolean;
 }
@@ -45,7 +45,7 @@ export interface useDataProviderParams<
 export const useDataProvider = <
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 >({
   dataProvider,
   update,
@@ -163,8 +163,12 @@ export const useDataProvider = <
   };
 };
 
-export const useThrottledDataProvider = <Data, Delta>(
-  params: Omit<useDataProviderParams<Data, Delta>, 'update'>,
+export const useThrottledDataProvider = <
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+>(
+  params: Omit<useDataProviderParams<Data, Delta, Variables>, 'update'>,
   wait?: number
 ) => {
   const [data, setData] = useState<Data | null>(null);

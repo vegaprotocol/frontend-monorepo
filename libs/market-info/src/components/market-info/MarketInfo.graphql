@@ -1,4 +1,4 @@
-query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
+query MarketInfo($marketId: ID!) {
   market(id: $marketId) {
     id
     decimalPlaces
@@ -32,7 +32,6 @@ query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
         }
       }
     }
-    tradingMode
     fees {
       factors {
         makerFee
@@ -54,47 +53,11 @@ query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
       short
       long
     }
-    data {
-      market {
-        id
-      }
-      markPrice
-      midPrice
-      bestBidVolume
-      bestOfferVolume
-      bestStaticBidVolume
-      bestStaticOfferVolume
-      bestBidPrice
-      bestOfferPrice
-      trigger
-      openInterest
-      suppliedStake
-      openInterest
-      targetStake
-      marketValueProxy
-      priceMonitoringBounds {
-        minValidPrice
-        maxValidPrice
-        trigger {
-          horizonSecs
-          probability
-          auctionExtensionSecs
-        }
-        referencePrice
-      }
-    }
     liquidityMonitoringParameters {
       triggeringRatio
       targetStakeParameters {
         timeWindow
         scalingFactor
-      }
-    }
-    candlesConnection(interval: $interval, since: $since) {
-      edges {
-        node {
-          volume
-        }
       }
     }
     tradableInstrument {
@@ -144,10 +107,12 @@ query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
           }
         }
       }
-    }
-    depth {
-      lastTrade {
-        price
+      marginCalculator {
+        scalingFactors {
+          searchLevel
+          initialMargin
+          collateralRelease
+        }
       }
     }
   }

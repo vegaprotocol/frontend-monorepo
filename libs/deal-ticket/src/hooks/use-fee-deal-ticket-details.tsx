@@ -3,22 +3,24 @@ import {
   addDecimal,
   addDecimalsFormatNumber,
   formatNumber,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
-  EST_MARGIN_TOOLTIP_TEXT,
+  EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
+  MARGIN_ACCOUNT_TOOLTIP_TEXT,
+  MARGIN_DIFF_TOOLTIP_TEXT,
 } from '../constants';
-import { useCalculateSlippage } from './use-calculate-slippage';
-import { useOrderMargin } from './use-order-margin';
-import type { OrderMargin } from './use-order-margin';
+import { useOrderCloseOut } from './use-order-closeout';
+import { useMarketAccountBalance } from '@vegaprotocol/accounts';
 import { getDerivedPrice } from '../utils/get-price';
+import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
+import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
@@ -26,43 +28,39 @@ export const useFeeDealTicketDetails = (
   marketData: MarketData
 ) => {
   const { pubKey } = useVegaWallet();
-  const slippage = useCalculateSlippage({ market, order });
+  const { accountBalance } = useMarketAccountBalance(market.id);
 
-  const derivedPrice = useMemo(() => {
-    return getDerivedPrice(order, market, marketData);
-  }, [order, market, marketData]);
+  const price = useMemo(() => {
+    return getDerivedPrice(order, marketData);
+  }, [order, marketData]);
 
-  // Note this isn't currently used anywhere
-  const slippageAdjustedPrice = useMemo(() => {
-    if (derivedPrice) {
-      if (slippage && parseFloat(slippage) !== 0) {
-        const isLong = order.side === Schema.Side.SIDE_BUY;
-        const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
-          parseFloat(slippage) / 100
-        );
-        return new BigNumber(derivedPrice).multipliedBy(multiplier).toNumber();
-      }
-      return derivedPrice;
-    }
-    return null;
-  }, [derivedPrice, order.side, slippage]);
+  const { data: estMargin } = useEstimateOrderQuery({
+    variables: {
+      marketId: market.id,
+      partyId: pubKey || '',
+      price,
+      size: order.size,
+      side: order.side,
+      timeInForce: order.timeInForce,
+      type: order.type,
+    },
+    skip: !pubKey || !market || !order.size || !price,
+  });
 
-  const estMargin = useOrderMargin({
+  const estCloseOut = useOrderCloseOut({
     order,
     market,
     marketData,
-    partyId: pubKey || '',
-    derivedPrice,
   });
 
   const notionalSize = useMemo(() => {
-    if (derivedPrice && order.size) {
-      return new BigNumber(order.size)
-        .multipliedBy(addDecimal(derivedPrice, market.decimalPlaces))
+    if (price && order.size) {
+      return toBigNum(order.size, market.positionDecimalPlaces)
+        .multipliedBy(addDecimal(price, market.decimalPlaces))
         .toString();
     }
     return null;
-  }, [derivedPrice, order.size, market.decimalPlaces]);
+  }, [price, order.size, market.decimalPlaces, market.positionDecimalPlaces]);
 
   const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
@@ -72,33 +70,40 @@ export const useFeeDealTicketDetails = (
       market,
       assetSymbol,
       notionalSize,
-      estMargin,
-      slippage,
-      slippageAdjustedPrice,
+      accountBalance,
+      estimateOrder: estMargin?.estimateOrder,
+      estCloseOut,
     };
   }, [
     market,
     assetSymbol,
     notionalSize,
+    accountBalance,
     estMargin,
-    slippage,
-    slippageAdjustedPrice,
+    estCloseOut,
   ]);
 };
 
 export interface FeeDetails {
+  balance: string;
   market: Market;
   assetSymbol: string;
   notionalSize: string | null;
-  estMargin: OrderMargin | null;
-  slippage: string | null;
+  estCloseOut: string | null;
+  estimateOrder: EstimateOrderQuery['estimateOrder'] | undefined;
+  margin: string;
+  totalMargin: string;
 }
 
 export const getFeeDetailsValues = ({
+  balance,
   assetSymbol,
-  notionalSize,
-  estMargin,
+  estCloseOut,
+  estimateOrder,
+  margin,
   market,
+  notionalSize,
+  totalMargin,
 }: FeeDetails) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
@@ -116,7 +121,12 @@ export const getFeeDetailsValues = ({
       ? addDecimalsFormatNumber(value, assetDecimals)
       : '-';
   };
-  return [
+  const details: {
+    label: string;
+    value?: string | null;
+    symbol: string;
+    labelDescription: React.ReactNode;
+  }[] = [
     {
       label: t('Notional'),
       value: formatValueWithMarketDp(notionalSize),
@@ -126,8 +136,8 @@ export const getFeeDetailsValues = ({
     {
       label: t('Fees'),
       value:
-        estMargin?.totalFees &&
-        `~${formatValueWithAssetDp(estMargin?.totalFees)}`,
+        estimateOrder?.totalFeeAmount &&
+        `~${formatValueWithAssetDp(estimateOrder?.totalFeeAmount)}`,
       labelDescription: (
         <>
           <span>
@@ -136,7 +146,7 @@ export const getFeeDetailsValues = ({
             )}
           </span>
           <FeesBreakdown
-            fees={estMargin?.fees}
+            fees={estimateOrder?.fee}
             feeFactors={market.fees.factors}
             symbol={assetSymbol}
             decimals={assetDecimals}
@@ -145,12 +155,40 @@ export const getFeeDetailsValues = ({
       ),
       symbol: assetSymbol,
     },
+    /*
     {
-      label: t('Margin'),
-      value:
-        estMargin?.margin && `~${formatValueWithAssetDp(estMargin?.margin)}`,
+      label: t('Initial margin'),
+      value: margin && `~${formatValueWithAssetDp(margin)}`,
       symbol: assetSymbol,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT(assetSymbol),
     },
+    */
+    {
+      label: t('Margin required'),
+      value: `~${formatValueWithAssetDp(
+        balance
+          ? (BigInt(totalMargin) - BigInt(balance)).toString()
+          : totalMargin
+      )}`,
+      symbol: assetSymbol,
+      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
+    },
   ];
+  if (balance) {
+    details.push({
+      label: t('Projected margin'),
+      value: `~${formatValueWithAssetDp(totalMargin)}`,
+      symbol: assetSymbol,
+      labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
+    });
+  }
+  details.push({
+    label: t('Current margin allocation'),
+    value: balance
+      ? `~${formatValueWithAssetDp(balance)}`
+      : `${formatValueWithAssetDp(balance)}`,
+    symbol: assetSymbol,
+    labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
+  });
+  return details;
 };

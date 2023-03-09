@@ -12,6 +12,7 @@ export const Home = () => {
   // should be the oldest market that is currently trading in     us mode(i.e. not in auction).
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithDataProvider,
+    variables: undefined,
   });
   const update = useGlobalStore((store) => store.update);
   const marketId = useGlobalStore((store) => store.marketId);

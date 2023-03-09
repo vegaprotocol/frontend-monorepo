@@ -29,12 +29,16 @@ export const encodeTransaction = (tx: Transaction): string => {
   );
 };
 
-export const normalizeOrderSubmission = <T extends Exact<OrderSubmission, T>>(
-  order: T,
+export const normalizeOrderSubmission = (
+  order: OrderSubmission,
   decimalPlaces: number,
   positionDecimalPlaces: number
 ): OrderSubmission => ({
-  ...order,
+  marketId: order.marketId,
+  reference: order.reference,
+  type: order.type,
+  side: order.side,
+  timeInForce: order.timeInForce,
   price:
     order.type === OrderType.TYPE_LIMIT && order.price
       ? removeDecimal(order.price, decimalPlaces)

@@ -13,13 +13,14 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const { data, error, loading, reload } = useDataProvider({
     dataProvider,
     skipUpdates: true,
+    variables: undefined,
   });
-
   return (
     <div className="h-full relative">
       <MarketListTable
         rowData={error ? [] : data}
-        noRowsOverlayComponent={() => null}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
         onRowClicked={(rowEvent: RowClickedEvent) => {
           const { data, event } = rowEvent;
           // filters out clicks on the symbol column because it should display asset details

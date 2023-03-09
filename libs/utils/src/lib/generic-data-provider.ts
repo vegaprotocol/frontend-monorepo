@@ -53,12 +53,12 @@ export interface PageInfo {
 export interface Subscribe<
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > {
   (
     callback: UpdateCallback<Data, Delta>,
     client: ApolloClient<object>,
-    variables?: Variables
+    variables: Variables
   ): {
     unsubscribe: () => void;
     reload: Reload;
@@ -73,14 +73,9 @@ export type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 export interface Update<
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > {
-  (
-    data: Data | null,
-    delta: Delta,
-    reload: Reload,
-    variables?: Variables
-  ): Data;
+  (data: Data | null, delta: Delta, reload: Reload, variables: Variables): Data;
 }
 
 export interface Append<Data> {
@@ -165,7 +160,7 @@ interface DataProviderParams<
   Data,
   SubscriptionData,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > {
   query: Query<QueryData>;
   subscriptionQuery?: Query<SubscriptionData>;
@@ -200,7 +195,7 @@ function makeDataProviderInternal<
   Data,
   SubscriptionData,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 >({
   query,
   subscriptionQuery,
@@ -225,7 +220,7 @@ function makeDataProviderInternal<
   const updateQueue: Delta[] = [];
 
   let resetTimer: ReturnType<typeof setTimeout>;
-  let variables: Variables | undefined;
+  let variables: Variables;
   let data: Data | null = null;
   let error: Error | undefined;
   let loading = true;
@@ -492,7 +487,9 @@ function makeDataProviderInternal<
     callbacks.push(callback);
     if (callbacks.length === 1) {
       client = c;
-      variables = v;
+      if (v) {
+        variables = v;
+      }
       initialize();
     } else {
       notify(callback);
@@ -515,7 +512,7 @@ function makeDataProviderInternal<
 const memoize = <
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 >(
   fn: () => Subscribe<Data, Delta, Variables>
 ) => {
@@ -563,7 +560,7 @@ export function makeDataProvider<
   Data,
   SubscriptionData,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 >(
   params: DataProviderParams<
     QueryData,
@@ -585,27 +582,27 @@ export function makeDataProvider<
  * This effects in parts in combine function has any[] type
  */
 type DependencySubscribe<
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > = Subscribe<any, any, Variables>; // eslint-disable-line @typescript-eslint/no-explicit-any
 type DependencyUpdateCallback<
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > = Parameters<DependencySubscribe<Variables>>['0'];
 export type DerivedPart<
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > = Parameters<DependencyUpdateCallback<Variables>>['0'];
 export type CombineDerivedData<
   Data,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > = (
   data: DerivedPart<Variables>['data'][],
-  variables: Variables | undefined,
+  variables: Variables,
   prevData: Data | null
 ) => Data | null;
 
 export type CombineDerivedDelta<
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > = (
   data: Data,
   parts: DerivedPart<Variables>[],
@@ -615,7 +612,7 @@ export type CombineDerivedDelta<
 
 export type CombineInsertionData<
   Data,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 > = (
   data: Data,
   parts: DerivedPart<Variables>[],
@@ -625,7 +622,7 @@ export type CombineInsertionData<
 function makeDerivedDataProviderInternal<
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 >(
   dependencies: DependencySubscribe<Variables>[],
   combineData: CombineDerivedData<Data, Variables>,
@@ -635,7 +632,7 @@ function makeDerivedDataProviderInternal<
   let subscriptions: ReturnType<DependencySubscribe>[] | undefined;
   let client: ApolloClient<object>;
   const callbacks: UpdateCallback<Data, Delta>[] = [];
-  let variables: Variables | undefined;
+  let variables: Variables;
   const parts: DerivedPart<Variables>[] = [];
   let data: Data | null = null;
   let error: Error | undefined;
@@ -756,7 +753,9 @@ function makeDerivedDataProviderInternal<
     callbacks.push(callback);
     if (callbacks.length === 1) {
       client = c;
-      variables = v;
+      if (v) {
+        variables = v;
+      }
       initialize();
     } else {
       notify(callback);
@@ -777,7 +776,7 @@ function makeDerivedDataProviderInternal<
 export function makeDerivedDataProvider<
   Data,
   Delta,
-  Variables extends OperationVariables = OperationVariables
+  Variables extends OperationVariables | undefined = undefined
 >(
   dependencies: DependencySubscribe<Variables>[],
   combineData: CombineDerivedData<Data, Variables>,
