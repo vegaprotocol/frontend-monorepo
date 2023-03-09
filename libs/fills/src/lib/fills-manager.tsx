@@ -39,8 +39,6 @@ export const FillsManager = ({
   const checkBottomPlaceholder = useCallback(() => {
     const rowCont = gridRef.current?.api?.getModel().getRowCount() ?? 0;
     const lastRowIndex = gridRef.current?.api?.getLastDisplayedRow();
-    console.log('rowCont', rowCont);
-    console.log('lastRowIndex', lastRowIndex);
     if (lastRowIndex && rowCont - 1 === lastRowIndex) {
       const lastrow = gridRef.current?.api.getDisplayedRowAtIndex(lastRowIndex);
       lastrow?.setRowHeight(50);
@@ -60,9 +58,9 @@ export const FillsManager = ({
     [addNewRows, checkBottomPlaceholder]
   );
 
-  const onBodyScroll = (event: BodyScrollEvent) => {
+  const onBodyScroll = useCallback((event: BodyScrollEvent) => {
     scrolledToTop.current = event.top <= 0;
-  };
+  }, []);
 
   const { isFullWidthRow, fullWidthCellRenderer, rowClassRules } =
     useBottomPlaceholder<Trade>({

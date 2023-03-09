@@ -25,7 +25,6 @@ export const useFillsList = ({
   const placeholderAdded = useRef(-1);
 
   const makeBottomPlaceholders = useCallback((trade?: Trade) => {
-    console.log('trade', trade);
     if (!trade) {
       if (placeholderAdded.current >= 0) {
         dataRef.current?.splice(placeholderAdded.current, 1);

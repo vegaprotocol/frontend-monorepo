@@ -54,6 +54,7 @@ export const PositionsManager = ({
         ],
       },
     });
+
   const setId = useCallback((data: Position) => {
     return {
       ...data,
@@ -64,6 +65,7 @@ export const PositionsManager = ({
     gridRef,
     setId,
   });
+
   return (
     <div className="h-full relative">
       <PositionsTable
