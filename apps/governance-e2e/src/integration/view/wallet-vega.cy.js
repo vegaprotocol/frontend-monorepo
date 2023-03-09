@@ -36,8 +36,13 @@ context(
       cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
     });
 
-    describe('with wallets disconnected', () => {
-      it('should have required elements visible', function () {
+    describe('with wallets disconnected', function () {
+      before('wait for widget to load', function () {
+        // FIXME: Timeout madness
+        cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
+      });
+
+      it('should have VEGA WALLET header visible', function () {
         cy.get(walletContainer).within(() => {
           cy.get(walletHeader)
             .should('be.visible')
@@ -53,9 +58,10 @@ context(
       });
     });
 
-    describe('when connect button clicked', () => {
-      before('click connect vega wallet button', () => {
-        cy.get(walletContainer).within(() => {
+    describe('when connect button clicked', function () {
+      before('click connect vega wallet button', function () {
+        // FIXME: Timeout madness
+        cy.get(walletContainer, { timeout: 60000 }).within(() => {
           cy.get(connectButton).click();
         });
       });
