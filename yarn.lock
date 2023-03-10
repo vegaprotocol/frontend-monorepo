@@ -8010,13 +8010,13 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.17.1, allotment@^1.17.1:
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.17.1.tgz#1a87fe911e520e6028df3740d9ba397c48f8e8d7"
-  integrity sha512-3/blHxKZfP441IZRwoOJaaNfDOx9XtvQQaeRYYrn7xjQWF7ZhYZCfR7oNxudwx2ga21tIskvfytbZF2P/ydE3A==
+allotment@1.18.1:
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.18.1.tgz#a31b0cb5b301309334dfa352c7704361437058de"
+  integrity sha512-ZhmpHoSvxHyPT5XjzTHeCBjzCMIFn1aGdNAzBCZhj1CcRMp31CaJCi+lfweoOLDbbjJqbFZqUk3xf+p7Mb0x5A==
   dependencies:
     classnames "^2.3.0"
-    eventemitter3 "^4.0.0"
+    eventemitter3 "^5.0.0"
     lodash.clamp "^4.0.0"
     lodash.debounce "^4.0.0"
     lodash.isequal "^4.5.0"
@@ -9818,6 +9818,11 @@ chownr@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
+
+chroma-js@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-2.4.2.tgz#dffc214ed0c11fa8eefca2c36651d8e57cbfb2b0"
+  integrity sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==
 
 chrome-trace-event@^1.0.2:
   version "1.0.3"
@@ -18288,10 +18293,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennant@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.6.0.tgz#9c7d873527defba689439a18f2ff2f9aa5ababea"
-  integrity sha512-0eWZmFNaWMCYHj9C/+KgwFy8sf/dEkR2TilYrkoRgOVgziDFakojHSiNIwFrqYZFXH1HincYwS7PjKFtQkvrRA==
+pennant@1.8.0-alpha.2:
+  version "1.8.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.8.0-alpha.2.tgz#dc916753a54cb847db09221a4f55a08610a6908a"
+  integrity sha512-IAonrvsl/zlMXRrhuIH9bLGZoywE/4YcOLzMTXmVBUiO5u512Ctj9ARcwgGWn931br/wFQecwrQDilU28L6rAQ==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
@@ -18312,7 +18317,8 @@ pennant@1.6.0:
     "@types/react" "^18.0.14"
     "@types/react-dom" "^18.0.5"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.17.1"
+    allotment "1.18.1"
+    chroma-js "^2.4.2"
     classnames "^2.2.6"
     d3-array "2.8.0"
     d3-axis "^3.0.0"
@@ -18333,7 +18339,6 @@ pennant@1.6.0:
     lodash "^4.17.20"
     react-virtualized-auto-sizer "^1.0.4"
     sass "^1.49.9"
-    typescript "^4.1.2"
     use-resize-observer "^9.0.0"
 
 performance-now@^2.1.0:
@@ -22109,11 +22114,6 @@ typescript@4.7.4:
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
-
-typescript@^4.1.2:
-  version "4.9.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.4.tgz#a2a3d2756c079abda241d75f149df9d561091e78"
-  integrity sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==
 
 typescript@^4.4.3:
   version "4.8.4"
