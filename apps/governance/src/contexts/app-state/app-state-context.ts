@@ -37,9 +37,6 @@ export interface AppState {
   /** Whether or not the connect to Ethereum wallet overlay is open */
   ethConnectOverlay: boolean;
 
-  /** Whether or not the mobile drawer is open. Only relevant on screens smaller than 960 */
-  drawerOpen: boolean;
-
   /**  Whether or not the transaction modal is open */
   transactionOverlay: boolean;
   /**

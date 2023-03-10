@@ -1,4 +1,3 @@
-const connectButton = '[data-testid="connect-to-eth-btn"]';
 const lockedTokensInVestingContract = '6,499,972.30';
 
 context(
@@ -6,24 +5,7 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to vesting page', function () {
-      cy.visit('/').navigate_to('vesting');
-    });
-
-    describe('with wallets disconnected', function () {
-      it('should have vesting tab highlighted', function () {
-        cy.verify_tab_highlighted('token');
-      });
-
-      it('should have VESTING header visible', function () {
-        cy.verify_page_header('Vesting');
-      });
-
-      // 1005-VEST-018
-      it('should have connect Eth wallet button', function () {
-        cy.get(connectButton)
-          .should('be.visible')
-          .and('have.text', 'Connect Ethereum wallet');
-      });
+      cy.visit('/token/redeem');
     });
 
     describe('With Eth wallet connected', function () {
@@ -38,15 +20,18 @@ context(
           cy.getByTestId('currency-title')
             .should('contain.text', 'VEGA')
             .and('contain.text', 'In vesting contract');
-          cy.getByTestId('currency-value').should(
+          cy.get('[data-testid="currency-value"]:visible').should(
             'have.text',
             lockedTokensInVestingContract
           );
-          cy.getByTestId('currency-locked').should(
+          cy.get('[data-testid="currency-locked"]:visible').should(
             'have.text',
             lockedTokensInVestingContract
           );
-          cy.getByTestId('currency-unlocked').should('have.text', '0.00');
+          cy.get('[data-testid="currency-unlocked"]:visible').should(
+            'have.text',
+            '0.00'
+          );
         });
       });
       // 1005-VEST-022 1005-VEST-023
