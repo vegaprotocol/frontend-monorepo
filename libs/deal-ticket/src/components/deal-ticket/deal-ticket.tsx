@@ -58,10 +58,12 @@ export const DealTicket = ({
   const { pubKey, isReadOnly } = useVegaWallet();
   // store last used tif for market so that when changing OrderType the previous TIF
   // selection for that type is used when switching back
+
   const [lastTIF, setLastTIF] = useState({
     [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
     [OrderType.TYPE_LIMIT]: OrderTimeInForce.TIME_IN_FORCE_GTC,
   });
+
   const {
     control,
     errors,
@@ -71,20 +73,20 @@ export const DealTicket = ({
     update,
     handleSubmit,
   } = useOrderForm(market.id);
+
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
+
   const { accountBalance: marginAccountBalance } = useMarketAccountBalance(
     market.id
   );
+
   const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
+
   const balance = (
     BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
   ).toString();
 
-  const marketStateError = validateMarketState(marketData.marketState);
-  const hasNoBalance = BigInt(generalAccountBalance) === BigInt('0');
-  const marketTradingModeError = validateMarketTradingMode(
-    marketData.marketTradingMode
-  );
+  const { marketState, marketTradingMode } = marketData;
 
   const normalizedOrder =
     order &&
@@ -94,13 +96,9 @@ export const DealTicket = ({
       market.positionDecimalPlaces
     );
 
-  const { margin, totalMargin } = useInitialMargin(
-    market.id,
-    normalizedOrder?.size,
-    order?.side
-  );
+  const { margin, totalMargin } = useInitialMargin(market.id, normalizedOrder);
 
-  const checkForErrors = useCallback(() => {
+  useEffect(() => {
     if (!pubKey) {
       setError('summary', {
         message: t('No public key selected'),
@@ -109,6 +107,7 @@ export const DealTicket = ({
       return;
     }
 
+    const marketStateError = validateMarketState(marketState);
     if (marketStateError !== true) {
       setError('summary', {
         message: marketStateError,
@@ -117,6 +116,7 @@ export const DealTicket = ({
       return;
     }
 
+    const hasNoBalance = generalAccountBalance === '0';
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
@@ -125,6 +125,7 @@ export const DealTicket = ({
       return;
     }
 
+    const marketTradingModeError = validateMarketTradingMode(marketTradingMode);
     if (marketTradingModeError !== true) {
       setError('summary', {
         message: marketTradingModeError,
@@ -132,41 +133,19 @@ export const DealTicket = ({
       });
       return;
     }
+    clearErrors('summary');
   }, [
-    hasNoBalance,
-    marketStateError,
-    marketTradingModeError,
+    marketState,
+    marketTradingMode,
+    generalAccountBalance,
     pubKey,
     setError,
-  ]);
-
-  useEffect(() => {
-    if (
-      (pubKey && errors.summary?.type === SummaryValidationType.NoPubKey) ||
-      (!hasNoBalance &&
-        errors.summary?.type === SummaryValidationType.NoCollateral) ||
-      (marketStateError === true &&
-        errors.summary?.type === SummaryValidationType.MarketState) ||
-      (marketTradingModeError === true &&
-        errors.summary?.type === SummaryValidationType.TradingMode)
-    ) {
-      clearErrors('summary');
-    }
-    checkForErrors();
-  }, [
-    pubKey,
-    hasNoBalance,
-    marketStateError,
-    marketTradingModeError,
     clearErrors,
-    errors.summary?.message,
-    errors.summary?.type,
-    checkForErrors,
+    errors.summary,
   ]);
 
   const onSubmit = useCallback(
     (order: OrderSubmission) => {
-      checkForErrors();
       submit(
         normalizeOrderSubmission(
           order,
@@ -175,11 +154,11 @@ export const DealTicket = ({
         )
       );
     },
-    [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
+    [submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
   // if an order doesn't exist one will be created by the store immediately
-  if (!order) return null;
+  if (!order || !normalizedOrder) return null;
 
   return (
     <form
@@ -297,11 +276,7 @@ export const DealTicket = ({
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <DealTicketFeeDetails
-        order={normalizeOrderSubmission(
-          order,
-          market.decimalPlaces,
-          market.positionDecimalPlaces
-        )}
+        order={normalizedOrder}
         market={market}
         marketData={marketData}
         margin={margin}
