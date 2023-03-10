@@ -7,41 +7,27 @@ export type UserVoteQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
-export type UserVoteQuery = {
-  __typename?: 'Query';
-  party?: {
-    __typename?: 'Party';
-    votesConnection?: {
-      __typename?: 'ProposalVoteConnection';
-      edges?: Array<{
-        __typename?: 'ProposalVoteEdge';
-        node: {
-          __typename?: 'ProposalVote';
-          proposalId: string;
-          vote: { __typename?: 'Vote'; value: Types.VoteValue; datetime: any };
-        };
-      }> | null;
-    } | null;
-  } | null;
-};
+
+export type UserVoteQuery = { __typename?: 'Query', party?: { __typename?: 'Party', votesConnection?: { __typename?: 'ProposalVoteConnection', edges?: Array<{ __typename?: 'ProposalVoteEdge', node: { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } } }> | null } | null } | null };
+
 
 export const UserVoteDocument = gql`
-  query UserVote($partyId: ID!) {
-    party(id: $partyId) {
-      votesConnection {
-        edges {
-          node {
-            proposalId
-            vote {
-              value
-              datetime
-            }
+    query UserVote($partyId: ID!) {
+  party(id: $partyId) {
+    votesConnection {
+      edges {
+        node {
+          proposalId
+          vote {
+            value
+            datetime
           }
         }
       }
     }
   }
-`;
+}
+    `;
 
 /**
  * __useUserVoteQuery__
@@ -59,32 +45,14 @@ export const UserVoteDocument = gql`
  *   },
  * });
  */
-export function useUserVoteQuery(
-  baseOptions: Apollo.QueryHookOptions<UserVoteQuery, UserVoteQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<UserVoteQuery, UserVoteQueryVariables>(
-    UserVoteDocument,
-    options
-  );
-}
-export function useUserVoteLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    UserVoteQuery,
-    UserVoteQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<UserVoteQuery, UserVoteQueryVariables>(
-    UserVoteDocument,
-    options
-  );
-}
+export function useUserVoteQuery(baseOptions: Apollo.QueryHookOptions<UserVoteQuery, UserVoteQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserVoteQuery, UserVoteQueryVariables>(UserVoteDocument, options);
+      }
+export function useUserVoteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserVoteQuery, UserVoteQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserVoteQuery, UserVoteQueryVariables>(UserVoteDocument, options);
+        }
 export type UserVoteQueryHookResult = ReturnType<typeof useUserVoteQuery>;
-export type UserVoteLazyQueryHookResult = ReturnType<
-  typeof useUserVoteLazyQuery
->;
-export type UserVoteQueryResult = Apollo.QueryResult<
-  UserVoteQuery,
-  UserVoteQueryVariables
->;
+export type UserVoteLazyQueryHookResult = ReturnType<typeof useUserVoteLazyQuery>;
+export type UserVoteQueryResult = Apollo.QueryResult<UserVoteQuery, UserVoteQueryVariables>;

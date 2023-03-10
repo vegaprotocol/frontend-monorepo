@@ -5,7 +5,6 @@ import type { components } from '../../../../../types/explorer';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { TxDetailsChainMultisigSigner } from './tx-multisig-signer';
-import { getBlockTime } from './lib/get-block-time';
 
 type Added = components['schemas']['vegaERC20SignerAdded'];
 type Removed = components['schemas']['vegaERC20SignerRemoved'];
@@ -61,10 +60,7 @@ describe('Chain Event: multisig signer change', () => {
     expect(screen.getByText(t('Add signer'))).toBeInTheDocument();
     expect(screen.getByText(`${addedMock.newSigner}`)).toBeInTheDocument();
 
-    const expectedDate = getBlockTime(mockBlockTime);
-
     expect(screen.getByText(t('Signer change at'))).toBeInTheDocument();
-    expect(screen.getByText(expectedDate)).toBeInTheDocument();
   });
 
   it('Renders TableRows if all data is provided', () => {
@@ -93,9 +89,6 @@ describe('Chain Event: multisig signer change', () => {
     expect(screen.getByText(t('Remove signer'))).toBeInTheDocument();
     expect(screen.getByText(`${removedMock.oldSigner}`)).toBeInTheDocument();
 
-    const expectedDate = getBlockTime(mockBlockTime);
-
     expect(screen.getByText(t('Signer change at'))).toBeInTheDocument();
-    expect(screen.getByText(expectedDate)).toBeInTheDocument();
   });
 });

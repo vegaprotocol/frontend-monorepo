@@ -7,28 +7,20 @@ export type VoteButtonsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
-export type VoteButtonsQuery = {
-  __typename?: 'Query';
-  party?: {
-    __typename?: 'Party';
-    id: string;
-    stakingSummary: {
-      __typename?: 'StakingSummary';
-      currentStakeAvailable: string;
-    };
-  } | null;
-};
+
+export type VoteButtonsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } | null };
+
 
 export const VoteButtonsDocument = gql`
-  query VoteButtons($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      stakingSummary {
-        currentStakeAvailable
-      }
+    query VoteButtons($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    stakingSummary {
+      currentStakeAvailable
     }
   }
-`;
+}
+    `;
 
 /**
  * __useVoteButtonsQuery__
@@ -46,35 +38,14 @@ export const VoteButtonsDocument = gql`
  *   },
  * });
  */
-export function useVoteButtonsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    VoteButtonsQuery,
-    VoteButtonsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<VoteButtonsQuery, VoteButtonsQueryVariables>(
-    VoteButtonsDocument,
-    options
-  );
-}
-export function useVoteButtonsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    VoteButtonsQuery,
-    VoteButtonsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<VoteButtonsQuery, VoteButtonsQueryVariables>(
-    VoteButtonsDocument,
-    options
-  );
-}
+export function useVoteButtonsQuery(baseOptions: Apollo.QueryHookOptions<VoteButtonsQuery, VoteButtonsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VoteButtonsQuery, VoteButtonsQueryVariables>(VoteButtonsDocument, options);
+      }
+export function useVoteButtonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VoteButtonsQuery, VoteButtonsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VoteButtonsQuery, VoteButtonsQueryVariables>(VoteButtonsDocument, options);
+        }
 export type VoteButtonsQueryHookResult = ReturnType<typeof useVoteButtonsQuery>;
-export type VoteButtonsLazyQueryHookResult = ReturnType<
-  typeof useVoteButtonsLazyQuery
->;
-export type VoteButtonsQueryResult = Apollo.QueryResult<
-  VoteButtonsQuery,
-  VoteButtonsQueryVariables
->;
+export type VoteButtonsLazyQueryHookResult = ReturnType<typeof useVoteButtonsLazyQuery>;
+export type VoteButtonsQueryResult = Apollo.QueryResult<VoteButtonsQuery, VoteButtonsQueryVariables>;
