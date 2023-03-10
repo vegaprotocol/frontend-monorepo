@@ -11,7 +11,7 @@ export interface WithdrawStore {
   update: (state: Partial<WithdrawStore>) => void;
 }
 
-export const useWithdrawStore = create<WithdrawStore>((set) => ({
+export const useWithdrawStore = create<WithdrawStore>()((set) => ({
   asset: undefined,
   balance: new BigNumber(0),
   min: new BigNumber(0),

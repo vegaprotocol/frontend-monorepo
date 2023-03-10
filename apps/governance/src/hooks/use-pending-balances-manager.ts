@@ -9,26 +9,28 @@ export type PendingTxsStore = {
   resetPendingTxs: () => void;
 };
 
-export const usePendingBalancesStore = create<PendingTxsStore>((set, get) => ({
-  pendingBalances: [],
-  addPendingTxs: (event: Event[]) => {
-    set({
-      pendingBalances: uniqBy(
-        [...get().pendingBalances, ...event],
-        'transactionHash'
-      ),
-    });
-  },
-  removePendingTx: (event: Event) => {
-    set({
-      pendingBalances: [
-        ...get().pendingBalances.filter(
-          ({ transactionHash }) => transactionHash !== event.transactionHash
+export const usePendingBalancesStore = create<PendingTxsStore>()(
+  (set, get) => ({
+    pendingBalances: [],
+    addPendingTxs: (event: Event[]) => {
+      set({
+        pendingBalances: uniqBy(
+          [...get().pendingBalances, ...event],
+          'transactionHash'
         ),
-      ],
-    });
-  },
-  resetPendingTxs: () => {
-    set({ pendingBalances: [] });
-  },
-}));
+      });
+    },
+    removePendingTx: (event: Event) => {
+      set({
+        pendingBalances: [
+          ...get().pendingBalances.filter(
+            ({ transactionHash }) => transactionHash !== event.transactionHash
+          ),
+        ],
+      });
+    },
+    resetPendingTxs: () => {
+      set({ pendingBalances: [] });
+    },
+  })
+);

@@ -20,7 +20,7 @@ export type AssetDetailsDialogStore = {
   open: (id: string, trigger?: HTMLElement | null, asJson?: boolean) => void;
 };
 
-export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
+export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>()(
   (set) => ({
     isOpen: false,
     id: '',
