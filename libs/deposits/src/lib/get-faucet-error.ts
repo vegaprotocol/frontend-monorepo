@@ -10,7 +10,7 @@ export const getFaucetError = (error: TxError | null, symbol: string) => {
       symbol
     ),
     'must wait faucetCallLimit between faucet calls': t(
-      'You have exceeded the maximum number of faucet attempts'
+      'You have exceeded the maximum number of faucet attempts allowed'
     ),
     'user rejected transaction': t(
       'The faucet transaction was rejected by the connected Ethereum wallet'
