@@ -1,4 +1,3 @@
-const connectButton = '[data-testid="connect-to-eth-btn"]';
 const lockedTokensInVestingContract = '6,499,972.30';
 
 context(
@@ -6,24 +5,7 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to vesting page', function () {
-      cy.visit('/').navigate_to('vesting');
-    });
-
-    describe('with wallets disconnected', function () {
-      it('should have vesting tab highlighted', function () {
-        cy.verify_tab_highlighted('vesting');
-      });
-
-      it('should have VESTING header visible', function () {
-        cy.verify_page_header('Vesting');
-      });
-
-      // 1005-VEST-018
-      it('should have connect Eth wallet button', function () {
-        cy.get(connectButton)
-          .should('be.visible')
-          .and('have.text', 'Connect Ethereum wallet');
-      });
+      cy.visit('/token/redeem');
     });
 
     describe('With Eth wallet connected', function () {

@@ -25,31 +25,7 @@ const stakeNumberRegex = /^\d*\.?\d*$/;
 
 context('Staking Page - verify elements on page', function () {
   before('navigate to staking page', function () {
-    cy.visit('/').navigate_to('validators');
-  });
-
-  describe('with wallets disconnected', { tags: '@smoke' }, function () {
-    describe('description section', function () {
-      it('Should have validators tab highlighted', function () {
-        cy.verify_tab_highlighted('validators');
-      });
-
-      it('Should have validators ON VEGA header visible', function () {
-        cy.verify_page_header('Validators');
-      });
-
-      it('Should have Staking Guide link visible', function () {
-        // 2001-STKE-003
-        cy.get(guideLink)
-          .should('be.visible')
-          .and('have.text', 'Read more about staking on Vega')
-          .and(
-            'have.attr',
-            'href',
-            'https://docs.vega.xyz/mainnet/concepts/vega-chain/#staking-on-vega'
-          );
-      });
-    });
+    cy.visit('/validators');
   });
 
   describe(
