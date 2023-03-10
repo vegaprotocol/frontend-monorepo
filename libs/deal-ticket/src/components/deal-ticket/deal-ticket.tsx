@@ -41,6 +41,7 @@ import {
 
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
+import BigNumber from 'bignumber.js';
 
 export interface DealTicketProps {
   market: Market;
@@ -116,7 +117,8 @@ export const DealTicket = ({
       return;
     }
 
-    const hasNoBalance = BigInt(generalAccountBalance) === BigInt('0');
+    const hasNoBalance = new BigNumber(generalAccountBalance || 0).isEqualTo(0);
+    console.log({ generalAccountBalance });
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
