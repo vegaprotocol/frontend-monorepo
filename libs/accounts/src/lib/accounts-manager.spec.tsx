@@ -15,51 +15,29 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
 }));
 
 describe('AccountManager', () => {
-  beforeEach(() => {
-    mockedUseDataProvider
-      .mockImplementationOnce((args) => {
-        return {
-          data: [],
-        };
-      })
-      .mockImplementationOnce((args) => {
-        return {
-          data: [
-            { asset: { id: 'a1' }, party: { id: 't1' } },
-            { asset: { id: 'a2' }, party: { id: 't2' } },
-          ],
-        };
-      });
-  });
-
-  it('change partyId should reload data provider', async () => {
-    const { rerender } = render(
-      <AccountManager
-        partyId="partyOne"
-        onClickAsset={jest.fn}
-        isReadOnly={false}
-      />
-    );
-    expect(
-      (helpers.useDataProvider as jest.Mock).mock.calls[0][0].variables.partyId
-    ).toEqual('partyOne');
-    await act(() => {
-      rerender(
-        <AccountManager
-          partyId="partyTwo"
-          onClickAsset={jest.fn}
-          isReadOnly={false}
-        />
-      );
+  describe('when rerender', () => {
+    beforeEach(() => {
+      mockedUseDataProvider
+        .mockImplementationOnce((args) => {
+          return {
+            data: [],
+          };
+        })
+        .mockImplementationOnce((args) => {
+          return {
+            data: [
+              { asset: { id: 'a1' }, party: { id: 't1' } },
+              { asset: { id: 'a2' }, party: { id: 't2' } },
+            ],
+          };
+        });
     });
-    expect(
-      (helpers.useDataProvider as jest.Mock).mock.calls[1][0].variables.partyId
-    ).toEqual('partyTwo');
-  });
 
-  it('update method should return proper result', async () => {
-    let rerenderer: (ui: React.ReactElement) => void;
-    await act(() => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('change partyId should reload data provider', async () => {
       const { rerender } = render(
         <AccountManager
           partyId="partyOne"
@@ -67,13 +45,67 @@ describe('AccountManager', () => {
           isReadOnly={false}
         />
       );
-      rerenderer = rerender;
+      expect(
+        (helpers.useDataProvider as jest.Mock).mock.calls[0][0].variables
+          .partyId
+      ).toEqual('partyOne');
+      await act(() => {
+        rerender(
+          <AccountManager
+            partyId="partyTwo"
+            onClickAsset={jest.fn}
+            isReadOnly={false}
+          />
+        );
+      });
+      expect(
+        (helpers.useDataProvider as jest.Mock).mock.calls[1][0].variables
+          .partyId
+      ).toEqual('partyTwo');
     });
-    await waitFor(() => {
-      expect(screen.getByText('No accounts')).toBeInTheDocument();
+
+    it('update method should return proper result', async () => {
+      let rerenderer: (ui: React.ReactElement) => void;
+      await act(() => {
+        const { rerender } = render(
+          <AccountManager
+            partyId="partyOne"
+            onClickAsset={jest.fn}
+            isReadOnly={false}
+          />
+        );
+        rerenderer = rerender;
+      });
+      await waitFor(() => {
+        expect(screen.getByText('No accounts')).toBeInTheDocument();
+      });
+      await act(() => {
+        rerenderer(
+          <AccountManager
+            partyId="partyOne"
+            onClickAsset={jest.fn}
+            isReadOnly={false}
+          />
+        );
+      });
+
+      const container = document.querySelector('.ag-center-cols-container');
+      await waitFor(() => {
+        expect(container).toBeInTheDocument();
+      });
+      expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
+    });
+  });
+
+  it('splash loading should be displayed', async () => {
+    mockedUseDataProvider.mockImplementation((args) => {
+      return {
+        loading: true,
+        data: null,
+      };
     });
     await act(() => {
-      rerenderer(
+      render(
         <AccountManager
           partyId="partyOne"
           onClickAsset={jest.fn}
@@ -81,11 +113,15 @@ describe('AccountManager', () => {
         />
       );
     });
-
-    const container = document.querySelector('.ag-center-cols-container');
     await waitFor(() => {
-      expect(container).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          (content, element) =>
+            Boolean(
+              element?.className.endsWith('flex items-center justify-center')
+            ) && content.startsWith('Loading')
+        )
+      ).toBeInTheDocument();
     });
-    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
   });
 });
