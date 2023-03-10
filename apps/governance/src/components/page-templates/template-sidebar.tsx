@@ -27,7 +27,7 @@ export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
           </ExternalLink>
         </div>
       </AnnouncementBanner>
-      <Nav navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
+      <Nav theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
       {isReadOnly ? (
         <ViewingAsBanner pubKey={pubKey} disconnect={disconnect} />
       ) : null}

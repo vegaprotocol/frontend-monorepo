@@ -1,13 +1,16 @@
 import { t } from '@vegaprotocol/i18n';
 
-export const VegaLogo = () => {
+type VegaLogoProps = {
+  className?: string;
+};
+export const VegaLogo = ({ className }: VegaLogoProps) => {
   return (
     <svg
       aria-label={t('Vega logo')}
-      width="111"
-      height="24"
+      className={className || 'h-6'}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 111 24"
     >
       <path
         fill="currentColor"
