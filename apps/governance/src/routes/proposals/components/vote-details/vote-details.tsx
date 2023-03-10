@@ -56,7 +56,7 @@ export const VoteDetails = ({
       {proposalType === ProposalType.PROPOSAL_UPDATE_MARKET && (
         <section>
           <SubHeading title={t('liquidityVotes')} />
-          <p>
+          <p data-testid="liquidity-votes-status">
             <span>
               <CurrentProposalStatus proposal={proposal} />
             </span>
@@ -105,7 +105,7 @@ export const VoteDetails = ({
       )}
       <section data-testid="votes-table">
         <SubHeading title={t('tokenVotes')} />
-        <p>
+        <p data-testid="token-votes-status">
           <span>
             <CurrentProposalStatus proposal={proposal} />
           </span>

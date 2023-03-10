@@ -82,9 +82,10 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'get_submitted_proposal_from_proposal_list',
   (proposalTitle) => {
-    cy.get_proposal_id_from_list(proposalTitle);
-    cy.get('@proposalIdText').then((proposalId) => {
-      return cy.get(`#${proposalId}`);
+    cy.get_proposal_id_from_list(proposalTitle).then(() => {
+      cy.get('@proposalIdText').then((proposalId) => {
+        return cy.get(`#${proposalId}`);
+      });
     });
   }
 );

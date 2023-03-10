@@ -1,9 +1,9 @@
 {
-  "lpPriceRange": "10",
+  "lpPriceRange": "11",
   "instrument": {
-    "code": "TEST.24h",
+    "code": "Token.24h",
     "future": {
-      "quoteName": "fUSDC",
+      "quoteName": "fBTC",
       "dataSourceSpecForSettlementData": {
         "external": {
           "oracle": {
@@ -17,9 +17,8 @@
             "filters": [
               {
                 "key": {
-                  "name": "prices.ETH.value",
-                  "type": "TYPE_INTEGER",
-                  "numberDecimalPlaces": "0"
+                  "name": "prices.BTC.value",
+                  "type": "TYPE_INTEGER"
                 },
                 "conditions": [
                   {
@@ -50,8 +49,8 @@
                 },
                 "conditions": [
                   {
-                    "operator": "OPERATOR_EQUALS",
-                    "value": "true"
+                    "operator": "OPERATOR_GREATER_THAN_OR_EQUAL",
+                    "value": "1648684800000000000"
                   }
                 ]
               }
@@ -60,17 +59,12 @@
         }
       },
       "dataSourceSpecBinding": {
-        "settlementDataProperty": "prices.ETH.value",
+        "settlementDataProperty": "prices.BTC.value",
         "tradingTerminationProperty": "trading.terminated.ETH5"
       }
     }
   },
-  "metadata": [
-    "sector:energy",
-    "sector:food",
-    "source:docs.vega.xyz",
-    "test:update"
-  ],
+  "metadata": ["sector:energy", "sector:food", "source:docs.vega.xyz"],
   "priceMonitoringParameters": {
     "triggers": [
       {
@@ -79,14 +73,6 @@
         "auctionExtension": "600"
       }
     ]
-  },
-  "liquidityMonitoringParameters": {
-    "targetStakeParameters": {
-      "timeWindow": "3600",
-      "scalingFactor": 10
-    },
-    "triggeringRatio": "0.7",
-    "auctionExtension": "1"
   },
   "logNormal": {
     "tau": 0.0001140771161,
