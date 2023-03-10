@@ -8,7 +8,6 @@ import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-  VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
 import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
@@ -227,13 +226,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'The full amount associated with this key. Total of used and available collateral.'
             )}
-            valueGetter={({
-              data,
-            }: VegaValueGetterParams<AccountFields, 'available'>) => {
-              return !data?.available
-                ? undefined
-                : toBigNum(data.available, data.asset.decimals).toNumber();
-            }}
             valueFormatter={({
               data,
             }: VegaValueFormatterParams<AccountFields, 'total'>) =>

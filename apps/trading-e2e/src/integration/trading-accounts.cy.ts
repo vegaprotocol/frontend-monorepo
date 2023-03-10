@@ -1,4 +1,4 @@
-import { checkSorting, checkSortingContain } from '@vegaprotocol/cypress';
+import { checkSorting } from '@vegaprotocol/cypress';
 
 beforeEach(() => {
   cy.mockTradingPage();
@@ -38,8 +38,9 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="total"]')
-      .should('have.text', '1,001.00');
+      .should('have.text', '100,001.01');
   });
+
   describe('sorting by ag-grid columns should work well', () => {
     it('sorting by asset', () => {
       cy.getByTestId('Collateral').click();
@@ -87,10 +88,28 @@ describe('accounts', { tags: '@smoke' }, () => {
 
     it('sorting by used', () => {
       cy.getByTestId('Collateral').click();
-      const marketsSortedDefault = ['0.00', '1.00', '0.01', '0.01', '0.00'];
-      const marketsSortedAsc = ['0.00', '0.00', '0.01', '0.01', '1.00'];
-      const marketsSortedDesc = ['1.00', '0.01', '0.01', '0.00', '0.00'];
-      checkSortingContain(
+      const marketsSortedDefault = [
+        '0.000.00%',
+        '1.010.00%',
+        '0.010.00%',
+        '0.000.00%',
+        '0.000.00%',
+      ];
+      const marketsSortedAsc = [
+        '0.000.00%',
+        '0.000.00%',
+        '0.000.00%',
+        '0.010.00%',
+        '1.010.00%',
+      ];
+      const marketsSortedDesc = [
+        '1.010.00%',
+        '0.010.00%',
+        '0.000.00%',
+        '0.000.00%',
+        '0.000.00%',
+      ];
+      checkSorting(
         'used',
         marketsSortedDefault,
         marketsSortedAsc,
@@ -98,32 +117,32 @@ describe('accounts', { tags: '@smoke' }, () => {
       );
     });
 
-    it('sorting by available', () => {
+    it('sorting by total', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
         '1,000.00002',
-        '100,000.00',
-        '1,000.00',
+        '100,001.01',
+        '1,000.01',
         '1,000.00',
         '1,000.00001',
       ];
       const marketsSortedAsc = [
         '1,000.00',
-        '1,000.00',
         '1,000.00001',
         '1,000.00002',
-        '100,000.00',
+        '1,000.01',
+        '100,001.01',
       ];
       const marketsSortedDesc = [
-        '100,000.00',
+        '100,001.01',
+        '1,000.01',
         '1,000.00002',
         '1,000.00001',
-        '1,000.00',
         '1,000.00',
       ];
 
       checkSorting(
-        'available',
+        'total',
         marketsSortedDefault,
         marketsSortedAsc,
         marketsSortedDesc
