@@ -1,6 +1,6 @@
 import { truncateByChars } from '@vegaprotocol/utils';
 
-const walletContainer = '[data-testid="vega-wallet"]:visible';
+const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = '[data-testid="connect-vega-wallet"]';
 const getVegaLink = '[data-testid="link"]';
@@ -36,13 +36,8 @@ context(
       cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
     });
 
-    describe('with wallets disconnected', function () {
-      before('wait for widget to load', function () {
-        // FIXME: Timeout madness
-        cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
-      });
-
-      it('should have VEGA WALLET header visible', function () {
+    describe('with wallets disconnected', () => {
+      it('should have required elements visible', function () {
         cy.get(walletContainer).within(() => {
           cy.get(walletHeader)
             .should('be.visible')
@@ -58,10 +53,9 @@ context(
       });
     });
 
-    describe('when connect button clicked', function () {
-      before('click connect vega wallet button', function () {
-        // FIXME: Timeout madness
-        cy.get(walletContainer, { timeout: 60000 }).within(() => {
+    describe('when connect button clicked', () => {
+      before('click connect vega wallet button', () => {
+        cy.get(walletContainer).within(() => {
           cy.get(connectButton).click();
         });
       });
