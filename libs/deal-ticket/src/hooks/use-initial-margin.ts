@@ -13,8 +13,7 @@ import { marketInfoProvider } from '@vegaprotocol/market-info';
 
 export const useInitialMargin = (
   marketId: OrderSubmissionBody['orderSubmission']['marketId'],
-  size?: OrderSubmissionBody['orderSubmission']['size'],
-  side?: OrderSubmissionBody['orderSubmission']['side']
+  order?: OrderSubmissionBody['orderSubmission']
 ) => {
   const { pubKey: partyId } = useVegaWallet();
   const commonVariables = { marketId, partyId: partyId || '' };
@@ -33,7 +32,7 @@ export const useInitialMargin = (
   });
   let totalMargin = '0';
   let margin = '0';
-  if (marketInfo?.riskFactors && marketData && size && side) {
+  if (marketInfo?.riskFactors && marketData && order) {
     const {
       positionDecimalPlaces,
       decimalPlaces,
@@ -43,8 +42,8 @@ export const useInitialMargin = (
     const { marginCalculator, instrument } = tradableInstrument;
     const { decimals } = instrument.product.settlementAsset;
     margin = totalMargin = calculateMargins({
-      side,
-      size,
+      side: order.side,
+      size: order.size,
       price: marketData.markPrice, // getDerivedPrice(order, marketData), same in positions-data-providers
       positionDecimalPlaces,
       decimalPlaces,
@@ -57,7 +56,7 @@ export const useInitialMargin = (
   if (activeVolumeAndMargin) {
     let sellMargin = BigInt(activeVolumeAndMargin.sellInitialMargin);
     let buyMargin = BigInt(activeVolumeAndMargin.buyInitialMargin);
-    if (side === Side.SIDE_SELL) {
+    if (order?.side === Side.SIDE_SELL) {
       sellMargin += BigInt(totalMargin);
     } else {
       buyMargin += BigInt(totalMargin);

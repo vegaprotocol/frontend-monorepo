@@ -76,6 +76,9 @@ describe(
       cy.getByTestId(closeDialog).click();
       cy.getByTestId('Trading').first().click();
       cy.getByTestId(collateralTab).click();
+      cy.getByTestId(openTransferDialog).should('not.exist');
+      cy.getByTestId('Portfolio').eq(0).click();
+      cy.getByTestId(collateralTab).click();
       cy.getByTestId(openTransferDialog).click();
       cy.getByTestId(dialogTransferText).should(
         'contain.text',
