@@ -5,6 +5,11 @@ query ExplorerNewAssetSignatureBundle($id: ID!) {
   }
   asset(id: $id) {
     status
+    source {
+      ... on ERC20 {
+        contractAddress
+      }
+    }
   }
 }
 
@@ -15,5 +20,10 @@ query ExplorerUpdateAssetSignatureBundle($id: ID!) {
   }
   asset(id: $id) {
     status
+    source {
+      ... on ERC20 {
+        contractAddress
+      }
+    }
   }
 }
