@@ -9,8 +9,6 @@ import { OrderType } from '@vegaprotocol/types';
 
 jest.mock('zustand');
 
-jest.mock('zustand');
-
 describe('useOrderStore', () => {
   const setup = () => {
     return renderHook(() => useOrderStore());
