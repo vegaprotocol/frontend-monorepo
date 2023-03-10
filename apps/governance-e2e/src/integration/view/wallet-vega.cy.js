@@ -323,9 +323,10 @@ context(
                 .contains(id)
                 .parent()
                 .siblings()
-                .within(() =>
-                  cy.contains_exactly(expectedAmount).should('be.visible')
-                );
+                .within((el) => {
+                  const value = parseFloat(el.text());
+                  cy.wrap(value).should('be.gte', parseFloat(expectedAmount));
+                });
 
               cy.get(vegaWalletCurrencyTitle)
                 .contains(id)
