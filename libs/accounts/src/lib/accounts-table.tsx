@@ -165,7 +165,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               data,
               value,
-              node,
             }: VegaICellRendererParams<AccountFields, 'used'>) => {
               if (!data) return null;
               const percentageUsed = percentageValue(value, data.total);

@@ -116,7 +116,7 @@ export const DealTicket = ({
       return;
     }
 
-    const hasNoBalance = generalAccountBalance === '0';
+    const hasNoBalance = BigInt(generalAccountBalance) === BigInt('0');
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
