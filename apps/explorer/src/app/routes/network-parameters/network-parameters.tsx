@@ -31,6 +31,7 @@ const PERCENTAGE_PARAMS = [
   'governance.proposal.updateMarket.requiredParticipationLP',
   'governance.proposal.updateNetParam.requiredMajority',
   'governance.proposal.updateNetParam.requiredParticipation',
+  'governance.proposal.updateMarket.minProposerEquityLikeShare',
   'validators.vote.required',
 ];
 
