@@ -33,6 +33,41 @@ const colorClass = (percentageUsed: number, neutral = false) => {
   });
 };
 
+export const percentageValue = (part?: string, total?: string) =>
+  new BigNumber(part || 0)
+    .dividedBy(total || 1)
+    .multipliedBy(100)
+    .toNumber();
+
+const formatWithAssetDecimals = (
+  data: AccountFields | undefined,
+  value: string | undefined
+) => {
+  return (
+    data &&
+    data.asset &&
+    isNumeric(value) &&
+    addDecimalsFormatNumber(value, data.asset.decimals)
+  );
+};
+
+export const accountValuesComparator = (
+  valueA: string,
+  valueB: string,
+  nodeA: RowNode,
+  nodeB: RowNode
+) => {
+  if (isNumeric(valueA) && isNumeric(valueB)) {
+    const a = toBigNum(valueA, nodeA.data.asset?.decimals);
+    const b = toBigNum(valueB, nodeB.data.asset?.decimals);
+
+    if (a.isEqualTo(b)) return 0;
+    return a.isGreaterThan(b) ? 1 : -1;
+  }
+  if (valueA === valueB) return 0;
+  return valueA > valueB ? 1 : -1;
+};
+
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
 }
@@ -90,22 +125,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             resizable: true,
             tooltipComponent: TooltipCellComponent,
             sortable: true,
-            comparator: (
-              valueA: string,
-              valueB: string,
-              nodeA: RowNode,
-              nodeB: RowNode
-            ) => {
-              if (isNumeric(valueA) && isNumeric(valueB)) {
-                const a = toBigNum(valueA, nodeA.data.asset?.decimals);
-                const b = toBigNum(valueB, nodeB.data.asset?.decimals);
-
-                if (a.isEqualTo(b)) return 0;
-                return a.isGreaterThan(b) ? 1 : -1;
-              }
-              if (valueA === valueB) return 0;
-              return valueA > valueB ? 1 : -1;
-            },
+            comparator: accountValuesComparator,
           }}
           {...props}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
@@ -148,11 +168,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               node,
             }: VegaICellRendererParams<AccountFields, 'used'>) => {
               if (!data) return null;
-              const percentageUsed = new BigNumber(value || 0)
-                .dividedBy(data.total || 1)
-                .multipliedBy(100)
-                .toNumber();
-              const valueFormatted = formatValue(data, value);
+              const percentageUsed = percentageValue(value, data.total);
+              const valueFormatted = formatWithAssetDecimals(data, value);
 
               return data.breakdown ? (
                 <>
@@ -195,14 +212,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               value,
               data,
             }: VegaICellRendererParams<AccountFields, 'available'>) => {
-              const percentageUsed = new BigNumber(data?.used || 0)
-                .dividedBy(data?.total || 1)
-                .multipliedBy(100)
-                .toNumber();
+              const percentageUsed = percentageValue(data?.used, data?.total);
 
               return (
                 <span className={colorClass(percentageUsed, true)}>
-                  {formatValue(data, value)}
+                  {formatWithAssetDecimals(data, value)}
                 </span>
               );
             }}
@@ -224,10 +238,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             valueFormatter={({
               data,
             }: VegaValueFormatterParams<AccountFields, 'total'>) =>
-              data &&
-              data.asset &&
-              isNumeric(data.total) &&
-              addDecimalsFormatNumber(data.total, data.asset.decimals)
+              formatWithAssetDecimals(data, data?.total)
             }
           />
           {
@@ -315,15 +326,3 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     );
   }
 );
-
-const formatValue = (
-  data: AccountFields | undefined,
-  value: string | undefined
-) => {
-  return (
-    data &&
-    data.asset &&
-    isNumeric(value) &&
-    addDecimalsFormatNumber(value, data.asset.decimals)
-  );
-};

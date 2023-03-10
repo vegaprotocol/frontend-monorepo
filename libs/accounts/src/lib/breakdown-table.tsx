@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   Intent,
@@ -13,6 +13,7 @@ import type { ValueProps } from '@vegaprotocol/ui-toolkit';
 import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import { AgGridDynamic as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
 import type { ValueFormatterParams } from 'ag-grid-community';
+import { accountValuesComparator } from './accounts-table';
 
 export const progressBarValueFormatter = ({
   data,
@@ -91,18 +92,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           maxWidth={500}
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
-          comparator={(
-            valueA: string,
-            valueB: string,
-            nodeA: { data: AccountFields },
-            nodeB: { data: AccountFields }
-          ) => {
-            const a = toBigNum(valueA, nodeA.data.asset?.decimals);
-            const b = toBigNum(valueB, nodeB.data.asset?.decimals);
-
-            if (a.isEqualTo(b)) return 0;
-            return a.isGreaterThan(b) ? 1 : -1;
-          }}
+          comparator={accountValuesComparator}
         />
       </AgGrid>
     );
