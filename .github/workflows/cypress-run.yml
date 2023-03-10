@@ -87,7 +87,7 @@ jobs:
         run: ls -alsh /home/runner/.vegacapsule/testnet/logs/
 
       - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
+        if: ${{ failure() }}
         with:
           name: logs-${{ matrix.project }}
           path: /home/runner/.vegacapsule/testnet/logs

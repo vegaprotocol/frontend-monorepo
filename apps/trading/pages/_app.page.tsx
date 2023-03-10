@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-import { Navbar } from '../components/navbar';
 import { t } from '@vegaprotocol/i18n';
 import {
   useEagerConnect as useVegaEagerConnect,
@@ -33,6 +32,7 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import classNames from 'classnames';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
+import { Navbar } from '../components/navbar';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -83,9 +83,7 @@ function AppBody({ Component }: AppProps) {
       </Head>
       <Title />
       <div className={gridClasses}>
-        <Navbar
-          navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
-        />
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
         <Banner />
         <ViewingBanner />
         <main data-testid={location.pathname}>

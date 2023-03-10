@@ -15,7 +15,7 @@ interface PageTitleStore {
   updateTitle: (title: string) => void;
 }
 
-export const useGlobalStore = create<GlobalStore>((set) => ({
+export const useGlobalStore = create<GlobalStore>()((set) => ({
   nodeSwitcherDialog: false,
   marketId: LocalStorage.getItem('marketId') || null,
   shouldDisplayWelcomeDialog: false,

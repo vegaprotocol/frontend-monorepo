@@ -37,7 +37,7 @@ export interface VegaConnectDialogProps {
   onChangeOpen?: (open: boolean) => void;
 }
 
-export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
+export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
   (set) => ({
     vegaWalletDialogOpen: false,
     updateVegaWalletDialog: (open: boolean) =>

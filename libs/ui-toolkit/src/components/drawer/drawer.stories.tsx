@@ -31,7 +31,7 @@ export const Default = Template.bind({});
 Default.args = {
   open: false,
   children: (
-    <p className="h-full bg-black dark:bg-white text-white dark:text-black">
+    <p className="h-full bg-white dark:bg-black text-black dark:text-white">
       Some content
     </p>
   ),

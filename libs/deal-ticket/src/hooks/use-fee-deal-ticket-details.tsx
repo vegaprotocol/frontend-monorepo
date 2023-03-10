@@ -98,9 +98,7 @@ export interface FeeDetails {
 export const getFeeDetailsValues = ({
   balance,
   assetSymbol,
-  estCloseOut,
   estimateOrder,
-  margin,
   market,
   notionalSize,
   totalMargin,

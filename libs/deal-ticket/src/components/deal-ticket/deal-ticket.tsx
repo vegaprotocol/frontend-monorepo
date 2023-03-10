@@ -184,7 +184,9 @@ export const DealTicket = ({
                 type,
                 // when changing type also update the tif to what was last used of new type
                 timeInForce: lastTIF[type] || order.timeInForce,
+                expiresAt: undefined,
               });
+              clearErrors('expiresAt');
             }}
             market={market}
             marketData={marketData}
@@ -232,7 +234,12 @@ export const DealTicket = ({
               update({ timeInForce });
               // Set tif value for the given order type, so that when switching
               // types we know the last used TIF for the given order type
-              setLastTIF((curr) => ({ ...curr, [order.type]: timeInForce }));
+              setLastTIF((curr) => ({
+                ...curr,
+                [order.type]: timeInForce,
+                expiresAt: undefined,
+              }));
+              clearErrors('expiresAt');
             }}
             market={market}
             marketData={marketData}

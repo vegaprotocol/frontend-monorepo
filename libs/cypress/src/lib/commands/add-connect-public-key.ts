@@ -12,7 +12,7 @@ export const addConnectPublicKey = () => {
   Cypress.Commands.add('connectPublicKey', (publicKey) => {
     cy.getByTestId('connect-vega-wallet').then((connectWallet) => {
       if (connectWallet.length) {
-        cy.getByTestId('connect-vega-wallet').click();
+        cy.get('aside [data-testid="connect-vega-wallet"]').click();
         cy.getByTestId('connector-view').should('be.visible').click();
         cy.getByTestId('address').click();
         cy.getByTestId('address').type(publicKey);

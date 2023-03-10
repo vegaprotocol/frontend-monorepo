@@ -38,7 +38,7 @@ export interface RefreshBalances {
   vestingAssociatedBalance: BigNumber;
 }
 
-export const useBalances = create<BalancesStore>((set) => ({
+export const useBalances = create<BalancesStore>()((set) => ({
   associationBreakdown: {
     stakingAssociations: {},
     vestingAssociations: {},

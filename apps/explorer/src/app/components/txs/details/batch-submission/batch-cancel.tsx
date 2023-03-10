@@ -2,6 +2,7 @@ import type { BatchCancellationInstruction } from '../../../../routes/types/bloc
 import { TxOrderType } from '../../tx-order-type';
 import { MarketLink } from '../../../links';
 import OrderSummary from '../../../order-summary/order-summary';
+import { CancelSummary } from '../../../order-summary/order-cancellation';
 
 interface BatchCancelProps {
   index: number;
@@ -19,7 +20,14 @@ export const BatchCancel = ({ index, submission }: BatchCancelProps) => {
         <TxOrderType orderType={'OrderCancellation'} />
       </td>
       <td>
-        <OrderSummary id={submission.orderId} modifier="cancelled" />
+        {submission.orderId ? (
+          <OrderSummary id={submission.orderId} modifier="cancelled" />
+        ) : (
+          <CancelSummary
+            orderId={submission.orderId}
+            marketId={submission.marketId}
+          />
+        )}
       </td>
       <td>
         <MarketLink id={submission.marketId} />
