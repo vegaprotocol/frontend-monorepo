@@ -116,7 +116,7 @@ export const DealTicket = ({
       return;
     }
 
-    const hasNoBalance = generalAccountBalance === '0';
+    const hasNoBalance = !BigInt(generalAccountBalance);
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
@@ -141,7 +141,6 @@ export const DealTicket = ({
     pubKey,
     setError,
     clearErrors,
-    errors.summary,
   ]);
 
   const onSubmit = useCallback(
@@ -386,8 +385,12 @@ const SummaryMessage = memo(
 
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
-    if (BigInt(balance) < BigInt(margin)) {
-      return <MarginWarning balance={balance} margin={margin} asset={asset} />;
+    if (BigInt(balance) < BigInt(margin) && BigInt(balance) > BigInt(0)) {
+      return (
+        <div className="mb-2">
+          <MarginWarning balance={balance} margin={margin} asset={asset} />
+        </div>
+      );
     }
     // Show auction mode warning
     if (
