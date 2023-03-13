@@ -119,7 +119,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
   useEffect(() => {
     const epochInterval = setInterval(() => {
-      if (!epoch?.timestamps.expiry) return;
+      if (!epoch?.timestamps.expiry) {
+        return;
+      }
       const now = Date.now();
       const expiry = new Date(epoch.timestamps.expiry).getTime();
 
@@ -135,7 +137,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   }, [epoch?.timestamps.expiry, refetch]);
 
   const nodes = useMemo(() => {
-    if (!data?.nodes) return [];
+    if (!data?.nodes) {
+      return [];
+    }
 
     return data.nodes
       .filter(({ id }) => !LEAVING_VALIDATORS.includes(id))
@@ -164,18 +168,12 @@ export const NodeList = ({ epoch }: NodeListProps) => {
               name,
             },
             [STATUS]: statusTranslated,
-            [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
-            [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
-            [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
-            [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
-            [STAKE_SCORE]: formatNumberPercentage(
-              new BigNumber(stakeScore).times(100),
-              2
-            ),
-            [PERFORMANCE_SCORE]: formatNumber(
-              new BigNumber(performanceScore),
-              5
-            ),
+            [TOTAL_STAKE_THIS_EPOCH]: stakedTotalFormatted,
+            [VALIDATOR_STAKE]: stakedOnNode,
+            [PENDING_STAKE]: pendingStakeFormatted,
+            [RANKING_SCORE]: rankingScore,
+            [STAKE_SCORE]: stakeScore,
+            [PERFORMANCE_SCORE]: performanceScore,
             [VOTING_POWER]: votingPower,
           };
         }
@@ -192,7 +190,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           headerName: t('validator').toString(),
           cellRenderer: ValidatorRenderer,
           comparator: ({ name: a }, { name: b }) => {
-            if (a === b) return 0;
+            if (a === b) {
+              return 0;
+            }
             return a > b ? 1 : -1;
           },
         },
@@ -200,7 +200,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           field: STATUS,
           headerName: t('status').toString(),
           comparator: (a, b) => {
-            if (a === b) return 0;
+            if (a === b) {
+              return 0;
+            }
             return a > b ? 1 : -1;
           },
           width: 100,
@@ -209,32 +211,39 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           field: TOTAL_STAKE_THIS_EPOCH,
           headerName: t('totalStakeThisEpoch').toString(),
           width: 160,
+          valueFormatter: ({ value }) => formatNumber(value, 2),
         },
         {
           field: STAKE_SCORE,
           headerName: t('stakeScore').toString(),
           width: 100,
+          valueFormatter: ({ value }) =>
+            formatNumberPercentage(new BigNumber(value).times(100), 2),
         },
         {
           field: VALIDATOR_STAKE,
           headerName: t('validatorStake').toString(),
           width: 120,
+          valueFormatter: ({ value }) => formatNumber(value, 2),
         },
         {
           field: PENDING_STAKE,
           headerName: t('nextEpoch').toString(),
           width: 100,
+          valueFormatter: ({ value }) => formatNumber(value, 2),
         },
         {
           field: RANKING_SCORE,
           headerName: t('rankingScore').toString(),
           width: 120,
+          valueFormatter: ({ value }) => formatNumber(new BigNumber(value), 5),
           sort: 'desc',
         },
         {
           field: PERFORMANCE_SCORE,
           headerName: t('performanceScore').toString(),
           width: 100,
+          valueFormatter: ({ value }) => formatNumber(new BigNumber(value), 5),
         },
         {
           field: VOTING_POWER,
