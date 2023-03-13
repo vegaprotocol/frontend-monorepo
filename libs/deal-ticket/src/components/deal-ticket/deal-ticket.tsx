@@ -116,16 +116,6 @@ export const DealTicket = ({
       return;
     }
 
-    const hasNoBalance =
-      generalAccountBalance === '0' || generalAccountBalance === '';
-    if (hasNoBalance) {
-      setError('summary', {
-        message: SummaryValidationType.NoCollateral,
-        type: SummaryValidationType.NoCollateral,
-      });
-      return;
-    }
-
     const marketTradingModeError = validateMarketTradingMode(marketTradingMode);
     if (marketTradingModeError !== true) {
       setError('summary', {
@@ -362,16 +352,6 @@ const SummaryMessage = memo(
         </div>
       );
     }
-    if (errorMessage === SummaryValidationType.NoCollateral) {
-      return (
-        <div className="mb-2">
-          <ZeroBalanceError
-            asset={asset}
-            onClickCollateral={onClickCollateral}
-          />
-        </div>
-      );
-    }
 
     // If we have any other full error which prevents
     // submission render that first
@@ -388,9 +368,19 @@ const SummaryMessage = memo(
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
     if (BigInt(balance) < BigInt(margin)) {
+      if (BigInt(balance) > BigInt(0)) {
+        return (
+          <div className="mb-2">
+            <MarginWarning balance={balance} margin={margin} asset={asset} />
+          </div>
+        );
+      }
       return (
         <div className="mb-2">
-          <MarginWarning balance={balance} margin={margin} asset={asset} />
+          <ZeroBalanceError
+            asset={asset}
+            onClickCollateral={onClickCollateral}
+          />
         </div>
       );
     }
