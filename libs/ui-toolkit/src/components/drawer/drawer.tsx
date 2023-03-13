@@ -27,11 +27,12 @@ export function Drawer({
   trigger,
 }: DrawerProps) {
   const contentClasses = classNames(
+    'group/drawer',
     'h-full max-w-[500px] w-[90vw] z-10 top-0 right-0 fixed transition-transform',
     className,
     {
       'translate-x-[100%]': !open,
-      'translate-x-0 z-40': open,
+      'translate-x-0 z-20': open,
     }
   );
 

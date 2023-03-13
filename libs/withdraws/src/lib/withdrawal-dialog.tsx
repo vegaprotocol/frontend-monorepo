@@ -17,7 +17,7 @@ interface Actions {
   close: () => void;
 }
 
-export const useWithdrawalDialog = create<State & Actions>((set) => ({
+export const useWithdrawalDialog = create<State & Actions>()((set) => ({
   isOpen: false,
   assetId: undefined,
   open: (assetId) => set(() => ({ assetId, isOpen: true })),

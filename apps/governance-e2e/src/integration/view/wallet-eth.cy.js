@@ -1,18 +1,19 @@
-const walletContainer = '[data-testid="ethereum-wallet"]';
+const walletContainer = 'aside [data-testid="ethereum-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
-const connectToEthButton = '[data-testid="connect-to-eth-wallet-button"]';
+const connectToEthButton =
+  '[data-testid="connect-to-eth-wallet-button"]:visible';
 const connectorList = '[data-testid="web3-connector-list"]';
 const associate = '[href="/token/associate"]';
 const disassociate = '[href="/token/disassociate"]';
 const disconnect = '[data-testid="disconnect-from-eth-wallet-button"]';
 const accountNo = '[data-testid="ethereum-account-truncated"]';
-const currencyTitle = '[data-testid="currency-title"]';
-const currencyValue = '[data-testid="currency-value"]';
-const vegaInVesting = '[data-testid="vega-in-vesting-contract"]';
-const vegaInWallet = '[data-testid="vega-in-wallet"]';
-const progressBar = '[data-testid="progress-bar"]';
-const currencyLocked = '[data-testid="currency-locked"]';
-const currencyUnlocked = '[data-testid="currency-unlocked"]';
+const currencyTitle = '[data-testid="currency-title"]:visible';
+const currencyValue = '[data-testid="currency-value"]:visible';
+const vegaInVesting = '[data-testid="vega-in-vesting-contract"]:visible';
+const vegaInWallet = '[data-testid="vega-in-wallet"]:visible';
+const progressBar = '[data-testid="progress-bar"]:visible';
+const currencyLocked = '[data-testid="currency-locked"]:visible';
+const currencyUnlocked = '[data-testid="currency-unlocked"]:visible';
 const dialog = '[role="dialog"]';
 const dialogHeader = '[data-testid="dialog-title"]';
 const dialogCloseBtn = '[data-testid="dialog-close"]';

@@ -7,7 +7,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
-const vegaWalletContainer = '[data-testid="vega-wallet"]';
+const vegaWalletContainer = 'aside [data-testid="vega-wallet"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
@@ -95,7 +95,7 @@ Cypress.Commands.add('faucet_asset', function (assetEthAddress) {
 });
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
-  cy.get('[data-testid="associated-amount"]')
+  cy.get('aside [data-testid="associated-amount"]')
     .should('be.visible')
     .invoke('text')
     .as('associatedAmount');

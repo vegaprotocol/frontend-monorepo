@@ -49,8 +49,8 @@ export interface EthWithdrawApprovalStore {
   delete: (index: number) => void;
 }
 
-export const useEthWithdrawApprovalsStore = create(
-  subscribeWithSelector<EthWithdrawApprovalStore>((set, get) => ({
+export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>()(
+  subscribeWithSelector((set, get) => ({
     transactions: [] as EthWithdrawalApprovalState[],
     create: (
       withdrawal: EthWithdrawalApprovalState['withdrawal'],

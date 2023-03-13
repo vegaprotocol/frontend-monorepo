@@ -13,7 +13,7 @@ export const EST_TOTAL_MARGIN_TOOLTIP_TEXT = t(
 export const MARGIN_ACCOUNT_TOOLTIP_TEXT = t('Margin account balance');
 export const MARGIN_DIFF_TOOLTIP_TEXT = (settlementAsset: string) =>
   t(
-    "The additional margin required for your new position (taking into account volume and open orders), compared to your current margin. Measured in the market's settlement asset ($s).",
+    "The additional margin required for your new position (taking into account volume and open orders), compared to your current margin. Measured in the market's settlement asset (%s).",
     [settlementAsset]
   );
 export const CONTRACTS_MARGIN_TOOLTIP_TEXT = t(

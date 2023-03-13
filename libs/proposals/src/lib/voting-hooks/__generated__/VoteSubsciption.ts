@@ -3,42 +3,31 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type VoteEventFieldsFragment = {
-  __typename?: 'ProposalVote';
-  proposalId: string;
-  vote: { __typename?: 'Vote'; value: Types.VoteValue; datetime: any };
-};
+export type VoteEventFieldsFragment = { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } };
 
 export type VoteEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
-export type VoteEventSubscription = {
-  __typename?: 'Subscription';
-  votes: {
-    __typename?: 'ProposalVote';
-    proposalId: string;
-    vote: { __typename?: 'Vote'; value: Types.VoteValue; datetime: any };
-  };
-};
+
+export type VoteEventSubscription = { __typename?: 'Subscription', votes: { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } } };
 
 export const VoteEventFieldsFragmentDoc = gql`
-  fragment VoteEventFields on ProposalVote {
-    proposalId
-    vote {
-      value
-      datetime
-    }
+    fragment VoteEventFields on ProposalVote {
+  proposalId
+  vote {
+    value
+    datetime
   }
-`;
+}
+    `;
 export const VoteEventDocument = gql`
-  subscription VoteEvent($partyId: ID!) {
-    votes(partyId: $partyId) {
-      ...VoteEventFields
-    }
+    subscription VoteEvent($partyId: ID!) {
+  votes(partyId: $partyId) {
+    ...VoteEventFields
   }
-  ${VoteEventFieldsFragmentDoc}
-`;
+}
+    ${VoteEventFieldsFragmentDoc}`;
 
 /**
  * __useVoteEventSubscription__
@@ -56,20 +45,9 @@ export const VoteEventDocument = gql`
  *   },
  * });
  */
-export function useVoteEventSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    VoteEventSubscription,
-    VoteEventSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    VoteEventSubscription,
-    VoteEventSubscriptionVariables
-  >(VoteEventDocument, options);
-}
-export type VoteEventSubscriptionHookResult = ReturnType<
-  typeof useVoteEventSubscription
->;
-export type VoteEventSubscriptionResult =
-  Apollo.SubscriptionResult<VoteEventSubscription>;
+export function useVoteEventSubscription(baseOptions: Apollo.SubscriptionHookOptions<VoteEventSubscription, VoteEventSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<VoteEventSubscription, VoteEventSubscriptionVariables>(VoteEventDocument, options);
+      }
+export type VoteEventSubscriptionHookResult = ReturnType<typeof useVoteEventSubscription>;
+export type VoteEventSubscriptionResult = Apollo.SubscriptionResult<VoteEventSubscription>;

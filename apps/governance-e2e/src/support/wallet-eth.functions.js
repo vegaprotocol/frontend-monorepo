@@ -1,5 +1,6 @@
-const ethWalletContainer = '[data-testid="ethereum-wallet"]';
-const connectToEthButton = '[data-testid="connect-to-eth-wallet-button"]';
+const ethWalletContainer = '[data-testid="ethereum-wallet"]:visible';
+const connectToEthButton =
+  '[data-testid="connect-to-eth-wallet-button"]:visible';
 const capsuleWalletConnectButton = '[data-testid="web3-connector-Unknown"]';
 
 Cypress.Commands.add('ethereum_wallet_connect', () => {

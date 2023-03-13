@@ -13,7 +13,7 @@ interface Actions {
   close: () => void;
 }
 
-export const useWeb3ConnectStore = create<State & Actions>((set) => ({
+export const useWeb3ConnectStore = create<State & Actions>()((set) => ({
   isOpen: false,
   connectors: [],
   initialize: (connectors, desiredChainId) => {
