@@ -119,7 +119,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
   useEffect(() => {
     const epochInterval = setInterval(() => {
-      if (!epoch?.timestamps.expiry) return;
+      if (!epoch?.timestamps.expiry) {
+        return;
+      }
       const now = Date.now();
       const expiry = new Date(epoch.timestamps.expiry).getTime();
 
@@ -135,7 +137,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   }, [epoch?.timestamps.expiry, refetch]);
 
   const nodes = useMemo(() => {
-    if (!data?.nodes) return [];
+    if (!data?.nodes) {
+      return [];
+    }
 
     return data.nodes
       .filter(({ id }) => !LEAVING_VALIDATORS.includes(id))
@@ -184,6 +188,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
   const gridRef = useRef<AgGridReact | null>(null);
 
+  const compareStringifiedNumbers = (a: string, b: string) =>
+    parseFloat(a.replace(/,/g, '')) - parseFloat(b.replace(/,/g, ''));
+
   const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
     const colDefs = useMemo<ColDef[]>(
       () => [
@@ -192,7 +199,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           headerName: t('validator').toString(),
           cellRenderer: ValidatorRenderer,
           comparator: ({ name: a }, { name: b }) => {
-            if (a === b) return 0;
+            if (a === b) {
+              return 0;
+            }
             return a > b ? 1 : -1;
           },
         },
@@ -200,7 +209,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           field: STATUS,
           headerName: t('status').toString(),
           comparator: (a, b) => {
-            if (a === b) return 0;
+            if (a === b) {
+              return 0;
+            }
             return a > b ? 1 : -1;
           },
           width: 100,
@@ -208,6 +219,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         {
           field: TOTAL_STAKE_THIS_EPOCH,
           headerName: t('totalStakeThisEpoch').toString(),
+          comparator: (a: string, b: string) => compareStringifiedNumbers(a, b),
           width: 160,
         },
         {
@@ -218,6 +230,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         {
           field: VALIDATOR_STAKE,
           headerName: t('validatorStake').toString(),
+          comparator: (a: string, b: string) => compareStringifiedNumbers(a, b),
           width: 120,
         },
         {
