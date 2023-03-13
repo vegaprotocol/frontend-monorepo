@@ -168,18 +168,12 @@ export const NodeList = ({ epoch }: NodeListProps) => {
               name,
             },
             [STATUS]: statusTranslated,
-            [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
-            [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
-            [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
-            [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
-            [STAKE_SCORE]: formatNumberPercentage(
-              new BigNumber(stakeScore).times(100),
-              2
-            ),
-            [PERFORMANCE_SCORE]: formatNumber(
-              new BigNumber(performanceScore),
-              5
-            ),
+            [TOTAL_STAKE_THIS_EPOCH]: stakedTotalFormatted,
+            [VALIDATOR_STAKE]: stakedOnNode,
+            [PENDING_STAKE]: pendingStakeFormatted,
+            [RANKING_SCORE]: rankingScore,
+            [STAKE_SCORE]: stakeScore,
+            [PERFORMANCE_SCORE]: performanceScore,
             [VOTING_POWER]: votingPower,
           };
         }
@@ -187,9 +181,6 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   }, [data, t]);
 
   const gridRef = useRef<AgGridReact | null>(null);
-
-  const compareStringifiedNumbers = (a: string, b: string) =>
-    parseFloat(a.replace(/,/g, '')) - parseFloat(b.replace(/,/g, ''));
 
   const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
     const colDefs = useMemo<ColDef[]>(
@@ -219,35 +210,40 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         {
           field: TOTAL_STAKE_THIS_EPOCH,
           headerName: t('totalStakeThisEpoch').toString(),
-          comparator: (a: string, b: string) => compareStringifiedNumbers(a, b),
           width: 160,
+          valueFormatter: ({ value }) => formatNumber(value, 2),
         },
         {
           field: STAKE_SCORE,
           headerName: t('stakeScore').toString(),
           width: 100,
+          valueFormatter: ({ value }) =>
+            formatNumberPercentage(new BigNumber(value).times(100), 2),
         },
         {
           field: VALIDATOR_STAKE,
           headerName: t('validatorStake').toString(),
-          comparator: (a: string, b: string) => compareStringifiedNumbers(a, b),
           width: 120,
+          valueFormatter: ({ value }) => formatNumber(value, 2),
         },
         {
           field: PENDING_STAKE,
           headerName: t('nextEpoch').toString(),
           width: 100,
+          valueFormatter: ({ value }) => formatNumber(value, 2),
         },
         {
           field: RANKING_SCORE,
           headerName: t('rankingScore').toString(),
           width: 120,
+          valueFormatter: ({ value }) => formatNumber(new BigNumber(value), 5),
           sort: 'desc',
         },
         {
           field: PERFORMANCE_SCORE,
           headerName: t('performanceScore').toString(),
           width: 100,
+          valueFormatter: ({ value }) => formatNumber(new BigNumber(value), 5),
         },
         {
           field: VOTING_POWER,
