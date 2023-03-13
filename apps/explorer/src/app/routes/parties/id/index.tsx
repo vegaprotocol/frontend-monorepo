@@ -14,6 +14,7 @@ import type { ExplorerPartyAssetsAccountsFragment } from './__generated__/Party-
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import GovernanceAssetBalance from '../../../components/asset-balance/governance-asset-balance';
 import { PartyAccounts } from './components/party-accounts';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -75,7 +76,12 @@ const Party = () => {
       >
         {t('Public key')}
       </h1>
-      {partyRes.data ? (
+      <AsyncRenderer
+        error={error}
+        loading={!!loading}
+        data={partyRes.data}
+        noDataMessage={t('No details found for Party')}
+      >
         <>
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>
@@ -92,7 +98,7 @@ const Party = () => {
             className="mb-28"
           />
         </>
-      ) : null}
+      </AsyncRenderer>
     </section>
   );
 };

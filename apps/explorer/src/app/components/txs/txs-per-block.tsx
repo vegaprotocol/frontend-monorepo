@@ -1,5 +1,4 @@
 import { Routes } from '../../routes/route-names';
-import { RenderFetched } from '../render-fetched';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { TxOrderType } from './tx-order-type';
 import { Table, TableRow, TableCell } from '../table';
@@ -9,7 +8,7 @@ import type { BlockExplorerTransactions } from '../../routes/types/block-explore
 import isNumber from 'lodash/isNumber';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import { getTxsDataUrl } from '../../hooks/use-txs-data';
-import { Loader } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
 import EmptyList from '../empty-list/empty-list';
 
 interface TxsPerBlockProps {
@@ -27,7 +26,7 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   } = useFetch<BlockExplorerTransactions>(url);
 
   return (
-    <RenderFetched error={error} loading={loading} className="text-body-large">
+    <AsyncRenderer data={data} error={error} loading={!!loading}>
       {data && data.transactions.length > 0 ? (
         <div className="overflow-x-auto whitespace-nowrap mb-28">
           <Table>
@@ -95,6 +94,6 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
           label={t('0 transactions')}
         />
       )}
-    </RenderFetched>
+    </AsyncRenderer>
   );
 };
