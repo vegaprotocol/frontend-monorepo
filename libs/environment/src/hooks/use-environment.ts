@@ -14,7 +14,10 @@ import type { Environment } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
-import { configSchema } from '../utils/validate-configuration';
+import {
+  configSchema,
+  tomlConfigSchema,
+} from '../utils/validate-configuration';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -164,7 +167,13 @@ const fetchConfig = async (url?: string) => {
   if (url.match(/github(.+)\.toml$/)) {
     const content = await res.text();
     const parsed = tomlParse(content);
-    cfg = { hosts: parsed.API.GraphQL.Hosts };
+    const tomlResults = tomlConfigSchema.parse(parsed);
+    const {
+      API: {
+        GraphQL: { Hosts: hosts },
+      },
+    } = tomlResults;
+    cfg = { hosts };
   } else {
     cfg = await res.json();
   }
