@@ -204,7 +204,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             field="available"
             type="rightAligned"
             headerTooltip={t(
-              'Deposited on the network, but not allocated to a market. Free for use in new markets or orders.'
+              'Deposited on the network, but not allocated to a market. Free to use for placing orders or providing liquidity.'
             )}
             cellRenderer={({
               value,
@@ -224,7 +224,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             type="rightAligned"
             field="total"
             headerTooltip={t(
-              'The full amount associated with this key. Total of used and available collateral.'
+              'The full amount of assets on this key. Total of used and available collateral.'
             )}
             valueFormatter={({
               data,
