@@ -322,9 +322,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
                     data={{
                       highestPrice: bounds.maxValidPrice,
                       lowestPrice: bounds.minValidPrice,
-                      referencePrice: bounds.referencePrice,
                     }}
-                    decimalPlaces={assetDecimals}
+                    decimalPlaces={market.decimalPlaces}
                     assetSymbol={quoteUnit}
                   />
                 )}

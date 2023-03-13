@@ -9,7 +9,9 @@ export default {
   title: 'PositionsTable',
 } as Meta;
 
-const Template: Story = (args) => <PositionsTable {...args} />;
+const Template: Story = (args) => (
+  <PositionsTable {...args} isReadOnly={false} />
+);
 
 export const Primary = Template.bind({});
 const longPosition: Position = {
@@ -27,7 +29,6 @@ const longPosition: Position = {
   // leverageMaintenance: '0',
   // leverageRelease: '0',
   // leverageSearch: '0',
-  liquidationPrice: '1129935',
   lowMarginLevel: false,
   marginAccountBalance: new BigNumber('0').toString(),
   // marginMaintenance: '0',
@@ -42,6 +43,8 @@ const longPosition: Position = {
   unrealisedPNL: '45',
   searchPrice: '1132123',
   updatedAt: '2022-07-27T15:02:58.400Z',
+  lossSocializationAmount: '0',
+  status: Schema.PositionStatus.POSITION_STATUS_UNSPECIFIED,
 };
 
 const shortPosition: Position = {
@@ -59,7 +62,6 @@ const shortPosition: Position = {
   // leverageMaintenance: '0',
   // leverageRelease: '0',
   // leverageSearch: '0',
-  liquidationPrice: '23734',
   lowMarginLevel: false,
   marginAccountBalance: new BigNumber('0').toString(),
   // marginMaintenance: '0',
@@ -74,6 +76,8 @@ const shortPosition: Position = {
   unrealisedPNL: '0',
   searchPrice: '0',
   updatedAt: '2022-07-26T14:01:34.800Z',
+  lossSocializationAmount: '0',
+  status: Schema.PositionStatus.POSITION_STATUS_UNSPECIFIED,
 };
 
 Primary.args = {
