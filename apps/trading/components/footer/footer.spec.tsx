@@ -11,6 +11,7 @@ describe('NodeHealth', () => {
         url={'https://api.n99.somenetwork.vega.xyz'}
         blockHeight={100}
         blockDiff={0}
+        blockUpdateMsLatency={0}
       />
     );
     await userEvent.click(screen.getByRole('button'));
@@ -38,7 +39,9 @@ describe('HealthIndicator', () => {
   it.each(cases)(
     'renders correct text and indicator color for $diff block difference',
     (elem) => {
-      render(<HealthIndicator blockDiff={elem.diff} />);
+      render(
+        <HealthIndicator blockDiff={elem.diff} blockUpdateMsLatency={0} />
+      );
       expect(screen.getByTestId('indicator')).toHaveClass(elem.classname);
       expect(screen.getByText(elem.text)).toBeInTheDocument();
     }
