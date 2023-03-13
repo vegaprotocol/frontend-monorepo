@@ -10,7 +10,7 @@ Cypress.Commands.add(
 );
 
 const navigation = {
-  section: 'nav',
+  section: '[data-testid="navbar"]',
   vesting: '[href="/token/redeem"]',
   validators: '[href="/validators"]',
   rewards: '[href="/rewards"]',

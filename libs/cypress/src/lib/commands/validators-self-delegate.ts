@@ -1,6 +1,3 @@
-import { setGraphQLEndpoint } from '../capsule/request';
-import { createWalletClient } from '../capsule/wallet-client';
-import { createEthereumWallet } from '../capsule/ethereum-wallet';
 import { selfDelegate } from '../capsule/self-delegate';
 
 declare global {
@@ -8,46 +5,126 @@ declare global {
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      validatorsSelfDelegate(nodeNum: number): void;
+      validatorsSelfDelegate(): void;
     }
   }
 }
 
 export const addValidatorsSelfDelegate = () => {
-  Cypress.Commands.add('validatorsSelfDelegate', (nodeNum) => {
-    let vegaWalletPubKey;
-    let walletApiToken;
-    let nodeId;
-
-    if (nodeNum == 0) {
-      vegaWalletPubKey =
-        '203e708a2b7ea8612d6bcaba609e3ebda6b173339c6cb08045ce964204e9e395';
-      walletApiToken = Cypress.env('VEGA_WALLET_API_TOKEN_NODE0');
-      nodeId =
-        '721ad5a391efb43f619ea142c5169eb93063dab29f6d2ff0b6afe6a2e4088824';
-    } else if (nodeNum == 1) {
-      vegaWalletPubKey =
-        '94a55ed4d5a95ce6a5bec0b3aa4876de787bdd76d4d55dd749b9998d667f9829';
-      walletApiToken = Cypress.env('VEGA_WALLET_API_TOKEN_NODE1');
-      nodeId =
-        '629b93f83836b24e5f875482cd22c393d965bddbe17737449a31185edb6f932b';
-    } else {
-      throw new Error('Must specify node 0 or 1 to self delegate');
-    }
-
+  Cypress.Commands.add('validatorsSelfDelegate', () => {
     const config = {
-      vegaPubKey: vegaWalletPubKey,
-      token: walletApiToken,
       ethWalletMnemonic: Cypress.env('ETH_WALLET_MNEMONIC'),
       ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
       vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
       vegaUrl: Cypress.env('VEGA_URL'),
       faucetUrl: Cypress.env('FAUCET_URL'),
-      nodeId: nodeId,
     };
 
+    // Get node wallet recovery phrases
+    cy.exec('vegacapsule nodes ls --home-path ~/.vegacapsule/testnet/')
+      .its('stdout')
+      .then((result) => {
+        const obj = JSON.parse(result);
+        console.log(obj);
+        cy.writeFile(
+          './src/fixtures/wallet/node0RecoveryPhrase',
+          obj['testnet-nodeset-validators-0-validator'].Vega.NodeWalletInfo
+            .VegaWalletRecoveryPhrase
+        );
+        cy.writeFile(
+          './src/fixtures/wallet/node1RecoveryPhrase',
+          obj['testnet-nodeset-validators-1-validator'].Vega.NodeWalletInfo
+            .VegaWalletRecoveryPhrase
+        );
+        cy.wrap(
+          obj['testnet-nodeset-validators-0-validator'].Vega.NodeWalletInfo
+            .VegaWalletPublicKey
+        ).as('node0PubKey');
+        cy.wrap(
+          obj['testnet-nodeset-validators-1-validator'].Vega.NodeWalletInfo
+            .VegaWalletPublicKey
+        ).as('node1PubKey');
+
+        cy.wrap(
+          obj['testnet-nodeset-validators-0-validator'].Vega.NodeWalletInfo
+            .VegaWalletID
+        ).as('node0Id');
+        cy.wrap(
+          obj['testnet-nodeset-validators-1-validator'].Vega.NodeWalletInfo
+            .VegaWalletID
+        ).as('node1Id');
+      });
+
+    // Import node wallets
+    cy.exec(
+      'vega wallet import -w node0_wallet --recovery-phrase-file ./src/fixtures/wallet/node0RecoveryPhrase -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet'
+    );
+    cy.exec(
+      'vega wallet import -w node1_wallet --recovery-phrase-file ./src/fixtures/wallet/node1RecoveryPhrase -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet'
+    );
+
+    // Initialise api token
+    cy.exec(
+      'vega wallet api-token init --home ~/.vegacapsule/testnet/wallet --passphrase-file ./src/fixtures/wallet/passphrase'
+    );
+
+    // Generate api tokens for wallets
+    cy.exec(
+      'vega wallet api-token generate --wallet-name node0_wallet --tokens-passphrase-file ./src/fixtures/wallet/passphrase  --wallet-passphrase-file ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet'
+    )
+      .its('stdout')
+      .then((result) => {
+        const apiToken = result.match('[a-zA-Z0-9]{64}');
+        if (apiToken) {
+          cy.wrap(apiToken[0]).as('node0ApiToken');
+        }
+      });
+
+    cy.exec(
+      'vega wallet api-token generate --wallet-name node1_wallet --tokens-passphrase-file ./src/fixtures/wallet/passphrase  --wallet-passphrase-file ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet'
+    )
+      .its('stdout')
+      .then((result) => {
+        const apiToken = result.match('[a-zA-Z0-9]{64}');
+        if (apiToken) {
+          cy.wrap(apiToken[0]).as('node1ApiToken');
+        }
+      });
+
+    cy.updateCapsuleMultiSig();
     cy.highlight('Validators self-delegating');
 
-    selfDelegate(config);
+    // Self delegating Node 0 wallet
+    cy.get('@node0PubKey').then((node0PubKey) => {
+      cy.get('@node0ApiToken').then((node0ApiToken) => {
+        cy.get('@node0Id').then((node0Id) => {
+          cy.wrap(
+            selfDelegate(
+              config,
+              String(node0PubKey),
+              String(node0ApiToken),
+              String(node0Id)
+            ),
+            { timeout: 60000 }
+          );
+          // Self delegating Node 1 wallet
+          cy.get('@node1PubKey').then((node1PubKey) => {
+            cy.get('@node1ApiToken').then((node1ApiToken) => {
+              cy.get('@node1Id').then((node1Id) => {
+                cy.wrap(
+                  selfDelegate(
+                    config,
+                    String(node1PubKey),
+                    String(node1ApiToken),
+                    String(node1Id)
+                  ),
+                  { timeout: 60000 }
+                );
+              });
+            });
+          });
+        });
+      });
+    });
   });
 };

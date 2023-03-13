@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# Generate api tokens for validator wallets
-vega wallet api-token init --home ~/.vegacapsule/testnet/vega/node0 --passphrase-file  ~/.vegacapsule/testnet/vega/node0/vega-wallet-pass.txt
-echo "API token for Node 0 wallet"
-vega wallet api-token generate --wallet-name created-wallet --tokens-passphrase-file ~/.vegacapsule/testnet/vega/node0/vega-wallet-pass.txt  --wallet-passphrase-file ~/.vegacapsule/testnet/vega/node0/vega-wallet-pass.txt --home ~/.vegacapsule/testnet/vega/node0
-
-# Node 1 wallet
-vega wallet api-token init --home ~/.vegacapsule/testnet/vega/node1 --passphrase-file  ~/.vegacapsule/testnet/vega/node1/vega-wallet-pass.txt
-echo "API token for Node 1 wallet"
-vega wallet api-token generate --wallet-name created-wallet --tokens-passphrase-file ~/.vegacapsule/testnet/vega/node1/vega-wallet-pass.txt  --wallet-passphrase-file ~/.vegacapsule/testnet/vega/node1/vega-wallet-pass.txt --home ~/.vegacapsule/testnet/vega/node1
-
 # Initialise wallet
 vega wallet init -f --home ~/.vegacapsule/testnet/wallet
 

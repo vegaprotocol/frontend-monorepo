@@ -44,7 +44,7 @@ export async function createMarket(cfg: {
 
   // To participate in governance (in this case proposing and voting in a market)
   // you need to have staked (associated) some Vega with a Vega public key
-  await stakeForVegaPublicKey(cfg.vegaPubKey);
+  await stakeForVegaPublicKey(cfg.vegaPubKey, '10000');
 
   // Send some of the asset for the market to be proposed to the test pubkey
   const result = await faucetAsset(

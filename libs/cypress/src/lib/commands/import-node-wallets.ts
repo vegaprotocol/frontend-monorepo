@@ -10,14 +10,53 @@ declare global {
 
 export const addImportNodeWallets = () => {
   Cypress.Commands.add('importNodeWallets', () => {
-    // Import node wallets using recovery files generated from cy.getNodeWalletsRecoveryPhrase()
-    //cy.exec('vega wallet import -w node0_wallet --recovery-phrase-file ./src/fixtures/wallet/node0RecoveryPhrase -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet')
+    // Get node wallet recovery phrases
+    cy.exec('vegacapsule nodes ls --home-path ~/.vegacapsule/testnet/')
+      .its('stdout')
+      .then((result) => {
+        const obj = JSON.parse(result);
+        console.log(obj);
+        cy.writeFile(
+          './src/fixtures/wallet/node0RecoveryPhrase',
+          obj['testnet-nodeset-validators-0-validator'].Vega.NodeWalletInfo
+            .VegaWalletRecoveryPhrase
+        );
+        cy.writeFile(
+          './src/fixtures/wallet/node1RecoveryPhrase',
+          obj['testnet-nodeset-validators-1-validator'].Vega.NodeWalletInfo
+            .VegaWalletRecoveryPhrase
+        );
+        cy.wrap(
+          obj['testnet-nodeset-validators-0-validator'].Vega.NodeWalletInfo
+            .VegaWalletPublicKey
+        ).as('node0PubKey');
+        cy.wrap(
+          obj['testnet-nodeset-validators-1-validator'].Vega.NodeWalletInfo
+            .VegaWalletPublicKey
+        ).as('node1PubKey');
+
+        cy.wrap(
+          obj['testnet-nodeset-validators-0-validator'].Vega.NodeWalletInfo
+            .VegaWalletID
+        ).as('node0Id');
+        cy.wrap(
+          obj['testnet-nodeset-validators-1-validator'].Vega.NodeWalletInfo
+            .VegaWalletID
+        ).as('node1Id');
+      });
+
+    // Import node wallets
+    cy.exec(
+      'vega wallet import -w node0_wallet --recovery-phrase-file ./src/fixtures/wallet/node0RecoveryPhrase -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet'
+    );
     cy.exec(
       'vega wallet import -w node1_wallet --recovery-phrase-file ./src/fixtures/wallet/node1RecoveryPhrase -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet'
     );
 
     // Initialise api token
-    //cy.exec('vega wallet api-token init --home ~/.vegacapsule/testnet/wallet --passphrase-file ./src/fixtures/wallet/passphrase')
+    cy.exec(
+      'vega wallet api-token init --home ~/.vegacapsule/testnet/wallet --passphrase-file ./src/fixtures/wallet/passphrase'
+    );
 
     // Generate api tokens for wallets
     cy.exec(
