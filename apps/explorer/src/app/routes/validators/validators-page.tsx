@@ -305,18 +305,22 @@ export const ValidatorsPage = () => {
                           </div>
                         </KeyValueTableRow>
                         {v.avatarUrl && (
-                        <KeyValueTableRow>
-                          <div>{t('Avatar')}</div>
-                          <div>
-                        <ExternalLink href={validatorPage} className="mx-auto">
-                          <img
-                            className="max-w-[75px] md:max-w-[200px] max-h-[80px]"
-                            src={v.avatarUrl}
-                            alt={validatorName}
-                          />
-                        </ExternalLink>
-                          </div>
-                      </KeyValueTableRow>)}
+                          <KeyValueTableRow>
+                            <div>{t('Avatar')}</div>
+                            <div>
+                              <ExternalLink
+                                href={validatorPage}
+                                className="mx-auto"
+                              >
+                                <img
+                                  className="max-w-[75px] md:max-w-[200px] max-h-[80px]"
+                                  src={v.avatarUrl}
+                                  alt={validatorName}
+                                />
+                              </ExternalLink>
+                            </div>
+                          </KeyValueTableRow>
+                        )}
                       </KeyValueTable>
                     </div>
                   </div>
