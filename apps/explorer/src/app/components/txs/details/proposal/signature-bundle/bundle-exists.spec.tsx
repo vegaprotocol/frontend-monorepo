@@ -32,6 +32,7 @@ describe('Bundle Exists', () => {
               nonce={MOCK_NONCE}
               proposalId={MOCK_PROPOSAL_ID}
               signatures={MOCK_SIGNATURES}
+              assetAddress={'0x123413423'}
               status={status}
             />
           </MockedProvider>
@@ -52,6 +53,7 @@ describe('Bundle Exists', () => {
               nonce={MOCK_NONCE}
               proposalId={MOCK_PROPOSAL_ID}
               signatures={MOCK_SIGNATURES}
+              assetAddress={'0x123413423'}
               status={status}
             />
           </MockedProvider>

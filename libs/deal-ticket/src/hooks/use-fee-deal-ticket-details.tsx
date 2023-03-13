@@ -11,8 +11,6 @@ import { useMemo } from 'react';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
-  EST_CLOSEOUT_TOOLTIP_TEXT,
-  // EST_MARGIN_TOOLTIP_TEXT,
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
@@ -100,16 +98,13 @@ export interface FeeDetails {
 export const getFeeDetailsValues = ({
   balance,
   assetSymbol,
-  estCloseOut,
   estimateOrder,
-  margin,
   market,
   notionalSize,
   totalMargin,
 }: FeeDetails) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const formatValueWithMarketDp = (
     value: string | number | null | undefined
   ): string => {
@@ -192,12 +187,6 @@ export const getFeeDetailsValues = ({
       : `${formatValueWithAssetDp(balance)}`,
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
-  });
-  details.push({
-    label: t('Liquidation'),
-    value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
-    symbol: market.tradableInstrument.instrument.product.quoteName,
-    labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT(quoteName),
   });
   return details;
 };

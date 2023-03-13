@@ -19,12 +19,10 @@ const renderComponent = () => (
 );
 
 describe('Header', () => {
-  it('should render heading', () => {
+  it('should render navigation', () => {
     render(renderComponent());
 
-    expect(screen.getByTestId('explorer-header')).toHaveTextContent(
-      'Vega Explorer'
-    );
+    expect(screen.getByTestId('navigation')).toHaveTextContent('Explorer');
   });
   it('should render search', () => {
     render(renderComponent());

@@ -23,14 +23,18 @@ import { NetworkParameters } from './network-parameters';
 import type { RouteObject } from 'react-router-dom';
 import { MarketPage, MarketsPage } from './markets';
 
-export type Navigable = { path: string; name: string; text: string };
+export type Navigable = {
+  path: string;
+  name: string;
+  text: string;
+};
 type Route = RouteObject & Navigable;
 
 const partiesRoutes: Route[] = flags.parties
   ? [
       {
         path: Routes.PARTIES,
-        name: 'Parties',
+        name: t('Parties'),
         text: t('Parties'),
         element: <Party />,
         children: [
@@ -52,7 +56,7 @@ const assetsRoutes: Route[] = flags.assets
       {
         path: Routes.ASSETS,
         text: t('Assets'),
-        name: 'Assets',
+        name: t('Assets'),
         children: [
           {
             index: true,
@@ -71,7 +75,7 @@ const genesisRoutes: Route[] = flags.genesis
   ? [
       {
         path: Routes.GENESIS,
-        name: 'Genesis',
+        name: t('Genesis'),
         text: t('Genesis Parameters'),
         element: <Genesis />,
       },
@@ -82,7 +86,7 @@ const governanceRoutes: Route[] = flags.governance
   ? [
       {
         path: Routes.GOVERNANCE,
-        name: 'Governance proposals',
+        name: t('Governance proposals'),
         text: t('Governance Proposals'),
         element: <Proposals />,
       },
@@ -93,7 +97,7 @@ const marketsRoutes: Route[] = flags.markets
   ? [
       {
         path: Routes.MARKETS,
-        name: 'Markets',
+        name: t('Markets'),
         text: t('Markets'),
         children: [
           {
@@ -113,17 +117,18 @@ const networkParametersRoutes: Route[] = flags.networkParameters
   ? [
       {
         path: Routes.NETWORK_PARAMETERS,
-        name: 'NetworkParameters',
+        name: t('NetworkParameters'),
         text: t('Network Parameters'),
         element: <NetworkParameters />,
       },
     ]
   : [];
+
 const validators: Route[] = flags.validators
   ? [
       {
         path: Routes.VALIDATORS,
-        name: 'Validators',
+        name: t('Validators'),
         text: t('Validators'),
         element: <ValidatorsPage />,
       },
@@ -133,14 +138,14 @@ const validators: Route[] = flags.validators
 const routerConfig: Route[] = [
   {
     path: Routes.HOME,
-    name: 'Home',
+    name: t('Home'),
     text: t('Home'),
     element: <Home />,
     index: true,
   },
   {
     path: Routes.TX,
-    name: 'Txs',
+    name: t('Txs'),
     text: t('Transactions'),
     element: <Txs />,
     children: [
@@ -160,7 +165,7 @@ const routerConfig: Route[] = [
   },
   {
     path: Routes.BLOCKS,
-    name: 'Blocks',
+    name: t('Blocks'),
     text: t('Blocks'),
     element: <BlockPage />,
     children: [
@@ -176,7 +181,7 @@ const routerConfig: Route[] = [
   },
   {
     path: Routes.ORACLES,
-    name: 'Oracles',
+    name: t('Oracles'),
     text: t('Oracles'),
     element: <OraclePage />,
     children: [

@@ -54,7 +54,7 @@ const MobileWalletButton = ({
     ? 'hidden'
     : isYellow
     ? 'fill-black'
-    : 'fill-white';
+    : 'fill-black dark:fill-white';
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
   const walletButton = (

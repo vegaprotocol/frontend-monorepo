@@ -1,33 +1,27 @@
 context('Blocks page', { tags: '@regression' }, function () {
-  before('visit token home page', function () {
-    cy.visit('/');
-  });
-
   describe('Verify elements on page', function () {
-    const blockNavigation = 'a[href="/blocks"]';
+    beforeEach(() => {
+      cy.visit('/blocks');
+    });
     const blockHeight = '[data-testid="block-height"]';
     const blockTime = '[data-testid="block-time"]';
     const blockHeader = '[data-testid="block-header"]';
     const previousBlockBtn = '[data-testid="previous-block"]';
     const infiniteScrollWrapper = '[data-testid="infinite-scroll-wrapper"]';
 
-    beforeEach('navigate to blocks page', function () {
-      cy.get(blockNavigation).click();
-    });
-
     it('Blocks page is displayed', function () {
       validateBlocksDisplayed();
     });
 
     it('Blocks page is displayed on mobile', function () {
-      cy.common_switch_to_mobile_and_click_toggle();
-      cy.get(blockNavigation).click();
+      cy.switchToMobile();
       validateBlocksDisplayed();
     });
 
     it('Block validator page is displayed', function () {
       waitForBlocksResponse();
-      cy.get(blockHeight).eq(0).click();
+      cy.get(blockHeight).eq(0).find('a').click({ force: true });
+
       cy.get('[data-testid="block-validator"]').should('not.be.empty');
       cy.get(blockTime).should('not.be.empty');
       //TODO: Add assertion for transactions when txs are added
@@ -35,7 +29,7 @@ context('Blocks page', { tags: '@regression' }, function () {
 
     it('Navigate to previous block', function () {
       waitForBlocksResponse();
-      cy.get(blockHeight).eq(0).click();
+      cy.get(blockHeight).eq(0).find('a').click({ force: true });
       cy.get(blockHeader)
         .invoke('text')
         .then(($blockHeaderTxt) => {

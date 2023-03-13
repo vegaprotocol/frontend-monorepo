@@ -1,7 +1,7 @@
 import { toBigNum } from '@vegaprotocol/utils';
 import type { TrancheServiceResponse } from '@vegaprotocol/smart-contracts';
 import type BigNumber from 'bignumber.js';
-import create from 'zustand';
+import { create } from 'zustand';
 import { ENV } from '../../config';
 
 export interface Tranche {
@@ -36,7 +36,7 @@ export type TranchesStore = {
 
 const secondsToDate = (seconds: number) => new Date(seconds * 1000);
 
-export const useTranches = create<TranchesStore>((set) => ({
+export const useTranches = create<TranchesStore>()((set) => ({
   tranches: null,
   loading: false,
   error: null,

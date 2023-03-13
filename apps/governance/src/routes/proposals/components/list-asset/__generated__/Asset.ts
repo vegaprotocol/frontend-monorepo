@@ -7,44 +7,29 @@ export type ProposalAssetQueryVariables = Types.Exact<{
   assetId: Types.Scalars['ID'];
 }>;
 
-export type ProposalAssetQuery = {
-  __typename?: 'Query';
-  asset?: {
-    __typename?: 'Asset';
-    status: Types.AssetStatus;
-    source:
-      | { __typename?: 'BuiltinAsset' }
-      | { __typename?: 'ERC20'; contractAddress: string };
-  } | null;
-};
+
+export type ProposalAssetQuery = { __typename?: 'Query', asset?: { __typename?: 'Asset', status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } | null };
 
 export type AssetListBundleQueryVariables = Types.Exact<{
   assetId: Types.Scalars['ID'];
 }>;
 
-export type AssetListBundleQuery = {
-  __typename?: 'Query';
-  erc20ListAssetBundle?: {
-    __typename?: 'Erc20ListAssetBundle';
-    assetSource: string;
-    vegaAssetId: string;
-    nonce: string;
-    signatures: string;
-  } | null;
-};
+
+export type AssetListBundleQuery = { __typename?: 'Query', erc20ListAssetBundle?: { __typename?: 'Erc20ListAssetBundle', assetSource: string, vegaAssetId: string, nonce: string, signatures: string } | null };
+
 
 export const ProposalAssetDocument = gql`
-  query ProposalAsset($assetId: ID!) {
-    asset(id: $assetId) {
-      status
-      source {
-        ... on ERC20 {
-          contractAddress
-        }
+    query ProposalAsset($assetId: ID!) {
+  asset(id: $assetId) {
+    status
+    source {
+      ... on ERC20 {
+        contractAddress
       }
     }
   }
-`;
+}
+    `;
 
 /**
  * __useProposalAssetQuery__
@@ -62,50 +47,27 @@ export const ProposalAssetDocument = gql`
  *   },
  * });
  */
-export function useProposalAssetQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    ProposalAssetQuery,
-    ProposalAssetQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<ProposalAssetQuery, ProposalAssetQueryVariables>(
-    ProposalAssetDocument,
-    options
-  );
-}
-export function useProposalAssetLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    ProposalAssetQuery,
-    ProposalAssetQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<ProposalAssetQuery, ProposalAssetQueryVariables>(
-    ProposalAssetDocument,
-    options
-  );
-}
-export type ProposalAssetQueryHookResult = ReturnType<
-  typeof useProposalAssetQuery
->;
-export type ProposalAssetLazyQueryHookResult = ReturnType<
-  typeof useProposalAssetLazyQuery
->;
-export type ProposalAssetQueryResult = Apollo.QueryResult<
-  ProposalAssetQuery,
-  ProposalAssetQueryVariables
->;
+export function useProposalAssetQuery(baseOptions: Apollo.QueryHookOptions<ProposalAssetQuery, ProposalAssetQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProposalAssetQuery, ProposalAssetQueryVariables>(ProposalAssetDocument, options);
+      }
+export function useProposalAssetLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProposalAssetQuery, ProposalAssetQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProposalAssetQuery, ProposalAssetQueryVariables>(ProposalAssetDocument, options);
+        }
+export type ProposalAssetQueryHookResult = ReturnType<typeof useProposalAssetQuery>;
+export type ProposalAssetLazyQueryHookResult = ReturnType<typeof useProposalAssetLazyQuery>;
+export type ProposalAssetQueryResult = Apollo.QueryResult<ProposalAssetQuery, ProposalAssetQueryVariables>;
 export const AssetListBundleDocument = gql`
-  query AssetListBundle($assetId: ID!) {
-    erc20ListAssetBundle(assetId: $assetId) {
-      assetSource
-      vegaAssetId
-      nonce
-      signatures
-    }
+    query AssetListBundle($assetId: ID!) {
+  erc20ListAssetBundle(assetId: $assetId) {
+    assetSource
+    vegaAssetId
+    nonce
+    signatures
   }
-`;
+}
+    `;
 
 /**
  * __useAssetListBundleQuery__
@@ -123,37 +85,14 @@ export const AssetListBundleDocument = gql`
  *   },
  * });
  */
-export function useAssetListBundleQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    AssetListBundleQuery,
-    AssetListBundleQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<AssetListBundleQuery, AssetListBundleQueryVariables>(
-    AssetListBundleDocument,
-    options
-  );
-}
-export function useAssetListBundleLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    AssetListBundleQuery,
-    AssetListBundleQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    AssetListBundleQuery,
-    AssetListBundleQueryVariables
-  >(AssetListBundleDocument, options);
-}
-export type AssetListBundleQueryHookResult = ReturnType<
-  typeof useAssetListBundleQuery
->;
-export type AssetListBundleLazyQueryHookResult = ReturnType<
-  typeof useAssetListBundleLazyQuery
->;
-export type AssetListBundleQueryResult = Apollo.QueryResult<
-  AssetListBundleQuery,
-  AssetListBundleQueryVariables
->;
+export function useAssetListBundleQuery(baseOptions: Apollo.QueryHookOptions<AssetListBundleQuery, AssetListBundleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AssetListBundleQuery, AssetListBundleQueryVariables>(AssetListBundleDocument, options);
+      }
+export function useAssetListBundleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AssetListBundleQuery, AssetListBundleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AssetListBundleQuery, AssetListBundleQueryVariables>(AssetListBundleDocument, options);
+        }
+export type AssetListBundleQueryHookResult = ReturnType<typeof useAssetListBundleQuery>;
+export type AssetListBundleLazyQueryHookResult = ReturnType<typeof useAssetListBundleLazyQuery>;
+export type AssetListBundleQueryResult = Apollo.QueryResult<AssetListBundleQuery, AssetListBundleQueryVariables>;

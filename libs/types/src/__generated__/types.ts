@@ -1098,6 +1098,8 @@ export type InternalDataSourceKind = DataSourceSpecConfigurationTime;
 
 /** The interval for trade candles when subscribing via Vega GraphQL, default is I15M */
 export enum Interval {
+  /** The block interval is not a fixed amount of time, rather it used to indicate grouping of events that occur in a single block. It is usually about a second. */
+  INTERVAL_BLOCK = 'INTERVAL_BLOCK',
   /** 1 day interval */
   INTERVAL_I1D = 'INTERVAL_I1D',
   /** 1 hour interval */
@@ -3805,6 +3807,8 @@ export type StakeLinking = {
   __typename?: 'StakeLinking';
   /** The amount linked or unlinked */
   amount: Scalars['String'];
+  /** The (ethereum) block height of the link/unlink */
+  blockHeight: Scalars['String'];
   /** The time at which the stake linking was fully processed by the Vega network, null until defined */
   finalizedAt?: Maybe<Scalars['Timestamp']>;
   id: Scalars['ID'];

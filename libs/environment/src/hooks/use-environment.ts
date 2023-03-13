@@ -38,7 +38,7 @@ export type EnvStore = Env & Actions;
 export const STORAGE_KEY = 'vega_url';
 const SUBSCRIPTION_TIMEOUT = 3000;
 
-export const useEnvironment = create<EnvStore>((set, get) => ({
+export const useEnvironment = create<EnvStore>()((set, get) => ({
   ...compileEnvVars(),
   nodes: [],
   status: 'default',
