@@ -134,6 +134,10 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           headerName={t('Transfer type')}
           field="transferType"
           tooltipField="transferType"
+          filter={SetFilter}
+          filterParams={{
+            set: TransferTypeMapping,
+          }}
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<LedgerEntry, 'transferType'>) =>
@@ -147,14 +151,9 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
             value,
             data,
           }: VegaValueFormatterParams<LedgerEntry, 'quantity'>) => {
-            const marketDecimalPlaces = data?.marketSender?.decimalPlaces;
             const assetDecimalPlaces = data?.asset?.decimals || 0;
             return value
-              ? addDecimalsFormatNumber(
-                  value,
-                  assetDecimalPlaces,
-                  marketDecimalPlaces
-                )
+              ? addDecimalsFormatNumber(value, assetDecimalPlaces)
               : value;
           }}
         />
@@ -175,14 +174,9 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
             value,
             data,
           }: VegaValueFormatterParams<LedgerEntry, 'fromAccountBalance'>) => {
-            const marketDecimalPlaces = data?.marketSender?.decimalPlaces;
             const assetDecimalPlaces = data?.asset?.decimals || 0;
             return value
-              ? addDecimalsFormatNumber(
-                  value,
-                  assetDecimalPlaces,
-                  marketDecimalPlaces
-                )
+              ? addDecimalsFormatNumber(value, assetDecimalPlaces)
               : value;
           }}
         />
@@ -193,14 +187,9 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
             value,
             data,
           }: VegaValueFormatterParams<LedgerEntry, 'toAccountBalance'>) => {
-            const marketDecimalPlaces = data?.marketReceiver?.decimalPlaces;
             const assetDecimalPlaces = data?.asset?.decimals || 0;
             return value
-              ? addDecimalsFormatNumber(
-                  value,
-                  assetDecimalPlaces,
-                  marketDecimalPlaces
-                )
+              ? addDecimalsFormatNumber(value, assetDecimalPlaces)
               : value;
           }}
         />
