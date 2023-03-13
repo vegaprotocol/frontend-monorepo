@@ -18,6 +18,9 @@ const md = 'px-10 py-2 text-base';
 const lg = 'px-14 py-4';
 const fillClasses = 'block w-full';
 const defaultClasses = [
+  'px-10 py-2',
+  'text-base',
+  'text-center',
   'border-neutral-500',
   'bg-transparent',
   'enabled:hover:bg-neutral-500/20 dark:enabled:hover:bg-neutral-500/40',
