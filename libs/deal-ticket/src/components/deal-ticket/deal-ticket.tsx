@@ -41,7 +41,6 @@ import {
 
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
-import BigNumber from 'bignumber.js';
 
 export interface DealTicketProps {
   market: Market;
@@ -117,8 +116,8 @@ export const DealTicket = ({
       return;
     }
 
-    const hasNoBalance = new BigNumber(generalAccountBalance || 0).isEqualTo(0);
-    console.log({ generalAccountBalance });
+    const hasNoBalance =
+      generalAccountBalance === '0' || generalAccountBalance === '';
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
@@ -388,10 +387,10 @@ const SummaryMessage = memo(
 
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
-    if (BigInt(balance) < BigInt(margin) && BigInt(balance) !== BigInt(0)) {
+    if (BigInt(balance) < BigInt(margin)) {
       return (
         <div className="mb-2">
-          <MarginWarning balance={balance} margin={margin} asset={asset} />{' '}
+          <MarginWarning balance={balance} margin={margin} asset={asset} />
         </div>
       );
     }
