@@ -73,7 +73,7 @@ context(
               .should('be.visible')
               .and(
                 'have.text',
-                'Rewards are credited 5 minutes after the epoch ends.This delay is set by a network parameter'
+                'Rewards are credited less than a minute after the epoch ends.This delay is set by a network parameter'
               );
           });
           it('should have toggle for seeing total vs individual rewards', () => {
