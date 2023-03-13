@@ -523,6 +523,16 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
       <div>
         <h3 className="font-bold">{t('Transfer complete')}</h3>
         <p>{t('Your transaction has been confirmed ')}</p>
+        {tx.txHash && (
+          <p className="break-all">
+            <ExternalLink
+              href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
+              rel="noreferrer"
+            >
+              {t('View in block explorer')}
+            </ExternalLink>
+          </p>
+        )}
         <VegaTransactionDetails tx={tx} />
       </div>
     );
