@@ -83,8 +83,8 @@ function AppBody({ Component }: AppProps) {
       </Head>
       <Title />
       <div className={gridClasses}>
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
         <Banner />
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
         <ViewingBanner />
         <main data-testid={location.pathname}>
           <Component />
