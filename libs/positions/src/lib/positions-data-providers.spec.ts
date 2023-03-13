@@ -213,7 +213,6 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[0].marketDecimalPlaces).toEqual(5);
     expect(metrics[0].positionDecimalPlaces).toEqual(0);
     expect(metrics[0].decimals).toEqual(5);
-    expect(metrics[0].liquidationPrice).toEqual('169990');
     expect(metrics[0].lowMarginLevel).toEqual(false);
     expect(metrics[0].markPrice).toEqual('9431775');
     expect(metrics[0].marketId).toEqual(
@@ -242,7 +241,6 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[1].marketDecimalPlaces).toEqual(5);
     expect(metrics[1].positionDecimalPlaces).toEqual(0);
     expect(metrics[1].decimals).toEqual(5);
-    expect(metrics[1].liquidationPrice).toEqual('9830750');
     expect(metrics[1].lowMarginLevel).toEqual(false);
     expect(metrics[1].markPrice).toEqual('869762');
     expect(metrics[1].marketId).toEqual(
