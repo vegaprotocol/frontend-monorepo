@@ -8,13 +8,7 @@ context(
   function () {
     before('visit homepage', function () {
       cy.intercept('GET', '**/tranches/stats', { tranches });
-      cy.visit('/');
-    });
-
-    it('Able to navigate to tranches page', function () {
-      cy.navigate_to('supply');
-      cy.url().should('include', '/token/tranches');
-      cy.get('h1').should('contain.text', 'Vesting tranches');
+      cy.visit('/token/tranches');
     });
 
     // 1005-VEST-001

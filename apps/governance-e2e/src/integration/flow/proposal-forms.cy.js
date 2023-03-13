@@ -26,6 +26,10 @@ const enactmentDeadlineError =
   '[data-testid="enactment-before-voting-deadline"]';
 const proposalDownloadBtn = '[data-testid="proposal-download-json"]';
 const feedbackError = '[data-testid="Error"]';
+const viewProposalBtn = 'view-proposal-btn';
+const liquidityVoteStatus = 'liquidity-votes-status';
+const tokenVoteStatus = 'token-votes-status';
+const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
@@ -45,6 +49,7 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
+      cy.createMarket();
       cy.visit('/');
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
@@ -65,7 +70,7 @@ context(
       // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
-      cy.get(proposalParameterSelect).find('option').should('have.length', 116);
+      cy.get(proposalParameterSelect).find('option').should('have.length', 117);
       cy.get(proposalParameterSelect).select(
         // 3007-PNEC-002
         'governance_proposal_asset_minEnact'
@@ -175,9 +180,8 @@ context(
       cy.get(enactmentDeadlineError).should('not.exist');
     });
 
-    // Skipping because unclear what the required json is yet for new market proposal, will update once docs have been updated
-    // 3003-todo-PMAN-001
-    it.skip('Able to submit valid new market proposal', function () {
+    // 3003-PMAN-001
+    it('Able to submit valid new market proposal', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalTitle).type('Test new market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
@@ -199,6 +203,7 @@ context(
       cy.get(newProposalTitle).type('Test new market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
       cy.fixture('/proposals/new-market').then((newMarketProposal) => {
+        newMarketProposal.invalid = 'I am an invalid field';
         let newMarketPayload = JSON.stringify(newMarketProposal);
         cy.get(newProposalTerms).type(newMarketPayload, {
           parseSpecialCharSequences: false,
@@ -209,11 +214,66 @@ context(
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should(
         'have.text',
-        'Invalid params: the transaction is malformed'
+        'Invalid params: the transaction is not a valid Vega command: unknown field "invalid" in vega.NewMarket'
       );
     });
 
-    it.skip('Able to submit update market proposal', function () {
+    // Will fail if run after 'Able to submit update market proposal and vote for proposal'
+    // 3002-PROP-022
+    it('Unable to submit update market proposal without equity-like share in the market', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
+      cy.get(newProposalTitle).type('Test update market proposal - rejected');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.get(proposalMarketSelect).select('Test market 1');
+      cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
+        let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
+        cy.get(newProposalTerms).type(newUpdateMarketProposal, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
+      cy.getByTestId('dialog-content')
+        .find('p')
+        .should('have.text', 'PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE');
+      cy.ensure_specified_unstaked_tokens_are_associated('1');
+    });
+
+    // 3002-PROP-020
+    it('Unable to submit update market proposal without minimum amount of tokens', function () {
+      cy.vega_wallet_teardown();
+      cy.vega_wallet_faucet_assets_without_check(
+        'fUSDC',
+        '1000000',
+        vegaWalletPublicKey
+      );
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
+      cy.get(newProposalTitle).type('Test update market proposal - rejected');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.get(proposalMarketSelect).select('Test market 1');
+      cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
+        let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
+        cy.get(newProposalTerms).type(newUpdateMarketProposal, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Transaction failed', proposalTimeout).should('be.visible');
+      cy.get(feedbackError).should(
+        'have.text',
+        'Network error: the network blocked the transaction through the spam protection: party has insufficient associated governance tokens in their staking account to submit proposal request (ABCI code 89)'
+      );
+    });
+
+    // 3001-VOTE-092
+    it('Able to submit update market proposal and vote for proposal', function () {
+      cy.vega_wallet_faucet_assets_without_check(
+        'fUSDC',
+        '1000000',
+        vegaWalletPublicKey
+      );
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
       cy.get(newProposalTitle).type('Test update market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
@@ -222,6 +282,10 @@ context(
         cy.get('dd').eq(0).should('have.text', 'Test market 1');
         cy.get('dd').eq(1).should('have.text', 'TEST.24h');
         cy.get('dd').eq(2).should('not.be.empty');
+        cy.get('dd').eq(2).invoke('text').as('EnactedMarketId');
+      });
+      cy.get('@EnactedMarketId').then((marketId) => {
+        cy.VegaWalletSubmitLiquidityProvision(marketId, '1');
       });
       cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
         let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
@@ -232,6 +296,34 @@ context(
       });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
+      cy.navigate_to('proposals');
+      cy.get('@EnactedMarketId').then((marketId) => {
+        cy.contains(marketId)
+          .parentsUntil(proposalListItem)
+          .within(() => {
+            cy.getByTestId(viewProposalBtn).click();
+          });
+      });
+      cy.getByTestId(liquidityVoteStatus).should(
+        'contain.text',
+        'Currently expected to fail'
+      );
+      cy.getByTestId(tokenVoteStatus).should(
+        'contain.text',
+        'Currently expected to fail'
+      );
+      cy.vote_for_proposal('for');
+      cy.getByTestId(liquidityVoteStatus).should(
+        'contain.text',
+        'Currently expected to pass'
+      );
+      cy.getByTestId(tokenVoteStatus).should(
+        'contain.text',
+        'Currently expected to pass'
+      );
+      cy.get_proposal_information_from_table('Expected to pass')
+        .contains('👍 by Token vote')
+        .should('be.visible');
     });
 
     // 3001-VOTE-026 3001-VOTE-027  3001-VOTE-028 3001-VOTE-095 3001-VOTE-096 3005-PASN-001
@@ -298,7 +390,7 @@ context(
           .parentsUntil(proposalListItem)
           .within(() => {
             cy.get(proposalDetails).should('contain.text', assetId); // 3001-VOTE-029
-            cy.getByTestId('view-proposal-btn').click();
+            cy.getByTestId(viewProposalBtn).click();
           });
       });
       cy.get_proposal_information_from_table('Proposed enactment') // 3001-VOTE-044

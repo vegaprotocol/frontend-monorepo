@@ -37,6 +37,7 @@ export const TOKEN_DROPDOWN_ROUTES = [
   {
     name: 'Token',
     path: Routes.TOKEN,
+    end: true,
   },
   {
     name: 'Supply & Vesting',

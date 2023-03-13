@@ -14,13 +14,14 @@ const stakeShare = '[data-testid="stake-percentage"]';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletUnstakedBalance =
-  '[data-testid="vega-wallet-balance-unstaked"]';
+  '[data-testid="vega-wallet-balance-unstaked"]:visible';
 const vegaWalletStakedBalances =
   '[data-testid="vega-wallet-balance-staked-validators"]';
 const ethWalletAssociatedBalances =
   '[data-testid="eth-wallet-associated-balances"]';
-const ethWalletTotalAssociatedBalance = '[data-testid="currency-locked"]';
-const ethWalletContainer = '[data-testid="ethereum-wallet"]';
+const ethWalletTotalAssociatedBalance =
+  '[data-testid="currency-locked"]:visible';
+const ethWalletContainer = '[data-testid="ethereum-wallet"]:visible';
 const vegaWallet = '[data-testid="vega-wallet"]';
 const partValidatorId = '…';
 const txTimeout = Cypress.env('txTimeout');

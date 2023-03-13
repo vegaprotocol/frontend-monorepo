@@ -1,10 +1,12 @@
 import { Loader } from '@vegaprotocol/ui-toolkit';
+import type { ProposalTerms } from '../tx-proposal';
 import { BundleError } from './signature-bundle/bundle-error';
 import { BundleExists } from './signature-bundle/bundle-exists';
 import { useExplorerNewAssetSignatureBundleQuery } from './__generated__/SignatureBundle';
 
 export interface ProposalSignatureBundleByTypeProps {
   id: string;
+  tx?: ProposalTerms['newAsset'] | ProposalTerms['updateAsset'];
 }
 
 /**
@@ -16,6 +18,7 @@ export interface ProposalSignatureBundleByTypeProps {
  */
 export const ProposalSignatureBundleNewAsset = ({
   id,
+  tx,
 }: ProposalSignatureBundleByTypeProps) => {
   const { data, error, loading } = useExplorerNewAssetSignatureBundleQuery({
     variables: {
@@ -24,7 +27,20 @@ export const ProposalSignatureBundleNewAsset = ({
   });
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="w-auto max-w-lg p-5 mt-5">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (
+    !tx?.changes?.erc20 ||
+    !tx?.changes?.erc20 ||
+    !('contractAddress' in tx.changes.erc20) ||
+    tx.changes.erc20.contractAddress === undefined
+  ) {
+    return null;
   }
 
   if (data?.erc20ListAssetBundle?.signatures) {
@@ -32,8 +48,10 @@ export const ProposalSignatureBundleNewAsset = ({
       <BundleExists
         signatures={data.erc20ListAssetBundle.signatures}
         nonce={data.erc20ListAssetBundle.nonce}
+        assetAddress={tx.changes.erc20.contractAddress}
         status={data.asset?.status}
         proposalId={id}
+        tx={tx}
       />
     );
   } else {

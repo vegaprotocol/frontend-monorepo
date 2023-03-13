@@ -54,7 +54,6 @@ const mockAppState: AppState = {
   vegaWalletOverlay: false,
   vegaWalletManageOverlay: false,
   ethConnectOverlay: false,
-  drawerOpen: false,
   transactionOverlay: false,
   bannerMessage: '',
 };

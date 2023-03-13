@@ -86,7 +86,7 @@ export const rows: Rows = [
     key: AssetDetail.QUANTUM,
     label: t('Quantum'),
     tooltip: t('The minimum economically meaningful amount of the asset'),
-    value: (asset) => asset.quantum,
+    value: (asset) => num(asset, asset.quantum),
   },
   {
     key: AssetDetail.STATUS,

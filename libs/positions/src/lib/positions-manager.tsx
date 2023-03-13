@@ -1,21 +1,25 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import type { Position } from '../';
 import { usePositionsData, PositionsTable } from '../';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
+import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 
 interface PositionsManagerProps {
   partyId: string;
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
+  noBottomPlaceholder?: boolean;
 }
 
 export const PositionsManager = ({
   partyId,
   onMarketClick,
   isReadOnly,
+  noBottomPlaceholder,
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, reload } = usePositionsData(
@@ -52,6 +56,18 @@ export const PositionsManager = ({
         ],
       },
     });
+
+  const setId = useCallback((data: Position) => {
+    return {
+      ...data,
+      marketId: `${data.marketId}-1`,
+    };
+  }, []);
+  const bottomPlaceholderProps = useBottomPlaceholder<Position>({
+    gridRef,
+    setId,
+  });
+
   return (
     <div className="h-full relative">
       <PositionsTable
@@ -61,6 +77,7 @@ export const PositionsManager = ({
         onClose={onClose}
         noRowsOverlayComponent={() => null}
         isReadOnly={isReadOnly}
+        {...(noBottomPlaceholder ? null : bottomPlaceholderProps)}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
