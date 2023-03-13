@@ -11,7 +11,10 @@ export const Footer = () => {
   const setNodeSwitcher = useGlobalStore(
     (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
   );
-  const { blockDiff, datanodeBlockHeight } = useNodeHealth();
+  const { blockDiff, datanodeBlockHeight, datanodeVegaTime } = useNodeHealth();
+  const blockUpdateMsLatency = datanodeVegaTime
+    ? Date.now() - datanodeVegaTime.valueOf()
+    : 0;
 
   return (
     <footer className="px-4 py-1 text-xs border-t border-default text-vega-light-300 dark:text-vega-dark-300 lg:fixed bottom-0 left-0 border-r bg-white dark:bg-black">
@@ -22,6 +25,7 @@ export const Footer = () => {
             url={VEGA_URL}
             blockHeight={datanodeBlockHeight}
             blockDiff={blockDiff}
+            blockUpdateMsLatency={blockUpdateMsLatency}
             onClick={() => setNodeSwitcher(true)}
           />
         )}
@@ -34,6 +38,7 @@ interface NodeHealthProps {
   blockHeight: number | undefined;
   blockDiff: number | null;
   onClick: () => void;
+  blockUpdateMsLatency: number;
 }
 
 export const NodeHealth = ({
@@ -41,11 +46,15 @@ export const NodeHealth = ({
   blockHeight,
   blockDiff,
   onClick,
+  blockUpdateMsLatency,
 }: NodeHealthProps) => {
   return (
     <FooterButton onClick={onClick} data-testid="node-health">
       <FooterButtonPart>
-        <HealthIndicator blockDiff={blockDiff} />
+        <HealthIndicator
+          blockDiff={blockDiff}
+          blockUpdateMsLatency={blockUpdateMsLatency}
+        />
       </FooterButtonPart>
       <FooterButtonPart>
         <NodeUrl url={url} />
@@ -70,13 +79,19 @@ export const NodeUrl = ({ url }: NodeUrlProps) => {
 
 interface HealthIndicatorProps {
   blockDiff: number | null;
+  blockUpdateMsLatency: number;
 }
 
 // How many blocks behind the most advanced block that is
 // deemed acceptable for "Good" status
 const BLOCK_THRESHOLD = 3;
+const ERROR_LATENCY = 20000;
+const WARNING_LATENCY = 10000;
 
-export const HealthIndicator = ({ blockDiff }: HealthIndicatorProps) => {
+export const HealthIndicator = ({
+  blockDiff,
+  blockUpdateMsLatency,
+}: HealthIndicatorProps) => {
   const online = useNavigatorOnline();
 
   let intent = Intent.Success;
@@ -89,8 +104,20 @@ export const HealthIndicator = ({ blockDiff }: HealthIndicatorProps) => {
     // Block height query failed and null was returned
     text = t('Non operational');
     intent = Intent.Danger;
+  } else if (blockUpdateMsLatency > ERROR_LATENCY) {
+    text = t('Erroneous latency ( >%s sec): %s sec', [
+      (ERROR_LATENCY / 1000).toFixed(2),
+      (blockUpdateMsLatency / 1000).toFixed(2),
+    ]);
+    intent = Intent.Danger;
   } else if (blockDiff >= BLOCK_THRESHOLD) {
     text = t(`${blockDiff} Blocks behind`);
+    intent = Intent.Warning;
+  } else if (blockUpdateMsLatency > WARNING_LATENCY) {
+    text = t('Warning delay ( >%s sec): %s sec', [
+      (WARNING_LATENCY / 1000).toFixed(2),
+      (blockUpdateMsLatency / 1000).toFixed(2),
+    ]);
     intent = Intent.Warning;
   }
 
