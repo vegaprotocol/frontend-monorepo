@@ -27,22 +27,6 @@ runs:
       shell: bash
       run: vegacapsule network bootstrap --config-path=./frontend-monorepo/vegacapsule/config.hcl --force
 
-    - name: Init api-token Node 0
-      shell: bash
-      run: vega wallet api-token init --home ~/.vegacapsule/testnet/vega/node0 --passphrase-file  ~/.vegacapsule/testnet/vega/node0/vega-wallet-pass.txt
-
-    - name: Generate api-token Node 0
-      shell: bash
-      run: echo api-token-node0=$(vega wallet api-token generate --wallet-name created-wallet --tokens-passphrase-file ~/.vegacapsule/testnet/vega/node0/vega-wallet-pass.txt  --wallet-passphrase-file ~/.vegacapsule/testnet/vega/node0/vega-wallet-pass.txt --home ~/.vegacapsule/testnet/vega/node0 | grep -Eo '[a-zA-Z0-9]{64}') >> $GITHUB_OUTPUT
-
-    - name: Init api-token Node 1
-      shell: bash
-      run: vega wallet api-token init --home ~/.vegacapsule/testnet/vega/node1 --passphrase-file  ~/.vegacapsule/testnet/vega/node1/vega-wallet-pass.txt
-
-    - name: Generate api-token Node 1
-      shell: bash
-      run: echo api-token-node1=$(vega wallet api-token generate --wallet-name created-wallet --tokens-passphrase-file ~/.vegacapsule/testnet/vega/node1/vega-wallet-pass.txt  --wallet-passphrase-file ~/.vegacapsule/testnet/vega/node1/vega-wallet-pass.txt --home ~/.vegacapsule/testnet/vega/node1 | grep -Eo '[a-zA-Z0-9]{64}') >> $GITHUB_OUTPUT
-
     - name: Initialize wallet
       shell: bash
       run: vega wallet init -f --home ~/.vegacapsule/testnet/wallet

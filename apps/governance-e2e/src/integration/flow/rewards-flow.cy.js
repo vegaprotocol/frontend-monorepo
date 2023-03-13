@@ -8,7 +8,7 @@ const txTimeout = Cypress.env('txTimeout');
 const rewardsTimeOut = { timeout: 60000 };
 
 context('rewards - flow', { tags: '@slow' }, function () {
-  before('set up', function () {
+  before('set up environment to allow rewards', function () {
     cy.visit('/');
     cy.wait_for_spinner();
     cy.deposit_asset(vegaAssetAddress, '1000');
