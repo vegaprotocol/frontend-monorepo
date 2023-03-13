@@ -38,19 +38,6 @@ const Party = () => {
 
   const p = partyRes.data?.partiesConnection?.edges[0].node;
 
-  const header = p?.id ? (
-    <PageHeader
-      title={p.id}
-      copy
-      truncateStart={visibleChars}
-      truncateEnd={visibleChars}
-    />
-  ) : (
-    <Panel>
-      <p>No data found for public key {party}</p>
-    </Panel>
-  );
-
   const staking = (
     <section>
       {p?.stakingSummary?.currentStakeAvailable ? (
@@ -76,29 +63,35 @@ const Party = () => {
       >
         {t('Public key')}
       </h1>
+      <PageHeader
+        title={partyId}
+        copy
+        truncateStart={visibleChars}
+        truncateEnd={visibleChars}
+      />
       <AsyncRenderer
-        error={error}
-        loading={!!loading}
-        data={partyRes.data}
-        noDataMessage={t('No details found for Party')}
+        data={accounts}
+        error={partyRes.error}
+        errorMessage={t('Could not load accounts')}
+        noDataCondition={(data) => !data || data.length === 0}
+        loading={partyRes.loading}
+        loadingMessage={t('Loading accounts for') + ` ${partyId}`}
       >
-        <>
-          {header}
-          <SubHeading>{t('Asset data')}</SubHeading>
-          {accounts ? <PartyAccounts accounts={accounts} /> : null}
-          {staking}
-
-          <SubHeading>{t('Transactions')}</SubHeading>
-          <TxsInfiniteList
-            hasMoreTxs={hasMoreTxs}
-            areTxsLoading={loading}
-            txs={txsData}
-            loadMoreTxs={loadTxs}
-            error={error}
-            className="mb-28"
-          />
-        </>
+        <SubHeading>{t('Asset data')}</SubHeading>
+        {accounts ? <PartyAccounts accounts={accounts} /> : null}
       </AsyncRenderer>
+
+      {staking}
+
+      <SubHeading>{t('Transactions')}</SubHeading>
+      <TxsInfiniteList
+        hasMoreTxs={hasMoreTxs}
+        areTxsLoading={loading}
+        txs={txsData}
+        loadMoreTxs={loadTxs}
+        error={error}
+        className="mb-28"
+      />
     </section>
   );
 };
