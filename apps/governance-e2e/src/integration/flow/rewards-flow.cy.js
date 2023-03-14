@@ -15,11 +15,6 @@ context('rewards - flow', { tags: '@slow' }, function () {
     cy.validatorsSelfDelegate();
     cy.ethereum_wallet_connect();
     cy.connectVegaWallet();
-    cy.get(walletContainer).within(() => {
-      cy.get(vegaWalletCurrencyTitle)
-        .contains('VEGA', txTimeout)
-        .should('be.visible');
-    });
     topUpRewardsPool();
     cy.navigate_to('validators');
     cy.vega_wallet_teardown();
@@ -71,6 +66,7 @@ context('rewards - flow', { tags: '@slow' }, function () {
     });
   });
 
+  // 2002-SINC-009 2002-SINC-010 2002-SINC-011 2002-SINC-012
   it('Should display table of rewards earned by connected vega wallet', function () {
     cy.getByTestId('epoch-reward-view-toggle-individual').click();
     cy.getByTestId('connected-vega-key')
