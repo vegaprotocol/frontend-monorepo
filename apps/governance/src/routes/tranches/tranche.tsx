@@ -1,7 +1,6 @@
 import {
   KeyValueTable,
   KeyValueTableRow,
-  Link,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { Link as RouterLink } from 'react-router-dom';
@@ -11,7 +10,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { formatNumber } from '@vegaprotocol/utils';
 
-import { EtherscanLink, useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
@@ -19,7 +18,6 @@ import { useTranches } from '../../lib/tranches/tranches-store';
 
 export const Tranche = () => {
   const tranches = useTranches((state) => state.tranches);
-  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { trancheId } = useParams<{ trancheId: string; address: string }>();
   const { chainId } = useWeb3React();
