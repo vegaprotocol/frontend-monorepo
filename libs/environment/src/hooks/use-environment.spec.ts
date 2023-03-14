@@ -36,11 +36,16 @@ const createDefaultMockClient = () => {
 
 global.fetch = jest.fn();
 // eslint-disable-next-line
-const setupFetch = (result: any) => {
+const setupFetch = ({ hosts }: any) => {
+  const result = `
+  [API]
+      [API.GraphQL]
+          Hosts = ${JSON.stringify(hosts)}
+  `;
   return () => {
     return Promise.resolve({
       ok: true,
-      json: () => Promise.resolve(result),
+      text: () => Promise.resolve(result),
     });
   };
 };
@@ -102,7 +107,7 @@ describe('useEnvironment', () => {
   };
 
   it('exposes env vars and sets VEGA_URL from config nodes', async () => {
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     const nodes = [
       'https://api.n00.foo.vega.xyz',
@@ -137,7 +142,7 @@ describe('useEnvironment', () => {
 
   it('uses the first successfully responding node', async () => {
     jest.useFakeTimers();
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
 
     const slowNode = 'https://api.n00.foo.vega.xyz';
@@ -204,7 +209,7 @@ describe('useEnvironment', () => {
   });
 
   it('passes a node if both queries and subscriptions working', async () => {
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     const successNode = 'https://api.n01.foo.vega.xyz';
     const failNode = 'https://api.n00.foo.vega.xyz';
@@ -254,7 +259,7 @@ describe('useEnvironment', () => {
   });
 
   it('fails initialization if no suitable node is found', async () => {
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     const nodes = [
       'https://api.n00.foo.vega.xyz',
@@ -345,7 +350,7 @@ describe('useEnvironment', () => {
   });
 
   it('allows for undefined VEGA_URL if VEGA_CONFIG_URL is set', async () => {
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     process.env['NX_VEGA_URL'] = undefined;
     const nodes = [
@@ -365,7 +370,7 @@ describe('useEnvironment', () => {
   });
 
   it('handles error if node config cannot be fetched', async () => {
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     process.env['NX_VEGA_URL'] = undefined;
     // @ts-ignore setup mock fetch for config url
@@ -385,7 +390,7 @@ describe('useEnvironment', () => {
   });
 
   it('handles an invalid node config', async () => {
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     process.env['NX_VEGA_URL'] = undefined;
     // @ts-ignore: typscript doesn't recognise the mock implementation
@@ -403,7 +408,7 @@ describe('useEnvironment', () => {
   });
 
   it('uses stored url', async () => {
-    const configUrl = 'https://vega.xyz/testnet-config.json';
+    const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     // @ts-ignore setup mock fetch for config url
     global.fetch.mockImplementation(
@@ -434,40 +439,5 @@ describe('useEnvironment', () => {
     });
     expect(result.current.VEGA_URL).toBe(newUrl);
     expect(localStorage.getItem(STORAGE_KEY)).toBe(newUrl);
-  });
-
-  it('can fetch and parse toml network files', async () => {
-    process.env['NX_VEGA_CONFIG_URL'] =
-      'https://raw.githubusercontent.com/mainnet1.toml';
-    const textContent1 = `
-    [API]
-        [API.GraphQL]
-            Hosts = [
-              "http://t1.vega.community",
-              "http://t2.vega.community",
-            ]
-    `;
-
-    const jsonSpy = jest.fn();
-    const textSpy = jest.fn(() => Promise.resolve(textContent1));
-    (global.fetch as jest.Mock).mockImplementation(() => {
-      return Promise.resolve({
-        ok: true,
-        json: jsonSpy,
-        text: textSpy,
-      });
-    });
-    const { result } = setup();
-    await act(async () => {
-      result.current.initialize();
-    });
-    await waitFor(() => {
-      expect(jsonSpy).not.toHaveBeenCalled();
-      expect(textSpy).toHaveBeenCalled();
-      expect(result.current.nodes).toEqual([
-        'http://t1.vega.community',
-        'http://t2.vega.community',
-      ]);
-    });
   });
 });

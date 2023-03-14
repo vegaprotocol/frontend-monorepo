@@ -163,22 +163,15 @@ export const useInitializeEnv = () => {
 const fetchConfig = async (url?: string) => {
   if (!url) return [];
   const res = await fetch(url);
-  let cfg: Record<string, unknown>;
-  if (url.match(/github(.+)\.toml$/)) {
-    const content = await res.text();
-    const parsed = tomlParse(content);
-    const tomlResults = tomlConfigSchema.parse(parsed);
-    const {
-      API: {
-        GraphQL: { Hosts: hosts },
-      },
-    } = tomlResults;
-    cfg = { hosts };
-  } else {
-    cfg = await res.json();
-  }
-  const result = configSchema.parse(cfg);
-  return result.hosts;
+  const content = await res.text();
+  const parsed = tomlParse(content);
+  const tomlResults = tomlConfigSchema.parse(parsed);
+  const {
+    API: {
+      GraphQL: { Hosts },
+    },
+  } = tomlResults;
+  return Hosts;
 };
 
 /**
