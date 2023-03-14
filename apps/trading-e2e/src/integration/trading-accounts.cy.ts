@@ -22,24 +22,25 @@ describe('accounts', { tags: '@smoke' }, () => {
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="breakdown"] [data-testid="breakdown"]')
-      .should('have.text', 'Breakdown');
+      .find('[col-id="accounts-actions"]')
+      .should('have.text', 'DepositWithdraw');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="breakdown"] [data-testid="deposit"]')
+      .find('[data-testid="deposit"]')
       .should('have.text', 'Deposit');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="breakdown"] [data-testid="withdraw"]')
+      .find('[col-id="accounts-actions"] [data-testid="withdraw"]')
       .should('have.text', 'Withdraw');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[col-id="deposited"]')
+      .find('[col-id="total"]')
       .should('have.text', '100,001.01');
   });
+
   describe('sorting by ag-grid columns should work well', () => {
     it('sorting by asset', () => {
       cy.getByTestId('Collateral').click();
@@ -78,7 +79,7 @@ describe('accounts', { tags: '@smoke' }, () => {
         '1,000.00',
       ];
       checkSorting(
-        'deposited',
+        'total',
         marketsSortedDefault,
         marketsSortedAsc,
         marketsSortedDesc
@@ -87,9 +88,27 @@ describe('accounts', { tags: '@smoke' }, () => {
 
     it('sorting by used', () => {
       cy.getByTestId('Collateral').click();
-      const marketsSortedDefault = ['0.00', '1.01', '0.01', '0.00', '0.00'];
-      const marketsSortedAsc = ['0.00', '0.00', '0.00', '0.01', '1.01'];
-      const marketsSortedDesc = ['1.01', '0.01', '0.00', '0.00', '0.00'];
+      const marketsSortedDefault = [
+        '0.000.00%',
+        '1.010.00%',
+        '0.010.00%',
+        '0.000.00%',
+        '0.000.00%',
+      ];
+      const marketsSortedAsc = [
+        '0.000.00%',
+        '0.000.00%',
+        '0.000.00%',
+        '0.010.00%',
+        '1.010.00%',
+      ];
+      const marketsSortedDesc = [
+        '1.010.00%',
+        '0.010.00%',
+        '0.000.00%',
+        '0.000.00%',
+        '0.000.00%',
+      ];
       checkSorting(
         'used',
         marketsSortedDefault,
@@ -98,32 +117,32 @@ describe('accounts', { tags: '@smoke' }, () => {
       );
     });
 
-    it('sorting by available', () => {
+    it('sorting by total', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
         '1,000.00002',
-        '100,000.00',
-        '1,000.00',
+        '100,001.01',
+        '1,000.01',
         '1,000.00',
         '1,000.00001',
       ];
       const marketsSortedAsc = [
         '1,000.00',
-        '1,000.00',
         '1,000.00001',
         '1,000.00002',
-        '100,000.00',
+        '1,000.01',
+        '100,001.01',
       ];
       const marketsSortedDesc = [
-        '100,000.00',
+        '100,001.01',
+        '1,000.01',
         '1,000.00002',
         '1,000.00001',
-        '1,000.00',
         '1,000.00',
       ];
 
       checkSorting(
-        'available',
+        'total',
         marketsSortedDefault,
         marketsSortedAsc,
         marketsSortedDesc

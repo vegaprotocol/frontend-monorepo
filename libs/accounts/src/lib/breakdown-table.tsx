@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   Intent,
@@ -13,6 +13,7 @@ import type { ValueProps } from '@vegaprotocol/ui-toolkit';
 import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import { AgGridDynamic as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
 import type { ValueFormatterParams } from 'ag-grid-community';
+import { accountValuesComparator } from './accounts-table';
 
 export const progressBarValueFormatter = ({
   data,
@@ -23,22 +24,14 @@ export const progressBarValueFormatter = ({
   }
   const min = BigInt(data.used);
   const mid = BigInt(data.available);
-  const max = BigInt(data.deposited);
+  const max = BigInt(data.total);
   const range = max > min ? max : min;
   return {
-    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals, 4),
-    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals, 4),
+    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),
+    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals),
     value: range ? Number((min * BigInt(100)) / range) : 0,
     intent: Intent.Warning,
   };
-};
-
-export const progressBarHeaderComponentParams = {
-  template:
-    '<div class="ag-cell-label-container" role="presentation">' +
-    `  <span>${t('Available')}</span>` +
-    '  <span ref="eText" class="ag-header-cell-text"></span>' +
-    '</div>',
 };
 
 interface BreakdownTableProps extends AgGridReactProps {
@@ -62,8 +55,23 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         defaultColDef={{
           flex: 1,
           resizable: true,
+          sortable: true,
         }}
       >
+        <AgGridColumn
+          headerName={t('Market')}
+          field="market.tradableInstrument.instrument.name"
+          valueFormatter={({
+            value,
+          }: VegaValueFormatterParams<
+            AccountFields,
+            'market.tradableInstrument.instrument.name'
+          >) => {
+            if (!value) return 'None';
+            return value;
+          }}
+          minWidth={200}
+        />
         <AgGridColumn
           headerName={t('Account type')}
           field="type"
@@ -76,42 +84,15 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
               : ''
           }
         />
+
         <AgGridColumn
-          headerName={t('Market')}
-          field="market.tradableInstrument.instrument.name"
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<
-            AccountFields,
-            'market.tradableInstrument.instrument.name'
-          >) => {
-            if (!value) return '-';
-            return value;
-          }}
-          minWidth={200}
-        />
-        <AgGridColumn
-          headerName={t('Used')}
+          headerName={t('Balance')}
           field="used"
           flex={2}
           maxWidth={500}
-          headerComponentParams={progressBarHeaderComponentParams}
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
-        />
-        <AgGridColumn
-          headerName={t('Balance')}
-          field="balance"
-          valueFormatter={({
-            value,
-            data,
-          }: VegaValueFormatterParams<AccountFields, 'balance'>) => {
-            if (data && data.asset && isNumeric(value)) {
-              return addDecimalsFormatNumber(value, data.asset.decimals);
-            }
-            return '-';
-          }}
-          maxWidth={300}
+          comparator={accountValuesComparator}
         />
       </AgGrid>
     );

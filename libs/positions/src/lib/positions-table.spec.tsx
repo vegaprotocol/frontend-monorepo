@@ -17,7 +17,6 @@ const singleRow: Position = {
   decimals: 2,
   totalBalance: '123456',
   assetSymbol: 'BTC',
-  liquidationPrice: '83',
   lowMarginLevel: false,
   marketId: 'string',
   marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -50,7 +49,7 @@ it('render correct columns', async () => {
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(12);
+  expect(headers).toHaveLength(11);
   expect(
     headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
   ).toEqual([
@@ -60,7 +59,6 @@ it('render correct columns', async () => {
     'Mark price',
     'Settlement asset',
     'Entry price',
-    'Liquidation price (est)',
     'Leverage',
     'Margin allocated',
     'Realised PNL',
@@ -146,33 +144,12 @@ it('displays mark price', async () => {
   expect(cells[3].textContent).toEqual('-');
 });
 
-it("displays properly entry, liquidation price and liquidation bar and it's intent", async () => {
-  let result: RenderResult;
-  await act(async () => {
-    result = render(
-      <PositionsTable rowData={singleRowData} isReadOnly={false} />
-    );
-  });
-  let cells = screen.getAllByRole('gridcell');
-  const entryPrice = cells[5].firstElementChild?.firstElementChild?.textContent;
-  expect(entryPrice).toEqual('13.3');
-  await act(async () => {
-    result.rerender(
-      <PositionsTable
-        rowData={[{ ...singleRow, lowMarginLevel: true }]}
-        isReadOnly={false}
-      />
-    );
-  });
-  cells = screen.getAllByRole('gridcell');
-});
-
 it('displays leverage', async () => {
   await act(async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[7].textContent).toEqual('1.1');
+  expect(cells[6].textContent).toEqual('1.1');
 });
 
 it('displays allocated margin', async () => {
@@ -180,7 +157,7 @@ it('displays allocated margin', async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  const cell = cells[8];
+  const cell = cells[7];
   expect(cell.textContent).toEqual('123,456.00');
 });
 
@@ -189,8 +166,7 @@ it('displays realised and unrealised PNL', async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[9].textContent).toEqual('1.23');
-  expect(cells[10].textContent).toEqual('4.56');
+  expect(cells[9].textContent).toEqual('4.56');
 });
 
 it('displays close button', async () => {
@@ -206,7 +182,7 @@ it('displays close button', async () => {
     );
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[12].textContent).toEqual('Close');
+  expect(cells[11].textContent).toEqual('Close');
 });
 
 it('do not display close button if openVolume is zero', async () => {
@@ -222,7 +198,7 @@ it('do not display close button if openVolume is zero', async () => {
     );
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[12].textContent).toEqual('');
+  expect(cells[11].textContent).toEqual('');
 });
 
 describe('PNLCell', () => {

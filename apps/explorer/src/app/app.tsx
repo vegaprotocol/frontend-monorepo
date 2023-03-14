@@ -48,7 +48,7 @@ const MainnetSimAd = () => {
           <Icon name="cross" className="w-6 h-6" ariaLabel="dismiss" />
         </button>
         <div>
-          <span className="pr-4">Mainnet sim 3 is coming soon!</span>
+          <span className="pr-4">Mainnet sim 3 is live!</span>
           <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
         </div>
       </div>
