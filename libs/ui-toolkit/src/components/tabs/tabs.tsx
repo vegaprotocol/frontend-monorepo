@@ -1,49 +1,31 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useState } from 'react';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
-
-interface TabsProps {
+export interface TabsProps extends TabsPrimitive.TabsProps {
   children: ReactElement<TabProps>[];
-  active?: string;
-  persistId?: string;
 }
 
 export const Tabs = ({
   children,
-  active: activeDefaultId,
-  persistId: persistIdLocalStorageKey,
+  defaultValue,
+  value,
+  onValueChange,
+  ...props
 }: TabsProps) => {
-  const [activePersistId, setActivePersistId] = useLocalStorage(
-    'active-tab-' + persistIdLocalStorageKey
-  );
   const [activeTab, setActiveTab] = useState<string>(() => {
-    if (activeDefaultId) {
-      return activeDefaultId;
-    }
-    if (
-      persistIdLocalStorageKey &&
-      activePersistId &&
-      children.some((child) => child.props.id === activePersistId)
-    ) {
-      return activePersistId;
+    if (defaultValue) {
+      return defaultValue;
     }
     return children[0].props.id;
   });
-
-  const onValueChange = (value: string) => {
-    if (persistIdLocalStorageKey) {
-      setActivePersistId(value);
-    }
-    setActiveTab(value);
-  };
-
   return (
     <TabsPrimitive.Root
-      value={activeTab}
+      {...props}
+      value={value || activeTab}
+      onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
-      onValueChange={onValueChange}
     >
       <div className="border-b border-default">
         <TabsPrimitive.List
@@ -52,7 +34,7 @@ export const Tabs = ({
         >
           {Children.map(children, (child) => {
             if (!isValidElement(child) || child.props.hidden) return null;
-            const isActive = child.props.id === activeTab;
+            const isActive = child.props.id === (value || activeTab);
             const triggerClass = classNames(
               'relative px-4 py-1 border-r border-default',
               'uppercase',
@@ -107,4 +89,14 @@ interface TabProps {
 
 export const Tab = ({ children, ...props }: TabProps) => {
   return <div {...props}>{children}</div>;
+};
+
+export const LocalStoragePersistTabs = ({
+  storageKey,
+  ...props
+}: Omit<TabsProps, 'value' | 'onValueChange'> & { storageKey: string }) => {
+  const [value, onValueChange] = useLocalStorage(`active-tab-${storageKey}`);
+  return (
+    <Tabs {...props} value={value || undefined} onValueChange={onValueChange} />
+  );
 };

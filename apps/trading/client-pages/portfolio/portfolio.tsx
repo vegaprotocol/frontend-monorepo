@@ -2,7 +2,11 @@ import { titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
-import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import {
+  ResizableGridPanel,
+  Tab,
+  LocalStoragePersistTabs as Tabs,
+} from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
@@ -41,7 +45,7 @@ export const Portfolio = () => {
       <ResizableGrid vertical>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
-            <Tabs persistId="console-portfolio-account-history">
+            <Tabs storageKey="console-portfolio-account-history">
               <Tab id="account-history" name={t('Account history')}>
                 <VegaWalletContainer>
                   <AccountHistoryContainer />
@@ -79,7 +83,7 @@ export const Portfolio = () => {
           minSize={50}
         >
           <PortfolioGridChild>
-            <Tabs persistId="console-portfolio-collateral">
+            <Tabs storageKey="console-portfolio-collateral">
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
                   <AccountsContainer />
