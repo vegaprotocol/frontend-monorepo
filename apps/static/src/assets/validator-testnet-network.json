@@ -1,3 +1,6 @@
 {
-  "hosts": ["https://api.validators-testnet.vega.xyz/graphql"]
+  "hosts": [
+    "https://api-validators-testnet.vega.rocks/graphql",
+    "https://vega-testnet.anyvalid.com/query"
+  ]
 }

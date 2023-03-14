@@ -27,7 +27,7 @@ const singleRow = {
   },
   available: '125600000',
   used: '125600000',
-  deposited: '125600000',
+  total: '251200000',
 } as AccountFields;
 const singleRowData = [singleRow];
 
@@ -37,10 +37,10 @@ describe('BreakdownTable', () => {
       render(<BreakdownTable data={singleRowData} />);
     });
     const headers = await screen.findAllByRole('columnheader');
-    expect(headers).toHaveLength(4);
+    expect(headers).toHaveLength(3);
     expect(
       headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-    ).toEqual(['Account type', 'Market', 'Used', 'Balance']);
+    ).toEqual(['Market', 'Account type', 'Balance']);
   });
 
   it('should apply correct formatting', async () => {
@@ -49,9 +49,9 @@ describe('BreakdownTable', () => {
     });
     const cells = await screen.findAllByRole('gridcell');
     const expectedValues = [
-      'Margin',
       'BTCUSD Monthly (30 Jun 2022)',
-      '1,256.001,256.00',
+      'Margin',
+      '1,256.00 (50%)',
       '1,256.00',
       '1,256.00',
     ];
@@ -83,7 +83,7 @@ describe('BreakdownTable', () => {
             },
             available: '0',
             balance: '125600000',
-            deposited: '125600000',
+            total: '125600000',
             market: {
               __typename: 'Market',
               id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
@@ -99,7 +99,7 @@ describe('BreakdownTable', () => {
             used: '125600000',
           },
         ],
-        deposited: '125600000',
+        total: '125600000',
         type: 'ACCOUNT_TYPE_GENERAL',
         used: '125600000',
       },

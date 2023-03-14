@@ -8,7 +8,6 @@ import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
-  VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
 import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
@@ -17,12 +16,56 @@ import {
   CenteredGridCellWrapper,
 } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
-import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
+import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
+import classNames from 'classnames';
+
+const colorClass = (percentageUsed: number, neutral = false) => {
+  return classNames({
+    'text-neutral-500 dark:text-neutral-400': percentageUsed < 75 && !neutral,
+    'text-vega-orange': percentageUsed >= 75 && percentageUsed < 90,
+    'text-vega-pink': percentageUsed >= 90,
+  });
+};
+
+export const percentageValue = (part?: string, total?: string) =>
+  new BigNumber(part || 0)
+    .dividedBy(total || 1)
+    .multipliedBy(100)
+    .toNumber();
+
+const formatWithAssetDecimals = (
+  data: AccountFields | undefined,
+  value: string | undefined
+) => {
+  return (
+    data &&
+    data.asset &&
+    isNumeric(value) &&
+    addDecimalsFormatNumber(value, data.asset.decimals)
+  );
+};
+
+export const accountValuesComparator = (
+  valueA: string,
+  valueB: string,
+  nodeA: RowNode,
+  nodeB: RowNode
+) => {
+  if (isNumeric(valueA) && isNumeric(valueB)) {
+    const a = toBigNum(valueA, nodeA.data.asset?.decimals);
+    const b = toBigNum(valueB, nodeB.data.asset?.decimals);
+
+    if (a.isEqualTo(b)) return 0;
+    return a.isGreaterThan(b) ? 1 : -1;
+  }
+  if (valueA === valueB) return 0;
+  return valueA > valueB ? 1 : -1;
+};
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
@@ -47,7 +90,7 @@ export interface AccountTableProps extends AgGridReactProps {
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
   ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
-    const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
+    const [row, setRow] = useState<AccountFields>();
     const pinnedAssetId = props.pinnedAsset?.id;
 
     const pinnedAssetRow = useMemo(() => {
@@ -60,7 +103,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             asset: props.pinnedAsset,
             available: '0',
             used: '0',
-            deposited: '0',
+            total: '0',
             balance: '0',
           };
         }
@@ -81,6 +124,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             resizable: true,
             tooltipComponent: TooltipCellComponent,
             sortable: true,
+            comparator: accountValuesComparator,
           }}
           {...props}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
@@ -94,90 +138,64 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               value,
               data,
-              node,
             }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
-              return value ? (
-                <CenteredGridCellWrapper
-                  className={node.rowPinned ? 'h-[30px]' : undefined}
+              return (
+                <ButtonLink
+                  data-testid="asset"
+                  onClick={() => {
+                    if (data) {
+                      onClickAsset(data.asset.id);
+                    }
+                  }}
                 >
-                  <ButtonLink
-                    data-testid="asset"
-                    onClick={() => {
-                      if (data) {
-                        onClickAsset(data.asset.id);
-                      }
-                    }}
-                  >
-                    {value}
-                  </ButtonLink>
-                </CenteredGridCellWrapper>
-              ) : null;
-            }}
-            maxWidth={300}
-          />
-          <AgGridColumn
-            headerName={t('Total')}
-            type="rightAligned"
-            field="deposited"
-            headerTooltip={t(
-              'This is the total amount of collateral used plus the amount available in your general account.'
-            )}
-            valueGetter={({
-              data,
-            }: VegaValueGetterParams<AccountFields, 'deposited'>) => {
-              return !data?.deposited
-                ? undefined
-                : toBigNum(data.deposited, data.asset.decimals).toNumber();
-            }}
-            maxWidth={300}
-            cellRenderer={({
-              data,
-              node,
-            }: VegaICellRendererParams<AccountFields, 'deposited'>) => {
-              const valueFormatted =
-                data &&
-                data.asset &&
-                isNumeric(data.deposited) &&
-                addDecimalsFormatNumber(data.deposited, data.asset.decimals);
-              return node.rowPinned ? (
-                <CenteredGridCellWrapper className="h-[30px] justify-end">
-                  {valueFormatted}
-                </CenteredGridCellWrapper>
-              ) : (
-                valueFormatted
+                  {value}
+                </ButtonLink>
               );
             }}
+            maxWidth={300}
           />
           <AgGridColumn
             headerName={t('Used')}
             type="rightAligned"
             field="used"
             headerTooltip={t(
-              'This is the amount of collateral used from your general account.'
+              'Currently allocated to a market as margin or bond. Check the breakdown for details.'
             )}
-            valueGetter={({
-              data,
-            }: VegaValueGetterParams<AccountFields, 'used'>) => {
-              return !data?.used
-                ? undefined
-                : toBigNum(data.used, data.asset.decimals).toNumber();
-            }}
-            maxWidth={300}
             cellRenderer={({
               data,
-              node,
+              value,
             }: VegaICellRendererParams<AccountFields, 'used'>) => {
-              const valueFormatted =
-                data &&
-                data.asset &&
-                isNumeric(data.used) &&
-                addDecimalsFormatNumber(data.used, data.asset.decimals);
-              return node.rowPinned ? (
-                <CenteredGridCellWrapper className="h-[30px] justify-end">
-                  {valueFormatted}
-                </CenteredGridCellWrapper>
+              if (!data) return null;
+              const percentageUsed = percentageValue(value, data.total);
+              const valueFormatted = formatWithAssetDecimals(data, value);
+
+              return data.breakdown ? (
+                <>
+                  <ButtonLink
+                    data-testid="breakdown"
+                    onClick={() => {
+                      setOpenBreakdown(!openBreakdown);
+                      setRow(data);
+                    }}
+                  >
+                    <span>{valueFormatted}</span>
+                  </ButtonLink>
+                  <span
+                    className={classNames(
+                      colorClass(percentageUsed),
+                      'ml-2 inline-block w-14'
+                    )}
+                  >
+                    {percentageUsed.toFixed(2)}%
+                  </span>
+                </>
               ) : (
-                valueFormatted
+                <>
+                  <span>{valueFormatted}</span>
+                  <span className="ml-2 inline-block w-14 text-neutral-500 dark:text-neutral-400">
+                    0.00%
+                  </span>
+                </>
               );
             }}
           />
@@ -186,115 +204,113 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             field="available"
             type="rightAligned"
             headerTooltip={t(
-              'This is the amount of collateral available in your general account.'
+              'Deposited on the network, but not allocated to a market. Free to use for placing orders or providing liquidity.'
             )}
-            valueGetter={({
-              data,
-            }: VegaValueGetterParams<AccountFields, 'available'>) => {
-              return !data?.available
-                ? undefined
-                : toBigNum(data.available, data.asset.decimals).toNumber();
-            }}
-            valueFormatter={({
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'available'>) =>
-              data &&
-              data.asset &&
-              isNumeric(data.available) &&
-              addDecimalsFormatNumber(data.available, data.asset.decimals)
-            }
-            maxWidth={300}
             cellRenderer={({
+              value,
               data,
-              node,
             }: VegaICellRendererParams<AccountFields, 'available'>) => {
-              const valueFormatted =
-                data &&
-                data.asset &&
-                isNumeric(data.available) &&
-                addDecimalsFormatNumber(data.available, data.asset.decimals);
-              return node.rowPinned ? (
-                <CenteredGridCellWrapper className="h-[30px] justify-end">
-                  {valueFormatted}
-                </CenteredGridCellWrapper>
-              ) : (
-                valueFormatted
+              const percentageUsed = percentageValue(data?.used, data?.total);
+
+              return (
+                <span className={colorClass(percentageUsed, true)}>
+                  {formatWithAssetDecimals(data, value)}
+                </span>
               );
             }}
           />
           <AgGridColumn
-            colId="breakdown"
-            headerName=""
-            sortable={false}
-            minWidth={200}
+            headerName={t('Total')}
             type="rightAligned"
-            cellRenderer={({
+            field="total"
+            headerTooltip={t(
+              'The total amount of each asset on this key. Includes used and available collateral.'
+            )}
+            valueFormatter={({
               data,
-            }: VegaICellRendererParams<AccountFields>) => {
-              if (!data) return null;
-              else {
-                if (
-                  data.asset.id === pinnedAssetId &&
-                  new BigNumber(data.deposited).isLessThanOrEqualTo(0)
-                ) {
+            }: VegaValueFormatterParams<AccountFields, 'total'>) =>
+              formatWithAssetDecimals(data, data?.total)
+            }
+          />
+          {
+            <AgGridColumn
+              colId="accounts-actions"
+              headerName=""
+              sortable={false}
+              minWidth={200}
+              type="rightAligned"
+              cellRenderer={({
+                data,
+              }: VegaICellRendererParams<AccountFields>) => {
+                if (!data) return null;
+                else {
+                  if (
+                    data.asset.id === pinnedAssetId &&
+                    new BigNumber(data.total).isLessThanOrEqualTo(0)
+                  ) {
+                    return (
+                      <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
+                        <Button
+                          size="xs"
+                          variant="primary"
+                          data-testid="deposit"
+                          onClick={() => {
+                            onClickDeposit && onClickDeposit(data.asset.id);
+                          }}
+                        >
+                          {t('Deposit to trade')}
+                        </Button>
+                      </CenteredGridCellWrapper>
+                    );
+                  }
                   return (
-                    <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
-                      <Button
-                        size="xs"
-                        variant="primary"
-                        data-testid="deposit"
-                        onClick={() => {
-                          onClickDeposit && onClickDeposit(data.asset.id);
-                        }}
-                      >
-                        {t('Deposit to trade')}
-                      </Button>
-                    </CenteredGridCellWrapper>
+                    <>
+                      <span className="mx-1" />
+                      {!props.isReadOnly && (
+                        <ButtonLink
+                          data-testid="deposit"
+                          onClick={() => {
+                            onClickDeposit && onClickDeposit(data.asset.id);
+                          }}
+                        >
+                          {t('Deposit')}
+                        </ButtonLink>
+                      )}
+                      <span className="mx-1" />
+                      {!props.isReadOnly && (
+                        <ButtonLink
+                          data-testid="withdraw"
+                          onClick={() =>
+                            onClickWithdraw && onClickWithdraw(data.asset.id)
+                          }
+                        >
+                          {t('Withdraw')}
+                        </ButtonLink>
+                      )}
+                    </>
                   );
                 }
-                return (
-                  <>
-                    <ButtonLink
-                      data-testid="breakdown"
-                      onClick={() => {
-                        setOpenBreakdown(!openBreakdown);
-                        setBreakdown(data.breakdown || null);
-                      }}
-                    >
-                      {t('Breakdown')}
-                    </ButtonLink>
-                    <span className="mx-1" />
-                    {!props.isReadOnly && (
-                      <ButtonLink
-                        data-testid="deposit"
-                        onClick={() => {
-                          onClickDeposit && onClickDeposit(data.asset.id);
-                        }}
-                      >
-                        {t('Deposit')}
-                      </ButtonLink>
-                    )}
-                    <span className="mx-1" />
-                    {!props.isReadOnly && (
-                      <ButtonLink
-                        data-testid="withdraw"
-                        onClick={() =>
-                          onClickWithdraw && onClickWithdraw(data.asset.id)
-                        }
-                      >
-                        {t('Withdraw')}
-                      </ButtonLink>
-                    )}
-                  </>
-                );
-              }
-            }}
-          />
+              }}
+            />
+          }
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">
-            <h1 className="text-xl mb-4">{t('Collateral breakdown')}</h1>
-            <BreakdownTable data={breakdown} domLayout="autoHeight" />
+            <h1 className="text-xl mb-4">
+              {row?.asset?.symbol} {t('usage breakdown')}
+            </h1>
+            {row && (
+              <p className="mb-2 text-sm">
+                {t('You have %s %s in total.', [
+                  addDecimalsFormatNumber(row.total, row.asset.decimals),
+                  row.asset.symbol,
+                ])}
+              </p>
+            )}
+            <BreakdownTable
+              data={row?.breakdown || null}
+              domLayout="autoHeight"
+            />
           </div>
         </Dialog>
       </>

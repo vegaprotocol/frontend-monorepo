@@ -250,40 +250,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Liquidation price (est)')}
-          field="liquidationPrice"
-          type="rightAligned"
-          cellRendererSelector={(): CellRendererSelectorResult => {
-            return {
-              component: PriceFlashCell,
-            };
-          }}
-          filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'liquidationPrice'>) => {
-            return data?.liquidationPrice === undefined || !data
-              ? undefined
-              : toBigNum(
-                  data.liquidationPrice,
-                  data.marketDecimalPlaces
-                ).toNumber();
-          }}
-          valueFormatter={({
-            data,
-          }: VegaValueFormatterParams<Position, 'liquidationPrice'>):
-            | string
-            | undefined => {
-            if (!data || data?.liquidationPrice === undefined) {
-              return undefined;
-            }
-            return addDecimalsFormatNumber(
-              data.liquidationPrice,
-              data.marketDecimalPlaces
-            );
-          }}
-        />
-        <AgGridColumn
           headerName={t('Leverage')}
           field="currentLeverage"
           type="rightAligned"
