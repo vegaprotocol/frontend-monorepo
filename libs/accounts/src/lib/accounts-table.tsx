@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useState } from 'react';
 import {
   addDecimalsFormatNumber,
   isNumeric,
@@ -16,7 +16,12 @@ import {
   CenteredGridCellWrapper,
 } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
-import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
+import type {
+  IDatasource,
+  IGetRowsParams,
+  RowClassParams,
+  RowNode,
+} from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
@@ -91,11 +96,10 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
   ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
     const [row, setRow] = useState<AccountFields>();
-    const pinnedAssetId = props.pinnedAsset?.id;
 
     const pinnedAssetRow = useMemo(() => {
       const currentPinnedAssetRow = props.rowData?.find(
-        (row) => row.asset.id === pinnedAssetId
+        (row) => row.asset.id === props.pinnedAsset?.id
       );
       if (!currentPinnedAssetRow) {
         if (props.pinnedAsset) {
@@ -109,7 +113,19 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         }
       }
       return undefined;
-    }, [pinnedAssetId, props.pinnedAsset, props.rowData]);
+    }, [props.pinnedAsset, props.rowData]);
+
+    const shouldHighlightRow = useCallback(
+      ({ data }: RowClassParams) => {
+        const currentPinnedAssetRow = props.rowData?.find(
+          (row) => row.asset.id === props.pinnedAsset?.id
+        );
+        const shouldHighlight =
+          data?.asset.id === props.pinnedAsset?.id && !!currentPinnedAssetRow;
+        return shouldHighlight;
+      },
+      [props.pinnedAsset?.id, props.rowData]
+    );
 
     return (
       <>
@@ -128,6 +144,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           }}
           {...props}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
+          rowClassRules={{
+            '!bg-vega-yellow !text-black': shouldHighlightRow,
+          }}
         >
           <AgGridColumn
             headerName={t('Asset')}
@@ -245,7 +264,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 if (!data) return null;
                 else {
                   if (
-                    data.asset.id === pinnedAssetId &&
+                    data.asset.id === props.pinnedAsset?.id &&
                     new BigNumber(data.total).isLessThanOrEqualTo(0)
                   ) {
                     return (
