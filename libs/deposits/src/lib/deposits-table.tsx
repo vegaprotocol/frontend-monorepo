@@ -16,14 +16,13 @@ import type {
   TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
 import type { DepositFieldsFragment } from './__generated__/Deposit';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
 
 export const DepositsTable = forwardRef<
   AgGridReact,
   TypedDataAgGrid<DepositFieldsFragment>
 >((props, ref) => {
-  const { ETHERSCAN_URL } = useEnvironment();
   return (
     <AgGrid
       ref={ref}
@@ -77,14 +76,9 @@ export const DepositsTable = forwardRef<
           if (!data) return null;
           if (!value) return '-';
           return (
-            <Link
-              title={t('View transaction on Etherscan')}
-              href={`${ETHERSCAN_URL}/tx/${value}`}
-              data-testid="etherscan-link"
-              target="_blank"
-            >
+            <EtherscanLink tx={value} data-testid="etherscan-link">
               {truncateByChars(value)}
-            </Link>
+            </EtherscanLink>
           );
         }}
       />

@@ -11,7 +11,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { formatNumber } from '@vegaprotocol/utils';
 
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink, useEnvironment } from '@vegaprotocol/environment';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
@@ -59,25 +59,15 @@ export const Tranche = () => {
             </KeyValueTableRow>
             {tranche.users.map((user) => (
               <KeyValueTableRow key={user}>
-                {
-                  <Link
-                    title={t('View on Etherscan (opens in a new tab)')}
-                    href={`${ETHERSCAN_URL}/address/${user}`}
-                    target="_blank"
-                  >
-                    {user}
-                  </Link>
-                }
-                {
-                  <RouterLink
-                    className="underline"
-                    title={t('View vesting information')}
-                    to={`${Routes.REDEEM}/${user}`}
-                    data-testid="redeem-link"
-                  >
-                    {t('View vesting information')}
-                  </RouterLink>
-                }
+                <EtherscanLink address={user} />
+                <RouterLink
+                  className="underline"
+                  title={t('View vesting information')}
+                  to={`${Routes.REDEEM}/${user}`}
+                  data-testid="redeem-link"
+                >
+                  {t('View vesting information')}
+                </RouterLink>
               </KeyValueTableRow>
             ))}
           </KeyValueTable>

@@ -1,7 +1,7 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
@@ -126,14 +126,10 @@ const ApprovalTxFeedback = ({
   selectedAsset: Asset;
   allowance?: BigNumber;
 }) => {
-  const { ETHERSCAN_URL } = useEnvironment();
-
   if (!tx) return null;
 
   const txLink = tx.txHash && (
-    <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-      {t('View on Etherscan')}
-    </ExternalLink>
+    <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
   );
 
   if (tx.status === EthTxStatus.Error) {
