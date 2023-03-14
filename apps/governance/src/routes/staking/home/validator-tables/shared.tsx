@@ -12,6 +12,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
+import { useAppState } from '../../../../contexts/app-state/app-state-context';
 
 export enum ValidatorFields {
   RANKING_INDEX = 'rankingIndex',
@@ -148,6 +149,11 @@ interface TotalStakeRendererProps {
 
 export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
   const { t } = useTranslation();
+  const {
+    appState: { decimals },
+  } = useAppState();
+
+  const formattedStake = formatNumber(toBigNum(data.stake, decimals), 2);
 
   return (
     <Tooltip
@@ -160,12 +166,13 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
             {t('stakedByDelegates')}: {data.stakedByDelegates.toString()}
           </div>
           <div data-testid="total-staked-tooltip">
-            {t('totalStake')}: <span className="font-bold">{data.stake}</span>
+            {t('totalStake')}:{' '}
+            <span className="font-bold">{formattedStake}</span>
           </div>
         </>
       }
     >
-      <span>{data.stake}</span>
+      <span>{formattedStake}</span>
     </Tooltip>
   );
 };
