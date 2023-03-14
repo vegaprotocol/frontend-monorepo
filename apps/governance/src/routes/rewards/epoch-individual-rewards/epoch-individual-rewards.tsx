@@ -43,7 +43,7 @@ export const EpochIndividualRewards = () => {
       data={data}
       render={() => (
         <div>
-          <p className="mb-10">
+          <p data-testid="connected-vega-key" className="mb-10">
             {t('Connected Vega key')}:{' '}
             <span className="text-white">{pubKey}</span>
           </p>

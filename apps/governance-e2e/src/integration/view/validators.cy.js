@@ -83,6 +83,7 @@ context('Staking Page - verify elements on page', function () {
           .should('contain', 'Normalised voting power: 0.10%');
       });
 
+      // 2002-SINC-018
       it('Should be able to see validator total penalties', function () {
         cy.get('[col-id="totalPenalties"] > div > span > span')
           .should('have.length.at.least', 1)
