@@ -1,15 +1,11 @@
 import throttle from 'lodash/throttle';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-  Market,
-} from '@vegaprotocol/market-list';
+import type { MarketData, Market } from '@vegaprotocol/market-list';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import * as constants from '../constants';
 
 export const MarketState = ({ market }: { market: Market | null }) => {
@@ -33,14 +29,10 @@ export const MarketState = ({ market }: { market: Market | null }) => {
     [throttledSetMarketState]
   );
 
-  const variables = useMemo(
-    () => ({ marketId: market?.id || '' }),
-    [market?.id]
-  );
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+  useDataProvider({
     dataProvider: marketDataProvider,
     update,
-    variables,
+    variables: { marketId: market?.id || '' },
     skip: !market?.id,
   });
 

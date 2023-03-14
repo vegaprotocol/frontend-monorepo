@@ -13,6 +13,7 @@ import type { PageInfo, Edge } from '@vegaprotocol/utils';
 import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 import type {
   FillsQuery,
+  FillsQueryVariables,
   FillFieldsFragment,
   FillEdgeFragment,
   FillsEventSubscription,
@@ -56,19 +57,28 @@ const update = (
   });
 };
 
-export type Trade = Omit<FillFieldsFragment, 'market'> & { market?: Market };
+export type Trade = Omit<FillFieldsFragment, 'market'> & {
+  market?: Market;
+  isLastPlaceholder?: boolean;
+};
 export type TradeEdge = Edge<Trade>;
 
 const getData = (responseData: FillsQuery | null): FillEdgeFragment[] =>
   responseData?.party?.tradesConnection?.edges || [];
 
-const getPageInfo = (responseData: FillsQuery): PageInfo | null =>
-  responseData.party?.tradesConnection?.pageInfo || null;
+const getPageInfo = (responseData: FillsQuery | null): PageInfo | null =>
+  responseData?.party?.tradesConnection?.pageInfo || null;
 
 const getDelta = (subscriptionData: FillsEventSubscription) =>
   subscriptionData.trades || [];
 
-export const fillsProvider = makeDataProvider({
+export const fillsProvider = makeDataProvider<
+  Parameters<typeof getData>['0'],
+  ReturnType<typeof getData>,
+  Parameters<typeof getDelta>['0'],
+  ReturnType<typeof getDelta>,
+  FillsQueryVariables
+>({
   query: FillsDocument,
   subscriptionQuery: FillsEventDocument,
   update,
@@ -83,9 +93,13 @@ export const fillsProvider = makeDataProvider({
 
 export const fillsWithMarketProvider = makeDerivedDataProvider<
   (TradeEdge | null)[],
-  Trade[]
+  Trade[],
+  FillsQueryVariables
 >(
-  [fillsProvider, marketsProvider],
+  [
+    fillsProvider,
+    (callback, client) => marketsProvider(callback, client, undefined),
+  ],
   (partsData): (TradeEdge | null)[] =>
     (partsData[0] as ReturnType<typeof getData>)?.map(
       (edge) =>

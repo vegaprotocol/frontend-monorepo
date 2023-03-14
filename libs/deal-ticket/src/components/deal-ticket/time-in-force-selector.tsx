@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   FormGroup,
   InputError,
@@ -22,15 +21,6 @@ interface TimeInForceSelectorProps {
   errorMessage?: string;
 }
 
-type OrderType = Schema.OrderType.TYPE_MARKET | Schema.OrderType.TYPE_LIMIT;
-type PreviousTimeInForce = {
-  [key in OrderType]: Schema.OrderTimeInForce;
-};
-const DEFAULT_TIME_IN_FORCE: PreviousTimeInForce = {
-  [Schema.OrderType.TYPE_MARKET]: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-  [Schema.OrderType.TYPE_LIMIT]: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-};
-
 export const TimeInForceSelector = ({
   value,
   orderType,
@@ -47,28 +37,6 @@ export const TimeInForceSelector = ({
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
         );
-  const [previousOrderType, setPreviousOrderType] = useState(
-    Schema.OrderType.TYPE_MARKET
-  );
-  const [previousTimeInForce, setPreviousTimeInForce] =
-    useState<PreviousTimeInForce>({
-      ...DEFAULT_TIME_IN_FORCE,
-      [orderType]: value,
-    });
-
-  useEffect(() => {
-    if (previousOrderType !== orderType) {
-      setPreviousOrderType(orderType);
-      const prev = previousTimeInForce[orderType as OrderType];
-      onSelect(prev);
-    }
-  }, [
-    onSelect,
-    orderType,
-    previousTimeInForce,
-    previousOrderType,
-    setPreviousOrderType,
-  ]);
 
   const renderError = (errorType: string) => {
     if (errorType === MarketModeValidationType.Auction) {
@@ -119,15 +87,25 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
+    <FormGroup
+      label={t('Time in force')}
+      labelFor="select-time-in-force"
+      compact={true}
+    >
       <Select
         id="select-time-in-force"
         value={value}
         onChange={(e) => {
-          setPreviousTimeInForce({
-            ...previousTimeInForce,
-            [orderType]: e.target.value,
-          });
+          // setPreviousTimeInForce({
+          //   ...previousTimeInForce,
+          //   [orderType]: e.target.value,
+          // });
+
+          // if (previousOrderType !== orderType) {
+          //   setPreviousOrderType(orderType);
+          //   const prev = previousTimeInForce[orderType as OrderType];
+          //   onSelect(prev);
+          // }
           onSelect(e.target.value as Schema.OrderTimeInForce);
         }}
         className="w-full"

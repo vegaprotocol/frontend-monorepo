@@ -4,9 +4,8 @@ import {
   getMarketExpiryDateFormatted,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { MarketInfoNoCandlesQuery } from '@vegaprotocol/market-info';
+import type { MarketInfoWithData } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
-import pick from 'lodash/pick';
 import {
   MarketStateMapping,
   MarketTradingModeMapping,
@@ -17,11 +16,7 @@ import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-export const MarketDetails = ({
-  market,
-}: {
-  market: MarketInfoNoCandlesQuery['market'];
-}) => {
+export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   const quoteUnit = market?.tradableInstrument.instrument.product.quoteName;
   const assetId = useMemo(
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
@@ -32,7 +27,9 @@ export const MarketDetails = ({
   if (!market) return null;
 
   const keyDetails = {
-    ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
+    decimalPlaces: market.decimalPlaces,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+    tradingMode: market.tradingMode,
     state: MarketStateMapping[market.state],
   };
   const assetDecimals =

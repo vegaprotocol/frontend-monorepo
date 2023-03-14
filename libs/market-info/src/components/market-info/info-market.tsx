@@ -1,6 +1,9 @@
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { totalFeesPercentage } from '@vegaprotocol/market-list';
+import {
+  totalFeesPercentage,
+  calcCandleVolume,
+} from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -20,30 +23,19 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
-import pick from 'lodash/pick';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
 import { MarketInfoTable } from './info-key-value-table';
-import { marketInfoDataProvider } from './market-info-data-provider';
+import { marketInfoWithDataAndCandlesProvider } from './market-info-data-provider';
 
-import type { MarketInfoQuery } from './__generated__/MarketInfo';
+import type { MarketInfoWithDataAndCandles } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 
 export interface InfoProps {
-  market: MarketInfoQuery['market'];
+  market: MarketInfoWithDataAndCandles;
   onSelect: (id: string) => void;
 }
-
-export const calcCandleVolume = (
-  m: MarketInfoQuery['market']
-): string | undefined => {
-  return m?.candlesConnection?.edges
-    ?.reduce((acc: BigNumber, c) => {
-      return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-    }, new BigNumber(m?.candlesConnection?.edges[0]?.node.volume ?? 0))
-    ?.toString();
-};
 
 export interface MarketInfoContainerProps {
   marketId: string;
@@ -67,15 +59,15 @@ export const MarketInfoContainer = ({
   );
 
   const { data, loading, error, reload } = useDataProvider({
-    dataProvider: marketInfoDataProvider,
+    dataProvider: marketInfoWithDataAndCandlesProvider,
     skipUpdates: true,
     variables,
   });
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
-      {data && data.market ? (
-        <Info market={data.market} onSelect={(id) => onSelect?.(id)} />
+      {data ? (
+        <Info market={data} onSelect={(id) => onSelect?.(id)} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -88,7 +80,6 @@ export const MarketInfoContainer = ({
 export const Info = ({ market, onSelect }: InfoProps) => {
   const { VEGA_TOKEN_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
-  const dayVolume = calcCandleVolume(market);
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   const quoteUnit =
@@ -104,6 +95,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const marketAccounts = removePaginationWrapper(
     market.accountsConnection?.edges
   );
+
+  const last24hourVolume = market.candles && calcCandleVolume(market.candles);
 
   const marketDataPanels = [
     {
@@ -131,13 +124,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <>
           <MarketInfoTable
             data={{
-              ...pick(
-                market.data,
-                'name',
-                'markPrice',
-                'bestBidPrice',
-                'bestOfferPrice'
-              ),
+              markPrice: market.data?.markPrice,
+              bestBidPrice: market.data?.bestBidPrice,
+              bestOfferPrice: market.data?.bestOfferPrice,
               quoteUnit: market.tradableInstrument.instrument.product.quoteName,
             }}
             decimalPlaces={market.decimalPlaces}
@@ -157,16 +146,17 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <MarketInfoTable
           data={{
             '24hourVolume':
-              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
-            ...pick(
-              market.data,
-              'openInterest',
-              'name',
-              'bestBidVolume',
-              'bestOfferVolume',
-              'bestStaticBidVolume',
-              'bestStaticOfferVolume'
-            ),
+              last24hourVolume && last24hourVolume !== '0'
+                ? addDecimalsFormatNumber(
+                    last24hourVolume,
+                    market.positionDecimalPlaces
+                  )
+                : '-',
+            openInterest: market.data?.openInterest,
+            bestBidVolume: market.data?.bestBidVolume,
+            bestOfferVolume: market.data?.bestOfferVolume,
+            bestStaticBidVolume: market.data?.bestStaticBidVolume,
+            bestStaticOfferVolume: market.data?.bestStaticOfferVolume,
           }}
           decimalPlaces={market.positionDecimalPlaces}
         />
@@ -192,7 +182,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   ];
 
   const keyDetails = {
-    ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
+    decimalPlaces: market.decimalPlaces,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+    tradingMode: market.tradingMode,
     state: Schema.MarketStateMapping[market.state],
   };
 
@@ -330,9 +322,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
                     data={{
                       highestPrice: bounds.maxValidPrice,
                       lowestPrice: bounds.minValidPrice,
-                      referencePrice: bounds.referencePrice,
                     }}
-                    decimalPlaces={assetDecimals}
+                    decimalPlaces={market.decimalPlaces}
                     assetSymbol={quoteUnit}
                   />
                 )}

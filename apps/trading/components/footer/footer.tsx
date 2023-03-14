@@ -14,7 +14,7 @@ export const Footer = () => {
   const { blockDiff, datanodeBlockHeight } = useNodeHealth();
 
   return (
-    <footer className="px-4 py-1 text-xs border-t border-default text-vega-light-300 dark:text-vega-dark-300">
+    <footer className="px-4 py-1 text-xs border-t border-default text-vega-light-300 dark:text-vega-dark-300 lg:fixed bottom-0 left-0 border-r bg-white dark:bg-black">
       {/* Pull left to align with top nav, due to button padding */}
       <div className="-ml-2">
         {VEGA_URL && (

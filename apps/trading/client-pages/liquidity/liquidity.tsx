@@ -47,7 +47,8 @@ export const Liquidity = () => {
 const useReloadLiquidityData = (marketId: string | undefined) => {
   const { reload } = useDataProvider({
     dataProvider: liquidityProvisionsDataProvider,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
+    skip: !marketId,
   });
   useEffect(() => {
     const interval = setInterval(reload, 10000);
@@ -77,7 +78,8 @@ export const LiquidityContainer = ({
   const { data, loading, error } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
+    skip: !marketId,
   });
 
   const assetDecimalPlaces =
@@ -161,7 +163,8 @@ export const LiquidityViewContainer = ({
   } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: { marketId: marketId || '' },
+    skip: !marketId,
   });
 
   const targetStake = marketData?.targetStake;

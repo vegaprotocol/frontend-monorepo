@@ -12,6 +12,7 @@ import type {
   OrderStatus,
   OrderTimeInForce,
   OrderType,
+  PositionStatus,
   ProposalRejectionReason,
   ProposalState,
   Side,
@@ -85,6 +86,7 @@ export const DepositStatusMapping: {
 export const IntervalMapping: {
   [T in Interval]: string;
 } = {
+  INTERVAL_BLOCK: '1 block',
   INTERVAL_I15M: 'I15M',
   INTERVAL_I1D: 'I1D',
   INTERVAL_I1H: 'I1H',
@@ -444,4 +446,12 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
   DISPATCH_METRIC_MARKET_VALUE: 'Total market Value',
+};
+
+export const PositionStatusMapping: {
+  [T in PositionStatus]: string;
+} = {
+  POSITION_STATUS_CLOSED_OUT: 'Closed by network',
+  POSITION_STATUS_ORDERS_CLOSED: 'Maintained by network',
+  POSITION_STATUS_UNSPECIFIED: 'Normal',
 };

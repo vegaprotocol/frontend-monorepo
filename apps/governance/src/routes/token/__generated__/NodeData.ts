@@ -3,20 +3,19 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type NodeDataQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type NodeDataQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
-export type NodeDataQuery = {
-  __typename?: 'Query';
-  nodeData?: { __typename?: 'NodeData'; stakedTotal: string } | null;
-};
+
+export type NodeDataQuery = { __typename?: 'Query', nodeData?: { __typename?: 'NodeData', stakedTotal: string } | null };
+
 
 export const NodeDataDocument = gql`
-  query NodeData {
-    nodeData {
-      stakedTotal
-    }
+    query NodeData {
+  nodeData {
+    stakedTotal
   }
-`;
+}
+    `;
 
 /**
  * __useNodeDataQuery__
@@ -33,32 +32,14 @@ export const NodeDataDocument = gql`
  *   },
  * });
  */
-export function useNodeDataQuery(
-  baseOptions?: Apollo.QueryHookOptions<NodeDataQuery, NodeDataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<NodeDataQuery, NodeDataQueryVariables>(
-    NodeDataDocument,
-    options
-  );
-}
-export function useNodeDataLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    NodeDataQuery,
-    NodeDataQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<NodeDataQuery, NodeDataQueryVariables>(
-    NodeDataDocument,
-    options
-  );
-}
+export function useNodeDataQuery(baseOptions?: Apollo.QueryHookOptions<NodeDataQuery, NodeDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NodeDataQuery, NodeDataQueryVariables>(NodeDataDocument, options);
+      }
+export function useNodeDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NodeDataQuery, NodeDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NodeDataQuery, NodeDataQueryVariables>(NodeDataDocument, options);
+        }
 export type NodeDataQueryHookResult = ReturnType<typeof useNodeDataQuery>;
-export type NodeDataLazyQueryHookResult = ReturnType<
-  typeof useNodeDataLazyQuery
->;
-export type NodeDataQueryResult = Apollo.QueryResult<
-  NodeDataQuery,
-  NodeDataQueryVariables
->;
+export type NodeDataLazyQueryHookResult = ReturnType<typeof useNodeDataLazyQuery>;
+export type NodeDataQueryResult = Apollo.QueryResult<NodeDataQuery, NodeDataQueryVariables>;

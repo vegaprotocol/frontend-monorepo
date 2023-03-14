@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { marketDepthProvider } from '@vegaprotocol/market-depth';
 import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
@@ -13,11 +12,10 @@ interface Props {
 }
 
 export const useCalculateSlippage = ({ market, order }: Props) => {
-  const variables = useMemo(() => ({ marketId: market.id }), [market.id]);
   const { data } = useThrottledDataProvider(
     {
       dataProvider: marketDepthProvider,
-      variables,
+      variables: { marketId: market.id },
     },
     1000
   );

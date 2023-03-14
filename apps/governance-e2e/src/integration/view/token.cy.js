@@ -17,8 +17,7 @@ const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
 
 context('Verify elements on Token page', { tags: '@smoke' }, function () {
   before('Visit token page', function () {
-    cy.visit('/');
-    cy.navigate_to('token');
+    cy.visit('/token');
   });
   describe('THE $VEGA TOKEN table', function () {
     it('should have TOKEN ADDRESS', function () {

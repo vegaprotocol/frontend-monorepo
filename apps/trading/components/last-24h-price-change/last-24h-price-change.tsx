@@ -1,5 +1,4 @@
 import type { RefObject } from 'react';
-import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { isNumeric } from '@vegaprotocol/utils';
 import {
@@ -9,7 +8,6 @@ import {
 import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
-import type { Candle } from '@vegaprotocol/market-list';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';
 import { THROTTLE_UPDATE_TIME } from '../constants';
 
@@ -30,19 +28,14 @@ export const Last24hPriceChange = ({
 }: Props) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });
   const yesterday = useYesterday();
-  const variables = useMemo(
-    () => ({
-      marketId: marketId,
-      interval: Schema.Interval.INTERVAL_I1H,
-      since: new Date(yesterday).toISOString(),
-    }),
-    [marketId, yesterday]
-  );
-
-  const { data, error } = useThrottledDataProvider<Candle[], Candle>(
+  const { data, error } = useThrottledDataProvider(
     {
       dataProvider: marketCandlesProvider,
-      variables,
+      variables: {
+        marketId: marketId || '',
+        interval: Schema.Interval.INTERVAL_I1H,
+        since: new Date(yesterday).toISOString(),
+      },
       skip: !marketId || !inView,
     },
     THROTTLE_UPDATE_TIME

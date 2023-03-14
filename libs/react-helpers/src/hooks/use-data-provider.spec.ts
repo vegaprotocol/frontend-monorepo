@@ -6,6 +6,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 type Data = number;
 type Delta = number;
+type Variables = { partyId: string };
 
 const unsubscribe = jest.fn();
 const reload = jest.fn();
@@ -23,8 +24,8 @@ const updateCallbackPayload: Parameters<UpdateCallback<Data, Delta>>['0'] = {
 };
 
 const dataProvider = jest.fn<
-  ReturnType<Subscribe<Data, Delta>>,
-  Parameters<Subscribe<Data, Delta>>
+  ReturnType<Subscribe<Data, Delta, Variables>>,
+  Parameters<Subscribe<Data, Delta, Variables>>
 >();
 
 dataProvider.mockReturnValue({
@@ -37,10 +38,12 @@ dataProvider.mockReturnValue({
 jest.useFakeTimers();
 
 describe('useDataProvider hook', () => {
-  const render = (initialProps?: useDataProviderParams<Data, Delta>) =>
+  const render = (
+    initialProps?: useDataProviderParams<Data, Delta, Variables>
+  ) =>
     renderHook<
       ReturnType<typeof useDataProvider>,
-      useDataProviderParams<Data, Delta>
+      useDataProviderParams<Data, Delta, Variables>
     >((props) => useDataProvider(props), {
       wrapper: MockedProvider,
       initialProps,
@@ -62,8 +65,8 @@ describe('useDataProvider hook', () => {
     });
     expect(result.current.data).toEqual(updateCallbackPayload.data);
     expect(result.current.loading).toEqual(false);
-    expect(update).toBeCalledTimes(1);
-    expect(update.mock.calls[0][0].data).toEqual(updateCallbackPayload.data);
+    expect(update).toBeCalledTimes(2);
+    expect(update.mock.calls[1][0].data).toEqual(updateCallbackPayload.data);
   });
 
   it('calls update on error', async () => {
@@ -77,8 +80,8 @@ describe('useDataProvider hook', () => {
     });
     expect(result.current.data).toEqual(updateCallbackPayload.data);
     expect(result.current.loading).toEqual(false);
-    expect(update).toBeCalledTimes(1);
-    expect(update.mock.calls[0][0].data).toEqual(updateCallbackPayload.data);
+    expect(update).toBeCalledTimes(2);
+    expect(update.mock.calls[1][0].data).toEqual(updateCallbackPayload.data);
   });
 
   it('calls update if isUpdate and skip setting state if update returns true', async () => {
@@ -89,7 +92,8 @@ describe('useDataProvider hook', () => {
     await act(async () => {
       callback({ ...updateCallbackPayload, data: ++data });
     });
-    expect(update).toBeCalledTimes(1);
+    expect(update).toBeCalledTimes(2);
+    expect(result.current.data).toEqual(data);
     await act(async () => {
       callback({
         ...updateCallbackPayload,
@@ -99,9 +103,9 @@ describe('useDataProvider hook', () => {
       });
     });
     expect(result.current.data).toEqual(data);
-    expect(update).toBeCalledTimes(2);
-    expect(update.mock.calls[1][0].data).toEqual(data);
-    expect(update.mock.calls[1][0].delta).toEqual(delta);
+    expect(update).toBeCalledTimes(3);
+    expect(update.mock.calls[2][0].data).toEqual(data);
+    expect(update.mock.calls[2][0].delta).toEqual(delta);
     update.mockReturnValueOnce(true);
     await act(async () => {
       callback({
@@ -111,10 +115,10 @@ describe('useDataProvider hook', () => {
         isUpdate: true,
       });
     });
-    expect(result.current.data).toEqual(update.mock.calls[1][0].data);
-    expect(update).toBeCalledTimes(3);
-    expect(update.mock.calls[2][0].data).toEqual(data);
-    expect(update.mock.calls[2][0].delta).toEqual(delta);
+    expect(result.current.data).toEqual(update.mock.calls[2][0].data);
+    expect(update).toBeCalledTimes(4);
+    expect(update.mock.calls[3][0].data).toEqual(data);
+    expect(update.mock.calls[3][0].delta).toEqual(delta);
   });
 
   it('calls insert if isInsert and skip setting state if update returns true', async () => {
@@ -159,7 +163,7 @@ describe('useDataProvider hook', () => {
     await act(async () => {
       callback({ ...updateCallbackPayload });
     });
-    expect(update).toBeCalledTimes(1);
+    expect(update).toBeCalledTimes(2);
 
     // setting same variables, with different object reference
     await act(async () => {
@@ -180,7 +184,7 @@ describe('useDataProvider hook', () => {
     await act(async () => {
       callback({ ...updateCallbackPayload });
     });
-    expect(update).toBeCalledTimes(3);
+    expect(update).toBeCalledTimes(4);
 
     // changing variables, apollo query will return error
     await act(async () => {
@@ -200,7 +204,7 @@ describe('useDataProvider hook', () => {
         pageInfo: null,
       });
     });
-    expect(update).toBeCalledTimes(5);
+    expect(update).toBeCalledTimes(6);
   });
 
   it('do not create data provider instance when skip is true', async () => {
@@ -223,6 +227,7 @@ describe('useThrottledDataProvider hook', () => {
         useThrottledDataProvider(
           {
             dataProvider,
+            variables,
           },
           wait
         ),

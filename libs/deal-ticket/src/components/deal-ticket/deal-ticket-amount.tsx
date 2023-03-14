@@ -1,17 +1,21 @@
-import type { UseFormRegister } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
 import * as Schema from '@vegaprotocol/types';
-import type { DealTicketFormFields } from './deal-ticket';
+import type { OrderObj } from '@vegaprotocol/orders';
+import type { OrderFormFields } from '../../hooks/use-order-form';
 
 export interface DealTicketAmountProps {
+  control: Control<OrderFormFields>;
   orderType: Schema.OrderType;
   marketData: MarketData;
   market: Market;
-  register: UseFormRegister<DealTicketFormFields>;
   sizeError?: string;
   priceError?: string;
+  update: (obj: Partial<OrderObj>) => void;
+  size: string;
+  price?: string;
 }
 
 export const DealTicketAmount = ({

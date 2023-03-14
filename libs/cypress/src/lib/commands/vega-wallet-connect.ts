@@ -25,7 +25,7 @@ export function addVegaWalletConnect() {
     mockConnectWallet();
     cy.highlight(`Connecting Vega Wallet`);
     cy.get(
-      `[data-testid=connect-vega-wallet${isMobile ? '-mobile' : ''}]`
+      `[data-testid=connect-vega-wallet${isMobile ? '-mobile' : ''}]:visible`
     ).click();
     cy.get('[data-testid=connectors-list]')
       .find('[data-testid="connector-jsonRpc"]')

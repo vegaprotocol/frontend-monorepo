@@ -179,7 +179,10 @@ const MainGrid = ({
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
               <VegaWalletContainer>
-                <TradingViews.Collateral pinnedAsset={pinnedAsset} />
+                <TradingViews.Collateral
+                  pinnedAsset={pinnedAsset}
+                  hideButtons
+                />
               </VegaWalletContainer>
             </Tab>
           </Tabs>

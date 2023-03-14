@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { memo, useCallback, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -9,20 +9,21 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import type { OrderSubmission } from '@vegaprotocol/wallet';
+import {
+  normalizeOrderSubmission,
+  useVegaWallet,
+  useVegaWalletDialogStore,
+} from '@vegaprotocol/wallet';
 import {
   ExternalLink,
   InputError,
   Intent,
   Notification,
 } from '@vegaprotocol/ui-toolkit';
-import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
-import { MarginWarning } from '../deal-ticket-validation/margin-warning';
+
 import {
-  getDefaultOrder,
+  validateExpiration,
   validateMarketState,
   validateMarketTradingMode,
   validateTimeInForce,
@@ -30,28 +31,23 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
-import { useHasNoBalance } from '../../hooks/use-has-no-balance';
+import { useInitialMargin } from '../../hooks/use-initial-margin';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
+import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
-  usePersistedOrderStore,
-  usePersistedOrderStoreSubscription,
-} from '@vegaprotocol/orders';
-import { OrderType } from '@vegaprotocol/types';
+  useMarketAccountBalance,
+  useAccountBalance,
+} from '@vegaprotocol/accounts';
 
-export type TransactionStatus = 'default' | 'pending';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { useOrderForm } from '../../hooks/use-order-form';
 
 export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
-  submit: (order: OrderSubmissionBody['orderSubmission']) => void;
+  submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
 }
-
-export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
-  // This is not a field used in the form but allows us to set a
-  // summary error message
-  summary: string;
-};
 
 export const DealTicket = ({
   market,
@@ -60,58 +56,58 @@ export const DealTicket = ({
   onClickCollateral,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const { getPersistedOrder, setPersistedOrder } = usePersistedOrderStore(
-    (store) => ({
-      getPersistedOrder: store.getOrder,
-      setPersistedOrder: store.setOrder,
-    })
-  );
+  // store last used tif for market so that when changing OrderType the previous TIF
+  // selection for that type is used when switching back
+
+  const [lastTIF, setLastTIF] = useState({
+    [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
+    [OrderType.TYPE_LIMIT]: OrderTimeInForce.TIME_IN_FORCE_GTC,
+  });
 
   const {
-    register,
     control,
-    handleSubmit,
-    watch,
+    errors,
+    order,
     setError,
     clearErrors,
-    formState: { errors },
-    setValue,
-  } = useForm<DealTicketFormFields>({
-    defaultValues: getPersistedOrder(market.id) || getDefaultOrder(market),
-  });
+    update,
+    handleSubmit,
+  } = useOrderForm(market.id);
 
-  const order = watch();
+  const asset = market.tradableInstrument.instrument.product.settlementAsset;
 
-  watch((orderData) => {
-    const persistable = !(
-      orderData.type === OrderType.TYPE_LIMIT && orderData.price === ''
+  const { accountBalance: marginAccountBalance } = useMarketAccountBalance(
+    market.id
+  );
+
+  const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
+
+  const balance = (
+    BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
+  ).toString();
+
+  const { marketState, marketTradingMode } = marketData;
+
+  const normalizedOrder =
+    order &&
+    normalizeOrderSubmission(
+      order,
+      market.decimalPlaces,
+      market.positionDecimalPlaces
     );
-    if (persistable) {
-      setPersistedOrder(orderData as DealTicketFormFields);
-    }
-  });
 
-  usePersistedOrderStoreSubscription(market.id, (storedOrder) => {
-    if (order.price !== storedOrder.price) {
-      clearErrors('price');
-      setValue('price', storedOrder.price);
-    }
-  });
+  const { margin, totalMargin } = useInitialMargin(market.id, normalizedOrder);
 
-  const marketStateError = validateMarketState(marketData.marketState);
-  const hasNoBalance = useHasNoBalance(
-    market.tradableInstrument.instrument.product.settlementAsset.id
-  );
-  const marketTradingModeError = validateMarketTradingMode(
-    marketData.marketTradingMode
-  );
-
-  const checkForErrors = useCallback(() => {
+  useEffect(() => {
     if (!pubKey) {
-      setError('summary', { message: t('No public key selected') });
+      setError('summary', {
+        message: t('No public key selected'),
+        type: SummaryValidationType.NoPubKey,
+      });
       return;
     }
 
+    const marketStateError = validateMarketState(marketState);
     if (marketStateError !== true) {
       setError('summary', {
         message: marketStateError,
@@ -120,6 +116,7 @@ export const DealTicket = ({
       return;
     }
 
+    const hasNoBalance = !BigInt(generalAccountBalance);
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
@@ -128,6 +125,7 @@ export const DealTicket = ({
       return;
     }
 
+    const marketTradingModeError = validateMarketTradingMode(marketTradingMode);
     if (marketTradingModeError !== true) {
       setError('summary', {
         message: marketTradingModeError,
@@ -135,39 +133,18 @@ export const DealTicket = ({
       });
       return;
     }
+    clearErrors('summary');
   }, [
-    hasNoBalance,
-    marketStateError,
-    marketTradingModeError,
+    marketState,
+    marketTradingMode,
+    generalAccountBalance,
     pubKey,
     setError,
-  ]);
-
-  useEffect(() => {
-    if (
-      (!hasNoBalance &&
-        errors.summary?.type === SummaryValidationType.NoCollateral) ||
-      (marketStateError === true &&
-        errors.summary?.type === SummaryValidationType.MarketState) ||
-      (marketTradingModeError === true &&
-        errors.summary?.type === SummaryValidationType.TradingMode)
-    ) {
-      clearErrors('summary');
-    }
-    checkForErrors();
-  }, [
-    hasNoBalance,
-    marketStateError,
-    marketTradingModeError,
     clearErrors,
-    errors.summary?.message,
-    errors.summary?.type,
-    checkForErrors,
   ]);
 
   const onSubmit = useCallback(
-    (order: OrderSubmissionBody['orderSubmission']) => {
-      checkForErrors();
+    (order: OrderSubmission) => {
       submit(
         normalizeOrderSubmission(
           order,
@@ -176,12 +153,15 @@ export const DealTicket = ({
         )
       );
     },
-    [checkForErrors, submit, market.decimalPlaces, market.positionDecimalPlaces]
+    [submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
+
+  // if an order doesn't exist one will be created by the store immediately
+  if (!order || !normalizedOrder) return null;
 
   return (
     <form
-      onSubmit={isReadOnly ? () => null : handleSubmit(onSubmit)}
+      onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
       className="p-4"
       noValidate
     >
@@ -194,10 +174,19 @@ export const DealTicket = ({
             marketData.trigger
           ),
         }}
-        render={({ field }) => (
+        render={() => (
           <TypeSelector
-            value={field.value}
-            onSelect={field.onChange}
+            value={order.type}
+            onSelect={(type) => {
+              if (type === OrderType.TYPE_NETWORK) return;
+              update({
+                type,
+                // when changing type also update the tif to what was last used of new type
+                timeInForce: lastTIF[type] || order.timeInForce,
+                expiresAt: undefined,
+              });
+              clearErrors('expiresAt');
+            }}
             market={market}
             marketData={marketData}
             errorMessage={errors.type?.message}
@@ -207,17 +196,25 @@ export const DealTicket = ({
       <Controller
         name="side"
         control={control}
-        render={({ field }) => (
-          <SideSelector value={field.value} onSelect={field.onChange} />
+        render={() => (
+          <SideSelector
+            value={order.side}
+            onSelect={(side) => {
+              update({ side });
+            }}
+          />
         )}
       />
       <DealTicketAmount
+        control={control}
         orderType={order.type}
         market={market}
         marketData={marketData}
-        register={register}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
+        update={update}
+        size={order.size}
+        price={order.price}
       />
       <Controller
         name="timeInForce"
@@ -228,11 +225,21 @@ export const DealTicket = ({
             marketData.trigger
           ),
         }}
-        render={({ field }) => (
+        render={() => (
           <TimeInForceSelector
-            value={field.value}
+            value={order.timeInForce}
             orderType={order.type}
-            onSelect={field.onChange}
+            onSelect={(timeInForce) => {
+              update({ timeInForce });
+              // Set tif value for the given order type, so that when switching
+              // types we know the last used TIF for the given order type
+              setLastTIF((curr) => ({
+                ...curr,
+                [order.type]: timeInForce,
+                expiresAt: undefined,
+              }));
+              clearErrors('expiresAt');
+            }}
             market={market}
             marketData={marketData}
             errorMessage={errors.timeInForce?.message}
@@ -244,33 +251,43 @@ export const DealTicket = ({
           <Controller
             name="expiresAt"
             control={control}
-            render={({ field }) => (
+            rules={{
+              validate: validateExpiration,
+            }}
+            render={() => (
               <ExpirySelector
-                value={field.value}
-                onSelect={field.onChange}
+                value={order.expiresAt}
+                onSelect={(expiresAt) =>
+                  update({
+                    expiresAt: expiresAt || undefined,
+                  })
+                }
                 errorMessage={errors.expiresAt?.message}
-                register={register}
               />
             )}
           />
         )}
       <SummaryMessage
         errorMessage={errors.summary?.message}
-        market={market}
-        marketData={marketData}
-        order={order}
+        asset={asset}
+        marketTradingMode={marketData.marketTradingMode}
+        balance={balance}
+        margin={totalMargin}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
-        onClickCollateral={onClickCollateral || (() => null)}
+        onClickCollateral={onClickCollateral}
       />
       <DealTicketButton
         disabled={Object.keys(errors).length >= 1 || isReadOnly}
         variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
       />
       <DealTicketFeeDetails
-        order={order}
+        order={normalizedOrder}
         market={market}
         marketData={marketData}
+        margin={margin}
+        totalMargin={totalMargin}
+        balance={marginAccountBalance}
       />
     </form>
   );
@@ -282,32 +299,28 @@ export const DealTicket = ({
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: Market;
-  marketData: MarketData;
-  order: OrderSubmissionBody['orderSubmission'];
+  asset: { id: string; symbol: string; name: string; decimals: number };
+  marketTradingMode: MarketData['marketTradingMode'];
+  balance: string;
+  margin: string;
   isReadOnly: boolean;
   pubKey: string | null;
-  onClickCollateral: () => void;
+  onClickCollateral?: () => void;
 }
 const SummaryMessage = memo(
   ({
     errorMessage,
-    market,
-    marketData,
-    order,
+    asset,
+    marketTradingMode,
+    balance,
+    margin,
     isReadOnly,
     pubKey,
     onClickCollateral,
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
-    const asset = market.tradableInstrument.instrument.product.settlementAsset;
     const assetSymbol = asset.symbol;
-    const { balanceError, balance, margin } = useOrderMarginValidation({
-      market,
-      marketData,
-      order,
-    });
     const openVegaWalletDialog = useVegaWalletDialogStore(
       (store) => store.openVegaWalletDialog
     );
@@ -351,7 +364,7 @@ const SummaryMessage = memo(
       return (
         <div className="mb-2">
           <ZeroBalanceError
-            asset={market.tradableInstrument.instrument.product.settlementAsset}
+            asset={asset}
             onClickCollateral={onClickCollateral}
           />
         </div>
@@ -372,21 +385,20 @@ const SummaryMessage = memo(
 
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
-    if (balanceError) {
+    if (BigInt(balance) < BigInt(margin) && BigInt(balance) > BigInt(0)) {
       return (
         <div className="mb-2">
           <MarginWarning balance={balance} margin={margin} asset={asset} />
         </div>
       );
     }
-
     // Show auction mode warning
     if (
       [
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(marketData.marketTradingMode)
+      ].includes(marketTradingMode)
     ) {
       return (
         <div className="mb-2">

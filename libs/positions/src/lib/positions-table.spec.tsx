@@ -1,8 +1,11 @@
 import type { RenderResult } from '@testing-library/react';
-import { act, render, screen } from '@testing-library/react';
-import PositionsTable from './positions-table';
+import { act, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import PositionsTable, { OpenVolumeCell, PNLCell } from './positions-table';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
+import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
+import type { ICellRendererParams } from 'ag-grid-community';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
@@ -14,7 +17,6 @@ const singleRow: Position = {
   decimals: 2,
   totalBalance: '123456',
   assetSymbol: 'BTC',
-  liquidationPrice: '83',
   lowMarginLevel: false,
   marketId: 'string',
   marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -26,6 +28,8 @@ const singleRow: Position = {
   searchPrice: '0',
   updatedAt: '2022-07-27T15:02:58.400Z',
   marginAccountBalance: '12345600',
+  status: PositionStatus.POSITION_STATUS_UNSPECIFIED,
+  lossSocializationAmount: '0',
 };
 
 const singleRowData = [singleRow];
@@ -45,7 +49,7 @@ it('render correct columns', async () => {
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(12);
+  expect(headers).toHaveLength(11);
   expect(
     headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
   ).toEqual([
@@ -55,7 +59,6 @@ it('render correct columns', async () => {
     'Mark price',
     'Settlement asset',
     'Entry price',
-    'Liquidation price (est)',
     'Leverage',
     'Margin allocated',
     'Realised PNL',
@@ -141,33 +144,12 @@ it('displays mark price', async () => {
   expect(cells[3].textContent).toEqual('-');
 });
 
-it("displays properly entry, liquidation price and liquidation bar and it's intent", async () => {
-  let result: RenderResult;
-  await act(async () => {
-    result = render(
-      <PositionsTable rowData={singleRowData} isReadOnly={false} />
-    );
-  });
-  let cells = screen.getAllByRole('gridcell');
-  const entryPrice = cells[5].firstElementChild?.firstElementChild?.textContent;
-  expect(entryPrice).toEqual('13.3');
-  await act(async () => {
-    result.rerender(
-      <PositionsTable
-        rowData={[{ ...singleRow, lowMarginLevel: true }]}
-        isReadOnly={false}
-      />
-    );
-  });
-  cells = screen.getAllByRole('gridcell');
-});
-
 it('displays leverage', async () => {
   await act(async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[7].textContent).toEqual('1.1');
+  expect(cells[6].textContent).toEqual('1.1');
 });
 
 it('displays allocated margin', async () => {
@@ -175,7 +157,7 @@ it('displays allocated margin', async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  const cell = cells[8];
+  const cell = cells[7];
   expect(cell.textContent).toEqual('123,456.00');
 });
 
@@ -184,8 +166,7 @@ it('displays realised and unrealised PNL', async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[9].textContent).toEqual('1.23');
-  expect(cells[10].textContent).toEqual('4.56');
+  expect(cells[9].textContent).toEqual('4.56');
 });
 
 it('displays close button', async () => {
@@ -201,7 +182,7 @@ it('displays close button', async () => {
     );
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[12].textContent).toEqual('Close');
+  expect(cells[11].textContent).toEqual('Close');
 });
 
 it('do not display close button if openVolume is zero', async () => {
@@ -217,5 +198,99 @@ it('do not display close button if openVolume is zero', async () => {
     );
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[12].textContent).toEqual('');
+  expect(cells[11].textContent).toEqual('');
+});
+
+describe('PNLCell', () => {
+  const props = {
+    data: undefined,
+    valueFormatted: '100',
+  };
+  it('renders a dash if no data', () => {
+    render(<PNLCell {...(props as ICellRendererParams)} />);
+    expect(screen.getByText('-')).toBeInTheDocument();
+  });
+
+  it('renders value if no loss socialisation has occurred', () => {
+    const props = {
+      data: {
+        ...singleRow,
+        lossSocialisationAmount: '0',
+      },
+      valueFormatted: '100',
+    };
+    render(<PNLCell {...(props as ICellRendererParams)} />);
+    expect(screen.getByText(props.valueFormatted)).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+  });
+
+  it('renders value with warning tooltip if loss socialisation occurred', async () => {
+    const props = {
+      data: {
+        ...singleRow,
+        lossSocializationAmount: '500',
+        decimals: 2,
+      },
+      valueFormatted: '100',
+    };
+    render(<PNLCell {...(props as ICellRendererParams)} />);
+    const content = screen.getByText(props.valueFormatted);
+    expect(content).toBeInTheDocument();
+    expect(screen.getByRole('img')).toBeInTheDocument();
+
+    await userEvent.hover(content);
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip).toBeInTheDocument();
+    expect(
+      // using within as radix renders tooltip content twice
+      within(tooltip).getByText('Lifetime loss socialisation deductions: 5.00')
+    ).toBeInTheDocument();
+  });
+});
+
+describe('OpenVolumeCell', () => {
+  const props = {
+    data: undefined,
+    valueFormatted: '100',
+  };
+  it('renders a dash if no data', () => {
+    render(<OpenVolumeCell {...(props as ICellRendererParams)} />);
+    expect(screen.getByText('-')).toBeInTheDocument();
+  });
+
+  it('renders value if no status is normal', () => {
+    const props = {
+      data: {
+        ...singleRow,
+        status: PositionStatus.POSITION_STATUS_UNSPECIFIED,
+      },
+      valueFormatted: '100',
+    };
+    render(<OpenVolumeCell {...(props as ICellRendererParams)} />);
+    expect(screen.getByText(props.valueFormatted)).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+  });
+
+  it('renders status with warning tooltip if not normal', async () => {
+    const props = {
+      data: {
+        ...singleRow,
+        status: PositionStatus.POSITION_STATUS_ORDERS_CLOSED,
+      },
+      valueFormatted: '100',
+    };
+    render(<OpenVolumeCell {...(props as ICellRendererParams)} />);
+    const content = screen.getByText(props.valueFormatted);
+    expect(content).toBeInTheDocument();
+    expect(screen.getByRole('img')).toBeInTheDocument();
+    await userEvent.hover(content);
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip).toBeInTheDocument();
+    expect(
+      // using within as radix renders tooltip content twice
+      within(tooltip).getByText(
+        `Status: ${PositionStatusMapping[props.data.status]}`
+      )
+    ).toBeInTheDocument();
+  });
 });

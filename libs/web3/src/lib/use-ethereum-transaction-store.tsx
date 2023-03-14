@@ -26,7 +26,7 @@ export interface EthStoredTxState extends EthTxState {
   methodName: ContractMethod;
   args: string[];
   requiredConfirmations: number;
-  requiresConfirmation: boolean;
+  requiresConfirmation: boolean; // whether or not the tx needs external confirmation (IE from a subscription even)
   assetId?: string;
   deposit?: DepositBusEventFieldsFragment;
 }
@@ -55,8 +55,8 @@ export interface EthTransactionStore {
   delete: (index: number) => void;
 }
 
-export const useEthTransactionStore = create(
-  subscribeWithSelector<EthTransactionStore>((set, get) => ({
+export const useEthTransactionStore = create<EthTransactionStore>()(
+  subscribeWithSelector((set, get) => ({
     transactions: [] as EthStoredTxState[],
     create: (
       contract: Contract | null,

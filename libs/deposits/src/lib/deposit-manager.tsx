@@ -5,36 +5,26 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import { useDepositDialog } from './deposit-dialog';
 import type { Asset } from '@vegaprotocol/assets';
-import type { DepositDialogStylePropsSetter } from './deposit-dialog';
-import pick from 'lodash/pick';
-import type { EthTransaction } from '@vegaprotocol/web3';
 import {
-  EthTxStatus,
   useEthTransactionStore,
   useBridgeContract,
   useEthereumConfig,
 } from '@vegaprotocol/web3';
-import { t } from '@vegaprotocol/i18n';
 
 interface DepositManagerProps {
   assetId?: string;
   assets: Asset[];
   isFaucetable: boolean;
-  setDialogStyleProps?: DepositDialogStylePropsSetter;
 }
-
-const getProps = (txContent?: EthTransaction['TxContent']) =>
-  txContent ? pick(txContent, ['title', 'icon', 'intent']) : undefined;
 
 export const DepositManager = ({
   assetId: initialAssetId,
   assets,
   isFaucetable,
-  setDialogStyleProps,
 }: DepositManagerProps) => {
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const { config } = useEthereumConfig();
@@ -43,26 +33,16 @@ export const DepositManager = ({
   const bridgeContract = useBridgeContract();
   const closeDepositDialog = useDepositDialog((state) => state.close);
 
-  const { balance, allowance, deposited, max, refresh } = useDepositBalances(
+  const { getBalances, reset, balances } = useDepositBalances(
     asset,
     isFaucetable
   );
 
   // Set up approve transaction
-  const approve = useSubmitApproval(asset);
+  const approve = useSubmitApproval(asset, getBalances);
 
   // Set up faucet transaction
-  const faucet = useSubmitFaucet(asset);
-
-  const transactionInProgress = [approve.TxContent, faucet.TxContent].filter(
-    (t) => t.status !== EthTxStatus.Default
-  )[0];
-
-  useEffect(() => {
-    setDialogStyleProps?.(getProps(transactionInProgress));
-  }, [setDialogStyleProps, transactionInProgress]);
-
-  const returnLabel = t('Return to deposit');
+  const faucet = useSubmitFaucet(asset, getBalances);
 
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
@@ -86,31 +66,24 @@ export const DepositManager = ({
   };
 
   return (
-    <>
-      {!transactionInProgress && (
-        <DepositForm
-          balance={balance}
-          selectedAsset={asset}
-          onSelectAsset={setAssetId}
-          assets={sortBy(assets, 'name')}
-          submitApprove={async () => {
-            await approve.perform();
-            refresh();
-          }}
-          submitDeposit={submitDeposit}
-          requestFaucet={async () => {
-            await faucet.perform();
-            refresh();
-          }}
-          deposited={deposited}
-          max={max}
-          allowance={allowance}
-          isFaucetable={isFaucetable}
-        />
-      )}
-
-      <approve.TxContent.Content returnLabel={returnLabel} />
-      <faucet.TxContent.Content returnLabel={returnLabel} />
-    </>
+    <DepositForm
+      selectedAsset={asset}
+      onDisconnect={reset}
+      onSelectAsset={(id) => {
+        setAssetId(id);
+        // When we change asset, also clear the tracked faucet/approve transactions so
+        // we dont render stale UI
+        approve.reset();
+        faucet.reset();
+      }}
+      assets={sortBy(assets, 'name')}
+      submitApprove={approve.perform}
+      submitDeposit={submitDeposit}
+      submitFaucet={faucet.perform}
+      faucetTxId={faucet.id}
+      approveTxId={approve.id}
+      balances={balances}
+      isFaucetable={isFaucetable}
+    />
   );
 };
