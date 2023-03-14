@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
@@ -5,7 +6,6 @@ import { Indicator } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useGlobalStore } from '../../stores';
-import { useCallback } from 'react';
 
 export const Footer = () => {
   return (
@@ -20,19 +20,13 @@ export const Footer = () => {
 
 export const NodeHealth = () => {
   const { VEGA_URL } = useEnvironment();
-  console.log('useGlobalStore', useGlobalStore);
   const setNodeSwitcher = useGlobalStore(
     (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
   );
-
-  console.log('setNodeSwitcher', setNodeSwitcher);
-
   const { datanodeBlockHeight, text, intent } = useNodeHealth();
-
   const onClick = useCallback(() => {
     setNodeSwitcher(true);
   }, [setNodeSwitcher]);
-  console.log('VEGA_URL', VEGA_URL);
   return VEGA_URL ? (
     <FooterButton onClick={onClick} data-testid="node-health">
       <FooterButtonPart>
@@ -64,42 +58,7 @@ interface HealthIndicatorProps {
   intent: Intent;
 }
 
-// How many blocks behind the most advanced block that is
-// deemed acceptable for "Good" status
-/*const BLOCK_THRESHOLD = 3;
-const ERROR_LATENCY = 20000;
-const WARNING_LATENCY = 10000;*/
-
 export const HealthIndicator = ({ text, intent }: HealthIndicatorProps) => {
-  /*const online = useNavigatorOnline();
-
-  let intent = Intent.Success;
-  let text = 'Operational';
-
-  if (!online) {
-    text = t('Offline');
-    intent = Intent.Danger;
-  } else if (blockDiff === null) {
-    // Block height query failed and null was returned
-    text = t('Non operational');
-    intent = Intent.Danger;
-  } else if (blockUpdateMsLatency > ERROR_LATENCY) {
-    text = t('Erroneous latency ( >%s sec): %s sec', [
-      (ERROR_LATENCY / 1000).toFixed(2),
-      (blockUpdateMsLatency / 1000).toFixed(2),
-    ]);
-    intent = Intent.Danger;
-  } else if (blockDiff >= BLOCK_THRESHOLD) {
-    text = t(`${blockDiff} Blocks behind`);
-    intent = Intent.Warning;
-  } else if (blockUpdateMsLatency > WARNING_LATENCY) {
-    text = t('Warning delay ( >%s sec): %s sec', [
-      (WARNING_LATENCY / 1000).toFixed(2),
-      (blockUpdateMsLatency / 1000).toFixed(2),
-    ]);
-    intent = Intent.Warning;
-  }*/
-
   return (
     <span title={t('Node health')}>
       <Indicator variant={intent} />
