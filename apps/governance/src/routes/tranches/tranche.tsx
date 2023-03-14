@@ -57,7 +57,7 @@ export const Tranche = () => {
             </KeyValueTableRow>
             {tranche.users.map((user) => (
               <KeyValueTableRow key={user}>
-                <EtherscanLink address={user} />
+                <EtherscanLink address={user} data-testid="link" />
                 <RouterLink
                   className="underline"
                   title={t('View vesting information')}
