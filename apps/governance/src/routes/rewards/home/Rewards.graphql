@@ -30,6 +30,7 @@ query Rewards(
     id
     rewardsConnection(pagination: $rewardsPagination) {
       edges {
+        cursor
         node {
           ...RewardFields
         }
@@ -71,6 +72,7 @@ query EpochAssetsRewards($epochRewardSummariesPagination: Pagination) {
   }
   epochRewardSummaries(pagination: $epochRewardSummariesPagination) {
     edges {
+      cursor
       node {
         ...EpochRewardSummaryFields
       }
