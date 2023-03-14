@@ -14,10 +14,7 @@ import type { Environment } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
-import {
-  configSchema,
-  tomlConfigSchema,
-} from '../utils/validate-configuration';
+import { tomlConfigSchema } from '../utils/validate-configuration';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
