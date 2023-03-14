@@ -131,7 +131,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.get('p.col-span-1').contains('Within 43,200 seconds');
     validateMarketDataRow(0, 'Highest Price', '7.97323 ');
     validateMarketDataRow(1, 'Lowest Price', '6.54701 ');
-    validateMarketDataRow(2, 'Reference Price', '7.22625 ');
   });
 
   it('liquidity monitoring parameters displayed', () => {

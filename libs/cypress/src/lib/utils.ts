@@ -53,6 +53,7 @@ export const checkSorting = (
   });
   checkSortChange(orderTabDesc, column);
 };
+
 const checkSortChange = (tabsArr: string[], column: string) => {
   cy.get('.ag-center-cols-container').within(() => {
     tabsArr.forEach((entry, i) => {
