@@ -1,10 +1,4 @@
 outputs:
-  token-node0:
-    description: 'api-token for validator node 0 wallet'
-    value: ${{ steps.generate-api-token.outputs.api-token-node0 }}
-  token-node1:
-    description: 'api-token for validator node 1 wallet'
-    value: ${{ steps.generate-api-token.outputs.api-token-node1 }}
   token:
     description: 'api-token of wallet'
     value: ${{ steps.generate-api-token.outputs.api-token }}
