@@ -1,5 +1,3 @@
-const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
-const walletContainer = '[data-testid="ethereum-wallet"]';
 const vegaAssetAddress = '0x67175Da1D5e966e40D11c4B2519392B2058373de';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
