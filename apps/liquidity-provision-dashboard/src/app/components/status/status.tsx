@@ -5,6 +5,7 @@ import * as Schema from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
 
 import { Indicator } from '../indicator';
+import type { AuctionTrigger } from '@vegaprotocol/types';
 
 export const Status = ({
   tradingMode,
@@ -31,7 +32,7 @@ export const Status = ({
   };
 
   const status = getStatus();
-  const tooltipDescription = t(getTooltipDescription(status));
+  const tooltipDescription = t(getTooltipDescription(status, trigger));
 
   return (
     <div>
@@ -52,14 +53,16 @@ export const Status = ({
   );
 };
 
-const getTooltipDescription = (status: string) => {
+const getTooltipDescription = (status: string, trigger?: string) => {
   let tooltipDescription = '';
   switch (status) {
     case Schema.MarketTradingModeMapping.TRADING_MODE_CONTINUOUS:
       tooltipDescription =
         'This is the standard trading mode where trades are executed whenever orders are received';
       break;
-    case `${Schema.MarketTradingModeMapping.TRADING_MODE_MONITORING_AUCTION} - ${Schema.AuctionTriggerMapping.AUCTION_TRIGGER_LIQUIDITY}`:
+    case `${
+      Schema.MarketTradingModeMapping.TRADING_MODE_MONITORING_AUCTION
+    } - ${Schema.AuctionTriggerMapping[trigger as AuctionTrigger]}`:
       tooltipDescription =
         'This market is in auction until it reaches sufficient liquidity';
       break;
