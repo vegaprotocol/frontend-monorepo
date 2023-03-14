@@ -1,3 +1,4 @@
+import { parse as tomlParse } from 'toml';
 import { isValidUrl, LocalStorage } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useEffect } from 'react';
@@ -13,7 +14,7 @@ import type { Environment } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
-import { configSchema } from '../utils/validate-configuration';
+import { tomlConfigSchema } from '../utils/validate-configuration';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -159,9 +160,15 @@ export const useInitializeEnv = () => {
 const fetchConfig = async (url?: string) => {
   if (!url) return [];
   const res = await fetch(url);
-  const cfg = await res.json();
-  const result = configSchema.parse(cfg);
-  return result.hosts;
+  const content = await res.text();
+  const parsed = tomlParse(content);
+  const tomlResults = tomlConfigSchema.parse(parsed);
+  const {
+    API: {
+      GraphQL: { Hosts },
+    },
+  } = tomlResults;
+  return Hosts;
 };
 
 /**
