@@ -279,8 +279,6 @@ export const PriceMonitoringBoundsInfoPanel = ({
   PanelProps) => {
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
-  const assetDecimals =
-    market.tradableInstrument.instrument.product.settlementAsset.decimals;
   const trigger =
     market.priceMonitoringSettings?.parameters?.triggers?.[triggerIndex];
   const bounds = market.data?.priceMonitoringBounds?.[triggerIndex];
