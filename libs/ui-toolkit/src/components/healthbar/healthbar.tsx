@@ -3,12 +3,9 @@ import * as Schema from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
-import {
-  getIntentBackground,
-  Indicator,
-  Intent,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { getIntentBackground, Intent } from '../../utils/intent';
+import { Indicator } from '../indicator';
+import { Tooltip } from '../tooltip';
 
 const intentForStatus = (status: Schema.MarketTradingMode) => {
   return marketTradingModeIntent[status];
