@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import debounce from 'lodash/debounce';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   useDataProvider,
-  useResize,
   useScreenDimensions,
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';

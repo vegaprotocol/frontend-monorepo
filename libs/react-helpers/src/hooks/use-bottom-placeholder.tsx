@@ -71,6 +71,6 @@ export const useBottomPlaceholder = <T extends {}>({
             onFilterChange: onRowsChanged,
           }
         : {},
-    [onBodyScrollEnd, onRowsChanged]
+    [onBodyScrollEnd, onRowsChanged, disabled]
   );
 };

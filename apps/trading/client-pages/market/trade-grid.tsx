@@ -183,7 +183,7 @@ const MainGrid = memo(
           </Tabs>
         </TradeGridChild>
       );
-    }, [screenSize, marketId, onMarketClick]);
+    }, [screenSize, marketId, onMarketClick, pinnedAsset]);
 
     return (
       <ResizableGrid vertical>
