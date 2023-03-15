@@ -74,7 +74,7 @@ const marketsDataFieldsFragments: MarketsDataFieldsFragment[] = [
     bestBidPrice: '0',
     bestOfferPrice: '0',
     markPrice: '4612690058',
-    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET,
     __typename: 'MarketData',
   },
   {
@@ -91,7 +91,7 @@ const marketsDataFieldsFragments: MarketsDataFieldsFragment[] = [
     bestBidPrice: '0',
     bestOfferPrice: '0',
     markPrice: '4612690058',
-    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET,
     __typename: 'MarketData',
   },
 ];
