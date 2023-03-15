@@ -1,4 +1,7 @@
-import { aliasWalletConnectQuery } from '../mock-rest';
+import {
+  aliasWalletConnectQuery,
+  aliasWalletConnectWithUserError,
+} from '../mock-rest';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -17,6 +20,12 @@ declare global {
 export const mockConnectWallet = () => {
   cy.mockWallet((req) => {
     aliasWalletConnectQuery(req, Cypress.env('VEGA_WALLET_API_TOKEN'));
+  });
+};
+
+export const mockConnectWalletWithUserError = () => {
+  cy.mockWallet((req) => {
+    aliasWalletConnectWithUserError(req, Cypress.env('VEGA_WALLET_API_TOKEN'));
   });
 };
 

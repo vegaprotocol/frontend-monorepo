@@ -63,3 +63,24 @@ export const aliasWalletConnectQuery = (
     });
   }
 };
+
+export const aliasWalletConnectWithUserError = (
+  req: CyHttpMessages.IncomingHttpRequest,
+  token: string
+) => {
+  if (hasMethod(req, 'client.connect_wallet')) {
+    req.alias = 'client.connect_wallet';
+    req.reply({
+      statusCode: 400,
+      body: {
+        jsonrpc: '2.0',
+        error: {
+          code: 3001,
+          data: 'the user rejected the wallet connection',
+          message: 'User error',
+        },
+        id: '0',
+      },
+    });
+  }
+};

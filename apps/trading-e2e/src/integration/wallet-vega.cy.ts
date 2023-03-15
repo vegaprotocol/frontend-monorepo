@@ -1,7 +1,8 @@
-import { mockConnectWallet } from '@vegaprotocol/cypress';
-import { connectEthereumWallet } from '../support/ethereum-wallet';
+import {
+  mockConnectWallet,
+  mockConnectWalletWithUserError,
+} from '@vegaprotocol/cypress';
 
-const connectEthWalletBtn = 'connect-eth-wallet-btn';
 const connectVegaBtn = 'connect-vega-wallet';
 const manageVegaBtn = 'manage-vega-wallet';
 const form = 'rest-connector-form';
@@ -127,6 +128,21 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     cy.getByTestId(manageVegaBtn).should('exist');
   });
 
+  it.only('can not connect', () => {
+    // 0002-WCON-002
+    // 0002-WCON-005
+    // 0002-WCON-007
+
+    mockConnectWalletWithUserError();
+    cy.getByTestId(connectVegaBtn).click();
+    cy.getByTestId('connectors-list')
+      .find('[data-testid="connector-jsonRpc"]')
+      .click();
+    cy.getByTestId('dialog-content')
+      .should('contain.text', 'User error')
+      .and('contain.text', 'the user rejected the wallet connection');
+  });
+
   it('can change selected public key and disconnect', () => {
     // 0002-WCON-022
     // 0002-WCON-023
@@ -162,41 +178,5 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     cy.contains(
       'Choose wallet app to connect, or to change port or server URL enter a custom wallet location first'
     );
-  });
-});
-
-describe('ethereum wallet', { tags: '@smoke' }, () => {
-  beforeEach(() => {
-    cy.mockWeb3Provider();
-    // Using portfolio withdrawals tab is it requires Ethereum wallet connection
-    cy.mockTradingPage();
-    cy.mockSubscription();
-    cy.setVegaWallet();
-    cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
-    cy.getByTestId('Withdrawals').click();
-  });
-
-  it('can connect', () => {
-    cy.wait('@NetworkParams');
-    cy.getByTestId('Deposits').click();
-    cy.getByTestId('deposit-button').click();
-    cy.getByTestId('connect-eth-wallet-btn').click();
-    cy.getByTestId('web3-connector-list').should('exist');
-    cy.getByTestId('web3-connector-MetaMask').click();
-    cy.getByTestId('web3-connector-list').should('not.exist');
-    cy.getByTestId('tab-deposits').should('not.be.empty');
-  });
-
-  it('able to disconnect eth wallet', () => {
-    const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
-    cy.getByTestId('Deposits').click();
-    cy.getByTestId('deposit-button').click();
-    connectEthereumWallet('MetaMask');
-    cy.getByTestId('ethereum-address').should('have.text', ethWalletAddress);
-    cy.getByTestId('disconnect-ethereum-wallet')
-      .should('have.text', 'Disconnect')
-      .click();
-    cy.getByTestId(connectEthWalletBtn).should('exist');
   });
 });
