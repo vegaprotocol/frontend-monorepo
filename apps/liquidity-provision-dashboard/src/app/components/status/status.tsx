@@ -32,7 +32,8 @@ export const Status = ({
   };
 
   const status = getStatus();
-  const tooltipDescription = t(getTooltipDescription(status, trigger));
+  const tooltipDescription =
+    tradingMode && getTooltipDescription(tradingMode, trigger);
 
   return (
     <div>
@@ -53,26 +54,39 @@ export const Status = ({
   );
 };
 
-const getTooltipDescription = (status: string, trigger?: string) => {
-  let tooltipDescription = '';
+const getTooltipDescription = (
+  status: Schema.MarketTradingMode,
+  trigger?: Schema.AuctionTrigger
+) => {
   switch (status) {
-    case Schema.MarketTradingModeMapping.TRADING_MODE_CONTINUOUS:
-      tooltipDescription =
-        'This is the standard trading mode where trades are executed whenever orders are received';
-      break;
-    case `${
-      Schema.MarketTradingModeMapping.TRADING_MODE_MONITORING_AUCTION
-    } - ${Schema.AuctionTriggerMapping[trigger as AuctionTrigger]}`:
-      tooltipDescription =
-        'This market is in auction until it reaches sufficient liquidity';
-      break;
-    case Schema.MarketTradingModeMapping.TRADING_MODE_OPENING_AUCTION:
-      tooltipDescription =
-        'This is a new market in an opening auction to determine a fair mid-price before starting continuous trading.';
-      break;
+    case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS:
+      return 'This is the standard trading mode where trades are executed whenever orders are received';
+    case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION:
+      return getMonitoringDescriptionTooltip(trigger);
+    case Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION:
+      return 'This is a new market in an opening auction to determine a fair mid-price before starting continuous trading.';
     default:
-      break;
+      return '';
   }
+};
 
-  return tooltipDescription;
+const getMonitoringDescriptionTooltip = (trigger?: AuctionTrigger) => {
+  switch (trigger) {
+    case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET:
+      return t(
+        `This market is in auction until it reaches sufficient liquidity.`
+      );
+    case Schema.AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS:
+      return t(
+        `This market may have sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.`
+      );
+    case Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE:
+      return t(`This market is in auction due to high price volatility.`);
+    case Schema.AuctionTrigger.AUCTION_TRIGGER_OPENING:
+      return t(
+        `This is a new market in an opening auction to determine a fair mid-price before starting continuous trading`
+      );
+    default:
+      return '';
+  }
 };
