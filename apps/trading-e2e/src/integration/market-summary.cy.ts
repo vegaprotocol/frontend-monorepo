@@ -148,7 +148,7 @@ describe('Market trading page', () => {
           cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
           cy.getByTestId(itemValue).should(
             'have.text',
-            'Monitoring auction - liquidity'
+            'Monitoring auction - liquidity (target not met)'
           );
         });
       });
