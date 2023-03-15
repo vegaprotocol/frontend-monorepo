@@ -1,4 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { StatusMessage } from '../status-message';
 
 interface RenderFetchedProps {
@@ -7,6 +8,7 @@ interface RenderFetchedProps {
   loading: boolean | undefined;
   className?: string;
   errorMessage?: string;
+  refetch?: () => void;
 }
 
 export const RenderFetched = ({
@@ -15,6 +17,7 @@ export const RenderFetched = ({
   children,
   className,
   errorMessage = t('Error retrieving data'),
+  refetch,
 }: RenderFetchedProps) => {
   if (loading) {
     return (
@@ -23,7 +26,20 @@ export const RenderFetched = ({
   }
 
   if (error) {
-    return <StatusMessage className={className}>{errorMessage}</StatusMessage>;
+    return (
+      <>
+        <StatusMessage className={className}>{errorMessage}</StatusMessage>
+        {refetch && (
+          <Button
+            onClick={() => {
+              refetch();
+            }}
+          >
+            {t('Try again')}
+          </Button>
+        )}
+      </>
+    );
   }
 
   return children;
