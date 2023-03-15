@@ -63,7 +63,8 @@ export const AccountManager = ({
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         isReadOnly={isReadOnly}
-        noRowsOverlayComponent={() => null}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
         pinnedAsset={pinnedAsset}
         getRowHeight={getRowHeight}
         {...bottomPlaceholderProps}
