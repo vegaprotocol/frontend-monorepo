@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink, useEnvironment } from '@vegaprotocol/environment';
 import { EthTxStatus } from '../use-ethereum-transaction';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
@@ -62,14 +62,14 @@ export const TxRow = ({
         }`}
       >
         <span>{t('Ethereum transaction complete')}</span>
-        <Link
-          href={`${ETHERSCAN_URL}/tx/${txHash}`}
-          title={t('View on Etherscan')}
-          className="text-vega-pink dark:text-vega-yellow"
-          target="_blank"
-        >
-          {t('View transaction on Etherscan')}
-        </Link>
+        {txHash && (
+          <EtherscanLink
+            tx={txHash}
+            className="text-vega-pink dark:text-vega-yellow"
+          >
+            {t('View transaction on Etherscan')}
+          </EtherscanLink>
+        )}
       </p>
     );
   }

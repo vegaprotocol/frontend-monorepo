@@ -103,6 +103,7 @@ export const TOKEN_VALIDATOR = '/validators/:id';
 export const EXPLORER_TX = '/txs/:hash';
 
 // Etherscan pages
+export const ETHERSCAN_ADDRESS = '/address/:hash';
 export const ETHERSCAN_TX = '/tx/:hash';
 
 // Console pages
