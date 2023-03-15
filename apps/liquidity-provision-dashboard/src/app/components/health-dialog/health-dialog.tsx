@@ -1,9 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { Dialog, HealthBar } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
 import classNames from 'classnames';
-
-import { HealthBar } from '../health-bar';
 
 interface HealthDialogProps {
   isOpen: boolean;

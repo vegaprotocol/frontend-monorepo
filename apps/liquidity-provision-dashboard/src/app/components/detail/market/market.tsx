@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { Icon } from '@vegaprotocol/ui-toolkit';
+import { Icon, HealthBar } from '@vegaprotocol/ui-toolkit';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 
 import type * as Schema from '@vegaprotocol/types';
-import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Last24hVolume } from '../last-24h-volume';
 import { Status } from '../../status';

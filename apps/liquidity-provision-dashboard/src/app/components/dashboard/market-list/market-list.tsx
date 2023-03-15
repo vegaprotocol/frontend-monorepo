@@ -18,6 +18,7 @@ import type * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Icon,
+  HealthBar,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
 import type { GetRowIdParams, RowClickedEvent } from 'ag-grid-community';
@@ -27,7 +28,6 @@ import { AgGridColumn } from 'ag-grid-react';
 import { useCallback, useState } from 'react';
 
 import { Grid } from '../../grid';
-import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { formatDistanceToNow } from 'date-fns';
