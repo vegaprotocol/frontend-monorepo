@@ -1,10 +1,19 @@
 import { useRef, useEffect, useState } from 'react';
 
+const SERVER_SIDE_DIMENSIONS = {
+  width: 1200,
+  height: 900,
+};
+
 export const useResize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const [windowSize, setWindowSize] = useState(
+    typeof window !== undefined
+      ? {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        }
+      : { ...SERVER_SIDE_DIMENSIONS }
+  );
 
   const timeout = useRef(0);
 

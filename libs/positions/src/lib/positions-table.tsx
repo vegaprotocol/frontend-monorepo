@@ -116,6 +116,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               value
             )
           }
+          minWidth={150}
         />
         <AgGridColumn
           headerName={t('Notional')}
@@ -141,6 +142,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                   data.marketDecimalPlaces
                 );
           }}
+          minWidth={80}
         />
         <AgGridColumn
           headerName={t('Open volume')}
@@ -174,6 +176,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 );
           }}
           cellRenderer={OpenVolumeCell}
+          minWidth={100}
         />
         <AgGridColumn
           headerName={t('Mark price')}
@@ -213,8 +216,13 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               data.marketDecimalPlaces
             );
           }}
+          minWidth={100}
         />
-        <AgGridColumn headerName={t('Settlement asset')} field="assetSymbol" />
+        <AgGridColumn
+          headerName={t('Settlement asset')}
+          field="assetSymbol"
+          minWidth={100}
+        />
         <AgGridColumn
           headerName={t('Entry price')}
           field="averageEntryPrice"
@@ -248,6 +256,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               data.marketDecimalPlaces
             );
           }}
+          minWidth={100}
         />
         <AgGridColumn
           headerName={t('Leverage')}
@@ -264,6 +273,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
             value === undefined ? undefined : formatNumber(value.toString(), 1)
           }
+          minWidth={100}
         />
         <AgGridColumn
           headerName={t('Margin allocated')}
@@ -295,6 +305,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               data.decimals
             );
           }}
+          minWidth={100}
         />
         <AgGridColumn
           headerName={t('Realised PNL')}
@@ -321,6 +332,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
           )}
           cellRenderer={PNLCell}
+          minWidth={100}
         />
         <AgGridColumn
           headerName={t('Unrealised PNL')}
@@ -347,6 +359,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
           )}
           cellRenderer={PNLCell}
+          minWidth={100}
         />
         <AgGridColumn
           headerName={t('Updated')}
@@ -361,6 +374,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             return getDateTimeFormat().format(new Date(value));
           }}
+          minWidth={100}
         />
         {onClose && !props.isReadOnly ? (
           <AgGridColumn
@@ -375,6 +389,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 </ButtonLink>
               ) : null
             }
+            minWidth={50}
           />
         ) : null}
       </AgGrid>

@@ -19,6 +19,7 @@ interface AccountManagerProps {
   onClickDeposit?: (assetId?: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
+  noBottomPlaceholder?: boolean;
 }
 
 export const AccountManager = ({
@@ -28,6 +29,7 @@ export const AccountManager = ({
   partyId,
   isReadOnly,
   pinnedAsset,
+  noBottomPlaceholder,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -45,6 +47,7 @@ export const AccountManager = ({
   const bottomPlaceholderProps = useBottomPlaceholder<AccountFields>({
     gridRef,
     setId,
+    disabled: noBottomPlaceholder,
   });
 
   const getRowHeight = useCallback(

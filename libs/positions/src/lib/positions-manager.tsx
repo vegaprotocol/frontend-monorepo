@@ -66,6 +66,7 @@ export const PositionsManager = ({
   const bottomPlaceholderProps = useBottomPlaceholder<Position>({
     gridRef,
     setId,
+    disabled: noBottomPlaceholder,
   });
 
   return (
@@ -77,7 +78,7 @@ export const PositionsManager = ({
         onClose={onClose}
         noRowsOverlayComponent={() => null}
         isReadOnly={isReadOnly}
-        {...(noBottomPlaceholder ? null : bottomPlaceholderProps)}
+        {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
