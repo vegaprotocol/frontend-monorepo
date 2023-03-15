@@ -24,6 +24,7 @@ export * from './nav-dropdown';
 export * from './nav';
 export * from './navigation';
 export * from './notification';
+export * from './pagination';
 export * from './popover';
 export * from './progress-bar';
 export * from './radio-group';

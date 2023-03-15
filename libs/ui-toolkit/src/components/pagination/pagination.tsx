@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
+import classnames from 'classnames';
 import { Button } from '../button';
 import { Icon } from '../icon';
 
 export type PaginationProps = {
+  className?: string;
   hasPrevPage: boolean;
   hasNextPage: boolean;
   isLoading?: boolean;
@@ -12,6 +14,7 @@ export type PaginationProps = {
 };
 
 export const Pagination = ({
+  className,
   hasPrevPage,
   hasNextPage,
   isLoading,
@@ -20,7 +23,12 @@ export const Pagination = ({
   onNext,
 }: PaginationProps) => {
   return (
-    <div className="flex gap-2 items-center justify-center">
+    <div
+      className={classnames(
+        'flex gap-2 items-center justify-center',
+        className
+      )}
+    >
       <Button
         size="sm"
         disabled={isLoading || !hasPrevPage}

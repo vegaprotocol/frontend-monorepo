@@ -29,8 +29,13 @@ query Rewards(
   party(id: $partyId) {
     id
     rewardsConnection(pagination: $rewardsPagination) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
       edges {
-        cursor
         node {
           ...RewardFields
         }
@@ -71,8 +76,13 @@ query EpochAssetsRewards($epochRewardSummariesPagination: Pagination) {
     }
   }
   epochRewardSummaries(pagination: $epochRewardSummariesPagination) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
     edges {
-      cursor
       node {
         ...EpochRewardSummaryFields
       }
