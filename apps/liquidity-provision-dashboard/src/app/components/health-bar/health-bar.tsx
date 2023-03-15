@@ -1,13 +1,26 @@
 import classNames from 'classnames';
-import type * as Schema from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  getIntentBackground,
+  Indicator,
+  Intent,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 
-import { getColorForStatus } from '../../lib/utils';
+const intentForStatus = (status: Schema.MarketTradingMode) => {
+  return marketTradingModeIntent[status];
+};
 
-import { Indicator } from '../indicator';
+const marketTradingModeIntent = {
+  [Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS]: Intent.Success,
+  [Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION]: Intent.Danger,
+  [Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION]: Intent.Primary,
+  [Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION]: Intent.Danger,
+  [Schema.MarketTradingMode.TRADING_MODE_NO_TRADING]: Intent.Danger,
+};
 
 const Remainder = () => (
   <div className="bg-greys-light-200 h-[inherit] relative flex-1" />
@@ -27,7 +40,7 @@ const Target = ({
       description={
         <>
           <div className="mt-1.5 inline-flex">
-            <Indicator />
+            <Indicator variant={Intent.None} />
           </div>
           <span>
             {t('Target stake')} {addDecimalsFormatNumber(target, decimals)}
@@ -58,7 +71,6 @@ const Target = ({
 const Level = ({
   commitmentAmount,
   rangeLimit,
-  backgroundColor,
   opacity,
   status,
   fee,
@@ -67,7 +79,6 @@ const Level = ({
 }: {
   commitmentAmount: number;
   rangeLimit: number;
-  backgroundColor: string;
   opacity: number;
   status: Schema.MarketTradingMode;
   fee: string;
@@ -79,10 +90,11 @@ const Level = ({
     .multipliedBy(100)
     .toNumber();
 
+  const intent = intentForStatus(status);
   const tooltipContent = (
     <>
       <div className="mt-1.5 inline-flex">
-        <Indicator status={status} opacity={opacity} />
+        <Indicator variant={intent} />
       </div>
       <span>
         {fee}% {t('Fee')}
@@ -105,11 +117,11 @@ const Level = ({
         }}
       >
         <div
-          className="relative w-full h-[inherit] group-hover:scale-y-150"
-          style={{
-            opacity,
-            backgroundColor,
-          }}
+          className={classNames(
+            'relative w-full h-[inherit] group-hover:scale-y-150',
+            getIntentBackground(intent)
+          )}
+          style={{ opacity }}
         />
       </div>
     </Tooltip>
@@ -153,7 +165,6 @@ export const HealthBar = ({
     .toNumber();
 
   const isLarge = size === 'large';
-  const backgroundColor = getColorForStatus(status);
   const showRemainder = committedNumber < rangeLimit || levels.length === 0;
   const showOverflow = !showRemainder && lastVisibleLevel < levels.length - 1;
 
@@ -182,7 +193,6 @@ export const HealthBar = ({
                 <Level
                   commitmentAmount={commitmentAmount}
                   rangeLimit={rangeLimit}
-                  backgroundColor={backgroundColor}
                   opacity={opacity}
                   status={status}
                   fee={fee}
