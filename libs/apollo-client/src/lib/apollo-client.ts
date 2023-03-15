@@ -59,13 +59,19 @@ export function createClient({
           const timestamp = r?.headers.get('x-block-timestamp');
           if (blockHeight && timestamp) {
             const state = useHeaderStore.getState();
-            useHeaderStore.setState({
-              ...state,
-              [r.url]: {
-                blockHeight: Number(blockHeight),
-                timestamp: new Date(Number(timestamp.slice(0, -6))),
-              },
-            });
+            const urlState = state[r.url];
+            if (
+              !urlState?.blockHeight ||
+              urlState.blockHeight !== blockHeight
+            ) {
+              useHeaderStore.setState({
+                ...state,
+                [r.url]: {
+                  blockHeight: Number(blockHeight),
+                  timestamp: new Date(Number(timestamp.slice(0, -6))),
+                },
+              });
+            }
           }
           return response;
         });

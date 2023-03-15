@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
-import { ETHERSCAN_TX, useEtherscanLink } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
@@ -8,7 +8,7 @@ import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
-import { ExternalLink, Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
+import { Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { useCallback } from 'react';
 import compact from 'lodash/compact';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
@@ -103,7 +103,7 @@ const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
-      <EtherscanLink tx={tx} />
+      {tx.txHash && <EtherscanLink tx={tx.txHash} />}
       <EthTransactionDetails tx={tx} />
     </>
   );
@@ -126,26 +126,12 @@ const EthTxErrorToastContent = ({ tx }: EthTxToastContentProps) => {
   );
 };
 
-const EtherscanLink = ({ tx }: EthTxToastContentProps) => {
-  const etherscanLink = useEtherscanLink();
-  return tx.txHash ? (
-    <p className="break-all">
-      <ExternalLink
-        href={etherscanLink(ETHERSCAN_TX.replace(':hash', tx.txHash))}
-        rel="noreferrer"
-      >
-        {t('View on Etherscan')}
-      </ExternalLink>
-    </p>
-  ) : null;
-};
-
 const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
   return (
     <>
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
-      <EtherscanLink tx={tx} />
+      {tx.txHash && <EtherscanLink tx={tx.txHash} />}
       <EthTransactionDetails tx={tx} />
     </>
   );
@@ -162,7 +148,7 @@ const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
         {t('Your transaction has been completed.')}{' '}
         {isDeposit && t('Waiting for deposit confirmation.')}
       </p>
-      <EtherscanLink tx={tx} />
+      {tx.txHash && <EtherscanLink tx={tx.txHash} />}
       <EthTransactionDetails tx={tx} />
     </>
   );
