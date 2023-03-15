@@ -7,6 +7,10 @@ const externalLink = 'external-link';
 const accordionContent = 'accordion-content';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
+  beforeEach(() => {
+    cy.mockTradingPage();
+  });
+
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
