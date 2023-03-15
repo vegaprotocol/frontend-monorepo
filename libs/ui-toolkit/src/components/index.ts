@@ -46,3 +46,4 @@ export * from './traffic-light';
 export * from './vega-icons';
 export * from './vega-logo';
 export * from './viewing-as-user';
+export * from './healthbar';
