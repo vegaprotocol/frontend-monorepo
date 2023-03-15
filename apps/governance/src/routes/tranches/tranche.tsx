@@ -1,7 +1,6 @@
 import {
   KeyValueTable,
   KeyValueTableRow,
-  Link,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { Link as RouterLink } from 'react-router-dom';
@@ -11,7 +10,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { formatNumber } from '@vegaprotocol/utils';
 
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
@@ -19,7 +18,6 @@ import { useTranches } from '../../lib/tranches/tranches-store';
 
 export const Tranche = () => {
   const tranches = useTranches((state) => state.tranches);
-  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { trancheId } = useParams<{ trancheId: string; address: string }>();
   const { chainId } = useWeb3React();
@@ -59,25 +57,15 @@ export const Tranche = () => {
             </KeyValueTableRow>
             {tranche.users.map((user) => (
               <KeyValueTableRow key={user}>
-                {
-                  <Link
-                    title={t('View on Etherscan (opens in a new tab)')}
-                    href={`${ETHERSCAN_URL}/address/${user}`}
-                    target="_blank"
-                  >
-                    {user}
-                  </Link>
-                }
-                {
-                  <RouterLink
-                    className="underline"
-                    title={t('View vesting information')}
-                    to={`${Routes.REDEEM}/${user}`}
-                    data-testid="redeem-link"
-                  >
-                    {t('View vesting information')}
-                  </RouterLink>
-                }
+                <EtherscanLink address={user} data-testid="link" />
+                <RouterLink
+                  className="underline"
+                  title={t('View vesting information')}
+                  to={`${Routes.REDEEM}/${user}`}
+                  data-testid="redeem-link"
+                >
+                  {t('View vesting information')}
+                </RouterLink>
               </KeyValueTableRow>
             ))}
           </KeyValueTable>

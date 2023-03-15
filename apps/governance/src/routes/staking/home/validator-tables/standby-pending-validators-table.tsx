@@ -122,10 +122,7 @@ export const StandbyPendingValidatorsTable = ({
               avatarUrl,
               name,
             },
-            [ValidatorFields.STAKE]: formatNumber(
-              toBigNum(stakedTotal, decimals),
-              2
-            ),
+            [ValidatorFields.STAKE]: stakedTotal,
             [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION]:
               individualStakeNeededForPromotion || null,
             [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
@@ -154,10 +151,7 @@ export const StandbyPendingValidatorsTable = ({
               stakedTotal,
               totalStake
             ),
-            [ValidatorFields.PENDING_STAKE]: formatNumber(
-              toBigNum(pendingStake, decimals),
-              2
-            ),
+            [ValidatorFields.PENDING_STAKE]: pendingStake,
           };
         }
       );
@@ -222,6 +216,8 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.PENDING_STAKE,
           headerName: t(ValidatorFields.PENDING_STAKE).toString(),
           headerTooltip: t('PendingStakeDescription').toString(),
+          valueFormatter: ({ value }) =>
+            formatNumber(toBigNum(value, decimals), 2),
           width: 110,
         },
       ],
