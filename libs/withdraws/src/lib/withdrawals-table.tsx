@@ -9,14 +9,14 @@ import {
 } from '@vegaprotocol/utils';
 import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
-import { Link, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
@@ -27,7 +27,6 @@ export const WithdrawalsTable = (
   props: TypedDataAgGrid<WithdrawalFieldsFragment>
 ) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { ETHERSCAN_URL } = useEnvironment();
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
@@ -66,7 +65,6 @@ export const WithdrawalsTable = (
         headerName={t('Recipient')}
         field="details.receiverAddress"
         cellRenderer="RecipientCell"
-        cellRendererParams={{ ethUrl: ETHERSCAN_URL }}
         valueFormatter={({
           value,
           data,
@@ -126,7 +124,6 @@ export const WithdrawalsTable = (
           complete: (withdrawal: WithdrawalFieldsFragment) => {
             createWithdrawApproval(withdrawal);
           },
-          ethUrl: ETHERSCAN_URL,
         }}
         cellRendererSelector={({
           data,
@@ -160,20 +157,12 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
 
 export const EtherscanLinkCell = ({
   value,
-  ethUrl,
-}: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'> & {
-  ethUrl: string;
-}) => {
+}: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
   if (!value) return '-';
   return (
-    <Link
-      title={t('View transaction on Etherscan')}
-      href={`${ethUrl}/tx/${value}`}
-      data-testid="etherscan-link"
-      target="_blank"
-    >
+    <EtherscanLink tx={value} data-testid="etherscan-link">
       {truncateByChars(value)}
-    </Link>
+    </EtherscanLink>
   );
 };
 
@@ -193,28 +182,17 @@ export const StatusCell = ({ data }: { data: WithdrawalFieldsFragment }) => {
   return <span>{t('Failed')}</span>;
 };
 
-export interface RecipientCellProps
-  extends VegaICellRendererParams<
-    WithdrawalFieldsFragment,
-    'details.receiverAddress'
-  > {
-  ethUrl: string;
-}
-
 const RecipientCell = ({
-  ethUrl,
   value,
   valueFormatted,
-}: RecipientCellProps) => {
+}: VegaICellRendererParams<
+  WithdrawalFieldsFragment,
+  'details.receiverAddress'
+>) => {
   return (
-    <Link
-      title={t('View on Etherscan (opens in a new tab)')}
-      href={`${ethUrl}/address/${value}`}
-      data-testid="etherscan-link"
-      target="_blank"
-    >
+    <EtherscanLink address={value} data-testid="etherscan-link">
       {valueFormatted}
-    </Link>
+    </EtherscanLink>
   );
 };
 

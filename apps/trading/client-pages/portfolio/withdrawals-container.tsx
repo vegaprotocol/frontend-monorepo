@@ -24,7 +24,8 @@ export const WithdrawalsContainer = () => {
         <WithdrawalsTable
           data-testid="withdrawals-history"
           rowData={data}
-          noRowsOverlayComponent={() => null}
+          suppressLoadingOverlay
+          suppressNoRowsOverlay
         />
         <div className="pointer-events-none absolute inset-0">
           <AsyncRenderer

@@ -22,6 +22,7 @@ const Tx = () => {
 
   const {
     state: { data, loading, error },
+    refetch,
   } = useFetch<BlockExplorerTransaction>(
     `${DATA_SOURCES.blockExplorerUrl}/transactions/${toNonHex(hash)}`
   );
@@ -56,6 +57,7 @@ const Tx = () => {
         error={error}
         loading={loading}
         errorMessage={errorMessage}
+        refetch={refetch}
       >
         <TxDetails
           className="mb-28"

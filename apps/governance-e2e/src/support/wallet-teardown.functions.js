@@ -47,13 +47,14 @@ beforeEach(function () {
   cy.wrap(this.vestingContract).as('vestingContract');
 });
 
-Cypress.Commands.add('deposit_asset', function (assetEthAddress) {
+Cypress.Commands.add('deposit_asset', function (assetEthAddress, amount) {
+  cy.highlight('Depositing asset into vegawallet');
   cy.get('@signer', { log: false }).then((signer) => {
     // Approve asset
     cy.wrap(
       new TokenFaucetable(assetEthAddress, signer).approve(
         Erc20BridgeAddress,
-        '10000000000'
+        amount + '0'.repeat(19)
       )
     )
       .then((tx) => {
@@ -67,7 +68,7 @@ Cypress.Commands.add('deposit_asset', function (assetEthAddress) {
           cy.wrap(
             bridge.deposit_asset(
               assetEthAddress,
-              '1000000000',
+              amount + '0'.repeat(18),
               '0x' + vegaWalletPubKey
             ),
             { timeout: transactionTimeout, log: false }
@@ -109,10 +110,9 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
     }
   });
   cy.get(vegaWalletContainer).within(() => {
-    cy.get('[data-testid="associated-amount"]', { timeout: 30000 }).should(
-      'contain.text',
-      '0.00'
-    );
+    cy.get('[data-testid="vega-wallet-balance-unstaked"]', {
+      timeout: 30000,
+    }).should('contain.text', '0.00');
   });
 });
 

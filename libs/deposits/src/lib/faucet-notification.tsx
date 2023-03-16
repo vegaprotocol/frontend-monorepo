@@ -1,7 +1,7 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
 import { getFaucetError } from './get-faucet-error';
 
@@ -19,7 +19,6 @@ export const FaucetNotification = ({
   selectedAsset,
   faucetTxId,
 }: FaucetNotificationProps) => {
-  const { ETHERSCAN_URL } = useEnvironment();
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === faucetTxId);
   });
@@ -79,9 +78,9 @@ export const FaucetNotification = ({
               </p>
               {tx.txHash && (
                 <p>
-                  <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
+                  <EtherscanLink tx={tx.txHash}>
                     {t('View on Etherscan')}
-                  </ExternalLink>
+                  </EtherscanLink>
                 </p>
               )}
             </>
@@ -107,9 +106,9 @@ export const FaucetNotification = ({
               </p>
               {tx.txHash && (
                 <p>
-                  <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
+                  <EtherscanLink tx={tx.txHash}>
                     {t('View on Etherscan')}
-                  </ExternalLink>
+                  </EtherscanLink>
                 </p>
               )}
             </>
