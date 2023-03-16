@@ -128,7 +128,7 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     cy.getByTestId(manageVegaBtn).should('exist');
   });
 
-  it.only('can not connect', () => {
+  it('can not connect', () => {
     // 0002-WCON-002
     // 0002-WCON-005
     // 0002-WCON-007
