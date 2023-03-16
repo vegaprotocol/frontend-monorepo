@@ -30,9 +30,6 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledTwice;
-    });
     cy.wait('@Markets');
   });
 
@@ -135,14 +132,19 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledTwice;
+    cy.getByTestId('tab-orders').within(() => {
+      cy.get('[col-id="status"][role="columnheader"]')
+        .focus()
+        .find('.ag-header-cell-menu-button')
+        .click();
+      cy.get('.ag-filter-apply-panel-button').click();
     });
   });
   const orderId = '1234567890';
   // 7002-SORD-053
   // 7002-SORD-040
   // 7003-MORD-001
+
   it('must see an active order', () => {
     // 7002-SORD-041
     updateOrder({
@@ -151,6 +153,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Active');
   });
+
   it('must see an expired order', () => {
     // 7002-SORD-042
     updateOrder({
@@ -353,8 +356,12 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledTwice;
+    cy.getByTestId('tab-orders').within(() => {
+      cy.get('[col-id="status"][role="columnheader"]')
+        .focus()
+        .find('.ag-header-cell-menu-button')
+        .click();
+      cy.get('.ag-filter-apply-panel-button').click();
     });
     cy.mockVegaWalletTransaction();
   });

@@ -5,10 +5,10 @@ const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
 const tokenInputApprove = '[data-testid="token-input-approve-button"]';
 const addStakeRadioButton = '[data-testid="add-stake-radio"]';
 const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
-const ethWalletAssociateButton = '[href="/token/associate"]';
-const ethWalletDissociateButton = '[href="/token/disassociate"]';
+const ethWalletAssociateButton = '[href="/token/associate"]:visible';
+const ethWalletDissociateButton = '[href="/token/disassociate"]:visible';
 const vegaWalletUnstakedBalance =
-  '[data-testid="vega-wallet-balance-unstaked"]';
+  '[data-testid="vega-wallet-balance-unstaked"]:visible';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const associateContractRadioButton = '[data-testid="associate-radio-contract"]';

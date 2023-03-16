@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/utils';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import type { Trade, TradeEdge } from './fills-data-provider';
@@ -22,6 +22,21 @@ export const useFillsList = ({
   const dataRef = useRef<(TradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
+  const placeholderAdded = useRef(-1);
+
+  const makeBottomPlaceholders = useCallback((trade?: Trade) => {
+    if (!trade) {
+      if (placeholderAdded.current >= 0) {
+        dataRef.current?.splice(placeholderAdded.current, 1);
+      }
+      placeholderAdded.current = -1;
+    } else if (placeholderAdded.current === -1) {
+      dataRef.current?.push({
+        node: { ...trade, id: `${trade?.id}-1`, isLastPlaceholder: true },
+      });
+      placeholderAdded.current = (dataRef.current?.length || 0) - 1;
+    }
+  }, []);
 
   const addNewRows = useCallback(() => {
     if (newRows.current === 0) {
@@ -73,16 +88,11 @@ export const useFillsList = ({
     [gridRef]
   );
 
-  const variables = useMemo(() => ({ partyId, marketId }), [partyId, marketId]);
-
-  const { data, error, loading, load, totalCount, reload } = useDataProvider<
-    (TradeEdge | null)[],
-    Trade[]
-  >({
+  const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: fillsWithMarketProvider,
     update,
     insert,
-    variables,
+    variables: { partyId, marketId: marketId || '' },
   });
   totalCountRef.current = totalCount;
 
@@ -92,5 +102,13 @@ export const useFillsList = ({
     load,
     newRows
   );
-  return { data, error, loading, addNewRows, getRows, reload };
+  return {
+    data,
+    error,
+    loading,
+    addNewRows,
+    getRows,
+    reload,
+    makeBottomPlaceholders,
+  };
 };

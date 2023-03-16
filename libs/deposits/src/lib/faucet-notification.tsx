@@ -1,8 +1,9 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
+import { getFaucetError } from './get-faucet-error';
 
 interface FaucetNotificationProps {
   isActive: boolean;
@@ -18,7 +19,6 @@ export const FaucetNotification = ({
   selectedAsset,
   faucetTxId,
 }: FaucetNotificationProps) => {
-  const { ETHERSCAN_URL } = useEnvironment();
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === faucetTxId);
   });
@@ -36,13 +36,13 @@ export const FaucetNotification = ({
   }
 
   if (tx.status === EthTxStatus.Error) {
+    const errorMessage = getFaucetError(tx.error, selectedAsset.symbol);
     return (
       <div className="mb-4">
         <Notification
           intent={Intent.Danger}
           testId="faucet-error"
-          // @ts-ignore tx.error not typed correctly
-          message={t(`Faucet failed: ${tx.error?.reason}`)}
+          message={errorMessage}
         />
       </div>
     );
@@ -55,7 +55,7 @@ export const FaucetNotification = ({
           intent={Intent.Warning}
           testId="faucet-requested"
           message={t(
-            `Go to your Ethereum wallet and approve the faucet transaction for ${selectedAsset?.symbol}`
+            `Confirm the transaction in your Ethereum wallet to use the ${selectedAsset?.symbol} faucet`
           )}
         />
       </div>
@@ -69,14 +69,21 @@ export const FaucetNotification = ({
           intent={Intent.Primary}
           testId="faucet-pending"
           message={
-            <p>
-              {t('Faucet pending...')}{' '}
+            <>
+              <p className="mb-2">
+                {t(
+                  'Your request for funds from the %s faucet is being confirmed by the Ethereum network',
+                  selectedAsset.symbol
+                )}{' '}
+              </p>
               {tx.txHash && (
-                <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-                  {t('View on Etherscan')}
-                </ExternalLink>
+                <p>
+                  <EtherscanLink tx={tx.txHash}>
+                    {t('View on Etherscan')}
+                  </EtherscanLink>
+                </p>
               )}
-            </p>
+            </>
           }
         />
       </div>
@@ -90,14 +97,21 @@ export const FaucetNotification = ({
           intent={Intent.Success}
           testId="faucet-confirmed"
           message={
-            <p>
-              {t('Faucet successful')}{' '}
+            <>
+              <p className="mb-2">
+                {t(
+                  '%s has been deposited in your Ethereum wallet',
+                  selectedAsset.symbol
+                )}{' '}
+              </p>
               {tx.txHash && (
-                <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-                  {t('View on Etherscan')}
-                </ExternalLink>
+                <p>
+                  <EtherscanLink tx={tx.txHash}>
+                    {t('View on Etherscan')}
+                  </EtherscanLink>
+                </p>
               )}
-            </p>
+            </>
           }
         />
       </div>

@@ -2,16 +2,13 @@ context('Network parameters page', { tags: '@smoke' }, function () {
   before('navigate to network parameter page', function () {
     cy.fixture('net_parameter_format_lookup').as('networkParameterFormat');
   });
-
   describe('Verify elements on page', function () {
-    const networkParametersNavigation = 'a[href="/network-parameters"]';
+    beforeEach(() => {
+      cy.visit('/network-parameters');
+    });
+
     const networkParametersHeader = '[data-testid="network-param-header"]';
     const tableRows = '[data-testid="key-value-table-row"]';
-
-    before('navigate to network parameter page', function () {
-      cy.visit('/');
-      cy.get(networkParametersNavigation).click();
-    });
 
     it('should show network parameter heading at top of page', function () {
       cy.get(networkParametersHeader)
@@ -201,55 +198,8 @@ context('Network parameters page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should be able to switch network parameter page - between light and dark mode', function () {
-      const whiteThemeSelectedMenuOptionColor = 'rgb(255, 7, 127)';
-      const whiteThemeJsonFieldBackColor = 'rgb(255, 255, 255)';
-      const whiteThemeSideMenuBackgroundColor = 'rgb(255, 255, 255)';
-      const darkThemeSelectedMenuOptionColor = 'rgb(215, 251, 80)';
-      const darkThemeJsonFieldBackColor = 'rgb(38, 38, 38)';
-      const darkThemeSideMenuBackgroundColor = 'rgb(0, 0, 0)';
-      const themeSwitcher = '[data-testid="theme-switcher"]';
-      const jsonFields = '.hljs';
-      const sideMenuBackground = '.absolute';
-
-      // Engage dark mode if not already set
-      cy.get(sideMenuBackground)
-        .should('have.css', 'background-color')
-        .then((background_color) => {
-          if (background_color.includes(whiteThemeSideMenuBackgroundColor))
-            cy.get(themeSwitcher).click();
-        });
-
-      // Engage white mode
-      cy.get(themeSwitcher).click();
-
-      // White Mode
-      cy.get(networkParametersNavigation)
-        .should('have.css', 'background-color')
-        .and('include', whiteThemeSelectedMenuOptionColor);
-      cy.get(jsonFields)
-        .should('have.css', 'background-color')
-        .and('include', whiteThemeJsonFieldBackColor);
-      cy.get(sideMenuBackground)
-        .should('have.css', 'background-color')
-        .and('include', whiteThemeSideMenuBackgroundColor);
-
-      // Dark Mode
-      cy.get(themeSwitcher).click();
-      cy.get(networkParametersNavigation)
-        .should('have.css', 'background-color')
-        .and('include', darkThemeSelectedMenuOptionColor);
-      cy.get(jsonFields)
-        .should('have.css', 'background-color')
-        .and('include', darkThemeJsonFieldBackColor);
-      cy.get(sideMenuBackground)
-        .should('have.css', 'background-color')
-        .and('include', darkThemeSideMenuBackgroundColor);
-    });
-
-    it.skip('should be able to see network parameters - on mobile', function () {
-      cy.common_switch_to_mobile_and_click_toggle();
-      cy.get(networkParametersNavigation).click();
+    it('should be able to see network parameters - on mobile', function () {
+      cy.switchToMobile();
       cy.get_network_parameters().then((network_parameters) => {
         network_parameters = Object.entries(network_parameters);
         network_parameters.forEach((network_parameter) => {

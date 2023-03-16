@@ -4,10 +4,7 @@ import {
   useDataProvider,
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
-import type {
-  MarketData,
-  MarketDataUpdateFieldsFragment,
-} from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import {
@@ -70,7 +67,7 @@ export const MarketLiquiditySupplied = ({
     [noUpdate]
   );
 
-  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+  useDataProvider({
     dataProvider: marketDataProvider,
     update,
     variables,

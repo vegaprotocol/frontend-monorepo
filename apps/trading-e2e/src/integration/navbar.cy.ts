@@ -17,14 +17,10 @@ describe('Desktop view', { tags: '@smoke' }, () => {
 
     links.forEach((link, index) => {
       it(`${link} should be correctly rendered`, () => {
-        cy.getByTestId('navbar')
-          .find(`[data-testid="navbar-links"] a[data-testid=${link}]`)
+        cy.get('nav')
+          .find(`a[data-testid=${link}]:visible`)
           .then((element) => {
-            cy.contains('Loading...').should('not.exist');
             cy.wrap(element).click();
-            cy.wrap(element)
-              .get('span.absolute.md\\:h-1.w-full')
-              .should('exist');
             cy.location('hash').should('equal', hashes[index]);
           });
       });

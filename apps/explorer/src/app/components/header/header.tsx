@@ -1,43 +1,108 @@
-import classnames from 'classnames';
-import { Link } from 'react-router-dom';
-import { ThemeSwitcher, Icon } from '@vegaprotocol/ui-toolkit';
+import { matchPath, useLocation } from 'react-router-dom';
+import {
+  ThemeSwitcher,
+  Navigation,
+  NavigationList,
+  NavigationItem,
+  NavigationLink,
+  NavigationBreakpoint,
+  NavigationTrigger,
+  NavigationContent,
+} from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { Search } from '../search';
 import { Routes } from '../../routes/route-names';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
-import { useNavStore } from '../nav';
+import type { Navigable } from '../../routes/router-config';
+import routerConfig from '../../routes/router-config';
+import { useMemo } from 'react';
+import compact from 'lodash/compact';
+import { Search } from '../search';
+
+const routeToNavigationItem = (r: Navigable) => (
+  <NavigationItem key={r.name}>
+    <NavigationLink to={r.path}>{r.text}</NavigationLink>
+  </NavigationItem>
+);
 
 export const Header = () => {
-  const [open, toggle] = useNavStore((state) => [state.open, state.toggle]);
-  const headerClasses = classnames(
-    'md:col-span-2',
-    'grid grid-rows-2 md:grid-rows-1 grid-cols-[1fr_auto] md:grid-cols-[auto_1fr_auto] items-center',
-    'p-4 gap-2 md:gap-4',
-    'border-b border-neutral-700 dark:border-neutral-300 bg-black',
-    'dark text-white'
+  const mainItems = compact(
+    [Routes.TX, Routes.BLOCKS, Routes.ORACLES, Routes.VALIDATORS].map((n) =>
+      routerConfig.find((r) => r.path === n)
+    )
   );
+
+  const groupedItems = compact(
+    [
+      Routes.PARTIES,
+      Routes.ASSETS,
+      Routes.MARKETS,
+      Routes.GOVERNANCE,
+      Routes.NETWORK_PARAMETERS,
+      Routes.GENESIS,
+    ].map((n) => routerConfig.find((r) => r.path === n))
+  );
+
+  const { pathname } = useLocation();
+
+  /**
+   * Because the grouped items are displayed in a sub menu under an "Other" item
+   * we need to determine whether any underlying item is active to highlight the
+   * trigger in the same fashion as any other top-level `NavigationLink`.
+   * This function checks whether the current location pathname is one of the
+   * underlying NavigationLinks.
+   */
+  const isOnOther = useMemo(() => {
+    for (const path of groupedItems.map((r) => r.path)) {
+      const matched = matchPath(`${path}/*`, pathname);
+      if (matched) return true;
+    }
+    return false;
+  }, [groupedItems, pathname]);
+
   return (
-    <header className={headerClasses}>
-      <div className="flex h-full items-center sm:items-stretch gap-4">
-        <Link to={Routes.HOME}>
-          <h1
-            className="text-white text-3xl font-alpha uppercase calt mb-0"
-            data-testid="explorer-header"
-          >
-            {t('Vega Explorer')}
-          </h1>
-        </Link>
-        <NetworkSwitcher />
-      </div>
-      <button
-        data-testid="open-menu"
-        className="md:hidden text-white"
-        onClick={() => toggle()}
+    <Navigation
+      appName="Explorer"
+      theme="system"
+      breakpoints={[490, 900]}
+      actions={
+        <>
+          <ThemeSwitcher />
+          <Search />
+        </>
+      }
+      onResize={(width, el) => {
+        if (width < 1157) {
+          // switch to magnifying glass trigger when width < 1157
+          el.classList.remove('nav-search-full');
+          el.classList.add('nav-search-compact');
+        } else {
+          el.classList.remove('nav-search-compact');
+          el.classList.add('nav-search-full');
+        }
+      }}
+    >
+      <NavigationList hide={[NavigationBreakpoint.Small]}>
+        <NavigationItem>
+          <NetworkSwitcher />
+        </NavigationItem>
+      </NavigationList>
+      <NavigationList
+        hide={[NavigationBreakpoint.Small, NavigationBreakpoint.Narrow]}
       >
-        <Icon name={open ? 'cross' : 'menu'} />
-      </button>
-      <Search />
-      <ThemeSwitcher className="-my-4" />
-    </header>
+        {mainItems.map(routeToNavigationItem)}
+        {groupedItems && (
+          <NavigationItem>
+            <NavigationTrigger isActive={Boolean(isOnOther)}>
+              {t('Other')}
+            </NavigationTrigger>
+            <NavigationContent>
+              <NavigationList>
+                {groupedItems.map(routeToNavigationItem)}
+              </NavigationList>
+            </NavigationContent>
+          </NavigationItem>
+        )}
+      </NavigationList>
+    </Navigation>
   );
 };

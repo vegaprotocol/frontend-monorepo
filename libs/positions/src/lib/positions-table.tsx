@@ -30,6 +30,7 @@ import {
   formatNumber,
   getDateTimeFormat,
   addDecimalsFormatNumber,
+  createDocsLinks,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { AgGridColumn } from 'ag-grid-react';
@@ -249,40 +250,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Liquidation price (est)')}
-          field="liquidationPrice"
-          type="rightAligned"
-          cellRendererSelector={(): CellRendererSelectorResult => {
-            return {
-              component: PriceFlashCell,
-            };
-          }}
-          filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'liquidationPrice'>) => {
-            return data?.liquidationPrice === undefined || !data
-              ? undefined
-              : toBigNum(
-                  data.liquidationPrice,
-                  data.marketDecimalPlaces
-                ).toNumber();
-          }}
-          valueFormatter={({
-            data,
-          }: VegaValueFormatterParams<Position, 'liquidationPrice'>):
-            | string
-            | undefined => {
-            if (!data || data?.liquidationPrice === undefined) {
-              return undefined;
-            }
-            return addDecimalsFormatNumber(
-              data.liquidationPrice,
-              data.marketDecimalPlaces
-            );
-          }}
-        />
-        <AgGridColumn
           headerName={t('Leverage')}
           field="currentLeverage"
           type="rightAligned"
@@ -422,6 +389,8 @@ export const PNLCell = ({
   data,
 }: VegaICellRendererParams<Position, 'realisedPNL'>) => {
   const { VEGA_DOCS_URL } = useEnvironment();
+  const LOSS_SOCIALIZATION_LINK =
+    VEGA_DOCS_URL && createDocsLinks(VEGA_DOCS_URL).LOSS_SOCIALIZATION;
 
   if (!data) {
     return <>-</>;
@@ -446,7 +415,7 @@ export const PNLCell = ({
             {t('Lifetime loss socialisation deductions: %s', lossesFormatted)}
           </p>
           {VEGA_DOCS_URL && (
-            <ExternalLink href={VEGA_DOCS_URL}>
+            <ExternalLink href={LOSS_SOCIALIZATION_LINK}>
               {t('Read more about loss socialisation')}
             </ExternalLink>
           )}
@@ -473,6 +442,9 @@ export const OpenVolumeCell = ({
     return <>{valueFormatted}</>;
   }
 
+  const POSITION_RESOLUTION_LINK =
+    VEGA_DOCS_URL && createDocsLinks(VEGA_DOCS_URL).POSITION_RESOLUTION;
+
   return (
     <WarningCell
       tooltipContent={
@@ -489,7 +461,7 @@ export const OpenVolumeCell = ({
             )}
           </p>
           {VEGA_DOCS_URL && (
-            <ExternalLink href={VEGA_DOCS_URL}>
+            <ExternalLink href={POSITION_RESOLUTION_LINK}>
               {t('Read more about position resolution')}
             </ExternalLink>
           )}

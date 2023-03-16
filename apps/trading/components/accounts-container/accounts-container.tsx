@@ -11,8 +11,10 @@ import { useDepositDialog } from '@vegaprotocol/deposits';
 
 export const AccountsContainer = ({
   pinnedAsset,
+  hideButtons,
 }: {
   pinnedAsset?: PinnedAsset;
+  hideButtons?: boolean;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
@@ -36,27 +38,30 @@ export const AccountsContainer = ({
   }
 
   return (
-    <div className="h-full relative grid grid-rows-[1fr,min-content]">
-      <div>
-        <AccountManager
-          partyId={pubKey}
-          onClickAsset={onClickAsset}
-          onClickWithdraw={openWithdrawalDialog}
-          onClickDeposit={openDepositDialog}
-          isReadOnly={isReadOnly}
-          pinnedAsset={pinnedAsset}
-        />
-      </div>
-      {!isReadOnly && (
-        <div className="flex gap-2 justify-end p-2 px-[11px]">
+    <div className="h-full relative">
+      <AccountManager
+        partyId={pubKey}
+        onClickAsset={onClickAsset}
+        onClickWithdraw={openWithdrawalDialog}
+        onClickDeposit={openDepositDialog}
+        isReadOnly={isReadOnly}
+        pinnedAsset={pinnedAsset}
+      />
+      {!isReadOnly && !hideButtons && (
+        <div className="flex gap-2 justify-end p-2 px-[11px] absolute lg:fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">
           <Button
+            variant="primary"
             size="sm"
             data-testid="open-transfer-dialog"
             onClick={() => openTransferDialog()}
           >
             {t('Transfer')}
           </Button>
-          <Button size="sm" onClick={() => openDepositDialog()}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => openDepositDialog()}
+          >
             {t('Deposit')}
           </Button>
         </div>

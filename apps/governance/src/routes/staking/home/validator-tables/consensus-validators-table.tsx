@@ -166,10 +166,7 @@ export const ConsensusValidatorsTable = ({
               avatarUrl,
               name,
             },
-            [ValidatorFields.STAKE]: formatNumber(
-              toBigNum(stakedTotal, decimals),
-              2
-            ),
+            [ValidatorFields.STAKE]: stakedTotal,
             [ValidatorFields.NORMALISED_VOTING_POWER]:
               getNormalisedVotingPower(votingPower),
             [ValidatorFields.UNNORMALISED_VOTING_POWER]:
@@ -198,10 +195,8 @@ export const ConsensusValidatorsTable = ({
               stakedTotal,
               totalStake
             ),
-            [ValidatorFields.PENDING_STAKE]: formatNumber(
-              toBigNum(pendingStake, decimals),
-              2
-            ),
+            [ValidatorFields.PENDING_STAKE]: pendingStake,
+            decimals,
           };
         }
       );
@@ -256,22 +251,18 @@ export const ConsensusValidatorsTable = ({
 
       return {
         ...acc,
-        [ValidatorFields.STAKE]: formatNumber(
-          toBigNum(accStake, decimals).plus(toBigNum(stake, decimals)),
-          2
-        ),
+        [ValidatorFields.STAKE]: toBigNum(accStake, decimals)
+          .plus(toBigNum(stake, decimals))
+          .toString(),
         [ValidatorFields.STAKE_SHARE]: formatNumberPercentage(
           new BigNumber(parseFloat(accStakeShare)).plus(
             new BigNumber(parseFloat(stakeShare))
           ),
           2
         ),
-        [ValidatorFields.PENDING_STAKE]: formatNumber(
-          toBigNum(accPendingStake, decimals).plus(
-            toBigNum(pendingStake, decimals)
-          ),
-          2
-        ),
+        [ValidatorFields.PENDING_STAKE]: toBigNum(accPendingStake, decimals)
+          .plus(toBigNum(pendingStake, decimals))
+          .toString(),
         [ValidatorFields.NORMALISED_VOTING_POWER]: formatNumberPercentage(
           new BigNumber(parseFloat(accNormalisedVotingPower)).plus(
             new BigNumber(parseFloat(normalisedVotingPower))
@@ -349,6 +340,8 @@ export const ConsensusValidatorsTable = ({
           field: ValidatorFields.PENDING_STAKE,
           headerName: t(ValidatorFields.PENDING_STAKE).toString(),
           headerTooltip: t('PendingStakeDescription').toString(),
+          valueFormatter: ({ value }) =>
+            formatNumber(toBigNum(value, decimals), 2),
           width: 110,
         },
       ],

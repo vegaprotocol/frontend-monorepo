@@ -54,7 +54,7 @@ const MobileWalletButton = ({
     ? 'hidden'
     : isYellow
     ? 'fill-black'
-    : 'fill-white';
+    : 'fill-black dark:fill-white';
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
   const walletButton = (
@@ -145,7 +145,8 @@ export const VegaWalletConnectButton = () => {
     (store) => store.openVegaWalletDialog
   );
   const openTransferDialog = useTransferDialog((store) => store.open);
-  const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
+  const { pubKey, pubKeys, selectPubKey, disconnect, isReadOnly } =
+    useVegaWallet();
   const isConnected = pubKey !== null;
 
   const activeKey = useMemo(() => {
@@ -186,12 +187,14 @@ export const VegaWalletConnectButton = () => {
                   ))}
                 </DropdownMenuRadioGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  data-testid="wallet-transfer"
-                  onClick={() => openTransferDialog(true)}
-                >
-                  {t('Transfer')}
-                </DropdownMenuItem>
+                {!isReadOnly && (
+                  <DropdownMenuItem
+                    data-testid="wallet-transfer"
+                    onClick={() => openTransferDialog(true)}
+                  >
+                    {t('Transfer')}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
                   {t('Disconnect')}
                 </DropdownMenuItem>

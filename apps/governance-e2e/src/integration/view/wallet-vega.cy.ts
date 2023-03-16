@@ -4,7 +4,7 @@ import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletTeardown } from '../../support/wallet-teardown.functions';
 import { vegaWalletFacetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
-const walletContainer = '[data-testid="vega-wallet"]';
+const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = '[data-testid="connect-vega-wallet"]';
 const getVegaLink = '[data-testid="link"]';
@@ -18,7 +18,6 @@ const restWallet = '#wallet';
 const restPassphrase = '#passphrase';
 const restConnectBtn = '[type="submit"]';
 const accountNo = '[data-testid="vega-account-truncated"]';
-const walletName = '[data-testid="wallet-name"]';
 const currencyTitle = '[data-testid="currency-title"]';
 const currencyValue = '[data-testid="currency-value"]';
 const vegaUnstaked = '[data-testid="vega-wallet-balance-unstaked"] .text-right';
@@ -32,44 +31,24 @@ const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const txTimeout = Cypress.env('txTimeout');
 
-const faucetAssets = {
-  BTCFake: 'fBTC',
-  DAIFake: 'fDAI',
-  EUROFake: 'fEURO',
-  USDCFake: 'fUSDC',
-};
-
 context(
   'Vega Wallet - verify elements on widget',
   { tags: '@regression' },
-  function () {
-    before('visit token home page', function () {
+  () => {
+    before('visit token home page', () => {
       cy.visit('/');
+      cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
     });
 
-    describe('with wallets disconnected', function () {
-      before('wait for widget to load', function () {
-        cy.get(walletContainer, { timeout: 10000 }).should('be.visible');
-      });
-
-      it('should have VEGA WALLET header visible', function () {
+    describe('with wallets disconnected', () => {
+      it('should have required elements visible', function () {
         cy.get(walletContainer).within(() => {
           cy.get(walletHeader)
             .should('be.visible')
             .and('have.text', 'Vega Wallet');
-        });
-      });
-
-      it('should have Connect Vega button visible', function () {
-        cy.get(walletContainer).within(() => {
           cy.get(connectButton)
             .should('be.visible')
             .and('have.text', 'Connect Vega wallet to use associated $VEGA');
-        });
-      });
-
-      it('should have Get a Vega wallet link visible', function () {
-        cy.get(walletContainer).within(() => {
           cy.get(getVegaLink)
             .should('be.visible')
             .and('have.text', 'Get a Vega wallet')
@@ -78,14 +57,14 @@ context(
       });
     });
 
-    describe('when connect button clicked', function () {
-      before('click connect vega wallet button', function () {
+    describe('when connect button clicked', () => {
+      before('click connect vega wallet button', () => {
         cy.get(walletContainer).within(() => {
           cy.get(connectButton).click();
         });
       });
 
-      it('should have Connect Vega header visible', function () {
+      it('should have Connect Vega header visible', () => {
         cy.get(dialog).within(() => {
           cy.get(walletDialogHeader)
             .should('be.visible')
@@ -178,14 +157,6 @@ context(
           });
         }
       );
-
-      it.skip('should have wallet name visible', function () {
-        cy.get(walletContainer).within(() => {
-          cy.get(walletName)
-            .should('be.visible')
-            .and('have.text', `${Cypress.env('vegaWalletName')} key 1`);
-        });
-      });
 
       it('should have Vega Associated currency title visible', function () {
         cy.get(walletContainer).within(() => {
@@ -303,113 +274,71 @@ context(
       });
 
       // 2002-SINC-016
-      describe('when assets exist in vegawallet', function () {
-        before('send-faucet assets to connected vega wallet', function () {
-          vegaWalletFacetAssetsWithoutCheck(
-            faucetAssets.USDCFake,
-            '1000000',
-            vegaWalletPublicKey
-          );
-          vegaWalletFacetAssetsWithoutCheck(
-            faucetAssets.BTCFake,
-            '600000',
-            vegaWalletPublicKey
-          );
-          vegaWalletFacetAssetsWithoutCheck(
-            faucetAssets.EUROFake,
-            '800000',
-            vegaWalletPublicKey
-          );
-          vegaWalletFacetAssetsWithoutCheck(
-            faucetAssets.DAIFake,
-            '200000',
-            vegaWalletPublicKey
-          );
+      describe('Vega wallet with assets', function () {
+        const assets = [
+          {
+            id: 'fUSDC',
+            name: 'USDC (fake)',
+            amount: '1000000',
+            expectedAmount: '10.00',
+          },
+          {
+            id: 'fDAI',
+            name: 'DAI (fake)',
+            amount: '200000',
+            expectedAmount: '2.00',
+          },
+          {
+            id: 'fBTC',
+            name: 'BTC (fake)',
+            amount: '600000',
+            expectedAmount: '6.00',
+          },
+          {
+            id: 'fEURO',
+            name: 'EURO (fake)',
+            amount: '800000',
+            expectedAmount: '8.00',
+          },
+        ];
+
+        before('faucet assets to connected vega wallet', function () {
+          for (const { id, amount } of assets) {
+            vegaWalletFacetAssetsWithoutCheck(
+              id,
+              amount,
+              vegaWalletPublicKey
+            );
+          }
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();
           ethereumWalletConnect();
         });
 
-        it('should see fUSDC assets - within vega wallet', function () {
-          const currency = { id: faucetAssets.USDCFake, name: 'USDC (fake)' };
-          cy.get(walletContainer).within(() => {
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id, txTimeout)
-              .should('be.visible');
+        for (const { id, name, expectedAmount } of assets) {
+          it(`should see ${id} within vega wallet`, () => {
+            cy.get(walletContainer).within(() => {
+              cy.get(vegaWalletCurrencyTitle)
+                .contains(id, txTimeout)
+                .should('be.visible');
 
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .siblings()
-              .invoke('text')
-              .should('not.be.empty');
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .contains(currency.name);
+              cy.get(vegaWalletCurrencyTitle)
+                .contains(id)
+                .parent()
+                .siblings()
+                .within((el) => {
+                  const value = parseFloat(el.text());
+                  cy.wrap(value).should('be.gte', parseFloat(expectedAmount));
+                });
+
+              cy.get(vegaWalletCurrencyTitle)
+                .contains(id)
+                .parent()
+                .contains(name);
+            });
           });
-        });
-
-        it('should see fBTC assets - within vega wallet', function () {
-          const currency = { id: faucetAssets.BTCFake, name: 'BTC (fake)' };
-          cy.get(walletContainer).within(() => {
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id, txTimeout)
-              .should('be.visible');
-
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .siblings()
-              .within(() => cy.contains_exactly('6.00').should('be.visible'));
-
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .contains(currency.name);
-          });
-        });
-
-        it('should see fEURO assets - within vega wallet', function () {
-          const currency = { id: faucetAssets.EUROFake, name: 'EURO (fake)' };
-          cy.get(walletContainer).within(() => {
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id, txTimeout)
-              .should('be.visible');
-
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .siblings()
-              .within(() => cy.contains_exactly('8.00').should('be.visible'));
-
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .contains(currency.name);
-          });
-        });
-
-        it('should see fDAI assets - within vega wallet', function () {
-          const currency = { id: faucetAssets.DAIFake, name: 'DAI (fake)' };
-          cy.get(walletContainer).within(() => {
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id, txTimeout)
-              .should('be.visible');
-
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .siblings()
-              .within(() => cy.contains_exactly('2.00').should('be.visible'));
-
-            cy.get(vegaWalletCurrencyTitle)
-              .contains(currency.id)
-              .parent()
-              .contains(currency.name);
-          });
-        });
+        }
       });
     });
   }

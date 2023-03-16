@@ -58,7 +58,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
   });
 
   it('Able to disconnect via wallet', function () {
-    cy.getByTestId('manage-vega-wallet').click();
+    cy.get('aside [data-testid="manage-vega-wallet"]').click();
     cy.getByTestId('disconnect').click();
     cy.getByTestId(banner).should('not.exist');
   });

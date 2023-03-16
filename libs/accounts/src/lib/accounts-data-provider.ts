@@ -18,6 +18,7 @@ import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
+  AccountsQueryVariables,
 } from './__generated__/Accounts';
 import type { Market } from '@vegaprotocol/market-list';
 import type { Asset } from '@vegaprotocol/assets';
@@ -85,7 +86,8 @@ export const accountsOnlyDataProvider = makeDataProvider<
   AccountsQuery,
   AccountFieldsFragment[],
   AccountEventsSubscription,
-  AccountEventsSubscription['accounts']
+  AccountEventsSubscription['accounts'],
+  AccountsQueryVariables
 >({
   query: AccountsDocument,
   subscriptionQuery: AccountEventsDocument,
@@ -97,7 +99,7 @@ export const accountsOnlyDataProvider = makeDataProvider<
 export interface AccountFields extends Account {
   available: string;
   used: string;
-  deposited: string;
+  total: string;
   balance: string;
   breakdown?: AccountFields[];
 }
@@ -143,15 +145,17 @@ const getAssetAccountAggregation = (
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     available: available.toString(),
     used: used.toString(),
-    deposited: (available + used).toString(),
+    total: (available + used).toString(),
   };
 
   const breakdown = accounts
-    .filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
+    .filter((a) =>
+      [...USE_ACCOUNT_TYPES, AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type)
+    )
     .map((a) => ({
       ...a,
       asset: accounts[0].asset,
-      deposited: balanceAccount.deposited,
+      total: balanceAccount.total,
       available: balanceAccount.available,
       used: a.balance,
     }))
@@ -159,8 +163,16 @@ const getAssetAccountAggregation = (
   return { ...balanceAccount, breakdown };
 };
 
-export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
-  [accountsOnlyDataProvider, marketsProvider, assetsProvider],
+export const accountsDataProvider = makeDerivedDataProvider<
+  Account[],
+  never,
+  AccountsQueryVariables
+>(
+  [
+    accountsOnlyDataProvider,
+    (callback, client) => marketsProvider(callback, client, undefined),
+    (callback, client) => assetsProvider(callback, client, undefined),
+  ],
   ([accounts, markets, assets]): Account[] | null => {
     return accounts
       ? accounts
@@ -194,7 +206,8 @@ export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
 
 export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
   AccountFields[],
-  never
+  never,
+  AccountsQueryVariables
 >(
   [accountsDataProvider],
   (parts) => parts[0] && getAccountData(parts[0] as Account[])

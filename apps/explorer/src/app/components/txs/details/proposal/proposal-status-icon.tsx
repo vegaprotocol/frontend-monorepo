@@ -110,7 +110,9 @@ export const ProposalStatusIcon = ({ id }: ProposalStatusIconProps) => {
   return (
     <div className="float-left mr-3">
       <Tooltip description={<p>{label}</p>}>
-        <Icon name={icon} />
+        <div>
+          <Icon name={icon} />
+        </div>
       </Tooltip>
     </div>
   );

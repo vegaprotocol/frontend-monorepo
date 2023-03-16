@@ -1,62 +1,78 @@
 {
+  "lpPriceRange": "10",
+  "linearSlippageFactor": "0.001",
+  "quadraticSlippageFactor": "0",
   "instrument": {
     "code": "TEST.24h",
     "future": {
       "quoteName": "fUSDC",
-      "settlementDataDecimals": 5,
       "dataSourceSpecForSettlementData": {
-        "signers": [
-          {
-            "pubKey": {
-              "key": "70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680"
-            }
-          }
-        ],
-        "filters": [
-          {
-            "key": {
-              "name": "prices.ETH.value",
-              "type": "TYPE_INTEGER"
-            },
-            "conditions": [
+        "external": {
+          "oracle": {
+            "signers": [
               {
-                "operator": "OPERATOR_GREATER_THAN",
-                "value": "0"
+                "pubKey": {
+                  "key": "70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680"
+                }
+              }
+            ],
+            "filters": [
+              {
+                "key": {
+                  "name": "prices.ETH.value",
+                  "type": "TYPE_INTEGER",
+                  "numberDecimalPlaces": "0"
+                },
+                "conditions": [
+                  {
+                    "operator": "OPERATOR_GREATER_THAN",
+                    "value": "0"
+                  }
+                ]
               }
             ]
           }
-        ]
+        }
       },
       "dataSourceSpecForTradingTermination": {
-        "signers": [
-          {
-            "pubKey": {
-              "key": "70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680"
-            }
-          }
-        ],
-        "filters": [
-          {
-            "key": {
-              "name": "trading.terminated.ETH5",
-              "type": "TYPE_BOOLEAN"
-            },
-            "conditions": [
+        "external": {
+          "oracle": {
+            "signers": [
               {
-                "operator": "OPERATOR_GREATER_THAN_OR_EQUAL",
-                "value": "1648684800000000000"
+                "pubKey": {
+                  "key": "70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680"
+                }
+              }
+            ],
+            "filters": [
+              {
+                "key": {
+                  "name": "trading.terminated.ETH5",
+                  "type": "TYPE_BOOLEAN"
+                },
+                "conditions": [
+                  {
+                    "operator": "OPERATOR_EQUALS",
+                    "value": "true"
+                  }
+                ]
               }
             ]
           }
-        ]
+        }
       },
       "dataSourceSpecBinding": {
-        "settlementPriceProperty": "prices.ETH.value",
+        "settlementDataProperty": "prices.ETH.value",
         "tradingTerminationProperty": "trading.terminated.ETH5"
       }
     }
   },
-  "metadata": ["sector:energy", "sector:food", "source:docs.vega.xyz"],
+  "metadata": [
+    "sector:energy",
+    "sector:food",
+    "source:docs.vega.xyz",
+    "test:update"
+  ],
   "priceMonitoringParameters": {
     "triggers": [
       {
@@ -65,6 +81,14 @@
         "auctionExtension": "600"
       }
     ]
+  },
+  "liquidityMonitoringParameters": {
+    "targetStakeParameters": {
+      "timeWindow": "3600",
+      "scalingFactor": 10
+    },
+    "triggeringRatio": "0.7",
+    "auctionExtension": "1"
   },
   "logNormal": {
     "tau": 0.0001140771161,

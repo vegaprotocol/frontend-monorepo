@@ -7,52 +7,30 @@ export type PreviousEpochQueryVariables = Types.Exact<{
   epochId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
-export type PreviousEpochQuery = {
-  __typename?: 'Query';
-  epoch: {
-    __typename?: 'Epoch';
-    id: string;
-    validatorsConnection?: {
-      __typename?: 'NodesConnection';
-      edges?: Array<{
-        __typename?: 'NodeEdge';
-        node: {
-          __typename?: 'Node';
-          id: string;
-          rewardScore?: {
-            __typename?: 'RewardScore';
-            rawValidatorScore: string;
-          } | null;
-          rankingScore: {
-            __typename?: 'RankingScore';
-            performanceScore: string;
-          };
-        };
-      } | null> | null;
-    } | null;
-  };
-};
+
+export type PreviousEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, validatorsConnection?: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string } | null, rankingScore: { __typename?: 'RankingScore', performanceScore: string } } } | null> | null } | null } };
+
 
 export const PreviousEpochDocument = gql`
-  query PreviousEpoch($epochId: ID) {
-    epoch(id: $epochId) {
-      id
-      validatorsConnection {
-        edges {
-          node {
-            id
-            rewardScore {
-              rawValidatorScore
-            }
-            rankingScore {
-              performanceScore
-            }
+    query PreviousEpoch($epochId: ID) {
+  epoch(id: $epochId) {
+    id
+    validatorsConnection {
+      edges {
+        node {
+          id
+          rewardScore {
+            rawValidatorScore
+          }
+          rankingScore {
+            performanceScore
           }
         }
       }
     }
   }
-`;
+}
+    `;
 
 /**
  * __usePreviousEpochQuery__
@@ -70,37 +48,14 @@ export const PreviousEpochDocument = gql`
  *   },
  * });
  */
-export function usePreviousEpochQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    PreviousEpochQuery,
-    PreviousEpochQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<PreviousEpochQuery, PreviousEpochQueryVariables>(
-    PreviousEpochDocument,
-    options
-  );
-}
-export function usePreviousEpochLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    PreviousEpochQuery,
-    PreviousEpochQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<PreviousEpochQuery, PreviousEpochQueryVariables>(
-    PreviousEpochDocument,
-    options
-  );
-}
-export type PreviousEpochQueryHookResult = ReturnType<
-  typeof usePreviousEpochQuery
->;
-export type PreviousEpochLazyQueryHookResult = ReturnType<
-  typeof usePreviousEpochLazyQuery
->;
-export type PreviousEpochQueryResult = Apollo.QueryResult<
-  PreviousEpochQuery,
-  PreviousEpochQueryVariables
->;
+export function usePreviousEpochQuery(baseOptions?: Apollo.QueryHookOptions<PreviousEpochQuery, PreviousEpochQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PreviousEpochQuery, PreviousEpochQueryVariables>(PreviousEpochDocument, options);
+      }
+export function usePreviousEpochLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PreviousEpochQuery, PreviousEpochQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PreviousEpochQuery, PreviousEpochQueryVariables>(PreviousEpochDocument, options);
+        }
+export type PreviousEpochQueryHookResult = ReturnType<typeof usePreviousEpochQuery>;
+export type PreviousEpochLazyQueryHookResult = ReturnType<typeof usePreviousEpochLazyQuery>;
+export type PreviousEpochQueryResult = Apollo.QueryResult<PreviousEpochQuery, PreviousEpochQueryVariables>;

@@ -8,14 +8,16 @@ import { BundleError } from './bundle-error';
 describe('Bundle Error', () => {
   const NON_ENABLED_STATUS: AssetStatus[] = [
     AssetStatus.STATUS_PENDING_LISTING,
+  ];
+
+  const NOT_SHOWN_STATUS: AssetStatus[] = [
     AssetStatus.STATUS_PROPOSED,
     AssetStatus.STATUS_REJECTED,
   ];
 
   const ENABLED_STATUS: AssetStatus[] = [AssetStatus.STATUS_ENABLED];
-
-  it.each(NON_ENABLED_STATUS)(
-    'shows the apollo error if not enabled and a message is provided',
+  it.each(NOT_SHOWN_STATUS)(
+    'does not render for proposed or rejected bundles',
     (status) => {
       const screen = render(
         <MemoryRouter>
@@ -28,7 +30,24 @@ describe('Bundle Error', () => {
         </MemoryRouter>
       );
 
-      expect(screen.getByText('test-error-message')).toBeInTheDocument();
+      expect(screen.container).toBeEmptyDOMElement();
+    }
+  );
+  it.each(NON_ENABLED_STATUS)(
+    'shows the apollo error in a syntax highlighter if not enabled and a message is provided',
+    (status) => {
+      const screen = render(
+        <MemoryRouter>
+          <MockedProvider>
+            <BundleError
+              error={{ message: 'test-error-message' } as ApolloError}
+              status={status}
+            />
+          </MockedProvider>
+        </MemoryRouter>
+      );
+
+      expect(screen.getByText('No signature bundle')).toBeInTheDocument();
     }
   );
 
@@ -43,7 +62,7 @@ describe('Bundle Error', () => {
         </MemoryRouter>
       );
 
-      expect(screen.getByText('No bundle for proposal ID')).toBeInTheDocument();
+      expect(screen.getByText('No signature bundle')).toBeInTheDocument();
     }
   );
 

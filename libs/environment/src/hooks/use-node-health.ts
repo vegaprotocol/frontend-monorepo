@@ -2,30 +2,35 @@ import { useEffect, useMemo } from 'react';
 import { useStatisticsQuery } from '../utils/__generated__/Node';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { useEnvironment } from './use-environment';
-import { fromNanoSeconds } from '@vegaprotocol/utils';
+import { useNavigatorOnline } from '@vegaprotocol/react-helpers';
+import { Intent } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/i18n';
 
 const POLL_INTERVAL = 1000;
+const BLOCK_THRESHOLD = 3;
+const ERROR_LATENCY = 10000;
+const WARNING_LATENCY = 3000;
 
 export const useNodeHealth = () => {
+  const online = useNavigatorOnline();
   const url = useEnvironment((store) => store.VEGA_URL);
   const headerStore = useHeaderStore();
   const headers = url ? headerStore[url] : undefined;
-  const { data, error, loading, startPolling, stopPolling } =
-    useStatisticsQuery({
-      fetchPolicy: 'no-cache',
-    });
+  const { data, error, startPolling, stopPolling } = useStatisticsQuery({
+    fetchPolicy: 'no-cache',
+  });
 
   const blockDiff = useMemo(() => {
     if (!data?.statistics.blockHeight) {
       return null;
     }
 
-    if (!headers) {
+    if (!headers?.blockHeight) {
       return 0;
     }
 
     return Number(data.statistics.blockHeight) - headers.blockHeight;
-  }, [data, headers]);
+  }, [data?.statistics.blockHeight, headers?.blockHeight]);
 
   useEffect(() => {
     if (error) {
@@ -38,17 +43,43 @@ export const useNodeHealth = () => {
     }
   }, [error, startPolling, stopPolling]);
 
+  const blockUpdateMsLatency = headers?.timestamp
+    ? Date.now() - headers.timestamp.getTime()
+    : 0;
+
+  const [text, intent] = useMemo(() => {
+    let intent = Intent.Success;
+    let text = 'Operational';
+
+    if (!online) {
+      text = t('Offline');
+      intent = Intent.Danger;
+    } else if (blockDiff === null) {
+      // Block height query failed and null was returned
+      text = t('Non operational');
+      intent = Intent.Danger;
+    } else if (blockUpdateMsLatency > ERROR_LATENCY) {
+      text = t('Erroneous latency ( >%s sec): %s sec', [
+        (ERROR_LATENCY / 1000).toString(),
+        (blockUpdateMsLatency / 1000).toFixed(2),
+      ]);
+      intent = Intent.Danger;
+    } else if (blockDiff >= BLOCK_THRESHOLD) {
+      text = t(`%s Blocks behind`, String(blockDiff));
+      intent = Intent.Warning;
+    } else if (blockUpdateMsLatency > WARNING_LATENCY) {
+      text = t('Warning delay ( >%s sec): %s sec', [
+        (WARNING_LATENCY / 1000).toString(),
+        (blockUpdateMsLatency / 1000).toFixed(2),
+      ]);
+      intent = Intent.Warning;
+    }
+    return [text, intent];
+  }, [online, blockDiff, blockUpdateMsLatency]);
+
   return {
-    error,
-    loading,
-    coreBlockHeight: data?.statistics
-      ? Number(data.statistics.blockHeight)
-      : undefined,
-    coreVegaTime: data?.statistics
-      ? fromNanoSeconds(data?.statistics.vegaTime)
-      : undefined,
     datanodeBlockHeight: headers?.blockHeight,
-    datanodeVegaTime: headers?.timestamp,
-    blockDiff,
+    text,
+    intent,
   };
 };

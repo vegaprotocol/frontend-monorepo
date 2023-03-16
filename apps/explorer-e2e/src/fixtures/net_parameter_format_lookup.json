@@ -22,7 +22,6 @@
     "governance.proposal.updateAsset.minProposerBalance",
     "governance.proposal.updateAsset.minVoterBalance",
     "governance.proposal.updateAsset.requiredParticipation",
-    "governance.proposal.updateMarket.minProposerEquityLikeShare",
     "market.fee.factors.infrastructureFee",
     "market.fee.factors.makerFee",
     "market.liquidity.bondPenaltyParameter",
@@ -77,6 +76,7 @@
     "governance.proposal.updateMarket.requiredParticipationLP",
     "governance.proposal.updateNetParam.requiredMajority",
     "governance.proposal.updateNetParam.requiredParticipation",
+    "governance.proposal.updateMarket.minProposerEquityLikeShare",
     "validators.vote.required"
   ],
   "duration": [

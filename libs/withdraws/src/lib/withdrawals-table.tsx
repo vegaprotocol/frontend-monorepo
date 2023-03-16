@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
   getDateTimeFormat,
@@ -5,21 +7,16 @@ import {
   addDecimalsFormatNumber,
   isNumeric,
 } from '@vegaprotocol/utils';
+import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
-import {
-  Link,
-  ButtonLink,
-  Intent,
-  Icon,
-  Loader,
-} from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
@@ -29,11 +26,12 @@ import { ApprovalStatus } from './use-verify-withdrawal';
 export const WithdrawalsTable = (
   props: TypedDataAgGrid<WithdrawalFieldsFragment>
 ) => {
-  const { ETHERSCAN_URL } = useEnvironment();
+  const gridRef = useRef<AgGridReact | null>(null);
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
 
+  const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
@@ -45,8 +43,9 @@ export const WithdrawalsTable = (
         EtherscanLinkCell,
         CompleteCell,
       }}
-      suppressCellFocus={true}
-      domLayout="autoHeight"
+      suppressCellFocus
+      ref={gridRef}
+      {...bottomPlaceholderProps}
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />
@@ -66,13 +65,14 @@ export const WithdrawalsTable = (
         headerName={t('Recipient')}
         field="details.receiverAddress"
         cellRenderer="RecipientCell"
-        cellRendererParams={{ ethUrl: ETHERSCAN_URL }}
         valueFormatter={({
           value,
+          data,
         }: VegaValueFormatterParams<
           WithdrawalFieldsFragment,
           'details.receiverAddress'
         >) => {
+          if (!data) return null;
           if (!value) return '-';
           return truncateByChars(value);
         }}
@@ -82,20 +82,34 @@ export const WithdrawalsTable = (
         field="createdTimestamp"
         valueFormatter={({
           value,
+          data,
         }: VegaValueFormatterParams<
           WithdrawalFieldsFragment,
           'createdTimestamp'
-        >) => (value ? getDateTimeFormat().format(new Date(value)) : '-')}
+        >) =>
+          data
+            ? value
+              ? getDateTimeFormat().format(new Date(value))
+              : '-'
+            : null
+        }
       />
       <AgGridColumn
         headerName={t('Completed')}
         field="withdrawnTimestamp"
         valueFormatter={({
           value,
+          data,
         }: VegaValueFormatterParams<
           WithdrawalFieldsFragment,
           'withdrawnTimestamp'
-        >) => (value ? getDateTimeFormat().format(new Date(value)) : '-')}
+        >) =>
+          data
+            ? value
+              ? getDateTimeFormat().format(new Date(value))
+              : '-'
+            : null
+        }
       />
       <AgGridColumn
         headerName={t('Status')}
@@ -110,7 +124,6 @@ export const WithdrawalsTable = (
           complete: (withdrawal: WithdrawalFieldsFragment) => {
             createWithdrawApproval(withdrawal);
           },
-          ethUrl: ETHERSCAN_URL,
         }}
         cellRendererSelector={({
           data,
@@ -126,8 +139,11 @@ export type CompleteCellProps = {
   data: WithdrawalFieldsFragment;
   complete: (withdrawal: WithdrawalFieldsFragment) => void;
 };
-export const CompleteCell = ({ data, complete }: CompleteCellProps) =>
-  data.pendingOnForeignChain ? (
+export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
+  if (!data) {
+    return null;
+  }
+  return data.pendingOnForeignChain ? (
     '-'
   ) : (
     <ButtonLink
@@ -137,27 +153,23 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) =>
       {t('Complete withdrawal')}
     </ButtonLink>
   );
+};
 
 export const EtherscanLinkCell = ({
   value,
-  ethUrl,
-}: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'> & {
-  ethUrl: string;
-}) => {
+}: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
   if (!value) return '-';
   return (
-    <Link
-      title={t('View transaction on Etherscan')}
-      href={`${ethUrl}/tx/${value}`}
-      data-testid="etherscan-link"
-      target="_blank"
-    >
+    <EtherscanLink tx={value} data-testid="etherscan-link">
       {truncateByChars(value)}
-    </Link>
+    </EtherscanLink>
   );
 };
 
 export const StatusCell = ({ data }: { data: WithdrawalFieldsFragment }) => {
+  if (!data) {
+    return null;
+  }
   if (data.pendingOnForeignChain || !data.txHash) {
     return <span>{t('Pending')}</span>;
   }
@@ -170,48 +182,18 @@ export const StatusCell = ({ data }: { data: WithdrawalFieldsFragment }) => {
   return <span>{t('Failed')}</span>;
 };
 
-export interface RecipientCellProps
-  extends VegaICellRendererParams<
-    WithdrawalFieldsFragment,
-    'details.receiverAddress'
-  > {
-  ethUrl: string;
-}
-
 const RecipientCell = ({
-  ethUrl,
   value,
   valueFormatted,
-}: RecipientCellProps) => {
+}: VegaICellRendererParams<
+  WithdrawalFieldsFragment,
+  'details.receiverAddress'
+>) => {
   return (
-    <Link
-      title={t('View on Etherscan (opens in a new tab)')}
-      href={`${ethUrl}/address/${value}`}
-      data-testid="etherscan-link"
-      target="_blank"
-    >
+    <EtherscanLink address={value} data-testid="etherscan-link">
       {valueFormatted}
-    </Link>
+    </EtherscanLink>
   );
-};
-
-export const getVerifyDialogProps = (status: ApprovalStatus) => {
-  if (status === ApprovalStatus.Error) {
-    return {
-      intent: Intent.Danger,
-      icon: <Icon name="warning-sign" />,
-    };
-  }
-
-  if (status === ApprovalStatus.Pending) {
-    return { intent: Intent.None, icon: <Loader size="small" /> };
-  }
-
-  if (status === ApprovalStatus.Delayed) {
-    return { intent: Intent.Warning, icon: <Icon name="time" /> };
-  }
-
-  return { intent: Intent.None };
 };
 
 export const VerificationStatus = ({ state }: { state: VerifyState }) => {

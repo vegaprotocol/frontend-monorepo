@@ -15,7 +15,7 @@ interface Actions {
   close: () => void;
 }
 
-export const useDepositDialog = create<State & Actions>((set) => ({
+export const useDepositDialog = create<State & Actions>()((set) => ({
   isOpen: false,
   assetId: undefined,
   open: (assetId) => set(() => ({ assetId, isOpen: true })),

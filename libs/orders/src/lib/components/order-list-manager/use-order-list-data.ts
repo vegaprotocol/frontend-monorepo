@@ -51,6 +51,21 @@ export const useOrderListData = ({
   const dataRef = useRef<(OrderEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
+  const placeholderAdded = useRef(-1);
+
+  const makeBottomPlaceholders = useCallback((order?: Order) => {
+    if (!order) {
+      if (placeholderAdded.current >= 0) {
+        dataRef.current?.splice(placeholderAdded.current, 1);
+      }
+      placeholderAdded.current = -1;
+    } else if (placeholderAdded.current === -1) {
+      dataRef.current?.push({
+        node: { ...order, id: `${order?.id}-1`, isLastPlaceholder: true },
+      });
+      placeholderAdded.current = (dataRef.current?.length || 0) - 1;
+    }
+  }, []);
 
   const variables = useMemo<
     OrdersQueryVariables & OrdersUpdateSubscriptionVariables
@@ -124,11 +139,16 @@ export const useOrderListData = ({
   });
   totalCountRef.current = totalCount;
 
-  const getRows = makeInfiniteScrollGetRows<OrderEdge>(
-    dataRef,
-    totalCountRef,
-    load,
-    newRows
+  const getRows = useRef(
+    makeInfiniteScrollGetRows<OrderEdge>(dataRef, totalCountRef, load, newRows)
   );
-  return { loading, error, data, addNewRows, getRows, reload };
+  return {
+    loading,
+    error,
+    data,
+    addNewRows,
+    getRows: getRows.current,
+    reload,
+    makeBottomPlaceholders,
+  };
 };

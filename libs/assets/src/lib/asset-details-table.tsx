@@ -1,4 +1,4 @@
-import { ContractAddressLink } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
@@ -86,7 +86,7 @@ export const rows: Rows = [
     key: AssetDetail.QUANTUM,
     label: t('Quantum'),
     tooltip: t('The minimum economically meaningful amount of the asset'),
-    value: (asset) => asset.quantum,
+    value: (asset) => num(asset, asset.quantum),
   },
   {
     key: AssetDetail.STATUS,
@@ -108,7 +108,7 @@ export const rows: Rows = [
 
       return (
         <>
-          <ContractAddressLink address={asset.source.contractAddress} />{' '}
+          <EtherscanLink address={asset.source.contractAddress} />{' '}
           <CopyWithTooltip text={asset.source.contractAddress}>
             <button title={t('Copy address to clipboard')}>
               <Icon size={3} name="duplicate" />

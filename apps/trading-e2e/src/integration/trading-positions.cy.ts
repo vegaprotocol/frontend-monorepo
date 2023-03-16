@@ -50,7 +50,6 @@ describe('positions', { tags: '@smoke' }, () => {
       const emptyCells = [
         'notional',
         'markPrice',
-        'liquidationPrice',
         'currentLeverage',
         'averageEntryPrice',
       ];
@@ -162,12 +161,10 @@ describe('positions', { tags: '@smoke' }, () => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
 
-      cy.get('[col-id="liquidationPrice"]').should('contain.text', '0'); // liquidation price
-
-      cy.get('[col-id="currentLeverage"]').should('contain.text', '138.446.1');
+      cy.get('[col-id="currentLeverage"]').should('contain.text', '2.846.1');
 
       cy.get('[col-id="marginAccountBalance"]') // margin allocated
-        .should('contain.text', '1,000');
+        .should('contain.text', '0.01');
 
       cy.get('[col-id="unrealisedPNL"]').each(($unrealisedPnl) => {
         cy.wrap($unrealisedPnl).invoke('text').should('not.be.empty');

@@ -5,6 +5,8 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
+import { CancelSummary } from '../../order-summary/order-cancellation';
+import Hash from '../../links/hash';
 
 interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -24,8 +26,8 @@ export const TxDetailsOrderCancel = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const marketId: string = txData.command.orderCancellation.marketId || '-';
-  const orderId: string = txData.command.orderCancellation.orderId || '-';
+  const marketId: string = txData.command.orderCancellation.marketId;
+  const orderId: string = txData.command.orderCancellation.orderId;
 
   return (
     <>
@@ -38,18 +40,24 @@ export const TxDetailsOrderCancel = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Order')}</TableCell>
           <TableCell>
-            <code>{orderId}</code>
+            {orderId ? (
+              <Hash text={orderId} />
+            ) : (
+              <CancelSummary orderId={orderId} marketId={marketId} />
+            )}
           </TableCell>
         </TableRow>
-        <TableRow modifier="bordered">
-          <TableCell>{t('Market')}</TableCell>
-          <TableCell>
-            <MarketLink id={marketId} />
-          </TableCell>
-        </TableRow>
+        {marketId ? (
+          <TableRow modifier="bordered">
+            <TableCell>{t('Market')}</TableCell>
+            <TableCell>
+              <MarketLink id={marketId} />
+            </TableCell>
+          </TableRow>
+        ) : null}
       </TableWithTbody>
 
-      {orderId !== '-' ? <DeterministicOrderDetails id={orderId} /> : null}
+      {orderId ? <DeterministicOrderDetails id={orderId} /> : null}
     </>
   );
 };

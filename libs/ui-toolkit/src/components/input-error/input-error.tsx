@@ -13,6 +13,7 @@ export const InputError = ({
   children,
   forInput,
   testId,
+  className,
   ...props
 }: InputErrorProps) => {
   const effectiveClassName = classNames(
@@ -31,7 +32,7 @@ export const InputError = ({
     <div
       data-testid={testId || 'input-error-text'}
       aria-describedby={forInput}
-      className={effectiveClassName}
+      className={classNames(effectiveClassName, className)}
       {...props}
       role="alert"
     >

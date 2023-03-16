@@ -7,6 +7,10 @@ const externalLink = 'external-link';
 const accordionContent = 'accordion-content';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
+  beforeEach(() => {
+    cy.mockTradingPage();
+  });
+
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
@@ -26,20 +30,20 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('market price', () => {
     cy.getByTestId(marketTitle).contains('Market price').click();
-    validateMarketDataRow(0, 'Mark Price', '0.05749');
-    validateMarketDataRow(1, 'Best Bid Price', '6.81765 ');
-    validateMarketDataRow(2, 'Best Offer Price', '6.81769 ');
+    validateMarketDataRow(0, 'Mark Price', '46,126.90058');
+    validateMarketDataRow(1, 'Best Bid Price', '44,126.90058 ');
+    validateMarketDataRow(2, 'Best Offer Price', '48,126.90058 ');
     validateMarketDataRow(3, 'Quote Unit', 'BTC');
   });
 
   it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
-    validateMarketDataRow(0, '24 Hour Volume', '-');
+    validateMarketDataRow(0, '24 Hour Volume', '1');
     validateMarketDataRow(1, 'Open Interest', '0');
-    validateMarketDataRow(2, 'Best Bid Volume', '5');
-    validateMarketDataRow(3, 'Best Offer Volume', '1');
-    validateMarketDataRow(4, 'Best Static Bid Volume', '5');
-    validateMarketDataRow(5, 'Best Static Offer Volume', '1');
+    validateMarketDataRow(2, 'Best Bid Volume', '1');
+    validateMarketDataRow(3, 'Best Offer Volume', '3');
+    validateMarketDataRow(4, 'Best Static Bid Volume', '2');
+    validateMarketDataRow(5, 'Best Static Offer Volume', '4');
   });
 
   it('insurance pool displayed', () => {
@@ -131,7 +135,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.get('p.col-span-1').contains('Within 43,200 seconds');
     validateMarketDataRow(0, 'Highest Price', '7.97323 ');
     validateMarketDataRow(1, 'Lowest Price', '6.54701 ');
-    validateMarketDataRow(2, 'Reference Price', '7.22625 ');
   });
 
   it('liquidity monitoring parameters displayed', () => {
@@ -149,9 +152,9 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .contains(/Liquidity(?! m)/)
       .click();
 
-    validateMarketDataRow(0, 'Target Stake', '0.56789 tBTC');
-    validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');
-    validateMarketDataRow(2, 'Market Value Proxy', '6.77678 tBTC');
+    validateMarketDataRow(0, 'Target Stake', '10.00 tBTC');
+    validateMarketDataRow(1, 'Supplied Stake', '0.01 tBTC');
+    validateMarketDataRow(2, 'Market Value Proxy', '20.00 tBTC');
 
     cy.getByTestId('view-liquidity-link').should(
       'have.text',
@@ -163,8 +166,8 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.getByTestId(marketTitle).contains('Liquidity price range').click();
 
     validateMarketDataRow(0, 'Liquidity Price Range', '2.00% of mid price');
-    validateMarketDataRow(1, 'Lowest Price', '0.05634 BTC');
-    validateMarketDataRow(2, 'Highest Price', '0.05864 BTC');
+    validateMarketDataRow(1, 'Lowest Price', '45,204.362 BTC');
+    validateMarketDataRow(2, 'Highest Price', '47,049.438 BTC');
   });
 
   it('oracle displayed', () => {

@@ -13,6 +13,7 @@ import { useExplorerUpdateAssetSignatureBundleQuery } from './__generated__/Sign
  */
 export const ProposalSignatureBundleUpdateAsset = ({
   id,
+  tx,
 }: ProposalSignatureBundleByTypeProps) => {
   const { data, error, loading } = useExplorerUpdateAssetSignatureBundleQuery({
     variables: {
@@ -24,11 +25,16 @@ export const ProposalSignatureBundleUpdateAsset = ({
     return <Loader />;
   }
 
+  if (data?.asset?.source?.__typename !== 'ERC20') {
+    return null;
+  }
+
   if (data?.erc20SetAssetLimitsBundle?.signatures) {
     return (
       <BundleExists
         signatures={data.erc20SetAssetLimitsBundle.signatures}
         nonce={data.erc20SetAssetLimitsBundle.nonce}
+        assetAddress={data.asset.source.contractAddress}
         status={data.asset?.status}
         proposalId={id}
       />

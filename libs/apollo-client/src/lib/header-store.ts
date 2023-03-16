@@ -9,4 +9,4 @@ type HeaderStore = {
   [url: string]: HeaderEntry | undefined;
 };
 
-export const useHeaderStore = create<HeaderStore>(() => ({}));
+export const useHeaderStore = create<HeaderStore>()(() => ({}));

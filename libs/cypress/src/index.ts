@@ -17,8 +17,11 @@ import {
 import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
 import { addCreateMarket } from './lib/commands/create-market';
 import { addConnectPublicKey } from './lib/commands/add-connect-public-key';
+import { addValidatorsSelfDelegate } from './lib/commands/validators-self-delegate';
 import { addVegaWalletSubmitProposal } from './lib/commands/vega-wallet-submit-proposal';
 import { addGetNodes } from './lib/commands/get-nodes';
+import { addVegaWalletSubmitLiquidityProvision } from './lib/commands/vega-wallet-submit-liquidity-provision';
+import { addImportNodeWallets } from './lib/commands/import-node-wallets';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -38,7 +41,10 @@ addSetVegaWallet();
 addMockTransactionResponse();
 addCreateMarket();
 addConnectPublicKey();
+addValidatorsSelfDelegate();
 addVegaWalletSubmitProposal();
+addVegaWalletSubmitLiquidityProvision();
+addImportNodeWallets();
 
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
 export type { onMessage } from './lib/mock-ws';

@@ -5,9 +5,9 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type PositionFieldsFragment = { __typename?: 'Position', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, positionStatus: Types.PositionStatus, lossSocializationAmount: string, market: { __typename?: 'Market', id: string } };
 
-export type PositionsQueryVariables = Types.Exact<{
+export type PositionsQueryVariables = {
   partyId: Types.Scalars['ID'];
-}>;
+};
 
 
 export type PositionsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, positionsConnection?: { __typename?: 'PositionConnection', edges?: Array<{ __typename?: 'PositionEdge', node: { __typename?: 'Position', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, positionStatus: Types.PositionStatus, lossSocializationAmount: string, market: { __typename?: 'Market', id: string } } }> | null } | null } | null };

@@ -89,6 +89,7 @@ export const Notification = ({
             onClick={buttonProps.action}
             className={classNames(buttonProps.className)}
             data-testid={buttonProps.dataTestId}
+            type="button"
           >
             {buttonProps.text}
           </Button>

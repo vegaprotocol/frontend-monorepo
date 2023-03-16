@@ -47,8 +47,8 @@ type Actions = {
 
 type ToastsStore = State & Actions;
 
-export const useToasts = create(
-  immer<ToastsStore>((set, get) => ({
+export const useToasts = create<ToastsStore>()(
+  immer((set) => ({
     toasts: {},
     count: 0,
     add: (toast) =>

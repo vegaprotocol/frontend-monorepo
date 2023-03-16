@@ -8,14 +8,14 @@ export type ExplorerNewAssetSignatureBundleQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerNewAssetSignatureBundleQuery = { __typename?: 'Query', erc20ListAssetBundle?: { __typename?: 'Erc20ListAssetBundle', signatures: string, nonce: string } | null, asset?: { __typename?: 'Asset', status: Types.AssetStatus } | null };
+export type ExplorerNewAssetSignatureBundleQuery = { __typename?: 'Query', erc20ListAssetBundle?: { __typename?: 'Erc20ListAssetBundle', signatures: string, nonce: string } | null, asset?: { __typename?: 'Asset', status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } | null };
 
 export type ExplorerUpdateAssetSignatureBundleQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
 }>;
 
 
-export type ExplorerUpdateAssetSignatureBundleQuery = { __typename?: 'Query', erc20SetAssetLimitsBundle: { __typename?: 'ERC20SetAssetLimitsBundle', signatures: string, nonce: string }, asset?: { __typename?: 'Asset', status: Types.AssetStatus } | null };
+export type ExplorerUpdateAssetSignatureBundleQuery = { __typename?: 'Query', erc20SetAssetLimitsBundle: { __typename?: 'ERC20SetAssetLimitsBundle', signatures: string, nonce: string }, asset?: { __typename?: 'Asset', status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } | null };
 
 
 export const ExplorerNewAssetSignatureBundleDocument = gql`
@@ -26,6 +26,11 @@ export const ExplorerNewAssetSignatureBundleDocument = gql`
   }
   asset(id: $id) {
     status
+    source {
+      ... on ERC20 {
+        contractAddress
+      }
+    }
   }
 }
     `;
@@ -65,6 +70,11 @@ export const ExplorerUpdateAssetSignatureBundleDocument = gql`
   }
   asset(id: $id) {
     status
+    source {
+      ... on ERC20 {
+        contractAddress
+      }
+    }
   }
 }
     `;

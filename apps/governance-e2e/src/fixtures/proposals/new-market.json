@@ -2,6 +2,8 @@
   "changes": {
     "decimalPlaces": "5",
     "positionDecimalPlaces": "5",
+    "linearSlippageFactor": "0.001",
+    "quadraticSlippageFactor": "0",
     "lpPriceRange": "10",
     "instrument": {
       "name": "Token test market",
@@ -22,7 +24,7 @@
               "filters": [
                 {
                   "key": {
-                    "name": "prices.ETH.value",
+                    "name": "prices.BTC.value",
                     "type": "TYPE_INTEGER",
                     "numberDecimalPlaces": "0"
                   },
@@ -38,30 +40,34 @@
           }
         },
         "dataSourceSpecForTradingTermination": {
-          "signers": [
-            {
-              "pubKey": {
-                "key": "70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680"
-              }
-            }
-          ],
-          "filters": [
-            {
-              "key": {
-                "name": "trading.terminated.ETH5",
-                "type": "TYPE_BOOLEAN"
-              },
-              "conditions": [
+          "external": {
+            "oracle": {
+              "signers": [
                 {
-                  "operator": "OPERATOR_EQUALS",
-                  "value": "true"
+                  "pubKey": {
+                    "key": "70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680"
+                  }
+                }
+              ],
+              "filters": [
+                {
+                  "key": {
+                    "name": "trading.terminated.ETH5",
+                    "type": "TYPE_BOOLEAN"
+                  },
+                  "conditions": [
+                    {
+                      "operator": "OPERATOR_EQUALS",
+                      "value": "true"
+                    }
+                  ]
                 }
               ]
             }
-          ]
+          }
         },
         "dataSourceSpecBinding": {
-          "settlementPriceProperty": "prices.BTC.value",
+          "settlementDataProperty": "prices.BTC.value",
           "tradingTerminationProperty": "trading.terminated.ETH5"
         }
       }

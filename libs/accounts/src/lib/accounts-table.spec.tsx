@@ -27,7 +27,7 @@ const singleRow = {
   },
   available: '125600000',
   used: '125600000',
-  deposited: '125600000',
+  total: '251200000',
 } as AccountFields;
 const singleRowData = [singleRow];
 
@@ -42,7 +42,7 @@ describe('AccountsTable', () => {
         />
       );
     });
-    const expectedHeaders = ['Asset', 'Total', 'Used', 'Available', ''];
+    const expectedHeaders = ['Asset', 'Used', 'Available', 'Total', ''];
     const headers = await screen.findAllByRole('columnheader');
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(
@@ -65,8 +65,7 @@ describe('AccountsTable', () => {
       'tBTC',
       '1,256.00',
       '1,256.00',
-      '1,256.00',
-      'Breakdown',
+      '2,512.00',
       'Deposit',
       'Withdraw',
     ];
@@ -88,13 +87,8 @@ describe('AccountsTable', () => {
       );
     });
     const cells = await screen.findAllByRole('gridcell');
-    const expectedValues = [
-      'tBTC',
-      '1,256.00',
-      '1,256.00',
-      '1,256.00',
-      'Breakdown',
-    ];
+    const expectedValues = ['tBTC', '1,256.00', '1,256.00', '2,512.00', ''];
+    expect(cells.length).toBe(expectedValues.length);
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });
@@ -145,7 +139,7 @@ describe('AccountsTable', () => {
             },
             available: '0',
             balance: '125600000',
-            deposited: '125600000',
+            total: '125600000',
             market: {
               __typename: 'Market',
               id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
@@ -161,7 +155,7 @@ describe('AccountsTable', () => {
             used: '125600000',
           },
         ],
-        deposited: '125600000',
+        total: '125600000',
         type: 'ACCOUNT_TYPE_GENERAL',
         used: '125600000',
       },

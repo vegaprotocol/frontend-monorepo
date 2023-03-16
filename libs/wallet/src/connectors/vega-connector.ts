@@ -1,5 +1,25 @@
 import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type * as Schema from '@vegaprotocol/types';
+import type { PeggedReference } from '@vegaprotocol/types';
+
+export interface LiquidityProvisionSubmission {
+  liquidityProvisionSubmission: LiquidityProvisionBody;
+  pubKey: string;
+  propagate: boolean;
+}
+export interface LiquidityProvisionBody {
+  marketId: string;
+  commitmentAmount: string;
+  fee: string;
+  buys?: PeggedOrders[];
+  sells?: PeggedOrders[];
+}
+
+export interface PeggedOrders {
+  offset: string;
+  proportion: string;
+  reference: PeggedReference;
+}
 
 export interface DelegateSubmissionBody {
   delegateSubmission: {
@@ -78,6 +98,8 @@ interface ProposalNewMarketTerms {
       decimalPlaces: string;
       positionDecimalPlaces: string;
       lpPriceRange: string;
+      linearSlippageFactor: string;
+      quadraticSlippageFactor: string;
       instrument: {
         name: string;
         code: string;
@@ -110,6 +132,8 @@ interface ProposalUpdateMarketTerms {
   updateMarket: {
     marketId: string;
     changes: {
+      linearSlippageFactor: string;
+      quadraticSlippageFactor: string;
       instrument: {
         code: string;
         future: {
@@ -336,7 +360,8 @@ export type Transaction =
   | OrderAmendmentBody
   | ProposalSubmissionBody
   | BatchMarketInstructionSubmissionBody
-  | TransferBody;
+  | TransferBody
+  | LiquidityProvisionSubmission;
 
 export const isWithdrawTransaction = (
   transaction: Transaction

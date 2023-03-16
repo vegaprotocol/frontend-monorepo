@@ -7,13 +7,13 @@ import type { onMessage } from '@vegaprotocol/cypress';
 import type { PartialDeep } from 'type-fest';
 import { orderUpdateSubscription } from '@vegaprotocol/mock';
 
-let sendOrderUpdate: (data: OrdersUpdateSubscription) => void;
+const sendOrderUpdate: ((data: OrdersUpdateSubscription) => void)[] = [];
 const getOnOrderUpdate = () => {
   const onOrderUpdate: onMessage<
     OrdersUpdateSubscription,
     OrdersUpdateSubscriptionVariables
   > = (send) => {
-    sendOrderUpdate = send;
+    sendOrderUpdate.push(send);
   };
   return onOrderUpdate;
 };
@@ -31,5 +31,5 @@ export function updateOrder(
   if (!sendOrderUpdate) {
     throw new Error('OrderSub not called');
   }
-  sendOrderUpdate(update);
+  sendOrderUpdate.forEach((send) => send(update));
 }

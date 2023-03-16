@@ -392,7 +392,7 @@ const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
         data-testid="deposit-submit"
         variant={isActive ? 'primary' : 'default'}
         fill={true}
-        disabled={invalidChain || (selectedAsset && !approved)}
+        disabled={invalidChain}
       >
         {t('Deposit')}
       </Button>
