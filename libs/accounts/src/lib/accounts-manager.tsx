@@ -10,7 +10,8 @@ import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
-import type { RowHeightParams } from 'ag-grid-community';
+import type { RowClassParams, RowHeightParams } from 'ag-grid-community';
+import classNames from 'classnames';
 
 interface AccountManagerProps {
   partyId: string;
@@ -30,11 +31,15 @@ export const AccountManager = ({
   pinnedAsset,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const variables = useMemo(
+    () => ({ partyId, pinnedAsset }),
+    [partyId, pinnedAsset]
+  );
   const { data, loading, error, reload } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
+
   const setId = useCallback(
     (data: AccountFields) => ({
       ...data,
@@ -51,11 +56,24 @@ export const AccountManager = ({
     (params: RowHeightParams) => (params.node.rowPinned ? 32 : 22),
     []
   );
+
+  const getRowClass = useCallback(
+    ({ data: rowData }: RowClassParams) => {
+      const currentPinnedAssetRow = data?.find(
+        (row) => row.asset.id === pinnedAsset?.id
+      );
+      const shouldHighlight =
+        rowData?.asset.id === pinnedAsset?.id && currentPinnedAssetRow;
+      return classNames({ '!bg-vega-yellow !text-black': shouldHighlight });
+    },
+    [pinnedAsset?.id, data]
+  );
+
   return (
     <div className="relative h-full">
       <AccountTable
         ref={gridRef}
-        rowData={error ? [] : data}
+        rowData={error ? [] : data ?? []}
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
@@ -63,6 +81,7 @@ export const AccountManager = ({
         suppressLoadingOverlay
         suppressNoRowsOverlay
         pinnedAsset={pinnedAsset}
+        getRowClass={getRowClass}
         getRowHeight={getRowHeight}
         {...bottomPlaceholderProps}
       />

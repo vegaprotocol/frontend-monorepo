@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import {
   addDecimalsFormatNumber,
   isNumeric,
@@ -16,12 +16,7 @@ import {
   CenteredGridCellWrapper,
 } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
-import type {
-  IDatasource,
-  IGetRowsParams,
-  RowClassParams,
-  RowNode,
-} from 'ag-grid-community';
+import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
@@ -115,18 +110,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       return undefined;
     }, [props.pinnedAsset, props.rowData]);
 
-    const shouldHighlightRow = useCallback(
-      ({ data }: RowClassParams) => {
-        const currentPinnedAssetRow = props.rowData?.find(
-          (row) => row.asset.id === props.pinnedAsset?.id
-        );
-        const shouldHighlight =
-          data?.asset.id === props.pinnedAsset?.id && !!currentPinnedAssetRow;
-        return shouldHighlight;
-      },
-      [props.pinnedAsset?.id, props.rowData]
-    );
-
     return (
       <>
         <AgGrid
@@ -144,9 +127,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           }}
           {...props}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
-          rowClassRules={{
-            '!bg-vega-yellow !text-black': shouldHighlightRow,
-          }}
         >
           <AgGridColumn
             headerName={t('Asset')}
