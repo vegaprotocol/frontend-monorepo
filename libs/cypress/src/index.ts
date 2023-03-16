@@ -46,7 +46,10 @@ addVegaWalletSubmitProposal();
 addVegaWalletSubmitLiquidityProvision();
 addImportNodeWallets();
 
-export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
+export {
+  mockConnectWallet,
+  mockConnectWalletWithUserError,
+} from './lib/commands/vega-wallet-connect';
 export type { onMessage } from './lib/mock-ws';
 export { aliasGQLQuery } from './lib/mock-gql';
 export { aliasWalletQuery } from './lib/mock-rest';
