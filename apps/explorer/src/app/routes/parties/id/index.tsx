@@ -10,11 +10,9 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/Party-assets';
-import type { ExplorerPartyAssetsAccountsFragment } from './__generated__/Party-assets';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import GovernanceAssetBalance from '../../../components/asset-balance/governance-asset-balance';
 import { PartyAccounts } from './components/party-accounts';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -38,23 +36,6 @@ const Party = () => {
 
   const p = partyRes.data?.partiesConnection?.edges[0].node;
 
-  const staking = (
-    <section>
-      {p?.stakingSummary?.currentStakeAvailable ? (
-        <div className="mt-4 leading-3">
-          <strong className="font-semibold">{t('Staking Balance: ')}</strong>
-          <GovernanceAssetBalance
-            price={p.stakingSummary.currentStakeAvailable}
-          />
-        </div>
-      ) : null}
-    </section>
-  );
-
-  const accounts = getNodes<ExplorerPartyAssetsAccountsFragment>(
-    p?.accountsConnection
-  );
-
   return (
     <section>
       <h1
@@ -69,19 +50,23 @@ const Party = () => {
         truncateStart={visibleChars}
         truncateEnd={visibleChars}
       />
-      <AsyncRenderer
-        data={accounts}
-        error={partyRes.error}
-        errorMessage={t('Could not load accounts')}
-        noDataCondition={(data) => !data || data.length === 0}
-        loading={partyRes.loading}
-        loadingMessage={t('Loading accounts for') + ` ${partyId}`}
-      >
-        <SubHeading>{t('Asset data')}</SubHeading>
-        {accounts ? <PartyAccounts accounts={accounts} /> : null}
-      </AsyncRenderer>
 
-      {staking}
+      {/*<PartyAccounts partyId={partyId} /> */}
+
+      <div className="grid md:grid-flow-col grid-flow-row md:space-x-4 grid-cols-1 md:grid-cols-3 w-full">
+        <div className="border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
+          {p?.stakingSummary.currentStakeAvailable ? (
+            <>
+              <strong className="font-semibold">
+                {t('Staking Balance: ')}
+              </strong>
+              <GovernanceAssetBalance
+                price={p.stakingSummary.currentStakeAvailable}
+              />
+            </>
+          ) : null}
+        </div>
+      </div>
 
       <SubHeading>{t('Transactions')}</SubHeading>
       <TxsInfiniteList
