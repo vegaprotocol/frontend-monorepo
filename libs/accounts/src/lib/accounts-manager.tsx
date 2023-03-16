@@ -10,7 +10,6 @@ import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
-import type { RowHeightParams } from 'ag-grid-community';
 
 interface AccountManagerProps {
   partyId: string;
