@@ -62,7 +62,7 @@ export const MarketPage = () => {
   const navigate = useNavigate();
 
   const { screenSize } = useScreenDimensions();
-  const largeScreen = ['lg', 'xl', 'xxl'].includes(screenSize);
+  const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 

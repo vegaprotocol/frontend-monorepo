@@ -10,7 +10,7 @@ export const Footer = () => {
   const [nodeSwitcherOpen, setNodeSwitcherOpen] = useState(false);
   const { screenSize } = useScreenDimensions();
   const showFullFeedbackLabel = useMemo(
-    () => ['lg', 'xl'].includes(screenSize),
+    () => ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize),
     [screenSize]
   );
 

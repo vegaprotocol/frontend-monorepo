@@ -236,7 +236,7 @@ describe('Market trading page', () => {
         'inactive'
       );
 
-      cy.viewport(1600, 1000);
+      cy.viewport(1801, 1000);
       cy.getByTestId('tab-positions').should(
         'have.attr',
         'data-state',

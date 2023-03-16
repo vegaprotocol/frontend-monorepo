@@ -88,7 +88,7 @@ const MarketBottomPanel = memo(
       [navigate]
     );
 
-    return 'xxl' === screenSize ? (
+    return 'xxxl' === screenSize ? (
       <ResizableGrid proportionalLayout minSize={200}>
         <ResizableGridPanel
           priority={LayoutPriority.Low}

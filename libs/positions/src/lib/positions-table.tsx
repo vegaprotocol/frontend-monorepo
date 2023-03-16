@@ -116,7 +116,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               value
             )
           }
-          minWidth={150}
+          minWidth={190}
         />
         <AgGridColumn
           headerName={t('Notional')}
@@ -374,7 +374,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             return getDateTimeFormat().format(new Date(value));
           }}
-          minWidth={100}
+          minWidth={150}
         />
         {onClose && !props.isReadOnly ? (
           <AgGridColumn
@@ -389,7 +389,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 </ButtonLink>
               ) : null
             }
-            minWidth={50}
+            minWidth={80}
           />
         ) : null}
       </AgGrid>
