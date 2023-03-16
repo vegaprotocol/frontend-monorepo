@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useState } from 'react';
 import {
   addDecimalsFormatNumber,
   isNumeric,
@@ -16,7 +16,12 @@ import {
   CenteredGridCellWrapper,
 } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
-import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
+import type {
+  IDatasource,
+  IGetRowsParams,
+  RowHeightParams,
+  RowNode,
+} from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
@@ -108,17 +113,31 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           };
         }
       }
-      return undefined;
+      return currentPinnedAssetRow;
     }, [pinnedAssetId, props.pinnedAsset, props.rowData]);
+
+    const getRowHeight = useCallback(
+      (params: RowHeightParams) =>
+        params.node.rowPinned &&
+        params.data.asset.id === pinnedAssetId &&
+        new BigNumber(params.data.total).isLessThanOrEqualTo(0)
+          ? 32
+          : 22,
+      [pinnedAssetId]
+    );
 
     return (
       <>
         <AgGrid
+          {...props}
           style={{ width: '100%', height: '100%' }}
           overlayNoRowsTemplate={t('No accounts')}
           getRowId={({ data }: { data: AccountFields }) => data.asset.id}
           ref={ref}
           tooltipShowDelay={500}
+          rowData={props.rowData?.filter(
+            (data) => data.asset.id !== pinnedAssetId
+          )}
           defaultColDef={{
             flex: 1,
             resizable: true,
@@ -126,7 +145,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             sortable: true,
             comparator: accountValuesComparator,
           }}
-          {...props}
+          getRowHeight={getRowHeight}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
         >
           <AgGridColumn
