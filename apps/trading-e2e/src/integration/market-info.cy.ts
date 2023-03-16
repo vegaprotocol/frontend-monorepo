@@ -12,7 +12,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   before(() => {
-    cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');

@@ -65,8 +65,7 @@ export const aliasWalletConnectQuery = (
 };
 
 export const aliasWalletConnectWithUserError = (
-  req: CyHttpMessages.IncomingHttpRequest,
-  token: string
+  req: CyHttpMessages.IncomingHttpRequest
 ) => {
   if (hasMethod(req, 'client.connect_wallet')) {
     req.alias = 'client.connect_wallet';
