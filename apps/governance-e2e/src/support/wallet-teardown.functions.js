@@ -110,10 +110,9 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
     }
   });
   cy.get(vegaWalletContainer).within(() => {
-    cy.get('[data-testid="associated-amount"]', { timeout: 30000 }).should(
-      'contain.text',
-      '0.00'
-    );
+    cy.get('[data-testid="vega-wallet-balance-unstaked"]', {
+      timeout: 30000,
+    }).should('contain.text', '0.00');
   });
 });
 
