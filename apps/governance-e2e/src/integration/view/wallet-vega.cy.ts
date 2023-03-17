@@ -313,7 +313,9 @@ context(
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();
-          cy.getByTestId('currency-title').should('have.length.at.least', 4);
+          cy.get(walletContainer).within(() => {
+            cy.getByTestId('currency-title').should('have.length.at.least', 5);
+          });
         });
 
         for (const { id, name, expectedAmount } of assets) {
