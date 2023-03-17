@@ -79,11 +79,12 @@ export async function vegaWalletTeardown() {
         }
       });
       cy.get(vegaWalletContainer).within(() => {
+        cy.getByTestId('vega-wallet-balance-staked-validators', {
+          timeout: transactionTimeout,
+        }).should('not.exist');
         cy.get('[data-testid="vega-wallet-balance-unstaked"]', {
           timeout: transactionTimeout,
-        })
-          .should('have.length', 1)
-          .and('contain.text', '0.00');
+        }).should('contain.text', '0.00');
       });
     });
 }

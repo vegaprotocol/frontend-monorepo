@@ -11,6 +11,7 @@ import {
 import {
   clickOnValidatorFromList,
   closeStakingDialog,
+  ensureSpecifiedUnstakedTokensAreAssociated,
   stakingPageAssociateTokens,
   stakingPageDisassociateAllTokens,
   stakingPageDisassociateTokens,
@@ -50,7 +51,7 @@ context(
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
       // this is a workaround for #2422 which can be removed once issue is resolved
-      cy.associateTokenToVegaWallet();
+      cy.associateTokensToVegaWallet('4');
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
@@ -62,7 +63,6 @@ context(
           waitForSpinner();
           cy.connectVegaWallet();
           ethereumWalletConnect();
-          vegaWalletTeardown();
           navigateTo(navigation.validators);
         }
       );
@@ -183,9 +183,7 @@ context(
         'Able to remove part of a stake against a validator',
         { tags: '@smoke' },
         function () {
-          stakingPageAssociateTokens('4');
-          verifyUnstakedBalance(4.0);
-          cy.get('button').contains('Select a validator to nominate').click();
+          ensureSpecifiedUnstakedTokensAreAssociated('4');
           clickOnValidatorFromList(0);
           stakingValidatorPageAddStake('3');
           verifyNextEpochValue(3.0);

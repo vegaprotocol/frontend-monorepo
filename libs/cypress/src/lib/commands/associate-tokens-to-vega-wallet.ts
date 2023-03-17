@@ -8,13 +8,13 @@ declare global {
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      associateTokenToVegaWallet(): void;
+      associateTokensToVegaWallet(amount: string): void;
     }
   }
 }
 
-export function addAssociateTokenToVegaWallet() {
-  Cypress.Commands.add('associateTokenToVegaWallet', () => {
+export function addAssociateTokensToVegaWallet() {
+  Cypress.Commands.add('associateTokensToVegaWallet', (amount) => {
     const ethWalletMnemonic = Cypress.env('ETH_WALLET_MNEMONIC');
     const ethereumProviderUrl = Cypress.env('ETHEREUM_PROVIDER_URL');
     const vegaWalletUrl = Cypress.env('VEGA_WALLET_URL');
@@ -28,6 +28,6 @@ export function addAssociateTokenToVegaWallet() {
 
     cy.highlight('Perform Eth tx at start of test');
 
-    cy.wrap(stakeForVegaPublicKey(vegaPubKey, '1'), { timeout: 60000 });
+    cy.wrap(stakeForVegaPublicKey(vegaPubKey, amount), { timeout: 60000 });
   });
 }

@@ -23,7 +23,7 @@ import { addGetNodes } from './lib/commands/get-nodes';
 import { addVegaWalletSubmitLiquidityProvision } from './lib/commands/vega-wallet-submit-liquidity-provision';
 import { addImportNodeWallets } from './lib/commands/import-node-wallets';
 import { addVegaWalletTopUpRewardsPool } from './lib/commands/vega-wallet-top-up-rewards-pool';
-import { addAssociateTokenToVegaWallet } from './lib/commands/associate-token-to-vega-wallet';
+import { addAssociateTokensToVegaWallet } from './lib/commands/associate-tokens-to-vega-wallet';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -48,7 +48,7 @@ addVegaWalletSubmitProposal();
 addVegaWalletSubmitLiquidityProvision();
 addImportNodeWallets();
 addVegaWalletTopUpRewardsPool();
-addAssociateTokenToVegaWallet();
+addAssociateTokensToVegaWallet();
 
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
 export type { onMessage } from './lib/mock-ws';
