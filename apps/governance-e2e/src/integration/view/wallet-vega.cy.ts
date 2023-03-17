@@ -1,4 +1,4 @@
-import { truncateByChars } from '@vegaprotocol/react-helpers';
+import { truncateByChars } from '@vegaprotocol/utils';
 import { waitForSpinner } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletTeardown } from '../../support/wallet-teardown.functions';
@@ -309,7 +309,7 @@ context(
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();
-          ethereumWalletConnect();
+          cy.getByTestId('currency-title').should('have.length.at.least', 4);
         });
 
         for (const { id, name, expectedAmount } of assets) {

@@ -78,7 +78,7 @@ context(
       });
 
       vegaWalletSetSpecifiedApprovalAmount('1000');
-      cy.associateTokenToVegaWallet()
+      cy.associateTokenToVegaWallet();
     });
 
     beforeEach('visit governance tab', function () {

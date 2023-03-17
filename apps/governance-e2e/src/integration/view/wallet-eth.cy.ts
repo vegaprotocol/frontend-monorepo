@@ -1,7 +1,7 @@
 import { convertTokenValueToNumber } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 
-const walletContainer = '[data-testid="ethereum-wallet"]';
+const walletContainer = 'aside [data-testid="ethereum-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectToEthButton =
   '[data-testid="connect-to-eth-wallet-button"]:visible';
