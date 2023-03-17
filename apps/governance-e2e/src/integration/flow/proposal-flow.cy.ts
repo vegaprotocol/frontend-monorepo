@@ -15,7 +15,6 @@ import {
 } from '../../support/governance.functions';
 
 import {
-  associateTokenStartOfTests,
   verifyUnstakedBalance,
   waitForSpinner,
   navigateTo,
@@ -79,7 +78,7 @@ context(
       });
 
       vegaWalletSetSpecifiedApprovalAmount('1000');
-      associateTokenStartOfTests();
+      cy.associateTokenToVegaWallet()
     });
 
     beforeEach('visit governance tab', function () {

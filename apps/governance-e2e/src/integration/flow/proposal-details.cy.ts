@@ -1,6 +1,5 @@
 import {
   navigateTo,
-  associateTokenStartOfTests,
   waitForSpinner,
   navigation,
 } from '../../support/common.functions';
