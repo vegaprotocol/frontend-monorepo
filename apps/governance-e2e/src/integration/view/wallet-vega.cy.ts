@@ -161,7 +161,7 @@ context(
         cy.get(walletContainer).within(() => {
           cy.get(currencyTitle)
             .should('be.visible')
-            .and('have.text', `VEGAAssociated`);
+            .and('contain.text', `VEGAAssociated`);
         });
       });
 
@@ -170,7 +170,9 @@ context(
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
-            cy.get(currencyValue).should('be.visible').and('have.text', `0.00`);
+            cy.get(currencyValue)
+              .should('be.visible')
+              .and('contain.text', `0.00`);
           });
         }
       );

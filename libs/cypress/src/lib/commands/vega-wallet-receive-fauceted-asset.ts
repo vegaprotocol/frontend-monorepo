@@ -21,6 +21,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
         `Topping up vega wallet with ${assetName}, amount: ${amount}`
       );
       // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.getAssets().then((assets: any) => {
         const asset = assets[assetName];
         if (assets[assetName] !== undefined) {
@@ -37,6 +38,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
               );
             });
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const validAssets = assets.filter((a: any) =>
             a.name.includes('fake')
           );

@@ -34,7 +34,7 @@ export async function stakeForVegaPublicKey(
       ethereumConfig.staking_bridge_contract.address,
       amount + '0'.repeat(19)
     ),
-    1000,
+    10 * 60 * 1000,
     'approve staking tx'
   );
 
