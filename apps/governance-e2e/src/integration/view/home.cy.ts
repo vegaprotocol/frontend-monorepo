@@ -1,14 +1,5 @@
 import { waitForSpinner } from '../../support/common.functions';
 
-// const navSection = 'nav';
-// const navSupply = '[href="/token/tranches"]';
-// const navToken = '[href="/token"]';
-// const navStaking = '[href="/validators"]';
-// const navRewards = '[href="/rewards"]';
-// const navWithdraw = '[href="/token/withdraw"]';
-// const navGovernance = '[href="/proposals"]';
-// const navRedeem = '[href="/token/redeem"]';
-
 context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
   before('visit token home page', function () {
     cy.visit('/');
@@ -116,6 +107,57 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
             .should('exist')
             .and('have.text', 'Manage tokens');
         });
+      });
+    });
+
+    describe('Mobile view - navigation bar', function () {
+      before('Change to mobile resolution', function () {
+        cy.viewport('iphone-xr');
+      });
+
+      it('should have burger button', () => {
+        cy.getByTestId('button-menu-drawer').should('be.visible').click();
+        cy.getByTestId('menu-drawer').should('be.visible');
+      });
+
+      it('should have link for proposal page', function () {
+        cy.getByTestId('menu-drawer').within(() => {
+          cy.get('[href="/proposals"]')
+            .should('exist')
+            .and('have.text', 'Proposals');
+        });
+      });
+      it('should have link for validator page', function () {
+        cy.getByTestId('menu-drawer').within(() => {
+          cy.get('[href="/validators"]')
+            .first()
+            .should('exist')
+            .and('have.text', 'Validators');
+        });
+      });
+
+      it('should have link for rewards page', function () {
+        cy.getByTestId('menu-drawer').within(() => {
+          cy.get('[href="/rewards"]')
+            .first()
+            .should('exist')
+            .and('have.text', 'Rewards');
+        });
+      });
+      it('should have link for withdrawal page', function () {
+        cy.getByTestId('menu-drawer').within(() => {
+          cy.get('[href="/token/withdraw"]')
+            .first()
+            .should('exist')
+            .and('have.text', 'Withdraw');
+        });
+      });
+
+      after(function () {
+        cy.viewport(
+          Cypress.config('viewportWidth'),
+          Cypress.config('viewportHeight')
+        );
       });
     });
   });
