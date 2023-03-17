@@ -18,6 +18,7 @@ import {
   stakingValidatorPageAddStake,
   stakingValidatorPageRemoveStake,
   validateValidatorListTotalStakeAndShare,
+  waitForBeginningOfEpoch,
 } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
@@ -201,7 +202,8 @@ context(
           verifyNextEpochValue(2.0);
           verifyThisEpochValue(2.0);
           cy.get(totalStake, epochTimeout).should('contain.text', '2');
-          cy.get(stakeShare, epochTimeout).should('have.text', '100%');
+          waitForBeginningOfEpoch();
+          cy.get(stakeShare).should('have.text', '100%');
           navigateTo(navigation.validators);
           validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
         }

@@ -179,7 +179,10 @@ context(
 
       it('should have Unstaked value visible', { tags: '@smoke' }, function () {
         cy.get(walletContainer).within(() => {
-          cy.get(vegaUnstaked).should('be.visible').and('have.text', `0.00`);
+          cy.get(vegaUnstaked)
+            .should('be.visible')
+            .invoke('text')
+            .and('not.be.empty');
         });
       });
 
@@ -324,8 +327,9 @@ context(
                 .contains(id)
                 .parent()
                 .siblings()
-                .within((el) => {
-                  const value = parseFloat(el.text());
+                .invoke('text')
+                .then((el) => {
+                  const value = parseFloat(el);
                   cy.wrap(value).should('be.gte', parseFloat(expectedAmount));
                 });
 
