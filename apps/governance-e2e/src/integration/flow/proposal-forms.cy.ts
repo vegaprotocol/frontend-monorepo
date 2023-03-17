@@ -11,8 +11,11 @@ import {
 } from '../../support/governance.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import { vegaWalletSetSpecifiedApprovalAmount, vegaWalletTeardown } from '../../support/wallet-teardown.functions';
-import { vegaWalletFacetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
+import {
+  vegaWalletSetSpecifiedApprovalAmount,
+  vegaWalletTeardown,
+} from '../../support/wallet-teardown.functions';
+import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const openProposals = '[data-testid="open-proposals"]';
@@ -259,7 +262,7 @@ context(
     // 3002-PROP-020
     it('Unable to submit update market proposal without minimum amount of tokens', function () {
       vegaWalletTeardown();
-      vegaWalletFacetAssetsWithoutCheck(
+      vegaWalletFaucetAssetsWithoutCheck(
         'fUSDC',
         '1000000',
         vegaWalletPublicKey
@@ -285,7 +288,7 @@ context(
 
     // 3001-VOTE-092
     it('Able to submit update market proposal and vote for proposal', function () {
-      vegaWalletFacetAssetsWithoutCheck(
+      vegaWalletFaucetAssetsWithoutCheck(
         'fUSDC',
         '1000000',
         vegaWalletPublicKey

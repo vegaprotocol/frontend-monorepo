@@ -21,7 +21,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
         `Topping up vega wallet with ${assetName}, amount: ${amount}`
       );
       // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
-      cy.getAssets().then((assets) => {
+      cy.getAssets().then((assets: any) => {
         const asset = assets[assetName];
         if (assets[assetName] !== undefined) {
           for (let i = 0; i < asset.decimals; i++) amount += '0';
@@ -37,7 +37,9 @@ export function addVegaWalletReceiveFaucetedAsset() {
               );
             });
         } else {
-          const validAssets = assets.filter((a) => a.name.includes('fake'));
+          const validAssets = assets.filter((a: any) =>
+            a.name.includes('fake')
+          );
           assert.exists(
             asset,
             `${assetName} is not a faucet-able asset, only the following assets can be faucet-ed: ${validAssets}`

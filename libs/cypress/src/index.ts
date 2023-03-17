@@ -22,6 +22,8 @@ import { addVegaWalletSubmitProposal } from './lib/commands/vega-wallet-submit-p
 import { addGetNodes } from './lib/commands/get-nodes';
 import { addVegaWalletSubmitLiquidityProvision } from './lib/commands/vega-wallet-submit-liquidity-provision';
 import { addImportNodeWallets } from './lib/commands/import-node-wallets';
+import { addVegaWalletTopUpRewardsPool } from './lib/commands/vega-wallet-top-up-rewards-pool';
+import { addAssociateTokenToVegaWallet } from './lib/commands/associate-token-to-vega-wallet';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -45,6 +47,8 @@ addValidatorsSelfDelegate();
 addVegaWalletSubmitProposal();
 addVegaWalletSubmitLiquidityProvision();
 addImportNodeWallets();
+addVegaWalletTopUpRewardsPool();
+addAssociateTokenToVegaWallet();
 
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
 export type { onMessage } from './lib/mock-ws';

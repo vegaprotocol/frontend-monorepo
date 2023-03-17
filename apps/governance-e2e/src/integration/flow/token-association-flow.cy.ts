@@ -25,7 +25,7 @@ const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const txTimeout = Cypress.env('txTimeout');
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
-const ethWalletAssociateButton = '[href="/token/associate"]';
+const ethWalletAssociateButton = '[data-testid="associate-btn"]';
 const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
 const tokenSubmitButton = '[data-testid="token-input-submit-button"]';

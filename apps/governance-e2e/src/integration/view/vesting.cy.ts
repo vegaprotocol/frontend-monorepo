@@ -20,7 +20,7 @@ context(
 
     describe('with wallets disconnected', function () {
       it('should have vesting tab highlighted', function () {
-        verifyTabHighlighted(navigation.token);
+        verifyTabHighlighted(navigation.vesting);
       });
 
       it('should have VESTING header visible', function () {

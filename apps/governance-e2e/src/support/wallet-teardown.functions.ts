@@ -8,7 +8,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
-const vegaWalletContainer = '[data-testid="vega-wallet"]';
+const vegaWalletContainer = 'aside [data-testid="vega-wallet"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
@@ -34,10 +34,10 @@ const stakingBridgeContract = new StakingBridge(
 );
 const vestingContract = new TokenVesting(vegaTokenContractAddress, signer);
 
-export async function depositAsset(assetEthAddress: string) {
+export async function depositAsset(assetEthAddress: string, amount: string) {
   // Approve asset
   const faucet = new TokenFaucetable(assetEthAddress, signer);
-  cy.wrap(faucet.approve(Erc20BridgeAddress, '10000000000'), {
+  cy.wrap(faucet.approve(Erc20BridgeAddress, amount + '0'.repeat(19)), {
     timeout: transactionTimeout,
     log: false,
   })
@@ -49,7 +49,7 @@ export async function depositAsset(assetEthAddress: string) {
       cy.wrap(
         collateralBridge.deposit_asset(
           assetEthAddress,
-          '1000000000',
+          amount + '0'.repeat(18),
           '0x' + vegaWalletPubKey
         ),
         { timeout: transactionTimeout, log: false }
@@ -79,7 +79,7 @@ export async function vegaWalletTeardown() {
         }
       });
       cy.get(vegaWalletContainer).within(() => {
-        cy.get('[data-testid="associated-amount"]', {
+        cy.get('[data-testid="vega-wallet-balance-unstaked"]', {
           timeout: transactionTimeout,
         })
           .should('have.length', 1)

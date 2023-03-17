@@ -50,6 +50,8 @@ context(
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
       vegaWalletSetSpecifiedApprovalAmount('1000');
+      // this is a workaround for #2422 which can be removed once issue is resolved
+      cy.associateTokenToVegaWallet();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {

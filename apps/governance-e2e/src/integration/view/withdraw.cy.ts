@@ -18,7 +18,7 @@ context(
 
     describe('with wallets disconnected', function () {
       it('should have withdraw tab highlighted', function () {
-        verifyTabHighlighted(navigation.token);
+        verifyTabHighlighted(navigation.withdraw);
       });
 
       it('should have WITHDRAW header visible', function () {

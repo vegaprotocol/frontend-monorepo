@@ -23,7 +23,7 @@ const dialogCloseButton = '[data-testid="dialog-close"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
-function waitForBeginningOfEpoch() {
+export function waitForBeginningOfEpoch() {
   cy.contains('Waiting for next epoch to start', epochTimeout).should(
     'not.exist'
   );

@@ -42,7 +42,7 @@ context(
       cy.visit('/');
       // When running tests locally, will fail if run without restarting capsule
       cy.updateCapsuleMultiSig().then(() => {
-        depositAsset(usdcEthAddress);
+        depositAsset(usdcEthAddress, '100');
       });
     });
 

@@ -45,7 +45,6 @@ describe(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       vegaWalletSetSpecifiedApprovalAmount('1000');
-      associateTokenStartOfTests();
     });
 
     beforeEach('visit proposals tab', function () {

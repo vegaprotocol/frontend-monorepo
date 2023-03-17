@@ -1,6 +1,7 @@
 import { ethereumWalletConnect } from './wallet-eth.functions';
 import { vegaWalletTeardown } from './wallet-teardown.functions';
 
+const tokenDropDown = 'state-trigger';
 const epochTimeout = Cypress.env('epochTimeout');
 const txTimeout = Cypress.env('txTimeout');
 
@@ -27,23 +28,28 @@ const topLevelRoutes = [
 ];
 
 export function navigateTo(page: navigation) {
-  const tokenDropDown = 'state-trigger';
-
   if (!topLevelRoutes.includes(page)) {
-    cy.getByTestId(tokenDropDown, { timeout: 10000 }).click();
+    cy.getByTestId(tokenDropDown, { timeout: 10000 }).eq(0).click();
     cy.getByTestId('token-dropdown').within(() => {
-      cy.get(page).click();
+      cy.get(page).eq(0).click();
     });
   } else {
     return cy.get(navigation.section, { timeout: 10000 }).within(() => {
-      cy.get(page).click();
+      cy.get(page).eq(0).click();
     });
   }
 }
 
 export function verifyTabHighlighted(page: navigation) {
   return cy.get(navigation.section).within(() => {
-    cy.get(page).should('have.attr', 'aria-current');
+    if (!topLevelRoutes.includes(page)) {
+      cy.getByTestId(tokenDropDown, { timeout: 10000 }).eq(0).click();
+      cy.get('[data-testid="token-dropdown"]:visible').within(() => {
+        cy.get(page).should('have.attr', 'aria-current');
+      });
+    } else {
+      cy.get(page).should('have.attr', 'aria-current');
+    }
   });
 }
 
@@ -62,7 +68,7 @@ export function associateTokenStartOfTests() {
   cy.highlight(`Associating tokens for first time`);
   ethereumWalletConnect();
   cy.connectVegaWallet();
-  cy.get('[href="/token/associate"]').first().click();
+  cy.getByTestId('associate-btn').last().click();
   cy.getByTestId('associate-radio-wallet', { timeout: 30000 }).click();
   cy.getByTestId('token-amount-input', epochTimeout).type('1');
   cy.getByTestId('token-input-submit-button', txTimeout)

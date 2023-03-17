@@ -283,38 +283,34 @@ context(
     });
 
     // 1005-PROP-009
-    it.skip(
-      'Unable to vote on a freeform proposal - when some but not enough vega associated',
-      { tags: '@smoke' },
-      function () {
-        const proposalTitle = generateFreeFormProposalTitle();
+    it('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
+      const proposalTitle = generateFreeFormProposalTitle();
 
-        ensureSpecifiedUnstakedTokensAreAssociated('1');
-        goToMakeNewProposal(governanceProposalType.FREEFORM);
-        enterUniqueFreeFormProposalBody('50', proposalTitle);
-        waitForProposalSubmitted();
-        stakingPageDisassociateTokens('0.0001');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance).should('have.length', 1);
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-            'contain',
-            '0.9999'
-          );
-        });
-        navigateTo(navigation.proposals);
-        getSubmittedProposalFromProposalList(proposalTitle).within(() =>
-          cy.get(viewProposalButton).click()
+      ensureSpecifiedUnstakedTokensAreAssociated('1');
+      goToMakeNewProposal(governanceProposalType.FREEFORM);
+      enterUniqueFreeFormProposalBody('50', proposalTitle);
+      waitForProposalSubmitted();
+      stakingPageDisassociateTokens('0.0001');
+      cy.get(vegaWallet).within(() => {
+        cy.get(vegaWalletAssociatedBalance).should('have.length', 1);
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          'contain',
+          '0.9999'
         );
-        cy.contains('Vote breakdown').should('be.visible', {
-          timeout: 10000,
-        });
-        cy.get(voteButtons).should('not.exist');
-        cy.getByTestId('min-proposal-requirements').should(
-          'have.text',
-          `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
-        );
-      }
-    );
+      });
+      navigateTo(navigation.proposals);
+      getSubmittedProposalFromProposalList(proposalTitle).within(() =>
+        cy.get(viewProposalButton).click()
+      );
+      cy.contains('Vote breakdown').should('be.visible', {
+        timeout: 10000,
+      });
+      cy.get(voteButtons).should('not.exist');
+      cy.getByTestId('min-proposal-requirements').should(
+        'have.text',
+        `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
+      );
+    });
 
     it('Unable to vote on a proposal - when vega wallet disconnected - option to connect from within', function () {
       createRawProposal();

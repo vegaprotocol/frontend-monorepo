@@ -9,7 +9,7 @@ import {
   enterUniqueFreeFormProposalBody,
   goToMakeNewProposal,
 } from '../../support/governance.functions';
-import { vegaWalletFacetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
+import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey2');
 const vegaPubkeyTruncated = Cypress.env('vegaWalletPublicKey2Short');
@@ -17,7 +17,7 @@ const banner = 'view-banner';
 
 context('View functionality with public key', { tags: '@smoke' }, function () {
   before('send asset to wallet', function () {
-    vegaWalletFacetAssetsWithoutCheck('fUSDC', '1000000', vegaWalletPubKey);
+    vegaWalletFaucetAssetsWithoutCheck('fUSDC', '1000000', vegaWalletPubKey);
   });
 
   beforeEach('visit home page', function () {

@@ -2,7 +2,7 @@ import { truncateByChars } from '@vegaprotocol/react-helpers';
 import { waitForSpinner } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletTeardown } from '../../support/wallet-teardown.functions';
-import { vegaWalletFacetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
+import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
@@ -304,11 +304,7 @@ context(
 
         before('faucet assets to connected vega wallet', function () {
           for (const { id, amount } of assets) {
-            vegaWalletFacetAssetsWithoutCheck(
-              id,
-              amount,
-              vegaWalletPublicKey
-            );
+            vegaWalletFaucetAssetsWithoutCheck(id, amount, vegaWalletPublicKey);
           }
           cy.reload();
           waitForSpinner();

@@ -1,4 +1,4 @@
-export function vegaWalletFacetAssetsWithoutCheck(
+export function vegaWalletFaucetAssetsWithoutCheck(
   asset: string,
   amount: string,
   vegaWalletPublicKey: string
