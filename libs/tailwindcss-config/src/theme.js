@@ -6,6 +6,7 @@ module.exports = {
     lg: '960px',
     xl: '1280px',
     xxl: '1536px',
+    xxxl: '1800px',
   },
   colors: {
     transparent: 'transparent',
