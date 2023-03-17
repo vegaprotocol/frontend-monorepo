@@ -1,8 +1,4 @@
-import { ethereumWalletConnect } from './wallet-eth.functions';
-import { vegaWalletTeardown } from './wallet-teardown.functions';
-
 const tokenDropDown = 'state-trigger';
-const epochTimeout = Cypress.env('epochTimeout');
 const txTimeout = Cypress.env('txTimeout');
 
 export enum navigation {

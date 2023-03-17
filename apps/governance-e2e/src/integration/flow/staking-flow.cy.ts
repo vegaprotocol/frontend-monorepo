@@ -49,9 +49,9 @@ context(
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
-      vegaWalletSetSpecifiedApprovalAmount('1000');
       // this is a workaround for #2422 which can be removed once issue is resolved
       cy.associateTokenToVegaWallet();
+      vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {

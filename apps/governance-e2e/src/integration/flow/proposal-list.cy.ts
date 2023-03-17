@@ -93,6 +93,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
 
   it('Newly created proposals list - shows title and portion of summary', function () {
     createRawProposal(this.minProposerBalance); // 3001-VOTE-052
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cy.get('@rawProposal').then((rawProposal: any) => {
       getProposalIdFromList(rawProposal.rationale.title);
       cy.get('@proposalIdText').then((proposalId) => {
@@ -118,15 +119,17 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     // 3001-VOTE-004
     // 3001-VOTE-035
     createRawProposal(this.minProposerBalance);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cy.get('@rawProposal').then((rawProposal: any) => {
       getSubmittedProposalFromProposalList(rawProposal.rationale.title).within(
         () => {
           cy.get(viewProposalButton).should('be.visible').click();
         }
       );
-      cy.get('@proposalIdText').then((proposalId: any) => {
+
+      cy.get('@proposalIdText').then((proposalId) => {
         getProposalInformationFromTable('ID')
-          .contains(proposalId)
+          .contains(String(proposalId))
           .and('be.visible');
       });
       getProposalInformationFromTable('State')

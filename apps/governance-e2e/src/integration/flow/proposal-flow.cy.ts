@@ -62,6 +62,7 @@ context(
   function () {
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cy.get_network_parameters().then((network_parameters: any) => {
         cy.wrap(
           network_parameters['spam.protection.proposal.min.tokens'] /
