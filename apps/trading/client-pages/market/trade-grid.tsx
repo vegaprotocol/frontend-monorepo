@@ -8,7 +8,7 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { memo, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -29,6 +29,7 @@ import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -69,129 +70,204 @@ interface TradeGridProps {
   pinnedAsset?: PinnedAsset;
 }
 
-const MainGrid = ({
-  marketId,
-  onSelect,
-  pinnedAsset,
-}: {
+interface BottomPanelProps {
   marketId: string;
-  onSelect?: (marketId: string) => void;
   pinnedAsset?: PinnedAsset;
-}) => {
-  const navigate = useNavigate();
-  const onMarketClick = (marketId: string) => {
-    navigate(Links[Routes.MARKET](marketId), {
-      replace: true,
-    });
-  };
-  return (
-    <ResizableGrid vertical>
-      <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-        <ResizableGrid proportionalLayout={false} minSize={200}>
-          <ResizableGridPanel
-            priority={LayoutPriority.High}
-            minSize={200}
-            preferredSize="50%"
-          >
-            <TradeGridChild>
-              <Tabs>
-                <Tab id="chart" name={t('Chart')}>
-                  <TradingViews.Candles marketId={marketId} />
-                </Tab>
-                <Tab id="depth" name={t('Depth')}>
-                  <TradingViews.Depth marketId={marketId} />
-                </Tab>
-                <Tab id="liquidity" name={t('Liquidity')}>
-                  <TradingViews.Liquidity marketId={marketId} />
-                </Tab>
-              </Tabs>
-            </TradeGridChild>
-          </ResizableGridPanel>
-          <ResizableGridPanel
-            priority={LayoutPriority.Low}
-            preferredSize={330}
-            minSize={300}
-          >
-            <TradeGridChild>
-              <Tabs>
-                <Tab id="ticket" name={t('Ticket')}>
-                  <TradingViews.Ticket
+}
+
+const MarketBottomPanel = memo(
+  ({ marketId, pinnedAsset }: BottomPanelProps) => {
+    const { screenSize } = useScreenDimensions();
+    const navigate = useNavigate();
+    const onMarketClick = useCallback(
+      (marketId: string) => {
+        navigate(Links[Routes.MARKET](marketId), {
+          replace: true,
+        });
+      },
+      [navigate]
+    );
+
+    return 'xxxl' === screenSize ? (
+      <ResizableGrid proportionalLayout minSize={200}>
+        <ResizableGridPanel
+          priority={LayoutPriority.Low}
+          preferredSize="50%"
+          minSize={50}
+        >
+          <TradeGridChild>
+            <Tabs>
+              <Tab id="orders" name={t('Orders')}>
+                <VegaWalletContainer>
+                  <TradingViews.Orders
                     marketId={marketId}
-                    onClickCollateral={() => navigate('/portfolio')}
+                    onMarketClick={onMarketClick}
                   />
-                </Tab>
-                <Tab id="info" name={t('Info')}>
-                  <TradingViews.Info
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="fills" name={t('Fills')}>
+                <VegaWalletContainer>
+                  <TradingViews.Fills
                     marketId={marketId}
-                    onSelect={(id: string) => {
-                      onSelect?.(id);
-                    }}
+                    onMarketClick={onMarketClick}
                   />
-                </Tab>
-              </Tabs>
-            </TradeGridChild>
-          </ResizableGridPanel>
-          <ResizableGridPanel
-            priority={LayoutPriority.Low}
-            preferredSize={430}
-            minSize={200}
-          >
-            <TradeGridChild>
-              <Tabs>
-                <Tab id="orderbook" name={t('Orderbook')}>
-                  <TradingViews.Orderbook marketId={marketId} />
-                </Tab>
-                <Tab id="trades" name={t('Trades')}>
-                  <TradingViews.Trades marketId={marketId} />
-                </Tab>
-              </Tabs>
-            </TradeGridChild>
-          </ResizableGridPanel>
-        </ResizableGrid>
-      </ResizableGridPanel>
-      <ResizableGridPanel
-        priority={LayoutPriority.Low}
-        preferredSize="25%"
-        minSize={50}
-      >
-        <TradeGridChild>
-          <Tabs>
-            <Tab id="positions" name={t('Positions')}>
-              <VegaWalletContainer>
-                <TradingViews.Positions onMarketClick={onMarketClick} />
-              </VegaWalletContainer>
-            </Tab>
-            <Tab id="orders" name={t('Orders')}>
-              <VegaWalletContainer>
-                <TradingViews.Orders
-                  marketId={marketId}
-                  onMarketClick={onMarketClick}
-                />
-              </VegaWalletContainer>
-            </Tab>
-            <Tab id="fills" name={t('Fills')}>
-              <VegaWalletContainer>
-                <TradingViews.Fills
-                  marketId={marketId}
-                  onMarketClick={onMarketClick}
-                />
-              </VegaWalletContainer>
-            </Tab>
-            <Tab id="accounts" name={t('Collateral')}>
-              <VegaWalletContainer>
-                <TradingViews.Collateral
-                  pinnedAsset={pinnedAsset}
-                  hideButtons
-                />
-              </VegaWalletContainer>
-            </Tab>
-          </Tabs>
-        </TradeGridChild>
-      </ResizableGridPanel>
-    </ResizableGrid>
-  );
-};
-const MainGridWrapped = memo(MainGrid);
+                </VegaWalletContainer>
+              </Tab>
+            </Tabs>
+          </TradeGridChild>
+        </ResizableGridPanel>
+        <ResizableGridPanel
+          priority={LayoutPriority.Low}
+          preferredSize="50%"
+          minSize={50}
+        >
+          <TradeGridChild>
+            <Tabs>
+              <Tab id="positions" name={t('Positions')}>
+                <VegaWalletContainer>
+                  <TradingViews.Positions
+                    onMarketClick={onMarketClick}
+                    noBottomPlaceholder
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="accounts" name={t('Collateral')}>
+                <VegaWalletContainer>
+                  <TradingViews.Collateral
+                    pinnedAsset={pinnedAsset}
+                    noBottomPlaceholder
+                    hideButtons
+                  />
+                </VegaWalletContainer>
+              </Tab>
+            </Tabs>
+          </TradeGridChild>
+        </ResizableGridPanel>
+      </ResizableGrid>
+    ) : (
+      <TradeGridChild>
+        <Tabs>
+          <Tab id="positions" name={t('Positions')}>
+            <VegaWalletContainer>
+              <TradingViews.Positions onMarketClick={onMarketClick} />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="orders" name={t('Orders')}>
+            <VegaWalletContainer>
+              <TradingViews.Orders
+                marketId={marketId}
+                onMarketClick={onMarketClick}
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="fills" name={t('Fills')}>
+            <VegaWalletContainer>
+              <TradingViews.Fills
+                marketId={marketId}
+                onMarketClick={onMarketClick}
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="accounts" name={t('Collateral')}>
+            <VegaWalletContainer>
+              <TradingViews.Collateral pinnedAsset={pinnedAsset} hideButtons />
+            </VegaWalletContainer>
+          </Tab>
+        </Tabs>
+      </TradeGridChild>
+    );
+  }
+);
+MarketBottomPanel.displayName = 'MarketBottomPanel';
+
+const MainGrid = memo(
+  ({
+    marketId,
+    onSelect,
+    pinnedAsset,
+  }: {
+    marketId: string;
+    onSelect?: (marketId: string) => void;
+    pinnedAsset?: PinnedAsset;
+  }) => {
+    const navigate = useNavigate();
+    return (
+      <ResizableGrid vertical>
+        <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
+          <ResizableGrid proportionalLayout={false} minSize={200}>
+            <ResizableGridPanel
+              priority={LayoutPriority.High}
+              minSize={200}
+              preferredSize="50%"
+            >
+              <TradeGridChild>
+                <Tabs>
+                  <Tab id="chart" name={t('Chart')}>
+                    <TradingViews.Candles marketId={marketId} />
+                  </Tab>
+                  <Tab id="depth" name={t('Depth')}>
+                    <TradingViews.Depth marketId={marketId} />
+                  </Tab>
+                  <Tab id="liquidity" name={t('Liquidity')}>
+                    <TradingViews.Liquidity marketId={marketId} />
+                  </Tab>
+                </Tabs>
+              </TradeGridChild>
+            </ResizableGridPanel>
+            <ResizableGridPanel
+              priority={LayoutPriority.Low}
+              preferredSize={330}
+              minSize={300}
+            >
+              <TradeGridChild>
+                <Tabs>
+                  <Tab id="ticket" name={t('Ticket')}>
+                    <TradingViews.Ticket
+                      marketId={marketId}
+                      onClickCollateral={() => navigate('/portfolio')}
+                    />
+                  </Tab>
+                  <Tab id="info" name={t('Info')}>
+                    <TradingViews.Info
+                      marketId={marketId}
+                      onSelect={(id: string) => {
+                        onSelect?.(id);
+                      }}
+                    />
+                  </Tab>
+                </Tabs>
+              </TradeGridChild>
+            </ResizableGridPanel>
+            <ResizableGridPanel
+              priority={LayoutPriority.Low}
+              preferredSize={430}
+              minSize={200}
+            >
+              <TradeGridChild>
+                <Tabs>
+                  <Tab id="orderbook" name={t('Orderbook')}>
+                    <TradingViews.Orderbook marketId={marketId} />
+                  </Tab>
+                  <Tab id="trades" name={t('Trades')}>
+                    <TradingViews.Trades marketId={marketId} />
+                  </Tab>
+                </Tabs>
+              </TradeGridChild>
+            </ResizableGridPanel>
+          </ResizableGrid>
+        </ResizableGridPanel>
+        <ResizableGridPanel
+          priority={LayoutPriority.Low}
+          preferredSize="25%"
+          minSize={50}
+        >
+          <MarketBottomPanel marketId={marketId} pinnedAsset={pinnedAsset} />
+        </ResizableGridPanel>
+      </ResizableGrid>
+    );
+  }
+);
+MainGrid.displayName = 'MainGrid';
 
 export const TradeGrid = ({
   market,
@@ -201,7 +277,7 @@ export const TradeGrid = ({
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <TradeMarketHeader market={market} onSelect={onSelect} />
-      <MainGridWrapped
+      <MainGrid
         marketId={market?.id || ''}
         onSelect={onSelect}
         pinnedAsset={pinnedAsset}

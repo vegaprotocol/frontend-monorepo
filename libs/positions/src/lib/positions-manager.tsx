@@ -68,10 +68,11 @@ export const PositionsManager = ({
   const bottomPlaceholderProps = useBottomPlaceholder<Position>({
     gridRef,
     setId,
+    disabled: noBottomPlaceholder,
   });
   useEffect(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [data]);
+  }, [data?.length]);
   const onFilterChanged = useCallback((event: FilterChangedEvent) => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);
@@ -86,7 +87,7 @@ export const PositionsManager = ({
         suppressNoRowsOverlay
         isReadOnly={isReadOnly}
         onFilterChanged={onFilterChanged}
-        {...(noBottomPlaceholder ? null : bottomPlaceholderProps)}
+        {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
