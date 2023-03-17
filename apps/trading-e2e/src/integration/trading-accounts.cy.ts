@@ -10,7 +10,7 @@ beforeEach(() => {
 
 describe('accounts', { tags: '@smoke' }, () => {
   it('renders accounts', () => {
-    const tradingAccountRowId = '[row-id="asset-0"]';
+    const tradingAccountRowId = '[row-id="t-0"]';
     cy.getByTestId('Collateral').click();
 
     cy.getByTestId('tab-accounts').should('be.visible');
@@ -44,9 +44,9 @@ describe('accounts', { tags: '@smoke' }, () => {
   describe('sorting by ag-grid columns should work well', () => {
     it('sorting by asset', () => {
       cy.getByTestId('Collateral').click();
-      const marketsSortedDefault = ['tBTC', 'AST0', 'tEURO', 'tDAI', 'tBTC'];
-      const marketsSortedAsc = ['AST0', 'tBTC', 'tBTC', 'tDAI', 'tEURO'];
-      const marketsSortedDesc = ['tEURO', 'tDAI', 'tBTC', 'tBTC', 'AST0'];
+      const marketsSortedDefault = ['tBTC', 'tEURO', 'tDAI', 'tBTC'];
+      const marketsSortedAsc = ['tBTC', 'tBTC', 'tDAI', 'tEURO'];
+      const marketsSortedDesc = ['tEURO', 'tDAI', 'tBTC', 'tBTC'];
       checkSorting(
         'asset.symbol',
         marketsSortedDefault,
@@ -59,7 +59,6 @@ describe('accounts', { tags: '@smoke' }, () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
         '1,000.00002',
-        '100,001.01',
         '1,000.01',
         '1,000.00',
         '1,000.00001',
@@ -69,10 +68,8 @@ describe('accounts', { tags: '@smoke' }, () => {
         '1,000.00001',
         '1,000.00002',
         '1,000.01',
-        '100,001.01',
       ];
       const marketsSortedDesc = [
-        '100,001.01',
         '1,000.01',
         '1,000.00002',
         '1,000.00001',
@@ -90,7 +87,6 @@ describe('accounts', { tags: '@smoke' }, () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
         '0.000.00%',
-        '1.010.00%',
         '0.010.00%',
         '0.000.00%',
         '0.000.00%',
@@ -100,10 +96,8 @@ describe('accounts', { tags: '@smoke' }, () => {
         '0.000.00%',
         '0.000.00%',
         '0.010.00%',
-        '1.010.00%',
       ];
       const marketsSortedDesc = [
-        '1.010.00%',
         '0.010.00%',
         '0.000.00%',
         '0.000.00%',
@@ -121,7 +115,6 @@ describe('accounts', { tags: '@smoke' }, () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
         '1,000.00002',
-        '100,001.01',
         '1,000.01',
         '1,000.00',
         '1,000.00001',
@@ -131,10 +124,8 @@ describe('accounts', { tags: '@smoke' }, () => {
         '1,000.00001',
         '1,000.00002',
         '1,000.01',
-        '100,001.01',
       ];
       const marketsSortedDesc = [
-        '100,001.01',
         '1,000.01',
         '1,000.00002',
         '1,000.00001',
