@@ -50,7 +50,7 @@ interface Props extends AgGridReactProps {
 export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%', background: 'red' }}
+      style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate={t('No trades')}
       getRowId={({ data }) => data.id}
       ref={ref}
