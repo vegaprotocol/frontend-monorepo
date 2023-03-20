@@ -61,4 +61,10 @@ describe('HealthIndicator', () => {
       expect(screen.getByText(elem.text)).toBeInTheDocument();
     }
   );
+  it('External link to blog should be present', () => {
+    render(<NodeHealth />, { wrapper: MockedProvider });
+    expect(
+      screen.getByRole('link', { name: /^Mainnet status & incidents/ })
+    ).toBeInTheDocument();
+  });
 });
