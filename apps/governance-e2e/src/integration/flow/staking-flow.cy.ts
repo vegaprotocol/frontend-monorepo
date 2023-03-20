@@ -51,9 +51,10 @@ context(
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
-      vegaWalletSetSpecifiedApprovalAmount('1000');
+      ethereumWalletConnect();
       // this is a workaround for #2422 which can be removed once issue is resolved
       cy.associateTokensToVegaWallet('4');
+      vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
@@ -69,7 +70,7 @@ context(
       );
 
       it('Able to stake against a validator - using vega from wallet', function () {
-        stakingPageAssociateTokens('3');
+        ensureSpecifiedUnstakedTokensAreAssociated('3');
         verifyUnstakedBalance(3.0);
         verifyEthWalletTotalAssociatedBalance('3.0');
         verifyEthWalletAssociatedBalance('3.0');
@@ -144,7 +145,7 @@ context(
         stakingValidatorPageAddStake('1');
         verifyUnstakedBalance(2.0);
         cy.get(vegaWalletStakedBalances, txTimeout)
-          .should('have.length', 2, txTimeout)
+          .should('have.length', 4, txTimeout)
           .eq(0)
           .should('contain', 2.0, txTimeout);
         cy.get(vegaWalletStakedBalances, txTimeout)
@@ -185,6 +186,7 @@ context(
         { tags: '@smoke' },
         function () {
           ensureSpecifiedUnstakedTokensAreAssociated('4');
+          navigateTo(navigation.validators);
           clickOnValidatorFromList(0);
           stakingValidatorPageAddStake('3');
           verifyNextEpochValue(3.0);
@@ -432,7 +434,7 @@ context(
         cy.get(stakeTokenSubmitButton).should('contain', 'Add 1 $VEGA tokens');
       });
 
-      after('Teardown Wallet', function () {
+      afterEach('Teardown Wallet', function () {
         vegaWalletTeardown();
       });
 

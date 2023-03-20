@@ -74,8 +74,8 @@ export function verifyStakedBalance(amount: number) {
 
 export function verifyEthWalletTotalAssociatedBalance(amount: string) {
   cy.getByTestId('currency-locked', txTimeout)
-    .contains(amount, txTimeout)
-    .should('be.visible');
+    .should('contain', amount)
+    .and('be.visible');
 }
 
 export function verifyEthWalletAssociatedBalance(amount: string) {

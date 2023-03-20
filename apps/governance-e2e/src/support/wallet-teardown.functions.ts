@@ -82,9 +82,9 @@ export async function vegaWalletTeardown() {
         cy.getByTestId('vega-wallet-balance-staked-validators', {
           timeout: transactionTimeout,
         }).should('not.exist');
-        cy.get('[data-testid="vega-wallet-balance-unstaked"]', {
+        cy.getByTestId('associated-amount', {
           timeout: transactionTimeout,
-        }).should('contain.text', '0.00');
+        }).contains('0.00');
       });
     });
 }
