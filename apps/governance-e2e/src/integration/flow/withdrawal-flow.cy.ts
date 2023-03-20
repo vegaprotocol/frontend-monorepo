@@ -72,7 +72,6 @@ context(
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(withdrawalForm).within(() => {
         cy.get('select').select(usdtSelectValue, { force: true });
-        // cy.getByTestId(selectAsset).parent().select(usdtName)
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(submitWithdrawalButton).click();
         cy.getByTestId(formValidationError).should('have.length', 1);
