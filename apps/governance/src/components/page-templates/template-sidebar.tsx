@@ -22,7 +22,9 @@ export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
       <AnnouncementBanner>
         <div className="font-alpha calt uppercase text-center text-lg text-white">
           <span className="pr-4">Wait no longer, SIM3 is here!</span>
-          <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
+          <ExternalLink href="https://fairground.wtf/sim3">
+            Learn more
+          </ExternalLink>
         </div>
       </AnnouncementBanner>
       <Nav theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
