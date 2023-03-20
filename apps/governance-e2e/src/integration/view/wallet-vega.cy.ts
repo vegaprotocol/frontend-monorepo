@@ -314,7 +314,10 @@ context(
           waitForSpinner();
           cy.connectVegaWallet();
           cy.get(walletContainer).within(() => {
-            cy.getByTestId('currency-title').should('have.length.at.least', 5);
+            cy.getByTestId('currency-title', txTimeout).should(
+              'have.length.at.least',
+              5
+            );
           });
         });
 
