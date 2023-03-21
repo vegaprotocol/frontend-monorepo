@@ -25,7 +25,7 @@ export interface OrderListManagerProps {
   marketId?: string;
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
-  enforceBottomPlaceholder: boolean;
+  enforceBottomPlaceholder?: boolean;
 }
 
 const CancelAllOrdersButton = ({
