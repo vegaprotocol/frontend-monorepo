@@ -1,5 +1,6 @@
 # Build container
-FROM node:16.14.0-alpine as build
+ARG NODE_VERSION
+FROM node:${NODE_VERSION}-alpine as build
 WORKDIR /app
 # Argument to allow building of different apps
 ARG APP
