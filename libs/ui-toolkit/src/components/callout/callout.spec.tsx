@@ -32,7 +32,7 @@ it(`Applies class for danger intent`, () => {
 
 it(`Applies class for primary intent`, () => {
   render(<Callout intent={Intent.Primary} />);
-  expect(screen.getByTestId('callout')).toHaveClass('border-neutral-500');
+  expect(screen.getByTestId('callout')).toHaveClass('border-vega-blue-300');
 });
 
 it(`Applies class for none intent`, () => {
