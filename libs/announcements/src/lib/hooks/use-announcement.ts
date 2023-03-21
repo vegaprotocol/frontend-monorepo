@@ -26,17 +26,17 @@ const getData = async (name: AppNameType, url: string) => {
 };
 
 type State = {
-  loading: boolean
-  data: null | Announcement
-  error: null | string
-}
+  loading: boolean;
+  data: null | Announcement;
+  error: null | string;
+};
 
 export const useAnnouncement = (name: AppNameType, url: string) => {
   const [state, setState] = useState<State>({
     loading: true,
     data: null,
     error: null,
-  })
+  });
 
   const fetchData = useCallback(() => {
     getData(name, url)
@@ -45,14 +45,14 @@ export const useAnnouncement = (name: AppNameType, url: string) => {
           loading: false,
           data,
           error: null,
-        })
+        });
       })
       .catch((err) => {
         setState({
           loading: false,
           data: null,
           error: `${err}`,
-        })
+        });
       });
   }, [name, url, setState]);
 
