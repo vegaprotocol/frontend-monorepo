@@ -1,8 +1,9 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import {
   DApp,
   NetworkSwitcher,
   TOKEN_GOVERNANCE,
+  useEnvironment,
   useLinks,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
@@ -17,6 +18,8 @@ import {
   ExternalLink,
   Icon,
   NavigationBreakpoint,
+  NavigationTrigger,
+  NavigationContent,
 } from '@vegaprotocol/ui-toolkit';
 
 import { Links, Routes } from '../../pages/client-router';
@@ -26,6 +29,7 @@ export const Navbar = ({
 }: {
   theme: ComponentProps<typeof Navigation>['theme'];
 }) => {
+  const { VEGA_DOCS_URL, GITHUB_FEEDBACK_URL } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
   const { marketId } = useGlobalStore((store) => ({
     marketId: store.marketId,
@@ -75,12 +79,30 @@ export const Navbar = ({
           </NavigationLink>
         </NavigationItem>
         <NavigationItem>
-          <ExternalLink href={tokenLink(TOKEN_GOVERNANCE)}>
-            <span className="flex items-center gap-2">
-              <span>{t('Governance')}</span>{' '}
-              <Icon name="arrow-top-right" size={3} />
-            </span>
-          </ExternalLink>
+          <NavExternalLink href={tokenLink(TOKEN_GOVERNANCE)}>
+            {t('Governance')}
+          </NavExternalLink>
+        </NavigationItem>
+        <NavigationItem>
+          <NavigationTrigger>{t('Resources')}</NavigationTrigger>
+          <NavigationContent>
+            <NavigationList>
+              {VEGA_DOCS_URL && (
+                <NavigationItem>
+                  <NavExternalLink href={VEGA_DOCS_URL}>
+                    {t('Docs')}
+                  </NavExternalLink>
+                </NavigationItem>
+              )}
+              {GITHUB_FEEDBACK_URL && (
+                <NavigationItem>
+                  <NavExternalLink href={GITHUB_FEEDBACK_URL}>
+                    {t('Give Feedback')}
+                  </NavExternalLink>
+                </NavigationItem>
+              )}
+            </NavigationList>
+          </NavigationContent>
         </NavigationItem>
       </NavigationList>
       <NavigationList
@@ -96,5 +118,22 @@ export const Navbar = ({
         </NavigationItem>
       </NavigationList>
     </Navigation>
+  );
+};
+
+const NavExternalLink = ({
+  children,
+  href,
+}: {
+  children: ReactNode;
+  href: string;
+}) => {
+  return (
+    <ExternalLink href={href}>
+      <span className="flex items-center gap-2">
+        <span>{children}</span>
+        <Icon name="arrow-top-right" size={3} />
+      </span>
+    </ExternalLink>
   );
 };
