@@ -285,6 +285,7 @@ function compileEnvVars() {
     GIT_BRANCH: process.env['GIT_COMMIT_BRANCH'],
     GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'],
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
+    VEGA_INCIDENT_URL: process.env['NX_VEGA_INCIDENT_URL'],
   };
 
   return env;

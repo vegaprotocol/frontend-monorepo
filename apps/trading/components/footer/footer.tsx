@@ -17,10 +17,9 @@ export const Footer = () => {
     </footer>
   );
 };
-const MAINNET_INCIDENT_LINK =
-  'https://blog.vega.xyz/tagged/vega-incident-reports';
+
 export const NodeHealth = () => {
-  const { VEGA_URL } = useEnvironment();
+  const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useGlobalStore(
     (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
   );
@@ -28,35 +27,35 @@ export const NodeHealth = () => {
   const onClick = useCallback(() => {
     setNodeSwitcher(true);
   }, [setNodeSwitcher]);
-  const incidentsLink = (
-    <ExternalLink className="ml-1" href={MAINNET_INCIDENT_LINK}>
+  const incidentsLink = VEGA_INCIDENT_URL && (
+    <ExternalLink className="ml-1" href={VEGA_INCIDENT_URL}>
       {t('Mainnet status & incidents')}
     </ExternalLink>
   );
-  return VEGA_URL ? (
+  return (
     <>
-      <FooterButton onClick={onClick} data-testid="node-health">
-        <FooterButtonPart>
-          <HealthIndicator text={text} intent={intent} />
-        </FooterButtonPart>
-        <FooterButtonPart>
-          <NodeUrl url={VEGA_URL} />
-        </FooterButtonPart>
-        {/* create a monospace effect - avoiding jumps of width */}
-        <FooterButtonPart
-          width={`${
-            datanodeBlockHeight
-              ? String(datanodeBlockHeight).length + 'ch'
-              : 'auto'
-          }`}
-        >
-          <span title={t('Block height')}>{datanodeBlockHeight}</span>
-        </FooterButtonPart>
-      </FooterButton>
+      {VEGA_URL && (
+        <FooterButton onClick={onClick} data-testid="node-health">
+          <FooterButtonPart>
+            <HealthIndicator text={text} intent={intent} />
+          </FooterButtonPart>
+          <FooterButtonPart>
+            <NodeUrl url={VEGA_URL} />
+          </FooterButtonPart>
+          {/* create a monospace effect - avoiding jumps of width */}
+          <FooterButtonPart
+            width={`${
+              datanodeBlockHeight
+                ? String(datanodeBlockHeight).length + 'ch'
+                : 'auto'
+            }`}
+          >
+            <span title={t('Block height')}>{datanodeBlockHeight}</span>
+          </FooterButtonPart>
+        </FooterButton>
+      )}
       {incidentsLink}
     </>
-  ) : (
-    incidentsLink
   );
 };
 
