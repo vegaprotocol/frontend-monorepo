@@ -12,7 +12,7 @@ describe('markets table', { tags: '@smoke' }, () => {
       cy.mockTradingPage(
         Schema.MarketState.STATE_ACTIVE,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
       cy.visit('/');

@@ -30,9 +30,12 @@ export const compileGridData = (
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: SimpleGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    marketData?.marketTradingMode ===
+    (marketData?.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    marketData?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+      marketData?.trigger ===
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET) ||
+    marketData?.trigger ===
+      Schema.AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
 
   const formatStake = (value: string) => {
     const formattedValue = addDecimalsFormatNumber(

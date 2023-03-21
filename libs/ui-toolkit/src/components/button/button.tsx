@@ -4,14 +4,13 @@ import type {
   ReactNode,
 } from 'react';
 import { forwardRef } from 'react';
-import type { IconName } from '../icon';
-import { Icon } from '../icon';
 import classnames from 'classnames';
 
 export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'ternary';
 export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
-const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
+const base =
+  'inline-block uppercase border rounded-md disabled:opacity-60 text-base text-center';
 const xs = 'px-2 py-0 text-sm';
 const sm = 'px-2 py-1 text-sm';
 const md = 'px-10 py-2 text-base';
@@ -76,8 +75,8 @@ interface CommonProps {
   disabled?: boolean;
   fill?: boolean;
   size?: ButtonSize;
-  icon?: IconName;
-  rightIcon?: IconName;
+  icon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
@@ -117,7 +116,7 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
   (
     {
       variant = 'default',
-      size = 'lg',
+      size = 'md',
       fill = false,
       icon,
       rightIcon,
@@ -151,17 +150,13 @@ export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
 
 interface ButtonContentProps {
   children: ReactNode;
-  icon?: IconName;
-  rightIcon?: IconName;
+  icon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 
 const ButtonContent = ({ children, icon, rightIcon }: ButtonContentProps) => {
-  const iconEl = icon ? (
-    <Icon name={icon} className="fill-current mr-2 align-text-top" />
-  ) : null;
-  const rightIconEl = rightIcon ? (
-    <Icon name={rightIcon} className="fill-current ml-2 align-text-top" />
-  ) : null;
+  const iconEl = icon ? icon : null;
+  const rightIconEl = rightIcon ? rightIcon : null;
 
   return (
     <>
