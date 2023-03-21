@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
-import { Indicator } from '@vegaprotocol/ui-toolkit';
+import { Indicator, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useGlobalStore } from '../../stores';
@@ -19,7 +19,7 @@ export const Footer = () => {
 };
 
 export const NodeHealth = () => {
-  const { VEGA_URL } = useEnvironment();
+  const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useGlobalStore(
     (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
   );
@@ -27,19 +27,36 @@ export const NodeHealth = () => {
   const onClick = useCallback(() => {
     setNodeSwitcher(true);
   }, [setNodeSwitcher]);
-  return VEGA_URL ? (
-    <FooterButton onClick={onClick} data-testid="node-health">
-      <FooterButtonPart>
-        <HealthIndicator text={text} intent={intent} />
-      </FooterButtonPart>
-      <FooterButtonPart>
-        <NodeUrl url={VEGA_URL} />
-      </FooterButtonPart>
-      <FooterButtonPart>
-        <span title={t('Block height')}>{datanodeBlockHeight}</span>
-      </FooterButtonPart>
-    </FooterButton>
-  ) : null;
+  const incidentsLink = VEGA_INCIDENT_URL && (
+    <ExternalLink className="ml-1" href={VEGA_INCIDENT_URL}>
+      {t('Mainnet status & incidents')}
+    </ExternalLink>
+  );
+  return (
+    <>
+      {VEGA_URL && (
+        <FooterButton onClick={onClick} data-testid="node-health">
+          <FooterButtonPart>
+            <HealthIndicator text={text} intent={intent} />
+          </FooterButtonPart>
+          <FooterButtonPart>
+            <NodeUrl url={VEGA_URL} />
+          </FooterButtonPart>
+          {/* create a monospace effect - avoiding jumps of width */}
+          <FooterButtonPart
+            width={`${
+              datanodeBlockHeight
+                ? String(datanodeBlockHeight).length + 'ch'
+                : 'auto'
+            }`}
+          >
+            <span title={t('Block height')}>{datanodeBlockHeight}</span>
+          </FooterButtonPart>
+        </FooterButton>
+      )}
+      {incidentsLink}
+    </>
+  );
 };
 
 interface NodeUrlProps {
@@ -78,9 +95,16 @@ const FooterButton = (props: FooterButtonProps) => {
   return <button {...props} className={buttonClasses} />;
 };
 
-const FooterButtonPart = ({ children }: { children: ReactNode }) => {
+const FooterButtonPart = ({
+  width = 'auto',
+  children,
+}: {
+  children: ReactNode;
+  width?: string;
+}) => {
   return (
     <span
+      style={{ width }}
       className={classNames(
         'relative inline-block mr-2 last:mr-0 pr-2 last:pr-0',
         'last:after:hidden',

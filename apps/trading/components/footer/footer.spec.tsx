@@ -6,9 +6,10 @@ import { Intent } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
-  useEnvironment: jest
-    .fn()
-    .mockImplementation(() => ({ VEGA_URL: 'https://vega-url.wtf' })),
+  useEnvironment: jest.fn().mockImplementation(() => ({
+    VEGA_URL: 'https://vega-url.wtf',
+    VEGA_INCIDENT_URL: 'https://blog.vega.community',
+  })),
 }));
 
 const mockSetNodeSwitcher = jest.fn();
@@ -25,6 +26,13 @@ describe('NodeHealth', () => {
     });
     await userEvent.click(screen.getByRole('button'));
     expect(mockSetNodeSwitcher).toHaveBeenCalled();
+  });
+
+  it('External link to blog should be present', () => {
+    render(<NodeHealth />, { wrapper: MockedProvider });
+    expect(
+      screen.getByRole('link', { name: /^Mainnet status & incidents/ })
+    ).toBeInTheDocument();
   });
 });
 

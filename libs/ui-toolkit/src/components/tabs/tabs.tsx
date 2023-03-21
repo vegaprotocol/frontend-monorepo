@@ -1,23 +1,31 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { useLocalStorageSnapshot } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useState } from 'react';
-
-interface TabsProps {
+export interface TabsProps extends TabsPrimitive.TabsProps {
   children: ReactElement<TabProps>[];
-  active?: string;
 }
 
-export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
+export const Tabs = ({
+  children,
+  defaultValue,
+  value,
+  onValueChange,
+  ...props
+}: TabsProps) => {
   const [activeTab, setActiveTab] = useState<string>(() => {
-    return activeDefaultId ?? children[0].props.id;
+    if (defaultValue) {
+      return defaultValue;
+    }
+    return children[0].props.id;
   });
-
   return (
     <TabsPrimitive.Root
-      value={activeTab}
+      {...props}
+      value={value || activeTab}
+      onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
-      onValueChange={(value) => setActiveTab(value)}
     >
       <div className="border-b border-default">
         <TabsPrimitive.List
@@ -26,7 +34,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
         >
           {Children.map(children, (child) => {
             if (!isValidElement(child) || child.props.hidden) return null;
-            const isActive = child.props.id === activeTab;
+            const isActive = child.props.id === (value || activeTab);
             const triggerClass = classNames(
               'relative px-4 py-1 border-r border-default',
               'uppercase',
@@ -81,4 +89,16 @@ interface TabProps {
 
 export const Tab = ({ children, ...props }: TabProps) => {
   return <div {...props}>{children}</div>;
+};
+
+export const LocalStoragePersistTabs = ({
+  storageKey,
+  ...props
+}: Omit<TabsProps, 'value' | 'onValueChange'> & { storageKey: string }) => {
+  const [value, onValueChange] = useLocalStorageSnapshot(
+    `active-tab-${storageKey}`
+  );
+  return (
+    <Tabs {...props} value={value || undefined} onValueChange={onValueChange} />
+  );
 };
