@@ -6,12 +6,10 @@ import { Intent } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
-  useEnvironment: jest
-    .fn()
-    .mockImplementation(() => ({
-      VEGA_URL: 'https://vega-url.wtf',
-      VEGA_INCIDENT_URL: 'https://blog.vega.community',
-    })),
+  useEnvironment: jest.fn().mockImplementation(() => ({
+    VEGA_URL: 'https://vega-url.wtf',
+    VEGA_INCIDENT_URL: 'https://blog.vega.community',
+  })),
 }));
 
 const mockSetNodeSwitcher = jest.fn();
