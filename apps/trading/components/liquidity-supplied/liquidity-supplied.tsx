@@ -93,7 +93,8 @@ export const MarketLiquiditySupplied = ({
     percentage.gte(100) &&
     market?.marketTradingMode ===
       MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    market.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+    market.trigger ===
+      AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
 
   const description = marketId ? (
     <section>

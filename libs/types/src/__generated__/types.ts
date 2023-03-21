@@ -313,12 +313,14 @@ export type AuctionEvent = {
 export enum AuctionTrigger {
   /** Auction because market has a frequent batch auction trading mode */
   AUCTION_TRIGGER_BATCH = 'AUCTION_TRIGGER_BATCH',
-  /** Liquidity monitoring */
-  AUCTION_TRIGGER_LIQUIDITY = 'AUCTION_TRIGGER_LIQUIDITY',
+  /** Liquidity monitoring due to unmet target stake */
+  AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET = 'AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET',
   /** Opening auction */
   AUCTION_TRIGGER_OPENING = 'AUCTION_TRIGGER_OPENING',
   /** Price monitoring */
   AUCTION_TRIGGER_PRICE = 'AUCTION_TRIGGER_PRICE',
+  /** Liquidity monitoring due to not being able to deploy LP orders because there's nothing to peg on one or both sides of the book */
+  AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS = 'AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS',
   /** Invalid trigger (or no auction) */
   AUCTION_TRIGGER_UNSPECIFIED = 'AUCTION_TRIGGER_UNSPECIFIED'
 }

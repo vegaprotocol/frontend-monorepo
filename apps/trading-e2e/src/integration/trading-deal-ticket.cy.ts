@@ -161,7 +161,7 @@ describe(
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -230,7 +230,7 @@ describe(
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -299,7 +299,7 @@ describe(
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -585,7 +585,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_SUSPENDED,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
     );
     const accounts = accountsQuery();
     cy.mockGQL((req) => {
