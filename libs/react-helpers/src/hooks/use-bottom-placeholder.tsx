@@ -68,7 +68,7 @@ export const useBottomPlaceholder = <T extends {}>({
             isFullWidthRow,
             fullWidthCellRenderer,
             onSortChanged: onRowsChanged,
-            onFilterChange: onRowsChanged,
+            onFilterChanged: onRowsChanged,
           }
         : {},
     [onBodyScrollEnd, onRowsChanged, disabled]

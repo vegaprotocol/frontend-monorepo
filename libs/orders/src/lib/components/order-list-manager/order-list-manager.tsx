@@ -1,12 +1,7 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useRef, useState } from 'react';
-import type {
-  BodyScrollEvent,
-  BodyScrollEndEvent,
-  FilterChangedEvent,
-  SortChangedEvent,
-} from 'ag-grid-community';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { FilterChangedEvent, SortChangedEvent } from 'ag-grid-community';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent } from 'ag-grid-community';
@@ -23,13 +18,14 @@ import {
 } from '@vegaprotocol/wallet';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import type { Order } from '../order-data-provider';
+import type { Order, OrderEdge } from '../order-data-provider';
 
 export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
+  enforceBottomPlaceholder: boolean;
 }
 
 const CancelAllOrdersButton = ({
@@ -65,78 +61,50 @@ export const OrderListManager = ({
   marketId,
   onMarketClick,
   isReadOnly,
+  enforceBottomPlaceholder,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const scrolledToTop = useRef(true);
+  const [dataCount, setDataCount] = useState(0);
+  const scrolledToTop = useRef(false);
   const [sort, setSort] = useState<Sort[] | undefined>();
   const [filter, setFilter] = useState<Filter | undefined>(initialFilter);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasActiveOrder = useHasActiveOrder(marketId);
 
-  const {
-    data,
-    error,
-    loading,
-    addNewRows,
-    getRows,
-    reload,
-    makeBottomPlaceholders,
-  } = useOrderListData({
+  const { data, error, loading, reload } = useOrderListData({
     partyId,
-    marketId,
     sort,
     filter,
     gridRef,
     scrolledToTop,
   });
 
-  const checkBottomPlaceholder = useCallback(() => {
-    if (!isReadOnly && hasActiveOrder) {
-      const rowCont = gridRef.current?.api?.getModel().getRowCount() ?? 0;
-      const lastRowIndex = gridRef.current?.api?.getLastDisplayedRow();
-      if (lastRowIndex && rowCont - 1 === lastRowIndex) {
-        const lastrow =
-          gridRef.current?.api.getDisplayedRowAtIndex(lastRowIndex);
-        lastrow?.setRowHeight(50);
-        makeBottomPlaceholders(lastrow?.data);
-        gridRef.current?.api.onRowHeightChanged();
-        gridRef.current?.api.refreshInfiniteCache();
-      }
-    }
-  }, [isReadOnly, hasActiveOrder, makeBottomPlaceholders]);
-
-  const onBodyScrollEnd = useCallback(
-    (event: BodyScrollEndEvent) => {
-      if (event.top === 0) {
-        addNewRows();
-      }
-      checkBottomPlaceholder();
-    },
-    [addNewRows, checkBottomPlaceholder]
-  );
-
-  const onBodyScroll = useCallback((event: BodyScrollEvent) => {
-    scrolledToTop.current = event.top <= 0;
-  }, []);
+  const {
+    onSortChanged: bottomPlaceholderOnSortChanged,
+    onFilterChanged: bottomPlaceholderOnFilterChanged,
+    ...bottomPlaceholderProps
+  } = useBottomPlaceholder<Order>({
+    gridRef,
+    disabled: !enforceBottomPlaceholder && !isReadOnly && !hasActiveOrder,
+  });
 
   const onFilterChanged = useCallback(
     (event: FilterChangedEvent) => {
-      makeBottomPlaceholders();
       const updatedFilter = event.api.getFilterModel();
       if (Object.keys(updatedFilter).length) {
         setFilter(updatedFilter);
       } else {
         setFilter(undefined);
       }
-      checkBottomPlaceholder();
+      setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+      bottomPlaceholderOnFilterChanged?.();
     },
-    [setFilter, makeBottomPlaceholders, checkBottomPlaceholder]
+    [setFilter, bottomPlaceholderOnFilterChanged]
   );
 
   const onSortChange = useCallback(
     (event: SortChangedEvent) => {
-      makeBottomPlaceholders();
       const sort = event.columnApi
         .getColumnState()
         .sort((a, b) => (a.sortIndex || 0) - (b.sortIndex || 0))
@@ -148,9 +116,9 @@ export const OrderListManager = ({
           return acc;
         }, [] as { colId: string; sort: string }[]);
       setSort(sort.length > 0 ? sort : undefined);
-      checkBottomPlaceholder();
+      bottomPlaceholderOnSortChanged?.();
     },
-    [setSort, makeBottomPlaceholders, checkBottomPlaceholder]
+    [setSort, bottomPlaceholderOnSortChanged]
   );
 
   const cancel = useCallback(
@@ -166,15 +134,13 @@ export const OrderListManager = ({
     [create]
   );
 
-  const onGridReady = useCallback(
-    ({ api }: GridReadyEvent) => {
-      api.setDatasource({
-        getRows,
-      });
-      api.setFilterModel(initialFilter);
-    },
-    [getRows]
-  );
+  const onGridReady = useCallback(({ api }: GridReadyEvent) => {
+    api.setFilterModel(initialFilter);
+  }, []);
+
+  useEffect(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, [data]);
 
   const cancelAll = useCallback(
     (marketId?: string) => {
@@ -186,20 +152,24 @@ export const OrderListManager = ({
     },
     [create]
   );
-  const { isFullWidthRow, fullWidthCellRenderer, rowClassRules } =
-    useBottomPlaceholder<Order>({
-      gridRef,
-    });
+  const extractNodesDecorator = useCallback(
+    (data: (OrderEdge | null)[] | null, loading: boolean) =>
+      data && !loading
+        ? data
+            .filter((item) => item !== null)
+            .map((item) => (item as OrderEdge).node)
+        : null,
+    []
+  );
+  const extractedData = extractNodesDecorator(data, loading);
 
   return (
     <>
       <div className="h-full relative">
         <OrderListTable
+          rowData={extractedData}
           ref={gridRef}
-          rowModelType="infinite"
           onGridReady={onGridReady}
-          onBodyScrollEnd={onBodyScrollEnd}
-          onBodyScroll={onBodyScroll}
           onFilterChanged={onFilterChanged}
           onSortChanged={onSortChange}
           cancel={cancel}
@@ -209,9 +179,7 @@ export const OrderListManager = ({
           blockLoadDebounceMillis={100}
           suppressLoadingOverlay
           suppressNoRowsOverlay
-          isFullWidthRow={isFullWidthRow}
-          fullWidthCellRenderer={fullWidthCellRenderer}
-          rowClassRules={rowClassRules}
+          {...bottomPlaceholderProps}
         />
         <div className="pointer-events-none absolute inset-0">
           <AsyncRenderer
@@ -219,7 +187,7 @@ export const OrderListManager = ({
             error={error}
             data={data}
             noDataMessage={t('No orders')}
-            noDataCondition={(data) => !(data && data.length)}
+            noDataCondition={(data) => !dataCount}
             reload={reload}
           />
         </div>
