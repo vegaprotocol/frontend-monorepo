@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import type { ComponentProps } from 'react';
 import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
@@ -6,7 +7,7 @@ import {
   calcCandleVolume,
   totalFeesPercentage,
 } from '@vegaprotocol/market-list';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -21,7 +22,11 @@ import type {
   MarketInfoWithDataAndCandles,
 } from './market-info-data-provider';
 import BigNumber from 'bignumber.js';
+import type { DataSourceDefinition } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import { useEnvironment } from '@vegaprotocol/environment';
+import type { Identities } from '@vegaprotocol/oracles';
+import { useOracleProofs } from '@vegaprotocol/oracles';
 
 type PanelProps = Pick<
   ComponentProps<typeof MarketInfoTable>,
@@ -401,7 +406,7 @@ export const LiquidityPriceRangeInfoPanel = ({
                 market.decimalPlaces
               )} ${quoteUnit}`,
           }}
-        ></MarketInfoTable>
+        />
       </div>
     </>
   );
@@ -410,9 +415,89 @@ export const LiquidityPriceRangeInfoPanel = ({
 export const OracleInfoPanel = ({
   market,
   ...props
-}: MarketInfoProps & PanelProps) => (
-  <MarketInfoTable
-    data={market.tradableInstrument.instrument.product.dataSourceSpecBinding}
-    {...props}
-  />
-);
+}: MarketInfoProps & PanelProps) => {
+  const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
+  const { data } = useOracleProofs(ORACLE_PROOFS_URL);
+
+  return (
+    <MarketInfoTable
+      data={market.tradableInstrument.instrument.product.dataSourceSpecBinding}
+      {...props}
+    >
+      <h3 className="text-lg">Oracle proofs</h3>
+      <DataSourceProof
+        data={
+          market.tradableInstrument.instrument.product
+            .dataSourceSpecForSettlementData.data
+        }
+        identities={data}
+        linkText={t('View oracle profile for settlement data')}
+      />
+      <DataSourceProof
+        data={
+          market.tradableInstrument.instrument.product
+            .dataSourceSpecForTradingTermination.data
+        }
+        identities={data}
+        linkText={t('View oracle profile for trading termination')}
+      />
+      {/*
+       */}
+      <h3 className="text-lg">Oracle specifications</h3>
+      <ExternalLink
+        href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id}`}
+      >
+        {t('View settlement data oracle specification')}
+      </ExternalLink>
+      <ExternalLink
+        href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForTradingTermination.id}`}
+      >
+        {t('View termination oracle specification')}
+      </ExternalLink>
+    </MarketInfoTable>
+  );
+};
+
+const DataSourceProof = ({
+  data,
+  identities,
+  linkText,
+}: {
+  data: DataSourceDefinition;
+  identities: Identities | undefined;
+  linkText: string;
+}) => {
+  if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
+    const signers = data.sourceType.sourceType.signers || [];
+
+    const identityForSigner = signers.map((s) => {
+      if (s.signer.__typename === 'PubKey') {
+        const key = s.signer.key;
+        return identities?.find((d) => d.type === 'PubKey' && d.key === key);
+      }
+
+      if (s.signer.__typename === 'ETHAddress') {
+        const address = s.signer.address; // not sure why but defining a new variable here appeases TS as otherwise condition above doesn't work
+        return identities?.find(
+          (d) => d.type === 'ETHAddress' && d.address === address
+        );
+      }
+
+      return null;
+    });
+
+    return (
+      <div>
+        {compact(identityForSigner).map((identity) => {
+          return <ExternalLink href={identity.url}>{linkText}</ExternalLink>;
+        })}
+      </div>
+    );
+  }
+
+  if (data.sourceType.__typename === 'DataSourceDefinitionInternal') {
+    return <div>{data.sourceType.__typename}: Render internal conditions</div>;
+  }
+
+  return <div>{t('No data sources')}</div>;
+};

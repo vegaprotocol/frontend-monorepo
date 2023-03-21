@@ -277,6 +277,7 @@ function compileEnvVars() {
     ),
     ETH_LOCAL_PROVIDER_URL: process.env['NX_ETH_LOCAL_PROVIDER_URL'],
     ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'],
+    ORACLE_PROOFS_URL: process.env['NX_ORACLE_PROOFS_URL'],
     VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'],
     VEGA_EXPLORER_URL: process.env['NX_VEGA_EXPLORER_URL'],
     VEGA_TOKEN_URL: process.env['NX_VEGA_TOKEN_URL'],
