@@ -9,11 +9,11 @@ name: Publish docker containers
 
   workflow_dispatch:
     inputs:
-      publish:
-        description: 'Publish tag to Docker Hub & GitHub Registry'
-        required: false
-        type: boolean
-        default: false
+      # publish:
+      #   description: 'Publish tag to Docker Hub & GitHub Registry'
+      #   required: false
+      #   type: boolean
+      #   default: false
       tag:
         description: 'Git Tag to build and publish'
         required: false
@@ -24,18 +24,18 @@ name: Publish docker containers
         required: false
         type: choice
         options:
-          - '["explorer", "token", "trading"]'
+          # - '["explorer", "token", "trading"]'
           - '["explorer"]'
-          - '["token"]'
-          - '["trading"]'
-      archs:
-        description: 'Architecture to build and publish'
-        required: false
-        type: choice
-        options:
-          - linux/amd64, linux/arm64
-          - linux/amd64
-          - linux/arm64
+          # - '["token"]'
+          # - '["trading"]'
+      # archs:
+      #   description: 'Architecture to build and publish'
+      #   required: false
+      #   type: choice
+      #   options:
+      #     - linux/amd64, linux/arm64
+      #     - linux/amd64
+      #     - linux/arm64
 
 jobs:
   master:
@@ -62,7 +62,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
-        if: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
+        # if: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -82,9 +82,9 @@ jobs:
           git rev-parse --verify HEAD
           git status
           echo "inputs.tag=${{ inputs.tag }}"
-          echo "inputs.publish=${{ inputs.publish }}"
+          # echo "inputs.publish=${{ inputs.publish }}"
           echo "inputs.apps=${{ inputs.apps }}"
-          echo "inputs.archs=${{ inputs.archs }}"
+          # echo "inputs.archs=${{ inputs.archs }}"
           echo "steps.tags.outputs.version=${{ steps.tags.outputs.version }}"
 
       - uses: actions/setup-node@v3
@@ -102,7 +102,9 @@ jobs:
           context: .
           push: false
           file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
-          build-args: APP=${{ matrix.app }}
+          build-args:
+            APP=${{ matrix.app }}
+            NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
           load: true
           tags: vegaprotocol/${{ matrix.app }}:local
 
@@ -116,10 +118,13 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
+          push: true
+          # push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
           file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
-          build-args: APP=${{ matrix.app }}
-          platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
+          build-args: |
+            APP=${{ matrix.app }}
+            NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
+          # platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
           tags: |
             vegaprotocol/${{ matrix.app }}:latest
             vegaprotocol/${{ matrix.app }}:${{ steps.tags.outputs.version }}
