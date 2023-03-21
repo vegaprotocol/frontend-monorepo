@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: ${{ fromJson(inputs.apps || '["explorer", "token", "trading"]') }}
+        app: ${{ fromJson(inputs.apps || '["explorer"]') }}
     name: Build the ${{ matrix.app }} image
     runs-on: ubuntu-latest
     steps:
