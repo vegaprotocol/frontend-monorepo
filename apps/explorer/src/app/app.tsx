@@ -71,8 +71,8 @@ function App() {
           )}
         >
           <div>
-            <Header />
             <MainnetSimAd />
+            <Header />
           </div>
           <div>
             <Main />

@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { forwardRef, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
@@ -87,7 +87,12 @@ const TopThirdCellRenderer = (
         <div className="mb-4">
           <Button
             data-testid="show-all-validators"
-            rightIcon="arrow-right"
+            rightIcon={
+              <Icon
+                name="arrow-right"
+                className="fill-current mr-2 align-text-top"
+              />
+            }
             className="inline-flex items-center"
           >
             {t('Reveal top validators')}
