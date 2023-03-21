@@ -11,16 +11,14 @@ import classnames from 'classnames';
 export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'ternary';
 export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
-const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
+const base =
+  'inline-block uppercase border rounded-md disabled:opacity-60 text-base text-center';
 const xs = 'px-2 py-0 text-sm';
 const sm = 'px-2 py-1 text-sm';
 const md = 'px-10 py-2 text-base';
 const lg = 'px-14 py-4';
 const fillClasses = 'block w-full';
 const defaultClasses = [
-  'px-10 py-2',
-  'text-base',
-  'text-center',
   'border-neutral-500',
   'bg-transparent',
   'enabled:hover:bg-neutral-500/20 dark:enabled:hover:bg-neutral-500/40',
@@ -120,7 +118,7 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
   (
     {
       variant = 'default',
-      size = 'lg',
+      size = 'md',
       fill = false,
       icon,
       rightIcon,
