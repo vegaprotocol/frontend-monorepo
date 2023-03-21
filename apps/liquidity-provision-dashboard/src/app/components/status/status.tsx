@@ -60,11 +60,15 @@ const getTooltipDescription = (
 ) => {
   switch (status) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS:
-      return 'This is the standard trading mode where trades are executed whenever orders are received';
+      return t(
+        'This is the standard trading mode where trades are executed whenever orders are received'
+      );
     case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION:
       return getMonitoringDescriptionTooltip(trigger);
     case Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION:
-      return 'This is a new market in an opening auction to determine a fair mid-price before starting continuous trading.';
+      return t(
+        'This is a new market in an opening auction to determine a fair mid-price before starting continuous trading.'
+      );
     default:
       return '';
   }
