@@ -4,11 +4,11 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useTranslation } from 'react-i18next';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { SplashLoader } from '../../../components/splash-loader';
-import { useStakingQuery } from './__generated__/Staking';
-import { usePreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import { useStakingQuery } from '../__generated__/Staking';
+import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';
 import type { ReactElement } from 'react';
-import type { StakingQuery } from './__generated__/Staking';
-import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import type { StakingQuery } from '../__generated__/Staking';
+import type { PreviousEpochQuery } from '../__generated__/PreviousEpoch';
 
 // TODO should only request a single node. When migrating from deprecated APIs we should address this.
 
