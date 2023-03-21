@@ -48,7 +48,9 @@ describe('OrderListTable', () => {
     await act(async () => {
       render(generateJsx({ rowData: [] }));
     });
-    expect(screen.getByText('No orders')).toBeInTheDocument();
+    expect(() => screen.getByText('No orders')).toThrow(
+      'Unable to find an element'
+    );
   });
 
   it('should render correct columns', async () => {
