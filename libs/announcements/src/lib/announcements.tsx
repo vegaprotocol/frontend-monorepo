@@ -11,6 +11,9 @@ export type AnnouncementBannerProps = {
   configUrl: string;
 };
 
+// run only if below the allowed maximum delay ~24.8 days (https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#maximum_delay_value)
+const MAX_DELAY = 2147483648
+
 export const AnnouncementBanner = ({
   app,
   configUrl,
@@ -26,13 +29,13 @@ export const AnnouncementBanner = ({
     if (data) {
       if (!data.timing || (data.timing?.from && now > data.timing.from)) {
         setVisible(true);
-      } else if (data.timing.from && now < data.timing.from) {
+      } else if (data.timing.from && now < data.timing.from && (data.timing.from.valueOf() - now.valueOf()) < MAX_DELAY) {
         stampFrom = setTimeout(() => {
           setVisible(true);
         }, data.timing.from.valueOf() - now.valueOf());
       }
 
-      if (data.timing?.to && now < data.timing.to) {
+      if (data.timing?.to && now < data.timing.to && data.timing.to.valueOf() - now.valueOf() < MAX_DELAY) {
         stampTo = setTimeout(() => {
           setVisible(false);
         }, data.timing.to.valueOf() - now.valueOf());
@@ -53,7 +56,7 @@ export const AnnouncementBanner = ({
     <Banner>
       <div
         data-testid="app-announcement"
-        className="font-alpha calt uppercase text-center text-lg text-white"
+        className="font-alpha flex gap-2 justify-center calt uppercase text-center text-lg text-white"
       >
         <span className="pr-4">{data.text}</span>
         {data.urlText && data.url && (
