@@ -11,7 +11,8 @@ export const getIntentBorder = (intent = Intent.None) => {
     border: true,
     'border-danger': intent === Intent.Danger,
     'border-warning': intent === Intent.Warning,
-    'border-neutral-500': intent === Intent.None || intent === Intent.Primary,
+    'border-neutral-500': intent === Intent.None,
+    'border-vega-blue-300': intent === Intent.Primary,
     'border-success': intent === Intent.Success,
   };
 };
@@ -20,7 +21,7 @@ export const getIntentBackground = (intent?: Intent) => {
   return {
     'bg-neutral-200 dark:bg-neutral-800': intent === undefined,
     'bg-black dark:bg-white': intent === Intent.None,
-    'bg-vega-pink dark:bg-vega-yellow': intent === Intent.Primary,
+    'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
     'bg-danger': intent === Intent.Danger,
     'bg-warning': intent === Intent.Warning,
     // contrast issues with light mode
@@ -31,8 +32,7 @@ export const getIntentBackground = (intent?: Intent) => {
 export const getIntentText = (intent?: Intent) => {
   return {
     'text-white dark:text-black': intent === Intent.None,
-    'text-black dark:text-black-normal': intent === Intent.Primary,
-    'text-white': intent === Intent.Danger,
+    'text-white': intent === Intent.Danger || intent === Intent.Primary,
     'text-black': intent === Intent.Warning || intent === Intent.Success,
   };
 };
