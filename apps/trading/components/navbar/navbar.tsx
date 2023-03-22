@@ -83,27 +83,25 @@ export const Navbar = ({
             {t('Governance')}
           </NavExternalLink>
         </NavigationItem>
-        <NavigationItem>
-          <NavigationTrigger>{t('Resources')}</NavigationTrigger>
-          <NavigationContent>
-            <NavigationList>
-              {VEGA_DOCS_URL && (
+        {VEGA_DOCS_URL && GITHUB_FEEDBACK_URL && (
+          <NavigationItem>
+            <NavigationTrigger>{t('Resources')}</NavigationTrigger>
+            <NavigationContent>
+              <NavigationList>
                 <NavigationItem>
                   <NavExternalLink href={VEGA_DOCS_URL}>
                     {t('Docs')}
                   </NavExternalLink>
                 </NavigationItem>
-              )}
-              {GITHUB_FEEDBACK_URL && (
                 <NavigationItem>
                   <NavExternalLink href={GITHUB_FEEDBACK_URL}>
                     {t('Give Feedback')}
                   </NavExternalLink>
                 </NavigationItem>
-              )}
-            </NavigationList>
-          </NavigationContent>
-        </NavigationItem>
+              </NavigationList>
+            </NavigationContent>
+          </NavigationItem>
+        )}
       </NavigationList>
       <NavigationList
         className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
