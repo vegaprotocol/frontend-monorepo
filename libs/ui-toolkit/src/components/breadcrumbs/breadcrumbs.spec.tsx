@@ -3,7 +3,7 @@ import { Link, MemoryRouter } from 'react-router-dom';
 import { Breadcrumbs } from './breadcrumbs';
 
 describe('Breadcrumbs', () => {
-  it('does not display breadcrumbs if none elements provided', () => {
+  it('does not display breadcrumbs if no elements are provided', () => {
     const { queryAllByTestId } = render(
       <Breadcrumbs elements={[]} data-testid="crumbs" />
     );
