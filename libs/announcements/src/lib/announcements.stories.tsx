@@ -8,8 +8,6 @@ export default {
   title: 'AnnouncementBanner',
 } as Meta;
 
-const a = addSeconds(new Date(), 30);
-
 const MOCK_URL = 'http://somewhere.com/config.json';
 fetchMock.get(MOCK_URL, {
   console: [
@@ -17,9 +15,6 @@ fetchMock.get(MOCK_URL, {
       text: 'Console announcement',
       url: 'http://vega.xyz',
       urlText: 'Read more',
-      timing: {
-        to: a.toISOString(),
-      },
     },
   ],
   governance: [
