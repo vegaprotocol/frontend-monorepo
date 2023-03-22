@@ -35,17 +35,6 @@ const Tx = () => {
 
   return (
     <section>
-      <Link
-        className="font-normal underline underline-offset-4 block mb-5"
-        to={`/${Routes.TX}`}
-      >
-        <Icon
-          className="text-vega-light-150 dark:text-vega-light-150"
-          name={IconNames.CHEVRON_LEFT}
-        />
-        All Transactions
-      </Link>
-
       <PageHeader
         title="transaction"
         truncateStart={5}
