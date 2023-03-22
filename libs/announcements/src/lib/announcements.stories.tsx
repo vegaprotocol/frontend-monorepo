@@ -1,4 +1,5 @@
 import fetchMock from 'fetch-mock';
+import { addSeconds } from 'date-fns'
 import type { Story, Meta } from '@storybook/react';
 import { AnnouncementBanner } from './announcements';
 
@@ -7,9 +8,7 @@ export default {
   title: 'AnnouncementBanner',
 } as Meta;
 
-const a = new Date();
-a.setHours(15);
-a.setMinutes(1);
+const a = addSeconds(new Date(), 30);
 
 const MOCK_URL = 'http://somewhere.com/config.json';
 fetchMock.get(MOCK_URL, {
@@ -19,7 +18,7 @@ fetchMock.get(MOCK_URL, {
       url: 'http://vega.xyz',
       urlText: 'Read more',
       timing: {
-        from: a.toISOString(),
+        to: a.toISOString(),
       },
     },
   ],

@@ -83,7 +83,7 @@
     "tslib": "^2.0.0",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4",
-    "zod": "^3.17.3",
+    "zod": "^3.20.3",
     "zustand": "^4.3.2"
   },
   "devDependencies": {
@@ -162,6 +162,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-unicorn": "^41.0.0",
     "faker": "^5.5.3",
+    "fetch-mock": "^9.11.0",
     "flush-promises": "^1.0.2",
     "glob": "^8.0.3",
     "husky": "^7.0.4",

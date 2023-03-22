@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { AppNameType } from './schema';
+import type { AppNameType, Announcement } from './schema';
 import { useAnnouncement } from './hooks/use-announcement';
 import {
   AnnouncementBanner as Banner,
@@ -14,12 +14,26 @@ export type AnnouncementBannerProps = {
 // run only if below the allowed maximum delay ~24.8 days (https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#maximum_delay_value)
 const MAX_DELAY = 2147483648;
 
+const doesStartInTheFuture = (now: Date, data: Announcement) => {
+  return data.timing?.from ? (
+    now < data.timing.from &&
+    data.timing.from.valueOf() - now.valueOf() < MAX_DELAY
+  ) : false
+}
+
+const doesEndInTheFuture = (now: Date, data: Announcement) => {
+  return data.timing?.to ? (
+    now < data.timing.to &&
+    data.timing.to.valueOf() - now.valueOf() < MAX_DELAY
+  ) : false
+}
+
 export const AnnouncementBanner = ({
   app,
   configUrl,
 }: AnnouncementBannerProps) => {
   const [isVisible, setVisible] = useState(false);
-  const { data } = useAnnouncement(app, configUrl);
+  const { data, reload } = useAnnouncement(app, configUrl);
 
   useEffect(() => {
     const now = new Date();
@@ -27,25 +41,23 @@ export const AnnouncementBanner = ({
     let stampTo: NodeJS.Timeout;
 
     if (data) {
-      if (!data.timing || (data.timing?.from && now > data.timing.from)) {
+      const startsInTheFuture = doesStartInTheFuture(now, data)
+      const endsInTheFuture = doesEndInTheFuture(now, data)
+
+      if (!startsInTheFuture) {
         setVisible(true);
-      } else if (
-        data.timing.from &&
-        now < data.timing.from &&
-        data.timing.from.valueOf() - now.valueOf() < MAX_DELAY
-      ) {
+      }
+      
+      if (data.timing?.from && startsInTheFuture) {
         stampFrom = setTimeout(() => {
           setVisible(true);
         }, data.timing.from.valueOf() - now.valueOf());
       }
 
-      if (
-        data.timing?.to &&
-        now < data.timing.to &&
-        data.timing.to.valueOf() - now.valueOf() < MAX_DELAY
-      ) {
+      if (data.timing?.to && endsInTheFuture) {
         stampTo = setTimeout(() => {
           setVisible(false);
+          reload();
         }, data.timing.to.valueOf() - now.valueOf());
       }
     }
@@ -54,7 +66,7 @@ export const AnnouncementBanner = ({
       clearTimeout(stampFrom);
       clearTimeout(stampTo);
     };
-  }, [data, setVisible]);
+  }, [data, reload, setVisible]);
 
   if (!data || !isVisible) {
     return null;
