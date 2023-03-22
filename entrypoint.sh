@@ -29,7 +29,7 @@ do
   if [ ! -z "$varname" ]; then
     echo "  $varname: \"$value\"," >> $env_file
   fi
-done < .env
+done < /usr/share/nginx/html/.env
 
 echo "}" >> $env_file
 
