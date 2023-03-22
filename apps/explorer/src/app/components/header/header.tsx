@@ -13,23 +13,25 @@ import { t } from '@vegaprotocol/i18n';
 import { Routes } from '../../routes/route-names';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
 import type { Navigable } from '../../routes/router-config';
-import routerConfig from '../../routes/router-config';
+import { isNavigable } from '../../routes/router-config';
+import { routerConfig } from '../../routes/router-config';
 import { useMemo } from 'react';
 import compact from 'lodash/compact';
 import { Search } from '../search';
 
 const routeToNavigationItem = (r: Navigable) => (
-  <NavigationItem key={r.name}>
-    <NavigationLink to={r.path}>{r.text}</NavigationLink>
+  <NavigationItem key={r.handle.name}>
+    <NavigationLink to={r.path}>{r.handle.text}</NavigationLink>
   </NavigationItem>
 );
 
 export const Header = () => {
+  const pages = routerConfig[0].children || [];
   const mainItems = compact(
     [Routes.TX, Routes.BLOCKS, Routes.ORACLES, Routes.VALIDATORS].map((n) =>
-      routerConfig.find((r) => r.path === n)
+      pages.find((r) => r.path === n)
     )
-  );
+  ).filter(isNavigable);
 
   const groupedItems = compact(
     [
@@ -39,8 +41,8 @@ export const Header = () => {
       Routes.GOVERNANCE,
       Routes.NETWORK_PARAMETERS,
       Routes.GENESIS,
-    ].map((n) => routerConfig.find((r) => r.path === n))
-  );
+    ].map((n) => pages.find((r) => r.path === n))
+  ).filter(isNavigable);
 
   const { pathname } = useLocation();
 
@@ -90,7 +92,7 @@ export const Header = () => {
         hide={[NavigationBreakpoint.Small, NavigationBreakpoint.Narrow]}
       >
         {mainItems.map(routeToNavigationItem)}
-        {groupedItems && (
+        {groupedItems && groupedItems.length > 0 && (
           <NavigationItem>
             <NavigationTrigger isActive={Boolean(isOnOther)}>
               {t('Other')}
