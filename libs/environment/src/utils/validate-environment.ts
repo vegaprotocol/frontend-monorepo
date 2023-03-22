@@ -50,6 +50,7 @@ const schemaObject = {
   MAINTENANCE_PAGE: z.optional(z.boolean()),
   ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
   ETH_WALLET_MNEMONIC: z.optional(z.string()),
+  ANNOUNCEMENTS_CONFIG_URL: z.optional(z.string()),
 };
 
 // combine schema above with custom rule to ensure either

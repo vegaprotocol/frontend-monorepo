@@ -1,13 +1,9 @@
-import { NetworkLoader, useInitializeEnv } from '@vegaprotocol/environment';
+import { NetworkLoader, useEnvironment, useInitializeEnv } from '@vegaprotocol/environment';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 import { Footer } from './components/footer/footer';
-import {
-  AnnouncementBanner,
-  ExternalLink,
-  Icon,
-} from '@vegaprotocol/ui-toolkit';
+import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
@@ -29,34 +25,8 @@ const DialogsContainer = () => {
   );
 };
 
-const MainnetSimAd = () => {
-  const [shouldDisplayBanner, setShouldDisplayBanner] = useState<boolean>(true);
-
-  // Return an empty div so that the grid layout in _app.page.ts
-  // renders correctly
-  if (!shouldDisplayBanner) {
-    return <div />;
-  }
-
-  return (
-    <AnnouncementBanner>
-      <div className="grid grid-cols-[auto_1fr] gap-4 font-alpha calt uppercase text-center text-lg text-white">
-        <button
-          className="flex items-center"
-          onClick={() => setShouldDisplayBanner(false)}
-        >
-          <Icon name="cross" className="w-6 h-6" ariaLabel="dismiss" />
-        </button>
-        <div>
-          <span className="pr-4">Mainnet sim 3 is live!</span>
-          <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
-        </div>
-      </div>
-    </AnnouncementBanner>
-  );
-};
-
 function App() {
+  const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment()
   return (
     <TendermintWebsocketProvider>
       <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
@@ -71,7 +41,12 @@ function App() {
           )}
         >
           <div>
-            <MainnetSimAd />
+            {ANNOUNCEMENTS_CONFIG_URL && (
+              <AnnouncementBanner
+                app="explorer"
+                configUrl={ANNOUNCEMENTS_CONFIG_URL}
+              />
+            )}
             <Header />
           </div>
           <div>

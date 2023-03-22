@@ -112,8 +112,12 @@ const Web3Container = ({
 
 const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
-  const { VEGA_ENV, GIT_COMMIT_HASH, GIT_BRANCH, ETHEREUM_PROVIDER_URL } =
-    useEnvironment();
+  const {
+    VEGA_ENV,
+    GIT_COMMIT_HASH,
+    GIT_BRANCH,
+    ETHEREUM_PROVIDER_URL,
+  } = useEnvironment();
 
   useEffect(() => {
     if (ENV.dsn) {

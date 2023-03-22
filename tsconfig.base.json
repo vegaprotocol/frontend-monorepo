@@ -17,6 +17,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@vegaprotocol/accounts": ["libs/accounts/src/index.ts"],
+      "@vegaprotocol/announcements": ["libs/announcements/src/index.ts"],
       "@vegaprotocol/apollo-client": ["libs/apollo-client/src/index.ts"],
       "@vegaprotocol/assets": ["libs/assets/src/index.ts"],
       "@vegaprotocol/candles-chart": ["libs/candles-chart/src/index.ts"],

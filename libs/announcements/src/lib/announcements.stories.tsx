@@ -43,6 +43,13 @@ fetchMock.get(MOCK_URL, {
       urlText: 'Read more',
     },
   ],
+  website: [
+    {
+      text: 'Website announcement',
+      url: 'http://vega.xyz',
+      urlText: 'Read more',
+    },
+  ],
 });
 
 const Template: Story = (args) => (

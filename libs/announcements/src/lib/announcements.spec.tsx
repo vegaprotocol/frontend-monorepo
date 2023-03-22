@@ -37,6 +37,7 @@ describe('Announcements', () => {
       governance: [],
       explorer: [],
       wallet: [],
+      website: [],
     });
     const { container } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
@@ -48,20 +49,29 @@ describe('Announcements', () => {
 
   it('shows the correct announcement', async () => {
     fetchMock.get(MOCK_URL, {
-      console: [MOCK_ANNOUNCEMENT],
+      console: [
+        {
+          text: 'Console announcement',
+        },
+      ],
       governance: [
         {
-          text: 'Governance update',
+          text: 'Governance announcement',
         },
       ],
       explorer: [
         {
-          text: 'Explorer update',
+          text: 'Explorer announcement',
         },
       ],
       wallet: [
         {
-          text: 'Wallet update',
+          text: 'Wallet announcement',
+        },
+      ],
+      website: [
+        {
+          text: 'Website announcement',
         },
       ],
     });
@@ -69,16 +79,19 @@ describe('Announcements', () => {
     const { container, rerender, findByText } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
-    expect(await findByText(MOCK_ANNOUNCEMENT.text)).toBeVisible();
+    expect(await findByText('Console announcement')).toBeVisible();
 
     rerender(<AnnouncementBanner app="governance" configUrl={MOCK_URL} />);
-    expect(await findByText('Governance update')).toBeVisible();
+    expect(await findByText('Governance announcement')).toBeVisible();
 
     rerender(<AnnouncementBanner app="explorer" configUrl={MOCK_URL} />);
-    expect(await findByText('Explorer update')).toBeVisible();
+    expect(await findByText('Explorer announcement')).toBeVisible();
 
     rerender(<AnnouncementBanner app="wallet" configUrl={MOCK_URL} />);
-    expect(await findByText('Wallet update')).toBeVisible();
+    expect(await findByText('Wallet announcement')).toBeVisible();
+
+    rerender(<AnnouncementBanner app="website" configUrl={MOCK_URL} />);
+    expect(await findByText('Website announcement')).toBeVisible();
   });
 
   it('shows the announcement link', async () => {
@@ -87,6 +100,7 @@ describe('Announcements', () => {
       governance: [],
       explorer: [],
       wallet: [],
+      website: [],
     });
 
     const { findByText, findByRole } = render(
@@ -115,6 +129,7 @@ describe('Announcements', () => {
       governance: [],
       explorer: [],
       wallet: [],
+      website: [],
     });
 
     const { findByText } = render(
@@ -139,6 +154,7 @@ describe('Announcements', () => {
       governance: [],
       explorer: [],
       wallet: [],
+      website: [],
     });
 
     const { findByText } = render(
@@ -163,6 +179,7 @@ describe('Announcements', () => {
       governance: [],
       explorer: [],
       wallet: [],
+      website: [],
     });
 
     const { container, findByText } = render(
@@ -193,6 +210,7 @@ describe('Announcements', () => {
       governance: [],
       explorer: [],
       wallet: [],
+      website: [],
     });
 
     const { container, findByText } = render(
