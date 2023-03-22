@@ -9,7 +9,8 @@ import classnames from 'classnames';
 export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'ternary';
 export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
-const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
+const base =
+  'inline-block uppercase border rounded-md disabled:opacity-60 text-base text-center';
 const xs = 'px-2 py-0 text-sm';
 const sm = 'px-2 py-1 text-sm';
 const md = 'px-10 py-2 text-base';
@@ -115,7 +116,7 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
   (
     {
       variant = 'default',
-      size = 'lg',
+      size = 'md',
       fill = false,
       icon,
       rightIcon,

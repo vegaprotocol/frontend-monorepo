@@ -74,7 +74,7 @@ describe('updateLevels', () => {
 
     const updates = [{ price: '132', volume: '200' }];
 
-    expect(updateLevels(priceLevels, updates, 2, 0, true)).toEqual([
+    expect(updateLevels(priceLevels, updates, 2, 0, false)).toEqual([
       { price: 1.35, volume: 200 },
       { price: 1.32, volume: 200 },
       { price: 1.28, volume: 100 },

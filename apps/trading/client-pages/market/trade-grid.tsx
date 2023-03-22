@@ -14,7 +14,7 @@ import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
   Tab,
-  Tabs,
+  LocalStoragePersistTabs as Tabs,
   ResizableGrid,
   ResizableGridPanel,
   Splash,
@@ -96,7 +96,7 @@ const MarketBottomPanel = memo(
           minSize={50}
         >
           <TradeGridChild>
-            <Tabs>
+            <Tabs storageKey="console-trade-grid-orders">
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
                   <TradingViews.Orders
@@ -122,7 +122,7 @@ const MarketBottomPanel = memo(
           minSize={50}
         >
           <TradeGridChild>
-            <Tabs>
+            <Tabs storageKey="console-trade-grid-positions">
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
                   <TradingViews.Positions
@@ -146,7 +146,7 @@ const MarketBottomPanel = memo(
       </ResizableGrid>
     ) : (
       <TradeGridChild>
-        <Tabs>
+        <Tabs storageKey="console-trade-grid-positions">
           <Tab id="positions" name={t('Positions')}>
             <VegaWalletContainer>
               <TradingViews.Positions onMarketClick={onMarketClick} />
@@ -201,7 +201,7 @@ const MainGrid = memo(
               preferredSize="50%"
             >
               <TradeGridChild>
-                <Tabs>
+                <Tabs storageKey="console-trade-grid-chart">
                   <Tab id="chart" name={t('Chart')}>
                     <TradingViews.Candles marketId={marketId} />
                   </Tab>
@@ -220,7 +220,7 @@ const MainGrid = memo(
               minSize={300}
             >
               <TradeGridChild>
-                <Tabs>
+                <Tabs storageKey="console-trade-grid-ticket">
                   <Tab id="ticket" name={t('Ticket')}>
                     <TradingViews.Ticket
                       marketId={marketId}
@@ -244,7 +244,7 @@ const MainGrid = memo(
               minSize={200}
             >
               <TradeGridChild>
-                <Tabs>
+                <Tabs storageKey="console-trade-grid-orderbook">
                   <Tab id="orderbook" name={t('Orderbook')}>
                     <TradingViews.Orderbook marketId={marketId} />
                   </Tab>
