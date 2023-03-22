@@ -2,6 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import { Dialog, HealthBar } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
 import classNames from 'classnames';
+import { intentForStatus } from '../../lib/utils';
 
 interface HealthDialogProps {
   isOpen: boolean;
@@ -94,9 +95,9 @@ export const HealthDialog = ({ onChange, isOpen }: HealthDialogProps) => {
                   <HealthBar
                     size="large"
                     levels={r.data.levels}
-                    status={r.data.status}
                     target={r.data.target}
                     decimals={r.data.decimals}
+                    intent={intentForStatus(r.data.status)}
                   />
                 </td>
               </tr>

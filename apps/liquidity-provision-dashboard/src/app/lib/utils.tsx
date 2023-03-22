@@ -1,4 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
 const marketTradingModeStyle = {
   [Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS]: '#00D46E',
@@ -10,3 +11,15 @@ const marketTradingModeStyle = {
 
 export const getColorForStatus = (status: Schema.MarketTradingMode) =>
   marketTradingModeStyle[status];
+
+const marketTradingModeIntent = {
+  [Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS]: Intent.Success,
+  [Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION]: Intent.Danger,
+  [Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION]: Intent.Primary,
+  [Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION]: Intent.Danger,
+  [Schema.MarketTradingMode.TRADING_MODE_NO_TRADING]: Intent.Danger,
+};
+
+export const intentForStatus = (status: Schema.MarketTradingMode) => {
+  return marketTradingModeIntent[status];
+};

@@ -7,6 +7,7 @@ import type * as Schema from '@vegaprotocol/types';
 import { HealthDialog } from '../../health-dialog';
 import { Last24hVolume } from '../last-24h-volume';
 import { Status } from '../../status';
+import { intentForStatus } from '../../../lib/utils';
 
 interface Levels {
   fee: string;
@@ -91,10 +92,10 @@ export const Market = ({
               <td className="px-4">
                 {tradingMode && settlementAsset?.decimals && feeLevels && (
                   <HealthBar
-                    status={tradingMode}
                     target={targetStake}
                     decimals={settlementAsset.decimals}
                     levels={feeLevels}
+                    intent={intentForStatus(tradingMode)}
                   />
                 )}
               </td>

@@ -1,23 +1,10 @@
 import classNames from 'classnames';
-import * as Schema from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
 import { getIntentBackground, Intent } from '../../utils/intent';
 import { Indicator } from '../indicator';
 import { Tooltip } from '../tooltip';
-
-const intentForStatus = (status: Schema.MarketTradingMode) => {
-  return marketTradingModeIntent[status];
-};
-
-const marketTradingModeIntent = {
-  [Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS]: Intent.Success,
-  [Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION]: Intent.Danger,
-  [Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION]: Intent.Primary,
-  [Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION]: Intent.Danger,
-  [Schema.MarketTradingMode.TRADING_MODE_NO_TRADING]: Intent.Danger,
-};
 
 const Remainder = () => (
   <div className="bg-greys-light-200 h-[inherit] relative flex-1" />
@@ -69,25 +56,24 @@ const Level = ({
   commitmentAmount,
   rangeLimit,
   opacity,
-  status,
   fee,
   prevLevel,
   decimals,
+  intent,
 }: {
   commitmentAmount: number;
   rangeLimit: number;
   opacity: number;
-  status: Schema.MarketTradingMode;
   fee: string;
   prevLevel: number;
   decimals: number;
+  intent: Intent;
 }) => {
   const width = new BigNumber(commitmentAmount)
     .div(rangeLimit)
     .multipliedBy(100)
     .toNumber();
 
-  const intent = intentForStatus(status);
   const tooltipContent = (
     <>
       <div className="mt-1.5 inline-flex">
@@ -135,17 +121,17 @@ interface Levels {
 }
 
 export const HealthBar = ({
-  status,
   target = '0',
   decimals,
   levels,
   size = 'small',
+  intent,
 }: {
-  status: Schema.MarketTradingMode;
   target: string;
   decimals: number;
   levels: Levels[];
   size?: 'small' | 'large';
+  intent: Intent;
 }) => {
   const targetNumber = parseInt(target, 10);
   const rangeLimit = targetNumber * 2;
@@ -191,10 +177,10 @@ export const HealthBar = ({
                   commitmentAmount={commitmentAmount}
                   rangeLimit={rangeLimit}
                   opacity={opacity}
-                  status={status}
                   fee={fee}
                   prevLevel={prevLevel}
                   decimals={0}
+                  intent={intent}
                 />
               ) : null;
             })}
