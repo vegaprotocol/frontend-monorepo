@@ -2,54 +2,19 @@ name: Publish docker containers
 
 'on':
   pull_request:
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+-*'
-
-  workflow_dispatch:
-    inputs:
-      # publish:
-      #   description: 'Publish tag to Docker Hub & GitHub Registry'
-      #   required: false
-      #   type: boolean
-      #   default: false
-      tag:
-        description: 'Git Tag to build and publish'
-        required: false
-        type: string
-        default: ''
-      apps:
-        description: 'Applications to build and publish'
-        required: false
-        type: choice
-        options:
-          # - '["explorer", "token", "trading"]'
-          - '["explorer"]'
-          # - '["token"]'
-          # - '["trading"]'
-      # archs:
-      #   description: 'Architecture to build and publish'
-      #   required: false
-      #   type: choice
-      #   options:
-      #     - linux/amd64, linux/arm64
-      #     - linux/amd64
-      #     - linux/arm64
 
 jobs:
   master:
     strategy:
       fail-fast: false
+      # to be replaced by nix: https://github.com/vegaprotocol/frontend-monorepo/blob/develop/tools/ipfs-deploy.js#L106-L108
       matrix:
-        app: ${{ fromJson(inputs.apps || '["explorer"]') }}
+        app: ${{ fromJson('["explorer"]') }}
     name: Build the ${{ matrix.app }} image
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.tag }}
 
       - name: Set up QEMU
         id: quemu
@@ -61,19 +26,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Login to DockerHub
-        # if: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Determine Docker Image tag
         id: tags
         run: |
           npmVersion=$(cat .nvmrc | head -n 1)
           hash=$(git rev-parse HEAD|cut -b1-8)
-          versionTag=${{ inputs.tag || startsWith(github.ref, 'refs/tags/') && github.ref_name || '${hash}' }}
+          versionTag=${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '${hash}' }}
           echo ::set-output name=npmVersion::${npmVersion}
           echo ::set-output name=version::${versionTag}
 
@@ -81,10 +39,6 @@ jobs:
         run: |
           git rev-parse --verify HEAD
           git status
-          echo "inputs.tag=${{ inputs.tag }}"
-          # echo "inputs.publish=${{ inputs.publish }}"
-          echo "inputs.apps=${{ inputs.apps }}"
-          # echo "inputs.archs=${{ inputs.archs }}"
           echo "steps.tags.outputs.version=${{ steps.tags.outputs.version }}"
 
       - name: Build and export to local Docker
@@ -111,12 +65,10 @@ jobs:
         with:
           context: .
           push: true
-          # push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
           file: dockerfiles/Dockerfile
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
-          # platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:latest
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ steps.tags.outputs.version }}
