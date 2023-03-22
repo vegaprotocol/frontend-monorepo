@@ -152,16 +152,12 @@ export const OrderListManager = ({
     },
     [create]
   );
-  const extractNodesDecorator = useCallback(
-    (data: (OrderEdge | null)[] | null, loading: boolean) =>
-      data && !loading
-        ? data
-            .filter((item) => item !== null)
-            .map((item) => (item as OrderEdge).node)
-        : null,
-    []
-  );
-  const extractedData = extractNodesDecorator(data, loading);
+  const extractedData =
+    data && !loading
+      ? data
+          .filter((item) => item !== null)
+          .map((item) => (item as OrderEdge).node)
+      : null;
 
   return (
     <>
