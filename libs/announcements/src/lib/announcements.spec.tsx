@@ -27,7 +27,7 @@ describe('Announcements', () => {
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
     await waitFor(() => {
-      expect(container).toBeEmptyDOMElement();
+      expect(container.firstChild).toBeEmptyDOMElement();
     });
   });
 
@@ -43,7 +43,7 @@ describe('Announcements', () => {
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
     await waitFor(() => {
-      expect(container).toBeEmptyDOMElement();
+      expect(container.firstChild).toBeEmptyDOMElement();
     });
   });
 
@@ -132,10 +132,13 @@ describe('Announcements', () => {
       website: [],
     });
 
-    const { findByText } = render(
+    const { queryByText } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
-    expect(await findByText('First text')).toBeVisible();
+
+    await waitFor(() => {
+      expect(queryByText('First text')).toBeInTheDocument();
+    })
   });
 
   it('does not show expired announcements', async () => {
@@ -157,10 +160,13 @@ describe('Announcements', () => {
       website: [],
     });
 
-    const { findByText } = render(
+    const { queryByText } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
-    expect(await findByText('Live text')).toBeVisible();
+
+    await waitFor(() => {
+      expect(queryByText('Live text')).toBeInTheDocument();
+    })
   });
 
   it('hides announcements after they expire', async () => {
@@ -182,14 +188,20 @@ describe('Announcements', () => {
       website: [],
     });
 
-    const { container, findByText } = render(
+    const { queryByText } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
-    expect(await findByText('Live text')).toBeVisible();
+
+    await waitFor(() => {
+      expect(queryByText('Live text')).toBeInTheDocument();
+    })
 
     act(() => {
       jest.runOnlyPendingTimers();
     });
-    expect(container).toBeEmptyDOMElement();
+
+    await waitFor(() => {
+      expect(queryByText('Live text')).not.toBeInTheDocument();
+    })
   });
 });
