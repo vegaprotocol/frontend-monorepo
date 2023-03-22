@@ -1,10 +1,11 @@
-import { getNodes } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import {
+  useDataProvider,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
-import { Panel } from '../../../components/panel';
 import { toNonHex } from '../../../components/search/detect-search';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
@@ -12,7 +13,22 @@ import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/Party-assets';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import GovernanceAssetBalance from '../../../components/asset-balance/governance-asset-balance';
-import { PartyAccounts } from './components/party-accounts';
+import {
+  Icon,
+  KeyValueTable,
+  KeyValueTableRow,
+  Loader,
+  Splash,
+} from '@vegaprotocol/ui-toolkit';
+import { PartyBlock } from './components/party-block';
+import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@vegaprotocol/ui-toolkit';
+import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -27,6 +43,16 @@ const Party = () => {
     filters,
   });
 
+  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const {
+    data: AccountData,
+    loading: AccountLoading,
+    error: AccountError,
+  } = useDataProvider({
+    dataProvider: aggregatedAccountsDataProvider,
+    variables,
+  });
+
   const partyRes = useExplorerPartyAssetsQuery({
     // Don't cache data for this query, party information can move quite quickly
     fetchPolicy: 'network-only',
@@ -37,7 +63,7 @@ const Party = () => {
   const p = partyRes.data?.partiesConnection?.edges[0].node;
 
   return (
-    <section>
+    <section className="max-w-5xl mx-auto">
       <h1
         className="font-alpha calt uppercase font-xl mb-4 text-vega-dark-100 dark:text-vega-light-100"
         data-testid="parties-header"
@@ -54,29 +80,90 @@ const Party = () => {
       {/*<PartyAccounts partyId={partyId} /> */}
 
       <div className="grid md:grid-flow-col grid-flow-row md:space-x-4 grid-cols-1 md:grid-cols-3 w-full">
-        <div className="border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
+        <PartyBlock title={t('Assets')}>
+          {AccountData ? (
+            <KeyValueTable>
+              <KeyValueTableRow>
+                <div>{t('Assets')}</div>
+                <DropdownMenu
+                  trigger={
+                    <DropdownMenuTrigger>
+                      <span>{AccountData.length} assets held</span>
+                    </DropdownMenuTrigger>
+                  }
+                >
+                  <DropdownMenuContent>
+                    {AccountData.map((asset) => (
+                      <DropdownMenuItem key={asset.asset.name}>
+                        <div>
+                          <strong className="block w-2 bold">
+                            {asset.asset.name}
+                          </strong>
+                          <span className="font-mono">
+                            {addDecimalsFixedFormatNumber(
+                              asset.total,
+                              asset.asset.decimals
+                            )}
+                          </span>
+                          <span className="ml-1">{asset.asset.symbol}</span>
+                        </div>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </KeyValueTableRow>
+            </KeyValueTable>
+          ) : AccountLoading && !AccountError ? (
+            <Loader size="small" />
+          ) : (
+            <p>
+              <Icon className="mr-1" name="error" />
+              <span className="text-sm">{t('Could not load assets')}</span>
+            </p>
+          )}
+        </PartyBlock>
+
+        <PartyBlock title={t('Staking')}>
           {p?.stakingSummary.currentStakeAvailable ? (
-            <>
-              <strong className="font-semibold">
-                {t('Staking Balance: ')}
-              </strong>
-              <GovernanceAssetBalance
-                price={p.stakingSummary.currentStakeAvailable}
-              />
-            </>
-          ) : null}
-        </div>
+            <KeyValueTable>
+              <KeyValueTableRow>
+                <div>{t('Available stake')}</div>
+                <div>
+                  <GovernanceAssetBalance
+                    price={p.stakingSummary.currentStakeAvailable}
+                  />
+                </div>
+              </KeyValueTableRow>
+            </KeyValueTable>
+          ) : AccountLoading && !AccountError ? (
+            <Loader size="small" />
+          ) : (
+            <p>
+              <Icon className="mr-1" name="error" />
+              <span className="text-sm">
+                {t('Could not load stake details')}
+              </span>
+            </p>
+          )}
+        </PartyBlock>
       </div>
 
       <SubHeading>{t('Transactions')}</SubHeading>
-      <TxsInfiniteList
-        hasMoreTxs={hasMoreTxs}
-        areTxsLoading={loading}
-        txs={txsData}
-        loadMoreTxs={loadTxs}
-        error={error}
-        className="mb-28"
-      />
+      {!error ? (
+        <TxsInfiniteList
+          hasMoreTxs={hasMoreTxs}
+          areTxsLoading={loading}
+          txs={txsData}
+          loadMoreTxs={loadTxs}
+          error={error}
+          className="mb-28"
+        />
+      ) : (
+        <Splash>
+          <Icon name="error" className="mr-1" />
+          &nbsp;{t('Could not load transaction list for party')}
+        </Splash>
+      )}
     </section>
   );
 };

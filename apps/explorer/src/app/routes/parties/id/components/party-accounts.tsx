@@ -1,10 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import get from 'lodash/get';
-import AssetBalance from '../../../../components/asset-balance/asset-balance';
-import { AssetLink, MarketLink } from '../../../../components/links';
-import { Table, TableRow } from '../../../../components/table';
 import type * as Schema from '@vegaprotocol/types';
-import type { ExplorerPartyAssetsAccountsFragment } from '../__generated__/Party-assets';
 import { AccountManager } from '@vegaprotocol/accounts';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
