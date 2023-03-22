@@ -40,23 +40,17 @@ export async function depositAsset(assetEthAddress: string, amount: string) {
   cy.wrap(faucet.approve(Erc20BridgeAddress, amount + '0'.repeat(19)), {
     timeout: transactionTimeout,
     log: false,
-  })
-    .then((tx) => {
-      waitForTransaction(tx);
-    })
-    .then(() => {
-      const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
-      cy.wrap(
-        collateralBridge.deposit_asset(
-          assetEthAddress,
-          amount + '0'.repeat(18),
-          '0x' + vegaWalletPubKey
-        ),
-        { timeout: transactionTimeout, log: false }
-      ).then((tx) => {
-        waitForTransaction(tx);
-      });
-    });
+  }).then(() => {
+    const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
+    cy.wrap(
+      collateralBridge.deposit_asset(
+        assetEthAddress,
+        amount + '0'.repeat(18),
+        '0x' + vegaWalletPubKey
+      ),
+      { timeout: transactionTimeout, log: false }
+    );
+  });
 }
 
 export async function faucetAsset(assetEthAddress: string) {
@@ -84,7 +78,9 @@ export async function vegaWalletTeardown() {
         }).should('not.exist');
         cy.getByTestId('associated-amount', {
           timeout: transactionTimeout,
-        }).contains('0.00');
+        }).contains('0.00', {
+          timeout: transactionTimeout,
+        });
       });
     });
 }
@@ -117,9 +113,7 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
           vegaWalletPubKey
         ),
         { timeout: transactionTimeout, log: false }
-      ).then((tx) => {
-        waitForTransaction(tx);
-      });
+      );
     }
   });
 }
@@ -134,9 +128,7 @@ async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
       cy.wrap(
         vestingContract.remove_stake(String(vestingAmount), vegaWalletPubKey),
         { timeout: transactionTimeout, log: false }
-      ).then((tx) => {
-        waitForTransaction(tx);
-      });
+      );
     }
   });
 }
@@ -151,9 +143,4 @@ export async function vegaWalletDisassociate(amount: string) {
   cy.highlight('Disassociating tokens');
   amount = amount + '0'.repeat(18);
   stakingBridgeContract.remove_stake(amount, vegaWalletPubKey);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function waitForTransaction(tx: any) {
-  cy.wrap(tx.wait(1).catch(cy.log), { timeout: transactionTimeout });
 }

@@ -22,6 +22,7 @@ import {
 import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../../../governance-e2e/src/support/staking.functions';
 import { ethereumWalletConnect } from '../../../../governance-e2e/src/support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../../../governance-e2e/src/support/wallet-teardown.functions';
+import type { testFreeformProposal } from '../../support/common-interfaces';
 
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
@@ -58,8 +59,7 @@ describe(
     // 3001-VOTE-055
     it('Newly created raw proposal details - shows proposal title and full description', function () {
       createRawProposal();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.get('@rawProposal').then((rawProposal: any) => {
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getProposalIdFromList(rawProposal.rationale.title);
         cy.get('@proposalIdText').then((proposalId) => {
           cy.get(openProposals).within(() => {
@@ -118,8 +118,7 @@ describe(
       // 3001-VOTE-040
       // 3001-VOTE-067
       createRawProposal();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.get('@rawProposal').then((rawProposal: any) => {
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
         ).within(() => cy.get(viewProposalButton).click());
@@ -145,8 +144,7 @@ describe(
     // 3001-VOTE-080 3001-VOTE-090 3001-VOTE-069 3001-VOTE-072 3001-VOTE-073
     it('Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated', function () {
       createRawProposal();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.get('@rawProposal').then((rawProposal: any) => {
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
         ).within(() => cy.get(viewProposalButton).click());
@@ -216,8 +214,7 @@ describe(
     // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060
     it('Newly created proposal details - ability to increase associated tokens - by voting again after association', function () {
       createRawProposal();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.get('@rawProposal').then((rawProposal: any) => {
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getSubmittedProposalFromProposalList(rawProposal.rationale.title)
           .as('submittedProposal')
           .within(() => cy.get(viewProposalButton).click());
@@ -237,8 +234,7 @@ describe(
             tokensRequiredToAchieveResult
           );
           navigateTo(navigation.proposals);
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          cy.get('@rawProposal').then((rawProposal: any) => {
+          cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
             getSubmittedProposalFromProposalList(rawProposal.rationale.title)
               .as('submittedProposal')
               .within(() => cy.get(viewProposalButton).click());

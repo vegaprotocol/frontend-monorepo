@@ -273,7 +273,6 @@ context(
       });
 
       // 1004-ASSO-004
-
       it('Pending association outside of app is shown', function () {
         vegaWalletAssociate('2');
         cy.getByTestId('currency-title', txTimeout).should(

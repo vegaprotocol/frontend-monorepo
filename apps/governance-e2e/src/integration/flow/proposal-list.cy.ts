@@ -1,3 +1,4 @@
+import type { testFreeformProposal } from '../../support/common-interfaces';
 import {
   navigateTo,
   navigation,
@@ -93,8 +94,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
 
   it('Newly created proposals list - shows title and portion of summary', function () {
     createRawProposal(this.minProposerBalance); // 3001-VOTE-052
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cy.get('@rawProposal').then((rawProposal: any) => {
+    cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
       getProposalIdFromList(rawProposal.rationale.title);
       cy.get('@proposalIdText').then((proposalId) => {
         cy.get(openProposals).within(() => {
@@ -119,8 +119,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     // 3001-VOTE-004
     // 3001-VOTE-035
     createRawProposal(this.minProposerBalance);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cy.get('@rawProposal').then((rawProposal: any) => {
+    cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
       getSubmittedProposalFromProposalList(rawProposal.rationale.title).within(
         () => {
           cy.get(viewProposalButton).should('be.visible').click();

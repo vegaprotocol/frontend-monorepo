@@ -32,10 +32,11 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-teardown.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
+import type { testFreeformProposal } from '../../support/common-interfaces';
 
 const vegaWalletStakedBalances =
   '[data-testid="vega-wallet-balance-staked-validators"]';
-const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
+const vegaWalletAssociatedBalance = '[data-testid="associated-amount"]';
 const vegaWalletNameElement = '[data-testid="wallet-name"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
 const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
@@ -62,19 +63,19 @@ context(
   function () {
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.get_network_parameters().then((network_parameters: any) => {
+      cy.get_network_parameters().then((network_parameters) => {
         cy.wrap(
-          network_parameters['spam.protection.proposal.min.tokens'] /
+          Number(network_parameters['spam.protection.proposal.min.tokens']) /
             1000000000000000000
         ).as('minProposerBalance');
         cy.wrap(
-          network_parameters['spam.protection.voting.min.tokens'] /
+          Number(network_parameters['spam.protection.voting.min.tokens']) /
             1000000000000000000
         ).as('minVoterBalance');
         cy.wrap(
-          network_parameters['governance.proposal.freeform.requiredMajority'] *
-            100
+          Number(
+            network_parameters['governance.proposal.freeform.requiredMajority']
+          ) * 100
         ).as('requiredMajority');
       });
 
@@ -180,8 +181,7 @@ context(
       waitForProposalSync();
       navigateTo(navigation.proposals);
       cy.get(rejectProposalsLink).click();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.get('@rawProposal').then((rawProposal: any) => {
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
         ).within(() => {
@@ -315,8 +315,7 @@ context(
       createRawProposal();
       cy.get('[data-testid="manage-vega-wallet"]').click();
       cy.get('[data-testid="disconnect"]').click();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cy.get('@rawProposal').then((rawProposal: any) => {
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getSubmittedProposalFromProposalList(
           rawProposal.rationale.title
         ).within(() => cy.get(viewProposalButton).click());
