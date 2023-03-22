@@ -138,7 +138,7 @@ describe('Announcements', () => {
 
     await waitFor(() => {
       expect(queryByText('First text')).toBeInTheDocument();
-    })
+    });
   });
 
   it('does not show expired announcements', async () => {
@@ -166,7 +166,7 @@ describe('Announcements', () => {
 
     await waitFor(() => {
       expect(queryByText('Live text')).toBeInTheDocument();
-    })
+    });
   });
 
   it('hides announcements after they expire', async () => {
@@ -194,7 +194,7 @@ describe('Announcements', () => {
 
     await waitFor(() => {
       expect(queryByText('Live text')).toBeInTheDocument();
-    })
+    });
 
     act(() => {
       jest.runOnlyPendingTimers();
@@ -202,6 +202,6 @@ describe('Announcements', () => {
 
     await waitFor(() => {
       expect(queryByText('Live text')).not.toBeInTheDocument();
-    })
+    });
   });
 });
