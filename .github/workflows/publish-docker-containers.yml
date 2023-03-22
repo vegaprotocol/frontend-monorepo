@@ -87,21 +87,12 @@ jobs:
           # echo "inputs.archs=${{ inputs.archs }}"
           echo "steps.tags.outputs.version=${{ steps.tags.outputs.version }}"
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ steps.tags.outputs.npmVersion }}
-
-      - name: Build frontend dists
-        run: |
-          yarn --verbose --pure-lockfile
-          yarn nx build ${{ matrix.app }} --pure-lockfile
-
       - name: Build and export to local Docker
         uses: docker/build-push-action@v3
         with:
           context: .
           push: false
-          file: dockerfiles/Dockerfile.cra.dist
+          file: dockerfiles/Dockerfile
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
@@ -121,7 +112,7 @@ jobs:
           context: .
           push: true
           # push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
-          file: dockerfiles/Dockerfile.cra.dist
+          file: dockerfiles/Dockerfile
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}

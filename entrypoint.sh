@@ -2,11 +2,11 @@
 
 # Recreate config file
 mkdir assets
-rm -rf ./assets/env-config.js
-touch ./assets/env-config.js
+rm -rf /usr/share/nginx/html/assets/env-config.js
+touch /usr/share/nginx/html/assets/env-config.js
 
 # Add assignment
-echo "window._env_ = {" >> ./assets/env-config.js
+echo "window._env_ = {" >> /usr/share/nginx/html/assets/env-config.js
 
 # Read each line in .env file
 # Each line represents key=value pairs
@@ -25,8 +25,11 @@ do
 
   # Append configuration property to JS file if non-empty
   if [ ! -z "$varname" ]; then
-    echo "  $varname: \"$value\"," >> ./assets/env-config.js
+    echo "  $varname: \"$value\"," >> /usr/share/nginx/html/assets/env-config.js
   fi
 done < .env
 
-echo "}" >> ./assets/env-config.js
+echo "}" >> /usr/share/nginx/html/assets/env-config.js
+
+# start serving
+nginx -g 'daemon off;'
