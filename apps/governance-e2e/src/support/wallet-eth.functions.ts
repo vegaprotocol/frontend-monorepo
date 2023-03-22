@@ -3,7 +3,7 @@ const connectToEthButton =
   '[data-testid="connect-to-eth-wallet-button"]:visible';
 const capsuleWalletConnectButton = '[data-testid="web3-connector-Unknown"]';
 
-Cypress.Commands.add('ethereum_wallet_connect', () => {
+export function ethereumWalletConnect() {
   cy.highlight('Connecting Eth Wallet');
   cy.get(connectToEthButton).within(() => {
     cy.contains('Connect Ethereum wallet to associate $VEGA')
@@ -20,4 +20,4 @@ Cypress.Commands.add('ethereum_wallet_connect', () => {
   // It needs a few seconds before becoming operational
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(4000);
-});
+}

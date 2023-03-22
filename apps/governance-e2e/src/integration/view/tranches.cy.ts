@@ -1,4 +1,5 @@
 import { trancheData } from '../../fixtures/mocks/tranches';
+import { navigateTo, navigation } from '../../support/common.functions';
 
 const tranches = trancheData;
 
@@ -8,7 +9,13 @@ context(
   function () {
     before('visit homepage', function () {
       cy.intercept('GET', '**/tranches/stats', { tranches });
-      cy.visit('/token/tranches');
+      cy.visit('/');
+    });
+
+    it('Able to navigate to tranches page', function () {
+      navigateTo(navigation.supply);
+      cy.url().should('include', '/token/tranches');
+      cy.get('h1').should('contain.text', 'Vesting tranches');
     });
 
     // 1005-VEST-001
@@ -62,7 +69,7 @@ context(
     });
 
     it('Able to view tranches with less than 10 vega', function () {
-      cy.navigate_to('supply');
+      navigateTo(navigation.supply);
       cy.getByTestId('show-all-tranches').click();
       cy.getByTestId('tranche-item')
         .should('have.length', 8)

@@ -1,3 +1,5 @@
+import { vegaWalletTeardown } from './wallet-teardown.functions';
+
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
 const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
 const tokenInputApprove = '[data-testid="token-input-approve-button"]';
@@ -21,44 +23,47 @@ const dialogCloseButton = '[data-testid="dialog-close"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
-Cypress.Commands.add('wait_for_beginning_of_epoch', () => {
+export function waitForBeginningOfEpoch() {
   cy.contains('Waiting for next epoch to start', epochTimeout).should(
     'not.exist'
   );
   cy.contains('Waiting for next epoch to start', epochTimeout).should(
     'be.visible'
   );
-});
+}
 
-Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
+export function stakingValidatorPageAddStake(stake: string) {
   cy.highlight(`Adding a stake of ${stake}`);
   cy.get(addStakeRadioButton, epochTimeout).click({ force: true });
   cy.get(tokenAmountInputBox).type(stake);
-  cy.wait_for_beginning_of_epoch();
+  waitForBeginningOfEpoch();
   cy.get(tokenSubmitButton, epochTimeout)
     .should('be.enabled')
     .and('contain', `Add ${stake} $VEGA tokens`)
     .and('be.visible')
     .click();
-});
+}
 
-Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
+export function stakingValidatorPageRemoveStake(stake: string) {
   cy.highlight(`Removing a stake of ${stake}`);
   cy.get(removeStakeRadioButton, epochTimeout).click();
   cy.get(tokenAmountInputBox).type(stake);
-  cy.wait_for_beginning_of_epoch();
+  waitForBeginningOfEpoch();
   cy.get(tokenSubmitButton)
     .should('be.enabled', epochTimeout)
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
     .and('be.visible')
     .click();
   cy.get(dialogCloseButton).click();
-});
+}
 
-Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
-  let approve = options && options.approve ? options.approve : false;
-  let type = options && options.type ? options.type : 'wallet';
-  let skipConfirmation =
+export function stakingPageAssociateTokens(
+  amount: string,
+  options?: associateOptions
+) {
+  const approve = options && options.approve ? options.approve : false;
+  const type = options && options.type ? options.type : 'wallet';
+  const skipConfirmation =
     options && options.skipConfirmation ? options.skipConfirmation : false;
 
   cy.highlight(`Associating ${amount} tokens from ${type}`);
@@ -94,10 +99,13 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
       txTimeout
     ).should('be.visible');
   }
-});
+}
 
-Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
-  let type = options && options.type ? options.type : 'wallet';
+export function stakingPageDisassociateTokens(
+  amount: string,
+  options?: associateOptions
+) {
+  const type = options && options.type ? options.type : 'wallet';
   cy.highlight(
     `Disassociating ${amount} tokens via Staking Page back to ${type}`
   );
@@ -127,92 +135,89 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
       txTimeout
     ).should('be.visible');
   }
-});
+}
 
-Cypress.Commands.add(
-  'staking_page_disassociate_all_tokens',
-  (type = 'wallet') => {
-    cy.highlight(`Disassociating all tokens via Staking Page`);
-    cy.get(ethWalletDissociateButton).first().click();
-    cy.get(stakeMaximumTokens, epochTimeout).click();
-    cy.get(tokenSubmitButton, epochTimeout).click();
-    if (type === 'wallet') {
-      cy.contains(
-        `$VEGA tokens have been returned to Ethereum wallet`,
-        txTimeout
-      ).should('be.visible');
-    } else if (type === 'contract') {
-      cy.contains(
-        `$VEGA tokens have been returned to Vesting contract`,
-        txTimeout
-      ).should('be.visible');
-    }
+export function stakingPageDisassociateAllTokens(type = 'wallet') {
+  cy.highlight(`Disassociating all tokens via Staking Page`);
+  cy.get(ethWalletDissociateButton).first().click();
+  cy.get(stakeMaximumTokens, epochTimeout).click();
+  cy.get(tokenSubmitButton, epochTimeout).click();
+  if (type === 'wallet') {
+    cy.contains(
+      `$VEGA tokens have been returned to Ethereum wallet`,
+      txTimeout
+    ).should('be.visible');
+  } else if (type === 'contract') {
+    cy.contains(
+      `$VEGA tokens have been returned to Vesting contract`,
+      txTimeout
+    ).should('be.visible');
   }
-);
+}
 
-Cypress.Commands.add(
-  'click_on_validator_from_list',
-  (validatorNumber, validatorName = null) => {
-    cy.contains('Loading...', epochTimeout).should('not.exist');
-    cy.wait_for_beginning_of_epoch();
-    // below is to ensure validator list is shown
-    cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
-    cy.get(stakeValidatorListPendingStake, txTimeout).should(
-      'not.contain',
-      '2,000,000,000,000,000,000.00' // number due to bug #936
+export function clickOnValidatorFromList(
+  validatorNumber: number,
+  validatorName = null
+) {
+  cy.contains('Loading...', epochTimeout).should('not.exist');
+  waitForBeginningOfEpoch();
+  // below is to ensure validator list is shown
+  cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
+  cy.get(stakeValidatorListPendingStake, txTimeout).should(
+    'not.contain',
+    '2,000,000,000,000,000,000.00' // number due to bug #936
+  );
+  if (validatorName) {
+    cy.contains(validatorName).click();
+  } else {
+    cy.get(`[row-id="${validatorNumber}"]`)
+      .should('be.visible')
+      .find(stakeValidatorListName)
+      .click();
+  }
+}
+
+export function validateValidatorListTotalStakeAndShare(
+  positionOnList: string,
+  expectedTotalStake: string,
+  expectedTotalShare: string
+) {
+  cy.contains('Loading...', epochTimeout).should('not.exist');
+  waitForBeginningOfEpoch();
+  cy.get(`[row-id="${positionOnList}"]`).within(() => {
+    cy.get(stakeValidatorListTotalStake, epochTimeout).should(
+      'have.text',
+      expectedTotalStake
     );
-    if (validatorName) {
-      cy.contains(validatorName).click();
-    } else {
-      cy.get(`[row-id="${validatorNumber}"]`)
-        .should('be.visible')
-        .find(stakeValidatorListName)
-        .click();
-    }
-  }
-);
+    cy.get(stakeValidatorListTotalShare, epochTimeout).should(
+      'have.text',
+      expectedTotalShare
+    );
+  });
+}
 
-Cypress.Commands.add(
-  'validate_validator_list_total_stake_and_share',
-  (positionOnList, expectedTotalStake, expectedTotalShare) => {
-    cy.contains('Loading...', epochTimeout).should('not.exist');
-    cy.wait_for_beginning_of_epoch();
-    cy.get(`[row-id="${positionOnList}"]`).within(() => {
-      cy.get(stakeValidatorListTotalStake, epochTimeout).should(
-        'have.text',
-        expectedTotalStake
-      );
-      cy.get(stakeValidatorListTotalShare, epochTimeout).should(
-        'have.text',
-        expectedTotalShare
-      );
+export function ensureSpecifiedUnstakedTokensAreAssociated(
+  tokenAmount: string
+) {
+  cy.highlight(`Ensuring ${tokenAmount} token(s) associated`);
+  cy.get(vegaWalletUnstakedBalance)
+    .children()
+    .children()
+    .eq(1)
+    .invoke('text')
+    .then((unstakedBalance) => {
+      if (parseFloat(unstakedBalance) != parseFloat(tokenAmount)) {
+        vegaWalletTeardown();
+        cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
+          '0.00',
+          txTimeout
+        );
+        stakingPageAssociateTokens(tokenAmount);
+      }
     });
-  }
-);
+}
 
-Cypress.Commands.add(
-  'ensure_specified_unstaked_tokens_are_associated',
-  (tokenAmount) => {
-    cy.highlight(`Ensuring ${tokenAmount} token(s) associated`);
-    cy.get(vegaWalletUnstakedBalance)
-      .children()
-      .children()
-      .eq(1)
-      .invoke('text')
-      .then((unstakedBalance) => {
-        if (parseFloat(unstakedBalance) != parseFloat(tokenAmount)) {
-          cy.vega_wallet_teardown();
-          cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
-            '0.00',
-            txTimeout
-          );
-          cy.staking_page_associate_tokens(tokenAmount);
-        }
-      });
-  }
-);
-
-Cypress.Commands.add('close_staking_dialog', () => {
+export function closeStakingDialog() {
   cy.getByTestId('dialog-title').should(
     'contain.text',
     'At the beginning of the next epoch'
@@ -220,20 +225,26 @@ Cypress.Commands.add('close_staking_dialog', () => {
   cy.getByTestId('dialog-content').within(() => {
     cy.get('a').should('have.text', 'Back to Staking').click();
   });
-});
+}
 
-Cypress.Commands.add(
-  'validate_wallet_currency',
-  (currencyTitle, expectedAmount) => {
-    cy.get("[data-testid='currency-title']")
-      .contains(currencyTitle)
-      .parent()
-      .parent()
-      .within(() => {
-        cy.getByTestId('currency-value', txTimeout).should(
-          'have.text',
-          expectedAmount
-        );
-      });
-  }
-);
+export function validateWalletCurrency(
+  currencyTitle: string,
+  expectedAmount: string
+) {
+  cy.get("[data-testid='currency-title']")
+    .contains(currencyTitle)
+    .parent()
+    .parent()
+    .within(() => {
+      cy.getByTestId('currency-value', txTimeout).should(
+        'have.text',
+        expectedAmount
+      );
+    });
+}
+
+interface associateOptions {
+  approve?: boolean;
+  type?: string;
+  skipConfirmation?: boolean;
+}

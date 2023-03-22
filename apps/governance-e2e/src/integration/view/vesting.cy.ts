@@ -1,3 +1,12 @@
+import {
+  navigateTo,
+  navigation,
+  verifyPageHeader,
+  verifyTabHighlighted,
+} from '../../support/common.functions';
+import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
+
+const connectButton = '[data-testid="connect-to-eth-btn"]';
 const lockedTokensInVestingContract = '6,499,972.30';
 
 context(
@@ -5,12 +14,30 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to vesting page', function () {
-      cy.visit('/token/redeem');
+      cy.visit('/');
+      navigateTo(navigation.vesting);
+    });
+
+    describe('with wallets disconnected', function () {
+      it('should have vesting tab highlighted', function () {
+        verifyTabHighlighted(navigation.vesting);
+      });
+
+      it('should have VESTING header visible', function () {
+        verifyPageHeader('Vesting');
+      });
+
+      // 1005-VEST-018
+      it('should have connect Eth wallet button', function () {
+        cy.get(connectButton)
+          .should('be.visible')
+          .and('have.text', 'Connect Ethereum wallet');
+      });
     });
 
     describe('With Eth wallet connected', function () {
       before('connect eth wallet', function () {
-        cy.ethereum_wallet_connect();
+        ethereumWalletConnect();
         cy.getByTestId('view-connected-eth-btn').click();
       });
 
@@ -105,7 +132,6 @@ context(
             'All the tokens in this tranche are locked and can not be redeemed yet.'
           );
         });
-        cy.connectVegaWallet();
       });
     });
   }

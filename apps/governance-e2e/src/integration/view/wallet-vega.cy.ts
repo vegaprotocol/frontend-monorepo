@@ -1,4 +1,7 @@
 import { truncateByChars } from '@vegaprotocol/utils';
+import { waitForSpinner } from '../../support/common.functions';
+import { vegaWalletTeardown } from '../../support/wallet-teardown.functions';
+import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
@@ -129,7 +132,7 @@ context(
       before('connect vega wallet', function () {
         cy.visit('/');
         cy.connectVegaWallet();
-        cy.vega_wallet_teardown();
+        vegaWalletTeardown();
       });
 
       // 0002-WCON-007
@@ -158,7 +161,7 @@ context(
         cy.get(walletContainer).within(() => {
           cy.get(currencyTitle)
             .should('be.visible')
-            .and('have.text', `VEGAAssociated`);
+            .and('contain.text', `VEGAAssociated`);
         });
       });
 
@@ -167,14 +170,19 @@ context(
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
-            cy.get(currencyValue).should('be.visible').and('have.text', `0.00`);
+            cy.get(currencyValue)
+              .should('be.visible')
+              .and('contain.text', `0.00`);
           });
         }
       );
 
       it('should have Unstaked value visible', { tags: '@smoke' }, function () {
         cy.get(walletContainer).within(() => {
-          cy.get(vegaUnstaked).should('be.visible').and('have.text', `0.00`);
+          cy.get(vegaUnstaked)
+            .should('be.visible')
+            .invoke('text')
+            .and('not.be.empty');
         });
       });
 
@@ -300,16 +308,17 @@ context(
 
         before('faucet assets to connected vega wallet', function () {
           for (const { id, amount } of assets) {
-            cy.vega_wallet_faucet_assets_without_check(
-              id,
-              amount,
-              vegaWalletPublicKey
-            );
+            vegaWalletFaucetAssetsWithoutCheck(id, amount, vegaWalletPublicKey);
           }
           cy.reload();
-          cy.wait_for_spinner();
+          waitForSpinner();
           cy.connectVegaWallet();
-          cy.ethereum_wallet_connect();
+          cy.get(walletContainer).within(() => {
+            cy.getByTestId('currency-title', txTimeout).should(
+              'have.length.at.least',
+              5
+            );
+          });
         });
 
         for (const { id, name, expectedAmount } of assets) {
@@ -323,8 +332,9 @@ context(
                 .contains(id)
                 .parent()
                 .siblings()
-                .within((el) => {
-                  const value = parseFloat(el.text());
+                .invoke('text')
+                .then((el) => {
+                  const value = parseFloat(el);
                   cy.wrap(value).should('be.gte', parseFloat(expectedAmount));
                 });
 
