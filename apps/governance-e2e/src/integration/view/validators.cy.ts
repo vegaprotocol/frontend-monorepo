@@ -19,16 +19,16 @@ const pendingStake = '[data-testid="pending-stake"]';
 const stakedByOperator = '[data-testid="staked-by-operator"]';
 const stakedByDelegates = '[data-testid="staked-by-delegates"]';
 const stakeShare = '[data-testid="stake-percentage"]';
-const stakedByOperatorToolTip = "[data-testid='staked-operator-tooltip']";
-const stakedByDelegatesToolTip = "[data-testid='staked-delegates-tooltip']";
-const totalStakedToolTip = "[data-testid='total-staked-tooltip']";
+const stakedByOperatorToolTip = '[data-testid="staked-operator-tooltip"]';
+const stakedByDelegatesToolTip = '[data-testid="staked-delegates-tooltip"]';
+const totalStakedToolTip = '[data-testid="total-staked-tooltip"]';
 const unnormalisedVotingPowerToolTip =
-  "[data-testid='unnormalised-voting-power-tooltip']";
+  '[data-testid="unnormalised-voting-power-tooltip"]';
 const normalisedVotingPowerToolTip =
-  "[data-testid='normalised-voting-power-tooltip']";
-const performancePenaltyToolTip = "[data-testid='performance-penalty-tooltip']";
-const overstakedPenaltyToolTip = "[data-testid='overstaked-penalty-tooltip']";
-const totalPenaltyToolTip = "[data-testid='total-penalty-tooltip']";
+  '[data-testid="normalised-voting-power-tooltip"]';
+const performancePenaltyToolTip = '[data-testid="performance-penalty-tooltip"]';
+const overstakedPenaltyToolTip = '[data-testid="overstaked-penalty-tooltip"]';
+const totalPenaltyToolTip = '[data-testid="total-penalty-tooltip"]';
 const epochCountDown = '[data-testid="epoch-countdown"]';
 const stakeNumberRegex = /^\d*\.?\d*$/;
 
