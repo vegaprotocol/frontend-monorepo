@@ -27,6 +27,8 @@ import type { ReactNode } from 'react';
 import { ErrorBoundary, Layout } from './layout';
 import compact from 'lodash/compact';
 import { AssetLink, MarketLink } from '../components/links';
+import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
+import { remove0x } from '@vegaprotocol/utils';
 
 export type Navigable = {
   path: string;
@@ -252,7 +254,7 @@ export const routerConfig: Route[] = [
             handle: {
               breadcrumb: (params: Params<string>) => (
                 <Link to={linkTo(Routes.TX, params.txHash)}>
-                  {params.txHash}
+                  {truncateMiddle(remove0x(params.txHash as string))}
                 </Link>
               ),
             },

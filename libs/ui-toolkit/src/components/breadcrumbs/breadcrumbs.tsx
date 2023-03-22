@@ -23,7 +23,10 @@ export const Breadcrumbs = ({
   ));
   return crumbs.length > 0 ? (
     <ol
-      className={classNames(['flex flex-row flex-wrap gap-2'], className)}
+      className={classNames(
+        ['flex flex-row flex-wrap gap-2', 'text-sm sm:text-base'],
+        className
+      )}
       {...props}
     >
       {crumbs}
