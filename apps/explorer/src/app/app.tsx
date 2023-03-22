@@ -1,4 +1,8 @@
-import { NetworkLoader, useEnvironment, useInitializeEnv } from '@vegaprotocol/environment';
+import {
+  NetworkLoader,
+  useEnvironment,
+  useInitializeEnv,
+} from '@vegaprotocol/environment';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
@@ -26,7 +30,7 @@ const DialogsContainer = () => {
 };
 
 function App() {
-  const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment()
+  const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
   return (
     <TendermintWebsocketProvider>
       <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>

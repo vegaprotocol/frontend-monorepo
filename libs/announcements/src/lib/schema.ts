@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
-const AppName = z.enum(['console', 'governance', 'explorer', 'wallet', 'website']);
+const AppName = z.enum([
+  'console',
+  'governance',
+  'explorer',
+  'wallet',
+  'website',
+]);
 
 export type AppNameType = z.infer<typeof AppName>;
 

@@ -1,6 +1,6 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { ViewingAsBanner } from '@vegaprotocol/ui-toolkit';
-import { AnnouncementBanner } from '@vegaprotocol/announcements'
+import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 
