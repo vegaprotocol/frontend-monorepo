@@ -14,14 +14,18 @@ export const Breadcrumbs = ({
     <li
       key={i}
       className={classNames(
-        'before:content-["/"] before:pr-2 before:text-vega-light-300 dark:before:text-vega-dark-300'
+        'before:content-["/"] before:pr-2 before:text-vega-light-300 dark:before:text-vega-dark-300',
+        'overflow-hidden text-ellipsis'
       )}
     >
       {crumb}
     </li>
   ));
   return crumbs.length > 0 ? (
-    <ol className={classNames(['flex flex-row gap-2'], className)} {...props}>
+    <ol
+      className={classNames(['flex flex-row flex-wrap gap-2'], className)}
+      {...props}
+    >
       {crumbs}
     </ol>
   ) : null;
