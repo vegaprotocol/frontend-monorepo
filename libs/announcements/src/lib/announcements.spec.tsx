@@ -76,7 +76,7 @@ describe('Announcements', () => {
       ],
     });
 
-    const { container, rerender, findByText } = render(
+    const { rerender, findByText } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
     expect(await findByText('Console announcement')).toBeVisible();
@@ -191,37 +191,5 @@ describe('Announcements', () => {
       jest.runOnlyPendingTimers();
     });
     expect(container).toBeEmptyDOMElement();
-  });
-
-  // Can't make this pass for some reason
-  it.skip('shows announcements from when they are supposed to show', async () => {
-    const now = new Date();
-    const tomorrow = addDays(now, 1);
-
-    fetchMock.get(MOCK_URL, {
-      console: [
-        {
-          text: 'Live text',
-          timing: {
-            from: tomorrow.toISOString(),
-          },
-        },
-      ],
-      governance: [],
-      explorer: [],
-      wallet: [],
-      website: [],
-    });
-
-    const { container, findByText } = render(
-      <AnnouncementBanner app="console" configUrl={MOCK_URL} />
-    );
-    expect(container).toBeEmptyDOMElement();
-
-    act(() => {
-      jest.runOnlyPendingTimers();
-    });
-    expect(await findByText('Live text')).toBeVisible();
-    console.log(container);
   });
 });

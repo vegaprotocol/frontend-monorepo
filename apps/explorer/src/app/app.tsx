@@ -14,7 +14,6 @@ import {
 } from '@vegaprotocol/assets';
 import { DEFAULT_CACHE_CONFIG } from '@vegaprotocol/apollo-client';
 import classNames from 'classnames';
-import { useState } from 'react';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, asJson, setOpen } = useAssetDetailsDialogStore();

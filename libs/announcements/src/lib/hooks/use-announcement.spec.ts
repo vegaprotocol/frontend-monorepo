@@ -9,7 +9,7 @@ const MOCK_ANNOUNCEMENT = {
   urlText: 'Read more',
 };
 
-describe.skip('Use announcement hook', () => {
+describe('Use announcement hook', () => {
   afterEach(() => {
     fetchMock.reset();
   });
