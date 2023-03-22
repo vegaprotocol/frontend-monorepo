@@ -106,7 +106,8 @@ jobs:
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
           load: true
-          tags: vegaprotocol/${{ matrix.app }}:local
+          tags: |
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
       - name: Sanity check docker image
         run: |
@@ -126,8 +127,8 @@ jobs:
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
           # platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
           tags: |
-            vegaprotocol/${{ matrix.app }}:latest
-            vegaprotocol/${{ matrix.app }}:${{ steps.tags.outputs.version }}
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:latest
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ steps.tags.outputs.version }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
