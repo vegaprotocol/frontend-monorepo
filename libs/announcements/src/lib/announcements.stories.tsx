@@ -1,5 +1,4 @@
 import fetchMock from 'fetch-mock';
-import { addSeconds } from 'date-fns';
 import type { Story, Meta } from '@storybook/react';
 import { AnnouncementBanner } from './announcements';
 

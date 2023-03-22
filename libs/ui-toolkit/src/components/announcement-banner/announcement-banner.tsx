@@ -10,7 +10,7 @@ export const AnnouncementBanner = ({ className, children }: BannerProps) => {
   const bannerClasses = classnames(
     "bg-[url('https://static.vega.xyz/assets/img/banner-bg.jpg')] bg-cover bg-center bg-no-repeat",
     'p-4',
-    className,
+    className
   );
 
   return <div className={bannerClasses}>{children}</div>;
