@@ -15,18 +15,18 @@ export type AnnouncementBannerProps = {
 const MAX_DELAY = 2147483648;
 
 const doesStartInTheFuture = (now: Date, data: Announcement) => {
-  return data.timing?.from ? (
-    now < data.timing.from &&
-    data.timing.from.valueOf() - now.valueOf() < MAX_DELAY
-  ) : false
-}
+  return data.timing?.from
+    ? now < data.timing.from &&
+        data.timing.from.valueOf() - now.valueOf() < MAX_DELAY
+    : false;
+};
 
 const doesEndInTheFuture = (now: Date, data: Announcement) => {
-  return data.timing?.to ? (
-    now < data.timing.to &&
-    data.timing.to.valueOf() - now.valueOf() < MAX_DELAY
-  ) : false
-}
+  return data.timing?.to
+    ? now < data.timing.to &&
+        data.timing.to.valueOf() - now.valueOf() < MAX_DELAY
+    : false;
+};
 
 export const AnnouncementBanner = ({
   app,
@@ -41,13 +41,13 @@ export const AnnouncementBanner = ({
     let stampTo: NodeJS.Timeout;
 
     if (data) {
-      const startsInTheFuture = doesStartInTheFuture(now, data)
-      const endsInTheFuture = doesEndInTheFuture(now, data)
+      const startsInTheFuture = doesStartInTheFuture(now, data);
+      const endsInTheFuture = doesEndInTheFuture(now, data);
 
       if (!startsInTheFuture) {
         setVisible(true);
       }
-      
+
       if (data.timing?.from && startsInTheFuture) {
         stampFrom = setTimeout(() => {
           setVisible(true);
