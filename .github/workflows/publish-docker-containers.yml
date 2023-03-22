@@ -56,10 +56,14 @@ jobs:
 
       - name: Sanity check docker image
         run: |
-          docker run --rm vegaprotocol/${{ matrix.app }}:local cat .env
-          docker run --rm vegaprotocol/${{ matrix.app }}:local ls -lah
+          echo "Check .env file"
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat .env
+          echo "Check ipfs-hash"
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
+          echo "List html directory"
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah
 
-      - name: Build and push to DockerHub
+      - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v3
         with:
