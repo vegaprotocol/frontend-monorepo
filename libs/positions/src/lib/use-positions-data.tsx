@@ -11,8 +11,7 @@ export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
 export const usePositionsData = (
   partyId: string,
-  gridRef: RefObject<AgGridReact>,
-  clientSideModel?: boolean
+  gridRef: RefObject<AgGridReact>
 ) => {
   const variables = useMemo<PositionsQueryVariables>(
     () => ({ partyId }),
@@ -21,13 +20,28 @@ export const usePositionsData = (
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
-      return clientSideModel ? false : updateGridData(dataRef, data, gridRef);
+      if (gridRef.current?.api?.getModel().getType() === 'infinite') {
+        return updateGridData(dataRef, data, gridRef);
+      }
+      gridRef.current?.api?.applyTransaction({ update: data });
+      return true;
     },
-    [gridRef, clientSideModel]
+    [gridRef]
+  );
+  const insert = useCallback(
+    ({ data }: { data: Position[] | null }) => {
+      if (gridRef.current?.api?.getModel().getType() === 'infinite') {
+        return updateGridData(dataRef, data, gridRef);
+      }
+      gridRef.current?.api?.applyTransaction({ add: data });
+      return true;
+    },
+    [gridRef]
   );
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: positionsMetricsProvider,
     update,
+    insert,
     variables,
   });
   const getRows = useCallback(
