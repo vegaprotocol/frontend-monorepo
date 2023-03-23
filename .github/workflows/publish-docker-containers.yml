@@ -26,12 +26,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Determine Docker Image tag
         id: tags
         run: |
           npmVersion=$(cat .nvmrc | head -n 1)
-          versionTag=${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.head_ref }}
+          versionTag=${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.sha }}
           echo ::set-output name=npmVersion::${npmVersion}
           echo ::set-output name=version::${versionTag}
 
