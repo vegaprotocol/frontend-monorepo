@@ -1,107 +1,89 @@
-import { useEffect } from 'react';
-import classnames from 'classnames';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { statsFields } from '../../config/stats-fields';
-import type {
-  Stats as IStats,
-  StructuredStats as IStructuredStats,
-} from '../../config/types';
-import { Table } from '../table';
-import { TableRow } from '../table-row';
-import { PromotedStats } from '../promoted-stats';
-import { PromotedStatsItem } from '../promoted-stats-item';
+import type { Statistics, NodeData } from '../../config/stats-fields';
+import { fieldsDefinition } from '../../config/stats-fields';
 import { useStatsQuery } from './__generated__/Stats';
-import type { StatsQuery } from './__generated__/Stats';
+import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import classNames from 'classnames';
+import { useEffect } from 'react';
 
 interface StatsManagerProps {
   className?: string;
 }
 
-const compileData = (data?: StatsQuery) => {
-  const { nodeData, statistics } = data || {};
-  const returned = { ...nodeData, ...statistics };
-
-  // Loop through the stats fields config, grabbing values from the fetched
-  // data and building a set of promoted and standard table entries.
-  return Object.entries(statsFields).reduce(
-    (acc, [key, value]) => {
-      const statKey = key as keyof IStats;
-      const statData = returned[statKey];
-
-      value.forEach((x) => {
-        const stat = {
-          ...x,
-          value: statData || '-',
-        };
-
-        stat.promoted ? acc.promoted.push(stat) : acc.table.push(stat);
-      });
-
-      return acc;
-    },
-    { promoted: [], table: [] } as IStructuredStats
-  );
-};
-
 export const StatsManager = ({ className }: StatsManagerProps) => {
   const { VEGA_ENV } = useEnvironment();
-  const { data, error, startPolling, stopPolling } = useStatsQuery();
+  const { data, startPolling, stopPolling } = useStatsQuery();
 
   useEffect(() => {
-    startPolling(1000);
+    startPolling(500);
     return () => stopPolling();
-  });
+  }, [startPolling, stopPolling]);
 
-  const displayData = compileData(data);
+  const getValue = (field: keyof NodeData | keyof Statistics) =>
+    ['stakedTotal', 'totalNodes', 'inactiveNodes'].includes(field)
+      ? data?.nodeData?.[field as keyof NodeData]
+      : data?.statistics?.[field as keyof Statistics];
 
-  const classes = classnames(
-    className,
-    'stats-grid w-full self-start justify-self-center'
+  const panels = fieldsDefinition.map(
+    ({ field, title, description, formatter, goodThreshold }) => ({
+      field,
+      title,
+      description,
+      value: formatter ? formatter(getValue(field)) : getValue(field),
+      good:
+        goodThreshold && getValue(field)
+          ? goodThreshold(getValue(field))
+          : undefined,
+    })
   );
 
   return (
-    <div className={classes}>
-      <h3
-        data-testid="stats-environment"
-        className="font-alpha calt uppercase text-2xl pb-8 col-span-full"
-      >
-        {(error && `/ ${error}`) ||
-          (data ? `/ ${VEGA_ENV}` : '/ Connecting...')}
-      </h3>
-
-      {displayData?.promoted ? (
-        <PromotedStats>
-          {displayData.promoted.map((stat, i) => {
-            return (
-              <PromotedStatsItem
-                title={stat.title}
-                value={stat.value || '-'}
-                formatter={stat.formatter}
-                goodThreshold={stat.goodThreshold}
-                description={stat.description}
-                key={i}
-              />
-            );
-          })}
-        </PromotedStats>
-      ) : null}
-
-      <Table>
-        {displayData?.table
-          ? displayData.table.map((stat, i) => {
-              return (
-                <TableRow
-                  title={stat.title}
-                  value={stat.value || '-'}
-                  formatter={stat.formatter}
-                  goodThreshold={stat.goodThreshold}
-                  description={stat.description}
-                  key={i}
-                />
-              );
-            })
-          : null}
-      </Table>
+    <div
+      className={classNames(
+        'grid grid-cols-2 md:grid-cols-3 gap-3 w-full self-start justify-self-center',
+        className
+      )}
+    >
+      {panels.map(({ field, title, description, value, good }, i) => (
+        <div
+          key={i}
+          className={classNames(
+            'border rounded p-2 relative border-vega-light-200 dark:border-vega-dark-200',
+            {
+              'col-span-2': field === 'chainId' || field === 'status',
+            },
+            {
+              'bg-transparent border-vega-light-200 dark:border-vega-dark-200':
+                good === undefined,
+              'bg-vega-pink-300 dark:bg-vega-pink-700 border-vega-pink-500 dark:border-vega-pink-500':
+                good !== undefined && !good,
+              'bg-vega-green-300 dark:bg-vega-green-700 border-vega-green-500 dark:border-vega-green-500':
+                good !== undefined && good,
+            }
+          )}
+        >
+          <div className="uppercase flex items-center gap-2 text-xs font-alpha calt">
+            <div
+              className={classNames('w-2 h-2 rounded-full', {
+                'bg-vega-light-150 dark:bg-vega-dark-150': good === undefined,
+                'bg-vega-pink dark:bg-vega-pink': good !== undefined && !good,
+                'bg-vega-green dark:bg-vega-green': good !== undefined && good,
+              })}
+            ></div>
+            <div>{title}</div>
+            {description && (
+              <Tooltip description={description} align="center">
+                <div className="absolute top-1 right-2 text-vega-light-200 dark:text-vega-dark-200 cursor-help">
+                  <Icon name="info-sign" size={3} />
+                </div>
+              </Tooltip>
+            )}
+          </div>
+          <div className="font-mono text-xl pt-2">
+            {value} {field === 'status' && `(${VEGA_ENV})`}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

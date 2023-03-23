@@ -1,4 +1,4 @@
-import { matchPath, useLocation } from 'react-router-dom';
+import { matchPath, useLocation, useMatch } from 'react-router-dom';
 import {
   ThemeSwitcher,
   Navigation,
@@ -26,6 +26,7 @@ const routeToNavigationItem = (r: Navigable) => (
 );
 
 export const Header = () => {
+  const isHome = Boolean(useMatch(Routes.HOME));
   const pages = routerConfig[0].children || [];
   const mainItems = compact(
     [Routes.TX, Routes.BLOCKS, Routes.ORACLES, Routes.VALIDATORS].map((n) =>
@@ -69,7 +70,7 @@ export const Header = () => {
       actions={
         <>
           <ThemeSwitcher />
-          <Search />
+          {!isHome && <Search />}
         </>
       }
       onResize={(width, el) => {

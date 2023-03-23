@@ -17,10 +17,12 @@ import {
   isRouteErrorResponse,
   Link,
   Outlet,
+  useMatch,
   useRouteError,
 } from 'react-router-dom';
 import { Footer } from '../components/footer/footer';
 import { Header } from '../components/header';
+import { Routes } from './route-names';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, asJson, setOpen } = useAssetDetailsDialogStore();
@@ -63,6 +65,7 @@ const MainnetSimAd = () => {
 };
 
 export const Layout = () => {
+  const isHome = Boolean(useMatch(Routes.HOME));
   return (
     <>
       <div
@@ -81,7 +84,7 @@ export const Layout = () => {
         </div>
         <div>
           <main className="p-4">
-            <BreadcrumbsContainer className="mb-4" />
+            {!isHome && <BreadcrumbsContainer className="mb-4" />}
             <Outlet />
           </main>
         </div>
@@ -119,7 +122,7 @@ export const ErrorBoundary = () => {
       >
         <div className="flex gap-4">
           <div>{GHOST}</div>
-          <h1 className="text-[3rem] font-alpha calt break-all uppercase">
+          <h1 className="text-[2.7rem] font-alpha calt break-words uppercase">
             {errorTitle}
           </h1>
         </div>
