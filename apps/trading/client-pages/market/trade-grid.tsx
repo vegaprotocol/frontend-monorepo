@@ -102,6 +102,7 @@ const MarketBottomPanel = memo(
                   <TradingViews.Orders
                     marketId={marketId}
                     onMarketClick={onMarketClick}
+                    enforceBottomPlaceholder
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -157,6 +158,7 @@ const MarketBottomPanel = memo(
               <TradingViews.Orders
                 marketId={marketId}
                 onMarketClick={onMarketClick}
+                enforceBottomPlaceholder
               />
             </VegaWalletContainer>
           </Tab>

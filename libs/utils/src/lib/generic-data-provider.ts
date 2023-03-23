@@ -258,7 +258,16 @@ function makeDataProviderInternal<
     client
       .query<QueryData>({
         query,
-        variables: { ...variables, ...(pagination && { pagination }) },
+        variables: {
+          ...variables,
+          ...(pagination && {
+            // let the variables pagination be prior to provider param
+            pagination: {
+              ...pagination,
+              ...(variables?.['pagination'] ?? null),
+            },
+          }),
+        },
         fetchPolicy: fetchPolicy || 'no-cache',
         context: additionalContext,
         errorPolicy: policy || 'none',

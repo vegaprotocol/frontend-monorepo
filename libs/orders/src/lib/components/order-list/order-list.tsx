@@ -39,10 +39,10 @@ export const OrderListTable = memo(
       return (
         <AgGrid
           ref={ref}
-          overlayNoRowsTemplate={t('No orders')}
           defaultColDef={{
             flex: 1,
             resizable: true,
+            sortable: true,
             filterParams: { buttons: ['reset'] },
           }}
           style={{
@@ -74,6 +74,7 @@ export const OrderListTable = memo(
                 value
               )
             }
+            minWidth={150}
           />
           <AgGridColumn
             headerName={t('Size')}
@@ -89,7 +90,6 @@ export const OrderListTable = memo(
             valueFormatter={({
               value,
               data,
-              node,
             }: VegaValueFormatterParams<Order, 'size'>) => {
               if (!data) {
                 return undefined;
@@ -110,6 +110,7 @@ export const OrderListTable = memo(
                 )
               );
             }}
+            minWidth={80}
           />
           <AgGridColumn
             field="type"
@@ -120,7 +121,6 @@ export const OrderListTable = memo(
             valueFormatter={({
               data: order,
               value,
-              node,
             }: VegaValueFormatterParams<Order, 'type'>) => {
               if (!order) {
                 return undefined;
@@ -130,6 +130,7 @@ export const OrderListTable = memo(
               if (order?.liquidityProvision) return t('Liquidity provision');
               return Schema.OrderTypeMapping[value];
             }}
+            minWidth={80}
           />
           <AgGridColumn
             field="status"
@@ -160,6 +161,7 @@ export const OrderListTable = memo(
                 {valueFormatted}
               </span>
             )}
+            minWidth={100}
           />
           <AgGridColumn
             headerName={t('Filled')}
@@ -186,6 +188,7 @@ export const OrderListTable = memo(
                 dps
               )}/${addDecimalsFormatNumber(size.toString(), dps)}`;
             }}
+            minWidth={100}
           />
           <AgGridColumn
             field="price"
@@ -208,6 +211,7 @@ export const OrderListTable = memo(
               }
               return addDecimalsFormatNumber(value, data.market.decimalPlaces);
             }}
+            minWidth={100}
           />
           <AgGridColumn
             field="timeInForce"
@@ -231,6 +235,7 @@ export const OrderListTable = memo(
 
               return value ? Schema.OrderTimeInForceMapping[value] : '';
             }}
+            minWidth={150}
           />
           <AgGridColumn
             field="createdAt"
@@ -244,6 +249,7 @@ export const OrderListTable = memo(
                 </span>
               );
             }}
+            minWidth={150}
           />
           <AgGridColumn
             field="updatedAt"
@@ -261,6 +267,7 @@ export const OrderListTable = memo(
                 </span>
               );
             }}
+            minWidth={150}
           />
           <AgGridColumn
             colId="amend"
@@ -284,6 +291,7 @@ export const OrderListTable = memo(
                 </>
               ) : null;
             }}
+            sortable={false}
           />
         </AgGrid>
       );
