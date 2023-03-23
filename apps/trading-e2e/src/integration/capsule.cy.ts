@@ -143,6 +143,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   it('can not withdrawal because of no MultiSign', function () {
     // 1002-WITH-022
     // 1002-WITH-023
+    // 0003-WTXN-011
 
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();

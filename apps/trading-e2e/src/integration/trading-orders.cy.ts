@@ -22,7 +22,7 @@ const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
 
 describe('orders list', { tags: '@smoke' }, () => {
-  before(() => {
+  beforeEach(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
@@ -82,6 +82,13 @@ describe('orders list', { tags: '@smoke' }, () => {
       '94aead3ca92dc932efcb503631b03a410e2a5d4606cae6083e2406dc38e52f78';
 
     cy.getByTestId('tab-orders').should('be.visible');
+    cy.get('.ag-header-container').within(() => {
+      cy.get('[col-id="status"]').realHover();
+      cy.get('[col-id="status"] .ag-icon-menu').click();
+    });
+    cy.contains('Partially Filled').click();
+    cy.getByTestId('Orders').click();
+
     cy.get(`[row-id="${partiallyFilledId}"]`).within(() => {
       cy.get(`[col-id='${orderStatus}']`).should(
         'have.text',
@@ -102,6 +109,12 @@ describe('orders list', { tags: '@smoke' }, () => {
       'BTCUSD.MF21',
       'BTCUSD.MF21',
     ];
+    cy.get('.ag-header-container').within(() => {
+      cy.get('[col-id="status"]').realHover();
+      cy.get('[col-id="status"] .ag-icon-menu').click();
+    });
+    cy.contains('Reset').click();
+    cy.getByTestId('Orders').click();
 
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)

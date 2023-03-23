@@ -96,12 +96,13 @@ const MarketBottomPanel = memo(
           minSize={50}
         >
           <TradeGridChild>
-            <Tabs storageKey="console-trade-grid-orders">
+            <Tabs storageKey="console-trade-grid-bottom-left">
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
                   <TradingViews.Orders
                     marketId={marketId}
                     onMarketClick={onMarketClick}
+                    enforceBottomPlaceholder
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -122,7 +123,7 @@ const MarketBottomPanel = memo(
           minSize={50}
         >
           <TradeGridChild>
-            <Tabs storageKey="console-trade-grid-positions">
+            <Tabs storageKey="console-trade-grid-bottom-right">
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
                   <TradingViews.Positions
@@ -146,7 +147,7 @@ const MarketBottomPanel = memo(
       </ResizableGrid>
     ) : (
       <TradeGridChild>
-        <Tabs storageKey="console-trade-grid-positions">
+        <Tabs storageKey="console-trade-grid-bottom">
           <Tab id="positions" name={t('Positions')}>
             <VegaWalletContainer>
               <TradingViews.Positions onMarketClick={onMarketClick} />
@@ -157,6 +158,7 @@ const MarketBottomPanel = memo(
               <TradingViews.Orders
                 marketId={marketId}
                 onMarketClick={onMarketClick}
+                enforceBottomPlaceholder
               />
             </VegaWalletContainer>
           </Tab>
@@ -201,7 +203,7 @@ const MainGrid = memo(
               preferredSize="50%"
             >
               <TradeGridChild>
-                <Tabs storageKey="console-trade-grid-chart">
+                <Tabs storageKey="console-trade-grid-main-left">
                   <Tab id="chart" name={t('Chart')}>
                     <TradingViews.Candles marketId={marketId} />
                   </Tab>
@@ -220,7 +222,7 @@ const MainGrid = memo(
               minSize={300}
             >
               <TradeGridChild>
-                <Tabs storageKey="console-trade-grid-ticket">
+                <Tabs storageKey="console-trade-grid-main-center">
                   <Tab id="ticket" name={t('Ticket')}>
                     <TradingViews.Ticket
                       marketId={marketId}
@@ -244,7 +246,7 @@ const MainGrid = memo(
               minSize={200}
             >
               <TradeGridChild>
-                <Tabs storageKey="console-trade-grid-orderbook">
+                <Tabs storageKey="console-trade-grid-main-right">
                   <Tab id="orderbook" name={t('Orderbook')}>
                     <TradingViews.Orderbook marketId={marketId} />
                   </Tab>

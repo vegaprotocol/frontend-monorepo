@@ -45,7 +45,7 @@ export const Portfolio = () => {
       <ResizableGrid vertical>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
-            <Tabs storageKey="console-portfolio-account-history">
+            <Tabs storageKey="console-portfolio-top">
               <Tab id="account-history" name={t('Account history')}>
                 <VegaWalletContainer>
                   <AccountHistoryContainer />
@@ -83,7 +83,7 @@ export const Portfolio = () => {
           minSize={50}
         >
           <PortfolioGridChild>
-            <Tabs storageKey="console-portfolio-collateral">
+            <Tabs storageKey="console-portfolio-bottom">
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
                   <AccountsContainer />
