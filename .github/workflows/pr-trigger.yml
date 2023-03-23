@@ -12,7 +12,7 @@ on:
       - synchronize
       - ready_for_review
 jobs:
-  pr:
+  define-affected-apps:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout frontend mono repo
@@ -20,14 +20,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check node version
+        id: node-version
+        run: |
+          npmVersion=$(cat .nvmrc | head -n 1)
+          echo ::set-output name=npmVersion::${npmVersion}
+
       - name: Setup node
         uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.node-version.outputs.npmVersion }}
 
-      - name: Remove package.json & yarn.lock to avoid installing everything
-        run: rm package.json yarn.lock
-
-      - name: Install nx
-        run: yarn add nx
+      - name: Setup nx
+        run: |
+          rm package.json yarn.lock
+          yarn add nx
+          git restore package.json yarn.lock
 
       # Check SHAs
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
@@ -41,26 +49,36 @@ jobs:
         run: |
           affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
           echo -n "Affected projects: $affected"
-          projects=""
-          if [[ $affected == *"governance"* ]]; then projects+='"governance-e2e" '; fi
-          if [[ $affected == *"trading"* ]]; then projects+='"trading-e2e" '; fi
-          if [[ $affected == *"explorer"* ]]; then projects+='"explorer-e2e" '; fi
-          if [[ -z "$projects" ]]; then projects+='"governance-e2e" "trading-e2e" "explorer-e2e" '; fi
-          projects=${projects%?}
-          projects=[${projects// /,}]
-          echo PROJECTS=$projects >> $GITHUB_ENV
+          projects_e2e=""
+          if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
+          if [[ $affected == *"trading"* ]]; then projects_e2e+='"trading-e2e" '; fi
+          if [[ $affected == *"explorer"* ]]; then projects_e2e+='"explorer-e2e" '; fi
+          if [[ -z "$projects_e2e" ]]; then projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '; fi
+          projects_e2e=${projects_e2e%?}
+          projects_e2e=[${projects_e2e// /,}]
+          echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
+          echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
 
     outputs:
       projects: ${{ env.PROJECTS }}
+      projects-e2e: ${{ env.PROJECTS_E2E }}
 
-  run:
-    needs: pr
+  run-cypress:
+    needs: define-affected-apps
     if: ${{ needs.pr.outputs.projects != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
-      projects: ${{ needs.pr.outputs.projects }}
+      projects: ${{ needs.pr.outputs.projects-e2e }}
       tags: '@smoke @regression'
+
+  run-docker-build:
+    needs: define-affected-apps
+    if: ${{ needs.pr.outputs.projects != '[]' }}
+    uses: ./.github/workflows/publish-docker-containers.yml
+    secrets: inherit
+    with:
+      projects: ${{ needs.pr.outputs.projects }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   result:
