@@ -39,6 +39,26 @@ const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.OHLC, IconNames.WATERFALL_CHART],
 ]);
 
+const getValidItem = <T,>(
+  value: T | null | undefined,
+  set: T[],
+  defaultValue: T
+) =>
+  value !== null && value !== undefined && set.includes(value)
+    ? value
+    : defaultValue;
+
+const getValidSubset = <T,>(
+  value: T[] | null | undefined,
+  set: T[],
+  defaultValue: T[]
+) =>
+  value !== null && value !== undefined
+    ? value.filter((item) => set.includes(item))
+    : defaultValue;
+
+const SET_SEPARATOR = '\t';
+
 export type CandlesChartContainerProps = {
   marketId: string;
 };
@@ -63,39 +83,35 @@ export const CandlesChartContainer = ({
     'console-candels-chart-study'
   );
 
-  const interval: Interval = Object.values(Interval).includes(
-    storedInterval as Interval
-  )
-    ? (storedInterval as Interval)
-    : Interval.I15M;
+  const interval: Interval = getValidItem(
+    storedInterval as Interval,
+    Object.values(Interval),
+    Interval.I15M
+  );
 
-  const chartType: ChartType =
-    storedChartType &&
-    Object.values(ChartType).includes(storedChartType as ChartType)
-      ? (storedChartType as ChartType)
-      : ChartType.CANDLE;
+  const chartType: ChartType = getValidItem(
+    storedChartType as ChartType,
+    Object.values(ChartType),
+    ChartType.CANDLE
+  );
 
   const setOverlays = (overlays: Overlay[]) =>
-    storeOverlays(overlays.join(','));
-  const overlays: Overlay[] = [];
-  if (storedOverlays) {
-    storedOverlays.split(',').forEach((overlay) => {
-      if (Object.values(Overlay).includes(overlay as Overlay)) {
-        overlays.push(overlay as Overlay);
-      }
-    });
-  }
+    storeOverlays(overlays.join(SET_SEPARATOR));
 
-  const setStudies = (studies: Study[]) => storeStudies(studies.join(','));
-  const studies: Study[] = [Study.VOLUME];
-  if (storedStudies) {
-    studies.pop();
-    storedStudies.split(',').forEach((study) => {
-      if (Object.values(Study).includes(study as Study)) {
-        studies.push(study as Study);
-      }
-    });
-  }
+  const overlays: Overlay[] = getValidSubset(
+    storedOverlays ? (storedOverlays.split(SET_SEPARATOR) as Overlay[]) : null,
+    Object.values(Overlay),
+    []
+  );
+
+  const setStudies = (studies: Study[]) =>
+    storeStudies(studies.join(SET_SEPARATOR));
+
+  const studies: Study[] = getValidSubset(
+    storedStudies ? (storedStudies.split(SET_SEPARATOR) as Study[]) : null,
+    Object.values(Study),
+    [Study.VOLUME]
+  );
 
   const dataSource = useMemo(() => {
     return new VegaDataSource(client, marketId, pubKey);
