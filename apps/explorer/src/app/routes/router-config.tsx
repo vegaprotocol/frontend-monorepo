@@ -79,7 +79,7 @@ const partiesRoutes: Route[] = flags.parties
             handle: {
               breadcrumb: (params: Params<string>) => (
                 <Link to={linkTo(Routes.PARTIES, params.party)}>
-                  {params.party}
+                  {truncateMiddle(params.party as string)}
                 </Link>
               ),
             },
@@ -309,7 +309,9 @@ export const routerConfig: Route[] = [
             element: <Oracle />,
             handle: {
               breadcrumb: (params: Params<string>) => (
-                <Link to={linkTo(Routes.ORACLES, params.id)}>{params.id}</Link>
+                <Link to={linkTo(Routes.ORACLES, params.id)}>
+                  {truncateMiddle(params.id as string)}
+                </Link>
               ),
             },
           },
