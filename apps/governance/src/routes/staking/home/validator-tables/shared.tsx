@@ -46,22 +46,6 @@ export const addUserDataToValidator = (
   nextEpochUserStaking: StakingDelegationFieldsFragment | undefined,
   currentUserStakeAvailable: string
 ) => {
-  if (currentEpochUserStaking && nextEpochUserStaking) {
-    console.log(
-      `validator name ${validator.name}, currentEpochUserStaking ${
-        currentEpochUserStaking?.amount
-      }, nextEpochUserStaking ${
-        nextEpochUserStaking?.amount
-      }, currentUserStakeAvailable ${currentUserStakeAvailable}, pending user stake currently calculated as ${
-        currentEpochUserStaking &&
-        nextEpochUserStaking &&
-        new BigNumber(nextEpochUserStaking?.amount)
-          .minus(new BigNumber(currentEpochUserStaking.amount))
-          .toString()
-      }`
-    );
-  }
-
   return {
     ...validator,
     [ValidatorFields.STAKED_BY_USER]:
@@ -74,10 +58,10 @@ export const addUserDataToValidator = (
           .toString()
       : undefined,
     [ValidatorFields.USER_STAKE_SHARE]:
-      currentEpochUserStaking && Number(currentEpochUserStaking) > 0
-        ? new BigNumber(currentEpochUserStaking.amount)
-            .dividedBy(new BigNumber(currentUserStakeAvailable))
-            .times(100)
+      currentEpochUserStaking && Number(currentEpochUserStaking.amount) > 0
+        ? new BigNumber(currentEpochUserStaking.amount).dividedBy(
+            new BigNumber(currentUserStakeAvailable)
+          )
         : undefined,
   };
 };
@@ -323,16 +307,16 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
 interface StakeShareRendererProps {
   data: {
     stakeShare: string;
-    stakedByUser: string | undefined;
+    userStakeShare: string | undefined;
   };
 }
 
 export const StakeShareRenderer = ({ data }: StakeShareRendererProps) => {
   return (
     <div className="flex flex-col">
-      {data.stakedByUser && (
+      {data.userStakeShare && (
         <span data-testid="user-stake-share" className="text-vega-green">
-          {data.stakedByUser}%
+          {data.userStakeShare}
         </span>
       )}
       <span data-testid="total-stake-share">{data.stakeShare}</span>
