@@ -14,8 +14,8 @@ const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const associateContractRadioButton = '[data-testid="associate-radio-contract"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
-const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
-const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
+const stakeValidatorListTotalStake = 'total-stake';
+const stakeValidatorListTotalShare = 'total-stake-share';
 const stakeValidatorListName = '[col-id="validator"]';
 const vegaKeySelector = '#vega-key-selector';
 const dialogCloseButton = '[data-testid="dialog-close"]';
@@ -185,11 +185,11 @@ export function validateValidatorListTotalStakeAndShare(
   cy.contains('Loading...', epochTimeout).should('not.exist');
   waitForBeginningOfEpoch();
   cy.get(`[row-id="${positionOnList}"]`).within(() => {
-    cy.get(stakeValidatorListTotalStake, epochTimeout).should(
+    cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
       'have.text',
       expectedTotalStake
     );
-    cy.get(stakeValidatorListTotalShare, epochTimeout).should(
+    cy.getByTestId(stakeValidatorListTotalShare, epochTimeout).should(
       'have.text',
       expectedTotalShare
     );
