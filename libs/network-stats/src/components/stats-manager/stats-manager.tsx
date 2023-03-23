@@ -70,7 +70,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
                 'bg-vega-green dark:bg-vega-green': good !== undefined && good,
               })}
             ></div>
-            <div>{title}</div>
+            <div data-testid="stats-title">{title}</div>
             {description && (
               <Tooltip description={description} align="center">
                 <div className="absolute top-1 right-2 text-vega-light-200 dark:text-vega-dark-200 cursor-help">
@@ -79,7 +79,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
               </Tooltip>
             )}
           </div>
-          <div className="font-mono text-xl pt-2">
+          <div data-testid="stats-value" className="font-mono text-xl pt-2">
             {value} {field === 'status' && `(${VEGA_ENV})`}
           </div>
         </div>
