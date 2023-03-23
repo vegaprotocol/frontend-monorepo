@@ -1,54 +1,20 @@
 name: Publish docker containers
 
 'on':
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+-*'
-
-  workflow_dispatch:
-    inputs:
-      publish:
-        description: 'Publish tag to Docker Hub & GitHub Registry'
-        required: false
-        type: boolean
-        default: false
-      tag:
-        description: 'Git Tag to build and publish'
-        required: false
-        type: string
-        default: ''
-      apps:
-        description: 'Applications to build and publish'
-        required: false
-        type: choice
-        options:
-          - '["explorer", "token", "trading"]'
-          - '["explorer"]'
-          - '["token"]'
-          - '["trading"]'
-      archs:
-        description: 'Architecture to build and publish'
-        required: false
-        type: choice
-        options:
-          - linux/amd64, linux/arm64
-          - linux/amd64
-          - linux/arm64
+  pull_request:
 
 jobs:
   master:
     strategy:
       fail-fast: false
+      # to be replaced by nix: https://github.com/vegaprotocol/frontend-monorepo/blob/develop/tools/ipfs-deploy.js#L106-L108
       matrix:
-        app: ${{ fromJson(inputs.apps || '["explorer", "token", "trading"]') }}
+        app: ${{ fromJson('["explorer"]') }}
     name: Build the ${{ matrix.app }} image
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.tag }}
 
       - name: Set up QEMU
         id: quemu
@@ -60,67 +26,64 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Login to DockerHub
-        if: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+      # https://docs.github.com/en/actions/learn-github-actions/contexts
+      # https://github.com/actions/checkout#Checkout-pull-request-HEAD-commit-instead-of-merge-commit
       - name: Determine Docker Image tag
         id: tags
         run: |
-          hash=$(git rev-parse HEAD|cut -b1-8)
-          versionTag=${{ inputs.tag || startsWith(github.ref, 'refs/tags/') && github.ref_name || '${hash}' }}
+          npmVersion=$(cat .nvmrc | head -n 1)
+          versionTag=${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.event.pull_request.head.sha }}
+          echo ::set-output name=npmVersion::${npmVersion}
           echo ::set-output name=version::${versionTag}
-          echo ::set-output name=npmVersion::$(cat dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }} | grep FROM | head -n 1 | awk '{print $2}' | cut -d ':' -f 2 | cut -d '-' -f 1 )
 
       - name: Print config
         run: |
           git rev-parse --verify HEAD
           git status
-          echo "inputs.tag=${{ inputs.tag }}"
-          echo "inputs.publish=${{ inputs.publish }}"
-          echo "inputs.apps=${{ inputs.apps }}"
-          echo "inputs.archs=${{ inputs.archs }}"
           echo "steps.tags.outputs.version=${{ steps.tags.outputs.version }}"
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ steps.tags.outputs.npmVersion }}
-
-      - name: Build frontend dists
-        run: |
-          yarn --verbose --pure-lockfile
-          yarn nx ${{ matrix.app =='trading' && 'export' || 'build' }} ${{ matrix.app }} --pure-lockfile
 
       - name: Build and export to local Docker
         uses: docker/build-push-action@v3
         with:
           context: .
           push: false
-          file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
-          build-args: APP=${{ matrix.app }}
+          file: dockerfiles/Dockerfile
+          build-args: |
+            APP=${{ matrix.app }}
+            NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
           load: true
-          tags: vegaprotocol/${{ matrix.app }}:local
+          tags: |
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
       - name: Sanity check docker image
         run: |
-          docker run --rm vegaprotocol/${{ matrix.app }}:local cat .env
-          docker run --rm vegaprotocol/${{ matrix.app }}:local ls -lah
+          echo "Check .env file"
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat .env
+          echo "Check ipfs-hash"
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
+          echo "List html directory"
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah
 
-      - name: Build and push to DockerHub
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: .
-          push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
-          file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
-          build-args: APP=${{ matrix.app }}
-          platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
+          push: true
+          file: dockerfiles/Dockerfile
+          build-args: |
+            APP=${{ matrix.app }}
+            NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
           tags: |
-            vegaprotocol/${{ matrix.app }}:latest
-            vegaprotocol/${{ matrix.app }}:${{ steps.tags.outputs.version }}
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:latest
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ steps.tags.outputs.version }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
