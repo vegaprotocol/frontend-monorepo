@@ -1,4 +1,4 @@
-name: Cypress tests - PR
+name: PR Validations
 
 on:
   push:
