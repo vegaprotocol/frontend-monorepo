@@ -16,12 +16,8 @@ import orderBy from 'lodash/orderBy';
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
     arr,
-    [
-      (p) => new Date(p?.terms?.enactmentDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
-      (p) => new Date(p?.terms?.closingDatetime).getTime(),
-      (p) => p.id,
-    ],
-    ['desc', 'desc', 'desc']
+    [(p) => new Date(p?.terms?.closingDatetime).getTime(), (p) => p.id],
+    ['desc', 'desc']
   );
 
 export function getNotRejectedProposals<T extends ProposalFieldsFragment>(
