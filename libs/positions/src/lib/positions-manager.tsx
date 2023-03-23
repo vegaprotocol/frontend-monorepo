@@ -54,6 +54,7 @@ export const PositionsManager = ({
               ? Schema.Side.SIDE_BUY
               : Schema.Side.SIDE_SELL,
             size: openVolume.replace('-', ''),
+            reduceOnly: true,
           },
         ],
       },
