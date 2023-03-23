@@ -26,7 +26,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-
       # https://docs.github.com/en/actions/learn-github-actions/contexts
       # https://github.com/actions/checkout#Checkout-pull-request-HEAD-commit-instead-of-merge-commit
       - name: Determine Docker Image tag
