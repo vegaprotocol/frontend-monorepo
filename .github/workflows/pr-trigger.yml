@@ -12,7 +12,7 @@ on:
       - synchronize
       - ready_for_review
 jobs:
-  define-affected-apps:
+  pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout frontend mono repo
@@ -64,7 +64,7 @@ jobs:
       projects-e2e: ${{ env.PROJECTS_E2E }}
 
   run-cypress:
-    needs: define-affected-apps
+    needs: pr
     if: ${{ needs.pr.outputs.projects != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
@@ -73,7 +73,7 @@ jobs:
       tags: '@smoke @regression'
 
   run-docker-build:
-    needs: define-affected-apps
+    needs: pr
     if: ${{ needs.pr.outputs.projects != '[]' }}
     uses: ./.github/workflows/publish-docker-containers.yml
     secrets: inherit
