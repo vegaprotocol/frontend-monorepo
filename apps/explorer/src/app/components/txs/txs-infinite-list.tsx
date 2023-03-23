@@ -68,7 +68,7 @@ export const TxsInfiniteList = ({
   className,
 }: TxsInfiniteListProps) => {
   const { screenSize } = useScreenDimensions();
-  const isStacked = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
+  const isStacked = ['xs', 'sm'].includes(screenSize);
 
   if (!txs) {
     if (!areTxsLoading) {
@@ -95,7 +95,7 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="transactions-list">
-      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-vega-dark-300 uppercase">
+      <div className="lg:grid grid-cols-10 w-full mb-3 hidden text-vega-dark-300 uppercase">
         <div className="col-span-3">
           <span className="hidden xl:inline">{t('Transaction')} &nbsp;</span>
           <span>ID</span>
