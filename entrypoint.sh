@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -e
 
 # Recreate config file
 env_file=/usr/share/nginx/html/assets/env-config.js
