@@ -1,25 +1,6 @@
-import { t } from '@vegaprotocol/i18n';
-import type * as Schema from '@vegaprotocol/types';
 import { AccountManager } from '@vegaprotocol/accounts';
-
-const accountTypeString: Record<Schema.AccountType, string> = {
-  ACCOUNT_TYPE_BOND: t('Bond'),
-  ACCOUNT_TYPE_EXTERNAL: t('External'),
-  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: t('Fees (Infrastructure)'),
-  ACCOUNT_TYPE_FEES_LIQUIDITY: t('Fees (Liquidity)'),
-  ACCOUNT_TYPE_FEES_MAKER: t('Fees (Maker)'),
-  ACCOUNT_TYPE_GENERAL: t('General'),
-  ACCOUNT_TYPE_GLOBAL_INSURANCE: t('Global Insurance Pool'),
-  ACCOUNT_TYPE_GLOBAL_REWARD: t('Global Reward Pool'),
-  ACCOUNT_TYPE_INSURANCE: t('Insurance'),
-  ACCOUNT_TYPE_MARGIN: t('Margin'),
-  ACCOUNT_TYPE_PENDING_TRANSFERS: t('Pending Transfers'),
-  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: t('Reward - LP Fees received'),
-  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: t('Reward - Maker fees paid'),
-  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: t('Reward - Maker fees received'),
-  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: t('Reward - Market proposers'),
-  ACCOUNT_TYPE_SETTLEMENT: t('Settlement'),
-};
+import { useCallback } from 'react';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 interface PartyAccountsProps {
   partyId: string;
@@ -31,11 +12,19 @@ interface PartyAccountsProps {
  * appearing first and... tbd
  */
 export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const onClickAsset = useCallback(
+    (assetId?: string) => {
+      assetId && openAssetDetailsDialog(assetId);
+    },
+    [openAssetDetailsDialog]
+  );
+
   return (
-    <div className="block h-44 w-full border-red-800 relative">
+    <div className="block min-h-44 h-60 4 w-full border-red-800 relative">
       <AccountManager
         partyId={partyId}
-        onClickAsset={() => null}
+        onClickAsset={onClickAsset}
         isReadOnly={true}
       />
     </div>

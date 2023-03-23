@@ -77,13 +77,11 @@ const Party = () => {
         truncateEnd={visibleChars}
       />
 
-      {/*<PartyAccounts partyId={partyId} /> */}
-
       <div className="grid md:grid-flow-col grid-flow-row md:space-x-4 grid-cols-1 md:grid-cols-3 w-full">
-        <PartyBlock title={t('Assets')}>
+        <PartyBlock title={t('Accounts')}>
           {AccountData ? (
             <KeyValueTable>
-              <KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
                 <div>{t('Assets')}</div>
                 <DropdownMenu
                   trigger={
@@ -126,7 +124,7 @@ const Party = () => {
         <PartyBlock title={t('Staking')}>
           {p?.stakingSummary.currentStakeAvailable ? (
             <KeyValueTable>
-              <KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
                 <div>{t('Available stake')}</div>
                 <div>
                   <GovernanceAssetBalance
