@@ -83,7 +83,7 @@ jobs:
   # Report single result at the end, to avoid mess with required checks in PR
   result:
     if: ${{ always() }}
-    needs: run
+    needs: run-cypress
     runs-on: ubuntu-latest
     name: Cypress result
     steps:
