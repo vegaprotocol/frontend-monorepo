@@ -30,8 +30,7 @@ jobs:
         id: tags
         run: |
           npmVersion=$(cat .nvmrc | head -n 1)
-          hash=$(git rev-parse HEAD|cut -b1-8)
-          versionTag=${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '${hash}' }}
+          versionTag=${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.sha }}
           echo ::set-output name=npmVersion::${npmVersion}
           echo ::set-output name=version::${versionTag}
 
