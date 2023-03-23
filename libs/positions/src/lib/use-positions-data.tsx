@@ -6,6 +6,7 @@ import { positionsMetricsProvider } from './positions-data-providers';
 import type { PositionsQueryVariables } from './__generated__/Positions';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import type { GetRowsParams } from '@vegaprotocol/datagrid';
+import isEqual from 'lodash/isEqual';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
@@ -20,20 +21,28 @@ export const usePositionsData = (
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
+      console.log('update data', data);
       if (gridRef.current?.api?.getModel().getType() === 'infinite') {
         return updateGridData(dataRef, data, gridRef);
       }
-      gridRef.current?.api?.applyTransaction({ update: data });
-      return true;
-    },
-    [gridRef]
-  );
-  const insert = useCallback(
-    ({ data }: { data: Position[] | null }) => {
-      if (gridRef.current?.api?.getModel().getType() === 'infinite') {
-        return updateGridData(dataRef, data, gridRef);
-      }
-      gridRef.current?.api?.applyTransaction({ add: data });
+
+      const update: Position[] = [];
+      const add: Position[] = [];
+      data?.forEach((d) => {
+        const rowNode = gridRef.current?.api?.getRowNode(d.marketId);
+        if (rowNode) {
+          if (!isEqual(rowNode.data, d)) {
+            update.push(d);
+          }
+        } else {
+          add.push(d);
+        }
+      });
+      gridRef.current?.api?.applyTransaction({
+        update,
+        add,
+        addIndex: 0,
+      });
       return true;
     },
     [gridRef]
@@ -41,7 +50,6 @@ export const usePositionsData = (
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: positionsMetricsProvider,
     update,
-    insert,
     variables,
   });
   const getRows = useCallback(
