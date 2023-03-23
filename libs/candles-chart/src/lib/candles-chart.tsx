@@ -12,9 +12,12 @@ import {
 } from 'pennant';
 import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import {
+  useThemeSwitcher,
+  useLocalStorageSnapshot,
+} from '@vegaprotocol/react-helpers';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -47,10 +50,52 @@ export const CandlesChartContainer = ({
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
 
-  const [interval, setInterval] = useState<Interval>(Interval.I15M);
-  const [chartType, setChartType] = useState<ChartType>(ChartType.CANDLE);
-  const [overlays, setOverlays] = useState<Overlay[]>([]);
-  const [studies, setStudies] = useState<Study[]>([Study.VOLUME]);
+  const [storedInterval, setInterval] = useLocalStorageSnapshot(
+    'console-candels-chart-interval'
+  );
+  const [storedChartType, setChartType] = useLocalStorageSnapshot(
+    'console-candels-chart-type'
+  );
+  const [storedOverlays, storeOverlays] = useLocalStorageSnapshot(
+    'console-candels-chart-overlays'
+  );
+  const [storedStudies, storeStudies] = useLocalStorageSnapshot(
+    'console-candels-chart-study'
+  );
+
+  const interval: Interval = Object.values(Interval).includes(
+    storedInterval as Interval
+  )
+    ? (storedInterval as Interval)
+    : Interval.I15M;
+
+  const chartType: ChartType =
+    storedChartType &&
+    Object.values(ChartType).includes(storedChartType as ChartType)
+      ? (storedChartType as ChartType)
+      : ChartType.CANDLE;
+
+  const setOverlays = (overlays: Overlay[]) =>
+    storeOverlays(overlays.join(','));
+  const overlays: Overlay[] = [];
+  if (storedOverlays) {
+    storedOverlays.split(',').forEach((overlay) => {
+      if (Object.values(Overlay).includes(overlay as Overlay)) {
+        overlays.push(overlay as Overlay);
+      }
+    });
+  }
+
+  const setStudies = (studies: Study[]) => storeStudies(studies.join(','));
+  const studies: Study[] = [Study.VOLUME];
+  if (storedStudies) {
+    studies.pop();
+    storedStudies.split(',').forEach((study) => {
+      if (Object.values(Study).includes(study as Study)) {
+        studies.push(study as Study);
+      }
+    });
+  }
 
   const dataSource = useMemo(() => {
     return new VegaDataSource(client, marketId, pubKey);
