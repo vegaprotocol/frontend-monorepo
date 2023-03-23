@@ -144,11 +144,15 @@ export const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
       </span>
       <Link to={data.id}>
         {data.stakedByUser ? (
-          <Button size="sm" className="text-vega-green border-vega-green">
+          <Button
+            data-testid="my-stake-btn"
+            size="sm"
+            className="text-vega-green border-vega-green"
+          >
             {t('myStake')}
           </Button>
         ) : (
-          <Button size="sm" fill={true}>
+          <Button data-testid="stake-btn" size="sm" fill={true}>
             {t('Stake')}
           </Button>
         )}
@@ -168,8 +172,14 @@ export const StakeNeededForPromotionRenderer = ({
   data,
 }: StakeNeededForPromotionRendererProps) => {
   return (
-    <Tooltip description={data.stakeNeededForPromotionDescription}>
-      <span>
+    <Tooltip
+      description={
+        <span data-testid="stake-needed-for-promotion-tooltip">
+          {data.stakeNeededForPromotionDescription}
+        </span>
+      }
+    >
+      <span data-testid="stake-needed-for-promotion">
         {data.stakeNeededForPromotion &&
           formatNumber(data.stakeNeededForPromotion, 2)}
       </span>
@@ -200,7 +210,9 @@ export const VotingPowerRenderer = ({ data }: VotingPowerRendererProps) => {
         </>
       }
     >
-      <span>{data.normalisedVotingPower}</span>
+      <span data-testid="normalised-voting-power">
+        {data.normalisedVotingPower}
+      </span>
     </Tooltip>
   );
 };
@@ -243,11 +255,13 @@ export const PendingStakeRenderer = ({ data }: PendingStakeRendererProps) => {
     >
       <div className="flex flex-col">
         {data.pendingUserStake && data.pendingStake !== '0' && (
-          <span className="text-vega-green">
+          <span data-testid="pending-user-stake" className="text-vega-green">
             {formatNumber(toBigNum(data.pendingUserStake, decimals), 2)}
           </span>
         )}
-        <span>{formatNumber(toBigNum(data.pendingStake, decimals), 2)}</span>
+        <span data-testid="total-pending-stake">
+          {formatNumber(toBigNum(data.pendingStake, decimals), 2)}
+        </span>
       </div>
     </Tooltip>
   );
@@ -296,9 +310,11 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
     >
       <div className="flex flex-col">
         {data.stakedByUser && (
-          <span className="text-vega-green">{data.stakedByUser}</span>
+          <span data-testid="user-stake" className="text-vega-green">
+            {data.stakedByUser}
+          </span>
         )}
-        <span>{formattedStake}</span>
+        <span data-testid="total-stake">{formattedStake}</span>
       </div>
     </Tooltip>
   );
@@ -315,9 +331,11 @@ export const StakeShareRenderer = ({ data }: StakeShareRendererProps) => {
   return (
     <div className="flex flex-col">
       {data.stakedByUser && (
-        <span className="text-vega-green">{data.stakedByUser}%</span>
+        <span data-testid="user-stake-share" className="text-vega-green">
+          {data.stakedByUser}%
+        </span>
       )}
-      <span>{data.stakeShare}</span>
+      <span data-testid="total-stake-share">{data.stakeShare}</span>
     </div>
   );
 };
@@ -354,7 +372,7 @@ export const TotalPenaltiesRenderer = ({
         </>
       }
     >
-      <span>{data.totalPenalties}</span>
+      <span data-testid="total-penalty">{data.totalPenalties}</span>
     </Tooltip>
   );
 };
