@@ -42,9 +42,9 @@ jobs:
       - name: See affected apps
         run: |
           nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
-          mkdir -p ./bin
-          yarn global add "nx@${nx_version}" --prefix $PWD/bin
-          affected=$(./bin/nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
+          yarn global add "nx@${nx_version}" --prefix $PWD
+          export PATH="$PATH:$PWD/bin"
+          affected=$(nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
           echo -n "Affected projects: $affected"
           projects_e2e=""
           if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
