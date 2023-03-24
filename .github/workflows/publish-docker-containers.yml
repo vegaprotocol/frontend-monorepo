@@ -48,13 +48,10 @@ jobs:
       - name: Build and export to local Docker
         uses: docker/build-push-action@v3
         with:
-          context: .
-          push: false
-          file: dockerfiles/Dockerfile
+          load: true
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
-          load: true
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
@@ -78,9 +75,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          context: .
           push: true
-          file: dockerfiles/Dockerfile
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
