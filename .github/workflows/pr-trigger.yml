@@ -31,12 +31,6 @@ jobs:
         with:
           node-version: ${{ steps.node-version.outputs.npmVersion }}
 
-      - name: Setup nx
-        run: |
-          rm package.json yarn.lock
-          yarn add nx
-          git restore package.json yarn.lock
-
       # Check SHAs
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
@@ -47,7 +41,8 @@ jobs:
       # See affected apps
       - name: See affected apps
         run: |
-          affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
+          nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
+          affected=$(npx --silent --yes "nx@${nx_version}" print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
           echo -n "Affected projects: $affected"
           projects_e2e=""
           if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
