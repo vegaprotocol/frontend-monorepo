@@ -136,6 +136,82 @@ describe('Proposals list item details', () => {
     );
   });
 
+  it('Renders proposal state: Update market proposal - set to pass by LP vote', () => {
+    renderComponent(
+      generateProposal({
+        state: ProposalState.STATE_OPEN,
+        terms: {
+          change: {
+            __typename: 'UpdateMarket',
+          },
+        },
+        votes: {
+          yes: {
+            ...generateYesVotes(0),
+            totalEquityLikeShareWeight: '1000',
+          },
+          no: {
+            ...generateNoVotes(0),
+            totalEquityLikeShareWeight: '0',
+          },
+        },
+      })
+    );
+    expect(screen.getByTestId('vote-status')).toHaveTextContent(
+      'Set to pass by LP vote'
+    );
+  });
+
+  it('Renders proposal state: Update market proposal - set to pass by token vote', () => {
+    renderComponent(
+      generateProposal({
+        state: ProposalState.STATE_OPEN,
+        terms: {
+          change: {
+            __typename: 'UpdateMarket',
+          },
+        },
+        votes: {
+          yes: {
+            ...generateYesVotes(1000, 1000),
+            totalEquityLikeShareWeight: '0',
+          },
+          no: {
+            ...generateNoVotes(0),
+            totalEquityLikeShareWeight: '0',
+          },
+        },
+      })
+    );
+    expect(screen.getByTestId('vote-status')).toHaveTextContent(
+      'Set to pass by token vote'
+    );
+  });
+
+  it('Renders proposal state: Update market proposal - set to fail', () => {
+    renderComponent(
+      generateProposal({
+        state: ProposalState.STATE_OPEN,
+        terms: {
+          change: {
+            __typename: 'UpdateMarket',
+          },
+        },
+        votes: {
+          yes: {
+            ...generateYesVotes(0),
+            totalEquityLikeShareWeight: '0',
+          },
+          no: {
+            ...generateNoVotes(0),
+            totalEquityLikeShareWeight: '0',
+          },
+        },
+      })
+    );
+    expect(screen.getByTestId('vote-status')).toHaveTextContent('Set to fail');
+  });
+
   it('Renders proposal state: Open - 5 minutes left to vote', () => {
     renderComponent(
       generateProposal({
