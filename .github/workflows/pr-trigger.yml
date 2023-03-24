@@ -44,6 +44,7 @@ jobs:
           export PATH="$(yarn global bin):$PATH"
           nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
           yarn global add "nx@${nx_version}"
+          echo "$(which nx)"
           affected=$(nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
           echo -n "Affected projects: $affected"
           projects_e2e=""
