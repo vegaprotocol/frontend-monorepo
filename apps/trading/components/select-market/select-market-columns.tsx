@@ -1,5 +1,5 @@
 import type { ReactNode, RefObject, MouseEvent, KeyboardEvent } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FeesCell } from '@vegaprotocol/market-info';
 import {
   calcCandleHigh,
@@ -189,7 +189,6 @@ const MarketExternalLink = ({
 
   const handleOnClick = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {
-      console.log('test');
       e.preventDefault();
       onSelect(marketId);
     },
@@ -430,30 +429,14 @@ export const columnsPositionMarkets = (
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLSpanElement>,
-    id: string
-  ) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
   const candleVolume = market.candles && calcCandleVolume(market.candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
       value: (
-        <Link
-          to={Links[Routes.MARKET](market.id)}
-          data-testid={`market-link-${market.id}`}
-          onKeyPress={(event) => handleKeyPress(event, market.id)}
-          onClick={(e) => {
-            e.preventDefault();
-            onSelect(market.id);
-          }}
-        >
+        <MarketExternalLink marketId={market.id} onSelect={onSelect}>
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
-        </Link>
+        </MarketExternalLink>
       ),
       className: cellClassNames,
       onlyOnDetailed: false,

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -17,15 +18,28 @@ import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketMaybeWithData, MarketFieldsFragment } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import type { MarketNameCellPropsRenderer } from './markets-container';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
+const DefaultMarketNameCellRenderer = ({
+  value,
+  data,
+}: VegaICellRendererParams<
+  MarketMaybeWithData,
+  'tradableInstrument.instrument.code'
+>) => {
+  if (!data) return null;
+  return <span data-testid={`market-${data.id}`}>{value}</span>;
+};
+
 export const MarketListTable = forwardRef<
   AgGridReact,
-  TypedDataAgGrid<MarketMaybeWithData>
->((props, ref) => {
+  TypedDataAgGrid<MarketMaybeWithData> & MarketNameCellPropsRenderer
+>(({ MarketNameCell, ...props }, ref) => {
+  MarketNameCell = MarketNameCell || DefaultMarketNameCellRenderer;
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
@@ -41,22 +55,13 @@ export const MarketListTable = forwardRef<
         filterParams: { buttons: ['reset'] },
       }}
       suppressCellFocus={true}
-      components={{ PriceFlashCell }}
+      components={{ PriceFlashCell, MarketNameCell }}
       {...props}
     >
       <AgGridColumn
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
-        cellRenderer={({
-          value,
-          data,
-        }: VegaICellRendererParams<
-          MarketMaybeWithData,
-          'tradableInstrument.instrument.code'
-        >) => {
-          if (!data) return null;
-          return <span data-testid={`market-${data.id}`}>{value}</span>;
-        }}
+        cellRenderer="MarketNameCell"
       />
       <AgGridColumn
         headerName={t('Description')}
