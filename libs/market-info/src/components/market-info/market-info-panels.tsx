@@ -22,10 +22,10 @@ import type {
   MarketInfoWithDataAndCandles,
 } from './market-info-data-provider';
 import BigNumber from 'bignumber.js';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
+import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
-import { useEnvironment } from '@vegaprotocol/environment';
-import type { Identities } from '@vegaprotocol/oracles';
+import { EtherscanLink, useEnvironment } from '@vegaprotocol/environment';
+import type { Provider } from '@vegaprotocol/oracles';
 import { useOracleProofs } from '@vegaprotocol/oracles';
 
 type PanelProps = Pick<
@@ -416,41 +416,32 @@ export const OracleInfoPanel = ({
   market,
   ...props
 }: MarketInfoProps & PanelProps) => {
+  const product = market.tradableInstrument.instrument.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
-  const { data } = useOracleProofs(ORACLE_PROOFS_URL);
+  const { data, error } = useOracleProofs(ORACLE_PROOFS_URL);
+  console.log(error);
 
   return (
-    <MarketInfoTable
-      data={market.tradableInstrument.instrument.product.dataSourceSpecBinding}
-      {...props}
-    >
-      <h3 className="text-lg">Oracle proofs</h3>
+    <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
+      <h3 className="text-lg">Oracle profiles</h3>
       <DataSourceProof
-        data={
-          market.tradableInstrument.instrument.product
-            .dataSourceSpecForSettlementData.data
-        }
-        identities={data}
+        data={product.dataSourceSpecForSettlementData.data}
+        providers={data}
         linkText={t('View oracle profile for settlement data')}
       />
       <DataSourceProof
-        data={
-          market.tradableInstrument.instrument.product
-            .dataSourceSpecForTradingTermination.data
-        }
-        identities={data}
+        data={product.dataSourceSpecForTradingTermination.data}
+        providers={data}
         linkText={t('View oracle profile for trading termination')}
       />
-      {/*
-       */}
       <h3 className="text-lg">Oracle specifications</h3>
       <ExternalLink
-        href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id}`}
+        href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForSettlementData.id}`}
       >
         {t('View settlement data oracle specification')}
       </ExternalLink>
       <ExternalLink
-        href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForTradingTermination.id}`}
+        href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForTradingTermination.id}`}
       >
         {t('View termination oracle specification')}
       </ExternalLink>
@@ -460,36 +451,29 @@ export const OracleInfoPanel = ({
 
 const DataSourceProof = ({
   data,
-  identities,
+  providers,
   linkText,
 }: {
   data: DataSourceDefinition;
-  identities: Identities | undefined;
+  providers: Provider[] | undefined;
   linkText: string;
 }) => {
+  if (!providers) return null;
+
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
-
-    const identityForSigner = signers.map((s) => {
-      if (s.signer.__typename === 'PubKey') {
-        const key = s.signer.key;
-        return identities?.find((d) => d.type === 'PubKey' && d.key === key);
-      }
-
-      if (s.signer.__typename === 'ETHAddress') {
-        const address = s.signer.address; // not sure why but defining a new variable here appeases TS as otherwise condition above doesn't work
-        return identities?.find(
-          (d) => d.type === 'ETHAddress' && d.address === address
-        );
-      }
-
-      return null;
-    });
-
     return (
       <div>
-        {compact(identityForSigner).map((identity) => {
-          return <ExternalLink href={identity.url}>{linkText}</ExternalLink>;
+        {signers.map(({ signer }, i) => {
+          const provider = getProvider(providers, signer);
+          if (provider) {
+            return (
+              <ExternalLink key={i} href={provider.github_link}>
+                {linkText}
+              </ExternalLink>
+            );
+          }
+          return null;
         })}
       </div>
     );
@@ -500,4 +484,29 @@ const DataSourceProof = ({
   }
 
   return <div>{t('No data sources')}</div>;
+};
+
+const getProvider = (providers: Provider[], signer: SignerKind) => {
+  for (let i = 0; i < providers.length; i++) {
+    const provider = providers[i];
+    for (let j = 0; j < provider.identities.length; j++) {
+      const identity = provider.identities[j];
+
+      if (signer.__typename === 'PubKey') {
+        if (identity.type === 'PubKey' && identity.key === signer.key) {
+          return provider;
+        }
+      }
+
+      if (signer.__typename === 'ETHAddress') {
+        if (
+          identity.type === 'ETHAddress' &&
+          identity.address === signer.address
+        ) {
+          return provider;
+        }
+      }
+    }
+  }
+  return null;
 };

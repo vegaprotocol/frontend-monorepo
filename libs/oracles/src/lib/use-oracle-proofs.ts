@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import type { Identities } from './identity-schema';
-import { identitiesSchema } from './identity-schema';
+import type { Provider } from './identity-schema';
+import { providersSchema } from './identity-schema';
 
 const cache: {
-  [url: string]: Identities;
+  [url: string]: Provider[];
 } = {};
 
 export const useOracleProofs = (url?: string) => {
-  const [data, setData] = useState<Identities | undefined>(() =>
+  const [data, setData] = useState<Provider[] | undefined>(() =>
     url ? cache[url] : undefined
   );
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
@@ -25,18 +25,15 @@ export const useOracleProofs = (url?: string) => {
           setData(cache[url]);
           setStatus('done');
         } else {
-          console.log('fetch');
-          // const res = await fetch(url);
-          // const json = await res.json();
-          // TODO remove fakeFetch
-          const json = await fakeFetch();
+          const res = await fetch(url);
+          const json = await res.json();
 
           if (ignore) return;
 
-          const validJson = identitiesSchema.parse(json);
+          const result = providersSchema.parse(json);
 
-          cache[url] = validJson;
-          setData(validJson);
+          cache[url] = result;
+          setData(result);
           setStatus('done');
         }
       } catch (err) {
@@ -62,64 +59,4 @@ export const useOracleProofs = (url?: string) => {
     loading: status === 'loading',
     error,
   };
-};
-
-const identitiesdata: Identities = [
-  {
-    type: 'PubKey',
-    key: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-    status: 'GOOD',
-    trusted: true,
-    url: 'https://github.com/vegaprotcol/well-known',
-    proofs: [
-      {
-        type: 'Url',
-        url: 'https://github.com',
-      },
-      {
-        type: 'SignedMessage',
-        message: 'somemessage',
-      },
-    ],
-  },
-  {
-    type: 'ETHAddress',
-    address: '0x949AF81E51D57831AE52591d17fBcdd1014a5f52',
-    status: 'GOOD',
-    trusted: true,
-    url: 'https://github.com/vegaprotcol/well-known',
-    proofs: [
-      {
-        type: 'Url',
-        url: 'https://github.com',
-      },
-      {
-        type: 'SignedMessage',
-        message: 'somemessage',
-      },
-    ],
-  },
-  {
-    type: 'PubKey',
-    key: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-    status: 'MALICIOUS',
-    trusted: false,
-    url: 'https://github.com/vegaprotcol/well-known',
-    proofs: [
-      {
-        type: 'Url',
-        url: 'https://github.com',
-      },
-      {
-        type: 'SignedMessage',
-        message: 'somemessage',
-      },
-    ],
-  },
-];
-
-const fakeFetch = async (): Promise<Identities> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(identitiesdata), 500);
-  });
 };
