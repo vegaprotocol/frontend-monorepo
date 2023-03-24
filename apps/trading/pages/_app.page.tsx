@@ -1,3 +1,5 @@
+import { useMemo, useState } from 'react';
+import classNames from 'classnames';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
@@ -23,16 +25,15 @@ import {
 import './styles.css';
 import { useGlobalStore, usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
-import classNames from 'classnames';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
+import { useKeyHoldHandlers } from '../lib/hooks/use-key-hold-handler';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -57,12 +58,13 @@ const Title = () => {
   );
 };
 
-const TransactionsHandler = () => {
+const InitializeHandlers = () => {
   useVegaTransactionManager();
   useVegaTransactionUpdater();
   useEthTransactionManager();
   useEthTransactionUpdater();
   useEthWithdrawApprovalsManager();
+  useKeyHoldHandlers();
   return null;
 };
 
@@ -93,7 +95,7 @@ function AppBody({ Component }: AppProps) {
       </div>
       <DialogsContainer />
       <ToastsManager />
-      <TransactionsHandler />
+      <InitializeHandlers />
       <MaybeConnectEagerly />
     </div>
   );
