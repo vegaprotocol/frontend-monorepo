@@ -35,40 +35,45 @@ const orderMatchFilters = (
     return true;
   }
   if (
-    variables?.filter?.status &&
-    !(order.status && variables.filter.status.includes(order.status))
+    variables?.filter?.order?.status &&
+    !(order.status && variables.filter.order.status.includes(order.status))
   ) {
     return false;
   }
   if (
-    variables?.filter?.types &&
-    !(order.type && variables.filter.types.includes(order.type))
+    variables?.filter?.order?.types &&
+    !(order.type && variables.filter.order.types.includes(order.type))
   ) {
     return false;
   }
   if (
-    variables?.filter?.timeInForce &&
-    !variables.filter.timeInForce.includes(order.timeInForce)
+    variables?.filter?.order?.timeInForce &&
+    !variables.filter.order.timeInForce.includes(order.timeInForce)
   ) {
     return false;
   }
-  if (variables?.filter?.excludeLiquidity && order.liquidityProvisionId) {
+  if (
+    variables?.filter?.order?.excludeLiquidity &&
+    order.liquidityProvisionId
+  ) {
     return false;
   }
   if (
-    variables?.dateRange?.start &&
+    variables?.filter?.order?.dateRange?.start &&
     !(
       (order.updatedAt || order.createdAt) &&
-      variables.dateRange.start < (order.updatedAt || order.createdAt)
+      variables.filter.order.dateRange.start <
+        (order.updatedAt || order.createdAt)
     )
   ) {
     return false;
   }
   if (
-    variables?.dateRange?.end &&
+    variables?.filter?.order?.dateRange?.end &&
     !(
       (order.updatedAt || order.createdAt) &&
-      variables.dateRange.end > (order.updatedAt || order.createdAt)
+      variables.filter.order.dateRange.end >
+        (order.updatedAt || order.createdAt)
     )
   ) {
     return false;
@@ -241,8 +246,10 @@ export const hasActiveOrderProvider = makeDerivedDataProvider<
     (callback, client, variables) =>
       hasActiveOrderProviderInternal(callback, client, {
         filter: {
-          status: [OrderStatus.STATUS_ACTIVE],
-          excludeLiquidity: true,
+          order: {
+            status: [OrderStatus.STATUS_ACTIVE],
+            excludeLiquidity: true,
+          },
         },
         pagination: {
           first: 1,

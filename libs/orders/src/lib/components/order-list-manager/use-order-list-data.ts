@@ -67,24 +67,25 @@ export const useOrderListData = ({
     }
   }, []);
 
-  const variables = useMemo<
-    OrdersQueryVariables & OrdersUpdateSubscriptionVariables
-  >(
-    () => ({
+  const variables = useMemo(() => {
+    // define variable as const to get type safety, using generic with useMemo resulted in lost type safety
+    const allVars: OrdersQueryVariables & OrdersUpdateSubscriptionVariables = {
       partyId,
-      dateRange: filter?.updatedAt?.value,
-      marketId,
       filter: {
-        status: filter?.status?.value,
-        timeInForce: filter?.timeInForce?.value,
-        types: filter?.type?.value,
+        order: {
+          dateRange: filter?.updatedAt?.value,
+          status: filter?.status?.value,
+          timeInForce: filter?.timeInForce?.value,
+          types: filter?.type?.value,
+        },
       },
       pagination: {
         first: 1000,
       },
-    }),
-    [partyId, marketId, filter]
-  );
+    };
+
+    return allVars;
+  }, [partyId, filter]);
 
   const addNewRows = useCallback(() => {
     if (newRows.current === 0) {

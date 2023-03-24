@@ -68,7 +68,7 @@ fragment OrderTxUpdateFields on OrderUpdate {
 }
 
 subscription OrderTxUpdate($partyId: ID!) {
-  orders(partyId: $partyId) {
+  orders(filter: { partyIds: [$partyId] }) {
     ...OrderTxUpdateFields
   }
 }
