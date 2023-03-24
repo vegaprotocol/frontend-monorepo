@@ -41,12 +41,22 @@ export const ProposalsListItemDetails = ({
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
   const state = proposal?.state;
-  const { willPassByTokenVote, majorityMet, participationMet } =
-    useVoteInformation({
-      proposal,
-    });
+  const {
+    willPassByTokenVote,
+    willPassByLPVote,
+    majorityMet,
+    participationMet,
+  } = useVoteInformation({
+    proposal,
+  });
   const { t } = useTranslation();
   const { voteState } = useUserVote(proposal?.id);
+  const isUpdateMarket = proposal?.terms.change.__typename === 'UpdateMarket';
+  const updateMarketWillPass = willPassByTokenVote || willPassByLPVote;
+  const updateMarketVotePassMethod = willPassByTokenVote
+    ? t('byTokenVote')
+    : t('byLPVote');
+
   let proposalStatus: ReactNode;
   let voteDetails: ReactNode;
   let voteStatus: ReactNode;
@@ -128,6 +138,19 @@ export const ProposalsListItemDetails = ({
           </>
         );
       voteStatus =
+        (isUpdateMarket &&
+          (updateMarketWillPass ? (
+            <>
+              {t('Set to')}{' '}
+              <StatusPass>
+                {t('pass')} {updateMarketVotePassMethod}
+              </StatusPass>
+            </>
+          ) : (
+            <>
+              {t('Set to')} <StatusFail>{t('fail')}</StatusFail>
+            </>
+          ))) ||
         (!participationMet && <ParticipationNotReached />) ||
         (!majorityMet && <MajorityNotReached />) ||
         (willPassByTokenVote ? (
