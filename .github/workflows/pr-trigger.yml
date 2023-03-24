@@ -44,7 +44,6 @@ jobs:
           nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
           rm package.json yarn.lock
           yarn add nx@$nx_version
-          git restore package.json yarn.lock
           affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
           echo -n "Affected projects: $affected"
           projects_e2e=""
