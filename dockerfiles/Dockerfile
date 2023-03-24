@@ -10,7 +10,9 @@ COPY yarn.lock ./
 COPY . ./
 RUN apk add python3 make gcc g++
 RUN yarn --network-timeout 100000 --pure-lockfile
-RUN yarn nx build ${APP} --network-timeout 100000 --pure-lockfile
+RUN yarn nx build-production ${APP} --network-timeout 100000 --pure-lockfile; \
+  if [ "${APP}" = "trading" ]; then mv /app/dist/apps/trading/exporter/ /app/tmp; rm -rf /app/dist/apps/trading; mv /app/tmp /app/dist/apps/trading; fi
+  # work around for different build process in trading
 
 # Server environment
 # if this fails you need to docker pull nginx:1.23-alpine and pin new SHA
