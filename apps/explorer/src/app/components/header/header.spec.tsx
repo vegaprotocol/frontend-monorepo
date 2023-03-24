@@ -13,7 +13,7 @@ jest.mock('../search', () => ({
 }));
 
 const renderComponent = () => (
-  <MemoryRouter>
+  <MemoryRouter initialEntries={['/txs']}>
     <Header />
   </MemoryRouter>
 );
@@ -24,6 +24,7 @@ describe('Header', () => {
 
     expect(screen.getByTestId('navigation')).toHaveTextContent('Explorer');
   });
+
   it('should render search', () => {
     render(renderComponent());
 
