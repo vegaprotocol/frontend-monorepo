@@ -223,7 +223,7 @@ export const DepositForm = ({
             {errors.asset.message}
           </InputError>
         )}
-        {isFaucetable && selectedAsset && (
+        {isActive && isFaucetable && selectedAsset && (
           <UseButton onClick={submitFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>
