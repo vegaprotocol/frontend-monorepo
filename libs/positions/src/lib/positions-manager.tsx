@@ -49,7 +49,7 @@ export const PositionsManager = ({
           {
             marketId: marketId,
             type: Schema.OrderType.TYPE_MARKET as const,
-            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK as const,
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC as const,
             side: openVolume.startsWith('-')
               ? Schema.Side.SIDE_BUY
               : Schema.Side.SIDE_SELL,
