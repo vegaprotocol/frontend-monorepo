@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { t } from '@vegaprotocol/i18n';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { Link as UILink } from '@vegaprotocol/ui-toolkit';
+import { Link as UILink, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import type { OnCellClickHandler } from '../select-market';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
 import {
@@ -55,8 +55,8 @@ export const SelectMarketLandingTable = ({
   const showProposed = (markets?.length || 0) <= 5;
   return (
     <>
-      <div
-        className="max-h-[60vh] overflow-x-auto"
+      <TinyScroll
+        className="max-h-[60vh] overflow-x-auto -mr-4 pr-4"
         data-testid="select-market-list"
       >
         <p className="text-neutral-500 dark:text-neutral-400 mb-4">
@@ -78,7 +78,7 @@ export const SelectMarketLandingTable = ({
             ))}
           </tbody>
         </table>
-      </div>
+      </TinyScroll>
       <div className="mt-4 text-md">
         <Link
           to={Links[Routes.MARKETS]()}

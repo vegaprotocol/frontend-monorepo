@@ -83,6 +83,8 @@ export const DepositForm = ({
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { isActive, account } = useWeb3React();
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
+  const [approveNotificationIntent, setApproveNotificationIntent] =
+    useState<Intent>(Intent.Warning);
   const {
     register,
     handleSubmit,
@@ -103,8 +105,10 @@ export const DepositForm = ({
     if (!selectedAsset || selectedAsset.source.__typename !== 'ERC20') {
       throw new Error('Invalid asset');
     }
-    if (!approved) throw new Error('Deposits not approved');
-
+    if (!approved) {
+      setApproveNotificationIntent(Intent.Danger);
+      return;
+    }
     submitDeposit({
       assetSource: selectedAsset.source.contractAddress,
       amount: fields.amount,
@@ -219,7 +223,7 @@ export const DepositForm = ({
             {errors.asset.message}
           </InputError>
         )}
-        {isFaucetable && selectedAsset && (
+        {isActive && isFaucetable && selectedAsset && (
           <UseButton onClick={submitFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>
@@ -355,9 +359,13 @@ export const DepositForm = ({
         isActive={isActive}
         approveTxId={approveTxId}
         selectedAsset={selectedAsset}
-        onApprove={submitApprove}
+        onApprove={() => {
+          submitApprove();
+          setApproveNotificationIntent(Intent.Warning);
+        }}
         balances={balances}
         approved={approved}
+        intent={approveNotificationIntent}
         amount={amount}
       />
       <FormButton approved={approved} selectedAsset={selectedAsset} />

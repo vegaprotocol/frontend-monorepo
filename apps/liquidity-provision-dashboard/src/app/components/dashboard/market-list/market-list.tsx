@@ -18,6 +18,7 @@ import type * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Icon,
+  HealthBar,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
 import type { GetRowIdParams, RowClickedEvent } from 'ag-grid-community';
@@ -27,9 +28,9 @@ import { AgGridColumn } from 'ag-grid-react';
 import { useCallback, useState } from 'react';
 
 import { Grid } from '../../grid';
-import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
+import { intentForStatus } from '../../../lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 
 export const MarketList = () => {
@@ -273,13 +274,13 @@ export const MarketList = () => {
               data: Market;
             }) => (
               <HealthBar
-                status={value}
                 target={data.target}
                 decimals={
                   data.tradableInstrument.instrument.product.settlementAsset
                     .decimals
                 }
                 levels={data.feeLevels}
+                intent={intentForStatus(value)}
               />
             )}
             sortable={false}

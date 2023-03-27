@@ -60,6 +60,7 @@ GatewayEnabled = true
     SwarmPort = {{add 400 .NodeNumber}}5
     StartWebUI = false
     WebUIPort = {{add 500 .NodeNumber}}5
+    SwarmKeyOverride = "{{ .NodeSet.DataNode.UniqueSwarmKey }}"
   [NetworkHistory.Snapshot]
     PanicOnSnapshotCreationError = true
     WaitForCreationLockTimeout = "5s"

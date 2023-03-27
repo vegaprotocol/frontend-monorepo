@@ -1,4 +1,3 @@
-import styles from './orderbook.module.scss';
 import colors from 'tailwindcss/colors';
 import { useEffect, useRef, useState, useCallback, Fragment } from 'react';
 import classNames from 'classnames';
@@ -14,7 +13,7 @@ import {
 import * as Schema from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow } from './orderbook-data';
-import { Checkbox, Icon, Splash } from '@vegaprotocol/ui-toolkit';
+import { Checkbox, Icon, Splash, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
 
 interface OrderbookProps extends OrderbookData {
@@ -547,8 +546,8 @@ export const Orderbook = ({
           {t('Cumulative vol')}
         </div>
       </div>
-      <div
-        className={`h-full overflow-auto relative ${styles['scroll']}`}
+      <TinyScroll
+        className="h-full overflow-auto relative"
         onScroll={onScroll}
         ref={scrollElement}
         data-testid="scroll"
@@ -580,7 +579,7 @@ export const Orderbook = ({
             testId={'best-static-offer-price'}
           />
         )}
-      </div>
+      </TinyScroll>
       <div
         className="absolute bottom-0 grid grid-cols-4 gap-2 border-t border-default mt-2 z-10 bg-white dark:bg-black w-full"
         ref={footerElement}

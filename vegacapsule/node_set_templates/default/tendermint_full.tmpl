@@ -1,25 +1,24 @@
 log_level = "info"
 
-proxy_app = "tcp://127.0.0.1:{{add 2660 .NodeNumber}}8"
+proxy_app = "tcp://127.0.0.1:26{{ printf "%02d" (add .NodeNumber 60) }}8"
 moniker = "{{.TendermintNodePrefix}}-{{.NodeNumber}}"
 
 [rpc]
-  laddr = "tcp://0.0.0.0:{{add 2660 .NodeNumber}}7"
+  laddr = "tcp://0.0.0.0:26{{ printf "%02d" (add .NodeNumber 60) }}7"
   unsafe = true
-  cors_allowed_origins = ["*"]
-  cors_allowed_methods = ["HEAD", "GET", "POST", ]
-  cors_allowed_headers = ["Origin", "Accept", "Content-Type", "X-Requested-With", "X-Server-Time", ]
 
 [p2p]
-  laddr = "tcp://0.0.0.0:{{add 2660 .NodeNumber}}6"
+  laddr = "tcp://0.0.0.0:26{{ printf "%02d" (add .NodeNumber 60) }}6"
   addr_book_strict = false
   max_packet_msg_payload_size = 4096
   pex = false
   allow_duplicate_ip = true
   persistent_peers = "{{- range $i, $peer := .NodePeers -}}
-	  {{- if ne $i 0 }},{{end -}}
-	  {{- $peer.ID}}@127.0.0.1:{{add 2660 $peer.Index}}6
+    {{- if ne $i 0 }},{{end -}}
+    {{- $peer.ID}}@127.0.0.1:26{{ printf "%02d" (add $peer.Index 60) }}6
   {{- end -}}"
+
+  persistent_peers_max_dial_period = "5s"
 
 [mempool]
   size = 10000
@@ -27,3 +26,10 @@ moniker = "{{.TendermintNodePrefix}}-{{.NodeNumber}}"
 
 [consensus]
   skip_timeout_commit = true
+
+[statesync]
+  enable = false
+  rpc_servers = "{{- range $i, $peer := .NodePeers -}}
+    {{- if ne $i 0 }},{{end -}}
+    127.0.0.1:26{{ printf "%02d" (add $peer.Index 60) }}7
+  {{- end -}}"

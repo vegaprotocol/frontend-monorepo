@@ -37,7 +37,7 @@ GatewayEnabled = true
   Port = {{add 210 .NodeNumber}}2
   Enabled = false
 [Broker]
-  Level = "Info"
+  Level = "Debug"
   UseEventFile = false
   [Broker.SocketConfig]
     Port = {{add 300 .NodeNumber}}5
@@ -54,6 +54,7 @@ GatewayEnabled = true
     {{- end -}}]
 
     UseIpfsDefaultPeers = false
-    SwarmPort = 40{{.NodeNumber}}5
+    SwarmPort = {{add 400 .NodeNumber}}5
     StartWebUI = false
-    WebUIPort = 50{{.NodeNumber}}5
+    WebUIPort = {{add 500 .NodeNumber}}5
+    SwarmKeyOverride = "{{ .NodeSet.DataNode.UniqueSwarmKey }}"
