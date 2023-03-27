@@ -103,7 +103,9 @@ const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
-      {tx.txHash && <EtherscanLink tx={tx.txHash} />}
+      {tx.txHash && (
+        <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
+      )}
       <EthTransactionDetails tx={tx} />
     </>
   );
@@ -131,7 +133,9 @@ const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
     <>
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
-      {tx.txHash && <EtherscanLink tx={tx.txHash} />}
+      {tx.txHash && (
+        <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
+      )}
       <EthTransactionDetails tx={tx} />
     </>
   );
@@ -148,7 +152,9 @@ const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
         {t('Your transaction has been completed.')}{' '}
         {isDeposit && t('Waiting for deposit confirmation.')}
       </p>
-      {tx.txHash && <EtherscanLink tx={tx.txHash} />}
+      {tx.txHash && (
+        <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
+      )}
       <EthTransactionDetails tx={tx} />
     </>
   );
