@@ -39,21 +39,31 @@ export const useAnnouncement = (name: AppNameType, url: string) => {
   });
 
   const fetchData = useCallback(() => {
+    let mounted = true;
+
     getData(name, url)
       .then((data) => {
-        setState({
-          loading: false,
-          data,
-          error: null,
-        });
+        if (mounted) {
+          setState({
+            loading: false,
+            data,
+            error: null,
+          });
+        }
       })
       .catch((err) => {
-        setState({
-          loading: false,
-          data: null,
-          error: `${err}`,
-        });
+        if (mounted) {
+          setState({
+            loading: false,
+            data: null,
+            error: `${err}`,
+          });
+        }
       });
+
+    return () => {
+      mounted = false;
+    }
   }, [name, url, setState]);
 
   useEffect(() => {
