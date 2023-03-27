@@ -14,7 +14,11 @@ import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
 import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import {
+  useThemeSwitcher,
+  getValidItem,
+  getValidSubset,
+} from '@vegaprotocol/react-helpers';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -83,24 +87,6 @@ const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.LINE, IconNames.TIMELINE_LINE_CHART],
   [ChartType.OHLC, IconNames.WATERFALL_CHART],
 ]);
-
-const getValidItem = <T,>(
-  value: T | null | undefined,
-  set: T[],
-  defaultValue: T
-) =>
-  value !== null && value !== undefined && set.includes(value)
-    ? value
-    : defaultValue;
-
-const getValidSubset = <T,>(
-  value: T[] | null | undefined,
-  set: T[],
-  defaultValue: T[]
-) =>
-  value !== null && value !== undefined
-    ? value.filter((item) => set.includes(item))
-    : defaultValue;
 
 export type CandlesChartContainerProps = {
   marketId: string;
