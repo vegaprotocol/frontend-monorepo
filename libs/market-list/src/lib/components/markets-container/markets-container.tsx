@@ -5,26 +5,12 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { CellClickedEvent } from 'ag-grid-community';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
 import type { MarketMaybeWithData } from '../../markets-provider';
-import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
 
-export interface MarketNameCellPropsRenderer {
-  MarketNameCell?: ({
-    value,
-    data,
-  }: VegaICellRendererParams<
-    MarketMaybeWithData,
-    'tradableInstrument.instrument.code'
-  >) => JSX.Element | null;
-}
-
-interface MarketsContainerProps extends MarketNameCellPropsRenderer {
+interface MarketsContainerProps {
   onSelect: (marketId: string) => void;
 }
 
-export const MarketsContainer = ({
-  onSelect,
-  MarketNameCell,
-}: MarketsContainerProps) => {
+export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const { data, error, loading, reload } = useDataProvider({
     dataProvider,
     skipUpdates: true,
@@ -49,7 +35,6 @@ export const MarketsContainer = ({
           }
           onSelect((data as MarketMaybeWithData).id);
         }}
-        MarketNameCell={MarketNameCell}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

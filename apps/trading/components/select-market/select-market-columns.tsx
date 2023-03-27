@@ -8,7 +8,11 @@ import {
 } from '@vegaprotocol/market-list';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { PriceCell, signedNumberCssClass } from '@vegaprotocol/datagrid';
+import {
+  PriceCell,
+  signedNumberCssClass,
+  useKeyHoldingStore,
+} from '@vegaprotocol/datagrid';
 import {
   ExternalLink,
   Icon,
@@ -26,7 +30,6 @@ import { MarketTradingMode } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
 import { Links, Routes } from '../../pages/client-router';
 import { IconNames } from '@blueprintjs/icons';
-import { useGlobalStore } from '../../stores';
 
 const ellipsisClasses = 'whitespace-nowrap overflow-hidden text-ellipsis';
 export const cellClassNames = `py-1 first:text-left text-right ${ellipsisClasses}`;
@@ -174,7 +177,7 @@ const MarketExternalLink = ({
   marketId: string;
   onSelect: (id: string) => void;
 }) => {
-  const holdingKey = useGlobalStore((store) => store.holdingKey);
+  const holdingKey = useKeyHoldingStore((store) => store.holdingKey);
   const ref = useRef<HTMLDivElement | null>(null);
   const [on, setOn] = useState(false);
   const [externalKeyDown, setExternalKeyDown] = useState(false);

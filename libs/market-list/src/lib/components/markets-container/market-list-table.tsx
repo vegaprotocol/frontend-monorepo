@@ -11,6 +11,7 @@ import type {
 import {
   AgGridDynamic as AgGrid,
   PriceFlashCell,
+  MarketNameCell,
 } from '@vegaprotocol/datagrid';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -18,28 +19,15 @@ import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketMaybeWithData, MarketFieldsFragment } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import type { MarketNameCellPropsRenderer } from './markets-container';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
-const DefaultMarketNameCellRenderer = ({
-  value,
-  data,
-}: VegaICellRendererParams<
-  MarketMaybeWithData,
-  'tradableInstrument.instrument.code'
->) => {
-  if (!data) return null;
-  return <span data-testid={`market-${data.id}`}>{value}</span>;
-};
-
 export const MarketListTable = forwardRef<
   AgGridReact,
-  TypedDataAgGrid<MarketMaybeWithData> & MarketNameCellPropsRenderer
->(({ MarketNameCell, ...props }, ref) => {
-  MarketNameCell = MarketNameCell || DefaultMarketNameCellRenderer;
+  TypedDataAgGrid<MarketMaybeWithData>
+>(({ ...props }, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid

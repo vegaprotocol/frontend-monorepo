@@ -1,18 +1,22 @@
-import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
-import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
 import { useEffect, useRef, useState } from 'react';
+import get from 'lodash/get';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { Links, Routes } from '../pages/client-router';
 import { Link } from 'react-router-dom';
-import { useKeyHoldingStore } from '@vegaprotocol/datagrid';
+import { useKeyHoldingStore } from '../key-holding-store';
+
+const MARKET_PATH = 'markets';
+
+interface MarketNameCellProps {
+  value?: string;
+  data?: { id?: string; marketId?: string; market?: { id: string } };
+  idPath?: string;
+}
 
 export const MarketNameCell = ({
   value,
   data,
-}: VegaICellRendererParams<
-  MarketMaybeWithData,
-  'tradableInstrument.instrument.code'
->) => {
+  idPath,
+}: MarketNameCellProps) => {
   const holdingKey = useKeyHoldingStore((store) => store.holdingKey);
   const ref = useRef<HTMLDivElement | null>(null);
   const [on, setOn] = useState(false);
@@ -28,16 +32,16 @@ export const MarketNameCell = ({
   }, [on, holdingKey]);
 
   if (!data) return null;
+  const id = get(data, idPath ?? 'id', 'all');
+
+  const marketPath = `/#/${MARKET_PATH}/${id}`;
 
   const linkContent = externalKeyDown ? (
-    <ExternalLink
-      href={`#${Links[Routes.MARKET](data.id)}`}
-      onClick={(e) => e.stopPropagation()}
-    >
+    <ExternalLink href={marketPath} onClick={(e) => e.stopPropagation()}>
       {value}
     </ExternalLink>
   ) : (
-    <Link to={Links[Routes.MARKET](data.id)}>{value}</Link>
+    <Link to={marketPath}>{value}</Link>
   );
   return (
     <div

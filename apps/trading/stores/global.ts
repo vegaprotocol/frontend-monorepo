@@ -8,7 +8,6 @@ interface GlobalStore {
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
   shouldDisplayWelcomeDialog: boolean;
   shouldDisplayAnnouncementBanner: boolean;
-  holdingKey: string;
 }
 
 interface PageTitleStore {
@@ -21,7 +20,6 @@ export const useGlobalStore = create<GlobalStore>()((set) => ({
   marketId: LocalStorage.getItem('marketId') || null,
   shouldDisplayWelcomeDialog: false,
   shouldDisplayAnnouncementBanner: true,
-  holdingKey: '',
   update: (newState) => {
     set(
       produce((state: GlobalStore) => {

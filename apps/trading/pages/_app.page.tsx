@@ -33,7 +33,7 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
-import { useKeyHoldHandlers } from '../lib/hooks/use-key-hold-handler';
+import { useKeyHoldingHandlers } from '@vegaprotocol/datagrid';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -64,7 +64,7 @@ const InitializeHandlers = () => {
   useEthTransactionManager();
   useEthTransactionUpdater();
   useEthWithdrawApprovalsManager();
-  useKeyHoldHandlers();
+  useKeyHoldingHandlers();
   return null;
 };
 

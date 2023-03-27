@@ -14,16 +14,13 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
-import { Link } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   positiveClassNames,
   negativeClassNames,
+  MarketNameCell,
 } from '@vegaprotocol/datagrid';
-import type {
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-} from '@vegaprotocol/datagrid';
+import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
@@ -48,30 +45,14 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         getRowId={({ data }) => data?.id}
         tooltipShowDelay={0}
         tooltipHideDelay={2000}
+        components={{ MarketNameCell }}
         {...props}
       >
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.name"
-          cellRenderer={({
-            value,
-            data,
-          }: VegaICellRendererParams<
-            Trade,
-            'market.tradableInstrument.instrument.name'
-          >) =>
-            onMarketClick ? (
-              <Link
-                onClick={() =>
-                  data?.market?.id && onMarketClick(data?.market?.id)
-                }
-              >
-                {value}
-              </Link>
-            ) : (
-              value
-            )
-          }
+          cellRenderer="MarketNameCell"
+          cellRendererParams={{ idPath: 'market.id' }}
         />
         <AgGridColumn
           headerName={t('Size')}

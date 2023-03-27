@@ -14,12 +14,12 @@ import {
   PriceFlashCell,
   signedNumberCssClass,
   signedNumberCssClassRules,
+  MarketNameCell,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
   Tooltip,
   TooltipCellComponent,
-  Link,
   ExternalLink,
   Icon,
   ProgressBarCell,
@@ -96,26 +96,18 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           filterParams: { buttons: ['reset'] },
           tooltipComponent: TooltipCellComponent,
         }}
-        components={{ AmountCell, PriceFlashCell, ProgressBarCell }}
+        components={{
+          AmountCell,
+          PriceFlashCell,
+          ProgressBarCell,
+          MarketNameCell,
+        }}
         {...props}
       >
         <AgGridColumn
           headerName={t('Market')}
           field="marketName"
-          cellRenderer={({
-            value,
-            data,
-          }: VegaICellRendererParams<Position, 'marketName'>) =>
-            onMarketClick ? (
-              <Link
-                onClick={() => data?.marketId && onMarketClick(data?.marketId)}
-              >
-                {value}
-              </Link>
-            ) : (
-              value
-            )
-          }
+          cellRenderer="MarketNameCell"
           minWidth={190}
         />
         <AgGridColumn
