@@ -21,7 +21,6 @@ export const usePositionsData = (
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
-      console.log('update data', data);
       if (gridRef.current?.api?.getModel().getType() === 'infinite') {
         return updateGridData(dataRef, data, gridRef);
       }
