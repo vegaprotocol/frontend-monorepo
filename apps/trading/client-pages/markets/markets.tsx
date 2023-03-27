@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { MarketsContainer } from '@vegaprotocol/market-list';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
-import { MarketNameCell } from '../../components/market-name-cell';
 
 export const Markets = () => {
   const navigate = useNavigate();
@@ -13,10 +12,5 @@ export const Markets = () => {
     [navigate]
   );
 
-  return (
-    <MarketsContainer
-      onSelect={handleOnSelect}
-      MarketNameCell={MarketNameCell}
-    />
-  );
+  return <MarketsContainer onSelect={handleOnSelect} />;
 };
