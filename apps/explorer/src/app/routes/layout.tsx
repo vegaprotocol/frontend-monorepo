@@ -3,8 +3,8 @@ import {
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
-import { useEnvironment } from '@vegaprotocol/environment'
-import { AnnouncementBanner } from '@vegaprotocol/announcements'
+import { useEnvironment } from '@vegaprotocol/environment';
+import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import {
   BackgroundVideo,
   BreadcrumbsContainer,
