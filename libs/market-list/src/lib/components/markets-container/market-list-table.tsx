@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
