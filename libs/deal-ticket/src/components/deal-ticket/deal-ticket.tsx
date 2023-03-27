@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState, useRef } from 'react';
 import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
@@ -75,6 +75,8 @@ export const DealTicket = ({
     handleSubmit,
   } = useOrderForm(market.id);
 
+  const lastSubmitTime = useRef(0);
+
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
 
   const { accountBalance: marginAccountBalance } = useMarketAccountBalance(
@@ -146,6 +148,10 @@ export const DealTicket = ({
 
   const onSubmit = useCallback(
     (order: OrderSubmission) => {
+      const now = new Date().getTime();
+      if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
+        return;
+      }
       submit(
         normalizeOrderSubmission(
           order,
@@ -153,6 +159,7 @@ export const DealTicket = ({
           market.positionDecimalPlaces
         )
       );
+      lastSubmitTime.current = now;
     },
     [submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
