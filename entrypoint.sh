@@ -7,6 +7,10 @@ mkdir -p $(dirname $env_file)
 rm -rf $env_file || echo "no file to delete"
 touch $env_file
 
+env_vars_file=/usr/share/nginx/html/.env
+sed -i '/^#/d' $env_vars_file # remove comment lines
+sed -i '/^$/d' $env_vars_file # remove empty lines
+
 # Add assignment
 echo "window._env_ = {" >> $env_file
 
@@ -29,7 +33,9 @@ do
   if [ ! -z "$varname" ]; then
     echo "  $varname: \"$value\"," >> $env_file
   fi
-done < /usr/share/nginx/html/.env
+done < $env_vars_file
+
+rm $env_vars_file
 
 echo "}" >> $env_file
 

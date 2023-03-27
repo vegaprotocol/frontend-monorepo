@@ -1,16 +1,19 @@
-name: Publish docker containers
+name: Docker build
 
-'on':
-  pull_request:
+on:
+  workflow_call:
+    inputs:
+      projects:
+        required: true
+        type: string
 
 jobs:
   master:
     strategy:
       fail-fast: false
-      # to be replaced by nix: https://github.com/vegaprotocol/frontend-monorepo/blob/develop/tools/ipfs-deploy.js#L106-L108
       matrix:
-        app: ${{ fromJson('["explorer"]') }}
-    name: Build the ${{ matrix.app }} image
+        app: ${{ fromJSON(inputs.projects) }}
+    name: ${{ matrix.app }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -45,13 +48,10 @@ jobs:
       - name: Build and export to local Docker
         uses: docker/build-push-action@v3
         with:
-          context: .
-          push: false
-          file: dockerfiles/Dockerfile
+          load: true
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
-          load: true
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
@@ -75,15 +75,20 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          context: .
           push: true
-          file: dockerfiles/Dockerfile
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.npmVersion }}
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:latest
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ steps.tags.outputs.version }}
+
+      - name: Add preview label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          labels: ${{ matrix.app }}-preview
+          number: ${{ github.event.number }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

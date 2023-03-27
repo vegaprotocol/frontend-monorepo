@@ -9,6 +9,7 @@ import {
   ExternalLink,
   Link as UILink,
   Splash,
+  TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
@@ -71,7 +72,9 @@ export const MarketInfoContainer = ({
   return (
     <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
       {data ? (
-        <Info market={data} onSelect={(id) => onSelect?.(id)} />
+        <TinyScroll className="h-full overflow-auto">
+          <Info market={data} onSelect={(id) => onSelect?.(id)} />
+        </TinyScroll>
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>

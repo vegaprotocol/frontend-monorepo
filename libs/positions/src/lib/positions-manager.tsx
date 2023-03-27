@@ -24,11 +24,7 @@ export const PositionsManager = ({
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [dataCount, setDataCount] = useState(0);
-  const { data, error, loading, reload } = usePositionsData(
-    partyId,
-    gridRef,
-    true
-  );
+  const { data, error, loading, reload } = usePositionsData(partyId, gridRef);
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
     marketId,
@@ -73,7 +69,7 @@ export const PositionsManager = ({
   });
   useEffect(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [data?.length]);
+  }, [data]);
   const onFilterChanged = useCallback((event: FilterChangedEvent) => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);

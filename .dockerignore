@@ -3,3 +3,7 @@ apps/**/node_modules/*
 tmp/*
 .dockerignore
 dockerfiles
+node_modules
+.git
+.github
+.vscode

@@ -341,7 +341,7 @@ context(
         'Currently expected to pass'
       );
       getProposalInformationFromTable('Expected to pass')
-        .contains('👍 by Token vote')
+        .contains('👍 by token vote')
         .should('be.visible');
     });
 
