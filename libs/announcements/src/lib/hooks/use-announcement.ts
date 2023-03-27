@@ -63,7 +63,7 @@ export const useAnnouncement = (name: AppNameType, url: string) => {
 
     return () => {
       mounted = false;
-    }
+    };
   }, [name, url, setState]);
 
   useEffect(() => {
