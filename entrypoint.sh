@@ -35,6 +35,8 @@ do
   fi
 done < $env_vars_file
 
+rm $env_vars_file
+
 echo "}" >> $env_file
 
 # start serving
