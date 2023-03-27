@@ -13,6 +13,7 @@ import {
   limitOrder,
   marketOrder,
 } from '../mocks/generate-orders';
+import { MemoryRouter } from 'react-router-dom';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -36,9 +37,11 @@ const generateJsx = (
 ) => {
   return (
     <MockedProvider>
-      <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <OrderListTable {...defaultProps} {...props} />
-      </VegaWalletContext.Provider>
+      <MemoryRouter>
+        <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
+          <OrderListTable {...defaultProps} {...props} />
+        </VegaWalletContext.Provider>
+      </MemoryRouter>
     </MockedProvider>
   );
 };
