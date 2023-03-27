@@ -32,20 +32,15 @@ export const SelectMarketTableHeader = ({
 export const SelectMarketTableRow = ({
   detailed = false,
   columns,
-  onSelect,
   marketId,
 }: {
   detailed?: boolean;
   columns: Column[];
-  onSelect: (id: string) => void;
   marketId: string;
 }) => {
   return (
     <tr
       className={`hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer relative h-[34px]`}
-      onClick={() => {
-        onSelect(marketId);
-      }}
       data-testid={`market-link-${marketId}`}
     >
       {columns.map(({ kind, value, className, dataTestId, onlyOnDetailed }) => {

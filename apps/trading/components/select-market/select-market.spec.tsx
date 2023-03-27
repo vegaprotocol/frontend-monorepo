@@ -162,14 +162,12 @@ describe('SelectMarket', () => {
   const table = document.createElement('table');
 
   it('should render the SelectAllMarketsTableBody', () => {
-    const onSelect = jest.fn();
     const onCellClick = jest.fn();
     const { container } = render(
       <MemoryRouter>
         <SelectAllMarketsTableBody
           markets={[MARKET_A as Market, MARKET_B as Market]}
           onCellClick={onCellClick}
-          onSelect={onSelect}
         />
       </MemoryRouter>,
       { wrapper: MockedProvider, container: document.body.appendChild(table) }
@@ -177,7 +175,5 @@ describe('SelectMarket', () => {
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
     expect(screen.getByText('25.00%')).toBeTruthy(); // price change
     expect(container).toHaveTextContent(/1,000/); // volume
-    fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
-    expect(onSelect).toHaveBeenCalledWith('1');
   });
 });

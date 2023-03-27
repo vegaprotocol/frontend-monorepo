@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import type { RefObject } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t } from '@vegaprotocol/i18n';
@@ -31,16 +32,14 @@ import { HeaderTitle } from '../header';
 export const SelectAllMarketsTableBody = ({
   markets,
   positions,
-  onSelect,
   onCellClick,
   inViewRoot,
   headers = columnHeaders,
-  tableColumns = (market) => columns(market, onSelect, onCellClick, inViewRoot),
+  tableColumns = (market) => columns(market, onCellClick, inViewRoot),
 }: {
   markets?: MarketMaybeWithDataAndCandles[] | null;
   positions?: PositionFieldsFragment[];
   title?: string;
-  onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
   headers?: Column[];
   tableColumns?: (
@@ -65,7 +64,6 @@ export const SelectAllMarketsTableBody = ({
               marketId={market.id}
               key={i}
               detailed
-              onSelect={onSelect}
               columns={tableColumns(
                 market,
                 inViewRoot,
@@ -90,7 +88,6 @@ export const SelectAllMarketsTableBody = ({
 export const SelectMarketPopover = ({
   marketCode,
   marketName,
-  onSelect,
   onCellClick,
 }: {
   marketCode: string;
@@ -115,13 +112,10 @@ export const SelectMarketPopover = ({
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
-  const onSelectMarket = useCallback(
-    (marketId: string) => {
-      onSelect(marketId);
-      setOpen(false);
-    },
-    [onSelect]
-  );
+  const location = useLocation();
+  useEffect(() => {
+    setOpen(false);
+  }, [location]);
 
   const iconClass = open ? 'rotate-180' : '';
   const markets = useMemo(
@@ -172,13 +166,11 @@ export const SelectMarketPopover = ({
                   inViewRoot={inViewRoot}
                   markets={markets}
                   positions={positions || undefined}
-                  onSelect={onSelectMarket}
                   onCellClick={onCellClick}
                   headers={columnHeadersPositionMarkets}
                   tableColumns={(market, inViewRoot, openVolume) =>
                     columnsPositionMarkets(
                       market,
-                      onSelectMarket,
                       inViewRoot,
                       openVolume,
                       onCellClick
@@ -191,7 +183,6 @@ export const SelectMarketPopover = ({
             <SelectAllMarketsTableBody
               inViewRoot={inViewRoot}
               markets={data}
-              onSelect={onSelectMarket}
               onCellClick={onCellClick}
             />
           </table>

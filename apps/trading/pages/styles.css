@@ -56,3 +56,13 @@ html [data-theme='light'] {
   --pennant-color-depth-sell-fill: theme('colors.vega.pink.400');
   --pennant-color-depth-sell-stroke: theme('colors.vega.pink.550');
 }
+
+.stretched-link::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  content: '';
+}

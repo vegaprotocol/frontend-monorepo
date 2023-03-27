@@ -164,7 +164,6 @@ export type OnCellClickHandler = (
 
 export const columns = (
   market: MarketMaybeWithDataAndCandles,
-  onSelect: (id: string) => void,
   onCellClick: OnCellClickHandler,
   inViewRoot?: RefObject<HTMLElement>
 ) => {
@@ -174,14 +173,6 @@ export const columns = (
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
   const candleVolume = market.candles && calcCandleVolume(market.candles);
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLAnchorElement>,
-    id: string
-  ) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -189,11 +180,7 @@ export const columns = (
         <Link
           to={Links[Routes.MARKET](market.id)}
           data-testid={`market-link-${market.id}`}
-          onKeyPress={(event) => handleKeyPress(event, market.id)}
-          onClick={(e) => {
-            e.preventDefault();
-            onSelect(market.id);
-          }}
+          className="stretched-link"
         >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
         </Link>
@@ -252,7 +239,7 @@ export const columns = (
       value: (
         <button
           data-dialog-trigger
-          className="inline underline"
+          className="inline underline relative z-[1]"
           onClick={(e) => {
             e.stopPropagation();
             onCellClick(
@@ -352,7 +339,6 @@ export const columns = (
 
 export const columnsPositionMarkets = (
   market: MarketMaybeWithDataAndCandles,
-  onSelect: (id: string) => void,
   inViewRoot?: RefObject<HTMLElement>,
   openVolume?: string,
   onCellClick?: OnCellClickHandler
@@ -362,14 +348,6 @@ export const columnsPositionMarkets = (
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLSpanElement>,
-    id: string
-  ) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
   const candleVolume = market.candles && calcCandleVolume(market.candles);
   const selectMarketColumns: Column[] = [
     {
@@ -378,11 +356,7 @@ export const columnsPositionMarkets = (
         <Link
           to={Links[Routes.MARKET](market.id)}
           data-testid={`market-link-${market.id}`}
-          onKeyPress={(event) => handleKeyPress(event, market.id)}
-          onClick={(e) => {
-            e.preventDefault();
-            onSelect(market.id);
-          }}
+          className="stretched-link"
         >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
         </Link>
@@ -441,7 +415,7 @@ export const columnsPositionMarkets = (
       value: (
         <button
           data-dialog-trigger
-          className="inline underline"
+          className="inline underline relative"
           onClick={(e) => {
             e.stopPropagation();
             if (!onCellClick) return;
