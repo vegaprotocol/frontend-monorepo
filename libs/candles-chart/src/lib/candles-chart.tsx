@@ -14,10 +14,7 @@ import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
 import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  useThemeSwitcher,
-  useLocalStorageSnapshot,
-} from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -31,6 +28,54 @@ import {
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/i18n';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+
+interface StoredSettings {
+  interval?: Interval;
+  type?: ChartType;
+  overlays?: Overlay[];
+  studies?: Study[];
+}
+
+export const useCandlesChartSettings = create<
+  StoredSettings & {
+    merge: (settings: StoredSettings) => void;
+    setType: (type: ChartType) => void;
+    setInterval: (interval: Interval) => void;
+    setOverlays: (overlays: Overlay[]) => void;
+    setStudies: (studies: Study[]) => void;
+  }
+>()(
+  persist(
+    immer((set) => ({
+      merge: (settings: StoredSettings) =>
+        set((state) => {
+          Object.assign(state, settings);
+        }),
+      setType: (type: ChartType) =>
+        set((state) => {
+          state.type = type;
+        }),
+      setInterval: (interval: Interval) =>
+        set((state) => {
+          state.interval = interval;
+        }),
+      setOverlays: (overlays: Overlay[]) =>
+        set((state) => {
+          state.overlays = overlays;
+        }),
+      setStudies: (studies: Study[]) =>
+        set((state) => {
+          state.studies = studies;
+        }),
+    })),
+    {
+      name: 'console-candles',
+    }
+  )
+);
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -57,8 +102,6 @@ const getValidSubset = <T,>(
     ? value.filter((item) => set.includes(item))
     : defaultValue;
 
-const SET_SEPARATOR = '\t';
-
 export type CandlesChartContainerProps = {
   marketId: string;
 };
@@ -70,45 +113,28 @@ export const CandlesChartContainer = ({
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
 
-  const [storedInterval, setInterval] = useLocalStorageSnapshot(
-    'console-candels-chart-interval'
-  );
-  const [storedChartType, setChartType] = useLocalStorageSnapshot(
-    'console-candels-chart-type'
-  );
-  const [storedOverlays, storeOverlays] = useLocalStorageSnapshot(
-    'console-candels-chart-overlays'
-  );
-  const [storedStudies, storeStudies] = useLocalStorageSnapshot(
-    'console-candels-chart-study'
-  );
+  const settings = useCandlesChartSettings();
 
   const interval: Interval = getValidItem(
-    storedInterval as Interval,
+    settings.interval,
     Object.values(Interval),
     Interval.I15M
   );
 
   const chartType: ChartType = getValidItem(
-    storedChartType as ChartType,
+    settings.type,
     Object.values(ChartType),
     ChartType.CANDLE
   );
 
-  const setOverlays = (overlays: Overlay[]) =>
-    storeOverlays(overlays.join(SET_SEPARATOR));
-
   const overlays: Overlay[] = getValidSubset(
-    storedOverlays ? (storedOverlays.split(SET_SEPARATOR) as Overlay[]) : null,
+    settings.overlays,
     Object.values(Overlay),
     []
   );
 
-  const setStudies = (studies: Study[]) =>
-    storeStudies(studies.join(SET_SEPARATOR));
-
   const studies: Study[] = getValidSubset(
-    storedStudies ? (storedStudies.split(SET_SEPARATOR) as Study[]) : null,
+    settings.studies,
     Object.values(Study),
     [Study.VOLUME]
   );
@@ -131,7 +157,7 @@ export const CandlesChartContainer = ({
             <DropdownMenuRadioGroup
               value={interval}
               onValueChange={(value) => {
-                setInterval(value as Interval);
+                settings.setInterval(value as Interval);
               }}
             >
               {Object.values(Interval).map((timeInterval) => (
@@ -158,7 +184,7 @@ export const CandlesChartContainer = ({
             <DropdownMenuRadioGroup
               value={chartType}
               onValueChange={(value) => {
-                setChartType(value as ChartType);
+                settings.setType(value as ChartType);
               }}
             >
               {Object.values(ChartType).map((type) => (
@@ -186,7 +212,7 @@ export const CandlesChartContainer = ({
                     ? newOverlays.splice(index, 1)
                     : newOverlays.push(overlay);
 
-                  setOverlays(newOverlays);
+                  settings.setOverlays(newOverlays);
                 }}
               >
                 {overlayLabels[overlay]}
@@ -211,7 +237,7 @@ export const CandlesChartContainer = ({
                     ? newStudies.splice(index, 1)
                     : newStudies.push(study);
 
-                  setStudies(newStudies);
+                  settings.setStudies(newStudies);
                 }}
               >
                 {studyLabels[study]}
@@ -237,8 +263,10 @@ export const CandlesChartContainer = ({
           interval={interval}
           theme={theme}
           onOptionsChanged={(options) => {
-            setOverlays(options.overlays ?? []);
-            setStudies(options.studies ?? []);
+            settings.merge({
+              overlays: options.overlays,
+              studies: options.studies,
+            });
           }}
         />
       </div>
