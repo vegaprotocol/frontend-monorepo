@@ -96,21 +96,19 @@ export const MarketVolumeInfoPanel = ({
   ...props
 }: MarketInfoWithDataAndCandlesProps & PanelProps) => {
   const last24hourVolume = market.candles && calcCandleVolume(market.candles);
+
+  const dash = (value: string | undefined) =>
+    value && value !== '0' ? value : '-';
+
   return (
     <MarketInfoTable
       data={{
-        '24hourVolume':
-          last24hourVolume && last24hourVolume !== '0'
-            ? addDecimalsFormatNumber(
-                last24hourVolume,
-                market.positionDecimalPlaces
-              )
-            : '-',
-        openInterest: market.data?.openInterest,
-        bestBidVolume: market.data?.bestBidVolume,
-        bestOfferVolume: market.data?.bestOfferVolume,
-        bestStaticBidVolume: market.data?.bestStaticBidVolume,
-        bestStaticOfferVolume: market.data?.bestStaticOfferVolume,
+        '24hourVolume': dash(last24hourVolume),
+        openInterest: dash(market.data?.openInterest),
+        bestBidVolume: dash(market.data?.bestBidVolume),
+        bestOfferVolume: dash(market.data?.bestOfferVolume),
+        bestStaticBidVolume: dash(market.data?.bestStaticBidVolume),
+        bestStaticOfferVolume: dash(market.data?.bestStaticOfferVolume),
       }}
       decimalPlaces={market.positionDecimalPlaces}
       {...props}
