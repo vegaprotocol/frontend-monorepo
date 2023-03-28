@@ -21,10 +21,10 @@ fragment DelegationFields on Delegation {
   epoch
 }
 
-query Rewards($partyId: ID!, $delegationsPagination: Pagination) {
+query Rewards($partyId: ID!, $delegationsPagination: Pagination, $rewardsPagination: Pagination) {
   party(id: $partyId) {
     id
-    rewardsConnection {
+    rewardsConnection(pagination: $rewardsPagination) {
       edges {
         node {
           ...RewardFields
