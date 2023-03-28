@@ -21,7 +21,7 @@ export const MarketNameCell = ({
 }: MarketNameCellProps) => {
   const navigate = useNavigate();
   const id = data ? get(data, idPath ?? 'id', 'all') : '';
-  const marketLink = `/#/${MARKET_PATH}/${id}`;
+  const marketLink = `/${MARKET_PATH}/${id}`;
   const handleOnClick = useCallback(
     (ev: MouseEvent<HTMLAnchorElement>) => {
       ev.preventDefault();
@@ -31,7 +31,7 @@ export const MarketNameCell = ({
         return;
       }
       if (ev.metaKey) {
-        window.open(marketLink, '_blank');
+        window.open(`/#${marketLink}`, '_blank');
       } else {
         navigate(marketLink);
       }

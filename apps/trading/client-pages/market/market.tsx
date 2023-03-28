@@ -69,9 +69,9 @@ export const MarketPage = () => {
   const onSelect = useCallback(
     (id: string, metaKey?: boolean) => {
       if (id) {
-        const link = `/#${Links[Routes.MARKET](id)}`;
+        const link = Links[Routes.MARKET](id);
         if (metaKey) {
-          window.open(link, '_blank');
+          window.open(`/#${link}`, '_blank');
         } else if (id !== marketId) {
           navigate(link);
         }

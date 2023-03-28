@@ -81,9 +81,9 @@ const MarketBottomPanel = memo(
     const navigate = useNavigate();
     const onMarketClick = useCallback(
       (marketId: string, metaKey?: boolean) => {
-        const link = `/#${Links[Routes.MARKET](marketId)}`;
+        const link = Links[Routes.MARKET](marketId);
         if (metaKey) {
-          window.open(link, '_blank');
+          window.open(`/#${link}`, '_blank');
         } else {
           navigate(link, {
             replace: true,
