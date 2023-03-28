@@ -125,6 +125,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: <InstrumentInfoPanel market={market} />,
     },
     {
+      title: t('Oracle'),
+      content: <OracleInfoPanel market={market} />,
+    },
+    {
       title: t('Settlement asset'),
       content: <SettlementAssetInfoPanel market={market} />,
     },
@@ -176,10 +180,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Liquidity price range'),
       content: <LiquidityPriceRangeInfoPanel market={market} />,
-    },
-    {
-      title: t('Oracle'),
-      content: <OracleInfoPanel market={market} />,
     },
   ];
 
