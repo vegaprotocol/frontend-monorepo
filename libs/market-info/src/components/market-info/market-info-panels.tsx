@@ -22,6 +22,7 @@ import type {
 } from './market-info-data-provider';
 import BigNumber from 'bignumber.js';
 import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
+import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '@vegaprotocol/oracles';
@@ -418,10 +419,12 @@ export const OracleInfoPanel = ({
   const product = market.tradableInstrument.instrument.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
-  console.log(data);
   return (
     <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
-      <div className="flex flex-col gap-2 mt-4">
+      <div
+        className="flex flex-col gap-2 mt-4"
+        data-testid="oracle-proof-links"
+      >
         <DataSourceProof
           data={product.dataSourceSpecForSettlementData.data}
           providers={data}
@@ -449,7 +452,7 @@ export const OracleInfoPanel = ({
   );
 };
 
-const DataSourceProof = ({
+export const DataSourceProof = ({
   data,
   providers,
   linkText,
@@ -458,19 +461,25 @@ const DataSourceProof = ({
   providers: Provider[] | undefined;
   linkText: string;
 }) => {
-  if (!providers) return null;
-
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
+
+    if (!providers) {
+      return <p>{t('No oracle proofs found')}</p>;
+    }
+
     return (
-      <div className="flex flex-col gap-2" data-testid="oracle-proof-links">
+      <div className="flex flex-col gap-2">
         {signers.map(({ signer }, i) => {
           return (
             <OracleLink
               key={i}
               providers={providers}
               signer={signer}
-              linkText={linkText}
+              // render link text with a number for the signer eg "View termination proof (1)"
+              linkText={
+                signers.length > 1 ? `${linkText} (${i + 1})` : linkText
+              }
             />
           );
         })}
@@ -479,10 +488,22 @@ const DataSourceProof = ({
   }
 
   if (data.sourceType.__typename === 'DataSourceDefinitionInternal') {
-    return <div>{data.sourceType.__typename}: Render internal conditions</div>;
+    return (
+      <div>
+        <h3>{t('Internal conditions')}</h3>
+        {data.sourceType.sourceType.conditions.map((condition, i) => {
+          if (!condition) return null;
+          return (
+            <p key={i}>
+              {ConditionOperatorMapping[condition.operator]} {condition.value}
+            </p>
+          );
+        })}
+      </div>
+    );
   }
 
-  return <div>{t('No data sources')}</div>;
+  return <div>{t('Invalid data source')}</div>;
 };
 
 const OracleLink = ({
@@ -517,8 +538,12 @@ const OracleLink = ({
   });
 
   if (!provider) {
-    return <p>{t('No oracle found for data source')}</p>;
+    return <p>{t('No oracle proof for data source')}</p>;
   }
 
-  return <ExternalLink href={provider.github_link}>{linkText}</ExternalLink>;
+  return (
+    <p>
+      <ExternalLink href={provider.github_link}>{linkText}</ExternalLink>
+    </p>
+  );
 };

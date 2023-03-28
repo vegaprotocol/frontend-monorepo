@@ -1,3 +1,4 @@
+import type { ConditionOperator } from './__generated__/types';
 import type {
   AccountType,
   AuctionTrigger,
@@ -22,6 +23,7 @@ import type {
   VoteValue,
   WithdrawalStatus,
   DispatchMetric,
+  Condition,
 } from './__generated__/types';
 
 export const AccountTypeMapping: {
@@ -457,4 +459,12 @@ export const PositionStatusMapping: {
   POSITION_STATUS_CLOSED_OUT: 'Closed by network',
   POSITION_STATUS_ORDERS_CLOSED: 'Maintained by network',
   POSITION_STATUS_UNSPECIFIED: 'Normal',
+};
+
+export const ConditionOperatorMapping: { [C in ConditionOperator]: string } = {
+  OPERATOR_EQUALS: 'Equals',
+  OPERATOR_GREATER_THAN: 'Greater than',
+  OPERATOR_GREATER_THAN_OR_EQUAL: 'Greater than or equal to',
+  OPERATOR_LESS_THAN: 'Less than',
+  OPERATOR_LESS_THAN_OR_EQUAL: 'Less than or equal to',
 };
