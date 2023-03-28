@@ -178,6 +178,6 @@ describe('SelectMarket', () => {
     expect(screen.getByText('25.00%')).toBeTruthy(); // price change
     expect(container).toHaveTextContent(/1,000/); // volume
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
-    expect(onSelect).toHaveBeenCalledWith('1');
+    expect(onSelect).toHaveBeenCalledWith('1', false);
   });
 });
