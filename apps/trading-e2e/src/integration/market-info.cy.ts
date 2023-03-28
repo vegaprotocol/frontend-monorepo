@@ -39,7 +39,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
     validateMarketDataRow(0, '24 Hour Volume', '1');
-    validateMarketDataRow(1, 'Open Interest', '0');
+    validateMarketDataRow(1, 'Open Interest', '-');
     validateMarketDataRow(2, 'Best Bid Volume', '1');
     validateMarketDataRow(3, 'Best Offer Volume', '3');
     validateMarketDataRow(4, 'Best Static Bid Volume', '2');
