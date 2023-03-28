@@ -17,11 +17,13 @@ import {
 type TradingModeTooltipProps = {
   marketId?: string;
   skip?: boolean;
+  skipGrid?: boolean;
 };
 
 export const TradingModeTooltip = ({
   marketId,
   skip,
+  skipGrid,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
   const onSelect = useMarketOnClickHandler();
@@ -45,7 +47,7 @@ export const TradingModeTooltip = ({
   );
 
   const compiledGrid =
-    onSelect && compileGridData(market, marketData, onSelect);
+    !skipGrid && compileGridData(market, marketData, onSelect);
 
   switch (marketTradingMode) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
@@ -106,6 +108,7 @@ export const TradingModeTooltip = ({
             {VEGA_DOCS_URL && (
               <ExternalLink
                 href={createDocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}
+                className="ml-1"
               >
                 {t('Find out more')}
               </ExternalLink>
@@ -132,6 +135,7 @@ export const TradingModeTooltip = ({
                       createDocsLinks(VEGA_DOCS_URL)
                         .AUCTION_TYPE_LIQUIDITY_MONITORING
                     }
+                    className="ml-1"
                   >
                     {t('Find out more')}
                   </ExternalLink>
@@ -156,6 +160,7 @@ export const TradingModeTooltip = ({
                       createDocsLinks(VEGA_DOCS_URL)
                         .AUCTION_TYPE_LIQUIDITY_MONITORING
                     }
+                    className="ml-1"
                   >
                     {t('Find out more')}
                   </ExternalLink>
@@ -178,6 +183,7 @@ export const TradingModeTooltip = ({
                       createDocsLinks(VEGA_DOCS_URL)
                         .AUCTION_TYPE_PRICE_MONITORING
                     }
+                    className="ml-1"
                   >
                     {t('Find out more')}
                   </ExternalLink>
