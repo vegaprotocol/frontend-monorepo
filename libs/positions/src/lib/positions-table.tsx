@@ -40,10 +40,10 @@ import * as Schema from '@vegaprotocol/types';
 import { getRowId } from './use-positions-data';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { useMarketOnClickHandler } from '@vegaprotocol/market-list';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
-  onMarketClick?: (id: string, metaKey?: boolean) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
 }
@@ -80,7 +80,8 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
-  ({ onClose, onMarketClick, ...props }, ref) => {
+  ({ onClose, ...props }, ref) => {
+    const onMarketClick = useMarketOnClickHandler();
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}

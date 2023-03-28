@@ -8,20 +8,23 @@ import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, SimpleGrid } from '@vegaprotocol/ui-toolkit';
 import { compileGridData } from './compile-grid-data';
-import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
+import {
+  useMarket,
+  useMarketOnClickHandler,
+  useStaticMarketData,
+} from '@vegaprotocol/market-list';
 
 type TradingModeTooltipProps = {
   marketId?: string;
-  onSelect?: (marketId: string, metaKey?: boolean) => void;
   skip?: boolean;
 };
 
 export const TradingModeTooltip = ({
   marketId,
-  onSelect,
   skip,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
+  const onSelect = useMarketOnClickHandler();
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useStaticMarketData(marketId, skip);
   const { marketTradingMode, trigger } = marketData || {};

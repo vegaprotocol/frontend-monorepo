@@ -3,13 +3,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { FillsManager } from './fills-manager';
 
-export const FillsContainer = ({
-  marketId,
-  onMarketClick,
-}: {
-  marketId?: string;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-}) => {
+export const FillsContainer = ({ marketId }: { marketId?: string }) => {
   const { pubKey } = useVegaWallet();
 
   if (!pubKey) {
@@ -20,11 +14,5 @@ export const FillsContainer = ({
     );
   }
 
-  return (
-    <FillsManager
-      partyId={pubKey}
-      marketId={marketId}
-      onMarketClick={onMarketClick}
-    />
-  );
+  return <FillsManager partyId={pubKey} marketId={marketId} />;
 };

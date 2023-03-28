@@ -24,19 +24,20 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
+import { useMarketOnClickHandler } from '@vegaprotocol/market-list';
 
 type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 
 export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
 };
 
 export const OrderListTable = memo(
   forwardRef<AgGridReact, OrderListTableProps>(
-    ({ cancel, setEditOrder, onMarketClick, ...props }, ref) => {
+    ({ cancel, setEditOrder, ...props }, ref) => {
+      const onMarketClick = useMarketOnClickHandler();
       return (
         <AgGrid
           ref={ref}

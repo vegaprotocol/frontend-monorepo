@@ -4,10 +4,8 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { PositionsManager } from './positions-manager';
 
 export const PositionsContainer = ({
-  onMarketClick,
   noBottomPlaceholder,
 }: {
-  onMarketClick?: (marketId: string) => void;
   noBottomPlaceholder?: boolean;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -22,7 +20,6 @@ export const PositionsContainer = ({
   return (
     <PositionsManager
       partyId={pubKey}
-      onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
       noBottomPlaceholder={noBottomPlaceholder}
     />

@@ -11,14 +11,12 @@ import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 
 interface PositionsManagerProps {
   partyId: string;
-  onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
   noBottomPlaceholder?: boolean;
 }
 
 export const PositionsManager = ({
   partyId,
-  onMarketClick,
   isReadOnly,
   noBottomPlaceholder,
 }: PositionsManagerProps) => {
@@ -77,7 +75,6 @@ export const PositionsManager = ({
       <PositionsTable
         rowData={error ? [] : data}
         ref={gridRef}
-        onMarketClick={onMarketClick}
         onClose={onClose}
         suppressLoadingOverlay
         suppressNoRowsOverlay

@@ -8,7 +8,7 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -27,7 +27,6 @@ import { TradeMarketHeader } from './trade-market-header';
 import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
-import { Links, Routes } from '../../pages/client-router';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
@@ -66,7 +65,6 @@ type TradingView = keyof typeof TradingViews;
 
 interface TradeGridProps {
   market: Market | null;
-  onSelect: (marketId: string) => void;
   pinnedAsset?: PinnedAsset;
 }
 
@@ -78,20 +76,6 @@ interface BottomPanelProps {
 const MarketBottomPanel = memo(
   ({ marketId, pinnedAsset }: BottomPanelProps) => {
     const { screenSize } = useScreenDimensions();
-    const navigate = useNavigate();
-    const onMarketClick = useCallback(
-      (marketId: string, metaKey?: boolean) => {
-        const link = Links[Routes.MARKET](marketId);
-        if (metaKey) {
-          window.open(`/#${link}`, '_blank');
-        } else {
-          navigate(link, {
-            replace: true,
-          });
-        }
-      },
-      [navigate]
-    );
 
     return 'xxxl' === screenSize ? (
       <ResizableGrid proportionalLayout minSize={200}>
@@ -106,17 +90,13 @@ const MarketBottomPanel = memo(
                 <VegaWalletContainer>
                   <TradingViews.Orders
                     marketId={marketId}
-                    onMarketClick={onMarketClick}
                     enforceBottomPlaceholder
                   />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <TradingViews.Fills
-                    marketId={marketId}
-                    onMarketClick={onMarketClick}
-                  />
+                  <TradingViews.Fills marketId={marketId} />
                 </VegaWalletContainer>
               </Tab>
             </Tabs>
@@ -131,10 +111,7 @@ const MarketBottomPanel = memo(
             <Tabs storageKey="console-trade-grid-bottom-right">
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <TradingViews.Positions
-                    onMarketClick={onMarketClick}
-                    noBottomPlaceholder
-                  />
+                  <TradingViews.Positions noBottomPlaceholder />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="accounts" name={t('Collateral')}>
@@ -155,24 +132,20 @@ const MarketBottomPanel = memo(
         <Tabs storageKey="console-trade-grid-bottom">
           <Tab id="positions" name={t('Positions')}>
             <VegaWalletContainer>
-              <TradingViews.Positions onMarketClick={onMarketClick} />
+              <TradingViews.Positions />
             </VegaWalletContainer>
           </Tab>
           <Tab id="orders" name={t('Orders')}>
             <VegaWalletContainer>
               <TradingViews.Orders
                 marketId={marketId}
-                onMarketClick={onMarketClick}
                 enforceBottomPlaceholder
               />
             </VegaWalletContainer>
           </Tab>
           <Tab id="fills" name={t('Fills')}>
             <VegaWalletContainer>
-              <TradingViews.Fills
-                marketId={marketId}
-                onMarketClick={onMarketClick}
-              />
+              <TradingViews.Fills marketId={marketId} />
             </VegaWalletContainer>
           </Tab>
           <Tab id="accounts" name={t('Collateral')}>
@@ -190,11 +163,9 @@ MarketBottomPanel.displayName = 'MarketBottomPanel';
 const MainGrid = memo(
   ({
     marketId,
-    onSelect,
     pinnedAsset,
   }: {
     marketId: string;
-    onSelect?: (marketId: string) => void;
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
@@ -235,12 +206,7 @@ const MainGrid = memo(
                     />
                   </Tab>
                   <Tab id="info" name={t('Info')}>
-                    <TradingViews.Info
-                      marketId={marketId}
-                      onSelect={(id: string) => {
-                        onSelect?.(id);
-                      }}
-                    />
+                    <TradingViews.Info marketId={marketId} />
                   </Tab>
                 </Tabs>
               </TradeGridChild>
@@ -276,19 +242,11 @@ const MainGrid = memo(
 );
 MainGrid.displayName = 'MainGrid';
 
-export const TradeGrid = ({
-  market,
-  onSelect,
-  pinnedAsset,
-}: TradeGridProps) => {
+export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
-      <MainGrid
-        marketId={market?.id || ''}
-        onSelect={onSelect}
-        pinnedAsset={pinnedAsset}
-      />
+      <TradeMarketHeader market={market} />
+      <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
     </div>
   );
 };
@@ -309,27 +267,18 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 
 interface TradePanelsProps {
   market: Market | null;
-  onSelect: (marketId: string) => void;
-  onMarketClick?: (marketId: string) => void;
   onClickCollateral: () => void;
   pinnedAsset?: PinnedAsset;
 }
 
 export const TradePanels = ({
   market,
-  onSelect,
   onClickCollateral,
   pinnedAsset,
 }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
   const renderView = () => {
-    const Component = memo<{
-      marketId: string;
-      onSelect: (marketId: string) => void;
-      onMarketClick?: (marketId: string) => void;
-      onClickCollateral: () => void;
-      pinnedAsset?: PinnedAsset;
-    }>(TradingViews[view]);
+    const Component = memo(TradingViews[view]);
 
     if (!Component) {
       throw new Error(`No component for view: ${view}`);
@@ -340,7 +289,6 @@ export const TradePanels = ({
     return (
       <Component
         marketId={market?.id}
-        onSelect={onSelect}
         onClickCollateral={onClickCollateral}
         pinnedAsset={pinnedAsset}
       />
@@ -349,7 +297,7 @@ export const TradePanels = ({
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <TradeMarketHeader market={market} />
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (

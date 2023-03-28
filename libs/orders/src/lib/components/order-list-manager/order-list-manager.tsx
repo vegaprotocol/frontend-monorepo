@@ -23,7 +23,6 @@ import type { Order, OrderEdge } from '../order-data-provider';
 export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   enforceBottomPlaceholder?: boolean;
 }
@@ -59,7 +58,6 @@ const initialFilter: Filter = {
 export const OrderListManager = ({
   partyId,
   marketId,
-  onMarketClick,
   isReadOnly,
   enforceBottomPlaceholder,
 }: OrderListManagerProps) => {
@@ -170,7 +168,6 @@ export const OrderListManager = ({
           onSortChanged={onSortChange}
           cancel={cancel}
           setEditOrder={setEditOrder}
-          onMarketClick={onMarketClick}
           isReadOnly={isReadOnly}
           blockLoadDebounceMillis={100}
           suppressLoadingOverlay

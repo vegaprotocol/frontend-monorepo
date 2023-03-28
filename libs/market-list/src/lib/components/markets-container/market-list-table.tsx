@@ -18,6 +18,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketMaybeWithData, MarketFieldsFragment } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useMarketOnClickHandler } from '../../use-market-onclick-handler';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
 
@@ -28,6 +29,7 @@ export const MarketListTable = forwardRef<
   TypedDataAgGrid<MarketMaybeWithData>
 >(({ ...props }, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const onMarketClick = useMarketOnClickHandler();
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
@@ -49,6 +51,7 @@ export const MarketListTable = forwardRef<
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
         cellRenderer="MarketNameCell"
+        cellRendererParams={{ onMarketClick }}
       />
       <AgGridColumn
         headerName={t('Description')}
