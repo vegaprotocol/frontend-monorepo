@@ -421,26 +421,28 @@ export const OracleInfoPanel = ({
   console.log(data);
   return (
     <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
-      <DataSourceProof
-        data={product.dataSourceSpecForSettlementData.data}
-        providers={data}
-        linkText={t('View oracle profile for settlement data')}
-      />
-      <DataSourceProof
-        data={product.dataSourceSpecForTradingTermination.data}
-        providers={data}
-        linkText={t('View oracle profile for trading termination')}
-      />
-      <div data-testid="oracle-spec-links">
+      <div className="flex flex-col gap-2 mt-4">
+        <DataSourceProof
+          data={product.dataSourceSpecForSettlementData.data}
+          providers={data}
+          linkText={t('View settlement data proof')}
+        />
+        <DataSourceProof
+          data={product.dataSourceSpecForTradingTermination.data}
+          providers={data}
+          linkText={t('View termination proof')}
+        />
+      </div>
+      <div className="flex flex-col gap-2" data-testid="oracle-spec-links">
         <ExternalLink
           href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForSettlementData.id}`}
         >
-          {t('View settlement data oracle specification')}
+          {t('View settlement data specification')}
         </ExternalLink>
         <ExternalLink
           href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForTradingTermination.id}`}
         >
-          {t('View termination oracle specification')}
+          {t('View termination specification')}
         </ExternalLink>
       </div>
     </MarketInfoTable>
@@ -461,7 +463,7 @@ const DataSourceProof = ({
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
     return (
-      <div data-testid="oracle-proof-links">
+      <div className="flex flex-col gap-2" data-testid="oracle-proof-links">
         {signers.map(({ signer }, i) => {
           return (
             <OracleLink
