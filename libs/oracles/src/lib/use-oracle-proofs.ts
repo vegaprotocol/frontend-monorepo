@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import type { Provider } from './identity-schema';
-import { providersSchema } from './identity-schema';
+import type { Provider } from './oracle-schema';
+import { providersSchema } from './oracle-schema';
 
-const cache: {
+export let cache: {
   [url: string]: Provider[];
 } = {};
 
@@ -20,11 +20,10 @@ export const useOracleProofs = (url?: string) => {
 
     const run = async () => {
       try {
-        setStatus('loading');
         if (cache[url]) {
           setData(cache[url]);
-          setStatus('done');
         } else {
+          setStatus('loading');
           const res = await fetch(url);
           const json = await res.json();
 
@@ -34,7 +33,6 @@ export const useOracleProofs = (url?: string) => {
 
           cache[url] = result;
           setData(result);
-          setStatus('done');
         }
       } catch (err) {
         if (err instanceof Error) {
@@ -59,4 +57,8 @@ export const useOracleProofs = (url?: string) => {
     loading: status === 'loading',
     error,
   };
+};
+
+export const invalidateCache = () => {
+  cache = {};
 };

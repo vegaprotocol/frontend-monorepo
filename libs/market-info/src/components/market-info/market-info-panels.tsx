@@ -1,4 +1,3 @@
-import compact from 'lodash/compact';
 import type { ComponentProps } from 'react';
 import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
@@ -24,7 +23,7 @@ import type {
 import BigNumber from 'bignumber.js';
 import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
-import { EtherscanLink, useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '@vegaprotocol/oracles';
 import { useOracleProofs } from '@vegaprotocol/oracles';
 
@@ -418,12 +417,10 @@ export const OracleInfoPanel = ({
 }: MarketInfoProps & PanelProps) => {
   const product = market.tradableInstrument.instrument.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
-  const { data, error } = useOracleProofs(ORACLE_PROOFS_URL);
-  console.log(error);
-
+  const { data } = useOracleProofs(ORACLE_PROOFS_URL);
+  console.log(data);
   return (
     <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
-      <h3 className="text-lg">Oracle profiles</h3>
       <DataSourceProof
         data={product.dataSourceSpecForSettlementData.data}
         providers={data}
@@ -434,7 +431,6 @@ export const OracleInfoPanel = ({
         providers={data}
         linkText={t('View oracle profile for trading termination')}
       />
-      <h3 className="text-lg">Oracle specifications</h3>
       <ExternalLink
         href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForSettlementData.id}`}
       >
@@ -465,15 +461,14 @@ const DataSourceProof = ({
     return (
       <div>
         {signers.map(({ signer }, i) => {
-          const provider = getProvider(providers, signer);
-          if (provider) {
-            return (
-              <ExternalLink key={i} href={provider.github_link}>
-                {linkText}
-              </ExternalLink>
-            );
-          }
-          return null;
+          return (
+            <OracleLink
+              key={i}
+              providers={providers}
+              signer={signer}
+              linkText={linkText}
+            />
+          );
         })}
       </div>
     );
@@ -486,27 +481,40 @@ const DataSourceProof = ({
   return <div>{t('No data sources')}</div>;
 };
 
-const getProvider = (providers: Provider[], signer: SignerKind) => {
-  for (let i = 0; i < providers.length; i++) {
-    const provider = providers[i];
-    for (let j = 0; j < provider.identities.length; j++) {
-      const identity = provider.identities[j];
-
-      if (signer.__typename === 'PubKey') {
-        if (identity.type === 'PubKey' && identity.key === signer.key) {
-          return provider;
-        }
-      }
-
-      if (signer.__typename === 'ETHAddress') {
-        if (
-          identity.type === 'ETHAddress' &&
-          identity.address === signer.address
-        ) {
-          return provider;
-        }
+const OracleLink = ({
+  providers,
+  signer,
+  linkText,
+}: {
+  providers: Provider[];
+  signer: SignerKind;
+  linkText: string;
+}) => {
+  const provider = providers.find((p) => {
+    if (signer.__typename === 'PubKey') {
+      if (
+        p.oracle.type === 'public_key' &&
+        p.oracle.public_key === signer.key
+      ) {
+        return true;
       }
     }
+
+    if (signer.__typename === 'ETHAddress') {
+      if (
+        p.oracle.type === 'eth_address' &&
+        p.oracle.eth_address === signer.address
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  });
+
+  if (!provider) {
+    return <p>{t('No oracle found for data source')}</p>;
   }
-  return null;
+
+  return <ExternalLink href={provider.github_link}>{linkText}</ExternalLink>;
 };
