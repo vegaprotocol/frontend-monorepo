@@ -26,7 +26,7 @@ export const compileGridData = (
     | 'targetStake'
     | 'trigger'
   > | null,
-  onSelect?: (id: string) => void
+  onSelect?: (id: string, metaKey?: boolean) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: SimpleGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
@@ -78,7 +78,7 @@ export const compileGridData = (
       label: (
         <Link
           to={`/liquidity/${market.id}`}
-          onClick={() => onSelect && onSelect(market.id)}
+          onClick={(ev) => onSelect && onSelect(market.id, ev.metaKey)}
         >
           <UILink>{t('Current liquidity')}</UILink>
         </Link>

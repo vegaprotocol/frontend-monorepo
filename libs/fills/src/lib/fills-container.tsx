@@ -8,7 +8,7 @@ export const FillsContainer = ({
   onMarketClick,
 }: {
   marketId?: string;
-  onMarketClick?: (marketId: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
   const { pubKey } = useVegaWallet();
 

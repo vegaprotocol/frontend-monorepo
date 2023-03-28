@@ -12,7 +12,7 @@ import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
 
 type TradingModeTooltipProps = {
   marketId?: string;
-  onSelect?: (marketId: string) => void;
+  onSelect?: (marketId: string, metaKey?: boolean) => void;
   skip?: boolean;
 };
 

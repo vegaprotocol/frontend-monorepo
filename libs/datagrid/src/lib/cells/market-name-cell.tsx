@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent } from 'react';
+import { useCallback } from 'react';
 import get from 'lodash/get';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { useKeyHoldingStore } from '../key-holding-store';
 
 const MARKET_PATH = 'markets';
 
@@ -10,49 +10,38 @@ interface MarketNameCellProps {
   value?: string;
   data?: { id?: string; marketId?: string; market?: { id: string } };
   idPath?: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }
 
 export const MarketNameCell = ({
   value,
   data,
   idPath,
+  onMarketClick,
 }: MarketNameCellProps) => {
-  const holdingKey = useKeyHoldingStore((store) => store.holdingKey);
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [on, setOn] = useState(false);
-  const [externalKeyDown, setExternalKeyDown] = useState(false);
-
-  useEffect(() => {
-    setExternalKeyDown(['Meta', 'Control'].includes(holdingKey) && on);
-    if (on) {
-      ref.current?.focus();
-    } else {
-      ref.current?.blur();
-    }
-  }, [on, holdingKey]);
-
-  if (!data) return null;
-  const id = get(data, idPath ?? 'id', 'all');
-
-  const marketPath = `/#/${MARKET_PATH}/${id}`;
-
-  const linkContent = externalKeyDown ? (
-    <ExternalLink href={marketPath} onClick={(e) => e.stopPropagation()}>
-      {value}
-    </ExternalLink>
-  ) : (
-    <Link to={marketPath}>{value}</Link>
+  const navigate = useNavigate();
+  const id = data ? get(data, idPath ?? 'id', 'all') : '';
+  const marketLink = `/#/${MARKET_PATH}/${id}`;
+  const handleOnClick = useCallback(
+    (ev: MouseEvent<HTMLAnchorElement>) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (onMarketClick) {
+        onMarketClick(id, ev.metaKey);
+        return;
+      }
+      if (ev.metaKey) {
+        window.open(marketLink, '_blank');
+      } else {
+        navigate(marketLink);
+      }
+    },
+    [marketLink, navigate, id, onMarketClick]
   );
+  if (!data) return null;
   return (
-    <div
-      data-testid={`market-${data.id}`}
-      ref={ref}
-      role="link"
-      tabIndex={0}
-      onMouseEnter={() => setOn(true)}
-      onMouseLeave={() => setOn(false)}
-    >
-      {linkContent}
-    </div>
+    <Link to={marketLink} onClick={handleOnClick}>
+      {value}
+    </Link>
   );
 };

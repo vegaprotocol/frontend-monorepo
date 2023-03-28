@@ -31,7 +31,7 @@ const MAKER = 'MAKER';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
-  onMarketClick?: (marketId: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
@@ -52,7 +52,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.name"
           cellRenderer="MarketNameCell"
-          cellRendererParams={{ idPath: 'market.id' }}
+          cellRendererParams={{ idPath: 'market.id', onMarketClick }}
         />
         <AgGridColumn
           headerName={t('Size')}

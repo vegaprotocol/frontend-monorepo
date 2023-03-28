@@ -43,7 +43,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
-  onMarketClick?: (id: string) => void;
+  onMarketClick?: (id: string, metaKey?: boolean) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
 }
@@ -108,6 +108,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Market')}
           field="marketName"
           cellRenderer="MarketNameCell"
+          cellRendererParams={{ idPath: 'marketId', onMarketClick }}
           minWidth={190}
         />
         <AgGridColumn

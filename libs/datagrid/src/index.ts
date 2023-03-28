@@ -16,5 +16,3 @@ export * from './lib/filters/set-filter';
 
 export * from './lib/cell-class-rules';
 export * from './lib/type-helpers';
-
-export * from './lib/key-holding-store';

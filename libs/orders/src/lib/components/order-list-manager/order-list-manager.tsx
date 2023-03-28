@@ -23,7 +23,7 @@ import type { Order, OrderEdge } from '../order-data-provider';
 export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
-  onMarketClick?: (marketId: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   enforceBottomPlaceholder?: boolean;
 }

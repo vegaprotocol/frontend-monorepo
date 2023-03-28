@@ -10,7 +10,7 @@ import {
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
@@ -33,11 +33,19 @@ export const Portfolio = () => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
 
-  const onMarketClick = (marketId: string) => {
-    navigate(Links[Routes.MARKET](marketId), {
-      replace: true,
-    });
-  };
+  const onMarketClick = useCallback(
+    (marketId: string, metaKey?: boolean) => {
+      const link = `/#${Links[Routes.MARKET](marketId)}`;
+      if (metaKey) {
+        window.open(link, '_blank');
+      } else {
+        navigate(link, {
+          replace: true,
+        });
+      }
+    },
+    [navigate]
+  );
 
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (

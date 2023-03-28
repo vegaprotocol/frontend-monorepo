@@ -80,10 +80,15 @@ const MarketBottomPanel = memo(
     const { screenSize } = useScreenDimensions();
     const navigate = useNavigate();
     const onMarketClick = useCallback(
-      (marketId: string) => {
-        navigate(Links[Routes.MARKET](marketId), {
-          replace: true,
-        });
+      (marketId: string, metaKey?: boolean) => {
+        const link = `/#${Links[Routes.MARKET](marketId)}`;
+        if (metaKey) {
+          window.open(link, '_blank');
+        } else {
+          navigate(link, {
+            replace: true,
+          });
+        }
       },
       [navigate]
     );

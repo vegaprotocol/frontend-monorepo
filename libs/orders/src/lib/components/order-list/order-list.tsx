@@ -30,7 +30,7 @@ type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
-  onMarketClick?: (marketId: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
 };
 
@@ -58,7 +58,7 @@ export const OrderListTable = memo(
             headerName={t('Market')}
             field="market.tradableInstrument.instrument.code"
             cellRenderer="MarketNameCell"
-            cellRendererParams={{ idPath: 'marketId' }}
+            cellRendererParams={{ idPath: 'market.id', onMarketClick }}
             minWidth={150}
           />
           <AgGridColumn

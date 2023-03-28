@@ -1,5 +1,4 @@
-import type { ReactNode, RefObject, MouseEvent, KeyboardEvent } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import type { RefObject, MouseEvent } from 'react';
 import { FeesCell } from '@vegaprotocol/market-info';
 import {
   calcCandleHigh,
@@ -8,18 +7,8 @@ import {
 } from '@vegaprotocol/market-list';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  PriceCell,
-  signedNumberCssClass,
-  useKeyHoldingStore,
-} from '@vegaprotocol/datagrid';
-import {
-  ExternalLink,
-  Icon,
-  Link as UILink,
-  Sparkline,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { PriceCell, signedNumberCssClass } from '@vegaprotocol/datagrid';
+import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
 import type { CandleClose } from '@vegaprotocol/types';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
@@ -29,7 +18,6 @@ import { Last24hPriceChange } from '../last-24h-price-change';
 import { MarketTradingMode } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
 import { Links, Routes } from '../../pages/client-router';
-import { IconNames } from '@blueprintjs/icons';
 
 const ellipsisClasses = 'whitespace-nowrap overflow-hidden text-ellipsis';
 export const cellClassNames = `py-1 first:text-left text-right ${ellipsisClasses}`;
@@ -168,79 +156,6 @@ export const columnHeaders: Column[] = [
   },
 ];
 
-const MarketExternalLink = ({
-  children,
-  marketId,
-  onSelect,
-}: {
-  children: ReactNode;
-  marketId: string;
-  onSelect: (id: string) => void;
-}) => {
-  const holdingKey = useKeyHoldingStore((store) => store.holdingKey);
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [on, setOn] = useState(false);
-  const [externalKeyDown, setExternalKeyDown] = useState(false);
-  const handleKeyPress = (
-    event: KeyboardEvent<HTMLAnchorElement>,
-    id: string
-  ) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
-
-  const handleOnClick = useCallback(
-    (e: MouseEvent<HTMLAnchorElement>) => {
-      e.preventDefault();
-      onSelect(marketId);
-    },
-    [onSelect, marketId]
-  );
-
-  useEffect(() => {
-    setExternalKeyDown(['Meta', 'Control'].includes(holdingKey) && on);
-    if (on) {
-      ref.current?.focus();
-    } else {
-      ref.current?.blur();
-    }
-  }, [on, holdingKey]);
-
-  const linkContent = externalKeyDown ? (
-    <ExternalLink
-      href={`#${Links[Routes.MARKET](marketId)}`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <>
-        {children}
-        <Icon size={3} name={IconNames.SHARE} className="ml-1" />
-      </>
-    </ExternalLink>
-  ) : (
-    <Link
-      to={Links[Routes.MARKET](marketId)}
-      data-testid={`market-link-${marketId}`}
-      onKeyPress={(event) => handleKeyPress(event, marketId)}
-      onClick={handleOnClick}
-    >
-      {children}
-    </Link>
-  );
-
-  return (
-    <div
-      ref={ref}
-      role="link"
-      tabIndex={0}
-      onMouseEnter={() => setOn(true)}
-      onMouseLeave={() => setOn(false)}
-    >
-      {linkContent}
-    </div>
-  );
-};
-
 export type OnCellClickHandler = (
   e: MouseEvent,
   kind: ColumnKind,
@@ -249,7 +164,7 @@ export type OnCellClickHandler = (
 
 export const columns = (
   market: MarketMaybeWithDataAndCandles,
-  onSelect: (id: string) => void,
+  onSelect: (id: string, metaKey?: boolean) => void,
   onCellClick: OnCellClickHandler,
   inViewRoot?: RefObject<HTMLElement>
 ) => {
@@ -264,9 +179,16 @@ export const columns = (
     {
       kind: ColumnKind.Market,
       value: (
-        <MarketExternalLink marketId={market.id} onSelect={onSelect}>
+        <Link
+          to={Links[Routes.MARKET](market.id)}
+          data-testid={`market-link-${market.id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            onSelect(market.id, e.metaKey);
+          }}
+        >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
-        </MarketExternalLink>
+        </Link>
       ),
       className: `${cellClassNames} max-w-[110px]`,
       onlyOnDetailed: false,
@@ -422,7 +344,7 @@ export const columns = (
 
 export const columnsPositionMarkets = (
   market: MarketMaybeWithDataAndCandles,
-  onSelect: (id: string) => void,
+  onSelect: (id: string, metaKey?: boolean) => void,
   inViewRoot?: RefObject<HTMLElement>,
   openVolume?: string,
   onCellClick?: OnCellClickHandler
@@ -437,9 +359,16 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.Market,
       value: (
-        <MarketExternalLink marketId={market.id} onSelect={onSelect}>
+        <Link
+          to={Links[Routes.MARKET](market.id)}
+          data-testid={`market-link-${market.id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            onSelect(market.id, e.metaKey);
+          }}
+        >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
-        </MarketExternalLink>
+        </Link>
       ),
       className: cellClassNames,
       onlyOnDetailed: false,

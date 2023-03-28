@@ -67,9 +67,14 @@ export const MarketPage = () => {
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
   const onSelect = useCallback(
-    (id: string) => {
-      if (id && id !== marketId) {
-        navigate(Links[Routes.MARKET](id));
+    (id: string, metaKey?: boolean) => {
+      if (id) {
+        const link = `/#${Links[Routes.MARKET](id)}`;
+        if (metaKey) {
+          window.open(link, '_blank');
+        } else if (id !== marketId) {
+          navigate(link);
+        }
       }
     },
     [marketId, navigate]
