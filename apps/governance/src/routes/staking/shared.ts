@@ -2,7 +2,7 @@ import {
   formatNumberPercentage,
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
-import type { PreviousEpochQuery } from './__generated___/PreviousEpoch';
+import type { PreviousEpochQuery } from './__generated__/PreviousEpoch';
 import { BigNumber } from '../../lib/bignumber';
 
 export const getLastEpochScoreAndPerformance = (

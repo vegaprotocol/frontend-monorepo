@@ -88,6 +88,7 @@ export const DepositStatusMapping: {
 export const IntervalMapping: {
   [T in Interval]: string;
 } = {
+  // @ts-ignore - temporarily suppressing this as it's a valid value
   INTERVAL_BLOCK: '1 block',
   INTERVAL_I15M: 'I15M',
   INTERVAL_I1D: 'I1D',

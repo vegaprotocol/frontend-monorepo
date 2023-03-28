@@ -74,7 +74,7 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator stake', function () {
-          cy.get('[col-id="stake"] > div > span > span')
+          cy.getByTestId('total-stake')
             .should('have.length.at.least', 1)
             .each(($stake) => {
               cy.wrap($stake).should('not.be.empty');
@@ -82,7 +82,7 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator stake tooltip', function () {
-          cy.get('[col-id="stake"] > div > span > span').first().realHover();
+          cy.getByTestId('total-stake').first().realHover();
 
           cy.get(stakedByOperatorToolTip)
             .invoke('text')
@@ -96,17 +96,15 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator normalised voting power', function () {
-          cy.get('[col-id="normalisedVotingPower"] > div > span > span')
+          cy.getByTestId('normalised-voting-power')
             .should('have.length.at.least', 1)
             .each(($vPower) => {
               cy.wrap($vPower).should('not.be.empty');
             });
         });
 
-        it('Should be able to see validator voting power tooltip', function () {
-          cy.get('[col-id="normalisedVotingPower"] > div > span > span')
-            .first()
-            .realHover();
+        it('Should be able to see validator normalised voting power tooltip', function () {
+          cy.getByTestId('normalised-voting-power').first().realHover();
 
           cy.get(unnormalisedVotingPowerToolTip)
             .invoke('text')
@@ -118,7 +116,7 @@ context('Validators Page - verify elements on page', function () {
 
         // 2002-SINC-018
         it('Should be able to see validator total penalties', function () {
-          cy.get('[col-id="totalPenalties"] > div > span > span')
+          cy.getByTestId('total-penalty')
             .should('have.length.at.least', 1)
             .each(($penalties) => {
               cy.wrap($penalties).should('contain.text', '0%');
@@ -126,7 +124,7 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator penalties tooltip', function () {
-          cy.get('[col-id="totalPenalties"] > div > span > span').realHover();
+          cy.getByTestId('total-penalty').realHover();
 
           cy.get(performancePenaltyToolTip)
             .invoke('text')
@@ -140,7 +138,7 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator pending stake', function () {
-          cy.get('[col-id="pendingStake"] > div > span')
+          cy.getByTestId('total-pending-stake')
             .should('have.length.at.least', 1)
             .each(($pendingStake) => {
               cy.wrap($pendingStake).should('contain.text', '0.00');

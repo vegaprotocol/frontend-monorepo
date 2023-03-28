@@ -104,7 +104,7 @@ export const RewardsPage = () => {
               </section>
             )}
 
-          <section className="grid xl:grid-cols-2 gap-12 items-center mb-8">
+          <section className="grid xl:grid-cols-[1fr_auto] gap-12 items-center mb-8">
             <div>
               <SubHeading title={t('rewardsAndFeesReceived')} />
               <p>
@@ -114,7 +114,7 @@ export const RewardsPage = () => {
               </p>
             </div>
 
-            <div className="max-w-[600px]">
+            <div className="w-[440px]">
               <Toggle
                 name="epoch-reward-view-toggle"
                 toggles={[
