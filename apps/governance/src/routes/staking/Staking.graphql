@@ -23,6 +23,17 @@ fragment StakingNodeFields on Node {
   }
 }
 
+fragment StakingDelegationFields on Delegation {
+  amount
+  epoch
+  node {
+    id
+  }
+  party {
+    id
+  }
+}
+
 query Staking($partyId: ID!, $delegationsPagination: Pagination) {
   party(id: $partyId) {
     id
@@ -32,11 +43,7 @@ query Staking($partyId: ID!, $delegationsPagination: Pagination) {
     delegationsConnection(pagination: $delegationsPagination) {
       edges {
         node {
-          amount
-          epoch
-          node {
-            id
-          }
+          ...StakingDelegationFields
         }
       }
     }

@@ -21,6 +21,8 @@ import {
   ValidatorRenderer,
   TotalPenaltiesRenderer,
   TotalStakeRenderer,
+  StakeShareRenderer,
+  PendingStakeRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
@@ -38,6 +40,7 @@ export const StandbyPendingValidatorsTable = ({
   totalStake,
   stakeNeededForPromotion,
   stakeNeededForPromotionDescription,
+  validatorsView,
 }: StandbyPendingValidatorsTableProps) => {
   const { t } = useTranslation();
   const {
@@ -47,7 +50,7 @@ export const StandbyPendingValidatorsTable = ({
 
   const gridRef = useRef<AgGridReact | null>(null);
 
-  const nodes = useMemo(() => {
+  let nodes = useMemo(() => {
     if (!data) return [];
 
     return data
@@ -75,6 +78,9 @@ export const StandbyPendingValidatorsTable = ({
           rankingScore: { stakeScore },
           pendingStake,
           votingPowerRanking,
+          stakedByUser,
+          pendingUserStake,
+          userStakeShare,
         }) => {
           const { rawValidatorScore, performanceScore } =
             getLastEpochScoreAndPerformance(previousEpochData, id);
@@ -152,6 +158,13 @@ export const StandbyPendingValidatorsTable = ({
               totalStake
             ),
             [ValidatorFields.PENDING_STAKE]: pendingStake,
+            [ValidatorFields.STAKED_BY_USER]: stakedByUser
+              ? formatNumber(toBigNum(stakedByUser, decimals), 2)
+              : undefined,
+            [ValidatorFields.PENDING_USER_STAKE]: pendingUserStake,
+            [ValidatorFields.USER_STAKE_SHARE]: userStakeShare
+              ? stakedTotalPercentage(userStakeShare)
+              : undefined,
           };
         }
       );
@@ -164,6 +177,12 @@ export const StandbyPendingValidatorsTable = ({
     t,
     totalStake,
   ]);
+
+  if (validatorsView === 'myStake') {
+    nodes = nodes.filter(
+      (node) => node[ValidatorFields.STAKED_BY_USER] !== undefined
+    );
+  }
 
   const StandbyPendingTable = forwardRef<AgGridReact>((_, gridRef) => {
     const colDefs = useMemo<ColDef[]>(
@@ -180,7 +199,7 @@ export const StandbyPendingValidatorsTable = ({
           cellRenderer: ValidatorRenderer,
           comparator: ({ name: a }, { name: b }) => Math.sign(a - b),
           pinned: 'left',
-          width: 240,
+          width: 260,
         },
         {
           field: ValidatorFields.STAKE,
@@ -188,6 +207,20 @@ export const StandbyPendingValidatorsTable = ({
           headerTooltip: t('StakeDescription').toString(),
           cellRenderer: TotalStakeRenderer,
           width: 120,
+        },
+        {
+          field: ValidatorFields.PENDING_STAKE,
+          headerName: t(ValidatorFields.PENDING_STAKE).toString(),
+          headerTooltip: t('PendingStakeDescription').toString(),
+          cellRenderer: PendingStakeRenderer,
+          width: 120,
+        },
+        {
+          field: ValidatorFields.STAKE_SHARE,
+          headerName: t(ValidatorFields.STAKE_SHARE).toString(),
+          headerTooltip: t('StakeShareDescription').toString(),
+          cellRenderer: StakeShareRenderer,
+          width: 100,
         },
         {
           field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
@@ -200,25 +233,11 @@ export const StandbyPendingValidatorsTable = ({
           sort: 'asc',
         },
         {
-          field: ValidatorFields.STAKE_SHARE,
-          headerName: t(ValidatorFields.STAKE_SHARE).toString(),
-          headerTooltip: t('StakeShareDescription').toString(),
-          width: 100,
-        },
-        {
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
           headerTooltip: t('TotalPenaltiesDescription').toString(),
           cellRenderer: TotalPenaltiesRenderer,
           width: 120,
-        },
-        {
-          field: ValidatorFields.PENDING_STAKE,
-          headerName: t(ValidatorFields.PENDING_STAKE).toString(),
-          headerTooltip: t('PendingStakeDescription').toString(),
-          valueFormatter: ({ value }) =>
-            formatNumber(toBigNum(value, decimals), 2),
-          width: 110,
         },
       ],
       []
@@ -230,7 +249,7 @@ export const StandbyPendingValidatorsTable = ({
           domLayout="autoHeight"
           style={{ width: '100%' }}
           customThemeParams={NODE_LIST_GRID_STYLES}
-          rowHeight={52}
+          rowHeight={68}
           defaultColDef={defaultColDef}
           tooltipShowDelay={0}
           animateRows={true}

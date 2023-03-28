@@ -15,8 +15,8 @@ import type {
   LinkingsFieldsFragment,
   PartyStakeLinkingsQuery,
   PartyStakeLinkingsQueryVariables,
-} from './__generated___/PartyStakeLinkings';
-import { PartyStakeLinkingsDocument } from './__generated___/PartyStakeLinkings';
+} from './__generated__/PartyStakeLinkings';
+import { PartyStakeLinkingsDocument } from './__generated__/PartyStakeLinkings';
 
 export const useAddStake = (
   address: string,

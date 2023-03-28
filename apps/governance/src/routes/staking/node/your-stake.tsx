@@ -23,7 +23,7 @@ export const YourStake = ({
   return (
     <div data-testid="your-stake">
       <SubHeading title={t('Your stake')} />
-      <RoundedWrapper>
+      <RoundedWrapper paddingBottom={true}>
         <KeyValueTable>
           <KeyValueTableRow>
             {t('Your Stake On Node (This Epoch)')}

@@ -1,27 +1,30 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { ConsensusValidatorsTable } from './consensus-validators-table';
-import { StandbyPendingValidatorsTable } from './standby-pending-validators-table';
+import BigNumber from 'bignumber.js';
 import * as Schema from '@vegaprotocol/types';
-import { formatNumber } from '../../../../lib/format-number';
 import {
   createDocsLinks,
   removePaginationWrapper,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { Link as UTLink } from '@vegaprotocol/ui-toolkit';
-import { SubHeading } from '../../../../components/heading';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { Link as UTLink, Toggle } from '@vegaprotocol/ui-toolkit';
+
+import { formatNumber } from '../../../../lib/format-number';
+import { SubHeading } from '../../../../components/heading';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import type {
-  NodesQuery,
-  NodesFragmentFragment,
-} from '../__generated___/Nodes';
-import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
-import BigNumber from 'bignumber.js';
+import { addUserDataToValidator } from './shared';
+import { ConsensusValidatorsTable } from './consensus-validators-table';
+import { StandbyPendingValidatorsTable } from './standby-pending-validators-table';
+import type { NodesQuery, NodesFragmentFragment } from '../__generated__/Nodes';
+import type { PreviousEpochQuery } from '../../__generated__/PreviousEpoch';
+import type { StakingQuery } from '../../__generated__/Staking';
+import type { StakingDelegationFieldsFragment } from '../../__generated__/Staking';
+import type { ValidatorWithUserData } from './shared';
 
 export interface ValidatorsTableProps {
-  data: NodesQuery | undefined;
+  nodesData: NodesQuery | undefined;
+  userStakingData: StakingQuery | undefined;
   previousEpochData: PreviousEpochQuery | undefined;
 }
 
@@ -31,8 +34,11 @@ interface SortedValidatorsProps {
   pendingValidators: NodesFragmentFragment[];
 }
 
+export type ValidatorsView = 'all' | 'myStake';
+
 export const ValidatorTables = ({
-  data,
+  nodesData,
+  userStakingData,
   previousEpochData,
 }: ValidatorsTableProps) => {
   const { t } = useTranslation();
@@ -40,25 +46,69 @@ export const ValidatorTables = ({
   const {
     appState: { decimals },
   } = useAppState();
+
+  const [validatorsView, setValidatorsView] = useState<ValidatorsView>('all');
   const totalStake = useMemo(
-    () => data?.nodeData?.stakedTotal || '0',
-    [data?.nodeData?.stakedTotal]
+    () => nodesData?.nodeData?.stakedTotal || '0',
+    [nodesData?.nodeData?.stakedTotal]
   );
+  const epochId = useMemo(() => nodesData?.epoch.id, [nodesData?.epoch.id]);
+  const currentUserStakeAvailable = useMemo(
+    () => userStakingData?.party?.stakingSummary.currentStakeAvailable || '0',
+    [userStakingData?.party?.stakingSummary.currentStakeAvailable]
+  );
+
   let stakeNeededForPromotion = undefined;
+  let delegations: StakingDelegationFieldsFragment[] | undefined = undefined;
+
+  if (userStakingData) {
+    delegations = removePaginationWrapper(
+      userStakingData?.party?.delegationsConnection?.edges
+    );
+  }
 
   const { consensusValidators, standbyValidators, pendingValidators } = useMemo(
     () =>
-      removePaginationWrapper(data?.nodesConnection.edges).reduce(
+      removePaginationWrapper(nodesData?.nodesConnection.edges).reduce(
         (acc: SortedValidatorsProps, validator) => {
+          const validatorId = validator.id;
+          const currentDelegation = delegations?.find(
+            (d) => d.node.id === validatorId && d.epoch === Number(epochId)
+          );
+          const nextDelegation = delegations?.find(
+            (d) => d.node.id === validatorId && d.epoch === Number(epochId) + 1
+          );
+
           switch (validator.rankingScore?.status) {
             case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT:
-              acc.consensusValidators.push(validator);
+              acc.consensusValidators.push(
+                addUserDataToValidator(
+                  validator,
+                  currentDelegation,
+                  nextDelegation,
+                  currentUserStakeAvailable
+                )
+              );
               break;
             case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ:
-              acc.standbyValidators.push(validator);
+              acc.standbyValidators.push(
+                addUserDataToValidator(
+                  validator,
+                  currentDelegation,
+                  nextDelegation,
+                  currentUserStakeAvailable
+                )
+              );
               break;
             case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING:
-              acc.pendingValidators.push(validator);
+              acc.pendingValidators.push(
+                addUserDataToValidator(
+                  validator,
+                  currentDelegation,
+                  nextDelegation,
+                  currentUserStakeAvailable
+                )
+              );
           }
           return acc;
         },
@@ -68,7 +118,12 @@ export const ValidatorTables = ({
           pendingValidators: [],
         }
       ),
-    [data?.nodesConnection.edges]
+    [
+      currentUserStakeAvailable,
+      delegations,
+      epochId,
+      nodesData?.nodesConnection.edges,
+    ]
   );
 
   if (
@@ -76,7 +131,7 @@ export const ValidatorTables = ({
     (standbyValidators.length || pendingValidators.length)
   ) {
     const lowestRankingConsensusScore = consensusValidators.reduce(
-      (lowest: NodesFragmentFragment, validator: NodesFragmentFragment) => {
+      (lowest: ValidatorWithUserData, validator: ValidatorWithUserData) => {
         if (
           Number(validator.rankingScore.rankingScore) <
           Number(lowest.rankingScore.rankingScore)
@@ -98,19 +153,42 @@ export const ValidatorTables = ({
     ).toString();
   }
   return (
-    <div data-testid="validator-tables">
+    <section data-testid="validator-tables">
+      <div className="grid w-full justify-end">
+        <div className="w-[400px]">
+          <Toggle
+            name="validators-view-toggle"
+            toggles={[
+              {
+                label: t('ALL VALIDATORS'),
+                value: 'all',
+              },
+              {
+                label: t('STAKED BY ME'),
+                value: 'myStake',
+              },
+            ]}
+            checkedValue={validatorsView}
+            onChange={(e) =>
+              setValidatorsView(e.target.value as ValidatorsView)
+            }
+          />
+        </div>
+      </div>
+
       {consensusValidators.length > 0 && (
-        <>
+        <div className="mb-10">
           <SubHeading title={t('status-tendermint')} />
           <ConsensusValidatorsTable
             data={consensusValidators}
             previousEpochData={previousEpochData}
             totalStake={totalStake}
+            validatorsView={validatorsView}
           />
-        </>
+        </div>
       )}
       {standbyValidators.length > 0 && (
-        <>
+        <div className="mb-10">
           <SubHeading title={t('status-ersatz')} />
           <p>
             <Trans
@@ -126,8 +204,9 @@ export const ValidatorTables = ({
             totalStake={totalStake}
             stakeNeededForPromotion={stakeNeededForPromotion}
             stakeNeededForPromotionDescription="StakeNeededForPromotionStandbyDescription"
+            validatorsView={validatorsView}
           />
-        </>
+        </div>
       )}
       {pendingValidators.length > 0 && (
         <>
@@ -155,9 +234,10 @@ export const ValidatorTables = ({
             totalStake={totalStake}
             stakeNeededForPromotion={stakeNeededForPromotion}
             stakeNeededForPromotionDescription="StakeNeededForPromotionCandidateDescription"
+            validatorsView={validatorsView}
           />
         </>
       )}
-    </div>
+    </section>
   );
 };
