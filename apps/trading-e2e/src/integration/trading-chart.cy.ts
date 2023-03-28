@@ -11,14 +11,14 @@ describe('chart', { tags: '@smoke' }, () => {
     cy.get('@control-buttons').each(($button) => {
       cy.wrap($button).click();
       cy.get(
-        '[role="menuitemradio"]:last, [role="menuitemcheckbox"]:last'
+        '[role="menuitemradio"]:first, [role="menuitemcheckbox"]:first'
       ).click();
     });
     cy.getByTestId('Depth').click();
     cy.getByTestId('Chart').click();
     cy.get('@control-buttons').each(($button) => {
       cy.wrap($button).click();
-      cy.get('[role="menuitemradio"]:last, [role="menuitemcheckbox"]:last')
+      cy.get('[role="menuitemradio"]:first, [role="menuitemcheckbox"]:first')
         .within(($lastMenuItem) => {
           expect($lastMenuItem.data('state')).to.equal('checked');
         })
