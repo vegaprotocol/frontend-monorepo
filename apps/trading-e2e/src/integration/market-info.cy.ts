@@ -181,7 +181,15 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       'termination.BTC.value'
     );
 
+    // check that links to github for oracle proofs are shown
     cy.getByTestId(accordionContent)
+      .getByTestId('oracle-proof-links')
+      .find(`[data-testid="${externalLink}"]`)
+      .should('have.attr', 'href')
+      .and('contain', 'https://github.com/vegaprotocol/well-known');
+
+    cy.getByTestId(accordionContent)
+      .getByTestId('oracle-spec-links')
       .find(`[data-testid="${externalLink}"]`)
       .should('have.attr', 'href')
       .and('contain', '/oracles');

@@ -431,16 +431,18 @@ export const OracleInfoPanel = ({
         providers={data}
         linkText={t('View oracle profile for trading termination')}
       />
-      <ExternalLink
-        href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForSettlementData.id}`}
-      >
-        {t('View settlement data oracle specification')}
-      </ExternalLink>
-      <ExternalLink
-        href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForTradingTermination.id}`}
-      >
-        {t('View termination oracle specification')}
-      </ExternalLink>
+      <div data-testid="oracle-spec-links">
+        <ExternalLink
+          href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForSettlementData.id}`}
+        >
+          {t('View settlement data oracle specification')}
+        </ExternalLink>
+        <ExternalLink
+          href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForTradingTermination.id}`}
+        >
+          {t('View termination oracle specification')}
+        </ExternalLink>
+      </div>
     </MarketInfoTable>
   );
 };
@@ -459,7 +461,7 @@ const DataSourceProof = ({
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
     return (
-      <div>
+      <div data-testid="oracle-proof-links">
         {signers.map(({ signer }, i) => {
           return (
             <OracleLink

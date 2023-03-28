@@ -35,6 +35,8 @@ type MarketPageMockData = {
   trigger?: Schema.AuctionTrigger;
 };
 
+const ORACLE_PUBKEY = Cypress.env('ORACLE_PUBKEY');
+
 const marketDataOverride = (
   data: MarketPageMockData
 ): PartialDeep<MarketDataQuery> => ({
@@ -96,7 +98,54 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Margins', marginsQuery());
   aliasGQLQuery(req, 'Assets', assetsQuery());
   aliasGQLQuery(req, 'Asset', assetQuery());
-  aliasGQLQuery(req, 'MarketInfo', marketInfoQuery());
+  aliasGQLQuery(
+    req,
+    'MarketInfo',
+    marketInfoQuery({
+      market: {
+        tradableInstrument: {
+          instrument: {
+            product: {
+              dataSourceSpecForSettlementData: {
+                data: {
+                  sourceType: {
+                    sourceType: {
+                      signers: [
+                        {
+                          __typename: 'Signer',
+                          signer: {
+                            __typename: 'PubKey',
+                            key: ORACLE_PUBKEY,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+              dataSourceSpecForTradingTermination: {
+                data: {
+                  sourceType: {
+                    sourceType: {
+                      signers: [
+                        {
+                          __typename: 'Signer',
+                          signer: {
+                            __typename: 'PubKey',
+                            key: ORACLE_PUBKEY,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+  );
   aliasGQLQuery(req, 'Trades', tradesQuery());
   aliasGQLQuery(req, 'Chart', chartQuery());
   aliasGQLQuery(req, 'Candles', candlesQuery());
@@ -127,6 +176,40 @@ export const addMockTradingPage = () => {
       cy.mockGQL((req) => {
         mockTradingPage(req, state, tradingMode, trigger);
       });
+
+      // Prevent request to github, return some dummy content
+      cy.intercept(
+        'GET',
+        /^https:\/\/raw.githubusercontent.com\/vegaprotocol\/well-known/,
+        {
+          body: [
+            {
+              name: 'Another oracle',
+              url: 'https://zombo.com',
+              description_markdown:
+                'Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n',
+              oracle: {
+                status: 'GOOD',
+                status_reason: '',
+                first_verified: '2022-01-01T00:00:00.000Z',
+                last_verified: '2022-12-31T00:00:00.000Z',
+                type: 'public_key',
+                public_key: ORACLE_PUBKEY,
+              },
+              proofs: [
+                {
+                  format: 'signed_message',
+                  available: true,
+                  type: 'public_key',
+                  public_key: ORACLE_PUBKEY,
+                  message: 'SOMEHEX',
+                },
+              ],
+              github_link: `https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/PubKey-${ORACLE_PUBKEY}.toml`,
+            },
+          ],
+        }
+      );
     }
   );
 };
