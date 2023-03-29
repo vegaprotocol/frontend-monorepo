@@ -36,7 +36,7 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
         with:
-          main-branch-name: develop
+          main-branch-name: ${{ github.base_ref || github.ref_name }}
 
       # See affected apps
       - name: See affected apps
