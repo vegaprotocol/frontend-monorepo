@@ -33,7 +33,7 @@ jobs:
 
       # Check SHAs
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v2
+        uses: nrwl/nx-set-shas@v3
         with:
           main-branch-name: ${{ github.base_ref || github.ref_name }}
           set-environment-variables-for-job: true
@@ -44,7 +44,7 @@ jobs:
           nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
           rm package.json yarn.lock
           yarn add nx@$nx_version
-          affected=$(yarn nx print-affected --select=projects)
+          affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
           echo -n "Affected projects: $affected"
           projects_e2e=""
           if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
