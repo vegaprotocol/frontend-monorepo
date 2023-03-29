@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Checkout frontend mono repo
         uses: actions/checkout@v3
+        with:
+          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+          fetch-depth: 0
 
       - name: Check node version
         id: node-version
@@ -33,8 +36,7 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
         with:
-          main-branch-name: ${{ github.base_ref || github.ref_name }}
-          set-environment-variables-for-job: true
+          main-branch-name: develop
 
       # See affected apps
       - name: See affected apps
