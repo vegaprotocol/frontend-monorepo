@@ -176,7 +176,7 @@ export type WithdrawalBusEventSubscriptionHookResult = ReturnType<typeof useWith
 export type WithdrawalBusEventSubscriptionResult = Apollo.SubscriptionResult<WithdrawalBusEventSubscription>;
 export const OrderTxUpdateDocument = gql`
     subscription OrderTxUpdate($partyId: ID!) {
-  orders(partyId: $partyId) {
+  orders(filter: {partyIds: [$partyId]}) {
     ...OrderTxUpdateFields
   }
 }

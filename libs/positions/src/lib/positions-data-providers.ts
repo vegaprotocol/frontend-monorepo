@@ -353,10 +353,12 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
       ordersProvider(callback, client, {
         ...variables,
         filter: {
-          status: [
-            OrderStatus.STATUS_ACTIVE,
-            OrderStatus.STATUS_PARTIALLY_FILLED,
-          ],
+          order: {
+            status: [
+              OrderStatus.STATUS_ACTIVE,
+              OrderStatus.STATUS_PARTIALLY_FILLED,
+            ],
+          },
         },
       }),
     (callback, client, variables) =>

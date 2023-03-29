@@ -1,6 +1,7 @@
 import { update } from './order-data-provider';
 import type { OrderUpdateFieldsFragment, OrderFieldsFragment } from '../';
 import type { Edge } from '@vegaprotocol/utils';
+
 describe('order data provider', () => {
   it('puts incoming data in proper place', () => {
     const data = [
@@ -110,7 +111,11 @@ describe('order data provider', () => {
 
     const updatedData = update(data, delta, () => null, {
       partyId: '0x123',
-      dateRange: { end: new Date('2022-02-01').toISOString() },
+      filter: {
+        order: {
+          dateRange: { end: new Date('2022-02-01').toISOString() },
+        },
+      },
     });
     expect(
       updatedData?.findIndex((edge) => edge.node.id === delta[0].id)
