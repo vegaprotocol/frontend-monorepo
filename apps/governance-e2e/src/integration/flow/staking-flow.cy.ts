@@ -53,9 +53,9 @@ context(
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
-      cy.associateTokensToVegaWallet('4');
       ethereumWalletConnect();
       // this is a workaround for #2422 which can be removed once issue is resolved
+      cy.associateTokensToVegaWallet('4');
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
@@ -143,7 +143,8 @@ context(
         validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
       });
 
-      it('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
+      it.only('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
+        vegaWalletTeardown();
         stakingPageAssociateTokens('3', { type: 'contract' });
         navigateTo(navigation.validators);
         stakingPageAssociateTokens('4', { type: 'wallet' });
