@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout frontend mono repo
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Check node version
         id: node-version
@@ -42,6 +40,11 @@ jobs:
       - name: See affected apps
         run: |
           nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
+          echo "NX Version: $nx_version"
+          echo "NX_BASE: ${{ env.NX_BASE }}"
+          echo "NX_HEAD: ${{ env.NX_HEAD }}"
+          echo "Main branch name: ${{ github.base_ref || github.ref_name }}"
+          echo "Docker version: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.event.pull_request.head.sha }}"
           rm package.json yarn.lock
           yarn add nx@$nx_version
           affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
