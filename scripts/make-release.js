@@ -73,9 +73,9 @@ inquirer
         execSync('git checkout develop');
       })
       .catch((err) => {
-        console.log('Something went wrong');
+        console.log('Something went wrong', err.toString());
       });
   })
   .catch((err) => {
-    console.log('Something went wrong');
+    console.log('Something went wrong', err.toString());
   });
