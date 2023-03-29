@@ -42,13 +42,18 @@ jobs:
       - name: See affected apps
         run: |
           nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
+          rm package.json yarn.lock
+          yarn add nx@$nx_version
+
+          echo ">>>> debug"
           echo "NX Version: $nx_version"
           echo "NX_BASE: ${{ env.NX_BASE }}"
           echo "NX_HEAD: ${{ env.NX_HEAD }}"
           echo "Main branch name: ${{ github.base_ref || github.ref_name }}"
           echo "Docker version: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.event.pull_request.head.sha }}"
-          rm package.json yarn.lock
-          yarn add nx@$nx_version
+          echo "command to execute: 'yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects'"
+          echo ">>>> eof debug"
+
           affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
           echo -n "Affected projects: $affected"
           projects_e2e=""
