@@ -428,12 +428,12 @@ export const OracleInfoPanel = ({
         <DataSourceProof
           data={product.dataSourceSpecForSettlementData.data}
           providers={data}
-          linkText={t('View settlement data proof')}
+          type="settlementData"
         />
         <DataSourceProof
           data={product.dataSourceSpecForTradingTermination.data}
           providers={data}
-          linkText={t('View termination proof')}
+          type="termination"
         />
       </div>
       <div className="flex flex-col gap-2" data-testid="oracle-spec-links">
@@ -455,17 +455,17 @@ export const OracleInfoPanel = ({
 export const DataSourceProof = ({
   data,
   providers,
-  linkText,
+  type,
 }: {
   data: DataSourceDefinition;
   providers: Provider[] | undefined;
-  linkText: string;
+  type: 'settlementData' | 'termination';
 }) => {
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
 
-    if (!providers) {
-      return <p>{t('No oracle proofs found')}</p>;
+    if (!providers?.length) {
+      return <NoOracleProof type={type} />;
     }
 
     return (
@@ -476,10 +476,8 @@ export const DataSourceProof = ({
               key={i}
               providers={providers}
               signer={signer}
-              // render link text with a number for the signer eg "View termination proof (1)"
-              linkText={
-                signers.length > 1 ? `${linkText} (${i + 1})` : linkText
-              }
+              type={type}
+              index={i}
             />
           );
         })}
@@ -509,12 +507,20 @@ export const DataSourceProof = ({
 const OracleLink = ({
   providers,
   signer,
-  linkText,
+  type,
+  index,
 }: {
   providers: Provider[];
   signer: SignerKind;
-  linkText: string;
+  type: 'settlementData' | 'termination';
+  index: number;
 }) => {
+  const text =
+    type === 'settlementData'
+      ? t('View settlement data proof')
+      : t('View termination proof');
+  const textWithCount = index > 0 ? `${text} (${index + 1})` : text;
+
   const provider = providers.find((p) => {
     if (signer.__typename === 'PubKey') {
       if (
@@ -538,12 +544,27 @@ const OracleLink = ({
   });
 
   if (!provider) {
-    return <p>{t('No oracle proof for data source')}</p>;
+    return <NoOracleProof type={type} />;
   }
 
   return (
     <p>
-      <ExternalLink href={provider.github_link}>{linkText}</ExternalLink>
+      <ExternalLink href={provider.github_link}>{textWithCount}</ExternalLink>
+    </p>
+  );
+};
+
+const NoOracleProof = ({
+  type,
+}: {
+  type: 'settlementData' | 'termination';
+}) => {
+  return (
+    <p>
+      {t(
+        'No oracle proof for %s',
+        type === 'settlementData' ? 'settlement data' : 'termination'
+      )}
     </p>
   );
 };

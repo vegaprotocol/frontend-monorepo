@@ -53,7 +53,7 @@ describe('DataSourceProof', () => {
           github_link: `https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/PubKey-${ORACLE_PUBKEY}.toml`,
         },
       ],
-      linkText: 'Termination proof',
+      type: 'termination' as const,
     };
     render(<DataSourceProof {...props} />);
     expect(screen.getByRole('link')).toHaveAttribute(
@@ -62,7 +62,7 @@ describe('DataSourceProof', () => {
     );
   });
 
-  it('renders message if no matching proof is found', () => {
+  it('renders message if there are no providers', () => {
     const props = {
       data: {
         sourceType: {
@@ -82,11 +82,64 @@ describe('DataSourceProof', () => {
         },
       },
       providers: [],
-      linkText: 'Termination proof',
+      type: 'termination' as const,
     };
     render(<DataSourceProof {...props} />);
     expect(
-      screen.getByText('No oracle proof for data source')
+      screen.getByText('No oracle proof for termination')
+    ).toBeInTheDocument();
+  });
+
+  it('renders message if there are no matching proofs', () => {
+    const props = {
+      data: {
+        sourceType: {
+          __typename: 'DataSourceDefinitionExternal' as const,
+          sourceType: {
+            __typename: 'DataSourceSpecConfiguration' as const,
+            signers: [
+              {
+                __typename: 'Signer' as const,
+                signer: {
+                  __typename: 'PubKey' as const,
+                  key: ORACLE_PUBKEY,
+                },
+              },
+            ],
+          },
+        },
+      },
+      providers: [
+        {
+          name: 'Another oracle',
+          url: 'https://zombo.com',
+          description_markdown:
+            'Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n',
+          oracle: {
+            status: 'GOOD' as const,
+            status_reason: '',
+            first_verified: '2022-01-01T00:00:00.000Z',
+            last_verified: '2022-12-31T00:00:00.000Z',
+            type: 'public_key' as const,
+            public_key: 'not-the-pubkey',
+          },
+          proofs: [
+            {
+              format: 'signed_message' as const,
+              available: true,
+              type: 'public_key' as const,
+              public_key: 'not-the-pubkey',
+              message: 'SOMEHEX',
+            },
+          ],
+          github_link: `https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/PubKey-${ORACLE_PUBKEY}.toml`,
+        },
+      ],
+      type: 'settlementData' as const,
+    };
+    render(<DataSourceProof {...props} />);
+    expect(
+      screen.getByText('No oracle proof for settlement data')
     ).toBeInTheDocument();
   });
 
@@ -98,7 +151,7 @@ describe('DataSourceProof', () => {
         },
       },
       providers: [],
-      linkText: 'Termination proof',
+      type: 'termination' as const,
     };
     // @ts-ignore types are invalid
     render(<DataSourceProof {...props} />);
@@ -122,7 +175,7 @@ describe('DataSourceProof', () => {
         },
       },
       providers: [],
-      linkText: 'Termination proof',
+      type: 'termination' as const,
     };
     render(<DataSourceProof {...props} />);
     expect(screen.getByText('Internal conditions')).toBeInTheDocument();

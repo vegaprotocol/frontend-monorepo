@@ -205,7 +205,7 @@ export const addMockTradingPage = () => {
                   message: 'SOMEHEX',
                 },
               ],
-              github_link: `https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/PubKey-${ORACLE_PUBKEY}.toml`,
+              github_link: `https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/public_key-${ORACLE_PUBKEY}.toml`,
             },
           ],
         }
