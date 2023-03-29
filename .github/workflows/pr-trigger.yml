@@ -51,12 +51,12 @@ jobs:
           echo "NX_HEAD: ${{ env.NX_HEAD }}"
           echo "Main branch name: ${{ github.base_ref || github.ref_name }}"
           echo "git rev-parse HEAD: $(git rev-parse HEAD)"
-          echo "git merge-base origin/develop HEAD: $(git merge-base origin/develop HEAD)"
+          echo "Head: {{ github.head_ref }}"
           echo "Docker version: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.event.pull_request.head.sha }}"
           echo "command to execute: 'yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects'"
           echo ">>>> eof debug"
 
-          affected=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)
+          affected=$(yarn nx print-affected --base=${{ github.base_ref || github.ref_name }} --head=${{ github.head_ref }} --select=projects)
           echo -n "Affected projects: $affected"
           projects_e2e=""
           if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
