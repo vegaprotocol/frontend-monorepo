@@ -75,8 +75,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(3, 'Quote Name', 'BTC');
   });
 
-  // need to check why data are not visible
-  it.skip('settlement asset displayed', () => {
+  it('settlement asset displayed', () => {
     cy.getByTestId(marketTitle).contains('Settlement asset').click();
     cy.window().then((win) => {
       cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT');
