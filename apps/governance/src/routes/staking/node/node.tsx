@@ -20,8 +20,8 @@ import NodeContainer from './nodes-container';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { Heading, SubHeading } from '../../../components/heading';
 import Routes from '../../routes';
-import type { StakingQuery } from './__generated__/Staking';
-import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import type { StakingQuery } from '../__generated__/Staking';
+import type { PreviousEpochQuery } from '../__generated__/PreviousEpoch';
 
 interface StakingNodeProps {
   data?: StakingQuery;
@@ -116,13 +116,6 @@ export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
           t('validatorTitle', { nodeName: t('validatorTitleFallback') })
         }
       />
-      <section className="mb-4">
-        <ValidatorTable
-          node={nodeInfo}
-          stakedTotal={addDecimal(data?.nodeData?.stakedTotal || '0', decimals)}
-          previousEpochData={previousEpochData}
-        />
-      </section>
       {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
         <section className="mb-10">
           <EpochCountdown
@@ -157,6 +150,13 @@ export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
           <ConnectToVega />
         </>
       )}
+      <section className="mb-4">
+        <ValidatorTable
+          node={nodeInfo}
+          stakedTotal={addDecimal(data?.nodeData?.stakedTotal || '0', decimals)}
+          previousEpochData={previousEpochData}
+        />
+      </section>
     </div>
   );
 };

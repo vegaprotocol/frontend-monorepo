@@ -25,22 +25,24 @@ import {
   vegaWalletSetSpecifiedApprovalAmount,
   vegaWalletTeardown,
 } from '../../support/wallet-teardown.functions';
-const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
-const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
-const stakeValidatorListValidatorStake = '[col-id="stake"] > div > span';
-const stakeRemoveStakeRadioButton = '[data-testid="remove-stake-radio"]';
-const stakeTokenAmountInputBox = '[data-testid="token-amount-input"]';
-const stakeTokenSubmitButton = '[data-testid="token-input-submit-button"]';
-const stakeAddStakeRadioButton = '[data-testid="add-stake-radio"]';
-const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
-const totalStake = '[data-testid="total-stake"]';
-const stakeShare = '[data-testid="stake-percentage"]';
+const stakeValidatorListTotalStake = 'total-stake';
+const stakeValidatorListTotalShare = 'total-stake-share';
+const stakeValidatorListStakePercentage = 'stake-percentage';
+const userStakeBtn = 'my-stake-btn';
+const userStake = 'user-stake';
+const userStakeShare = 'user-stake-share';
+const viewAllValidatorsToggle = 'validators-view-toggle-all';
+const viewStakedByMeToggle = 'validators-view-toggle-myStake';
+const stakeRemoveStakeRadioButton = 'remove-stake-radio';
+const stakeTokenAmountInputBox = 'token-amount-input';
+const stakeTokenSubmitButton = 'token-input-submit-button';
+const stakeAddStakeRadioButton = 'add-stake-radio';
+const stakeMaximumTokens = 'token-amount-use-maximum';
+const vegaWalletAssociatedBalance = 'currency-value';
+const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
+const ethWalletContainer = 'ethereum-wallet';
+const vegaWallet = 'vega-wallet';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
-const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
-const vegaWalletStakedBalances =
-  '[data-testid="vega-wallet-balance-staked-validators"]';
-const ethWalletContainer = '[data-testid="ethereum-wallet"]';
-const vegaWallet = '[data-testid="vega-wallet"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
@@ -51,9 +53,9 @@ context(
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
+      cy.associateTokensToVegaWallet('4');
       ethereumWalletConnect();
       // this is a workaround for #2422 which can be removed once issue is resolved
-      cy.associateTokensToVegaWallet('4');
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
@@ -91,6 +93,39 @@ context(
         validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
       });
 
+      it('Able to view validators staked by me', function () {
+        ensureSpecifiedUnstakedTokensAreAssociated('4');
+        cy.get('button').contains('Select a validator to nominate').click();
+        clickOnValidatorFromList(0);
+        stakingValidatorPageAddStake('2');
+        closeStakingDialog();
+        navigateTo(navigation.validators);
+        cy.getByTestId(userStake, epochTimeout)
+          .first()
+          .should('have.text', '2.00');
+        cy.getByTestId('total-stake').first().realHover();
+        cy.getByTestId('staked-by-user-tooltip')
+          .first()
+          .should('have.text', 'Staked by me: 2.00');
+        cy.getByTestId('total-pending-stake').first().realHover();
+        cy.getByTestId('pending-user-stake-tooltip')
+          .first()
+          .should('have.text', 'My pending stake: 0.00');
+        cy.getByTestId(userStakeShare).invoke('text').should('not.be.empty'); // Adjust when #3286 is resolved
+        cy.getByTestId(userStakeBtn).should('exist').click();
+        verifyThisEpochValue(2.0);
+        navigateTo(navigation.validators);
+        cy.getByTestId(viewStakedByMeToggle).click();
+        cy.getByTestId(userStakeBtn).should('have.length', 1);
+        cy.getByTestId(viewAllValidatorsToggle).click();
+        clickOnValidatorFromList(1);
+        stakingValidatorPageAddStake('2');
+        closeStakingDialog();
+        navigateTo(navigation.validators);
+        cy.getByTestId(viewStakedByMeToggle).click();
+        cy.getByTestId(userStakeBtn).should('have.length', 2);
+      });
+
       it('Able to stake against a validator - using vega from vesting contract', function () {
         stakingPageAssociateTokens('3', { type: 'contract' });
         verifyUnstakedBalance(3.0);
@@ -115,8 +150,6 @@ context(
         verifyUnstakedBalance(7.0);
         verifyEthWalletTotalAssociatedBalance('3.0');
         verifyEthWalletTotalAssociatedBalance('4.0');
-        verifyEthWalletTotalAssociatedBalance('3.0');
-        verifyEthWalletTotalAssociatedBalance('4.0');
         cy.get('button').contains('Select a validator to nominate').click();
         clickOnValidatorFromList(0);
         stakingValidatorPageAddStake('6');
@@ -136,7 +169,7 @@ context(
         clickOnValidatorFromList(0);
         stakingValidatorPageAddStake('2');
         verifyUnstakedBalance(3.0);
-        cy.get(vegaWalletStakedBalances, txTimeout)
+        cy.getByTestId(vegaWalletStakedBalances, txTimeout)
           .parent()
           .should('contain', 2.0, txTimeout);
         closeStakingDialog();
@@ -144,36 +177,36 @@ context(
         clickOnValidatorFromList(1);
         stakingValidatorPageAddStake('1');
         verifyUnstakedBalance(2.0);
-        cy.get(vegaWalletStakedBalances, txTimeout)
+        cy.getByTestId(vegaWalletStakedBalances, txTimeout)
           .should('have.length', 4, txTimeout)
           .eq(0)
           .should('contain', 2.0, txTimeout);
-        cy.get(vegaWalletStakedBalances, txTimeout)
+        cy.getByTestId(vegaWalletStakedBalances, txTimeout)
           .eq(1)
           .should('contain', 1.0, txTimeout);
         closeStakingDialog();
         navigateTo(navigation.validators);
         cy.get(`[row-id="${0}"]`).within(() => {
-          cy.get(stakeValidatorListTotalStake)
+          cy.getByTestId(stakeValidatorListTotalStake)
             .should('have.text', '2.00')
             .and('be.visible');
-          cy.get(stakeValidatorListTotalShare)
+          cy.getByTestId(stakeValidatorListTotalShare)
             .should('have.text', '66.67%')
             .and('be.visible');
-          cy.get(stakeValidatorListValidatorStake)
+          cy.getByTestId(stakeValidatorListTotalStake)
             .scrollIntoView()
             .should('have.text', '2.00')
             .and('be.visible');
         });
         cy.get(`[row-id="${1}"]`).within(() => {
-          cy.get(stakeValidatorListTotalStake)
+          cy.getByTestId(stakeValidatorListTotalStake)
             .scrollIntoView()
             .should('have.text', '1.00')
             .and('be.visible');
-          cy.get(stakeValidatorListTotalShare)
+          cy.getByTestId(stakeValidatorListTotalShare)
             .should('have.text', '33.33%')
             .and('be.visible');
-          cy.get(stakeValidatorListValidatorStake)
+          cy.getByTestId(stakeValidatorListTotalStake)
             .scrollIntoView()
             .should('have.text', '1.00')
             .and('be.visible');
@@ -203,9 +236,15 @@ context(
           verifyStakedBalance(2.0);
           verifyNextEpochValue(2.0);
           verifyThisEpochValue(2.0);
-          cy.get(totalStake, epochTimeout).should('contain.text', '2');
+          cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
+            'contain.text',
+            '2'
+          );
           waitForBeginningOfEpoch();
-          cy.get(stakeShare).should('have.text', '100%');
+          cy.getByTestId(stakeValidatorListStakePercentage).should(
+            'have.text',
+            '100%'
+          );
           navigateTo(navigation.validators);
           validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
         }
@@ -227,12 +266,16 @@ context(
         verifyUnstakedBalance(3.0);
         verifyNextEpochValue(0.0);
         verifyThisEpochValue(0.0);
-        cy.get(vegaWalletStakedBalances, txTimeout).should(
+        cy.getByTestId(vegaWalletStakedBalances, txTimeout).should(
           'not.exist',
           txTimeout
         );
         navigateTo(navigation.validators);
         validateValidatorListTotalStakeAndShare('0', '0.00', '0.00%');
+
+        cy.getByTestId(userStakeBtn).should('not.exist');
+        cy.getByTestId(userStake).should('not.exist');
+        cy.getByTestId(userStakeShare).should('not.exist');
       });
 
       it('Unable to remove a stake with a negative value for a validator', function () {
@@ -246,10 +289,10 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         clickOnValidatorFromList(0);
-        cy.get(stakeRemoveStakeRadioButton, txTimeout).click();
-        cy.get(stakeTokenAmountInputBox).type('-0.1');
+        cy.getByTestId(stakeRemoveStakeRadioButton, txTimeout).click();
+        cy.getByTestId(stakeTokenAmountInputBox).type('-0.1');
         cy.contains('Waiting for next epoch to start', epochTimeout);
-        cy.get(stakeTokenSubmitButton)
+        cy.getByTestId(stakeTokenSubmitButton)
           .should('be.disabled', epochTimeout)
           .and('contain', `Remove -0.1 $VEGA tokens at the end of epoch`)
           .and('be.visible');
@@ -266,10 +309,10 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         clickOnValidatorFromList(0);
-        cy.get(stakeRemoveStakeRadioButton).click();
-        cy.get(stakeTokenAmountInputBox).type('4');
+        cy.getByTestId(stakeRemoveStakeRadioButton).click();
+        cy.getByTestId(stakeTokenAmountInputBox).type('4');
         cy.contains('Waiting for next epoch to start', epochTimeout);
-        cy.get(stakeTokenSubmitButton)
+        cy.getByTestId(stakeTokenSubmitButton)
           .should('be.disabled', epochTimeout)
           .and('contain', `Remove 4 $VEGA tokens at the end of epoch`)
           .and('be.visible');
@@ -285,17 +328,17 @@ context(
         verifyStakedBalance(2.0);
         closeStakingDialog();
         stakingPageDisassociateAllTokens();
-        cy.get(ethWalletContainer).within(() => {
+        cy.getByTestId(ethWalletContainer).within(() => {
           cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
         verifyEthWalletTotalAssociatedBalance('0.0');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+        cy.getByTestId(vegaWallet).within(() => {
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '0.00'
           );
         });
-        cy.get(vegaWalletStakedBalances, txTimeout).should(
+        cy.getByTestId(vegaWalletStakedBalances, txTimeout).should(
           'not.exist',
           txTimeout
         );
@@ -313,17 +356,17 @@ context(
         verifyStakedBalance(2.0);
         closeStakingDialog();
         stakingPageDisassociateAllTokens('contract');
-        cy.get(ethWalletContainer).within(() => {
+        cy.getByTestId(ethWalletContainer).within(() => {
           cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
         verifyEthWalletTotalAssociatedBalance('0.0');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+        cy.getByTestId(vegaWallet).within(() => {
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '0.00'
           );
         });
-        cy.get(vegaWalletStakedBalances, txTimeout).should(
+        cy.getByTestId(vegaWalletStakedBalances, txTimeout).should(
           'not.exist',
           txTimeout
         );
@@ -342,8 +385,8 @@ context(
         closeStakingDialog();
         stakingPageDisassociateTokens('1');
         verifyEthWalletTotalAssociatedBalance('2.0');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+        cy.getByTestId(vegaWallet).within(() => {
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '2.00'
           );
@@ -409,8 +452,8 @@ context(
         verifyUnstakedBalance(0.0);
         closeStakingDialog();
         stakingPageAssociateTokens('6');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+        cy.getByTestId(vegaWallet).within(() => {
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '12.00'
           );
@@ -429,9 +472,12 @@ context(
         verifyUnstakedBalance(1.0);
         closeStakingDialog();
         clickOnValidatorFromList(0);
-        cy.get(stakeAddStakeRadioButton).click();
-        cy.get(stakeMaximumTokens, { timeout: 60000 }).click();
-        cy.get(stakeTokenSubmitButton).should('contain', 'Add 1 $VEGA tokens');
+        cy.getByTestId(stakeAddStakeRadioButton).click();
+        cy.getByTestId(stakeMaximumTokens, { timeout: 60000 }).click();
+        cy.getByTestId(stakeTokenSubmitButton).should(
+          'contain',
+          'Add 1 $VEGA tokens'
+        );
       });
 
       afterEach('Teardown Wallet', function () {
