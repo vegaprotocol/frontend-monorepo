@@ -12,7 +12,7 @@
     "lint:all": "nx run-many --all --target=lint",
     "e2e:all": "nx run-many --all --target=e2e",
     "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl",
-    "release": "git checkout develop ; git pull ; node make-release.js"
+    "release": "git checkout develop ; git pull ; node scripts/make-release.js"
   },
   "engines": {
     "node": ">=16.15.1"
