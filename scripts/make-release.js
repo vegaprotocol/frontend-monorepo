@@ -70,6 +70,7 @@ inquirer
         for (const env of answers.envs) {
           release(answers.tag, env);
         }
+        execSync('git checkout develop');
       })
       .catch((err) => {
         console.log('Something went wrong');
