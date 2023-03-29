@@ -45,6 +45,7 @@ export interface OrderSubmission {
   size: string;
   price?: string;
   expiresAt?: string;
+  reduceOnly?: boolean;
 }
 
 export interface OrderCancellation {

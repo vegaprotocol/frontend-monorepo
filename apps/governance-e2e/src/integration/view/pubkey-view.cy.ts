@@ -27,6 +27,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
   });
 
   it('Able to connect public key via wallet', function () {
+    cy.reload();
     verifyConnectedToPubKey();
     cy.getByTestId('currency-title', { timeout: 10000 })
       .should('have.length.at.least', 4)

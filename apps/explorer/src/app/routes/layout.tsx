@@ -38,6 +38,7 @@ const DialogsContainer = () => {
 export const Layout = () => {
   const isHome = Boolean(useMatch(Routes.HOME));
   const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
+
   return (
     <>
       <div

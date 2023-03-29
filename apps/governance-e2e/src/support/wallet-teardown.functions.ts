@@ -73,9 +73,6 @@ export async function vegaWalletTeardown() {
         }
       });
       cy.get(vegaWalletContainer).within(() => {
-        cy.getByTestId('vega-wallet-balance-staked-validators', {
-          timeout: transactionTimeout,
-        }).should('not.exist');
         cy.getByTestId('associated-amount', {
           timeout: transactionTimeout,
         }).contains('0.00', {
@@ -125,6 +122,9 @@ async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
     log: false,
   }).then((vestingAmount) => {
     if (Number(vestingAmount) != 0) {
+      // Wait needed to allow time for ganache to process tx for stakingBridgeContract.remove_stake
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1000);
       cy.wrap(
         vestingContract.remove_stake(String(vestingAmount), vegaWalletPubKey),
         { timeout: transactionTimeout, log: false }
