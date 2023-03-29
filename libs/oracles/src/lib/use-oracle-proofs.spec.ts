@@ -1,10 +1,11 @@
 import { renderHook, waitFor } from '@testing-library/react';
+import type { Provider } from './oracle-schema';
 import { useOracleProofs, cache, invalidateCache } from './use-oracle-proofs';
 
 global.fetch = jest.fn();
 const mockFetch = global.fetch as jest.Mock;
 
-const createOracleData = () => {
+const createOracleData = (): Provider[] => {
   return [
     {
       name: 'Another oracle',
@@ -28,30 +29,11 @@ const createOracleData = () => {
           url: 'https://twitter.com/vegaprotocol/status/956833487230730241',
         },
         {
-          format: 'url',
-          available: true,
-          type: 'web',
-          url: 'https://acme.io/proof.txt',
-        },
-        {
-          format: 'url',
-          available: true,
-          type: 'github',
-          url: 'https://github.com',
-        },
-        {
           format: 'signed_message',
           available: true,
           type: 'public_key',
           public_key:
             '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-          message: 'SOMEHEX',
-        },
-        {
-          format: 'signed_message',
-          available: true,
-          type: 'eth_address',
-          eth_address: '0x949AF81E51D57831AE52591d17fBcdd1014a5f52',
           message: 'SOMEHEX',
         },
       ],
@@ -63,7 +45,7 @@ const createOracleData = () => {
 
 describe('useOracleProofs', () => {
   const url = 'https://foo.bar.com';
-  const setup = (data: any) => {
+  const setup = (data: Provider[]) => {
     mockFetch.mockImplementation(() => {
       return Promise.resolve({
         ok: true,
@@ -112,7 +94,8 @@ describe('useOracleProofs', () => {
 
   it('handles invalid payload', async () => {
     invalidateCache();
-    const { result } = setup({ invalid: 'result' });
+    // @ts-ignore enforce invalid result
+    const { result } = setup([{ invalid: 'result' }]);
 
     expect(result.current.data).toBe(undefined);
     expect(result.current.error).toBe(undefined);
