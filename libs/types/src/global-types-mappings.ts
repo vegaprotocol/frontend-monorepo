@@ -23,7 +23,6 @@ import type {
   VoteValue,
   WithdrawalStatus,
   DispatchMetric,
-  Condition,
 } from './__generated__/types';
 
 export const AccountTypeMapping: {
