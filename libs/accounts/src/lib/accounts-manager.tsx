@@ -10,7 +10,6 @@ import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
-import type { RowHeightParams } from 'ag-grid-community';
 
 interface AccountManagerProps {
   partyId: string;
@@ -50,10 +49,6 @@ export const AccountManager = ({
     disabled: noBottomPlaceholder,
   });
 
-  const getRowHeight = useCallback(
-    (params: RowHeightParams) => (params.node.rowPinned ? 32 : 22),
-    []
-  );
   return (
     <div className="relative h-full">
       <AccountTable
@@ -66,7 +61,6 @@ export const AccountManager = ({
         suppressLoadingOverlay
         suppressNoRowsOverlay
         pinnedAsset={pinnedAsset}
-        getRowHeight={getRowHeight}
         {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">

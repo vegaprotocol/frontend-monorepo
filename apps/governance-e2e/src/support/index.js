@@ -1,12 +1,12 @@
 import '@vegaprotocol/cypress';
 import 'cypress-real-events/support';
 
-import './common.functions.js';
-import './staking.functions.js';
-import './governance.functions.js';
-import './wallet-eth.functions.js';
-import './wallet-teardown.functions.js';
-import './wallet-vega.functions.js';
+import './common.functions.ts';
+import './staking.functions.ts';
+import './governance.functions.ts';
+import './wallet-eth.functions.ts';
+import './wallet-teardown.functions.ts';
+import './wallet-vega.functions.ts';
 import './proposal.functions.ts';
 import registerCypressGrep from '@cypress/grep';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';

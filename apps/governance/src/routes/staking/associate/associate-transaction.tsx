@@ -15,7 +15,7 @@ import {
 } from '../../../hooks/transaction-reducer';
 import Routes from '../../routes';
 import { truncateMiddle } from '../../../lib/truncate-middle';
-import type { LinkingsFieldsFragment } from './__generated___/PartyStakeLinkings';
+import type { LinkingsFieldsFragment } from './__generated__/PartyStakeLinkings';
 
 export const AssociateTransaction = ({
   amount,

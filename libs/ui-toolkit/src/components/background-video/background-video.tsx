@@ -1,11 +1,19 @@
-export const BackgroundVideo = () => {
+import classNames from 'classnames';
+
+type BackgroundVideoProps = {
+  className?: string;
+};
+export const BackgroundVideo = ({ className }: BackgroundVideoProps) => {
   return (
     <video
       autoPlay
       muted
       loop
       playsInline
-      className="absolute left-0 top-0 w-full h-full object-cover"
+      className={classNames(
+        'absolute left-0 top-0 w-full h-full object-cover',
+        className
+      )}
       poster="https://vega.xyz/poster-image.jpg"
     >
       <source

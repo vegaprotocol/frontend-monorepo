@@ -67,21 +67,25 @@ export const useOrderListData = ({
     }
   }, []);
 
-  const variables = useMemo<
-    OrdersQueryVariables & OrdersUpdateSubscriptionVariables
-  >(
-    () => ({
+  const variables = useMemo(() => {
+    // define variable as const to get type safety, using generic with useMemo resulted in lost type safety
+    const allVars: OrdersQueryVariables & OrdersUpdateSubscriptionVariables = {
       partyId,
-      dateRange: filter?.updatedAt?.value,
-      marketId,
       filter: {
-        status: filter?.status?.value,
-        timeInForce: filter?.timeInForce?.value,
-        types: filter?.type?.value,
+        order: {
+          dateRange: filter?.updatedAt?.value,
+          status: filter?.status?.value,
+          timeInForce: filter?.timeInForce?.value,
+          types: filter?.type?.value,
+        },
       },
-    }),
-    [partyId, marketId, filter]
-  );
+      pagination: {
+        first: 1000,
+      },
+    };
+
+    return allVars;
+  }, [partyId, filter]);
 
   const addNewRows = useCallback(() => {
     if (newRows.current === 0) {
@@ -98,7 +102,6 @@ export const useOrderListData = ({
     ({
       data,
       delta,
-      totalCount,
     }: {
       data: (OrderEdge | null)[] | null;
       delta?: Order[];
@@ -112,7 +115,10 @@ export const useOrderListData = ({
           ).length;
         }
       }
-      return updateGridData(dataRef, data, gridRef);
+      if (gridRef.current?.api?.getModel().getType() === 'infinite') {
+        return updateGridData(dataRef, data, gridRef);
+      }
+      return false;
     },
     [gridRef, scrolledToTop]
   );
@@ -126,7 +132,10 @@ export const useOrderListData = ({
       totalCount?: number;
     }) => {
       totalCountRef.current = totalCount;
-      return updateGridData(dataRef, data, gridRef);
+      if (gridRef.current?.api?.getModel().getType() === 'infinite') {
+        return updateGridData(dataRef, data, gridRef);
+      }
+      return false;
     },
     [gridRef]
   );

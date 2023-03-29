@@ -29,7 +29,7 @@ export const OrderSubFieldsFragmentDoc = gql`
     `;
 export const OrderSubDocument = gql`
     subscription OrderSub($partyId: ID!) {
-  orders(partyId: $partyId) {
+  orders(filter: {partyIds: [$partyId]}) {
     ...OrderSubFields
   }
 }

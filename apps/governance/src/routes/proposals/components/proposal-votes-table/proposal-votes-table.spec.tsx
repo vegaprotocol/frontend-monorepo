@@ -86,7 +86,7 @@ describe('Proposal Votes Table', () => {
 
   it('displays if an update market proposal will pass by token vote', () => {
     renderComponent(updateMarketProposal, updateMarketProposalType);
-    expect(screen.getByText('👍 by Token vote')).toBeInTheDocument();
+    expect(screen.getByText('👍 by token vote')).toBeInTheDocument();
   });
 
   it('displays if an update market proposal will pass by LP vote', () => {
@@ -110,6 +110,6 @@ describe('Proposal Votes Table', () => {
       }),
       updateMarketProposalType
     );
-    expect(screen.getByText('👍 by Liquidity vote')).toBeInTheDocument();
+    expect(screen.getByText('👍 by liquidity vote')).toBeInTheDocument();
   });
 });

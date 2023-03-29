@@ -1,4 +1,6 @@
 import { addDecimal } from '@vegaprotocol/utils';
+import uniqBy from 'lodash/uniqBy';
+import reverse from 'lodash/reverse';
 
 interface PriceLevel {
   price: number;
@@ -41,9 +43,9 @@ export const updateLevels = (
   updates: RawPriceLevel[],
   decimalPlaces: number,
   positionDecimalPlaces: number,
-  reverse = false
+  ascending = true
 ) => {
-  updates.forEach((update) => {
+  uniqBy(reverse(updates || []), 'price').forEach((update) => {
     const updateLevel = parseLevel(
       update,
       decimalPlaces,
@@ -63,9 +65,9 @@ export const updateLevels = (
       }
     } else if (update.volume !== '0') {
       index = levels.findIndex((level) =>
-        reverse
-          ? level.price < updateLevel.price
-          : level.price > updateLevel.price
+        ascending
+          ? level.price > updateLevel.price
+          : level.price < updateLevel.price
       );
       if (index !== -1) {
         levels.splice(index, 0, updateLevel);

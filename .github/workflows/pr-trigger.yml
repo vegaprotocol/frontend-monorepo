@@ -1,0 +1,121 @@
+name: PR Validations
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+jobs:
+  pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout frontend mono repo
+        uses: actions/checkout@v3
+        with:
+          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+          fetch-depth: 0
+
+      - name: Check node version
+        id: node-version
+        run: |
+          npmVersion=$(cat .nvmrc | head -n 1)
+          echo ::set-output name=npmVersion::${npmVersion}
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.node-version.outputs.npmVersion }}
+
+      # Check SHAs
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
+
+      # See affected apps
+      - name: See affected apps
+        run: |
+          nx_version=$(cat package.json | grep '"nx"' | cut -d ':' -f 2 | tr -d '",[:space:]')
+          rm package.json yarn.lock
+          yarn add nx@$nx_version
+
+          echo ">>>> debug"
+          echo "NX Version: $nx_version"
+          echo "NX_BASE: ${{ env.NX_BASE }}"
+          echo "NX_HEAD: ${{ env.NX_HEAD }}"
+
+          # echo "Main branch name: ${{ github.base_ref || github.ref_name }}"
+          # echo "git rev-parse HEAD: $(git rev-parse HEAD)"
+          # echo "Head: ${{ github.head_ref }}"
+
+          # echo "command to execute: 'yarn nx print-affected --base=${{ github.base_ref || github.ref_name }} --head=${{ github.head_ref }} --select=projects'"
+
+          # merge_base=$(git merge-base origin/develop HEAD)
+          # echo "git merge-base origin/develop HEAD: $merge_base"
+
+          # head_sha="${{ github.event.pull_request.head.sha || github.sha }}"
+          # echo "Head SHA: $head_sha"
+
+          # echo "command to execute (without nx-set-sha): 'yarn nx print-affected --base=$merge_base --head=$head_sha --select=projects'"
+          echo ">>>> eof debug"
+
+          # affected_1=$(yarn nx print-affected --base=$merge_base --head=$head_sha --select=projects || true)
+          # echo -n "Affected projects (allowed to fail): $affected_1"
+
+          # affected=$(yarn nx print-affected --base=${{ github.base_ref || github.ref_name }} --head=${{ github.head_ref }} --select=projects)
+          # echo -n "Affected projects: $affected"
+
+          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=HEAD --select=projects)"
+          echo -n "Affected projects: $affected"
+
+          projects_e2e=""
+          if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
+          if [[ $affected == *"trading"* ]]; then projects_e2e+='"trading-e2e" '; fi
+          if [[ $affected == *"explorer"* ]]; then projects_e2e+='"explorer-e2e" '; fi
+          if [[ -z "$projects_e2e" ]]; then projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '; fi
+          projects_e2e=${projects_e2e%?}
+          projects_e2e=[${projects_e2e// /,}]
+          echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
+          echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
+
+    outputs:
+      projects: ${{ env.PROJECTS }}
+      projects-e2e: ${{ env.PROJECTS_E2E }}
+
+  run-cypress:
+    needs: pr
+    if: ${{ needs.pr.outputs.projects != '[]' }}
+    uses: ./.github/workflows/cypress-run.yml
+    secrets: inherit
+    with:
+      projects: ${{ needs.pr.outputs.projects-e2e }}
+      tags: '@smoke @regression'
+
+  run-docker-build:
+    needs: pr
+    if: ${{ needs.pr.outputs.projects != '[]' }}
+    uses: ./.github/workflows/publish-docker-containers.yml
+    secrets: inherit
+    with:
+      projects: ${{ needs.pr.outputs.projects }}
+
+  # Report single result at the end, to avoid mess with required checks in PR
+  result:
+    if: ${{ always() }}
+    needs: run-cypress
+    runs-on: ubuntu-latest
+    name: Cypress result
+    steps:
+      - run: |
+          result="${{ needs.run-cypress.result }}"
+          if [[ $result == "success" || $result == "skipped" ]]; then
+            exit 0
+          else
+            exit 1
+          fi

@@ -313,12 +313,14 @@ export type AuctionEvent = {
 export enum AuctionTrigger {
   /** Auction because market has a frequent batch auction trading mode */
   AUCTION_TRIGGER_BATCH = 'AUCTION_TRIGGER_BATCH',
-  /** Liquidity monitoring */
-  AUCTION_TRIGGER_LIQUIDITY = 'AUCTION_TRIGGER_LIQUIDITY',
+  /** Liquidity monitoring due to unmet target stake */
+  AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET = 'AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET',
   /** Opening auction */
   AUCTION_TRIGGER_OPENING = 'AUCTION_TRIGGER_OPENING',
   /** Price monitoring */
   AUCTION_TRIGGER_PRICE = 'AUCTION_TRIGGER_PRICE',
+  /** Liquidity monitoring due to not being able to deploy LP orders because there's nothing to peg on one or both sides of the book */
+  AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS = 'AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS',
   /** Invalid trigger (or no auction) */
   AUCTION_TRIGGER_UNSPECIFIED = 'AUCTION_TRIGGER_UNSPECIFIED'
 }
@@ -1511,6 +1513,7 @@ export type MarketdepthArgs = {
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type MarketliquidityProvisionsConnectionArgs = {
+  live?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
 };
@@ -1518,8 +1521,7 @@ export type MarketliquidityProvisionsConnectionArgs = {
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type MarketordersConnectionArgs = {
-  dateRange?: InputMaybe<DateRange>;
-  filter?: InputMaybe<OrderFilter>;
+  filter?: InputMaybe<OrderByPartyIdsFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -2191,8 +2193,12 @@ export type Order = {
   party: Party;
   /** PeggedOrder contains the details about a pegged order */
   peggedOrder?: Maybe<PeggedOrder>;
+  /** Is this a post only order */
+  postOnly?: Maybe<Scalars['Boolean']>;
   /** The worst price the order will trade at (e.g. buy for price or less, sell for price or more) (uint64) */
   price: Scalars['String'];
+  /** Is this a reduce only order */
+  reduceOnly?: Maybe<Scalars['Boolean']>;
   /** The external reference (if available) for the order */
   reference: Scalars['String'];
   /** Why the order was rejected */
@@ -2222,6 +2228,22 @@ export type Order = {
 export type OrdertradesConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
   pagination?: InputMaybe<Pagination>;
+};
+
+export type OrderByMarketAndPartyIdsFilter = {
+  marketIds?: InputMaybe<Array<Scalars['ID']>>;
+  order?: InputMaybe<OrderFilter>;
+  partyIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export type OrderByMarketIdsFilter = {
+  marketIds?: InputMaybe<Array<Scalars['ID']>>;
+  order?: InputMaybe<OrderFilter>;
+};
+
+export type OrderByPartyIdsFilter = {
+  order?: InputMaybe<OrderFilter>;
+  partyIds?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 /** Connection type for retrieving cursor-based paginated order information */
@@ -2254,6 +2276,8 @@ export type OrderEstimate = {
 };
 
 export type OrderFilter = {
+  /** Date range to retrieve orders from/to. Start and end time should be expressed as an integer value of nano-seconds past the Unix epoch */
+  dateRange?: InputMaybe<DateRange>;
   excludeLiquidity?: InputMaybe<Scalars['Boolean']>;
   status?: InputMaybe<Array<OrderStatus>>;
   timeInForce?: InputMaybe<Array<OrderTimeInForce>>;
@@ -2537,6 +2561,7 @@ export type PartydepositsConnectionArgs = {
 
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyliquidityProvisionsConnectionArgs = {
+  live?: InputMaybe<Scalars['Boolean']>;
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   reference?: InputMaybe<Scalars['String']>;
@@ -2552,9 +2577,7 @@ export type PartymarginsConnectionArgs = {
 
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyordersConnectionArgs = {
-  dateRange?: InputMaybe<DateRange>;
-  filter?: InputMaybe<OrderFilter>;
-  marketId?: InputMaybe<Scalars['ID']>;
+  filter?: InputMaybe<OrderByMarketIdsFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -4048,8 +4071,7 @@ export type SubscriptionmarketsDepthUpdateArgs = {
 
 /** Subscriptions allow a caller to receive new information as it is available from the Vega network. */
 export type SubscriptionordersArgs = {
-  marketId?: InputMaybe<Scalars['ID']>;
-  partyId?: InputMaybe<Scalars['ID']>;
+  filter?: InputMaybe<OrderByMarketAndPartyIdsFilter>;
 };
 
 

@@ -12,14 +12,14 @@ import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import Routes from '../routes';
 import { ExternalLinks, removePaginationWrapper } from '@vegaprotocol/utils';
-import { useNodesQuery } from '../staking/home/__generated___/Nodes';
+import { useNodesQuery } from '../staking/home/__generated__/Nodes';
 import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
 import { getNotRejectedProposals } from '../proposals/proposals/proposals-container';
 import { Heading } from '../../components/heading';
 import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
-import type { NodesFragmentFragment } from '../staking/home/__generated___/Nodes';
+import type { NodesFragmentFragment } from '../staking/home/__generated__/Nodes';
 
 const nodesToShow = 6;
 
