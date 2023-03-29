@@ -33,10 +33,10 @@ jobs:
           node-version: ${{ steps.node-version.outputs.npmVersion }}
 
       # Check SHAs
-      # - name: Derive appropriate SHAs for base and head for `nx affected` commands
-      #   uses: nrwl/nx-set-shas@v3
-      #   with:
-      #     main-branch-name: develop
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
 
       # See affected apps
       - name: See affected apps
@@ -45,10 +45,10 @@ jobs:
           rm package.json yarn.lock
           yarn add nx@$nx_version
 
-          # echo ">>>> debug"
-          # echo "NX Version: $nx_version"
-          # echo "NX_BASE: ${{ env.NX_BASE }}"
-          # echo "NX_HEAD: ${{ env.NX_HEAD }}"
+          echo ">>>> debug"
+          echo "NX Version: $nx_version"
+          echo "NX_BASE: ${{ env.NX_BASE }}"
+          echo "NX_HEAD: ${{ env.NX_HEAD }}"
 
           # echo "Main branch name: ${{ github.base_ref || github.ref_name }}"
           # echo "git rev-parse HEAD: $(git rev-parse HEAD)"
@@ -63,7 +63,7 @@ jobs:
           # echo "Head SHA: $head_sha"
 
           # echo "command to execute (without nx-set-sha): 'yarn nx print-affected --base=$merge_base --head=$head_sha --select=projects'"
-          # echo ">>>> eof debug"
+          echo ">>>> eof debug"
 
           # affected_1=$(yarn nx print-affected --base=$merge_base --head=$head_sha --select=projects || true)
           # echo -n "Affected projects (allowed to fail): $affected_1"
@@ -71,7 +71,7 @@ jobs:
           # affected=$(yarn nx print-affected --base=${{ github.base_ref || github.ref_name }} --head=${{ github.head_ref }} --select=projects)
           # echo -n "Affected projects: $affected"
 
-          affected="$(yarn nx print-affected --base=develop --head=HEAD --select=projects)"
+          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=HEAD --select=projects)"
           echo -n "Affected projects: $affected"
 
           projects_e2e=""
