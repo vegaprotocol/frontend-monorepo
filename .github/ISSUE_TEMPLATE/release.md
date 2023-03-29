@@ -8,7 +8,7 @@ assignees: ''
 
 ### Tasks
 
-- [ ] Review [link to core release](xxx) 
+- [ ] Review [link to core release](xxx)
 - [ ] Tag frontend-monorepo
 - [ ] Create release and generate release notes
 - [ ] Run `@smoke` tests
