@@ -3,16 +3,14 @@ import {
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import {
-  AnnouncementBanner,
   BackgroundVideo,
   BreadcrumbsContainer,
   ButtonLink,
-  ExternalLink,
-  Icon,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import { useState } from 'react';
 import {
   isRouteErrorResponse,
   Link,
@@ -37,35 +35,9 @@ const DialogsContainer = () => {
   );
 };
 
-const MainnetSimAd = () => {
-  const [shouldDisplayBanner, setShouldDisplayBanner] = useState<boolean>(true);
-
-  // Return an empty div so that the grid layout in _app.page.ts
-  // renders correctly
-  if (!shouldDisplayBanner) {
-    return <div />;
-  }
-
-  return (
-    <AnnouncementBanner>
-      <div className="grid grid-cols-[auto_1fr] gap-4 font-alpha calt uppercase text-center text-lg text-white">
-        <button
-          className="flex items-center"
-          onClick={() => setShouldDisplayBanner(false)}
-        >
-          <Icon name="cross" className="w-6 h-6" ariaLabel="dismiss" />
-        </button>
-        <div>
-          <span className="pr-4">Mainnet sim 3 is live!</span>
-          <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
-        </div>
-      </div>
-    </AnnouncementBanner>
-  );
-};
-
 export const Layout = () => {
   const isHome = Boolean(useMatch(Routes.HOME));
+  const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
   return (
     <>
       <div
@@ -79,7 +51,12 @@ export const Layout = () => {
         )}
       >
         <div>
-          <MainnetSimAd />
+          {ANNOUNCEMENTS_CONFIG_URL && (
+            <AnnouncementBanner
+              app="explorer"
+              configUrl={ANNOUNCEMENTS_CONFIG_URL}
+            />
+          )}
           <Header />
         </div>
         <div>
