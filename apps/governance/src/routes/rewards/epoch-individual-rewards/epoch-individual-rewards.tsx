@@ -21,6 +21,12 @@ export const EpochIndividualRewards = () => {
             first: Number(delegationsPagination),
           }
         : undefined,
+      // we can use the same value for rewardsPagination as delegationsPagination
+      rewardsPagination: delegationsPagination
+        ? {
+            first: Number(delegationsPagination),
+          }
+        : undefined,
     },
     skip: !pubKey,
   });
