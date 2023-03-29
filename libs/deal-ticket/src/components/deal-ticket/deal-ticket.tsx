@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState, useRef } from 'react';
 import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
@@ -20,6 +20,7 @@ import {
   InputError,
   Intent,
   Notification,
+  TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -73,6 +74,8 @@ export const DealTicket = ({
     update,
     handleSubmit,
   } = useOrderForm(market.id);
+
+  const lastSubmitTime = useRef(0);
 
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
 
@@ -145,6 +148,10 @@ export const DealTicket = ({
 
   const onSubmit = useCallback(
     (order: OrderSubmission) => {
+      const now = new Date().getTime();
+      if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
+        return;
+      }
       submit(
         normalizeOrderSubmission(
           order,
@@ -152,6 +159,7 @@ export const DealTicket = ({
           market.positionDecimalPlaces
         )
       );
+      lastSubmitTime.current = now;
     },
     [submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
@@ -160,136 +168,140 @@ export const DealTicket = ({
   if (!order || !normalizedOrder) return null;
 
   return (
-    <form
-      onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
-      className="p-4"
-      noValidate
-    >
-      <Controller
-        name="type"
-        control={control}
-        rules={{
-          validate: validateType(
-            marketData.marketTradingMode,
-            marketData.trigger
-          ),
-        }}
-        render={() => (
-          <TypeSelector
-            value={order.type}
-            onSelect={(type) => {
-              if (type === OrderType.TYPE_NETWORK) return;
-              update({
-                type,
-                // when changing type also update the tif to what was last used of new type
-                timeInForce: lastTIF[type] || order.timeInForce,
-                expiresAt: undefined,
-              });
-              clearErrors('expiresAt');
-            }}
-            market={market}
-            marketData={marketData}
-            errorMessage={errors.type?.message}
-          />
-        )}
-      />
-      <Controller
-        name="side"
-        control={control}
-        render={() => (
-          <SideSelector
-            value={order.side}
-            onSelect={(side) => {
-              update({ side });
-            }}
-          />
-        )}
-      />
-      <DealTicketAmount
-        control={control}
-        orderType={order.type}
-        market={market}
-        marketData={marketData}
-        sizeError={errors.size?.message}
-        priceError={errors.price?.message}
-        update={update}
-        size={order.size}
-        price={order.price}
-      />
-      <Controller
-        name="timeInForce"
-        control={control}
-        rules={{
-          validate: validateTimeInForce(
-            marketData.marketTradingMode,
-            marketData.trigger
-          ),
-        }}
-        render={() => (
-          <TimeInForceSelector
-            value={order.timeInForce}
-            orderType={order.type}
-            onSelect={(timeInForce) => {
-              update({ timeInForce });
-              // Set tif value for the given order type, so that when switching
-              // types we know the last used TIF for the given order type
-              setLastTIF((curr) => ({
-                ...curr,
-                [order.type]: timeInForce,
-                expiresAt: undefined,
-              }));
-              clearErrors('expiresAt');
-            }}
-            market={market}
-            marketData={marketData}
-            errorMessage={errors.timeInForce?.message}
-          />
-        )}
-      />
-      {order.type === Schema.OrderType.TYPE_LIMIT &&
-        order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
-          <Controller
-            name="expiresAt"
-            control={control}
-            rules={{
-              validate: validateExpiration,
-            }}
-            render={() => (
-              <ExpirySelector
-                value={order.expiresAt}
-                onSelect={(expiresAt) =>
-                  update({
-                    expiresAt: expiresAt || undefined,
-                  })
-                }
-                errorMessage={errors.expiresAt?.message}
-              />
-            )}
-          />
-        )}
-      <SummaryMessage
-        errorMessage={errors.summary?.message}
-        asset={asset}
-        marketTradingMode={marketData.marketTradingMode}
-        balance={balance}
-        margin={totalMargin}
-        isReadOnly={isReadOnly}
-        pubKey={pubKey}
-        onClickCollateral={onClickCollateral}
-      />
-      <DealTicketButton
-        disabled={Object.keys(errors).length >= 1 || isReadOnly}
-        variant={order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
-      />
-      <DealTicketFeeDetails
-        order={normalizedOrder}
-        market={market}
-        marketData={marketData}
-        margin={margin}
-        totalMargin={totalMargin}
-        balance={marginAccountBalance}
-      />
-    </form>
+    <TinyScroll className="h-full overflow-auto">
+      <form
+        onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
+        className="p-4"
+        noValidate
+      >
+        <Controller
+          name="type"
+          control={control}
+          rules={{
+            validate: validateType(
+              marketData.marketTradingMode,
+              marketData.trigger
+            ),
+          }}
+          render={() => (
+            <TypeSelector
+              value={order.type}
+              onSelect={(type) => {
+                if (type === OrderType.TYPE_NETWORK) return;
+                update({
+                  type,
+                  // when changing type also update the tif to what was last used of new type
+                  timeInForce: lastTIF[type] || order.timeInForce,
+                  expiresAt: undefined,
+                });
+                clearErrors('expiresAt');
+              }}
+              market={market}
+              marketData={marketData}
+              errorMessage={errors.type?.message}
+            />
+          )}
+        />
+        <Controller
+          name="side"
+          control={control}
+          render={() => (
+            <SideSelector
+              value={order.side}
+              onSelect={(side) => {
+                update({ side });
+              }}
+            />
+          )}
+        />
+        <DealTicketAmount
+          control={control}
+          orderType={order.type}
+          market={market}
+          marketData={marketData}
+          sizeError={errors.size?.message}
+          priceError={errors.price?.message}
+          update={update}
+          size={order.size}
+          price={order.price}
+        />
+        <Controller
+          name="timeInForce"
+          control={control}
+          rules={{
+            validate: validateTimeInForce(
+              marketData.marketTradingMode,
+              marketData.trigger
+            ),
+          }}
+          render={() => (
+            <TimeInForceSelector
+              value={order.timeInForce}
+              orderType={order.type}
+              onSelect={(timeInForce) => {
+                update({ timeInForce });
+                // Set tif value for the given order type, so that when switching
+                // types we know the last used TIF for the given order type
+                setLastTIF((curr) => ({
+                  ...curr,
+                  [order.type]: timeInForce,
+                  expiresAt: undefined,
+                }));
+                clearErrors('expiresAt');
+              }}
+              market={market}
+              marketData={marketData}
+              errorMessage={errors.timeInForce?.message}
+            />
+          )}
+        />
+        {order.type === Schema.OrderType.TYPE_LIMIT &&
+          order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
+            <Controller
+              name="expiresAt"
+              control={control}
+              rules={{
+                validate: validateExpiration,
+              }}
+              render={() => (
+                <ExpirySelector
+                  value={order.expiresAt}
+                  onSelect={(expiresAt) =>
+                    update({
+                      expiresAt: expiresAt || undefined,
+                    })
+                  }
+                  errorMessage={errors.expiresAt?.message}
+                />
+              )}
+            />
+          )}
+        <SummaryMessage
+          errorMessage={errors.summary?.message}
+          asset={asset}
+          marketTradingMode={marketData.marketTradingMode}
+          balance={balance}
+          margin={totalMargin}
+          isReadOnly={isReadOnly}
+          pubKey={pubKey}
+          onClickCollateral={onClickCollateral}
+        />
+        <DealTicketButton
+          disabled={Object.keys(errors).length >= 1 || isReadOnly}
+          variant={
+            order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'
+          }
+        />
+        <DealTicketFeeDetails
+          order={normalizedOrder}
+          market={market}
+          marketData={marketData}
+          margin={margin}
+          totalMargin={totalMargin}
+          balance={marginAccountBalance}
+        />
+      </form>
+    </TinyScroll>
   );
 };
 

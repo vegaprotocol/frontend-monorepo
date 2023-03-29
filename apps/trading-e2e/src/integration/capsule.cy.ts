@@ -135,7 +135,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.getByTestId(transferForm).find(submitTransferBtn).click();
     cy.getByTestId(toastContent).should(
       'contain.text',
-      'Transfer completeYour transaction has been confirmed TransferTo 7f9cf0…c255351.00 tBTC'
+      'Transfer completeYour transaction has been confirmed View in block explorerTransferTo 7f9cf0…c255351.00 tBTC'
     );
     cy.getByTestId(toastCloseBtn).click();
   });
@@ -143,6 +143,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   it('can not withdrawal because of no MultiSign', function () {
     // 1002-WITH-022
     // 1002-WITH-023
+    // 0003-WTXN-011
 
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
@@ -282,7 +283,7 @@ describe('capsule', { tags: '@slow' }, () => {
     });
   });
   // comment because of bug #2695
-  it.skip('can edit order', function () {
+  it('can edit order', function () {
     cy.getByTestId(ordersTab).click();
     cy.getByTestId('edit').first().should('be.visible').click();
     cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
@@ -421,7 +422,11 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.getByTestId(depositSubmit).click();
     cy.getByTestId('input-error-text').should(
       'contain.text',
-      'Amount is above approved amount.Update approve amount'
+      'Amount is above approved amount'
+    );
+    cy.getByTestId('reapprove-default').should(
+      'contain.text',
+      'Approve again to deposit more than'
     );
   });
 
@@ -436,9 +441,11 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
     cy.get(assetSelectField, txTimeout).select(vegaName, { force: true });
-    cy.getByTestId('deposit-submit').click();
-    cy.getByTestId('dialog-title').should('contain.text', 'Approve complete');
-    cy.get('[data-testid="Return to deposit"]').click();
+    cy.getByTestId('approve-submit').click();
+    cy.getByTestId('approve-confirmed').should(
+      'contain.text',
+      'You can now make deposits in VEGA, up to a maximum of'
+    );
     cy.get(amountField).clear().type('10000');
     cy.getByTestId('deposit-submit').click();
     cy.getByTestId(toastContent, txTimeout).should(
@@ -446,7 +453,7 @@ describe('capsule', { tags: '@slow' }, () => {
       `Your transaction has been confirmed.`,
       { matchCase: false }
     );
-    cy.getByTestId(toastCloseBtn).click();
+    cy.getByTestId(toastCloseBtn).click({ multiple: true });
     cy.getByTestId('Collateral').click();
 
     cy.highlight('deposit verification');

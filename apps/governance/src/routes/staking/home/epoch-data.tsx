@@ -1,36 +1,53 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { EpochCountdown } from '../../../components/epoch-countdown';
-import { useNodesQuery } from './__generated___/Nodes';
-import { usePreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import { useNodesQuery } from './__generated__/Nodes';
+import { useStakingQuery } from '../__generated__/Staking';
+import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';
 import { ValidatorTables } from './validator-tables';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const EpochData = () => {
   // errorPolicy due to vegaprotocol/vega issue 5898
-  const { data, error, loading, refetch } = useNodesQuery();
+  const { pubKey } = useVegaWallet();
+  const {
+    data: nodesData,
+    error: nodesError,
+    loading: nodesLoading,
+    refetch,
+  } = useNodesQuery();
+  const { data: userStakingData } = useStakingQuery({
+    variables: {
+      partyId: pubKey || '',
+    },
+  });
   const { data: previousEpochData } = usePreviousEpochQuery({
     variables: {
-      epochId: (Number(data?.epoch.id) - 1).toString(),
+      epochId: (Number(nodesData?.epoch.id) - 1).toString(),
     },
-    skip: !data?.epoch.id,
+    skip: !nodesData?.epoch.id,
   });
 
-  useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
+  useRefreshAfterEpoch(nodesData?.epoch.timestamps.expiry, refetch);
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      {data?.epoch &&
-        data.epoch.timestamps.start &&
-        data?.epoch.timestamps.expiry && (
+    <AsyncRenderer loading={nodesLoading} error={nodesError} data={nodesData}>
+      {nodesData?.epoch &&
+        nodesData.epoch.timestamps.start &&
+        nodesData?.epoch.timestamps.expiry && (
           <div className="mb-10">
             <EpochCountdown
-              id={data.epoch.id}
-              startDate={new Date(data.epoch.timestamps.start)}
-              endDate={new Date(data.epoch.timestamps.expiry)}
+              id={nodesData.epoch.id}
+              startDate={new Date(nodesData.epoch.timestamps.start)}
+              endDate={new Date(nodesData.epoch.timestamps.expiry)}
             />
           </div>
         )}
-      <ValidatorTables data={data} previousEpochData={previousEpochData} />
+      <ValidatorTables
+        nodesData={nodesData}
+        userStakingData={userStakingData}
+        previousEpochData={previousEpochData}
+      />
     </AsyncRenderer>
   );
 };

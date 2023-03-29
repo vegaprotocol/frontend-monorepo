@@ -3,14 +3,15 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ConsensusValidatorsTable } from './consensus-validators-table';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
-import { NodesDocument } from '../__generated___/Nodes';
-import { PreviousEpochDocument } from '../../__generated___/PreviousEpoch';
+import { NodesDocument } from '../__generated__/Nodes';
+import { PreviousEpochDocument } from '../../__generated__/PreviousEpoch';
 import * as Schema from '@vegaprotocol/types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { PartialDeep } from 'type-fest';
-import type { NodesFragmentFragment } from '../__generated___/Nodes';
-import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
+import type { NodesFragmentFragment } from '../__generated__/Nodes';
+import type { PreviousEpochQuery } from '../../__generated__/PreviousEpoch';
+import type { ValidatorsView } from './validator-tables';
 
 const nodeFactory = (
   overrides?: PartialDeep<NodesFragmentFragment>
@@ -142,7 +143,8 @@ const MOCK_TOTAL_STAKE = '28832590188747439203824';
 
 const renderValidatorsTable = (
   data = MOCK_NODES,
-  previousEpochData = MOCK_PREVIOUS_EPOCH
+  previousEpochData = MOCK_PREVIOUS_EPOCH,
+  validatorsView: ValidatorsView = 'all'
 ) => {
   return render(
     <AppStateProvider initialState={{ decimals: 18 }}>
@@ -152,6 +154,7 @@ const renderValidatorsTable = (
             data={data}
             previousEpochData={previousEpochData}
             totalStake={MOCK_TOTAL_STAKE}
+            validatorsView={validatorsView}
           />
         </MockedProvider>
       </MemoryRouter>

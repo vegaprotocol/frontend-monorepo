@@ -282,7 +282,7 @@ export const LiquidityViewContainer = ({
             <div className="break-word">{marketId}</div>
           </HeaderStat>
         </Header>
-        <Tabs active={getActiveDefaultId()}>
+        <Tabs defaultValue={getActiveDefaultId()}>
           <Tab
             id={LiquidityTabs.MyLiquidityProvision}
             name={t('My liquidity provision')}

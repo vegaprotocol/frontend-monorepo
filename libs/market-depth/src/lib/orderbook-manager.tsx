@@ -75,6 +75,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     }, 250)
   );
 
+  useEffect(() => {
+    deltaRef.current.buy = [];
+    deltaRef.current.sell = [];
+  }, [marketId]);
+
   const update = useCallback(
     ({
       delta: deltas,

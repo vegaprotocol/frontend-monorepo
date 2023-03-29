@@ -156,6 +156,7 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     // 0002-WCON-035
     // 0002-WCON-014
     // 0002-WCON-010
+    // 0003-WTXN-004
 
     mockConnectWallet();
     const key2 = Cypress.env('VEGA_PUBLIC_KEY2');

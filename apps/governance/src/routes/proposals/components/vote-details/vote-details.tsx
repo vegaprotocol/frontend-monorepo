@@ -32,6 +32,7 @@ export const VoteDetails = ({
     totalTokensPercentage,
     participationMet,
     totalTokensVoted,
+    totalLPTokensPercentage,
     noPercentage,
     noLPPercentage,
     yesPercentage,
@@ -41,6 +42,8 @@ export const VoteDetails = ({
     requiredMajorityPercentage,
     requiredMajorityLPPercentage,
     requiredParticipation,
+    requiredParticipationLP,
+    participationLPMet,
   } = useVoteInformation({ proposal });
 
   const { t } = useTranslation();
@@ -101,6 +104,25 @@ export const VoteDetails = ({
               </tr>
             </tbody>
           </table>
+
+          <p className="mb-6">
+            {t('participation')}
+            {': '}
+            {participationLPMet ? (
+              <span className="text-vega-green mx-4">{t('met')}</span>
+            ) : (
+              <span className="text-danger mx-4">{t('notMet')}</span>
+            )}{' '}
+            {formatNumber(totalLPTokensPercentage, defaultDecimals)}%
+            <span className="ml-4">
+              {requiredParticipationLP && (
+                <>
+                  ({formatNumber(requiredParticipationLP, defaultDecimals)}%{' '}
+                  {t('governanceRequired')})
+                </>
+              )}
+            </span>
+          </p>
         </section>
       )}
       <section data-testid="votes-table">

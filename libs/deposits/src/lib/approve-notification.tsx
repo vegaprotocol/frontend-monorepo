@@ -16,6 +16,7 @@ interface ApproveNotificationProps {
   balances: DepositBalances | null;
   amount: string;
   approveTxId: number | null;
+  intent?: Intent;
 }
 
 export const ApproveNotification = ({
@@ -26,6 +27,7 @@ export const ApproveNotification = ({
   balances,
   approved,
   approveTxId,
+  intent = Intent.Warning,
 }: ApproveNotificationProps) => {
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === approveTxId);
@@ -46,7 +48,7 @@ export const ApproveNotification = ({
   const approvePrompt = (
     <div className="mb-4">
       <Notification
-        intent={Intent.Warning}
+        intent={intent}
         testId="approve-default"
         message={t(
           `Before you can make a deposit of your chosen asset, ${selectedAsset?.symbol}, you need to approve its use in your Ethereum wallet`
@@ -63,7 +65,7 @@ export const ApproveNotification = ({
   const reApprovePrompt = (
     <div className="mb-4">
       <Notification
-        intent={Intent.Warning}
+        intent={intent}
         testId="reapprove-default"
         message={t(
           `Approve again to deposit more than ${formatNumber(

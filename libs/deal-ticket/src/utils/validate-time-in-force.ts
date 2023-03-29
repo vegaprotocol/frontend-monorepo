@@ -13,7 +13,10 @@ export const validateTimeInForce = (
     const isPriceTrigger =
       trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE;
     const isLiquidityTrigger =
-      trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+      trigger ===
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET ||
+      trigger ===
+        Schema.AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
 
     if (isMarketInAuction(marketTradingMode)) {
       if (

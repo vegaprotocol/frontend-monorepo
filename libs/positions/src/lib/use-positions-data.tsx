@@ -6,13 +6,13 @@ import { positionsMetricsProvider } from './positions-data-providers';
 import type { PositionsQueryVariables } from './__generated__/Positions';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
 import type { GetRowsParams } from '@vegaprotocol/datagrid';
+import isEqual from 'lodash/isEqual';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
 export const usePositionsData = (
   partyId: string,
-  gridRef: RefObject<AgGridReact>,
-  clientSideModel?: boolean
+  gridRef: RefObject<AgGridReact>
 ) => {
   const variables = useMemo<PositionsQueryVariables>(
     () => ({ partyId }),
@@ -21,9 +21,30 @@ export const usePositionsData = (
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
-      return clientSideModel ? false : updateGridData(dataRef, data, gridRef);
+      if (gridRef.current?.api?.getModel().getType() === 'infinite') {
+        return updateGridData(dataRef, data, gridRef);
+      }
+
+      const update: Position[] = [];
+      const add: Position[] = [];
+      data?.forEach((d) => {
+        const rowNode = gridRef.current?.api?.getRowNode(d.marketId);
+        if (rowNode) {
+          if (!isEqual(rowNode.data, d)) {
+            update.push(d);
+          }
+        } else {
+          add.push(d);
+        }
+      });
+      gridRef.current?.api?.applyTransaction({
+        update,
+        add,
+        addIndex: 0,
+      });
+      return true;
     },
-    [gridRef, clientSideModel]
+    [gridRef]
   );
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: positionsMetricsProvider,

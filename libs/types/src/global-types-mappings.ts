@@ -63,7 +63,9 @@ export const AuctionTriggerMapping: {
   [T in AuctionTrigger]: string;
 } = {
   AUCTION_TRIGGER_BATCH: 'batch',
-  AUCTION_TRIGGER_LIQUIDITY: 'liquidity',
+  AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET: 'liquidity (target not met)',
+  AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS:
+    'liquidity (unable to deploy liquidity provision orders)',
   AUCTION_TRIGGER_OPENING: 'opening',
   AUCTION_TRIGGER_PRICE: 'price',
   AUCTION_TRIGGER_UNSPECIFIED: 'unspecified',
@@ -86,6 +88,7 @@ export const DepositStatusMapping: {
 export const IntervalMapping: {
   [T in Interval]: string;
 } = {
+  // @ts-ignore - temporarily suppressing this as it's a valid value
   INTERVAL_BLOCK: '1 block',
   INTERVAL_I15M: 'I15M',
   INTERVAL_I1D: 'I1D',

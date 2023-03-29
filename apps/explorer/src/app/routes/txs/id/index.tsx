@@ -1,5 +1,4 @@
-import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { remove0x } from '@vegaprotocol/utils';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { DATA_SOURCES } from '../../../config';
@@ -8,9 +7,6 @@ import { TxDetails } from './tx-details';
 import type { BlockExplorerTransaction } from '../../../routes/types/block-explorer-response';
 import { toNonHex } from '../../../components/search/detect-search';
 import { PageHeader } from '../../../components/page-header';
-import { Routes } from '../../../routes/route-names';
-import { IconNames } from '@blueprintjs/icons';
-import { Icon } from '@vegaprotocol/ui-toolkit';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const Tx = () => {
@@ -35,17 +31,6 @@ const Tx = () => {
 
   return (
     <section>
-      <Link
-        className="font-normal underline underline-offset-4 block mb-5"
-        to={`/${Routes.TX}`}
-      >
-        <Icon
-          className="text-vega-light-150 dark:text-vega-light-150"
-          name={IconNames.CHEVRON_LEFT}
-        />
-        All Transactions
-      </Link>
-
       <PageHeader
         title="transaction"
         truncateStart={5}
