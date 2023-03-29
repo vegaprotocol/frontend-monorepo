@@ -106,7 +106,7 @@ export const MarketInfoTable = ({
               decimalPlaces={decimalPlaces}
               assetSymbol={assetSymbol}
               asPercentage={asPercentage}
-              unformatted={unformatted || key.toLowerCase().includes('volume')}
+              unformatted={unformatted}
               noBorder={noBorder}
             />
           ))}
