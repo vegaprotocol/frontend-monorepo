@@ -25,7 +25,7 @@ const getReleaseBranches = () => {
 
 const release = (tag, branch) => {
   const steps = [
-    `git checkout release/${branch}`,
+    `git checkout ${branch}`,
     'git pull',
     `git reset --hard ${tag}`,
     'git push --force',
@@ -51,7 +51,7 @@ inquirer
       type: 'checkbox',
       name: 'envs',
       message: 'To what environment you wish to release?',
-      choices: getReleaseBranches(),
+      choices: ['mainnet', ...getReleaseBranches()],
       validate(answer) {
         return answer.length > 0;
       },
@@ -68,7 +68,8 @@ inquirer
       })
       .then(() => {
         for (const env of answers.envs) {
-          release(answers.tag, env);
+          const branch = env === 'mainnet' ? 'master' : `release/${env}`;
+          release(answers.tag, branch);
         }
         execSync('git checkout develop');
       })
