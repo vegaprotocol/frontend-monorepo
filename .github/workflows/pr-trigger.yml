@@ -49,15 +49,28 @@ jobs:
           echo "NX Version: $nx_version"
           echo "NX_BASE: ${{ env.NX_BASE }}"
           echo "NX_HEAD: ${{ env.NX_HEAD }}"
-          echo "Main branch name: ${{ github.base_ref || github.ref_name }}"g
+
+          echo "Main branch name: ${{ github.base_ref || github.ref_name }}"
           echo "git rev-parse HEAD: $(git rev-parse HEAD)"
           echo "Head: ${{ github.head_ref }}"
-          echo "Docker version: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.event.pull_request.head.sha }}"
+
           echo "command to execute: 'yarn nx print-affected --base=${{ github.base_ref || github.ref_name }} --head=${{ github.head_ref }} --select=projects'"
+
+          mergeBase=$(git merge-base origin/develop HEAD)
+          echo "git merge-base origin/develop HEAD: $mergeBase"
+
+          head_sha="${{ github.event.pull_request.head.sha || github.sha }}"
+          echo "Head SHA: $head_sha"
+
+          echo "command to execute (without nx-set-sha): 'yarn nx print-affected --base=$mergeBase --head=$head_sha --select=projects'"
           echo ">>>> eof debug"
+
+          affected_1=$(yarn nx print-affected --base=$mergeBase --head=$head_sha --select=projects || true)
+          echo -n "Affected projects (allowed to fail): $affected_1"
 
           affected=$(yarn nx print-affected --base=${{ github.base_ref || github.ref_name }} --head=${{ github.head_ref }} --select=projects)
           echo -n "Affected projects: $affected"
+
           projects_e2e=""
           if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
           if [[ $affected == *"trading"* ]]; then projects_e2e+='"trading-e2e" '; fi
