@@ -22,9 +22,13 @@ import { MarketState as State } from '@vegaprotocol/types';
 
 interface TradeMarketHeaderProps {
   market: Market | null;
+  onSelect: (marketId: string, metaKey?: boolean) => void;
 }
 
-export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
+export const TradeMarketHeader = ({
+  market,
+  onSelect,
+}: TradeMarketHeaderProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
@@ -42,6 +46,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
         <SelectMarketPopover
           marketCode={market?.tradableInstrument.instrument.code || NO_MARKET}
           marketName={market?.tradableInstrument.instrument.name || NO_MARKET}
+          onSelect={onSelect}
           onCellClick={onCellClick}
         />
       }
@@ -86,6 +91,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
       </HeaderStat>
       <HeaderStatMarketTradingMode
         marketId={market?.id}
+        onSelect={onSelect}
         initialTradingMode={market?.tradingMode}
       />
       <MarketState market={market} />

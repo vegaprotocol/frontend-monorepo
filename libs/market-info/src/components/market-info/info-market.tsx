@@ -18,7 +18,6 @@ import { marketInfoWithDataAndCandlesProvider } from './market-info-data-provide
 
 import type { MarketInfoWithDataAndCandles } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
-import { useMarketOnClickHandler } from '@vegaprotocol/market-list';
 import {
   CurrentFeesInfoPanel,
   InstrumentInfoPanel,
@@ -45,9 +44,12 @@ export interface InfoProps {
 
 export interface MarketInfoContainerProps {
   marketId: string;
+  onSelect?: (id: string) => void;
 }
-export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
-  const onSelect = useMarketOnClickHandler();
+export const MarketInfoContainer = ({
+  marketId,
+  onSelect,
+}: MarketInfoContainerProps) => {
   const yesterday = useYesterday();
   const yTimestamp = useMemo(() => {
     return new Date(yesterday).toISOString();

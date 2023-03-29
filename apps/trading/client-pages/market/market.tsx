@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -7,6 +7,7 @@ import {
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
+
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
@@ -65,6 +66,20 @@ export const MarketPage = () => {
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
+  const onSelect = useCallback(
+    (id: string, metaKey?: boolean) => {
+      if (id) {
+        const link = Links[Routes.MARKET](id);
+        if (metaKey) {
+          window.open(`/#${link}`, '_blank');
+        } else if (id !== marketId) {
+          navigate(link);
+        }
+      }
+    },
+    [marketId, navigate]
+  );
+
   const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,
     variables: { marketId: marketId || '' },
@@ -82,6 +97,7 @@ export const MarketPage = () => {
       return (
         <TradeGrid
           market={data}
+          onSelect={onSelect}
           pinnedAsset={
             data?.tradableInstrument.instrument.product.settlementAsset
           }
@@ -91,10 +107,11 @@ export const MarketPage = () => {
     return (
       <TradePanels
         market={data}
+        onSelect={onSelect}
         onClickCollateral={() => navigate('/portfolio')}
       />
     );
-  }, [largeScreen, data, navigate]);
+  }, [largeScreen, data, onSelect, navigate]);
   if (!data && marketId) {
     return (
       <Splash>

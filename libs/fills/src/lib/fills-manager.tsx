@@ -11,9 +11,14 @@ import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 interface FillsManagerProps {
   partyId: string;
   marketId?: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }
 
-export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
+export const FillsManager = ({
+  partyId,
+  marketId,
+  onMarketClick,
+}: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const {
@@ -71,6 +76,7 @@ export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
+        onMarketClick={onMarketClick}
         suppressLoadingOverlay
         suppressNoRowsOverlay
         isFullWidthRow={isFullWidthRow}

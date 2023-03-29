@@ -25,18 +25,17 @@ import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
 import type { FillFieldsFragment } from './__generated__/Fills';
-import { useMarketOnClickHandler } from '@vegaprotocol/market-list';
 
 const TAKER = 'TAKER';
 const MAKER = 'MAKER';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
-  ({ partyId, ...props }, ref) => {
-    const onMarketClick = useMarketOnClickHandler();
+  ({ partyId, onMarketClick, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}

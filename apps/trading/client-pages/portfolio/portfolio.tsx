@@ -10,7 +10,7 @@ import {
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
@@ -19,15 +19,33 @@ import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 import { AccountHistoryContainer } from './account-history-container';
+import { useNavigate } from 'react-router-dom';
+import { Links, Routes } from '../../pages/client-router';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
+
+  const onMarketClick = useCallback(
+    (marketId: string, metaKey?: boolean) => {
+      const link = Links[Routes.MARKET](marketId);
+      if (metaKey) {
+        window.open(`/#${link}`, '_blank');
+      } else {
+        navigate(link, {
+          replace: true,
+        });
+      }
+    },
+    [navigate]
+  );
 
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
@@ -43,17 +61,20 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <PositionsContainer noBottomPlaceholder />
+                  <PositionsContainer
+                    onMarketClick={onMarketClick}
+                    noBottomPlaceholder
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <OrderListContainer />
+                  <OrderListContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <FillsContainer />
+                  <FillsContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>

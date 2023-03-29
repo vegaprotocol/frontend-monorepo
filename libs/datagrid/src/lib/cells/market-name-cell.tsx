@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react';
 import { useCallback } from 'react';
 import get from 'lodash/get';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 const MARKET_PATH = 'markets';
@@ -18,6 +19,7 @@ export const MarketNameCell = ({
   idPath,
   onMarketClick,
 }: MarketNameCellProps) => {
+  const navigate = useNavigate();
   const id = data ? get(data, idPath ?? 'id', 'all') : '';
   const marketLink = `/${MARKET_PATH}/${id}`;
   const handleOnClick = useCallback(
@@ -28,8 +30,13 @@ export const MarketNameCell = ({
         onMarketClick(id, ev.metaKey);
         return;
       }
+      if (ev.metaKey) {
+        window.open(`/#${marketLink}`, '_blank');
+      } else {
+        navigate(marketLink);
+      }
     },
-    [id, onMarketClick]
+    [marketLink, navigate, id, onMarketClick]
   );
   if (!data) return null;
   return (

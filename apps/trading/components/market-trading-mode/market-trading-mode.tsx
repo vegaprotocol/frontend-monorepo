@@ -25,12 +25,14 @@ const getTradingModeLabel = (
 
 interface HeaderStatMarketTradingModeProps {
   marketId?: string;
+  onSelect?: (marketId: string) => void;
   initialTradingMode?: Schema.MarketTradingMode;
   initialTrigger?: Schema.AuctionTrigger;
 }
 
 export const HeaderStatMarketTradingMode = ({
   marketId,
+  onSelect,
   initialTradingMode,
   initialTrigger,
 }: HeaderStatMarketTradingModeProps) => {
@@ -41,7 +43,9 @@ export const HeaderStatMarketTradingMode = ({
   return (
     <HeaderStat
       heading={t('Trading mode')}
-      description={<TradingModeTooltip marketId={marketId} />}
+      description={
+        <TradingModeTooltip marketId={marketId} onSelect={onSelect} />
+      }
       testId="market-trading-mode"
     >
       <div>{getTradingModeLabel(marketTradingMode, trigger)}</div>

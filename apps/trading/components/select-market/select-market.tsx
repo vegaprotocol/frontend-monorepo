@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import type { RefObject } from 'react';
-import {
-  useMarketList,
-  useMarketOnClickHandler,
-} from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
@@ -93,13 +90,14 @@ export const SelectAllMarketsTableBody = ({
 export const SelectMarketPopover = ({
   marketCode,
   marketName,
+  onSelect,
   onCellClick,
 }: {
   marketCode: string;
   marketName: string;
+  onSelect: (id: string, metaKey?: boolean) => void;
   onCellClick: OnCellClickHandler;
 }) => {
-  const onSelect = useMarketOnClickHandler();
   const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const inViewRoot = useRef<HTMLDivElement>(null);
