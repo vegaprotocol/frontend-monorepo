@@ -54,7 +54,12 @@ export const Checkbox = ({
           )}
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
-      <label htmlFor={name} className="text-sm">
+      <label
+        htmlFor={name}
+        className={classNames('text-sm', {
+          'dark:text-neutral-400 text-neutral-600': disabled,
+        })}
+      >
         {label}
       </label>
     </div>
