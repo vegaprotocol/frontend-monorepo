@@ -474,15 +474,17 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   if (tx.order && tx.order.rejectionReason) {
+    const rejectionReason = getRejectionReason(tx.order) || ' ';
     return (
       <>
         <ToastHeading>{t('Order rejected')}</ToastHeading>
-        <p>
-          {t(
-            'Your order has been rejected because: %s',
-            getRejectionReason(tx.order) || ''
-          )}
-        </p>
+        {rejectionReason ? (
+          <p>
+            {t('Your order has been rejected because: %s', [rejectionReason])}
+          </p>
+        ) : (
+          <p>{t('Your order has been rejected.')}</p>
+        )}
         {tx.txHash && (
           <p className="break-all">
             <ExternalLink
@@ -576,10 +578,9 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     walletNoConnectionCodes.includes(tx.error.code);
   if (orderRejection) {
     label = t('Order rejected');
-    errorMessage = t(
-      'Your order has been rejected because: %s',
-      orderRejection
-    );
+    errorMessage = t('Your order has been rejected because: %s', [
+      orderRejection,
+    ]);
   }
   if (walletError) {
     label = t('Wallet disconnected');
