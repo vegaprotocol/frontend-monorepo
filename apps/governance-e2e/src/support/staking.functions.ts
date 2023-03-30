@@ -1,3 +1,4 @@
+import { closeDialog } from './common.functions';
 import { vegaWalletTeardown } from './wallet-teardown.functions';
 
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
@@ -18,7 +19,6 @@ const stakeValidatorListTotalStake = 'total-stake';
 const stakeValidatorListTotalShare = 'total-stake-share';
 const stakeValidatorListName = '[col-id="validator"]';
 const vegaKeySelector = '#vega-key-selector';
-const dialogCloseButton = '[data-testid="dialog-close"]';
 
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
@@ -54,7 +54,7 @@ export function stakingValidatorPageRemoveStake(stake: string) {
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
     .and('be.visible')
     .click();
-  cy.get(dialogCloseButton).click();
+  closeDialog();
 }
 
 export function stakingPageAssociateTokens(
