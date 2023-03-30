@@ -65,11 +65,23 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
     });
   },
   getData: (responseData: LiquidityProvisionsQuery | null) => {
+    // to remove dedupe after core fix https://github.com/vegaprotocol/vega/issues/8043
+    const dedupeArr: string[] = [];
     return (
       responseData?.market?.liquidityProvisionsConnection?.edges?.map(
         (e) => e?.node
       ) ?? []
-    ).filter((e) => !!e) as LiquidityProvisionFieldsFragment[];
+    ).filter((e) => {
+      if (e) {
+        const id = getId(e);
+        if (dedupeArr.includes(id)) {
+          return false;
+        }
+        dedupeArr.push(id);
+        return true;
+      }
+      return false;
+    }) as LiquidityProvisionFieldsFragment[];
   },
   getDelta: (
     subscriptionData: LiquidityProvisionsUpdateSubscription
@@ -96,8 +108,8 @@ export const getId = (
       >
 ) =>
   isLpFragment(entry)
-    ? `${entry.party.id}${entry.status}${entry.createdAt}`
-    : `${entry.partyID}${entry.status}${entry.createdAt}`;
+    ? `${entry.party.id}${entry.status}${entry.createdAt}${entry.updatedAt}`
+    : `${entry.partyID}${entry.status}${entry.createdAt}${entry.updatedAt}`;
 
 export const marketLiquidityDataProvider = makeDataProvider<
   MarketLpQuery,
