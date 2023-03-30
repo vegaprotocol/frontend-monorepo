@@ -128,7 +128,7 @@ context(
         .and('be.visible');
     });
 
-    // 3001-VOTE-048 3001-VOTE-049
+    // 3001-VOTE-048 3001-VOTE-049 3001-VOTE-050
     it('Able to fail proposal due to lack of participation', function () {
       const proposalTitle = 'Add New free form proposal with short enactment';
       const proposalTx = createFreeFormProposalTxBody();

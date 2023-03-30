@@ -1,4 +1,4 @@
-import { navigateTo, navigation } from './common.functions';
+import { closeDialog, navigateTo, navigation } from './common.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from './staking.functions';
 
 const newProposalButton = '[data-testid="new-proposal-link"]';
@@ -12,7 +12,6 @@ const voteButtons = '[data-testid="vote-buttons"]';
 const dialogTitle = '[data-testid="dialog-title"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
-const dialogCloseButton = '[data-testid="dialog-close"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
@@ -125,7 +124,7 @@ export function voteForProposal(vote: string) {
     'have.text',
     'Transaction complete'
   );
-  cy.get(dialogCloseButton).click();
+  closeDialog();
 }
 
 export function waitForProposalSync() {
@@ -176,7 +175,7 @@ export function waitForProposalSubmitted() {
     'be.visible'
   );
   cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
-  cy.get(dialogCloseButton).click();
+  closeDialog();
 }
 
 export function createRawProposal(proposerBalance?: string) {
