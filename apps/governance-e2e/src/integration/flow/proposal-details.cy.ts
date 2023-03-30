@@ -56,7 +56,7 @@ describe(
       navigateTo(navigation.proposals);
     });
 
-    // 3001-VOTE-055
+    // 3001-VOTE-050 3001-VOTE-054 3001-VOTE-055 3002-PROP-019
     it('Newly created raw proposal details - shows proposal title and full description', function () {
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {

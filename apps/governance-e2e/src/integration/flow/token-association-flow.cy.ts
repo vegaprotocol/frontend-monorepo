@@ -183,6 +183,7 @@ context(
         // 1004-ASSO-018
         // 1004-ASSO-024
         // 1004-ASSO-023
+        // 1004-ASSO-032
 
         stakingPageAssociateTokens('2', {
           type: 'contract',

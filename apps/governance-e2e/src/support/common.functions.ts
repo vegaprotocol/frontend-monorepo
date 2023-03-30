@@ -84,3 +84,7 @@ export function verifyEthWalletAssociatedBalance(amount: string) {
     .parent(txTimeout)
     .should('contain', amount, txTimeout);
 }
+
+export function closeDialog() {
+  cy.getByTestId('dialog-close').click();
+}
