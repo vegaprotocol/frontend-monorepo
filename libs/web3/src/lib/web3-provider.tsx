@@ -11,6 +11,7 @@ interface Web3ProviderProps {
 export const Web3Provider = ({ children, connectors }: Web3ProviderProps) => {
   const key = useMemo(
     () => `WEB3_PROVIDER_${Date.now().toString()}`,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [connectors]
   );
 
