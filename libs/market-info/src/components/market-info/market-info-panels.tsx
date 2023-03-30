@@ -517,8 +517,8 @@ const OracleLink = ({
 }) => {
   const text =
     type === 'settlementData'
-      ? t('View settlement data proof')
-      : t('View termination proof');
+      ? t('View settlement oracle details')
+      : t('View termination oracle details');
   const textWithCount = index > 0 ? `${text} (${index + 1})` : text;
 
   const provider = providers.find((p) => {
