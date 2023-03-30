@@ -21,3 +21,4 @@ export * from './lib/web3-connect-dialog';
 export * from './lib/web3-connect-store';
 export * from './lib/url-connector';
 export * from './lib/eip-1193-custom-bridge';
+export * from './constansts';

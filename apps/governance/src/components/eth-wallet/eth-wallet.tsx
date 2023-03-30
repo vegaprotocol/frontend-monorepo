@@ -239,7 +239,12 @@ export const EthWallet = () => {
             <div className="flex justify-end">
               <button
                 className="underline"
-                onClick={() => connector.deactivate()}
+                onClick={() => {
+                  if (connector.deactivate) {
+                    connector.deactivate();
+                  }
+                  connector.resetState();
+                }}
                 data-testid="disconnect-from-eth-wallet-button"
               >
                 {t('disconnect')}

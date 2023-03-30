@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { MetaMask } from '@web3-react/metamask';
-import { WalletConnect } from '@web3-react/walletconnect';
+import { WalletConnect } from '@web3-react/walletconnect-v2';
 import type { Connector } from '@web3-react/types';
 import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
 import type { Web3ReactHooks } from '@web3-react/core';
@@ -39,9 +39,13 @@ export const Web3ConnectDialog = ({
                 className="hover:text-vega-pink dark:hover:text-vega-yellow underline"
                 data-testid={`web3-connector-${info.name}`}
                 onClick={async () => {
-                  await connector.activate(desiredChainId);
-                  setEagerConnector(info.name);
-                  setDialogOpen(false);
+                  try {
+                    await connector.activate(desiredChainId);
+                    setEagerConnector(info.name);
+                    setDialogOpen(false);
+                  } catch (err) {
+                    // NOOP - cancelled wallet connector
+                  }
                 }}
               >
                 {info.text}

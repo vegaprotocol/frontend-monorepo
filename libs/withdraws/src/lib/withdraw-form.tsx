@@ -310,7 +310,10 @@ const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
   return (
     <UseButton
       onClick={() => {
-        connector.deactivate();
+        if (connector.deactivate) {
+          connector.deactivate();
+        }
+        connector.resetState();
         clearAddress();
         removeEagerConnector();
       }}

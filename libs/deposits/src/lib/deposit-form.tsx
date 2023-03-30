@@ -449,10 +449,17 @@ const DisconnectEthereumButton = ({
   const { connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
 
+  const deactivateConnector = () => {
+    if (connector.deactivate) {
+      connector.deactivate();
+    }
+    connector.resetState();
+  };
+
   return (
     <ButtonLink
       onClick={() => {
-        connector.deactivate();
+        deactivateConnector();
         removeEagerConnector();
         onDisconnect();
       }}
