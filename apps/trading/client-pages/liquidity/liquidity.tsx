@@ -26,7 +26,7 @@ import {
   Indicator,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Header, HeaderStat, HeaderTitle } from '../../components/header';
 
@@ -59,7 +59,7 @@ const useReloadLiquidityData = (marketId: string | undefined) => {
     skip: !marketId,
   });
   useEffect(() => {
-    const interval = setInterval(reload, 10000);
+    const interval = setInterval(reload, 30000);
     return () => clearInterval(interval);
   }, [reload]);
 };
@@ -215,12 +215,40 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
 });
 LiquidityViewHeader.displayName = 'LiquidityViewHeader';
 
+const filterLiquidities = (
+  tab: string,
+  liquidities?: LiquidityProvisionData[] | null,
+  pubKey?: string | null
+) => {
+  switch (tab) {
+    case LiquidityTabs.MyLiquidityProvision:
+      return pubKey
+        ? (liquidities || []).filter((e) => e.party.id === pubKey)
+        : [];
+      break;
+    case LiquidityTabs.Active:
+      return (liquidities || []).filter(
+        (e) => e.status === Schema.LiquidityProvisionStatus.STATUS_ACTIVE
+      );
+    case LiquidityTabs.Inactive:
+      return (liquidities || []).filter(
+        (e) => e.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE
+      );
+    default:
+      return [];
+  }
+};
+
 export const LiquidityViewContainer = ({
   marketId,
 }: {
   marketId: string | undefined;
 }) => {
+  const [tab, setTab] = useState('');
   const { pubKey } = useVegaWallet();
+  const [liquidityProviders, setLiquidityProviders] = useState<
+    LiquidityProvisionData[] | null
+  >();
   const gridRef = useRef<AgGridReact | null>(null);
   const { data: market } = useMarket(marketId);
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
@@ -230,17 +258,21 @@ export const LiquidityViewContainer = ({
 
   const update = useCallback(
     ({ data }: { data: LiquidityProvisionData[] | null }) => {
+      if (!dataRef.current) {
+        setLiquidityProviders(data);
+        dataRef.current = data;
+      }
       if (!gridRef.current?.api) {
         return false;
       }
       const updateRows: LiquidityProvisionData[] = [];
       const addRows: LiquidityProvisionData[] = [];
-      const removeRows: LiquidityProvisionData[] = [];
       if (gridRef.current?.api?.getModel().getType() === 'infinite') {
         dataRef.current = data;
         gridRef.current.api.refreshInfiniteCache();
       } else {
-        data?.forEach((d) => {
+        const filteredData = filterLiquidities(tab, data, pubKey as string);
+        filteredData?.forEach((d) => {
           const rowNode = gridRef.current?.api?.getRowNode(getId(d));
           if (rowNode) {
             if (!isEqual(rowNode.data, d)) {
@@ -253,26 +285,20 @@ export const LiquidityViewContainer = ({
         gridRef.current?.api?.applyTransaction({
           update: updateRows,
           add: addRows,
-          remove: removeRows,
           addIndex: 0,
         });
       }
       return true;
     },
-    [gridRef]
+    [gridRef, tab, pubKey]
   );
 
-  const {
-    data: liquidityProviders,
-    loading,
-    error,
-  } = useDataProvider({
+  const { loading, error } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
     variables: { marketId: marketId || '' },
     skip: !marketId,
   });
-
   const assetDecimalPlaces =
     market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
@@ -283,42 +309,45 @@ export const LiquidityViewContainer = ({
     NetworkParams.market_liquidity_targetstake_triggering_ratio,
   ]);
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
-
   const myLpEdges = useMemo(
-    () => (liquidityProviders || []).filter((e) => e.party.id === pubKey),
+    () =>
+      filterLiquidities(
+        LiquidityTabs.MyLiquidityProvision,
+        liquidityProviders,
+        pubKey
+      ),
     [liquidityProviders, pubKey]
   );
   const activeEdges = useMemo(
-    () =>
-      liquidityProviders?.filter(
-        (e) => e.status === Schema.LiquidityProvisionStatus.STATUS_ACTIVE
-      ),
+    () => filterLiquidities(LiquidityTabs.Active, liquidityProviders),
     [liquidityProviders]
   );
   const inactiveEdges = useMemo(
-    () =>
-      (liquidityProviders || [])?.filter(
-        (e) => e.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE
-      ),
+    () => filterLiquidities(LiquidityTabs.Inactive, liquidityProviders),
     [liquidityProviders]
   );
 
-  const defaultTabId = useMemo(() => {
+  useEffect(() => {
+    if (tab) {
+      return;
+    }
+    let initialTab = LiquidityTabs.Active;
     if (myLpEdges.length > 0) {
-      return LiquidityTabs.MyLiquidityProvision;
+      initialTab = LiquidityTabs.MyLiquidityProvision;
     }
-    if (activeEdges?.length) return LiquidityTabs.Active;
-    else if (inactiveEdges.length > 0) {
-      return LiquidityTabs.Inactive;
+    if (activeEdges?.length) {
+      initialTab = LiquidityTabs.Active;
+    } else if (inactiveEdges.length > 0) {
+      initialTab = LiquidityTabs.Inactive;
     }
-    return LiquidityTabs.Active;
-  }, [myLpEdges?.length, activeEdges?.length, inactiveEdges?.length]);
+    setTab(initialTab);
+  }, [tab, myLpEdges?.length, activeEdges?.length, inactiveEdges?.length]);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <LiquidityViewHeader marketId={marketId} />
-        <Tabs defaultValue={defaultTabId}>
+        <Tabs value={tab} onValueChange={setTab}>
           <Tab
             id={LiquidityTabs.MyLiquidityProvision}
             name={t('My liquidity provision')}
