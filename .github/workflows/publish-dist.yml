@@ -71,15 +71,16 @@ jobs:
 
       - name: Sanity check docker image
         run: |
-          echo "Check .env file"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat .env
           echo "Check ipfs-hash"
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
+
           echo "List html directory"
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah
+
           echo "Copy dist to local filesystem"
           docker create --name=dist ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
           docker cp dist:/usr/share/nginx/html dist
+
           echo "Check local dist"
           ls -al dist
 
