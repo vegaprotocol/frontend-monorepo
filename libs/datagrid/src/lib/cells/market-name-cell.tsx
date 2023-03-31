@@ -20,7 +20,6 @@ export const MarketNameCell = ({
     (ev: MouseEvent<HTMLButtonElement>) => {
       ev.preventDefault();
       ev.stopPropagation();
-      console.log('onMarketClick', onMarketClick);
       if (onMarketClick) {
         onMarketClick(id, ev.metaKey);
       }
