@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import abi from '../abis/vesting_abi.json';
-import { prepend0x } from '../utils';
+import { prepend0x, calcGasBuffer } from '../utils';
 
 export class TokenVesting {
   public contract: ethers.Contract;
@@ -14,11 +14,21 @@ export class TokenVesting {
     this.address = address;
   }
 
-  stake_tokens(amount: string, vegaPublicKey: string) {
-    return this.contract.stake_tokens(amount, prepend0x(vegaPublicKey));
+  async stake_tokens(amount: string, vegaPublicKey: string) {
+    const spender = prepend0x(vegaPublicKey);
+    const res = await this.contract.estimateGas.stake_tokens(amount, spender);
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.stake_tokens(amount, spender, {
+      gasLimit,
+    });
   }
-  remove_stake(amount: string, vegaPublicKey: string) {
-    return this.contract.remove_stake(amount, prepend0x(vegaPublicKey));
+  async remove_stake(amount: string, vegaPublicKey: string) {
+    const spender = prepend0x(vegaPublicKey);
+    const res = await this.contract.estimateGas.remove_stake(amount, spender);
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.remove_stake(amount, spender, {
+      gasLimit,
+    });
   }
   stake_balance(address: string, vegaPublicKey: string) {
     return this.contract.stake_balance(address, prepend0x(vegaPublicKey));
@@ -38,7 +48,13 @@ export class TokenVesting {
   user_total_all_tranches(address: string) {
     return this.contract.user_total_all_tranches(address);
   }
-  withdraw_from_tranche(trancheId: number) {
-    return this.contract.withdraw_from_tranche(trancheId);
+  async withdraw_from_tranche(trancheId: number) {
+    const res = await this.contract.estimateGas.withdraw_from_tranche(
+      trancheId
+    );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.withdraw_from_tranche(trancheId, {
+      gasLimit,
+    });
   }
 }
