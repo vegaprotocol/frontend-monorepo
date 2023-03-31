@@ -45,16 +45,15 @@ jobs:
         id: tags
         run: |
           nodeVersion=$(cat .nvmrc | head -n 1)
-          bucketName="${{ github.event.repository.name }}-$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
           echo ::set-output name=nodeVersion::${nodeVersion}
-          echo ::set-output name=bucketName::${bucketName}
 
-      - name: Print config
-        run: |
-          git rev-parse --verify HEAD
-          git status
-          echo "steps.tags.outputs.bucketName=${{ steps.tags.outputs.bucketName }}"
-          echo "steps.tags.outputs.version=${{ steps.tags.outputs.version }}"
+          if [[ "${{ github.event_name }}" = "push" ]]; then
+            envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+            bucketName="${{ github.event.repository.name }}-$envName"
+            echo ::set-output name=bucketName::${bucketName}
+            echo ::set-output name=envName::${envName}
+          fi
+
 
       - name: Build and export to local Docker
         uses: docker/build-push-action@v3
@@ -66,6 +65,7 @@ jobs:
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.nodeVersion }}
+            ENV_NAME=${{ steps.tags.outputs.envName || '' }}
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
