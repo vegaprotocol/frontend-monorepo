@@ -10,6 +10,7 @@ import type {
 import {
   AgGridDynamic as AgGrid,
   PriceFlashCell,
+  MarketNameCell,
 } from '@vegaprotocol/datagrid';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -24,8 +25,10 @@ export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
 export const MarketListTable = forwardRef<
   AgGridReact,
-  TypedDataAgGrid<MarketMaybeWithData>
->((props, ref) => {
+  TypedDataAgGrid<MarketMaybeWithData> & {
+    onMarketClick: (marketId: string, metaKey?: boolean) => void;
+  }
+>(({ onMarketClick, ...props }, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
@@ -41,22 +44,14 @@ export const MarketListTable = forwardRef<
         filterParams: { buttons: ['reset'] },
       }}
       suppressCellFocus={true}
-      components={{ PriceFlashCell }}
+      components={{ PriceFlashCell, MarketNameCell }}
       {...props}
     >
       <AgGridColumn
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
-        cellRenderer={({
-          value,
-          data,
-        }: VegaICellRendererParams<
-          MarketMaybeWithData,
-          'tradableInstrument.instrument.code'
-        >) => {
-          if (!data) return null;
-          return <span data-testid={`market-${data.id}`}>{value}</span>;
-        }}
+        cellRenderer="MarketNameCell"
+        cellRendererParams={{ onMarketClick }}
       />
       <AgGridColumn
         headerName={t('Description')}

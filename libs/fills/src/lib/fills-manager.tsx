@@ -11,7 +11,7 @@ import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 interface FillsManagerProps {
   partyId: string;
   marketId?: string;
-  onMarketClick?: (marketId: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }
 
 export const FillsManager = ({

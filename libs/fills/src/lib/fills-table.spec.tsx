@@ -7,6 +7,7 @@ import type { Trade } from './fills-data-provider';
 
 import { FillsTable, getFeesBreakdown } from './fills-table';
 import { generateFill } from './test-helpers';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('FillsTable', () => {
   let defaultFill: PartialDeep<Trade>;
@@ -36,7 +37,11 @@ describe('FillsTable', () => {
 
   it('correct columns are rendered', async () => {
     await act(async () => {
-      render(<FillsTable partyId="party-id" rowData={[generateFill()]} />);
+      render(
+        <MemoryRouter>
+          <FillsTable partyId="party-id" rowData={[generateFill()]} />
+        </MemoryRouter>
+      );
     });
 
     const headers = screen.getAllByRole('columnheader');
@@ -67,7 +72,11 @@ describe('FillsTable', () => {
         liquidityFee: '2',
       },
     });
-    render(<FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />);
+    render(
+      <MemoryRouter>
+        <FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />
+      </MemoryRouter>
+    );
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       buyerFill.market?.tradableInstrument.instrument.name || '',
@@ -100,7 +109,11 @@ describe('FillsTable', () => {
         liquidityFee: '1',
       },
     });
-    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
+    render(
+      <MemoryRouter>
+        <FillsTable partyId={partyId} rowData={[buyerFill]} />
+      </MemoryRouter>
+    );
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
@@ -129,7 +142,9 @@ describe('FillsTable', () => {
       aggressor: Schema.Side.SIDE_SELL,
     });
     const { rerender } = render(
-      <FillsTable partyId={partyId} rowData={[takerFill]} />
+      <MemoryRouter>
+        <FillsTable partyId={partyId} rowData={[takerFill]} />
+      </MemoryRouter>
     );
     expect(
       screen
@@ -143,7 +158,11 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_BUY,
     });
-    rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);
+    rerender(
+      <MemoryRouter>
+        <FillsTable partyId={partyId} rowData={[makerFill]} />
+      </MemoryRouter>
+    );
 
     expect(
       screen
@@ -160,7 +179,11 @@ describe('FillsTable', () => {
       },
       aggressor: Schema.Side.SIDE_SELL,
     });
-    render(<FillsTable partyId={partyId} rowData={[takerFill]} />);
+    render(
+      <MemoryRouter>
+        <FillsTable partyId={partyId} rowData={[takerFill]} />
+      </MemoryRouter>
+    );
 
     const feeCell = screen
       .getAllByRole('gridcell')

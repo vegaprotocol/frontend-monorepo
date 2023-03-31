@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { memo, forwardRef } from 'react';
@@ -15,6 +15,7 @@ import {
   DateRangeFilter,
   negativeClassNames,
   positiveClassNames,
+  MarketNameCell,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -29,7 +30,7 @@ type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
-  onMarketClick?: (marketId: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
 };
 
@@ -50,30 +51,14 @@ export const OrderListTable = memo(
             height: '100%',
           }}
           getRowId={({ data }) => data.id}
+          components={{ MarketNameCell }}
           {...props}
         >
           <AgGridColumn
             headerName={t('Market')}
             field="market.tradableInstrument.instrument.code"
-            cellRenderer={({
-              value,
-              data,
-            }: VegaICellRendererParams<
-              Order,
-              'market.tradableInstrument.instrument.code'
-            >) =>
-              onMarketClick ? (
-                <Link
-                  onClick={() =>
-                    data?.market?.id && onMarketClick(data?.market?.id)
-                  }
-                >
-                  {value}
-                </Link>
-              ) : (
-                value
-              )
-            }
+            cellRenderer="MarketNameCell"
+            cellRendererParams={{ idPath: 'market.id', onMarketClick }}
             minWidth={150}
           />
           <AgGridColumn

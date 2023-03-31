@@ -39,12 +39,12 @@ import {
 
 export interface InfoProps {
   market: MarketInfoWithDataAndCandles;
-  onSelect: (id: string) => void;
+  onSelect?: (id: string, metaKey?: boolean) => void;
 }
 
 export interface MarketInfoContainerProps {
   marketId: string;
-  onSelect?: (id: string) => void;
+  onSelect?: (id: string, metaKey?: boolean) => void;
 }
 export const MarketInfoContainer = ({
   marketId,
@@ -73,7 +73,7 @@ export const MarketInfoContainer = ({
     <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
       {data ? (
         <TinyScroll className="h-full overflow-auto">
-          <Info market={data} onSelect={(id) => onSelect?.(id)} />
+          <Info market={data} onSelect={onSelect} />
         </TinyScroll>
       ) : (
         <Splash>
@@ -169,7 +169,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <LiquidityInfoPanel market={market}>
           <Link
             to={`/liquidity/${market.id}`}
-            onClick={() => onSelect(market.id)}
+            onClick={(ev) => onSelect?.(market.id, ev.metaKey)}
             data-testid="view-liquidity-link"
           >
             <UILink>{t('View liquidity provision table')}</UILink>
