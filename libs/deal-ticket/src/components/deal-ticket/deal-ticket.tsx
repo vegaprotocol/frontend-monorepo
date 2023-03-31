@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { memo, useCallback, useEffect, useState, useRef } from 'react';
+import { memo, useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
@@ -16,10 +16,12 @@ import {
   useVegaWalletDialogStore,
 } from '@vegaprotocol/wallet';
 import {
+  Checkbox,
   ExternalLink,
   InputError,
   Intent,
   Notification,
+  Tooltip,
   TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
 
@@ -146,6 +148,16 @@ export const DealTicket = ({
     clearErrors,
   ]);
 
+  const disablePostOnlyCheckbox = useMemo(() => {
+    const disabled = order
+      ? [
+          Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+          Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+        ].includes(order.timeInForce)
+      : true;
+    return disabled;
+  }, [order]);
+
   const onSubmit = useCallback(
     (order: OrderSubmission) => {
       const now = new Date().getTime();
@@ -239,7 +251,7 @@ export const DealTicket = ({
               value={order.timeInForce}
               orderType={order.type}
               onSelect={(timeInForce) => {
-                update({ timeInForce });
+                update({ timeInForce, postOnly: false, reduceOnly: false });
                 // Set tif value for the given order type, so that when switching
                 // types we know the last used TIF for the given order type
                 setLastTIF((curr) => ({
@@ -276,6 +288,65 @@ export const DealTicket = ({
               )}
             />
           )}
+        <div className="flex gap-2 pb-2 justify-between">
+          <Controller
+            name="postOnly"
+            control={control}
+            render={() => (
+              <Checkbox
+                name="post-only"
+                checked={order.postOnly}
+                disabled={disablePostOnlyCheckbox}
+                onCheckedChange={() => {
+                  update({ postOnly: !order.postOnly, reduceOnly: false });
+                }}
+                label={
+                  <Tooltip
+                    description={
+                      <span>
+                        {disablePostOnlyCheckbox
+                          ? t(
+                              '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                            )
+                          : t(
+                              '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                            )}
+                      </span>
+                    }
+                  >
+                    <span className="text-xs">{t('Post only')}</span>
+                  </Tooltip>
+                }
+              />
+            )}
+          />
+          <Controller
+            name="reduceOnly"
+            control={control}
+            render={() => (
+              <Checkbox
+                name="reduce-only"
+                checked={order.reduceOnly}
+                onCheckedChange={() => {
+                  update({ postOnly: false, reduceOnly: !order.reduceOnly });
+                }}
+                label={
+                  <Tooltip
+                    description={
+                      <span>
+                        {t(
+                          '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.'
+                        )}
+                      </span>
+                    }
+                  >
+                    <span className="text-xs">{t('Reduce only')}</span>
+                  </Tooltip>
+                }
+              />
+            )}
+          />
+        </div>
         <SummaryMessage
           errorMessage={errors.summary?.message}
           asset={asset}

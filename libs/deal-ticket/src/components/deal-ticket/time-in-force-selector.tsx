@@ -96,16 +96,6 @@ export const TimeInForceSelector = ({
         id="select-time-in-force"
         value={value}
         onChange={(e) => {
-          // setPreviousTimeInForce({
-          //   ...previousTimeInForce,
-          //   [orderType]: e.target.value,
-          // });
-
-          // if (previousOrderType !== orderType) {
-          //   setPreviousOrderType(orderType);
-          //   const prev = previousTimeInForce[orderType as OrderType];
-          //   onSelect(prev);
-          // }
           onSelect(e.target.value as Schema.OrderTimeInForce);
         }}
         className="w-full"
