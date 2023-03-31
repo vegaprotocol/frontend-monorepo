@@ -54,7 +54,6 @@ jobs:
             echo ::set-output name=envName::${envName}
           fi
 
-
       - name: Build and export to local Docker
         id: docker_build
         uses: docker/build-push-action@v3
