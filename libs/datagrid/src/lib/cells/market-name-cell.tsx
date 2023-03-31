@@ -33,7 +33,7 @@ export const MarketNameCell = ({
   );
   if (!data) return null;
   return (
-    <Link to={marketLink} onClick={handleOnClick}>
+    <span onClick={handleOnClick} role="link" tabIndex="0">
       {value}
     </Link>
   );
