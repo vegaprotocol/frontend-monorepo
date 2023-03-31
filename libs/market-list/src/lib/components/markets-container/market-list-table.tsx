@@ -25,8 +25,10 @@ export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
 export const MarketListTable = forwardRef<
   AgGridReact,
-  TypedDataAgGrid<MarketMaybeWithData>
->(({ ...props }, ref) => {
+  TypedDataAgGrid<MarketMaybeWithData> & {
+    onMarketClick: (marketId: string, metaKey?: boolean) => void;
+  }
+>(({ onMarketClick, ...props }, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
@@ -49,6 +51,7 @@ export const MarketListTable = forwardRef<
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
         cellRenderer="MarketNameCell"
+        cellRendererParams={{ onMarketClick }}
       />
       <AgGridColumn
         headerName={t('Description')}

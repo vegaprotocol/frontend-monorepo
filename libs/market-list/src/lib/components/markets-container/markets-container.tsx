@@ -7,7 +7,7 @@ import { marketsWithDataProvider as dataProvider } from '../../markets-provider'
 import type { MarketMaybeWithData } from '../../markets-provider';
 
 interface MarketsContainerProps {
-  onSelect: (marketId: string) => void;
+  onSelect: (marketId: string, metaKey?: boolean) => void;
 }
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
@@ -35,6 +35,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           }
           onSelect((data as MarketMaybeWithData).id);
         }}
+        onMarketClick={onSelect}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

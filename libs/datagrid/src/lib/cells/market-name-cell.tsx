@@ -1,9 +1,6 @@
 import type { MouseEvent } from 'react';
 import { useCallback } from 'react';
 import get from 'lodash/get';
-import { Link } from 'react-router-dom';
-
-const MARKET_PATH = 'markets';
 
 interface MarketNameCellProps {
   value?: string;
@@ -19,22 +16,21 @@ export const MarketNameCell = ({
   onMarketClick,
 }: MarketNameCellProps) => {
   const id = data ? get(data, idPath ?? 'id', 'all') : '';
-  const marketLink = `/${MARKET_PATH}/${id}`;
   const handleOnClick = useCallback(
-    (ev: MouseEvent<HTMLAnchorElement>) => {
+    (ev: MouseEvent<HTMLButtonElement>) => {
       ev.preventDefault();
       ev.stopPropagation();
+      console.log('onMarketClick', onMarketClick);
       if (onMarketClick) {
         onMarketClick(id, ev.metaKey);
-        return;
       }
     },
     [id, onMarketClick]
   );
   if (!data) return null;
   return (
-    <span onClick={handleOnClick} role="link" tabIndex="0">
+    <button onClick={handleOnClick} tabIndex={0}>
       {value}
-    </Link>
+    </button>
   );
 };
