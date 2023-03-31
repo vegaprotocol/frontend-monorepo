@@ -138,7 +138,7 @@ export type MarketLpQueryResult = Apollo.QueryResult<MarketLpQuery, MarketLpQuer
 export const LiquidityProvisionsDocument = gql`
     query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection {
+    liquidityProvisionsConnection(live: true) {
       edges {
         node {
           ...LiquidityProvisionFields
