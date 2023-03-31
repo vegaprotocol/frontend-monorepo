@@ -184,6 +184,7 @@ export const columns = (
           data-testid={`market-link-${market.id}`}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             onSelect(market.id, e.metaKey);
           }}
         >
@@ -364,6 +365,7 @@ export const columnsPositionMarkets = (
           data-testid={`market-link-${market.id}`}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             onSelect(market.id, e.metaKey);
           }}
         >

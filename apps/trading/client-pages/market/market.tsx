@@ -13,6 +13,7 @@ import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -66,19 +67,7 @@ export const MarketPage = () => {
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const onSelect = useCallback(
-    (id: string, metaKey?: boolean) => {
-      if (id) {
-        const link = Links[Routes.MARKET](id);
-        if (metaKey) {
-          window.open(`/#${link}`, '_blank');
-        } else if (id !== marketId) {
-          navigate(link);
-        }
-      }
-    },
-    [marketId, navigate]
-  );
+  const onSelect = useMarketClickHandler();
 
   const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,

@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
@@ -23,7 +24,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
         suppressLoadingOverlay
         suppressNoRowsOverlay
         onCellClicked={(cellEvent: CellClickedEvent) => {
-          const { data, column } = cellEvent;
+          const { data, column, event } = cellEvent;
           const colId = column.getColId();
           if (
             [
@@ -33,7 +34,10 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           ) {
             return;
           }
-          onSelect((data as MarketMaybeWithData).id);
+          onSelect(
+            (data as MarketMaybeWithData).id,
+            (event as unknown as MouseEvent)?.metaKey
+          );
         }}
         onMarketClick={onSelect}
       />

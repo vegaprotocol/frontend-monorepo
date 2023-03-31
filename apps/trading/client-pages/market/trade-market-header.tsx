@@ -91,7 +91,6 @@ export const TradeMarketHeader = ({
       </HeaderStat>
       <HeaderStatMarketTradingMode
         marketId={market?.id}
-        onSelect={onSelect}
         initialTradingMode={market?.tradingMode}
       />
       <MarketState market={market} />
