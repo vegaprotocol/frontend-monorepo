@@ -26,6 +26,7 @@
     "multisig-signer": "apps/multisig-signer",
     "network-info": "libs/network-info",
     "network-stats": "libs/network-stats",
+    "oracles": "libs/oracles",
     "orders": "libs/orders",
     "positions": "libs/positions",
     "proposals": "libs/proposals",

@@ -85,7 +85,7 @@ export const MarketInfoContainer = ({
 };
 
 export const Info = ({ market, onSelect }: InfoProps) => {
-  const { VEGA_TOKEN_URL, VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_TOKEN_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
 
   if (!market) return null;
@@ -123,6 +123,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Instrument'),
       content: <InstrumentInfoPanel market={market} />,
+    },
+    {
+      title: t('Oracle'),
+      content: <OracleInfoPanel market={market} />,
     },
     {
       title: t('Settlement asset'),
@@ -177,23 +181,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       title: t('Liquidity price range'),
       content: <LiquidityPriceRangeInfoPanel market={market} />,
     },
-    {
-      title: t('Oracle'),
-      content: (
-        <OracleInfoPanel market={market}>
-          <ExternalLink
-            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id}`}
-          >
-            {t('View settlement data oracle specification')}
-          </ExternalLink>
-          <ExternalLink
-            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForTradingTermination.id}`}
-          >
-            {t('View termination oracle specification')}
-          </ExternalLink>
-        </OracleInfoPanel>
-      ),
-    },
   ];
 
   const marketGovPanels = [
@@ -236,17 +223,17 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   return (
     <div className="p-4">
       <div className="mb-8">
-        <p className={headerClassName}>{t('Market data')}</p>
+        <h3 className={headerClassName}>{t('Market data')}</h3>
         <Accordion panels={marketDataPanels} />
       </div>
       <div className="mb-8">
         <MarketProposalNotification marketId={market.id} />
-        <p className={headerClassName}>{t('Market specification')}</p>
+        <h3 className={headerClassName}>{t('Market specification')}</h3>
         <Accordion panels={marketSpecPanels} />
       </div>
       {VEGA_TOKEN_URL && market.proposal?.id && (
         <div>
-          <p className={headerClassName}>{t('Market governance')}</p>
+          <h3 className={headerClassName}>{t('Market governance')}</h3>
           <Accordion panels={marketGovPanels} />
         </div>
       )}
