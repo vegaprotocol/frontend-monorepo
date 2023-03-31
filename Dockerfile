@@ -25,5 +25,4 @@ EXPOSE 80
 WORKDIR /usr/share/nginx/html
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist/apps/${APP} /usr/share/nginx/html
-COPY ./apps/${APP}/.env .env
 RUN apk add --no-cache go-ipfs; ipfs init && echo "$(ipfs add -rQ .)" > ipfs-hash; apk del go-ipfs
