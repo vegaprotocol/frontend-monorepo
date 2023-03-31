@@ -6,7 +6,7 @@ import {
   calcCandleVolume,
   totalFeesPercentage,
 } from '@vegaprotocol/market-list';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -21,7 +21,12 @@ import type {
   MarketInfoWithDataAndCandles,
 } from './market-info-data-provider';
 import BigNumber from 'bignumber.js';
+import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
+import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import { useEnvironment } from '@vegaprotocol/environment';
+import type { Provider } from '@vegaprotocol/oracles';
+import { useOracleProofs } from '@vegaprotocol/oracles';
 
 type PanelProps = Pick<
   ComponentProps<typeof MarketInfoTable>,
@@ -399,7 +404,7 @@ export const LiquidityPriceRangeInfoPanel = ({
                 market.decimalPlaces
               )} ${quoteUnit}`,
           }}
-        ></MarketInfoTable>
+        />
       </div>
     </>
   );
@@ -408,9 +413,156 @@ export const LiquidityPriceRangeInfoPanel = ({
 export const OracleInfoPanel = ({
   market,
   ...props
-}: MarketInfoProps & PanelProps) => (
-  <MarketInfoTable
-    data={market.tradableInstrument.instrument.product.dataSourceSpecBinding}
-    {...props}
-  />
-);
+}: MarketInfoProps & PanelProps) => {
+  const product = market.tradableInstrument.instrument.product;
+  const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
+  const { data } = useOracleProofs(ORACLE_PROOFS_URL);
+  return (
+    <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
+      <div
+        className="flex flex-col gap-2 mt-4"
+        data-testid="oracle-proof-links"
+      >
+        <DataSourceProof
+          data={product.dataSourceSpecForSettlementData.data}
+          providers={data}
+          type="settlementData"
+        />
+        <DataSourceProof
+          data={product.dataSourceSpecForTradingTermination.data}
+          providers={data}
+          type="termination"
+        />
+      </div>
+      <div className="flex flex-col gap-2" data-testid="oracle-spec-links">
+        <ExternalLink
+          href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForSettlementData.id}`}
+        >
+          {t('View settlement data specification')}
+        </ExternalLink>
+        <ExternalLink
+          href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForTradingTermination.id}`}
+        >
+          {t('View termination specification')}
+        </ExternalLink>
+      </div>
+    </MarketInfoTable>
+  );
+};
+
+export const DataSourceProof = ({
+  data,
+  providers,
+  type,
+}: {
+  data: DataSourceDefinition;
+  providers: Provider[] | undefined;
+  type: 'settlementData' | 'termination';
+}) => {
+  if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
+    const signers = data.sourceType.sourceType.signers || [];
+
+    if (!providers?.length) {
+      return <NoOracleProof type={type} />;
+    }
+
+    return (
+      <div className="flex flex-col gap-2">
+        {signers.map(({ signer }, i) => {
+          return (
+            <OracleLink
+              key={i}
+              providers={providers}
+              signer={signer}
+              type={type}
+              index={i}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (data.sourceType.__typename === 'DataSourceDefinitionInternal') {
+    return (
+      <div>
+        <h3>{t('Internal conditions')}</h3>
+        {data.sourceType.sourceType.conditions.map((condition, i) => {
+          if (!condition) return null;
+          return (
+            <p key={i}>
+              {ConditionOperatorMapping[condition.operator]} {condition.value}
+            </p>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return <div>{t('Invalid data source')}</div>;
+};
+
+const OracleLink = ({
+  providers,
+  signer,
+  type,
+  index,
+}: {
+  providers: Provider[];
+  signer: SignerKind;
+  type: 'settlementData' | 'termination';
+  index: number;
+}) => {
+  const text =
+    type === 'settlementData'
+      ? t('View settlement oracle details')
+      : t('View termination oracle details');
+  const textWithCount = index > 0 ? `${text} (${index + 1})` : text;
+
+  const provider = providers.find((p) => {
+    if (signer.__typename === 'PubKey') {
+      if (
+        p.oracle.type === 'public_key' &&
+        p.oracle.public_key === signer.key
+      ) {
+        return true;
+      }
+    }
+
+    if (signer.__typename === 'ETHAddress') {
+      if (
+        p.oracle.type === 'eth_address' &&
+        p.oracle.eth_address === signer.address
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  });
+
+  if (!provider) {
+    return <NoOracleProof type={type} />;
+  }
+
+  return (
+    <p>
+      <ExternalLink href={provider.github_link}>{textWithCount}</ExternalLink>
+    </p>
+  );
+};
+
+const NoOracleProof = ({
+  type,
+}: {
+  type: 'settlementData' | 'termination';
+}) => {
+  return (
+    <p>
+      {t(
+        'No oracle proof for %s',
+        type === 'settlementData' ? 'settlement data' : 'termination'
+      )}
+    </p>
+  );
+};

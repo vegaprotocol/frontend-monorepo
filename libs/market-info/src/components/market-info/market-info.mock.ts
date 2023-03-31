@@ -133,10 +133,44 @@ export const marketInfoQuery = (
             dataSourceSpecForSettlementData: {
               __typename: 'DataSourceSpec',
               id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
+              data: {
+                sourceType: {
+                  __typename: 'DataSourceDefinitionExternal',
+                  sourceType: {
+                    __typename: 'DataSourceSpecConfiguration',
+                    signers: [
+                      {
+                        __typename: 'Signer',
+                        signer: {
+                          __typename: 'PubKey',
+                          key: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
             },
             dataSourceSpecForTradingTermination: {
               __typename: 'DataSourceSpec',
               id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
+              data: {
+                sourceType: {
+                  __typename: 'DataSourceDefinitionExternal',
+                  sourceType: {
+                    __typename: 'DataSourceSpecConfiguration',
+                    signers: [
+                      {
+                        __typename: 'Signer',
+                        signer: {
+                          __typename: 'PubKey',
+                          key: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
             },
             dataSourceSpecBinding: {
               __typename: 'DataSourceSpecToFutureBinding',
