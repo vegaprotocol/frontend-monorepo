@@ -13,7 +13,7 @@ export type LiquidityProvisionMarketsQuery = { __typename?: 'Query', marketsConn
 export const MarketNodeFragmentDoc = gql`
     fragment MarketNode on Market {
   id
-  liquidityProvisionsConnection {
+  liquidityProvisionsConnection(live: true) {
     edges {
       node {
         commitmentAmount
