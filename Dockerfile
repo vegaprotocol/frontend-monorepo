@@ -22,8 +22,6 @@ ARG APP
 # configuration of system
 RUN apk add --no-cache bash go-ipfs
 EXPOSE 80
-COPY entrypoint.sh /entrypoint.sh
-CMD ["/entrypoint.sh"]
 
 # Copy dist
 WORKDIR /usr/share/nginx/html

@@ -1,10 +1,9 @@
-name: PR Validations
+name: CI/CD
 
 on:
   push:
     branches:
-      - develop
-      - main
+      - release/*
   pull_request:
     types:
       - opened
@@ -45,9 +44,16 @@ jobs:
       - name: Install root dependencies
         run: yarn install --frozen-lockfile
 
+      # See affected apps
       - name: See affected apps
         run: |
-          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=HEAD --select=projects)"
+          echo ">>>> debug"
+          echo "NX Version: $nx_version"
+          echo "NX_BASE: ${{ env.NX_BASE }}"
+          echo "NX_HEAD: ${{ env.NX_HEAD }}"
+          echo ">>>> eof debug"
+
+          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
           echo -n "Affected projects: $affected"
 
           projects_e2e=""
@@ -63,6 +69,7 @@ jobs:
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
+      nx-head: ${{ env.NX_HEAD }}
 
   run-cypress:
     needs: pr
@@ -76,10 +83,11 @@ jobs:
   run-docker-build:
     needs: pr
     if: ${{ needs.pr.outputs.projects != '[]' }}
-    uses: ./.github/workflows/publish-docker-containers.yml
+    uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
       projects: ${{ needs.pr.outputs.projects }}
+      nx-version: ${{ needs.pr.outputs.nx-head }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   result:
