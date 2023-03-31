@@ -56,6 +56,7 @@ jobs:
 
 
       - name: Build and export to local Docker
+        id: docker_build
         uses: docker/build-push-action@v3
         with:
           load: true
@@ -84,7 +85,6 @@ jobs:
           ls -al dist
 
       - name: Publish dist as docker image
-        id: docker_build
         uses: docker/build-push-action@v3
         if: ${{ github.event_name == 'pull_request' }}
         with:
@@ -97,14 +97,14 @@ jobs:
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
 
-      - uses: shallwefootball/s3-upload-action@master
-        if: ${{ github.event_name == 'push' }}
-        name: Upload dist S3
-        with:
-          aws_key_id: ${{ secrets.AWS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: ${{ steps.tags.outputs.bucketName }}
-          source_dir: 'dist'
+      # - uses: shallwefootball/s3-upload-action@master
+      #   if: ${{ github.event_name == 'push' }}
+      #   name: Upload dist S3
+      #   with:
+      #     aws_key_id: ${{ secrets.AWS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+      #     aws_bucket: ${{ steps.tags.outputs.bucketName }}
+      #     source_dir: 'dist'
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
