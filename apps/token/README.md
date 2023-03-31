@@ -2,7 +2,7 @@
 
 **_Control panel for your VEGA tokens_**
 
-<img width="1438" alt="Screenshot 2021-12-11 at 06 32 51" src="https://user-images.githubusercontent.com/13255539/145666935-563fc1ff-35bc-4cd9-ae6d-cf711cc23454.png">
+<img width="1437" alt="Screenshot 2021-12-11 at 06 32 51" src="https://user-images.githubusercontent.com/13255539/145666935-563fc1ff-35bc-4cd9-ae6d-cf711cc23454.png">
 
 ## Features
 
