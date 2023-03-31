@@ -4,7 +4,7 @@ import type { Connector } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { initializeUrlConnector } from './url-connector';
-import { PROJECT_ID } from '../constansts';
+import { PROJECT_ID } from '../constants';
 import { useWeb3ConnectStore } from './web3-connect-store';
 
 export const initializeWalletConnector = (
@@ -15,6 +15,7 @@ export const initializeWalletConnector = (
     (actions) =>
       new WalletConnect({
         actions,
+        defaultChainId: chainId,
         options: {
           projectId: PROJECT_ID,
           chains: [chainId],
@@ -42,8 +43,6 @@ export const initializeMetaMaskConnector = () =>
       })
   );
 
-const [metamask, metamaskHooks] = initializeMetaMaskConnector();
-
 export const createConnectors = (
   providerUrl: string,
   chainId: number,
@@ -54,6 +53,7 @@ export const createConnectors = (
     throw new Error('Invalid Ethereum chain ID for environment');
   }
 
+  const [metamask, metamaskHooks] = initializeMetaMaskConnector();
   const [walletconnect, walletconnectHooks] = initializeWalletConnector(
     chainId,
     providerUrl
