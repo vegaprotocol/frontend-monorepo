@@ -69,7 +69,7 @@ jobs:
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
-      nx-head: ${{ env.NX_HEAD }}
+      # nx-head: ${{ env.NX_HEAD }}
 
   run-cypress:
     needs: pr
@@ -87,7 +87,7 @@ jobs:
     secrets: inherit
     with:
       projects: ${{ needs.pr.outputs.projects }}
-      nx-version: ${{ needs.pr.outputs.nx-head }}
+      # nx-version: ${{ needs.pr.outputs.nx-head }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   result:

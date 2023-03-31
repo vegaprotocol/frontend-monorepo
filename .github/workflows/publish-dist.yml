@@ -6,10 +6,10 @@ on:
       projects:
         required: true
         type: string
-      nx-version:
-        required: false
-        default: 'latest'
-        type: string
+      # nx-version:
+      #   required: false
+      #   default: 'latest'
+      #   type: string
 
 jobs:
   master:
@@ -92,10 +92,10 @@ jobs:
           build-args: |
             APP=${{ matrix.app }}
             NODE_VERSION=${{ steps.tags.outputs.nodeVersion }}
+          # caching tag: ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ inputs.nx-version }}
           # https://github.com/actions/checkout#Checkout-pull-request-HEAD-commit-instead-of-merge-commit -> the first one is used by argocd while the other one by github actions
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
-            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ inputs.nx-version }}
 
       - uses: shallwefootball/s3-upload-action@master
         if: ${{ github.event_name == 'push' }}
