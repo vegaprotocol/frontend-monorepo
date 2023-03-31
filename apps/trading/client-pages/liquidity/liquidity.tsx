@@ -56,6 +56,7 @@ const useReloadLiquidityData = (marketId: string | undefined) => {
   const { reload } = useDataProvider({
     dataProvider: liquidityProvisionsDataProvider,
     variables: { marketId: marketId || '' },
+    update: () => true,
     skip: !marketId,
   });
   useEffect(() => {
