@@ -339,7 +339,7 @@ function makeDataProviderInternal<
     }
   };
 
-  const initialFetch = async () => {
+  const initialFetch = async (isUpdate = false) => {
     if (!client) {
       return;
     }
@@ -394,7 +394,7 @@ function makeDataProviderInternal<
       subscription = undefined;
     } finally {
       loading = false;
-      notifyAll();
+      notifyAll({ isUpdate });
     }
   };
 
@@ -410,7 +410,7 @@ function makeDataProviderInternal<
     } else {
       loading = true;
       error = undefined;
-      initialFetch();
+      initialFetch(true);
     }
   };
 
