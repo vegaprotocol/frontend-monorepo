@@ -31,18 +31,11 @@ query OrderById($orderId: ID!) {
 query Orders(
   $partyId: ID!
   $pagination: Pagination
-  $dateRange: DateRange
-  $filter: OrderFilter
-  $marketId: ID
+  $filter: OrderByMarketIdsFilter
 ) {
   party(id: $partyId) {
     id
-    ordersConnection(
-      pagination: $pagination
-      dateRange: $dateRange
-      filter: $filter
-      marketId: $marketId
-    ) {
+    ordersConnection(pagination: $pagination, filter: $filter) {
       edges {
         node {
           ...OrderFields
@@ -79,8 +72,8 @@ fragment OrderUpdateFields on OrderUpdate {
   }
 }
 
-subscription OrdersUpdate($partyId: ID!, $marketId: ID) {
-  orders(partyId: $partyId, marketId: $marketId) {
+subscription OrdersUpdate($partyId: ID!) {
+  orders(filter: { partyIds: [$partyId] }) {
     ...OrderUpdateFields
   }
 }

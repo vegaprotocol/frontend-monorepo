@@ -282,7 +282,6 @@ describe('capsule', { tags: '@slow' }, () => {
         });
     });
   });
-  // comment because of bug #2695
   it('can edit order', function () {
     cy.getByTestId(ordersTab).click();
     cy.getByTestId('edit').first().should('be.visible').click();

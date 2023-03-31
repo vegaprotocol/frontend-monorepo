@@ -19,6 +19,7 @@ import {
   waitForSpinner,
   navigateTo,
   navigation,
+  closeDialog,
 } from '../../support/common.functions';
 import {
   clickOnValidatorFromList,
@@ -41,7 +42,6 @@ const vegaWalletNameElement = '[data-testid="wallet-name"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
 const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
-const dialogCloseButton = '[data-testid="dialog-close"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const rawProposalData = '[data-testid="proposal-data"]';
 const minVoteButton = '[data-testid="min-vote"]';
@@ -177,7 +177,7 @@ context(
         'be.visible'
       );
       cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
-      cy.get(dialogCloseButton).click();
+      closeDialog();
       waitForProposalSync();
       navigateTo(navigation.proposals);
       cy.get(rejectProposalsLink).click();
@@ -214,7 +214,7 @@ context(
       enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should('have.text', errorMsg);
-      cy.get(dialogCloseButton).click();
+      closeDialog();
     });
 
     // 3002-PROP-009
@@ -227,7 +227,7 @@ context(
       enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should('have.text', errorMsg);
-      cy.get(dialogCloseButton).click();
+      closeDialog();
     });
 
     it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
@@ -251,7 +251,7 @@ context(
 
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should('have.text', errorMsg);
-      cy.get(dialogCloseButton).click();
+      closeDialog();
       cy.get(rawProposalData)
         .invoke('val')
         .should('contain', "i shouldn't be here");
@@ -279,7 +279,7 @@ context(
 
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should('have.text', errorMsg);
-      cy.get(dialogCloseButton).click();
+      closeDialog();
     });
 
     // 1005-PROP-009

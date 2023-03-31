@@ -1,4 +1,5 @@
 import {
+  closeDialog,
   navigateTo,
   navigation,
   waitForSpinner,
@@ -39,7 +40,6 @@ const maxVoteDeadline = '[data-testid="max-vote"]';
 const minValidationDeadline = '[data-testid="min-validation"]';
 const minEnactDeadline = '[data-testid="min-enactment"]';
 const maxEnactDeadline = '[data-testid="max-enactment"]';
-const dialogCloseButton = '[data-testid="dialog-close"]';
 const inputError = '[data-testid="input-error-text"]';
 const enactmentDeadlineError =
   '[data-testid="enactment-before-voting-deadline"]';
@@ -48,6 +48,7 @@ const feedbackError = '[data-testid="Error"]';
 const viewProposalBtn = 'view-proposal-btn';
 const liquidityVoteStatus = 'liquidity-votes-status';
 const tokenVoteStatus = 'token-votes-status';
+const proposalTermsSection = 'proposal';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
@@ -68,7 +69,6 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      cy.createMarket();
       cy.visit('/');
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
@@ -78,6 +78,7 @@ context(
       waitForSpinner();
       cy.connectVegaWallet();
       ethereumWalletConnect();
+      cy.createMarket();
       ensureSpecifiedUnstakedTokensAreAssociated('1');
       navigateTo(navigation.proposals);
     });
@@ -194,7 +195,7 @@ context(
         'have.text',
         'Invalid params: proposal_submission.terms.closing_timestamp (cannot be after enactment time)'
       );
-      cy.get(dialogCloseButton).click();
+      closeDialog();
       cy.get(minVoteDeadline).click();
       cy.get(enactmentDeadlineError).should('not.exist');
     });
@@ -286,7 +287,7 @@ context(
       );
     });
 
-    // 3001-VOTE-092
+    // 3001-VOTE-092 3004-PMAC-001
     it('Able to submit update market proposal and vote for proposal', function () {
       vegaWalletFaucetAssetsWithoutCheck(
         'fUSDC',
@@ -347,8 +348,9 @@ context(
 
     // 3001-VOTE-026 3001-VOTE-027  3001-VOTE-028 3001-VOTE-095 3001-VOTE-096 3005-PASN-001
     it('Able to submit new asset proposal using min deadlines', function () {
+      const proposalTitle = 'Test new asset proposal';
       goToMakeNewProposal(governanceProposalType.NEW_ASSET);
-      cy.get(newProposalTitle).type('Test new asset proposal');
+      cy.get(newProposalTitle).type(proposalTitle);
       cy.get(newProposalDescription).type('E2E test for proposals');
       cy.fixture('/proposals/new-asset').then((newAssetProposal) => {
         const newAssetPayload = JSON.stringify(newAssetProposal);
@@ -367,7 +369,7 @@ context(
       cy.contains('Proposal waiting for node vote', proposalTimeout).should(
         'be.visible'
       );
-      cy.get(dialogCloseButton).click();
+      closeDialog();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       // cannot submit a proposal with ERC20 address already in use
       cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
@@ -376,6 +378,17 @@ context(
           'have.text',
           'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE'
         );
+      });
+      closeDialog();
+      navigateTo(navigation.proposals);
+      cy.contains(proposalTitle)
+        .parentsUntil(proposalListItem)
+        .within(() => {
+          cy.getByTestId(viewProposalBtn).click();
+        });
+      cy.getByTestId(proposalTermsSection).within(() => {
+        cy.contains('USDT Coin').should('be.visible');
+        cy.contains('USDT').should('be.visible');
       });
     });
 
@@ -415,9 +428,15 @@ context(
       getProposalInformationFromTable('Proposed enactment') // 3001-VOTE-044
         .invoke('text')
         .should('not.be.empty');
+      // 3001-VOTE-030 3001-VOTE-031
+      cy.getByTestId(proposalTermsSection).within(() => {
+        cy.contains('UpdateAsset').should('be.visible');
+        cy.contains('UpdateERC20').should('be.visible');
+        cy.contains('"lifetimeLimit": "10"').should('be.visible');
+      });
     });
 
-    it('Able to submit update asset proposal using max deadline', function () {
+    it.only('Able to submit update asset proposal using max deadline', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
       cy.get(maxVoteDeadline).click();
