@@ -1,5 +1,5 @@
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
-import { isOrderActive, ordersWithMarketProvider } from '@vegaprotocol/orders';
+import { isOrderActive, ordersProvider } from '@vegaprotocol/orders';
 import type { OrdersQueryVariables } from '@vegaprotocol/orders';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
@@ -13,8 +13,11 @@ export const useRequestClosePositionData = (
     [marketId]
   );
   const orderVariables = useMemo<OrdersQueryVariables>(
-    () => ({ partyId: partyId || '' }),
-    [partyId]
+    () => ({
+      partyId: partyId || '',
+      marketIds: marketId ? [marketId] : undefined,
+    }),
+    [partyId, marketId]
   );
   const { data: market, loading: marketLoading } = useDataProvider({
     dataProvider: marketProvider,
@@ -26,7 +29,7 @@ export const useRequestClosePositionData = (
     variables: marketVariables,
   });
   const { data: orderData, loading: orderDataLoading } = useDataProvider({
-    dataProvider: ordersWithMarketProvider,
+    dataProvider: ordersProvider,
     variables: orderVariables,
     skip: !partyId,
   });
@@ -35,23 +38,7 @@ export const useRequestClosePositionData = (
     if (!orderData || !market) return [];
     return (
       orderData
-        .filter((o) => {
-          // Filter out orders not on market for position
-          if (
-            !o ||
-            !o.node ||
-            !o.node.market ||
-            o.node.market.id !== market.id
-          ) {
-            return false;
-          }
-
-          if (!isOrderActive(o.node.status)) {
-            return false;
-          }
-
-          return true;
-        })
+        .filter((o) => o?.node && isOrderActive(o.node.status))
         // @ts-ignore o is never null as its been filtered out above
         .map((o) => o.node)
     );

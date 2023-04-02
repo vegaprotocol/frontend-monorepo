@@ -1,5 +1,5 @@
 import type { MarketData, Market } from '@vegaprotocol/market-list';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderFieldsFragment } from '@vegaprotocol/orders';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -50,7 +50,7 @@ export const ActiveOrders = ({
   orders,
 }: {
   market: Market;
-  orders: Order[];
+  orders: OrderFieldsFragment[];
 }) => {
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
 

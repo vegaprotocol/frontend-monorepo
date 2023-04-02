@@ -14,8 +14,9 @@ export type OrderByIdQuery = { __typename?: 'Query', orderByID: { __typename?: '
 
 export type OrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  marketIds?: Types.InputMaybe<Array<Types.Scalars['ID']> | Types.Scalars['ID']>;
   pagination?: Types.InputMaybe<Types.Pagination>;
-  filter?: Types.InputMaybe<Types.OrderByMarketIdsFilter>;
+  filter?: Types.InputMaybe<Types.OrderFilter>;
 }>;
 
 
@@ -25,6 +26,7 @@ export type OrderUpdateFieldsFragment = { __typename?: 'OrderUpdate', id: string
 
 export type OrdersUpdateSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  marketIds?: Types.InputMaybe<Array<Types.Scalars['ID']> | Types.Scalars['ID']>;
 }>;
 
 
@@ -112,10 +114,13 @@ export type OrderByIdQueryHookResult = ReturnType<typeof useOrderByIdQuery>;
 export type OrderByIdLazyQueryHookResult = ReturnType<typeof useOrderByIdLazyQuery>;
 export type OrderByIdQueryResult = Apollo.QueryResult<OrderByIdQuery, OrderByIdQueryVariables>;
 export const OrdersDocument = gql`
-    query Orders($partyId: ID!, $pagination: Pagination, $filter: OrderByMarketIdsFilter) {
+    query Orders($partyId: ID!, $marketIds: [ID!], $pagination: Pagination, $filter: OrderFilter) {
   party(id: $partyId) {
     id
-    ordersConnection(pagination: $pagination, filter: $filter) {
+    ordersConnection(
+      pagination: $pagination
+      filter: {order: $filter, marketIds: $marketIds}
+    ) {
       edges {
         node {
           ...OrderFields
@@ -146,6 +151,7 @@ export const OrdersDocument = gql`
  * const { data, loading, error } = useOrdersQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      marketIds: // value for 'marketIds'
  *      pagination: // value for 'pagination'
  *      filter: // value for 'filter'
  *   },
@@ -163,8 +169,8 @@ export type OrdersQueryHookResult = ReturnType<typeof useOrdersQuery>;
 export type OrdersLazyQueryHookResult = ReturnType<typeof useOrdersLazyQuery>;
 export type OrdersQueryResult = Apollo.QueryResult<OrdersQuery, OrdersQueryVariables>;
 export const OrdersUpdateDocument = gql`
-    subscription OrdersUpdate($partyId: ID!) {
-  orders(filter: {partyIds: [$partyId]}) {
+    subscription OrdersUpdate($partyId: ID!, $marketIds: [ID!]) {
+  orders(filter: {partyIds: [$partyId], marketIds: $marketIds}) {
     ...OrderUpdateFields
   }
 }
@@ -183,6 +189,7 @@ export const OrdersUpdateDocument = gql`
  * const { data, loading, error } = useOrdersUpdateSubscription({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      marketIds: // value for 'marketIds'
  *   },
  * });
  */
