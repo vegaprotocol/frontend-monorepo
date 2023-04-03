@@ -12,18 +12,25 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Check node version
+        id: node-version
+        run: |
+          npmVersion=$(cat .nvmrc | head -n 1)
+          echo ::set-output name=npmVersion::${npmVersion}
+
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 0
-      - name: Use Node.js 16
-        id: Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.15.1
+          node-version: ${{ steps.node-version.outputs.npmVersion }}
+
       - name: Install root dependencies
         run: yarn install
+
       - name: Generate queries
         run: node ./scripts/get-queries.js
+
       - uses: actions/upload-artifact@v2
         with:
           name: queries

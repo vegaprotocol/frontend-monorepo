@@ -1,4 +1,4 @@
-name: (CD) Publish Dist
+name: (CD) Publish docker + s3
 
 on:
   workflow_call:

@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI (lint + unit test)
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
       - ready_for_review
 jobs:
   pr:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted-runner
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -65,6 +65,22 @@ jobs:
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
+
+      - name: Check formatting
+        run: yarn nx format:check
+
+      - name: Lint affected
+        run: yarn nx affected:lint --max-warnings=0
+
+      - name: Build affected spec
+        run: yarn nx affected --target=build-spec
+
+      - name: Test affected
+        run: yarn nx affected:test
+
+      - name: Build affected
+        run: yarn nx affected:build
+
 
     outputs:
       projects: ${{ env.PROJECTS }}
