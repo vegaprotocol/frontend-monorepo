@@ -474,7 +474,8 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   if (tx.order && tx.order.rejectionReason) {
-    const rejectionReason = getRejectionReason(tx.order) || ' ';
+    const rejectionReason =
+      getRejectionReason(tx.order) || tx.order.rejectionReason || '';
     return (
       <>
         <ToastHeading>{t('Order rejected')}</ToastHeading>
