@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - run: |
-          result="${{ needs.run-cypress.result }}"
+          result="${{ needs.cypress.result }}"
           if [[ $result == "success" || $result == "skipped" ]]; then
             exit 0
           else
