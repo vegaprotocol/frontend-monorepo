@@ -11,6 +11,7 @@ export type RewardsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   rewardsPagination?: Types.InputMaybe<Types.Pagination>;
   delegationsPagination?: Types.InputMaybe<Types.Pagination>;
+  rewardsPagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
@@ -127,17 +128,18 @@ ${DelegationFieldsFragmentDoc}`;
  *      partyId: // value for 'partyId'
  *      rewardsPagination: // value for 'rewardsPagination'
  *      delegationsPagination: // value for 'delegationsPagination'
+ *      rewardsPagination: // value for 'rewardsPagination'
  *   },
  * });
  */
 export function useRewardsQuery(baseOptions: Apollo.QueryHookOptions<RewardsQuery, RewardsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<RewardsQuery, RewardsQueryVariables>(RewardsDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<RewardsQuery, RewardsQueryVariables>(RewardsDocument, options);
+}
 export function useRewardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RewardsQuery, RewardsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<RewardsQuery, RewardsQueryVariables>(RewardsDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<RewardsQuery, RewardsQueryVariables>(RewardsDocument, options);
+}
 export type RewardsQueryHookResult = ReturnType<typeof useRewardsQuery>;
 export type RewardsLazyQueryHookResult = ReturnType<typeof useRewardsLazyQuery>;
 export type RewardsQueryResult = Apollo.QueryResult<RewardsQuery, RewardsQueryVariables>;
@@ -189,13 +191,13 @@ export const EpochAssetsRewardsDocument = gql`
  * });
  */
 export function useEpochAssetsRewardsQuery(baseOptions?: Apollo.QueryHookOptions<EpochAssetsRewardsQuery, EpochAssetsRewardsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EpochAssetsRewardsQuery, EpochAssetsRewardsQueryVariables>(EpochAssetsRewardsDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<EpochAssetsRewardsQuery, EpochAssetsRewardsQueryVariables>(EpochAssetsRewardsDocument, options);
+}
 export function useEpochAssetsRewardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EpochAssetsRewardsQuery, EpochAssetsRewardsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EpochAssetsRewardsQuery, EpochAssetsRewardsQueryVariables>(EpochAssetsRewardsDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<EpochAssetsRewardsQuery, EpochAssetsRewardsQueryVariables>(EpochAssetsRewardsDocument, options);
+}
 export type EpochAssetsRewardsQueryHookResult = ReturnType<typeof useEpochAssetsRewardsQuery>;
 export type EpochAssetsRewardsLazyQueryHookResult = ReturnType<typeof useEpochAssetsRewardsLazyQuery>;
 export type EpochAssetsRewardsQueryResult = Apollo.QueryResult<EpochAssetsRewardsQuery, EpochAssetsRewardsQueryVariables>;
@@ -223,13 +225,13 @@ export const EpochDocument = gql`
  * });
  */
 export function useEpochQuery(baseOptions?: Apollo.QueryHookOptions<EpochQuery, EpochQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EpochQuery, EpochQueryVariables>(EpochDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<EpochQuery, EpochQueryVariables>(EpochDocument, options);
+}
 export function useEpochLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EpochQuery, EpochQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EpochQuery, EpochQueryVariables>(EpochDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<EpochQuery, EpochQueryVariables>(EpochDocument, options);
+}
 export type EpochQueryHookResult = ReturnType<typeof useEpochQuery>;
 export type EpochLazyQueryHookResult = ReturnType<typeof useEpochLazyQuery>;
 export type EpochQueryResult = Apollo.QueryResult<EpochQuery, EpochQueryVariables>;

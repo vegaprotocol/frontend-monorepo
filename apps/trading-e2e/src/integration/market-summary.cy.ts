@@ -21,7 +21,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
     );
     cy.mockGQL((req) => {
       aliasGQLQuery(
@@ -62,7 +62,7 @@ describe('Market trading page', () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
     );
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
@@ -148,7 +148,7 @@ describe('Market trading page', () => {
           cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
           cy.getByTestId(itemValue).should(
             'have.text',
-            'Monitoring auction - liquidity'
+            'Monitoring auction - liquidity (target not met)'
           );
         });
       });
@@ -214,6 +214,60 @@ describe('Market trading page', () => {
             cy.getByTestId(toolTipValue).eq(i).should('not.be.empty');
           }
         });
+    });
+  });
+
+  describe('market bottom panel', { tags: '@smoke' }, () => {
+    it('on xxl screen should be splitted out into two tables', () => {
+      cy.getByTestId('tab-positions').should(
+        'have.attr',
+        'data-state',
+        'active'
+      );
+      cy.getByTestId('tab-orders').should(
+        'have.attr',
+        'data-state',
+        'inactive'
+      );
+      cy.getByTestId('tab-fills').should('have.attr', 'data-state', 'inactive');
+      cy.getByTestId('tab-accounts').should(
+        'have.attr',
+        'data-state',
+        'inactive'
+      );
+
+      cy.viewport(1801, 1000);
+      cy.getByTestId('tab-positions').should(
+        'have.attr',
+        'data-state',
+        'active'
+      );
+      cy.getByTestId('tab-orders').should('have.attr', 'data-state', 'active');
+      cy.getByTestId('tab-fills').should('have.attr', 'data-state', 'inactive');
+      cy.getByTestId('tab-accounts').should(
+        'have.attr',
+        'data-state',
+        'inactive'
+      );
+
+      cy.getByTestId('Fills').click();
+      cy.getByTestId('Collateral').click();
+      cy.getByTestId('tab-positions').should(
+        'have.attr',
+        'data-state',
+        'inactive'
+      );
+      cy.getByTestId('tab-orders').should(
+        'have.attr',
+        'data-state',
+        'inactive'
+      );
+      cy.getByTestId('tab-fills').should('have.attr', 'data-state', 'active');
+      cy.getByTestId('tab-accounts').should(
+        'have.attr',
+        'data-state',
+        'active'
+      );
     });
   });
 });

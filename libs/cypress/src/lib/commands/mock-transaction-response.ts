@@ -8,6 +8,7 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
       mockVegaWalletTransaction(
+        delayValue?: number,
         override?: PartialDeep<TransactionResponse>
       ): void;
     }
@@ -17,7 +18,7 @@ declare global {
 export function addMockTransactionResponse() {
   Cypress.Commands.add(
     'mockVegaWalletTransaction',
-    (override?: PartialDeep<TransactionResponse>) => {
+    (delayValue?: number, override?: PartialDeep<TransactionResponse>) => {
       const defaultTransactionResponse = {
         transactionHash: 'test-tx-hash',
         sentAt: new Date().toISOString(),
@@ -43,12 +44,16 @@ export function addMockTransactionResponse() {
         },
       };
 
-      cy.intercept('POST', 'http://localhost:1789/api/v2/requests', {
-        body: {
-          jsonrpc: '2.0',
-          result: merge(defaultTransactionResponse, override),
-          id: '1',
-        },
+      cy.intercept('POST', 'http://localhost:1789/api/v2/requests', (req) => {
+        req.on('response', (res) => {
+          res.setDelay(delayValue ?? 0);
+          res.statusCode = 400;
+          res.send({
+            jsonrpc: '2.0',
+            result: merge(defaultTransactionResponse, override),
+            id: '1',
+          });
+        });
       }).as('VegaWalletTransaction');
     }
   );

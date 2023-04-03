@@ -1,0 +1,72 @@
+fragment StakingNodeFields on Node {
+  id
+  name
+  pubkey
+  infoUrl
+  location
+  ethereumAddress
+  stakedByOperator
+  stakedByDelegates
+  stakedTotal
+  pendingStake
+  epochData {
+    total
+    offline
+    online
+  }
+  rankingScore {
+    rankingScore
+    stakeScore
+    performanceScore
+    votingPower
+    status
+  }
+}
+
+fragment StakingDelegationFields on Delegation {
+  amount
+  epoch
+  node {
+    id
+  }
+  party {
+    id
+  }
+}
+
+query Staking($partyId: ID!, $delegationsPagination: Pagination) {
+  party(id: $partyId) {
+    id
+    stakingSummary {
+      currentStakeAvailable
+    }
+    delegationsConnection(pagination: $delegationsPagination) {
+      edges {
+        node {
+          ...StakingDelegationFields
+        }
+      }
+    }
+  }
+  epoch {
+    id
+    timestamps {
+      start
+      end
+      expiry
+    }
+  }
+  nodesConnection {
+    edges {
+      node {
+        ...StakingNodeFields
+      }
+    }
+  }
+  nodeData {
+    stakedTotal
+    totalNodes
+    inactiveNodes
+    uptime
+  }
+}

@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { forwardRef, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
@@ -19,7 +19,9 @@ import {
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
+  PendingStakeRenderer,
   stakedTotalPercentage,
+  StakeShareRenderer,
   TotalPenaltiesRenderer,
   TotalStakeRenderer,
   ValidatorFields,
@@ -54,6 +56,9 @@ interface CanonisedConsensusNodeProps {
   [ValidatorFields.OVERSTAKING_PENALTY]: string;
   [ValidatorFields.TOTAL_PENALTIES]: string;
   [ValidatorFields.PENDING_STAKE]: string;
+  [ValidatorFields.STAKED_BY_USER]: string | undefined;
+  [ValidatorFields.PENDING_USER_STAKE]: string | undefined;
+  [ValidatorFields.USER_STAKE_SHARE]: string | undefined;
 }
 
 const getRowHeight = (params: RowHeightParams) => {
@@ -61,7 +66,7 @@ const getRowHeight = (params: RowHeightParams) => {
     // Note: this value will change if the height of the top third cell renderer changes
     return 138;
   }
-  return 52;
+  return 68;
 };
 
 const TopThirdCellRenderer = (
@@ -87,7 +92,12 @@ const TopThirdCellRenderer = (
         <div className="mb-4">
           <Button
             data-testid="show-all-validators"
-            rightIcon="arrow-right"
+            rightIcon={
+              <Icon
+                name="arrow-right"
+                className="fill-current mr-2 align-text-top"
+              />
+            }
             className="inline-flex items-center"
           >
             {t('Reveal top validators')}
@@ -112,6 +122,7 @@ export const ConsensusValidatorsTable = ({
   data,
   previousEpochData,
   totalStake,
+  validatorsView,
 }: ValidatorsTableProps) => {
   const { t } = useTranslation();
   const {
@@ -124,7 +135,7 @@ export const ConsensusValidatorsTable = ({
 
   const nodes = useMemo(() => {
     if (!data || !previousEpochData) return [];
-    const canonisedNodes = data
+    let canonisedNodes = data
       .sort((a, b) => {
         const aVotingPower = new BigNumber(a.rankingScore.votingPower);
         const bVotingPower = new BigNumber(b.rankingScore.votingPower);
@@ -149,6 +160,9 @@ export const ConsensusValidatorsTable = ({
           rankingScore: { stakeScore, votingPower },
           pendingStake,
           votingPowerRanking,
+          stakedByUser,
+          pendingUserStake,
+          userStakeShare,
         }) => {
           const { rawValidatorScore, performanceScore } =
             getLastEpochScoreAndPerformance(previousEpochData, id);
@@ -166,10 +180,7 @@ export const ConsensusValidatorsTable = ({
               avatarUrl,
               name,
             },
-            [ValidatorFields.STAKE]: formatNumber(
-              toBigNum(stakedTotal, decimals),
-              2
-            ),
+            [ValidatorFields.STAKE]: stakedTotal,
             [ValidatorFields.NORMALISED_VOTING_POWER]:
               getNormalisedVotingPower(votingPower),
             [ValidatorFields.UNNORMALISED_VOTING_POWER]:
@@ -198,15 +209,29 @@ export const ConsensusValidatorsTable = ({
               stakedTotal,
               totalStake
             ),
-            [ValidatorFields.PENDING_STAKE]: formatNumber(
-              toBigNum(pendingStake, decimals),
-              2
-            ),
+            [ValidatorFields.PENDING_STAKE]: pendingStake,
+            [ValidatorFields.STAKED_BY_USER]: stakedByUser
+              ? formatNumber(toBigNum(stakedByUser, decimals), 2)
+              : undefined,
+            [ValidatorFields.PENDING_USER_STAKE]: pendingUserStake,
+            [ValidatorFields.USER_STAKE_SHARE]: userStakeShare
+              ? stakedTotalPercentage(userStakeShare)
+              : undefined,
           };
         }
       );
 
-    if (canonisedNodes.length < 3 || !hideTopThird) {
+    if (validatorsView === 'myStake') {
+      canonisedNodes = canonisedNodes.filter(
+        (node) => node[ValidatorFields.STAKED_BY_USER] !== undefined
+      );
+    }
+
+    if (
+      canonisedNodes.length < 3 ||
+      !hideTopThird ||
+      validatorsView === 'myStake'
+    ) {
       return canonisedNodes;
     }
 
@@ -256,22 +281,18 @@ export const ConsensusValidatorsTable = ({
 
       return {
         ...acc,
-        [ValidatorFields.STAKE]: formatNumber(
-          toBigNum(accStake, decimals).plus(toBigNum(stake, decimals)),
-          2
-        ),
+        [ValidatorFields.STAKE]: toBigNum(accStake, decimals)
+          .plus(toBigNum(stake, decimals))
+          .toString(),
         [ValidatorFields.STAKE_SHARE]: formatNumberPercentage(
           new BigNumber(parseFloat(accStakeShare)).plus(
             new BigNumber(parseFloat(stakeShare))
           ),
           2
         ),
-        [ValidatorFields.PENDING_STAKE]: formatNumber(
-          toBigNum(accPendingStake, decimals).plus(
-            toBigNum(pendingStake, decimals)
-          ),
-          2
-        ),
+        [ValidatorFields.PENDING_STAKE]: toBigNum(accPendingStake, decimals)
+          .plus(toBigNum(pendingStake, decimals))
+          .toString(),
         [ValidatorFields.NORMALISED_VOTING_POWER]: formatNumberPercentage(
           new BigNumber(parseFloat(accNormalisedVotingPower)).plus(
             new BigNumber(parseFloat(normalisedVotingPower))
@@ -295,7 +316,14 @@ export const ConsensusValidatorsTable = ({
       },
       ...remaining,
     ];
-  }, [data, decimals, hideTopThird, previousEpochData, totalStake]);
+  }, [
+    data,
+    decimals,
+    hideTopThird,
+    previousEpochData,
+    totalStake,
+    validatorsView,
+  ]);
 
   const ConsensusTable = forwardRef<AgGridReact>((_, gridRef) => {
     const colDefs = useMemo<ColDef[]>(
@@ -315,13 +343,27 @@ export const ConsensusValidatorsTable = ({
             return a > b ? 1 : -1;
           },
           pinned: 'left',
-          width: 240,
+          width: 260,
         },
         {
           field: ValidatorFields.STAKE,
           headerName: t(ValidatorFields.STAKE).toString(),
           headerTooltip: t('StakeDescription').toString(),
           cellRenderer: TotalStakeRenderer,
+          width: 120,
+        },
+        {
+          field: ValidatorFields.PENDING_STAKE,
+          headerName: t(ValidatorFields.PENDING_STAKE).toString(),
+          headerTooltip: t('PendingStakeDescription').toString(),
+          cellRenderer: PendingStakeRenderer,
+          width: 120,
+        },
+        {
+          field: ValidatorFields.STAKE_SHARE,
+          headerName: t(ValidatorFields.STAKE_SHARE).toString(),
+          headerTooltip: t('StakeShareDescription').toString(),
+          cellRenderer: StakeShareRenderer,
           width: 120,
         },
         {
@@ -333,23 +375,11 @@ export const ConsensusValidatorsTable = ({
           sort: 'desc',
         },
         {
-          field: ValidatorFields.STAKE_SHARE,
-          headerName: t(ValidatorFields.STAKE_SHARE).toString(),
-          headerTooltip: t('StakeShareDescription').toString(),
-          width: 100,
-        },
-        {
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
           headerTooltip: t('TotalPenaltiesDescription').toString(),
           cellRenderer: TotalPenaltiesRenderer,
           width: 120,
-        },
-        {
-          field: ValidatorFields.PENDING_STAKE,
-          headerName: t(ValidatorFields.PENDING_STAKE).toString(),
-          headerTooltip: t('PendingStakeDescription').toString(),
-          width: 110,
         },
       ],
       []

@@ -1,7 +1,8 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { Position } from '../';
 import { usePositionsData, PositionsTable } from '../';
+import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
@@ -22,11 +23,8 @@ export const PositionsManager = ({
   noBottomPlaceholder,
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading, reload } = usePositionsData(
-    partyId,
-    gridRef,
-    true
-  );
+  const [dataCount, setDataCount] = useState(0);
+  const { data, error, loading, reload } = usePositionsData(partyId, gridRef);
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
     marketId,
@@ -47,11 +45,12 @@ export const PositionsManager = ({
           {
             marketId: marketId,
             type: Schema.OrderType.TYPE_MARKET as const,
-            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK as const,
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC as const,
             side: openVolume.startsWith('-')
               ? Schema.Side.SIDE_BUY
               : Schema.Side.SIDE_SELL,
             size: openVolume.replace('-', ''),
+            reduceOnly: true,
           },
         ],
       },
@@ -66,8 +65,14 @@ export const PositionsManager = ({
   const bottomPlaceholderProps = useBottomPlaceholder<Position>({
     gridRef,
     setId,
+    disabled: noBottomPlaceholder,
   });
-
+  useEffect(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, [data]);
+  const onFilterChanged = useCallback((event: FilterChangedEvent) => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, []);
   return (
     <div className="h-full relative">
       <PositionsTable
@@ -75,9 +80,11 @@ export const PositionsManager = ({
         ref={gridRef}
         onMarketClick={onMarketClick}
         onClose={onClose}
-        noRowsOverlayComponent={() => null}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
         isReadOnly={isReadOnly}
-        {...(noBottomPlaceholder ? null : bottomPlaceholderProps)}
+        onFilterChanged={onFilterChanged}
+        {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
@@ -85,7 +92,7 @@ export const PositionsManager = ({
           error={error}
           data={data}
           noDataMessage={t('No positions')}
-          noDataCondition={(data) => !(data && data.length)}
+          noDataCondition={(data) => !dataCount}
           reload={reload}
         />
       </div>

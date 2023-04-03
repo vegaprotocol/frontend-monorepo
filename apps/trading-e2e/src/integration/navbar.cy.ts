@@ -25,6 +25,23 @@ describe('Desktop view', { tags: '@smoke' }, () => {
           });
       });
     });
+
+    it('Resources dropdown should be correctly rendered', () => {
+      const resourceSelector = 'ul li:last-child';
+      ['Docs', 'Give Feedback'].forEach((text, index) => {
+        cy.get('nav').find(resourceSelector).contains('Resources').click();
+        cy.get('nav')
+          .find(resourceSelector)
+          .find('.navigation-content li')
+          .eq(index)
+          .find('a')
+          .then((element) => {
+            expect(element.attr('target')).to.eq('_blank');
+            expect(element.attr('href')).to.not.be.empty;
+            expect(element.text()).to.eq(text);
+          });
+      });
+    });
   });
 });
 

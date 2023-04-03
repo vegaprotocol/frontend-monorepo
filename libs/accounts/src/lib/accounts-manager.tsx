@@ -10,7 +10,6 @@ import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
-import type { RowHeightParams } from 'ag-grid-community';
 
 interface AccountManagerProps {
   partyId: string;
@@ -19,6 +18,7 @@ interface AccountManagerProps {
   onClickDeposit?: (assetId?: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
+  noBottomPlaceholder?: boolean;
 }
 
 export const AccountManager = ({
@@ -28,6 +28,7 @@ export const AccountManager = ({
   partyId,
   isReadOnly,
   pinnedAsset,
+  noBottomPlaceholder,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -45,12 +46,9 @@ export const AccountManager = ({
   const bottomPlaceholderProps = useBottomPlaceholder<AccountFields>({
     gridRef,
     setId,
+    disabled: noBottomPlaceholder,
   });
 
-  const getRowHeight = useCallback(
-    (params: RowHeightParams) => (params.node.rowPinned ? 32 : 22),
-    []
-  );
   return (
     <div className="relative h-full">
       <AccountTable
@@ -60,9 +58,9 @@ export const AccountManager = ({
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         isReadOnly={isReadOnly}
-        noRowsOverlayComponent={() => null}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
         pinnedAsset={pinnedAsset}
-        getRowHeight={getRowHeight}
         {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">

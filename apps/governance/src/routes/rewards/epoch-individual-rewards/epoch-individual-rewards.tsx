@@ -22,11 +22,11 @@ export const EpochIndividualRewards = () => {
       rewardsPagination: {
         first: REWARDS_PAGE_SIZE,
       },
-      delegationsPagination: {
-        first: delegationsPagination
-          ? Number(delegationsPagination)
-          : undefined,
-      },
+      delegationsPagination: delegationsPagination
+        ? {
+          first: Number(delegationsPagination),
+        }
+        : undefined,
     },
     skip: !pubKey,
   });
@@ -91,7 +91,7 @@ export const EpochIndividualRewards = () => {
       data={data}
       render={() => (
         <div>
-          <p className="mb-10">
+          <p data-testid="connected-vega-key" className="mb-10">
             {t('Connected Vega key')}:{' '}
             <span className="text-white">{pubKey}</span>
           </p>

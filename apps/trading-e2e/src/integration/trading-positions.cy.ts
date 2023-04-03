@@ -50,7 +50,6 @@ describe('positions', { tags: '@smoke' }, () => {
       const emptyCells = [
         'notional',
         'markPrice',
-        'liquidationPrice',
         'currentLeverage',
         'averageEntryPrice',
       ];
@@ -161,8 +160,6 @@ describe('positions', { tags: '@smoke' }, () => {
       cy.getByTestId('flash-cell').each(($prices) => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
-
-      cy.get('[col-id="liquidationPrice"]').should('contain.text', '0'); // liquidation price
 
       cy.get('[col-id="currentLeverage"]').should('contain.text', '2.846.1');
 

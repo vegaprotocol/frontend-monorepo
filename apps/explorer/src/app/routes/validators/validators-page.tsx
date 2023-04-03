@@ -21,7 +21,7 @@ import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { PageTitle } from '../../components/page-helpers/page-title';
 import BigNumber from 'bignumber.js';
 import {
-  ContractAddressLink,
+  EtherscanLink,
   DApp,
   TOKEN_VALIDATOR,
   useLinks,
@@ -176,25 +176,14 @@ export const ValidatorsPage = () => {
               const validatorName =
                 v.name && v.name.length > 0 ? v.name : truncateMiddle(v.id);
               return (
-                <li className="mb-5" key={v.id}>
+                <li className="mb-5 relative" key={v.id}>
                   <div
                     data-testid="validator-tile"
                     validator-id={v.id}
-                    className="border border-vega-light-200 dark:border-vega-dark-200 rounded p-2 overflow-hidden relative flex gap-2 items-start justify-between"
+                    className="border border-vega-light-200 dark:border-vega-dark-200 rounded p-2 overflow-hidden"
                   >
-                    {v.avatarUrl && (
-                      <div className="w-20">
-                        <ExternalLink href={validatorPage}>
-                          <img
-                            className="w-full"
-                            src={v.avatarUrl}
-                            alt={validatorName}
-                          />
-                        </ExternalLink>
-                      </div>
-                    )}
                     <div className="w-full">
-                      <h2 className="font-alpha text-2xl">
+                      <h2 className="font-alpha text-2xl leading-[60px]">
                         <ExternalLink href={validatorPage}>
                           {validatorName}
                         </ExternalLink>
@@ -235,7 +224,7 @@ export const ValidatorsPage = () => {
                         <KeyValueTableRow>
                           <div>{t('Ethereum address')}</div>
                           <div className="break-all text-xs">
-                            <ContractAddressLink address={v.ethereumAddress} />{' '}
+                            <EtherscanLink address={v.ethereumAddress} />{' '}
                             <CopyWithTooltip text={v.ethereumAddress}>
                               <button title={t('Copy address to clipboard')}>
                                 <Icon size={3} name="duplicate" />
@@ -315,6 +304,23 @@ export const ValidatorsPage = () => {
                             </div>
                           </div>
                         </KeyValueTableRow>
+                        {v.avatarUrl && (
+                          <KeyValueTableRow>
+                            <div>{t('Avatar')}</div>
+                            <div>
+                              <ExternalLink
+                                href={validatorPage}
+                                className="mx-auto"
+                              >
+                                <img
+                                  className="max-w-[75px] md:max-w-[200px] max-h-[80px]"
+                                  src={v.avatarUrl}
+                                  alt={validatorName}
+                                />
+                              </ExternalLink>
+                            </div>
+                          </KeyValueTableRow>
+                        )}
                       </KeyValueTable>
                     </div>
                   </div>

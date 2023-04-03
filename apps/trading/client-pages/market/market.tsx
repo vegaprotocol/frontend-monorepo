@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import debounce from 'lodash/debounce';
+import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   useDataProvider,
+  useScreenDimensions,
   useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
@@ -13,6 +13,7 @@ import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -61,18 +62,12 @@ export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
 
-  const { w } = useWindowSize();
+  const { screenSize } = useScreenDimensions();
+  const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const onSelect = useCallback(
-    (id: string) => {
-      if (id && id !== marketId) {
-        navigate(Links[Routes.MARKET](id));
-      }
-    },
-    [marketId, navigate]
-  );
+  const onSelect = useMarketClickHandler();
 
   const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,
@@ -87,7 +82,7 @@ export const MarketPage = () => {
   }, [update, lastMarketId, data?.id]);
 
   const tradeView = useMemo(() => {
-    if (w > 960) {
+    if (largeScreen) {
       return (
         <TradeGrid
           market={data}
@@ -105,7 +100,7 @@ export const MarketPage = () => {
         onClickCollateral={() => navigate('/portfolio')}
       />
     );
-  }, [w, data, onSelect, navigate]);
+  }, [largeScreen, data, onSelect, navigate]);
   if (!data && marketId) {
     return (
       <Splash>
@@ -139,38 +134,4 @@ export const MarketPage = () => {
       {tradeView}
     </AsyncRenderer>
   );
-};
-
-const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return {
-        w: window.innerWidth,
-        h: window.innerHeight,
-      };
-    }
-
-    // Something sensible for server rendered page
-    return {
-      w: 1200,
-      h: 900,
-    };
-  });
-
-  useEffect(() => {
-    const handleResize = debounce(({ target }) => {
-      setWindowSize({
-        w: target.innerWidth,
-        h: target.innerHeight,
-      });
-    }, 300);
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  return windowSize;
 };

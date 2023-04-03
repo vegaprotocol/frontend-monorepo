@@ -1,7 +1,7 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
@@ -16,6 +16,7 @@ interface ApproveNotificationProps {
   balances: DepositBalances | null;
   amount: string;
   approveTxId: number | null;
+  intent?: Intent;
 }
 
 export const ApproveNotification = ({
@@ -26,6 +27,7 @@ export const ApproveNotification = ({
   balances,
   approved,
   approveTxId,
+  intent = Intent.Warning,
 }: ApproveNotificationProps) => {
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === approveTxId);
@@ -46,7 +48,7 @@ export const ApproveNotification = ({
   const approvePrompt = (
     <div className="mb-4">
       <Notification
-        intent={Intent.Warning}
+        intent={intent}
         testId="approve-default"
         message={t(
           `Before you can make a deposit of your chosen asset, ${selectedAsset?.symbol}, you need to approve its use in your Ethereum wallet`
@@ -63,7 +65,7 @@ export const ApproveNotification = ({
   const reApprovePrompt = (
     <div className="mb-4">
       <Notification
-        intent={Intent.Warning}
+        intent={intent}
         testId="reapprove-default"
         message={t(
           `Approve again to deposit more than ${formatNumber(
@@ -126,14 +128,10 @@ const ApprovalTxFeedback = ({
   selectedAsset: Asset;
   allowance?: BigNumber;
 }) => {
-  const { ETHERSCAN_URL } = useEnvironment();
-
   if (!tx) return null;
 
   const txLink = tx.txHash && (
-    <ExternalLink href={`${ETHERSCAN_URL}/tx/${tx.txHash}`}>
-      {t('View on Etherscan')}
-    </ExternalLink>
+    <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
   );
 
   if (tx.status === EthTxStatus.Error) {

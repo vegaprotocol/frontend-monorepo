@@ -8,7 +8,10 @@ import { wallet } from './ethereum-wallet';
 
 const log = createLog('ethereum-setup');
 
-export async function stakeForVegaPublicKey(vegaPublicKey: string) {
+export async function stakeForVegaPublicKey(
+  vegaPublicKey: string,
+  amount: string
+) {
   if (!wallet) {
     throw new Error('ethereum wallet not initialized');
   }
@@ -29,9 +32,9 @@ export async function stakeForVegaPublicKey(vegaPublicKey: string) {
   const approveTx = await promiseWithTimeout(
     tokenContract.approve(
       ethereumConfig.staking_bridge_contract.address,
-      '100000' + '0'.repeat(18)
+      amount + '0'.repeat(19)
     ),
-    1000,
+    10 * 60 * 1000,
     'approve staking tx'
   );
 
@@ -47,12 +50,12 @@ export async function stakeForVegaPublicKey(vegaPublicKey: string) {
     wallet
   );
 
-  const amount = '10000' + '0'.repeat(18);
-  log(`sending stake tx of ${amount} to ${vegaPublicKey}`);
+  const realAmount = amount + '0'.repeat(18);
+  log(`sending stake tx of ${realAmount} to ${vegaPublicKey}`);
   const stakeTx = await promiseWithTimeout(
-    stakingContract.stake(amount, vegaPublicKey),
+    stakingContract.stake(realAmount, vegaPublicKey),
     14000,
-    'stakingContract.stake(amount, vegaPublicKey)'
+    'stakingContract.stake(realAmount, vegaPublicKey)'
   );
   await promiseWithTimeout(
     stakeTx.wait(3),

@@ -74,4 +74,20 @@ describe('OrderListManager', () => {
     });
     expect(await screen.findByText('OrderList')).toBeInTheDocument();
   });
+
+  it('should show no orders message', async () => {
+    jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
+      data: [],
+      loading: false,
+      error: undefined,
+      flush: jest.fn(),
+      reload: jest.fn(),
+      load: jest.fn(),
+      totalCount: undefined,
+    });
+    await act(async () => {
+      render(generateJsx());
+    });
+    expect(screen.getByText('No orders')).toBeInTheDocument();
+  });
 });

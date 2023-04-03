@@ -1,4 +1,4 @@
-import { ContractAddressLink } from '@vegaprotocol/environment';
+import { EtherscanLink } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
@@ -108,7 +108,7 @@ export const rows: Rows = [
 
       return (
         <>
-          <ContractAddressLink address={asset.source.contractAddress} />{' '}
+          <EtherscanLink address={asset.source.contractAddress} />{' '}
           <CopyWithTooltip text={asset.source.contractAddress}>
             <button title={t('Copy address to clipboard')}>
               <Icon size={3} name="duplicate" />

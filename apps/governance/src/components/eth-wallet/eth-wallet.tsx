@@ -165,7 +165,7 @@ const ConnectedKey = () => {
       </section>
       <WalletCardActions>
         <Link className="flex-1" to={Routes.ASSOCIATE}>
-          <Button size="sm" fill={true}>
+          <Button data-testid="associate-btn" size="sm" fill={true}>
             {t('associate')}
           </Button>
         </Link>

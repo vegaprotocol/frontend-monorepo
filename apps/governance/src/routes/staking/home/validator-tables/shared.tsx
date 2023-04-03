@@ -10,8 +10,12 @@ import {
   Tooltip,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
-import type { NodesFragmentFragment } from '../__generated___/Nodes';
-import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
+import { BigNumber } from '../../../../lib/bignumber';
+import type { NodesFragmentFragment } from '../__generated__/Nodes';
+import type { PreviousEpochQuery } from '../../__generated__/PreviousEpoch';
+import { useAppState } from '../../../../contexts/app-state/app-state-context';
+import type { StakingDelegationFieldsFragment } from '../../__generated__/Staking';
+import type { ValidatorsView } from './validator-tables';
 
 export enum ValidatorFields {
   RANKING_INDEX = 'rankingIndex',
@@ -30,12 +34,49 @@ export enum ValidatorFields {
   PERFORMANCE_PENALTY = 'performancePenalty',
   OVERSTAKED_AMOUNT = 'overstakedAmount',
   OVERSTAKING_PENALTY = 'overstakingPenalty',
+  // the following are additional fields added to the validator object displaying user data
+  STAKED_BY_USER = 'stakedByUser',
+  PENDING_USER_STAKE = 'pendingUserStake',
+  USER_STAKE_SHARE = 'userStakeShare',
 }
 
+export const addUserDataToValidator = (
+  validator: NodesFragmentFragment,
+  currentEpochUserStaking: StakingDelegationFieldsFragment | undefined,
+  nextEpochUserStaking: StakingDelegationFieldsFragment | undefined,
+  currentUserStakeAvailable: string
+) => {
+  return {
+    ...validator,
+    [ValidatorFields.STAKED_BY_USER]:
+      currentEpochUserStaking && Number(currentEpochUserStaking?.amount) > 0
+        ? currentEpochUserStaking.amount
+        : undefined,
+    [ValidatorFields.PENDING_USER_STAKE]: nextEpochUserStaking
+      ? new BigNumber(nextEpochUserStaking?.amount)
+          .minus(new BigNumber(currentEpochUserStaking?.amount || 0))
+          .toString()
+      : undefined,
+    [ValidatorFields.USER_STAKE_SHARE]:
+      currentEpochUserStaking && Number(currentEpochUserStaking.amount) > 0
+        ? new BigNumber(currentEpochUserStaking.amount).dividedBy(
+            new BigNumber(currentUserStakeAvailable)
+          )
+        : undefined,
+  };
+};
+
+export type ValidatorWithUserData = NodesFragmentFragment & {
+  stakedByUser?: string;
+  pendingUserStake?: string;
+  userStakeShare?: string;
+};
+
 export interface ValidatorsTableProps {
-  data: NodesFragmentFragment[] | undefined;
+  data: ValidatorWithUserData[] | undefined;
   previousEpochData: PreviousEpochQuery | undefined;
   totalStake: string;
+  validatorsView: ValidatorsView;
 }
 
 // Custom styling to account for the scrollbar. This is needed because the
@@ -57,19 +98,23 @@ export const defaultColDef = {
   resizable: true,
   autoHeight: true,
   comparator: (a: string, b: string) => parseFloat(a) - parseFloat(b),
-  cellStyle: { margin: '10px 0', padding: '0 12px' },
   tooltipComponent: TooltipCellComponent,
+  cellStyle: { display: 'flex', alignItems: 'center', padding: '0 10px' },
 };
 
 interface ValidatorRendererProps {
-  data: { id: string; validator: { avatarUrl: string; name: string } };
+  data: {
+    id: string;
+    validator: { avatarUrl: string; name: string };
+    stakedByUser: string | undefined;
+  };
 }
 
 export const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { t } = useTranslation();
   const { avatarUrl, name } = data.validator;
   return (
-    <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
+    <div className="w-[238px] grid grid-cols-[1fr_auto] gap-2 items-center">
       <span className="flex overflow-hidden">
         {avatarUrl && (
           <img
@@ -82,9 +127,19 @@ export const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
         <span>{name}</span>
       </span>
       <Link to={data.id}>
-        <Button size="sm" fill={true}>
-          {t('Stake')}
-        </Button>
+        {data.stakedByUser ? (
+          <Button
+            data-testid="my-stake-btn"
+            size="sm"
+            className="text-vega-green border-vega-green"
+          >
+            {t('myStake')}
+          </Button>
+        ) : (
+          <Button data-testid="stake-btn" size="sm" fill={true}>
+            {t('Stake')}
+          </Button>
+        )}
       </Link>
     </div>
   );
@@ -101,8 +156,14 @@ export const StakeNeededForPromotionRenderer = ({
   data,
 }: StakeNeededForPromotionRendererProps) => {
   return (
-    <Tooltip description={data.stakeNeededForPromotionDescription}>
-      <span>
+    <Tooltip
+      description={
+        <span data-testid="stake-needed-for-promotion-tooltip">
+          {data.stakeNeededForPromotionDescription}
+        </span>
+      }
+    >
+      <span data-testid="stake-needed-for-promotion">
         {data.stakeNeededForPromotion &&
           formatNumber(data.stakeNeededForPromotion, 2)}
       </span>
@@ -133,7 +194,59 @@ export const VotingPowerRenderer = ({ data }: VotingPowerRendererProps) => {
         </>
       }
     >
-      <span>{data.normalisedVotingPower}</span>
+      <span data-testid="normalised-voting-power">
+        {data.normalisedVotingPower}
+      </span>
+    </Tooltip>
+  );
+};
+
+interface PendingStakeRendererProps {
+  data: {
+    pendingStake: string;
+    pendingUserStake: string | undefined;
+  };
+}
+
+export const PendingStakeRenderer = ({ data }: PendingStakeRendererProps) => {
+  const { t } = useTranslation();
+  const {
+    appState: { decimals },
+  } = useAppState();
+
+  return (
+    <Tooltip
+      description={
+        <>
+          <div data-testid="pending-stake-tooltip">
+            {t('pendingStake')}:{' '}
+            {formatNumber(toBigNum(data.pendingStake, decimals), decimals)}
+          </div>
+          {data.pendingUserStake && (
+            <div
+              className="text-vega-green border-t border-t-vega-dark-200 mt-1.5 pt-1"
+              data-testid="pending-user-stake-tooltip"
+            >
+              {t('myPendingStake')}:{' '}
+              {formatNumber(
+                toBigNum(data.pendingUserStake, decimals),
+                decimals
+              )}
+            </div>
+          )}
+        </>
+      }
+    >
+      <div className="flex flex-col">
+        {data.pendingUserStake && data.pendingStake !== '0' && (
+          <span data-testid="pending-user-stake" className="text-vega-green">
+            {formatNumber(toBigNum(data.pendingUserStake, decimals), 2)}
+          </span>
+        )}
+        <span data-testid="total-pending-stake">
+          {formatNumber(toBigNum(data.pendingStake, decimals), 2)}
+        </span>
+      </div>
     </Tooltip>
   );
 };
@@ -143,11 +256,17 @@ interface TotalStakeRendererProps {
     stake: string;
     stakedByDelegates: string;
     stakedByOperator: string;
+    stakedByUser: string | undefined;
   };
 }
 
 export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
   const { t } = useTranslation();
+  const {
+    appState: { decimals },
+  } = useAppState();
+
+  const formattedStake = formatNumber(toBigNum(data.stake, decimals), 2);
 
   return (
     <Tooltip
@@ -159,14 +278,49 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
           <div data-testid="staked-delegates-tooltip">
             {t('stakedByDelegates')}: {data.stakedByDelegates.toString()}
           </div>
-          <div data-testid="total-staked-tooltip">
-            {t('totalStake')}: <span className="font-bold">{data.stake}</span>
+          <div className="font-bold" data-testid="total-staked-tooltip">
+            {t('totalStake')}: {formattedStake}
           </div>
+          {data.stakedByUser && (
+            <div
+              className="text-vega-green border-t border-t-vega-dark-200 mt-1.5 pt-1"
+              data-testid="staked-by-user-tooltip"
+            >
+              {t('stakedByMe')}: {data.stakedByUser}
+            </div>
+          )}
         </>
       }
     >
-      <span>{data.stake}</span>
+      <div className="flex flex-col">
+        {data.stakedByUser && (
+          <span data-testid="user-stake" className="text-vega-green">
+            {data.stakedByUser}
+          </span>
+        )}
+        <span data-testid="total-stake">{formattedStake}</span>
+      </div>
     </Tooltip>
+  );
+};
+
+interface StakeShareRendererProps {
+  data: {
+    stakeShare: string;
+    userStakeShare: string | undefined;
+  };
+}
+
+export const StakeShareRenderer = ({ data }: StakeShareRendererProps) => {
+  return (
+    <div className="flex flex-col">
+      {data.userStakeShare && (
+        <span data-testid="user-stake-share" className="text-vega-green">
+          {data.userStakeShare}
+        </span>
+      )}
+      <span data-testid="total-stake-share">{data.stakeShare}</span>
+    </div>
   );
 };
 
@@ -202,7 +356,7 @@ export const TotalPenaltiesRenderer = ({
         </>
       }
     >
-      <span>{data.totalPenalties}</span>
+      <span data-testid="total-penalty">{data.totalPenalties}</span>
     </Tooltip>
   );
 };

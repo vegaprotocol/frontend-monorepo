@@ -107,6 +107,50 @@ describe('DealTicket', () => {
     );
   });
 
+  it('should use local storage state for initial values reduceOnly and postOnly', () => {
+    const expectedOrder = {
+      marketId: market.id,
+      type: Schema.OrderType.TYPE_LIMIT,
+      side: Schema.Side.SIDE_SELL,
+      size: '0.1',
+      price: '300.22',
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+      persist: true,
+      reduceOnly: true,
+      postOnly: false,
+    };
+
+    useOrderStore.setState({
+      orders: {
+        [expectedOrder.marketId]: expectedOrder,
+      },
+    });
+
+    render(generateJsx());
+
+    // Assert correct defaults are used from store
+    expect(
+      screen
+        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
+        .querySelector('input')
+    ).toBeChecked();
+    expect(
+      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
+    ).toBeChecked();
+    expect(
+      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
+    ).not.toBeChecked();
+    expect(screen.getByTestId('order-size')).toHaveDisplayValue(
+      expectedOrder.size
+    );
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      expectedOrder.timeInForce
+    );
+    expect(screen.getByTestId('order-price')).toHaveDisplayValue(
+      expectedOrder.price
+    );
+  });
+
   it('handles TIF select box dependent on order type', async () => {
     render(generateJsx());
 

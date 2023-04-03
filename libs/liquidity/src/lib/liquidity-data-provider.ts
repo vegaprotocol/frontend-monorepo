@@ -96,8 +96,8 @@ export const getId = (
       >
 ) =>
   isLpFragment(entry)
-    ? `${entry.party.id}${entry.status}${entry.createdAt}`
-    : `${entry.partyID}${entry.status}${entry.createdAt}`;
+    ? `${entry.party.id}${entry.status}${entry.createdAt}${entry.updatedAt}`
+    : `${entry.partyID}${entry.status}${entry.createdAt}${entry.updatedAt}`;
 
 export const marketLiquidityDataProvider = makeDataProvider<
   MarketLpQuery,

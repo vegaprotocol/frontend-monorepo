@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { Tabs, Tab } from '@vegaprotocol/ui-toolkit';
+import { LocalStoragePersistTabs as Tabs, Tab } from '@vegaprotocol/ui-toolkit';
 import { Markets } from './markets';
 import { Proposed } from './proposed';
 import { usePageTitleStore } from '../../stores';
@@ -14,7 +14,7 @@ export const MarketsPage = () => {
     updateTitle(titlefy(['Markets']));
   }, [updateTitle]);
   return (
-    <Tabs>
+    <Tabs storageKey="console-markets">
       <Tab id="all-markets" name={t('All markets')}>
         <Markets />
       </Tab>

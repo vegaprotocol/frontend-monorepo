@@ -52,6 +52,8 @@ describe('Console - market list - live env', { tags: '@live' }, () => {
 describe('Console - market info - live env', { tags: '@live' }, () => {
   before(() => {
     cy.visit('/');
+    cy.contains('Loading market data...').should('not.exist');
+    cy.getByTestId('link').should('be.visible');
     cy.getByTestId('dialog-close').click();
     cy.getByTestId(marketInfoBtn).click();
   });
@@ -68,17 +70,20 @@ describe('Console - market info - live env', { tags: '@live' }, () => {
     'Risk model',
     'Risk parameters',
     'Risk factors',
-    'Price monitoring trigger 1',
+    'Price monitoring bounds 1',
     'Liquidity monitoring parameters',
     'Liquidity',
+    'Liquidity price range',
     'Oracle',
     'Proposal',
   ];
 
   it('market info titles are displayed', () => {
-    cy.get('.text-lg').each((element, index) => {
-      cy.wrap(element).should('have.text', titles[index]);
-    });
+    cy.getByTestId('split-view-view')
+      .find('.text-lg')
+      .each((element, index) => {
+        cy.wrap(element).should('have.text', titles[index]);
+      });
   });
 
   it('market info subtitles are displayed', () => {
@@ -205,6 +210,8 @@ describe('Console - markets table - live env', { tags: '@live' }, () => {
 });
 
 function openMarketDropDown() {
+  cy.contains('Loading...').should('not.exist');
+  cy.getByTestId('link').should('be.visible');
   cy.getByTestId('dialog-close').click();
   cy.getByTestId('popover-trigger').click();
   cy.contains('Loading market data...').should('not.exist');

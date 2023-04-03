@@ -1,5 +1,5 @@
 import type z from 'zod';
-import type { configSchema } from './utils/validate-configuration';
+import type { tomlConfigSchema } from './utils/validate-configuration';
 import type { envSchema } from './utils/validate-environment';
 
 export enum Networks {
@@ -14,5 +14,5 @@ export enum Networks {
   MIRROR = 'MIRROR',
 }
 export type Environment = z.infer<typeof envSchema>;
-export type Configuration = z.infer<typeof configSchema>;
+export type Configuration = z.infer<typeof tomlConfigSchema>;
 export const CUSTOM_NODE_KEY = 'custom' as const;

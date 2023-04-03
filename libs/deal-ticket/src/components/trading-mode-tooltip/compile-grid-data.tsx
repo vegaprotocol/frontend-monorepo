@@ -26,13 +26,16 @@ export const compileGridData = (
     | 'targetStake'
     | 'trigger'
   > | null,
-  onSelect?: (id: string) => void
+  onSelect?: (id: string, metaKey?: boolean) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: SimpleGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    marketData?.marketTradingMode ===
+    (marketData?.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    marketData?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+      marketData?.trigger ===
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET) ||
+    marketData?.trigger ===
+      Schema.AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
 
   const formatStake = (value: string) => {
     const formattedValue = addDecimalsFormatNumber(
@@ -75,7 +78,7 @@ export const compileGridData = (
       label: (
         <Link
           to={`/liquidity/${market.id}`}
-          onClick={() => onSelect && onSelect(market.id)}
+          onClick={(ev) => onSelect && onSelect(market.id, ev.metaKey)}
         >
           <UILink>{t('Current liquidity')}</UILink>
         </Link>

@@ -22,7 +22,7 @@ const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
 
 describe('orders list', { tags: '@smoke' }, () => {
-  before(() => {
+  beforeEach(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
@@ -30,9 +30,6 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledThrice;
-    });
     cy.wait('@Markets');
   });
 
@@ -85,6 +82,13 @@ describe('orders list', { tags: '@smoke' }, () => {
       '94aead3ca92dc932efcb503631b03a410e2a5d4606cae6083e2406dc38e52f78';
 
     cy.getByTestId('tab-orders').should('be.visible');
+    cy.get('.ag-header-container').within(() => {
+      cy.get('[col-id="status"]').realHover();
+      cy.get('[col-id="status"] .ag-icon-menu').click();
+    });
+    cy.contains('Partially Filled').click();
+    cy.getByTestId('Orders').click();
+
     cy.get(`[row-id="${partiallyFilledId}"]`).within(() => {
       cy.get(`[col-id='${orderStatus}']`).should(
         'have.text',
@@ -105,6 +109,12 @@ describe('orders list', { tags: '@smoke' }, () => {
       'BTCUSD.MF21',
       'BTCUSD.MF21',
     ];
+    cy.get('.ag-header-container').within(() => {
+      cy.get('[col-id="status"]').realHover();
+      cy.get('[col-id="status"] .ag-icon-menu').click();
+    });
+    cy.contains('Reset').click();
+    cy.getByTestId('Orders').click();
 
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
@@ -135,14 +145,19 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledThrice;
+    cy.getByTestId('tab-orders').within(() => {
+      cy.get('[col-id="status"][role="columnheader"]')
+        .focus()
+        .find('.ag-header-cell-menu-button')
+        .click();
+      cy.get('.ag-filter-apply-panel-button').click();
     });
   });
   const orderId = '1234567890';
   // 7002-SORD-053
   // 7002-SORD-040
   // 7003-MORD-001
+
   it('must see an active order', () => {
     // 7002-SORD-041
     updateOrder({
@@ -151,6 +166,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Active');
   });
+
   it('must see an expired order', () => {
     // 7002-SORD-042
     updateOrder({
@@ -353,8 +369,12 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
-    cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrdersUpdate).to.be.calledThrice;
+    cy.getByTestId('tab-orders').within(() => {
+      cy.get('[col-id="status"][role="columnheader"]')
+        .focus()
+        .find('.ag-header-cell-menu-button')
+        .click();
+      cy.get('.ag-filter-apply-panel-button').click();
     });
     cy.mockVegaWalletTransaction();
   });

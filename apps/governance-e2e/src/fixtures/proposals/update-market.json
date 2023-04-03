@@ -1,5 +1,7 @@
 {
   "lpPriceRange": "10",
+  "linearSlippageFactor": "0.001",
+  "quadraticSlippageFactor": "0",
   "instrument": {
     "code": "TEST.24h",
     "future": {

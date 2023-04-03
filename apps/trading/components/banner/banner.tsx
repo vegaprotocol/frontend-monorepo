@@ -1,39 +1,16 @@
-import {
-  AnnouncementBanner,
-  ExternalLink,
-  Icon,
-} from '@vegaprotocol/ui-toolkit';
-import { useGlobalStore } from '../../stores';
-import React from 'react';
+import { AnnouncementBanner } from '@vegaprotocol/announcements';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export const Banner = () => {
-  const { update, shouldDisplayAnnouncementBanner } = useGlobalStore(
-    (store) => ({
-      update: store.update,
-      shouldDisplayAnnouncementBanner: store.shouldDisplayAnnouncementBanner,
-    })
-  );
+  const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
 
   // Return an empty div so that the grid layout in _app.page.ts
   // renders correctly
-  if (!shouldDisplayAnnouncementBanner) {
+  if (!ANNOUNCEMENTS_CONFIG_URL) {
     return <div />;
   }
 
   return (
-    <AnnouncementBanner>
-      <div className="grid grid-cols-[auto_1fr] gap-4 font-alpha calt uppercase text-center text-lg text-white">
-        <button
-          className="flex items-center"
-          onClick={() => update({ shouldDisplayAnnouncementBanner: false })}
-        >
-          <Icon name="cross" className="w-6 h-6" ariaLabel="dismiss" />
-        </button>
-        <div>
-          <span className="pr-4">Mainnet sim 3 is coming soon!</span>
-          <ExternalLink href="https://fairground.wtf/">Learn more</ExternalLink>
-        </div>
-      </div>
-    </AnnouncementBanner>
+    <AnnouncementBanner app="console" configUrl={ANNOUNCEMENTS_CONFIG_URL} />
   );
 };

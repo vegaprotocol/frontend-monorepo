@@ -57,7 +57,7 @@ fragment LiquidityProvisionFields on LiquidityProvision {
 
 query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection {
+    liquidityProvisionsConnection(live: true) {
       edges {
         node {
           ...LiquidityProvisionFields

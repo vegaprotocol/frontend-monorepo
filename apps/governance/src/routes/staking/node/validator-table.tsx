@@ -28,8 +28,8 @@ import {
   getStakePercentage,
 } from '../shared';
 import type { ReactNode } from 'react';
-import type { StakingNodeFieldsFragment } from './__generated__/Staking';
-import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import type { StakingNodeFieldsFragment } from '../__generated__/Staking';
+import type { PreviousEpochQuery } from '../__generated__/PreviousEpoch';
 
 const statuses = {
   [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: 'status-ersatz',
@@ -111,7 +111,7 @@ export const ValidatorTable = ({
 
       <div className="my-12" data-testid="validator-table">
         <SubHeading title={t('profile')} />
-        <RoundedWrapper>
+        <RoundedWrapper paddingBottom={true}>
           <KeyValueTable data-testid="validator-table-profile">
             <KeyValueTableRow>
               <span>{t('id')}</span>
@@ -156,7 +156,7 @@ export const ValidatorTable = ({
         </div>
 
         <SubHeading title={t('ADDRESS')} />
-        <RoundedWrapper marginBottomLarge={true}>
+        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
           <KeyValueTable data-testid="validator-table-address">
             <KeyValueTableRow>
               <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
@@ -187,7 +187,7 @@ export const ValidatorTable = ({
         </RoundedWrapper>
 
         <SubHeading title={t('STAKE')} />
-        <RoundedWrapper marginBottomLarge={true}>
+        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
           <KeyValueTable data-testid="validator-table-stake">
             <KeyValueTableRow>
               <span>{t('STAKED BY OPERATOR')}</span>
@@ -238,7 +238,7 @@ export const ValidatorTable = ({
         </RoundedWrapper>
 
         <SubHeading title={t('PENALTIES')} />
-        <RoundedWrapper marginBottomLarge={true}>
+        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
           <KeyValueTable data-testid="validator-table-penalties">
             <KeyValueTableRow>
               <span>{t('OVERSTAKED PENALTY')}</span>
@@ -270,7 +270,7 @@ export const ValidatorTable = ({
         </RoundedWrapper>
 
         <SubHeading title={t('VOTING POWER')} />
-        <RoundedWrapper marginBottomLarge={true}>
+        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
           <KeyValueTable data-testid="validator-table-voting-power">
             <KeyValueTableRow>
               <span>{t('UNNORMALISED VOTING POWER')}</span>

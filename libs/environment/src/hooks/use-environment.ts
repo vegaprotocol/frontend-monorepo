@@ -1,3 +1,4 @@
+import { parse as tomlParse } from 'toml';
 import { isValidUrl, LocalStorage } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useEffect } from 'react';
@@ -13,7 +14,7 @@ import type { Environment } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
-import { configSchema } from '../utils/validate-configuration';
+import { tomlConfigSchema } from '../utils/validate-configuration';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -159,9 +160,15 @@ export const useInitializeEnv = () => {
 const fetchConfig = async (url?: string) => {
   if (!url) return [];
   const res = await fetch(url);
-  const cfg = await res.json();
-  const result = configSchema.parse(cfg);
-  return result.hosts;
+  const content = await res.text();
+  const parsed = tomlParse(content);
+  const tomlResults = tomlConfigSchema.parse(parsed);
+  const {
+    API: {
+      GraphQL: { Hosts },
+    },
+  } = tomlResults;
+  return Hosts;
 };
 
 /**
@@ -270,6 +277,7 @@ function compileEnvVars() {
     ),
     ETH_LOCAL_PROVIDER_URL: process.env['NX_ETH_LOCAL_PROVIDER_URL'],
     ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'],
+    ORACLE_PROOFS_URL: process.env['NX_ORACLE_PROOFS_URL'],
     VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'],
     VEGA_EXPLORER_URL: process.env['NX_VEGA_EXPLORER_URL'],
     VEGA_TOKEN_URL: process.env['NX_VEGA_TOKEN_URL'],
@@ -278,6 +286,8 @@ function compileEnvVars() {
     GIT_BRANCH: process.env['GIT_COMMIT_BRANCH'],
     GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'],
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
+    ANNOUNCEMENTS_CONFIG_URL: process.env['NX_ANNOUNCEMENTS_CONFIG_URL'],
+    VEGA_INCIDENT_URL: process.env['NX_VEGA_INCIDENT_URL'],
   };
 
   return env;

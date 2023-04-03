@@ -11,11 +11,13 @@ const isFullWidthRow = (params: IsFullWidthRowParams) =>
 interface Props<T> {
   gridRef: RefObject<AgGridReact>;
   setId?: (data: T) => T;
+  disabled?: boolean;
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const useBottomPlaceholder = <T extends {}>({
   gridRef,
   setId,
+  disabled,
 }: Props<T>) => {
   const onBodyScrollEnd = useCallback(() => {
     const rowCont = gridRef.current?.api.getModel().getRowCount() ?? 0;
@@ -58,14 +60,17 @@ export const useBottomPlaceholder = <T extends {}>({
   }, [gridRef, onBodyScrollEnd]);
 
   return useMemo(
-    () => ({
-      onBodyScrollEnd,
-      rowClassRules: NO_HOVER_CSS_RULE,
-      isFullWidthRow,
-      fullWidthCellRenderer,
-      onSortChanged: onRowsChanged,
-      onFilterChange: onRowsChanged,
-    }),
-    [onBodyScrollEnd, onRowsChanged]
+    () =>
+      !disabled
+        ? {
+            onBodyScrollEnd,
+            rowClassRules: NO_HOVER_CSS_RULE,
+            isFullWidthRow,
+            fullWidthCellRenderer,
+            onSortChanged: onRowsChanged,
+            onFilterChanged: onRowsChanged,
+          }
+        : {},
+    [onBodyScrollEnd, onRowsChanged, disabled]
   );
 };

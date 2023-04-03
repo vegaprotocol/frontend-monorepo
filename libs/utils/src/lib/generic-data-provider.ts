@@ -258,7 +258,16 @@ function makeDataProviderInternal<
     client
       .query<QueryData>({
         query,
-        variables: { ...variables, ...(pagination && { pagination }) },
+        variables: {
+          ...variables,
+          ...(pagination && {
+            // let the variables pagination be prior to provider param
+            pagination: {
+              ...pagination,
+              ...(variables?.['pagination'] ?? null),
+            },
+          }),
+        },
         fetchPolicy: fetchPolicy || 'no-cache',
         context: additionalContext,
         errorPolicy: policy || 'none',
@@ -330,7 +339,7 @@ function makeDataProviderInternal<
     }
   };
 
-  const initialFetch = async () => {
+  const initialFetch = async (isUpdate = false) => {
     if (!client) {
       return;
     }
@@ -385,7 +394,7 @@ function makeDataProviderInternal<
       subscription = undefined;
     } finally {
       loading = false;
-      notifyAll();
+      notifyAll({ isUpdate });
     }
   };
 
@@ -401,7 +410,7 @@ function makeDataProviderInternal<
     } else {
       loading = true;
       error = undefined;
-      initialFetch();
+      initialFetch(true);
     }
   };
 

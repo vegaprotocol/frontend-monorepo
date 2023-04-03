@@ -1,3 +1,4 @@
+import type { ConditionOperator } from './__generated__/types';
 import type {
   AccountType,
   AuctionTrigger,
@@ -63,7 +64,9 @@ export const AuctionTriggerMapping: {
   [T in AuctionTrigger]: string;
 } = {
   AUCTION_TRIGGER_BATCH: 'batch',
-  AUCTION_TRIGGER_LIQUIDITY: 'liquidity',
+  AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET: 'liquidity (target not met)',
+  AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS:
+    'liquidity (unable to deploy liquidity provision orders)',
   AUCTION_TRIGGER_OPENING: 'opening',
   AUCTION_TRIGGER_PRICE: 'price',
   AUCTION_TRIGGER_UNSPECIFIED: 'unspecified',
@@ -86,6 +89,7 @@ export const DepositStatusMapping: {
 export const IntervalMapping: {
   [T in Interval]: string;
 } = {
+  // @ts-ignore - temporarily suppressing this as it's a valid value
   INTERVAL_BLOCK: '1 block',
   INTERVAL_I15M: 'I15M',
   INTERVAL_I1D: 'I1D',
@@ -454,4 +458,12 @@ export const PositionStatusMapping: {
   POSITION_STATUS_CLOSED_OUT: 'Closed by network',
   POSITION_STATUS_ORDERS_CLOSED: 'Maintained by network',
   POSITION_STATUS_UNSPECIFIED: 'Normal',
+};
+
+export const ConditionOperatorMapping: { [C in ConditionOperator]: string } = {
+  OPERATOR_EQUALS: 'Equals',
+  OPERATOR_GREATER_THAN: 'Greater than',
+  OPERATOR_GREATER_THAN_OR_EQUAL: 'Greater than or equal to',
+  OPERATOR_LESS_THAN: 'Less than',
+  OPERATOR_LESS_THAN_OR_EQUAL: 'Less than or equal to',
 };

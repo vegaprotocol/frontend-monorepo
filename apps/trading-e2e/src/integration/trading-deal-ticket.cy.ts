@@ -42,7 +42,7 @@ describe('time in force default values', () => {
   });
 
   it('must have market order set up to IOC by default', function () {
-    //7002-SORD-031
+    // 7002-SORD-031
     cy.getByTestId(toggleMarket).click();
     cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
       'have.text',
@@ -51,7 +51,7 @@ describe('time in force default values', () => {
   });
 
   it('must have time in force set to GTC for limit order', function () {
-    //7002-SORD-031
+    // 7002-SORD-031
     cy.getByTestId(toggleLimit).click();
     cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
       'have.text',
@@ -75,13 +75,17 @@ describe('must submit order', { tags: '@smoke' }, () => {
   });
 
   it('successfully places market buy order', () => {
-    //7002-SORD-010
+    // 7002-SORD-010
+    // 0003-WTXN-012
+    // 0003-WTXN-003
     cy.mockVegaWalletTransaction();
     const order: OrderSubmission = {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_MARKET,
       side: Schema.Side.SIDE_BUY,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      postOnly: false,
+      reduceOnly: false,
       size: '100',
     };
     createOrder(order);
@@ -96,6 +100,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       side: Schema.Side.SIDE_SELL,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
       size: '100',
+      postOnly: false,
+      reduceOnly: false,
     };
     createOrder(order);
     testOrderSubmission(order);
@@ -110,6 +116,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       side: Schema.Side.SIDE_BUY,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       size: '100',
+      postOnly: false,
+      reduceOnly: false,
       price: '200',
     };
     createOrder(order);
@@ -124,6 +132,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       side: Schema.Side.SIDE_SELL,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GFN,
       size: '100',
+      postOnly: false,
+      reduceOnly: false,
       price: '50000',
     };
     createOrder(order);
@@ -141,6 +151,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       size: '100',
       price: '1.00',
       expiresAt: expiresAt.toISOString().substring(0, 16),
+      postOnly: false,
+      reduceOnly: false,
     };
 
     createOrder(order);
@@ -148,6 +160,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       price: '100000',
       expiresAt:
         new Date(order.expiresAt as string).getTime().toString() + '000000',
+      postOnly: false,
+      reduceOnly: false,
     });
   });
 });
@@ -161,7 +175,7 @@ describe(
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -180,6 +194,8 @@ describe(
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '200',
       };
       createOrder(order);
@@ -194,6 +210,8 @@ describe(
         side: Schema.Side.SIDE_SELL,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '50000',
       };
       createOrder(order);
@@ -208,12 +226,16 @@ describe(
         side: Schema.Side.SIDE_SELL,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '1.00',
         expiresAt: displayTomorrow(),
       };
       createOrder(order);
       testOrderSubmission(order, {
         price: '100000',
+        postOnly: false,
+        reduceOnly: false,
         expiresAt:
           new Date(order.expiresAt as string).getTime().toString() + '000000',
       });
@@ -230,7 +252,7 @@ describe(
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -249,6 +271,8 @@ describe(
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '200',
       };
       createOrder(order);
@@ -263,6 +287,8 @@ describe(
         side: Schema.Side.SIDE_SELL,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '50000',
       };
       createOrder(order);
@@ -279,6 +305,8 @@ describe(
         size: '100',
         price: '1.00',
         expiresAt: displayTomorrow(),
+        postOnly: false,
+        reduceOnly: false,
       };
       createOrder(order);
       testOrderSubmission(order, {
@@ -299,7 +327,7 @@ describe(
       cy.mockTradingPage(
         Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
       cy.visit('/#/markets/market-0');
@@ -318,6 +346,8 @@ describe(
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '200',
       };
       createOrder(order);
@@ -333,6 +363,8 @@ describe(
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '50000',
+        postOnly: false,
+        reduceOnly: false,
       };
       createOrder(order);
       testOrderSubmission(order, { price: '5000000000' });
@@ -348,6 +380,8 @@ describe(
         size: '100',
         price: '1.00',
         expiresAt: displayTomorrow(),
+        postOnly: false,
+        reduceOnly: false,
       };
       createOrder(order);
       testOrderSubmission(order, {
@@ -367,6 +401,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
   });
 
   it('must show place order button and connect wallet if wallet is not connected', () => {
+    // 0003-WTXN-001
     cy.getByTestId('connect-vega-wallet'); // Not connected
     cy.getByTestId('order-connect-wallet').should('exist');
     cy.getByTestId(placeOrderBtn).should('exist');
@@ -374,15 +409,15 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
   });
 
   it('must be able to select order direction - long/short', function () {
-    //7002-SORD-004
+    // 7002-SORD-004
     cy.getByTestId(toggleShort).click().children('input').should('be.checked');
     cy.getByTestId(toggleLong).click().children('input').should('be.checked');
   });
 
   it('must be able to select order type - limit/market', function () {
-    //7002-SORD-005
-    //7002-SORD-006
-    //7002-SORD-007
+    // 7002-SORD-005
+    // 7002-SORD-006
+    // 7002-SORD-007
     cy.getByTestId(toggleLimit).click().children('input').should('be.checked');
     cy.getByTestId(toggleMarket).click().children('input').should('be.checked');
   });
@@ -412,7 +447,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
   });
 
   it('must warn if order size input has too many digits after the decimal place', function () {
-    //7002-SORD-016
+    // 7002-SORD-016
     cy.getByTestId('order-type-TYPE_MARKET').click();
     cy.getByTestId(orderSizeField).clear().type('1.234');
     cy.getByTestId(placeOrderBtn).should('not.be.disabled');
@@ -452,7 +487,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
   });
 
   it('must see the price unit', function () {
-    //7002-SORD-018
+    // 7002-SORD-018
     cy.getByTestId(orderPriceField)
       .siblings('label')
       .should('have.text', 'Price (DAI)');
@@ -478,7 +513,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
   });
 
   it('must see warning if price has too many digits after decimal place', function () {
-    //7002-SORD-059
+    // 7002-SORD-059
     cy.getByTestId(toggleLimit).click();
     cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTC');
     cy.getByTestId(orderSizeField).clear().type('1');
@@ -492,12 +527,12 @@ describe('limit order validations', { tags: '@smoke' }, () => {
   describe('time in force validations', function () {
     const validTIF = TIFlist;
     validTIF.forEach((tif) => {
-      //7002-SORD-023
-      //7002-SORD-024
-      //7002-SORD-025
-      //7002-SORD-026
-      //7002-SORD-027
-      //7002-SORD-028
+      // 7002-SORD-023
+      // 7002-SORD-024
+      // 7002-SORD-025
+      // 7002-SORD-026
+      // 7002-SORD-027
+      // 7002-SORD-028
 
       it(`must be able to select ${tif.code}`, function () {
         cy.getByTestId(orderTIFDropDown).select(tif.value);
@@ -544,7 +579,7 @@ describe('market order validations', { tags: '@smoke' }, () => {
   });
 
   it('must not see the price unit', function () {
-    //7002-SORD-019
+    // 7002-SORD-019
     cy.getByTestId(orderPriceField).should('not.exist');
   });
 
@@ -555,8 +590,8 @@ describe('market order validations', { tags: '@smoke' }, () => {
     );
 
     validTIF.forEach((tif) => {
-      //7002-SORD-025
-      //7002-SORD-026
+      // 7002-SORD-025
+      // 7002-SORD-026
 
       it(`must be able to select ${tif.code}`, function () {
         cy.getByTestId(orderTIFDropDown).select(tif.value);
@@ -568,10 +603,10 @@ describe('market order validations', { tags: '@smoke' }, () => {
     });
 
     invalidTIF.forEach((tif) => {
-      //7002-SORD-023
-      //7002-SORD-024
-      //7002-SORD-027
-      //7002-SORD-028
+      // 7002-SORD-023
+      // 7002-SORD-024
+      // 7002-SORD-027
+      // 7002-SORD-028
       it(`must not be able to select ${tif.code}`, function () {
         cy.getByTestId(orderTIFDropDown).should('not.contain', tif.text);
       });
@@ -585,7 +620,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_SUSPENDED,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
     );
     const accounts = accountsQuery();
     cy.mockGQL((req) => {
@@ -652,7 +687,7 @@ describe('account validation', { tags: '@regression' }, () => {
 
     it('should show an error if your balance is zero', () => {
       cy.getByTestId('place-order').should('be.disabled');
-      //7002-SORD-003
+      // 7002-SORD-003
       cy.getByTestId('dealticket-error-message-zero-balance').should(
         'have.text',
         'You need ' +
@@ -681,7 +716,8 @@ describe('account validation', { tags: '@regression' }, () => {
     });
 
     it('should display info and button for deposit', () => {
-      //7002-SORD-003
+      // 7002-SORD-003
+
       // warning should show immediately
       cy.getByTestId('dealticket-warning-margin').should(
         'contain.text',
@@ -696,6 +732,96 @@ describe('account validation', { tags: '@regression' }, () => {
         .find('h1')
         .eq(0)
         .should('have.text', 'Deposit');
+    });
+  });
+
+  describe('must submit order', { tags: '@smoke' }, () => {
+    // 7002-SORD-039
+    beforeEach(() => {
+      cy.setVegaWallet();
+      cy.mockTradingPage();
+      cy.mockSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.wait('@Markets');
+    });
+
+    it('must see a prompt to check connected vega wallet to approve transaction', () => {
+      // 0003-WTXN-002
+      cy.mockVegaWalletTransaction(1000);
+      const order: OrderSubmission = {
+        marketId: 'market-0',
+        type: Schema.OrderType.TYPE_MARKET,
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+        size: '100',
+      };
+      createOrder(order);
+      cy.getByTestId('toast-content').should(
+        'contain.text',
+        'Please go to your Vega wallet application and approve or reject the transaction.'
+      );
+    });
+
+    it('must show error returned by wallet ', () => {
+      // 0003-WTXN-009
+      // 0003-WTXN-011
+
+      //trigger error from the wallet
+      cy.intercept('POST', 'http://localhost:1789/api/v2/requests', (req) => {
+        req.on('response', (res) => {
+          res.send({
+            jsonrpc: '2.0',
+            id: '1',
+          });
+        });
+      });
+
+      const order: OrderSubmission = {
+        marketId: 'market-0',
+        type: Schema.OrderType.TYPE_MARKET,
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+        size: '100',
+      };
+      createOrder(order);
+      cy.getByTestId('toast-content').should(
+        'contain.text',
+        'The connection to your Vega Wallet has been lost.'
+      );
+    });
+
+    it('must see that the order was rejected by the connected wallet', () => {
+      // 0003-WTXN-007
+
+      //trigger rejection error from the wallet
+      cy.intercept('POST', 'http://localhost:1789/api/v2/requests', (req) => {
+        req.alias = 'client.send_transaction';
+        req.reply({
+          statusCode: 400,
+          body: {
+            jsonrpc: '2.0',
+            error: {
+              code: 3001,
+              data: 'the user rejected the wallet connection',
+              message: 'User error',
+            },
+            id: '0',
+          },
+        });
+      });
+
+      const order: OrderSubmission = {
+        marketId: 'market-0',
+        type: Schema.OrderType.TYPE_MARKET,
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+        size: '100',
+      };
+      createOrder(order);
+      cy.getByTestId('toast-content').should(
+        'contain.text',
+        'Error occurredthe user rejected the wallet connection'
+      );
     });
   });
 });

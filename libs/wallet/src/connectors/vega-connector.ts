@@ -45,6 +45,8 @@ export interface OrderSubmission {
   size: string;
   price?: string;
   expiresAt?: string;
+  postOnly?: boolean;
+  reduceOnly?: boolean;
 }
 
 export interface OrderCancellation {
@@ -98,6 +100,8 @@ interface ProposalNewMarketTerms {
       decimalPlaces: string;
       positionDecimalPlaces: string;
       lpPriceRange: string;
+      linearSlippageFactor: string;
+      quadraticSlippageFactor: string;
       instrument: {
         name: string;
         code: string;
@@ -130,6 +134,8 @@ interface ProposalUpdateMarketTerms {
   updateMarket: {
     marketId: string;
     changes: {
+      linearSlippageFactor: string;
+      quadraticSlippageFactor: string;
       instrument: {
         code: string;
         future: {

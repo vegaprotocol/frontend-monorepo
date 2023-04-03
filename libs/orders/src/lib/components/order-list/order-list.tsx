@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { memo, forwardRef } from 'react';
@@ -15,6 +15,7 @@ import {
   DateRangeFilter,
   negativeClassNames,
   positiveClassNames,
+  MarketNameCell,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -29,7 +30,7 @@ type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
-  onMarketClick?: (marketId: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
 };
 
@@ -39,10 +40,10 @@ export const OrderListTable = memo(
       return (
         <AgGrid
           ref={ref}
-          overlayNoRowsTemplate={t('No orders')}
           defaultColDef={{
             flex: 1,
             resizable: true,
+            sortable: true,
             filterParams: { buttons: ['reset'] },
           }}
           style={{
@@ -50,30 +51,15 @@ export const OrderListTable = memo(
             height: '100%',
           }}
           getRowId={({ data }) => data.id}
+          components={{ MarketNameCell }}
           {...props}
         >
           <AgGridColumn
             headerName={t('Market')}
             field="market.tradableInstrument.instrument.code"
-            cellRenderer={({
-              value,
-              data,
-            }: VegaICellRendererParams<
-              Order,
-              'market.tradableInstrument.instrument.code'
-            >) =>
-              onMarketClick ? (
-                <Link
-                  onClick={() =>
-                    data?.market?.id && onMarketClick(data?.market?.id)
-                  }
-                >
-                  {value}
-                </Link>
-              ) : (
-                value
-              )
-            }
+            cellRenderer="MarketNameCell"
+            cellRendererParams={{ idPath: 'market.id', onMarketClick }}
+            minWidth={150}
           />
           <AgGridColumn
             headerName={t('Size')}
@@ -89,7 +75,6 @@ export const OrderListTable = memo(
             valueFormatter={({
               value,
               data,
-              node,
             }: VegaValueFormatterParams<Order, 'size'>) => {
               if (!data) {
                 return undefined;
@@ -110,6 +95,7 @@ export const OrderListTable = memo(
                 )
               );
             }}
+            minWidth={80}
           />
           <AgGridColumn
             field="type"
@@ -120,7 +106,6 @@ export const OrderListTable = memo(
             valueFormatter={({
               data: order,
               value,
-              node,
             }: VegaValueFormatterParams<Order, 'type'>) => {
               if (!order) {
                 return undefined;
@@ -130,6 +115,7 @@ export const OrderListTable = memo(
               if (order?.liquidityProvision) return t('Liquidity provision');
               return Schema.OrderTypeMapping[value];
             }}
+            minWidth={80}
           />
           <AgGridColumn
             field="status"
@@ -160,6 +146,7 @@ export const OrderListTable = memo(
                 {valueFormatted}
               </span>
             )}
+            minWidth={100}
           />
           <AgGridColumn
             headerName={t('Filled')}
@@ -186,6 +173,7 @@ export const OrderListTable = memo(
                 dps
               )}/${addDecimalsFormatNumber(size.toString(), dps)}`;
             }}
+            minWidth={100}
           />
           <AgGridColumn
             field="price"
@@ -208,6 +196,7 @@ export const OrderListTable = memo(
               }
               return addDecimalsFormatNumber(value, data.market.decimalPlaces);
             }}
+            minWidth={100}
           />
           <AgGridColumn
             field="timeInForce"
@@ -231,6 +220,7 @@ export const OrderListTable = memo(
 
               return value ? Schema.OrderTimeInForceMapping[value] : '';
             }}
+            minWidth={150}
           />
           <AgGridColumn
             field="createdAt"
@@ -244,6 +234,7 @@ export const OrderListTable = memo(
                 </span>
               );
             }}
+            minWidth={150}
           />
           <AgGridColumn
             field="updatedAt"
@@ -261,6 +252,7 @@ export const OrderListTable = memo(
                 </span>
               );
             }}
+            minWidth={150}
           />
           <AgGridColumn
             colId="amend"
@@ -284,6 +276,7 @@ export const OrderListTable = memo(
                 </>
               ) : null;
             }}
+            sortable={false}
           />
         </AgGrid>
       );

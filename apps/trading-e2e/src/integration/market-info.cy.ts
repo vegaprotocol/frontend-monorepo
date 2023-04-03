@@ -7,6 +7,10 @@ const externalLink = 'external-link';
 const accordionContent = 'accordion-content';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
+  beforeEach(() => {
+    cy.mockTradingPage();
+  });
+
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
@@ -35,7 +39,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
     validateMarketDataRow(0, '24 Hour Volume', '1');
-    validateMarketDataRow(1, 'Open Interest', '0');
+    validateMarketDataRow(1, 'Open Interest', '-');
     validateMarketDataRow(2, 'Best Bid Volume', '1');
     validateMarketDataRow(3, 'Best Offer Volume', '3');
     validateMarketDataRow(4, 'Best Static Bid Volume', '2');
@@ -131,7 +135,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.get('p.col-span-1').contains('Within 43,200 seconds');
     validateMarketDataRow(0, 'Highest Price', '7.97323 ');
     validateMarketDataRow(1, 'Lowest Price', '6.54701 ');
-    validateMarketDataRow(2, 'Reference Price', '7.22625 ');
   });
 
   it('liquidity monitoring parameters displayed', () => {
@@ -177,7 +180,15 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       'termination.BTC.value'
     );
 
+    // check that links to github for oracle proofs are shown
     cy.getByTestId(accordionContent)
+      .getByTestId('oracle-proof-links')
+      .find(`[data-testid="${externalLink}"]`)
+      .should('have.attr', 'href')
+      .and('contain', 'https://github.com/vegaprotocol/well-known');
+
+    cy.getByTestId(accordionContent)
+      .getByTestId('oracle-spec-links')
       .find(`[data-testid="${externalLink}"]`)
       .should('have.attr', 'href')
       .and('contain', '/oracles');

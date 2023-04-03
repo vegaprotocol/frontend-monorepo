@@ -2,7 +2,11 @@ import { titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
-import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import {
+  ResizableGridPanel,
+  Tab,
+  LocalStoragePersistTabs as Tabs,
+} from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
@@ -15,25 +19,18 @@ import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 import { AccountHistoryContainer } from './account-history-container';
-import { useNavigate } from 'react-router-dom';
-import { Links, Routes } from '../../pages/client-router';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
 
-  const onMarketClick = (marketId: string) => {
-    navigate(Links[Routes.MARKET](marketId), {
-      replace: true,
-    });
-  };
+  const onMarketClick = useMarketClickHandler(true);
 
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
@@ -41,7 +38,7 @@ export const Portfolio = () => {
       <ResizableGrid vertical>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
-            <Tabs>
+            <Tabs storageKey="console-portfolio-top">
               <Tab id="account-history" name={t('Account history')}>
                 <VegaWalletContainer>
                   <AccountHistoryContainer />
@@ -79,7 +76,7 @@ export const Portfolio = () => {
           minSize={50}
         >
           <PortfolioGridChild>
-            <Tabs>
+            <Tabs storageKey="console-portfolio-bottom">
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
                   <AccountsContainer />

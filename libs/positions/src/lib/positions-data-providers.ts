@@ -67,7 +67,6 @@ export interface Position {
   positionDecimalPlaces: number;
   totalBalance: string;
   assetSymbol: string;
-  liquidationPrice: string | undefined;
   lowMarginLevel: boolean;
   marketId: string;
   marketTradingMode: Schema.MarketTradingMode;
@@ -140,7 +139,6 @@ export const getMetrics = (
       ? new BigNumber(0)
       : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
 
-    const marginMaintenance = toBigNum(marginLevel.maintenanceLevel, decimals);
     const marginSearch = toBigNum(marginLevel.searchLevel, decimals);
     const marginInitial = toBigNum(marginLevel.initialLevel, decimals);
 
@@ -149,17 +147,6 @@ export const getMetrics = (
           .minus(marginAccountBalance)
           .dividedBy(openVolume)
           .plus(markPrice)
-      : undefined;
-
-    const liquidationPrice = markPrice
-      ? BigNumber.maximum(
-          0,
-          marginMaintenance
-            .minus(marginAccountBalance)
-            .minus(generalAccountBalance)
-            .dividedBy(openVolume)
-            .plus(markPrice)
-        )
       : undefined;
 
     const lowMarginLevel =
@@ -180,9 +167,6 @@ export const getMetrics = (
         market.tradableInstrument.instrument.product.settlementAsset.symbol,
       totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       lowMarginLevel,
-      liquidationPrice: liquidationPrice
-        ? liquidationPrice.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
-        : undefined,
       marketId: market.id,
       marketTradingMode: market.tradingMode,
       markPrice: marketData ? marketData.markPrice : undefined,
@@ -369,10 +353,12 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
       ordersProvider(callback, client, {
         ...variables,
         filter: {
-          status: [
-            OrderStatus.STATUS_ACTIVE,
-            OrderStatus.STATUS_PARTIALLY_FILLED,
-          ],
+          order: {
+            status: [
+              OrderStatus.STATUS_ACTIVE,
+              OrderStatus.STATUS_PARTIALLY_FILLED,
+            ],
+          },
         },
       }),
     (callback, client, variables) =>
