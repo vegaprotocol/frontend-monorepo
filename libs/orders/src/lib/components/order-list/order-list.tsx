@@ -221,9 +221,9 @@ export const OrderListTable = memo(
               const tifLabel = value
                 ? Schema.OrderTimeInForceMapping[value]
                 : '';
-              const label = `${tifLabel}${
-                data?.postOnly ? '. (Post Only)' : ''
-              }${data?.reduceOnly ? '. (Reduce Only)' : ''}`;
+              const label = `${tifLabel}${data?.postOnly ? '. Post Only' : ''}${
+                data?.reduceOnly ? '. Reduce only' : ''
+              }`;
 
               return label;
             }}
