@@ -24,8 +24,8 @@ export const EpochIndividualRewards = () => {
       },
       delegationsPagination: delegationsPagination
         ? {
-          first: Number(delegationsPagination),
-        }
+            first: Number(delegationsPagination),
+          }
         : undefined,
     },
     skip: !pubKey,
