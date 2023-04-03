@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: "Monorepo project to publish"
+        description: 'Monorepo project to publish'
         required: true
         type: choice
         options:
@@ -21,8 +21,8 @@ jobs:
     name: Build & Publish - Tag
     runs-on: ubuntu-22.04
     permissions:
-      contents: "read"
-      actions: "read"
+      contents: 'read'
+      actions: 'read'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version-file: ".nvmrc"
+          node-version-file: '.nvmrc'
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
 
