@@ -581,7 +581,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   if (orderRejection) {
     label = t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [
-      orderRejection || tx.order?.rejectionReason || ' ',
+      orderRejection,
     ]);
   }
   if (walletError) {
