@@ -232,13 +232,12 @@ export const TransferFee = ({
 
   // using toFixed without an argument will always return a
   // number in normal notation without rounding, formatting functions
-  // aren't working in a way which won't round the decimal places
+  // arent working in a way which won't round the decimal places
   const value = new BigNumber(amount).times(feeFactor).toFixed();
-  const totalValue = new BigNumber(amount).plus(value).toFixed();
 
   return (
-    <div className="mb-4 flex flex-col gap-4">
-      <div className="flex justify-between gap-4 items-center flex-wrap">
+    <div className="mb-4 flex justify-between items-center gap-4 flex-wrap">
+      <div>
         <Tooltip
           description={t(
             `The transfer fee is set by the network parameter transfer.fee.factor, currently set to ${feeFactor}`
@@ -246,29 +245,12 @@ export const TransferFee = ({
         >
           <div>{t('Transfer fee')}</div>
         </Tooltip>
-
-        <div
-          data-testid="transfer-fee"
-          className="text-neutral-500 dark:text-neutral-300"
-        >
-          {value}
-        </div>
       </div>
-      <div className="flex justify-between gap-4 items-center flex-wrap">
-        <Tooltip
-          description={t(
-            `The total amount plus the transfer fee, which is set by the network parameter "transfer.fee.factor", currently set to ${feeFactor}`
-          )}
-        >
-          <div>{t('Total amount (with fee)')}</div>
-        </Tooltip>
-
-        <div
-          data-testid="total-transfer-fee"
-          className="text-neutral-500 dark:text-neutral-300"
-        >
-          {totalValue}
-        </div>
+      <div
+        data-testid="transfer-fee"
+        className="text-neutral-500 dark:text-neutral-300"
+      >
+        {value}
       </div>
     </div>
   );

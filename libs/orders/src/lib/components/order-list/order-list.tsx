@@ -129,8 +129,9 @@ export const OrderListTable = memo(
             }: VegaValueFormatterParams<Order, 'status'>) => {
               if (data?.rejectionReason && value) {
                 return `${Schema.OrderStatusMapping[value]}: ${
-                  data?.rejectionReason &&
-                  Schema.OrderRejectionReasonMapping[data.rejectionReason]
+                  (data?.rejectionReason &&
+                    Schema.OrderRejectionReasonMapping[data.rejectionReason]) ||
+                  data?.rejectionReason
                 }`;
               }
               return value ? Schema.OrderStatusMapping[value] : '';
