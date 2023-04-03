@@ -218,7 +218,14 @@ export const OrderListTable = memo(
                 return `${Schema.OrderTimeInForceMapping[value]}: ${expiry}`;
               }
 
-              return value ? Schema.OrderTimeInForceMapping[value] : '';
+              const tifLabel = value
+                ? Schema.OrderTimeInForceMapping[value]
+                : '';
+              const label = `${tifLabel}${
+                data?.postOnly ? '. (Post Only)' : ''
+              }${data?.reduceOnly ? '. (Reduce Only)' : ''}`;
+
+              return label;
             }}
             minWidth={150}
           />
