@@ -202,11 +202,11 @@ export const DealTicket = ({
                 if (type === OrderType.TYPE_NETWORK) return;
                 update({
                   type,
-                  // when changing type also update the tif to what was last used of new type
+                  // when changing type also update the TIF to what was last used of new type
                   timeInForce: lastTIF[type] || order.timeInForce,
+                  postOnly:
+                    type === OrderType.TYPE_MARKET ? false : order.postOnly,
                   expiresAt: undefined,
-                  reduceOnly: false,
-                  postOnly: false,
                 });
                 clearErrors('expiresAt');
               }}
@@ -254,7 +254,15 @@ export const DealTicket = ({
               orderType={order.type}
               onSelect={(timeInForce) => {
                 // Reset post only and reduce only when changing TIF
-                update({ timeInForce, postOnly: false, reduceOnly: false });
+                update({
+                  timeInForce,
+                  postOnly: [
+                    OrderTimeInForce.TIME_IN_FORCE_FOK,
+                    OrderTimeInForce.TIME_IN_FORCE_IOC,
+                  ].includes(timeInForce)
+                    ? false
+                    : order.postOnly,
+                });
                 // Set TIF value for the given order type, so that when switching
                 // types we know the last used TIF for the given order type
                 setLastTIF((curr) => ({
