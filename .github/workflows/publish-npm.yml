@@ -26,22 +26,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: User Node.js 16
-        id: Node
+
+      - name: Check node version
+        id: node-version
+        run: |
+          npmVersion=$(cat .nvmrc | head -n 1)
+          echo ::set-output name=npmVersion::${npmVersion}
+
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.15.1
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+          node-version: ${{ steps.node-version.outputs.npmVersion }}
+          cache: yarn
+
       - name: Install root dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Build project
         run: yarn nx build ${{inputs.project}}
+
       - name: Publish project to @vegaprotocol
         uses: JS-DevTools/npm-publish@v1
         with:
