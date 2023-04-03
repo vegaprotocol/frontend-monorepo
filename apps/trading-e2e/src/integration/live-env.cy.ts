@@ -95,6 +95,16 @@ describe('Console - market info - live env', { tags: '@live' }, () => {
       cy.wrap(element).should('have.text', subtitles[index]);
     });
   });
+
+  it('renders  correctly liquidity in trading tab', () => {
+    cy.getByTestId('Liquidity').click();
+    cy.contains('Loading').should('not.exist');
+    cy.contains('Something went wrong').should('not.exist');
+    cy.contains('Application error').should('not.exist');
+    cy.getByTestId('tab-liquidity').within(() => {
+      cy.get('[col-id="party.id"]').eq(1).should('not.be.empty');
+    });
+  });
 });
 
 describe('Console - market summary - live env', { tags: '@live' }, () => {
