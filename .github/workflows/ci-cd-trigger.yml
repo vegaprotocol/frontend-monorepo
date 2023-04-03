@@ -85,7 +85,7 @@ jobs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
 
-  run-cypress:
+  cypress:
     needs: lint-test-build
     if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
@@ -94,7 +94,7 @@ jobs:
       projects: ${{ needs.lint-test-build.outputs.projects-e2e }}
       tags: '@smoke @regression'
 
-  run-docker-build:
+  docker-build:
     needs: lint-test-build
     if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/publish-dist.yml
