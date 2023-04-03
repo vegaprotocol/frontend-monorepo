@@ -78,6 +78,7 @@ jobs:
 
   cypress:
     needs: lint-test-build
+    name: '(CI) cypress'
     if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
@@ -85,8 +86,9 @@ jobs:
       projects: ${{ needs.lint-test-build.outputs.projects-e2e }}
       tags: '@smoke @regression'
 
-  docker-build:
+  publish-dist:
     needs: lint-test-build
+    name: '(CD) publish dist (${{ github.event_name == "pull_request" && "docker" || "s3" }})'
     if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
