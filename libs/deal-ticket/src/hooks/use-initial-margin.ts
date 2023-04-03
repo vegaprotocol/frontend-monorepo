@@ -65,5 +65,11 @@ export const useInitialMargin = (
       sellMargin > buyMargin ? sellMargin.toString() : buyMargin.toString();
   }
 
-  return useMemo(() => ({ totalMargin, margin }), [totalMargin, margin]);
+  return useMemo(
+    () => ({
+      totalMargin,
+      margin,
+    }),
+    [totalMargin, margin]
+  );
 };

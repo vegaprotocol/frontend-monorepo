@@ -153,35 +153,84 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
   },
 });
 
+export type Filter = { partyId?: string; active?: boolean };
+
 export const lpAggregatedDataProvider = makeDerivedDataProvider<
-  ReturnType<typeof getLiquidityProvision>,
+  LiquidityProvisionData[],
   never,
-  MarketLpQueryVariables
+  MarketLpQueryVariables & { filter?: Filter }
 >(
   [
-    liquidityProvisionsDataProvider,
-    marketLiquidityDataProvider,
-    liquidityFeeShareDataProvider,
+    (callback, client, variables) =>
+      liquidityProvisionsDataProvider(callback, client, {
+        marketId: variables.marketId,
+      }),
+    (callback, client, variables) =>
+      marketLiquidityDataProvider(callback, client, {
+        marketId: variables.marketId,
+      }),
+    (callback, client, variables) =>
+      liquidityFeeShareDataProvider(callback, client, {
+        marketId: variables.marketId,
+      }),
   ],
-  ([
-    liquidityProvisions,
-    marketLiquidity,
-    liquidityFeeShare,
-  ]): LiquidityProvisionData[] => {
+  (
+    [liquidityProvisions, marketLiquidity, liquidityFeeShare],
+    { filter }
+  ): LiquidityProvisionData[] => {
     return getLiquidityProvision(
       liquidityProvisions,
       marketLiquidity,
-      liquidityFeeShare
+      liquidityFeeShare,
+      filter
     );
   }
 );
 
+export const matchFilter = (
+  filter: Filter,
+  lp: LiquidityProvisionFieldsFragment
+) => {
+  if (filter.partyId && lp.party.id !== filter.partyId) {
+    return false;
+  }
+  if (
+    filter.active === true &&
+    lp.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE
+  ) {
+    return false;
+  }
+  if (
+    filter.active === false &&
+    lp.status === Schema.LiquidityProvisionStatus.STATUS_ACTIVE
+  ) {
+    return false;
+  }
+  return true;
+};
+
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
   marketLiquidity: MarketLpQuery,
-  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
+  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[],
+  filter?: Filter
 ): LiquidityProvisionData[] => {
   return liquidityProvisions
+    .filter((lp) => {
+      if (
+        ![
+          Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
+          Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
+          Schema.LiquidityProvisionStatus.STATUS_PENDING,
+        ].includes(lp.status)
+      ) {
+        return false;
+      }
+      if (filter && !matchFilter(filter, lp)) {
+        return false;
+      }
+      return true;
+    })
     .map((lp) => {
       const market = marketLiquidity?.market;
       const feeShare = liquidityFeeShare.find(
@@ -210,14 +259,7 @@ export const getLiquidityProvision = (
             .decimals,
         balance,
       };
-    })
-    .filter((e) =>
-      [
-        Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
-        Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
-        Schema.LiquidityProvisionStatus.STATUS_PENDING,
-      ].includes(e.status)
-    );
+    });
 };
 
 export interface LiquidityProvisionData

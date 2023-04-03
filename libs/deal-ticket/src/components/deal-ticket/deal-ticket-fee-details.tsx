@@ -1,4 +1,5 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import classnames from 'classnames';
 import type { ReactNode } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
@@ -11,9 +12,12 @@ interface DealTicketFeeDetailsProps {
   order: OrderSubmissionBody['orderSubmission'];
   market: Market;
   marketData: MarketData;
-  margin: string;
-  totalMargin: string;
-  balance: string;
+  currentInitialMargin?: string;
+  currentMaintenanceMargin?: string;
+  estimatedInitialMargin: string;
+  estimatedTotalInitialMargin: string;
+  marginAccountBalance: string;
+  generalAccountBalance: string;
 }
 
 export interface DealTicketFeeDetailProps {
@@ -45,23 +49,22 @@ export const DealTicketFeeDetails = ({
   order,
   market,
   marketData,
-  margin,
-  totalMargin,
-  balance,
+  ...args
 }: DealTicketFeeDetailsProps) => {
   const feeDetails = useFeeDealTicketDetails(order, market, marketData);
   const details = getFeeDetailsValues({
     ...feeDetails,
-    margin,
-    totalMargin,
-    balance,
+    ...args,
   });
   return (
     <div>
-      {details.map(({ label, value, labelDescription, symbol }) => (
+      {details.map(({ label, value, labelDescription, symbol, indent }) => (
         <div
           key={typeof label === 'string' ? label : 'value-dropdown'}
-          className="text-xs mt-2 flex justify-between items-center gap-4 flex-wrap"
+          className={classnames(
+            'text-xs mt-2 flex justify-between items-center gap-4 flex-wrap',
+            { 'ml-2': indent }
+          )}
         >
           <div>
             <Tooltip description={labelDescription}>
