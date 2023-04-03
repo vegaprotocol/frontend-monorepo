@@ -31,14 +31,15 @@ jobs:
           node-version: ${{ steps.node-version.outputs.npmVersion }}
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
+          cache-dependency-path: '**/yarn.lock '
+
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
         with:
           main-branch-name: develop
-
-      - name: Install root dependencies
-        run: yarn install --frozen-lockfile
 
       - name: Check formatting
         run: yarn nx format:check

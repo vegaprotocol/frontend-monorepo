@@ -26,7 +26,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.node-version.outputs.npmVersion }}
+          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
+          cache-dependency-path: '**/yarn.lock '
 
       - name: Install root dependencies
         run: yarn install --frozen-lockfile
