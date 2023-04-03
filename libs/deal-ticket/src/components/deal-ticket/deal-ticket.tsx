@@ -185,6 +185,8 @@ export const DealTicket = ({
   // if an order doesn't exist one will be created by the store immediately
   if (!order || !normalizedOrder) return null;
 
+  console.log('errors', errors);
+
   return (
     <TinyScroll className="h-full overflow-auto">
       <form

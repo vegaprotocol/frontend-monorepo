@@ -172,6 +172,8 @@ describe('TransferFee', () => {
     const expected = new BigNumber(props.amount)
       .times(props.feeFactor)
       .toFixed();
+    const total = new BigNumber(props.amount).plus(expected).toFixed();
     expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expected);
+    expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(total);
   });
 });

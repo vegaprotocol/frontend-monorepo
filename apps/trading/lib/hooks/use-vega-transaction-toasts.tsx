@@ -479,9 +479,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     return (
       <>
         <ToastHeading>{t('Order rejected')}</ToastHeading>
-        {rejectionReason ? (
+        {rejectionReason || tx.order.rejectionReason ? (
           <p>
-            {t('Your order has been rejected because: %s', [rejectionReason])}
+            {t('Your order has been rejected because: %s', [
+              rejectionReason || tx.order.rejectionReason,
+            ])}
           </p>
         ) : (
           <p>{t('Your order has been rejected.')}</p>
@@ -580,7 +582,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   if (orderRejection) {
     label = t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [
-      orderRejection,
+      orderRejection || tx.order?.rejectionReason || ' ',
     ]);
   }
   if (walletError) {
