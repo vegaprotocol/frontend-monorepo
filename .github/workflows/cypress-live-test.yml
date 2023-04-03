@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: "Url"
+        description: 'Url'
         required: true
         type: string
 

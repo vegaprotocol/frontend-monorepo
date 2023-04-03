@@ -38,7 +38,7 @@ jobs:
       - name: Restore node_modules from cache
         uses: actions/cache@v3
         with:
-          path: "**/node_modules"
+          path: '**/node_modules'
           key: node_modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install root dependencies
@@ -93,7 +93,7 @@ jobs:
     secrets: inherit
     with:
       projects: ${{ needs.pr.outputs.projects-e2e }}
-      tags: "@smoke @regression"
+      tags: '@smoke @regression'
 
   run-docker-build:
     needs: pr
