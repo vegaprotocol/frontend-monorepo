@@ -647,7 +647,11 @@ export const useVegaTransactionToasts = () => {
 
     // Transaction can be successful but the order can be rejected by the network
     const intent =
-      tx.order && [OrderStatus.STATUS_REJECTED].includes(tx.order.status)
+      (tx.order &&
+        [OrderStatus.STATUS_REJECTED, OrderStatus.STATUS_STOPPED].includes(
+          tx.order.status
+        )) ||
+      tx.order?.rejectionReason
         ? Intent.Danger
         : intentMap[tx.status];
 
