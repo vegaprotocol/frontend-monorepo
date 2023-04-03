@@ -17,12 +17,10 @@ export const envNameMapping: Record<Networks, string> = {
   [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
   [Networks.CUSTOM]: t('Custom'),
   [Networks.DEVNET]: t('Devnet'),
-  [Networks.SANDBOX]: t('Sandbox'),
   [Networks.STAGNET1]: t('Stagnet'),
   [Networks.STAGNET3]: t('Stagnet3'),
   [Networks.TESTNET]: t('Fairground testnet'),
   [Networks.MAINNET]: t('Mainnet'),
-  [Networks.MIRROR]: t('Mainnet mirror'),
 };
 
 export const envTriggerMapping: Record<Networks, string> = {
@@ -32,7 +30,6 @@ export const envTriggerMapping: Record<Networks, string> = {
 
 export const envDescriptionMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: '',
-  [Networks.SANDBOX]: t('A playground test environment'),
   [Networks.VALIDATOR_TESTNET]: t('The validator deployed testnet'),
   [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
   [Networks.STAGNET1]: t('A release candidate for the staging environment'),
@@ -41,9 +38,6 @@ export const envDescriptionMapping: Record<Networks, string> = {
     'Public testnet run by the Vega team, often used for incentives'
   ),
   [Networks.MAINNET]: t('The vega mainnet'),
-  [Networks.MIRROR]: t(
-    'A mirror of the mainnet environment running on an Ethereum test network'
-  ),
 };
 
 const standardNetworkKeys = [Networks.MAINNET, Networks.TESTNET];

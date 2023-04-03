@@ -3,13 +3,11 @@ import z from 'zod';
 export enum Networks {
   VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
   CUSTOM = 'CUSTOM',
-  SANDBOX = 'SANDBOX',
   TESTNET = 'TESTNET',
   STAGNET1 = 'STAGNET1',
   STAGNET3 = 'STAGNET3',
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',
-  MIRROR = 'MIRROR',
 }
 
 const schemaObject = {
