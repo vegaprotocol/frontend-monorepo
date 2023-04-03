@@ -158,6 +158,12 @@ export const DealTicket = ({
     return disabled;
   }, [order]);
 
+  useEffect(() => {
+    if (order?.postOnly && disablePostOnlyCheckbox) {
+      update({ postOnly: false });
+    }
+  }, [order, disablePostOnlyCheckbox, update]);
+
   const onSubmit = useCallback(
     (order: OrderSubmission) => {
       const now = new Date().getTime();
@@ -252,7 +258,7 @@ export const DealTicket = ({
               orderType={order.type}
               onSelect={(timeInForce) => {
                 update({ timeInForce, postOnly: false, reduceOnly: false });
-                // Set tif value for the given order type, so that when switching
+                // Set TIF value for the given order type, so that when switching
                 // types we know the last used TIF for the given order type
                 setLastTIF((curr) => ({
                   ...curr,
