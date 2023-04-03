@@ -103,11 +103,10 @@ jobs:
       projects: ${{ needs.lint-test-build.outputs.projects }}
 
   # Report single result at the end, to avoid mess with required checks in PR
-  result:
+  cypress-result:
     if: ${{ always() }}
-    needs: run-cypress
+    needs: cypress
     runs-on: ubuntu-22.04
-    name: Cypress result
     steps:
       - run: |
           result="${{ needs.run-cypress.result }}"
