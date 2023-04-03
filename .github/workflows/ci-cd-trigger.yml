@@ -11,7 +11,7 @@ on:
       - synchronize
       - ready_for_review
 jobs:
-  pr:
+  lint-test-build:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -44,6 +44,21 @@ jobs:
       - name: Install root dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Check formatting
+        run: yarn nx format:check
+
+      - name: Lint affected
+        run: yarn nx affected:lint --max-warnings=0
+
+      - name: Build affected spec
+        run: yarn nx affected --target=build-spec
+
+      - name: Test affected
+        run: yarn nx affected:test
+
+      - name: Build affected
+        run: yarn nx affected:build
+
       # See affected apps
       - name: See affected apps
         run: |
@@ -65,21 +80,6 @@ jobs:
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
-
-      - name: Check formatting
-        run: yarn nx format:check
-
-      - name: Lint affected
-        run: yarn nx affected:lint --max-warnings=0
-
-      - name: Build affected spec
-        run: yarn nx affected --target=build-spec
-
-      - name: Test affected
-        run: yarn nx affected:test
-
-      - name: Build affected
-        run: yarn nx affected:build
 
     outputs:
       projects: ${{ env.PROJECTS }}

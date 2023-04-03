@@ -12,7 +12,7 @@ on:
       #   type: string
 
 jobs:
-  master:
+  publish-dist:
     strategy:
       fail-fast: false
       matrix:
