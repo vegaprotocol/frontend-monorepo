@@ -96,7 +96,7 @@ describe('Console - market info - live env', { tags: '@live' }, () => {
     });
   });
 
-  it('renders  correctly liquidity in trading tab', () => {
+  it('renders correctly liquidity in trading tab', () => {
     cy.getByTestId('Liquidity').click();
     cy.contains('Loading').should('not.exist');
     cy.contains('Something went wrong').should('not.exist');
