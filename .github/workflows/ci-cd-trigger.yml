@@ -12,7 +12,7 @@ on:
       - ready_for_review
 jobs:
   pr:
-    runs-on: self-hosted-runner
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -38,7 +38,7 @@ jobs:
       - name: Restore node_modules from cache
         uses: actions/cache@v3
         with:
-          path: '**/node_modules'
+          path: "**/node_modules"
           key: node_modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install root dependencies
@@ -93,7 +93,7 @@ jobs:
     secrets: inherit
     with:
       projects: ${{ needs.pr.outputs.projects-e2e }}
-      tags: '@smoke @regression'
+      tags: "@smoke @regression"
 
   run-docker-build:
     needs: pr
@@ -108,7 +108,7 @@ jobs:
   result:
     if: ${{ always() }}
     needs: run-cypress
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Cypress result
     steps:
       - run: |

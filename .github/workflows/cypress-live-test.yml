@@ -6,14 +6,14 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: 'Url'
+        description: "Url"
         required: true
         type: string
 
 jobs:
   cypress-run:
     name: Run Cypress Trading tests -- live environment
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
