@@ -81,7 +81,6 @@ jobs:
       - name: Build affected
         run: yarn nx affected:build
 
-
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
