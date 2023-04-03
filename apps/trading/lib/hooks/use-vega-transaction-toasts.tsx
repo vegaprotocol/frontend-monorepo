@@ -480,9 +480,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         <ToastHeading>{t('Order rejected')}</ToastHeading>
         {rejectionReason ? (
           <p>
-            {t('Your order has been rejected because: %s', [
-              rejectionReason
-            ])}
+            {t('Your order has been rejected because: %s', [rejectionReason])}
           </p>
         ) : (
           <p>{t('Your order has been rejected.')}</p>
