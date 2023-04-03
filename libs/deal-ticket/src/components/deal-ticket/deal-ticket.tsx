@@ -44,6 +44,9 @@ import {
 
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+
+import { marketMarginDataProvider } from '@vegaprotocol/positions';
 
 export interface DealTicketProps {
   market: Market;
@@ -102,6 +105,12 @@ export const DealTicket = ({
     );
 
   const { margin, totalMargin } = useInitialMargin(market.id, normalizedOrder);
+
+  const { data: currentMargins } = useDataProvider({
+    dataProvider: marketMarginDataProvider,
+    variables: { marketId: market.id, partyId: pubKey || '' },
+    skip: !pubKey,
+  });
 
   useEffect(() => {
     if (!pubKey) {
@@ -367,9 +376,12 @@ export const DealTicket = ({
           order={normalizedOrder}
           market={market}
           marketData={marketData}
-          margin={margin}
-          totalMargin={totalMargin}
-          balance={marginAccountBalance}
+          estimatedInitialMargin={margin}
+          estimatedTotalInitialMargin={totalMargin}
+          currentInitialMargin={currentMargins?.initialLevel}
+          currentMaintenanceMargin={currentMargins?.maintenanceLevel}
+          marginAccountBalance={marginAccountBalance}
+          generalAccountBalance={generalAccountBalance}
         />
       </form>
     </TinyScroll>
