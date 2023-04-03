@@ -158,6 +158,16 @@ export const DealTicket = ({
     return disabled;
   }, [order]);
 
+  const disableReduceOnlyCheckbox = useMemo(() => {
+    const disabled = order
+      ? ![
+          Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+          Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+        ].includes(order.timeInForce)
+      : true;
+    return disabled;
+  }, [order]);
+
   const onSubmit = useCallback(
     (order: OrderSubmission) => {
       const now = new Date().getTime();
@@ -206,6 +216,14 @@ export const DealTicket = ({
                   timeInForce: lastTIF[type] || order.timeInForce,
                   postOnly:
                     type === OrderType.TYPE_MARKET ? false : order.postOnly,
+                  reduceOnly:
+                    type === OrderType.TYPE_LIMIT &&
+                    ![
+                      OrderTimeInForce.TIME_IN_FORCE_FOK,
+                      OrderTimeInForce.TIME_IN_FORCE_IOC,
+                    ].includes(lastTIF[type] || order.timeInForce)
+                      ? false
+                      : order.postOnly,
                   expiresAt: undefined,
                 });
                 clearErrors('expiresAt');
@@ -262,6 +280,12 @@ export const DealTicket = ({
                   ].includes(timeInForce)
                     ? false
                     : order.postOnly,
+                  reduceOnly: ![
+                    OrderTimeInForce.TIME_IN_FORCE_FOK,
+                    OrderTimeInForce.TIME_IN_FORCE_IOC,
+                  ].includes(timeInForce)
+                    ? false
+                    : order.reduceOnly,
                 });
                 // Set TIF value for the given order type, so that when switching
                 // types we know the last used TIF for the given order type
@@ -338,6 +362,7 @@ export const DealTicket = ({
               <Checkbox
                 name="reduce-only"
                 checked={order.reduceOnly}
+                disabled={disableReduceOnlyCheckbox}
                 onCheckedChange={() => {
                   update({ postOnly: false, reduceOnly: !order.reduceOnly });
                 }}
