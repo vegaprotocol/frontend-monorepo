@@ -84,25 +84,23 @@ jobs:
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
-      # nx-head: ${{ env.NX_HEAD }}
 
   run-cypress:
-    needs: pr
-    if: ${{ needs.pr.outputs.projects != '[]' }}
+    needs: lint-test-build
+    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
-      projects: ${{ needs.pr.outputs.projects-e2e }}
+      projects: ${{ needs.lint-test-build.outputs.projects-e2e }}
       tags: '@smoke @regression'
 
   run-docker-build:
-    needs: pr
-    if: ${{ needs.pr.outputs.projects != '[]' }}
+    needs: lint-test-build
+    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
-      projects: ${{ needs.pr.outputs.projects }}
-      # nx-version: ${{ needs.pr.outputs.nx-head }}
+      projects: ${{ needs.lint-test-build.outputs.projects }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   result:
