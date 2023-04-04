@@ -6,7 +6,6 @@ import produce from 'immer';
 
 import {
   LiquidityProviderFeeShareDocument,
-  LiquidityProviderFeeShareUpdateDocument,
   LiquidityProvisionsDocument,
   LiquidityProvisionsUpdateDocument,
   MarketLpDocument,
@@ -18,7 +17,6 @@ import type {
   LiquidityProviderFeeShareFieldsFragment,
   LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareQueryVariables,
-  LiquidityProviderFeeShareUpdateSubscription,
   LiquidityProvisionFieldsFragment,
   LiquidityProvisionsQuery,
   LiquidityProvisionsQueryVariables,
@@ -115,41 +113,13 @@ export const marketLiquidityDataProvider = makeDataProvider<
 export const liquidityFeeShareDataProvider = makeDataProvider<
   LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareFieldsFragment[],
-  LiquidityProviderFeeShareUpdateSubscription,
-  LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare'],
+  never,
+  never,
   LiquidityProviderFeeShareQueryVariables
 >({
   query: LiquidityProviderFeeShareDocument,
-  subscriptionQuery: LiquidityProviderFeeShareUpdateDocument,
-  update: (
-    data: LiquidityProviderFeeShareFieldsFragment[] | null,
-    deltas: LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare']
-  ) => {
-    return produce(data || [], (draft) => {
-      deltas?.forEach((delta) => {
-        const id = delta.partyId;
-        const index = draft.findIndex((a) => a.party.id === id);
-        if (index !== -1) {
-          draft[index].equityLikeShare = delta.equityLikeShare;
-          draft[index].averageEntryValuation = delta.averageEntryValuation;
-        } else {
-          draft.unshift({
-            equityLikeShare: delta.equityLikeShare,
-            averageEntryValuation: delta.averageEntryValuation,
-            party: {
-              id: delta.partyId,
-            },
-            // TODO add accounts connection to the subscription
-          });
-        }
-      });
-    });
-  },
   getData: (data) => {
     return data?.market?.data?.liquidityProviderFeeShare || [];
-  },
-  getDelta: (subscriptionData: LiquidityProviderFeeShareUpdateSubscription) => {
-    return subscriptionData.marketsData[0].liquidityProviderFeeShare;
   },
 });
 

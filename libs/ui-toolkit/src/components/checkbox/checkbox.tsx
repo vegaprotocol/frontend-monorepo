@@ -38,6 +38,7 @@ export const Checkbox = ({
         checked={checked}
         onCheckedChange={onCheckedChange}
         disabled={disabled}
+        data-testid={name}
       >
         <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-[15px] h-[15px] bg-black dark:bg-white">
           {checked === 'indeterminate' ? (

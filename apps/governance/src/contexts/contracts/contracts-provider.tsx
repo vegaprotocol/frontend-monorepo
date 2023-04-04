@@ -49,6 +49,13 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
           signer = provider.getSigner();
         }
 
+        const tokenVestingAddress =
+          config.token_vesting_contract?.address ||
+          ENV.addresses.tokenVestingAddress;
+        if (!tokenVestingAddress) {
+          throw new Error('No token vesting address found');
+        }
+
         if (provider && config) {
           const staking = new StakingBridge(
             config.staking_bridge_contract.address,
@@ -63,7 +70,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
                 signer || provider
               ),
               vesting: new TokenVesting(
-                config.token_vesting_contract.address,
+                tokenVestingAddress,
                 signer || provider
               ),
               claim: new Claim(ENV.addresses.claimAddress, signer || provider),

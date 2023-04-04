@@ -129,8 +129,9 @@ export const OrderListTable = memo(
             }: VegaValueFormatterParams<Order, 'status'>) => {
               if (data?.rejectionReason && value) {
                 return `${Schema.OrderStatusMapping[value]}: ${
-                  data?.rejectionReason &&
-                  Schema.OrderRejectionReasonMapping[data.rejectionReason]
+                  (data?.rejectionReason &&
+                    Schema.OrderRejectionReasonMapping[data.rejectionReason]) ||
+                  data?.rejectionReason
                 }`;
               }
               return value ? Schema.OrderStatusMapping[value] : '';
@@ -218,7 +219,14 @@ export const OrderListTable = memo(
                 return `${Schema.OrderTimeInForceMapping[value]}: ${expiry}`;
               }
 
-              return value ? Schema.OrderTimeInForceMapping[value] : '';
+              const tifLabel = value
+                ? Schema.OrderTimeInForceMapping[value]
+                : '';
+              const label = `${tifLabel}${
+                data?.postOnly ? t('. Post Only') : ''
+              }${data?.reduceOnly ? t('. Reduce only') : ''}`;
+
+              return label;
             }}
             minWidth={150}
           />

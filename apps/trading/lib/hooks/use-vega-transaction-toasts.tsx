@@ -474,13 +474,16 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   if (tx.order && tx.order.rejectionReason) {
-    const rejectionReason = getRejectionReason(tx.order) || ' ';
+    const rejectionReason =
+      getRejectionReason(tx.order) || tx.order.rejectionReason || '';
     return (
       <>
         <ToastHeading>{t('Order rejected')}</ToastHeading>
-        {rejectionReason ? (
+        {rejectionReason || tx.order.rejectionReason ? (
           <p>
-            {t('Your order has been rejected because: %s', [rejectionReason])}
+            {t('Your order has been rejected because: %s', [
+              rejectionReason || tx.order.rejectionReason,
+            ])}
           </p>
         ) : (
           <p>{t('Your order has been rejected.')}</p>
@@ -579,7 +582,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   if (orderRejection) {
     label = t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [
-      orderRejection,
+      orderRejection || tx.order?.rejectionReason || ' ',
     ]);
   }
   if (walletError) {
@@ -646,7 +649,11 @@ export const useVegaTransactionToasts = () => {
 
     // Transaction can be successful but the order can be rejected by the network
     const intent =
-      tx.order && [OrderStatus.STATUS_REJECTED].includes(tx.order.status)
+      (tx.order &&
+        [OrderStatus.STATUS_REJECTED, OrderStatus.STATUS_STOPPED].includes(
+          tx.order.status
+        )) ||
+      tx.order?.rejectionReason
         ? Intent.Danger
         : intentMap[tx.status];
 

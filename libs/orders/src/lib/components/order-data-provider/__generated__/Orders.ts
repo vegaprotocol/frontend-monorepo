@@ -3,28 +3,30 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null };
+export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null };
 
 export type OrderByIdQueryVariables = Types.Exact<{
   orderId: Types.Scalars['ID'];
 }>;
 
 
-export type OrderByIdQuery = { __typename?: 'Query', orderByID: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null } };
+export type OrderByIdQuery = { __typename?: 'Query', orderByID: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null } };
 
 export type OrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  marketIds?: Types.InputMaybe<Array<Types.Scalars['ID']> | Types.Scalars['ID']>;
   pagination?: Types.InputMaybe<Types.Pagination>;
-  filter?: Types.InputMaybe<Types.OrderByMarketIdsFilter>;
+  filter?: Types.InputMaybe<Types.OrderFilter>;
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, ordersConnection?: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } | null } | null } | null };
+export type OrdersQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, ordersConnection?: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder' } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } | null } | null } | null };
 
 export type OrderUpdateFieldsFragment = { __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder' } | null };
 
 export type OrdersUpdateSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  marketIds?: Types.InputMaybe<Array<Types.Scalars['ID']> | Types.Scalars['ID']>;
 }>;
 
 
@@ -47,6 +49,8 @@ export const OrderFieldsFragmentDoc = gql`
   expiresAt
   createdAt
   updatedAt
+  postOnly
+  reduceOnly
   liquidityProvision {
     __typename
   }
@@ -112,10 +116,13 @@ export type OrderByIdQueryHookResult = ReturnType<typeof useOrderByIdQuery>;
 export type OrderByIdLazyQueryHookResult = ReturnType<typeof useOrderByIdLazyQuery>;
 export type OrderByIdQueryResult = Apollo.QueryResult<OrderByIdQuery, OrderByIdQueryVariables>;
 export const OrdersDocument = gql`
-    query Orders($partyId: ID!, $pagination: Pagination, $filter: OrderByMarketIdsFilter) {
+    query Orders($partyId: ID!, $marketIds: [ID!], $pagination: Pagination, $filter: OrderFilter) {
   party(id: $partyId) {
     id
-    ordersConnection(pagination: $pagination, filter: $filter) {
+    ordersConnection(
+      pagination: $pagination
+      filter: {order: $filter, marketIds: $marketIds}
+    ) {
       edges {
         node {
           ...OrderFields
@@ -146,6 +153,7 @@ export const OrdersDocument = gql`
  * const { data, loading, error } = useOrdersQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      marketIds: // value for 'marketIds'
  *      pagination: // value for 'pagination'
  *      filter: // value for 'filter'
  *   },
@@ -163,8 +171,8 @@ export type OrdersQueryHookResult = ReturnType<typeof useOrdersQuery>;
 export type OrdersLazyQueryHookResult = ReturnType<typeof useOrdersLazyQuery>;
 export type OrdersQueryResult = Apollo.QueryResult<OrdersQuery, OrdersQueryVariables>;
 export const OrdersUpdateDocument = gql`
-    subscription OrdersUpdate($partyId: ID!) {
-  orders(filter: {partyIds: [$partyId]}) {
+    subscription OrdersUpdate($partyId: ID!, $marketIds: [ID!]) {
+  orders(filter: {partyIds: [$partyId], marketIds: $marketIds}) {
     ...OrderUpdateFields
   }
 }
@@ -183,6 +191,7 @@ export const OrdersUpdateDocument = gql`
  * const { data, loading, error } = useOrdersUpdateSubscription({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      marketIds: // value for 'marketIds'
  *   },
  * });
  */
