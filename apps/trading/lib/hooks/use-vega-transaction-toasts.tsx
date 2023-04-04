@@ -39,7 +39,11 @@ import { t } from '@vegaprotocol/i18n';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
-import { getRejectionReason, useOrderByIdQuery } from '@vegaprotocol/orders';
+import {
+  getOrderTitle as getOrderTitle,
+  getRejectionReason,
+  useOrderByIdQuery,
+} from '@vegaprotocol/orders';
 import { useMarketList } from '@vegaprotocol/market-list';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatus } from '@vegaprotocol/types';
@@ -477,7 +481,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     const rejectionReason = getRejectionReason(tx.order) || ' ';
     return (
       <>
-        <ToastHeading>{t('Order rejected')}</ToastHeading>
+        <ToastHeading>{getOrderTitle(tx.order.status)}</ToastHeading>
         {rejectionReason ? (
           <p>
             {t('Your order has been rejected because: %s', [rejectionReason])}
@@ -503,7 +507,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   if (isOrderSubmissionTransaction(tx.body) && tx.order?.rejectionReason) {
     return (
       <div>
-        <h3 className="font-bold">{t('Order rejected')}</h3>
+        <h3 className="font-bold">{getOrderTitle(tx.order.status)}</h3>
         <p>{t('Your order was rejected.')}</p>
         {tx.txHash && (
           <p className="break-all">
@@ -577,7 +581,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     tx.error instanceof WalletError &&
     walletNoConnectionCodes.includes(tx.error.code);
   if (orderRejection) {
-    label = t('Order rejected');
+    label = getOrderTitle(tx.order?.status) || t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [
       orderRejection,
     ]);

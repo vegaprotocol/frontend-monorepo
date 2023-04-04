@@ -13,7 +13,7 @@ import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
-export const getOrderDialogTitle = (
+export const getOrderTitle = (
   status?: Schema.OrderStatus
 ): string | undefined => {
   if (!status) {
@@ -42,7 +42,7 @@ export const getOrderDialogTitle = (
   }
 };
 
-export const getOrderDialogIntent = (
+export const getOrderIntent = (
   status?: Schema.OrderStatus
 ): Intent | undefined => {
   if (!status) {
@@ -65,7 +65,7 @@ export const getOrderDialogIntent = (
   }
 };
 
-export const getOrderDialogIcon = (
+export const getOrderToastIcon = (
   status?: Schema.OrderStatus
 ): ReactNode | undefined => {
   if (!status) {
