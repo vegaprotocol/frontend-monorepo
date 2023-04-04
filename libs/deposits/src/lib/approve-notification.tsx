@@ -174,7 +174,7 @@ const ApprovalTxFeedback = ({
             <>
               <p>
                 {t(
-                  `Your ${selectedAsset?.symbol} is being confirmed by the Ethereum network. When this is complete, you can continue your deposit`
+                  `Your ${selectedAsset?.symbol} approval is being confirmed by the Ethereum network. When this is complete, you can continue your deposit`
                 )}{' '}
               </p>
               {txLink && <p>{txLink}</p>}
