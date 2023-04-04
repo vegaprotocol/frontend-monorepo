@@ -44,6 +44,9 @@ import {
 
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+
+import { marketMarginDataProvider } from '@vegaprotocol/positions';
 
 export interface DealTicketProps {
   market: Market;
@@ -103,6 +106,12 @@ export const DealTicket = ({
 
   const { margin, totalMargin } = useInitialMargin(market.id, normalizedOrder);
 
+  const { data: currentMargins } = useDataProvider({
+    dataProvider: marketMarginDataProvider,
+    variables: { marketId: market.id, partyId: pubKey || '' },
+    skip: !pubKey,
+  });
+
   useEffect(() => {
     if (!pubKey) {
       setError('summary', {
@@ -158,6 +167,16 @@ export const DealTicket = ({
     return disabled;
   }, [order]);
 
+  const disableReduceOnlyCheckbox = useMemo(() => {
+    const disabled = order
+      ? ![
+          Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+          Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+        ].includes(order.timeInForce)
+      : true;
+    return disabled;
+  }, [order]);
+
   const onSubmit = useCallback(
     (order: OrderSubmission) => {
       const now = new Date().getTime();
@@ -202,8 +221,18 @@ export const DealTicket = ({
                 if (type === OrderType.TYPE_NETWORK) return;
                 update({
                   type,
-                  // when changing type also update the tif to what was last used of new type
+                  // when changing type also update the TIF to what was last used of new type
                   timeInForce: lastTIF[type] || order.timeInForce,
+                  postOnly:
+                    type === OrderType.TYPE_MARKET ? false : order.postOnly,
+                  reduceOnly:
+                    type === OrderType.TYPE_LIMIT &&
+                    ![
+                      OrderTimeInForce.TIME_IN_FORCE_FOK,
+                      OrderTimeInForce.TIME_IN_FORCE_IOC,
+                    ].includes(lastTIF[type] || order.timeInForce)
+                      ? false
+                      : order.postOnly,
                   expiresAt: undefined,
                 });
                 clearErrors('expiresAt');
@@ -251,8 +280,23 @@ export const DealTicket = ({
               value={order.timeInForce}
               orderType={order.type}
               onSelect={(timeInForce) => {
-                update({ timeInForce, postOnly: false, reduceOnly: false });
-                // Set tif value for the given order type, so that when switching
+                // Reset post only and reduce only when changing TIF
+                update({
+                  timeInForce,
+                  postOnly: [
+                    OrderTimeInForce.TIME_IN_FORCE_FOK,
+                    OrderTimeInForce.TIME_IN_FORCE_IOC,
+                  ].includes(timeInForce)
+                    ? false
+                    : order.postOnly,
+                  reduceOnly: ![
+                    OrderTimeInForce.TIME_IN_FORCE_FOK,
+                    OrderTimeInForce.TIME_IN_FORCE_IOC,
+                  ].includes(timeInForce)
+                    ? false
+                    : order.reduceOnly,
+                });
+                // Set TIF value for the given order type, so that when switching
                 // types we know the last used TIF for the given order type
                 setLastTIF((curr) => ({
                   ...curr,
@@ -327,6 +371,7 @@ export const DealTicket = ({
               <Checkbox
                 name="reduce-only"
                 checked={order.reduceOnly}
+                disabled={disableReduceOnlyCheckbox}
                 onCheckedChange={() => {
                   update({ postOnly: false, reduceOnly: !order.reduceOnly });
                 }}
@@ -334,9 +379,13 @@ export const DealTicket = ({
                   <Tooltip
                     description={
                       <span>
-                        {t(
-                          '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.'
-                        )}
+                        {disableReduceOnlyCheckbox
+                          ? t(
+                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                            )
+                          : t(
+                              '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.'
+                            )}
                       </span>
                     }
                   >
@@ -367,9 +416,12 @@ export const DealTicket = ({
           order={normalizedOrder}
           market={market}
           marketData={marketData}
-          margin={margin}
-          totalMargin={totalMargin}
-          balance={marginAccountBalance}
+          estimatedInitialMargin={margin}
+          estimatedTotalInitialMargin={totalMargin}
+          currentInitialMargin={currentMargins?.initialLevel}
+          currentMaintenanceMargin={currentMargins?.maintenanceLevel}
+          marginAccountBalance={marginAccountBalance}
+          generalAccountBalance={generalAccountBalance}
         />
       </form>
     </TinyScroll>

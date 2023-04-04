@@ -1,4 +1,4 @@
-name: Cypress Run
+name: (CI) Cypress Run
 on:
   workflow_call:
     inputs:

@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { Position } from '../';
 import { usePositionsData, PositionsTable } from '../';
-import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
@@ -23,8 +22,8 @@ export const PositionsManager = ({
   noBottomPlaceholder,
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [dataCount, setDataCount] = useState(0);
   const { data, error, loading, reload } = usePositionsData(partyId, gridRef);
+  const [dataCount, setDataCount] = useState(data?.length ?? 0);
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
     marketId,
@@ -67,10 +66,7 @@ export const PositionsManager = ({
     setId,
     disabled: noBottomPlaceholder,
   });
-  useEffect(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [data]);
-  const onFilterChanged = useCallback((event: FilterChangedEvent) => {
+  const updateRowCount = useCallback(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);
   return (
@@ -83,7 +79,8 @@ export const PositionsManager = ({
         suppressLoadingOverlay
         suppressNoRowsOverlay
         isReadOnly={isReadOnly}
-        onFilterChanged={onFilterChanged}
+        onFilterChanged={updateRowCount}
+        onRowDataUpdated={updateRowCount}
         {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">
