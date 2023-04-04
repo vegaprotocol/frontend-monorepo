@@ -16,6 +16,7 @@ import {
   RichSelect,
   Select,
   Tooltip,
+  Checkbox,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
@@ -63,6 +64,26 @@ export const TransferForm = ({
   const amount = watch('amount');
   const assetId = watch('asset');
 
+  const [includeFee, setIncludeFee] = useState(false);
+
+  const transferAmount = useMemo(() => {
+    if (!amount) return undefined;
+    if (includeFee && feeFactor) {
+      // using toFixed without an argument will always return a
+      // number in normal notation without rounding, formatting functions
+      // aren't working in a way which won't round the decimal places
+      return new BigNumber(1).minus(feeFactor).times(amount).toString();
+    }
+    return amount;
+  }, [amount, includeFee, feeFactor]);
+
+  const fee = useMemo(() => {
+    if (!transferAmount) return undefined;
+    return (
+      feeFactor && new BigNumber(feeFactor).times(transferAmount).toString()
+    );
+  }, [transferAmount, feeFactor]);
+
   const asset = useMemo(() => {
     return assets.find((a) => a.id === assetId);
   }, [assets, assetId]);
@@ -72,13 +93,16 @@ export const TransferForm = ({
       if (!asset) {
         throw new Error('Submitted transfer with no asset selected');
       }
-      const transfer = normalizeTransfer(fields.toAddress, fields.amount, {
+      if (!transferAmount) {
+        throw new Error('Submitted transfer with no amount selected');
+      }
+      const transfer = normalizeTransfer(fields.toAddress, transferAmount, {
         id: asset.id,
         decimals: asset.decimals,
       });
       submitTransfer(transfer);
     },
-    [asset, submitTransfer]
+    [asset, submitTransfer, transferAmount]
   );
 
   const min = useMemo(() => {
@@ -213,7 +237,25 @@ export const TransferForm = ({
           <InputError forInput="amount">{errors.amount.message}</InputError>
         )}
       </FormGroup>
-      <TransferFee amount={amount} feeFactor={feeFactor} />
+      <div className="mb-4">
+        <Checkbox
+          label={
+            <Tooltip
+              description={t(
+                `The fee will be taken from the amount you are transferring.`,
+                [feeFactor || '-']
+              )}
+            >
+              <div>{t('Include transfer fee')}</div>
+            </Tooltip>
+          }
+          checked={includeFee}
+          onCheckedChange={() => setIncludeFee(!includeFee)}
+        />
+      </div>
+      {transferAmount && fee && (
+        <TransferFee amount={transferAmount} feeFactor={feeFactor} fee={fee} />
+      )}
       <Button type="submit" variant="primary" fill={true}>
         {t('Confirm transfer')}
       </Button>
@@ -224,21 +266,19 @@ export const TransferForm = ({
 export const TransferFee = ({
   amount,
   feeFactor,
+  fee,
 }: {
   amount: string;
   feeFactor: string | null;
+  fee?: string;
 }) => {
-  if (!feeFactor || !amount) return null;
+  if (!feeFactor || !amount || !fee) return null;
 
-  // using toFixed without an argument will always return a
-  // number in normal notation without rounding, formatting functions
-  // aren't working in a way which won't round the decimal places
-  const value = new BigNumber(amount).times(feeFactor).toFixed();
-  const totalValue = new BigNumber(amount).plus(value).toFixed();
+  const totalValue = new BigNumber(amount).plus(fee).toFixed();
 
   return (
-    <div className="mb-4 flex flex-col gap-4">
-      <div className="flex justify-between gap-4 items-center flex-wrap">
+    <div className="mb-4 flex flex-col gap-2 text-xs">
+      <div className="flex justify-between gap-1 items-center flex-wrap">
         <Tooltip
           description={t(
             `The transfer fee is set by the network parameter transfer.fee.factor, currently set to %s`,
@@ -252,14 +292,29 @@ export const TransferFee = ({
           data-testid="transfer-fee"
           className="text-neutral-500 dark:text-neutral-300"
         >
-          {value}
+          {fee}
         </div>
       </div>
-      <div className="flex justify-between gap-4 items-center flex-wrap">
+      <div className="flex justify-between gap-1 items-center flex-wrap">
         <Tooltip
           description={t(
-            `The total amount plus the transfer fee, which is set by the network parameter "transfer.fee.factor", currently set to %s`,
-            [feeFactor]
+            `The total amount to be transferred (without the fee)`
+          )}
+        >
+          <div>{t('Amount to be transferred')}</div>
+        </Tooltip>
+
+        <div
+          data-testid="total-transfer-fee"
+          className="text-neutral-500 dark:text-neutral-300"
+        >
+          {amount}
+        </div>
+      </div>
+      <div className="flex justify-between gap-1 items-center flex-wrap">
+        <Tooltip
+          description={t(
+            `The total amount taken from your account. The amount to be transferred plus the fee.`
           )}
         >
           <div>{t('Total amount (with fee)')}</div>
