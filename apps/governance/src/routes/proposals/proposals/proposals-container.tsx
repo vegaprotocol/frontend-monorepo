@@ -16,6 +16,7 @@ import type { ProposalFieldsFragment } from './__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from './__generated__/ProtocolUpgradeProposals';
 
 import orderBy from 'lodash/orderBy';
+import { useProtocolUpgradesQuery } from './__generated__/ProtocolUpgradeProposals';
 
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
@@ -68,6 +69,16 @@ export const ProposalsContainer = () => {
     errorPolicy: 'ignore',
   });
 
+  const {
+    data: protocolUpgradesData,
+    loading: protocolUpgradesLoading,
+    error: protocolUpgradesError,
+  } = useProtocolUpgradesQuery({
+    pollInterval: 5000,
+    fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
+  });
+
   const proposals = useMemo(
     () =>
       getNotRejectedProposals<ProposalFieldsFragment>(
@@ -76,15 +87,25 @@ export const ProposalsContainer = () => {
     [data]
   );
 
-  if (error) {
+  const protocolUpgradeProposals = useMemo(
+    () =>
+      protocolUpgradesData
+        ? getNotRejectedProtocolUpgradeProposals<ProtocolUpgradeProposalFieldsFragment>(
+            protocolUpgradesData.protocolUpgradeProposals
+          )
+        : [],
+    [protocolUpgradesData]
+  );
+
+  if (error || protocolUpgradesError) {
     return (
       <Callout intent={Intent.Danger} title={t('Something went wrong')}>
-        <pre>{error.message}</pre>
+        <pre>{error?.message || protocolUpgradesError?.message}</pre>
       </Callout>
     );
   }
 
-  if (loading) {
+  if (loading || protocolUpgradesLoading) {
     return (
       <Splash>
         <SplashLoader />
@@ -92,5 +113,11 @@ export const ProposalsContainer = () => {
     );
   }
 
-  return <ProposalsList proposals={proposals} />;
+  return (
+    <ProposalsList
+      proposals={proposals}
+      protocolUpgradeProposals={protocolUpgradeProposals}
+      lastBlockHeight={protocolUpgradesData?.lastBlockHeight}
+    />
+  );
 };
