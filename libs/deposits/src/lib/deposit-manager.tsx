@@ -32,7 +32,6 @@ export const DepositManager = ({
   const [persistentDeposit, savePersistentDeposit] =
     usePersistentDeposit(initialAssetId);
   const [assetId, setAssetId] = useState(persistentDeposit?.assetId);
-  console.log('selected assetId', assetId);
   const asset = assets.find((a) => a.id === assetId);
   const bridgeContract = useBridgeContract();
   const closeDepositDialog = useDepositDialog((state) => state.close);
