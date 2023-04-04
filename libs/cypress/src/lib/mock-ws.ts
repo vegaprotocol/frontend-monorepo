@@ -19,6 +19,12 @@ const mockSocketServer = Cypress.env('VEGA_URL')
   ? new Server(Cypress.env('VEGA_URL').replace('http', 'ws'))
   : null;
 
+// DO NOT REMOVE: PASSTHROUGH for walletconnect
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const relayServer = new Server('wss://relay.walletconnect.com', {
+  mock: false,
+});
+
 export function addMockSubscription() {
   Cypress.Commands.add(
     'mockSubscription',

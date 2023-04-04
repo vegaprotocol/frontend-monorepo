@@ -27,7 +27,7 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('tab-deposits').should('not.be.empty');
   });
 
-  it('should see an option to cancel the attempted connection', () => {
+  it('should see QR code modal for WalletConnect', () => {
     // 0004-EWAL-003
 
     cy.wait('@NetworkParams');
@@ -36,8 +36,8 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-list').should('exist');
     cy.getByTestId('web3-connector-WalletConnect').click();
-    cy.get('#walletconnect-qrcode-text').should('exist');
-    cy.get('#walletconnect-qrcode-close').click();
+    // testing if exists rather than visible because of the long loading time
+    cy.get('w3m-modal').should('exist');
   });
 
   it('able to disconnect eth wallet', () => {

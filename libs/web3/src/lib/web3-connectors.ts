@@ -6,6 +6,7 @@ import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { initializeUrlConnector } from './url-connector';
 import { PROJECT_ID } from '../constants';
 import { useWeb3ConnectStore } from './web3-connect-store';
+import { theme } from '@vegaprotocol/tailwindcss-config';
 
 export const initializeWalletConnector = (
   chainId: number,
@@ -22,6 +23,18 @@ export const initializeWalletConnector = (
           showQrModal: true,
           rpcMap: {
             [chainId]: providerUrl,
+          },
+          qrModalOptions: {
+            themeMode: 'dark',
+            themeVariables: {
+              '--w3m-z-index': '40',
+              '--w3m-accent-color': theme.colors.vega.yellow.DEFAULT,
+              '--w3m-background-color': theme.colors.vega.dark[100],
+              '--w3m-font-family': 'AlphaLyrae',
+              '--w3m-container-border-radius': '0.25rem',
+              '--w3m-background-border-radius': '0.25rem',
+              '--w3m-accent-fill-color': theme.colors.vega.yellow.DEFAULT,
+            },
           },
         },
         onError: (error) => {

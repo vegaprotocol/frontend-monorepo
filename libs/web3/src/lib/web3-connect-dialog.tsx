@@ -27,6 +27,10 @@ export const Web3ConnectDialog = ({
     <Dialog
       open={dialogOpen}
       onChange={setDialogOpen}
+      onInteractOutside={(e) => {
+        // do not close dialog when clicked outside (wallet connect modal)
+        e.preventDefault();
+      }}
       intent={Intent.None}
       title={t('Connect to your Ethereum wallet')}
     >
@@ -39,11 +43,22 @@ export const Web3ConnectDialog = ({
                 className="hover:text-vega-pink dark:hover:text-vega-yellow underline"
                 data-testid={`web3-connector-${info.name}`}
                 onClick={async () => {
+                  // remove orphaned wallet connect modals
+                  const modals = document.querySelectorAll('w3m-modal');
+                  if (modals.length > 0) {
+                    modals.forEach((m) => m.remove());
+                  }
+
                   try {
                     await connector.activate(desiredChainId);
                     setEagerConnector(info.name);
                     setDialogOpen(false);
                   } catch (err) {
+                    console.log(
+                      'could not connect to the wallet',
+                      info.name,
+                      err
+                    );
                     // NOOP - cancelled wallet connector
                   }
                 }}
