@@ -2,31 +2,31 @@ import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { useRewardsQuery } from '../home/__generated__/Rewards';
+import { useRewardsQuery, EpochFieldsFragment } from '../home/__generated__/Rewards';
 import { ENV } from '../../../config';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
 
-const REWARDS_PAGE_SIZE = 5;
+const EPOCHS_PAGE_SIZE = 10;
 
-export const EpochIndividualRewards = () => {
+type EpochTotalRewardsProps = {
+  currentEpoch: EpochFieldsFragment
+}
+
+export const EpochIndividualRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
+  const epochId = parseInt(currentEpoch.id);
+  const totalPages = Math.ceil(epochId / EPOCHS_PAGE_SIZE);
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const { delegationsPagination } = ENV;
 
-  const { data, loading, error, fetchMore } = useRewardsQuery({
+  const { data, loading, error, refetch } = useRewardsQuery({
     variables: {
       partyId: pubKey || '',
-      rewardsPagination: {
-        first: REWARDS_PAGE_SIZE,
-      },
-      delegationsPagination: delegationsPagination
-        ? {
-            first: Number(delegationsPagination),
-          }
-        : undefined,
+      fromEpoch: epochId - EPOCHS_PAGE_SIZE,
+      toEpoch: epochId,
     },
     skip: !pubKey,
   });
@@ -42,47 +42,17 @@ export const EpochIndividualRewards = () => {
     return generateEpochIndividualRewardsList(rewards);
   }, [data?.party, rewards]);
 
-  const paginate = useCallback(
-    async (fromPage: number, toPage: number) => {
-      if (fromPage < toPage && toPage > 0) {
-        await fetchMore({
-          variables: {
-            partyId: pubKey || '',
-            rewardsPagination: {
-              first: REWARDS_PAGE_SIZE,
-              last: null,
-              after: data?.party?.rewardsConnection?.pageInfo?.endCursor,
-            },
-            delegationsPagination: {
-              first: delegationsPagination
-                ? Number(delegationsPagination)
-                : undefined,
-            },
-          },
-        });
-        setPage(toPage);
-      }
-      if (fromPage < toPage) {
-        await fetchMore({
-          variables: {
-            partyId: pubKey || '',
-            rewardsPagination: {
-              first: null,
-              last: REWARDS_PAGE_SIZE,
-              before: data?.party?.rewardsConnection?.pageInfo?.endCursor,
-            },
-            delegationsPagination: {
-              first: delegationsPagination
-                ? Number(delegationsPagination)
-                : undefined,
-            },
-          },
-        });
-        setPage(toPage);
-      }
-    },
-    [fetchMore, setPage, data]
-  );
+  const paginate = useCallback(async (toPage: number) => {
+    try {
+      await refetch({
+        fromEpoch: epochId - (EPOCHS_PAGE_SIZE * toPage),
+        toEpoch: epochId - (EPOCHS_PAGE_SIZE * toPage) + EPOCHS_PAGE_SIZE - 1,
+      })
+      setPage(toPage)
+    } catch (err) {
+      console.error(err)
+    }
+  }, [refetch, setPage, data]);
 
   return (
     <AsyncRenderer
@@ -109,14 +79,10 @@ export const EpochIndividualRewards = () => {
           <Pagination
             className="my-2"
             isLoading={loading}
-            hasPrevPage={Boolean(
-              data?.party?.rewardsConnection?.pageInfo?.hasPreviousPage
-            )}
-            hasNextPage={Boolean(
-              data?.party?.rewardsConnection?.pageInfo?.hasNextPage
-            )}
-            onBack={() => paginate(page, page - 1)}
-            onNext={() => paginate(page, page + 1)}
+            hasPrevPage={page > 1}
+            hasNextPage={page < totalPages}
+            onBack={() => paginate(page - 1)}
+            onNext={() => paginate(page + 1)}
           >
             Page {page}
           </Pagination>

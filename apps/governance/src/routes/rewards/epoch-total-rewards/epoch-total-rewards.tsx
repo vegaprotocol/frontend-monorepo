@@ -1,55 +1,46 @@
 import { useState, useCallback } from 'react';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
-import { useEpochAssetsRewardsQuery } from '../home/__generated__/Rewards';
+import { useEpochAssetsRewardsQuery, EpochFieldsFragment } from '../home/__generated__/Rewards';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-list';
 import { NoRewards } from '../no-rewards';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
 
-const REWARDS_PAGE_SIZE = 5;
+const EPOCHS_PAGE_SIZE = 10;
 
-export const EpochTotalRewards = () => {
+type EpochTotalRewardsProps = {
+  currentEpoch: EpochFieldsFragment
+}
+
+export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
+  const epochId = parseInt(currentEpoch.id)
+  const totalPages = Math.ceil(epochId / EPOCHS_PAGE_SIZE)
   const [page, setPage] = useState(1);
-  const { data, loading, error, refetch, fetchMore } =
-    useEpochAssetsRewardsQuery({
-      variables: {
-        epochRewardSummariesPagination: {
-          first: REWARDS_PAGE_SIZE,
-        },
-      },
-    });
-  useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
+  const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
+    variables: {
+      epochRewardSummariesFilter: {
+        fromEpoch: epochId - EPOCHS_PAGE_SIZE,
+        toEpoch: epochId,
+      }
+    }
+  });
+  useRefreshAfterEpoch(currentEpoch.timestamps.expiry, refetch);
+
+  const paginate = useCallback(async (toPage: number) => {
+    try {
+      await refetch({
+        epochRewardSummariesFilter: {
+          fromEpoch: epochId - (EPOCHS_PAGE_SIZE * toPage),
+          toEpoch: epochId - (EPOCHS_PAGE_SIZE * toPage) + EPOCHS_PAGE_SIZE - 1,
+        }
+      })
+      setPage(toPage)
+    } catch (err) {
+      console.error(err)
+    }
+  }, [epochId, page, totalPages, refetch])
 
   const epochTotalRewardSummaries = generateEpochTotalRewardsList(data) || [];
-
-  const paginate = useCallback(
-    async (fromPage: number, toPage: number) => {
-      console.log(data?.epochRewardSummaries?.pageInfo);
-      if (fromPage < toPage && toPage > 0) {
-        await fetchMore({
-          variables: {
-            epochRewardSummariesPagination: {
-              first: REWARDS_PAGE_SIZE,
-              after: data?.epochRewardSummaries?.pageInfo?.endCursor,
-            },
-          },
-        });
-        setPage(toPage);
-      }
-      if (fromPage < toPage) {
-        await fetchMore({
-          variables: {
-            epochRewardSummariesPagination: {
-              last: REWARDS_PAGE_SIZE,
-              before: data?.epochRewardSummaries?.pageInfo?.startCursor,
-            },
-          },
-        });
-        setPage(toPage);
-      }
-    },
-    [fetchMore, data]
-  );
 
   return (
     <AsyncRenderer
@@ -73,14 +64,10 @@ export const EpochTotalRewards = () => {
           <Pagination
             className="my-2"
             isLoading={loading}
-            hasPrevPage={Boolean(
-              data?.epochRewardSummaries?.pageInfo?.hasPreviousPage
-            )}
-            hasNextPage={Boolean(
-              data?.epochRewardSummaries?.pageInfo?.hasNextPage
-            )}
-            onBack={() => paginate(page, page - 1)}
-            onNext={() => paginate(page, page + 1)}
+            hasPrevPage={page > 1}
+            hasNextPage={page < totalPages}
+            onBack={() => paginate(page - 1)}
+            onNext={() => paginate(page + 1)}
           >
             Page {page}
           </Pagination>
