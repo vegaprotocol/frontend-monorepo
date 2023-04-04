@@ -40,7 +40,7 @@ import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import {
-  getOrderTitle as getOrderTitle,
+  getOrderTitle,
   getRejectionReason,
   useOrderByIdQuery,
 } from '@vegaprotocol/orders';
