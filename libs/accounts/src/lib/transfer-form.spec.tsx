@@ -165,6 +165,7 @@ describe('TransferFee', () => {
   const props = {
     amount: '200',
     feeFactor: '0.001',
+    fee: '0.2',
   };
   it('calculates and renders the transfer fee', () => {
     render(<TransferFee {...props} />);
@@ -174,6 +175,9 @@ describe('TransferFee', () => {
       .toFixed();
     const total = new BigNumber(props.amount).plus(expected).toFixed();
     expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expected);
+    expect(screen.getByTestId('transfer-amount')).toHaveTextContent(
+      props.amount
+    );
     expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(total);
   });
 });

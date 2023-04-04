@@ -305,7 +305,7 @@ export const TransferFee = ({
         </Tooltip>
 
         <div
-          data-testid="total-transfer-fee"
+          data-testid="transfer-amount"
           className="text-neutral-500 dark:text-neutral-300"
         >
           {amount}
