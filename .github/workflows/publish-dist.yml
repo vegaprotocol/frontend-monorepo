@@ -45,7 +45,7 @@ jobs:
 
           if [[ "${{ github.event_name }}" = "push" ]]; then
             envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
-            bucketName="${{ github.event.repository.name }}-$envName"
+            bucketName="${{ matrix.app }}-$envName"
             echo ::set-output name=bucketName::${bucketName}
             echo ::set-output name=envName::${envName}
           fi
@@ -88,14 +88,15 @@ jobs:
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
 
-      # - uses: shallwefootball/s3-upload-action@master
-      #   if: ${{ github.event_name == 'push' }}
-      #   name: Upload dist S3
-      #   with:
-      #     aws_key_id: ${{ secrets.AWS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-      #     aws_bucket: ${{ steps.tags.outputs.bucketName }}
-      #     source_dir: 'dist'
+      # bucket creation in github.com/vegaprotocol/terraform//frontend
+      - uses: shallwefootball/s3-upload-action@master
+        if: ${{ github.event_name == 'push' }}
+        name: Upload dist S3
+        with:
+          aws_key_id: ${{ secrets.AWS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: ${{ steps.tags.outputs.bucketName }}
+          source_dir: 'dist'
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
