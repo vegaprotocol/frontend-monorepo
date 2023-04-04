@@ -136,11 +136,15 @@ export const RewardsPage = () => {
           </section>
 
           {toggleRewardsView === 'total' ? (
-            epochData?.epoch ? <EpochTotalRewards currentEpoch={epochData?.epoch} /> : null
+            epochData?.epoch ? (
+              <EpochTotalRewards currentEpoch={epochData?.epoch} />
+            ) : null
           ) : (
             <section>
               {pubKey && pubKeys?.length ? (
-                epochData?.epoch ? <EpochIndividualRewards currentEpoch={epochData?.epoch} /> : null
+                epochData?.epoch ? (
+                  <EpochIndividualRewards currentEpoch={epochData?.epoch} />
+                ) : null
               ) : (
                 <ConnectToSeeRewards />
               )}
