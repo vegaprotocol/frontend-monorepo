@@ -5,7 +5,7 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import { useDepositDialog } from './deposit-dialog';
 import type { Asset } from '@vegaprotocol/assets';
@@ -69,6 +69,13 @@ export const DepositManager = ({
     closeDepositDialog();
   };
 
+  const onAmountChange = useCallback(
+    (amount: string) => {
+      savePersistentDeposit({ ...persistentDeposit, amount });
+    },
+    [savePersistentDeposit, persistentDeposit]
+  );
+
   return (
     <DepositForm
       selectedAsset={asset}
@@ -81,6 +88,7 @@ export const DepositManager = ({
         approve.reset();
         faucet.reset();
       }}
+      handleAmountChange={onAmountChange}
       assets={sortBy(assets, 'name')}
       submitApprove={approve.perform}
       submitDeposit={submitDeposit}

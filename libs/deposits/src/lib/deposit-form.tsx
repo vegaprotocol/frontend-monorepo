@@ -52,6 +52,7 @@ export interface DepositFormProps {
   selectedAsset?: Asset;
   balances: DepositBalances | null;
   onSelectAsset: (assetId: string) => void;
+  handleAmountChange: (amount: string) => void;
   onDisconnect: () => void;
   submitApprove: () => void;
   approveTxId: number | null;
@@ -70,6 +71,7 @@ export const DepositForm = ({
   selectedAsset,
   balances,
   onSelectAsset,
+  handleAmountChange,
   onDisconnect,
   submitApprove,
   submitDeposit,
@@ -84,9 +86,7 @@ export const DepositForm = ({
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
-  const [persistedDeposit, savePersistentDeposit] = usePersistentDeposit(
-    selectedAsset?.id
-  );
+  const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
 
   const {
     register,
@@ -338,10 +338,7 @@ export const DepositForm = ({
                 },
               },
               onChange: (e: ChangeEvent<HTMLInputElement>) => {
-                savePersistentDeposit({
-                  ...persistedDeposit,
-                  amount: e.target.value || '',
-                });
+                handleAmountChange(e.target.value || '');
               },
             })}
           />
@@ -355,7 +352,7 @@ export const DepositForm = ({
               onClick={() => {
                 const amount = balances.balance.toFixed(selectedAsset.decimals);
                 setValue('amount', amount);
-                savePersistentDeposit({ ...persistedDeposit, amount });
+                handleAmountChange(amount);
                 clearErrors('amount');
               }}
             >
