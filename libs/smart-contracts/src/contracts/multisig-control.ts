@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import abi from '../abis/multisig_abi.json';
+import { calcGasBuffer } from '../utils';
 
 export class MultisigControl {
   public contract: ethers.Contract;
@@ -13,12 +14,20 @@ export class MultisigControl {
     this.address = address;
   }
 
-  add_signer(newSigner: string, nonce: string, signatures: string) {
-    return this.contract.add_signer(newSigner, nonce, signatures);
+  async add_signer(newSigner: string, nonce: string, signatures: string) {
+    const res = await this.contract.estimateGas.add_signer(
+      newSigner,
+      nonce,
+      signatures
+    );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.add_signer(newSigner, nonce, signatures, { gasLimit });
   }
 
-  burn_nonce(nonce: string, signatures: string) {
-    return this.contract.burn_nonce(nonce, signatures);
+  async burn_nonce(nonce: string, signatures: string) {
+    const res = await this.contract.estimateGas.burn_nonce(nonce, signatures);
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.burn_nonce(nonce, signatures, { gasLimit });
   }
 
   get_current_threshold() {
@@ -37,19 +46,43 @@ export class MultisigControl {
     return this.contract.is_valid_signer(signerAddress);
   }
 
-  remove_signer(oldSigner: string, nonce: string, signatures: string) {
-    return this.contract.remove_signer(oldSigner, nonce, signatures);
+  async remove_signer(oldSigner: string, nonce: string, signatures: string) {
+    const res = await this.contract.estimateGas.remove_signer(
+      oldSigner,
+      nonce,
+      signatures
+    );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.remove_signer(oldSigner, nonce, signatures, {
+      gasLimit,
+    });
   }
 
-  set_threshold(newThreshold: string, nonce: string, signatures: string) {
-    return this.contract.set_threshold(newThreshold, nonce, signatures);
+  async set_threshold(newThreshold: string, nonce: string, signatures: string) {
+    const res = await this.contract.estimateGas.set_threshold(
+      newThreshold,
+      nonce,
+      signatures
+    );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.set_threshold(newThreshold, nonce, signatures, {
+      gasLimit,
+    });
   }
 
   signers(address: string) {
     return this.contract.signers(address);
   }
 
-  verify_signatures(nonce: string, message: string, signatures: string) {
-    return this.contract.verify_signatures(nonce, message, signatures);
+  async verify_signatures(nonce: string, message: string, signatures: string) {
+    const res = await this.contract.estimateGas.verify_signatures(
+      nonce,
+      message,
+      signatures
+    );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.verify_signatures(nonce, message, signatures, {
+      gasLimit,
+    });
   }
 }

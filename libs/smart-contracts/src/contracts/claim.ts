@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { hexlify } from 'ethers/lib/utils';
 import abi from '../abis/claim_abi.json';
+import { calcGasBuffer } from '../utils';
 
 export const UNSPENT_CODE = '0x0000000000000000000000000000000000000000';
 export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
@@ -42,7 +43,7 @@ export class Claim {
    * was performed and mined beforehand
    * @return {Promise<boolean>}
    */
-  public claim({
+  public async claim({
     amount,
     tranche,
     expiry,
@@ -61,20 +62,20 @@ export class Claim {
     r: string;
     s: string;
   }): Promise<ethers.ContractTransaction> {
-    return this.contract[
-      target != null ? 'claim_targeted' : 'claim_untargeted'
-    ](
-      ...[
-        { r, s, v },
-        {
-          amount,
-          tranche,
-          expiry,
-        },
-        hexlify(country),
-        target,
-      ].filter(Boolean)
-    );
+    const method = target != null ? 'claim_targeted' : 'claim_untargeted';
+    const args = [
+      { r, s, v },
+      {
+        amount,
+        tranche,
+        expiry,
+      },
+      hexlify(country),
+      target,
+    ].filter(Boolean);
+    const res = await this.contract.estimateGas[method](...args);
+    const gasLimit = calcGasBuffer(res);
+    return this.contract[method](...args, { gasLimit });
   }
 
   /**
