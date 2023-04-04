@@ -5,11 +5,15 @@ import { useTranslation } from 'react-i18next';
 import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
 import { useProposalsQuery } from './__generated__/Proposals';
-import type { ProposalFieldsFragment } from './__generated__/Proposals';
-import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
 import { getNodes } from '@vegaprotocol/utils';
 import flow from 'lodash/flow';
-import { ProposalState } from '@vegaprotocol/types';
+import {
+  ProposalState,
+  ProtocolUpgradeProposalStatus,
+} from '@vegaprotocol/types';
+import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
+import type { ProposalFieldsFragment } from './__generated__/Proposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from './__generated__/ProtocolUpgradeProposals';
 
 import orderBy from 'lodash/orderBy';
 
@@ -17,6 +21,15 @@ const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
     arr,
     [(p) => new Date(p?.terms?.closingDatetime).getTime(), (p) => p.id],
+    ['desc', 'desc']
+  );
+
+const orderByUpgradeBlockHeight = (
+  arr: ProtocolUpgradeProposalFieldsFragment[]
+) =>
+  orderBy(
+    arr,
+    [(p) => p?.upgradeBlockHeight, (p) => p.vegaReleaseTag],
     ['desc', 'desc']
   );
 
@@ -29,6 +42,21 @@ export function getNotRejectedProposals<T extends ProposalFieldsFragment>(
         p ? p.state !== ProposalState.STATE_REJECTED : false
       ),
     orderByDate,
+  ])(data);
+}
+
+export function getNotRejectedProtocolUpgradeProposals<
+  T extends ProtocolUpgradeProposalFieldsFragment
+>(data?: NodeConnection<NodeEdge<T>> | null): T[] {
+  return flow([
+    (data) =>
+      getNodes<ProtocolUpgradeProposalFieldsFragment>(data, (p) =>
+        p
+          ? p.status !==
+            ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED
+          : false
+      ),
+    orderByUpgradeBlockHeight,
   ])(data);
 }
 

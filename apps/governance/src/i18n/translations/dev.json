@@ -775,5 +775,10 @@
   "homeRewardsButtonText": "See rewards",
   "homeVegaTokenIntro": "VEGA Token is a governance asset used to make and vote on proposals, and nominate validators.",
   "homeVegaTokenButtonText": "Manage tokens",
-  "downloadProposalJson": "Download proposal as JSON"
+  "downloadProposalJson": "Download proposal as JSON",
+  "networkUpgrade": "Network Upgrade",
+  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED": "Approved",
+  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_PENDING": "Pending",
+  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED": "Rejected",
+  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_UNSPECIFIED": "Unspecified"
 }
