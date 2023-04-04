@@ -1,10 +1,7 @@
 import { useState, useCallback } from 'react';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
-import type {
-  EpochFieldsFragment} from '../home/__generated__/Rewards';
-import {
-  useEpochAssetsRewardsQuery
-} from '../home/__generated__/Rewards';
+import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
+import { useEpochAssetsRewardsQuery } from '../home/__generated__/Rewards';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-list';
 import { NoRewards } from '../no-rewards';

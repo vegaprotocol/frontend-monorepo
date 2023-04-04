@@ -2,11 +2,8 @@ import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import type {
-  EpochFieldsFragment} from '../home/__generated__/Rewards';
-import {
-  useRewardsQuery
-} from '../home/__generated__/Rewards';
+import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
+import { useRewardsQuery } from '../home/__generated__/Rewards';
 import { ENV } from '../../../config';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
