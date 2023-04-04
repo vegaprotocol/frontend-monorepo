@@ -245,8 +245,7 @@ export const TransferForm = ({
           label={
             <Tooltip
               description={t(
-                `The fee will be taken from the amount you are transferring.`,
-                [feeFactor || '-']
+                `The fee will be taken from the amount you are transferring.`
               )}
             >
               <div>{t('Include transfer fee')}</div>
