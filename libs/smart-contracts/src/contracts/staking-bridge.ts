@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import abi from '../abis/staking_abi.json';
-import { prepend0x } from '../utils';
+import { calcGasBuffer, prepend0x } from '../utils';
 
 export class StakingBridge {
   public contract: ethers.Contract;
@@ -13,20 +13,41 @@ export class StakingBridge {
     this.contract = new ethers.Contract(address, abi, signerOrProvider);
     this.address = address;
   }
+  async stake(amount: string, vegaPublicKey: string) {
+    const key = prepend0x(vegaPublicKey);
+    const res = await this.contract.estimateGas.stake(amount, key);
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.stake(amount, key, {
+      gasLimit,
+    });
+  }
 
-  stake(amount: string, vegaPublicKey: string) {
-    return this.contract.stake(amount, prepend0x(vegaPublicKey));
+  async remove_stake(amount: string, vegaPublicKey: string) {
+    const key = prepend0x(vegaPublicKey);
+    const res = await this.contract.estimateGas.remove_stake(amount, key);
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.remove_stake(amount, key, {
+      gasLimit,
+    });
   }
-  remove_stake(amount: string, vegaPublicKey: string) {
-    return this.contract.remove_stake(amount, prepend0x(vegaPublicKey));
-  }
-  transfer_stake(amount: string, newAddress: string, vegaPublicKey: string) {
-    return this.contract.transfer_stake(
+
+  async transfer_stake(
+    amount: string,
+    newAddress: string,
+    vegaPublicKey: string
+  ) {
+    const key = prepend0x(vegaPublicKey);
+    const res = await this.contract.estimateGas.transfer_stake(
       amount,
       newAddress,
-      prepend0x(vegaPublicKey)
+      key
     );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.transfer_stake(amount, newAddress, key, {
+      gasLimit,
+    });
   }
+
   staking_token() {
     return this.contract.staking_token();
   }

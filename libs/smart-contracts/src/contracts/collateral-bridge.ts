@@ -1,6 +1,7 @@
 import type { BigNumber } from 'ethers';
 import { ethers } from 'ethers';
 import abi from '../abis/erc20_bridge_abi.json';
+import { calcGasBuffer } from '../utils';
 
 export class CollateralBridge {
   public contract: ethers.Contract;
@@ -13,8 +14,20 @@ export class CollateralBridge {
     this.contract = new ethers.Contract(address, abi, signerOrProvider);
   }
 
-  deposit_asset(assetSource: string, amount: string, vegaPublicKey: string) {
-    return this.contract.deposit_asset(assetSource, amount, vegaPublicKey);
+  async deposit_asset(
+    assetSource: string,
+    amount: string,
+    vegaPublicKey: string
+  ) {
+    const res = await this.contract.estimateGas.deposit_asset(
+      assetSource,
+      amount,
+      vegaPublicKey
+    );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.deposit_asset(assetSource, amount, vegaPublicKey, {
+      gasLimit,
+    });
   }
   get_asset_source(vegaAssetId: string) {
     return this.contract.get_asset_source(vegaAssetId);
@@ -37,7 +50,7 @@ export class CollateralBridge {
   default_withdraw_delay() {
     return this.contract.default_withdraw_delay();
   }
-  list_asset(
+  async list_asset(
     address: string,
     vegaAssetId: string,
     lifetimeLimit: string,
@@ -45,7 +58,7 @@ export class CollateralBridge {
     nonce: string,
     signatures: string
   ) {
-    return this.contract.list_asset(
+    const res = await this.contract.estimateGas.list_asset(
       address,
       vegaAssetId,
       lifetimeLimit,
@@ -53,8 +66,20 @@ export class CollateralBridge {
       nonce,
       signatures
     );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.list_asset(
+      address,
+      vegaAssetId,
+      lifetimeLimit,
+      withdraw_threshold,
+      nonce,
+      signatures,
+      {
+        gasLimit,
+      }
+    );
   }
-  withdraw_asset(
+  async withdraw_asset(
     assetSource: string,
     amount: string,
     target: string,
@@ -62,13 +87,25 @@ export class CollateralBridge {
     nonce: string,
     signatures: string
   ) {
-    return this.contract.withdraw_asset(
+    const res = await this.contract.estimateGas.withdraw_asset(
       assetSource,
       amount,
       target,
       creation,
       nonce,
       signatures
+    );
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.withdraw_asset(
+      assetSource,
+      amount,
+      target,
+      creation,
+      nonce,
+      signatures,
+      {
+        gasLimit,
+      }
     );
   }
 
