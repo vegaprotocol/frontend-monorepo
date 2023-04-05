@@ -78,9 +78,7 @@ jobs:
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
 
           echo "List html directory"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah
-          echo "List nested dir"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah ${{ matrix.app }}
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add tree; tree .'
 
       - name: Copy dist to local filesystem
         run: |
@@ -88,7 +86,7 @@ jobs:
           docker cp dist:/usr/share/nginx/html dist
 
           echo "check local dist files"
-          ls -al dist
+          tree dist
 
       - name: Publish dist as docker image
         uses: docker/build-push-action@v3
