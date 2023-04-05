@@ -46,9 +46,9 @@ jobs:
           if [[ "${{ github.event_name }}" = "push" ]]; then
             if [[ "${{ github.ref }}" =~ release* ]]; then
               envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
-            elif [[ "${github.ref}" = "push-to-s3" ]]; then
+            elif [[ "${{ github.ref }}" = "push-to-s3" ]]; then
               envName="ops-vega"
-            elif [[ "${github.ref}" = "develop" ]]; then
+            elif [[ "${{ github.ref }}" = "develop" ]]; then
               envName="stagnet3"
             fi
             bucketName="${{ matrix.app }}-$envName"
