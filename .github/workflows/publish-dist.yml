@@ -79,12 +79,15 @@ jobs:
 
           echo "List html directory"
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah
+          echo "List nested dir"
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah ${{ matrix.app }}
 
-          echo "Copy dist to local filesystem"
+      - name: Copy dist to local filesystem
+        run: |
           docker create --name=dist ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
           docker cp dist:/usr/share/nginx/html dist
 
-          echo "Check local dist"
+          echo "check local dist files"
           ls -al dist
 
       - name: Publish dist as docker image
