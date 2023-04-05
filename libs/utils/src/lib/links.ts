@@ -3,6 +3,7 @@
  */
 
 export const createDocsLinks = (docsUrl: string) => ({
+  NEW_TO_VEGA: `${docsUrl}/concepts/new-to-vega`,
   AUCTION_TYPE_OPENING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-opening`,
   AUCTION_TYPE_LIQUIDITY_MONITORING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring`,
   AUCTION_TYPE_PRICE_MONITORING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring`,

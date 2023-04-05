@@ -23,6 +23,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import { Links, Routes } from '../../pages/client-router';
+import { createDocsLinks } from '@vegaprotocol/utils';
 
 export const Navbar = ({
   theme = 'system',
@@ -37,6 +38,7 @@ export const Navbar = ({
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
+
   return (
     <Navigation
       appName="Console"
@@ -89,7 +91,9 @@ export const Navbar = ({
             <NavigationContent>
               <NavigationList>
                 <NavigationItem>
-                  <NavExternalLink href={VEGA_DOCS_URL}>
+                  <NavExternalLink
+                    href={createDocsLinks(VEGA_DOCS_URL).NEW_TO_VEGA}
+                  >
                     {t('Docs')}
                   </NavExternalLink>
                 </NavigationItem>

@@ -21,7 +21,6 @@ const EmptyLinks: DAppLinks = {
   [Networks.STAGNET3]: '',
   [Networks.TESTNET]: '',
   [Networks.MAINNET]: '',
-  [Networks.MIRROR]: '',
 };
 
 const ExplorerLinks = {
