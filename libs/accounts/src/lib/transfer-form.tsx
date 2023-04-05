@@ -239,6 +239,7 @@ export const TransferForm = ({
       </FormGroup>
       <div className="mb-4">
         <Checkbox
+          name="include-transfer-fee"
           disabled={!transferAmount}
           label={
             <Tooltip
