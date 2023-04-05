@@ -31,9 +31,11 @@ export const EpochIndividualRewards = ({
       partyId: pubKey || '',
       fromEpoch: epochId - EPOCHS_PAGE_SIZE,
       toEpoch: epochId,
-      delegationsPagination: delegationsPagination ? {
-        first: Number(delegationsPagination),
-      } : undefined,
+      delegationsPagination: delegationsPagination
+        ? {
+            first: Number(delegationsPagination),
+          }
+        : undefined,
     },
     skip: !pubKey,
   });
@@ -49,31 +51,35 @@ export const EpochIndividualRewards = ({
     return generateEpochIndividualRewardsList(rewards);
   }, [data?.party, rewards]);
 
-
-  const refetchData = useCallback(async (toPage?: number) => {
-    const targetPage = toPage ?? page
-    try {
-      await refetch({
-        partyId: pubKey || '',
-        fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
-        toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
-        delegationsPagination: delegationsPagination ? {
-          first: Number(delegationsPagination),
-        } : undefined,
-      })
-      setPage(targetPage)
-    // eslint-disable-next-line no-empty
-    } catch (err) {
-      // no-op, the error will be in the original query
-    }
-  }, [epochId, page, refetch, delegationsPagination, pubKey])
+  const refetchData = useCallback(
+    async (toPage?: number) => {
+      const targetPage = toPage ?? page;
+      try {
+        await refetch({
+          partyId: pubKey || '',
+          fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
+          toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
+          delegationsPagination: delegationsPagination
+            ? {
+                first: Number(delegationsPagination),
+              }
+            : undefined,
+        });
+        setPage(targetPage);
+        // eslint-disable-next-line no-empty
+      } catch (err) {
+        // no-op, the error will be in the original query
+      }
+    },
+    [epochId, page, refetch, delegationsPagination, pubKey]
+  );
 
   useEffect(() => {
     // when the epoch changes, we want to refetch the data to update the current page
     if (data) {
-      refetchData()
+      refetchData();
     }
-  }, [epochId, data, refetchData])
+  }, [epochId, data, refetchData]);
 
   return (
     <AsyncRenderer

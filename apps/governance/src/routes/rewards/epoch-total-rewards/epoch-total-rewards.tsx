@@ -16,7 +16,7 @@ type EpochTotalRewardsProps = {
 export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
   const epochId = parseInt(currentEpoch.id);
   const totalPages = Math.ceil(epochId / EPOCHS_PAGE_SIZE);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
     notifyOnNetworkStatusChange: true,
@@ -27,28 +27,31 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
     },
   });
 
-  const refetchData = useCallback(async (toPage?: number) => {
-    const targetPage = toPage ?? page
-    try {
-      await refetch({
-        epochRewardSummariesFilter: {
-          fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
-          toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
-        },
-      })
-      setPage(targetPage)
-    // eslint-disable-next-line no-empty
-    } catch (err) {
-      // no-op, the error will be in the original query
-    }
-  }, [epochId, page, refetch])
+  const refetchData = useCallback(
+    async (toPage?: number) => {
+      const targetPage = toPage ?? page;
+      try {
+        await refetch({
+          epochRewardSummariesFilter: {
+            fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
+            toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
+          },
+        });
+        setPage(targetPage);
+        // eslint-disable-next-line no-empty
+      } catch (err) {
+        // no-op, the error will be in the original query
+      }
+    },
+    [epochId, page, refetch]
+  );
 
   useEffect(() => {
     // when the epoch changes, we want to refetch the data to update the current page
     if (data) {
-      refetchData()
+      refetchData();
     }
-  }, [epochId, data, refetchData])
+  }, [epochId, data, refetchData]);
 
   const epochTotalRewardSummaries = generateEpochTotalRewardsList(data) || [];
 
