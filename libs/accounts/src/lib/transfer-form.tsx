@@ -79,10 +79,13 @@ export const TransferForm = ({
 
   const fee = useMemo(() => {
     if (!transferAmount) return undefined;
+    if (includeFee) {
+      return new BigNumber(amount).minus(transferAmount).toString();
+    }
     return (
       feeFactor && new BigNumber(feeFactor).times(transferAmount).toString()
     );
-  }, [transferAmount, feeFactor]);
+  }, [amount, includeFee, transferAmount, feeFactor]);
 
   const asset = useMemo(() => {
     return assets.find((a) => a.id === assetId);
@@ -242,8 +245,7 @@ export const TransferForm = ({
           label={
             <Tooltip
               description={t(
-                `The fee will be taken from the amount you are transferring.`,
-                [feeFactor || '-']
+                `The fee will be taken from the amount you are transferring.`
               )}
             >
               <div>{t('Include transfer fee')}</div>
@@ -254,7 +256,12 @@ export const TransferForm = ({
         />
       </div>
       {transferAmount && fee && (
-        <TransferFee amount={transferAmount} feeFactor={feeFactor} fee={fee} />
+        <TransferFee
+          amount={transferAmount}
+          transferAmount={transferAmount}
+          feeFactor={feeFactor}
+          fee={fee}
+        />
       )}
       <Button type="submit" variant="primary" fill={true}>
         {t('Confirm transfer')}
@@ -265,16 +272,18 @@ export const TransferForm = ({
 
 export const TransferFee = ({
   amount,
+  transferAmount,
   feeFactor,
   fee,
 }: {
   amount: string;
+  transferAmount: string;
   feeFactor: string | null;
   fee?: string;
 }) => {
-  if (!feeFactor || !amount || !fee) return null;
+  if (!feeFactor || !amount || !transferAmount || !fee) return null;
 
-  const totalValue = new BigNumber(amount).plus(fee).toFixed();
+  const totalValue = new BigNumber(transferAmount).plus(fee).toFixed();
 
   return (
     <div className="mb-4 flex flex-col gap-2 text-xs">
