@@ -37,12 +37,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # https://docs.github.com/en/actions/learn-github-actions/contexts
-      - name: Check node version
+      - name: Define variables
         id: tags
         run: |
-          nodeVersion=$(cat .nvmrc | head -n 1)
-          echo ::set-output name=nodeVersion::${nodeVersion}
-
           if [[ "${{ github.event_name }}" = "push" ]]; then
             domain="vega.rocks"
             if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
@@ -59,6 +56,8 @@ jobs:
             echo ::set-output name=bucketName::${bucketName}
             echo ::set-output name=envName::${envName}
           fi
+          nodeVersion=$(cat .nvmrc | head -n 1)
+          echo ::set-output name=nodeVersion::${nodeVersion}
 
       - name: Build and export to local Docker
         id: docker_build
@@ -78,7 +77,7 @@ jobs:
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
 
           echo "List html directory"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add tree; tree .'
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree .'
 
       - name: Copy dist to local filesystem
         run: |
