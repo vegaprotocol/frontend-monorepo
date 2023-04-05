@@ -102,6 +102,7 @@ jobs:
           aws_key_id: ${{ secrets.AWS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_bucket: ${{ steps.tags.outputs.bucketName }}
+          destination_dir: ''
           source_dir: 'dist'
 
       - name: Add preview label
