@@ -9,6 +9,9 @@ query PreviousEpoch($epochId: ID) {
             rawValidatorScore
             performanceScore
           }
+          rankingScore {
+            stakeScore
+          }
         }
       }
     }

@@ -22,9 +22,10 @@ describe('getLastEpochScoreAndPerformance', () => {
               id: '0x123',
               rewardScore: {
                 rawValidatorScore: '0.25',
+                performanceScore: '0.75',
               },
               rankingScore: {
-                performanceScore: '0.75',
+                stakeScore: '0.25',
               },
             },
           },
@@ -33,9 +34,10 @@ describe('getLastEpochScoreAndPerformance', () => {
               id: '0x234',
               rewardScore: {
                 rawValidatorScore: '0.35',
+                performanceScore: '0.85',
               },
               rankingScore: {
-                performanceScore: '0.85',
+                stakeScore: '0.25',
               },
             },
           },
@@ -50,12 +52,14 @@ describe('getLastEpochScoreAndPerformance', () => {
     ).toEqual({
       rawValidatorScore: '0.25',
       performanceScore: '0.75',
+      stakeScore: '0.25',
     });
     expect(
       getLastEpochScoreAndPerformance(mockPreviousEpochData, '0x234')
     ).toEqual({
       rawValidatorScore: '0.35',
       performanceScore: '0.85',
+      stakeScore: '0.25',
     });
   });
 });
@@ -90,29 +94,70 @@ describe('getOverstakingPenalty', () => {
 });
 
 describe('getOverstakedAmount', () => {
-  it('should return the overstaked amount', () => {
+  it('returns 0 when one argument is null or undefined', () => {
     expect(
-      // If a validator score is 0, any amount staked on the node is considered overstaked
-      getOverstakedAmount('0', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(20));
+      getOverstakedAmount('10', null).isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
     expect(
-      getOverstakedAmount('0.05', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(15));
+      getOverstakedAmount(null, '20').isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
     expect(
-      getOverstakedAmount('0.1', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(10));
+      getOverstakedAmount('10', undefined).isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
     expect(
-      getOverstakedAmount('0.15', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(5));
-    expect(
-      getOverstakedAmount('0.2', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(0));
+      getOverstakedAmount(undefined, '20').isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
   });
 
-  it('should return 0 if the overstaked amount is negative', () => {
+  it('returns 0 when the result is negative', () => {
     expect(
-      getOverstakedAmount('0.8', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(0));
+      getOverstakedAmount('20', '10').isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
+  });
+
+  it('should return 0 if either validatorScore or stakeScore is undefined', () => {
+    expect(getOverstakedAmount(undefined, '100')).toEqual(new BigNumber(0));
+    expect(getOverstakedAmount('200', undefined)).toEqual(new BigNumber(0));
+  });
+
+  it('should return 0 if both validatorScore and stakeScore are 0', () => {
+    expect(getOverstakedAmount('0', '0')).toEqual(new BigNumber(0));
+  });
+
+  it('returns 0 when both arguments are null or undefined', () => {
+    expect(
+      getOverstakedAmount(null, null).isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
+    expect(
+      getOverstakedAmount(undefined, undefined).isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
+    expect(
+      getOverstakedAmount(null, undefined).isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
+    expect(
+      getOverstakedAmount(undefined, null).isEqualTo(new BigNumber(0))
+    ).toBeTruthy();
+  });
+
+  it('returns the correct overstaked amount', () => {
+    expect(getOverstakedAmount('10', '20')).toEqual(new BigNumber(0.5));
+    expect(getOverstakedAmount('30', '15')).toEqual(new BigNumber(0));
+    expect(getOverstakedAmount('0', '10')).toEqual(new BigNumber(0));
+  });
+
+  it('should always return a non-negative BigNumber', () => {
+    expect(getOverstakedAmount('100', '50').isNegative()).toBe(false);
+    expect(getOverstakedAmount('50', '100').isNegative()).toBe(false);
+    expect(getOverstakedAmount('0', '0').isNegative()).toBe(false);
+  });
+
+  it('handles string numbers with decimals', () => {
+    expect(
+      getOverstakedAmount('7.5', '15').isEqualTo(new BigNumber(0.5))
+    ).toBeTruthy();
+    expect(
+      getOverstakedAmount('12.5', '25').isEqualTo(new BigNumber(0.5))
+    ).toBeTruthy();
   });
 });
 

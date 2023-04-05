@@ -16,6 +16,7 @@ export const getLastEpochScoreAndPerformance = (
   return {
     rawValidatorScore: validator?.rewardScore?.rawValidatorScore,
     performanceScore: validator?.rewardScore?.performanceScore,
+    stakeScore: validator?.rankingScore?.stakeScore,
   };
 };
 
@@ -44,14 +45,17 @@ export const getPerformancePenalty = (performanceScore?: string) =>
 
 export const getOverstakedAmount = (
   validatorScore: string | null | undefined,
-  totalStake: string,
-  stakedOnNode: string
+  stakeScore: string | null | undefined
 ) => {
-  const toReturn = validatorScore
-    ? new BigNumber(stakedOnNode).minus(
-        new BigNumber(validatorScore).times(new BigNumber(totalStake))
-      )
-    : new BigNumber(0);
+  const toReturn =
+    validatorScore &&
+    new BigNumber(validatorScore).isGreaterThan(0) &&
+    stakeScore &&
+    new BigNumber(stakeScore).isGreaterThan(0)
+      ? new BigNumber(1).minus(
+          new BigNumber(validatorScore).dividedBy(new BigNumber(stakeScore))
+        )
+      : new BigNumber(0);
 
   return toReturn.isNegative() ? new BigNumber(0) : toReturn;
 };

@@ -75,14 +75,10 @@ export const ValidatorTable = ({
 
   const stakedOnNode = toBigNum(node.stakedTotal, decimals);
 
-  const { rawValidatorScore, performanceScore } =
+  const { rawValidatorScore, performanceScore, stakeScore } =
     getLastEpochScoreAndPerformance(previousEpochData, node.id);
 
-  const overstakedAmount = getOverstakedAmount(
-    rawValidatorScore,
-    stakedTotal,
-    node.stakedTotal
-  );
+  const overstakedAmount = getOverstakedAmount(rawValidatorScore, stakeScore);
 
   const stakePercentage = getStakePercentage(total, stakedOnNode);
 

@@ -164,13 +164,15 @@ export const ConsensusValidatorsTable = ({
           pendingUserStake,
           userStakeShare,
         }) => {
-          const { rawValidatorScore, performanceScore } =
-            getLastEpochScoreAndPerformance(previousEpochData, id);
+          const {
+            rawValidatorScore: lastEpochValidatorScore,
+            performanceScore: lastEpochPerformanceScore,
+            stakeScore: lastEpochStakeScore,
+          } = getLastEpochScoreAndPerformance(previousEpochData, id);
 
           const overstakedAmount = getOverstakedAmount(
-            rawValidatorScore,
-            stakedTotal,
-            totalStake
+            lastEpochValidatorScore,
+            lastEpochStakeScore
           );
 
           return {
@@ -184,7 +186,7 @@ export const ConsensusValidatorsTable = ({
             [ValidatorFields.NORMALISED_VOTING_POWER]:
               getNormalisedVotingPower(votingPower),
             [ValidatorFields.UNNORMALISED_VOTING_POWER]:
-              getUnnormalisedVotingPower(rawValidatorScore),
+              getUnnormalisedVotingPower(lastEpochValidatorScore),
             [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
             [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
               toBigNum(stakedByDelegates, decimals),
@@ -194,18 +196,20 @@ export const ConsensusValidatorsTable = ({
               toBigNum(stakedByOperator, decimals),
               2
             ),
-            [ValidatorFields.PERFORMANCE_SCORE]:
-              getFormattedPerformanceScore(performanceScore).toString(),
-            [ValidatorFields.PERFORMANCE_PENALTY]:
-              getPerformancePenalty(performanceScore),
+            [ValidatorFields.PERFORMANCE_SCORE]: getFormattedPerformanceScore(
+              lastEpochPerformanceScore
+            ).toString(),
+            [ValidatorFields.PERFORMANCE_PENALTY]: getPerformancePenalty(
+              lastEpochPerformanceScore
+            ),
             [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
             [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
               overstakedAmount,
               totalStake
             ),
             [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
-              rawValidatorScore,
-              performanceScore,
+              lastEpochValidatorScore,
+              lastEpochPerformanceScore,
               stakedTotal,
               totalStake
             ),
