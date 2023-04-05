@@ -478,7 +478,8 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   if (tx.order && tx.order.rejectionReason) {
-    const rejectionReason = getRejectionReason(tx.order) || ' ';
+    const rejectionReason =
+      getRejectionReason(tx.order) || tx.order.rejectionReason || '';
     return (
       <>
         <ToastHeading>{getOrderToastTitle(tx.order.status)}</ToastHeading>
@@ -583,7 +584,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   if (orderRejection) {
     label = getOrderToastTitle(tx.order?.status) || t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [
-      orderRejection,
+      orderRejection || tx.order?.rejectionReason || ' ',
     ]);
   }
   if (walletError) {

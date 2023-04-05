@@ -14,6 +14,8 @@ fragment OrderFields on Order {
   expiresAt
   createdAt
   updatedAt
+  postOnly
+  reduceOnly
   liquidityProvision {
     __typename
   }
@@ -30,12 +32,16 @@ query OrderById($orderId: ID!) {
 
 query Orders(
   $partyId: ID!
+  $marketIds: [ID!]
   $pagination: Pagination
-  $filter: OrderByMarketIdsFilter
+  $filter: OrderFilter
 ) {
   party(id: $partyId) {
     id
-    ordersConnection(pagination: $pagination, filter: $filter) {
+    ordersConnection(
+      pagination: $pagination
+      filter: { order: $filter, marketIds: $marketIds }
+    ) {
       edges {
         node {
           ...OrderFields
@@ -72,8 +78,8 @@ fragment OrderUpdateFields on OrderUpdate {
   }
 }
 
-subscription OrdersUpdate($partyId: ID!) {
-  orders(filter: { partyIds: [$partyId] }) {
+subscription OrdersUpdate($partyId: ID!, $marketIds: [ID!]) {
+  orders(filter: { partyIds: [$partyId], marketIds: $marketIds }) {
     ...OrderUpdateFields
   }
 }

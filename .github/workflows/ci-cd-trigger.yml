@@ -1,0 +1,110 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - release/*
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-22.04
+    name: '(CI) lint + unit test + build'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
+          cache: yarn
+
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
+
+      - name: Check formatting
+        run: yarn nx format:check
+
+      - name: Lint affected
+        run: yarn nx affected:lint --max-warnings=0
+
+      - name: Build affected spec
+        run: yarn nx affected --target=build-spec
+
+      - name: Test affected
+        run: yarn nx affected:test
+
+      - name: Build affected
+        run: yarn nx affected:build
+
+      # See affected apps
+      - name: See affected apps
+        run: |
+          echo ">>>> debug"
+          echo "NX Version: $nx_version"
+          echo "NX_BASE: ${{ env.NX_BASE }}"
+          echo "NX_HEAD: ${{ env.NX_HEAD }}"
+          echo ">>>> eof debug"
+
+          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
+          echo -n "Affected projects: $affected"
+
+          projects_e2e=""
+          if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
+          if [[ $affected == *"trading"* ]]; then projects_e2e+='"trading-e2e" '; fi
+          if [[ $affected == *"explorer"* ]]; then projects_e2e+='"explorer-e2e" '; fi
+          if [[ -z "$projects_e2e" ]]; then projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '; fi
+          projects_e2e=${projects_e2e%?}
+          projects_e2e=[${projects_e2e// /,}]
+          echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
+          echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
+
+    outputs:
+      projects: ${{ env.PROJECTS }}
+      projects-e2e: ${{ env.PROJECTS_E2E }}
+
+  cypress:
+    needs: lint-test-build
+    name: '(CI) cypress'
+    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    uses: ./.github/workflows/cypress-run.yml
+    secrets: inherit
+    with:
+      projects: ${{ needs.lint-test-build.outputs.projects-e2e }}
+      tags: '@smoke @regression'
+
+  publish-dist:
+    needs: lint-test-build
+    name: '(CD) publish dist'
+    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    uses: ./.github/workflows/publish-dist.yml
+    secrets: inherit
+    with:
+      projects: ${{ needs.lint-test-build.outputs.projects }}
+
+  # Report single result at the end, to avoid mess with required checks in PR
+  cypress-result:
+    if: ${{ always() }}
+    needs: cypress
+    runs-on: ubuntu-22.04
+    steps:
+      - run: |
+          result="${{ needs.cypress.result }}"
+          if [[ $result == "success" || $result == "skipped" ]]; then
+            exit 0
+          else
+            exit 1
+          fi

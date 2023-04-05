@@ -103,13 +103,3 @@ query LiquidityProviderFeeShare($marketId: ID!) {
     }
   }
 }
-
-subscription LiquidityProviderFeeShareUpdate($marketId: ID!) {
-  marketsData(marketIds: [$marketId]) {
-    liquidityProviderFeeShare {
-      partyId
-      equityLikeShare
-      averageEntryValuation
-    }
-  }
-}

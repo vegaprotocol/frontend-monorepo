@@ -35,45 +35,40 @@ const orderMatchFilters = (
     return true;
   }
   if (
-    variables?.filter?.order?.status &&
-    !(order.status && variables.filter.order.status.includes(order.status))
+    variables?.filter?.status &&
+    !(order.status && variables.filter.status.includes(order.status))
   ) {
     return false;
   }
   if (
-    variables?.filter?.order?.types &&
-    !(order.type && variables.filter.order.types.includes(order.type))
+    variables?.filter?.types &&
+    !(order.type && variables.filter.types.includes(order.type))
   ) {
     return false;
   }
   if (
-    variables?.filter?.order?.timeInForce &&
-    !variables.filter.order.timeInForce.includes(order.timeInForce)
+    variables?.filter?.timeInForce &&
+    !variables.filter.timeInForce.includes(order.timeInForce)
   ) {
     return false;
   }
-  if (
-    variables?.filter?.order?.excludeLiquidity &&
-    order.liquidityProvisionId
-  ) {
+  if (variables?.filter?.excludeLiquidity && order.liquidityProvisionId) {
     return false;
   }
   if (
-    variables?.filter?.order?.dateRange?.start &&
+    variables?.filter?.dateRange?.start &&
     !(
       (order.updatedAt || order.createdAt) &&
-      variables.filter.order.dateRange.start <
-        (order.updatedAt || order.createdAt)
+      variables.filter.dateRange.start < (order.updatedAt || order.createdAt)
     )
   ) {
     return false;
   }
   if (
-    variables?.filter?.order?.dateRange?.end &&
+    variables?.filter?.dateRange?.end &&
     !(
       (order.updatedAt || order.createdAt) &&
-      variables.filter.order.dateRange.end >
-        (order.updatedAt || order.createdAt)
+      variables.filter.dateRange.end > (order.updatedAt || order.createdAt)
     )
   ) {
     return false;
@@ -243,18 +238,17 @@ export const hasActiveOrderProvider = makeDerivedDataProvider<
   { partyId: string; marketId?: string }
 >(
   [
-    (callback, client, variables) =>
+    (callback, client, { partyId, marketId }) =>
       hasActiveOrderProviderInternal(callback, client, {
+        marketIds: marketId ? [marketId] : undefined,
         filter: {
-          order: {
-            status: [OrderStatus.STATUS_ACTIVE],
-            excludeLiquidity: true,
-          },
+          status: [OrderStatus.STATUS_ACTIVE],
+          excludeLiquidity: true,
         },
         pagination: {
           first: 1,
         },
-        ...variables,
+        partyId,
       } as OrdersQueryVariables),
   ],
   (parts) => parts[0]

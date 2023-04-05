@@ -72,12 +72,10 @@ export const useOrderListData = ({
     const allVars: OrdersQueryVariables & OrdersUpdateSubscriptionVariables = {
       partyId,
       filter: {
-        order: {
-          dateRange: filter?.updatedAt?.value,
-          status: filter?.status?.value,
-          timeInForce: filter?.timeInForce?.value,
-          types: filter?.type?.value,
-        },
+        dateRange: filter?.updatedAt?.value,
+        status: filter?.status?.value,
+        timeInForce: filter?.timeInForce?.value,
+        types: filter?.type?.value,
       },
       pagination: {
         first: 1000,

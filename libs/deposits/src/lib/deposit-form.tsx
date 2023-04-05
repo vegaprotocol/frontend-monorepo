@@ -25,11 +25,9 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { useState } from 'react';
-import { useMemo } from 'react';
-import { useWatch } from 'react-hook-form';
-import { Controller, useForm } from 'react-hook-form';
+import type { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';
+import { useMemo, useState } from 'react';
+import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
@@ -40,6 +38,7 @@ import {
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
 import { ApproveNotification } from './approve-notification';
+import { usePersistentDeposit } from './use-persistent-deposit';
 
 interface FormFields {
   asset: string;
@@ -53,6 +52,7 @@ export interface DepositFormProps {
   selectedAsset?: Asset;
   balances: DepositBalances | null;
   onSelectAsset: (assetId: string) => void;
+  handleAmountChange: (amount: string) => void;
   onDisconnect: () => void;
   submitApprove: () => void;
   approveTxId: number | null;
@@ -71,6 +71,7 @@ export const DepositForm = ({
   selectedAsset,
   balances,
   onSelectAsset,
+  handleAmountChange,
   onDisconnect,
   submitApprove,
   submitDeposit,
@@ -85,6 +86,8 @@ export const DepositForm = ({
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
+  const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
+
   const {
     register,
     handleSubmit,
@@ -95,7 +98,8 @@ export const DepositForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       to: pubKey ? pubKey : undefined,
-      asset: selectedAsset?.id || '',
+      asset: selectedAsset?.id,
+      amount: persistedDeposit.amount,
     },
   });
 
@@ -333,6 +337,9 @@ export const DepositForm = ({
                   return maxSafe(balances?.balance || new BigNumber(0))(v);
                 },
               },
+              onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                handleAmountChange(e.target.value || '');
+              },
             })}
           />
           {errors.amount?.message && (
@@ -343,10 +350,9 @@ export const DepositForm = ({
           {selectedAsset && balances && (
             <UseButton
               onClick={() => {
-                setValue(
-                  'amount',
-                  balances.balance.toFixed(selectedAsset.decimals)
-                );
+                const amount = balances.balance.toFixed(selectedAsset.decimals);
+                setValue('amount', amount);
+                handleAmountChange(amount);
                 clearErrors('amount');
               }}
             >
