@@ -43,34 +43,26 @@ export const getPerformancePenalty = (performanceScore?: string) =>
     2
   );
 
-export const getOverstakedAmount = (
+export const getOverstakingPenalty = (
   validatorScore: string | null | undefined,
   stakeScore: string | null | undefined
 ) => {
-  const toReturn =
-    validatorScore &&
-    new BigNumber(validatorScore).isGreaterThan(0) &&
-    stakeScore &&
-    new BigNumber(stakeScore).isGreaterThan(0)
-      ? new BigNumber(1).minus(
-          new BigNumber(validatorScore).dividedBy(new BigNumber(stakeScore))
-        )
-      : new BigNumber(0);
+  if (!validatorScore || !stakeScore) {
+    return '0%';
+  }
 
-  return toReturn.isNegative() ? new BigNumber(0) : toReturn;
-};
-
-export const getOverstakingPenalty = (
-  overstakedAmount: BigNumber,
-  stakedOnNode: string
-) => {
   // avoid division by zero
-  if (new BigNumber(stakedOnNode).isZero() || overstakedAmount.isZero()) {
-    return '0';
+  if (
+    new BigNumber(validatorScore).isZero() ||
+    new BigNumber(stakeScore).isZero()
+  ) {
+    return '0%';
   }
 
   return formatNumberPercentage(
-    overstakedAmount.dividedBy(new BigNumber(stakedOnNode)).times(100),
+    new BigNumber(1)
+      .minus(new BigNumber(validatorScore).dividedBy(new BigNumber(stakeScore)))
+      .times(100),
     2
   );
 };

@@ -4,7 +4,6 @@ import {
   getNormalisedVotingPower,
   getUnnormalisedVotingPower,
   getOverstakingPenalty,
-  getOverstakedAmount,
   getFormattedPerformanceScore,
   getPerformancePenalty,
   getTotalPenalties,
@@ -83,81 +82,34 @@ describe('getUnnormalisedVotingPower', () => {
 });
 
 describe('getOverstakingPenalty', () => {
-  it('should return the overstaking penalty', () => {
-    expect(
-      getOverstakingPenalty(new BigNumber(100), Number(1000).toString())
-    ).toEqual('10.00%');
-    expect(
-      getOverstakingPenalty(new BigNumber(500), Number(2000).toString())
-    ).toEqual('25.00%');
-  });
-});
-
-describe('getOverstakedAmount', () => {
-  it('returns 0 when one argument is null or undefined', () => {
-    expect(
-      getOverstakedAmount('10', null).isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
-    expect(
-      getOverstakedAmount(null, '20').isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
-    expect(
-      getOverstakedAmount('10', undefined).isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
-    expect(
-      getOverstakedAmount(undefined, '20').isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
+  it('returns "0%" when both arguments are null or undefined', () => {
+    expect(getOverstakingPenalty(null, null)).toBe('0%');
+    expect(getOverstakingPenalty(undefined, undefined)).toBe('0%');
+    expect(getOverstakingPenalty(null, undefined)).toBe('0%');
+    expect(getOverstakingPenalty(undefined, null)).toBe('0%');
   });
 
-  it('returns 0 when the result is negative', () => {
-    expect(
-      getOverstakedAmount('20', '10').isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
+  it('returns "0%" when one argument is null or undefined', () => {
+    expect(getOverstakingPenalty('10', null)).toBe('0%');
+    expect(getOverstakingPenalty(null, '20')).toBe('0%');
+    expect(getOverstakingPenalty('10', undefined)).toBe('0%');
+    expect(getOverstakingPenalty(undefined, '20')).toBe('0%');
   });
 
-  it('should return 0 if either validatorScore or stakeScore is undefined', () => {
-    expect(getOverstakedAmount(undefined, '100')).toEqual(new BigNumber(0));
-    expect(getOverstakedAmount('200', undefined)).toEqual(new BigNumber(0));
+  it('returns "0%" when validatorScore or stakeScore is zero', () => {
+    expect(getOverstakingPenalty('0', '20')).toBe('0%');
+    expect(getOverstakingPenalty('10', '0')).toBe('0%');
   });
 
-  it('should return 0 if both validatorScore and stakeScore are 0', () => {
-    expect(getOverstakedAmount('0', '0')).toEqual(new BigNumber(0));
-  });
-
-  it('returns 0 when both arguments are null or undefined', () => {
-    expect(
-      getOverstakedAmount(null, null).isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
-    expect(
-      getOverstakedAmount(undefined, undefined).isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
-    expect(
-      getOverstakedAmount(null, undefined).isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
-    expect(
-      getOverstakedAmount(undefined, null).isEqualTo(new BigNumber(0))
-    ).toBeTruthy();
-  });
-
-  it('returns the correct overstaked amount', () => {
-    expect(getOverstakedAmount('10', '20')).toEqual(new BigNumber(0.5));
-    expect(getOverstakedAmount('30', '15')).toEqual(new BigNumber(0));
-    expect(getOverstakedAmount('0', '10')).toEqual(new BigNumber(0));
-  });
-
-  it('should always return a non-negative BigNumber', () => {
-    expect(getOverstakedAmount('100', '50').isNegative()).toBe(false);
-    expect(getOverstakedAmount('50', '100').isNegative()).toBe(false);
-    expect(getOverstakedAmount('0', '0').isNegative()).toBe(false);
+  it('returns the correct overstaking penalty', () => {
+    expect(getOverstakingPenalty('0.18', '0.2')).toBe('10.00%');
+    expect(getOverstakingPenalty('0.2', '0.2')).toBe('0.00%');
+    expect(getOverstakingPenalty('0.04', '0.2')).toBe('80.00%');
   });
 
   it('handles string numbers with decimals', () => {
-    expect(
-      getOverstakedAmount('7.5', '15').isEqualTo(new BigNumber(0.5))
-    ).toBeTruthy();
-    expect(
-      getOverstakedAmount('12.5', '25').isEqualTo(new BigNumber(0.5))
-    ).toBeTruthy();
+    expect(getOverstakingPenalty('7.5', '15')).toBe('50.00%');
+    expect(getOverstakingPenalty('12.5', '25')).toBe('50.00%');
   });
 });
 

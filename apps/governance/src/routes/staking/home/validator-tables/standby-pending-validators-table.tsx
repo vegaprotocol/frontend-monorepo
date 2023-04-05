@@ -7,7 +7,6 @@ import { BigNumber } from '../../../../lib/bignumber';
 import {
   getFormattedPerformanceScore,
   getLastEpochScoreAndPerformance,
-  getOverstakedAmount,
   getOverstakingPenalty,
   getPerformancePenalty,
   getTotalPenalties,
@@ -88,10 +87,6 @@ export const StandbyPendingValidatorsTable = ({
             stakeScore: previousEpochStakeScore,
           } = getLastEpochScoreAndPerformance(previousEpochData, id);
 
-          const overstakedAmount = getOverstakedAmount(
-            previousEpochValidatorScore,
-            previousEpochStakeScore
-          );
           let individualStakeNeededForPromotion,
             individualStakeNeededForPromotionDescription;
 
@@ -152,10 +147,9 @@ export const StandbyPendingValidatorsTable = ({
             [ValidatorFields.PERFORMANCE_PENALTY]: getPerformancePenalty(
               previousEpochPerformanceScore
             ),
-            [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
             [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
-              overstakedAmount,
-              totalStake
+              previousEpochValidatorScore,
+              previousEpochStakeScore
             ),
             [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
               previousEpochValidatorScore,

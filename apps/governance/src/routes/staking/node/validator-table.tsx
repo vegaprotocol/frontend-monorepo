@@ -20,7 +20,6 @@ import { SubHeading } from '../../../components/heading';
 import {
   getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
-  getOverstakedAmount,
   getOverstakingPenalty,
   getPerformancePenalty,
   getTotalPenalties,
@@ -77,8 +76,6 @@ export const ValidatorTable = ({
 
   const { rawValidatorScore, performanceScore, stakeScore } =
     getLastEpochScoreAndPerformance(previousEpochData, node.id);
-
-  const overstakedAmount = getOverstakedAmount(rawValidatorScore, stakeScore);
 
   const stakePercentage = getStakePercentage(total, stakedOnNode);
 
@@ -241,7 +238,7 @@ export const ValidatorTable = ({
 
               <Tooltip description={t('OverstakedPenaltyDescription')}>
                 <span data-testid="overstaking-penalty">
-                  {getOverstakingPenalty(overstakedAmount, node.stakedTotal)}
+                  {getOverstakingPenalty(rawValidatorScore, stakeScore)}
                 </span>
               </Tooltip>
             </KeyValueTableRow>
