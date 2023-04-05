@@ -44,14 +44,18 @@ jobs:
           echo ::set-output name=nodeVersion::${nodeVersion}
 
           if [[ "${{ github.event_name }}" = "push" ]]; then
+            domain="vega.rocks"
             if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
               envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+              if [[ "${{ github.ref }}" =~ .*mainnet.* ]]; then
+                domain="vega.community"
+              fi
             elif [[ "${{ github.ref }}" =~ .*push-to-s3$ ]]; then
               envName="ops-vega"
             elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
               envName="stagnet3"
             fi
-            bucketName="${{ matrix.app }}-${envName}"
+            bucketName="${{ matrix.app }}.${envName}.${domain}"
             echo ::set-output name=bucketName::${bucketName}
             echo ::set-output name=envName::${envName}
           fi
