@@ -1,0 +1,13 @@
+name: Release
+
+on:
+  issues:
+    types:
+      - labeled
+jobs:
+  retrieve-version:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 'Retrieve release tag'
+        run: |
+          echo ${{ github.event.issue }}

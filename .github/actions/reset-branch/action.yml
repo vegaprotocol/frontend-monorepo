@@ -1,0 +1,23 @@
+name: 'Reset branch'
+description: 'Resets given branch to a specific tag'
+inputs:
+  reset_branch:
+    description: 'Name of a branch that you would like to reset'
+    required: true
+  reset_tag:
+    description: 'Name of a tag that you would like to use to reset the branch'
+    required: true
+runs:
+  using: ubuntu-22.04
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        ref: 'develop'
+        fetch-depth: 0
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git checkout ${{ inputs.reset_branch }}
+        git reset --hard ${{ inputs.reset_tag }}
+        git push -f
