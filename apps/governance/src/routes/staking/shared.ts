@@ -15,7 +15,7 @@ export const getLastEpochScoreAndPerformance = (
 
   return {
     rawValidatorScore: validator?.rewardScore?.rawValidatorScore,
-    performanceScore: validator?.rankingScore?.performanceScore,
+    performanceScore: validator?.rewardScore?.performanceScore,
   };
 };
 

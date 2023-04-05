@@ -7,8 +7,6 @@ query PreviousEpoch($epochId: ID) {
           id
           rewardScore {
             rawValidatorScore
-          }
-          rankingScore {
             performanceScore
           }
         }
