@@ -101,6 +101,7 @@ jobs:
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
         uses: jakejarvis/s3-sync-action@master
+        if: ${{ github.event_name == 'push' }}
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
