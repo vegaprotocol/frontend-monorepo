@@ -1,32 +1,42 @@
-import { useLocalStorageSnapshot } from '@vegaprotocol/react-helpers';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 
-const STORAGE_KEY = 'DEPOSIT_FORM_STORAGE';
+const STORAGE_KEY = 'vega_deposit_store';
 interface PersistedDeposit {
   assetId: string;
   amount?: string;
 }
 type PersistedDepositData = Record<string, PersistedDeposit>;
 
+const usePersistentDepositStore = create<{
+  deposits: PersistedDepositData;
+  saveValue: (entry: PersistedDeposit) => void;
+  lastVisited?: PersistedDeposit;
+}>()(
+  persist(
+    immer((set) => ({
+      deposits: {},
+      saveValue: (entry) =>
+        set((state) => {
+          const oldValue = state.deposits[entry.assetId] || null;
+          state.deposits[entry.assetId] = { ...oldValue, ...entry };
+          state.lastVisited = { ...oldValue, ...entry };
+          return state;
+        }),
+    })),
+    { name: STORAGE_KEY }
+  )
+);
+
 export const usePersistentDeposit = (
   assetId?: string
 ): [PersistedDeposit, (entry: PersistedDeposit) => void] => {
-  const [value, saveValue] = useLocalStorageSnapshot(STORAGE_KEY);
-  const parsedValues = useMemo(
-    () => JSON.parse(value || '{}') as PersistedDepositData,
-    [value]
-  );
-  const savedData = useMemo(() => {
-    const index = assetId || Object.keys({ ...parsedValues }).pop() || '';
-    return parsedValues[index] || { assetId: assetId || '' };
-  }, [parsedValues, assetId]);
-  const saveValueWrapper = useCallback(
-    (entry: PersistedDeposit) => {
-      parsedValues[entry.assetId] = entry;
-      saveValue(JSON.stringify(parsedValues));
-    },
-    [saveValue, parsedValues]
-  );
+  const { deposits, lastVisited, saveValue } = usePersistentDepositStore();
+  const discoveredData = useMemo(() => {
+    return deposits[assetId || ''] || lastVisited || { assetId: assetId || '' };
+  }, [deposits, lastVisited, assetId]);
 
-  return [savedData, saveValueWrapper];
+  return [discoveredData, saveValue];
 };
