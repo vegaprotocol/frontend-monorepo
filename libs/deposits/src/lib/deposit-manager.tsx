@@ -5,7 +5,7 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import { useDepositDialog } from './deposit-dialog';
 import type { Asset } from '@vegaprotocol/assets';
@@ -14,6 +14,7 @@ import {
   useBridgeContract,
   useEthereumConfig,
 } from '@vegaprotocol/web3';
+import { usePersistentDeposit } from './use-persistent-deposit';
 
 interface DepositManagerProps {
   assetId?: string;
@@ -28,7 +29,9 @@ export const DepositManager = ({
 }: DepositManagerProps) => {
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const { config } = useEthereumConfig();
-  const [assetId, setAssetId] = useState(initialAssetId);
+  const [persistentDeposit, savePersistentDeposit] =
+    usePersistentDeposit(initialAssetId);
+  const [assetId, setAssetId] = useState(persistentDeposit?.assetId);
   const asset = assets.find((a) => a.id === assetId);
   const bridgeContract = useBridgeContract();
   const closeDepositDialog = useDepositDialog((state) => state.close);
@@ -65,17 +68,26 @@ export const DepositManager = ({
     closeDepositDialog();
   };
 
+  const onAmountChange = useCallback(
+    (amount: string) => {
+      savePersistentDeposit({ ...persistentDeposit, amount });
+    },
+    [savePersistentDeposit, persistentDeposit]
+  );
+
   return (
     <DepositForm
       selectedAsset={asset}
       onDisconnect={reset}
       onSelectAsset={(id) => {
         setAssetId(id);
+        savePersistentDeposit({ assetId: id });
         // When we change asset, also clear the tracked faucet/approve transactions so
         // we dont render stale UI
         approve.reset();
         faucet.reset();
       }}
+      handleAmountChange={onAmountChange}
       assets={sortBy(assets, 'name')}
       submitApprove={approve.perform}
       submitDeposit={submitDeposit}
