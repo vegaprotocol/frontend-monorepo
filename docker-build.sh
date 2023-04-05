@@ -5,7 +5,9 @@ export PATH="/app/node_modules/.bin:$PATH"
 flags="--network-timeout 100000 --pure-lockfile"
 
 if [[ ! -z "${ENV_NAME}" ]]; then
-  flags="--env=${ENV_NAME} $flags"
+  if [[ "${ENV_NAME}" != "ops-vega" ]]; then
+    flags="--env=${ENV_NAME} $flags"
+  fi
 fi
 
 if [ "${APP}" = "trading" ]; then
