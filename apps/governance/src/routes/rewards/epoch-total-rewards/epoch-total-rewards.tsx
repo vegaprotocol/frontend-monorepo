@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
 import { useEpochAssetsRewardsQuery } from '../home/__generated__/Rewards';
-import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-list';
 import { NoRewards } from '../no-rewards';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
@@ -16,33 +16,39 @@ type EpochTotalRewardsProps = {
 export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
   const epochId = parseInt(currentEpoch.id);
   const totalPages = Math.ceil(epochId / EPOCHS_PAGE_SIZE);
+  const { t } = useTranslation()
   const [page, setPage] = useState(1);
   const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
+    notifyOnNetworkStatusChange: true,
     variables: {
       epochRewardSummariesFilter: {
         fromEpoch: epochId - EPOCHS_PAGE_SIZE,
-        toEpoch: epochId,
       },
     },
   });
-  useRefreshAfterEpoch(currentEpoch.timestamps.expiry, refetch);
 
-  const paginate = useCallback(
-    async (toPage: number) => {
-      try {
-        await refetch({
-          epochRewardSummariesFilter: {
-            fromEpoch: epochId - EPOCHS_PAGE_SIZE * toPage,
-            toEpoch: epochId - EPOCHS_PAGE_SIZE * toPage + EPOCHS_PAGE_SIZE - 1,
-          },
-        });
-        setPage(toPage);
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [epochId, page, totalPages, refetch]
-  );
+  const refetchData = useCallback(async (toPage?: number) => {
+    const targetPage = toPage ?? page
+    try {
+      await refetch({
+        epochRewardSummariesFilter: {
+          fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
+          toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
+        },
+      })
+      setPage(targetPage)
+    // eslint-disable-next-line no-empty
+    } catch (err) {
+      // no-op, the error will be in the original query
+    }
+  }, [epochId, page, refetch])
+
+  useEffect(() => {
+    // when the epoch changes, we want to refetch the data to update the current page
+    if (data) {
+      refetchData()
+    }
+  }, [epochId, data, refetchData])
 
   const epochTotalRewardSummaries = generateEpochTotalRewardsList(data) || [];
 
@@ -70,10 +76,10 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
             isLoading={loading}
             hasPrevPage={page > 1}
             hasNextPage={page < totalPages}
-            onBack={() => paginate(page - 1)}
-            onNext={() => paginate(page + 1)}
+            onBack={() => refetchData(page - 1)}
+            onNext={() => refetchData(page + 1)}
           >
-            Page {page}
+            {t('Page')} {page}
           </Pagination>
         </div>
       )}

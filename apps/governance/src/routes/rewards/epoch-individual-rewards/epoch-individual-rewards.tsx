@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
@@ -26,10 +26,14 @@ export const EpochIndividualRewards = ({
   const { delegationsPagination } = ENV;
 
   const { data, loading, error, refetch } = useRewardsQuery({
+    notifyOnNetworkStatusChange: true,
     variables: {
       partyId: pubKey || '',
       fromEpoch: epochId - EPOCHS_PAGE_SIZE,
       toEpoch: epochId,
+      delegationsPagination: delegationsPagination ? {
+        first: Number(delegationsPagination),
+      } : undefined,
     },
     skip: !pubKey,
   });
@@ -45,20 +49,31 @@ export const EpochIndividualRewards = ({
     return generateEpochIndividualRewardsList(rewards);
   }, [data?.party, rewards]);
 
-  const paginate = useCallback(
-    async (toPage: number) => {
-      try {
-        await refetch({
-          fromEpoch: epochId - EPOCHS_PAGE_SIZE * toPage,
-          toEpoch: epochId - EPOCHS_PAGE_SIZE * toPage + EPOCHS_PAGE_SIZE - 1,
-        });
-        setPage(toPage);
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [refetch, setPage, data]
-  );
+
+  const refetchData = useCallback(async (toPage?: number) => {
+    const targetPage = toPage ?? page
+    try {
+      await refetch({
+        partyId: pubKey || '',
+        fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
+        toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
+        delegationsPagination: delegationsPagination ? {
+          first: Number(delegationsPagination),
+        } : undefined,
+      })
+      setPage(targetPage)
+    // eslint-disable-next-line no-empty
+    } catch (err) {
+      // no-op, the error will be in the original query
+    }
+  }, [epochId, page, refetch, delegationsPagination, pubKey])
+
+  useEffect(() => {
+    // when the epoch changes, we want to refetch the data to update the current page
+    if (data) {
+      refetchData()
+    }
+  }, [epochId, data, refetchData])
 
   return (
     <AsyncRenderer
@@ -87,10 +102,10 @@ export const EpochIndividualRewards = ({
             isLoading={loading}
             hasPrevPage={page > 1}
             hasNextPage={page < totalPages}
-            onBack={() => paginate(page - 1)}
-            onNext={() => paginate(page + 1)}
+            onBack={() => refetchData(page - 1)}
+            onNext={() => refetchData(page + 1)}
           >
-            Page {page}
+            {t('Page')} {page}
           </Pagination>
         </div>
       )}
