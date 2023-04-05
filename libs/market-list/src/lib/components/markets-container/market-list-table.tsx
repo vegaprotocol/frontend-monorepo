@@ -11,12 +11,13 @@ import {
   AgGridDynamic as AgGrid,
   PriceFlashCell,
   MarketNameCell,
+  SetFilter,
 } from '@vegaprotocol/datagrid';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketMaybeWithData, MarketFieldsFragment } from '../../';
+import type { MarketMaybeWithData } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
@@ -33,7 +34,6 @@ export const MarketListTable = forwardRef<
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
-      overlayNoRowsTemplate={t('No markets')}
       getRowId={getRowId}
       ref={ref}
       defaultColDef={{
@@ -43,7 +43,7 @@ export const MarketListTable = forwardRef<
         filter: true,
         filterParams: { buttons: ['reset'] },
       }}
-      suppressCellFocus={true}
+      suppressCellFocus
       components={{ PriceFlashCell, MarketNameCell }}
       {...props}
     >
@@ -59,11 +59,11 @@ export const MarketListTable = forwardRef<
       />
       <AgGridColumn
         headerName={t('Trading mode')}
-        field="data"
+        field="tradingMode"
         minWidth={170}
-        valueGetter={({
+        valueFormatter={({
           data,
-        }: VegaValueGetterParams<MarketMaybeWithData, 'data'>) => {
+        }: VegaValueFormatterParams<MarketMaybeWithData, 'data'>) => {
           if (!data?.data) return undefined;
           const { trigger } = data.data;
           const { tradingMode } = data;
@@ -75,14 +75,22 @@ export const MarketListTable = forwardRef<
             - ${Schema.AuctionTriggerMapping[trigger]}`
             : Schema.MarketTradingModeMapping[tradingMode];
         }}
+        filter={SetFilter}
+        filterParams={{
+          set: Schema.MarketTradingModeMapping,
+        }}
       />
       <AgGridColumn
         headerName={t('Status')}
         field="state"
-        valueGetter={({
+        valueFormatter={({
           data,
-        }: VegaValueGetterParams<MarketFieldsFragment, 'state'>) => {
-          return data?.state ? Schema.MarketStateMapping[data?.state] : '-';
+        }: VegaValueFormatterParams<MarketMaybeWithData, 'state'>) => {
+          return data?.state ? Schema.MarketStateMapping[data.state] : '-';
+        }}
+        filter={SetFilter}
+        filterParams={{
+          set: Schema.MarketStateMapping,
         }}
       />
       <AgGridColumn

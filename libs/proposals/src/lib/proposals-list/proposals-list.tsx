@@ -1,9 +1,10 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import { proposalsDataProvider } from '../proposals-data-provider';
-import { useCallback, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
@@ -19,6 +20,7 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
 
 export const ProposalsList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
+  const [dataCount, setDataCount] = useState(0);
   const handleOnGridReady = useCallback(() => {
     gridRef.current?.api?.sizeColumnsToFit();
   }, [gridRef]);
@@ -30,22 +32,35 @@ export const ProposalsList = () => {
   });
   const filteredData = getNewMarketProposals(data || []);
   const { columnDefs, defaultColDef } = useColumnDefs();
+  useEffect(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, [filteredData]);
+  const onFilterChanged = useCallback(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, []);
   return (
-    <AsyncRenderer
-      loading={loading}
-      error={error}
-      data={filteredData}
-      reload={reload}
-    >
+    <div className="relative min-h-[200px]">
       <AgGrid
         ref={gridRef}
-        domLayout="autoHeight"
-        className="min-w-full"
+        className="w-full h-full"
         columnDefs={columnDefs}
         rowData={filteredData}
         defaultColDef={defaultColDef}
         onGridReady={handleOnGridReady}
+        suppressLoadingOverlay
+        suppressNoRowsOverlay
+        onFilterChanged={onFilterChanged}
       />
-    </AsyncRenderer>
+      <div className="pointer-events-none absolute inset-0">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={filteredData}
+          noDataMessage={t('No markets')}
+          noDataCondition={() => !dataCount}
+          reload={reload}
+        />
+      </div>
+    </div>
   );
 };
