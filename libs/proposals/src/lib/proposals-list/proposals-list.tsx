@@ -9,6 +9,13 @@ import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
 
+// prevent cutting filter windows by auto-height layout
+const CUSTOM_GRID_STYLES = `
+  .ag-layout-auto-height {
+    min-height: 200px !important;
+  }
+`;
+
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
     [
@@ -39,10 +46,11 @@ export const ProposalsList = () => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);
   return (
-    <div className="relative min-h-[200px]">
+    <div className="relative">
       <AgGrid
         ref={gridRef}
         className="w-full h-full"
+        domLayout="autoHeight"
         columnDefs={columnDefs}
         rowData={filteredData}
         defaultColDef={defaultColDef}
@@ -50,6 +58,7 @@ export const ProposalsList = () => {
         suppressLoadingOverlay
         suppressNoRowsOverlay
         onFilterChanged={onFilterChanged}
+        customThemeParams={CUSTOM_GRID_STYLES}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
