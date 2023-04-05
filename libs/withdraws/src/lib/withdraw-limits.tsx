@@ -1,7 +1,12 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import { WITHDRAW_THRESHOLD_TOOLTIP_TEXT } from '@vegaprotocol/assets';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -39,6 +44,7 @@ export const WithdrawLimits = ({
     {
       key: 'WITHDRAWAL_THRESHOLD',
       label: t('Delayed withdrawal threshold'),
+      tooltip: WITHDRAW_THRESHOLD_TOOLTIP_TEXT,
       rawValue: threshold,
       value: <CompactNumber number={threshold} decimals={asset.decimals} />,
     },
@@ -51,9 +57,17 @@ export const WithdrawLimits = ({
 
   return (
     <KeyValueTable>
-      {limits.map(({ key, label, rawValue, value }) => (
+      {limits.map(({ key, label, rawValue, value, tooltip }) => (
         <KeyValueTableRow key={key}>
-          <div data-testid={`${key}_label`}>{label}</div>
+          <div data-testid={`${key}_label`}>
+            {tooltip ? (
+              <Tooltip description={tooltip}>
+                <span>{label}</span>
+              </Tooltip>
+            ) : (
+              label
+            )}
+          </div>
           <div
             data-testid={`${key}_value`}
             className="truncate"
