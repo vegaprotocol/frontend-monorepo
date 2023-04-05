@@ -69,9 +69,6 @@ export const TransferForm = ({
   const transferAmount = useMemo(() => {
     if (!amount) return undefined;
     if (includeFee && feeFactor) {
-      // using toFixed without an argument will always return a
-      // number in normal notation without rounding, formatting functions
-      // aren't working in a way which won't round the decimal places
       return new BigNumber(1).minus(feeFactor).times(amount).toString();
     }
     return amount;
@@ -242,6 +239,7 @@ export const TransferForm = ({
       </FormGroup>
       <div className="mb-4">
         <Checkbox
+          disabled={!transferAmount}
           label={
             <Tooltip
               description={t(
@@ -261,6 +259,7 @@ export const TransferForm = ({
           transferAmount={transferAmount}
           feeFactor={feeFactor}
           fee={fee}
+          decimals={asset?.decimals}
         />
       )}
       <Button type="submit" variant="primary" fill={true}>
@@ -275,15 +274,17 @@ export const TransferFee = ({
   transferAmount,
   feeFactor,
   fee,
+  decimals,
 }: {
   amount: string;
   transferAmount: string;
   feeFactor: string | null;
   fee?: string;
+  decimals?: number;
 }) => {
   if (!feeFactor || !amount || !transferAmount || !fee) return null;
 
-  const totalValue = new BigNumber(transferAmount).plus(fee).toFixed();
+  const totalValue = new BigNumber(transferAmount).plus(fee).toString();
 
   return (
     <div className="mb-4 flex flex-col gap-2 text-xs">
@@ -301,7 +302,7 @@ export const TransferFee = ({
           data-testid="transfer-fee"
           className="text-neutral-500 dark:text-neutral-300"
         >
-          {fee}
+          {formatNumber(fee, decimals)}
         </div>
       </div>
       <div className="flex justify-between gap-1 items-center flex-wrap">
@@ -317,7 +318,7 @@ export const TransferFee = ({
           data-testid="transfer-amount"
           className="text-neutral-500 dark:text-neutral-300"
         >
-          {amount}
+          {formatNumber(amount, decimals)}
         </div>
       </div>
       <div className="flex justify-between gap-1 items-center flex-wrap">
@@ -333,7 +334,7 @@ export const TransferFee = ({
           data-testid="total-transfer-fee"
           className="text-neutral-500 dark:text-neutral-300"
         >
-          {totalValue}
+          {formatNumber(totalValue, decimals)}
         </div>
       </div>
     </div>
