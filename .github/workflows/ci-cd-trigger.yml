@@ -5,6 +5,7 @@ on:
     branches:
       - release/*
       - develop
+      - push-to-s3 # testing pipelines
   pull_request:
     types:
       - opened
