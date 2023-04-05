@@ -16,7 +16,3 @@ if [ "${APP}" = "trading" ]; then
 else
   yarn nx build ${APP} $flags
 fi
-
-env_vars_file="/app/dist/apps/${APP}/.env"
-# make sure there are no exposed .env files
-rm $env_vars_file || echo "No env vars file"

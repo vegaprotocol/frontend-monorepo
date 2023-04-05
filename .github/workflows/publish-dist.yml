@@ -83,8 +83,20 @@ jobs:
           echo "Check local dist"
           ls -al dist
 
+      - name: Publish dist as docker image
+        uses: docker/build-push-action@v3
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          push: true
+          build-args: |
+            APP=${{ matrix.app }}
+            NODE_VERSION=${{ steps.tags.outputs.nodeVersion }}
+          tags: |
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
+
       # bucket creation in github.com/vegaprotocol/terraform//frontend
-      - uses: jakejarvis/s3-sync-action@master
+      - name: Publish dist to s3
+        uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
