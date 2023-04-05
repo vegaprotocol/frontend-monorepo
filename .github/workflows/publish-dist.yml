@@ -44,7 +44,11 @@ jobs:
           echo ::set-output name=nodeVersion::${nodeVersion}
 
           if [[ "${{ github.event_name }}" = "push" ]]; then
-            envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+            if [[ "${{ github.ref }}" =~ release* ]]; then
+              envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+            else
+              envName="stagnet3"
+            fi
             bucketName="${{ matrix.app }}-$envName"
             echo ::set-output name=bucketName::${bucketName}
             echo ::set-output name=envName::${envName}
