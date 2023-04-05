@@ -83,27 +83,16 @@ jobs:
           echo "Check local dist"
           ls -al dist
 
-      - name: Publish dist as docker image
-        uses: docker/build-push-action@v3
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          push: true
-          build-args: |
-            APP=${{ matrix.app }}
-            NODE_VERSION=${{ steps.tags.outputs.nodeVersion }}
-          tags: |
-            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
-
       # bucket creation in github.com/vegaprotocol/terraform//frontend
-      - uses: shallwefootball/s3-upload-action@master
-        if: ${{ github.event_name == 'push' }}
-        name: Upload dist S3
-        with:
-          aws_key_id: ${{ secrets.AWS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: ${{ steps.tags.outputs.bucketName }}
-          destination_dir: ''
-          source_dir: 'dist'
+      - uses: jakejarvis/s3-sync-action@master
+        # with:
+        #   args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ steps.tags.outputs.bucketName }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}}
+          AWS_REGION: 'eu-west-1'
+          SOURCE_DIR: 'dist'
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
