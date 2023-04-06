@@ -14,7 +14,6 @@ import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
 import { TxsList } from './txs/home';
-import { PendingTxs } from './pending';
 import flags from '../config/flags';
 import { t } from '@vegaprotocol/i18n';
 import { Routes } from './route-names';
@@ -245,17 +244,6 @@ export const routerConfig: Route[] = [
           breadcrumb: () => <Link to={Routes.TX}>{t('Transactions')}</Link>,
         },
         children: [
-          {
-            path: 'pending',
-            element: <PendingTxs />,
-            handle: {
-              breadcrumb: () => (
-                <Link to={linkTo(Routes.TX, 'pending')}>
-                  {t('Pending transactions')}
-                </Link>
-              ),
-            },
-          },
           {
             path: ':txHash',
             element: <Tx />,
