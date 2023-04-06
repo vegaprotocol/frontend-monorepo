@@ -8,7 +8,6 @@ import type { BlockExplorerTransaction } from '../../../routes/types/block-explo
 import { toNonHex } from '../../../components/search/detect-search';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import { t } from '@vegaprotocol/i18n';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();

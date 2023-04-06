@@ -4,7 +4,8 @@ import {
   useScreenDimensions,
 } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Routes } from '../../../routes/route-names';
 import { SubHeading } from '../../../components/sub-heading';
 import { toNonHex } from '../../../components/search/detect-search';
 import { useTxsData } from '../../../hooks/use-txs-data';
@@ -18,17 +19,13 @@ import {
   KeyValueTable,
   KeyValueTableRow,
   Loader,
+  Option,
+  RichSelect,
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { PartyBlock } from './components/party-block';
 import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@vegaprotocol/ui-toolkit';
-import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
+import { formatNumber } from '@vegaprotocol/utils';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -42,6 +39,8 @@ const Party = () => {
     limit: 10,
     filters,
   });
+
+  const navigate = useNavigate();
 
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const {
@@ -76,41 +75,32 @@ const Party = () => {
         truncateStart={visibleChars}
         truncateEnd={visibleChars}
       />
-
-      <div className="grid md:grid-flow-col grid-flow-row md:space-x-4 grid-cols-1 md:grid-cols-3 w-full">
+      <div className="grid md:grid-flow-col grid-flow-row md:space-x-4 grid-cols-1 md:grid-cols-2 w-full">
         <PartyBlock title={t('Accounts')}>
           {AccountData ? (
-            <KeyValueTable>
-              <KeyValueTableRow noBorder={true}>
-                <div>{t('Assets')}</div>
-                <DropdownMenu
-                  trigger={
-                    <DropdownMenuTrigger>
-                      <span>{AccountData.length} assets held</span>
-                    </DropdownMenuTrigger>
-                  }
-                >
-                  <DropdownMenuContent>
-                    {AccountData.map((asset) => (
-                      <DropdownMenuItem key={asset.asset.name}>
-                        <div>
-                          <strong className="block w-2 bold">
-                            {asset.asset.name}
-                          </strong>
-                          <span className="font-mono">
-                            {addDecimalsFixedFormatNumber(
-                              asset.total,
-                              asset.asset.decimals
-                            )}
-                          </span>
-                          <span className="ml-1">{asset.asset.symbol}</span>
-                        </div>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </KeyValueTableRow>
-            </KeyValueTable>
+            <RichSelect
+              id="party-assets"
+              name="party-assets"
+              placeholder={`${AccountData.length} accounts`}
+              onValueChange={() => {
+                navigate(`/${Routes.PARTIES}/${partyId}/accounts`);
+                return false;
+              }}
+              hasError={false}
+              value={undefined}
+            >
+              {AccountData.map((a) => (
+                <Option key={a.asset.id} value={a.asset.id}>
+                  <div className="flex flex-col items-start">
+                    <span>{a.asset.name}</span>
+                    <span className="font-mono">
+                      {formatNumber(a.total, a.asset.decimals)}&nbsp;
+                      {a.asset.symbol}
+                    </span>
+                  </div>
+                </Option>
+              ))}
+            </RichSelect>
           ) : AccountLoading && !AccountError ? (
             <Loader size="small" />
           ) : (

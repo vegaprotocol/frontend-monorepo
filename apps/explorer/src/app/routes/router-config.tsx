@@ -22,16 +22,13 @@ import type { Params, RouteObject } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { MarketPage, MarketsPage } from './markets';
-<<<<<<< HEAD
 import type { ReactNode } from 'react';
 import { ErrorBoundary, Layout } from './layout';
 import compact from 'lodash/compact';
 import { AssetLink, MarketLink } from '../components/links';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { remove0x } from '@vegaprotocol/utils';
-=======
 import { PartyAccountsByAsset } from './parties/id/accounts';
->>>>>>> 43fddbc51 (feat(explorer): make separate accounts route)
 
 export type Navigable = {
   path: string;
@@ -78,18 +75,31 @@ const partiesRoutes: Route[] = flags.parties
           },
           {
             path: ':party',
-            element: <PartySingle />,
-            handle: {
-              breadcrumb: (params: Params<string>) => (
-                <Link to={linkTo(Routes.PARTIES, params.party)}>
-                  {truncateMiddle(params.party as string)}
-                </Link>
-              ),
-            },
-          },
-          {
-            path: ':party/accounts',
-            element: <PartyAccountsByAsset />,
+            element: <Party />,
+            children: [
+              {
+                index: true,
+                element: <PartySingle />,
+                handle: {
+                  breadcrumb: (params: Params<string>) => (
+                    <Link to={linkTo(Routes.PARTIES, params.party)}>
+                      {truncateMiddle(params.party as string)}
+                    </Link>
+                  ),
+                },
+              },
+              {
+                path: 'accounts',
+                element: <PartyAccountsByAsset />,
+                handle: {
+                  breadcrumb: (params: Params<string>) => (
+                    <Link to={linkTo(Routes.PARTIES, params.party)}>
+                      {truncateMiddle(params.party as string)}
+                    </Link>
+                  ),
+                },
+              },
+            ],
           },
         ],
       },
