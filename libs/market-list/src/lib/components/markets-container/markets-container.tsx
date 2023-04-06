@@ -1,4 +1,6 @@
 import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
 import { t } from '@vegaprotocol/i18n';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
@@ -12,15 +14,24 @@ interface MarketsContainerProps {
 }
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
+  const gridRef = useRef<AgGridReact | null>(null);
+  const [dataCount, setDataCount] = useState(0);
   const { data, error, loading, reload } = useDataProvider({
     dataProvider,
     skipUpdates: true,
     variables: undefined,
   });
+  useEffect(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, [data]);
+  const onFilterChanged = useCallback(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, []);
   return (
     <div className="h-full relative">
       <MarketListTable
-        rowData={error ? [] : data}
+        ref={gridRef}
+        rowData={data}
         suppressLoadingOverlay
         suppressNoRowsOverlay
         onCellClicked={(cellEvent: CellClickedEvent) => {
@@ -40,6 +51,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           );
         }}
         onMarketClick={onSelect}
+        onFilterChanged={onFilterChanged}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
@@ -47,6 +59,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           error={error}
           data={data}
           noDataMessage={t('No markets')}
+          noDataCondition={() => !dataCount}
           reload={reload}
         />
       </div>

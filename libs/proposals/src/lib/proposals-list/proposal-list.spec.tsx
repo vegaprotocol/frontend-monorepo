@@ -91,6 +91,6 @@ describe('ProposalsList', () => {
     await waitFor(() => {
       expect(container).toBeInTheDocument();
     });
-    expect(screen.getByText('No Rows To Show')).toBeInTheDocument();
+    expect(screen.getByText('No markets')).toBeInTheDocument();
   });
 });
