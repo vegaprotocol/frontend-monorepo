@@ -4,7 +4,6 @@ import {
   getNormalisedVotingPower,
   getUnnormalisedVotingPower,
   getOverstakingPenalty,
-  getOverstakedAmount,
   getFormattedPerformanceScore,
   getPerformancePenalty,
   getTotalPenalties,
@@ -22,9 +21,10 @@ describe('getLastEpochScoreAndPerformance', () => {
               id: '0x123',
               rewardScore: {
                 rawValidatorScore: '0.25',
+                performanceScore: '0.75',
               },
               rankingScore: {
-                performanceScore: '0.75',
+                stakeScore: '0.25',
               },
             },
           },
@@ -33,9 +33,10 @@ describe('getLastEpochScoreAndPerformance', () => {
               id: '0x234',
               rewardScore: {
                 rawValidatorScore: '0.35',
+                performanceScore: '0.85',
               },
               rankingScore: {
-                performanceScore: '0.85',
+                stakeScore: '0.25',
               },
             },
           },
@@ -50,12 +51,14 @@ describe('getLastEpochScoreAndPerformance', () => {
     ).toEqual({
       rawValidatorScore: '0.25',
       performanceScore: '0.75',
+      stakeScore: '0.25',
     });
     expect(
       getLastEpochScoreAndPerformance(mockPreviousEpochData, '0x234')
     ).toEqual({
       rawValidatorScore: '0.35',
       performanceScore: '0.85',
+      stakeScore: '0.25',
     });
   });
 });
@@ -79,40 +82,34 @@ describe('getUnnormalisedVotingPower', () => {
 });
 
 describe('getOverstakingPenalty', () => {
-  it('should return the overstaking penalty', () => {
-    expect(
-      getOverstakingPenalty(new BigNumber(100), Number(1000).toString())
-    ).toEqual('10.00%');
-    expect(
-      getOverstakingPenalty(new BigNumber(500), Number(2000).toString())
-    ).toEqual('25.00%');
-  });
-});
-
-describe('getOverstakedAmount', () => {
-  it('should return the overstaked amount', () => {
-    expect(
-      // If a validator score is 0, any amount staked on the node is considered overstaked
-      getOverstakedAmount('0', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(20));
-    expect(
-      getOverstakedAmount('0.05', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(15));
-    expect(
-      getOverstakedAmount('0.1', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(10));
-    expect(
-      getOverstakedAmount('0.15', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(5));
-    expect(
-      getOverstakedAmount('0.2', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(0));
+  it('returns "0%" when both arguments are null or undefined', () => {
+    expect(getOverstakingPenalty(null, null)).toBe('0%');
+    expect(getOverstakingPenalty(undefined, undefined)).toBe('0%');
+    expect(getOverstakingPenalty(null, undefined)).toBe('0%');
+    expect(getOverstakingPenalty(undefined, null)).toBe('0%');
   });
 
-  it('should return 0 if the overstaked amount is negative', () => {
-    expect(
-      getOverstakedAmount('0.8', Number(100).toString(), Number(20).toString())
-    ).toEqual(new BigNumber(0));
+  it('returns "0%" when one argument is null or undefined', () => {
+    expect(getOverstakingPenalty('10', null)).toBe('0%');
+    expect(getOverstakingPenalty(null, '20')).toBe('0%');
+    expect(getOverstakingPenalty('10', undefined)).toBe('0%');
+    expect(getOverstakingPenalty(undefined, '20')).toBe('0%');
+  });
+
+  it('returns "0%" when validatorScore or stakeScore is zero', () => {
+    expect(getOverstakingPenalty('0', '20')).toBe('0%');
+    expect(getOverstakingPenalty('10', '0')).toBe('0%');
+  });
+
+  it('returns the correct overstaking penalty', () => {
+    expect(getOverstakingPenalty('0.18', '0.2')).toBe('10.00%');
+    expect(getOverstakingPenalty('0.2', '0.2')).toBe('0.00%');
+    expect(getOverstakingPenalty('0.04', '0.2')).toBe('80.00%');
+  });
+
+  it('handles string numbers with decimals', () => {
+    expect(getOverstakingPenalty('7.5', '15')).toBe('50.00%');
+    expect(getOverstakingPenalty('12.5', '25')).toBe('50.00%');
   });
 });
 
