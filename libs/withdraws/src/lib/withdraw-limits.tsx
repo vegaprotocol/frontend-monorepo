@@ -30,7 +30,13 @@ export const WithdrawLimits = ({
       ? formatDistanceToNow(Date.now() + delay * 1000)
       : t('None');
 
-  const limits = [
+  const limits: {
+    key: string;
+    label: string;
+    value: string | JSX.Element;
+    rawValue?: BigNumber;
+    tooltip?: string;
+  }[] = [
     {
       key: 'BALANCE_AVAILABLE',
       label: t('Balance available'),
@@ -41,19 +47,21 @@ export const WithdrawLimits = ({
         '-'
       ),
     },
-    {
+  ];
+  if (threshold.isGreaterThan(0)) {
+    limits.push({
       key: 'WITHDRAWAL_THRESHOLD',
       label: t('Delayed withdrawal threshold'),
       tooltip: WITHDRAW_THRESHOLD_TOOLTIP_TEXT,
       rawValue: threshold,
       value: <CompactNumber number={threshold} decimals={asset.decimals} />,
-    },
-    {
-      key: 'DELAY_TIME',
-      label: t('Delay time'),
-      value: delayTime,
-    },
-  ];
+    });
+  }
+  limits.push({
+    key: 'DELAY_TIME',
+    label: t('Delay time'),
+    value: delayTime,
+  });
 
   return (
     <KeyValueTable>
