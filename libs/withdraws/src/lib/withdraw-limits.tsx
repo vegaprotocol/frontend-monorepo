@@ -48,7 +48,7 @@ export const WithdrawLimits = ({
       ),
     },
   ];
-  if (threshold.isGreaterThan(0)) {
+  if (threshold.isFinite()) {
     limits.push({
       key: 'WITHDRAWAL_THRESHOLD',
       label: t('Delayed withdrawal threshold'),

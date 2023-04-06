@@ -68,8 +68,13 @@ const WithdrawDelayNotification = ({
   return (
     <Notification
       intent={Intent.Warning}
+      testId={
+        threshold.isFinite()
+          ? 'amount-withdrawal-delay-notification'
+          : 'withdrawals-delay-notification'
+      }
       message={[
-        threshold.isGreaterThan(0)
+        !threshold.isFinite()
           ? t('All %s withdrawals are subject to a %s delay.', replacements)
           : t('Withdrawals of %s %s or more will be delayed for %s.', [
               formatNumber(threshold, decimals),

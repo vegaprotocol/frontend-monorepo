@@ -78,11 +78,16 @@ export const Notification = ({
       </div>
       <div className="flex flex-col flex-grow items-start gap-1.5">
         {title && (
-          <div className="whitespace-nowrap overflow-hidden text-ellipsis uppercase leading-6">
+          <div
+            key="title"
+            className="whitespace-nowrap overflow-hidden text-ellipsis uppercase leading-6"
+          >
             {title}
           </div>
         )}
-        <div className="text-sm [word-break:break-word]">{message}</div>
+        <div key="message" className="text-sm [word-break:break-word]">
+          {message}
+        </div>
         {buttonProps && (
           <Button
             size={buttonProps.size || 'sm'}
