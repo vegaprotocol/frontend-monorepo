@@ -17,7 +17,7 @@ import {
   InputError,
   Notification,
   RichSelect,
-  Icon,
+  ExternalLink,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
@@ -80,15 +80,12 @@ const WithdrawDelayNotification = ({
               formatNumber(threshold, decimals),
               ...replacements,
             ]),
-        <a
-          className="ml-2"
+        <ExternalLink
+          className="ml-1"
           href="https://docs.vega.xyz/testnet/concepts/deposits-withdrawals#withdrawal-limits"
-          target="_blank"
-          rel="noreferrer"
         >
           {t('Read more')}
-          <Icon name="arrow-top-right" size={3} className="ml-2" />
-        </a>,
+        </ExternalLink>,
       ]}
     />
   );
