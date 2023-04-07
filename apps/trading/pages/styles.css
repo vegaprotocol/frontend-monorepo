@@ -63,7 +63,7 @@ html [data-theme='light'] {
   --pennant-color-sell-stroke: theme('colors.vega.pink.400');
 
   --pennant-color-volume-buy: theme('colors.vega.green.400');
-  --pennant-color-volume-sell: theme('colors.vega.pink.500');
+  --pennant-color-volume-sell: theme('colors.vega.pink.400');
 
   /* depth chart */
   --pennant-color-depth-buy-fill: theme('colors.vega.green.400');
