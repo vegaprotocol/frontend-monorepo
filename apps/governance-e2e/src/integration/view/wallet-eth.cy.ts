@@ -68,8 +68,10 @@ context(
       it('should have connector list visible', function () {
         const connectList = [
           'Unknown',
-          'MetaMask, Brave or other injected web wallet',
+          'MetaMask',
+          'Coinbase',
           'WalletConnect',
+          'WalletConnect Legacy',
         ];
         cy.get(connectorList).within(() => {
           cy.get('button').each(($btn, i) => {
