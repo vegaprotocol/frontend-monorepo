@@ -15,7 +15,7 @@ import { WelcomeDialogHeader } from './welcome-dialog-header';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ProposedMarkets } from './proposed-markets';
 import { Links, Routes } from '../../pages/client-router';
-import {useMarketClickHandler} from "../../lib/hooks/use-market-click-handler";
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 export const SelectMarketLandingTable = ({
   markets,
@@ -28,7 +28,9 @@ export const SelectMarketLandingTable = ({
   const onSelectMarket = useCallback(
     (id: string, metaKey?: boolean) => {
       onSelect(id, metaKey);
-      onClose();
+      if (!metaKey) {
+        onClose();
+      }
     },
     [onSelect, onClose]
   );
