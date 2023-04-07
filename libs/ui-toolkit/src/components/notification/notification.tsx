@@ -70,6 +70,8 @@ export const Notification = ({
             'text-vega-green dark:text-vega-green': intent === Intent.Success,
             'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
             'text-vega-pink': intent === Intent.Danger,
+            'mt-1': !!title,
+            'mt-[0.125rem]': !title,
           },
           'flex items-start mt-1'
         )}
