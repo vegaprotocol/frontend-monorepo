@@ -3,10 +3,47 @@ import { initializeConnector } from '@web3-react/core';
 import type { Connector } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect-v2';
+import { WalletConnect as WalletConnectLegacy } from '@web3-react/walletconnect';
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { initializeUrlConnector } from './url-connector';
 import { PROJECT_ID } from '../constants';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
+
+export const initializeCoinbaseConnector = (providerUrl: string) =>
+  initializeConnector<CoinbaseWallet>(
+    (actions) =>
+      new CoinbaseWallet({
+        actions,
+        options: {
+          appName: 'Vega',
+          darkMode: true,
+          url: providerUrl,
+        },
+        onError: (error) => {
+          console.log('ERR_COINBASE_WALLET', error);
+          useWeb3ConnectStore.setState({ error });
+        },
+      })
+  );
+
+export const initializeWalletConnectLegacyConnector = (
+  chainId: number,
+  providerUrl: string
+) =>
+  initializeConnector<WalletConnectLegacy>(
+    (actions) =>
+      new WalletConnectLegacy({
+        actions,
+        options: {
+          rpc: {
+            [chainId]: providerUrl,
+          },
+          qrcode: true,
+        },
+        defaultChainId: chainId,
+      })
+  );
 
 export const initializeWalletConnector = (
   chainId: number,
@@ -49,6 +86,9 @@ export const initializeMetaMaskConnector = () =>
     (actions) =>
       new MetaMask({
         actions,
+        options: {
+          mustBeMetaMask: false,
+        },
         onError: (error) => {
           console.log('ERR_META_MASK', error.message);
           useWeb3ConnectStore.setState({ error });
@@ -71,10 +111,17 @@ export const createConnectors = (
     chainId,
     providerUrl
   );
+  const [legacy, legacyHooks] = initializeWalletConnectLegacyConnector(
+    chainId,
+    providerUrl
+  );
+  const [coinbase, coinbaseHooks] = initializeCoinbaseConnector(providerUrl);
 
   return [
     initializeUrlConnector(localProviderUrl, walletMnemonic),
     [metamask, metamaskHooks],
+    [coinbase, coinbaseHooks],
     [walletconnect, walletconnectHooks],
+    [legacy, legacyHooks],
   ].filter(Boolean) as [Connector, Web3ReactHooks][];
 };
