@@ -15,6 +15,7 @@ import { WelcomeDialogHeader } from './welcome-dialog-header';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ProposedMarkets } from './proposed-markets';
 import { Links, Routes } from '../../pages/client-router';
+import {useMarketClickHandler} from "../../lib/hooks/use-market-click-handler";
 
 export const SelectMarketLandingTable = ({
   markets,
@@ -23,22 +24,10 @@ export const SelectMarketLandingTable = ({
   markets: MarketMaybeWithDataAndCandles[] | null;
   onClose: () => void;
 }) => {
-  const params = useParams();
-  const navigate = useNavigate();
-  const marketId = params.marketId;
-
-  const onSelect = useCallback(
-    (id: string) => {
-      if (id && id !== marketId) {
-        navigate(Links[Routes.MARKET](id));
-      }
-    },
-    [marketId, navigate]
-  );
-
+  const onSelect = useMarketClickHandler();
   const onSelectMarket = useCallback(
-    (id: string) => {
-      onSelect(id);
+    (id: string, metaKey?: boolean) => {
+      onSelect(id, metaKey);
       onClose();
     },
     [onSelect, onClose]
@@ -73,7 +62,7 @@ export const SelectMarketLandingTable = ({
                 key={i}
                 detailed={false}
                 onSelect={onSelectMarket}
-                columns={columns(market, onSelect, onCellClick)}
+                columns={columns(market, onSelectMarket, onCellClick)}
               />
             ))}
           </tbody>
