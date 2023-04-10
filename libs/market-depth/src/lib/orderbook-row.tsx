@@ -1,5 +1,5 @@
 import React from 'react';
-import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
+import { addDecimal, addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { PriceCell, VolCell, CumulativeVol } from '@vegaprotocol/datagrid';
 
 interface OrderbookRowProps {
@@ -15,7 +15,7 @@ interface OrderbookRowProps {
   price: string;
   relativeAsk?: number;
   relativeBid?: number;
-  onClick?: (price?: string | number) => void;
+  onClick: (price: string) => void;
 }
 
 export const OrderbookRow = React.memo(
@@ -59,7 +59,7 @@ export const OrderbookRow = React.memo(
         <PriceCell
           testId={`price-${price}`}
           value={BigInt(price)}
-          onClick={() => onClick && onClick(price)}
+          onClick={() => onClick && onClick(addDecimal(price, decimalPlaces))}
           valueFormatted={addDecimalsFixedFormatNumber(price, decimalPlaces)}
         />
         <CumulativeVol
