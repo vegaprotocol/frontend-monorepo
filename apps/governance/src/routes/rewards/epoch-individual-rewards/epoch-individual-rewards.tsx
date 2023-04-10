@@ -48,12 +48,17 @@ export const EpochIndividualRewards = ({
 
   const epochIndividualRewardSummaries = useMemo(() => {
     if (!data?.party) return [];
-    return generateEpochIndividualRewardsList(rewards, epochId, page, EPOCHS_PAGE_SIZE);
+    return generateEpochIndividualRewardsList(
+      rewards,
+      epochId,
+      page,
+      EPOCHS_PAGE_SIZE
+    );
   }, [data?.party, epochId, page, rewards]);
 
   const refetchData = useCallback(
     async (toPage?: number) => {
-      const targetPage = toPage ?? page;      
+      const targetPage = toPage ?? page;
       await refetch({
         partyId: pubKey || '',
         fromEpoch: Math.max(0, epochId - EPOCHS_PAGE_SIZE * page),

@@ -31,16 +31,16 @@ export const generateEpochIndividualRewardsList = (
   rewards: RewardFieldsFragment[],
   epochId: number,
   page: number,
-  size: number,
+  size: number
 ) => {
-  const map: Map<string, EpochIndividualReward> = new Map()
-  const fromEpoch = Math.max(0, epochId - size * page)
-  const toEpoch = epochId - size * page + size
+  const map: Map<string, EpochIndividualReward> = new Map();
+  const fromEpoch = Math.max(0, epochId - size * page);
+  const toEpoch = epochId - size * page + size;
   for (let i = fromEpoch; i <= toEpoch; i++) {
     map.set(i.toString(), {
       epoch: i.toString(),
       rewards: [],
-    })
+    });
   }
 
   // We take the rewards and aggregate them by epoch and asset.

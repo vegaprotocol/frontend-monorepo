@@ -12,7 +12,7 @@ export type PaginationProps = {
   onBack: () => void;
   onNext: () => void;
   onFirst?: () => void;
-  onLast?: () => void;
+  onLast?: () => void;
 };
 
 export const Pagination = ({

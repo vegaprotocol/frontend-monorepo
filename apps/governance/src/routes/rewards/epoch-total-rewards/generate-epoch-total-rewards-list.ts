@@ -22,8 +22,8 @@ export interface AggregatedEpochRewardSummary {
 }
 
 interface EpochTotalCollection {
-  epoch: number
-  assetRewards: Map<string, AggregatedEpochRewardSummary>
+  epoch: number;
+  assetRewards: Map<string, AggregatedEpochRewardSummary>;
 }
 
 export interface EpochTotalSummary {
@@ -40,16 +40,16 @@ export const generateEpochTotalRewardsList = (
   epochData: EpochAssetsRewardsQuery | undefined,
   epochId: number,
   page: number,
-  size: number,
+  size: number
 ) => {
-  const map: Map<string, EpochTotalCollection> = new Map()
-  const fromEpoch = Math.max(0, epochId - size * page)
-  const toEpoch = epochId - size * page + size
+  const map: Map<string, EpochTotalCollection> = new Map();
+  const fromEpoch = Math.max(0, epochId - size * page);
+  const toEpoch = epochId - size * page + size;
   for (let i = fromEpoch; i <= toEpoch; i++) {
     map.set(i.toString(), {
       epoch: i,
       assetRewards: new Map(),
-    })
+    });
   }
 
   const epochRewardSummaries = removePaginationWrapper(
@@ -59,42 +59,44 @@ export const generateEpochTotalRewardsList = (
   const assets = removePaginationWrapper(epochData?.assetsConnection?.edges);
 
   const epochTotalRewards = epochRewardSummaries.reduce((acc, reward) => {
-    const epoch = acc.get(reward.epoch.toString())
+    const epoch = acc.get(reward.epoch.toString());
 
     if (epoch) {
-      const matchingAsset = assets.find(asset => asset.id === reward.assetId)
-      const assetRewards = epoch.assetRewards.get(reward.assetId)
-      
+      const matchingAsset = assets.find((asset) => asset.id === reward.assetId);
+      const assetRewards = epoch.assetRewards.get(reward.assetId);
+
       if (matchingAsset) {
-        const rewards = assetRewards?.rewards || []
+        const rewards = assetRewards?.rewards || [];
         rewards.push({
           rewardType: reward.rewardType,
           amount: reward.amount,
-        })
+        });
         epoch.assetRewards.set(reward.assetId, {
           assetId: matchingAsset.id,
           name: matchingAsset.name,
           rewards,
-          totalAmount: (Number(reward.amount) + Number(assetRewards?.totalAmount || 0)).toString(),
-        })
+          totalAmount: (
+            Number(reward.amount) + Number(assetRewards?.totalAmount || 0)
+          ).toString(),
+        });
       }
     }
 
-    return acc
-  }, map)
+    return acc;
+  }, map);
 
   return Array.from(epochTotalRewards.values())
-    .sort((a, b) => (
-      Number(b.epoch) - Number(a.epoch)
-    ))
-    .map(epochData => {
-      const assetRewards = Array.from(epochData.assetRewards.values()).sort((a, b) => {
-        return new BigNumber(b.totalAmount).comparedTo(a.totalAmount);
-      });
+    .sort((a, b) => Number(b.epoch) - Number(a.epoch))
+    .map((epochData) => {
+      const assetRewards = Array.from(epochData.assetRewards.values()).sort(
+        (a, b) => {
+          return new BigNumber(b.totalAmount).comparedTo(a.totalAmount);
+        }
+      );
 
       return {
         epoch: epochData.epoch,
         assetRewards,
-      }
+      };
     });
 };
