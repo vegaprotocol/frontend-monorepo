@@ -15,7 +15,7 @@ interface OrderbookRowProps {
   price: string;
   relativeAsk?: number;
   relativeBid?: number;
-  onClick: (price: string) => void;
+  onClick?: (price: string) => void;
 }
 
 export const OrderbookRow = React.memo(

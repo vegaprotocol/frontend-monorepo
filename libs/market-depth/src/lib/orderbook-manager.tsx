@@ -195,9 +195,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
         onResolutionChange={(resolution: number) => setResolution(resolution)}
-        onClick={(priceValue: string) => {
-          if (priceValue) {
-            updateOrder(marketId, { price: priceValue.toString() });
+        onClick={(price: string) => {
+          if (price) {
+            updateOrder(marketId, { price });
           }
         }}
       />
