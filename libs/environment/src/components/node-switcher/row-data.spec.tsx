@@ -319,7 +319,7 @@ describe('RowData', () => {
     });
 
     await act(async () => {
-      jest.advanceTimersByTime(1000);
+      jest.advanceTimersByTime(POLL_INTERVAL);
     });
 
     // statsQueryMock2 should be rendered
@@ -329,7 +329,7 @@ describe('RowData', () => {
     });
 
     await act(async () => {
-      jest.advanceTimersByTime(1000);
+      jest.advanceTimersByTime(POLL_INTERVAL);
     });
 
     // statsQueryMock3 should FAIL!
@@ -342,7 +342,7 @@ describe('RowData', () => {
     // rendered even though its successful, because the poll
     // should have been stopped
     await act(async () => {
-      jest.advanceTimersByTime(1000);
+      jest.advanceTimersByTime(POLL_INTERVAL);
     });
 
     // should still render the result of statsQueryMock3
