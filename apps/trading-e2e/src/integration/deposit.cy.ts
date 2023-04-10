@@ -87,7 +87,10 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
       .clear()
       .type('850')
       .next(`[data-testid="${formFieldError}"]`)
-      .should('have.text', 'Insufficient amount in Ethereum wallet');
+      .should(
+        'have.text',
+        "You can't deposit more than you have in your Ethereum wallet, 800 tEURO"
+      );
   });
 });
 
