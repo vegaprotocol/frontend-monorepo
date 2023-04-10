@@ -1,0 +1,100 @@
+fragment ClosedMarket on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  data {
+    market {
+      id
+    }
+    bestBidPrice
+    bestOfferPrice
+    markPrice
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          settlementAsset {
+            id
+            symbol
+            name
+            decimals
+          }
+          quoteName
+          dataSourceSpecForTradingTermination {
+            id
+          }
+          dataSourceSpecForSettlementData {
+            id
+          }
+        }
+      }
+    }
+  }
+  marketTimestamps {
+    open
+    close
+  }
+}
+
+query ClosedMarkets {
+  marketsConnection {
+    edges {
+      node {
+        ...ClosedMarket
+      }
+    }
+  }
+}
+
+query OracleSpec($oracleSpecId: ID!) {
+  oracleSpec(oracleSpecId: $oracleSpecId) {
+    dataSourceSpec {
+      spec {
+        id
+        data {
+          sourceType {
+            ... on DataSourceDefinitionExternal {
+              sourceType {
+                ... on DataSourceSpecConfiguration {
+                  filters {
+                    key {
+                      name
+                      numberDecimalPlaces
+                    }
+                    conditions {
+                      operator
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    dataConnection {
+      edges {
+        node {
+          externalData {
+            data {
+              data {
+                name
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
