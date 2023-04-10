@@ -183,4 +183,53 @@ describe('Orderbook', () => {
     );
     expect(result.getByTestId('scroll').scrollTop).toBe(6 * rowHeight);
   });
+
+  it('should format correctly the numbers on resolution change', async () => {
+    const onClickSpy = jest.fn();
+    window.innerHeight = 11 * rowHeight;
+    const result = render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        onClick={onClickSpy}
+        fillGaps
+        {...generateMockData(params)}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
+    const scrollElement = result.getByTestId('scroll');
+
+    fireEvent.click(result.getByTestId('price-122934'));
+    expect(onClickSpy).toBeCalledWith('122.934');
+
+    expect(scrollElement.scrollTop).toBe(91 * rowHeight);
+    scrollElement.scrollTop = 1;
+    fireEvent.scroll(scrollElement);
+    expect(result.getByTestId('scroll').scrollTop).toBe(1);
+    const resolutionSelect = result.getByTestId(
+      'resolution'
+    ) as HTMLSelectElement;
+
+    fireEvent.change(resolutionSelect, { target: { value: '10' } });
+    expect(onResolutionChange.mock.calls.length).toBe(1);
+    expect(onResolutionChange.mock.calls[0][0]).toBe(10);
+    fireEvent.click(result.getByTestId('price-122994'));
+    expect(onClickSpy).toBeCalledWith('122.994');
+    result.rerender(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        onClick={onClickSpy}
+        fillGaps
+        {...generateMockData({
+          ...params,
+          resolution: 10,
+        })}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+
+    expect(result.getByTestId('scroll').scrollTop).toBe(6 * rowHeight);
+  });
 });
