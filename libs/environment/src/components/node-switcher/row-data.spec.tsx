@@ -1,6 +1,6 @@
 import type { MockedResponse } from '@apollo/react-testing';
 import { MockedProvider } from '@apollo/react-testing';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { RadioGroup } from '@vegaprotocol/ui-toolkit';
 import type {
   BlockTimeSubscription,
@@ -9,6 +9,7 @@ import type {
 import { BlockTimeDocument } from '../../utils/__generated__/Node';
 import { StatisticsDocument } from '../../utils/__generated__/Node';
 import type { RowDataProps } from './row-data';
+import { POLL_INTERVAL } from './row-data';
 import { BLOCK_THRESHOLD, RowData } from './row-data';
 import type { HeaderEntry } from '@vegaprotocol/apollo-client';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
@@ -25,7 +26,7 @@ const statsQueryMock: MockedResponse<StatisticsQuery> = {
   result: {
     data: {
       statistics: {
-        blockHeight: '1234',
+        blockHeight: '1234', // the actual value used in the component is the from the header store
         vegaTime: new Date().toISOString(),
         chainId: 'test-chain-id',
       },
@@ -250,5 +251,106 @@ describe('RowData', () => {
     );
 
     expect(mockOnBlockHeight).toHaveBeenCalledWith(blockHeight);
+  });
+
+  it('should poll the query unless an errors is returned', async () => {
+    jest.useFakeTimers();
+    const createStatsQueryMock = (
+      blockHeight: string
+    ): MockedResponse<StatisticsQuery> => {
+      return {
+        request: {
+          query: StatisticsDocument,
+        },
+        result: {
+          data: {
+            statistics: {
+              blockHeight,
+              vegaTime: new Date().toISOString(),
+              chainId: 'test-chain-id',
+            },
+          },
+        },
+      };
+    };
+
+    const createFailedStatsQueryMock = (): MockedResponse<StatisticsQuery> => {
+      return {
+        request: {
+          query: StatisticsDocument,
+        },
+        result: {
+          data: undefined,
+        },
+        error: new Error('failed'),
+      };
+    };
+
+    mockHeaders(props.url);
+    const statsQueryMock1 = createStatsQueryMock('1234');
+    const statsQueryMock2 = createStatsQueryMock('1235');
+    const statsQueryMock3 = createFailedStatsQueryMock();
+    const statsQueryMock4 = createStatsQueryMock('1236');
+    render(
+      <MockedProvider
+        mocks={[
+          statsQueryMock1,
+          statsQueryMock2,
+          statsQueryMock3,
+          statsQueryMock4,
+          subMock,
+        ]}
+      >
+        <RadioGroup>
+          {/* Radio group required as radio is being render in isolation */}
+          <RowData {...props} />
+        </RadioGroup>
+      </MockedProvider>
+    );
+
+    expect(screen.getByTestId('block-height-cell')).toHaveTextContent(
+      'Checking'
+    );
+
+    // statsQueryMock1 should be rendered
+    await waitFor(() => {
+      const elem = screen.getByTestId('query-block-height');
+      expect(elem).toHaveAttribute('data-query-block-height', '1234');
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    // statsQueryMock2 should be rendered
+    await waitFor(() => {
+      const elem = screen.getByTestId('query-block-height');
+      expect(elem).toHaveAttribute('data-query-block-height', '1235');
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    // statsQueryMock3 should FAIL!
+    await waitFor(() => {
+      const elem = screen.getByTestId('query-block-height');
+      expect(elem).toHaveAttribute('data-query-block-height', 'failed');
+    });
+
+    // run the timer again, but statsQueryMock4's result should not be
+    // rendered even though its successful, because the poll
+    // should have been stopped
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    // should still render the result of statsQueryMock3
+    await waitFor(() => {
+      const elem = screen.getByTestId('query-block-height');
+      expect(elem).toHaveAttribute('data-query-block-height', 'failed');
+    });
+
+    jest.useRealTimers();
   });
 });
