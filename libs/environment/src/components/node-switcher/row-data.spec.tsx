@@ -26,7 +26,7 @@ const statsQueryMock: MockedResponse<StatisticsQuery> = {
   result: {
     data: {
       statistics: {
-        blockHeight: '1234', // the actual value used in the component is the from the header store
+        blockHeight: '1234', // the actual value used in the component is the value from the header store
         vegaTime: new Date().toISOString(),
         chainId: 'test-chain-id',
       },
