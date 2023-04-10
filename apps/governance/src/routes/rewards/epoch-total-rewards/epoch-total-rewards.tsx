@@ -30,18 +30,13 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
   const refetchData = useCallback(
     async (toPage?: number) => {
       const targetPage = toPage ?? page;
-      try {
-        await refetch({
-          epochRewardSummariesFilter: {
-            fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
-            toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
-          },
-        });
-        setPage(targetPage);
-        // eslint-disable-next-line no-empty
-      } catch (err) {
-        // no-op, the error will be in the original query
-      }
+      await refetch({
+        epochRewardSummariesFilter: {
+          fromEpoch: Math.max(0, epochId - EPOCHS_PAGE_SIZE * targetPage),
+          toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
+        },
+      });
+      setPage(targetPage);
     },
     [epochId, page, refetch]
   );
@@ -53,7 +48,7 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
     }
   }, [epochId, data, refetchData]);
 
-  const epochTotalRewardSummaries = generateEpochTotalRewardsList(data) || [];
+  const epochTotalRewardSummaries = generateEpochTotalRewardsList(data, epochId, page, EPOCHS_PAGE_SIZE) || [];
 
   return (
     <AsyncRenderer
@@ -65,15 +60,9 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
           className="max-w-full overflow-auto"
           data-testid="epoch-rewards-total"
         >
-          {epochTotalRewardSummaries.length === 0 ? (
-            <NoRewards />
-          ) : (
-            <>
-              {epochTotalRewardSummaries.map((epochTotalSummary, index) => (
-                <EpochTotalRewardsTable data={epochTotalSummary} key={index} />
-              ))}
-            </>
-          )}
+          {epochTotalRewardSummaries.map((epochTotalSummary, index) => (
+            <EpochTotalRewardsTable data={epochTotalSummary} key={index} />
+          ))}
           <Pagination
             className="my-2"
             isLoading={loading}
@@ -81,6 +70,8 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
             hasNextPage={page < totalPages}
             onBack={() => refetchData(page - 1)}
             onNext={() => refetchData(page + 1)}
+            onFirst={() => refetchData(1)}
+            onLast={() => refetchData(totalPages)}
           >
             {t('Page')} {page}
           </Pagination>

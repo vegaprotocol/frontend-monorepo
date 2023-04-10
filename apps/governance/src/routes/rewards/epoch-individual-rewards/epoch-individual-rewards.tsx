@@ -48,28 +48,23 @@ export const EpochIndividualRewards = ({
 
   const epochIndividualRewardSummaries = useMemo(() => {
     if (!data?.party) return [];
-    return generateEpochIndividualRewardsList(rewards);
-  }, [data?.party, rewards]);
+    return generateEpochIndividualRewardsList(rewards, epochId, page, EPOCHS_PAGE_SIZE);
+  }, [data?.party, epochId, page, rewards]);
 
   const refetchData = useCallback(
     async (toPage?: number) => {
-      const targetPage = toPage ?? page;
-      try {
-        await refetch({
-          partyId: pubKey || '',
-          fromEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage,
-          toEpoch: epochId - EPOCHS_PAGE_SIZE * targetPage + EPOCHS_PAGE_SIZE,
-          delegationsPagination: delegationsPagination
-            ? {
-                first: Number(delegationsPagination),
-              }
-            : undefined,
-        });
-        setPage(targetPage);
-        // eslint-disable-next-line no-empty
-      } catch (err) {
-        // no-op, the error will be in the original query
-      }
+      const targetPage = toPage ?? page;      
+      await refetch({
+        partyId: pubKey || '',
+        fromEpoch: Math.max(0, epochId - EPOCHS_PAGE_SIZE * page),
+        toEpoch: epochId - EPOCHS_PAGE_SIZE * page + EPOCHS_PAGE_SIZE,
+        delegationsPagination: delegationsPagination
+          ? {
+              first: Number(delegationsPagination),
+            }
+          : undefined,
+      });
+      setPage(targetPage);
     },
     [epochId, page, refetch, delegationsPagination, pubKey]
   );
@@ -92,16 +87,12 @@ export const EpochIndividualRewards = ({
             {t('Connected Vega key')}:{' '}
             <span className="text-white">{pubKey}</span>
           </p>
-          {epochIndividualRewardSummaries.length ? (
-            epochIndividualRewardSummaries.map(
-              (epochIndividualRewardSummary) => (
-                <EpochIndividualRewardsTable
-                  data={epochIndividualRewardSummary}
-                />
-              )
+          {epochIndividualRewardSummaries.map(
+            (epochIndividualRewardSummary) => (
+              <EpochIndividualRewardsTable
+                data={epochIndividualRewardSummary}
+              />
             )
-          ) : (
-            <p>{t('noRewards')}</p>
           )}
           <Pagination
             className="my-2"
@@ -110,6 +101,8 @@ export const EpochIndividualRewards = ({
             hasNextPage={page < totalPages}
             onBack={() => refetchData(page - 1)}
             onNext={() => refetchData(page + 1)}
+            onFirst={() => refetchData(1)}
+            onLast={() => refetchData(totalPages)}
           >
             {t('Page')} {page}
           </Pagination>

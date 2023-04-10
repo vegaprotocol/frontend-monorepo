@@ -28,10 +28,23 @@ const emptyRowAccountTypes = accountTypes.map((type) => [
 ]);
 
 export const generateEpochIndividualRewardsList = (
-  rewards: RewardFieldsFragment[]
+  rewards: RewardFieldsFragment[],
+  epochId: number,
+  page: number,
+  size: number,
 ) => {
+  const map: Map<string, EpochIndividualReward> = new Map()
+  const fromEpoch = Math.max(0, epochId - size * page)
+  const toEpoch = epochId - size * page + size
+  for (let i = fromEpoch; i <= toEpoch; i++) {
+    map.set(i.toString(), {
+      epoch: i.toString(),
+      rewards: [],
+    })
+  }
+
   // We take the rewards and aggregate them by epoch and asset.
-  const epochIndividualRewards = rewards.reduce((map, reward) => {
+  const epochIndividualRewards = rewards.reduce((acc, reward) => {
     const epochId = reward.epoch.id;
     const assetName = reward.asset.name;
     const rewardType = reward.rewardType;
@@ -40,14 +53,14 @@ export const generateEpochIndividualRewardsList = (
 
     // if the rewardType is not of a type we display in the table, we skip it.
     if (!accountTypes.includes(rewardType)) {
-      return map;
+      return acc;
     }
 
-    if (!map.has(epochId)) {
-      map.set(epochId, { epoch: epochId, rewards: [] });
+    if (!acc.has(epochId)) {
+      acc.set(epochId, { epoch: epochId, rewards: [] });
     }
 
-    const epoch = map.get(epochId);
+    const epoch = acc.get(epochId);
 
     let asset = epoch?.rewards.find((r) => r.asset === assetName);
 
@@ -76,8 +89,8 @@ export const generateEpochIndividualRewardsList = (
       });
     }
 
-    return map;
-  }, new Map<string, EpochIndividualReward>());
+    return acc;
+  }, map);
 
   return Array.from(epochIndividualRewards.values()).sort(
     (a, b) => Number(b.epoch) - Number(a.epoch)
