@@ -1,14 +1,15 @@
 import { render } from '@testing-library/react';
 import { AppStateProvider } from '../../../contexts/app-state/app-state-provider';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
-import {
+import type {
   AggregatedEpochRewardSummary,
   RewardType,
   RewardItem,
 } from './generate-epoch-total-rewards-list';
 import { AccountType } from '@vegaprotocol/types';
 
-const assetId = 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663'
+const assetId =
+  'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663';
 
 const rewardsList = [
   {
@@ -35,25 +36,25 @@ const rewardsList = [
     rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
     amount: '0',
   },
-]
+];
 
-const rewards: Map<RewardType, RewardItem> = new Map()
+const rewards: Map<RewardType, RewardItem> = new Map();
 
-rewardsList.forEach(r => {
-  rewards.set(r.rewardType, r)
-})
+rewardsList.forEach((r) => {
+  rewards.set(r.rewardType, r);
+});
 
 const assetRewards: Map<
   AggregatedEpochRewardSummary['assetId'],
   AggregatedEpochRewardSummary
-> = new Map()
+> = new Map();
 
 assetRewards.set(assetId, {
   assetId,
   name: 'tDAI TEST',
   rewards,
   totalAmount: '295',
-})
+});
 
 const mockData = {
   epoch: 4431,

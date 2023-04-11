@@ -52,7 +52,7 @@ export const EpochIndividualRewards = ({
       rewards,
       epochId,
       page,
-      size: EPOCHS_PAGE_SIZE
+      size: EPOCHS_PAGE_SIZE,
     });
   }, [data?.party, epochId, page, rewards]);
 

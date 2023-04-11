@@ -46,10 +46,10 @@ export const generateEpochTotalRewardsList = ({
   page = 1,
   size = 10,
 }: {
-  data?: EpochAssetsRewardsQuery | undefined,
-  epochId: number,
-  page?: number,
-  size?: number
+  data?: EpochAssetsRewardsQuery | undefined;
+  epochId: number;
+  page?: number;
+  size?: number;
 }) => {
   const map: Map<string, EpochTotalSummary> = new Map();
   const fromEpoch = Math.max(0, epochId - size * page);

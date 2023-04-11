@@ -54,7 +54,9 @@ describe('generateEpochIndividualRewardsList', () => {
   };
 
   it('should return an empty array if no rewards are provided', () => {
-    expect(generateEpochIndividualRewardsList({ rewards: [], epochId: 1 })).toEqual([]);
+    expect(
+      generateEpochIndividualRewardsList({ rewards: [], epochId: 1 })
+    ).toEqual([]);
   });
 
   it('should filter out any rewards of the wrong type', () => {
