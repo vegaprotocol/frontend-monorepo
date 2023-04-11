@@ -12,7 +12,7 @@ import { ExternalLinks } from '@vegaprotocol/utils';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../../proposals/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '../../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 
 interface ProposalsListProps {
   proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;

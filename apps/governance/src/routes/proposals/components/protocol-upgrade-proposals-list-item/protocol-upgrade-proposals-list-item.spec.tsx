@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { ProtocolUpgradeProposalsListItem } from './protocol-upgrade-proposals-list-item';
 import { ProtocolUpgradeProposalStatus } from '@vegaprotocol/types';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../../proposals/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '../../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 
 const proposal = {
   status:
@@ -11,15 +12,14 @@ const proposal = {
   upgradeBlockHeight: '12345',
 } as ProtocolUpgradeProposalFieldsFragment;
 
-describe('ProtocolUpgradeProposalsListItem', () => {
-  it('renders nothing when no proposal is passed', () => {
-    render(<ProtocolUpgradeProposalsListItem />);
-    const listItem = screen.queryByTestId(
-      'protocol-upgrade-proposals-list-item'
-    );
-    expect(listItem).not.toBeInTheDocument();
-  });
+const renderComponent = (proposal: ProtocolUpgradeProposalFieldsFragment) =>
+  render(
+    <BrowserRouter>
+      <ProtocolUpgradeProposalsListItem proposal={proposal} />
+    </BrowserRouter>
+  );
 
+describe('ProtocolUpgradeProposalsListItem', () => {
   it('renders the correct status icon for each proposal status', () => {
     const statuses = [
       {
@@ -44,20 +44,15 @@ describe('ProtocolUpgradeProposalsListItem', () => {
       },
     ];
 
-    statuses.forEach(({ status, icon }, index) => {
-      render(
-        <ProtocolUpgradeProposalsListItem
-          proposal={{ ...proposal, status }}
-          key={index}
-        />
-      );
+    statuses.forEach(({ status, icon }) => {
+      renderComponent({ ...proposal, status });
       const statusIcon = screen.getByTestId(icon);
       expect(statusIcon).toBeInTheDocument();
     });
   });
 
   it('renders the correct Vega release tag', () => {
-    render(<ProtocolUpgradeProposalsListItem proposal={proposal} />);
+    renderComponent(proposal);
     const releaseTag = screen.getByTestId(
       'protocol-upgrade-proposal-release-tag'
     );
@@ -65,7 +60,7 @@ describe('ProtocolUpgradeProposalsListItem', () => {
   });
 
   it('renders the correct upgrade block height', () => {
-    render(<ProtocolUpgradeProposalsListItem proposal={proposal} />);
+    renderComponent(proposal);
     const blockHeight = screen.getByTestId(
       'protocol-upgrade-proposal-block-height'
     );

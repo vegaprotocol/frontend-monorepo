@@ -15,7 +15,7 @@ import Routes from '../routes';
 import { ExternalLinks, removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
 import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
-import { useProtocolUpgradesQuery } from '../proposals/proposals/__generated__/ProtocolUpgradeProposals';
+import { useProtocolUpgradesQuery } from '../proposals/protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 import {
   getNotRejectedProposals,
   getNotRejectedProtocolUpgradeProposals,
@@ -25,7 +25,7 @@ import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
 import type { NodesFragmentFragment } from '../staking/home/__generated__/Nodes';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../proposals/proposals/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '../proposals/protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 
 const nodesToShow = 6;
 
@@ -119,20 +119,11 @@ const HomeNodes = ({
 
         {trimmedActiveNodes.map(({ id, avatarUrl, name }) => (
           <div key={id} data-testid="validators" className="col-span-2">
-            <Link to={`${Routes.VALIDATORS}/${id}`}>
-              <RoundedWrapper paddingBottom={true} border={false}>
-                <div className="flex items-center justify-center m-[-1rem] p-4 bg-neutral-900 hover:bg-neutral-800">
-                  {avatarUrl && (
-                    <img
-                      className="h-6 w-6 rounded-full mr-2"
-                      src={avatarUrl}
-                      alt={`Avatar icon for ${name}`}
-                    />
-                  )}
-                  <span className="text-sm">{name}</span>
-                </div>
-              </RoundedWrapper>
-            </Link>
+            <SimpleValidatorRenderer
+              id={id}
+              avatarUrl={avatarUrl}
+              name={name}
+            />
           </div>
         ))}
       </div>
@@ -145,6 +136,35 @@ const HomeNodes = ({
         </Link>
       )}
     </section>
+  );
+};
+
+interface SimpleValidatorRendererProps {
+  id: string;
+  avatarUrl: string | null | undefined;
+  name: string;
+}
+
+export const SimpleValidatorRenderer = ({
+  id,
+  avatarUrl,
+  name,
+}: SimpleValidatorRendererProps) => {
+  return (
+    <Link to={`${Routes.VALIDATORS}/${id}`}>
+      <RoundedWrapper paddingBottom={true} border={false}>
+        <div className="flex items-center justify-center m-[-1rem] p-3 bg-neutral-900 hover:bg-neutral-800">
+          {avatarUrl && (
+            <img
+              className="h-6 w-6 rounded-full mr-2"
+              src={avatarUrl}
+              alt={`Avatar icon for ${name}`}
+            />
+          )}
+          <span className="text-sm">{name}</span>
+        </div>
+      </RoundedWrapper>
+    </Link>
   );
 };
 
@@ -197,7 +217,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
             protocolUpgradesData.protocolUpgradeProposals
           ).filter(
             (p) =>
-              Number(p.upgradeBlockHeight) >
+              Number(p.upgradeBlockHeight) <
               Number(protocolUpgradesData.lastBlockHeight)
           )
         : [],
@@ -205,10 +225,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
   );
 
   const totalProposalsDesired = 4;
-  const protocolUpgradeProposalsToShow = protocolUpgradeProposals.slice(
-    0,
-    totalProposalsDesired
-  );
+  const protocolUpgradeProposalsToShow = protocolUpgradeProposals.slice(0, 1);
   const proposalsToShow =
     protocolUpgradeProposalsToShow.length === totalProposalsDesired
       ? []

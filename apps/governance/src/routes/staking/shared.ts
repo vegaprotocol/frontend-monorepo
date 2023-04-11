@@ -19,8 +19,8 @@ export const getLastEpochScoreAndPerformance = (
   };
 };
 
-export const getNormalisedVotingPower = (votingPower: string) =>
-  formatNumberPercentage(new BigNumber(votingPower).dividedBy(100), 2);
+export const getNormalisedVotingPower = (votingPower: string, decimals = 2) =>
+  formatNumberPercentage(new BigNumber(votingPower).dividedBy(100), decimals);
 
 export const getUnnormalisedVotingPower = (
   validatorScore: string | null | undefined

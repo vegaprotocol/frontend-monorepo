@@ -13,10 +13,10 @@ import {
 } from '@vegaprotocol/types';
 import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
 import type { ProposalFieldsFragment } from './__generated__/Proposals';
-import type { ProtocolUpgradeProposalFieldsFragment } from './__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 
 import orderBy from 'lodash/orderBy';
-import { useProtocolUpgradesQuery } from './__generated__/ProtocolUpgradeProposals';
+import { useProtocolUpgradesQuery } from '../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(

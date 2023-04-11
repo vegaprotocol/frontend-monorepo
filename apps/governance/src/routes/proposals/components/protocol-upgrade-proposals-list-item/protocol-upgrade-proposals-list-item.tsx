@@ -1,28 +1,26 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
   Button,
-  ExternalLink,
   Icon,
   Intent,
   Lozenge,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
+import { stripFullStops } from '@vegaprotocol/utils';
 import { ProtocolUpgradeProposalStatus } from '@vegaprotocol/types';
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../../proposals/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '../../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
+import Routes from '../../../routes';
 
 interface ProtocolProposalsListItemProps {
-  proposal?: ProtocolUpgradeProposalFieldsFragment;
+  proposal: ProtocolUpgradeProposalFieldsFragment;
 }
 
 export const ProtocolUpgradeProposalsListItem = ({
   proposal,
 }: ProtocolProposalsListItemProps) => {
-  const { VEGA_ENV } = useEnvironment();
-  const usesDevReleasesRepo =
-    VEGA_ENV === Networks.DEVNET || VEGA_ENV === Networks.STAGNET3;
   const { t } = useTranslation();
   if (!proposal || !proposal.upgradeBlockHeight) return null;
 
@@ -108,15 +106,15 @@ export const ProtocolUpgradeProposalsListItem = ({
             </div>
 
             <div className="col-start-2 row-start-2 justify-self-end">
-              <ExternalLink
-                href={`https://github.com/vegaprotocol/${
-                  usesDevReleasesRepo ? 'vega-dev-releases' : 'vega'
-                }/releases/tag/${proposal.vegaReleaseTag}`}
+              <Link
+                to={`${Routes.PROPOSALS}/protocol-upgrade/${stripFullStops(
+                  proposal.vegaReleaseTag
+                )}`}
               >
                 <Button data-testid="view-proposal-btn" size="sm">
                   {t('View')}
                 </Button>
-              </ExternalLink>
+              </Link>
             </div>
           </div>
         </div>
