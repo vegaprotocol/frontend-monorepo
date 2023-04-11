@@ -11,7 +11,7 @@ import {
 } from '../../utils/__generated__/Node';
 import { LayoutCell } from './layout-cell';
 
-const POLL_INTERVAL = 1000;
+export const POLL_INTERVAL = 1000;
 export const BLOCK_THRESHOLD = 3;
 
 export interface RowDataProps {
@@ -60,17 +60,21 @@ export const RowData = ({
 
   // handle polling
   useEffect(() => {
-    const handleStartPoll = () => startPolling(POLL_INTERVAL);
+    const handleStartPoll = () => {
+      if (error) return;
+      startPolling(POLL_INTERVAL);
+    };
     const handleStopPoll = () => stopPolling();
+
+    // start polling on mount, but only if there is no error
+    if (error) {
+      handleStopPoll();
+    } else {
+      handleStartPoll();
+    }
 
     window.addEventListener('blur', handleStopPoll);
     window.addEventListener('focus', handleStartPoll);
-
-    handleStartPoll();
-
-    if (error) {
-      stopPolling();
-    }
 
     return () => {
       window.removeEventListener('blur', handleStopPoll);
@@ -81,6 +85,7 @@ export const RowData = ({
   // measure response time
   useEffect(() => {
     if (!isValidUrl(url)) return;
+    if (typeof window.performance.getEntriesByName !== 'function') return; // protection for test environment
     // every time we get data measure response speed
     const requestUrl = new URL(url);
     const requests = window.performance.getEntriesByName(requestUrl.href);
@@ -177,7 +182,14 @@ export const RowData = ({
         hasError={getHasError()}
         dataTestId="block-height-cell"
       >
-        {getBlockDisplayValue(headers?.blockHeight, error)}
+        <span
+          data-testid="query-block-height"
+          data-query-block-height={
+            error ? 'failed' : data?.statistics.blockHeight
+          }
+        >
+          {getBlockDisplayValue(headers?.blockHeight, error)}
+        </span>
       </LayoutCell>
       <LayoutCell
         label={t('Subscription')}

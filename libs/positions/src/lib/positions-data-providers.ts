@@ -354,10 +354,7 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
         partyId,
         marketIds: [marketId],
         filter: {
-          status: [
-            OrderStatus.STATUS_ACTIVE,
-            OrderStatus.STATUS_PARTIALLY_FILLED,
-          ],
+          status: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
         },
       }),
     (callback, client, variables) =>

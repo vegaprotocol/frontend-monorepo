@@ -1,4 +1,5 @@
-import { isAssetTypeERC20, removeDecimal } from '@vegaprotocol/utils';
+import { MaxUint256 } from '@ethersproject/constants';
+import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import {
   EthTxStatus,
   useEthereumConfig,
@@ -37,10 +38,9 @@ export const useSubmitApproval = (
     },
     perform: () => {
       if (!asset || !config) return;
-      const amount = removeDecimal('1000000', asset.decimals);
       const id = createEthTransaction(contract, 'approve', [
         config?.collateral_bridge_contract.address,
-        amount,
+        MaxUint256.toString(),
       ]);
       setId(id);
     },

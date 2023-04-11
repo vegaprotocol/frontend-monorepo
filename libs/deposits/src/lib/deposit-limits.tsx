@@ -1,8 +1,13 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
+import { formatNumber } from '@vegaprotocol/utils';
 
 // Note: all of the values here are with correct asset's decimals
 // See `libs/deposits/src/lib/use-deposit-balances.ts`
@@ -34,20 +39,34 @@ export const DepositLimits = ({
       ),
     },
     {
-      key: 'MAX_LIMIT',
-      label: t('Lifetime deposit allowance'),
-      rawValue: max,
-      value: <CompactNumber number={max} decimals={asset.decimals} />,
-    },
-    {
-      key: 'DEPOSITED',
-      label: t('Deposited'),
-      rawValue: deposited,
-      value: <CompactNumber number={deposited} decimals={asset.decimals} />,
-    },
-    {
       key: 'REMAINING',
-      label: t('Remaining'),
+      label: (
+        <Tooltip
+          description={
+            <>
+              <p>
+                {t(
+                  'VEGA has a lifetime deposit limit of %s %s per address. This can be changed through governance',
+                  [formatNumber(max.toString()), asset.symbol]
+                )}
+              </p>
+              <p>
+                {t(
+                  'To date, %s %s has been deposited from this Ethereum address, so you can deposit up to %s %s more.',
+                  [
+                    formatNumber(deposited.toString()),
+                    asset.symbol,
+                    formatNumber(max.minus(deposited).toString()),
+                    asset.symbol,
+                  ]
+                )}
+              </p>
+            </>
+          }
+        >
+          <button type="button">{t('Remaining deposit allowance')}</button>
+        </Tooltip>
+      ),
       rawValue: max.minus(deposited),
       value: (
         <CompactNumber
@@ -58,7 +77,20 @@ export const DepositLimits = ({
     },
     {
       key: 'ALLOWANCE',
-      label: t('Approved'),
+      label: (
+        <Tooltip
+          description={
+            <p>
+              {t(
+                'The deposit cap is set when you approve an asset for use with this app. To increase this cap, approve %s again and choose a higher cap. Check the documentation for your Ethereum wallet app for details.',
+                asset.symbol
+              )}
+            </p>
+          }
+        >
+          <button type="button">{t('Ethereum deposit cap')}</button>
+        </Tooltip>
+      ),
       rawValue: allowance,
       value: allowance ? (
         <CompactNumber number={allowance} decimals={asset.decimals} />
