@@ -47,8 +47,6 @@ jobs:
               if [[ "${{ github.ref }}" =~ .*mainnet.* ]]; then
                 domain="vega.community"
               fi
-            elif [[ "${{ github.ref }}" =~ .*push-to-s3$ ]]; then
-              envName="ops-vega"
             elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
               envName="stagnet3"
             fi
