@@ -169,7 +169,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <LiquidityInfoPanel market={market}>
           <Link
             to={`/liquidity/${market.id}`}
-            onClick={(ev) => onSelect?.(market.id, ev.metaKey)}
+            onClick={(ev) => onSelect?.(market.id, ev.metaKey || ev.ctrlKey)}
             data-testid="view-liquidity-link"
           >
             <UILink>{t('View liquidity provision table')}</UILink>

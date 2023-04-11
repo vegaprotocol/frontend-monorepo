@@ -185,7 +185,7 @@ export const columns = (
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onSelect(market.id, e.metaKey);
+            onSelect(market.id, e.metaKey || e.ctrlKey);
           }}
         >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
@@ -366,7 +366,7 @@ export const columnsPositionMarkets = (
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onSelect(market.id, e.metaKey);
+            onSelect(market.id, e.metaKey || e.ctrlKey);
           }}
         >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>

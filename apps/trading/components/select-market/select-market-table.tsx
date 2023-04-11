@@ -44,7 +44,7 @@ export const SelectMarketTableRow = ({
     <tr
       className={`hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer relative h-[34px]`}
       onClick={(ev) => {
-        onSelect(marketId, ev.metaKey);
+        onSelect(marketId, ev.metaKey || ev.ctrlKey);
       }}
       data-testid={`market-link-${marketId}`}
     >
