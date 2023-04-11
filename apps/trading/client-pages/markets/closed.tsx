@@ -1,5 +1,5 @@
 import compact from 'lodash/compact';
-import { isAfter, formatDistanceToNowStrict } from 'date-fns';
+import { isAfter } from 'date-fns';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -18,9 +18,8 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
 import type { ClosedMarketFragment } from './__generated__/ClosedMarkets';
 import { useClosedMarketsQuery } from './__generated__/ClosedMarkets';
-import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
-import { Link } from '@vegaprotocol/ui-toolkit';
-import { useOracleSpecBindingData } from '@vegaprotocol/oracles';
+import { SettlementDateCell } from './settlement-date-cell';
+import { SettlementPriceCell } from './settlement-price-cell';
 
 type Row = ClosedMarketFragment & {
   realisedPNL: string | undefined;
@@ -51,14 +50,10 @@ export const Closed = () => {
       };
     })
     .filter((m) => {
-      if (
-        m.state === MarketState.STATE_SETTLED ||
-        m.state === MarketState.STATE_TRADING_TERMINATED
-      ) {
-        return true;
-      }
-
-      return false;
+      return [
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_TRADING_TERMINATED,
+      ].includes(m.state);
     });
 
   return <ClosedMarketsDataGrid rowData={rowData} />;
@@ -86,6 +81,7 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       },
       {
         headerName: t('Settlement date'),
+        colId: 'settlementDate', // colId needed if no field property provided otherwise column order is ruined in tests
         valueGetter: ({ data }) => {
           return getMarketExpiryDate(
             data?.tradableInstrument.instrument.metadata.tags
@@ -194,7 +190,6 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
           data,
         }: VegaValueFormatterParams<Row, 'realisedPNL'>) => {
           if (!value || !data) return '-';
-          console.log(value, data);
           return addDecimalsFormatNumber(value, data.decimalPlaces);
         },
       },
@@ -240,87 +235,5 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       }}
       overlayNoRowsTemplate="No data"
     />
-  );
-};
-
-export interface SettlementDataCellProps {
-  oracleSpecId: string;
-  metaDate: Date | null;
-  closeTimestamp: string | null;
-  marketState: MarketState;
-}
-
-export const SettlementDateCell = ({
-  oracleSpecId,
-  metaDate,
-  closeTimestamp,
-  marketState,
-}: SettlementDataCellProps) => {
-  const linkCreator = useLinks(DApp.Explorer);
-  const date = closeTimestamp ? new Date(closeTimestamp) : metaDate;
-
-  let text = '';
-  if (!date) {
-    text = t('Unknown');
-  } else {
-    // pass Date.now() to date constructor for easier mocking
-    const expiryHasPassed = isAfter(new Date(Date.now()), date);
-    const distance = formatDistanceToNowStrict(date); // X days/mins ago
-
-    if (expiryHasPassed) {
-      if (marketState !== MarketState.STATE_SETTLED) {
-        text = t('Expected %s ago', distance);
-      } else {
-        text = t('%s ago', distance);
-      }
-    } else {
-      text = t('Expected in %s', distance);
-    }
-  }
-
-  return (
-    <Link
-      href={linkCreator(EXPLORER_ORACLE.replace(':id', oracleSpecId))}
-      className="underline"
-      target="_blank"
-    >
-      {text}
-    </Link>
-  );
-};
-
-export const SettlementPriceCell = ({
-  oracleSpecId,
-  decimalPlaces,
-  settlementDataSpecBinding,
-}: {
-  oracleSpecId: string | undefined;
-  decimalPlaces: number;
-  settlementDataSpecBinding: string | undefined;
-}) => {
-  const linkCreator = useLinks(DApp.Explorer);
-  const { property, loading } = useOracleSpecBindingData(
-    oracleSpecId,
-    settlementDataSpecBinding
-  );
-
-  if (!oracleSpecId) {
-    return <span>{t('Unknown')}</span>;
-  }
-
-  if (loading) {
-    return <span>-</span>;
-  }
-
-  return (
-    <Link
-      href={linkCreator(EXPLORER_ORACLE.replace(':id', oracleSpecId))}
-      className="underline font-mono"
-      target="_blank"
-    >
-      {property
-        ? addDecimalsFormatNumber(property.value, decimalPlaces)
-        : t('Unknown')}
-    </Link>
   );
 };
