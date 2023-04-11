@@ -20,6 +20,7 @@ import type { ClosedMarketFragment } from './__generated__/ClosedMarkets';
 import { useOracleSpecQuery } from './__generated__/ClosedMarkets';
 import { useClosedMarketsQuery } from './__generated__/ClosedMarkets';
 import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
+import { Link } from '@vegaprotocol/ui-toolkit';
 
 type Row = ClosedMarketFragment & {
   realisedPNL: string | undefined;
@@ -270,14 +271,13 @@ const SettlementDateCell = ({
   }
 
   return (
-    <a
+    <Link
       href={linkCreator(EXPLORER_ORACLE.replace(':id', oracleSpecId))}
       className="underline"
       target="_blank"
-      rel="noreferrer"
     >
       {text}
-    </a>
+    </Link>
   );
 };
 
@@ -296,16 +296,15 @@ const SettlementPriceCell = ({
   }
 
   return (
-    <a
+    <Link
       href={linkCreator(EXPLORER_ORACLE.replace(':id', oracleSpecId))}
-      className="underline font-mono"
+      className="underlien font-mono"
       target="_blank"
-      rel="noreferrer"
     >
       {priceData
         ? addDecimalsFormatNumber(priceData.value, decimalPlaces)
         : t('Unknown')}
-    </a>
+    </Link>
   );
 };
 
