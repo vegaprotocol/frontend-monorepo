@@ -61,7 +61,7 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
           className="max-w-full overflow-auto"
           data-testid="epoch-rewards-total"
         >
-          {epochTotalRewardSummaries.map((epochTotalSummary, index) => (
+          {Array.from(epochTotalRewardSummaries.values()).map((epochTotalSummary, index) => (
             <EpochTotalRewardsTable data={epochTotalSummary} key={index} />
           ))}
           <Pagination
