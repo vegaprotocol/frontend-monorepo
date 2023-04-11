@@ -243,17 +243,19 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
   );
 };
 
-const SettlementDateCell = ({
-  oracleSpecId,
-  metaDate,
-  closeTimestamp,
-  marketState,
-}: {
+export interface SettlementDataCellProps {
   oracleSpecId: string;
   metaDate: Date | null;
   closeTimestamp: string | null;
   marketState: MarketState;
-}) => {
+}
+
+export const SettlementDateCell = ({
+  oracleSpecId,
+  metaDate,
+  closeTimestamp,
+  marketState,
+}: SettlementDataCellProps) => {
   const linkCreator = useLinks(DApp.Explorer);
   const date = closeTimestamp ? new Date(closeTimestamp) : metaDate;
 
@@ -261,14 +263,16 @@ const SettlementDateCell = ({
   if (!date) {
     text = t('Unknown');
   } else {
-    const expiryHasPassed = isAfter(new Date(), date);
+    // pass Date.now() to date constructor for easier mocking
+    const expiryHasPassed = isAfter(new Date(Date.now()), date);
     const distance = formatDistanceToNowStrict(date); // X days/mins ago
 
     if (expiryHasPassed) {
       if (marketState !== MarketState.STATE_SETTLED) {
         text = t('Expected %s ago', distance);
+      } else {
+        text = t('%s ago', distance);
       }
-      text = t('%s ago', distance);
     } else {
       text = t('Expected in %s', distance);
     }
@@ -285,7 +289,7 @@ const SettlementDateCell = ({
   );
 };
 
-const SettlementPriceCell = ({
+export const SettlementPriceCell = ({
   oracleSpecId,
   decimalPlaces,
   settlementDataSpecBinding,
@@ -300,18 +304,18 @@ const SettlementPriceCell = ({
     settlementDataSpecBinding
   );
 
-  if (loading) {
-    return <span>-</span>;
+  if (!oracleSpecId) {
+    return <span>{t('Unknown')}</span>;
   }
 
-  if (!oracleSpecId || !property) {
-    return <span>{t('Unknown')}</span>;
+  if (loading) {
+    return <span>-</span>;
   }
 
   return (
     <Link
       href={linkCreator(EXPLORER_ORACLE.replace(':id', oracleSpecId))}
-      className="underlien font-mono"
+      className="underline font-mono"
       target="_blank"
     >
       {property
