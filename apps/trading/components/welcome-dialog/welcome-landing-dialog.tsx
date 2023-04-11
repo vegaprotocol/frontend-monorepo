@@ -12,7 +12,7 @@ import {
   SelectMarketTableRow,
 } from '../select-market';
 import { WelcomeDialogHeader } from './welcome-dialog-header';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ProposedMarkets } from './proposed-markets';
 import { Links, Routes } from '../../pages/client-router';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
