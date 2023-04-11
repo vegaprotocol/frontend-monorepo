@@ -35,6 +35,10 @@ fragment ClosedMarket on Market {
           dataSourceSpecForSettlementData {
             id
           }
+          dataSourceSpecBinding {
+            settlementDataProperty
+            tradingTerminationProperty
+          }
         }
       }
     }
@@ -50,50 +54,6 @@ query ClosedMarkets {
     edges {
       node {
         ...ClosedMarket
-      }
-    }
-  }
-}
-
-query OracleSpec($oracleSpecId: ID!) {
-  oracleSpec(oracleSpecId: $oracleSpecId) {
-    dataSourceSpec {
-      spec {
-        id
-        data {
-          sourceType {
-            ... on DataSourceDefinitionExternal {
-              sourceType {
-                ... on DataSourceSpecConfiguration {
-                  filters {
-                    key {
-                      name
-                      numberDecimalPlaces
-                    }
-                    conditions {
-                      operator
-                      value
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    dataConnection {
-      edges {
-        node {
-          externalData {
-            data {
-              data {
-                name
-                value
-              }
-            }
-          }
-        }
       }
     }
   }

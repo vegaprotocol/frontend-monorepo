@@ -17,10 +17,10 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
 import type { ClosedMarketFragment } from './__generated__/ClosedMarkets';
-import { useOracleSpecQuery } from './__generated__/ClosedMarkets';
 import { useClosedMarketsQuery } from './__generated__/ClosedMarkets';
 import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
 import { Link } from '@vegaprotocol/ui-toolkit';
+import { useOracleSpecBindingData } from '@vegaprotocol/oracles';
 
 type Row = ClosedMarketFragment & {
   realisedPNL: string | undefined;
@@ -177,6 +177,10 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
           <SettlementPriceCell
             oracleSpecId={value}
             decimalPlaces={data?.decimalPlaces ?? 0}
+            settlementDataSpecBinding={
+              data?.tradableInstrument.instrument.product.dataSourceSpecBinding
+                .settlementDataProperty
+            }
           />
         ),
       },
@@ -284,14 +288,23 @@ const SettlementDateCell = ({
 const SettlementPriceCell = ({
   oracleSpecId,
   decimalPlaces,
+  settlementDataSpecBinding,
 }: {
   oracleSpecId: string | undefined;
   decimalPlaces: number;
+  settlementDataSpecBinding: string | undefined;
 }) => {
   const linkCreator = useLinks(DApp.Explorer);
-  const priceData = useSettlementPrice(oracleSpecId);
+  const { property, loading } = useOracleSpecBindingData(
+    oracleSpecId,
+    settlementDataSpecBinding
+  );
 
-  if (!oracleSpecId) {
+  if (loading) {
+    return <span>-</span>;
+  }
+
+  if (!oracleSpecId || !property) {
     return <span>{t('Unknown')}</span>;
   }
 
@@ -301,29 +314,9 @@ const SettlementPriceCell = ({
       className="underlien font-mono"
       target="_blank"
     >
-      {priceData
-        ? addDecimalsFormatNumber(priceData.value, decimalPlaces)
+      {property
+        ? addDecimalsFormatNumber(property.value, decimalPlaces)
         : t('Unknown')}
     </Link>
   );
-};
-
-const useSettlementPrice = (oracleSpecId: string | undefined) => {
-  const { data } = useOracleSpecQuery({
-    variables: {
-      oracleSpecId: oracleSpecId || '',
-    },
-    skip: !oracleSpecId,
-  });
-
-  // For now just return the first piece of data from the first data connection
-  const edges = data?.oracleSpec?.dataConnection?.edges;
-  if (!edges?.length) return null;
-  const firstEdge = edges[0];
-  if (!firstEdge) return null;
-  const oracleData = firstEdge.node.externalData.data.data;
-  if (!oracleData?.length) return null;
-  const firstOracleData = oracleData[0];
-
-  return firstOracleData;
 };
