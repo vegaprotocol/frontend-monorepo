@@ -411,6 +411,7 @@ describe('capsule', { tags: '@slow' }, () => {
 
   it('approved amount is less than deposit', function () {
     // 1001-DEPO-006
+    // 1001-DEPO-007
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
@@ -430,8 +431,8 @@ describe('capsule', { tags: '@slow' }, () => {
   });
 
   it('withdraw - delay verification', function () {
-    // 1001-DEPO-007
     // 1001-DEPO-024
+    // 1002-WITH-007
 
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
