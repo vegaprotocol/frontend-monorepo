@@ -4,7 +4,7 @@ import { usePersistentDeposit } from './use-persistent-deposit';
 describe('usePersistenDeposit', () => {
   it('should return empty data', () => {
     const { result } = renderHook(() => usePersistentDeposit());
-    expect(result.current).toEqual([{ assetId: '' }, expect.any(Function)]);
+    expect(result.current).toEqual([undefined, expect.any(Function)]);
   });
   it('should return empty and properly saved data', async () => {
     const aId = 'test';

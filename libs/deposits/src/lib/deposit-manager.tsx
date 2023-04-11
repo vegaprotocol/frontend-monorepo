@@ -70,7 +70,8 @@ export const DepositManager = ({
 
   const onAmountChange = useCallback(
     (amount: string) => {
-      savePersistentDeposit({ ...persistentDeposit, amount });
+      persistentDeposit &&
+        savePersistentDeposit({ ...persistentDeposit, amount });
     },
     [savePersistentDeposit, persistentDeposit]
   );

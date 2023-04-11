@@ -100,7 +100,7 @@ export const DepositForm = ({
     defaultValues: {
       to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id,
-      amount: persistedDeposit.amount,
+      amount: persistedDeposit?.amount,
     },
   });
 
