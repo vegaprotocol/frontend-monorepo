@@ -20,7 +20,7 @@ describe('Orderbook', () => {
   const decimalPlaces = 3;
   it('should scroll to mid price on init', async () => {
     window.innerHeight = 11 * rowHeight;
-    const result = render(
+    render(
       <Orderbook
         decimalPlaces={decimalPlaces}
         positionDecimalPlaces={0}
@@ -30,7 +30,7 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
-    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
+    expect(screen.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
   });
 
   it('should keep mid price row in the middle', async () => {
@@ -45,7 +45,7 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
-    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
+    expect(screen.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
     result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -121,7 +121,7 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
-    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight + 0.01);
+    expect(screen.getByTestId('scroll').scrollTop).toBe(91 * rowHeight + 0.01);
   });
 
   it('should get back to mid price on click', async () => {
@@ -143,7 +143,7 @@ describe('Orderbook', () => {
     expect(result.getByTestId('scroll').scrollTop).toBe(1);
     const scrollToMidPriceButton = result.getByTestId('scroll-to-midprice');
     fireEvent.click(scrollToMidPriceButton);
-    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight + 1);
+    expect(screen.getByTestId('scroll').scrollTop).toBe(91 * rowHeight + 1);
   });
 
   it('should get back to mid price on resolution change', async () => {
@@ -158,12 +158,12 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
-    const scrollElement = result.getByTestId('scroll');
+    const scrollElement = screen.getByTestId('scroll');
     expect(scrollElement.scrollTop).toBe(91 * rowHeight);
     scrollElement.scrollTop = 1;
     fireEvent.scroll(scrollElement);
-    expect(result.getByTestId('scroll').scrollTop).toBe(1);
-    const resolutionSelect = result.getByTestId(
+    expect(screen.getByTestId('scroll').scrollTop).toBe(1);
+    const resolutionSelect = screen.getByTestId(
       'resolution'
     ) as HTMLSelectElement;
     fireEvent.change(resolutionSelect, { target: { value: '10' } });
@@ -181,12 +181,11 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    expect(result.getByTestId('scroll').scrollTop).toBe(6 * rowHeight);
+    expect(screen.getByTestId('scroll').scrollTop).toBe(6 * rowHeight);
   });
 
   it('should format correctly the numbers on resolution change', async () => {
     const onClickSpy = jest.fn();
-    window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -197,26 +196,17 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
-    const scrollElement = result.getByTestId('scroll');
-
-    fireEvent.click(result.getByTestId('price-122934'));
+    expect(
+      await screen.findByTestId(`bid-vol-${params.midPrice}`)
+    ).toBeInTheDocument();
+    // Before resolution change the price is 122.934
+    await fireEvent.click(await screen.getByTestId('price-122934'));
     expect(onClickSpy).toBeCalledWith('122.934');
-
-    expect(scrollElement.scrollTop).toBe(91 * rowHeight);
-    scrollElement.scrollTop = 1;
-    fireEvent.scroll(scrollElement);
-    expect(result.getByTestId('scroll').scrollTop).toBe(1);
-    const resolutionSelect = result.getByTestId(
+    const resolutionSelect = screen.getByTestId(
       'resolution'
     ) as HTMLSelectElement;
-
-    fireEvent.change(resolutionSelect, { target: { value: '10' } });
-    expect(onResolutionChange.mock.calls.length).toBe(1);
-    expect(onResolutionChange.mock.calls[0][0]).toBe(10);
-    fireEvent.click(result.getByTestId('price-122994'));
-    expect(onClickSpy).toBeCalledWith('122.994');
-    result.rerender(
+    await fireEvent.change(resolutionSelect, { target: { value: '10' } });
+    await result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
         positionDecimalPlaces={0}
@@ -229,7 +219,9 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-
-    expect(result.getByTestId('scroll').scrollTop).toBe(6 * rowHeight);
+    await fireEvent.click(await screen.getByTestId('price-12299'));
+    // After resolution change the price is 122.99
+    expect(onResolutionChange.mock.calls[0][0]).toBe(10);
+    expect(onClickSpy).toBeCalledWith('122.99');
   });
 });
