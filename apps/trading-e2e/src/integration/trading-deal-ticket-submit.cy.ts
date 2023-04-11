@@ -514,6 +514,8 @@ describe('account validation', { tags: '@regression' }, () => {
     it('must show error returned by wallet ', () => {
       // 0003-WTXN-009
       // 0003-WTXN-011
+      // 0002-WCON-016
+      // 0003-WTXN-008
 
       //trigger error from the wallet
       cy.intercept('POST', 'http://localhost:1789/api/v2/requests', (req) => {
@@ -537,6 +539,8 @@ describe('account validation', { tags: '@regression' }, () => {
         'contain.text',
         'The connection to your Vega Wallet has been lost.'
       );
+      cy.getByTestId('connect-vega-wallet').click();
+      cy.getByTestId('dialog-content').should('be.visible');
     });
 
     it('must see that the order was rejected by the connected wallet', () => {

@@ -28,7 +28,7 @@ describe('time in force default values', () => {
   });
 
   it('must have market order set up to IOC by default', function () {
-    // 7002-SORD-031
+    // 7002-SORD-030
     cy.getByTestId(toggleMarket).click();
     cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
       'have.text',
