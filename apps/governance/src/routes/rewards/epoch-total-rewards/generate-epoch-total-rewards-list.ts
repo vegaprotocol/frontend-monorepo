@@ -11,22 +11,28 @@ interface EpochSummaryWithNamedReward extends EpochRewardSummaryFieldsFragment {
   name: string;
 }
 
-type RewardType = EpochRewardSummaryFieldsFragment['rewardType']
-type RewardItem = Pick<EpochRewardSummaryFieldsFragment, 'rewardType' | 'amount'>
+type RewardType = EpochRewardSummaryFieldsFragment['rewardType'];
+type RewardItem = Pick<
+  EpochRewardSummaryFieldsFragment,
+  'rewardType' | 'amount'
+>;
 
 export type AggregatedEpochRewardSummary = {
   assetId: EpochRewardSummaryFieldsFragment['assetId'];
   name: EpochSummaryWithNamedReward['name'];
   rewards: Map<RewardType, RewardItem>;
   totalAmount: string;
-}
+};
 
 export type EpochTotalSummary = {
   epoch: EpochRewardSummaryFieldsFragment['epoch'];
-  assetRewards: Map<EpochRewardSummaryFieldsFragment['assetId'], AggregatedEpochRewardSummary>;
-}
+  assetRewards: Map<
+    EpochRewardSummaryFieldsFragment['assetId'],
+    AggregatedEpochRewardSummary
+  >;
+};
 
-const emptyRowAccountTypes: Map<RewardType, RewardItem> = new Map()
+const emptyRowAccountTypes: Map<RewardType, RewardItem> = new Map();
 
 Object.keys(RowAccountTypes).forEach((type) => {
   emptyRowAccountTypes.set(type as AccountType, {
@@ -65,12 +71,12 @@ export const generateEpochTotalRewardsList = (
       const assetRewards = epoch.assetRewards.get(reward.assetId);
 
       if (matchingAsset) {
-        const rewards = assetRewards?.rewards || emptyRowAccountTypes
-        const r = rewards.get(reward.rewardType)
+        const rewards = assetRewards?.rewards || emptyRowAccountTypes;
+        const r = rewards.get(reward.rewardType);
         rewards.set(reward.rewardType, {
           rewardType: reward.rewardType,
           amount: ((Number(r?.amount) || 0) + Number(reward.amount)).toString(),
-        })
+        });
 
         epoch.assetRewards.set(reward.assetId, {
           assetId: matchingAsset.id,
