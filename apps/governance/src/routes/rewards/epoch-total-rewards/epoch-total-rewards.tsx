@@ -48,7 +48,12 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
   }, [epochId, data, refetchData]);
 
   const epochTotalRewardSummaries =
-    generateEpochTotalRewardsList(data, epochId, page, EPOCHS_PAGE_SIZE) || [];
+    generateEpochTotalRewardsList({
+      data,
+      epochId,
+      page,
+      size: EPOCHS_PAGE_SIZE,
+    }) || [];
 
   return (
     <AsyncRenderer

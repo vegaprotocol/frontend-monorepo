@@ -54,17 +54,23 @@ describe('generateEpochIndividualRewardsList', () => {
   };
 
   it('should return an empty array if no rewards are provided', () => {
-    expect(generateEpochIndividualRewardsList([])).toEqual([]);
+    expect(generateEpochIndividualRewardsList({ rewards: [], epochId: 1 })).toEqual([]);
   });
 
   it('should filter out any rewards of the wrong type', () => {
-    const result = generateEpochIndividualRewardsList([rewardWrongType]);
+    const result = generateEpochIndividualRewardsList({
+      rewards: [rewardWrongType],
+      epochId: 1,
+    });
 
     expect(result).toEqual([]);
   });
 
   it('should return reward in the correct format', () => {
-    const result = generateEpochIndividualRewardsList([reward1]);
+    const result = generateEpochIndividualRewardsList({
+      rewards: [reward1],
+      epochId: 1,
+    });
 
     expect(result[0]).toEqual({
       epoch: '1',
@@ -105,13 +111,16 @@ describe('generateEpochIndividualRewardsList', () => {
 
   it('should return an array sorted by epoch descending', () => {
     const rewards = [reward1, reward2, reward3, reward4];
-    const result1 = generateEpochIndividualRewardsList(rewards);
+    const result1 = generateEpochIndividualRewardsList({ rewards, epochId: 1 });
 
     expect(result1[0].epoch).toEqual('2');
     expect(result1[1].epoch).toEqual('1');
 
     const reorderedRewards = [reward4, reward3, reward2, reward1];
-    const result2 = generateEpochIndividualRewardsList(reorderedRewards);
+    const result2 = generateEpochIndividualRewardsList({
+      rewards: reorderedRewards,
+      epochId: 1,
+    });
 
     expect(result2[0].epoch).toEqual('2');
     expect(result2[1].epoch).toEqual('1');
@@ -119,7 +128,7 @@ describe('generateEpochIndividualRewardsList', () => {
 
   it('correctly calculates the total value of rewards for an asset', () => {
     const rewards = [reward1, reward4];
-    const result = generateEpochIndividualRewardsList(rewards);
+    const result = generateEpochIndividualRewardsList({ rewards, epochId: 1 });
 
     expect(result[0].rewards[0].totalAmount).toEqual('200');
   });
@@ -127,7 +136,7 @@ describe('generateEpochIndividualRewardsList', () => {
   it('returns data in the expected shape', () => {
     // Just sanity checking the whole structure here
     const rewards = [reward1, reward2, reward3, reward4];
-    const result = generateEpochIndividualRewardsList(rewards);
+    const result = generateEpochIndividualRewardsList({ rewards, epochId: 1 });
 
     expect(result).toEqual([
       {

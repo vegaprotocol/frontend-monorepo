@@ -10,8 +10,8 @@ interface EpochSummaryWithNamedReward extends EpochRewardSummaryFieldsFragment {
   name: string;
 }
 
-type RewardType = EpochRewardSummaryFieldsFragment['rewardType'];
-type RewardItem = Pick<
+export type RewardType = EpochRewardSummaryFieldsFragment['rewardType'];
+export type RewardItem = Pick<
   EpochRewardSummaryFieldsFragment,
   'rewardType' | 'amount'
 >;
@@ -40,12 +40,17 @@ Object.keys(RowAccountTypes).forEach((type) => {
   });
 });
 
-export const generateEpochTotalRewardsList = (
-  epochData: EpochAssetsRewardsQuery | undefined,
+export const generateEpochTotalRewardsList = ({
+  data,
+  epochId,
+  page = 1,
+  size = 10,
+}: {
+  data?: EpochAssetsRewardsQuery | undefined,
   epochId: number,
-  page: number,
-  size: number
-) => {
+  page?: number,
+  size?: number
+}) => {
   const map: Map<string, EpochTotalSummary> = new Map();
   const fromEpoch = Math.max(0, epochId - size * page);
   const toEpoch = epochId - size * page + size;
@@ -57,10 +62,10 @@ export const generateEpochTotalRewardsList = (
   }
 
   const epochRewardSummaries = removePaginationWrapper(
-    epochData?.epochRewardSummaries?.edges
+    data?.epochRewardSummaries?.edges
   );
 
-  const assets = removePaginationWrapper(epochData?.assetsConnection?.edges);
+  const assets = removePaginationWrapper(data?.assetsConnection?.edges);
 
   return epochRewardSummaries.reduce((acc, reward) => {
     const epoch = acc.get(reward.epoch.toString());

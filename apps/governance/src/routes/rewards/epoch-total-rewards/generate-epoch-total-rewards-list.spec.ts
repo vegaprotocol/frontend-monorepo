@@ -3,13 +3,13 @@ import { AccountType } from '@vegaprotocol/types';
 
 describe('generateEpochAssetRewardsList', () => {
   it('should return an empty array if data is undefined', () => {
-    const result = generateEpochTotalRewardsList(undefined);
+    const result = generateEpochTotalRewardsList({ epochId: 1 });
 
-    expect(result).toEqual([]);
+    expect(result).toEqual(new Map());
   });
 
   it('should return an empty array if empty data is provided', () => {
-    const epochData = {
+    const data = {
       assetsConnection: {
         edges: [],
       },
@@ -23,13 +23,13 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 1 });
 
-    expect(result).toEqual([]);
+    expect(result).toEqual(new Map());
   });
 
   it('should return an empty array if no epochRewardSummaries are provided', () => {
-    const epochData = {
+    const data = {
       assetsConnection: {
         edges: [
           {
@@ -56,13 +56,13 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 1 });
 
-    expect(result).toEqual([]);
+    expect(result).toEqual(new Map());
   });
 
   it('should return an array of unnamed assets if no asset names are provided (should not happen)', () => {
-    const epochData = {
+    const data = {
       assetsConnection: {
         edges: [],
       },
@@ -85,7 +85,7 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 1 });
 
     expect(result).toEqual([
       {
@@ -128,7 +128,7 @@ describe('generateEpochAssetRewardsList', () => {
   });
 
   it('should return an array of aggregated epoch summaries', () => {
-    const epochData = {
+    const data = {
       assetsConnection: {
         edges: [
           {
@@ -180,7 +180,7 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 1 });
 
     expect(result).toEqual([
       {

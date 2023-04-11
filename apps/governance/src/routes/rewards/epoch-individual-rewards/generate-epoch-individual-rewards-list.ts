@@ -27,12 +27,17 @@ const emptyRowAccountTypes = accountTypes.map((type) => [
   },
 ]);
 
-export const generateEpochIndividualRewardsList = (
+export const generateEpochIndividualRewardsList = ({
+  rewards,
+  epochId,
+  page = 1,
+  size = 10,
+}: {
   rewards: RewardFieldsFragment[],
   epochId: number,
-  page: number,
-  size: number
-) => {
+  page?: number,
+  size?: number
+}) => {
   const map: Map<string, EpochIndividualReward> = new Map();
   const fromEpoch = Math.max(0, epochId - size * page);
   const toEpoch = epochId - size * page + size;
