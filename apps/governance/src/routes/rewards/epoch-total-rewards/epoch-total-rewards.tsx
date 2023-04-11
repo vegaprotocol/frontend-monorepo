@@ -4,7 +4,6 @@ import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
 import { useEpochAssetsRewardsQuery } from '../home/__generated__/Rewards';
 import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-list';
-import { NoRewards } from '../no-rewards';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
 
 const EPOCHS_PAGE_SIZE = 10;

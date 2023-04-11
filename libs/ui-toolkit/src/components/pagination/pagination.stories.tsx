@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-
-import { Button } from '../button';
+import { useState } from 'react';
 import { Pagination } from './pagination';
 
 import type { ComponentStory, ComponentMeta } from '@storybook/react';

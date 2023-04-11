@@ -5,7 +5,6 @@ import type {
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { AccountType } from '@vegaprotocol/types';
-import { BigNumber } from '../../../lib/bignumber';
 
 interface EpochSummaryWithNamedReward extends EpochRewardSummaryFieldsFragment {
   name: string;
@@ -91,24 +90,4 @@ export const generateEpochTotalRewardsList = (
 
     return acc;
   }, map);
-
-  // return Array.from(epochTotalRewards.values())
-  //   .sort((a, b) => Number(b.epoch) - Number(a.epoch))
-  //   .map((epochData) => {
-  //     const assetRewards = Array.from(epochData.assetRewards.values()).sort(
-  //       (a, b) => {
-  //         return new BigNumber(b.totalAmount).comparedTo(a.totalAmount);
-  //       }
-  //     );
-
-  //     return {
-  //       epoch: epochData.epoch,
-  //       assetRewards: assetRewards.map(a => {
-  //         return {
-  //           ...a,
-  //           rewards: Array.from(a.rewards.values()),
-  //         }
-  //       }),
-  //     };
-  //   });
 };
