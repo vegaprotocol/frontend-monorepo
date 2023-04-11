@@ -47,7 +47,8 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           }
           onSelect(
             (data as MarketMaybeWithData).id,
-            (event as unknown as MouseEvent)?.metaKey
+            (event as unknown as MouseEvent)?.metaKey ||
+              (event as unknown as MouseEvent)?.ctrlKey
           );
         }}
         onMarketClick={onSelect}

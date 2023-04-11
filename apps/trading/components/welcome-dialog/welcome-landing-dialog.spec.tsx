@@ -8,6 +8,10 @@ import type {
   MarketData,
 } from '@vegaprotocol/market-list';
 import { SelectMarketLandingTable } from './welcome-landing-dialog';
+const mockMarketClickHandler = jest.fn();
+jest.mock('../../lib/hooks/use-market-click-handler', () => ({
+  useMarketClickHandler: () => mockMarketClickHandler,
+}));
 
 type Market = MarketMaybeWithCandles & MarketMaybeWithData;
 type PartialMarket = Partial<
@@ -172,6 +176,27 @@ describe('WelcomeLandingDialog', () => {
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onClose).toHaveBeenCalled();
     fireEvent.click(screen.getAllByTestId(`market-link-2`)[0]);
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it('should not call onClose when metaKey is held', () => {
+    const onClose = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <SelectMarketLandingTable
+          markets={[MARKET_A as Market, MARKET_B as Market]}
+          onClose={onClose}
+        />
+      </MemoryRouter>,
+      { wrapper: MockedProvider }
+    );
+    fireEvent.click(screen.getAllByTestId(`market-link-1`)[0], {
+      metaKey: true,
+    });
+    expect(mockMarketClickHandler).toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onClose).toHaveBeenCalled();
   });
 });
