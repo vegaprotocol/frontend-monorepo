@@ -32,10 +32,14 @@ const usePersistentDepositStore = create<{
 
 export const usePersistentDeposit = (
   assetId?: string
-): [PersistedDeposit, (entry: PersistedDeposit) => void] => {
+): [PersistedDeposit | undefined, (entry: PersistedDeposit) => void] => {
   const { deposits, lastVisited, saveValue } = usePersistentDepositStore();
   const discoveredData = useMemo(() => {
-    return deposits[assetId || ''] || lastVisited || { assetId: assetId || '' };
+    return assetId
+      ? deposits[assetId]
+        ? deposits[assetId]
+        : { assetId }
+      : lastVisited;
   }, [deposits, lastVisited, assetId]);
 
   return [discoveredData, saveValue];
