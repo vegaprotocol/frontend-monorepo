@@ -1,8 +1,6 @@
-import React from 'react';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
-import { addDecimal } from '@vegaprotocol/utils';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
@@ -195,10 +193,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
         onResolutionChange={(resolution: number) => setResolution(resolution)}
-        onClick={(price?: string | number) => {
+        onClick={(price: string) => {
           if (price) {
-            const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-            updateOrder(marketId, { price: priceValue });
+            updateOrder(marketId, { price });
           }
         }}
       />
