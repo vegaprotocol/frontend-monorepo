@@ -61,6 +61,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
+          dockerfile: 'ipfs.Dockerfile'
           load: true
           build-args: |
             APP=${{ matrix.app }}
@@ -89,6 +90,7 @@ jobs:
         uses: docker/build-push-action@v3
         if: ${{ github.event_name == 'pull_request' }}
         with:
+          dockerfile: 'ipfs.Dockerfile'
           push: true
           build-args: |
             APP=${{ matrix.app }}
