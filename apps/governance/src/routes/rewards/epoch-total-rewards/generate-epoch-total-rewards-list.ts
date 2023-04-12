@@ -5,7 +5,7 @@ import type {
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { AccountType } from '@vegaprotocol/types';
-import { calculateEpochOffset } from '../../../lib/epoch-pagination'
+import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 
 interface EpochSummaryWithNamedReward extends EpochRewardSummaryFieldsFragment {
   name: string;
@@ -59,7 +59,7 @@ export const generateEpochTotalRewardsList = ({
   const assets = removePaginationWrapper(data?.assetsConnection?.edges);
 
   const map: Map<string, EpochTotalSummary> = new Map();
-  const { fromEpoch, toEpoch } = calculateEpochOffset({ epochId, page, size })
+  const { fromEpoch, toEpoch } = calculateEpochOffset({ epochId, page, size });
 
   for (let i = toEpoch; i >= fromEpoch; i--) {
     map.set(i.toString(), {

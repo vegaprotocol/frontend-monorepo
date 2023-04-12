@@ -5,7 +5,7 @@ import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
 import { useEpochAssetsRewardsQuery } from '../home/__generated__/Rewards';
 import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-list';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
-import { calculateEpochOffset } from '../../../lib/epoch-pagination'
+import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 
 const EPOCHS_PAGE_SIZE = 10;
 
@@ -33,10 +33,10 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
       const targetPage = toPage ?? page;
       await refetch({
         epochRewardSummariesFilter: calculateEpochOffset({
-          epochId, page:
-          targetPage,
+          epochId,
+          page: targetPage,
           size: EPOCHS_PAGE_SIZE,
-        })
+        }),
       });
       setPage(targetPage);
     },

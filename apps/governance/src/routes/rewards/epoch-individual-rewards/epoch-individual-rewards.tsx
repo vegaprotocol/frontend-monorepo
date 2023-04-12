@@ -8,7 +8,7 @@ import { ENV } from '../../../config';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
-import { calculateEpochOffset } from '../../../lib/epoch-pagination'
+import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 
 const EPOCHS_PAGE_SIZE = 10;
 
