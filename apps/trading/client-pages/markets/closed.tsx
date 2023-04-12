@@ -21,9 +21,23 @@ import { useClosedMarketsQuery } from './__generated__/ClosedMarkets';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 
-type Row = ClosedMarketFragment & {
+interface Row {
+  id: string;
+  code: string;
+  name: string;
+  decimalPlaces: number;
+  state: MarketState;
+  metadata: string[];
+  closeTimestamp: string | null;
+  bestBidPrice: string | undefined;
+  bestOfferPrice: string | undefined;
+  markPrice: string | undefined;
+  settlementDataOracleId: string;
+  settlementDataSpecBinding: string;
+  tradingTerminationOracleId: string;
+  settlementAsset: ClosedMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'];
   realisedPNL: string | undefined;
-};
+}
 
 export const Closed = () => {
   const { pubKey } = useVegaWallet();
@@ -35,6 +49,8 @@ export const Closed = () => {
     skip: !pubKey,
   });
 
+  // find a position for each market and add the realised pnl to
+  // a normalized object
   const rowData = compact(marketData?.marketsConnection?.edges)
     .map((edge) => edge.node)
     .map((market) => {
@@ -44,10 +60,32 @@ export const Closed = () => {
         }
       );
 
-      return {
-        ...market,
+      const row: Row = {
+        id: market.id,
+        code: market.tradableInstrument.instrument.code,
+        name: market.tradableInstrument.instrument.name,
+        decimalPlaces: market.decimalPlaces,
+        state: market.state,
+        metadata: market.tradableInstrument.instrument.metadata.tags ?? [],
+        closeTimestamp: market.marketTimestamps.close,
+        bestBidPrice: market.data?.bestBidPrice,
+        bestOfferPrice: market.data?.bestOfferPrice,
+        markPrice: market.data?.markPrice,
+        settlementDataOracleId:
+          market.tradableInstrument.instrument.product
+            .dataSourceSpecForSettlementData.id,
+        settlementDataSpecBinding:
+          market.tradableInstrument.instrument.product.dataSourceSpecBinding
+            .settlementDataProperty,
+        tradingTerminationOracleId:
+          market.tradableInstrument.instrument.product
+            .dataSourceSpecForTradingTermination.id,
+        settlementAsset:
+          market.tradableInstrument.instrument.product.settlementAsset,
         realisedPNL: position?.node.realisedPNL,
       };
+
+      return row;
     })
     .filter((m) => {
       return [
@@ -65,11 +103,11 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
     const cols: ColDef[] = [
       {
         headerName: t('Market'),
-        field: 'tradableInstrument.instrument.code',
+        field: 'code',
       },
       {
         headerName: t('Description'),
-        field: 'tradableInstrument.instrument.name',
+        field: 'name',
       },
       {
         headerName: t('Status'),
@@ -82,28 +120,29 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       {
         headerName: t('Settlement date'),
         colId: 'settlementDate', // colId needed if no field property provided otherwise column order is ruined in tests
-        valueGetter: ({ data }) => {
-          return getMarketExpiryDate(
-            data?.tradableInstrument.instrument.metadata.tags
-          );
+        valueGetter: ({ data }: { data: Row }) => {
+          return getMarketExpiryDate(data.metadata);
         },
         cellRenderer: ({ value, data }: { value: Date | null; data: Row }) => {
           return (
             <SettlementDateCell
-              oracleSpecId={
-                data.tradableInstrument.instrument.product
-                  .dataSourceSpecForTradingTermination.id
-              }
+              oracleSpecId={data.tradingTerminationOracleId}
               metaDate={value}
               marketState={data.state}
-              closeTimestamp={data.marketTimestamps.close}
+              closeTimestamp={data.closeTimestamp}
             />
           );
         },
         cellClassRules: {
-          'text-danger': ({ value, data }) => {
-            const date = data.marketTimestamps.close
-              ? new Date(data.marketTimestamps.close)
+          'text-danger': ({
+            value,
+            data,
+          }: {
+            value: Date | null;
+            data: Row;
+          }) => {
+            const date = data.closeTimestamp
+              ? new Date(data.closeTimestamp)
               : value;
 
             if (!date) return false;
@@ -121,39 +160,39 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       },
       {
         headerName: t('Best bid'),
-        field: 'data.bestBidPrice',
+        field: 'bestBidPrice',
         type: 'numericColumn',
         cellClass: 'font-mono ag-right-aligned-cell',
         valueFormatter: ({
           value,
           data,
-        }: VegaValueFormatterParams<Row, 'data.bestBidPrice'>) => {
+        }: VegaValueFormatterParams<Row, 'bestBidPrice'>) => {
           if (!value || !data) return '-';
           return addDecimalsFormatNumber(value, data.decimalPlaces);
         },
       },
       {
         headerName: t('Best offer'),
-        field: 'data.bestOfferPrice',
+        field: 'bestOfferPrice',
         cellClass: 'font-mono ag-right-aligned-cell',
         type: 'numericColumn',
         valueFormatter: ({
           value,
           data,
-        }: VegaValueFormatterParams<Row, 'data.bestOfferPrice'>) => {
+        }: VegaValueFormatterParams<Row, 'bestOfferPrice'>) => {
           if (!value || !data) return '-';
           return addDecimalsFormatNumber(value, data.decimalPlaces);
         },
       },
       {
         headerName: t('Mark price'),
-        field: 'data.markPrice',
+        field: 'markPrice',
         cellClass: 'font-mono ag-right-aligned-cell',
         type: 'numericColumn',
         valueFormatter: ({
           value,
           data,
-        }: VegaValueFormatterParams<Row, 'data.markPrice'>) => {
+        }: VegaValueFormatterParams<Row, 'markPrice'>) => {
           if (!value || !data) return '-';
           return addDecimalsFormatNumber(value, data.decimalPlaces);
         },
@@ -161,22 +200,16 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       {
         headerName: t('Settlement price'),
         type: 'numericColumn',
-        field:
-          'tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id',
+        field: 'settlementDataOracleId',
+        // 'tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id',
         cellRenderer: ({
           value,
           data,
-        }: VegaICellRendererParams<
-          Row,
-          'tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id'
-        >) => (
+        }: VegaICellRendererParams<Row, 'settlementDataOracleId'>) => (
           <SettlementPriceCell
             oracleSpecId={value}
             decimalPlaces={data?.decimalPlaces ?? 0}
-            settlementDataSpecBinding={
-              data?.tradableInstrument.instrument.product.dataSourceSpecBinding
-                .settlementDataProperty
-            }
+            settlementDataSpecBinding={data?.settlementDataSpecBinding}
           />
         ),
       },
@@ -195,24 +228,19 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       },
       {
         headerName: t('Settlement asset'),
-        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
+        field: 'settlementAsset',
         cellRenderer: ({
           value,
           data,
-        }: VegaValueFormatterParams<
-          Row,
-          'tradableInstrument.instrument.product.settlementAsset.symbol'
-        >) => (
+        }: VegaValueFormatterParams<Row, 'settlementAsset'>) => (
           <button
             className="underline"
             onClick={() => {
-              const assetId =
-                data?.tradableInstrument.instrument.product.settlementAsset.id;
-              if (!assetId) return;
-              openAssetDialog(assetId);
+              if (!value) return;
+              openAssetDialog(value.id);
             }}
           >
-            {value}
+            {value ? value.symbol : '-'}
           </button>
         ),
       },
