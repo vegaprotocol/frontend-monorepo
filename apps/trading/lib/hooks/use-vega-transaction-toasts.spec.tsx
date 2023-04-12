@@ -7,7 +7,11 @@ import {
 } from '@vegaprotocol/types';
 import type { VegaStoredTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
-import { VegaTransactionDetails } from './use-vega-transaction-toasts';
+import {
+  VegaTransactionDetails,
+  getVegaTransactionContentIntent,
+} from './use-vega-transaction-toasts';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@vegaprotocol/assets', () => {
   const A1 = {
@@ -276,5 +280,29 @@ describe('VegaTransactionDetails', () => {
   ])('display details for transaction', ({ tx, details }) => {
     const { queryByTestId } = render(<VegaTransactionDetails tx={tx} />);
     expect(queryByTestId('toast-panel')?.textContent).toEqual(details);
+  });
+});
+
+describe('getVegaTransactionContentIntent', () => {
+  it('returns the correct intent for a transaction', () => {
+    expect(getVegaTransactionContentIntent(withdraw).intent).toBe(
+      Intent.Primary
+    );
+    expect(getVegaTransactionContentIntent(submitOrder).intent).toBe(
+      Intent.Success
+    );
+    expect(getVegaTransactionContentIntent(editOrder).intent).toBe(
+      Intent.Success
+    );
+    expect(getVegaTransactionContentIntent(cancelOrder).intent).toBe(
+      Intent.Primary
+    );
+    expect(getVegaTransactionContentIntent(cancelAll).intent).toBe(
+      Intent.Primary
+    );
+    expect(getVegaTransactionContentIntent(closePosition).intent).toBe(
+      Intent.Primary
+    );
+    expect(getVegaTransactionContentIntent(batch).intent).toBe(Intent.Primary);
   });
 });
