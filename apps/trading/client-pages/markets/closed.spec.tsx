@@ -17,13 +17,13 @@ import type {
   PositionFieldsFragment,
 } from '@vegaprotocol/positions';
 import { PositionsDocument } from '@vegaprotocol/positions';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import type { PartialDeep } from 'type-fest';
 import type {
   ClosedMarketFragment,
   ClosedMarketsQuery,
-} from './__generated__/ClosedMarkets';
-import { ClosedMarketsDocument } from './__generated__/ClosedMarkets';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { PartialDeep } from 'type-fest';
+} from '@vegaprotocol/market-list';
+import { ClosedMarketsDocument } from '@vegaprotocol/market-list';
 
 describe('Closed', () => {
   let originalNow: typeof Date.now;
