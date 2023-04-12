@@ -63,7 +63,7 @@ export const generateEpochIndividualRewardsList = ({
     }
 
     if (!acc.has(epochId)) {
-      return acc
+      return acc;
     }
 
     const epoch = acc.get(epochId);
