@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import classnames from 'classnames';
 import { Button } from '../button';
 import { Icon } from '../icon';
 
