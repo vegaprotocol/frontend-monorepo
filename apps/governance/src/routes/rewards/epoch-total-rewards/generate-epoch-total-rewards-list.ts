@@ -61,7 +61,7 @@ export const generateEpochTotalRewardsList = ({
   const fromEpoch = Math.max(0, epochId - size * page) + 1;
   const toEpoch = epochId - size * page + size;
 
-  for (let i = fromEpoch; i <= toEpoch; i++) {
+  for (let i = toEpoch; i >= fromEpoch; i--) {
     map.set(i.toString(), {
       epoch: i,
       assetRewards: new Map(),

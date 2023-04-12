@@ -13,7 +13,8 @@ type EpochTotalRewardsProps = {
 };
 
 export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
-  const epochId = parseInt(currentEpoch.id);
+  // we start from the previous epoch when displaying rewards data, because the current one has no calculated data while ongoing
+  const epochId = Number(currentEpoch.id) - 1;
   const totalPages = Math.ceil(epochId / EPOCHS_PAGE_SIZE);
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
