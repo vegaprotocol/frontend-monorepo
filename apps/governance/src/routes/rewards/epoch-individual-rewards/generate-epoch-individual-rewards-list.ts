@@ -4,7 +4,7 @@ import type { RewardFieldsFragment } from '../home/__generated__/Rewards';
 import type { AccountType } from '@vegaprotocol/types';
 
 export interface EpochIndividualReward {
-  epoch: string;
+  epoch: number;
   rewards: {
     asset: string;
     totalAmount: string;
@@ -39,11 +39,11 @@ export const generateEpochIndividualRewardsList = ({
   size?: number;
 }) => {
   const map: Map<string, EpochIndividualReward> = new Map();
-  const fromEpoch = Math.max(0, epochId - size * page);
+  const fromEpoch = Math.max(1, epochId - size * page);
   const toEpoch = epochId - size * page + size;
   for (let i = fromEpoch; i <= toEpoch; i++) {
     map.set(i.toString(), {
-      epoch: i.toString(),
+      epoch: i,
       rewards: [],
     });
   }
@@ -62,7 +62,7 @@ export const generateEpochIndividualRewardsList = ({
     }
 
     if (!acc.has(epochId)) {
-      acc.set(epochId, { epoch: epochId, rewards: [] });
+      acc.set(epochId, { epoch: Number(epochId), rewards: [] });
     }
 
     const epoch = acc.get(epochId);
