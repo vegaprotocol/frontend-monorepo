@@ -8,6 +8,7 @@ import { ENV } from '../../../config';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
+import { calculateEpochOffset } from '../../../lib/epoch-pagination'
 
 const EPOCHS_PAGE_SIZE = 10;
 
@@ -62,8 +63,7 @@ export const EpochIndividualRewards = ({
       const targetPage = toPage ?? page;
       await refetch({
         partyId: pubKey || '',
-        fromEpoch: Math.max(0, epochId - EPOCHS_PAGE_SIZE * page),
-        toEpoch: epochId - EPOCHS_PAGE_SIZE * page + EPOCHS_PAGE_SIZE,
+        ...calculateEpochOffset({ epochId, page, size: EPOCHS_PAGE_SIZE }),
         delegationsPagination: delegationsPagination
           ? {
               first: Number(delegationsPagination),

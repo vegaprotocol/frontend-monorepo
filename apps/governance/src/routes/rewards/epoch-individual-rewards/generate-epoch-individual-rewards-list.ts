@@ -2,6 +2,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { RewardFieldsFragment } from '../home/__generated__/Rewards';
 import type { AccountType } from '@vegaprotocol/types';
+import { calculateEpochOffset } from '../../../lib/epoch-pagination'
 
 export interface EpochIndividualReward {
   epoch: number;
@@ -39,8 +40,7 @@ export const generateEpochIndividualRewardsList = ({
   size?: number;
 }) => {
   const map: Map<string, EpochIndividualReward> = new Map();
-  const fromEpoch = Math.max(0, epochId - size * page) + 1;
-  const toEpoch = epochId - size * page + size;
+  const { fromEpoch, toEpoch } = calculateEpochOffset({ epochId, page, size })
 
   for (let i = toEpoch; i >= fromEpoch; i--) {
     map.set(i.toString(), {
