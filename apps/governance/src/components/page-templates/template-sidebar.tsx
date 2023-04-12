@@ -1,10 +1,6 @@
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { ViewingAsBanner } from '@vegaprotocol/ui-toolkit';
-import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
-
-import { Nav } from '../nav';
 
 export interface TemplateSidebarProps {
   children: React.ReactNode;
@@ -12,17 +8,9 @@ export interface TemplateSidebarProps {
 }
 
 export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
-  const { VEGA_ENV, ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
   const { isReadOnly, pubKey, disconnect } = useVegaWallet();
   return (
     <>
-      {ANNOUNCEMENTS_CONFIG_URL && (
-        <AnnouncementBanner
-          app="governance"
-          configUrl={ANNOUNCEMENTS_CONFIG_URL}
-        />
-      )}
-      <Nav theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
       {isReadOnly ? (
         <ViewingAsBanner pubKey={pubKey} disconnect={disconnect} />
       ) : null}
