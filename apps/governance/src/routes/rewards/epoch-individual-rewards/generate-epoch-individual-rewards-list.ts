@@ -41,7 +41,8 @@ export const generateEpochIndividualRewardsList = ({
   const map: Map<string, EpochIndividualReward> = new Map();
   const fromEpoch = Math.max(0, epochId - size * page) + 1;
   const toEpoch = epochId - size * page + size;
-  for (let i = fromEpoch; i <= toEpoch; i++) {
+
+  for (let i = toEpoch; i >= fromEpoch; i--) {
     map.set(i.toString(), {
       epoch: i,
       rewards: [],
@@ -62,7 +63,7 @@ export const generateEpochIndividualRewardsList = ({
     }
 
     if (!acc.has(epochId)) {
-      acc.set(epochId, { epoch: Number(epochId), rewards: [] });
+      return acc
     }
 
     const epoch = acc.get(epochId);
