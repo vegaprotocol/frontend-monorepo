@@ -11,6 +11,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { Asset } from './asset-data-provider';
+import { WITHDRAW_THRESHOLD_TOOLTIP_TEXT } from './constants';
 
 type Rows = {
   key: AssetDetail;
@@ -121,9 +122,7 @@ export const rows: Rows = [
   {
     key: AssetDetail.WITHDRAWAL_THRESHOLD,
     label: t('Withdrawal threshold'),
-    tooltip: t(
-      'The maximum you can withdraw instantly. There’s no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them'
-    ),
+    tooltip: WITHDRAW_THRESHOLD_TOOLTIP_TEXT,
     value: (asset) =>
       num(asset, (asset.source as Schema.ERC20).withdrawThreshold),
   },
