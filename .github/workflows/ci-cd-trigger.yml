@@ -15,7 +15,7 @@ on:
 jobs:
   node-modules:
     runs-on: ubuntu-22.04
-    name: "Cache yarn modules"
+    name: 'Cache yarn modules'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
