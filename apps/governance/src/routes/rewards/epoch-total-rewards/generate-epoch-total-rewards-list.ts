@@ -73,10 +73,13 @@ export const generateEpochTotalRewardsList = ({
     if (epoch) {
       const matchingAsset = assets.find((asset) => asset.id === reward.assetId);
       const assetWithRewards = epoch.assetRewards.get(reward.assetId);
- 
-      const rewards = assetWithRewards?.rewards || new Map(emptyRowAccountTypes);
+
+      const rewards =
+        assetWithRewards?.rewards || new Map(emptyRowAccountTypes);
       const rewardItem = rewards?.get(reward.rewardType);
-      const amount = ((Number(rewardItem?.amount) || 0) + Number(reward.amount)).toString()
+      const amount = (
+        (Number(rewardItem?.amount) || 0) + Number(reward.amount)
+      ).toString();
 
       rewards?.set(reward.rewardType, {
         rewardType: reward.rewardType,

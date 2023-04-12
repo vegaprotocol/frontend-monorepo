@@ -60,7 +60,7 @@ describe('generateEpochIndividualRewardsList', () => {
       {
         epoch: 1,
         rewards: [],
-      }
+      },
     ]);
   });
 
@@ -74,7 +74,7 @@ describe('generateEpochIndividualRewardsList', () => {
       {
         epoch: 1,
         rewards: [],
-      }
+      },
     ]);
   });
 
