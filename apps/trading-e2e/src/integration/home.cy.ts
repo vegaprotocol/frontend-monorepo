@@ -172,6 +172,7 @@ describe('home', { tags: '@regression' }, () => {
           ],
         },
       };
+      // @ts-ignore partial deep check failing
       const data = marketsDataQuery(override);
       cy.mockGQL((req) => {
         aliasGQLQuery(req, 'MarketsData', data);
