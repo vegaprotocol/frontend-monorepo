@@ -1,23 +1,17 @@
-import merge from 'lodash/merge';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import type { OracleData } from '@vegaprotocol/types';
-import {
-  MarketState,
-  MarketStateMapping,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import { addDays, subDays } from 'date-fns';
-import type { PartialDeep, SetNonNullable, SetRequired } from 'type-fest';
 import {
   assetsQuery,
   chainIdQuery,
-  marketsDataQuery,
-  marketsQuery,
   statisticsQuery,
+  closedMarketsQuery,
+  createClosedMarket,
+  createDataConnection,
+  oracleSpecDataConnectionQuery,
 } from '@vegaprotocol/mock';
 import { networkParamsQuery } from '@vegaprotocol/mock';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { ClosedMarketFragment } from '@vegaprotocol/market-list';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
   const rowSelector =
@@ -27,7 +21,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   // @ts-ignore asset definitely exists
   const settlementAsset = assetsResult.assetsConnection.edges[0].node;
 
-  const settledMarket = createMarket({
+  const settledMarket = createClosedMarket({
     id: '0',
     marketTimestamps: {
       open: subDays(new Date(), 10).toISOString(),
@@ -48,7 +42,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     },
   });
 
-  const terminatedMarket = createMarket({
+  const terminatedMarket = createClosedMarket({
     id: '1',
     state: MarketState.STATE_TRADING_TERMINATED,
     marketTimestamps: {
@@ -66,7 +60,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     },
   });
 
-  const delayedSettledMarket = createMarket({
+  const delayedSettledMarket = createClosedMarket({
     id: '2',
     state: MarketState.STATE_TRADING_TERMINATED,
     marketTimestamps: {
@@ -84,7 +78,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     },
   });
 
-  const unknownMarket = createMarket({ id: '3' });
+  const unknownMarket = createClosedMarket({ id: '3' });
 
   const closedMarketsResult = [
     {
@@ -97,8 +91,8 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       node: delayedSettledMarket,
     },
     { node: unknownMarket },
-    { node: createMarket({ id: '4', state: MarketState.STATE_PENDING }) },
-    { node: createMarket({ id: '5', state: MarketState.STATE_ACTIVE }) },
+    { node: createClosedMarket({ id: '4', state: MarketState.STATE_PENDING }) },
+    { node: createClosedMarket({ id: '5', state: MarketState.STATE_ACTIVE }) },
   ];
 
   const specDataConnection = createDataConnection();
@@ -109,20 +103,20 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       aliasGQLQuery(req, 'Statistics', statisticsQuery());
       aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
       aliasGQLQuery(req, 'Assets', assetsResult);
-      aliasGQLQuery(req, 'Markets', marketsQuery());
-      aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
-      aliasGQLQuery(req, 'ClosedMarkets', {
-        marketsConnection: {
-          edges: closedMarketsResult,
-        },
-      });
-      aliasGQLQuery(req, 'OracleSpecDataConnection', {
-        oracleSpec: {
-          dataConnection: {
-            edges: [{ node: specDataConnection }],
+      aliasGQLQuery(
+        req,
+        'ClosedMarkets',
+        closedMarketsQuery({
+          marketsConnection: {
+            edges: closedMarketsResult,
           },
-        },
-      });
+        })
+      );
+      aliasGQLQuery(
+        req,
+        'OracleSpecDataConnection',
+        oracleSpecDataConnectionQuery()
+      );
     });
 
     cy.mockSubscription();
@@ -217,6 +211,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .should(
         'have.text',
         addDecimalsFormatNumber(
+          // @ts-ignore cannot deep un-partial
           specDataConnection.externalData.data.data[0].value,
           settledMarket.decimalPlaces
         )
@@ -282,88 +277,3 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     );
   });
 });
-
-function createMarket(
-  override?: PartialDeep<ClosedMarketFragment>
-): SetNonNullable<SetRequired<ClosedMarketFragment, 'data'>> {
-  const marketId = override?.id || 'market-id';
-  const defaultMarket = {
-    __typename: 'Market',
-    id: marketId,
-    decimalPlaces: 2,
-    positionDecimalPlaces: 2,
-    state: MarketState.STATE_SETTLED,
-    tradingMode: MarketTradingMode.TRADING_MODE_NO_TRADING,
-    data: {
-      __typename: 'MarketData',
-      market: {
-        __typename: 'Market',
-        id: marketId,
-      },
-      bestBidPrice: '1000',
-      bestOfferPrice: '2000',
-      markPrice: '1500',
-    },
-    tradableInstrument: {
-      __typename: 'TradableInstrument',
-      instrument: {
-        __typename: 'Instrument',
-        id: '',
-        name: 'ETH USDC SIMS 4',
-        code: 'ETH/USDC',
-        metadata: {
-          __typename: 'InstrumentMetadata',
-          tags: [],
-        },
-        product: {
-          __typename: 'Future',
-          settlementAsset: {
-            __typename: 'Asset',
-            id: 'c5b60dd43d99879d9881343227e788fe27a3e213cbd918e6f60d3d3973e24522',
-            symbol: 'USDC',
-            name: 'USDC SIM4',
-            decimals: 18,
-          },
-          quoteName: 'USD',
-          dataSourceSpecForTradingTermination: {
-            __typename: 'DataSourceSpec',
-            id: 'trading-terminated-property',
-          },
-          dataSourceSpecForSettlementData: {
-            __typename: 'DataSourceSpec',
-            id: 'settlement-data-property',
-          },
-          dataSourceSpecBinding: {
-            __typename: 'DataSourceSpecToFutureBinding',
-            settlementDataProperty: 'settlement-data-property',
-            tradingTerminationProperty: 'trading-terminated-property',
-          },
-        },
-      },
-    },
-    marketTimestamps: {
-      __typename: 'MarketTimestamps',
-      open: subDays(new Date(), 10).toISOString(),
-      close: null,
-    },
-  };
-
-  return merge(defaultMarket, override);
-}
-
-function createDataConnection(override?: PartialDeep<OracleData>) {
-  const defaultDataConnection = {
-    externalData: {
-      data: {
-        data: [
-          {
-            name: 'settlement-data-property',
-            value: '100',
-          },
-        ],
-      },
-    },
-  };
-
-  return merge(defaultDataConnection, override);
-}
