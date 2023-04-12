@@ -37,18 +37,25 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # https://docs.github.com/en/actions/learn-github-actions/contexts
-      - name: Check node version
+      - name: Define variables
         id: tags
         run: |
-          nodeVersion=$(cat .nvmrc | head -n 1)
-          echo ::set-output name=nodeVersion::${nodeVersion}
-
           if [[ "${{ github.event_name }}" = "push" ]]; then
-            envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
-            bucketName="${{ github.event.repository.name }}-$envName"
+            domain="vega.rocks"
+            if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
+              envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+              if [[ "${{ github.ref }}" =~ .*mainnet.* ]]; then
+                domain="vega.community"
+              fi
+            elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
+              envName="stagnet3"
+            fi
+            bucketName="${{ matrix.app }}.${envName}.${domain}"
             echo ::set-output name=bucketName::${bucketName}
             echo ::set-output name=envName::${envName}
           fi
+          nodeVersion=$(cat .nvmrc | head -n 1)
+          echo ::set-output name=nodeVersion::${nodeVersion}
 
       - name: Build and export to local Docker
         id: docker_build
@@ -68,14 +75,15 @@ jobs:
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
 
           echo "List html directory"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree .'
 
-          echo "Copy dist to local filesystem"
+      - name: Copy dist to local filesystem
+        run: |
           docker create --name=dist ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
           docker cp dist:/usr/share/nginx/html dist
 
-          echo "Check local dist"
-          ls -al dist
+          echo "check local dist files"
+          tree dist
 
       - name: Publish dist as docker image
         uses: docker/build-push-action@v3
@@ -88,14 +96,18 @@ jobs:
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
 
-      # - uses: shallwefootball/s3-upload-action@master
-      #   if: ${{ github.event_name == 'push' }}
-      #   name: Upload dist S3
-      #   with:
-      #     aws_key_id: ${{ secrets.AWS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-      #     aws_bucket: ${{ steps.tags.outputs.bucketName }}
-      #     source_dir: 'dist'
+      # bucket creation in github.com/vegaprotocol/terraform//frontend
+      - name: Publish dist to s3
+        uses: jakejarvis/s3-sync-action@master
+        if: ${{ github.event_name == 'push' }}
+        with:
+          args: --acl private --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ steps.tags.outputs.bucketName }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-1'
+          SOURCE_DIR: 'dist/${{ matrix.app }}'
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
