@@ -4,7 +4,6 @@ import { Button } from '../button';
 import { Icon } from '../icon';
 
 export type PaginationProps = {
-  className?: string;
   hasPrevPage: boolean;
   hasNextPage: boolean;
   isLoading?: boolean;
@@ -15,8 +14,9 @@ export type PaginationProps = {
   onLast?: () => void;
 };
 
+const buttonClass = 'rounded-full w-[34px] h-[34px]';
+
 export const Pagination = ({
-  className,
   hasPrevPage,
   hasNextPage,
   isLoading,
@@ -27,18 +27,13 @@ export const Pagination = ({
   onLast,
 }: PaginationProps) => {
   return (
-    <div
-      className={classnames(
-        'flex gap-2 items-center justify-center',
-        className
-      )}
-    >
+    <div className={'flex gap-2 my-2 items-center justify-center'}>
       {onFirst && (
         <Button
           size="sm"
           data-testid="goto-first-page"
           disabled={isLoading || !hasPrevPage}
-          className="rounded-full w-[34px] h-[34px]"
+          className={buttonClass}
           onClick={onFirst}
         >
           <Icon name="double-chevron-left" ariaLabel="Back" />
@@ -48,7 +43,7 @@ export const Pagination = ({
         size="sm"
         data-testid="goto-previous-page"
         disabled={isLoading || !hasPrevPage}
-        className="rounded-full w-[34px] h-[34px]"
+        className={buttonClass}
         onClick={onBack}
       >
         <Icon name="chevron-left" ariaLabel="Back" />
@@ -58,7 +53,7 @@ export const Pagination = ({
         size="sm"
         data-testid="goto-next-page"
         disabled={isLoading || !hasNextPage}
-        className="rounded-full w-[34px] h-[34px]"
+        className={buttonClass}
         onClick={onNext}
       >
         <Icon name="chevron-right" ariaLabel="Next" />
@@ -68,7 +63,7 @@ export const Pagination = ({
           size="sm"
           data-testid="goto-last-page"
           disabled={isLoading || !hasNextPage}
-          className="rounded-full w-[34px] h-[34px]"
+          className={buttonClass}
           onClick={onLast}
         >
           <Icon name="double-chevron-right" ariaLabel="Back" />

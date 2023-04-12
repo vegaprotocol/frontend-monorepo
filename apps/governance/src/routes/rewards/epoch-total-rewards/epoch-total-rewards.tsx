@@ -74,7 +74,6 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
             )
           )}
           <Pagination
-            className="my-2"
             isLoading={loading}
             hasPrevPage={page > 1}
             hasNextPage={page < totalPages}

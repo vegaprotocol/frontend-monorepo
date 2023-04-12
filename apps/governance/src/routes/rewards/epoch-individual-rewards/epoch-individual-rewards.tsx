@@ -101,7 +101,6 @@ export const EpochIndividualRewards = ({
             )
           )}
           <Pagination
-            className="my-2"
             isLoading={loading}
             hasPrevPage={page > 1}
             hasNextPage={page < totalPages}
