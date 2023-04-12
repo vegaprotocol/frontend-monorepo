@@ -1,6 +1,6 @@
 import 'pennant/dist/style.css';
 import {
-  Chart,
+  CandlestickChart,
   ChartType,
   Interval,
   Overlay,
@@ -234,7 +234,7 @@ export const CandlesChartContainer = ({
         </DropdownMenu>
       </div>
       <div className="flex-1">
-        <Chart
+        <CandlestickChart
           dataSource={dataSource}
           options={{
             chartType: chartType,

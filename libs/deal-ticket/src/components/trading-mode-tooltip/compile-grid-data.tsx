@@ -78,7 +78,9 @@ export const compileGridData = (
       label: (
         <Link
           to={`/liquidity/${market.id}`}
-          onClick={(ev) => onSelect && onSelect(market.id, ev.metaKey)}
+          onClick={(ev) =>
+            onSelect && onSelect(market.id, ev.metaKey || ev.ctrlKey)
+          }
         >
           <UILink>{t('Current liquidity')}</UILink>
         </Link>

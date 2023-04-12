@@ -6,7 +6,6 @@ import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
-import { MemoryRouter } from 'react-router-dom';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
@@ -38,9 +37,7 @@ const singleRowData = [singleRow];
 it('should render successfully', async () => {
   await act(async () => {
     const { baseElement } = render(
-      <MemoryRouter>
-        <PositionsTable rowData={[]} isReadOnly={false} />
-      </MemoryRouter>
+      <PositionsTable rowData={[]} isReadOnly={false} />
     );
     expect(baseElement).toBeTruthy();
   });
@@ -48,11 +45,7 @@ it('should render successfully', async () => {
 
 it('render correct columns', async () => {
   await act(async () => {
-    render(
-      <MemoryRouter>
-        <PositionsTable rowData={singleRowData} isReadOnly={true} />
-      </MemoryRouter>
-    );
+    render(<PositionsTable rowData={singleRowData} isReadOnly={true} />);
   });
 
   const headers = screen.getAllByRole('columnheader');
@@ -76,11 +69,7 @@ it('render correct columns', async () => {
 
 it('renders market name', async () => {
   await act(async () => {
-    render(
-      <MemoryRouter>
-        <PositionsTable rowData={singleRowData} isReadOnly={false} />
-      </MemoryRouter>
-    );
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   expect(screen.getByText('ETH/BTC (31 july 2022)')).toBeTruthy();
 });
@@ -91,11 +80,7 @@ it('Does not fail if the market name does not match the split pattern', async ()
     Object.assign({}, singleRow, { marketName: breakingMarketName }),
   ];
   await act(async () => {
-    render(
-      <MemoryRouter>
-        <PositionsTable rowData={row} isReadOnly={false} />
-      </MemoryRouter>
-    );
+    render(<PositionsTable rowData={row} isReadOnly={false} />);
   });
 
   expect(screen.getByText(breakingMarketName)).toBeTruthy();
@@ -105,9 +90,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   let result: RenderResult;
   await act(async () => {
     result = render(
-      <MemoryRouter>
-        <PositionsTable rowData={singleRowData} isReadOnly={false} />
-      </MemoryRouter>
+      <PositionsTable rowData={singleRowData} isReadOnly={false} />
     );
   });
   let cells = screen.getAllByRole('gridcell');
@@ -118,12 +101,10 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[1].textContent).toEqual('1,230.0');
   await act(async () => {
     result.rerender(
-      <MemoryRouter>
-        <PositionsTable
-          rowData={[{ ...singleRow, openVolume: '-100' }]}
-          isReadOnly={false}
-        />
-      </MemoryRouter>
+      <PositionsTable
+        rowData={[{ ...singleRow, openVolume: '-100' }]}
+        isReadOnly={false}
+      />
     );
   });
   cells = screen.getAllByRole('gridcell');
@@ -137,9 +118,7 @@ it('displays mark price', async () => {
   let result: RenderResult;
   await act(async () => {
     result = render(
-      <MemoryRouter>
-        <PositionsTable rowData={singleRowData} isReadOnly={false} />
-      </MemoryRouter>
+      <PositionsTable rowData={singleRowData} isReadOnly={false} />
     );
   });
 
@@ -148,18 +127,16 @@ it('displays mark price', async () => {
 
   await act(async () => {
     result.rerender(
-      <MemoryRouter>
-        <PositionsTable
-          rowData={[
-            {
-              ...singleRow,
-              marketTradingMode:
-                Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-            },
-          ]}
-          isReadOnly={false}
-        />
-      </MemoryRouter>
+      <PositionsTable
+        rowData={[
+          {
+            ...singleRow,
+            marketTradingMode:
+              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+          },
+        ]}
+        isReadOnly={false}
+      />
     );
   });
 
@@ -169,11 +146,7 @@ it('displays mark price', async () => {
 
 it('displays leverage', async () => {
   await act(async () => {
-    render(
-      <MemoryRouter>
-        <PositionsTable rowData={singleRowData} isReadOnly={false} />
-      </MemoryRouter>
-    );
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
   expect(cells[6].textContent).toEqual('1.1');
@@ -181,11 +154,7 @@ it('displays leverage', async () => {
 
 it('displays allocated margin', async () => {
   await act(async () => {
-    render(
-      <MemoryRouter>
-        <PositionsTable rowData={singleRowData} isReadOnly={false} />
-      </MemoryRouter>
-    );
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
   const cell = cells[7];
@@ -194,11 +163,7 @@ it('displays allocated margin', async () => {
 
 it('displays realised and unrealised PNL', async () => {
   await act(async () => {
-    render(
-      <MemoryRouter>
-        <PositionsTable rowData={singleRowData} isReadOnly={false} />
-      </MemoryRouter>
-    );
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
   expect(cells[9].textContent).toEqual('4.56');
@@ -207,15 +172,13 @@ it('displays realised and unrealised PNL', async () => {
 it('displays close button', async () => {
   await act(async () => {
     render(
-      <MemoryRouter>
-        <PositionsTable
-          rowData={singleRowData}
-          onClose={() => {
-            return;
-          }}
-          isReadOnly={false}
-        />
-      </MemoryRouter>
+      <PositionsTable
+        rowData={singleRowData}
+        onClose={() => {
+          return;
+        }}
+        isReadOnly={false}
+      />
     );
   });
   const cells = screen.getAllByRole('gridcell');
@@ -225,15 +188,13 @@ it('displays close button', async () => {
 it('do not display close button if openVolume is zero', async () => {
   await act(async () => {
     render(
-      <MemoryRouter>
-        <PositionsTable
-          rowData={[{ ...singleRow, openVolume: '0' }]}
-          onClose={() => {
-            return;
-          }}
-          isReadOnly={false}
-        />
-      </MemoryRouter>
+      <PositionsTable
+        rowData={[{ ...singleRow, openVolume: '0' }]}
+        onClose={() => {
+          return;
+        }}
+        isReadOnly={false}
+      />
     );
   });
   const cells = screen.getAllByRole('gridcell');

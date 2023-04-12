@@ -13,6 +13,8 @@ export type OrderObj = {
   price?: string;
   expiresAt?: string | undefined;
   persist: boolean; // key used to determine if order should be kept in localStorage
+  postOnly?: boolean;
+  reduceOnly?: boolean;
 };
 type OrderMap = { [marketId: string]: OrderObj | undefined };
 
@@ -114,4 +116,6 @@ export const getDefaultOrder = (marketId: string): OrderObj => ({
   price: '0',
   expiresAt: undefined,
   persist: false,
+  postOnly: false,
+  reduceOnly: false,
 });

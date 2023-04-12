@@ -36,13 +36,6 @@ export type LiquidityProviderFeeShareQueryVariables = Types.Exact<{
 
 export type LiquidityProviderFeeShareQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, data?: { __typename?: 'MarketData', market: { __typename?: 'Market', id: string }, liquidityProviderFeeShare?: Array<{ __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, party: { __typename?: 'Party', id: string } }> | null } | null } | null };
 
-export type LiquidityProviderFeeShareUpdateSubscriptionVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-}>;
-
-
-export type LiquidityProviderFeeShareUpdateSubscription = { __typename?: 'Subscription', marketsData: Array<{ __typename?: 'ObservableMarketData', liquidityProviderFeeShare?: Array<{ __typename?: 'ObservableLiquidityProviderFeeShare', partyId: string, equityLikeShare: string, averageEntryValuation: string }> | null }> };
-
 export const LiquidityProvisionFieldsFragmentDoc = gql`
     fragment LiquidityProvisionFields on LiquidityProvision {
   party {
@@ -257,37 +250,3 @@ export function useLiquidityProviderFeeShareLazyQuery(baseOptions?: Apollo.LazyQ
 export type LiquidityProviderFeeShareQueryHookResult = ReturnType<typeof useLiquidityProviderFeeShareQuery>;
 export type LiquidityProviderFeeShareLazyQueryHookResult = ReturnType<typeof useLiquidityProviderFeeShareLazyQuery>;
 export type LiquidityProviderFeeShareQueryResult = Apollo.QueryResult<LiquidityProviderFeeShareQuery, LiquidityProviderFeeShareQueryVariables>;
-export const LiquidityProviderFeeShareUpdateDocument = gql`
-    subscription LiquidityProviderFeeShareUpdate($marketId: ID!) {
-  marketsData(marketIds: [$marketId]) {
-    liquidityProviderFeeShare {
-      partyId
-      equityLikeShare
-      averageEntryValuation
-    }
-  }
-}
-    `;
-
-/**
- * __useLiquidityProviderFeeShareUpdateSubscription__
- *
- * To run a query within a React component, call `useLiquidityProviderFeeShareUpdateSubscription` and pass it any options that fit your needs.
- * When your component renders, `useLiquidityProviderFeeShareUpdateSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useLiquidityProviderFeeShareUpdateSubscription({
- *   variables: {
- *      marketId: // value for 'marketId'
- *   },
- * });
- */
-export function useLiquidityProviderFeeShareUpdateSubscription(baseOptions: Apollo.SubscriptionHookOptions<LiquidityProviderFeeShareUpdateSubscription, LiquidityProviderFeeShareUpdateSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<LiquidityProviderFeeShareUpdateSubscription, LiquidityProviderFeeShareUpdateSubscriptionVariables>(LiquidityProviderFeeShareUpdateDocument, options);
-      }
-export type LiquidityProviderFeeShareUpdateSubscriptionHookResult = ReturnType<typeof useLiquidityProviderFeeShareUpdateSubscription>;
-export type LiquidityProviderFeeShareUpdateSubscriptionResult = Apollo.SubscriptionResult<LiquidityProviderFeeShareUpdateSubscription>;

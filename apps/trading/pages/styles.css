@@ -34,6 +34,18 @@ html [data-theme='dark'] {
   /* sell candles only use stroke as the candle is solid (without border) */
   --pennant-color-sell-stroke: theme('colors.vega.pink.500');
 
+  /* studies */
+  --pennant-color-eldar-ray-bear-power: theme('colors.vega.pink.500');
+  --pennant-color-eldar-ray-bull-power: theme('colors.vega.green.650');
+
+  --pennant-color-macd-divergence-buy: theme('colors.vega.green.650');
+  --pennant-color-macd-divergence-sell: theme('colors.vega.pink.500');
+  --pennant-color-macd-signal: theme('colors.vega.blue.500');
+  --pennant-color-macd-macd: theme('colors.vega.yellow.500');
+
+  --pennant-color-volume-buy: theme('colors.vega.green.650');
+  --pennant-color-volume-sell: theme('colors.vega.pink.500');
+
   /* depth chart */
   --pennant-color-depth-buy-fill: theme('colors.vega.green.650');
   --pennant-color-depth-buy-stroke: theme('colors.vega.green.500');
@@ -49,6 +61,9 @@ html [data-theme='light'] {
   --pennant-color-buy-stroke: theme('colors.vega.green.550');
   /* sell candles only use stroke as the candle is solid (without border) */
   --pennant-color-sell-stroke: theme('colors.vega.pink.400');
+
+  --pennant-color-volume-buy: theme('colors.vega.green.400');
+  --pennant-color-volume-sell: theme('colors.vega.pink.400');
 
   /* depth chart */
   --pennant-color-depth-buy-fill: theme('colors.vega.green.400');

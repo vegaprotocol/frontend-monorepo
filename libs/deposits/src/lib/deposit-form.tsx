@@ -8,6 +8,7 @@ import {
   maxSafe,
   addDecimal,
   isAssetTypeERC20,
+  formatNumber,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -25,11 +26,9 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { useState } from 'react';
-import { useMemo } from 'react';
-import { useWatch } from 'react-hook-form';
-import { Controller, useForm } from 'react-hook-form';
+import type { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';
+import { useMemo, useState } from 'react';
+import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
@@ -40,6 +39,7 @@ import {
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
 import { ApproveNotification } from './approve-notification';
+import { usePersistentDeposit } from './use-persistent-deposit';
 
 interface FormFields {
   asset: string;
@@ -53,6 +53,7 @@ export interface DepositFormProps {
   selectedAsset?: Asset;
   balances: DepositBalances | null;
   onSelectAsset: (assetId: string) => void;
+  handleAmountChange: (amount: string) => void;
   onDisconnect: () => void;
   submitApprove: () => void;
   approveTxId: number | null;
@@ -71,6 +72,7 @@ export const DepositForm = ({
   selectedAsset,
   balances,
   onSelectAsset,
+  handleAmountChange,
   onDisconnect,
   submitApprove,
   submitDeposit,
@@ -85,6 +87,8 @@ export const DepositForm = ({
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
+  const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
+
   const {
     register,
     handleSubmit,
@@ -95,7 +99,8 @@ export const DepositForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       to: pubKey ? pubKey : undefined,
-      asset: selectedAsset?.id || '',
+      asset: selectedAsset?.id,
+      amount: persistedDeposit?.amount,
     },
   });
 
@@ -129,11 +134,8 @@ export const DepositForm = ({
     return _pubKeys ? _pubKeys.map((pk) => pk.publicKey) : [];
   }, [_pubKeys]);
 
-  const approved = balances
-    ? balances.allowance.isGreaterThan(0)
-      ? true
-      : false
-    : false;
+  const approved =
+    balances && balances.allowance.isGreaterThan(0) ? true : false;
 
   return (
     <form
@@ -188,6 +190,44 @@ export const DepositForm = ({
         />
         {errors.from?.message && (
           <InputError intent="danger">{errors.from.message}</InputError>
+        )}
+      </FormGroup>
+      <FormGroup label={t('To (Vega key)')} labelFor="to">
+        <AddressField
+          pubKeys={pubKeys}
+          onChange={() => setValue('to', '')}
+          select={
+            <Select {...register('to')} id="to" defaultValue="">
+              <option value="" disabled>
+                {t('Please select')}
+              </option>
+              {pubKeys?.length &&
+                pubKeys.map((pk) => (
+                  <option key={pk} value={pk}>
+                    {pk}
+                  </option>
+                ))}
+            </Select>
+          }
+          input={
+            <Input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={true} // focus input immediately after is shown
+              id="to"
+              type="text"
+              {...register('to', {
+                validate: {
+                  required,
+                  vegaPublicKey,
+                },
+              })}
+            />
+          }
+        />
+        {errors.to?.message && (
+          <InputError intent="danger" forInput="to">
+            {errors.to.message}
+          </InputError>
         )}
       </FormGroup>
       <FormGroup label={t('Asset')} labelFor="asset">
@@ -246,45 +286,7 @@ export const DepositForm = ({
         selectedAsset={selectedAsset}
         faucetTxId={faucetTxId}
       />
-      <FormGroup label={t('To (Vega key)')} labelFor="to">
-        <AddressField
-          pubKeys={pubKeys}
-          onChange={() => setValue('to', '')}
-          select={
-            <Select {...register('to')} id="to" defaultValue="">
-              <option value="" disabled={true}>
-                {t('Please select')}
-              </option>
-              {pubKeys?.length &&
-                pubKeys.map((pk) => (
-                  <option key={pk} value={pk}>
-                    {pk}
-                  </option>
-                ))}
-            </Select>
-          }
-          input={
-            <Input
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus={true} // focus input immediately after is shown
-              id="to"
-              type="text"
-              {...register('to', {
-                validate: {
-                  required,
-                  vegaPublicKey,
-                },
-              })}
-            />
-          }
-        />
-        {errors.to?.message && (
-          <InputError intent="danger" forInput="to">
-            {errors.to.message}
-          </InputError>
-        )}
-      </FormGroup>
-      {selectedAsset && balances && (
+      {approved && selectedAsset && balances && (
         <div className="mb-6">
           <DepositLimits {...balances} asset={selectedAsset} />
         </div>
@@ -301,8 +303,15 @@ export const DepositForm = ({
                 minSafe: (value) => minSafe(new BigNumber(min))(value),
                 approved: (v) => {
                   const value = new BigNumber(v);
-                  if (value.isGreaterThan(balances?.allowance || 0)) {
-                    return t('Amount is above approved amount');
+                  const allowance = new BigNumber(balances?.allowance || 0);
+                  if (value.isGreaterThan(allowance)) {
+                    return t(
+                      "You can't deposit more than your approved deposit amount, %s %s",
+                      [
+                        formatNumber(allowance.toString()),
+                        selectedAsset?.symbol || ' ',
+                      ]
+                    );
                   }
                   return true;
                 },
@@ -318,20 +327,33 @@ export const DepositForm = ({
                   }
 
                   if (value.isGreaterThan(lifetimeLimit)) {
-                    return t('Amount is above lifetime deposit limit');
+                    return t(
+                      "You can't deposit more than your remaining deposit allowance, %s %s",
+                      [
+                        formatNumber(lifetimeLimit.toString()),
+                        selectedAsset?.symbol || ' ',
+                      ]
+                    );
                   }
                   return true;
                 },
                 balance: (v) => {
                   const value = new BigNumber(v);
-                  if (value.isGreaterThan(balances?.balance || 0)) {
-                    return t('Insufficient amount in Ethereum wallet');
+                  const balance = new BigNumber(balances?.balance || 0);
+                  if (value.isGreaterThan(balance)) {
+                    return t(
+                      "You can't deposit more than you have in your Ethereum wallet, %s %s",
+                      [formatNumber(balance), selectedAsset?.symbol || ' ']
+                    );
                   }
                   return true;
                 },
                 maxSafe: (v) => {
                   return maxSafe(balances?.balance || new BigNumber(0))(v);
                 },
+              },
+              onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                handleAmountChange(e.target.value || '');
               },
             })}
           />
@@ -343,10 +365,9 @@ export const DepositForm = ({
           {selectedAsset && balances && (
             <UseButton
               onClick={() => {
-                setValue(
-                  'amount',
-                  balances.balance.toFixed(selectedAsset.decimals)
-                );
+                const amount = balances.balance.toFixed(selectedAsset.decimals);
+                setValue('amount', amount);
+                handleAmountChange(amount);
                 clearErrors('amount');
               }}
             >
@@ -399,7 +420,7 @@ const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
         type="submit"
         data-testid="deposit-submit"
         variant={isActive ? 'primary' : 'default'}
-        fill={true}
+        fill
         disabled={invalidChain}
       >
         {t('Deposit')}

@@ -8,22 +8,25 @@ on:
 jobs:
   master:
     name: Generate Queries
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 0
-      - name: Use Node.js 16
-        id: Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.15.1
+          node-version-file: '.nvmrc'
+          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
+          cache: yarn
+
       - name: Install root dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
+
       - name: Generate queries
         run: node ./scripts/get-queries.js
+
       - uses: actions/upload-artifact@v2
         with:
           name: queries

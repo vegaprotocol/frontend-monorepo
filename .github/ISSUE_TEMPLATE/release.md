@@ -1,15 +1,14 @@
 ---
 name: Release
-about:
-  A template to outline the steps needed to for a successful release of our frontend apps
+about: A template to outline the steps needed to for a successful release of our frontend apps
 title: 'Release [add dapp version]-core-[add core version]'
-labels: 
+labels:
 assignees: ''
 ---
 
 ### Tasks
 
-- [ ] Review [link to core release](xxx) 
+- [ ] Review [link to core release](xxx)
 - [ ] Tag frontend-monorepo
 - [ ] Create release and generate release notes
 - [ ] Run `@smoke` tests

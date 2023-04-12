@@ -48,6 +48,8 @@ export const normalizeOrderSubmission = (
     order.expiresAt && order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
       ? toNanoSeconds(order.expiresAt)
       : undefined,
+  postOnly: order.postOnly,
+  reduceOnly: order.reduceOnly,
 });
 
 export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(

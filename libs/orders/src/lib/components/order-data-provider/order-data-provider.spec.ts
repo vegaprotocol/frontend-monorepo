@@ -112,9 +112,7 @@ describe('order data provider', () => {
     const updatedData = update(data, delta, () => null, {
       partyId: '0x123',
       filter: {
-        order: {
-          dateRange: { end: new Date('2022-02-01').toISOString() },
-        },
+        dateRange: { end: new Date('2022-02-01').toISOString() },
       },
     });
     expect(

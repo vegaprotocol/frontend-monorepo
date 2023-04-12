@@ -117,6 +117,7 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     // 0002-WCON-002
     // 0002-WCON-005
     // 0002-WCON-007
+    // 0002-WCON-009
 
     mockConnectWallet();
     cy.getByTestId(connectVegaBtn).click();
@@ -124,6 +125,10 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
       .find('[data-testid="connector-jsonRpc"]')
       .click();
     cy.wait('@walletReq');
+    cy.getByTestId(dialogContent).should(
+      'contain.text',
+      'Approve the connection from your Vega wallet app.'
+    );
     cy.getByTestId(dialogContent).should('not.exist');
     cy.getByTestId(manageVegaBtn).should('exist');
   });
@@ -132,6 +137,7 @@ describe('connect vega wallet', { tags: '@smoke' }, () => {
     // 0002-WCON-002
     // 0002-WCON-005
     // 0002-WCON-007
+    // 0002-WCON-015
 
     mockConnectWalletWithUserError();
     cy.getByTestId(connectVegaBtn).click();

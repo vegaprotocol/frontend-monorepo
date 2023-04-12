@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { Networks } from '../types';
 import { useEnvironment } from './use-environment';
 
-type Net = Exclude<Networks, 'CUSTOM' | 'SANDBOX'>;
+type Net = Exclude<Networks, 'CUSTOM'>;
 export enum DApp {
   Explorer = 'Explorer',
   Console = 'Console',
@@ -21,7 +21,6 @@ const EmptyLinks: DAppLinks = {
   [Networks.STAGNET3]: '',
   [Networks.TESTNET]: '',
   [Networks.MAINNET]: '',
-  [Networks.MIRROR]: '',
 };
 
 const ExplorerLinks = {
@@ -61,7 +60,7 @@ export const useLinks = (dapp: DApp, network?: Net) => {
   };
 
   let net = network || VEGA_ENV;
-  if (net === Networks.CUSTOM || net === Networks.SANDBOX) {
+  if (net === Networks.CUSTOM) {
     net = Networks.TESTNET;
   }
 

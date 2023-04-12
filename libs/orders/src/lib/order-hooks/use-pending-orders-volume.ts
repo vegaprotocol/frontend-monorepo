@@ -53,14 +53,12 @@ export const useActiveOrdersVolumeAndMargin = (
     update,
     variables: {
       partyId: partyId || '',
+      marketIds: [marketId],
       filter: {
-        marketIds: [marketId],
-        order: {
-          status: [
-            OrderStatus.STATUS_ACTIVE,
-            OrderStatus.STATUS_PARTIALLY_FILLED,
-          ],
-        },
+        status: [
+          OrderStatus.STATUS_ACTIVE,
+          OrderStatus.STATUS_PARTIALLY_FILLED,
+        ],
       },
     },
     skip: !partyId,

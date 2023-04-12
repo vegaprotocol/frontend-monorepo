@@ -8,6 +8,7 @@ import type { MarketData } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import {
+  ExternalLink,
   Indicator,
   KeyValueTable,
   KeyValueTableRow,
@@ -18,9 +19,11 @@ import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
+  createDocsLinks,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface Props {
   marketId?: string;
@@ -43,6 +46,8 @@ export const MarketLiquiditySupplied = ({
   const triggeringRatio = Number(
     params.market_liquidity_targetstake_triggering_ratio
   );
+
+  const { VEGA_DOCS_URL } = useEnvironment();
 
   const variables = useMemo(
     () => ({
@@ -126,6 +131,14 @@ export const MarketLiquiditySupplied = ({
       <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
       </Link>
+      {VEGA_DOCS_URL && (
+        <ExternalLink
+          href={createDocsLinks(VEGA_DOCS_URL).LIQUIDITY}
+          className="mt-2"
+        >
+          {t('Learn about providing liquidity')}
+        </ExternalLink>
+      )}
       {showMessage && (
         <p className="mt-4">
           {t(

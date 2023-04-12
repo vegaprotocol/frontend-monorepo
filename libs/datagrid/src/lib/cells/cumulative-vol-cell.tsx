@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { BID_COLOR, ASK_COLOR } from './vol-cell';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from './numeric-cell';
 
 export interface CumulativeVolProps {
@@ -55,7 +55,7 @@ export const CumulativeVol = memo(
         (
         <NumericCell
           value={Number(indicativeVolume)}
-          valueFormatted={addDecimalsFormatNumber(
+          valueFormatted={addDecimalsFixedFormatNumber(
             indicativeVolume,
             positionDecimalPlaces ?? 0
           )}
@@ -67,7 +67,7 @@ export const CumulativeVol = memo(
         {ask ? (
           <NumericCell
             value={ask}
-            valueFormatted={addDecimalsFormatNumber(
+            valueFormatted={addDecimalsFixedFormatNumber(
               ask,
               positionDecimalPlaces ?? 0
             )}
@@ -77,7 +77,7 @@ export const CumulativeVol = memo(
         {bid ? (
           <NumericCell
             value={ask}
-            valueFormatted={addDecimalsFormatNumber(
+            valueFormatted={addDecimalsFixedFormatNumber(
               bid,
               positionDecimalPlaces ?? 0
             )}

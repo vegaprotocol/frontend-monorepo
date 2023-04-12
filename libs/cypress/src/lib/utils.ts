@@ -52,6 +52,9 @@ export const checkSorting = (
     cy.get(`[col-id="${column}"]`).click();
   });
   checkSortChange(orderTabDesc, column);
+  cy.get('.ag-header-container').within(() => {
+    cy.get(`[col-id="${column}"]`).click();
+  });
 };
 
 const checkSortChange = (tabsArr: string[], column: string) => {

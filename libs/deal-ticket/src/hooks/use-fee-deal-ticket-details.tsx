@@ -15,8 +15,9 @@ import {
   NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
   MARGIN_DIFF_TOOLTIP_TEXT,
+  DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
+  TOTAL_MARGIN_AVAILABLE,
 } from '../constants';
-import { useOrderCloseOut } from './use-order-closeout';
 import { useMarketAccountBalance } from '@vegaprotocol/accounts';
 import { getDerivedPrice } from '../utils/get-price';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
@@ -47,12 +48,6 @@ export const useFeeDealTicketDetails = (
     skip: !pubKey || !market || !order.size || !price,
   });
 
-  const estCloseOut = useOrderCloseOut({
-    order,
-    market,
-    marketData,
-  });
-
   const notionalSize = useMemo(() => {
     if (price && order.size) {
       return toBigNum(order.size, market.positionDecimalPlaces)
@@ -72,37 +67,36 @@ export const useFeeDealTicketDetails = (
       notionalSize,
       accountBalance,
       estimateOrder: estMargin?.estimateOrder,
-      estCloseOut,
     };
-  }, [
-    market,
-    assetSymbol,
-    notionalSize,
-    accountBalance,
-    estMargin,
-    estCloseOut,
-  ]);
+  }, [market, assetSymbol, notionalSize, accountBalance, estMargin]);
 };
 
 export interface FeeDetails {
-  balance: string;
+  generalAccountBalance?: string;
+  marginAccountBalance?: string;
   market: Market;
   assetSymbol: string;
   notionalSize: string | null;
-  estCloseOut: string | null;
   estimateOrder: EstimateOrderQuery['estimateOrder'] | undefined;
-  margin: string;
-  totalMargin: string;
+  estimatedInitialMargin: string;
+  estimatedTotalInitialMargin: string;
+  currentInitialMargin?: string;
+  currentMaintenanceMargin?: string;
 }
 
 export const getFeeDetailsValues = ({
-  balance,
+  marginAccountBalance,
+  generalAccountBalance,
   assetSymbol,
   estimateOrder,
   market,
   notionalSize,
-  totalMargin,
+  estimatedTotalInitialMargin,
+  currentInitialMargin,
+  currentMaintenanceMargin,
 }: FeeDetails) => {
+  const totalBalance =
+    BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
   const formatValueWithMarketDp = (
@@ -123,7 +117,8 @@ export const getFeeDetailsValues = ({
     label: string;
     value?: string | null;
     symbol: string;
-    labelDescription: React.ReactNode;
+    indent?: boolean;
+    labelDescription?: React.ReactNode;
   }[] = [
     {
       label: t('Notional'),
@@ -153,38 +148,64 @@ export const getFeeDetailsValues = ({
       ),
       symbol: assetSymbol,
     },
-    /*
-    {
-      label: t('Initial margin'),
-      value: margin && `~${formatValueWithAssetDp(margin)}`,
-      symbol: assetSymbol,
-      labelDescription: EST_MARGIN_TOOLTIP_TEXT(assetSymbol),
-    },
-    */
     {
       label: t('Margin required'),
       value: `~${formatValueWithAssetDp(
-        balance
-          ? (BigInt(totalMargin) - BigInt(balance)).toString()
-          : totalMargin
+        currentInitialMargin
+          ? (
+              BigInt(estimatedTotalInitialMargin) - BigInt(currentInitialMargin)
+            ).toString()
+          : estimatedTotalInitialMargin
       )}`,
       symbol: assetSymbol,
       labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
     },
   ];
-  if (balance) {
+  if (totalBalance) {
+    const totalMarginAvailable = (
+      currentMaintenanceMargin
+        ? totalBalance - BigInt(currentMaintenanceMargin)
+        : totalBalance
+    ).toString();
+
+    details.push({
+      indent: true,
+      label: t('Total margin available'),
+      value: `~${formatValueWithAssetDp(totalMarginAvailable)}`,
+      symbol: assetSymbol,
+      labelDescription: TOTAL_MARGIN_AVAILABLE(
+        formatValueWithAssetDp(generalAccountBalance),
+        formatValueWithAssetDp(marginAccountBalance),
+        formatValueWithAssetDp(currentMaintenanceMargin),
+        assetSymbol
+      ),
+    });
+
+    if (marginAccountBalance) {
+      const deductionFromCollateral =
+        BigInt(estimatedTotalInitialMargin) - BigInt(marginAccountBalance);
+
+      details.push({
+        indent: true,
+        label: t('Deduction from collateral'),
+        value: `~${formatValueWithAssetDp(
+          deductionFromCollateral > 0 ? deductionFromCollateral.toString() : '0'
+        )}`,
+        symbol: assetSymbol,
+        labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
+      });
+    }
+
     details.push({
       label: t('Projected margin'),
-      value: `~${formatValueWithAssetDp(totalMargin)}`,
+      value: `~${formatValueWithAssetDp(estimatedTotalInitialMargin)}`,
       symbol: assetSymbol,
       labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
     });
   }
   details.push({
     label: t('Current margin allocation'),
-    value: balance
-      ? `~${formatValueWithAssetDp(balance)}`
-      : `${formatValueWithAssetDp(balance)}`,
+    value: `${formatValueWithAssetDp(marginAccountBalance)}`,
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
   });

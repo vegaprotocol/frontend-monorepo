@@ -301,7 +301,7 @@ export const AccountHistoryChart = ({
   asset: AssetFieldsFragment;
 }) => {
   const { theme } = useThemeSwitcher();
-  const values: { cols: string[]; rows: [Date, ...number[]][] } | null =
+  const values: { cols: [string, string]; rows: [Date, number][] } | null =
     useMemo(() => {
       if (!data?.balanceChanges.edges.length) {
         return null;
