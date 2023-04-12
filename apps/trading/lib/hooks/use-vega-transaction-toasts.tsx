@@ -547,7 +547,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
   return (
     <>
-      <ToastHeading>{t('Confirmed')}</ToastHeading>
+      <ToastHeading>
+        {tx.order?.status
+          ? getOrderToastTitle(tx.order.status)
+          : t('Confirmed')}
+      </ToastHeading>
       <p>{t('Your transaction has been confirmed ')}</p>
       {tx.txHash && (
         <p className="break-all">

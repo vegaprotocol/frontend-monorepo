@@ -82,10 +82,10 @@ export const getOrderToastIntent = (
       return Intent.Warning;
     case Schema.OrderStatus.STATUS_REJECTED:
     case Schema.OrderStatus.STATUS_STOPPED:
-    case Schema.OrderStatus.STATUS_CANCELLED:
       return Intent.Danger;
     case Schema.OrderStatus.STATUS_FILLED:
     case Schema.OrderStatus.STATUS_ACTIVE:
+    case Schema.OrderStatus.STATUS_CANCELLED:
       return Intent.Success;
     default:
       return;
