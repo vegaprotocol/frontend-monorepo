@@ -36,6 +36,7 @@ export const Pagination = ({
       {onFirst && (
         <Button
           size="sm"
+          data-testid="goto-first-page"
           disabled={isLoading || !hasPrevPage}
           className="rounded-full w-[34px] h-[34px]"
           onClick={onFirst}
@@ -45,6 +46,7 @@ export const Pagination = ({
       )}
       <Button
         size="sm"
+        data-testid="goto-previous-page"
         disabled={isLoading || !hasPrevPage}
         className="rounded-full w-[34px] h-[34px]"
         onClick={onBack}
@@ -54,6 +56,7 @@ export const Pagination = ({
       {children}
       <Button
         size="sm"
+        data-testid="goto-next-page"
         disabled={isLoading || !hasNextPage}
         className="rounded-full w-[34px] h-[34px]"
         onClick={onNext}
@@ -63,6 +66,7 @@ export const Pagination = ({
       {onLast && (
         <Button
           size="sm"
+          data-testid="goto-last-page"
           disabled={isLoading || !hasNextPage}
           className="rounded-full w-[34px] h-[34px]"
           onClick={onLast}

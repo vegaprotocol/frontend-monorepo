@@ -58,8 +58,9 @@ export const generateEpochTotalRewardsList = ({
   const assets = removePaginationWrapper(data?.assetsConnection?.edges);
 
   const map: Map<string, EpochTotalSummary> = new Map();
-  const fromEpoch = Math.max(1, epochId - size * page);
+  const fromEpoch = Math.max(0, epochId - size * page) + 1;
   const toEpoch = epochId - size * page + size;
+
   for (let i = fromEpoch; i <= toEpoch; i++) {
     map.set(i.toString(), {
       epoch: i,
@@ -91,7 +92,7 @@ export const generateEpochTotalRewardsList = ({
         name: matchingAsset?.name || '',
         rewards: rewards || new Map(emptyRowAccountTypes),
         totalAmount: (
-          Number(amount) + Number(assetWithRewards?.totalAmount || 0)
+          Number(reward.amount) + Number(assetWithRewards?.totalAmount || 0)
         ).toString(),
       });
     }

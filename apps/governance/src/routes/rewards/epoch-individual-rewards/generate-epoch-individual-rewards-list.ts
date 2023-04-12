@@ -39,7 +39,7 @@ export const generateEpochIndividualRewardsList = ({
   size?: number;
 }) => {
   const map: Map<string, EpochIndividualReward> = new Map();
-  const fromEpoch = Math.max(1, epochId - size * page);
+  const fromEpoch = Math.max(0, epochId - size * page) + 1;
   const toEpoch = epochId - size * page + size;
   for (let i = fromEpoch; i <= toEpoch; i++) {
     map.set(i.toString(), {
