@@ -6,6 +6,7 @@ import {
   removeDecimal,
   required,
   isAssetTypeERC20,
+  formatNumber,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -14,12 +15,16 @@ import {
   FormGroup,
   Input,
   InputError,
+  Notification,
   RichSelect,
+  ExternalLink,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes } from 'react';
 import type { ControllerRenderProps } from 'react-hook-form';
+import { formatDistanceToNow } from 'date-fns';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
@@ -44,6 +49,47 @@ export interface WithdrawFormProps {
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalArgs) => void;
 }
+
+const WithdrawDelayNotification = ({
+  threshold,
+  delay,
+  symbol,
+  decimals,
+}: {
+  threshold: BigNumber;
+  delay: number | undefined;
+  symbol: string;
+  decimals: number;
+}) => {
+  const replacements = [
+    symbol,
+    delay ? formatDistanceToNow(Date.now() + delay * 1000) : ' ',
+  ];
+  return (
+    <Notification
+      intent={Intent.Warning}
+      testId={
+        threshold.isFinite()
+          ? 'amount-withdrawal-delay-notification'
+          : 'withdrawals-delay-notification'
+      }
+      message={[
+        !threshold.isFinite()
+          ? t('All %s withdrawals are subject to a %s delay.', replacements)
+          : t('Withdrawals of %s %s or more will be delayed for %s.', [
+              formatNumber(threshold, decimals),
+              ...replacements,
+            ]),
+        <ExternalLink
+          className="ml-1"
+          href="https://docs.vega.xyz/testnet/concepts/deposits-withdrawals#withdrawal-limits"
+        >
+          {t('Read more')}
+        </ExternalLink>,
+      ]}
+    />
+  );
+};
 
 export const WithdrawForm = ({
   assets,
@@ -112,6 +158,12 @@ export const WithdrawForm = ({
       </RichSelect>
     );
   };
+
+  const showWithdrawDelayNotification =
+    delay &&
+    selectedAsset &&
+    (!threshold.isFinite() ||
+      new BigNumber(amount).isGreaterThanOrEqualTo(threshold));
 
   return (
     <>
@@ -205,6 +257,16 @@ export const WithdrawForm = ({
             >
               {t('Use maximum')}
             </UseButton>
+          )}
+          {showWithdrawDelayNotification && (
+            <div className="mt-2">
+              <WithdrawDelayNotification
+                threshold={threshold}
+                symbol={selectedAsset.symbol}
+                decimals={selectedAsset.decimals}
+                delay={delay}
+              />
+            </div>
           )}
         </FormGroup>
         <Button
