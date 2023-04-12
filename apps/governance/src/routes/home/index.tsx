@@ -217,7 +217,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
             protocolUpgradesData.protocolUpgradeProposals
           ).filter(
             (p) =>
-              Number(p.upgradeBlockHeight) <
+              Number(p.upgradeBlockHeight) >
               Number(protocolUpgradesData.lastBlockHeight)
           )
         : [],
@@ -225,7 +225,10 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
   );
 
   const totalProposalsDesired = 4;
-  const protocolUpgradeProposalsToShow = protocolUpgradeProposals.slice(0, 1);
+  const protocolUpgradeProposalsToShow = protocolUpgradeProposals.slice(
+    0,
+    totalProposalsDesired
+  );
   const proposalsToShow =
     protocolUpgradeProposalsToShow.length === totalProposalsDesired
       ? []
