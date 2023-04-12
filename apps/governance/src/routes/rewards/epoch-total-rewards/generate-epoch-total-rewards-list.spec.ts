@@ -445,7 +445,12 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const resultPageOne = generateEpochTotalRewardsList({ data, epochId: 3, page: 1, size: 2 });
+    const resultPageOne = generateEpochTotalRewardsList({
+      data,
+      epochId: 3,
+      page: 1,
+      size: 2,
+    });
 
     expect(resultPageOne).toEqual(
       new Map([
@@ -580,7 +585,12 @@ describe('generateEpochAssetRewardsList', () => {
       ])
     );
 
-    const resultPageTwo = generateEpochTotalRewardsList({ data, epochId: 3, page: 2, size: 2 });
+    const resultPageTwo = generateEpochTotalRewardsList({
+      data,
+      epochId: 3,
+      page: 2,
+      size: 2,
+    });
 
     expect(resultPageTwo).toEqual(
       new Map([
