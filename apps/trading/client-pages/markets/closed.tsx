@@ -13,11 +13,11 @@ import {
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
 import { usePositionsQuery } from '@vegaprotocol/positions';
+import type { ClosedMarketFragment } from '@vegaprotocol/market-list';
+import { useClosedMarketsQuery } from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
-import type { ClosedMarketFragment } from './__generated__/ClosedMarkets';
-import { useClosedMarketsQuery } from './__generated__/ClosedMarkets';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 

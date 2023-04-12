@@ -1,12 +1,13 @@
 import merge from 'lodash/merge';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import type { OracleData } from '@vegaprotocol/types';
 import {
   MarketState,
   MarketStateMapping,
   MarketTradingMode,
 } from '@vegaprotocol/types';
 import { addDays, subDays } from 'date-fns';
-import type { PartialDeep } from 'type-fest';
+import type { PartialDeep, SetNonNullable, SetRequired } from 'type-fest';
 import {
   assetsQuery,
   chainIdQuery,
@@ -16,6 +17,7 @@ import {
 } from '@vegaprotocol/mock';
 import { networkParamsQuery } from '@vegaprotocol/mock';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import type { ClosedMarketFragment } from '@vegaprotocol/market-list';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
   const rowSelector =
@@ -281,9 +283,10 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   });
 });
 
-// Create mock closed market
-function createMarket(override?: PartialDeep<any>): any {
-  const marketId = override.id || 'market-id';
+function createMarket(
+  override?: PartialDeep<ClosedMarketFragment>
+): SetNonNullable<SetRequired<ClosedMarketFragment, 'data'>> {
+  const marketId = override?.id || 'market-id';
   const defaultMarket = {
     __typename: 'Market',
     id: marketId,
@@ -348,7 +351,7 @@ function createMarket(override?: PartialDeep<any>): any {
   return merge(defaultMarket, override);
 }
 
-function createDataConnection(override?: PartialDeep<any>): any {
+function createDataConnection(override?: PartialDeep<OracleData>) {
   const defaultDataConnection = {
     externalData: {
       data: {
