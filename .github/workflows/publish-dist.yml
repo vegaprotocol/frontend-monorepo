@@ -73,7 +73,7 @@ jobs:
           nodeVersion=$(cat .nvmrc | head -n 1)
           echo ENV_NAME=${envName} >> $GITHUB_ENV
           echo NODE_VERSION=${nodeVersion} >> $GITHUB_ENV
-          echo DOCKERFILE=${dockerfile} >> $GITHUB_ENV
+          echo DOCKERFILE=docker/${dockerfile} >> $GITHUB_ENV
 
       - name: Build local dist
         if: ${{ env.DOCKERFILE != 'ipfs.Dockerfile' }}
