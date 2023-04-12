@@ -26,7 +26,7 @@ import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '@vegaprotocol/oracles';
-import { useOracleProofs } from '@vegaprotocol/oracles';
+import { OracleBasicProfile, useOracleProofs } from '@vegaprotocol/oracles';
 
 type PanelProps = Pick<
   ComponentProps<typeof MarketInfoTable>,
@@ -417,6 +417,7 @@ export const OracleInfoPanel = ({
   const product = market.tradableInstrument.instrument.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
+
   return (
     <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
       <div
@@ -546,9 +547,12 @@ const OracleLink = ({
   }
 
   return (
-    <p>
-      <ExternalLink href={provider.github_link}>{textWithCount}</ExternalLink>
-    </p>
+    <>
+      <p>
+        <ExternalLink href={provider.github_link}>{textWithCount}</ExternalLink>
+      </p>
+      <OracleBasicProfile provider={provider}></OracleBasicProfile>
+    </>
   );
 };
 
