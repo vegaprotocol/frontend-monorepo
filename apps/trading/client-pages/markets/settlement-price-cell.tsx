@@ -21,11 +21,7 @@ export const SettlementPriceCell = ({
     settlementDataSpecBinding
   );
 
-  if (!oracleSpecId) {
-    return <span>{t('Unknown')}</span>;
-  }
-
-  if (loading) {
+  if (!oracleSpecId || loading) {
     return <span>-</span>;
   }
 
