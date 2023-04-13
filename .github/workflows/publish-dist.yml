@@ -76,7 +76,7 @@ jobs:
           echo DOCKERFILE=docker/${dockerfile} >> $GITHUB_ENV
 
       - name: Build local dist
-        if: ${{ env.DOCKERFILE != 'ipfs.Dockerfile' }}
+        if: ${{ env.DOCKERFILE != 'docker/ipfs.Dockerfile' }}
         run: |
           flags=""
           if [[ ! -z "${{ env.ENV_NAME }}" ]]; then
@@ -92,6 +92,7 @@ jobs:
             yarn nx build ${{ matrix.app }} $flags
             DIST_LOCATION=dist/apps/${{ matrix.app }}
           fi
+          ls -al $PWD/$DIST_LOCATION
           echo DIST_LOCATION=$PWD/$DIST_LOCATION >> $GITHUB_ENV
 
       - name: Build and export to local Docker
@@ -111,12 +112,15 @@ jobs:
       - name: Sanity check docker image
         run: |
           echo "Check ipfs-hash"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
+          if [[ "${{ env.DOCKERFILE }}" = "docker/ipfs.Dockerfile" ]];  then
+            docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
+          fi
 
           echo "List html directory"
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree .'
 
       - name: Copy dist to local filesystem
+        if: ${{ env.DOCKERFILE != 'docker/ipfs.Dockerfile' }}
         run: |
           docker create --name=dist ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
           docker cp dist:/usr/share/nginx/html dist
