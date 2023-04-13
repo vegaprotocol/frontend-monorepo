@@ -164,3 +164,26 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        if: ${{ github.event_name == 'pull_request' }}
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: Previews
+
+      - name: Inject slug/short variables
+        if: ${{ github.event_name == 'pull_request' && steps.fc.outputs.comment-id == 0 }}
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Create comment
+        if: ${{ github.event_name == 'pull_request' && steps.fc.outputs.comment-id == 0 }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Previews
+            - explorer https://explorer.${{ env.GITHUB_REF_SLUG }}.vega.rocks
+            - trading https://trading.${{ env.GITHUB_REF_SLUG }}.vega.rocks
+            - console https://console.${{ env.GITHUB_REF_SLUG }}.vega.rocks
