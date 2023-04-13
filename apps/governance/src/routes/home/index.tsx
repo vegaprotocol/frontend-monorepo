@@ -119,11 +119,7 @@ const HomeNodes = ({
 
         {trimmedActiveNodes.map(({ id, avatarUrl, name }) => (
           <div key={id} data-testid="validators" className="col-span-2">
-            <SimpleValidatorRenderer
-              id={id}
-              avatarUrl={avatarUrl}
-              name={name}
-            />
+            <ValidatorDetailsLink id={id} avatarUrl={avatarUrl} name={name} />
           </div>
         ))}
       </div>
@@ -139,17 +135,17 @@ const HomeNodes = ({
   );
 };
 
-interface SimpleValidatorRendererProps {
+interface ValidatorDetailsLinkProps {
   id: string;
   avatarUrl: string | null | undefined;
   name: string;
 }
 
-export const SimpleValidatorRenderer = ({
+export const ValidatorDetailsLink = ({
   id,
   avatarUrl,
   name,
-}: SimpleValidatorRendererProps) => {
+}: ValidatorDetailsLinkProps) => {
   return (
     <Link to={`${Routes.VALIDATORS}/${id}`}>
       <RoundedWrapper paddingBottom={true} border={false}>

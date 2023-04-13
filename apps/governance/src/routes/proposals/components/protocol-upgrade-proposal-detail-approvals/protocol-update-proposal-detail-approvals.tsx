@@ -5,7 +5,7 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
-import { SimpleValidatorRenderer } from '../../../home';
+import { ValidatorDetailsLink } from '../../../home';
 import { getNormalisedVotingPower } from '../../../staking/shared';
 import type { NodesFragmentFragment } from '../../../staking/home/__generated__/Nodes';
 
@@ -61,7 +61,7 @@ export const ProtocolUpdateProposalDetailApprovals = ({
                   className="-mb-3 mt-1"
                   data-testid={`validator-${validator.id}`}
                 >
-                  <SimpleValidatorRenderer
+                  <ValidatorDetailsLink
                     id={validator.id}
                     avatarUrl={validator.avatarUrl}
                     name={validator.name}
