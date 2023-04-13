@@ -86,10 +86,10 @@ jobs:
           fi
 
           if [ "${{ matrix.app }}" = "trading" ]; then
-            yarn nx export trading
+            yarn nx export trading $flags || (yarn install && yarn nx export trading $flags)
             DIST_LOCATION=dist/apps/trading/exported
           else
-            yarn nx build ${{ matrix.app }} $flags
+            yarn nx build ${{ matrix.app }} $flags || (yarn install && yarn nx build ${{ matrix.app }} $flags)
             DIST_LOCATION=dist/apps/${{ matrix.app }}
           fi
           mv $DIST_LOCATION dist-result
