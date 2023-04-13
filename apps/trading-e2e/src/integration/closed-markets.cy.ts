@@ -5,10 +5,12 @@ import {
   assetsQuery,
   chainIdQuery,
   statisticsQuery,
-  closedMarketsQuery,
-  createClosedMarket,
   createDataConnection,
   oracleSpecDataConnectionQuery,
+  createMarketFragment,
+  marketsQuery,
+  marketsDataQuery,
+  createMarketsDataFragment,
 } from '@vegaprotocol/mock';
 import { networkParamsQuery } from '@vegaprotocol/mock';
 import {
@@ -24,8 +26,9 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   // @ts-ignore asset definitely exists
   const settlementAsset = assetsResult.assetsConnection.edges[0].node;
 
-  const settledMarket = createClosedMarket({
+  const settledMarket = createMarketFragment({
     id: '0',
+    state: MarketState.STATE_SETTLED,
     marketTimestamps: {
       open: subDays(new Date(), 10).toISOString(),
       close: subDays(new Date(), 4).toISOString(),
@@ -45,7 +48,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     },
   });
 
-  const terminatedMarket = createClosedMarket({
+  const terminatedMarket = createMarketFragment({
     id: '1',
     state: MarketState.STATE_TRADING_TERMINATED,
     marketTimestamps: {
@@ -63,7 +66,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     },
   });
 
-  const delayedSettledMarket = createClosedMarket({
+  const delayedSettledMarket = createMarketFragment({
     id: '2',
     state: MarketState.STATE_TRADING_TERMINATED,
     marketTimestamps: {
@@ -81,7 +84,10 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     },
   });
 
-  const unknownMarket = createClosedMarket({ id: '3' });
+  const unknownMarket = createMarketFragment({
+    id: '3',
+    state: MarketState.STATE_SETTLED,
+  });
 
   const closedMarketsResult = [
     {
@@ -94,8 +100,56 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       node: delayedSettledMarket,
     },
     { node: unknownMarket },
-    { node: createClosedMarket({ id: '4', state: MarketState.STATE_PENDING }) },
-    { node: createClosedMarket({ id: '5', state: MarketState.STATE_ACTIVE }) },
+    {
+      node: createMarketFragment({ id: '4', state: MarketState.STATE_PENDING }),
+    },
+    {
+      node: createMarketFragment({ id: '5', state: MarketState.STATE_ACTIVE }),
+    },
+  ];
+
+  const settledMarketData = createMarketsDataFragment({
+    market: {
+      id: settledMarket.id,
+    },
+    bestBidPrice: '1000',
+    bestOfferPrice: '2000',
+    markPrice: '1500',
+  });
+
+  const closedMarketsDataResult = [
+    {
+      node: {
+        data: settledMarketData,
+      },
+    },
+    {
+      node: {
+        data: createMarketsDataFragment({
+          market: {
+            id: terminatedMarket.id,
+          },
+        }),
+      },
+    },
+    {
+      node: {
+        data: createMarketsDataFragment({
+          market: {
+            id: delayedSettledMarket.id,
+          },
+        }),
+      },
+    },
+    {
+      node: {
+        data: createMarketsDataFragment({
+          market: {
+            id: unknownMarket.id,
+          },
+        }),
+      },
+    },
   ];
 
   const specDataConnection = createDataConnection();
@@ -108,10 +162,19 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       aliasGQLQuery(req, 'Assets', assetsResult);
       aliasGQLQuery(
         req,
-        'ClosedMarkets',
-        closedMarketsQuery({
+        'Markets',
+        marketsQuery({
           marketsConnection: {
             edges: closedMarketsResult,
+          },
+        })
+      );
+      aliasGQLQuery(
+        req,
+        'MarketsData',
+        marketsDataQuery({
+          marketsConnection: {
+            edges: closedMarketsDataResult,
           },
         })
       );
@@ -192,7 +255,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .should(
         'have.text',
         addDecimalsFormatNumber(
-          settledMarket.data.bestBidPrice,
+          settledMarketData.bestBidPrice,
           settledMarket.decimalPlaces
         )
       );
@@ -204,7 +267,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .should(
         'have.text',
         addDecimalsFormatNumber(
-          settledMarket.data.bestOfferPrice,
+          settledMarketData.bestOfferPrice,
           settledMarket.decimalPlaces
         )
       );
@@ -214,7 +277,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       'have.text',
 
       addDecimalsFormatNumber(
-        settledMarket.data.markPrice,
+        settledMarketData.markPrice,
         settledMarket.decimalPlaces
       )
     );

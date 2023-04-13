@@ -13,13 +13,17 @@ import {
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
 import { usePositionsQuery } from '@vegaprotocol/positions';
-import type { ClosedMarketFragment } from '@vegaprotocol/market-list';
-import { useClosedMarketsQuery } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
+import { closedMarketsWithDataProvider } from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+
+type SettlementAsset =
+  MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
 
 interface Row {
   id: string;
@@ -35,13 +39,16 @@ interface Row {
   settlementDataOracleId: string;
   settlementDataSpecBinding: string;
   tradingTerminationOracleId: string;
-  settlementAsset: ClosedMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'];
+  settlementAsset: SettlementAsset;
   realisedPNL: string | undefined;
 }
 
 export const Closed = () => {
   const { pubKey } = useVegaWallet();
-  const { data: marketData } = useClosedMarketsQuery();
+  const { data: marketData } = useDataProvider({
+    dataProvider: closedMarketsWithDataProvider,
+    variables: undefined,
+  });
   const { data: positionData } = usePositionsQuery({
     variables: {
       partyId: pubKey || '',
@@ -51,48 +58,40 @@ export const Closed = () => {
 
   // find a position for each market and add the realised pnl to
   // a normalized object
-  const rowData = compact(marketData?.marketsConnection?.edges)
-    .map((edge) => edge.node)
-    .map((market) => {
-      const position = positionData?.party?.positionsConnection?.edges?.find(
-        (edge) => {
-          return edge.node.market.id === market.id;
-        }
-      );
+  const rowData = compact(marketData).map((market) => {
+    const position = positionData?.party?.positionsConnection?.edges?.find(
+      (edge) => {
+        return edge.node.market.id === market.id;
+      }
+    );
 
-      const row: Row = {
-        id: market.id,
-        code: market.tradableInstrument.instrument.code,
-        name: market.tradableInstrument.instrument.name,
-        decimalPlaces: market.decimalPlaces,
-        state: market.state,
-        metadata: market.tradableInstrument.instrument.metadata.tags ?? [],
-        closeTimestamp: market.marketTimestamps.close,
-        bestBidPrice: market.data?.bestBidPrice,
-        bestOfferPrice: market.data?.bestOfferPrice,
-        markPrice: market.data?.markPrice,
-        settlementDataOracleId:
-          market.tradableInstrument.instrument.product
-            .dataSourceSpecForSettlementData.id,
-        settlementDataSpecBinding:
-          market.tradableInstrument.instrument.product.dataSourceSpecBinding
-            .settlementDataProperty,
-        tradingTerminationOracleId:
-          market.tradableInstrument.instrument.product
-            .dataSourceSpecForTradingTermination.id,
-        settlementAsset:
-          market.tradableInstrument.instrument.product.settlementAsset,
-        realisedPNL: position?.node.realisedPNL,
-      };
+    const row: Row = {
+      id: market.id,
+      code: market.tradableInstrument.instrument.code,
+      name: market.tradableInstrument.instrument.name,
+      decimalPlaces: market.decimalPlaces,
+      state: market.state,
+      metadata: market.tradableInstrument.instrument.metadata.tags ?? [],
+      closeTimestamp: market.marketTimestamps.close,
+      bestBidPrice: market.data?.bestBidPrice,
+      bestOfferPrice: market.data?.bestOfferPrice,
+      markPrice: market.data?.markPrice,
+      settlementDataOracleId:
+        market.tradableInstrument.instrument.product
+          .dataSourceSpecForSettlementData.id,
+      settlementDataSpecBinding:
+        market.tradableInstrument.instrument.product.dataSourceSpecBinding
+          .settlementDataProperty,
+      tradingTerminationOracleId:
+        market.tradableInstrument.instrument.product
+          .dataSourceSpecForTradingTermination.id,
+      settlementAsset:
+        market.tradableInstrument.instrument.product.settlementAsset,
+      realisedPNL: position?.node.realisedPNL,
+    };
 
-      return row;
-    })
-    .filter((m) => {
-      return [
-        MarketState.STATE_SETTLED,
-        MarketState.STATE_TRADING_TERMINATED,
-      ].includes(m.state);
-    });
+    return row;
+  });
 
   return <ClosedMarketsDataGrid rowData={rowData} />;
 };
@@ -257,6 +256,7 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       style={{ width: '100%', height: '100%' }}
       rowData={rowData}
       columnDefs={colDefs}
+      getRowId={({ data }) => data.id}
       defaultColDef={{
         flex: 1,
         resizable: true,

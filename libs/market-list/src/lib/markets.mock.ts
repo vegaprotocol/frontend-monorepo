@@ -22,8 +22,10 @@ export const marketsQuery = (
   return merge(defaultResult, override);
 };
 
-const marketFieldsFragments: MarketFieldsFragment[] = [
-  {
+export const createMarketFragment = (
+  override?: PartialDeep<MarketFieldsFragment>
+): MarketFieldsFragment => {
+  const defaultFragment = {
     id: 'market-0',
     decimalPlaces: 5,
     positionDecimalPlaces: 0,
@@ -63,6 +65,13 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
           dataSourceSpecForTradingTermination: {
             id: 'oracleId',
           },
+          dataSourceSpecForSettlementData: {
+            id: 'oracleId',
+          },
+          dataSourceSpecBinding: {
+            tradingTerminationProperty: 'trading-termination-property',
+            settlementDataProperty: 'settlement-data-property',
+          },
           quoteName: 'DAI',
           __typename: 'Future',
         },
@@ -71,36 +80,20 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
       __typename: 'TradableInstrument',
     },
     __typename: 'Market',
-  },
-  {
+  };
+
+  return merge(defaultFragment, override);
+};
+
+const marketFieldsFragments: MarketFieldsFragment[] = [
+  createMarketFragment({ id: 'market-0' }),
+  createMarketFragment({
     id: 'market-1',
     decimalPlaces: 2,
-    positionDecimalPlaces: 0,
-    tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    state: Schema.MarketState.STATE_ACTIVE,
-    marketTimestamps: {
-      __typename: 'MarketTimestamps',
-      close: '',
-      open: '',
-    },
-    fees: {
-      __typename: 'Fees',
-      factors: {
-        __typename: 'FeeFactors',
-        makerFee: '',
-        infrastructureFee: '',
-        liquidityFee: '',
-      },
-    },
     tradableInstrument: {
       instrument: {
-        id: 'SOLUSD',
         name: 'SUSPENDED MARKET',
         code: 'SOLUSD',
-        metadata: {
-          __typename: 'InstrumentMetadata',
-          tags: [],
-        },
         product: {
           settlementAsset: {
             id: 'asset-1',
@@ -109,33 +102,19 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
             decimals: 5,
             __typename: 'Asset',
           },
-          dataSourceSpecForTradingTermination: {
-            id: 'oracleId',
-          },
-          quoteName: 'USD',
-          __typename: 'Future',
         },
-        __typename: 'Instrument',
       },
-      __typename: 'TradableInstrument',
     },
-    __typename: 'Market',
-  },
-  {
+  }),
+  createMarketFragment({
     id: 'market-2',
-    decimalPlaces: 5,
-    positionDecimalPlaces: 0,
     tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
     state: Schema.MarketState.STATE_SUSPENDED,
     marketTimestamps: {
-      __typename: 'MarketTimestamps',
       close: '2022-08-26T11:36:32.252490405Z',
-      open: null,
     },
     fees: {
-      __typename: 'Fees',
       factors: {
-        __typename: 'FeeFactors',
         makerFee: '0.0002',
         infrastructureFee: '0.0005',
         liquidityFee: '0.001',
@@ -143,13 +122,8 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
     },
     tradableInstrument: {
       instrument: {
-        id: '',
         code: 'AAPL.MF21',
         name: 'Apple Monthly (30 Jun 2022)',
-        metadata: {
-          __typename: 'InstrumentMetadata',
-          tags: [],
-        },
         product: {
           settlementAsset: {
             id: 'asset-2',
@@ -158,33 +132,18 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
             decimals: 5,
             __typename: 'Asset',
           },
-          dataSourceSpecForTradingTermination: {
-            id: 'oracleId',
-          },
           quoteName: 'USDC',
-          __typename: 'Future',
         },
-        __typename: 'Instrument',
       },
-      __typename: 'TradableInstrument',
     },
-    __typename: 'Market',
-  },
-  {
+  }),
+  createMarketFragment({
     id: 'market-3',
-    decimalPlaces: 5,
-    positionDecimalPlaces: 0,
-    tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    state: Schema.MarketState.STATE_ACTIVE,
     marketTimestamps: {
-      __typename: 'MarketTimestamps',
       close: '2022-08-26T11:36:32.252490405Z',
-      open: null,
     },
     fees: {
-      __typename: 'Fees',
       factors: {
-        __typename: 'FeeFactors',
         makerFee: '0.0002',
         infrastructureFee: '0.0005',
         liquidityFee: '0.001',
@@ -192,13 +151,8 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
     },
     tradableInstrument: {
       instrument: {
-        id: '',
         code: 'ETHBTC.QM21',
         name: 'ETHBTC Quarterly (30 Jun 2022)',
-        metadata: {
-          __typename: 'InstrumentMetadata',
-          tags: [],
-        },
         product: {
           settlementAsset: {
             id: 'asset-3',
@@ -207,16 +161,9 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
             decimals: 5,
             __typename: 'Asset',
           },
-          dataSourceSpecForTradingTermination: {
-            id: 'oracleId',
-          },
           quoteName: 'BTC',
-          __typename: 'Future',
         },
-        __typename: 'Instrument',
       },
-      __typename: 'TradableInstrument',
     },
-    __typename: 'Market',
-  },
+  }),
 ];
