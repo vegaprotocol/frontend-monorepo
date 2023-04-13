@@ -188,4 +188,4 @@ jobs:
             Previews
             - explorer https://explorer.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
             - trading https://trading.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
-            - console https://console.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - governance https://governance.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
