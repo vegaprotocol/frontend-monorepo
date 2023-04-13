@@ -155,16 +155,16 @@ export const ValidatorTables = ({
   return (
     <section data-testid="validator-tables">
       <div className="grid w-full justify-end">
-        <div className="w-[400px]">
+        <div className="w-[340px]">
           <Toggle
             name="validators-view-toggle"
             toggles={[
               {
-                label: t('ALL VALIDATORS'),
+                label: t('All validators'),
                 value: 'all',
               },
               {
-                label: t('STAKED BY ME'),
+                label: t('Staked by me'),
                 value: 'myStake',
               },
             ]}
