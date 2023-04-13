@@ -25,11 +25,11 @@ const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const txTimeout = Cypress.env('txTimeout');
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
-const ethWalletAssociateButton = '[data-testid="associate-btn"]';
+const ethWalletAssociateButton = '[data-testid="associate-btn"]:visible';
 const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
 const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
-const ethWalletDissociateButton = '[href="/token/disassociate"]';
+const ethWalletDissociateButton = '[href="/token/disassociate"]:visible';
 const vestingContractSection = '[data-testid="vega-in-vesting-contract"]';
 const vegaInWalletSection = '[data-testid="vega-in-wallet"]';
 const connectedVegaKey = '[data-testid="connected-vega-key"]';
@@ -78,12 +78,12 @@ context(
 
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
-          3
+          6
         );
         validateWalletCurrency('Associated', '0.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '2.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
 
         // 0005-ETXN-002
         verifyEthWalletAssociatedBalance('2.0');
@@ -111,12 +111,12 @@ context(
         stakingPageDisassociateTokens('2');
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
-          3
+          6
         );
         validateWalletCurrency('Associated', '2.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '0.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
         cy.getByTestId('eth-wallet-associated-balances', txTimeout).should(
           'not.exist'
         );
@@ -192,12 +192,12 @@ context(
 
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
-          3
+          6
         );
         validateWalletCurrency('Associated', '0.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '2.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
         verifyEthWalletAssociatedBalance('2.0');
         verifyEthWalletTotalAssociatedBalance('2.0');
         cy.get(vegaWallet).within(() => {
@@ -210,12 +210,12 @@ context(
         });
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
-          3
+          6
         );
         validateWalletCurrency('Associated', '2.00');
         validateWalletCurrency('Pending association', '1.00');
         validateWalletCurrency('Total associated after pending', '1.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
         verifyEthWalletAssociatedBalance('1.0');
         verifyEthWalletTotalAssociatedBalance('1.0');
       });
@@ -266,7 +266,7 @@ context(
         // 1004-ASSO-008
         // 1004-ASSO-010
         // No warning visible as described in AC, but the button is disabled
-        cy.get(ethWalletAssociateButton).first().click();
+        cy.get(ethWalletAssociateButton).click();
         cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
         cy.get(tokenSubmitButton, txTimeout).should('be.disabled'); // button disabled with no input
         cy.get(tokenAmountInputBox, { timeout: 10000 }).type('6500000');
@@ -278,12 +278,12 @@ context(
         vegaWalletAssociate('2');
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
-          3
+          6
         );
         validateWalletCurrency('Associated', '0.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '2.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
         validateWalletCurrency('Associated', '2.00');
       });
 
@@ -294,24 +294,24 @@ context(
         });
         cy.getByTestId('currency-title', txTimeout).should(
           'have.length.above',
-          3
+          6
         );
         validateWalletCurrency('Associated', '2.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '0.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 3);
+        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
         validateWalletCurrency('Associated', '0.00');
       });
 
       it('Able to associate tokens to different public key of connected vega wallet', function () {
-        cy.get(ethWalletAssociateButton).first().click();
+        cy.get(ethWalletAssociateButton).click();
         cy.get(associateWalletRadioButton).click();
         cy.get(connectedVegaKey).should(
           'have.text',
           Cypress.env('vegaWalletPublicKey')
         );
 
-        cy.get('[data-testid="manage-vega-wallet"]').click();
+        cy.get('[data-testid="manage-vega-wallet"]:visible').click();
         cy.get('[data-testid="select-keypair-button"]').eq(0).click();
         cy.get(connectedVegaKey).should(
           'have.text',
