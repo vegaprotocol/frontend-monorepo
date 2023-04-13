@@ -44,6 +44,7 @@ jobs:
 
   lint_pr:
     needs: node-modules
+    name: Verify PR title
     uses: ./.github/workflows/lint_pr.yml
     secrets: inherit
 
