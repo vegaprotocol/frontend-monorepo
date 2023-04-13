@@ -292,7 +292,7 @@ describe('getVegaTransactionContentIntent', () => {
       Intent.Success
     );
     expect(getVegaTransactionContentIntent(editOrder).intent).toBe(
-      Intent.Success
+      Intent.Primary
     );
     expect(getVegaTransactionContentIntent(cancelOrder).intent).toBe(
       Intent.Primary
