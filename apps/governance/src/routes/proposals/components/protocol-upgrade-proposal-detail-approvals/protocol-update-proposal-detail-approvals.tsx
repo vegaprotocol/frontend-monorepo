@@ -26,7 +26,7 @@ export const ProtocolUpdateProposalDetailApprovals = ({
   return (
     <>
       <div className="mb-10">
-        <SubHeading title={t('APPROVAL STATUS')} />
+        <SubHeading title={t('approvalStatus')} />
         <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
           <KeyValueTable data-testid="protocol-upgrade-approval-status">
             <KeyValueTableRow noBorder={true}>
@@ -41,15 +41,15 @@ export const ProtocolUpdateProposalDetailApprovals = ({
 
       <div className="mb-10">
         <SubHeading
-          title={`${t('APPROVERS')} (${
+          title={`${t('approvers')} (${
             consensusApprovals.length
           }/${totalConsensusValidators} validators)`}
         />
         <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
           <KeyValueTable data-testid="protocol-upgrade-approvers">
             <KeyValueTableRow>
-              <div className="mb-2">{t('VALIDATOR')}</div>
-              <div className="text-white mb-2">{t('VOTING POWER')}</div>
+              <div className="mb-2">{t('validator')}</div>
+              <div className="text-white mb-2">{t('votingPower')}</div>
             </KeyValueTableRow>
 
             {consensusApprovals.map((validator, index) => (

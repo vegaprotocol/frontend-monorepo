@@ -20,11 +20,11 @@ export const ProtocolUpgradeProposalDetailInfo = ({
 
   return (
     <div className="mb-10">
-      <SubHeading title={t('PROPOSAL')} />
+      <SubHeading title={t('proposal')} />
       <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
         <KeyValueTable data-testid="protocol-upgrade-proposal-details">
           <KeyValueTableRow>
-            <span>{t('UPGRADE BLOCK HEIGHT')}</span>
+            <span className="uppercase">{t('upgradeBlockHeight')}</span>
 
             <span data-testid="protocol-upgrade-block-height">
               {proposal.upgradeBlockHeight}{' '}
@@ -37,7 +37,7 @@ export const ProtocolUpgradeProposalDetailInfo = ({
           </KeyValueTableRow>
 
           <KeyValueTableRow>
-            <span>{t('STATE')}</span>
+            <span className="uppercase">{t('state')}</span>
 
             <span data-testid="protocol-upgrade-state">
               {t(`${proposal.status}`)}
@@ -45,7 +45,7 @@ export const ProtocolUpgradeProposalDetailInfo = ({
           </KeyValueTableRow>
 
           <KeyValueTableRow noBorder={true}>
-            <span>{t('VEGA RELEASE TAG')}</span>
+            <span className="uppercase">{t('vegaReleaseTag')}</span>
 
             <span data-testid="protocol-upgrade-release-tag">
               {proposal.vegaReleaseTag}

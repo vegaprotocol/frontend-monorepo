@@ -82,7 +82,7 @@ export const ProtocolUpgradeProposalsListItem = ({
             data-testid="protocol-upgrade-proposal-release-tag"
             className="mb-2"
           >
-            <span className="pr-2">Release tag</span>
+            <span className="pr-2">{t('vegaReleaseTag')}</span>
             <Lozenge>{proposal.vegaReleaseTag}</Lozenge>
           </div>
 
@@ -90,7 +90,7 @@ export const ProtocolUpgradeProposalsListItem = ({
             data-testid="protocol-upgrade-proposal-block-height"
             className="mb-2"
           >
-            <span className="pr-2">Upgrade block height</span>
+            <span className="pr-2">{t('upgradeBlockHeight')}</span>
             <Lozenge>{proposal.upgradeBlockHeight}</Lozenge>
           </div>
 
