@@ -1,5 +1,4 @@
 import { t } from '@vegaprotocol/i18n';
-import { useAssetsDataProvider } from './assets-data-provider';
 import {
   Button,
   Dialog,
@@ -10,6 +9,7 @@ import {
 import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
 import { AssetProposalNotification } from '@vegaprotocol/proposals';
+import { useAssetDataProvider } from './asset-data-provider';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
@@ -55,9 +55,8 @@ export const AssetDetailsDialog = ({
   onChange,
   asJson = false,
 }: AssetDetailsDialogProps) => {
-  const { data } = useAssetsDataProvider();
+  const { data: asset } = useAssetDataProvider(assetId);
 
-  const asset = data?.find((a) => a.id === assetId);
   const assetSymbol = asset?.symbol || '';
 
   const content = asset ? (
