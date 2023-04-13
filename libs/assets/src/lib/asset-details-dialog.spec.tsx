@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
 import { AssetDetailsDialog } from './asset-details-dialog';
 import { AssetDetail, testId } from './asset-details-table';
-import { AssetsDocument } from './__generated__/Assets';
+import { AssetDocument } from './__generated__/Asset';
 import { generateBuiltinAsset, generateERC20Asset } from './test-helpers';
 
 const mockedData = {
@@ -39,15 +39,17 @@ const mockedData = {
   },
 };
 
-const mocks = [
-  {
-    request: {
-      query: AssetsDocument,
-      variables: {},
-    },
-    result: mockedData,
+const mocks = mockedData.data.assetsConnection.edges.map((mock) => ({
+  request: {
+    query: AssetDocument,
+    variables: { assetId: mock.node.id },
   },
-];
+  result: {
+    data: {
+      assetsConnection: { edges: [mock] },
+    },
+  },
+}));
 
 const WrappedAssetDetailsDialog = ({ assetId }: { assetId: string }) => (
   <MockedProvider mocks={mocks}>
