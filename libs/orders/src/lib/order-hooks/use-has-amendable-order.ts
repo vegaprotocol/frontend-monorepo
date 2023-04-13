@@ -1,17 +1,17 @@
 import { useCallback, useState } from 'react';
-import { hasActiveOrderProvider } from '../components/order-data-provider/';
+import { hasAmendableOrderProvider } from '../components/order-data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 
-export const useHasActiveOrder = (marketId?: string) => {
+export const useHasAmendableOrder = (marketId?: string) => {
   const { pubKey } = useVegaWallet();
-  const [hasActiveOrder, setHasActiveOrder] = useState(false);
+  const [hasAmendableOrder, setHasAmendableOrder] = useState(false);
   const update = useCallback(({ data }: { data: boolean | null }) => {
-    setHasActiveOrder(Boolean(data));
+    setHasAmendableOrder(Boolean(data));
     return true;
   }, []);
   useDataProvider({
-    dataProvider: hasActiveOrderProvider,
+    dataProvider: hasAmendableOrderProvider,
     update,
     variables: {
       partyId: pubKey || '',
@@ -20,5 +20,5 @@ export const useHasActiveOrder = (marketId?: string) => {
     skip: !pubKey,
   });
 
-  return hasActiveOrder;
+  return hasAmendableOrder;
 };
