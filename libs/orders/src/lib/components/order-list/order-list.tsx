@@ -16,6 +16,7 @@ import {
   negativeClassNames,
   positiveClassNames,
   MarketNameCell,
+  OrderTypeCell,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -31,12 +32,16 @@ export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
 };
 
 export const OrderListTable = memo(
   forwardRef<AgGridReact, OrderListTableProps>(
-    ({ cancel, setEditOrder, onMarketClick, ...props }, ref) => {
+    (
+      { cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
+      ref
+    ) => {
       return (
         <AgGrid
           ref={ref}
@@ -51,7 +56,7 @@ export const OrderListTable = memo(
             height: '100%',
           }}
           getRowId={({ data }) => data.id}
-          components={{ MarketNameCell }}
+          components={{ MarketNameCell, OrderTypeCell }}
           {...props}
         >
           <AgGridColumn
@@ -103,17 +108,10 @@ export const OrderListTable = memo(
             filterParams={{
               set: Schema.OrderTypeMapping,
             }}
-            valueFormatter={({
-              data: order,
-              value,
-            }: VegaValueFormatterParams<Order, 'type'>) => {
-              if (!order) {
-                return undefined;
-              }
-              if (!value) return '-';
-              if (order?.peggedOrder) return t('Pegged');
-              if (order?.liquidityProvision) return t('Liquidity provision');
-              return Schema.OrderTypeMapping[value];
+            cellRenderer="OrderTypeCell"
+            cellRendererParams={{
+              idPath: 'market.id',
+              onClick: onOrderTypeClick,
             }}
             minWidth={80}
           />

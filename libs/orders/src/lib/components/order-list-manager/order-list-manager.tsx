@@ -24,6 +24,7 @@ export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   enforceBottomPlaceholder?: boolean;
 }
@@ -60,6 +61,7 @@ export const OrderListManager = ({
   partyId,
   marketId,
   onMarketClick,
+  onOrderTypeClick,
   isReadOnly,
   enforceBottomPlaceholder,
 }: OrderListManagerProps) => {
@@ -171,6 +173,7 @@ export const OrderListManager = ({
           cancel={cancel}
           setEditOrder={setEditOrder}
           onMarketClick={onMarketClick}
+          onOrderTypeClick={onOrderTypeClick}
           isReadOnly={isReadOnly}
           blockLoadDebounceMillis={100}
           suppressLoadingOverlay
