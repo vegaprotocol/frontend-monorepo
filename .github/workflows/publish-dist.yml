@@ -176,6 +176,8 @@ jobs:
       - name: Inject slug/short variables
         if: ${{ github.event_name == 'pull_request' && steps.fc.outputs.comment-id == 0 }}
         uses: rlespinasse/github-slug-action@v4
+        with:
+          prefix: CI_
 
       - name: Create comment
         if: ${{ github.event_name == 'pull_request' && steps.fc.outputs.comment-id == 0 }}
@@ -184,6 +186,6 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews
-            - explorer https://explorer.${{ env.GITHUB_REF_SLUG }}.vega.rocks
-            - trading https://trading.${{ env.GITHUB_REF_SLUG }}.vega.rocks
-            - console https://console.${{ env.GITHUB_REF_SLUG }}.vega.rocks
+            - explorer https://explorer.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - trading https://trading.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - console https://console.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
