@@ -18,6 +18,17 @@
         }
       }
     },
+    "play": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn playwright test -c ./apps/trading-e2e/playwright.config.ts"
+      },
+      "configurations": {
+        "open": {
+          "command": "yarn playwright test -c ./apps/trading-e2e/playwright.config.ts --ui"
+        }
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
