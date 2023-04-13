@@ -2,6 +2,7 @@ import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState } from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { formatDistanceToNowStrict, isAfter } from 'date-fns';
 
 export interface SettlementDataCellProps {
@@ -44,6 +45,9 @@ export const SettlementDateCell = ({
       href={linkCreator(EXPLORER_ORACLE.replace(':id', oracleSpecId))}
       className="underline"
       target="_blank"
+      title={
+        date ? getDateTimeFormat().format(date) : t('Unknown settlement date')
+      }
     >
       {text}
     </Link>

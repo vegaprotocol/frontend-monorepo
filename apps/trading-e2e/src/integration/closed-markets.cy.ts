@@ -11,7 +11,10 @@ import {
   oracleSpecDataConnectionQuery,
 } from '@vegaprotocol/mock';
 import { networkParamsQuery } from '@vegaprotocol/mock';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+} from '@vegaprotocol/utils';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
   const rowSelector =
@@ -172,7 +175,14 @@ describe('Closed markets', { tags: '@smoke' }, () => {
           )
         );
       })
-      .should('have.text', '4 days ago');
+      .should('have.text', '4 days ago')
+      .should(
+        'have.attr',
+        'title',
+        getDateTimeFormat().format(
+          new Date(settledMarket.marketTimestamps.close)
+        )
+      );
 
     // 6001-MARK-011
     cy.get(rowSelector)
