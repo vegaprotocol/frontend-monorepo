@@ -21,6 +21,7 @@ import type { ColDef } from 'ag-grid-community';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -45,7 +46,12 @@ interface Row {
 
 export const Closed = () => {
   const { pubKey } = useVegaWallet();
-  const { data: marketData } = useDataProvider({
+  const {
+    data: marketData,
+    loading,
+    error,
+    reload,
+  } = useDataProvider({
     dataProvider: closedMarketsWithDataProvider,
     variables: undefined,
   });
@@ -92,8 +98,20 @@ export const Closed = () => {
 
     return row;
   });
-
-  return <ClosedMarketsDataGrid rowData={rowData} />;
+  return (
+    <div className="h-full relative">
+      <ClosedMarketsDataGrid rowData={rowData} />
+      <div className="pointer-events-none absolute inset-0">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={marketData}
+          noDataMessage={t('No markets')}
+          reload={reload}
+        />
+      </div>
+    </div>
+  );
 };
 
 const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
