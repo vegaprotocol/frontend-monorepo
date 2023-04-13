@@ -162,6 +162,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     // 6001-MARK-004
     // 6001-MARK-005
     // 6001-MARK-009
+    // 6001-MARK-008
     // 6001-MARK-010
     cy.get(rowSelector)
       .first()
