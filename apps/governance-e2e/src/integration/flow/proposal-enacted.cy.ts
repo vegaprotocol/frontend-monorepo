@@ -13,7 +13,6 @@ import {
   createUpdateNetworkProposalTxBody,
   createFreeFormProposalTxBody,
 } from '../../support/proposal.functions';
-import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
 
@@ -33,10 +32,6 @@ context(
     before('Connect wallets and set approval', function () {
       cy.visit('/');
       vegaWalletSetSpecifiedApprovalAmount('1000');
-      cy.connectVegaWallet();
-      ethereumWalletConnect();
-      ensureSpecifiedUnstakedTokensAreAssociated('1');
-      cy.clearLocalStorage();
     });
 
     beforeEach('visit proposals', function () {
@@ -114,7 +109,7 @@ context(
       navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
-      cy.get(openProposals).within(() => {
+      cy.get(openProposals, { timeout: 6000 }).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil('[data-testid="proposals-list-item"]')
           .within(() => cy.get(viewProposalButton).click());

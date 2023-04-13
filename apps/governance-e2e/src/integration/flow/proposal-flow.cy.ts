@@ -232,7 +232,7 @@ context(
 
     it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
       const errorMsg =
-        'Invalid params: the transaction does not use a valid Vega command: unknown field unexpected" in vega.commands.v1.ProposalSubmission';
+        'Invalid params: the transaction does not use a valid Vega command: unknown field "unexpected" in vega.commands.v1.ProposalSubmission';
 
       // 3001-VOTE-038 3002-PROP-013 3002-PROP-014
       goToMakeNewProposal(governanceProposalType.RAW);
@@ -313,7 +313,7 @@ context(
 
     it('Unable to vote on a proposal - when vega wallet disconnected - option to connect from within', function () {
       createRawProposal();
-      cy.get('[data-testid="manage-vega-wallet"]').click();
+      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
       cy.get('[data-testid="disconnect"]').click();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getSubmittedProposalFromProposalList(
