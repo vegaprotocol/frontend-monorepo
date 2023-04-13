@@ -1,8 +1,10 @@
 import merge from 'lodash/merge';
-import type { AssetsQuery } from './__generated__/Assets';
+import type {
+  AssetsQuery,
+  AssetListFieldsFragment,
+} from './__generated__/Assets';
 import * as Types from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-import type { AssetFieldsFragment } from './__generated__/Asset';
 
 export const assetsQuery = (
   override?: PartialDeep<AssetsQuery>
@@ -18,7 +20,7 @@ export const assetsQuery = (
   return merge(defaultAssets, override);
 };
 
-const assetFields: AssetFieldsFragment[] = [
+const assetFields: AssetListFieldsFragment[] = [
   {
     __typename: 'Asset',
     id: 'asset-id',
@@ -33,30 +35,6 @@ const assetFields: AssetFieldsFragment[] = [
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,
-    infrastructureFeeAccount: {
-      balance: '1',
-      __typename: 'AccountBalance',
-    },
-    globalRewardPoolAccount: {
-      balance: '2',
-      __typename: 'AccountBalance',
-    },
-    takerFeeRewardAccount: {
-      balance: '3',
-      __typename: 'AccountBalance',
-    },
-    makerFeeRewardAccount: {
-      balance: '4',
-      __typename: 'AccountBalance',
-    },
-    lpFeeRewardAccount: {
-      balance: '5',
-      __typename: 'AccountBalance',
-    },
-    marketProposerRewardAccount: {
-      balance: '6',
-      __typename: 'AccountBalance',
-    },
   },
   {
     __typename: 'Asset',
@@ -72,30 +50,6 @@ const assetFields: AssetFieldsFragment[] = [
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,
-    infrastructureFeeAccount: {
-      balance: '1',
-      __typename: 'AccountBalance',
-    },
-    globalRewardPoolAccount: {
-      balance: '2',
-      __typename: 'AccountBalance',
-    },
-    takerFeeRewardAccount: {
-      balance: '3',
-      __typename: 'AccountBalance',
-    },
-    makerFeeRewardAccount: {
-      balance: '4',
-      __typename: 'AccountBalance',
-    },
-    lpFeeRewardAccount: {
-      balance: '5',
-      __typename: 'AccountBalance',
-    },
-    marketProposerRewardAccount: {
-      balance: '6',
-      __typename: 'AccountBalance',
-    },
   },
   {
     __typename: 'Asset',
@@ -104,20 +58,10 @@ const assetFields: AssetFieldsFragment[] = [
     decimals: 5,
     name: 'Asto',
     source: {
-      maxFaucetAmountMint: '5000000000',
       __typename: 'BuiltinAsset',
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,
-    infrastructureFeeAccount: {
-      balance: '0',
-      __typename: 'AccountBalance',
-    },
-    globalRewardPoolAccount: null,
-    takerFeeRewardAccount: null,
-    makerFeeRewardAccount: null,
-    lpFeeRewardAccount: null,
-    marketProposerRewardAccount: null,
   },
   {
     __typename: 'Asset',
@@ -126,20 +70,10 @@ const assetFields: AssetFieldsFragment[] = [
     decimals: 5,
     name: 'tBTC TEST',
     source: {
-      maxFaucetAmountMint: '5000000000',
       __typename: 'BuiltinAsset',
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,
-    infrastructureFeeAccount: {
-      balance: '0',
-      __typename: 'AccountBalance',
-    },
-    globalRewardPoolAccount: null,
-    takerFeeRewardAccount: null,
-    makerFeeRewardAccount: null,
-    lpFeeRewardAccount: null,
-    marketProposerRewardAccount: null,
   },
   // NOTE: These assets ids and contract addresses are real assets on Sepolia, this is needed
   // because we don't currently mock our seplia infura provider. If we change network these will
@@ -158,30 +92,6 @@ const assetFields: AssetFieldsFragment[] = [
       __typename: 'ERC20',
     },
     quantum: '1',
-    infrastructureFeeAccount: {
-      balance: '1',
-      __typename: 'AccountBalance',
-    },
-    globalRewardPoolAccount: {
-      balance: '2',
-      __typename: 'AccountBalance',
-    },
-    takerFeeRewardAccount: {
-      balance: '3',
-      __typename: 'AccountBalance',
-    },
-    makerFeeRewardAccount: {
-      balance: '4',
-      __typename: 'AccountBalance',
-    },
-    lpFeeRewardAccount: {
-      balance: '5',
-      __typename: 'AccountBalance',
-    },
-    marketProposerRewardAccount: {
-      balance: '6',
-      __typename: 'AccountBalance',
-    },
   },
   {
     __typename: 'Asset',
@@ -197,29 +107,5 @@ const assetFields: AssetFieldsFragment[] = [
       __typename: 'ERC20',
     },
     quantum: '1',
-    infrastructureFeeAccount: {
-      balance: '1',
-      __typename: 'AccountBalance',
-    },
-    globalRewardPoolAccount: {
-      balance: '2',
-      __typename: 'AccountBalance',
-    },
-    takerFeeRewardAccount: {
-      balance: '3',
-      __typename: 'AccountBalance',
-    },
-    makerFeeRewardAccount: {
-      balance: '4',
-      __typename: 'AccountBalance',
-    },
-    lpFeeRewardAccount: {
-      balance: '5',
-      __typename: 'AccountBalance',
-    },
-    marketProposerRewardAccount: {
-      balance: '6',
-      __typename: 'AccountBalance',
-    },
   },
 ];
