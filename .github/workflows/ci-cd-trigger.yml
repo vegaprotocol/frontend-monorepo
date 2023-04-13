@@ -137,11 +137,11 @@ jobs:
       projects: ${{ needs.lint-test-build.outputs.projects }}
 
   cypress-check:
-    name: '(CI) Cypress - check'
+    name: '(CI) cypress - check'
     runs-on: ubuntu-latest
     needs: cypress
     steps:
-    - run: echo Done!
+      - run: echo Done!
 
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-result:
@@ -156,4 +156,3 @@ jobs:
           else
             exit 1
           fi
-
