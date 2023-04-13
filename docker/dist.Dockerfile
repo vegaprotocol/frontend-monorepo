@@ -3,4 +3,4 @@ EXPOSE 80
 WORKDIR /usr/share/nginx/html
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 RUN rm -rf /usr/share/nginx/html/*
-COPY dist-result/ /usr/share/nginx/html
+COPY ./dist-result/ /usr/share/nginx/html/
