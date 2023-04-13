@@ -41,6 +41,12 @@ describe('accounts', { tags: '@smoke' }, () => {
       .should('have.text', '100,001.01');
   });
 
+  it('asset detail should be properly rendered', () => {
+    cy.getByTestId('Collateral').click();
+    cy.getByTestId('asset').contains('tEURO').click();
+    cy.get('[data-testid$="_label"]').should('have.length', 16);
+  });
+
   describe('sorting by ag-grid columns should work well', () => {
     it('sorting by asset', () => {
       cy.getByTestId('Collateral').click();
