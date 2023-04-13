@@ -681,6 +681,9 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
 
   // Transaction can be successful but the order can be rejected by the network
   const intent =
-    (tx.order && getOrderToastIntent(tx.order.status)) || intentMap[tx.status];
+    (tx.order &&
+      !isOrderAmendmentTransaction(tx.body) &&
+      getOrderToastIntent(tx.order.status)) ||
+    intentMap[tx.status];
   return { intent, content };
 };
