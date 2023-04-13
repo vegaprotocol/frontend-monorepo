@@ -137,6 +137,36 @@ jobs:
     with:
       projects: ${{ needs.lint-test-build.outputs.projects }}
 
+  dist-check:
+    runs-on: ubuntu-latest
+    needs: publish-dist
+    if: ${{ github.event_name == 'pull_request' }}
+    name: '(CD) comment preview links'
+    steps:
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: Previews
+
+      - name: Inject slug/short variables
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        uses: rlespinasse/github-slug-action@v4
+        with:
+          prefix: CI_
+
+      - name: Create comment
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Previews
+            - explorer https://explorer.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - trading https://trading.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - governance https://governance.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+
   cypress-check:
     name: '(CI) cypress - check'
     runs-on: ubuntu-latest
