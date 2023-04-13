@@ -38,14 +38,16 @@ const DialogsContainer = () => {
 export const Layout = () => {
   const isHome = Boolean(useMatch(Routes.HOME));
   const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
+  const fixedWidthClasses = 'w-full max-w-[1500px] mx-auto';
+
   return (
     <>
       <div
         className={classNames(
-          'max-w-[1500px] min-h-[100vh]',
+          'min-h-[100vh]',
           'mx-auto my-0',
           'grid grid-rows-[auto_1fr_auto] grid-cols-1',
-          'border-vega-light-200 dark:border-vega-dark-200 lg:border-l lg:border-r',
+          'border-vega-light-200 dark:border-vega-dark-200',
           'antialiased text-black dark:text-white',
           'overflow-hidden relative'
         )}
@@ -59,13 +61,13 @@ export const Layout = () => {
           )}
           <Header />
         </div>
-        <div>
+        <div className={fixedWidthClasses}>
           <main className="p-4">
             {!isHome && <BreadcrumbsContainer className="mb-4" />}
             <Outlet />
           </main>
         </div>
-        <div>
+        <div className={fixedWidthClasses}>
           <Footer />
         </div>
       </div>
