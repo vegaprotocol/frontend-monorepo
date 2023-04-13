@@ -92,9 +92,7 @@ jobs:
             yarn nx build ${{ matrix.app }} $flags
             DIST_LOCATION=dist/apps/${{ matrix.app }}
           fi
-          ls -al
-          tree dist
-          echo DIST_LOCATION=$DIST_LOCATION >> $GITHUB_ENV
+          echo DIST_LOCATION=$PWD/$DIST_LOCATION >> $GITHUB_ENV
 
       - name: Build and export to local Docker
         id: docker_build
