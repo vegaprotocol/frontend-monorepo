@@ -72,7 +72,7 @@ describe('SettlementPriceCell', () => {
     );
   });
 
-  it('renders unknown if no spec value is found', async () => {
+  it('renders "-" if no spec value is found', async () => {
     const props = createProps();
     const property = {
       __typename: 'Property' as const,
@@ -90,14 +90,14 @@ describe('SettlementPriceCell', () => {
 
     expect(screen.getByText('-')).toBeInTheDocument();
     const link = await screen.findByRole('link');
-    expect(link).toHaveTextContent('Unknown');
+    expect(link).toHaveTextContent('-');
     expect(link).toHaveAttribute(
       'href',
       expect.stringContaining(`/oracles/${props.oracleSpecId}`)
     );
   });
 
-  it('renders unknown with no link if oracle spec id is not provided', () => {
+  it('renders "-" with no link if oracle spec id is not provided', () => {
     const props = createProps();
     props.oracleSpecId = undefined;
 
@@ -107,7 +107,7 @@ describe('SettlementPriceCell', () => {
       </MockedProvider>
     );
 
-    expect(screen.getByText('Unknown')).toBeInTheDocument();
+    expect(screen.getByText('-')).toBeInTheDocument();
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 });

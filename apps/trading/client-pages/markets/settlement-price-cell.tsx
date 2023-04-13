@@ -33,7 +33,7 @@ export const SettlementPriceCell = ({
     >
       {property
         ? addDecimalsFormatNumber(property.value, decimalPlaces)
-        : t('Unknown')}
+        : t('-')}
     </Link>
   );
 };

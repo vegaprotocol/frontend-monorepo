@@ -138,21 +138,28 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     cy.get(rowSelector).should('have.length', expectedMarkets.length);
 
     // check each column in the first row renders correctly
+    // 6001-MARK-001
     cy.get(rowSelector)
       .first()
       .find('[col-id="code"]')
       .should('have.text', settledMarket.tradableInstrument.instrument.code);
 
+    // 6001-MARK-002
     cy.get(rowSelector)
       .first()
       .find('[col-id="name"]')
       .should('have.text', settledMarket.tradableInstrument.instrument.name);
 
+    // 6001-MARK-003
     cy.get(rowSelector)
       .first()
       .find('[col-id="state"]')
       .should('have.text', MarketStateMapping[settledMarket.state]);
 
+    // 6001-MARK-004
+    // 6001-MARK-005
+    // 6001-MARK-009
+    // 6001-MARK-010
     cy.get(rowSelector)
       .first()
       .find('[col-id="settlementDate"]')
@@ -167,6 +174,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       })
       .should('have.text', '4 days ago');
 
+    // 6001-MARK-011
     cy.get(rowSelector)
       .first()
       .find('[col-id="bestBidPrice"]')
@@ -178,6 +186,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
         )
       );
 
+    // 6001-MARK-012
     cy.get(rowSelector)
       .first()
       .find('[col-id="bestOfferPrice"]')
@@ -189,6 +198,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
         )
       );
 
+    // 6001-MARK-013
     cy.get(rowSelector).first().find('[col-id="markPrice"]').should(
       'have.text',
 
@@ -198,6 +208,9 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       )
     );
 
+    // 6001-MARK-014
+    // 6001-MARK-015
+    // 6001-MARK-016
     cy.get(rowSelector)
       .first()
       .find('[col-id="settlementDataOracleId"]')
@@ -217,16 +230,19 @@ describe('Closed markets', { tags: '@smoke' }, () => {
         )
       );
 
+    // 6001-MARK-017
     cy.get(rowSelector)
       .first()
       .find('[col-id="realisedPNL"]')
       .should('have.text', '-');
 
+    // 6001-MARK-018
     cy.get(rowSelector)
       .first()
       .find('[col-id="settlementAsset"]')
       .should('have.text', product.settlementAsset.symbol);
 
+    // 6001-MARK-020
     cy.get(rowSelector)
       .first()
       .find('[col-id="id"]')
@@ -240,6 +256,8 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .find('[col-id="state"]')
       .should('have.text', MarketStateMapping[terminatedMarket.state]);
 
+    // 6001-MARK-006
+    // 6001-MARK-007
     cy.get(rowSelector)
       .eq(1)
       .find('[col-id="settlementDate"]')
@@ -271,6 +289,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .find('button')
       .click();
 
+    // 6001-MARK-019
     cy.get('[data-testid="dialog-title"]').should(
       'have.text',
       `Asset details - ${settlementAsset.symbol}`
