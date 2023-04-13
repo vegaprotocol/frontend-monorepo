@@ -6,6 +6,7 @@ on:
 
 jobs:
   lint_pr:
+    timeout-minutes: 10
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout

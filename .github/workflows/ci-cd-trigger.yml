@@ -49,6 +49,7 @@ jobs:
     secrets: inherit
 
   lint-test-build:
+    timeout-minutes: 10
     needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + unit test + build'
