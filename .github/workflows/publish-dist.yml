@@ -99,6 +99,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
+          context: .
           file: ${{ env.DOCKERFILE }}
           load: true
           build-args: |
@@ -131,6 +132,7 @@ jobs:
         uses: docker/build-push-action@v3
         if: ${{ github.event_name == 'pull_request' }}
         with:
+          context: .
           file: ${{ env.DOCKERFILE }}
           push: true
           build-args: |
