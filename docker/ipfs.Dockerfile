@@ -13,7 +13,7 @@ RUN apk add --update --no-cache \
 COPY . ./
 RUN yarn --network-timeout 100000 --pure-lockfile
 # work around for different build process in trading
-RUN sh ./docker-build.sh
+RUN sh docker/docker-build.sh
 
 # Server environment
 # if this fails you need to docker pull nginx:1.23-alpine and pin new SHA
@@ -23,7 +23,7 @@ FROM --platform=amd64 nginx:1.23-alpine@sha256:6318314189b40e73145a48060bff4783a
 EXPOSE 80
 # Copy dist
 WORKDIR /usr/share/nginx/html
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /app/dist/apps/${APP} /usr/share/nginx/html
-RUN apk add --no-cache go-ipfs; ipfs init && echo "$(ipfs add -rQ .)" > ipfs-hash; apk del go-ipfs
+COPY --from=build /app/dist/apps/${APP}/* /usr/share/nginx/html
+RUN apk add --no-cache go-ipfs; ipfs init && echo "$(ipfs add -rQ .)" > /ipfs-hash; apk del go-ipfs

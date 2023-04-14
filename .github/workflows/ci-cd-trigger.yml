@@ -8,11 +8,49 @@ on:
   pull_request:
     types:
       - opened
-      - reopened
-      - synchronize
       - ready_for_review
+      - reopened
+      - edited
+      - synchronize
 jobs:
+  node-modules:
+    runs-on: ubuntu-22.04
+    name: 'Cache yarn modules'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache node modules
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+          # comment out "resotre-keys" if you need to rebuild yarn from 0
+          restore-keys: |
+            ${{ runner.os }}-cache-node-modules-
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          node-version-file: '.nvmrc'
+          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
+          cache: yarn
+
+      - name: yarn install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --pure-lockfile
+
+  lint-pr-title:
+    needs: node-modules
+    name: Verify PR title
+    uses: ./.github/workflows/lint-pr.yml
+    secrets: inherit
+
   lint-test-build:
+    timeout-minutes: 10
+    needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + unit test + build'
     steps:
@@ -28,8 +66,11 @@ jobs:
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
 
-      - name: Install root dependencies
-        run: yarn install --frozen-lockfile
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
@@ -95,6 +136,43 @@ jobs:
     secrets: inherit
     with:
       projects: ${{ needs.lint-test-build.outputs.projects }}
+
+  dist-check:
+    runs-on: ubuntu-latest
+    needs: publish-dist
+    if: ${{ github.event_name == 'pull_request' }}
+    name: '(CD) comment preview links'
+    steps:
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: Previews
+
+      - name: Inject slug/short variables
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        uses: rlespinasse/github-slug-action@v4
+        with:
+          prefix: CI_
+
+      - name: Create comment
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Previews
+            - explorer https://explorer.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - trading https://trading.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - governance https://governance.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+
+  cypress-check:
+    name: '(CI) cypress - check'
+    runs-on: ubuntu-latest
+    needs: cypress
+    steps:
+      - run: echo Done!
 
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-result:
