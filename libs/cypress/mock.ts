@@ -12,7 +12,6 @@ export * from '../proposals/src/lib/proposals-data-provider/proposals.mock';
 export * from '../ledger/src/lib/ledger-entries.mock';
 export * from '../market-depth/src/lib/market-depth.mock';
 export * from '../market-info/src/components/market-info/market-info.mock';
-export * from '../market-list/src/lib/closed-markets.mock';
 export * from '../market-list/src/lib/market-candles.mock';
 export * from '../market-list/src/lib/market-data.mock';
 export * from '../market-list/src/lib/markets-candles.mock';

@@ -49,7 +49,17 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
               name: 'XYZ',
             },
             dataSourceSpecForTradingTermination: {
-              id: '',
+              __typename: 'DataSourceSpec',
+              id: 'oracleId',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceSpec',
+              id: 'oracleId',
+            },
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              tradingTerminationProperty: 'trading-termination-property',
+              settlementDataProperty: 'settlement-data-property',
             },
           },
         },
