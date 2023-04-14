@@ -1,4 +1,3 @@
-export * from './constants';
 export * from './lib/constants';
 export * from './lib/eip-1193-custom-bridge';
 export * from './lib/ethereum-error';

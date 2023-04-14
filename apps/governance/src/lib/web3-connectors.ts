@@ -9,6 +9,7 @@ import {
   initializeWalletConnectLegacyConnector,
   initializeCoinbaseConnector,
   UrlConnector,
+  WALLETCONNECT_PROJECT_ID,
 } from '@vegaprotocol/web3';
 
 const [urlConnector, urlHooks] = initializeConnector<UrlConnector>(
@@ -27,10 +28,6 @@ export const createConnectors = (providerUrl: string, chainId: number) => {
     throw new Error('Invalid Ethereum chain ID for environment');
   }
   const [coinbase, coinbaseHooks] = initializeCoinbaseConnector(providerUrl);
-  const [walletconnect, walletconnectHooks] = initializeWalletConnector(
-    chainId,
-    providerUrl
-  );
   const [legacy, legacyHooks] = initializeWalletConnectLegacyConnector(
     chainId,
     providerUrl
@@ -40,7 +37,7 @@ export const createConnectors = (providerUrl: string, chainId: number) => {
     ENV.urlConnect ? [urlConnector, urlHooks] : null,
     [metamask, metamaskHooks],
     [coinbase, coinbaseHooks],
-    [walletconnect, walletconnectHooks],
+    initializeWalletConnector(WALLETCONNECT_PROJECT_ID, chainId, providerUrl),
     [legacy, legacyHooks],
   ].filter(Boolean) as [Connector, Web3ReactHooks][];
 };

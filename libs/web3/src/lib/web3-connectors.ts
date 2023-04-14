@@ -6,7 +6,7 @@ import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { WalletConnect as WalletConnectLegacy } from '@web3-react/walletconnect';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { initializeUrlConnector } from './url-connector';
-import { PROJECT_ID } from '../constants';
+import { WALLETCONNECT_PROJECT_ID } from './constants';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
@@ -46,40 +46,43 @@ export const initializeWalletConnectLegacyConnector = (
   );
 
 export const initializeWalletConnector = (
+  projectId: string,
   chainId: number,
   providerUrl: string
 ) =>
-  initializeConnector<WalletConnect>(
-    (actions) =>
-      new WalletConnect({
-        actions,
-        defaultChainId: chainId,
-        options: {
-          projectId: PROJECT_ID,
-          chains: [chainId],
-          showQrModal: true,
-          rpcMap: {
-            [chainId]: providerUrl,
-          },
-          qrModalOptions: {
-            themeMode: 'dark',
-            themeVariables: {
-              '--w3m-z-index': '40',
-              '--w3m-accent-color': theme.colors.vega.yellow.DEFAULT,
-              '--w3m-background-color': theme.colors.vega.dark[100],
-              '--w3m-font-family': 'AlphaLyrae',
-              '--w3m-container-border-radius': '0.25rem',
-              '--w3m-background-border-radius': '0.25rem',
-              '--w3m-accent-fill-color': theme.colors.vega.yellow.DEFAULT,
+  projectId && projectId.length > 0
+    ? initializeConnector<WalletConnect>(
+        (actions) =>
+          new WalletConnect({
+            actions,
+            defaultChainId: chainId,
+            options: {
+              projectId: projectId,
+              chains: [chainId],
+              showQrModal: true,
+              rpcMap: {
+                [chainId]: providerUrl,
+              },
+              qrModalOptions: {
+                themeMode: 'dark',
+                themeVariables: {
+                  '--w3m-z-index': '40',
+                  '--w3m-accent-color': theme.colors.vega.yellow.DEFAULT,
+                  '--w3m-background-color': theme.colors.vega.dark[100],
+                  '--w3m-font-family': 'AlphaLyrae',
+                  '--w3m-container-border-radius': '0.25rem',
+                  '--w3m-background-border-radius': '0.25rem',
+                  '--w3m-accent-fill-color': theme.colors.vega.yellow.DEFAULT,
+                },
+              },
             },
-          },
-        },
-        onError: (error) => {
-          console.log('ERR_WALLET_CONNECT', error.message);
-          useWeb3ConnectStore.setState({ error });
-        },
-      })
-  );
+            onError: (error) => {
+              console.log('ERR_WALLET_CONNECT', error.message);
+              useWeb3ConnectStore.setState({ error });
+            },
+          })
+      )
+    : null;
 
 export const initializeMetaMaskConnector = () =>
   initializeConnector<MetaMask>(
@@ -106,22 +109,11 @@ export const createConnectors = (
     throw new Error('Invalid Ethereum chain ID for environment');
   }
 
-  const [metamask, metamaskHooks] = initializeMetaMaskConnector();
-  const [walletconnect, walletconnectHooks] = initializeWalletConnector(
-    chainId,
-    providerUrl
-  );
-  const [legacy, legacyHooks] = initializeWalletConnectLegacyConnector(
-    chainId,
-    providerUrl
-  );
-  const [coinbase, coinbaseHooks] = initializeCoinbaseConnector(providerUrl);
-
   return [
     initializeUrlConnector(localProviderUrl, walletMnemonic),
-    [metamask, metamaskHooks],
-    [coinbase, coinbaseHooks],
-    [walletconnect, walletconnectHooks],
-    [legacy, legacyHooks],
-  ].filter(Boolean) as [Connector, Web3ReactHooks][];
+    initializeMetaMaskConnector(),
+    initializeCoinbaseConnector(providerUrl),
+    initializeWalletConnector(WALLETCONNECT_PROJECT_ID, chainId, providerUrl),
+    initializeWalletConnectLegacyConnector(chainId, providerUrl),
+  ].filter(Boolean) as unknown as [Connector, Web3ReactHooks][];
 };
