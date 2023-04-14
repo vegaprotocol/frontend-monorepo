@@ -93,7 +93,7 @@ function AppBody({ Component }: AppProps) {
         <main data-testid={location.pathname}>
           <Component />
         </main>
-        {/* <Footer /> */}
+        <Footer />
       </div>
       <DialogsContainer />
       <ToastsManager />
