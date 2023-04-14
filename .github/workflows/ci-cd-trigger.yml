@@ -44,6 +44,7 @@ jobs:
 
   lint-pr-title:
     needs: node-modules
+    if: ${{ github.event_name == 'pull_request' }}
     name: Verify PR title
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
