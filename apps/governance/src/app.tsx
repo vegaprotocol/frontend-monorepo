@@ -28,10 +28,10 @@ import {
   NetworkLoader,
   useInitializeEnv,
 } from '@vegaprotocol/environment';
-// import { createConnectors } from './lib/web3-connectors';
-import { ENV } from './config/env';
+import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { WithdrawalDialog } from '@vegaprotocol/withdraws';
+import { SplashLoader } from './components/splash-loader';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -71,7 +71,6 @@ const cache: InMemoryCacheConfig = {
 
 const Web3Container = ({
   chainId,
-  providerUrl,
 }: {
   chainId: number;
   providerUrl: string;
@@ -104,6 +103,12 @@ const Web3Container = ({
   const sideBar = React.useMemo(() => {
     return [<EthWallet />, <VegaWallet />];
   }, []);
+
+  if (connectors.length === 0) {
+    // Prevent loading when the connectors are not initialized
+    return <SplashLoader />;
+  }
+
   return (
     <Web3Provider connectors={connectors}>
       <Web3Connector connectors={connectors} chainId={Number(chainId)}>
