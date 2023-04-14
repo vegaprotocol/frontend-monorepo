@@ -110,7 +110,6 @@ export const OrderListTable = memo(
             }}
             cellRenderer="OrderTypeCell"
             cellRendererParams={{
-              idPath: 'market.id',
               onClick: onOrderTypeClick,
             }}
             minWidth={80}

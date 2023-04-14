@@ -1,24 +1,21 @@
 import type { MouseEvent } from 'react';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
-import get from 'lodash/get';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 
 interface OrderTypeCellProps {
   value?: Schema.OrderType;
   data?: Schema.Order;
-  idPath?: string;
   onClick?: (marketId: string, metaKey?: boolean) => void;
 }
 
 export const OrderTypeCell = ({
   value,
   data: order,
-  idPath,
   onClick,
 }: OrderTypeCellProps) => {
-  const id = order ? get(order, idPath ?? 'id', 'all') : '';
+  const id = order ? order.market.id : '';
 
   const label = useMemo(() => {
     if (!order) {
