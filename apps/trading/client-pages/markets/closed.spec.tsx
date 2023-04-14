@@ -1,9 +1,7 @@
-import merge from 'lodash/merge';
 import { act, render, screen, within } from '@testing-library/react';
 import { Closed } from './closed';
 import { MarketStateMapping } from '@vegaprotocol/types';
 import { PositionStatus } from '@vegaprotocol/types';
-import { MarketTradingMode } from '@vegaprotocol/types';
 import { MarketState } from '@vegaprotocol/types';
 import { subDays } from 'date-fns';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -18,12 +16,15 @@ import type {
 } from '@vegaprotocol/positions';
 import { PositionsDocument } from '@vegaprotocol/positions';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { PartialDeep } from 'type-fest';
-import type {
-  ClosedMarketFragment,
-  ClosedMarketsQuery,
-} from '@vegaprotocol/market-list';
-import { ClosedMarketsDocument } from '@vegaprotocol/market-list';
+import type { MarketsDataQuery, MarketsQuery } from '@vegaprotocol/market-list';
+import { MarketsDataDocument } from '@vegaprotocol/market-list';
+import { MarketsDocument } from '@vegaprotocol/market-list';
+import {
+  createMarketFragment,
+  marketsQuery,
+  marketsDataQuery,
+  createMarketsDataFragment,
+} from '@vegaprotocol/mock';
 
 describe('Closed', () => {
   let originalNow: typeof Date.now;
@@ -34,93 +35,72 @@ describe('Closed', () => {
   ).toISOString();
   const settlementDateTag = `settlement-expiry-date:${settlementDateMetaDate}`;
   const pubKey = 'pubKey';
-  const marketId = 'market-id';
+  const marketId = 'market-0';
   const settlementDataProperty = 'spec-binding';
   const settlementDataId = 'settlement-data-oracle-id';
 
-  // Create mock closed market
-  const createMarket = (
-    override?: PartialDeep<ClosedMarketFragment>
-  ): ClosedMarketFragment => {
-    const defaultMarket = {
-      __typename: 'Market',
-      id: marketId,
-      decimalPlaces: 2,
-      positionDecimalPlaces: 2,
-      state: MarketState.STATE_SETTLED,
-      tradingMode: MarketTradingMode.TRADING_MODE_NO_TRADING,
-      data: {
-        __typename: 'MarketData',
-        market: {
-          __typename: 'Market',
-          id: marketId,
+  const market = createMarketFragment({
+    id: marketId,
+    state: MarketState.STATE_SETTLED,
+    tradableInstrument: {
+      instrument: {
+        metadata: {
+          tags: [settlementDateTag],
         },
-        bestBidPrice: '1000',
-        bestOfferPrice: '2000',
-        markPrice: '1500',
-      },
-      tradableInstrument: {
-        __typename: 'TradableInstrument',
-        instrument: {
-          __typename: 'Instrument',
-          id: '',
-          name: 'ETH USDC SIMS 4',
-          code: 'ETH/USDC',
-          metadata: {
-            __typename: 'InstrumentMetadata',
-            tags: [settlementDateTag],
+        product: {
+          dataSourceSpecForSettlementData: {
+            id: settlementDataId,
           },
-          product: {
-            __typename: 'Future',
-            settlementAsset: {
-              __typename: 'Asset',
-              id: 'c5b60dd43d99879d9881343227e788fe27a3e213cbd918e6f60d3d3973e24522',
-              symbol: 'USDC',
-              name: 'USDC SIM4',
-              decimals: 18,
-            },
-            quoteName: 'USD',
-            dataSourceSpecForTradingTermination: {
-              __typename: 'DataSourceSpec',
-              id: '5940e6c632f3b8a6640df3b3163a399d55722858c4eeb367ea41b40d270fe260',
-            },
-            dataSourceSpecForSettlementData: {
-              __typename: 'DataSourceSpec',
-              id: settlementDataId,
-            },
-            dataSourceSpecBinding: {
-              __typename: 'DataSourceSpecToFutureBinding',
-              settlementDataProperty,
-              tradingTerminationProperty: 'trading.terminated.ETH2',
-            },
+          dataSourceSpecBinding: {
+            settlementDataProperty,
           },
         },
       },
-      marketTimestamps: {
-        __typename: 'MarketTimestamps',
-        open: '2023-04-03T21:18:45.826251144Z',
-        close: null,
-      },
-    };
-
-    return merge(defaultMarket, override);
-  };
-  const market = createMarket();
-  const marketsMock: MockedResponse<ClosedMarketsQuery> = {
+    },
+  });
+  const marketsMock: MockedResponse<MarketsQuery> = {
     request: {
-      query: ClosedMarketsDocument,
+      query: MarketsDocument,
     },
     result: {
-      data: {
+      data: marketsQuery({
         marketsConnection: {
-          __typename: 'MarketConnection',
           edges: [
             {
               node: market,
             },
           ],
         },
-      },
+      }),
+    },
+  };
+
+  const marketsData = createMarketsDataFragment({
+    __typename: 'MarketData',
+    market: {
+      __typename: 'Market',
+      id: marketId,
+    },
+    bestBidPrice: '1000',
+    bestOfferPrice: '2000',
+    markPrice: '1500',
+  });
+  const marketsDataMock: MockedResponse<MarketsDataQuery> = {
+    request: {
+      query: MarketsDataDocument,
+    },
+    result: {
+      data: marketsDataQuery({
+        marketsConnection: {
+          edges: [
+            {
+              node: {
+                data: marketsData,
+              },
+            },
+          ],
+        },
+      }),
     },
   };
 
@@ -209,7 +189,9 @@ describe('Closed', () => {
   it('renders correctly formatted and filtered rows', async () => {
     await act(async () => {
       render(
-        <MockedProvider mocks={[marketsMock, positionsMock, oracleDataMock]}>
+        <MockedProvider
+          mocks={[marketsMock, marketsDataMock, positionsMock, oracleDataMock]}
+        >
           <VegaWalletContext.Provider
             value={{ pubKey } as VegaWalletContextShape}
           >
@@ -218,6 +200,7 @@ describe('Closed', () => {
         </MockedProvider>
       );
     });
+    // screen.debug(document, Infinity);
 
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
@@ -243,12 +226,12 @@ describe('Closed', () => {
       MarketStateMapping[market.state],
       '3 days ago',
       /* eslint-disable @typescript-eslint/no-non-null-assertion */
-      addDecimalsFormatNumber(market.data!.bestBidPrice, market.decimalPlaces),
+      addDecimalsFormatNumber(marketsData.bestBidPrice, market.decimalPlaces),
       addDecimalsFormatNumber(
-        market.data!.bestOfferPrice,
+        marketsData!.bestOfferPrice,
         market.decimalPlaces
       ),
-      addDecimalsFormatNumber(market.data!.markPrice, market.decimalPlaces),
+      addDecimalsFormatNumber(marketsData!.markPrice, market.decimalPlaces),
       /* eslint-enable @typescript-eslint/no-non-null-assertion */
       addDecimalsFormatNumber(property.value, market.decimalPlaces),
       addDecimalsFormatNumber(position.realisedPNL, market.decimalPlaces),
@@ -265,7 +248,7 @@ describe('Closed', () => {
       {
         // inlclude as settled
         __typename: 'MarketEdge' as const,
-        node: createMarket({
+        node: createMarketFragment({
           id: 'include-0',
           state: MarketState.STATE_SETTLED,
         }),
@@ -273,7 +256,7 @@ describe('Closed', () => {
       {
         // omit this market
         __typename: 'MarketEdge' as const,
-        node: createMarket({
+        node: createMarketFragment({
           id: 'discard-0',
           state: MarketState.STATE_SUSPENDED,
         }),
@@ -281,7 +264,7 @@ describe('Closed', () => {
       {
         // include as terminated
         __typename: 'MarketEdge' as const,
-        node: createMarket({
+        node: createMarketFragment({
           id: 'include-1',
           state: MarketState.STATE_TRADING_TERMINATED,
         }),
@@ -289,15 +272,15 @@ describe('Closed', () => {
       {
         // omit this market
         __typename: 'MarketEdge' as const,
-        node: createMarket({
+        node: createMarketFragment({
           id: 'discard-1',
           state: MarketState.STATE_ACTIVE,
         }),
       },
     ];
-    const mixedMarketsMock: MockedResponse<ClosedMarketsQuery> = {
+    const mixedMarketsMock: MockedResponse<MarketsQuery> = {
       request: {
-        query: ClosedMarketsDocument,
+        query: MarketsDocument,
       },
       result: {
         data: {
@@ -311,7 +294,12 @@ describe('Closed', () => {
     await act(async () => {
       render(
         <MockedProvider
-          mocks={[mixedMarketsMock, positionsMock, oracleDataMock]}
+          mocks={[
+            mixedMarketsMock,
+            marketsDataMock,
+            positionsMock,
+            oracleDataMock,
+          ]}
         >
           <VegaWalletContext.Provider
             value={{ pubKey } as VegaWalletContextShape}

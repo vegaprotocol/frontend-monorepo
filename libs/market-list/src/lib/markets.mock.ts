@@ -63,12 +63,15 @@ export const createMarketFragment = (
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {
+            __typename: 'DataSourceSpec',
             id: 'oracleId',
           },
           dataSourceSpecForSettlementData: {
+            __typename: 'DataSourceSpec',
             id: 'oracleId',
           },
           dataSourceSpecBinding: {
+            __typename: 'DataSourceSpecBinding',
             tradingTerminationProperty: 'trading-termination-property',
             settlementDataProperty: 'settlement-data-property',
           },
