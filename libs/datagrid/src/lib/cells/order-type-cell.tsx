@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { MouseEvent } from 'react';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
@@ -8,13 +7,7 @@ import * as Schema from '@vegaprotocol/types';
 
 interface OrderTypeCellProps {
   value?: Schema.OrderType;
-  data?: {
-    id?: string;
-    marketId?: string;
-    market?: { id: string };
-    peggedOrder?: any;
-    liquidityProvision?: any;
-  };
+  data?: Schema.Order;
   idPath?: string;
   onClick?: (marketId: string, metaKey?: boolean) => void;
 }
