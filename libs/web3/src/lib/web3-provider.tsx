@@ -9,6 +9,10 @@ interface Web3ProviderProps {
 }
 
 export const Web3Provider = ({ children, connectors }: Web3ProviderProps) => {
+  /**
+   * The connectors prop passed to Web3ReactProvider must be referentially static.
+   * https://github.com/Uniswap/web3-react/blob/31742897f9fddb38e00e36c2516029d3df9a9c54/packages/core/src/provider.tsx#L66
+   */
   const key = useMemo(
     () => `WEB3_PROVIDER_${Date.now().toString()}`,
     // eslint-disable-next-line react-hooks/exhaustive-deps
