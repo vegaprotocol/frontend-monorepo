@@ -98,6 +98,7 @@ jobs:
 
       - name: Build and export to local Docker
         id: docker_build
+        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -110,7 +111,12 @@ jobs:
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
+      - name: Image digest
+        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
       - name: Sanity check docker image
+        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
         run: |
           echo "Check ipfs-hash"
           if [[ "${{ env.DOCKERFILE }}" = "docker/ipfs.Dockerfile" ]];  then
@@ -121,13 +127,14 @@ jobs:
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree .'
 
       - name: Copy dist to local filesystem
-        if: ${{ env.DOCKERFILE != 'docker/ipfs.Dockerfile' }}
+        if: ${{ env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' }}
         run: |
           docker create --name=dist ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
           docker cp dist:/usr/share/nginx/html dist
 
           echo "check local dist files"
-          tree dist
+          tree dist/html
+          mv dist/html dist-result
 
       - name: Publish dist as docker image
         uses: docker/build-push-action@v3
@@ -154,7 +161,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-west-1'
-          SOURCE_DIR: 'dist'
+          SOURCE_DIR: 'dist-result'
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
@@ -162,6 +169,3 @@ jobs:
         with:
           labels: ${{ matrix.app }}-preview
           number: ${{ github.event.number }}
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
