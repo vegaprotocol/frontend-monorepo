@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { useVegaReleases } from './use-vega-releases';
 
-export const useVegaRelease = (tag: string) => {
-  const releases = useVegaReleases();
+export const useVegaRelease = (tag: string, includeDevReleases = false) => {
+  const { data } = useVegaReleases();
   return useMemo(() => {
-    return releases.filter((r) => r.tag_name === tag);
-  }, [releases, tag]);
+    return data?.find((r) => r.tagName === tag);
+  }, [data, tag]);
 };

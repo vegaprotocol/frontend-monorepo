@@ -15,45 +15,43 @@ describe('useVegaReleases', () => {
     fetchMock.reset();
   });
 
-  it('should return an empty list when 404 given', async () => {
+  it('should return an empty list when request is unsuccessful', async () => {
     fetchMock.get(GITHUB_VEGA_RELEASES, 404);
     fetchMock.get(GITHUB_VEGA_DEV_RELEASES, 404);
 
     const { result } = renderHook(() => useVegaReleases());
+    expect(result.current.loading).toBeTruthy();
     await waitFor(() => {
-      expect(result.current).toEqual([]);
+      expect(result.current.loading).toBeFalsy();
+      expect(result.current.data).toEqual([]);
     });
   });
 
-  it('should return a full list of releases', async () => {
+  it('should return a list of releases', async () => {
     fetchMock.get(GITHUB_VEGA_RELEASES, GITHUB_VEGA_RELEASES_DATA);
     fetchMock.get(GITHUB_VEGA_DEV_RELEASES, GITHUB_VEGA_DEV_RELEASES_DATA);
 
     const { result } = renderHook(() => useVegaReleases());
+    expect(result.current.loading).toBeTruthy();
     await waitFor(() => {
+      expect(result.current.loading).toBeFalsy();
       expect(result.current).not.toEqual([]);
-      const all = result.current.reverse();
-      expect(all[0].tag_name).toEqual('v0.70.3');
-      expect(all[0].html_url).toEqual(
+      const data = result.current.data;
+      expect(data?.[0].tagName).toEqual('v0.70.3');
+      expect(data?.[0].htmlUrl).toEqual(
         'https://github.com/vegaprotocol/vega/releases/tag/v0.70.3'
       );
-      expect(all[1].tag_name).toEqual('v0.70.2');
-      expect(all[2].tag_name).toEqual('v0.70.1');
-      expect(fetchMock.calls().length).toEqual(2);
+      expect(data?.[1].tagName).toEqual('v0.70.2');
+      expect(data?.[2].tagName).toEqual('v0.70.1');
     });
   });
 
-  it('should fetch only once', async () => {
+  it('should return a list of releases including dev releases', async () => {
     fetchMock.get(GITHUB_VEGA_RELEASES, GITHUB_VEGA_RELEASES_DATA);
     fetchMock.get(GITHUB_VEGA_DEV_RELEASES, GITHUB_VEGA_DEV_RELEASES_DATA);
-
-    const { result, rerender } = renderHook(() => useVegaReleases());
-    rerender(1);
-    rerender(2);
-    rerender(3);
+    const { result } = renderHook(() => useVegaReleases(true));
     await waitFor(() => {
-      expect(result.current).not.toEqual([]);
-      rerender(4);
+      expect(result.current.data?.length).toBeGreaterThan(30);
       expect(fetchMock.calls().length).toEqual(2);
     });
   });
