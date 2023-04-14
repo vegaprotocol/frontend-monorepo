@@ -33,6 +33,7 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
+import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 
@@ -144,7 +145,7 @@ const PartyData = () => {
 
 const MaybeConnectEagerly = () => {
   useVegaEagerConnect(Connectors);
-  useEthereumEagerConnect();
+  useEthereumEagerConnect(ENV.dsn);
 
   const { pubKey, connect } = useVegaWallet();
   const [searchParams] = useSearchParams();
