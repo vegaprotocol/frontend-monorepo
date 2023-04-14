@@ -53,7 +53,7 @@ export const OrderTypeCell = ({
   );
   if (!order) return null;
   return order?.liquidityProvision ? (
-    <button onClick={handleOnClick} tabIndex={0}>
+    <button onClick={handleOnClick} tabIndex={0} className="underline">
       {label}
     </button>
   ) : (
