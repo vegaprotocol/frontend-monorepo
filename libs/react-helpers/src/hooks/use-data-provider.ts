@@ -169,7 +169,7 @@ export const useThrottledDataProvider = <
   Variables extends OperationVariables = OperationVariables
 >(
   params: Omit<useDataProviderParams<Data, Delta, Variables>, 'update'>,
-  wait?: number
+  wait = 500
 ) => {
   const [data, setData] = useState<Data | null>(null);
   const dataRef = useRef<Data | null>(null);

@@ -14,9 +14,8 @@ import type { CandleClose } from '@vegaprotocol/types';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
 import { Link } from 'react-router-dom';
 import { MarketMarkPrice } from '../market-mark-price';
-import { Last24hPriceChange } from '../last-24h-price-change';
+import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/market-info';
 import { MarketTradingMode } from '../market-trading-mode';
-import { Last24hVolume } from '../last-24h-volume';
 import { Links, Routes } from '../../pages/client-router';
 
 const ellipsisClasses = 'whitespace-nowrap overflow-hidden text-ellipsis';

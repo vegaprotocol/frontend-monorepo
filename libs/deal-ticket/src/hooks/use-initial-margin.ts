@@ -15,20 +15,19 @@ export const useInitialMargin = (
   marketId: OrderSubmissionBody['orderSubmission']['marketId'],
   order?: OrderSubmissionBody['orderSubmission']
 ) => {
-  const { pubKey: partyId } = useVegaWallet();
-  const commonVariables = { marketId, partyId: partyId || '' };
+  const { pubKey } = useVegaWallet();
   const { data: marketData } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId },
   });
   const { data: activeVolumeAndMargin } = useDataProvider({
     dataProvider: volumeAndMarginProvider,
-    variables: commonVariables,
-    skip: !partyId,
+    variables: { marketId, partyId: pubKey || '' },
+    skip: !pubKey,
   });
   const { data: marketInfo } = useDataProvider({
     dataProvider: marketInfoProvider,
-    variables: commonVariables,
+    variables: { marketId },
   });
   let totalMargin = '0';
   let margin = '0';

@@ -1,5 +1,5 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoContainer } from '@vegaprotocol/market-info';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
@@ -35,7 +35,7 @@ type MarketDependantView =
   | typeof CandlesChartContainer
   | typeof DepthChartContainer
   | typeof DealTicketContainer
-  | typeof MarketInfoContainer
+  | typeof MarketInfoAccordionContainer
   | typeof OrderbookContainer
   | typeof TradesContainer;
 
@@ -53,7 +53,7 @@ const TradingViews = {
   Depth: requiresMarket(DepthChartContainer),
   Liquidity: requiresMarket(LiquidityContainer),
   Ticket: requiresMarket(DealTicketContainer),
-  Info: requiresMarket(MarketInfoContainer),
+  Info: requiresMarket(MarketInfoAccordionContainer),
   Orderbook: requiresMarket(OrderbookContainer),
   Trades: requiresMarket(TradesContainer),
   Positions: PositionsContainer,

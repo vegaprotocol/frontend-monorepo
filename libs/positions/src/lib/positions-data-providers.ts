@@ -357,10 +357,10 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
           status: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
         },
       }),
-    (callback, client, variables) =>
-      marketDataProvider(callback, client, { marketId: variables.marketId }),
-    (callback, client, variables) =>
-      marketInfoProvider(callback, client, { marketId: variables.marketId }),
+    (callback, client, { marketId }) =>
+      marketDataProvider(callback, client, { marketId }),
+    (callback, client, { marketId }) =>
+      marketInfoProvider(callback, client, { marketId }),
     openVolumeDataProvider,
   ],
   (data) => {
