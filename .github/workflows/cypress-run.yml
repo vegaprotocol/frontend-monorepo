@@ -73,6 +73,18 @@ jobs:
           CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
 
       ######
+      ## Show test summary on github page
+      ######
+
+      - name: Show test summary
+        if: success() || failure()
+        uses: dorny/test-reporter@v1
+        with:
+          name: UI Tests
+          path: mochawesome.json
+          reporter: mocha-json
+
+      ######
       ## Upload logs
       ######
 

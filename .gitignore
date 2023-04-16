@@ -46,3 +46,6 @@ cypress.env.json
 
 # Next.js
 .next
+
+#cypress
+/apps/trading-e2e/cypress/reports/html
