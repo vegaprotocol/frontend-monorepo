@@ -10,6 +10,7 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { ProposedMarkets } from './proposed-markets';
+import { TelemetryApproval } from './telemetry-approval';
 
 export const WelcomeNoticeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
@@ -55,6 +56,9 @@ export const WelcomeNoticeDialog = () => {
           <ExternalLink target="_blank" href={BLOG}>
             {t('Read about the mainnet launch')}
           </ExternalLink>
+        </li>
+        <li>
+          <TelemetryApproval />
         </li>
       </ul>
       <ProposedMarkets />
