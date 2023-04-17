@@ -91,7 +91,7 @@ jobs:
         run: yarn nx affected:test
 
       - name: Build affected
-        run: yarn nx affected:build
+        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
       # See affected apps
       - name: See affected apps
