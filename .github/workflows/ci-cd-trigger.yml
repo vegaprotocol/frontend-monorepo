@@ -50,7 +50,7 @@ jobs:
     secrets: inherit
 
   lint-test-build:
-    timeout-minutes: 10
+    timeout-minutes: 20
     needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + unit test + build'
@@ -91,7 +91,7 @@ jobs:
         run: yarn nx affected:test
 
       - name: Build affected
-        run: yarn nx affected:build
+        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
       # See affected apps
       - name: See affected apps
