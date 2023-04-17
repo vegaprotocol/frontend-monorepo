@@ -4,11 +4,12 @@ import * as Sentry from '@sentry/nextjs';
 import { BrowserTracing } from '@sentry/tracing';
 import { ENV } from '../config';
 
+const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
 export const STORAGE_KEY = 'vega_telemetry_approval';
 
 export const SentryInit = () => {
   const { dsn } = ENV;
-  if (dsn) {
+  if (dsn && Boolean(SENTRY_AUTH_TOKEN)) {
     Sentry.init({
       dsn,
       integrations: [new BrowserTracing()],
