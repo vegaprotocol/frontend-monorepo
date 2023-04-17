@@ -77,7 +77,6 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
 
   it('insufficient funds', () => {
     // 1001-DEPO-004
-    // Test
     mockWeb3DepositCalls({
       allowance: '1000',
       depositLifetimeLimit: '1000',
