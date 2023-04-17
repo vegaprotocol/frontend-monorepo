@@ -104,7 +104,11 @@ interface GetTotalCount<QueryData> {
 }
 
 interface GetDelta<SubscriptionData, Delta, Variables> {
-  (subscriptionData: SubscriptionData, variables?: Variables): Delta;
+  (
+    subscriptionData: SubscriptionData,
+    variables: Variables,
+    client: ApolloClient<object>
+  ): Delta;
 }
 
 export type Node = { id: string };
@@ -420,7 +424,7 @@ function makeDataProviderInternal<
     if (!subscriptionData || !getDelta || !update) {
       return;
     }
-    const delta = getDelta(subscriptionData, variables);
+    const delta = getDelta(subscriptionData, variables, client);
     if (loading) {
       updateQueue.push(delta);
     } else {
