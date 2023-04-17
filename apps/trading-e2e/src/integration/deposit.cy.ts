@@ -56,6 +56,15 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     );
   });
 
+  it('test', () => {
+    cy.getByTestId('enter-pubkey-manually').click();
+    cy.get(toAddressField).clear().type('INVALID_DEPOSIT_TO_ADDRESS');
+    cy.get(`[data-testid="${formFieldError}"][aria-describedby="to"]`).should(
+      'have.text',
+      'Invalid Vega key'
+    );
+  });
+
   it('invalid amount', () => {
     mockWeb3DepositCalls({
       allowance: '1000',
