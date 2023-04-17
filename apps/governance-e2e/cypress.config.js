@@ -25,6 +25,7 @@ module.exports = defineConfig({
     viewportWidth: 1440,
     viewportHeight: 900,
     numTestsKeptInMemory: 5,
+    testIsolation: false,
   },
   env: {
     ethProviderUrl: 'http://localhost:8545/',
