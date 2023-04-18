@@ -44,7 +44,8 @@ describe(
   function () {
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
-      vegaWalletSetSpecifiedApprovalAmount('1000');
+      ethereumWalletConnect();
+      cy.associateTokensToVegaWallet('1');
     });
 
     beforeEach('visit proposals tab', function () {
@@ -213,6 +214,7 @@ describe(
 
     // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060
     it('Newly created proposal details - ability to increase associated tokens - by voting again after association', function () {
+      vegaWalletSetSpecifiedApprovalAmount('1000');
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getSubmittedProposalFromProposalList(rawProposal.rationale.title)

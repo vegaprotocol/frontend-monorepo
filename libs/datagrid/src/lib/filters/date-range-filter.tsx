@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import type * as Schema from '@vegaprotocol/types';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
@@ -17,9 +17,9 @@ import { formatForInput } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 
-const defaultFilterValue: Schema.DateRange = {};
+const defaultValue: Schema.DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {
-  defaultRangeFilter?: Schema.DateRange;
+  defaultValue?: Schema.DateRange;
   maxSubDays?: number;
   maxNextDays?: number;
   maxDaysRange?: number;
@@ -27,8 +27,9 @@ export interface DateRangeFilterProps extends IFilterParams {
 
 export const DateRangeFilter = forwardRef(
   (props: DateRangeFilterProps, ref) => {
-    const defaultDates = props?.defaultRangeFilter || defaultFilterValue;
+    const defaultDates = props?.defaultValue || defaultValue;
     const [value, setValue] = useState<Schema.DateRange>(defaultDates);
+    const valueRef = useRef<Schema.DateRange>(value);
     const [error, setError] = useState<string>('');
     const [minStartDate, maxStartDate, minEndDate, maxEndDate] = useMemo(() => {
       const minStartDate =
@@ -93,7 +94,7 @@ export const DateRangeFilter = forwardRef(
         },
 
         isFilterActive() {
-          return value.start || value.end;
+          return valueRef.current.start || valueRef.current.end;
         },
 
         getModel() {
@@ -101,13 +102,13 @@ export const DateRangeFilter = forwardRef(
             return null;
           }
 
-          return { value };
+          return { value: valueRef.current };
         },
 
         setModel(model?: { value: Schema.DateRange } | null) {
-          setValue(
-            model?.value || props?.defaultRangeFilter || defaultFilterValue
-          );
+          valueRef.current =
+            model?.value || props?.defaultValue || defaultValue;
+          setValue(valueRef.current);
         },
       };
     });
@@ -185,10 +186,8 @@ export const DateRangeFilter = forwardRef(
       update = { ...update, end: checkForEndDate(endDate, startDate) };
 
       if (validate(name, date, update)) {
-        setValue((curr) => ({
-          ...curr,
-          ...update,
-        }));
+        valueRef.current = { ...valueRef.current, ...update };
+        setValue(valueRef.current);
       }
     };
     useEffect(() => {
@@ -241,7 +240,8 @@ export const DateRangeFilter = forwardRef(
             className="ag-standard-button ag-filter-apply-panel-button"
             onClick={() => {
               setError('');
-              setValue(defaultDates);
+              valueRef.current = defaultDates;
+              setValue(valueRef.current);
             }}
           >
             {t('Reset')}

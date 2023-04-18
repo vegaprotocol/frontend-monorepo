@@ -45,7 +45,7 @@ type CombinedData = {
 
 type SubscriptionData = QueryData;
 type Delta = Data;
-type Variables = { var: string };
+type Variables = { var: string; filter?: string[] };
 
 const update = jest.fn<
   ReturnType<Update<Data, Delta, Variables>>,
@@ -231,10 +231,14 @@ describe('data provider', () => {
     clientSubscribeSubscribe.mockClear();
   });
   it('memoize instance and unsubscribe if no subscribers', () => {
-    const subscription1 = subscribe(jest.fn(), client, variables);
-    const subscription2 = subscribe(jest.fn(), client, { ...variables });
-    // const subscription1 = subscribe(jest.fn(), client);
-    // const subscription2 = subscribe(jest.fn(), client);
+    const subscription1 = subscribe(jest.fn(), client, {
+      ...variables,
+      filter: ['1', '2'],
+    });
+    const subscription2 = subscribe(jest.fn(), client, {
+      ...variables,
+      filter: ['2', '1'],
+    });
     expect(clientSubscribeSubscribe.mock.calls.length).toEqual(1);
     subscription1.unsubscribe();
     expect(clientSubscribeUnsubscribe.mock.calls.length).toEqual(0);

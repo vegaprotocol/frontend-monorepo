@@ -547,7 +547,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
   return (
     <>
-      <ToastHeading>{t('Confirmed')}</ToastHeading>
+      <ToastHeading>
+        {tx.order?.status
+          ? getOrderToastTitle(tx.order.status)
+          : t('Confirmed')}
+      </ToastHeading>
       <p>{t('Your transaction has been confirmed ')}</p>
       {tx.txHash && (
         <p className="break-all">
@@ -634,25 +638,8 @@ export const useVegaTransactionToasts = () => {
   );
 
   const fromVegaTransaction = (tx: VegaStoredTxState): Toast => {
-    let content: ToastContent;
     const closeAfter = isFinal(tx) ? CLOSE_AFTER : undefined;
-    if (tx.status === VegaTxStatus.Requested) {
-      content = <VegaTxRequestedToastContent tx={tx} />;
-    }
-    if (tx.status === VegaTxStatus.Pending) {
-      content = <VegaTxPendingToastContentProps tx={tx} />;
-    }
-    if (tx.status === VegaTxStatus.Complete) {
-      content = <VegaTxCompleteToastsContent tx={tx} />;
-    }
-    if (tx.status === VegaTxStatus.Error) {
-      content = <VegaTxErrorToastContent tx={tx} />;
-    }
-
-    // Transaction can be successful but the order can be rejected by the network
-    const intent =
-      (tx.order && getOrderToastIntent(tx.order.status)) ||
-      intentMap[tx.status];
+    const { intent, content } = getVegaTransactionContentIntent(tx);
 
     return {
       id: `vega-${tx.id}`,
@@ -675,4 +662,28 @@ export const useVegaTransactionToasts = () => {
       txs.forEach((tx) => setToast(fromVegaTransaction(tx)));
     }
   );
+};
+
+export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
+  let content: ToastContent;
+  if (tx.status === VegaTxStatus.Requested) {
+    content = <VegaTxRequestedToastContent tx={tx} />;
+  }
+  if (tx.status === VegaTxStatus.Pending) {
+    content = <VegaTxPendingToastContentProps tx={tx} />;
+  }
+  if (tx.status === VegaTxStatus.Complete) {
+    content = <VegaTxCompleteToastsContent tx={tx} />;
+  }
+  if (tx.status === VegaTxStatus.Error) {
+    content = <VegaTxErrorToastContent tx={tx} />;
+  }
+
+  // Transaction can be successful but the order can be rejected by the network
+  const intent =
+    (tx.order &&
+      !isOrderAmendmentTransaction(tx.body) &&
+      getOrderToastIntent(tx.order.status)) ||
+    intentMap[tx.status];
+  return { intent, content };
 };
