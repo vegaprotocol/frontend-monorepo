@@ -1,10 +1,11 @@
 {
+  "name": "trading",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/trading",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "./tools/executors/next:build",
+      "executor": "@nrwl/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -15,11 +16,18 @@
         "production": {
           "optimization": true,
           "sourceMap": true
-        }
+        },
+        "capsule": {},
+        "devnet": {},
+        "mainnet": {},
+        "stagnet1": {},
+        "stagnet3": {},
+        "testnet": {},
+        "validator-testnet": {}
       }
     },
     "serve": {
-      "executor": "./tools/executors/next:serve",
+      "executor": "@nrwl/next:server",
       "options": {
         "buildTarget": "trading:build",
         "dev": true
@@ -28,13 +36,29 @@
         "production": {
           "buildTarget": "trading:build:production",
           "dev": false
-        }
+        },
+        "capsule": {},
+        "devnet": {},
+        "mainnet": {},
+        "stagnet1": {},
+        "stagnet3": {},
+        "testnet": {},
+        "validator-testnet": {}
       }
     },
     "export": {
-      "executor": "./tools/executors/next:export",
+      "executor": "@nrwl/next:export",
       "options": {
         "buildTarget": "trading:build:production"
+      },
+      "configurations": {
+        "capsule": {},
+        "devnet": {},
+        "mainnet": {},
+        "stagnet1": {},
+        "stagnet3": {},
+        "testnet": {},
+        "validator-testnet": {}
       }
     },
     "test": {

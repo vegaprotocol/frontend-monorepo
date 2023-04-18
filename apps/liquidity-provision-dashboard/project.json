@@ -1,4 +1,5 @@
 {
+  "name": "liquidity-provision-dashboard",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/liquidity-provision-dashboard/src",
   "projectType": "application",
@@ -47,7 +48,6 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/webpack:serve",
       "options": {
         "buildTarget": "liquidity-provision-dashboard:build",
         "hmr": true,

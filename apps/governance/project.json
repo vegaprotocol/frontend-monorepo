@@ -1,10 +1,10 @@
 {
+  "name": "governance",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/governance/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "./tools/executors/webpack:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -41,7 +41,6 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/webpack:serve",
       "options": {
         "port": 4210,
         "buildTarget": "governance:build:development",

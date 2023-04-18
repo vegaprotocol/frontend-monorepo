@@ -1,10 +1,10 @@
 {
+  "name": "multisig-signer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/multisig-signer/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "./tools/executors/webpack:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -38,7 +38,6 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/webpack:serve",
       "options": {
         "port": 3000,
         "buildTarget": "multisig-signer:build:development",

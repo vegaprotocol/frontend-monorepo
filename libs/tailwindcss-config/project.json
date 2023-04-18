@@ -1,5 +1,6 @@
 {
-  "root": "libs/tailwindcss-config",
+  "name": "tailwindcss-config",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tailwindcss-config/src",
   "projectType": "library",
   "targets": {
