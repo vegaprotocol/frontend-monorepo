@@ -91,5 +91,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
-          name: logs-${{ matrix.project }}
-          path: /home/runner/.vegacapsule/testnet/logs
+          name: test-report
+          path: frontend-monorepo/apps/trading-e2e/reports
