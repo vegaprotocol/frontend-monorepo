@@ -16,7 +16,9 @@
         },
         "live": {
           "devServerTarget": ""
-        }
+        },
+        "capsule": {},
+        "stagnet3": {}
       }
     },
     "lint": {
