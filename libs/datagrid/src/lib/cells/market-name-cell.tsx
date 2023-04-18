@@ -21,7 +21,7 @@ export const MarketNameCell = ({
       ev.preventDefault();
       ev.stopPropagation();
       if (onMarketClick) {
-        onMarketClick(id, ev.metaKey);
+        onMarketClick(id, ev.metaKey || ev.ctrlKey);
       }
     },
     [id, onMarketClick]

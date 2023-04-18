@@ -15,6 +15,7 @@ jobs:
         app: ${{ fromJSON(inputs.projects) }}
     name: ${{ matrix.app }}
     runs-on: ubuntu-22.04
+    timeout-minutes: 20
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -36,66 +37,131 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # https://docs.github.com/en/actions/learn-github-actions/contexts
-      - name: Check node version
-        id: tags
-        run: |
-          nodeVersion=$(cat .nvmrc | head -n 1)
-          echo ::set-output name=nodeVersion::${nodeVersion}
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
+          cache: yarn
 
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
+      # https://docs.github.com/en/actions/learn-github-actions/contexts
+      - name: Define variables
+        run: |
+          envName=''
+          dockerfile="dist.Dockerfile"
           if [[ "${{ github.event_name }}" = "push" ]]; then
-            envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
-            bucketName="${{ github.event.repository.name }}-$envName"
-            echo ::set-output name=bucketName::${bucketName}
-            echo ::set-output name=envName::${envName}
+            domain="vega.rocks"
+            if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
+              envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+              if [[ "${{ github.ref }}" =~ .*mainnet.* ]]; then
+                domain="vega.community"
+                if [[ "${{ matrix.app }}" = "trading" ]]; then
+                  dockerfile="ipfs.Dockerfile"
+                fi
+              fi
+            elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
+              envName="stagnet3"
+            fi
+            bucketName="${{ matrix.app }}.${envName}.${domain}"
+            echo BUCKET_NAME=${bucketName} >> $GITHUB_ENV
           fi
+          nodeVersion=$(cat .nvmrc | head -n 1)
+          echo ENV_NAME=${envName} >> $GITHUB_ENV
+          echo NODE_VERSION=${nodeVersion} >> $GITHUB_ENV
+          echo DOCKERFILE=docker/${dockerfile} >> $GITHUB_ENV
+
+      - name: Build local dist
+        if: ${{ env.DOCKERFILE != 'docker/ipfs.Dockerfile' }}
+        run: |
+          flags=""
+          if [[ ! -z "${{ env.ENV_NAME }}" ]]; then
+            if [[ "${{ env.ENV_NAME }}" != "ops-vega" ]]; then
+              flags="--env=${{ env.ENV_NAME }}"
+            fi
+          fi
+
+          if [ "${{ matrix.app }}" = "trading" ]; then
+            yarn nx export trading $flags || (yarn install && yarn nx export trading $flags)
+            DIST_LOCATION=dist/apps/trading/exported
+          else
+            yarn nx build ${{ matrix.app }} $flags || (yarn install && yarn nx build ${{ matrix.app }} $flags)
+            DIST_LOCATION=dist/apps/${{ matrix.app }}
+          fi
+          mv $DIST_LOCATION dist-result
+          tree dist-result
 
       - name: Build and export to local Docker
         id: docker_build
+        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
         uses: docker/build-push-action@v3
         with:
+          context: .
+          file: ${{ env.DOCKERFILE }}
           load: true
           build-args: |
             APP=${{ matrix.app }}
-            NODE_VERSION=${{ steps.tags.outputs.nodeVersion }}
-            ENV_NAME=${{ steps.tags.outputs.envName || '' }}
+            NODE_VERSION=${{ env.NODE_VERSION }}
+            ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
+      - name: Image digest
+        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
       - name: Sanity check docker image
+        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
         run: |
           echo "Check ipfs-hash"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat ipfs-hash
+          if [[ "${{ env.DOCKERFILE }}" = "docker/ipfs.Dockerfile" ]];  then
+            docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash
+          fi
 
           echo "List html directory"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local ls -lah
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree .'
 
-          echo "Copy dist to local filesystem"
+      - name: Copy dist to local filesystem
+        if: ${{ env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' }}
+        run: |
           docker create --name=dist ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
           docker cp dist:/usr/share/nginx/html dist
 
-          echo "Check local dist"
-          ls -al dist
+          echo "check local dist files"
+          tree dist/html
+          mv dist/html dist-result
 
       - name: Publish dist as docker image
         uses: docker/build-push-action@v3
         if: ${{ github.event_name == 'pull_request' }}
         with:
+          context: .
+          file: ${{ env.DOCKERFILE }}
           push: true
           build-args: |
             APP=${{ matrix.app }}
-            NODE_VERSION=${{ steps.tags.outputs.nodeVersion }}
+            NODE_VERSION=${{ env.NODE_VERSION }}
+            ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
 
-      # - uses: shallwefootball/s3-upload-action@master
-      #   if: ${{ github.event_name == 'push' }}
-      #   name: Upload dist S3
-      #   with:
-      #     aws_key_id: ${{ secrets.AWS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-      #     aws_bucket: ${{ steps.tags.outputs.bucketName }}
-      #     source_dir: 'dist'
+      # bucket creation in github.com/vegaprotocol/terraform//frontend
+      - name: Publish dist to s3
+        uses: jakejarvis/s3-sync-action@master
+        if: ${{ github.event_name == 'push' }}
+        with:
+          args: --acl private --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ env.BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-1'
+          SOURCE_DIR: 'dist-result'
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
@@ -103,6 +169,3 @@ jobs:
         with:
           labels: ${{ matrix.app }}-preview
           number: ${{ github.event.number }}
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}

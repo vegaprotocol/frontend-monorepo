@@ -5,6 +5,5 @@ export * from './lib/margin-data-provider';
 export * from './lib/margin-calculator';
 export * from './lib/positions-table';
 export * from './lib/use-market-margin';
-export * from './lib/use-market-position-open-volume';
 export * from './lib/use-open-volume';
 export * from './lib/use-positions-data';

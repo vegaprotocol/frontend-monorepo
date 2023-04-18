@@ -81,9 +81,10 @@ const MOCK_PREVIOUS_EPOCH: PreviousEpochQuery = {
             id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
             rewardScore: {
               rawValidatorScore: '0.25',
+              performanceScore: '0.9998677767864936',
             },
             rankingScore: {
-              performanceScore: '0.9998677767864936',
+              stakeScore: '0.2499583402766206',
             },
           },
         },
@@ -92,9 +93,10 @@ const MOCK_PREVIOUS_EPOCH: PreviousEpochQuery = {
             id: '966438c6bffac737cfb08173ffcb3f393c4692b099ad80cb45a82e2dc0a8cf99',
             rewardScore: {
               rawValidatorScore: '0.3',
+              performanceScore: '1',
             },
             rankingScore: {
-              performanceScore: '1',
+              stakeScore: '0.25',
             },
           },
         },
@@ -103,9 +105,10 @@ const MOCK_PREVIOUS_EPOCH: PreviousEpochQuery = {
             id: '12c81b738e8051152e1afe44376ec37bca9216466e6d44cdd772194bad0ada81',
             rewardScore: {
               rawValidatorScore: '0.35',
+              performanceScore: '0.999629748500531',
             },
             rankingScore: {
-              performanceScore: '0.999629748500531',
+              stakeScore: '0.2312',
             },
           },
         },

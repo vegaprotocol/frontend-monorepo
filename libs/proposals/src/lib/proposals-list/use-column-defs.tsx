@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
+import { DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -73,6 +74,10 @@ export const useColumnDefs = () => {
           value,
         }: VegaValueFormatterParams<ProposalListFieldsFragment, 'state'>) =>
           value ? ProposalStateMapping[value] : '-',
+        filter: SetFilter,
+        filterParams: {
+          set: ProposalStateMapping,
+        },
       },
       {
         colId: 'voting',
@@ -99,6 +104,7 @@ export const useColumnDefs = () => {
           }
           return '-';
         },
+        filter: false,
       },
       {
         colId: 'closing-date',
@@ -110,6 +116,7 @@ export const useColumnDefs = () => {
           ProposalListFieldsFragment,
           'terms.closingDatetime'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
+        filter: DateRangeFilter,
       },
       {
         colId: 'enactment-date',
@@ -121,13 +128,18 @@ export const useColumnDefs = () => {
           ProposalListFieldsFragment,
           'terms.enactmentDatetime'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
+        filter: DateRangeFilter,
       },
     ];
   }, [VEGA_TOKEN_URL, requiredMajorityPercentage]);
   const defaultColDef: ColDef = useMemo(() => {
     return {
-      sortable: false,
+      sortable: true,
       cellClass: cellCss,
+      flex: 1,
+      resizable: true,
+      filter: true,
+      filterParams: { buttons: ['reset'] },
     };
   }, []);
   return useMemo(

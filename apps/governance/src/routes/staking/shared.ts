@@ -15,7 +15,8 @@ export const getLastEpochScoreAndPerformance = (
 
   return {
     rawValidatorScore: validator?.rewardScore?.rawValidatorScore,
-    performanceScore: validator?.rankingScore?.performanceScore,
+    performanceScore: validator?.rewardScore?.performanceScore,
+    stakeScore: validator?.rankingScore?.stakeScore,
   };
 };
 
@@ -42,31 +43,26 @@ export const getPerformancePenalty = (performanceScore?: string) =>
     2
   );
 
-export const getOverstakedAmount = (
-  validatorScore: string | null | undefined,
-  totalStake: string,
-  stakedOnNode: string
-) => {
-  const toReturn = validatorScore
-    ? new BigNumber(stakedOnNode).minus(
-        new BigNumber(validatorScore).times(new BigNumber(totalStake))
-      )
-    : new BigNumber(0);
-
-  return toReturn.isNegative() ? new BigNumber(0) : toReturn;
-};
-
 export const getOverstakingPenalty = (
-  overstakedAmount: BigNumber,
-  stakedOnNode: string
+  validatorScore: string | null | undefined,
+  stakeScore: string | null | undefined
 ) => {
+  if (!validatorScore || !stakeScore) {
+    return '0%';
+  }
+
   // avoid division by zero
-  if (new BigNumber(stakedOnNode).isZero() || overstakedAmount.isZero()) {
-    return '0';
+  if (
+    new BigNumber(validatorScore).isZero() ||
+    new BigNumber(stakeScore).isZero()
+  ) {
+    return '0%';
   }
 
   return formatNumberPercentage(
-    overstakedAmount.dividedBy(new BigNumber(stakedOnNode)).times(100),
+    new BigNumber(1)
+      .minus(new BigNumber(validatorScore).dividedBy(new BigNumber(stakeScore)))
+      .times(100),
     2
   );
 };

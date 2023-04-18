@@ -1,8 +1,6 @@
-import React from 'react';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
-import { addDecimal } from '@vegaprotocol/utils';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
@@ -48,12 +46,12 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     throttle(() => {
       dataRef.current = {
         ...marketDataRef.current,
-        indicativePrice: marketDataRef.current?.indicativePrice
-          ? getPriceLevel(
-              marketDataRef.current.indicativePrice,
-              resolutionRef.current
-            )
-          : undefined,
+        indicativePrice:
+          marketDataRef.current?.indicativePrice &&
+          getPriceLevel(
+            marketDataRef.current.indicativePrice,
+            resolutionRef.current
+          ),
         midPrice: getMidPrice(
           rawDataRef.current?.depth.sell,
           rawDataRef.current?.depth.buy,
@@ -148,13 +146,12 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     variables,
   });
 
-  marketDataRef.current = marketData;
+  if (!marketDataRef.current && marketData) {
+    marketDataRef.current = marketData;
+  }
 
   useEffect(() => {
     const throttleRunner = updateOrderbookData.current;
-    if (!marketDataRef.current) {
-      return;
-    }
     if (!data) {
       dataRef.current = { rows: null };
       setOrderbookData(dataRef.current);
@@ -162,10 +159,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     }
     dataRef.current = {
       ...marketDataRef.current,
-      indicativePrice: getPriceLevel(
-        marketDataRef.current.indicativePrice,
-        resolution
-      ),
+      indicativePrice:
+        marketDataRef.current?.indicativePrice &&
+        getPriceLevel(marketDataRef.current.indicativePrice, resolution),
       midPrice: getMidPrice(data.depth.sell, data.depth.buy, resolution),
       rows: compactRows(data.depth.sell, data.depth.buy, resolution),
     };
@@ -175,7 +171,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     return () => {
       throttleRunner.cancel();
     };
-  }, [data, marketData, resolution]);
+  }, [data, resolution]);
 
   useEffect(() => {
     resolutionRef.current = resolution;
@@ -197,10 +193,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
         onResolutionChange={(resolution: number) => setResolution(resolution)}
-        onClick={(price?: string | number) => {
+        onClick={(price: string) => {
           if (price) {
-            const priceValue = addDecimal(price, market?.decimalPlaces ?? 0);
-            updateOrder(marketId, { price: priceValue });
+            updateOrder(marketId, { price });
           }
         }}
       />

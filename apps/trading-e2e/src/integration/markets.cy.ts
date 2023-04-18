@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery, checkSorting } from '@vegaprotocol/cypress';
 import { marketsQuery } from '@vegaprotocol/mock';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 
@@ -85,6 +85,7 @@ describe('markets table', { tags: '@smoke' }, () => {
     cy.getByTestId('view-market-list-link')
       .should('have.attr', 'href', '#/markets/all')
       .click();
+
     cy.get('[data-testid="All markets"]').should(
       'have.attr',
       'data-state',
@@ -116,6 +117,85 @@ describe('markets table', { tags: '@smoke' }, () => {
         'href',
         `${Cypress.env('VEGA_TOKEN_URL')}/proposals/propose/new-market`
       );
+  });
+  it('proposed markets tab should be sorted properly', () => {
+    cy.getByTestId('view-market-list-link').click();
+    cy.get('[data-testid="Proposed markets"]').click();
+    const marketColDefault = [
+      'ETHUSD',
+      'LINKUSD',
+      'ETHUSD',
+      'ETHDAI.MF21',
+      'AAPL.MF21',
+      'BTCUSD.MF21',
+      'TSLA.QM21',
+      'AAVEDAI.MF21',
+      'ETHBTC.QM21',
+      'UNIDAI.MF21',
+    ];
+    const marketColAsc = [
+      'AAPL.MF21',
+      'AAVEDAI.MF21',
+      'BTCUSD.MF21',
+      'ETHBTC.QM21',
+      'ETHDAI.MF21',
+      'ETHUSD',
+      'ETHUSD',
+      'LINKUSD',
+      'TSLA.QM21',
+      'UNIDAI.MF21',
+    ];
+    const marketColDesc = [
+      'UNIDAI.MF21',
+      'TSLA.QM21',
+      'LINKUSD',
+      'ETHUSD',
+      'ETHUSD',
+      'ETHDAI.MF21',
+      'ETHBTC.QM21',
+      'BTCUSD.MF21',
+      'AAVEDAI.MF21',
+      'AAPL.MF21',
+    ];
+    checkSorting('market', marketColDefault, marketColAsc, marketColDesc);
+
+    const stateColDefault = [
+      'Open',
+      'Passed',
+      'Waiting for Node Vote',
+      'Open',
+      'Passed',
+      'Open',
+      'Passed',
+      'Open',
+      'Waiting for Node Vote',
+      'Open',
+    ];
+    const stateColAsc = [
+      'Open',
+      'Open',
+      'Open',
+      'Open',
+      'Open',
+      'Passed',
+      'Passed',
+      'Passed',
+      'Waiting for Node Vote',
+      'Waiting for Node Vote',
+    ];
+    const stateColDesc = [
+      'Waiting for Node Vote',
+      'Waiting for Node Vote',
+      'Passed',
+      'Passed',
+      'Passed',
+      'Open',
+      'Open',
+      'Open',
+      'Open',
+      'Open',
+    ];
+    checkSorting('state', stateColDefault, stateColAsc, stateColDesc);
   });
 
   it('opening auction subsets should be properly displayed', () => {

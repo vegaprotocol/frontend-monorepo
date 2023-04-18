@@ -1,4 +1,11 @@
-import { waitFor, fireEvent, render, screen } from '@testing-library/react';
+import {
+  waitFor,
+  fireEvent,
+  render,
+  screen,
+  act,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
@@ -61,6 +68,7 @@ beforeEach(() => {
     submitDeposit: jest.fn(),
     submitFaucet: jest.fn(),
     onDisconnect: jest.fn(),
+    handleAmountChange: jest.fn(),
     approveTxId: null,
     faucetTxId: null,
     isFaucetable: true,
@@ -140,12 +148,14 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Insufficient amount in Ethereum wallet')
+        await screen.findByText(
+          "You can't deposit more than you have in your Ethereum wallet, 5"
+        )
       ).toBeInTheDocument();
     });
 
     it('fails when submitted amount is more than the maximum limit', async () => {
-      render(<DepositForm {...props} />);
+      render(<DepositForm {...props} selectedAsset={asset} />);
 
       const amountMoreThanLimit = '21';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -154,7 +164,9 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Amount is above lifetime deposit limit')
+        await screen.findByText(
+          "You can't deposit more than your remaining deposit allowance, 10 asset-symbol"
+        )
       ).toBeInTheDocument();
     });
 
@@ -178,7 +190,9 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Amount is above approved amount')
+        await screen.findByText(
+          "You can't deposit more than your approved deposit amount, 30"
+        )
       ).toBeInTheDocument();
     });
 
@@ -282,8 +296,6 @@ describe('Deposit form', () => {
     expect(screen.getByTestId('BALANCE_AVAILABLE_value')).toHaveTextContent(
       '50'
     );
-    expect(screen.getByTestId('MAX_LIMIT_value')).toHaveTextContent('20');
-    expect(screen.getByTestId('DEPOSITED_value')).toHaveTextContent('10');
     expect(screen.getByTestId('REMAINING_value')).toHaveTextContent('10');
 
     fireEvent.change(screen.getByLabelText('Amount'), {
@@ -363,5 +375,33 @@ describe('Deposit form', () => {
     expect(screen.getByTestId('chain-error')).toHaveTextContent(
       /this app only works on/i
     );
+  });
+
+  it('Remaining deposit allowance tooltip should be rendered', async () => {
+    render(<DepositForm {...props} selectedAsset={asset} />);
+    await act(async () => {
+      await userEvent.hover(screen.getByText('Remaining deposit allowance'));
+    });
+    await waitFor(async () => {
+      await expect(
+        screen.getByRole('tooltip', {
+          name: /VEGA has a lifetime deposit limit of 20 asset-symbol per address/,
+        })
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('Ethereum deposit cap tooltip should be rendered', async () => {
+    render(<DepositForm {...props} selectedAsset={asset} />);
+    await act(async () => {
+      await userEvent.hover(screen.getByText('Ethereum deposit cap'));
+    });
+    await waitFor(async () => {
+      await expect(
+        screen.getByRole('tooltip', {
+          name: /The deposit cap is set when you approve an asset for use with this app/,
+        })
+      ).toBeInTheDocument();
+    });
   });
 });

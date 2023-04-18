@@ -8,6 +8,7 @@ import {
 import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
+  createDocsLinks,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -23,6 +24,7 @@ import {
   Tabs,
   Link as UiToolkitLink,
   Indicator,
+  ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
@@ -37,6 +39,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 
 import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 const enum LiquidityTabs {
   Active = 'active',
@@ -144,6 +147,7 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
     market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
     market?.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const { VEGA_DOCS_URL } = useEnvironment();
 
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,
@@ -210,6 +214,13 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
       </HeaderStat>
       <HeaderStat heading={t('Market ID')}>
         <div className="break-word">{marketId}</div>
+      </HeaderStat>
+      <HeaderStat heading={t('Learn more')}>
+        {VEGA_DOCS_URL && (
+          <ExternalLink href={createDocsLinks(VEGA_DOCS_URL).LIQUIDITY}>
+            {t('Providing liquidity')}
+          </ExternalLink>
+        )}
       </HeaderStat>
     </Header>
   );

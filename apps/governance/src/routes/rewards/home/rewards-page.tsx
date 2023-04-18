@@ -114,7 +114,7 @@ export const RewardsPage = () => {
               </p>
             </div>
 
-            <div className="w-[440px]">
+            <div className="w-[360px]">
               <Toggle
                 name="epoch-reward-view-toggle"
                 toggles={[

@@ -18,7 +18,6 @@ import {
   DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
   TOTAL_MARGIN_AVAILABLE,
 } from '../constants';
-import { useOrderCloseOut } from './use-order-closeout';
 import { useMarketAccountBalance } from '@vegaprotocol/accounts';
 import { getDerivedPrice } from '../utils/get-price';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
@@ -49,12 +48,6 @@ export const useFeeDealTicketDetails = (
     skip: !pubKey || !market || !order.size || !price,
   });
 
-  const estCloseOut = useOrderCloseOut({
-    order,
-    market,
-    marketData,
-  });
-
   const notionalSize = useMemo(() => {
     if (price && order.size) {
       return toBigNum(order.size, market.positionDecimalPlaces)
@@ -74,16 +67,8 @@ export const useFeeDealTicketDetails = (
       notionalSize,
       accountBalance,
       estimateOrder: estMargin?.estimateOrder,
-      estCloseOut,
     };
-  }, [
-    market,
-    assetSymbol,
-    notionalSize,
-    accountBalance,
-    estMargin,
-    estCloseOut,
-  ]);
+  }, [market, assetSymbol, notionalSize, accountBalance, estMargin]);
 };
 
 export interface FeeDetails {
@@ -92,7 +77,6 @@ export interface FeeDetails {
   market: Market;
   assetSymbol: string;
   notionalSize: string | null;
-  estCloseOut: string | null;
   estimateOrder: EstimateOrderQuery['estimateOrder'] | undefined;
   estimatedInitialMargin: string;
   estimatedTotalInitialMargin: string;

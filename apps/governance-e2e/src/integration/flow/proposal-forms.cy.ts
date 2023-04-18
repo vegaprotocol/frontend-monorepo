@@ -218,7 +218,7 @@ context(
 
     it('Unable to submit new market proposal with missing/invalid fields', function () {
       const errorMsg =
-        'Invalid params: the transaction is not a valid Vega command: unknown field "filters" in vega.DataSourceDefinition';
+        'Invalid params: the transaction does not use a valid Vega command: unknown field "invalid" in vega.NewMarket';
 
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalSubmitButton).should('be.visible').click();
@@ -436,7 +436,7 @@ context(
       });
     });
 
-    it.only('Able to submit update asset proposal using max deadline', function () {
+    it('Able to submit update asset proposal using max deadline', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
       cy.get(maxVoteDeadline).click();

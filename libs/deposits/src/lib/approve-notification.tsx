@@ -51,11 +51,12 @@ export const ApproveNotification = ({
         intent={intent}
         testId="approve-default"
         message={t(
-          `Before you can make a deposit of your chosen asset, ${selectedAsset?.symbol}, you need to approve its use in your Ethereum wallet`
+          'Before you can make a deposit of your chosen asset, %s, you need to approve its use in your Ethereum wallet',
+          selectedAsset?.symbol
         )}
         buttonProps={{
           size: 'sm',
-          text: `Approve ${selectedAsset?.symbol}`,
+          text: t('Approve %s', selectedAsset?.symbol),
           action: onApprove,
           dataTestId: 'approve-submit',
         }}
@@ -68,13 +69,12 @@ export const ApproveNotification = ({
         intent={intent}
         testId="reapprove-default"
         message={t(
-          `Approve again to deposit more than ${formatNumber(
-            balances.allowance.toString()
-          )}`
+          'Approve again to deposit more than %s',
+          formatNumber(balances.allowance.toString())
         )}
         buttonProps={{
           size: 'sm',
-          text: `Approve ${selectedAsset?.symbol}`,
+          text: t('Approve %s', selectedAsset?.symbol),
           action: onApprove,
           dataTestId: 'reapprove-submit',
         }}
@@ -157,7 +157,8 @@ const ApprovalTxFeedback = ({
           intent={Intent.Warning}
           testId="approve-requested"
           message={t(
-            `Go to your Ethereum wallet and approve the transaction to enable the use of ${selectedAsset?.symbol}`
+            'Go to your Ethereum wallet and approve the transaction to enable the use of %s',
+            selectedAsset?.symbol
           )}
         />
       </div>
@@ -174,7 +175,8 @@ const ApprovalTxFeedback = ({
             <>
               <p>
                 {t(
-                  `Your ${selectedAsset?.symbol} is being confirmed by the Ethereum network. When this is complete, you can continue your deposit`
+                  'Your %s approval is being confirmed by the Ethereum network. When this is complete, you can continue your deposit',
+                  selectedAsset?.symbol
                 )}{' '}
               </p>
               {txLink && <p>{txLink}</p>}
@@ -194,13 +196,10 @@ const ApprovalTxFeedback = ({
           message={
             <>
               <p>
-                {t(
-                  `You can now make deposits in ${
-                    selectedAsset?.symbol
-                  }, up to a maximum of ${formatNumber(
-                    allowance?.toString() || 0
-                  )}`
-                )}
+                {t('You approved deposits of up to %s %s.', [
+                  selectedAsset?.symbol,
+                  formatNumber(allowance?.toString() || 0),
+                ])}
               </p>
               {txLink && <p>{txLink}</p>}
             </>
