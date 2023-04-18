@@ -222,9 +222,11 @@ export function closeStakingDialog() {
     'contain.text',
     'At the beginning of the next epoch'
   );
-  cy.get('[data-testid="dialog-content"]:visible').within(() => {
-    cy.get('a').should('have.text', 'Back to Staking').click();
-  });
+  cy.get('[data-testid="dialog-content"]:visible')
+    .first()
+    .within(() => {
+      cy.get('a').should('have.text', 'Back to Staking').click();
+    });
 }
 
 export function validateWalletCurrency(
