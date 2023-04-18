@@ -44,7 +44,7 @@ export const Layout = () => {
     <>
       <div
         className={classNames(
-          'min-h-screen'
+          'min-h-screen',
           'mx-auto my-0',
           'grid grid-rows-[auto_1fr_auto] grid-cols-1',
           'border-vega-light-200 dark:border-vega-dark-200',
