@@ -190,31 +190,35 @@ context(
           .should('contain', 1.0, txTimeout);
         closeStakingDialog();
         navigateTo(navigation.validators);
-        cy.get(`[row-id="${0}"]`).within(() => {
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .should('have.text', '2.00')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalShare)
-            .should('have.text', '66.67%')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .scrollIntoView()
-            .should('have.text', '2.00')
-            .and('be.visible');
-        });
-        cy.get(`[row-id="${1}"]`).within(() => {
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .scrollIntoView()
-            .should('have.text', '1.00')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalShare)
-            .should('have.text', '33.33%')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .scrollIntoView()
-            .should('have.text', '1.00')
-            .and('be.visible');
-        });
+        cy.get(`[row-id="${0}"]`)
+          .first()
+          .within(() => {
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .should('have.text', '2.00')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalShare)
+              .should('have.text', '66.67%')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .scrollIntoView()
+              .should('have.text', '2.00')
+              .and('be.visible');
+          });
+        cy.get(`[row-id="${1}"]`)
+          .first()
+          .within(() => {
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .scrollIntoView()
+              .should('have.text', '1.00')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalShare)
+              .should('have.text', '33.33%')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .scrollIntoView()
+              .should('have.text', '1.00')
+              .and('be.visible');
+          });
       });
 
       // 2001-STKE-041

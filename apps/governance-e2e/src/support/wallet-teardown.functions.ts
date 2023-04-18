@@ -9,7 +9,7 @@ import {
 import { ethers, Wallet } from 'ethers';
 
 const associatedAmountInWallet = '[data-testid="associated-amount"]:visible';
-const vegaWalletContainer = 'aside [data-testid="vega-wallet"]';
+const vegaWalletContainer = 'aside [data-testid="vega-wallet"]:visible';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
