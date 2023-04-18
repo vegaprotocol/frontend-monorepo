@@ -23,7 +23,6 @@ import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/stakin
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
 
-const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const openProposals = '[data-testid="open-proposals"]';
 const voteStatus = '[data-testid="vote-status"]';
 const proposalClosingDate = '[data-testid="vote-details"]';
