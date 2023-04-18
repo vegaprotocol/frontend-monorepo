@@ -1,15 +1,20 @@
+import { useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
 import type { AggregatedLedgerEntriesNode } from './ledger-entries-data-provider';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
 import type * as Types from '@vegaprotocol/types';
 
+const getProtoHost = (vegaurl: string) => {
+  const loc = new URL(vegaurl);
+  return `${loc.protocol}//${loc.host}`;
+};
 export interface Filter {
   vegaTime?: {
     value: Schema.DateRange;
@@ -47,9 +52,20 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
   useEffect(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, [extractedData]);
+  const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
+  const protohost = VEGA_URL ? getProtoHost(VEGA_URL) : '';
 
   return (
     <div className="h-full relative">
+      {protohost && (
+        <Link
+          className="h-[30px] text-sm p-2"
+          title={t('Download all to .csv file')}
+          href={`${protohost}/api/v2/ledgerentry/export?partyId=${partyId}`}
+        >
+          {t('Export all to .csv file')}
+        </Link>
+      )}
       <LedgerTable
         ref={gridRef}
         rowData={extractedData}
