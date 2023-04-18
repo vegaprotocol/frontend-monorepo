@@ -46,8 +46,10 @@ export const Links: ConsoleLinks = {
     marketId ? trimEnd(`${Routes.MARKET}/${marketId}`, '/') : Routes.MARKET,
   [Routes.MARKETS]: () => Routes.MARKETS,
   [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
-  [Routes.LIQUIDITY]: (marketId: string) =>
-    Routes.LIQUIDITY.replace(':marketId', marketId),
+  [Routes.LIQUIDITY]: (marketId: string | null | undefined) =>
+    marketId
+      ? trimEnd(`${Routes.LIQUIDITY}/${marketId}`, '/')
+      : Routes.LIQUIDITY,
   [Routes.SETTINGS]: () => Routes.SETTINGS,
 };
 
@@ -76,6 +78,16 @@ const routerConfig: RouteObject[] = [
   {
     path: Routes.LIQUIDITY,
     element: <LazyLiquidity />,
+    children: [
+      {
+        index: true,
+        element: <LazyLiquidity />,
+      },
+      {
+        path: ':marketId',
+        element: <LazyLiquidity />,
+      },
+    ],
   },
   {
     path: Routes.PORTFOLIO,
