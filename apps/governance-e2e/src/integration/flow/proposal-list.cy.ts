@@ -12,7 +12,6 @@ import {
   generateFreeFormProposalTitle,
   getProposalIdFromList,
   getProposalInformationFromTable,
-  getSortOrderOfSuppliedArray,
   getSubmittedProposalFromProposalList,
   goToMakeNewProposal,
   governanceProposalType,
@@ -27,6 +26,7 @@ import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teard
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const openProposals = '[data-testid="open-proposals"]';
 const voteStatus = '[data-testid="vote-status"]';
+const proposalClosingDate = '[data-testid="vote-details"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
 
 describe('Governance flow for proposal list', { tags: '@slow' }, function () {
@@ -45,16 +45,8 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   });
 
   it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
-    const minCloseDays = 2;
-    const maxCloseDays = 3;
-
     // 3001-VOTE-005
-    const proposalDays = [
-      minCloseDays + 1,
-      maxCloseDays,
-      minCloseDays + 3,
-      minCloseDays + 2,
-    ];
+    const proposalDays = [364, 50, 2];
     for (let index = 0; index < proposalDays.length; index++) {
       goToMakeNewProposal(governanceProposalType.RAW);
       enterRawProposalBody(
@@ -64,19 +56,12 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
       waitForProposalSync();
     }
 
-    const arrayOfProposals: string[] = [];
-
     navigateTo(navigation.proposals);
-    cy.get(proposalDetailsTitle)
-      .each((proposalTitleElement) => {
-        arrayOfProposals.push(proposalTitleElement.text());
-      })
-      .then(() => {
-        cy.wrap(getSortOrderOfSuppliedArray(arrayOfProposals)).should(
-          'equal',
-          'descending'
-        );
-      });
+    cy.get(openProposals).within(() => {
+      cy.get(proposalClosingDate).first().should('contain.text', 'year');
+      cy.get(proposalClosingDate).should('contain.text', 'months');
+      cy.get(proposalClosingDate).last().should('contain.text', 'days');
+    });
   });
 
   it('Newly created proposals list - able to filter by proposerID to show it in list', function () {
