@@ -33,13 +33,16 @@ export function addVegaWalletConnect() {
   Cypress.Commands.add('connectVegaWallet', (isMobile) => {
     mockConnectWallet();
     cy.highlight(`Connecting Vega Wallet`);
-    const connectVegaWaletBtn = Cypress.$(
-      `[data-testid=connect-vega-wallet${isMobile ? '-mobile' : ''}]:visible`
-    );
-    if (connectVegaWaletBtn.length > 0) {
-      cy.get(
-        `[data-testid=connect-vega-wallet${isMobile ? '-mobile' : ''}]:visible`
-      ).click();
+    const connectVegaWalletButton = `[data-testid=connect-vega-wallet${
+      isMobile ? '-mobile' : ''
+    }]:visible`;
+
+    cy.get(connectVegaWalletButton).then((btn) => {
+      if (btn.length === 0) {
+        cy.log('could not find the button, perhaps already connected');
+        return;
+      }
+      cy.wrap(btn).click();
       cy.get('[data-testid=connectors-list]')
         .find('[data-testid="connector-jsonRpc"]')
         .click();
@@ -50,9 +53,7 @@ export function addVegaWalletConnect() {
       );
       cy.getByTestId('dialog-close').click();
       cy.get('[data-testid=dialog-content]').should('not.exist');
-    } else {
-      cy.log('could not find the button, perhaps already connected');
-    }
+    });
   });
 }
 

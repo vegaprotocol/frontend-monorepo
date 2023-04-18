@@ -218,11 +218,11 @@ export function ensureSpecifiedUnstakedTokensAreAssociated(
 }
 
 export function closeStakingDialog() {
-  cy.getByTestId('dialog-title').should(
+  cy.get('[data-testid="dialog-title"]:visible').should(
     'contain.text',
     'At the beginning of the next epoch'
   );
-  cy.getByTestId('dialog-content').within(() => {
+  cy.get('[data-testid="dialog-content"]:visible').within(() => {
     cy.get('a').should('have.text', 'Back to Staking').click();
   });
 }
