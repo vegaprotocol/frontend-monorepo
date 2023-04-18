@@ -23,12 +23,18 @@ fragment DelegationFields on Delegation {
 
 query Rewards(
   $partyId: ID!
-  $delegationsPagination: Pagination
+  $fromEpoch: Int
+  $toEpoch: Int
   $rewardsPagination: Pagination
+  $delegationsPagination: Pagination
 ) {
   party(id: $partyId) {
     id
-    rewardsConnection(pagination: $rewardsPagination) {
+    rewardsConnection(
+      fromEpoch: $fromEpoch
+      toEpoch: $toEpoch
+      pagination: $rewardsPagination
+    ) {
       edges {
         node {
           ...RewardFields
@@ -43,14 +49,6 @@ query Rewards(
       }
     }
   }
-  epoch {
-    id
-    timestamps {
-      start
-      end
-      expiry
-    }
-  }
 }
 
 fragment EpochRewardSummaryFields on EpochRewardSummary {
@@ -60,7 +58,10 @@ fragment EpochRewardSummaryFields on EpochRewardSummary {
   rewardType
 }
 
-query EpochAssetsRewards($epochRewardSummariesPagination: Pagination) {
+query EpochAssetsRewards(
+  $epochRewardSummariesFilter: RewardSummaryFilter
+  $epochRewardSummariesPagination: Pagination
+) {
   assetsConnection {
     edges {
       node {
@@ -69,16 +70,14 @@ query EpochAssetsRewards($epochRewardSummariesPagination: Pagination) {
       }
     }
   }
-  epochRewardSummaries(pagination: $epochRewardSummariesPagination) {
+  epochRewardSummaries(
+    filter: $epochRewardSummariesFilter
+    pagination: $epochRewardSummariesPagination
+  ) {
     edges {
       node {
         ...EpochRewardSummaryFields
       }
-    }
-  }
-  epoch {
-    timestamps {
-      expiry
     }
   }
 }
