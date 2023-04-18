@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import throttle from 'lodash/throttle';
-import isEqual from 'lodash/isEqual';
+import isEqualWith from 'lodash/isEqualWith';
 import { useApolloClient } from '@apollo/client';
-import { usePrevious } from './use-previous';
 import type { OperationVariables } from '@apollo/client';
 import type { Subscribe, Load, UpdateCallback } from '@vegaprotocol/utils';
+import { variablesIsEqualCustomizer } from '@vegaprotocol/utils';
 
 export interface useDataProviderParams<
   Data,
@@ -62,13 +62,19 @@ export const useDataProvider = <
   const flushRef = useRef<(() => void) | undefined>(undefined);
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
   const loadRef = useRef<Load<Data> | undefined>(undefined);
-  const prevVariables = usePrevious(props.variables);
-  const [variables, setVariables] = useState(props.variables);
-  useEffect(() => {
-    if (!isEqual(prevVariables, props.variables)) {
-      setVariables(props.variables);
+  const variablesRef = useRef<Variables>(props.variables);
+  const variables = useMemo(() => {
+    if (
+      !isEqualWith(
+        variablesRef.current,
+        props.variables,
+        variablesIsEqualCustomizer
+      )
+    ) {
+      variablesRef.current = props.variables;
     }
-  }, [props.variables, prevVariables]);
+    return variablesRef.current;
+  }, [props.variables]);
   const flush = useCallback(() => {
     if (flushRef.current) {
       flushRef.current();
