@@ -17,7 +17,12 @@ import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
 import type { EthereumConfig } from '@vegaprotocol/web3';
-import { createConnectors, useWeb3ConnectStore } from '@vegaprotocol/web3';
+import {
+  createConnectors,
+  useEthTransactionManager,
+  useEthWithdrawApprovalsManager,
+  useWeb3ConnectStore,
+} from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
@@ -75,6 +80,11 @@ const Web3Container = ({
   chainId: number;
   providerUrl: string;
 }) => {
+  const InitializeHandlers = () => {
+    useEthTransactionManager();
+    useEthWithdrawApprovalsManager();
+    return null;
+  };
   const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
     store.connectors,
     store.initialize,
@@ -125,6 +135,7 @@ const Web3Container = ({
                       <NetworkInfo />
                     </footer>
                   </AppLayout>
+                  <InitializeHandlers />
                   <VegaWalletDialogs />
                   <TransactionModal />
                   <WithdrawalDialog />
