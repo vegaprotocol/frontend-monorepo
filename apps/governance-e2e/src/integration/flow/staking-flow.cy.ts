@@ -40,11 +40,14 @@ const stakeAddStakeRadioButton = 'add-stake-radio';
 const stakeMaximumTokens = 'token-amount-use-maximum';
 const vegaWalletAssociatedBalance = 'currency-value';
 const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
-const ethWalletContainer = 'ethereum-wallet';
+const ethWallet = 'ethereum-wallet';
 const vegaWallet = 'vega-wallet';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
+
+const getEthereumWallet = () => cy.get(`[data-testid="${ethWallet}"]:visible`);
+const getVegaWallet = () => cy.get(`[data-testid="${vegaWallet}"]:visible`);
 
 context(
   'Staking Tab - with eth and vega wallets connected',
@@ -329,11 +332,11 @@ context(
         verifyStakedBalance(2.0);
         closeStakingDialog();
         stakingPageDisassociateAllTokens();
-        cy.getByTestId(ethWalletContainer).within(() => {
+        getEthereumWallet().within(() => {
           cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
         verifyEthWalletTotalAssociatedBalance('0.0');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '0.00'
@@ -357,11 +360,11 @@ context(
         verifyStakedBalance(2.0);
         closeStakingDialog();
         stakingPageDisassociateAllTokens('contract');
-        cy.getByTestId(ethWalletContainer).within(() => {
+        getEthereumWallet().within(() => {
           cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
         verifyEthWalletTotalAssociatedBalance('0.0');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '0.00'
@@ -386,7 +389,7 @@ context(
         closeStakingDialog();
         stakingPageDisassociateTokens('1');
         verifyEthWalletTotalAssociatedBalance('2.0');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '2.00'
@@ -453,7 +456,7 @@ context(
         verifyUnstakedBalance(0.0);
         closeStakingDialog();
         stakingPageAssociateTokens('6');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '12.00'

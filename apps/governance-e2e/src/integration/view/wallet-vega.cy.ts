@@ -7,7 +7,7 @@ const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = '[data-testid="connect-vega-wallet"]';
 const getVegaLink = '[data-testid="link"]';
-const dialog = '[role="dialog"]';
+const dialog = '[role="dialog"]:visible';
 const dialogHeader = '[data-testid="dialog-title"]';
 const walletDialogHeader = '[data-testid="wallet-dialog-title"]';
 const connectorsList = '[data-testid="connectors-list"]';
