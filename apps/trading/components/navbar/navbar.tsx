@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from 'react';
+import { COG } from '@blueprintjs/icons/src/generated/iconNames';
 import {
   DApp,
   NetworkSwitcher,
@@ -106,6 +107,11 @@ export const Navbar = ({
             </NavigationContent>
           </NavigationItem>
         )}
+        <NavigationItem>
+          <NavigationLink data-testid="Settings" to={Links[Routes.SETTINGS]()}>
+            <Icon name={COG} className="!align-middle" />
+          </NavigationLink>
+        </NavigationItem>
       </NavigationList>
       <NavigationList
         className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
