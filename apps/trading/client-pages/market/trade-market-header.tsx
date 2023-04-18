@@ -22,7 +22,7 @@ import { MarketState as State } from '@vegaprotocol/types';
 
 interface TradeMarketHeaderProps {
   market: Market | null;
-  onSelect: (marketId: string) => void;
+  onSelect: (marketId: string, metaKey?: boolean) => void;
 }
 
 export const TradeMarketHeader = ({
@@ -91,7 +91,6 @@ export const TradeMarketHeader = ({
       </HeaderStat>
       <HeaderStatMarketTradingMode
         marketId={market?.id}
-        onSelect={onSelect}
         initialTradingMode={market?.tradingMode}
       />
       <MarketState market={market} />

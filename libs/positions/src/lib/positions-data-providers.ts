@@ -349,16 +349,15 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
   PositionsQueryVariables & MarketDataQueryVariables
 >(
   [
-    (callback, client, variables) =>
+    (callback, client, { partyId, marketId }) =>
       ordersProvider(callback, client, {
-        ...variables,
+        partyId,
+        marketIds: [marketId],
         filter: {
-          order: {
-            status: [
-              OrderStatus.STATUS_ACTIVE,
-              OrderStatus.STATUS_PARTIALLY_FILLED,
-            ],
-          },
+          status: [
+            OrderStatus.STATUS_ACTIVE,
+            OrderStatus.STATUS_PARTIALLY_FILLED,
+          ],
         },
       }),
     (callback, client, variables) =>

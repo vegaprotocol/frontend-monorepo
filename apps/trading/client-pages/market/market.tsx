@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -13,6 +13,7 @@ import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -66,14 +67,7 @@ export const MarketPage = () => {
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const onSelect = useCallback(
-    (id: string) => {
-      if (id && id !== marketId) {
-        navigate(Links[Routes.MARKET](id));
-      }
-    },
-    [marketId, navigate]
-  );
+  const onSelect = useMarketClickHandler();
 
   const { data, error, loading } = useDataProvider({
     dataProvider: marketProvider,

@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import type { RefObject, MouseEvent } from 'react';
 import { FeesCell } from '@vegaprotocol/market-info';
 import {
   calcCandleHigh,
@@ -157,14 +157,14 @@ export const columnHeaders: Column[] = [
 ];
 
 export type OnCellClickHandler = (
-  e: React.MouseEvent,
+  e: MouseEvent,
   kind: ColumnKind,
   value: string
 ) => void;
 
 export const columns = (
   market: MarketMaybeWithDataAndCandles,
-  onSelect: (id: string) => void,
+  onSelect: (id: string, metaKey?: boolean) => void,
   onCellClick: OnCellClickHandler,
   inViewRoot?: RefObject<HTMLElement>
 ) => {
@@ -174,14 +174,7 @@ export const columns = (
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
   const candleVolume = market.candles && calcCandleVolume(market.candles);
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLAnchorElement>,
-    id: string
-  ) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
+
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -189,10 +182,10 @@ export const columns = (
         <Link
           to={Links[Routes.MARKET](market.id)}
           data-testid={`market-link-${market.id}`}
-          onKeyPress={(event) => handleKeyPress(event, market.id)}
           onClick={(e) => {
             e.preventDefault();
-            onSelect(market.id);
+            e.stopPropagation();
+            onSelect(market.id, e.metaKey);
           }}
         >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
@@ -352,7 +345,7 @@ export const columns = (
 
 export const columnsPositionMarkets = (
   market: MarketMaybeWithDataAndCandles,
-  onSelect: (id: string) => void,
+  onSelect: (id: string, metaKey?: boolean) => void,
   inViewRoot?: RefObject<HTMLElement>,
   openVolume?: string,
   onCellClick?: OnCellClickHandler
@@ -362,14 +355,6 @@ export const columnsPositionMarkets = (
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLSpanElement>,
-    id: string
-  ) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
   const candleVolume = market.candles && calcCandleVolume(market.candles);
   const selectMarketColumns: Column[] = [
     {
@@ -378,10 +363,10 @@ export const columnsPositionMarkets = (
         <Link
           to={Links[Routes.MARKET](market.id)}
           data-testid={`market-link-${market.id}`}
-          onKeyPress={(event) => handleKeyPress(event, market.id)}
           onClick={(e) => {
             e.preventDefault();
-            onSelect(market.id);
+            e.stopPropagation();
+            onSelect(market.id, e.metaKey);
           }}
         >
           <UILink>{market.tradableInstrument.instrument.code}</UILink>

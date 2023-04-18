@@ -19,25 +19,18 @@ import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 import { AccountHistoryContainer } from './account-history-container';
-import { useNavigate } from 'react-router-dom';
-import { Links, Routes } from '../../pages/client-router';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
 
-  const onMarketClick = (marketId: string) => {
-    navigate(Links[Routes.MARKET](marketId), {
-      replace: true,
-    });
-  };
+  const onMarketClick = useMarketClickHandler(true);
 
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (

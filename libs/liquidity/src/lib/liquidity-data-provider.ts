@@ -6,7 +6,6 @@ import produce from 'immer';
 
 import {
   LiquidityProviderFeeShareDocument,
-  LiquidityProviderFeeShareUpdateDocument,
   LiquidityProvisionsDocument,
   LiquidityProvisionsUpdateDocument,
   MarketLpDocument,
@@ -18,7 +17,6 @@ import type {
   LiquidityProviderFeeShareFieldsFragment,
   LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareQueryVariables,
-  LiquidityProviderFeeShareUpdateSubscription,
   LiquidityProvisionFieldsFragment,
   LiquidityProvisionsQuery,
   LiquidityProvisionsQueryVariables,
@@ -96,8 +94,8 @@ export const getId = (
       >
 ) =>
   isLpFragment(entry)
-    ? `${entry.party.id}${entry.status}${entry.createdAt}`
-    : `${entry.partyID}${entry.status}${entry.createdAt}`;
+    ? `${entry.party.id}${entry.status}${entry.createdAt}${entry.updatedAt}`
+    : `${entry.partyID}${entry.status}${entry.createdAt}${entry.updatedAt}`;
 
 export const marketLiquidityDataProvider = makeDataProvider<
   MarketLpQuery,
@@ -115,73 +113,94 @@ export const marketLiquidityDataProvider = makeDataProvider<
 export const liquidityFeeShareDataProvider = makeDataProvider<
   LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareFieldsFragment[],
-  LiquidityProviderFeeShareUpdateSubscription,
-  LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare'],
+  never,
+  never,
   LiquidityProviderFeeShareQueryVariables
 >({
   query: LiquidityProviderFeeShareDocument,
-  subscriptionQuery: LiquidityProviderFeeShareUpdateDocument,
-  update: (
-    data: LiquidityProviderFeeShareFieldsFragment[] | null,
-    deltas: LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare']
-  ) => {
-    return produce(data || [], (draft) => {
-      deltas?.forEach((delta) => {
-        const id = delta.partyId;
-        const index = draft.findIndex((a) => a.party.id === id);
-        if (index !== -1) {
-          draft[index].equityLikeShare = delta.equityLikeShare;
-          draft[index].averageEntryValuation = delta.averageEntryValuation;
-        } else {
-          draft.unshift({
-            equityLikeShare: delta.equityLikeShare,
-            averageEntryValuation: delta.averageEntryValuation,
-            party: {
-              id: delta.partyId,
-            },
-            // TODO add accounts connection to the subscription
-          });
-        }
-      });
-    });
-  },
   getData: (data) => {
     return data?.market?.data?.liquidityProviderFeeShare || [];
   },
-  getDelta: (subscriptionData: LiquidityProviderFeeShareUpdateSubscription) => {
-    return subscriptionData.marketsData[0].liquidityProviderFeeShare;
-  },
 });
 
+export type Filter = { partyId?: string; active?: boolean };
+
 export const lpAggregatedDataProvider = makeDerivedDataProvider<
-  ReturnType<typeof getLiquidityProvision>,
+  LiquidityProvisionData[],
   never,
-  MarketLpQueryVariables
+  MarketLpQueryVariables & { filter?: Filter }
 >(
   [
-    liquidityProvisionsDataProvider,
-    marketLiquidityDataProvider,
-    liquidityFeeShareDataProvider,
+    (callback, client, variables) =>
+      liquidityProvisionsDataProvider(callback, client, {
+        marketId: variables.marketId,
+      }),
+    (callback, client, variables) =>
+      marketLiquidityDataProvider(callback, client, {
+        marketId: variables.marketId,
+      }),
+    (callback, client, variables) =>
+      liquidityFeeShareDataProvider(callback, client, {
+        marketId: variables.marketId,
+      }),
   ],
-  ([
-    liquidityProvisions,
-    marketLiquidity,
-    liquidityFeeShare,
-  ]): LiquidityProvisionData[] => {
+  (
+    [liquidityProvisions, marketLiquidity, liquidityFeeShare],
+    { filter }
+  ): LiquidityProvisionData[] => {
     return getLiquidityProvision(
       liquidityProvisions,
       marketLiquidity,
-      liquidityFeeShare
+      liquidityFeeShare,
+      filter
     );
   }
 );
 
+export const matchFilter = (
+  filter: Filter,
+  lp: LiquidityProvisionFieldsFragment
+) => {
+  if (filter.partyId && lp.party.id !== filter.partyId) {
+    return false;
+  }
+  if (
+    filter.active === true &&
+    lp.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE
+  ) {
+    return false;
+  }
+  if (
+    filter.active === false &&
+    lp.status === Schema.LiquidityProvisionStatus.STATUS_ACTIVE
+  ) {
+    return false;
+  }
+  return true;
+};
+
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
   marketLiquidity: MarketLpQuery,
-  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
+  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[],
+  filter?: Filter
 ): LiquidityProvisionData[] => {
   return liquidityProvisions
+    .filter((lp) => {
+      if (
+        ![
+          Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
+          Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
+          Schema.LiquidityProvisionStatus.STATUS_PENDING,
+        ].includes(lp.status)
+      ) {
+        return false;
+      }
+      if (filter && !matchFilter(filter, lp)) {
+        return false;
+      }
+      return true;
+    })
     .map((lp) => {
       const market = marketLiquidity?.market;
       const feeShare = liquidityFeeShare.find(
@@ -210,14 +229,7 @@ export const getLiquidityProvision = (
             .decimals,
         balance,
       };
-    })
-    .filter((e) =>
-      [
-        Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
-        Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
-        Schema.LiquidityProvisionStatus.STATUS_PENDING,
-      ].includes(e.status)
-    );
+    });
 };
 
 export interface LiquidityProvisionData

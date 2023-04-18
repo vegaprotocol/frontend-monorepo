@@ -14,6 +14,7 @@ import { TokenDetailsCirculating } from './token-details-circulating';
 import { SplashLoader } from '../../../components/splash-loader';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
+import { ENV } from '../../../config';
 
 export const TokenDetails = ({
   totalSupply,
@@ -49,6 +50,9 @@ export const TokenDetails = ({
     );
   }
 
+  const tokenVestingContractAddress =
+    config.token_vesting_contract?.address || ENV.addresses.tokenVestingAddress;
+
   return (
     <div className="token-details">
       <RoundedWrapper>
@@ -65,18 +69,20 @@ export const TokenDetails = ({
               {token.address}
             </Link>
           </KeyValueTableRow>
-          <KeyValueTableRow>
-            {t('Vesting contract').toUpperCase()}
-            <Link
-              data-testid="token-contract"
-              title={t('View on Etherscan (opens in a new tab)')}
-              className="font-mono text-white text-right"
-              href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
-              target="_blank"
-            >
-              {config.token_vesting_contract.address}
-            </Link>
-          </KeyValueTableRow>
+          {tokenVestingContractAddress && (
+            <KeyValueTableRow>
+              {t('Vesting contract').toUpperCase()}
+              <Link
+                data-testid="token-contract"
+                title={t('View on Etherscan (opens in a new tab)')}
+                className="font-mono text-white text-right"
+                href={`${ETHERSCAN_URL}/address/${tokenVestingContractAddress}`}
+                target="_blank"
+              >
+                {tokenVestingContractAddress}
+              </Link>
+            </KeyValueTableRow>
+          )}
           <KeyValueTableRow>
             {t('Total supply').toUpperCase()}
             <span className="font-mono" data-testid="total-supply">

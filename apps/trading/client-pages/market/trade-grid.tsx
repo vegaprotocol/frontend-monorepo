@@ -8,7 +8,7 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -27,9 +27,9 @@ import { TradeMarketHeader } from './trade-market-header';
 import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
-import { Links, Routes } from '../../pages/client-router';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -66,7 +66,7 @@ type TradingView = keyof typeof TradingViews;
 
 interface TradeGridProps {
   market: Market | null;
-  onSelect: (marketId: string) => void;
+  onSelect: (marketId: string, metaKey?: boolean) => void;
   pinnedAsset?: PinnedAsset;
 }
 
@@ -78,15 +78,7 @@ interface BottomPanelProps {
 const MarketBottomPanel = memo(
   ({ marketId, pinnedAsset }: BottomPanelProps) => {
     const { screenSize } = useScreenDimensions();
-    const navigate = useNavigate();
-    const onMarketClick = useCallback(
-      (marketId: string) => {
-        navigate(Links[Routes.MARKET](marketId), {
-          replace: true,
-        });
-      },
-      [navigate]
-    );
+    const onMarketClick = useMarketClickHandler(true);
 
     return 'xxxl' === screenSize ? (
       <ResizableGrid proportionalLayout minSize={200}>
@@ -189,7 +181,7 @@ const MainGrid = memo(
     pinnedAsset,
   }: {
     marketId: string;
-    onSelect?: (marketId: string) => void;
+    onSelect: (marketId: string, metaKey?: boolean) => void;
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
@@ -230,12 +222,7 @@ const MainGrid = memo(
                     />
                   </Tab>
                   <Tab id="info" name={t('Info')}>
-                    <TradingViews.Info
-                      marketId={marketId}
-                      onSelect={(id: string) => {
-                        onSelect?.(id);
-                      }}
-                    />
+                    <TradingViews.Info marketId={marketId} />
                   </Tab>
                 </Tabs>
               </TradeGridChild>
@@ -304,7 +291,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 
 interface TradePanelsProps {
   market: Market | null;
-  onSelect: (marketId: string) => void;
+  onSelect: (marketId: string, metaKey?: boolean) => void;
   onMarketClick?: (marketId: string) => void;
   onClickCollateral: () => void;
   pinnedAsset?: PinnedAsset;
@@ -320,7 +307,7 @@ export const TradePanels = ({
   const renderView = () => {
     const Component = memo<{
       marketId: string;
-      onSelect: (marketId: string) => void;
+      onSelect: (marketId: string, metaKey?: boolean) => void;
       onMarketClick?: (marketId: string) => void;
       onClickCollateral: () => void;
       pinnedAsset?: PinnedAsset;

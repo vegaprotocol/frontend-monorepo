@@ -13,7 +13,7 @@ env:
 
 jobs:
   add_issue:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Add issue to project board'
         run: |

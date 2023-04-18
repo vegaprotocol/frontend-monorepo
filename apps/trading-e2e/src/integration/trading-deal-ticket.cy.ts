@@ -84,6 +84,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       type: Schema.OrderType.TYPE_MARKET,
       side: Schema.Side.SIDE_BUY,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      postOnly: false,
+      reduceOnly: false,
       size: '100',
     };
     createOrder(order);
@@ -98,6 +100,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       side: Schema.Side.SIDE_SELL,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
       size: '100',
+      postOnly: false,
+      reduceOnly: false,
     };
     createOrder(order);
     testOrderSubmission(order);
@@ -112,6 +116,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       side: Schema.Side.SIDE_BUY,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       size: '100',
+      postOnly: false,
+      reduceOnly: false,
       price: '200',
     };
     createOrder(order);
@@ -126,6 +132,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       side: Schema.Side.SIDE_SELL,
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GFN,
       size: '100',
+      postOnly: false,
+      reduceOnly: false,
       price: '50000',
     };
     createOrder(order);
@@ -143,6 +151,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       size: '100',
       price: '1.00',
       expiresAt: expiresAt.toISOString().substring(0, 16),
+      postOnly: false,
+      reduceOnly: false,
     };
 
     createOrder(order);
@@ -150,6 +160,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       price: '100000',
       expiresAt:
         new Date(order.expiresAt as string).getTime().toString() + '000000',
+      postOnly: false,
+      reduceOnly: false,
     });
   });
 });
@@ -182,6 +194,8 @@ describe(
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '200',
       };
       createOrder(order);
@@ -196,6 +210,8 @@ describe(
         side: Schema.Side.SIDE_SELL,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '50000',
       };
       createOrder(order);
@@ -210,12 +226,16 @@ describe(
         side: Schema.Side.SIDE_SELL,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '1.00',
         expiresAt: displayTomorrow(),
       };
       createOrder(order);
       testOrderSubmission(order, {
         price: '100000',
+        postOnly: false,
+        reduceOnly: false,
         expiresAt:
           new Date(order.expiresAt as string).getTime().toString() + '000000',
       });
@@ -251,6 +271,8 @@ describe(
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '200',
       };
       createOrder(order);
@@ -265,6 +287,8 @@ describe(
         side: Schema.Side.SIDE_SELL,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '50000',
       };
       createOrder(order);
@@ -281,6 +305,8 @@ describe(
         size: '100',
         price: '1.00',
         expiresAt: displayTomorrow(),
+        postOnly: false,
+        reduceOnly: false,
       };
       createOrder(order);
       testOrderSubmission(order, {
@@ -320,6 +346,8 @@ describe(
         side: Schema.Side.SIDE_BUY,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
+        postOnly: false,
+        reduceOnly: false,
         price: '200',
       };
       createOrder(order);
@@ -335,6 +363,8 @@ describe(
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '50000',
+        postOnly: false,
+        reduceOnly: false,
       };
       createOrder(order);
       testOrderSubmission(order, { price: '5000000000' });
@@ -350,6 +380,8 @@ describe(
         size: '100',
         price: '1.00',
         expiresAt: displayTomorrow(),
+        postOnly: false,
+        reduceOnly: false,
       };
       createOrder(order);
       testOrderSubmission(order, {

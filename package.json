@@ -11,7 +11,8 @@
     "build:all": "nx run-many --all --target=build",
     "lint:all": "nx run-many --all --target=lint",
     "e2e:all": "nx run-many --all --target=e2e",
-    "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl"
+    "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl",
+    "release": "git checkout develop ; git pull ; node scripts/make-release.js"
   },
   "engines": {
     "node": ">=16.15.1"
@@ -166,6 +167,7 @@
     "flush-promises": "^1.0.2",
     "glob": "^8.0.3",
     "husky": "^7.0.4",
+    "inquirer": "^8.0.0",
     "jest": "27.5.1",
     "jest-canvas-mock": "^2.3.1",
     "jest-websocket-mock": "^2.3.0",

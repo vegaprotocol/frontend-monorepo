@@ -57,7 +57,7 @@ fragment LiquidityProvisionFields on LiquidityProvision {
 
 query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection {
+    liquidityProvisionsConnection(live: true) {
       edges {
         node {
           ...LiquidityProvisionFields
@@ -100,16 +100,6 @@ query LiquidityProviderFeeShare($marketId: ID!) {
       liquidityProviderFeeShare {
         ...LiquidityProviderFeeShareFields
       }
-    }
-  }
-}
-
-subscription LiquidityProviderFeeShareUpdate($marketId: ID!) {
-  marketsData(marketIds: [$marketId]) {
-    liquidityProviderFeeShare {
-      partyId
-      equityLikeShare
-      averageEntryValuation
     }
   }
 }

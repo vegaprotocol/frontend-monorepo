@@ -1,6 +1,6 @@
 fragment MarketNode on Market {
   id
-  liquidityProvisionsConnection {
+  liquidityProvisionsConnection(live: true) {
     edges {
       node {
         commitmentAmount

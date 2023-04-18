@@ -40,7 +40,7 @@ export const SelectAllMarketsTableBody = ({
   markets?: MarketMaybeWithDataAndCandles[] | null;
   positions?: PositionFieldsFragment[];
   title?: string;
-  onSelect: (id: string) => void;
+  onSelect: (id: string, metaKey?: boolean) => void;
   onCellClick: OnCellClickHandler;
   headers?: Column[];
   tableColumns?: (
@@ -95,7 +95,7 @@ export const SelectMarketPopover = ({
 }: {
   marketCode: string;
   marketName: string;
-  onSelect: (id: string) => void;
+  onSelect: (id: string, metaKey?: boolean) => void;
   onCellClick: OnCellClickHandler;
 }) => {
   const { pubKey } = useVegaWallet();
@@ -116,8 +116,8 @@ export const SelectMarketPopover = ({
     skip: !pubKey,
   });
   const onSelectMarket = useCallback(
-    (marketId: string) => {
-      onSelect(marketId);
+    (marketId: string, metaKey?: boolean) => {
+      onSelect(marketId, metaKey);
       setOpen(false);
     },
     [onSelect]

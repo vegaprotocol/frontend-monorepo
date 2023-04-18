@@ -38,6 +38,7 @@ export const Checkbox = ({
         checked={checked}
         onCheckedChange={onCheckedChange}
         disabled={disabled}
+        data-testid={name}
       >
         <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-[15px] h-[15px] bg-black dark:bg-white">
           {checked === 'indeterminate' ? (
@@ -54,7 +55,12 @@ export const Checkbox = ({
           )}
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
-      <label htmlFor={name} className="text-sm">
+      <label
+        htmlFor={name}
+        className={classNames('text-sm', {
+          'dark:text-neutral-400 text-neutral-600': disabled,
+        })}
+      >
         {label}
       </label>
     </div>

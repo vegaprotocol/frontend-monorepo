@@ -3,13 +3,11 @@ import z from 'zod';
 export enum Networks {
   VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
   CUSTOM = 'CUSTOM',
-  SANDBOX = 'SANDBOX',
   TESTNET = 'TESTNET',
   STAGNET1 = 'STAGNET1',
   STAGNET3 = 'STAGNET3',
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',
-  MIRROR = 'MIRROR',
 }
 
 const schemaObject = {
@@ -20,6 +18,7 @@ const schemaObject = {
   GIT_COMMIT_HASH: z.optional(z.string()),
   GIT_ORIGIN_URL: z.optional(z.string()),
   GITHUB_FEEDBACK_URL: z.optional(z.string()),
+  ORACLE_PROOFS_URL: z.optional(z.string().url()),
   VEGA_ENV: z.nativeEnum(Networks),
   VEGA_EXPLORER_URL: z.optional(z.string()),
   VEGA_TOKEN_URL: z.optional(z.string()),
