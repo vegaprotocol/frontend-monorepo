@@ -5,127 +5,97 @@ import type {
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { AccountType } from '@vegaprotocol/types';
-import { BigNumber } from '../../../lib/bignumber';
+import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 
 interface EpochSummaryWithNamedReward extends EpochRewardSummaryFieldsFragment {
   name: string;
 }
 
-export interface AggregatedEpochRewardSummary {
+export type RewardType = EpochRewardSummaryFieldsFragment['rewardType'];
+export type RewardItem = Pick<
+  EpochRewardSummaryFieldsFragment,
+  'rewardType' | 'amount'
+>;
+
+export type AggregatedEpochRewardSummary = {
   assetId: EpochRewardSummaryFieldsFragment['assetId'];
   name: EpochSummaryWithNamedReward['name'];
-  rewards: {
-    rewardType: EpochRewardSummaryFieldsFragment['rewardType'];
-    amount: EpochRewardSummaryFieldsFragment['amount'];
-  }[];
+  rewards: Map<RewardType, RewardItem>;
   totalAmount: string;
-}
+};
 
-export interface EpochTotalSummary {
+export type EpochTotalSummary = {
   epoch: EpochRewardSummaryFieldsFragment['epoch'];
-  assetRewards: AggregatedEpochRewardSummary[];
-}
+  assetRewards: Map<
+    EpochRewardSummaryFieldsFragment['assetId'],
+    AggregatedEpochRewardSummary
+  >;
+};
 
-const emptyRowAccountTypes = Object.keys(RowAccountTypes).map((type) => ({
-  rewardType: type as AccountType,
-  amount: '0',
-}));
+const emptyRowAccountTypes: Map<RewardType, RewardItem> = new Map();
 
-export const generateEpochTotalRewardsList = (
-  epochData: EpochAssetsRewardsQuery | undefined
-) => {
+Object.keys(RowAccountTypes).forEach((type) => {
+  emptyRowAccountTypes.set(type as AccountType, {
+    rewardType: type as AccountType,
+    amount: '0',
+  });
+});
+
+export const generateEpochTotalRewardsList = ({
+  data,
+  epochId,
+  page = 1,
+  size = 10,
+}: {
+  data?: EpochAssetsRewardsQuery | undefined;
+  epochId: number;
+  page?: number;
+  size?: number;
+}) => {
   const epochRewardSummaries = removePaginationWrapper(
-    epochData?.epochRewardSummaries?.edges
+    data?.epochRewardSummaries?.edges
   );
 
-  const assets = removePaginationWrapper(epochData?.assetsConnection?.edges);
+  const assets = removePaginationWrapper(data?.assetsConnection?.edges);
 
-  // Because the epochRewardSummaries don't have the asset name, we need to find it in the assets list
-  const epochSummariesWithNamedReward: EpochSummaryWithNamedReward[] =
-    epochRewardSummaries.map((epochReward) => ({
-      ...epochReward,
-      name:
-        assets.find((asset) => asset.id === epochReward.assetId)?.name || '',
-    }));
+  const map: Map<string, EpochTotalSummary> = new Map();
+  const { fromEpoch, toEpoch } = calculateEpochOffset({ epochId, page, size });
 
-  // Aggregating the epoch summaries by epoch number
-  const aggregatedEpochSummariesByEpochNumber =
-    epochSummariesWithNamedReward.reduce((acc, epochReward) => {
-      const epoch = epochReward.epoch;
-      const epochSummaryIndex = acc.findIndex(
-        (epochSummary) => epochSummary[0].epoch === epoch
-      );
-
-      if (epochSummaryIndex === -1) {
-        acc.push([epochReward]);
-      } else {
-        acc[epochSummaryIndex].push(epochReward);
-      }
-
-      return acc;
-    }, [] as EpochSummaryWithNamedReward[][]);
-
-  // Now aggregate the array of arrays of epoch summaries by asset rewards.
-  const epochTotalRewards: EpochTotalSummary[] =
-    aggregatedEpochSummariesByEpochNumber.map((epochSummaries) => {
-      const assetRewards = epochSummaries.reduce((acc, epochSummary) => {
-        const assetRewardIndex = acc.findIndex(
-          (assetReward) =>
-            assetReward.assetId === epochSummary.assetId &&
-            assetReward.name === epochSummary.name
-        );
-
-        if (assetRewardIndex === -1) {
-          acc.push({
-            assetId: epochSummary.assetId,
-            name: epochSummary.name,
-            rewards: [
-              ...emptyRowAccountTypes.map((emptyRowAccountType) => {
-                if (
-                  emptyRowAccountType.rewardType === epochSummary.rewardType
-                ) {
-                  return {
-                    rewardType: epochSummary.rewardType,
-                    amount: epochSummary.amount,
-                  };
-                } else {
-                  return emptyRowAccountType;
-                }
-              }),
-            ],
-            totalAmount: epochSummary.amount,
-          });
-        } else {
-          acc[assetRewardIndex].rewards = acc[assetRewardIndex].rewards.map(
-            (reward) => {
-              if (reward.rewardType === epochSummary.rewardType) {
-                return {
-                  rewardType: epochSummary.rewardType,
-                  amount: (
-                    Number(reward.amount) + Number(epochSummary.amount)
-                  ).toString(),
-                };
-              } else {
-                return reward;
-              }
-            }
-          );
-          acc[assetRewardIndex].totalAmount = (
-            Number(acc[assetRewardIndex].totalAmount) +
-            Number(epochSummary.amount)
-          ).toString();
-        }
-
-        return acc;
-      }, [] as AggregatedEpochRewardSummary[]);
-
-      return {
-        epoch: epochSummaries[0].epoch,
-        assetRewards: assetRewards.sort((a, b) => {
-          return new BigNumber(b.totalAmount).comparedTo(a.totalAmount);
-        }),
-      };
+  for (let i = toEpoch; i >= fromEpoch; i--) {
+    map.set(i.toString(), {
+      epoch: i,
+      assetRewards: new Map(),
     });
+  }
 
-  return epochTotalRewards;
+  return epochRewardSummaries.reduce((acc, reward) => {
+    const epoch = acc.get(reward.epoch.toString());
+
+    if (epoch) {
+      const matchingAsset = assets.find((asset) => asset.id === reward.assetId);
+      const assetWithRewards = epoch.assetRewards.get(reward.assetId);
+
+      const rewards =
+        assetWithRewards?.rewards || new Map(emptyRowAccountTypes);
+      const rewardItem = rewards?.get(reward.rewardType);
+      const amount = (
+        (Number(rewardItem?.amount) || 0) + Number(reward.amount)
+      ).toString();
+
+      rewards?.set(reward.rewardType, {
+        rewardType: reward.rewardType,
+        amount,
+      });
+
+      epoch.assetRewards.set(reward.assetId, {
+        assetId: reward.assetId,
+        name: matchingAsset?.name || '',
+        rewards: rewards || new Map(emptyRowAccountTypes),
+        totalAmount: (
+          Number(reward.amount) + Number(assetWithRewards?.totalAmount || 0)
+        ).toString(),
+      });
+    }
+    return acc;
+  }, map);
 };
