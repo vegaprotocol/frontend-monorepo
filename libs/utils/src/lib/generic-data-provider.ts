@@ -10,7 +10,7 @@ import type {
 } from '@apollo/client';
 import type { GraphQLErrors } from '@apollo/client/errors';
 import type { Subscription } from 'zen-observable-ts';
-import isEqual from 'lodash/isEqual';
+import isEqualWith from 'lodash/isEqualWith';
 import { isNotFoundGraphQLError } from './apollo-client';
 import type * as Schema from '@vegaprotocol/types';
 interface UpdateData<Data, Delta> {
@@ -513,10 +513,25 @@ function makeDataProviderInternal<
 }
 
 /**
+ * Compares two arrays assuming that they are sets of primitive values, used to compare gql query variables
+ */
+export const variablesIsEqualCustomizer: NonNullable<
+  Parameters<typeof isEqualWith>['2']
+> = (value, other) => {
+  if (Array.isArray(value) && Array.isArray(other)) {
+    return (
+      value.length === other.length &&
+      new Set([...value, ...other]).size === value.length
+    );
+  }
+  return undefined;
+};
+
+/**
  * Memoizes data provider instances using query variables as cache key
  *
  * @param fn
- * @returns subscibe function
+ * @returns subscribe function
  */
 const memoize = <
   Data,
@@ -530,7 +545,9 @@ const memoize = <
     variables?: Variables;
   }[] = [];
   return (variables?: Variables) => {
-    const cached = cache.find((c) => isEqual(c.variables, variables));
+    const cached = cache.find((c) =>
+      isEqualWith(c.variables, variables, variablesIsEqualCustomizer)
+    );
     if (cached) {
       return cached.subscribe;
     }
@@ -582,8 +599,10 @@ export function makeDataProvider<
   const getInstance = memoize<Data, Delta, Variables>(() =>
     makeDataProviderInternal(params)
   );
-  return (callback, client, variables) =>
-    getInstance(variables)(callback, client, variables);
+  return (callback, client, variables) => {
+    const instance = getInstance(variables)(callback, client, variables);
+    return instance;
+  };
 }
 
 /**
@@ -605,7 +624,9 @@ export type CombineDerivedData<
 > = (
   data: DerivedPart<Variables>['data'][],
   variables: Variables,
-  prevData: Data | null
+  prevData: Data | null,
+  parts: DerivedPart<Variables>[],
+  subscriptions?: ReturnType<DependencySubscribe<Variables>>[]
 ) => Data | null;
 
 export type CombineDerivedDelta<
@@ -687,7 +708,9 @@ function makeDerivedDataProviderInternal<
       ? combineData(
           parts.map((part) => part.data),
           variables,
-          data
+          data,
+          parts,
+          subscriptions
         )
       : data;
     if (

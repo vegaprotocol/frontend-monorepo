@@ -38,10 +38,10 @@ export const TransferTooltipCellComponent = ({
   );
 };
 
-const defaultRangeFilter = { start: formatRFC3339(subDays(Date.now(), 7)) };
+const defaultValue = { start: formatRFC3339(subDays(Date.now(), 7)) };
 const dateRangeFilterParams = {
   maxNextDays: 0,
-  defaultRangeFilter,
+  defaultValue,
 };
 type LedgerEntryProps = TypedDataAgGrid<LedgerEntry>;
 
