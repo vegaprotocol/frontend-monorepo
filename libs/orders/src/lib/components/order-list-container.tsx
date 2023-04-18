@@ -6,10 +6,12 @@ import { OrderListManager } from './order-list-manager';
 export const OrderListContainer = ({
   marketId,
   onMarketClick,
+  onOrderTypeClick,
   enforceBottomPlaceholder,
 }: {
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   enforceBottomPlaceholder?: boolean;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -23,6 +25,7 @@ export const OrderListContainer = ({
       partyId={pubKey}
       marketId={marketId}
       onMarketClick={onMarketClick}
+      onOrderTypeClick={onOrderTypeClick}
       isReadOnly={isReadOnly}
       enforceBottomPlaceholder={enforceBottomPlaceholder}
     />
