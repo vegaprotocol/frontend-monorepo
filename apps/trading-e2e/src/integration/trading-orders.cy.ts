@@ -21,7 +21,7 @@ const cancelOrderBtn = 'cancel';
 const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
 
-describe('orders list', { tags: '@smoke' }, () => {
+describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
   beforeEach(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
@@ -89,15 +89,17 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.contains('Partially Filled').click();
     cy.getByTestId('Orders').click();
 
-    cy.get(`[row-id="${partiallyFilledId}"]`).within(() => {
-      cy.get(`[col-id='${orderStatus}']`).should(
-        'have.text',
-        'Partially Filled'
-      );
-      cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7/10');
-      cy.getByTestId(cancelOrderBtn).should('not.exist');
-      cy.getByTestId(editOrderBtn).should('not.exist');
-    });
+    cy.get(`[row-id="${partiallyFilledId}"]`)
+      .eq(1)
+      .within(() => {
+        cy.get(`[col-id='${orderStatus}']`).should(
+          'have.text',
+          'Partially Filled'
+        );
+        cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7/10');
+        cy.getByTestId(cancelOrderBtn).should('not.exist');
+        cy.getByTestId(editOrderBtn).should('not.exist');
+      });
   });
 
   it('orders are sorted by most recent order', () => {

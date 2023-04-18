@@ -88,48 +88,54 @@ describe(
   }
 );
 
-describe('withdraw actions', { tags: '@regression' }, () => {
-  beforeEach(() => {
-    cy.mockWeb3Provider();
-    cy.mockTradingPage();
-    cy.mockSubscription();
-    cy.setVegaWallet();
+describe(
+  'withdraw actions',
+  { tags: '@regression', testIsolation: true },
+  () => {
+    beforeEach(() => {
+      cy.mockWeb3Provider();
+      cy.mockTradingPage();
+      cy.mockSubscription();
+      cy.setVegaWallet();
 
-    cy.visit('/#/portfolio');
-    cy.getByTestId(collateralTab).click();
-    cy.getByTestId(openTransferDialog).click();
+      cy.visit('/#/portfolio');
+      cy.getByTestId(collateralTab).click();
+      cy.getByTestId(openTransferDialog).click();
 
-    cy.wait('@Accounts');
-    cy.wait('@Assets');
-    cy.mockVegaWalletTransaction();
-  });
+      cy.wait('@Accounts');
+      cy.wait('@Assets');
+      cy.mockVegaWalletTransaction();
+    });
 
-  it('key to key transfers by select key', function () {
-    cy.getByTestId(transferForm).should('be.visible');
-    cy.getByTestId(transferForm).find(toAddressField).select(1);
-    selectAsset(ASSET_SEPOLIA_TBTC);
-    cy.getByTestId(transferForm).find(amountField).type('1', { delay: 100 });
-    cy.getByTestId(transferForm).find(submitTransferBtn).click();
-    cy.getByTestId(toastContent).should(
-      'contain.text',
-      'Awaiting confirmation'
-    );
-    cy.getByTestId(toastCloseBtn).click();
-  });
+    it('key to key transfers by select key', function () {
+      cy.getByTestId(transferForm).should('be.visible');
+      cy.getByTestId(transferForm).find(toAddressField).select(1);
+      selectAsset(ASSET_SEPOLIA_TBTC);
+      cy.getByTestId(transferForm).find(amountField).type('1', { delay: 100 });
+      cy.getByTestId(transferForm).find(submitTransferBtn).click();
+      cy.getByTestId(toastContent).should(
+        'contain.text',
+        'Awaiting confirmation'
+      );
+      cy.getByTestId(toastCloseBtn).click();
+    });
 
-  it('key to key transfers by enter manual key', function () {
-    cy.getByTestId(transferForm).should('be.visible');
-    cy.contains('Enter manually').click();
-    cy.getByTestId(transferForm)
-      .find(toAddressField)
-      .type('7f9cf07d3a9905b1a61a1069f7a758855da428bc0f4a97de87f48644bfc25535');
-    selectAsset(ASSET_SEPOLIA_TBTC);
-    cy.getByTestId(transferForm).find(amountField).type('1', { delay: 100 });
-    cy.getByTestId(transferForm).find(submitTransferBtn).click();
-    cy.getByTestId(toastContent).should(
-      'contain.text',
-      'Awaiting confirmation'
-    );
-    cy.getByTestId(toastCloseBtn).click();
-  });
-});
+    it('key to key transfers by enter manual key', function () {
+      cy.getByTestId(transferForm).should('be.visible');
+      cy.contains('Enter manually').click();
+      cy.getByTestId(transferForm)
+        .find(toAddressField)
+        .type(
+          '7f9cf07d3a9905b1a61a1069f7a758855da428bc0f4a97de87f48644bfc25535'
+        );
+      selectAsset(ASSET_SEPOLIA_TBTC);
+      cy.getByTestId(transferForm).find(amountField).type('1', { delay: 100 });
+      cy.getByTestId(transferForm).find(submitTransferBtn).click();
+      cy.getByTestId(toastContent).should(
+        'contain.text',
+        'Awaiting confirmation'
+      );
+      cy.getByTestId(toastCloseBtn).click();
+    });
+  }
+);

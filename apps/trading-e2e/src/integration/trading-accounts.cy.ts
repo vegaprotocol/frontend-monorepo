@@ -1,14 +1,15 @@
 import { checkSorting } from '@vegaprotocol/cypress';
 
-beforeEach(() => {
-  cy.mockTradingPage();
-  cy.mockWeb3Provider();
-  cy.mockSubscription();
-  cy.setVegaWallet();
-  cy.visit('/#/markets/market-0');
-});
-
 describe('accounts', { tags: '@smoke' }, () => {
+  before(() => {
+    cy.mockTradingPage();
+    cy.mockWeb3Provider();
+    cy.mockSubscription();
+    cy.setVegaWallet();
+    cy.visit('/#/markets/market-0');
+    cy.wait('@Assets');
+  });
+
   it('renders accounts', () => {
     const tradingAccountRowId = '[row-id="t-0"]';
     cy.getByTestId('Collateral').click();
@@ -42,9 +43,9 @@ describe('accounts', { tags: '@smoke' }, () => {
   });
 
   it('asset detail should be properly rendered', () => {
-    cy.getByTestId('Collateral').click();
     cy.getByTestId('asset').contains('tEURO').click();
     cy.get('[data-testid$="_label"]').should('have.length', 16);
+    cy.get('[data-testid="dialog-close"]:visible').click();
   });
 
   describe('sorting by ag-grid columns should work well', () => {
