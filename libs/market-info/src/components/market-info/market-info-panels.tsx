@@ -45,7 +45,9 @@ export const CurrentFeesInfoPanel = ({
   <>
     <MarketInfoTable
       data={{
-        ...market.fees.factors,
+        makerFee: market.fees.factors.makerFee,
+        infrastructureFee: market.fees.factors.infrastructureFee,
+        liquidityFee: market.fees.factors.liquidityFee,
         totalFees: totalFeesPercentage(market.fees.factors),
       }}
       asPercentage={true}
@@ -69,7 +71,6 @@ export const MarketPriceInfoPanel = ({
     market?.tradableInstrument.instrument.product?.quoteName || '';
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
-    skipUpdates: true,
     variables: { marketId: market.id },
   });
   return (
@@ -100,7 +101,6 @@ export const MarketVolumeInfoPanel = ({
 }: MarketInfoProps & PanelProps) => {
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
-    skipUpdates: true,
     variables: { marketId: market.id },
   });
 
@@ -303,7 +303,6 @@ export const PriceMonitoringBoundsInfoPanel = ({
   PanelProps) => {
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
-    skipUpdates: true,
     variables: { marketId: market.id },
   });
   const quoteUnit =
@@ -360,7 +359,11 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   <MarketInfoTable
     data={{
       triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
-      ...market.liquidityMonitoringParameters.targetStakeParameters,
+      timeWindow:
+        market.liquidityMonitoringParameters.targetStakeParameters.timeWindow,
+      scalingFactor:
+        market.liquidityMonitoringParameters.targetStakeParameters
+          .scalingFactor,
     }}
     {...props}
   />
@@ -376,7 +379,6 @@ export const LiquidityInfoPanel = ({
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
-    skipUpdates: true,
     variables: { marketId: market.id },
   });
   return (
@@ -404,7 +406,6 @@ export const LiquidityPriceRangeInfoPanel = ({
   );
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
-    skipUpdates: true,
     variables: { marketId: market.id },
   });
   return (
@@ -454,7 +455,15 @@ export const OracleInfoPanel = ({
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
   return (
-    <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
+    <MarketInfoTable
+      data={{
+        settlementDataProperty:
+          product.dataSourceSpecBinding.settlementDataProperty,
+        tradingTerminationProperty:
+          product.dataSourceSpecBinding.tradingTerminationProperty,
+      }}
+      {...props}
+    >
       <div
         className="flex flex-col gap-2 mt-4"
         data-testid="oracle-proof-links"
