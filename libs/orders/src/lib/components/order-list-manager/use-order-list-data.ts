@@ -71,17 +71,27 @@ export const useOrderListData = ({
     // define variable as const to get type safety, using generic with useMemo resulted in lost type safety
     const allVars: OrdersQueryVariables & OrdersUpdateSubscriptionVariables = {
       partyId,
-      filter: {
-        dateRange: filter?.updatedAt?.value,
-        status: filter?.status?.value,
-        timeInForce: filter?.timeInForce?.value,
-        types: filter?.type?.value,
-      },
-      pagination: {
-        first: 1000,
-      },
     };
-
+    if (
+      filter?.updatedAt?.value ||
+      filter?.status?.value.length ||
+      filter?.timeInForce?.value.length ||
+      filter?.type?.value.length
+    ) {
+      allVars.filter = {};
+      if (filter?.updatedAt?.value) {
+        allVars.filter.dateRange = filter?.updatedAt?.value;
+      }
+      if (filter?.status?.value.length) {
+        allVars.filter.status = filter?.status?.value;
+      }
+      if (filter?.timeInForce?.value.length) {
+        allVars.filter.timeInForce = filter?.timeInForce?.value;
+      }
+      if (filter?.type?.value.length) {
+        allVars.filter.types = filter?.type?.value;
+      }
+    }
     return allVars;
   }, [partyId, filter]);
 
