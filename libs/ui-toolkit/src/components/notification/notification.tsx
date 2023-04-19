@@ -57,7 +57,7 @@ export const Notification = ({
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
           'bg-vega-orange-300 dark:bg-vega-orange-700':
             intent === Intent.Warning,
-          'bg-vega-pink-300 dark:bg-vega-pink-650': intent === Intent.Danger,
+          'bg-vega-pink-300 dark:bg-vega-pink-700': intent === Intent.Danger,
         },
         'border rounded p-2 flex items-start gap-2.5'
       )}
