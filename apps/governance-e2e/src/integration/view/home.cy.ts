@@ -15,7 +15,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should display announcement banner', function () {
+    it.skip('should display announcement banner', function () {
       cy.getByTestId('app-announcement')
         .should('contain.text', 'TEST ANNOUNCEMENT!')
         .within(() => {

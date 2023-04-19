@@ -10,23 +10,31 @@ import {
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
+import { ProtocolUpgradeProposalsListItem } from '../proposals/components/protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import Routes from '../routes';
 import { ExternalLinks, removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
 import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
-import { getNotRejectedProposals } from '../proposals/proposals/proposals-container';
+import { useProtocolUpgradesQuery } from '../proposals/protocol-upgrade/__generated__/ProtocolUpgradeProposals';
+import {
+  getNotRejectedProposals,
+  getNotRejectedProtocolUpgradeProposals,
+} from '../proposals/proposals/proposals-container';
 import { Heading } from '../../components/heading';
 import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
 import type { NodesFragmentFragment } from '../staking/home/__generated__/Nodes';
+import type { ProtocolUpgradeProposalFieldsFragment } from '../proposals/protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 
 const nodesToShow = 6;
 
 const HomeProposals = ({
   proposals,
+  protocolUpgradeProposals,
 }: {
   proposals: ProposalFieldsFragment[];
+  protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
 
@@ -47,6 +55,10 @@ const HomeProposals = ({
         data-testid="home-proposal-list"
         className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6"
       >
+        {protocolUpgradeProposals.map((proposal, index) => (
+          <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
+        ))}
+
         {proposals.map((proposal) => (
           <ProposalsListItem key={proposal.id} proposal={proposal} />
         ))}
@@ -107,20 +119,7 @@ const HomeNodes = ({
 
         {trimmedActiveNodes.map(({ id, avatarUrl, name }) => (
           <div key={id} data-testid="validators" className="col-span-2">
-            <Link to={`${Routes.VALIDATORS}/${id}`}>
-              <RoundedWrapper paddingBottom={true} border={false}>
-                <div className="flex items-center justify-center m-[-1rem] p-4 bg-neutral-900 hover:bg-neutral-800">
-                  {avatarUrl && (
-                    <img
-                      className="h-6 w-6 rounded-full mr-2"
-                      src={avatarUrl}
-                      alt={`Avatar icon for ${name}`}
-                    />
-                  )}
-                  <span className="text-sm">{name}</span>
-                </div>
-              </RoundedWrapper>
-            </Link>
+            <ValidatorDetailsLink id={id} avatarUrl={avatarUrl} name={name} />
           </div>
         ))}
       </div>
@@ -136,6 +135,35 @@ const HomeNodes = ({
   );
 };
 
+interface ValidatorDetailsLinkProps {
+  id: string;
+  avatarUrl: string | null | undefined;
+  name: string;
+}
+
+export const ValidatorDetailsLink = ({
+  id,
+  avatarUrl,
+  name,
+}: ValidatorDetailsLinkProps) => {
+  return (
+    <Link to={`${Routes.VALIDATORS}/${id}`}>
+      <RoundedWrapper paddingBottom={true} border={false}>
+        <div className="flex items-center justify-center m-[-1rem] p-3 bg-neutral-900 hover:bg-neutral-800">
+          {avatarUrl && (
+            <img
+              className="h-6 w-6 rounded-full mr-2"
+              src={avatarUrl}
+              alt={`Avatar icon for ${name}`}
+            />
+          )}
+          <span className="text-sm">{name}</span>
+        </div>
+      </RoundedWrapper>
+    </Link>
+  );
+};
+
 const GovernanceHome = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
@@ -144,6 +172,16 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     loading: proposalsLoading,
     error: proposalsError,
   } = useProposalsQuery({
+    pollInterval: 5000,
+    fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
+  });
+
+  const {
+    data: protocolUpgradesData,
+    loading: protocolUpgradesLoading,
+    error: protocolUpgradesError,
+  } = useProtocolUpgradesQuery({
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
@@ -163,10 +201,37 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
       proposalsData
         ? getNotRejectedProposals<ProposalFieldsFragment>(
             proposalsData.proposalsConnection
-          ).slice(0, 3)
+          )
         : [],
     [proposalsData]
   );
+
+  const protocolUpgradeProposals = useMemo(
+    () =>
+      protocolUpgradesData
+        ? getNotRejectedProtocolUpgradeProposals<ProtocolUpgradeProposalFieldsFragment>(
+            protocolUpgradesData.protocolUpgradeProposals
+          ).filter(
+            (p) =>
+              Number(p.upgradeBlockHeight) >
+              Number(protocolUpgradesData.lastBlockHeight)
+          )
+        : [],
+    [protocolUpgradesData]
+  );
+
+  const totalProposalsDesired = 4;
+  const protocolUpgradeProposalsToShow = protocolUpgradeProposals.slice(
+    0,
+    totalProposalsDesired
+  );
+  const proposalsToShow =
+    protocolUpgradeProposalsToShow.length === totalProposalsDesired
+      ? []
+      : proposals.slice(
+          0,
+          totalProposalsDesired - protocolUpgradeProposalsToShow.length
+        );
 
   const activeNodes = removePaginationWrapper(
     validatorsData?.nodesConnection.edges
@@ -182,11 +247,14 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
 
   return (
     <AsyncRenderer
-      loading={proposalsLoading || validatorsLoading}
-      error={proposalsError || validatorsError}
-      data={proposalsData && validatorsData}
+      loading={proposalsLoading || protocolUpgradesLoading || validatorsLoading}
+      error={proposalsError || protocolUpgradesError || validatorsError}
+      data={proposalsData && protocolUpgradesData && validatorsData}
     >
-      <HomeProposals proposals={proposals} />
+      <HomeProposals
+        proposals={proposalsToShow}
+        protocolUpgradeProposals={protocolUpgradeProposalsToShow}
+      />
 
       <HomeNodes
         activeNodes={activeNodes}
