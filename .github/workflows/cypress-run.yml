@@ -92,4 +92,4 @@ jobs:
         if: ${{ failure() }}
         with:
           name: test-report
-          path: frontend-monorepo/apps/trading-e2e/reports
+          path: frontend-monorepo/apps/trading-e2e/cypress/reports
