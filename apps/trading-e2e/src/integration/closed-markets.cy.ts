@@ -2,7 +2,6 @@ import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import { addDays, subDays } from 'date-fns';
 import {
-  assetsQuery,
   chainIdQuery,
   statisticsQuery,
   createDataConnection,
@@ -11,8 +10,9 @@ import {
   marketsQuery,
   marketsDataQuery,
   createMarketsDataFragment,
+  assetQuery,
+  networkParamsQuery,
 } from '@vegaprotocol/mock';
-import { networkParamsQuery } from '@vegaprotocol/mock';
 import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
@@ -22,7 +22,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   const rowSelector =
     '[data-testid="tab-closed-markets"] .ag-center-cols-container .ag-row';
 
-  const assetsResult = assetsQuery();
+  const assetsResult = assetQuery();
   // @ts-ignore asset definitely exists
   const settlementAsset = assetsResult.assetsConnection.edges[0].node;
 
@@ -159,7 +159,6 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       aliasGQLQuery(req, 'ChainId', chainIdQuery());
       aliasGQLQuery(req, 'Statistics', statisticsQuery());
       aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
-      aliasGQLQuery(req, 'Assets', assetsResult);
       aliasGQLQuery(
         req,
         'Markets',
@@ -357,6 +356,10 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   });
 
   it('can open asset detail dialog', () => {
+    cy.mockGQL((req) => {
+      aliasGQLQuery(req, 'Asset', assetsResult);
+    });
+
     cy.get(rowSelector)
       .first()
       .find('[col-id="settlementAsset"]')
