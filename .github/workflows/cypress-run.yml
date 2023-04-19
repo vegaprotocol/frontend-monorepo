@@ -91,5 +91,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
-          name: test-report
+          name: test-report-${{ matrix.project }}
           path: frontend-monorepo/apps/trading-e2e/cypress/reports
