@@ -27,7 +27,7 @@ describe('Desktop view', { tags: '@smoke' }, () => {
     });
 
     it('Resources dropdown should be correctly rendered', () => {
-      const resourceSelector = 'ul li:last-child';
+      const resourceSelector = 'ul li:contains(Resources)';
       ['Docs', 'Give Feedback'].forEach((text, index) => {
         cy.get('nav').find(resourceSelector).contains('Resources').click();
         cy.get('nav')
