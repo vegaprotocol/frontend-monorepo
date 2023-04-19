@@ -1,7 +1,5 @@
-import { marketOrder } from '@vegaprotocol/orders';
 import {
   TIFlist,
-  orderPriceField,
   orderTIFDropDown,
   toggleLimit,
   toggleMarket,
