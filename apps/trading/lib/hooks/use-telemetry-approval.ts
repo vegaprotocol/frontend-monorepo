@@ -30,6 +30,7 @@ export const useTelemetryApproval = (): [
         SentryInit();
         return setValue('1');
       }
+      Sentry.close();
       removeValue();
     },
     [setValue, removeValue]
