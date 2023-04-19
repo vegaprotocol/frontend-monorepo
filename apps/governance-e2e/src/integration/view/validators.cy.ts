@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
 import {
-  navigateTo,
   navigation,
   verifyPageHeader,
   verifyTabHighlighted,
