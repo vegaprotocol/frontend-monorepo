@@ -110,9 +110,8 @@ export const useDataProvider = <
       if (!loading) {
         if (
           isUpdate &&
-          !skipUpdates &&
-          update &&
-          update({ delta, data, totalCount })
+          (skipUpdates ||
+            (!skipUpdates && update && update({ delta, data, totalCount })))
         ) {
           return;
         }
