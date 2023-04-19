@@ -2,6 +2,13 @@ const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   reporter: '../../node_modules/cypress-mochawesome-reporter',
+  reporterOptions: {
+    charts: true,
+    reportPageTitle: 'vega-cypress-pr',
+    embeddedScreenshots: true,
+    inlineAssets: true,
+    saveAllAttempts: false,
+  },
   e2e: {
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
@@ -24,7 +31,7 @@ module.exports = defineConfig({
     viewportHeight: 900,
     responseTimeout: 50000,
     requestTimeout: 20000,
-    // retries: 2,
+    retries: 2,
   },
   env: {
     ETHERSCAN_URL: 'https://sepolia.etherscan.io',
