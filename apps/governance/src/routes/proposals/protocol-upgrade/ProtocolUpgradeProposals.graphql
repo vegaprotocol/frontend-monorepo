@@ -1,0 +1,17 @@
+fragment ProtocolUpgradeProposalFields on ProtocolUpgradeProposal {
+  upgradeBlockHeight
+  vegaReleaseTag
+  approvers
+  status
+}
+
+query ProtocolUpgrades {
+  lastBlockHeight
+  protocolUpgradeProposals {
+    edges {
+      node {
+        ...ProtocolUpgradeProposalFields
+      }
+    }
+  }
+}

@@ -63,7 +63,7 @@ const renderComponent = (proposals: ProposalQuery['proposal'][]) => (
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>
         <VegaWalletContext.Provider value={mockWalletContext}>
-          <ProposalsList proposals={proposals} />
+          <ProposalsList proposals={proposals} protocolUpgradeProposals={[]} />
         </VegaWalletContext.Provider>
       </AppStateProvider>
     </MockedProvider>
