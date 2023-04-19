@@ -55,6 +55,7 @@ context(
   function () {
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
+      cy.clearAllLocalStorage();
       cy.visit('/');
       ethereumWalletConnect();
       // this is a workaround for #2422 which can be removed once issue is resolved
@@ -191,7 +192,7 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         cy.get(`[row-id="${0}"]`)
-          .first()
+          .eq(1)
           .within(() => {
             cy.getByTestId(stakeValidatorListTotalStake)
               .should('have.text', '2.00')
@@ -205,7 +206,7 @@ context(
               .and('be.visible');
           });
         cy.get(`[row-id="${1}"]`)
-          .first()
+          .eq(1)
           .within(() => {
             cy.getByTestId(stakeValidatorListTotalStake)
               .scrollIntoView()
