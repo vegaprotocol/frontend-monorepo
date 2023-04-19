@@ -775,5 +775,6 @@
   "homeRewardsButtonText": "See rewards",
   "homeVegaTokenIntro": "VEGA Token is a governance asset used to make and vote on proposals, and nominate validators.",
   "homeVegaTokenButtonText": "Manage tokens",
-  "downloadProposalJson": "Download proposal as JSON"
+  "downloadProposalJson": "Download proposal as JSON",
+  "associateVegaNow": "Associate $VEGA now"
 }

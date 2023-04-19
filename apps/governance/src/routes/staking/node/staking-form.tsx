@@ -2,7 +2,7 @@ import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ENV } from '../../../config';
 import { usePartyDelegationsLazyQuery } from './__generated__/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
@@ -11,8 +11,11 @@ import { useSearchParams } from '../../../hooks/use-search-params';
 import { BigNumber } from '../../../lib/bignumber';
 import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
+  Button,
   ButtonLink,
+  Callout,
   FormGroup,
+  Intent,
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
@@ -29,6 +32,7 @@ import type {
   DelegateSubmissionBody,
   UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
+import Routes from '../../routes';
 
 export enum FormState {
   Default,
@@ -191,51 +195,68 @@ export const StakingForm = ({
   }, [isDialogVisible]);
 
   return (
-    <>
+    <div className="my-8">
       <SubHeading title={t('Manage your stake')} />
       {formState === FormState.Default &&
         availableStakeToAdd.isEqualTo(0) &&
         availableStakeToRemove.isEqualTo(0) && (
           <div className="mb-4">
             {lien.isGreaterThan(0) ? (
-              <span className="text-vega-pink">
-                {t('stakeNodeWrongVegaKey')}
-              </span>
+              <Callout intent={Intent.Warning} iconName="warning-sign">
+                <p>stakeNodeWrongVegaKey</p>
+              </Callout>
             ) : (
-              <span className="text-vega-orange">{t('stakeNodeNone')}</span>
+              <Callout
+                title={t('stakeNodeNone')}
+                headingLevel={5}
+                intent={Intent.Warning}
+                iconName="warning-sign"
+              >
+                <div className="py-1">
+                  <Link to={Routes.ASSOCIATE}>
+                    <Button data-testid="stake-associate-btn" size="sm">
+                      {t('associateVegaNow')}
+                    </Button>
+                  </Link>
+                </div>
+              </Callout>
             )}
           </div>
         )}
-      <FormGroup
-        label={t('Select if you want to add or remove stake')}
-        labelFor="radio-stake-options"
-        hideLabel={true}
-      >
-        <RadioGroup
-          name="radio-stake-options"
-          onChange={(value) => {
-            // @ts-ignore value does exist on target
-            setAction(value);
-            navigate(`?action=${value}`, {
-              replace: true,
-            });
-          }}
-          value={action}
+
+      <div className="mb-8">
+        <FormGroup
+          label={t('Select if you want to add or remove stake')}
+          labelFor="radio-stake-options"
+          hideLabel={true}
         >
-          <Radio
-            disabled={availableStakeToAdd.isEqualTo(0)}
-            value={Actions.Add}
-            label="Add"
-            id="add-stake-radio"
-          />
-          <Radio
-            disabled={availableStakeToRemove.isEqualTo(0)}
-            value={Actions.Remove}
-            label="Remove"
-            id="remove-stake-radio"
-          />
-        </RadioGroup>
-      </FormGroup>
+          <RadioGroup
+            name="radio-stake-options"
+            onChange={(value) => {
+              // @ts-ignore value does exist on target
+              setAction(value);
+              navigate(`?action=${value}`, {
+                replace: true,
+              });
+            }}
+            value={action}
+          >
+            <Radio
+              disabled={availableStakeToAdd.isEqualTo(0)}
+              value={Actions.Add}
+              label="Add"
+              id="add-stake-radio"
+            />
+            <Radio
+              disabled={availableStakeToRemove.isEqualTo(0)}
+              value={Actions.Remove}
+              label="Remove"
+              id="remove-stake-radio"
+            />
+          </RadioGroup>
+        </FormGroup>
+      </div>
+
       {action !== undefined && (
         // eslint-disable-next-line
         <>
@@ -314,6 +335,6 @@ export const StakingForm = ({
         toggleDialog={toggleDialog}
         error={error}
       />
-    </>
+    </div>
   );
 };
