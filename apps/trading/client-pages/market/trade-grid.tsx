@@ -29,7 +29,10 @@ import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import {
+  useMarketClickHandler,
+  useMarketLiquidityClickHandler,
+} from '../../lib/hooks/use-market-click-handler';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -79,6 +82,7 @@ const MarketBottomPanel = memo(
   ({ marketId, pinnedAsset }: BottomPanelProps) => {
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
+    const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
     return 'xxxl' === screenSize ? (
       <ResizableGrid proportionalLayout minSize={200}>
@@ -94,6 +98,7 @@ const MarketBottomPanel = memo(
                   <TradingViews.Orders
                     marketId={marketId}
                     onMarketClick={onMarketClick}
+                    onOrderTypeClick={onOrderTypeClick}
                     enforceBottomPlaceholder
                   />
                 </VegaWalletContainer>
@@ -150,6 +155,7 @@ const MarketBottomPanel = memo(
               <TradingViews.Orders
                 marketId={marketId}
                 onMarketClick={onMarketClick}
+                onOrderTypeClick={onOrderTypeClick}
                 enforceBottomPlaceholder
               />
             </VegaWalletContainer>
@@ -293,6 +299,7 @@ interface TradePanelsProps {
   market: Market | null;
   onSelect: (marketId: string, metaKey?: boolean) => void;
   onMarketClick?: (marketId: string) => void;
+  onOrderTypeClick?: (marketId: string) => void;
   onClickCollateral: () => void;
   pinnedAsset?: PinnedAsset;
 }
@@ -303,12 +310,16 @@ export const TradePanels = ({
   onClickCollateral,
   pinnedAsset,
 }: TradePanelsProps) => {
+  const onMarketClick = useMarketClickHandler(true);
+  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
+
   const [view, setView] = useState<TradingView>('Candles');
   const renderView = () => {
     const Component = memo<{
       marketId: string;
       onSelect: (marketId: string, metaKey?: boolean) => void;
       onMarketClick?: (marketId: string) => void;
+      onOrderTypeClick?: (marketId: string) => void;
       onClickCollateral: () => void;
       pinnedAsset?: PinnedAsset;
     }>(TradingViews[view]);
@@ -325,6 +336,8 @@ export const TradePanels = ({
         onSelect={onSelect}
         onClickCollateral={onClickCollateral}
         pinnedAsset={pinnedAsset}
+        onMarketClick={onMarketClick}
+        onOrderTypeClick={onOrderTypeClick}
       />
     );
   };

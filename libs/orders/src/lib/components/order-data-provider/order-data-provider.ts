@@ -20,6 +20,7 @@ import type {
   OrdersQueryVariables,
 } from './__generated__/Orders';
 import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
+import type { ApolloClient } from '@apollo/client';
 
 export type Order = Omit<OrderFieldsFragment, 'market'> & {
   market?: Market;
@@ -81,8 +82,31 @@ const getData = (
 ): Edge<OrderFieldsFragment>[] =>
   responseData?.party?.ordersConnection?.edges || [];
 
-const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
-  subscriptionData.orders || [];
+const getDelta = (
+  subscriptionData: OrdersUpdateSubscription,
+  variables: OrdersQueryVariables,
+  client: ApolloClient<object>
+) => {
+  if (!subscriptionData.orders) {
+    return [];
+  }
+  subscriptionData.orders.forEach((order) => {
+    client.cache.modify({
+      id: client.cache.identify({
+        __typename: 'Order',
+        id: order.id,
+      }),
+      fields: {
+        price: () => order.price,
+        size: () => order.size,
+        remaining: () => order.remaining,
+        updatedAt: () => order.updatedAt,
+        status: () => order.status,
+      },
+    });
+  });
+  return subscriptionData.orders;
+};
 
 const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
   responseData.party?.ordersConnection?.pageInfo || null;

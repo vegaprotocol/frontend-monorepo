@@ -3,7 +3,7 @@ import { AppStateProvider } from '../../../contexts/app-state/app-state-provider
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 
 const mockData = {
-  epoch: '4441',
+  epoch: 4441,
   rewards: [
     {
       asset: 'tDAI',

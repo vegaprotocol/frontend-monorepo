@@ -48,17 +48,19 @@ export const EpochTotalRewardsTable = ({
 }: EpochTotalRewardsGridProps) => {
   return (
     <RewardsTable dataTestId="epoch-total-rewards-table" epoch={data.epoch}>
-      {data.assetRewards.map(({ name, rewards, totalAmount }, i) => (
-        <div className="contents" key={i}>
-          <div data-testid="asset" className={`${rowGridItemStyles()} p-5`}>
-            {name}
+      {Array.from(data.assetRewards.values()).map(
+        ({ name, rewards, totalAmount }, i) => (
+          <div className="contents" key={i}>
+            <div data-testid="asset" className={`${rowGridItemStyles()} p-5`}>
+              {name}
+            </div>
+            {Array.from(rewards.values()).map(({ rewardType, amount }, i) => (
+              <RewardItem key={i} dataTestId={rewardType} value={amount} />
+            ))}
+            <RewardItem dataTestId="total" value={totalAmount} last={true} />
           </div>
-          {rewards.map(({ rewardType, amount }, i) => (
-            <RewardItem key={i} dataTestId={rewardType} value={amount} />
-          ))}
-          <RewardItem dataTestId="total" value={totalAmount} last={true} />
-        </div>
-      ))}
+        )
+      )}
     </RewardsTable>
   );
 };
