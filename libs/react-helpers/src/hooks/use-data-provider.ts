@@ -63,6 +63,9 @@ export const useDataProvider = <
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
   const loadRef = useRef<Load<Data> | undefined>(undefined);
   const variablesRef = useRef<Variables>(props.variables);
+  const updateRef = useRef(update);
+  const insertRef = useRef(insert);
+  const skipUpdatesRef = useRef(skipUpdates);
   const variables = useMemo(() => {
     if (
       !isEqualWith(
@@ -91,53 +94,69 @@ export const useDataProvider = <
     }
     return Promise.reject();
   }, []);
-  const callback = useCallback<UpdateCallback<Data, Delta>>(
-    (args) => {
-      const {
-        data,
-        delta,
-        error,
-        loading,
-        insertionData,
-        totalCount,
-        isInsert,
-        isUpdate,
-      } = args;
-      setError(error);
-      setLoading(loading);
-      // if update or insert function returns true it means that component handles updates
-      // component can use flush() which will call callback without delta and cause data state update
-      if (!loading) {
-        if (
-          isUpdate &&
-          (skipUpdates ||
-            (!skipUpdates && update && update({ delta, data, totalCount })))
-        ) {
-          return;
-        }
-        if (isInsert && insert && insert({ insertionData, data, totalCount })) {
-          return;
-        }
+  const callback = useCallback<UpdateCallback<Data, Delta>>((args) => {
+    const {
+      data,
+      delta,
+      error,
+      loading,
+      insertionData,
+      totalCount,
+      isInsert,
+      isUpdate,
+    } = args;
+    setError(error);
+    setLoading(loading);
+    // if update or insert function returns true it means that component handles updates
+    // component can use flush() which will call callback without delta and cause data state update
+    if (!loading) {
+      if (
+        isUpdate &&
+        (skipUpdatesRef.current ||
+          (!skipUpdatesRef.current &&
+            updateRef.current &&
+            updateRef.current({ delta, data, totalCount })))
+      ) {
+        return;
       }
-      setTotalCount(totalCount);
-      setData(data);
-      if (!loading && !isUpdate && update) {
-        update({ data });
+      if (
+        isInsert &&
+        insertRef.current &&
+        insertRef.current({ insertionData, data, totalCount })
+      ) {
+        return;
       }
-    },
-    [update, insert, skipUpdates]
-  );
+    }
+    setTotalCount(totalCount);
+    setData(data);
+    if (!loading && !isUpdate && updateRef.current) {
+      updateRef.current({ data });
+    }
+  }, []);
+
+  useEffect(() => {
+    updateRef.current = update;
+  }, [update]);
+
+  useEffect(() => {
+    insertRef.current = insert;
+  }, [insert]);
+
+  useEffect(() => {
+    skipUpdatesRef.current = skipUpdates;
+  }, [skipUpdates]);
+
   useEffect(() => {
     setData(null);
     setError(undefined);
     setTotalCount(undefined);
-    if (update) {
-      update({ data: null });
+    if (updateRef.current) {
+      updateRef.current({ data: null });
     }
     if (skip) {
       setLoading(false);
-      if (update) {
-        update({ data: null });
+      if (updateRef.current) {
+        updateRef.current({ data: null });
       }
       return;
     }
@@ -156,7 +175,7 @@ export const useDataProvider = <
       loadRef.current = undefined;
       return unsubscribe();
     };
-  }, [client, dataProvider, callback, variables, skip, update]);
+  }, [client, dataProvider, callback, variables, skip]);
   return {
     data,
     loading,
