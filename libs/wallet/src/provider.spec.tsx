@@ -50,6 +50,7 @@ describe('VegaWalletProvider', () => {
       connect: expect.any(Function),
       disconnect: expect.any(Function),
       sendTx: expect.any(Function),
+      fetchPubKeys: expect.any(Function),
     });
 
     // Connect
@@ -77,14 +78,47 @@ describe('VegaWalletProvider', () => {
     expect(spyOnSend).toHaveBeenCalledWith(mockPubKeys[1].publicKey, {});
   });
 
+  it('should fetch new keypairs', async () => {
+    const { result } = setup();
+
+    // Default state
+    expect(result.current).toEqual({
+      pubKey: null,
+      pubKeys: null,
+      isReadOnly: false,
+      selectPubKey: expect.any(Function),
+      connect: expect.any(Function),
+      disconnect: expect.any(Function),
+      sendTx: expect.any(Function),
+      fetchPubKeys: expect.any(Function),
+    });
+
+    // Connect
+    await act(async () => {
+      result.current.connect(restConnector);
+      result.current.selectPubKey(mockPubKeys[0].publicKey);
+    });
+    expect(spyOnConnect).toHaveBeenCalled();
+    expect(result.current.pubKeys).toHaveLength(mockPubKeys.length);
+    expect(result.current.pubKey).toBe(mockPubKeys[0].publicKey);
+
+    // Fetch pub keys
+    mockPubKeys.push({ publicKey: '333', name: 'public key 3' });
+    await act(async () => {
+      result.current.fetchPubKeys();
+    });
+    expect(result.current.pubKeys).toHaveLength(mockPubKeys.length);
+  });
+
   it('persists selected pubkey and disconnects', async () => {
     const { result } = setup();
     expect(result.current.pubKey).toBe(null);
 
     await act(async () => {
       result.current.connect(restConnector);
+      result.current.selectPubKey(mockPubKeys[0].publicKey);
     });
-    expect(result.current.pubKey).toBe(mockPubKeys[1].publicKey);
+    expect(result.current.pubKey).toBe(mockPubKeys[0].publicKey);
 
     // Disconnect
     await act(async () => {
