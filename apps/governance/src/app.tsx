@@ -114,7 +114,7 @@ const Web3Container = ({
     return [<EthWallet />, <VegaWallet />];
   }, []);
 
-  if (connectors.length === 0) {
+  if (connectors.length === 0 && !('Cypress' in window)) {
     // Prevent loading when the connectors are not initialized
     return <SplashLoader />;
   }
