@@ -34,8 +34,8 @@ const stakeNumberRegex = /^\d*\.?\d*$/;
 
 context('Validators Page - verify elements on page', function () {
   before('navigate to validators page', function () {
-    cy.visit('/');
-    navigateTo(navigation.validators);
+    cy.clearAllLocalStorage();
+    cy.visit('/validators');
   });
 
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
