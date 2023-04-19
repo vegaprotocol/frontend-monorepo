@@ -55,7 +55,7 @@ export const Notification = ({
           'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
           'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
-          'bg-vega-orange-300 dark:bg-vega-orange-650':
+          'bg-vega-orange-300 dark:bg-vega-orange-700':
             intent === Intent.Warning,
           'bg-vega-pink-300 dark:bg-vega-pink-650': intent === Intent.Danger,
         },

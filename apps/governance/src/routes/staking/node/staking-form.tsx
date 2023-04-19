@@ -2,7 +2,7 @@ import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ENV } from '../../../config';
 import { usePartyDelegationsLazyQuery } from './__generated__/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
@@ -11,11 +11,10 @@ import { useSearchParams } from '../../../hooks/use-search-params';
 import { BigNumber } from '../../../lib/bignumber';
 import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
-  Button,
   ButtonLink,
-  Callout,
   FormGroup,
   Intent,
+  Notification,
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
@@ -202,24 +201,21 @@ export const StakingForm = ({
         availableStakeToRemove.isEqualTo(0) && (
           <div className="mb-4">
             {lien.isGreaterThan(0) ? (
-              <Callout intent={Intent.Warning} iconName="warning-sign">
-                <p>stakeNodeWrongVegaKey</p>
-              </Callout>
-            ) : (
-              <Callout
-                title={t('stakeNodeNone')}
-                headingLevel={5}
+              <Notification
                 intent={Intent.Warning}
-                iconName="warning-sign"
-              >
-                <div className="py-1">
-                  <Link to={Routes.ASSOCIATE}>
-                    <Button data-testid="stake-associate-btn" size="sm">
-                      {t('associateVegaNow')}
-                    </Button>
-                  </Link>
-                </div>
-              </Callout>
+                message={t('stakeNodeWrongVegaKey')}
+              />
+            ) : (
+              <Notification
+                message={t('stakeNodeNone')}
+                intent={Intent.Warning}
+                buttonProps={{
+                  text: t('associateVegaNow'),
+                  action: () => navigate(Routes.ASSOCIATE),
+                  className: 'py-1',
+                  size: 'sm',
+                }}
+              />
             )}
           </div>
         )}
