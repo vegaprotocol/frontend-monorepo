@@ -92,4 +92,4 @@ jobs:
         if: ${{ failure() }}
         with:
           name: test-report-${{ matrix.project }}
-          path: frontend-monorepo/apps/trading-e2e/cypress/reports
+          path: frontend-monorepo/apps/trading-e2e/cypress/reports/html
