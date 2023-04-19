@@ -17,9 +17,11 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
 
     it('should display announcement banner', function () {
       cy.getByTestId('app-announcement')
-        .should('be.visible')
+        .should('contain.text', 'TEST ANNOUNCEMENT!')
         .within(() => {
-          cy.getByTestId('external-link').should('exist');
+          cy.getByTestId('external-link')
+            .should('have.attr', 'href', 'https://fairground.wtf')
+            .and('have.text', 'CLICK LINK');
         });
       cy.getByTestId('app-announcement-close').should('be.visible').click();
       cy.getByTestId('app-announcement').should('not.exist');
