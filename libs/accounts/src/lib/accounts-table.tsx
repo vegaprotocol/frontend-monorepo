@@ -9,7 +9,16 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGridTrigger,
+  DropdownMenuItem,
+  Icon,
+} from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
@@ -28,6 +37,7 @@ import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
+import { IconNames } from '@blueprintjs/icons';
 
 const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames({
@@ -122,7 +132,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         params.data.asset.id === pinnedAssetId &&
         new BigNumber(params.data.total).isLessThanOrEqualTo(0)
           ? 32
-          : 22,
+          : 24,
       [pinnedAssetId]
     );
 
@@ -283,30 +293,65 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     );
                   }
                   return (
-                    <>
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="deposit"
-                          onClick={() => {
-                            onClickDeposit && onClickDeposit(data.asset.id);
-                          }}
-                        >
-                          {t('Deposit')}
-                        </ButtonLink>
-                      )}
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="withdraw"
-                          onClick={() =>
-                            onClickWithdraw && onClickWithdraw(data.asset.id)
-                          }
-                        >
-                          {t('Withdraw')}
-                        </ButtonLink>
-                      )}
-                    </>
+                    !props.isReadOnly && (
+                      <DropdownMenu
+                        trigger={
+                          <DropdownMenuGridTrigger className="mr-2"></DropdownMenuGridTrigger>
+                        }
+                      >
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            key={'deposit'}
+                            data-testid="deposit"
+                            onClick={() => {
+                              onClickDeposit && onClickDeposit(data.asset.id);
+                            }}
+                          >
+                            <span>
+                              <Icon
+                                name={IconNames.IMPORT}
+                                size={4}
+                                className="mr-2"
+                              />
+                              {t('Deposit')}
+                            </span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            key={'withdraw'}
+                            data-testid="withdraw"
+                            onClick={() =>
+                              onClickWithdraw && onClickWithdraw(data.asset.id)
+                            }
+                          >
+                            <span>
+                              <Icon
+                                name={IconNames.EXPORT}
+                                size={4}
+                                className="mr-2"
+                              />
+                              {t('Withdraw')}
+                            </span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            key={'breakdown'}
+                            data-testid="breakdown"
+                            onClick={() => {
+                              setOpenBreakdown(!openBreakdown);
+                              setRow(data);
+                            }}
+                          >
+                            <span>
+                              <Icon
+                                name={IconNames.INFO_SIGN}
+                                size={4}
+                                className="mr-2"
+                              />
+                              {t('Breakdown')}
+                            </span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )
                   );
                 }
               }}

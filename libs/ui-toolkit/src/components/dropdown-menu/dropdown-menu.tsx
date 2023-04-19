@@ -7,8 +7,8 @@ import { Icon } from '../icon';
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-white dark:hover:bg-neutral-200',
-  'focus:bg-white dark:focus:bg-neutral-200',
+  'hover:bg-white dark:hover:bg-neutral-500',
+  'focus:bg-white dark:focus:bg-neutral-500',
   'select-none',
   'whitespace-nowrap'
 );
@@ -42,7 +42,7 @@ export const DropdownMenuTrigger = forwardRef<
   const triggerClasses = classNames(
     className,
     'text-sm py-1 px-2 rounded bg-transparent border border-neutral-500 whitespace-nowrap',
-    'hover:bg-neutral-500/20 dark:hover:bg-neutral-500/40'
+    'dark:hover:bg-neutral-500/20 hover:bg-neutral-500/40'
   );
   return (
     <DropdownMenuPrimitive.Trigger
@@ -73,7 +73,7 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className="min-w-[290px] bg-neutral-200 dark:bg-white p-2 rounded z-20 dark:text-black"
+    className="min-w-[290px] bg-neutral-100 dark:bg-neutral-900 p-2 rounded z-20 text-black dark:text-white dark:border-neutral-700 border border-neutral-300"
     align="start"
     sideOffset={10}
   />
@@ -115,9 +115,9 @@ export const DropdownMenuRadioItem = forwardRef<
   React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem> & {
     inset?: boolean;
   }
->(({ className, inset = false, ...radioItemprops }, forwardedRef) => (
+>(({ className, inset = false, ...radioItemProps }, forwardedRef) => (
   <DropdownMenuPrimitive.RadioItem
-    {...radioItemprops}
+    {...radioItemProps}
     ref={forwardedRef}
     className={classNames(itemClass, className)}
   />
