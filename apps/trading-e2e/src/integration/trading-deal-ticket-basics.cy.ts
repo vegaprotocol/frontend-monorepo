@@ -1,3 +1,4 @@
+import * as Schema from '@vegaprotocol/types';
 import { mockConnectWallet } from '@vegaprotocol/cypress';
 import {
   orderPriceField,
@@ -54,3 +55,42 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
     cy.getByTestId(orderPriceField).should('have.value', '101');
   });
 });
+
+describe(
+  'market states not accepting orders',
+  { tags: '@smoke', testIsolation: true },
+  function () {
+    //7002-SORD-062
+    //7002-SORD-063
+    //7002-SORD-066
+
+    const states = [
+      Schema.MarketState.STATE_REJECTED,
+      Schema.MarketState.STATE_CANCELLED,
+      Schema.MarketState.STATE_CLOSED,
+      Schema.MarketState.STATE_SETTLED,
+      Schema.MarketState.STATE_TRADING_TERMINATED,
+    ];
+
+    states.forEach((marketState) => {
+      describe(marketState, function () {
+        beforeEach(function () {
+          cy.mockTradingPage(marketState);
+          cy.mockSubscription();
+          cy.setVegaWallet();
+          cy.visit('/#/markets/market-0');
+        });
+        it('must display that market is not accepting orders', function () {
+          cy.getByTestId('dealticket-error-message-summary').should(
+            'have.text',
+            `This market is ${marketState
+              .split('_')
+              .pop()
+              ?.toLowerCase()} and not accepting orders`
+          );
+          cy.getByTestId('place-order').should('be.disabled');
+        });
+      });
+    });
+  }
+);

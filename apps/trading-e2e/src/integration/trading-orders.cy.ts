@@ -426,7 +426,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       .find(`[data-testid="cancel"]`)
       .should('have.text', 'Cancel')
       .then(($btn) => {
-        cy.wrap($btn).click();
+        cy.wrap($btn).click({ force: true });
         const order: OrderCancellation = {
           orderId: orderId,
           marketId: 'market-0',
@@ -447,7 +447,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     cy.get(`[data-testid="cancelAll"]`)
       .should('have.text', 'Cancel all')
       .then(($btn) => {
-        cy.wrap($btn).click();
+        cy.wrap($btn).click({ force: true });
         const order: OrderCancellation = {
           marketId: 'market-0',
         };
@@ -466,7 +466,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       .find('[data-testid="edit"]')
       .should('have.text', 'Edit')
       .then(($btn) => {
-        cy.wrap($btn).click();
+        cy.wrap($btn).click({ force: true });
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');
         cy.get('#limitPrice').focus().clear().type('0.111111');
         cy.getByTestId('edit-order').find('[type="submit"]').click();
