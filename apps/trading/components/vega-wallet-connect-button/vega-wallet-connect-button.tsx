@@ -46,7 +46,9 @@ const MobileWalletButton = ({
       openVegaWalletDialog();
       setDrawerOpen(false);
     } else {
-      fetchPubKeys();
+      if (fetchPubKeys) {
+        fetchPubKeys();
+      }
       setDrawerOpen(!drawerOpen);
     }
   }, [drawerOpen, fetchPubKeys, isConnected, openVegaWalletDialog]);
@@ -170,7 +172,9 @@ export const VegaWalletConnectButton = () => {
               <DropdownMenuTrigger
                 data-testid="manage-vega-wallet"
                 onClick={() => {
-                  fetchPubKeys();
+                  if (fetchPubKeys) {
+                    fetchPubKeys();
+                  }
                   setDropdownOpen(!dropdownOpen);
                 }}
               >
