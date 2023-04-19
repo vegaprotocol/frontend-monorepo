@@ -184,16 +184,18 @@ export function validateValidatorListTotalStakeAndShare(
 ) {
   cy.contains('Loading...', epochTimeout).should('not.exist');
   waitForBeginningOfEpoch();
-  cy.get(`[row-id="${positionOnList}"]`).within(() => {
-    cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
-      'have.text',
-      expectedTotalStake
-    );
-    cy.getByTestId(stakeValidatorListTotalShare, epochTimeout).should(
-      'have.text',
-      expectedTotalShare
-    );
-  });
+  cy.get(`[row-id="${positionOnList}"]:visible`)
+    .first()
+    .within(() => {
+      cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
+        'have.text',
+        expectedTotalStake
+      );
+      cy.getByTestId(stakeValidatorListTotalShare, epochTimeout).should(
+        'have.text',
+        expectedTotalShare
+      );
+    });
 }
 
 export function ensureSpecifiedUnstakedTokensAreAssociated(
