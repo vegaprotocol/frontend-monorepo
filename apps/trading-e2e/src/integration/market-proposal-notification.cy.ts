@@ -2,6 +2,8 @@ import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { proposalListQuery, marketUpdateProposal } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 
+const marketSummaryBlock = 'header-summary';
+
 describe('Market proposal notification', { tags: '@smoke' }, () => {
   before(() => {
     cy.setVegaWallet();
