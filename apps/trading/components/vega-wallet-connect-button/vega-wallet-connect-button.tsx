@@ -171,7 +171,7 @@ export const VegaWalletConnectButton = () => {
                 data-testid="manage-vega-wallet"
                 onClick={() => {
                   fetchPubKeys();
-                  setDropdownOpen(dropdownOpenState);
+                  setDropdownOpen(!dropdownOpen);
                 }}
               >
                 {activeKey && (
