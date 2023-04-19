@@ -50,7 +50,7 @@ describe('VegaWalletProvider', () => {
       connect: expect.any(Function),
       disconnect: expect.any(Function),
       sendTx: expect.any(Function),
-      fetchPubKeys: expect.any(Function),
+      fetchPubKeys: expect.any(Function || undefined),
     });
 
     // Connect
@@ -105,7 +105,7 @@ describe('VegaWalletProvider', () => {
     // Fetch pub keys
     mockPubKeys.push({ publicKey: '333', name: 'public key 3' });
     await act(async () => {
-      result.current.fetchPubKeys();
+      result.current.fetchPubKeys && result.current.fetchPubKeys();
     });
     expect(result.current.pubKeys).toHaveLength(mockPubKeys.length);
   });
