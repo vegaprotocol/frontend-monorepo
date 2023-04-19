@@ -170,7 +170,6 @@ export const VegaWalletConnectButton = () => {
               <DropdownMenuTrigger
                 data-testid="manage-vega-wallet"
                 onClick={() => {
-                  const dropdownOpenState = !dropdownOpen;
                   fetchPubKeys();
                   setDropdownOpen(dropdownOpenState);
                 }}
