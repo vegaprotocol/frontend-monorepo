@@ -789,5 +789,6 @@
   "approvers": "Approvers",
   "approval (% validator voting power)": "approval (% validator voting power)",
   "67% voting power required": "67% voting power required",
-  "Token": "Token"
+  "Token": "Token",
+  "associateVegaNow": "Associate $VEGA now"
 }
