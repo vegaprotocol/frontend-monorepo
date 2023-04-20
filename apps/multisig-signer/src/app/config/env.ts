@@ -9,5 +9,4 @@ export const ENV = {
   dsn: windowOrDefault('NX_SENTRY_DSN'),
   flags: {},
   dataSources: {},
-  WALLETCONNECT_PROJECT_ID: windowOrDefault('NX_WALLETCONNECT_PROJECT_ID'),
 };
