@@ -26,7 +26,10 @@ export const Pagination = ({
   onLast,
 }: PaginationProps) => {
   return (
-    <div className={'flex gap-2 my-2 items-center justify-center'}>
+    <div
+      className={'flex gap-2 my-2 items-center justify-center'}
+      data-testid="page-info"
+    >
       {onFirst && (
         <Button
           size="sm"
