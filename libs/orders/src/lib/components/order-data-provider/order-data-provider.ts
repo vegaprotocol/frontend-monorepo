@@ -20,6 +20,7 @@ import type {
   OrdersQueryVariables,
 } from './__generated__/Orders';
 import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
+import type { ApolloClient } from '@apollo/client';
 
 export type Order = Omit<OrderFieldsFragment, 'market'> & {
   market?: Market;
@@ -81,8 +82,31 @@ const getData = (
 ): Edge<OrderFieldsFragment>[] =>
   responseData?.party?.ordersConnection?.edges || [];
 
-const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
-  subscriptionData.orders || [];
+const getDelta = (
+  subscriptionData: OrdersUpdateSubscription,
+  variables: OrdersQueryVariables,
+  client: ApolloClient<object>
+) => {
+  if (!subscriptionData.orders) {
+    return [];
+  }
+  subscriptionData.orders.forEach((order) => {
+    client.cache.modify({
+      id: client.cache.identify({
+        __typename: 'Order',
+        id: order.id,
+      }),
+      fields: {
+        price: () => order.price,
+        size: () => order.size,
+        remaining: () => order.remaining,
+        updatedAt: () => order.updatedAt,
+        status: () => order.status,
+      },
+    });
+  });
+  return subscriptionData.orders;
+};
 
 const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
   responseData.party?.ordersConnection?.pageInfo || null;
@@ -150,7 +174,7 @@ export const update = (
   });
 };
 
-export const ordersProvider = makeDataProvider<
+const ordersProvider = makeDataProvider<
   OrdersQuery,
   ReturnType<typeof getData>,
   OrdersUpdateSubscription,
@@ -165,10 +189,35 @@ export const ordersProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    first: 100,
+    first: 1000,
   },
   additionalContext: { isEnlargedTimeout: true },
 });
+
+export const activeOrdersProvider = makeDerivedDataProvider<
+  ReturnType<typeof getData>,
+  never,
+  { partyId: string; marketId?: string }
+>(
+  [
+    (callback, client, variables) =>
+      ordersProvider(callback, client, {
+        partyId: variables.partyId,
+        filter: {
+          status: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
+        },
+      }),
+  ],
+  (partsData, variables, prevData, parts, subscriptions) => {
+    if (!parts[0].isUpdate && subscriptions && subscriptions[0].load) {
+      subscriptions[0].load();
+    }
+    const orders = partsData[0] as ReturnType<typeof getData>;
+    return variables.marketId
+      ? orders.filter((edge) => variables.marketId === edge.node.market.id)
+      : orders;
+  }
+);
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
   (OrderEdge | null)[],
@@ -193,63 +242,20 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
   combineInsertionData<Order>
 );
 
-const hasActiveOrderProviderInternal = makeDataProvider<
-  OrdersQuery,
-  boolean,
-  OrdersUpdateSubscription,
-  ReturnType<typeof getDelta>,
-  OrdersQueryVariables
->({
-  query: OrdersDocument,
-  subscriptionQuery: OrdersUpdateDocument,
-  update: (
-    data: boolean | null,
-    delta: ReturnType<typeof getDelta>,
-    reload: () => void
-  ) => {
-    const orders = delta?.filter(
-      (order) => !(order.peggedOrder || order.liquidityProvisionId)
-    );
-    if (!orders?.length) {
-      return data;
-    }
-    const hasActiveOrders = orders.some(
-      (order) => order.status === OrderStatus.STATUS_ACTIVE
-    );
-    if (hasActiveOrders) {
-      return true;
-    } else if (data && !hasActiveOrders) {
-      reload();
-    }
-    return data;
-  },
-  getData: (responseData: OrdersQuery | null) => {
-    const hasActiveOrder = !!responseData?.party?.ordersConnection?.edges?.some(
-      (order) => !(order.node.peggedOrder || order.node.liquidityProvision)
-    );
-    return hasActiveOrder;
-  },
-  getDelta,
-});
-
 export const hasActiveOrderProvider = makeDerivedDataProvider<
   boolean,
   never,
   { partyId: string; marketId?: string }
->(
-  [
-    (callback, client, { partyId, marketId }) =>
-      hasActiveOrderProviderInternal(callback, client, {
-        marketIds: marketId ? [marketId] : undefined,
-        filter: {
-          status: [OrderStatus.STATUS_ACTIVE],
-          excludeLiquidity: true,
-        },
-        pagination: {
-          first: 1,
-        },
-        partyId,
-      } as OrdersQueryVariables),
-  ],
-  (parts) => parts[0]
-);
+>([activeOrdersProvider], (parts) => !!parts[0].length);
+
+export const hasAmendableOrderProvider = makeDerivedDataProvider<
+  boolean,
+  never,
+  { partyId: string; marketId?: string }
+>([activeOrdersProvider], (parts) => {
+  const activeOrders = parts[0] as ReturnType<typeof getData>;
+  const hasAmendableOrder = activeOrders.some(
+    (edge) => !(edge.node.liquidityProvision || edge.node.peggedOrder)
+  );
+  return hasAmendableOrder;
+});

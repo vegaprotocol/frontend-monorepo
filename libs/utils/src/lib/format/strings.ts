@@ -26,3 +26,7 @@ export function titlefy(words: (string | null | undefined)[]) {
     .join(TITLE_SEPARATOR);
   return title;
 }
+
+export function stripFullStops(input: string) {
+  return input.replace(/\./g, '');
+}

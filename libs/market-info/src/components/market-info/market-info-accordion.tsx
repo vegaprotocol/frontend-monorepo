@@ -1,7 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { removePaginationWrapper, TokenLinks } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   Accordion,
@@ -11,12 +11,11 @@ import {
   Splash,
   TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
-import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
-import { marketInfoWithDataAndCandlesProvider } from './market-info-data-provider';
+import { marketInfoProvider } from './market-info-data-provider';
 
-import type { MarketInfoWithDataAndCandles } from './market-info-data-provider';
+import type { MarketInfo } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import {
   CurrentFeesInfoPanel,
@@ -37,8 +36,8 @@ import {
   SettlementAssetInfoPanel,
 } from './market-info-panels';
 
-export interface InfoProps {
-  market: MarketInfoWithDataAndCandles;
+export interface MarketInfoAccordionProps {
+  market: MarketInfo;
   onSelect?: (id: string, metaKey?: boolean) => void;
 }
 
@@ -46,34 +45,21 @@ export interface MarketInfoContainerProps {
   marketId: string;
   onSelect?: (id: string, metaKey?: boolean) => void;
 }
-export const MarketInfoContainer = ({
+export const MarketInfoAccordionContainer = ({
   marketId,
   onSelect,
 }: MarketInfoContainerProps) => {
-  const yesterday = useYesterday();
-  const yTimestamp = useMemo(() => {
-    return new Date(yesterday).toISOString();
-  }, [yesterday]);
-  const variables = useMemo(
-    () => ({
-      marketId,
-      since: yTimestamp,
-      interval: Schema.Interval.INTERVAL_I1H,
-    }),
-    [marketId, yTimestamp]
-  );
-
   const { data, loading, error, reload } = useDataProvider({
-    dataProvider: marketInfoWithDataAndCandlesProvider,
+    dataProvider: marketInfoProvider,
     skipUpdates: true,
-    variables,
+    variables: { marketId },
   });
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
       {data ? (
         <TinyScroll className="h-full overflow-auto">
-          <Info market={data} onSelect={onSelect} />
+          <MarketInfoAccordion market={data} onSelect={onSelect} />
         </TinyScroll>
       ) : (
         <Splash>
@@ -84,7 +70,10 @@ export const MarketInfoContainer = ({
   );
 };
 
-export const Info = ({ market, onSelect }: InfoProps) => {
+const MarketInfoAccordion = ({
+  market,
+  onSelect,
+}: MarketInfoAccordionProps) => {
   const { VEGA_TOKEN_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
 

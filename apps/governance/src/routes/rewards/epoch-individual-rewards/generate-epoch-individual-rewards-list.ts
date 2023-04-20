@@ -2,9 +2,10 @@ import { BigNumber } from '../../../lib/bignumber';
 import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { RewardFieldsFragment } from '../home/__generated__/Rewards';
 import type { AccountType } from '@vegaprotocol/types';
+import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 
 export interface EpochIndividualReward {
-  epoch: string;
+  epoch: number;
   rewards: {
     asset: string;
     totalAmount: string;
@@ -27,11 +28,29 @@ const emptyRowAccountTypes = accountTypes.map((type) => [
   },
 ]);
 
-export const generateEpochIndividualRewardsList = (
-  rewards: RewardFieldsFragment[]
-) => {
+export const generateEpochIndividualRewardsList = ({
+  rewards,
+  epochId,
+  page = 1,
+  size = 10,
+}: {
+  rewards: RewardFieldsFragment[];
+  epochId: number;
+  page?: number;
+  size?: number;
+}) => {
+  const map: Map<string, EpochIndividualReward> = new Map();
+  const { fromEpoch, toEpoch } = calculateEpochOffset({ epochId, page, size });
+
+  for (let i = toEpoch; i >= fromEpoch; i--) {
+    map.set(i.toString(), {
+      epoch: i,
+      rewards: [],
+    });
+  }
+
   // We take the rewards and aggregate them by epoch and asset.
-  const epochIndividualRewards = rewards.reduce((map, reward) => {
+  const epochIndividualRewards = rewards.reduce((acc, reward) => {
     const epochId = reward.epoch.id;
     const assetName = reward.asset.name;
     const rewardType = reward.rewardType;
@@ -40,14 +59,14 @@ export const generateEpochIndividualRewardsList = (
 
     // if the rewardType is not of a type we display in the table, we skip it.
     if (!accountTypes.includes(rewardType)) {
-      return map;
+      return acc;
     }
 
-    if (!map.has(epochId)) {
-      map.set(epochId, { epoch: epochId, rewards: [] });
+    if (!acc.has(epochId)) {
+      return acc;
     }
 
-    const epoch = map.get(epochId);
+    const epoch = acc.get(epochId);
 
     let asset = epoch?.rewards.find((r) => r.asset === assetName);
 
@@ -76,8 +95,8 @@ export const generateEpochIndividualRewardsList = (
       });
     }
 
-    return map;
-  }, new Map<string, EpochIndividualReward>());
+    return acc;
+  }, map);
 
   return Array.from(epochIndividualRewards.values()).sort(
     (a, b) => Number(b.epoch) - Number(a.epoch)

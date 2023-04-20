@@ -10,7 +10,6 @@ import {
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
-import { THROTTLE_UPDATE_TIME } from '../constants';
 
 interface Props {
   marketId?: string;
@@ -30,18 +29,15 @@ export const Last24hVolume = ({
   const yesterday = useYesterday();
   const [ref, inView] = useInView({ root: inViewRoot?.current });
 
-  const { data } = useThrottledDataProvider(
-    {
-      dataProvider: marketCandlesProvider,
-      variables: {
-        marketId: marketId || '',
-        interval: Schema.Interval.INTERVAL_I1H,
-        since: new Date(yesterday).toISOString(),
-      },
-      skip: !(inView && marketId),
+  const { data } = useThrottledDataProvider({
+    dataProvider: marketCandlesProvider,
+    variables: {
+      marketId: marketId || '',
+      interval: Schema.Interval.INTERVAL_I1H,
+      since: new Date(yesterday).toISOString(),
     },
-    THROTTLE_UPDATE_TIME
-  );
+    skip: !(inView && marketId),
+  });
   const candleVolume = data ? calcCandleVolume(data) : initialValue;
   return (
     <span ref={ref}>

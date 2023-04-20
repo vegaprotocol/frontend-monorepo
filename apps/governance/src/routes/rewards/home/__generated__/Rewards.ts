@@ -9,21 +9,24 @@ export type DelegationFieldsFragment = { __typename?: 'Delegation', amount: stri
 
 export type RewardsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
-  delegationsPagination?: Types.InputMaybe<Types.Pagination>;
+  fromEpoch?: Types.InputMaybe<Types.Scalars['Int']>;
+  toEpoch?: Types.InputMaybe<Types.Scalars['Int']>;
   rewardsPagination?: Types.InputMaybe<Types.Pagination>;
+  delegationsPagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
-export type RewardsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, rewardsConnection?: { __typename?: 'RewardsConnection', edges?: Array<{ __typename?: 'RewardEdge', node: { __typename?: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename?: 'Asset', id: string, symbol: string, name: string }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } } } | null> | null } | null, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number } } | null> | null } | null } | null, epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } } };
+export type RewardsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, rewardsConnection?: { __typename?: 'RewardsConnection', edges?: Array<{ __typename?: 'RewardEdge', node: { __typename?: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename?: 'Asset', id: string, symbol: string, name: string }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } } } | null> | null } | null, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number } } | null> | null } | null } | null };
 
 export type EpochRewardSummaryFieldsFragment = { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType };
 
 export type EpochAssetsRewardsQueryVariables = Types.Exact<{
+  epochRewardSummariesFilter?: Types.InputMaybe<Types.RewardSummaryFilter>;
   epochRewardSummariesPagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
-export type EpochAssetsRewardsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string } } | null> | null } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null, epoch: { __typename?: 'Epoch', timestamps: { __typename?: 'EpochTimestamps', expiry?: any | null } } };
+export type EpochAssetsRewardsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string } } | null> | null } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
 
 export type EpochFieldsFragment = { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } };
 
@@ -76,10 +79,14 @@ export const EpochFieldsFragmentDoc = gql`
 }
     `;
 export const RewardsDocument = gql`
-    query Rewards($partyId: ID!, $delegationsPagination: Pagination, $rewardsPagination: Pagination) {
+    query Rewards($partyId: ID!, $fromEpoch: Int, $toEpoch: Int, $rewardsPagination: Pagination, $delegationsPagination: Pagination) {
   party(id: $partyId) {
     id
-    rewardsConnection(pagination: $rewardsPagination) {
+    rewardsConnection(
+      fromEpoch: $fromEpoch
+      toEpoch: $toEpoch
+      pagination: $rewardsPagination
+    ) {
       edges {
         node {
           ...RewardFields
@@ -92,14 +99,6 @@ export const RewardsDocument = gql`
           ...DelegationFields
         }
       }
-    }
-  }
-  epoch {
-    id
-    timestamps {
-      start
-      end
-      expiry
     }
   }
 }
@@ -119,8 +118,10 @@ ${DelegationFieldsFragmentDoc}`;
  * const { data, loading, error } = useRewardsQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
- *      delegationsPagination: // value for 'delegationsPagination'
+ *      fromEpoch: // value for 'fromEpoch'
+ *      toEpoch: // value for 'toEpoch'
  *      rewardsPagination: // value for 'rewardsPagination'
+ *      delegationsPagination: // value for 'delegationsPagination'
  *   },
  * });
  */
@@ -136,7 +137,7 @@ export type RewardsQueryHookResult = ReturnType<typeof useRewardsQuery>;
 export type RewardsLazyQueryHookResult = ReturnType<typeof useRewardsLazyQuery>;
 export type RewardsQueryResult = Apollo.QueryResult<RewardsQuery, RewardsQueryVariables>;
 export const EpochAssetsRewardsDocument = gql`
-    query EpochAssetsRewards($epochRewardSummariesPagination: Pagination) {
+    query EpochAssetsRewards($epochRewardSummariesFilter: RewardSummaryFilter, $epochRewardSummariesPagination: Pagination) {
   assetsConnection {
     edges {
       node {
@@ -145,16 +146,14 @@ export const EpochAssetsRewardsDocument = gql`
       }
     }
   }
-  epochRewardSummaries(pagination: $epochRewardSummariesPagination) {
+  epochRewardSummaries(
+    filter: $epochRewardSummariesFilter
+    pagination: $epochRewardSummariesPagination
+  ) {
     edges {
       node {
         ...EpochRewardSummaryFields
       }
-    }
-  }
-  epoch {
-    timestamps {
-      expiry
     }
   }
 }
@@ -172,6 +171,7 @@ export const EpochAssetsRewardsDocument = gql`
  * @example
  * const { data, loading, error } = useEpochAssetsRewardsQuery({
  *   variables: {
+ *      epochRewardSummariesFilter: // value for 'epochRewardSummariesFilter'
  *      epochRewardSummariesPagination: // value for 'epochRewardSummariesPagination'
  *   },
  * });

@@ -31,7 +31,7 @@ export enum Routes {
   MARKET = '/markets',
   MARKETS = '/markets/all',
   PORTFOLIO = '/portfolio',
-  LIQUIDITY = 'liquidity/:marketId',
+  LIQUIDITY = '/liquidity',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -41,8 +41,10 @@ export const Links: ConsoleLinks = {
     marketId ? trimEnd(`${Routes.MARKET}/${marketId}`, '/') : Routes.MARKET,
   [Routes.MARKETS]: () => Routes.MARKETS,
   [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
-  [Routes.LIQUIDITY]: (marketId: string) =>
-    Routes.LIQUIDITY.replace(':marketId', marketId),
+  [Routes.LIQUIDITY]: (marketId: string | null | undefined) =>
+    marketId
+      ? trimEnd(`${Routes.LIQUIDITY}/${marketId}`, '/')
+      : Routes.LIQUIDITY,
 };
 
 const routerConfig: RouteObject[] = [
@@ -70,6 +72,16 @@ const routerConfig: RouteObject[] = [
   {
     path: Routes.LIQUIDITY,
     element: <LazyLiquidity />,
+    children: [
+      {
+        index: true,
+        element: <LazyLiquidity />,
+      },
+      {
+        path: ':marketId',
+        element: <LazyLiquidity />,
+      },
+    ],
   },
   {
     path: Routes.PORTFOLIO,
