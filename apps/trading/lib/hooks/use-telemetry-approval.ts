@@ -1,23 +1,8 @@
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useCallback } from 'react';
-import * as Sentry from '@sentry/nextjs';
-import { BrowserTracing } from '@sentry/tracing';
-import { ENV } from '../config';
+import { SentryInit, SentryClose } from '../utils/sentry-init';
 
-const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
 export const STORAGE_KEY = 'vega_telemetry_approval';
-
-export const SentryInit = () => {
-  const { dsn } = ENV;
-  if (dsn && Boolean(SENTRY_AUTH_TOKEN)) {
-    Sentry.init({
-      dsn,
-      integrations: [new BrowserTracing()],
-      tracesSampleRate: 1,
-      environment: ENV.envName,
-    });
-  }
-};
 
 export const useTelemetryApproval = (): [
   value: boolean,
@@ -30,7 +15,7 @@ export const useTelemetryApproval = (): [
         SentryInit();
         return setValue('1');
       }
-      Sentry.close();
+      SentryClose();
       removeValue();
     },
     [setValue, removeValue]

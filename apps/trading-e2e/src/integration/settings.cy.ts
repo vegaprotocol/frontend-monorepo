@@ -1,5 +1,3 @@
-import * as Schema from '@vegaprotocol/types';
-
 describe('Settings page', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.clearLocalStorage().then(() => {
