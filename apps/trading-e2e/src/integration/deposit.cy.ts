@@ -52,7 +52,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.get(toAddressField).clear().type('INVALID_DEPOSIT_TO_ADDRESS');
     cy.get(`[data-testid="${formFieldError}"][aria-describedby="to"]`).should(
       'have.text',
-      'Vega key'
+      'Invalid Vega key'
     );
   });
 
