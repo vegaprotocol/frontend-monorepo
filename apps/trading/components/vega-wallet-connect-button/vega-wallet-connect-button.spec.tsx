@@ -23,26 +23,44 @@ const generateJsx = (context: VegaWalletContextShape) => {
   );
 };
 
-it('Not connected', () => {
-  render(generateJsx({ pubKey: null } as VegaWalletContextShape));
+describe('VegaWalletConnectButton', () => {
+  it('should fire dialog when not connected', () => {
+    render(generateJsx({ pubKey: null } as VegaWalletContextShape));
 
-  const button = screen.getByTestId('connect-vega-wallet');
-  expect(button).toHaveTextContent('Connect Vega wallet');
-  fireEvent.click(button);
-  expect(mockUpdateDialogOpen).toHaveBeenCalled();
-});
+    const button = screen.getByTestId('connect-vega-wallet');
+    expect(button).toHaveTextContent('Connect Vega wallet');
+    fireEvent.click(button);
+    expect(mockUpdateDialogOpen).toHaveBeenCalled();
+  });
 
-it('Connected', async () => {
-  const pubKey = { publicKey: '123456__123456', name: 'test' };
-  render(
-    generateJsx({
+  it('should retrieve keys when connected', async () => {
+    const pubKey = { publicKey: '123456__123456', name: 'test' };
+    const pubKey2 = { publicKey: '123456__123457', name: 'test2' };
+    render(
+      generateJsx({
+        pubKey: pubKey.publicKey,
+        pubKeys: [pubKey],
+        fetchPubKeys: () => Promise.resolve([pubKey, pubKey2]),
+      } as VegaWalletContextShape)
+    );
+
+    const button = screen.getByTestId('manage-vega-wallet');
+    expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
+    userEvent.click(button);
+    expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
+  });
+
+  it('should fetch keys when connected', async () => {
+    const pubKey = { publicKey: '123456__123456', name: 'test' };
+    const context = {
       pubKey: pubKey.publicKey,
       pubKeys: [pubKey],
-    } as VegaWalletContextShape)
-  );
+    } as VegaWalletContextShape;
+    render(generateJsx(context));
 
-  const button = screen.getByTestId('manage-vega-wallet');
-  expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
-  userEvent.click(button);
-  expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
+    const button = screen.getByTestId('manage-vega-wallet');
+    expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
+    userEvent.click(button);
+    expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
+  });
 });

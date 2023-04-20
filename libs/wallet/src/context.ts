@@ -31,6 +31,9 @@ export interface VegaWalletContextShape {
     /** Transaction payload */
     transaction: Transaction
   ) => Promise<TransactionResponse | null>;
+
+  /** Fetch public keys */
+  fetchPubKeys?: () => Promise<PubKey[] | null>;
 }
 
 export const VegaWalletContext = createContext<
