@@ -40,11 +40,14 @@ const stakeAddStakeRadioButton = 'add-stake-radio';
 const stakeMaximumTokens = 'token-amount-use-maximum';
 const vegaWalletAssociatedBalance = 'currency-value';
 const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
-const ethWalletContainer = 'ethereum-wallet';
+const ethWallet = 'ethereum-wallet';
 const vegaWallet = 'vega-wallet';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
+
+const getEthereumWallet = () => cy.get(`[data-testid="${ethWallet}"]:visible`);
+const getVegaWallet = () => cy.get(`[data-testid="${vegaWallet}"]:visible`);
 
 context(
   'Staking Tab - with eth and vega wallets connected',
@@ -52,6 +55,7 @@ context(
   function () {
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
+      cy.clearAllLocalStorage();
       cy.visit('/');
       ethereumWalletConnect();
       // this is a workaround for #2422 which can be removed once issue is resolved
@@ -187,31 +191,35 @@ context(
           .should('contain', 1.0, txTimeout);
         closeStakingDialog();
         navigateTo(navigation.validators);
-        cy.get(`[row-id="${0}"]`).within(() => {
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .should('have.text', '2.00')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalShare)
-            .should('have.text', '66.67%')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .scrollIntoView()
-            .should('have.text', '2.00')
-            .and('be.visible');
-        });
-        cy.get(`[row-id="${1}"]`).within(() => {
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .scrollIntoView()
-            .should('have.text', '1.00')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalShare)
-            .should('have.text', '33.33%')
-            .and('be.visible');
-          cy.getByTestId(stakeValidatorListTotalStake)
-            .scrollIntoView()
-            .should('have.text', '1.00')
-            .and('be.visible');
-        });
+        cy.get(`[row-id="${0}"]`)
+          .eq(1)
+          .within(() => {
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .should('have.text', '2.00')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalShare)
+              .should('have.text', '66.67%')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .scrollIntoView()
+              .should('have.text', '2.00')
+              .and('be.visible');
+          });
+        cy.get(`[row-id="${1}"]`)
+          .eq(1)
+          .within(() => {
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .scrollIntoView()
+              .should('have.text', '1.00')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalShare)
+              .should('have.text', '33.33%')
+              .and('be.visible');
+            cy.getByTestId(stakeValidatorListTotalStake)
+              .scrollIntoView()
+              .should('have.text', '1.00')
+              .and('be.visible');
+          });
       });
 
       // 2001-STKE-041
@@ -329,11 +337,11 @@ context(
         verifyStakedBalance(2.0);
         closeStakingDialog();
         stakingPageDisassociateAllTokens();
-        cy.getByTestId(ethWalletContainer).within(() => {
+        getEthereumWallet().within(() => {
           cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
         verifyEthWalletTotalAssociatedBalance('0.0');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '0.00'
@@ -357,11 +365,11 @@ context(
         verifyStakedBalance(2.0);
         closeStakingDialog();
         stakingPageDisassociateAllTokens('contract');
-        cy.getByTestId(ethWalletContainer).within(() => {
+        getEthereumWallet().within(() => {
           cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
         verifyEthWalletTotalAssociatedBalance('0.0');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '0.00'
@@ -386,7 +394,7 @@ context(
         closeStakingDialog();
         stakingPageDisassociateTokens('1');
         verifyEthWalletTotalAssociatedBalance('2.0');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '2.00'
@@ -453,7 +461,7 @@ context(
         verifyUnstakedBalance(0.0);
         closeStakingDialog();
         stakingPageAssociateTokens('6');
-        cy.getByTestId(vegaWallet).within(() => {
+        getVegaWallet().within(() => {
           cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '12.00'

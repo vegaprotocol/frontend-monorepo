@@ -2,7 +2,7 @@ import { connectEthereumWallet } from '../support/ethereum-wallet';
 
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
 
-describe('ethereum wallet', { tags: '@smoke' }, () => {
+describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
