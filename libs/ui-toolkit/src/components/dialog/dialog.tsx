@@ -12,6 +12,7 @@ interface DialogProps {
   open: boolean;
   onChange?: (isOpen: boolean) => void;
   onCloseAutoFocus?: (e: Event) => void;
+  onInteractOutside?: (e: Event) => void;
   title?: string;
   icon?: ReactNode;
   intent?: Intent;
@@ -24,6 +25,7 @@ export function Dialog({
   open,
   onChange,
   onCloseAutoFocus,
+  onInteractOutside,
   title,
   icon,
   intent,
@@ -66,6 +68,7 @@ export function Dialog({
         <DialogPrimitives.Content
           className={contentClasses}
           onCloseAutoFocus={onCloseAutoFocus}
+          onInteractOutside={onInteractOutside}
           data-testid={dataTestId}
         >
           <div className={wrapperClasses}>

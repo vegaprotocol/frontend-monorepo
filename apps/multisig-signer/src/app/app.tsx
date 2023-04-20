@@ -9,6 +9,7 @@ import {
 } from '@vegaprotocol/environment';
 import { AsyncRenderer, Button, Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
+import { useWeb3Disconnect } from '@vegaprotocol/web3';
 import { useEthereumConfig, Web3Provider } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/i18n';
 import { ENV } from './config/env';
@@ -34,6 +35,7 @@ const pageWrapperClasses = classnames(
 
 const ConnectedApp = ({ config }: { config: EthereumConfig | null }) => {
   const { account, connector } = useWeb3React();
+  const disconnect = useWeb3Disconnect(connector);
   return (
     <main className="w-full max-w-3xl px-5 justify-self-center">
       <h1>{t('Multisig signer')}</h1>
@@ -41,7 +43,7 @@ const ConnectedApp = ({ config }: { config: EthereumConfig | null }) => {
         <p>
           Connected to Eth wallet: <Lozenge>{account}</Lozenge>
         </p>
-        <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        <Button onClick={() => disconnect()}>Disconnect</Button>
       </div>
       <ContractDetails config={config} />
       <h2>{t('Add or remove signer')}</h2>
