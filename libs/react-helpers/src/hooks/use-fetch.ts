@@ -80,6 +80,7 @@ export const useFetch = <T>(
           }
 
           data = (await response.json()) as T;
+          // @ts-ignore - 'error' in data
           if (data && 'error' in data) {
             // @ts-ignore - data.error
             throw new Error(data.error);

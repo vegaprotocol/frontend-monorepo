@@ -26,7 +26,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-          # comment out "resotre-keys" if you need to rebuild yarn from 0
+          # comment out "restore-keys" if you need to rebuild yarn from 0
           restore-keys: |
             ${{ runner.os }}-cache-node-modules-
 
@@ -50,7 +50,7 @@ jobs:
     secrets: inherit
 
   lint-test-build:
-    timeout-minutes: 60
+    timeout-minutes: 35
     needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + unit test + build'

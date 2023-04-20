@@ -45,10 +45,12 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     navigateTo(navigation.proposals);
     goToMakeNewProposal('Freeform');
     enterUniqueFreeFormProposalBody('50', 'pub key proposal test');
-    cy.getByTestId('dialog-content').within(() => {
-      cy.get('h1').should('have.text', 'Transaction failed');
-      cy.getByTestId('Error').should('have.text', expectedErrorTxt);
-    });
+    cy.getByTestId('dialog-content')
+      .first()
+      .within(() => {
+        cy.get('h1').should('have.text', 'Transaction failed');
+        cy.getByTestId('Error').should('have.text', expectedErrorTxt);
+      });
   });
 
   it('Able to disconnect via banner', function () {

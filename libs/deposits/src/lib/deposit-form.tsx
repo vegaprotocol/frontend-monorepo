@@ -35,6 +35,7 @@ import {
   ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectStore,
   getChainName,
+  useWeb3Disconnect,
 } from '@vegaprotocol/web3';
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
@@ -448,11 +449,12 @@ const DisconnectEthereumButton = ({
 }) => {
   const { connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+  const disconnect = useWeb3Disconnect(connector);
 
   return (
     <ButtonLink
       onClick={() => {
-        connector.deactivate();
+        disconnect();
         removeEagerConnector();
         onDisconnect();
       }}
