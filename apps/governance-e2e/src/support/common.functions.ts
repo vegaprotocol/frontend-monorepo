@@ -26,9 +26,11 @@ const topLevelRoutes = [
 export function navigateTo(page: navigation) {
   if (!topLevelRoutes.includes(page)) {
     cy.getByTestId(tokenDropDown, { timeout: 10000 }).eq(0).click();
-    cy.getByTestId('token-dropdown').within(() => {
-      cy.get(page).eq(0).click();
-    });
+    cy.getByTestId('token-dropdown')
+      .first()
+      .within(() => {
+        cy.get(page).eq(0).click();
+      });
   } else {
     return cy.get(navigation.section, { timeout: 10000 }).within(() => {
       cy.get(page).eq(0).click();

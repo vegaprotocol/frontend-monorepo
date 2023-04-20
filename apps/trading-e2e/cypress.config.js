@@ -25,6 +25,7 @@ module.exports = defineConfig({
     responseTimeout: 50000,
     requestTimeout: 20000,
     retries: 2,
+    testIsolation: false,
   },
   env: {
     ETHERSCAN_URL: 'https://sepolia.etherscan.io',

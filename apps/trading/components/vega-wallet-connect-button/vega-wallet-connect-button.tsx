@@ -29,7 +29,7 @@ const MobileWalletButton = ({
   isConnected?: boolean;
   activeKey?: PubKey;
 }) => {
-  const { pubKeys, selectPubKey, disconnect } = useVegaWallet();
+  const { pubKeys, selectPubKey, disconnect, fetchPubKeys } = useVegaWallet();
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
@@ -46,9 +46,12 @@ const MobileWalletButton = ({
       openVegaWalletDialog();
       setDrawerOpen(false);
     } else {
+      if (fetchPubKeys) {
+        fetchPubKeys();
+      }
       setDrawerOpen(!drawerOpen);
     }
-  }, [drawerOpen, isConnected, openVegaWalletDialog]);
+  }, [drawerOpen, fetchPubKeys, isConnected, openVegaWalletDialog]);
 
   const iconClass = drawerOpen
     ? 'hidden'
@@ -145,8 +148,14 @@ export const VegaWalletConnectButton = () => {
     (store) => store.openVegaWalletDialog
   );
   const openTransferDialog = useTransferDialog((store) => store.open);
-  const { pubKey, pubKeys, selectPubKey, disconnect, isReadOnly } =
-    useVegaWallet();
+  const {
+    pubKey,
+    pubKeys,
+    selectPubKey,
+    disconnect,
+    isReadOnly,
+    fetchPubKeys,
+  } = useVegaWallet();
   const isConnected = pubKey !== null;
 
   const activeKey = useMemo(() => {
@@ -162,7 +171,12 @@ export const VegaWalletConnectButton = () => {
             trigger={
               <DropdownMenuTrigger
                 data-testid="manage-vega-wallet"
-                onClick={() => setDropdownOpen((curr) => !curr)}
+                onClick={() => {
+                  if (fetchPubKeys) {
+                    fetchPubKeys();
+                  }
+                  setDropdownOpen(!dropdownOpen);
+                }}
               >
                 {activeKey && (
                   <span className="uppercase">{activeKey.name}</span>
