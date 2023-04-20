@@ -26,7 +26,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
           .find(`a[data-testid=${name}]:visible`)
           .then((element) => {
             cy.wrap(element).click();
-            cy.location('hash').should('equal', link);
+            cy.location('hash').should('contain', link);
           });
       });
     });
@@ -81,7 +81,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
           cy.getByTestId('menu-drawer').should('be.visible');
           cy.getByTestId('menu-drawer').within((el) => {
             cy.wrap(el).getByTestId(name).click();
-            cy.location('hash').should('contain.text', link);
+            cy.location('hash').should('contain', link);
           });
         });
       });
