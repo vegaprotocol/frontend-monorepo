@@ -10,14 +10,15 @@ declare global {
 
 export const addConnectPublicKey = () => {
   Cypress.Commands.add('connectPublicKey', (publicKey) => {
-    cy.getByTestId('connect-vega-wallet').then((connectWallet) => {
-      if (connectWallet.length) {
-        cy.get('aside [data-testid="connect-vega-wallet"]').click();
-        cy.getByTestId('connector-view').should('be.visible').click();
-        cy.getByTestId('address').click();
-        cy.getByTestId('address').type(publicKey);
-        cy.getByTestId('connect').click();
-      }
-    });
+    const connectVegaWaletBtn = Cypress.$(
+      `[data-testid="connect-vega-wallet"]`
+    );
+    if (connectVegaWaletBtn.length > 0) {
+      cy.get('aside [data-testid="connect-vega-wallet"]').click();
+      cy.getByTestId('connector-view').should('be.visible').click();
+      cy.getByTestId('address').click();
+      cy.getByTestId('address').type(publicKey);
+      cy.getByTestId('connect').click();
+    }
   });
 };

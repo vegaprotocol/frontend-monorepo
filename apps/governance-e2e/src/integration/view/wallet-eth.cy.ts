@@ -17,7 +17,7 @@ const vegaInWallet = '[data-testid="vega-in-wallet"]:visible';
 const progressBar = '[data-testid="progress-bar"]:visible';
 const currencyLocked = '[data-testid="currency-locked"]:visible';
 const currencyUnlocked = '[data-testid="currency-unlocked"]:visible';
-const dialog = '[role="dialog"]';
+const dialog = '[role="dialog"]:visible';
 const dialogHeader = '[data-testid="dialog-title"]';
 const dialogCloseBtn = '[data-testid="dialog-close"]';
 

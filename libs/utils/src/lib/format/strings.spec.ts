@@ -1,4 +1,10 @@
-import { truncateByChars, ELLIPSIS, shorten, titlefy } from './strings';
+import {
+  truncateByChars,
+  ELLIPSIS,
+  shorten,
+  titlefy,
+  stripFullStops,
+} from './strings';
 
 describe('truncateByChars', () => {
   it.each([
@@ -47,5 +53,37 @@ describe('titlefy', () => {
     },
   ])('should convert to title-like string', ({ words, o }) => {
     expect(titlefy(words)).toEqual(o);
+  });
+});
+
+describe('stripFullStops', () => {
+  describe('stripFullStops', () => {
+    it('removes full stops from a version string', () => {
+      const input = 'v0.70.0-12075-8fa496c8';
+      const expectedResult = 'v0700-12075-8fa496c8';
+      expect(stripFullStops(input)).toBe(expectedResult);
+    });
+
+    it('does not alter a string without full stops', () => {
+      const input = 'v0700-12075-8fa496c8';
+      expect(stripFullStops(input)).toBe(input);
+    });
+
+    it('removes full stops from a string with consecutive full stops', () => {
+      const input = 'v0..70...0-12075-8fa496c8';
+      const expectedResult = 'v0700-12075-8fa496c8';
+      expect(stripFullStops(input)).toBe(expectedResult);
+    });
+
+    it('removes full stops from a string with only full stops', () => {
+      const input = '..........';
+      const expectedResult = '';
+      expect(stripFullStops(input)).toBe(expectedResult);
+    });
+
+    it('does not alter an empty string', () => {
+      const input = '';
+      expect(stripFullStops(input)).toBe(input);
+    });
   });
 });

@@ -60,9 +60,11 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
         <>
           <MarketInfoTable
             noBorder={false}
-            data={trigger}
+            data={{
+              maxValidPrice: trigger.maxValidPrice,
+              minValidPrice: trigger.minValidPrice,
+            }}
             decimalPlaces={market.decimalPlaces}
-            omits={['referencePrice', '__typename']}
           />
           <MarketInfoTable
             noBorder={false}
