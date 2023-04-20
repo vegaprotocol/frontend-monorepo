@@ -15,8 +15,6 @@ import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
   Tab,
   LocalStoragePersistTabs as Tabs,
-  ResizableGrid,
-  ResizableGridPanel,
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
@@ -33,6 +31,10 @@ import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
 } from '../../lib/hooks/use-market-click-handler';
+import {
+  ResizableGrid,
+  ResizableGridPanel,
+} from '../../components/resizable-grid';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
