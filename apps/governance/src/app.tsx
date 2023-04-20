@@ -3,7 +3,7 @@ import './i18n';
 import React, { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
 import { BalanceManager } from './components/balance-manager';
@@ -110,6 +110,20 @@ const Web3Container = ({
   );
 };
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // "document.documentElement.scrollTo" is the magic for React Router Dom v6
+    document.documentElement.scrollTo({
+      top: 0,
+      left: 0,
+    });
+  }, [pathname]);
+
+  return null;
+};
+
 const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
   const { VEGA_ENV, GIT_COMMIT_HASH, GIT_BRANCH, ETHEREUM_PROVIDER_URL } =
@@ -144,6 +158,7 @@ const AppContainer = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <AppStateProvider>
         <div className="grid min-h-full text-white">
           <AsyncRenderer<EthereumConfig | null>
