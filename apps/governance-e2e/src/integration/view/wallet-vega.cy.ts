@@ -35,6 +35,7 @@ context(
   { tags: '@regression' },
   () => {
     before('visit token home page', () => {
+      cy.clearAllLocalStorage();
       cy.visit('/');
       cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
     });

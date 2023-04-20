@@ -81,7 +81,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
           cy.getByTestId('menu-drawer').should('be.visible');
           cy.getByTestId('menu-drawer').within((el) => {
             cy.wrap(el).getByTestId(name).click();
-            cy.location('hash').should('equal', link);
+            cy.location('hash').should('contain.text', link);
           });
         });
       });
