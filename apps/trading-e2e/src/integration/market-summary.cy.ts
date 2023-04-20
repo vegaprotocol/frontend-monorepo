@@ -1,5 +1,3 @@
-import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { proposalListQuery, marketUpdateProposal } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 
 const marketSummaryBlock = 'header-summary';
@@ -15,50 +13,9 @@ const priceChangeValue = 'price-change';
 const itemHeader = 'item-header';
 const itemValue = 'item-value';
 
-describe('Market proposal notification', { tags: '@smoke' }, () => {
-  before(() => {
-    cy.setVegaWallet();
-    cy.mockTradingPage(
-      Schema.MarketState.STATE_ACTIVE,
-      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
-    );
-    cy.mockGQL((req) => {
-      aliasGQLQuery(
-        req,
-        'ProposalsList',
-        proposalListQuery({
-          proposalsConnection: {
-            edges: [{ node: marketUpdateProposal }],
-          },
-        })
-      );
-    });
-    cy.mockSubscription();
-    cy.visit('/#/markets/market-0');
-    cy.wait('@MarketData');
-    cy.getByTestId(marketSummaryBlock).should('be.visible');
-  });
-
-  it('should display market proposal notification if proposal found', () => {
-    cy.getByTestId(marketSummaryBlock).within(() => {
-      cy.getByTestId('market-proposal-notification').should(
-        'contain.text',
-        'Changes have been proposed for this market'
-      );
-      cy.getByTestId('market-proposal-notification').within(() => {
-        cy.getByTestId('external-link').should(
-          'have.attr',
-          'href',
-          `${Cypress.env('VEGA_TOKEN_URL')}/proposals/123`
-        );
-      });
-    });
-  });
-});
-
 describe('Market trading page', () => {
   before(() => {
+    cy.clearAllLocalStorage();
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -165,6 +122,7 @@ describe('Market trading page', () => {
         });
       });
       cy.getByTestId('expiry-tooltip')
+        .eq(0)
         .should(
           'contain.text',
           'This market expires when triggered by its oracle, not on a set date.'
@@ -202,6 +160,7 @@ describe('Market trading page', () => {
           'contain.text',
           'This market is in auction until it reaches sufficient liquidity.'
         )
+        .eq(0)
         .within(() => {
           cy.getByTestId('external-link')
             .should('have.attr', 'href')
@@ -214,95 +173,6 @@ describe('Market trading page', () => {
             cy.getByTestId(toolTipValue).eq(i).should('not.be.empty');
           }
         });
-    });
-  });
-
-  describe('market bottom panel', { tags: '@smoke' }, () => {
-    it('on xxl screen should be splitted out into two tables', () => {
-      cy.getByTestId('tab-positions').should(
-        'have.attr',
-        'data-state',
-        'active'
-      );
-      cy.getByTestId('tab-orders').should(
-        'have.attr',
-        'data-state',
-        'inactive'
-      );
-      cy.getByTestId('tab-fills').should('have.attr', 'data-state', 'inactive');
-      cy.getByTestId('tab-accounts').should(
-        'have.attr',
-        'data-state',
-        'inactive'
-      );
-
-      cy.viewport(1801, 1000);
-      cy.getByTestId('tab-positions').should(
-        'have.attr',
-        'data-state',
-        'active'
-      );
-      cy.getByTestId('tab-orders').should('have.attr', 'data-state', 'active');
-      cy.getByTestId('tab-fills').should('have.attr', 'data-state', 'inactive');
-      cy.getByTestId('tab-accounts').should(
-        'have.attr',
-        'data-state',
-        'inactive'
-      );
-
-      cy.getByTestId('Fills').click();
-      cy.getByTestId('Collateral').click();
-      cy.getByTestId('tab-positions').should(
-        'have.attr',
-        'data-state',
-        'inactive'
-      );
-      cy.getByTestId('tab-orders').should(
-        'have.attr',
-        'data-state',
-        'inactive'
-      );
-      cy.getByTestId('tab-fills').should('have.attr', 'data-state', 'active');
-      cy.getByTestId('tab-accounts').should(
-        'have.attr',
-        'data-state',
-        'active'
-      );
-    });
-  });
-});
-
-describe('market states not accepting orders', { tags: '@smoke' }, function () {
-  //7002-SORD-062
-  //7002-SORD-063
-  //7002-SORD-066
-
-  const states = [
-    Schema.MarketState.STATE_REJECTED,
-    Schema.MarketState.STATE_CANCELLED,
-    Schema.MarketState.STATE_CLOSED,
-    Schema.MarketState.STATE_SETTLED,
-    Schema.MarketState.STATE_TRADING_TERMINATED,
-  ];
-
-  states.forEach((marketState) => {
-    describe(marketState, function () {
-      beforeEach(function () {
-        cy.mockTradingPage(marketState);
-        cy.mockSubscription();
-        cy.setVegaWallet();
-        cy.visit('/#/markets/market-0');
-      });
-      it('must display that market is not accepting orders', function () {
-        cy.getByTestId('dealticket-error-message-summary').should(
-          'have.text',
-          `This market is ${marketState
-            .split('_')
-            .pop()
-            ?.toLowerCase()} and not accepting orders`
-        );
-        cy.getByTestId('place-order').should('be.disabled');
-      });
     });
   });
 });

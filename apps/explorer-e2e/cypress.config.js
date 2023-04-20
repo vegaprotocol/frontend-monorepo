@@ -21,6 +21,7 @@ module.exports = defineConfig({
     chromeWebSecurity: false,
     viewportWidth: 1440,
     viewportHeight: 900,
+    testIsolation: false,
   },
   env: {
     environment: 'CUSTOM',

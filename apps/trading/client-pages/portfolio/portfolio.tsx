@@ -19,7 +19,10 @@ import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 import { AccountHistoryContainer } from './account-history-container';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import {
+  useMarketClickHandler,
+  useMarketLiquidityClickHandler,
+} from '../../lib/hooks/use-market-click-handler';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -31,6 +34,7 @@ export const Portfolio = () => {
   }, [updateTitle]);
 
   const onMarketClick = useMarketClickHandler(true);
+  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
@@ -54,7 +58,10 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <OrderListContainer onMarketClick={onMarketClick} />
+                  <OrderListContainer
+                    onMarketClick={onMarketClick}
+                    onOrderTypeClick={onOrderTypeClick}
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>

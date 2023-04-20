@@ -9,7 +9,6 @@ import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';
-import { THROTTLE_UPDATE_TIME } from '../constants';
 
 interface Props {
   marketId?: string;
@@ -28,18 +27,15 @@ export const Last24hPriceChange = ({
 }: Props) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });
   const yesterday = useYesterday();
-  const { data, error } = useThrottledDataProvider(
-    {
-      dataProvider: marketCandlesProvider,
-      variables: {
-        marketId: marketId || '',
-        interval: Schema.Interval.INTERVAL_I1H,
-        since: new Date(yesterday).toISOString(),
-      },
-      skip: !marketId || !inView,
+  const { data, error } = useThrottledDataProvider({
+    dataProvider: marketCandlesProvider,
+    variables: {
+      marketId: marketId || '',
+      interval: Schema.Interval.INTERVAL_I1H,
+      since: new Date(yesterday).toISOString(),
     },
-    THROTTLE_UPDATE_TIME
-  );
+    skip: !marketId || !inView,
+  });
 
   const candles =
     data

@@ -1,10 +1,17 @@
 import type { ChangeEvent } from 'react';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+  useRef,
+} from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
 
 export const SetFilter = forwardRef((props: IFilterParams, ref) => {
   const [value, setValue] = useState<string[]>([]);
+  const valueRef = useRef(value);
 
   // expose AG Grid Filter Lifecycle callbacks
   useImperativeHandle(ref, () => {
@@ -28,29 +35,28 @@ export const SetFilter = forwardRef((props: IFilterParams, ref) => {
       },
 
       isFilterActive() {
-        return value.length !== 0;
+        return valueRef.current.length !== 0;
       },
 
       getModel() {
         if (!this.isFilterActive()) {
           return null;
         }
-
-        return { value };
+        return { value: valueRef.current };
       },
 
       setModel(model?: { value: string[] } | null) {
-        setValue(!model ? [] : model.value);
+        valueRef.current = !model ? [] : model.value;
+        setValue(valueRef.current);
       },
     };
   });
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(
-      event.target.checked
-        ? [...value, event.target.value]
-        : value.filter((v) => v !== event.target.value)
-    );
+    valueRef.current = event.target.checked
+      ? [...value, event.target.value]
+      : value.filter((v) => v !== event.target.value);
+    setValue(valueRef.current);
   };
 
   useEffect(() => {
@@ -77,7 +83,7 @@ export const SetFilter = forwardRef((props: IFilterParams, ref) => {
         <button
           type="button"
           className="ag-standard-button ag-filter-apply-panel-button"
-          onClick={() => setValue([])}
+          onClick={() => setValue((valueRef.current = []))}
         >
           {t('Reset')}
         </button>

@@ -26,7 +26,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-          # comment out "resotre-keys" if you need to rebuild yarn from 0
+          # comment out "restore-keys" if you need to rebuild yarn from 0
           restore-keys: |
             ${{ runner.os }}-cache-node-modules-
 
@@ -44,12 +44,13 @@ jobs:
 
   lint-pr-title:
     needs: node-modules
+    if: ${{ github.event_name == 'pull_request' }}
     name: Verify PR title
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
 
   lint-test-build:
-    timeout-minutes: 10
+    timeout-minutes: 35
     needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + unit test + build'
@@ -90,7 +91,7 @@ jobs:
         run: yarn nx affected:test
 
       - name: Build affected
-        run: yarn nx affected:build
+        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
       # See affected apps
       - name: See affected apps

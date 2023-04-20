@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import throttle from 'lodash/throttle';
-import isEqual from 'lodash/isEqual';
+import isEqualWith from 'lodash/isEqualWith';
 import { useApolloClient } from '@apollo/client';
-import { usePrevious } from './use-previous';
 import type { OperationVariables } from '@apollo/client';
 import type { Subscribe, Load, UpdateCallback } from '@vegaprotocol/utils';
+import { variablesIsEqualCustomizer } from '@vegaprotocol/utils';
 
 export interface useDataProviderParams<
   Data,
@@ -62,13 +62,22 @@ export const useDataProvider = <
   const flushRef = useRef<(() => void) | undefined>(undefined);
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
   const loadRef = useRef<Load<Data> | undefined>(undefined);
-  const prevVariables = usePrevious(props.variables);
-  const [variables, setVariables] = useState(props.variables);
-  useEffect(() => {
-    if (!isEqual(prevVariables, props.variables)) {
-      setVariables(props.variables);
+  const variablesRef = useRef<Variables>(props.variables);
+  const updateRef = useRef(update);
+  const insertRef = useRef(insert);
+  const skipUpdatesRef = useRef(skipUpdates);
+  const variables = useMemo(() => {
+    if (
+      !isEqualWith(
+        variablesRef.current,
+        props.variables,
+        variablesIsEqualCustomizer
+      )
+    ) {
+      variablesRef.current = props.variables;
     }
-  }, [props.variables, prevVariables]);
+    return variablesRef.current;
+  }, [props.variables]);
   const flush = useCallback(() => {
     if (flushRef.current) {
       flushRef.current();
@@ -85,54 +94,69 @@ export const useDataProvider = <
     }
     return Promise.reject();
   }, []);
-  const callback = useCallback<UpdateCallback<Data, Delta>>(
-    (args) => {
-      const {
-        data,
-        delta,
-        error,
-        loading,
-        insertionData,
-        totalCount,
-        isInsert,
-        isUpdate,
-      } = args;
-      setError(error);
-      setLoading(loading);
-      // if update or insert function returns true it means that component handles updates
-      // component can use flush() which will call callback without delta and cause data state update
-      if (!loading) {
-        if (
-          isUpdate &&
-          !skipUpdates &&
-          update &&
-          update({ delta, data, totalCount })
-        ) {
-          return;
-        }
-        if (isInsert && insert && insert({ insertionData, data, totalCount })) {
-          return;
-        }
+  const callback = useCallback<UpdateCallback<Data, Delta>>((args) => {
+    const {
+      data,
+      delta,
+      error,
+      loading,
+      insertionData,
+      totalCount,
+      isInsert,
+      isUpdate,
+    } = args;
+    setError(error);
+    setLoading(loading);
+    // if update or insert function returns true it means that component handles updates
+    // component can use flush() which will call callback without delta and cause data state update
+    if (!loading) {
+      if (
+        isUpdate &&
+        (skipUpdatesRef.current ||
+          (!skipUpdatesRef.current &&
+            updateRef.current &&
+            updateRef.current({ delta, data, totalCount })))
+      ) {
+        return;
       }
-      setTotalCount(totalCount);
-      setData(data);
-      if (!loading && !isUpdate && update) {
-        update({ data });
+      if (
+        isInsert &&
+        insertRef.current &&
+        insertRef.current({ insertionData, data, totalCount })
+      ) {
+        return;
       }
-    },
-    [update, insert, skipUpdates]
-  );
+    }
+    setTotalCount(totalCount);
+    setData(data);
+    if (!loading && !isUpdate && updateRef.current) {
+      updateRef.current({ data });
+    }
+  }, []);
+
+  useEffect(() => {
+    updateRef.current = update;
+  }, [update]);
+
+  useEffect(() => {
+    insertRef.current = insert;
+  }, [insert]);
+
+  useEffect(() => {
+    skipUpdatesRef.current = skipUpdates;
+  }, [skipUpdates]);
+
   useEffect(() => {
     setData(null);
     setError(undefined);
     setTotalCount(undefined);
-    if (update) {
-      update({ data: null });
+    if (updateRef.current) {
+      updateRef.current({ data: null });
     }
     if (skip) {
       setLoading(false);
-      if (update) {
-        update({ data: null });
+      if (updateRef.current) {
+        updateRef.current({ data: null });
       }
       return;
     }
@@ -151,7 +175,7 @@ export const useDataProvider = <
       loadRef.current = undefined;
       return unsubscribe();
     };
-  }, [client, dataProvider, callback, variables, skip, update]);
+  }, [client, dataProvider, callback, variables, skip]);
   return {
     data,
     loading,
@@ -169,7 +193,7 @@ export const useThrottledDataProvider = <
   Variables extends OperationVariables = OperationVariables
 >(
   params: Omit<useDataProviderParams<Data, Delta, Variables>, 'update'>,
-  wait?: number
+  wait = 500
 ) => {
   const [data, setData] = useState<Data | null>(null);
   const dataRef = useRef<Data | null>(null);

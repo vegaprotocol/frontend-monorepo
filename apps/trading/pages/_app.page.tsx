@@ -33,6 +33,9 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { Banner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
+import { ENV } from '../lib/config';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { activeOrdersProvider } from '@vegaprotocol/orders';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -95,6 +98,7 @@ function AppBody({ Component }: AppProps) {
       <ToastsManager />
       <InitializeHandlers />
       <MaybeConnectEagerly />
+      <PartyData />
     </div>
   );
 }
@@ -127,9 +131,21 @@ function VegaTradingApp(props: AppProps) {
 
 export default VegaTradingApp;
 
+const PartyData = () => {
+  const { pubKey } = useVegaWallet();
+  const variables = { partyId: pubKey || '' };
+  const skip = !pubKey;
+  useDataProvider({
+    dataProvider: activeOrdersProvider,
+    variables,
+    skip,
+  });
+  return null;
+};
+
 const MaybeConnectEagerly = () => {
   useVegaEagerConnect(Connectors);
-  useEthereumEagerConnect();
+  useEthereumEagerConnect(ENV.dsn);
 
   const { pubKey, connect } = useVegaWallet();
   const [searchParams] = useSearchParams();

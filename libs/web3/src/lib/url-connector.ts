@@ -69,7 +69,7 @@ export class UrlConnector extends Connector {
       const chainId = await this.provider!.request({ method: 'eth_chainId' });
       this.actions.update({ chainId: Number(chainId) });
     } catch (error) {
-      this.actions.reportError(error as Error);
+      this.onError?.(error as Error);
     }
   }
 }

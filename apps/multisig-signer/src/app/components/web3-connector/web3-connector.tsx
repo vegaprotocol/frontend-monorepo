@@ -1,5 +1,10 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { getChainName, useEthereumConfig } from '@vegaprotocol/web3';
+import {
+  getChainName,
+  useEthereumConfig,
+  useWeb3ConnectStore,
+  useWeb3Disconnect,
+} from '@vegaprotocol/web3';
 import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
@@ -55,7 +60,9 @@ export const Web3Content = ({
   appChainId,
   setDialogOpen,
 }: Web3ContentProps) => {
-  const { error, connector, chainId } = useWeb3React();
+  const { connector, chainId } = useWeb3React();
+  const error = useWeb3ConnectStore((store) => store.error);
+  const disconnect = useWeb3Disconnect(connector);
 
   useEffect(() => {
     if (connector?.connectEagerly) {
@@ -71,7 +78,7 @@ export const Web3Content = ({
       <Splash>
         <div className="flex flex-col items-center gap-12">
           <p className="text-white">Something went wrong: {error.message}</p>
-          <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+          <Button onClick={() => disconnect()}>Disconnect</Button>
         </div>
       </Splash>
     );
@@ -84,7 +91,7 @@ export const Web3Content = ({
           <p className="text-white">
             This app only works on {getChainName(appChainId)}
           </p>
-          <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+          <Button onClick={() => disconnect()}>Disconnect</Button>
         </div>
       </Splash>
     );

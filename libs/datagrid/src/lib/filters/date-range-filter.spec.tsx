@@ -8,7 +8,7 @@ const commonProps = {
 
 describe('DateRangeFilter', () => {
   it('should be properly rendered', async () => {
-    const defaultRangeFilter = {
+    const defaultValue = {
       start: '2023-02-14T13:53:01+01:00',
       end: '2023-02-21T13:53:01+01:00',
     };
@@ -17,7 +17,7 @@ describe('DateRangeFilter', () => {
     render(
       <DateRangeFilter
         {...(commonProps as unknown as DateRangeFilterProps)}
-        defaultRangeFilter={defaultRangeFilter}
+        defaultValue={defaultValue}
       />
     );
 
