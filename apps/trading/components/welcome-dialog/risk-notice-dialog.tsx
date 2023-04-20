@@ -3,6 +3,7 @@ import { t } from '@vegaprotocol/i18n';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { LocalStorage } from '@vegaprotocol/utils';
 import { RISK_ACCEPTED_KEY } from '../constants';
+import { TelemetryApproval } from './telemetry-approval';
 
 interface Props {
   onClose: () => void;
@@ -32,6 +33,9 @@ export const RiskNoticeDialog = ({ onClose }: Props) => {
         )}
       </p>
       <Button onClick={handleAcceptRisk}>{t('I understand, Continue')}</Button>
+      <p className="text-base mt-8">
+        <TelemetryApproval />
+      </p>
     </>
   );
 };

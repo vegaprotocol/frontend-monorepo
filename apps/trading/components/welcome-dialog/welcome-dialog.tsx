@@ -23,12 +23,11 @@ export const WelcomeDialog = () => {
     variables: undefined,
   });
 
-  const { update, shouldDisplayWelcomeDialog } = useGlobalStore((store) => ({
-    update: store.update,
-    shouldDisplayWelcomeDialog: store.shouldDisplayWelcomeDialog,
-  }));
-  const isRiskDialogNeeded =
-    riskAccepted !== 'true' && VEGA_ENV === Networks.MAINNET;
+  const update = useGlobalStore((store) => store.update);
+  const shouldDisplayWelcomeDialog = useGlobalStore(
+    (store) => store.shouldDisplayWelcomeDialog
+  );
+  const isRiskDialogNeeded = riskAccepted !== 'true';
   const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
   const onClose = useCallback(() => {
     update({ shouldDisplayWelcomeDialog: isRiskDialogNeeded });

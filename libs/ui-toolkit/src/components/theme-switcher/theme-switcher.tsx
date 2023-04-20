@@ -2,13 +2,16 @@ import { t } from '@vegaprotocol/i18n';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { SunIcon, MoonIcon } from './icons';
 import { Toggle } from '../toggle';
+import { Switch } from '../switch';
 
 export const ThemeSwitcher = ({
   className,
   withMobile,
+  withSettings,
 }: {
   className?: string;
   withMobile?: boolean;
+  withSettings?: boolean;
 }) => {
   const { theme, setTheme } = useThemeSwitcher();
   const button = (
@@ -17,11 +20,30 @@ export const ThemeSwitcher = ({
       onClick={() => setTheme()}
       className={className}
       data-testid="theme-switcher"
+      id="theme-switcher"
     >
       {theme === 'dark' && <SunIcon />}
       {theme === 'light' && <MoonIcon />}
     </button>
   );
+  if (withSettings) {
+    const text = t(theme === 'dark' ? 'Light mode' : 'Dark mode');
+    return (
+      <div className="flex justify-between my-2">
+        <div className="flex shrink">
+          {button}{' '}
+          <label htmlFor="theme-switcher" className="self-center text-md">
+            {text}
+          </label>
+        </div>
+        <Switch
+          name="settings-theme-switch"
+          onCheckedChange={() => setTheme()}
+          checked={theme === 'dark'}
+        />
+      </div>
+    );
+  }
   const toggles = [
     {
       value: 'dark',

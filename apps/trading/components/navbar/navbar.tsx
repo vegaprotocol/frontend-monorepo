@@ -25,6 +25,7 @@ import {
 
 import { Links, Routes } from '../../pages/client-router';
 import { createDocsLinks } from '@vegaprotocol/utils';
+import { SettingsButton } from '../../client-pages/settings';
 
 export const Navbar = ({
   theme = 'system',
@@ -46,7 +47,7 @@ export const Navbar = ({
       theme={theme}
       actions={
         <>
-          <ThemeSwitcher />
+          <SettingsButton />
           <VegaWalletConnectButton />
         </>
       }
@@ -107,11 +108,6 @@ export const Navbar = ({
             </NavigationContent>
           </NavigationItem>
         )}
-        <NavigationItem>
-          <NavigationLink data-testid="Settings" to={Links[Routes.SETTINGS]()}>
-            <Icon name={COG} className="!align-middle" />
-          </NavigationLink>
-        </NavigationItem>
       </NavigationList>
       <NavigationList
         className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
@@ -122,7 +118,7 @@ export const Navbar = ({
         ]}
       >
         <NavigationItem className="[.drawer-content_&]:w-full text-black dark:text-white">
-          <ThemeSwitcher withMobile />
+          <SettingsButton />
         </NavigationItem>
       </NavigationList>
     </Navigation>
