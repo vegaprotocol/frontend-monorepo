@@ -1,7 +1,6 @@
 import classNames from 'classnames';
-import type { VegaIconNames } from './svg';
-import { VegaIconNameMap } from './svg';
-export * from './vega-icon';
+import type { VegaIconNames } from './vega-icon-record';
+import { VegaIconNameMap } from './vega-icon-record';
 
 export interface VegaIconProps {
   name: VegaIconNames;
