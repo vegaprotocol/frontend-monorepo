@@ -17,7 +17,8 @@ import {
   DropdownMenuContent,
   DropdownMenuGridTrigger,
   DropdownMenuItem,
-  Icon,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
@@ -37,7 +38,6 @@ import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
-import { IconNames } from '@blueprintjs/icons';
 
 const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames({
@@ -266,7 +266,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               colId="accounts-actions"
               headerName=""
               sortable={false}
-              minWidth={200}
+              maxWidth={200}
               type="rightAligned"
               cellRenderer={({
                 data,
@@ -308,8 +308,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                             }}
                           >
                             <span>
-                              <Icon
-                                name={IconNames.IMPORT}
+                              <VegaIcon
+                                name={VegaIconNames.DEPOSIT}
                                 size={4}
                                 className="mr-2"
                               />
@@ -324,8 +324,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                             }
                           >
                             <span>
-                              <Icon
-                                name={IconNames.EXPORT}
+                              <VegaIcon
+                                name={VegaIconNames.WITHDRAW}
                                 size={4}
                                 className="mr-2"
                               />
@@ -341,8 +341,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                             }}
                           >
                             <span>
-                              <Icon
-                                name={IconNames.INFO_SIGN}
+                              <VegaIcon
+                                name={VegaIconNames.BREAKDOWN}
                                 size={4}
                                 className="mr-2"
                               />
