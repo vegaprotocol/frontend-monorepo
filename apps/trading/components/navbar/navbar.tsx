@@ -1,5 +1,4 @@
 import type { ComponentProps, ReactNode } from 'react';
-import { COG } from '@blueprintjs/icons/src/generated/iconNames';
 import {
   DApp,
   NetworkSwitcher,
@@ -11,7 +10,6 @@ import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
-  ThemeSwitcher,
   Navigation,
   NavigationList,
   NavigationItem,

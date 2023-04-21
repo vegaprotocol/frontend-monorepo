@@ -28,7 +28,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
           <RootSwitch.Thumb className="block w-[18px] h-[18px] bg-white rounded-full transition-transform duration-100 translate-x-0.3 will-change-transform data-[state=checked]:translate-x-[23px]" />
         </RootSwitch.Root>
         {labelText && (
-          <label className="Label" htmlFor={`switch-${name}`} className="ml-2">
+          <label htmlFor={`switch-${name}`} className="ml-2">
             {labelText}
           </label>
         )}
