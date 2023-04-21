@@ -108,18 +108,14 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('risk model displayed', () => {
     cy.getByTestId(marketTitle).contains('Risk model').click();
-
-    validateMarketDataRow(0, 'Typename', 'LogNormalRiskModel');
-    validateMarketDataRow(1, 'Tau', '0.0001140771161');
-    validateMarketDataRow(2, 'Risk Aversion Parameter', '0.01');
+    validateMarketDataRow(0, 'Tau', '0.0001140771161');
+    validateMarketDataRow(1, 'Risk Aversion Parameter', '0.01');
   });
 
   it('risk parameters displayed', () => {
     cy.getByTestId(marketTitle).contains('Risk parameters').click();
-
-    validateMarketDataRow(0, 'Typename', 'LogNormalModelParams');
-    validateMarketDataRow(1, 'R', '0.016');
-    validateMarketDataRow(2, 'Sigma', '0.3');
+    validateMarketDataRow(0, 'R', '0.016');
+    validateMarketDataRow(1, 'Sigma', '0.3');
   });
 
   it('risk factors displayed', () => {

@@ -17,6 +17,12 @@ import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
 import type { EthereumConfig } from '@vegaprotocol/web3';
+import {
+  createConnectors,
+  useEthTransactionManager,
+  useEthWithdrawApprovalsManager,
+  useWeb3ConnectStore,
+} from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
@@ -27,10 +33,10 @@ import {
   NetworkLoader,
   useInitializeEnv,
 } from '@vegaprotocol/environment';
-import { createConnectors } from './lib/web3-connectors';
-import { ENV } from './config/env';
+import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { WithdrawalDialog } from '@vegaprotocol/withdraws';
+import { SplashLoader } from './components/splash-loader';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -70,20 +76,52 @@ const cache: InMemoryCacheConfig = {
 
 const Web3Container = ({
   chainId,
-  providerUrl,
 }: {
   chainId: number;
   providerUrl: string;
 }) => {
+  const InitializeHandlers = () => {
+    useEthTransactionManager();
+    useEthWithdrawApprovalsManager();
+    return null;
+  };
+  const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
+    store.connectors,
+    store.initialize,
+  ]);
+  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
+    useEnvironment();
+  useEffect(() => {
+    if (chainId) {
+      return initializeConnectors(
+        createConnectors(
+          ETHEREUM_PROVIDER_URL,
+          Number(chainId),
+          ETH_LOCAL_PROVIDER_URL,
+          ETH_WALLET_MNEMONIC
+        ),
+        Number(chainId)
+      );
+    }
+  }, [
+    chainId,
+    ETHEREUM_PROVIDER_URL,
+    initializeConnectors,
+    ETH_LOCAL_PROVIDER_URL,
+    ETH_WALLET_MNEMONIC,
+  ]);
   const sideBar = React.useMemo(() => {
     return [<EthWallet />, <VegaWallet />];
   }, []);
-  const Connectors = React.useMemo(() => {
-    return createConnectors(providerUrl, Number(chainId));
-  }, [chainId, providerUrl]);
+
+  if (connectors.length === 0) {
+    // Prevent loading when the connectors are not initialized
+    return <SplashLoader />;
+  }
+
   return (
-    <Web3Provider connectors={Connectors}>
-      <Web3Connector connectors={Connectors} chainId={Number(chainId)}>
+    <Web3Provider connectors={connectors}>
+      <Web3Connector connectors={connectors} chainId={Number(chainId)}>
         <VegaWalletProvider>
           <ContractsProvider>
             <AppLoader>
@@ -97,6 +135,7 @@ const Web3Container = ({
                       <NetworkInfo />
                     </footer>
                   </AppLayout>
+                  <InitializeHandlers />
                   <VegaWalletDialogs />
                   <TransactionModal />
                   <WithdrawalDialog />

@@ -17,7 +17,7 @@ const vegaInWallet = '[data-testid="vega-in-wallet"]:visible';
 const progressBar = '[data-testid="progress-bar"]:visible';
 const currencyLocked = '[data-testid="currency-locked"]:visible';
 const currencyUnlocked = '[data-testid="currency-unlocked"]:visible';
-const dialog = '[role="dialog"]';
+const dialog = '[role="dialog"]:visible';
 const dialogHeader = '[data-testid="dialog-title"]';
 const dialogCloseBtn = '[data-testid="dialog-close"]';
 
@@ -68,8 +68,10 @@ context(
       it('should have connector list visible', function () {
         const connectList = [
           'Unknown',
-          'MetaMask, Brave or other injected web wallet',
+          'MetaMask',
+          'Coinbase',
           'WalletConnect',
+          'WalletConnect Legacy',
         ];
         cy.get(connectorList).within(() => {
           cy.get('button').each(($btn, i) => {

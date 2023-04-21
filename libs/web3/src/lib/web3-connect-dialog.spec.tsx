@@ -6,7 +6,7 @@ import { MetaMask } from '@web3-react/metamask';
 import type { Connector } from '@web3-react/types';
 
 const [foo, fooHooks] = initializeConnector((actions) => {
-  return new MetaMask(actions);
+  return new MetaMask({ actions });
 });
 
 const connectors: [Connector, Web3ReactHooks][] = [[foo, fooHooks]];

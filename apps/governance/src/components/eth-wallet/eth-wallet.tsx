@@ -26,6 +26,7 @@ import {
 import { Loader } from '@vegaprotocol/ui-toolkit';
 import colors from 'tailwindcss/colors';
 import { useBalances } from '../../lib/balances/balances-store';
+import { useWeb3Disconnect } from '@vegaprotocol/web3';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -184,6 +185,7 @@ export const EthWallet = () => {
   const { appDispatch } = useAppState();
   const { account, connector } = useWeb3React();
   const pendingTxs = usePendingTransactions();
+  const disconnect = useWeb3Disconnect(connector);
 
   return (
     <WalletCard>
@@ -239,7 +241,7 @@ export const EthWallet = () => {
             <div className="flex justify-end">
               <button
                 className="underline"
-                onClick={() => connector.deactivate()}
+                onClick={() => disconnect()}
                 data-testid="disconnect-from-eth-wallet-button"
               >
                 {t('disconnect')}

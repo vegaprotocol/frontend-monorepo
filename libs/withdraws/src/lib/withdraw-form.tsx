@@ -31,6 +31,7 @@ import { WithdrawLimits } from './withdraw-limits';
 import {
   ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectStore,
+  useWeb3Disconnect,
 } from '@vegaprotocol/web3';
 
 interface FormFields {
@@ -298,6 +299,7 @@ const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
   const openDialog = useWeb3ConnectStore((state) => state.open);
   const { isActive, connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+  const disconnect = useWeb3Disconnect(connector);
 
   if (!isActive) {
     return (
@@ -310,7 +312,7 @@ const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
   return (
     <UseButton
       onClick={() => {
-        connector.deactivate();
+        disconnect();
         clearAddress();
         removeEagerConnector();
       }}

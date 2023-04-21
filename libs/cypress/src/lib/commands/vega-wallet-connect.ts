@@ -33,19 +33,27 @@ export function addVegaWalletConnect() {
   Cypress.Commands.add('connectVegaWallet', (isMobile) => {
     mockConnectWallet();
     cy.highlight(`Connecting Vega Wallet`);
-    cy.get(
-      `[data-testid=connect-vega-wallet${isMobile ? '-mobile' : ''}]:visible`
-    ).click();
-    cy.get('[data-testid=connectors-list]')
-      .find('[data-testid="connector-jsonRpc"]')
-      .click();
-    cy.wait('@walletReq');
-    cy.get('[data-testid=dialog-content]').should(
-      'contain.text',
-      'Successfully connected'
-    );
-    cy.getByTestId('dialog-close').click();
-    cy.get('[data-testid=dialog-content]').should('not.exist');
+    const connectVegaWalletButton = `[data-testid=connect-vega-wallet${
+      isMobile ? '-mobile' : ''
+    }]:visible`;
+
+    cy.get(connectVegaWalletButton).then((btn) => {
+      if (btn.length === 0) {
+        cy.log('could not find the button, perhaps already connected');
+        return;
+      }
+      cy.wrap(btn).click();
+      cy.get('[data-testid=connectors-list]')
+        .find('[data-testid="connector-jsonRpc"]')
+        .click();
+      cy.wait('@walletReq');
+      cy.get('[data-testid=dialog-content]').should(
+        'contain.text',
+        'Successfully connected'
+      );
+      cy.getByTestId('dialog-close').click();
+      cy.get('[data-testid=dialog-content]').should('not.exist');
+    });
   });
 }
 

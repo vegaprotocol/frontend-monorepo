@@ -1,5 +1,9 @@
 import { addSeconds, millisecondsToSeconds } from 'date-fns';
 import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { upgradeProposalsData } from '../fixtures/mocks/network-upgrade';
+import { proposalsData } from '../fixtures/mocks/proposals';
+import { nodeData } from '../fixtures/mocks/nodes';
 
 export function createUpdateNetworkProposalTxBody(): ProposalSubmissionBody {
   const MIN_CLOSE_SEC = 5;
@@ -79,4 +83,12 @@ export function createFreeFormProposalTxBody(): ProposalSubmissionBody {
       },
     },
   };
+}
+
+export function mockNetworkUpgradeProposal() {
+  cy.mockGQL((req) => {
+    aliasGQLQuery(req, 'Nodes', nodeData);
+    aliasGQLQuery(req, 'Proposals', proposalsData);
+    aliasGQLQuery(req, 'ProtocolUpgrades', upgradeProposalsData);
+  });
 }

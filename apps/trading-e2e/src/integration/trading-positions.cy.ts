@@ -8,7 +8,7 @@ beforeEach(() => {
   cy.setVegaWallet();
 });
 
-describe('positions', { tags: '@smoke' }, () => {
+describe('positions', { tags: '@smoke', testIsolation: true }, () => {
   it('renders positions on trading page', () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Positions').click();
@@ -53,13 +53,17 @@ describe('positions', { tags: '@smoke' }, () => {
         'currentLeverage',
         'averageEntryPrice',
       ];
-      cy.getByTestId('tab-positions').within(() => {
-        cy.get('[row-id="market-2"]').within(() => {
-          emptyCells.forEach((cell) => {
-            cy.get(`[col-id="${cell}"]`).should('contain.text', '-');
-          });
+      cy.getByTestId('tab-positions')
+        .first()
+        .within(() => {
+          cy.get('[row-id="market-2"]')
+            .eq(1)
+            .within(() => {
+              emptyCells.forEach((cell) => {
+                cy.get(`[col-id="${cell}"]`).should('contain.text', '-');
+              });
+            });
         });
-      });
     });
     it('error message should be displayed', () => {
       const errors = [

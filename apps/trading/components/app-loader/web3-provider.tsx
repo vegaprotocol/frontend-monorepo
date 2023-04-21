@@ -14,10 +14,9 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
     useEnvironment();
-  const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
-    store.connectors,
-    store.initialize,
-  ]);
+
+  const connectors = useWeb3ConnectStore((store) => store.connectors);
+  const initializeConnectors = useWeb3ConnectStore((store) => store.initialize);
 
   useEffect(() => {
     if (config?.chain_id) {

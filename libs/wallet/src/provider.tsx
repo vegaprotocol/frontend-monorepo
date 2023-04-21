@@ -21,7 +21,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   const [pubKey, setPubKey] = useState<string | null>(null);
   const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
 
-  // Arary of pubkeys retrieved from the connector
+  // Array of public keys retrieved from the connector
   const [pubKeys, setPubKeys] = useState<PubKey[] | null>(null);
 
   // Reference to the current connector instance
@@ -30,6 +30,28 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   const selectPubKey = useCallback((pk: string) => {
     setPubKey(pk);
     LocalStorage.setItem(WALLET_KEY, pk);
+  }, []);
+
+  const fetchPubKeys = useCallback(async () => {
+    if (!connector.current) {
+      throw new Error('No connector');
+    }
+    try {
+      const keys = await connector.current.connect();
+
+      if (keys?.length) {
+        setPubKeys(keys);
+        setIsReadOnly(connector.current instanceof ViewConnector);
+        return keys;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      if (err instanceof WalletClientError) {
+        throw err;
+      }
+      return null;
+    }
   }, []);
 
   const connect = useCallback(async (c: VegaConnector) => {
@@ -95,8 +117,18 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       connect,
       disconnect,
       sendTx,
+      fetchPubKeys,
     };
-  }, [isReadOnly, pubKey, pubKeys, selectPubKey, connect, disconnect, sendTx]);
+  }, [
+    isReadOnly,
+    pubKey,
+    pubKeys,
+    selectPubKey,
+    connect,
+    disconnect,
+    sendTx,
+    fetchPubKeys,
+  ]);
 
   return (
     <VegaWalletContext.Provider value={contextValue}>
