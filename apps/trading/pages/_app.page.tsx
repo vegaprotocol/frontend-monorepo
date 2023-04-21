@@ -30,7 +30,7 @@ import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
-import { Banner } from '../components/banner';
+import { AnnouncementBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
 import { ENV } from '../lib/config';
@@ -86,7 +86,7 @@ function AppBody({ Component }: AppProps) {
       </Head>
       <Title />
       <div className={gridClasses}>
-        <Banner />
+        <AnnouncementBanner />
         <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
         <ViewingBanner />
         <main data-testid={location.pathname}>
