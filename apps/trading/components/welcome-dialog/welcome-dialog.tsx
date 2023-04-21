@@ -15,7 +15,7 @@ export const WelcomeDialog = () => {
   let dialogContent: React.ReactNode;
   let title = '';
   let size: 'small' | 'medium' = 'small';
-  let onClose: (open: boolean) => void;
+  let onClose: ((open: boolean) => void) | undefined = undefined;
   const [riskAccepted] = useLocalStorage(constants.RISK_ACCEPTED_KEY);
   const { data } = useDataProvider({
     dataProvider: activeMarketsProvider,
