@@ -1,9 +1,9 @@
+import type { Intent } from '@vegaprotocol/ui-toolkit';
+import { ProgressBar } from '@vegaprotocol/ui-toolkit';
 import type {
   CellRendererSelectorResult,
   ICellRendererParams,
 } from 'ag-grid-community';
-import type { Intent } from '../../utils/intent';
-import { ProgressBar } from './progress-bar';
 
 export interface ValueProps {
   valueFormatted?: {
