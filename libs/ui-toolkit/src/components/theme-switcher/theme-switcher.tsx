@@ -32,7 +32,7 @@ export const ThemeSwitcher = ({
       <div className="flex justify-between my-2">
         <div className="flex shrink">
           {button}{' '}
-          <label htmlFor="theme-switcher" className="self-center text-md">
+          <label htmlFor="theme-switcher" className="self-center text-lg">
             {text}
           </label>
         </div>
