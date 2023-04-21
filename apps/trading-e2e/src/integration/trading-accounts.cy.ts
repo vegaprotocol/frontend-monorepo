@@ -29,12 +29,7 @@ describe('accounts', { tags: '@smoke' }, () => {
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[data-testid="deposit"]')
-      .should('have.text', '');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="accounts-actions"] [data-testid="withdraw"]')
+      .find('[col-id="accounts-actions"]')
       .should('have.text', '');
 
     cy.getByTestId('tab-accounts')
