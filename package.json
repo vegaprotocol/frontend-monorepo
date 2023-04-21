@@ -152,6 +152,7 @@
     "autoprefixer": "10.4.8",
     "babel-jest": "27.5.1",
     "babel-loader": "8.1.0",
+    "cypress-mochawesome-reporter": "^3.3.0",
     "cypress": "^12.9.0",
     "cypress-real-events": "^1.7.6",
     "dotenv": "^16.0.1",
