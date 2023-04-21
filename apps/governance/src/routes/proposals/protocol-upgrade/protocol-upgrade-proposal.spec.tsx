@@ -9,7 +9,7 @@ import {
 import { ProtocolUpgradeProposalStatus } from '@vegaprotocol/types';
 import { getNormalisedVotingPower } from '../../staking/shared';
 import type { NodesFragmentFragment } from '../../staking/home/__generated__/Nodes';
-import type { ProtocolUpgradeProposalFieldsFragment } from './__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
 const mockProposal: ProtocolUpgradeProposalFieldsFragment = {
   vegaReleaseTag: 'v0.1.234',

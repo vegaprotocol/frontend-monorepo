@@ -15,7 +15,6 @@ import Routes from '../routes';
 import { ExternalLinks, removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
 import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
-import { useProtocolUpgradesQuery } from '../proposals/protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 import {
   getNotRejectedProposals,
   getNotRejectedProtocolUpgradeProposals,
@@ -25,7 +24,8 @@ import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
 import type { NodesFragmentFragment } from '../staking/home/__generated__/Nodes';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../proposals/protocol-upgrade/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { useProtocolUpgradesQuery } from '@vegaprotocol/proposals';
 
 const nodesToShow = 6;
 

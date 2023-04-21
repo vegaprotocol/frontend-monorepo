@@ -5,7 +5,7 @@ import {
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
 export interface ProtocolUpgradeProposalDetailInfoProps {
   proposal: ProtocolUpgradeProposalFieldsFragment;
