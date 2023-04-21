@@ -9,7 +9,7 @@ export const TelemetryApproval = () => {
       <div className="mr-4" role="form">
         <Checkbox
           label={
-            <span className="dark:text-white text-black text-md pl-1">
+            <span className="dark:text-white text-black text-lg pl-1">
               {t('Share usage data')}
             </span>
           }

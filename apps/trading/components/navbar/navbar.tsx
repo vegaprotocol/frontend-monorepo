@@ -110,15 +110,15 @@ export const Navbar = ({
         )}
       </NavigationList>
       <NavigationList
-        className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
+        className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-4 [.drawer-content_&]:mt-4"
         hide={[
           NavigationBreakpoint.Small,
           NavigationBreakpoint.Narrow,
           NavigationBreakpoint.Full,
         ]}
       >
-        <NavigationItem className="[.drawer-content_&]:w-full text-black dark:text-white">
-          <SettingsButton />
+        <NavigationItem className="[.drawer-content_&]:w-full">
+          <SettingsButton withMobile />
         </NavigationItem>
       </NavigationList>
     </Navigation>

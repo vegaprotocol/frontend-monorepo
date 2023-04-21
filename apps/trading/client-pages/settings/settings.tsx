@@ -17,7 +17,7 @@ export const Settings = () => {
         <div className="flex mt-10 w-full">
           <RoundedWrapper paddingBottom>
             <ThemeSwitcher withSettings />
-            <Divider orientation="horizontal" />
+            <Divider />
             <TelemetryApproval />
           </RoundedWrapper>
         </div>
