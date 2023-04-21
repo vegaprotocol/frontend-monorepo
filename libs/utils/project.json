@@ -6,6 +6,7 @@
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "format": ["esm", "cjs"],
       "options": {
         "outputPath": "dist/libs/utils",
         "main": "libs/utils/src/index.ts",
