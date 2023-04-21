@@ -63,7 +63,7 @@ describe('ProtocolUpdateProposalDetailApprovals', () => {
 
   it('renders the correct number of consensus approvers', () => {
     renderComponent();
-    const validators = screen.getAllByTestId(/validator-/i);
+    const validators = screen.getAllByTestId(/validator-name/);
     expect(validators.length).toBe(mockValidators.length);
   });
 
