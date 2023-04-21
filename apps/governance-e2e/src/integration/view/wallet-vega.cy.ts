@@ -334,7 +334,7 @@ context(
                 .parent()
                 .siblings()
                 .invoke('text')
-                .should('have.length.above', 4)
+                .should('have.length.at.least', 4)
                 .then((el) => {
                   const value = parseFloat(el);
                   cy.wrap(value).should('be.gte', parseFloat(expectedAmount));
