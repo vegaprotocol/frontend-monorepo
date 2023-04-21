@@ -30,7 +30,6 @@ export * from './pagination';
 export * from './popover';
 export * from './progress-bar';
 export * from './radio-group';
-export * from './resizable-grid';
 export * from './rounded-wrapper';
 export * from './select';
 export * from './simple-grid';
