@@ -334,11 +334,8 @@ context(
                 .parent()
                 .siblings()
                 .invoke('text')
-                .should('have.length.at.least', 4)
-                .then((el) => {
-                  const value = parseFloat(el);
-                  cy.wrap(value).should('be.gte', parseFloat(expectedAmount));
-                });
+                .then(parseFloat)
+                .should('be.gte', parseFloat(expectedAmount));
 
               cy.get(vegaWalletCurrencyTitle)
                 .contains(id)
