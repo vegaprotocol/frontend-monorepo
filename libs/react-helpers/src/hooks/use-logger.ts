@@ -1,13 +1,11 @@
 import { useRef } from 'react';
 import { BrowserTracing } from '@sentry/tracing';
 import * as Sentry from '@sentry/browser';
-import type { LocalLogger } from '@vegaprotocol/utils';
+import type { LocalLogger, LoggerConf } from '@vegaprotocol/utils';
 import { localLoggerFactory } from '@vegaprotocol/utils';
 
-interface Props {
+interface Props extends LoggerConf {
   dsn?: string;
-  application?: string;
-  tags?: string[];
 }
 
 export const useLogger = ({ dsn, ...props }: Props) => {
