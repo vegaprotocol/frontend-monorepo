@@ -33,9 +33,9 @@ export const RiskNoticeDialog = ({ onClose }: Props) => {
         )}
       </p>
       <Button onClick={handleAcceptRisk}>{t('I understand, Continue')}</Button>
-      <p className="text-base mt-8">
+      <div className="text-base mt-8">
         <TelemetryApproval />
-      </p>
+      </div>
     </>
   );
 };
