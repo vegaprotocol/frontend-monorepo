@@ -26,7 +26,7 @@ export const WelcomeDialog = () => {
   const shouldDisplayWelcomeDialog = useGlobalStore(
     (store) => store.shouldDisplayWelcomeDialog
   );
-  const isRiskDialogNeeded = riskAccepted !== 'true';
+  const isRiskDialogNeeded = riskAccepted !== 'true' && !('Cypress' in window);
   const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
   const onCloseDialog = useCallback(() => {
     update({ shouldDisplayWelcomeDialog: isRiskDialogNeeded });
