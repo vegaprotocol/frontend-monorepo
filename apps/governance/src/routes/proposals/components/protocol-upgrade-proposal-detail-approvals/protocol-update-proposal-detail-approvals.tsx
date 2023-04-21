@@ -57,10 +57,7 @@ export const ProtocolUpdateProposalDetailApprovals = ({
                 noBorder={index === consensusApprovals?.length - 1}
                 key={validator.pubkey}
               >
-                <div
-                  className="-mb-3 mt-1"
-                  data-testid={`validator-${validator.id}`}
-                >
+                <div className="-mb-3 mt-1" data-testid={'validator-name'}>
                   <ValidatorDetailsLink
                     id={validator.id}
                     avatarUrl={validator.avatarUrl}
@@ -68,7 +65,7 @@ export const ProtocolUpdateProposalDetailApprovals = ({
                   />
                 </div>
 
-                <span>
+                <span data-testid="validator-voting-power">
                   {getNormalisedVotingPower(
                     validator.rankingScore.votingPower,
                     2

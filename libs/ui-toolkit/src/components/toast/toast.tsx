@@ -30,7 +30,7 @@ type ToastProps = Toast & {
   state?: ToastState;
 };
 
-const toastIconMapping: { [i in Intent]: IconName } = {
+export const toastIconMapping: { [i in Intent]: IconName } = {
   [Intent.None]: IconNames.HELP,
   [Intent.Primary]: IconNames.INFO_SIGN,
   [Intent.Success]: IconNames.TICK_CIRCLE,
