@@ -91,7 +91,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
         cy.getByTestId('button-menu-drawer').click();
         cy.getByTestId('menu-drawer').should('be.visible');
         cy.getByTestId('menu-drawer')
-          .find('[data-testid="theme-switcher"]')
+          .find('[data-testid="Settings"]')
           .should('be.visible');
         cy.getByTestId('button-menu-drawer').click();
         cy.getByTestId('menu-drawer').should('not.be.visible');

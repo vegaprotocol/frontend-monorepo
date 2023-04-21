@@ -4,7 +4,8 @@ describe('Settings page', { tags: '@smoke' }, () => {
       cy.mockTradingPage();
       cy.mockSubscription();
       cy.visit('/');
-      cy.getByTestId('Settings').click();
+      cy.getByTestId('dialog-close').click({ multiple: true });
+      cy.get('[aria-label="cog icon"]').click();
     });
   });
   it('telemetry checkbox should work well', () => {
