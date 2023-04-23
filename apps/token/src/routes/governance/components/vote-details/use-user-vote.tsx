@@ -95,12 +95,17 @@ export function useUserVote(
 
     setVoteState(VoteState.Requested);
 
+    const voteMapping = {
+      [VoteValue.Yes]: 'VALUE_YES',
+      [VoteValue.No]: 'VALUE_NO',
+    } as const;
+
     try {
       const variables = {
         pubKey: keypair.pub,
         propagate: true,
         voteSubmission: {
-          value: value,
+          value: voteMapping[value],
           proposalId,
         },
       };
