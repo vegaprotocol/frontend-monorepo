@@ -1,12 +1,6 @@
 import type { z } from 'zod';
 import type { GetKeysSchema, TransactionResponseSchema } from './connectors';
 import type { IterableElement } from 'type-fest';
-import type {
-  OrderTimeInForce,
-  OrderType,
-  Side,
-  VoteValue,
-} from '@vegaprotocol/types';
 
 interface BaseTransaction {
   pubKey: string;
@@ -28,12 +22,19 @@ export interface UndelegateSubmissionBody extends BaseTransaction {
   };
 }
 
+type OrderTimeInForce =
+  | 'TIME_IN_FORCE_FOK'
+  | 'TIME_IN_FORCE_GFA'
+  | 'TIME_IN_FORCE_GFN'
+  | 'TIME_IN_FORCE_GTC'
+  | 'TIME_IN_FORCE_GTT'
+  | 'TIME_IN_FORCE_IOC';
 export interface OrderSubmissionBody extends BaseTransaction {
   orderSubmission: {
     marketId: string;
     reference?: string;
-    type: OrderType;
-    side: Side;
+    type: 'TYPE_MARKET' | 'TYPE_LIMIT';
+    side: 'SIDE_BUY' | 'SIDE_SELL';
     timeInForce: OrderTimeInForce;
     size: string;
     price?: string;
@@ -62,7 +63,7 @@ export interface OrderAmendmentBody extends BaseTransaction {
 
 export interface VoteSubmissionBody extends BaseTransaction {
   voteSubmission: {
-    value: VoteValue;
+    value: 'VALUE_YES' | 'VALUE_NO';
     proposalId: string;
   };
 }
