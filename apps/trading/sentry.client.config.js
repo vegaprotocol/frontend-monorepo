@@ -1,10 +1,9 @@
 import { ENV } from './lib/config/env';
-import { LocalStorage } from '@vegaprotocol/utils';
-import { STORAGE_KEY, SentryInit } from './lib/hooks/use-telemetry-approval';
+import { LocalStorage, SentryInit, SentryClose } from '@vegaprotocol/utils';
+import { STORAGE_KEY } from './lib/hooks/use-telemetry-approval';
 
-const { dsn } = ENV;
+const { dsn, envName } = ENV;
 const isTelemetryApproved = !!LocalStorage.getItem(STORAGE_KEY);
-
 if (dsn && isTelemetryApproved) {
-  SentryInit(dsn, ENV.envName);
+  SentryInit(dsn, envName);
 }

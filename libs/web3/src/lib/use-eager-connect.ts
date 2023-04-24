@@ -1,3 +1,4 @@
+import type { LoggerProps } from '@vegaprotocol/react-helpers';
 import { useLocalStorage, useLogger } from '@vegaprotocol/react-helpers';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
@@ -8,12 +9,12 @@ import { useWeb3ConnectStore } from './web3-connect-store';
 
 export const ETHEREUM_EAGER_CONNECT = 'ethereum-eager-connect';
 
-export const useEagerConnect = (sentryDsn?: string) => {
+export const useEagerConnect = (loggerConf: LoggerProps) => {
   const connectors = useWeb3ConnectStore((store) => store.connectors);
   const [eagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   const attemptedRef = useRef(false);
 
-  const logger = useLogger({ dsn: sentryDsn });
+  const logger = useLogger(loggerConf);
 
   useEffect(() => {
     if (attemptedRef.current || 'Cypress' in window) return;
