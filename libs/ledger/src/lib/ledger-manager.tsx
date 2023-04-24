@@ -45,11 +45,11 @@ const LedgerEntriesExportLink = ({
   entries: LedgerEntry[];
 }) => {
   const assets = entries.reduce((aggr, item) => {
-    if (!(item.assetId in aggr && item.asset?.name)) {
-      aggr[item.assetId] = item.asset.name;
+    if (item.asset && !(item.asset.id in aggr)) {
+      aggr[item.asset.id] = item.asset.name;
     }
     return aggr;
-  }, {});
+  }, {} as Record<string, string>);
   const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
   const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
   const protohost = VEGA_URL ? getProtoHost(VEGA_URL) : '';
