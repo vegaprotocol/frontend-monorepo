@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
 import type {
   AggregatedLedgerEntriesNode,
@@ -46,30 +46,16 @@ const LedgerEntriesExportLink = ({
 }) => {
   const assets = entries.reduce((aggr, item) => {
     if (item.asset && !(item.asset.id in aggr)) {
-      aggr[item.asset.id] = item.asset.name;
+      aggr[item.asset.id] = item.asset.symbol;
     }
     return aggr;
   }, {} as Record<string, string>);
   const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
   const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
   const protohost = VEGA_URL ? getProtoHost(VEGA_URL) : '';
-  if (!protohost) {
-    return null;
-  }
-  return (
-    <div className="flex shrink">
-      {assetId ? (
-        <Link
-          className="h-[30px] text-sm p-2"
-          title={t('Download all to .csv file')}
-          href={`${protohost}/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${assetId}`}
-        >
-          {t('Export all of %s to .csv file', [assets[assetId]])}
-        </Link>
-      ) : (
-        <>{t('Select asset to export')}</>
-      )}
 
+  const assetDropDown = useMemo(() => {
+    return (
       <DropdownMenu
         trigger={<DropdownMenuTrigger>{assets[assetId]}</DropdownMenuTrigger>}
       >
@@ -82,6 +68,25 @@ const LedgerEntriesExportLink = ({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+    );
+  }, [assetId, assets]);
+
+  if (!protohost) {
+    return null;
+  }
+  return (
+    <div className="flex shrink">
+      {assetId ? (
+        <Link
+          className="h-[50px] text-sm p-2"
+          title={t('Download all to .csv file')}
+          href={`${protohost}/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${assetId}`}
+        >
+          {t('Export all of')} {assetDropDown} {t('to .csv file')}
+        </Link>
+      ) : (
+        <>{t('Select asset to export')}</>
+      )}
     </div>
   );
 };
