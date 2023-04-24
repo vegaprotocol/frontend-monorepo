@@ -2,7 +2,6 @@ import { t } from '@vegaprotocol/i18n';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { SunIcon, MoonIcon } from './icons';
 import { Toggle } from '../toggle';
-import { Switch } from '../switch';
 
 export const ThemeSwitcher = ({
   className,

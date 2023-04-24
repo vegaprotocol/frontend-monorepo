@@ -6,7 +6,6 @@ import {
   Switch,
   ThemeSwitcher,
 } from '@vegaprotocol/ui-toolkit';
-import { useMemo } from 'react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 export const Settings = () => {
