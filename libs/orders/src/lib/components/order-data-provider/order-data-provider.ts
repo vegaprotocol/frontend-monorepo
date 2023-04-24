@@ -28,6 +28,11 @@ export type Order = Omit<OrderFieldsFragment, 'market'> & {
 };
 export type OrderEdge = Edge<Order>;
 
+const liveOnlyOrderStatuses = [
+  OrderStatus.STATUS_ACTIVE,
+  OrderStatus.STATUS_PARKED,
+];
+
 const orderMatchFilters = (
   order: OrderUpdateFieldsFragment,
   variables: OrdersQueryVariables
@@ -38,6 +43,12 @@ const orderMatchFilters = (
   if (
     variables?.filter?.status &&
     !(order.status && variables.filter.status.includes(order.status))
+  ) {
+    return false;
+  }
+  if (
+    variables?.filter?.liveOnly &&
+    !(order.status && liveOnlyOrderStatuses.includes(order.status))
   ) {
     return false;
   }
@@ -204,7 +215,7 @@ export const activeOrdersProvider = makeDerivedDataProvider<
       ordersProvider(callback, client, {
         partyId: variables.partyId,
         filter: {
-          status: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
+          liveOnly: true,
         },
       }),
   ],

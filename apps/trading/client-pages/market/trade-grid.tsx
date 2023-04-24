@@ -1,7 +1,7 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { OrderListContainer } from '@vegaprotocol/orders';
+import { OrderListContainer, Filter } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { TradesContainer } from '@vegaprotocol/trades';
@@ -153,7 +153,40 @@ const MarketBottomPanel = memo(
               <TradingViews.Positions onMarketClick={onMarketClick} />
             </VegaWalletContainer>
           </Tab>
-          <Tab id="orders" name={t('Orders')}>
+          <Tab id="open-orders" name={t('Open')}>
+            <VegaWalletContainer>
+              <TradingViews.Orders
+                marketId={marketId}
+                filter={Filter.Open}
+                onMarketClick={onMarketClick}
+                onOrderTypeClick={onOrderTypeClick}
+                enforceBottomPlaceholder
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="closed-orders" name={t('Closed')}>
+            <VegaWalletContainer>
+              <TradingViews.Orders
+                marketId={marketId}
+                filter={Filter.Closed}
+                onMarketClick={onMarketClick}
+                onOrderTypeClick={onOrderTypeClick}
+                enforceBottomPlaceholder
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="rejected-orders" name={t('Rejected')}>
+            <VegaWalletContainer>
+              <TradingViews.Orders
+                marketId={marketId}
+                filter={Filter.Rejected}
+                onMarketClick={onMarketClick}
+                onOrderTypeClick={onOrderTypeClick}
+                enforceBottomPlaceholder
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="orders" name={t('All')}>
             <VegaWalletContainer>
               <TradingViews.Orders
                 marketId={marketId}

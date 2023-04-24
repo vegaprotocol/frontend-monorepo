@@ -2279,6 +2279,7 @@ export type OrderFilter = {
   /** Date range to retrieve orders from/to. Start and end time should be expressed as an integer value of nano-seconds past the Unix epoch */
   dateRange?: InputMaybe<DateRange>;
   excludeLiquidity?: InputMaybe<Scalars['Boolean']>;
+  liveOnly?: InputMaybe<Scalars['Boolean']>;
   status?: InputMaybe<Array<OrderStatus>>;
   timeInForce?: InputMaybe<Array<OrderTimeInForce>>;
   types?: InputMaybe<Array<OrderType>>;

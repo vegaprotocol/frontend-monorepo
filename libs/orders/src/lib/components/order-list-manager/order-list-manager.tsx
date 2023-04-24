@@ -1,7 +1,6 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { FilterChangedEvent, SortChangedEvent } from 'ag-grid-community';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent } from 'ag-grid-community';
@@ -9,14 +8,13 @@ import type { GridReadyEvent } from 'ag-grid-community';
 import { OrderListTable } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
-import type { Filter, Sort } from './use-order-list-data';
+import type { Filter } from './use-order-list-data';
+import { FilterStatus } from './use-order-list-data';
 import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
-import { OrderStatus } from '@vegaprotocol/types';
 import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
 } from '@vegaprotocol/wallet';
-import isEqual from 'lodash/isEqual';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order, OrderEdge } from '../order-data-provider';
@@ -28,6 +26,7 @@ export interface OrderListManagerProps {
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   enforceBottomPlaceholder?: boolean;
+  filter?: Filter;
 }
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
@@ -43,12 +42,6 @@ const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
   </div>
 );
 
-const initialFilter: Filter = {
-  status: {
-    value: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
-  },
-};
-
 export const OrderListManager = ({
   partyId,
   marketId,
@@ -56,20 +49,16 @@ export const OrderListManager = ({
   onOrderTypeClick,
   isReadOnly,
   enforceBottomPlaceholder,
+  filter,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [dataCount, setDataCount] = useState(0);
   const scrolledToTop = useRef(false);
-  const [sort, setSort] = useState<Sort[] | undefined>();
-  const [filter, setFilter] = useState<Filter | undefined>(initialFilter);
-  const filterRef = useRef(initialFilter);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
-
   const { data, error, loading, reload } = useOrderListData({
     partyId,
-    sort,
     filter,
     gridRef,
     scrolledToTop,
@@ -84,42 +73,6 @@ export const OrderListManager = ({
     disabled: !enforceBottomPlaceholder && !isReadOnly && !hasAmendableOrder,
   });
 
-  const onFilterChanged = useCallback(
-    (event: FilterChangedEvent) => {
-      const updatedFilter = event.api.getFilterModel();
-      if (isEqual(updatedFilter, filterRef.current)) {
-        return;
-      }
-      filterRef.current = updatedFilter;
-      if (Object.keys(updatedFilter).length) {
-        setFilter(updatedFilter);
-      } else {
-        setFilter(undefined);
-      }
-      setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-      bottomPlaceholderOnFilterChanged?.();
-    },
-    [setFilter, bottomPlaceholderOnFilterChanged]
-  );
-
-  const onSortChange = useCallback(
-    (event: SortChangedEvent) => {
-      const sort = event.columnApi
-        .getColumnState()
-        .sort((a, b) => (a.sortIndex || 0) - (b.sortIndex || 0))
-        .reduce((acc, col) => {
-          if (col.sort) {
-            const { colId, sort } = col;
-            acc.push({ colId, sort });
-          }
-          return acc;
-        }, [] as { colId: string; sort: string }[]);
-      setSort(sort.length > 0 ? sort : undefined);
-      bottomPlaceholderOnSortChanged?.();
-    },
-    [setSort, bottomPlaceholderOnSortChanged]
-  );
-
   const cancel = useCallback(
     (order: Order) => {
       if (!order.market) return;
@@ -133,9 +86,18 @@ export const OrderListManager = ({
     [create]
   );
 
-  const onGridReady = useCallback(({ api }: GridReadyEvent) => {
-    api.setFilterModel(initialFilter);
-  }, []);
+  const onGridReady = useCallback(
+    ({ api }: GridReadyEvent) => {
+      if (filter) {
+        api.setFilterModel({
+          status: {
+            value: FilterStatus[filter],
+          },
+        });
+      }
+    },
+    [filter]
+  );
 
   useEffect(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
@@ -162,8 +124,6 @@ export const OrderListManager = ({
           rowData={extractedData}
           ref={gridRef}
           onGridReady={onGridReady}
-          onFilterChanged={onFilterChanged}
-          onSortChanged={onSortChange}
           cancel={cancel}
           setEditOrder={setEditOrder}
           onMarketClick={onMarketClick}

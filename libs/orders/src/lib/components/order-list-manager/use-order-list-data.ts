@@ -3,6 +3,7 @@ import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/utils';
 import { useDataProvider, updateGridData } from '@vegaprotocol/react-helpers';
+import { OrderStatus } from '@vegaprotocol/types';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import type {
   OrderEdge,
@@ -12,38 +13,33 @@ import type {
   OrdersQueryVariables,
   OrdersUpdateSubscriptionVariables,
 } from '../order-data-provider/__generated__/Orders';
-import type * as Types from '@vegaprotocol/types';
-export interface Sort {
-  colId: string;
-  sort: string;
+
+export enum Filter {
+  'Open' = 1,
+  'Closed',
+  'Rejected',
 }
-export interface Filter {
-  updatedAt?: {
-    value: Types.DateRange;
-  };
-  type?: {
-    value: Types.OrderType[];
-  };
-  status?: {
-    value: Types.OrderStatus[];
-  };
-  timeInForce?: {
-    value: Types.OrderTimeInForce[];
-  };
-}
+
+const FilterStatus = {
+  [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
+  [Filter.Closed]: [
+    OrderStatus.STATUS_CANCELLED,
+    OrderStatus.STATUS_EXPIRED,
+    OrderStatus.STATUS_FILLED,
+    OrderStatus.STATUS_PARTIALLY_FILLED,
+    OrderStatus.STATUS_STOPPED,
+  ],
+  [Filter.Rejected]: [OrderStatus.STATUS_REJECTED],
+};
 interface Props {
   partyId: string;
-  marketId?: string;
   filter?: Filter;
-  sort?: Sort[];
   gridRef: RefObject<AgGridReact>;
   scrolledToTop: RefObject<boolean>;
 }
 
 export const useOrderListData = ({
   partyId,
-  marketId,
-  sort,
   filter,
   gridRef,
   scrolledToTop,
@@ -72,25 +68,10 @@ export const useOrderListData = ({
     const allVars: OrdersQueryVariables & OrdersUpdateSubscriptionVariables = {
       partyId,
     };
-    if (
-      filter?.updatedAt?.value ||
-      filter?.status?.value.length ||
-      filter?.timeInForce?.value.length ||
-      filter?.type?.value.length
-    ) {
-      allVars.filter = {};
-      if (filter?.updatedAt?.value) {
-        allVars.filter.dateRange = filter?.updatedAt?.value;
-      }
-      if (filter?.status?.value.length) {
-        allVars.filter.status = filter?.status?.value;
-      }
-      if (filter?.timeInForce?.value.length) {
-        allVars.filter.timeInForce = filter?.timeInForce?.value;
-      }
-      if (filter?.type?.value.length) {
-        allVars.filter.types = filter?.type?.value;
-      }
+    if (filter === Filter.Open) {
+      allVars.filter = {
+        liveOnly: true,
+      };
     }
     return allVars;
   }, [partyId, filter]);
