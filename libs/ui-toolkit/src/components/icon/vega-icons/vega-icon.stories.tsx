@@ -10,8 +10,8 @@ export default {
 
 const Template: Story<VegaIconProps> = (args) => <VegaIcon {...args} />;
 
-export const Default = Template.bind({});
-Default.args = {
+export const Small = Template.bind({});
+Small.args = {
   name: VegaIconNames.BREAKDOWN,
 };
 
