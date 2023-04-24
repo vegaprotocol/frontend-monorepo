@@ -1,12 +1,22 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
-import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Link,
+} from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
-import type { AggregatedLedgerEntriesNode } from './ledger-entries-data-provider';
+import type {
+  AggregatedLedgerEntriesNode,
+  LedgerEntry,
+} from './ledger-entries-data-provider';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
 import type * as Types from '@vegaprotocol/types';
@@ -27,6 +37,55 @@ const defaultFilter = {
     value: { start: formatRFC3339(subDays(Date.now(), 7)) },
   },
 };
+const LedgerEntriesExportLink = ({
+  partyId,
+  entries,
+}: {
+  partyId: string;
+  entries: LedgerEntry[];
+}) => {
+  const assets = entries.reduce((aggr, item) => {
+    if (!(item.assetId in aggr && item.asset?.name)) {
+      aggr[item.assetId] = item.asset.name;
+    }
+    return aggr;
+  }, {});
+  const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
+  const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
+  const protohost = VEGA_URL ? getProtoHost(VEGA_URL) : '';
+  if (!protohost) {
+    return null;
+  }
+  return (
+    <div className="flex shrink">
+      {assetId ? (
+        <Link
+          className="h-[30px] text-sm p-2"
+          title={t('Download all to .csv file')}
+          href={`${protohost}/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${assetId}`}
+        >
+          {t('Export all of %s to .csv file', [assets[assetId]])}
+        </Link>
+      ) : (
+        <>{t('Select asset to export')}</>
+      )}
+
+      <DropdownMenu
+        trigger={<DropdownMenuTrigger>{assets[assetId]}</DropdownMenuTrigger>}
+      >
+        <DropdownMenuContent>
+          {Object.keys(assets).map((assetKey) => (
+            <DropdownMenuItem onSelect={() => setAssetId(assetKey)}>
+              {' '}
+              {assets[assetKey]}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
+
 export const LedgerManager = ({ partyId }: { partyId: string }) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
@@ -52,19 +111,11 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
   useEffect(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, [extractedData]);
-  const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
-  const protohost = VEGA_URL ? getProtoHost(VEGA_URL) : '';
 
   return (
     <div className="h-full relative">
-      {protohost && (
-        <Link
-          className="h-[30px] text-sm p-2"
-          title={t('Download all to .csv file')}
-          href={`${protohost}/api/v2/ledgerentry/export?partyId=${partyId}`}
-        >
-          {t('Export all to .csv file')}
-        </Link>
+      {extractedData && (
+        <LedgerEntriesExportLink entries={extractedData} partyId={partyId} />
       )}
       <LedgerTable
         ref={gridRef}
