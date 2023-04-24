@@ -1,14 +1,16 @@
 import { checkSorting } from '@vegaprotocol/cypress';
 
-beforeEach(() => {
-  cy.mockTradingPage();
-  cy.mockWeb3Provider();
-  cy.mockSubscription();
-  cy.setVegaWallet();
-  cy.visit('/#/markets/market-0');
-});
-
 describe('accounts', { tags: '@smoke' }, () => {
+  before(() => {
+    cy.clearAllLocalStorage();
+    cy.mockTradingPage();
+    cy.mockWeb3Provider();
+    cy.mockSubscription();
+    cy.setVegaWallet();
+    cy.visit('/#/markets/market-0');
+    cy.wait('@Assets');
+  });
+
   it('renders accounts', () => {
     const tradingAccountRowId = '[row-id="t-0"]';
     cy.getByTestId('Collateral').click();
@@ -23,17 +25,12 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="accounts-actions"]')
-      .should('have.text', 'DepositWithdraw');
+      .should('have.text', '');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
-      .find('[data-testid="deposit"]')
-      .should('have.text', 'Deposit');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="accounts-actions"] [data-testid="withdraw"]')
-      .should('have.text', 'Withdraw');
+      .find('[col-id="accounts-actions"]')
+      .should('have.text', '');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
@@ -41,7 +38,21 @@ describe('accounts', { tags: '@smoke' }, () => {
       .should('have.text', '100,001.01');
   });
 
+  it('should open asset details dialog when clicked on symbol', () => {
+    cy.getByTestId('asset').contains('tEURO').click();
+    cy.get('[data-testid="dialog-content"]:visible').should('exist');
+    cy.get('[data-testid="dialog-close"]:visible').click();
+  });
+
   describe('sorting by ag-grid columns should work well', () => {
+    before(() => {
+      const dialogs = Cypress.$('[data-testid="dialog-close"]:visible');
+      if (dialogs.length > 0) {
+        dialogs.each((btn) => {
+          cy.wrap(btn).click();
+        });
+      }
+    });
     it('sorting by asset', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = ['tBTC', 'tEURO', 'tDAI', 'tBTC'];

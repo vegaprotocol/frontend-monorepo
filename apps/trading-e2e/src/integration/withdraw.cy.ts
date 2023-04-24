@@ -70,54 +70,60 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
   });
 });
 
-describe('withdraw actions', { tags: '@regression' }, () => {
-  // this is extremely ugly hack, but setting it properly in contract is too much effort for such simple validation
+describe(
+  'withdraw actions',
+  { tags: '@regression', testIsolation: true },
+  () => {
+    // this is extremely ugly hack, but setting it properly in contract is too much effort for such simple validation
 
-  // 1002-WITH-018
+    // 1002-WITH-018
 
-  const withdrawalThreshold =
-    Cypress.env('VEGA_ENV') === 'CUSTOM' ? '0.00' : '100.00';
-  before(() => {
-    cy.mockWeb3Provider();
-    cy.mockTradingPage();
-    cy.mockSubscription();
-    cy.setVegaWallet();
+    const withdrawalThreshold =
+      Cypress.env('VEGA_ENV') === 'CUSTOM' ? '0.00' : '100.00';
+    before(() => {
+      cy.mockWeb3Provider();
+      cy.mockTradingPage();
+      cy.mockSubscription();
+      cy.setVegaWallet();
 
-    cy.visit('/#/portfolio');
-    cy.getByTestId('Withdrawals').click();
-    cy.getByTestId('withdraw-dialog-button').click();
+      cy.visit('/#/portfolio');
+      cy.getByTestId('Withdrawals').click();
 
-    connectEthereumWallet('MetaMask');
+      cy.getByTestId('withdraw-dialog-button').click();
 
-    cy.wait('@Accounts');
-    cy.wait('@Assets');
-    cy.mockVegaWalletTransaction();
-  });
+      // It also requires connection Ethereum wallet
+      connectEthereumWallet('MetaMask');
 
-  it('triggers transaction when submitted', () => {
-    // 1002-WITH-002
-    // 1002-WITH-003
-    selectAsset(ASSET_SEPOLIA_TBTC);
-    cy.getByTestId('BALANCE_AVAILABLE_label').should(
-      'contain.text',
-      'Balance available'
-    );
-    cy.getByTestId('BALANCE_AVAILABLE_value').should(
-      'have.text',
-      '1,000.00001'
-    );
-    cy.getByTestId('WITHDRAWAL_THRESHOLD_label').should(
-      'contain.text',
-      'Delayed withdrawal threshold'
-    );
-    cy.getByTestId('WITHDRAWAL_THRESHOLD_value').should(
-      'contain.text',
-      withdrawalThreshold
-    );
-    cy.getByTestId('DELAY_TIME_label').should('contain.text', 'Delay time');
-    cy.getByTestId('DELAY_TIME_value').should('have.text', 'None');
-    cy.get(amountField).clear().type('10');
-    cy.getByTestId(submitWithdrawBtn).click();
-    cy.getByTestId('toast').should('contain.text', 'Awaiting confirmation');
-  });
-});
+      cy.wait('@Accounts');
+      cy.wait('@Assets');
+      cy.mockVegaWalletTransaction();
+    });
+
+    it('triggers transaction when submitted', () => {
+      // 1002-WITH-002
+      // 1002-WITH-003
+      selectAsset(ASSET_SEPOLIA_TBTC);
+      cy.getByTestId('BALANCE_AVAILABLE_label').should(
+        'contain.text',
+        'Balance available'
+      );
+      cy.getByTestId('BALANCE_AVAILABLE_value').should(
+        'have.text',
+        '1,000.00001'
+      );
+      cy.getByTestId('WITHDRAWAL_THRESHOLD_label').should(
+        'contain.text',
+        'Delayed withdrawal threshold'
+      );
+      cy.getByTestId('WITHDRAWAL_THRESHOLD_value').should(
+        'contain.text',
+        withdrawalThreshold
+      );
+      cy.getByTestId('DELAY_TIME_label').should('contain.text', 'Delay time');
+      cy.getByTestId('DELAY_TIME_value').should('have.text', 'None');
+      cy.get(amountField).clear().type('10');
+      cy.getByTestId(submitWithdrawBtn).click();
+      cy.getByTestId('toast').should('contain.text', 'Awaiting confirmation');
+    });
+  }
+);

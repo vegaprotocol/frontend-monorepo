@@ -12,15 +12,17 @@ jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ account: ethereumAddress }),
 }));
 
+const withdrawAsset = {
+  asset,
+  balance: new BigNumber(1),
+  min: new BigNumber(0.0000001),
+  threshold: new BigNumber(1000),
+  delay: 10,
+  handleSelectAsset: jest.fn(),
+};
+
 jest.mock('./use-withdraw-asset', () => ({
-  useWithdrawAsset: () => ({
-    asset,
-    balance: new BigNumber(1),
-    min: new BigNumber(0.0000001),
-    threshold: new BigNumber(1000),
-    delay: 10,
-    handleSelectAsset: jest.fn(),
-  }),
+  useWithdrawAsset: () => withdrawAsset,
 }));
 
 jest.mock('@vegaprotocol/web3', () => ({
@@ -109,4 +111,25 @@ describe('WithdrawManager', () => {
     });
     fireEvent.submit(screen.getByTestId('withdraw-form'));
   };
+
+  it('shows withdraw delay notification if amount greater than threshold', async () => {
+    render(generateJsx(props));
+    fireEvent.change(screen.getByLabelText('Amount'), {
+      target: { value: '1000' },
+    });
+    expect(
+      await screen.findByTestId('amount-withdrawal-delay-notification')
+    ).toBeInTheDocument();
+  });
+
+  it('shows withdraw delay notification if threshold is 0', async () => {
+    withdrawAsset.threshold = new BigNumber(Infinity);
+    render(generateJsx(props));
+    fireEvent.change(screen.getByLabelText('Amount'), {
+      target: { value: '0.01' },
+    });
+    expect(
+      await screen.findByTestId('withdrawals-delay-notification')
+    ).toBeInTheDocument();
+  });
 });

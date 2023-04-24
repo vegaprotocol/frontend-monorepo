@@ -6,7 +6,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 type Data = number;
 type Delta = number;
-type Variables = { partyId: string };
+type Variables = { partyId: string; marketIds?: string[] };
 
 const unsubscribe = jest.fn();
 const reload = jest.fn();
@@ -154,6 +154,121 @@ describe('useDataProvider hook', () => {
     expect(insert).toBeCalledTimes(2);
     expect(insert.mock.calls[1][0].data).toEqual(data);
     expect(insert.mock.calls[1][0].insertionData).toEqual(insertionData);
+  });
+
+  it('calls dataProvider with updated variables if skip switched to true', async () => {
+    const { rerender } = render({
+      dataProvider,
+      variables: { partyId: '' },
+      skip: true,
+    });
+    expect(dataProvider).toBeCalledTimes(0);
+    rerender({
+      dataProvider,
+      variables,
+    });
+    expect(dataProvider).toBeCalledTimes(1);
+    expect(dataProvider.mock.calls[0][2]).toEqual(variables);
+  });
+  it('uses same data provider when rerendered with equal variables', async () => {
+    const { rerender } = render({
+      dataProvider,
+      variables: { ...variables, marketIds: ['a', 'b'] },
+    });
+    expect(dataProvider).toBeCalledTimes(1);
+    rerender({
+      dataProvider,
+      variables: { ...variables, marketIds: ['b', 'a'] },
+    });
+    expect(dataProvider).toBeCalledTimes(1);
+    rerender({
+      dataProvider,
+      variables: { ...variables },
+    });
+    expect(dataProvider).toBeCalledTimes(2);
+  });
+
+  it('calls new update and insert when replaced', async () => {
+    const { rerender } = render({
+      dataProvider,
+      update,
+      insert,
+      variables,
+    });
+    const data = 0;
+    const delta = 0;
+    const insertionData = 0;
+    const callback = dataProvider.mock.calls[0][0];
+    await act(async () => {
+      callback({ ...updateCallbackPayload, data });
+    });
+    const newUpdate = jest.fn();
+    const newInsert = jest.fn();
+    expect(update).toBeCalledTimes(2);
+    expect(insert).toBeCalledTimes(0);
+    rerender({ dataProvider, update: newUpdate, insert: newInsert, variables });
+    await act(async () => {
+      callback({
+        ...updateCallbackPayload,
+        data: data,
+        delta,
+        isUpdate: true,
+      });
+    });
+    expect(newUpdate).toBeCalledTimes(1);
+    await act(async () => {
+      callback({
+        ...updateCallbackPayload,
+        data,
+        insertionData,
+        isInsert: true,
+      });
+    });
+    expect(newUpdate).toBeCalledTimes(2);
+    expect(newInsert).toBeCalledTimes(1);
+    expect(update).toBeCalledTimes(2);
+    expect(insert).toBeCalledTimes(0);
+  });
+
+  it('skip updates if skipUpdates is true', async () => {
+    const { result, rerender } = render({
+      dataProvider,
+      update,
+      variables,
+      skipUpdates: true,
+    });
+    expect(update).toBeCalledTimes(1);
+    let data = 0;
+    const delta = 1;
+    const callback = dataProvider.mock.calls[0][0];
+    await act(async () => {
+      callback({ ...updateCallbackPayload, data });
+    });
+    expect(update).toBeCalledTimes(2);
+    expect(result.current.data).toEqual(data);
+    await act(async () => {
+      callback({
+        ...updateCallbackPayload,
+        data: data + delta,
+        delta,
+        isUpdate: true,
+      });
+    });
+    expect(update).toBeCalledTimes(2);
+    expect(result.current.data).toEqual(data);
+    rerender({ dataProvider, variables, update });
+    expect(update).toBeCalledTimes(2);
+    await act(async () => {
+      callback({
+        ...updateCallbackPayload,
+        data: (data = data + delta),
+        delta,
+        isUpdate: true,
+      });
+    });
+    expect(update).toBeCalledTimes(3);
+    expect(result.current.data).toEqual(data);
+    expect(dataProvider).toBeCalledTimes(1);
   });
 
   it('change data provider instance on variables change', async () => {

@@ -6,6 +6,7 @@
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "format": ["esm", "cjs"],
       "options": {
         "outputPath": "dist/libs/tailwindcss-config",
         "main": "libs/tailwindcss-config/src/index.js",

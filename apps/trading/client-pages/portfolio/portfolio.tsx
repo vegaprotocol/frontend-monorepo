@@ -2,24 +2,26 @@ import { titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
-import {
-  ResizableGridPanel,
-  Tab,
-  LocalStoragePersistTabs as Tabs,
-} from '@vegaprotocol/ui-toolkit';
+import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
-import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
 import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 import { AccountHistoryContainer } from './account-history-container';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import {
+  useMarketClickHandler,
+  useMarketLiquidityClickHandler,
+} from '../../lib/hooks/use-market-click-handler';
+import {
+  ResizableGrid,
+  ResizableGridPanel,
+} from '../../components/resizable-grid';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -31,6 +33,7 @@ export const Portfolio = () => {
   }, [updateTitle]);
 
   const onMarketClick = useMarketClickHandler(true);
+  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
@@ -54,7 +57,10 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <OrderListContainer onMarketClick={onMarketClick} />
+                  <OrderListContainer
+                    onMarketClick={onMarketClick}
+                    onOrderTypeClick={onOrderTypeClick}
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>

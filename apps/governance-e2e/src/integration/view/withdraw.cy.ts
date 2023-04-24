@@ -12,6 +12,7 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to withdrawals page', function () {
+      cy.clearAllLocalStorage();
       cy.visit('/');
       navigateTo(navigation.withdraw);
     });

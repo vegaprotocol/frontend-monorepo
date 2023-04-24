@@ -1,8 +1,10 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
+  reporter: '../../node_modules/cypress-mochawesome-reporter',
   e2e: {
     setupNodeEvents(on, config) {
+      require('cypress-mochawesome-reporter/plugin')(on);
       require('@cypress/grep/src/plugin')(config);
       return config;
     },
@@ -23,6 +25,7 @@ module.exports = defineConfig({
     responseTimeout: 50000,
     requestTimeout: 20000,
     retries: 2,
+    testIsolation: false,
   },
   env: {
     ETHERSCAN_URL: 'https://sepolia.etherscan.io',

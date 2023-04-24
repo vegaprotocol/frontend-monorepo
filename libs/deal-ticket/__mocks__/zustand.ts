@@ -1,6 +1,7 @@
 import type { StateCreator } from 'zustand';
 import { act } from 'react-dom/test-utils';
-const { create: actualCreate } = jest.requireActual('zustand'); // if using jest
+const { create: actualCreate, useStore: actualUseStore } =
+  jest.requireActual('zustand'); // if using jest
 
 // a variable to hold reset functions for all stores declared in the app
 const storeResetFns = new Set<() => void>();
@@ -15,7 +16,13 @@ export const create =
     return store;
   };
 
+export const createStore = create;
+export const useStore = actualUseStore;
+
 // Reset all stores after each test run
 beforeEach(() => {
   act(() => storeResetFns.forEach((resetFn) => resetFn()));
 });
+
+// also export default as web3-react internals import and use zustand as the default import
+export default create;

@@ -43,23 +43,25 @@ context(
 
       // 1005-VEST-020 1005-VEST-021
       it('Tokens in vesting contract for eth wallet is displayed on wallet window', function () {
-        cy.getByTestId('vega-in-vesting-contract').within(() => {
-          cy.getByTestId('currency-title')
-            .should('contain.text', 'VEGA')
-            .and('contain.text', 'In vesting contract');
-          cy.get('[data-testid="currency-value"]:visible').should(
-            'have.text',
-            lockedTokensInVestingContract
-          );
-          cy.get('[data-testid="currency-locked"]:visible').should(
-            'have.text',
-            lockedTokensInVestingContract
-          );
-          cy.get('[data-testid="currency-unlocked"]:visible').should(
-            'have.text',
-            '0.00'
-          );
-        });
+        cy.get('[data-testid="vega-in-vesting-contract"]:visible').within(
+          () => {
+            cy.getByTestId('currency-title')
+              .should('contain.text', 'VEGA')
+              .and('contain.text', 'In vesting contract');
+            cy.get('[data-testid="currency-value"]:visible').should(
+              'have.text',
+              lockedTokensInVestingContract
+            );
+            cy.get('[data-testid="currency-locked"]:visible').should(
+              'have.text',
+              lockedTokensInVestingContract
+            );
+            cy.get('[data-testid="currency-unlocked"]:visible').should(
+              'have.text',
+              '0.00'
+            );
+          }
+        );
       });
       // 1005-VEST-022 1005-VEST-023
       it('Tokens amount displayed in vesting page', function () {

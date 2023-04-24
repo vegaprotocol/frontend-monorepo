@@ -109,6 +109,13 @@ const LazyProposal = React.lazy(
     )
 );
 
+const LazyProtocolUpgradeProposal = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-protocol-upgrade-proposal", webpackPrefetch: true */ './proposals/protocol-upgrade'
+    )
+);
+
 const LazyProposalsList = React.lazy(
   () =>
     import(
@@ -257,6 +264,10 @@ const routerConfig = [
       },
       { path: 'proposals', element: <LazyProposalsList /> },
       { path: ':proposalId', element: <LazyProposal /> },
+      {
+        path: 'protocol-upgrade/:proposalReleaseTag',
+        element: <LazyProtocolUpgradeProposal />,
+      },
       { path: 'rejected', element: <LazyRejectedProposalsList /> },
     ],
   },

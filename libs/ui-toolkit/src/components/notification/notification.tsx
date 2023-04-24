@@ -55,9 +55,9 @@ export const Notification = ({
           'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
           'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
-          'bg-vega-orange-300 dark:bg-vega-orange-650':
+          'bg-vega-orange-300 dark:bg-vega-orange-700':
             intent === Intent.Warning,
-          'bg-vega-pink-300 dark:bg-vega-pink-650': intent === Intent.Danger,
+          'bg-vega-pink-300 dark:bg-vega-pink-700': intent === Intent.Danger,
         },
         'border rounded p-2 flex items-start gap-2.5'
       )}
@@ -70,6 +70,8 @@ export const Notification = ({
             'text-vega-green dark:text-vega-green': intent === Intent.Success,
             'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
             'text-vega-pink': intent === Intent.Danger,
+            'mt-1': !!title,
+            'mt-[0.125rem]': !title,
           },
           'flex items-start mt-1'
         )}
@@ -78,11 +80,16 @@ export const Notification = ({
       </div>
       <div className="flex flex-col flex-grow items-start gap-1.5">
         {title && (
-          <div className="whitespace-nowrap overflow-hidden text-ellipsis uppercase leading-6">
+          <div
+            key="title"
+            className="whitespace-nowrap overflow-hidden text-ellipsis uppercase leading-6"
+          >
             {title}
           </div>
         )}
-        <div className="text-sm [word-break:break-word]">{message}</div>
+        <div key="message" className="text-sm [word-break:break-word]">
+          {message}
+        </div>
         {buttonProps && (
           <Button
             size={buttonProps.size || 'sm'}

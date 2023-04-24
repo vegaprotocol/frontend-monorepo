@@ -8,7 +8,7 @@ import type { GridReadyEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
-import { useHasActiveOrder } from '../../order-hooks/use-has-active-order';
+import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
 import type { Filter, Sort } from './use-order-list-data';
 import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 import { OrderStatus } from '@vegaprotocol/types';
@@ -16,6 +16,7 @@ import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
 } from '@vegaprotocol/wallet';
+import isEqual from 'lodash/isEqual';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order, OrderEdge } from '../order-data-provider';
@@ -24,31 +25,23 @@ export interface OrderListManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   enforceBottomPlaceholder?: boolean;
 }
 
-const CancelAllOrdersButton = ({
-  onClick,
-  marketId,
-}: {
-  onClick: (marketId?: string) => void;
-  marketId?: string;
-}) => {
-  const hasActiveOrder = useHasActiveOrder(marketId);
-  return hasActiveOrder ? (
-    <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
-      <Button
-        variant="primary"
-        size="sm"
-        onClick={() => onClick(marketId)}
-        data-testid="cancelAll"
-      >
-        {t('Cancel all')}
-      </Button>
-    </div>
-  ) : null;
-};
+const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
+  <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
+    <Button
+      variant="primary"
+      size="sm"
+      onClick={onClick}
+      data-testid="cancelAll"
+    >
+      {t('Cancel all')}
+    </Button>
+  </div>
+);
 
 const initialFilter: Filter = {
   status: {
@@ -60,6 +53,7 @@ export const OrderListManager = ({
   partyId,
   marketId,
   onMarketClick,
+  onOrderTypeClick,
   isReadOnly,
   enforceBottomPlaceholder,
 }: OrderListManagerProps) => {
@@ -68,9 +62,10 @@ export const OrderListManager = ({
   const scrolledToTop = useRef(false);
   const [sort, setSort] = useState<Sort[] | undefined>();
   const [filter, setFilter] = useState<Filter | undefined>(initialFilter);
+  const filterRef = useRef(initialFilter);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
-  const hasActiveOrder = useHasActiveOrder(marketId);
+  const hasAmendableOrder = useHasAmendableOrder(marketId);
 
   const { data, error, loading, reload } = useOrderListData({
     partyId,
@@ -86,12 +81,16 @@ export const OrderListManager = ({
     ...bottomPlaceholderProps
   } = useBottomPlaceholder<Order>({
     gridRef,
-    disabled: !enforceBottomPlaceholder && !isReadOnly && !hasActiveOrder,
+    disabled: !enforceBottomPlaceholder && !isReadOnly && !hasAmendableOrder,
   });
 
   const onFilterChanged = useCallback(
     (event: FilterChangedEvent) => {
       const updatedFilter = event.api.getFilterModel();
+      if (isEqual(updatedFilter, filterRef.current)) {
+        return;
+      }
+      filterRef.current = updatedFilter;
       if (Object.keys(updatedFilter).length) {
         setFilter(updatedFilter);
       } else {
@@ -142,16 +141,13 @@ export const OrderListManager = ({
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, [data]);
 
-  const cancelAll = useCallback(
-    (marketId?: string) => {
-      create({
-        orderCancellation: {
-          marketId,
-        },
-      });
-    },
-    [create]
-  );
+  const cancelAll = useCallback(() => {
+    create({
+      orderCancellation: {
+        marketId,
+      },
+    });
+  }, [create, marketId]);
   const extractedData =
     data && !loading
       ? data
@@ -171,6 +167,7 @@ export const OrderListManager = ({
           cancel={cancel}
           setEditOrder={setEditOrder}
           onMarketClick={onMarketClick}
+          onOrderTypeClick={onOrderTypeClick}
           isReadOnly={isReadOnly}
           blockLoadDebounceMillis={100}
           suppressLoadingOverlay
@@ -188,8 +185,8 @@ export const OrderListManager = ({
           />
         </div>
       </div>
-      {!isReadOnly && (
-        <CancelAllOrdersButton onClick={cancelAll} marketId={marketId} />
+      {!isReadOnly && hasAmendableOrder && (
+        <CancelAllOrdersButton onClick={cancelAll} />
       )}
       {editOrder && (
         <OrderEditDialog

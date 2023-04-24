@@ -3,11 +3,13 @@ export const negativeClassNames = 'text-vega-pink dark:text-vega-pink';
 
 const isPositive = ({ value }: { value: string | bigint | number }) =>
   !!value &&
-  ((typeof value === 'string' && !value.startsWith('-')) || value > 0);
+  ((typeof value === 'string' && !value.startsWith('-')) ||
+    ((typeof value === 'number' || typeof value === 'bigint') && value > 0));
 
 const isNegative = ({ value }: { value: string | bigint | number }) =>
   !!value &&
-  ((typeof value === 'string' && value.startsWith('-')) || value < 0);
+  ((typeof value === 'string' && value.startsWith('-')) ||
+    ((typeof value === 'number' || typeof value === 'bigint') && value < 0));
 
 export const signedNumberCssClass = (value: string | bigint | number) => {
   if (isPositive({ value })) {

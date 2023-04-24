@@ -10,9 +10,12 @@ export * from './lib/cells/price-flash-cell';
 export * from './lib/cells/vol-cell';
 export * from './lib/cells/centered-grid-cell';
 export * from './lib/cells/market-name-cell';
+export * from './lib/cells/order-type-cell';
 
 export * from './lib/filters/date-range-filter';
 export * from './lib/filters/set-filter';
 
 export * from './lib/cell-class-rules';
 export * from './lib/type-helpers';
+
+export * from './lib/cells/grid-progress-bar';

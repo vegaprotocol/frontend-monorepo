@@ -30,12 +30,12 @@ import {
 import { marginsDataProvider } from './margin-data-provider';
 import { calculateMargins } from './margin-calculator';
 import type { Edge } from '@vegaprotocol/utils';
-import { OrderStatus, Side } from '@vegaprotocol/types';
+import { Side } from '@vegaprotocol/types';
 import { marketInfoProvider } from '@vegaprotocol/market-info';
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
-import { ordersProvider } from '@vegaprotocol/orders';
+import { activeOrdersProvider } from '@vegaprotocol/orders';
 import type { OrderFieldsFragment } from '@vegaprotocol/orders';
 import type { PositionStatus } from '@vegaprotocol/types';
 
@@ -350,17 +350,14 @@ export const volumeAndMarginProvider = makeDerivedDataProvider<
 >(
   [
     (callback, client, { partyId, marketId }) =>
-      ordersProvider(callback, client, {
+      activeOrdersProvider(callback, client, {
         partyId,
-        marketIds: [marketId],
-        filter: {
-          status: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
-        },
+        marketId,
       }),
-    (callback, client, variables) =>
-      marketDataProvider(callback, client, { marketId: variables.marketId }),
-    (callback, client, variables) =>
-      marketInfoProvider(callback, client, { marketId: variables.marketId }),
+    (callback, client, { marketId }) =>
+      marketDataProvider(callback, client, { marketId }),
+    (callback, client, { marketId }) =>
+      marketInfoProvider(callback, client, { marketId }),
     openVolumeDataProvider,
   ],
   (data) => {

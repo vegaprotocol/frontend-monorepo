@@ -3,13 +3,23 @@ import { AccountType } from '@vegaprotocol/types';
 
 describe('generateEpochAssetRewardsList', () => {
   it('should return an empty array if data is undefined', () => {
-    const result = generateEpochTotalRewardsList(undefined);
+    const result = generateEpochTotalRewardsList({ epochId: 1 });
 
-    expect(result).toEqual([]);
+    expect(result).toEqual(
+      new Map([
+        [
+          '1',
+          {
+            epoch: 1,
+            assetRewards: new Map(),
+          },
+        ],
+      ])
+    );
   });
 
-  it('should return an empty array if empty data is provided', () => {
-    const epochData = {
+  it('should return an empty map if empty data is provided', () => {
+    const data = {
       assetsConnection: {
         edges: [],
       },
@@ -23,13 +33,23 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 1 });
 
-    expect(result).toEqual([]);
+    expect(result).toEqual(
+      new Map([
+        [
+          '1',
+          {
+            epoch: 1,
+            assetRewards: new Map(),
+          },
+        ],
+      ])
+    );
   });
 
-  it('should return an empty array if no epochRewardSummaries are provided', () => {
-    const epochData = {
+  it('should return an empty map if no epochRewardSummaries are provided', () => {
+    const data = {
       assetsConnection: {
         edges: [
           {
@@ -56,13 +76,23 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 1 });
 
-    expect(result).toEqual([]);
+    expect(result).toEqual(
+      new Map([
+        [
+          '1',
+          {
+            epoch: 1,
+            assetRewards: new Map(),
+          },
+        ],
+      ])
+    );
   });
 
-  it('should return an array of unnamed assets if no asset names are provided (should not happen)', () => {
-    const epochData = {
+  it('should return a map of unnamed assets if no asset names are provided (should not happen)', () => {
+    const data = {
       assetsConnection: {
         edges: [],
       },
@@ -85,50 +115,80 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 1 });
 
-    expect(result).toEqual([
-      {
-        epoch: 1,
-        assetRewards: [
+    expect(result).toEqual(
+      new Map([
+        [
+          '1',
           {
-            assetId: '1',
-            name: '',
-            rewards: [
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-                amount: '123',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                amount: '0',
-              },
-            ],
-            totalAmount: '123',
+            epoch: 1,
+            assetRewards: new Map([
+              [
+                '1',
+                {
+                  assetId: '1',
+                  name: '',
+                  rewards: new Map([
+                    [
+                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                        amount: '123',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                        amount: '0',
+                      },
+                    ],
+                  ]),
+                  totalAmount: '123',
+                },
+              ],
+            ]),
           },
         ],
-      },
-    ]);
+      ])
+    );
   });
 
-  it('should return an array of aggregated epoch summaries', () => {
-    const epochData = {
+  it('should return the aggregated epoch summaries', () => {
+    const data = {
       assetsConnection: {
         edges: [
           {
@@ -180,81 +240,425 @@ describe('generateEpochAssetRewardsList', () => {
       },
     };
 
-    const result = generateEpochTotalRewardsList(epochData);
+    const result = generateEpochTotalRewardsList({ data, epochId: 2 });
 
-    expect(result).toEqual([
-      {
-        epoch: 1,
-        assetRewards: [
+    expect(result).toEqual(
+      new Map([
+        [
+          '1',
           {
-            assetId: '1',
-            name: 'Asset 1',
-            rewards: [
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                amount: '100',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                amount: '123',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                amount: '0',
-              },
-            ],
-            totalAmount: '223',
+            epoch: 1,
+            assetRewards: new Map([
+              [
+                '1',
+                {
+                  assetId: '1',
+                  name: 'Asset 1',
+                  rewards: new Map([
+                    [
+                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                        amount: '100',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                        amount: '123',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                        amount: '0',
+                      },
+                    ],
+                  ]),
+                  totalAmount: '223',
+                },
+              ],
+            ]),
+          },
+        ],
+        [
+          '2',
+          {
+            epoch: 2,
+            assetRewards: new Map([
+              [
+                '1',
+                {
+                  assetId: '1',
+                  name: 'Asset 1',
+                  rewards: new Map([
+                    [
+                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        amount: '5',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                        amount: '0',
+                      },
+                    ],
+                  ]),
+                  totalAmount: '5',
+                },
+              ],
+            ]),
+          },
+        ],
+      ])
+    );
+  });
+
+  it('should return the requested range for aggregated epoch summaries', () => {
+    const data = {
+      assetsConnection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              name: 'Asset 1',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              name: 'Asset 2',
+            },
           },
         ],
       },
-      {
-        epoch: 2,
-        assetRewards: [
+      epochRewardSummaries: {
+        edges: [
           {
-            assetId: '1',
-            name: 'Asset 1',
-            rewards: [
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                amount: '0',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-                amount: '5',
-              },
-              {
-                rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                amount: '0',
-              },
-            ],
-            totalAmount: '5',
+            node: {
+              epoch: 1,
+              assetId: '1',
+              rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+              amount: '123',
+            },
+          },
+          {
+            node: {
+              epoch: 1,
+              assetId: '1',
+              rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+              amount: '100',
+            },
+          },
+          {
+            node: {
+              epoch: 2,
+              assetId: '1',
+              rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+              amount: '6',
+            },
+          },
+          {
+            node: {
+              epoch: 2,
+              assetId: '1',
+              rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+              amount: '27',
+            },
+          },
+          {
+            node: {
+              epoch: 3,
+              assetId: '1',
+              rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+              amount: '15',
+            },
           },
         ],
       },
-    ]);
+      epoch: {
+        timestamps: {
+          expiry: null,
+        },
+      },
+    };
+
+    const resultPageOne = generateEpochTotalRewardsList({
+      data,
+      epochId: 3,
+      page: 1,
+      size: 2,
+    });
+
+    expect(resultPageOne).toEqual(
+      new Map([
+        [
+          '2',
+          {
+            epoch: 2,
+            assetRewards: new Map([
+              [
+                '1',
+                {
+                  assetId: '1',
+                  name: 'Asset 1',
+                  rewards: new Map([
+                    [
+                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        amount: '33',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                        amount: '0',
+                      },
+                    ],
+                  ]),
+                  totalAmount: '33',
+                },
+              ],
+            ]),
+          },
+        ],
+        [
+          '3',
+          {
+            epoch: 3,
+            assetRewards: new Map([
+              [
+                '1',
+                {
+                  assetId: '1',
+                  name: 'Asset 1',
+                  rewards: new Map([
+                    [
+                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                        amount: '15',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                        amount: '0',
+                      },
+                    ],
+                  ]),
+                  totalAmount: '15',
+                },
+              ],
+            ]),
+          },
+        ],
+      ])
+    );
+
+    const resultPageTwo = generateEpochTotalRewardsList({
+      data,
+      epochId: 3,
+      page: 2,
+      size: 2,
+    });
+
+    expect(resultPageTwo).toEqual(
+      new Map([
+        [
+          '1',
+          {
+            epoch: 1,
+            assetRewards: new Map([
+              [
+                '1',
+                {
+                  assetId: '1',
+                  name: 'Asset 1',
+                  rewards: new Map([
+                    [
+                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+                        amount: '100',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+                        amount: '123',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      {
+                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        amount: '0',
+                      },
+                    ],
+                    [
+                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                      {
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+                        amount: '0',
+                      },
+                    ],
+                  ]),
+                  totalAmount: '223',
+                },
+              ],
+            ]),
+          },
+        ],
+      ])
+    );
   });
 });

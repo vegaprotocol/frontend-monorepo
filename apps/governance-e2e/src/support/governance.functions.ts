@@ -150,22 +150,11 @@ export function waitForProposalSync() {
   });
 }
 
-export function getSortOrderOfSuppliedArray(suppliedArray: string[]) {
-  const tempArray = [];
-  for (let index = 1; index < suppliedArray.length; index++) {
-    tempArray.push(
-      suppliedArray[index - 1].localeCompare(suppliedArray[index])
-    );
-  }
-  if (tempArray.every((n) => n <= 0)) return 'ascending';
-  else if (tempArray.every((n) => n >= 0)) return 'descending';
-  else return 'unsorted';
-}
-
 export function goToMakeNewProposal(proposalType: string) {
   navigateTo(navigation.proposals);
   cy.get(newProposalButton).should('be.visible').click();
   cy.url().should('include', '/proposals/propose');
+  cy.get(navigation.pageSpinner, { timeout: 20000 }).should('not.exist');
   cy.get('li').should('contain.text', proposalType).and('be.visible');
   cy.get('li').contains(proposalType).click();
 }
