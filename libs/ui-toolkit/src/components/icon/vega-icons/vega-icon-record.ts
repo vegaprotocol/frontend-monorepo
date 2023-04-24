@@ -1,16 +1,16 @@
-import IconBreakdown from './svg/icon-breakdown.svg';
-import IconCopy from './svg/icon-copy.svg';
-import IconDeposit from './svg/icon-deposit.svg';
-import IconWithdraw from './svg/icon-withdraw.svg';
-import IconTransfer from './svg/icon-transfer.svg';
-import IconEdit from './svg/icon-edit.svg';
-import IconMoon from './svg/icon-moon.svg';
-import IconGlobe from './svg/icon-globe.svg';
-import IconLinkedIn from './svg/icon-linkedin.svg';
-import IconTwitter from './svg/icon-twitter.svg';
-import IconQuestionMark from './svg/icon-question-mark.svg';
-import IconForum from './svg/icon-forum.svg';
-import IconOpenExternal from './svg/icon-open-external.svg';
+import { IconBreakdown } from './svg-icons/icon-breakdown';
+import { IconCopy } from './svg-icons/icon-copy';
+import { IconDeposit } from './svg-icons/icon-deposit';
+import { IconWithdraw } from './svg-icons/icon-withdraw';
+import { IconTransfer } from './svg-icons/icon-transfer';
+import { IconEdit } from './svg-icons/icon-edit';
+import { IconMoon } from './svg-icons/icon-moon';
+import { IconGlobe } from './svg-icons/icon-globe';
+import { IconLinkedIn } from './svg-icons/icon-linkedin';
+import { IconTwitter } from './svg-icons/icon-twitter';
+import { IconQuestionMark } from './svg-icons/icon-question-mark';
+import { IconForum } from './svg-icons/icon-forum';
+import { IconOpenExternal } from './svg-icons/icon-open-external';
 
 export enum VegaIconNames {
   BREAKDOWN = 'breakdown',
@@ -28,7 +28,10 @@ export enum VegaIconNames {
   QUESTION_MARK = 'question-mark',
 }
 
-export const VegaIconNameMap: Record<VegaIconNames, string> = {
+export const VegaIconNameMap: Record<
+  VegaIconNames,
+  ({ size }: { size: number }) => JSX.Element
+> = {
   breakdown: IconBreakdown,
   copy: IconCopy,
   deposit: IconDeposit,
