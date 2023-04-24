@@ -1,4 +1,5 @@
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import { MarketState } from '@vegaprotocol/types';
 
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
@@ -205,6 +206,19 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .should('have.text', 'Propose a change to market')
       .and('have.attr', 'href')
       .and('contain', '/proposals/propose/update-market');
+  });
+
+  it('show oracle banner', () => {
+    cy.mockTradingPage(
+      MarketState.STATE_ACTIVE,
+      undefined,
+      undefined,
+      'COMPROMISED'
+    );
+    cy.visit('/#/markets/market-0');
+    cy.wait('@Markets');
+    cy.wait('@MarketInfo');
+    cy.getByTestId('oracle-status').should('contain.text', 'COMPROMISED');
   });
 
   afterEach('close toggle', () => {
