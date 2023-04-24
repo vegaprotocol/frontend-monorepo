@@ -61,8 +61,10 @@ const LedgerEntriesExportLink = ({
       >
         <DropdownMenuContent>
           {Object.keys(assets).map((assetKey) => (
-            <DropdownMenuItem onSelect={() => setAssetId(assetKey)}>
-              {' '}
+            <DropdownMenuItem
+              key={assetKey}
+              onSelect={() => setAssetId(assetKey)}
+            >
               {assets[assetKey]}
             </DropdownMenuItem>
           ))}
