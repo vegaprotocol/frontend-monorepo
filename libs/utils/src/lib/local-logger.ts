@@ -21,7 +21,7 @@ type ConsoleMethod = {
 }[keyof Console] &
   string;
 
-interface LoggerConf {
+export interface LoggerConf {
   application?: string;
   tags?: string[];
   logLevel?: LogLevelsType;

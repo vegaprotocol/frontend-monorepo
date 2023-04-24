@@ -12,11 +12,10 @@ import { memo, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import { OracleBanner } from '../../components/banner';
 import {
   Tab,
   LocalStoragePersistTabs as Tabs,
-  ResizableGrid,
-  ResizableGridPanel,
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
@@ -33,6 +32,10 @@ import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
 } from '../../lib/hooks/use-market-click-handler';
+import {
+  ResizableGrid,
+  ResizableGridPanel,
+} from '../../components/resizable-grid';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -271,7 +274,10 @@ export const TradeGrid = ({
 }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <div>
+        <TradeMarketHeader market={market} onSelect={onSelect} />
+        <OracleBanner marketId={market?.id || ''} />
+      </div>
       <MainGrid
         marketId={market?.id || ''}
         onSelect={onSelect}
