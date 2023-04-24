@@ -18,11 +18,11 @@ Small.args = {
 export const Bigger = Template.bind({});
 Bigger.args = {
   name: VegaIconNames.DEPOSIT,
-  size: 8,
+  size: 24,
 };
 
 export const EvenBigger = Template.bind({});
 EvenBigger.args = {
   name: VegaIconNames.GLOBE,
-  size: 12,
+  size: 32,
 };

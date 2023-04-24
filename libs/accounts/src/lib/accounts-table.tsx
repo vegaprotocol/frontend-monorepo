@@ -310,8 +310,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                             <span>
                               <VegaIcon
                                 name={VegaIconNames.DEPOSIT}
-                                size={4}
-                                className="mr-2"
+                                size={16}
                               />
                               {t('Deposit')}
                             </span>
@@ -326,8 +325,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                             <span>
                               <VegaIcon
                                 name={VegaIconNames.WITHDRAW}
-                                size={4}
-                                className="mr-2"
+                                size={16}
                               />
                               {t('Withdraw')}
                             </span>
@@ -343,8 +341,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                             <span>
                               <VegaIcon
                                 name={VegaIconNames.BREAKDOWN}
-                                size={4}
-                                className="mr-2"
+                                size={16}
                               />
                               {t('Breakdown')}
                             </span>
