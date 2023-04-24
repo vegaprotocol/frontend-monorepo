@@ -16,7 +16,6 @@ export const Icon = ({ size = 4, name, className, ariaLabel }: IconProps) => {
     'inline-block',
     'fill-current',
     'align-text-bottom',
-    'fill-current',
     'shrink-0',
     // Cant just concatenate as TW wont pick up that the class is being used
     // so below syntax is required
