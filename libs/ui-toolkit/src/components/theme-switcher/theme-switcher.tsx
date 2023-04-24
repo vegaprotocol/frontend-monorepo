@@ -7,11 +7,9 @@ import { Switch } from '../switch';
 export const ThemeSwitcher = ({
   className,
   withMobile,
-  withSettings,
 }: {
   className?: string;
   withMobile?: boolean;
-  withSettings?: boolean;
 }) => {
   const { theme, setTheme } = useThemeSwitcher();
   const button = (
@@ -26,24 +24,6 @@ export const ThemeSwitcher = ({
       {theme === 'light' && <MoonIcon />}
     </button>
   );
-  if (withSettings) {
-    const text = t(theme === 'dark' ? 'Light mode' : 'Dark mode');
-    return (
-      <div className="flex justify-between my-2">
-        <div className="flex shrink">
-          {button}{' '}
-          <label htmlFor="theme-switcher" className="self-center text-lg">
-            {text}
-          </label>
-        </div>
-        <Switch
-          name="settings-theme-switch"
-          onCheckedChange={() => setTheme()}
-          checked={theme === 'dark'}
-        />
-      </div>
-    );
-  }
   const toggles = [
     {
       value: 'dark',

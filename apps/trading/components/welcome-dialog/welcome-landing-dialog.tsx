@@ -16,7 +16,6 @@ import { Link } from 'react-router-dom';
 import { ProposedMarkets } from './proposed-markets';
 import { Links, Routes } from '../../pages/client-router';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { TelemetryApproval } from './telemetry-approval';
 
 export const SelectMarketLandingTable = ({
   markets,
@@ -83,9 +82,6 @@ export const SelectMarketLandingTable = ({
         </Link>
       </div>
       {showProposed && <ProposedMarkets />}
-      <div className="mt-4 text-md">
-        <TelemetryApproval />
-      </div>
     </>
   );
 };
