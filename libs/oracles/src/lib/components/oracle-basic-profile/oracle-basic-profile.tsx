@@ -1,10 +1,10 @@
 import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import {
+  ButtonLink,
   ExternalLink,
   Icon,
   Intent,
-  Link,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -12,7 +12,7 @@ import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
 
-const getVerifiedStatusIcon = (provider: Provider) => {
+export const getVerifiedStatusIcon = (provider: Provider) => {
   const getIconIntent = () => {
     switch (provider.oracle.status) {
       case 'GOOD':
@@ -54,7 +54,13 @@ const getVerifiedStatusIcon = (provider: Provider) => {
   };
 };
 
-export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
+export const OracleBasicProfile = ({
+  provider,
+  onClick,
+}: {
+  provider: Provider;
+  onClick?: (value?: boolean) => void;
+}) => {
   const { icon, message, intent } = getVerifiedStatusIcon(provider);
 
   const verifiedProofs = provider.proofs.filter(
@@ -77,18 +83,14 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
     <>
       <span className="flex gap-1">
         {provider.url && (
-          <Link
-            href={provider.github_link}
-            className="flex align-items-bottom text-md"
-            target="_blank"
-          >
-            <span>
-              <span className="underline pr-1">{provider.name}</span>
-              <span className="dark:text-vega-light-300 text-vega-dark-300">
-                ({verifiedProofs.length})
-              </span>
+          <span className="flex align-items-bottom text-md gap-1">
+            <ButtonLink onClick={() => onClick && onClick(true)}>
+              {provider.name}
+            </ButtonLink>
+            <span className="dark:text-vega-light-300 text-vega-dark-300">
+              ({verifiedProofs.length})
             </span>
-          </Link>
+          </span>
         )}
         <span
           className={classNames(
