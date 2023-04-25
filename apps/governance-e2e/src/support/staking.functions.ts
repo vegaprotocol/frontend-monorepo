@@ -54,6 +54,7 @@ export function stakingValidatorPageRemoveStake(stake: string) {
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
     .and('be.visible')
     .click();
+  cy.contains('been removed from validator').should('be.visible');
   closeDialog();
 }
 
