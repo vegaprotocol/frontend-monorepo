@@ -106,19 +106,33 @@ jobs:
           echo -n "Affected projects: $affected"
 
           projects_e2e=""
-          if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
-          if [[ $affected == *"trading"* ]]; then projects_e2e+='"trading-e2e" '; fi
-          if [[ $affected == *"explorer"* ]]; then projects_e2e+='"explorer-e2e" '; fi
-          if [[ -z "$projects_e2e" ]]; then projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '; fi
+          projects_preview=""
+          if [[ $affected == *"governance"* ]]; then
+            projects_e2e+='"governance-e2e" '
+            projects_preview+="governance "
+          fi
+          if [[ $affected == *"trading"* ]]; then
+            projects_e2e+='"trading-e2e" '
+            projects_preview+="trading"
+          fi
+          if [[ $affected == *"explorer"* ]]; then
+            projects_e2e+='"explorer-e2e" '
+            projects_preview="explorer"
+          fi
+          if [[ -z "$projects_e2e" ]]; then
+            projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '
+            projects_preview="governance trading explorer"
+          fi
           projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
           urls=""
-          for project in $(echo $projects_e2e | sed 's|-e2e||g'); do
-            project=$(echo $project | tr -d '"')
-            slug="$(echo ${{ env.GITHUB_REF_NAME }} | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)"
-            urls+=$(printf "* %s https://%s.%s.vega.rocks\n" "$project" "$project" "$slug")
+          for project in $projects_preview; do
+            slug="$(echo ${{ env.GITHUB_REF_NAME }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
+            url=$(printf "* %s https://%s.%s.vega.rocks\n" "$project" "$project" "$slug")
+            echo "$url"
+            urls+="$url"
           done
           echo "preview urls:"
           echo "$urls"
