@@ -211,7 +211,7 @@ export const ConsensusValidatorsTable = ({
               : undefined,
             [ValidatorFields.PENDING_USER_STAKE]: pendingUserStake,
             [ValidatorFields.USER_STAKE_SHARE]: userStakeShare
-              ? stakedTotalPercentage(userStakeShare)
+              ? formatNumberPercentage(new BigNumber(userStakeShare))
               : undefined,
           };
         }
