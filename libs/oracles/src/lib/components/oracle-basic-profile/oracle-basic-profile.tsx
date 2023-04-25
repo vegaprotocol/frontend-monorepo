@@ -1,27 +1,52 @@
 import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
-import { Icon, Intent, Link } from '@vegaprotocol/ui-toolkit';
+import {
+  ExternalLink,
+  Icon,
+  Intent,
+  Link,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import ReactMarkdown from 'react-markdown';
 
 const getVerifiedStatusIcon = (provider: Provider) => {
-  if (!provider.oracle.first_verified) {
+  const getIconIntent = () => {
+    switch (provider.oracle.status) {
+      case 'GOOD':
+        return { icon: IconNames.TICK_CIRCLE, intent: Intent.Success };
+      case 'RETIRED':
+        return { icon: IconNames.MOON, intent: Intent.None };
+      case 'UNKNOWN':
+        return { icon: IconNames.HELP, intent: Intent.Primary };
+      case 'MALICIOUS':
+        return { icon: IconNames.ERROR, intent: Intent.Danger };
+      case 'SUSPICIOUS':
+        return { icon: IconNames.ERROR, intent: Intent.Danger };
+      case 'COMPROMISED':
+        return { icon: IconNames.ERROR, intent: Intent.Danger };
+      default:
+        return { icon: IconNames.HELP, intent: Intent.Primary };
+    }
+  };
+
+  if (!provider.oracle.first_verified || !provider.oracle.last_verified) {
     return {
-      icon: IconNames.ERROR,
       message: t('Not verified'),
-      intent: Intent.Danger,
+      ...getIconIntent(),
     };
   }
 
-  const firstVerified = new Date(provider.oracle.first_verified);
+  const lastVerified = provider.oracle.last_verified
+    ? new Date(provider.oracle.last_verified)
+    : new Date(provider.oracle.first_verified);
   return {
-    icon: IconNames.TICK_CIRCLE,
-    intent: Intent.Success,
+    ...getIconIntent(),
     message: t(
       'Verified since %s',
-      firstVerified.toLocaleDateString(undefined, {
+      lastVerified.toLocaleDateString(undefined, {
         year: 'numeric',
         month: 'long',
       })
@@ -31,11 +56,41 @@ const getVerifiedStatusIcon = (provider: Provider) => {
 
 export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
   const { icon, message, intent } = getVerifiedStatusIcon(provider);
+
+  const verifiedProofs = provider.proofs.filter(
+    (proof) => proof.available === true
+  );
+
+  const signedProofs = provider.proofs.filter(
+    (proof) => proof.format === 'signed_message' && proof.available === true
+  );
+
+  const links = provider.proofs
+    .filter((proof) => proof.format === 'url' && proof.available === true)
+    .map((proof) => ({
+      ...proof,
+      url: 'url' in proof ? proof.url : '',
+      icon: getLinkIcon(proof.type),
+    }));
+
   return (
     <>
-      <div className="">
-        <Link href={provider.url}>{provider.name}</Link>
-        <div
+      <span className="flex gap-1">
+        {provider.url && (
+          <Link
+            href={provider.github_link}
+            className="flex align-items-bottom text-md"
+            target="_blank"
+          >
+            <span>
+              <span className="underline pr-1">{provider.name}</span>
+              <span className="dark:text-vega-light-300 text-vega-dark-300">
+                ({verifiedProofs.length})
+              </span>
+            </span>
+          </Link>
+        )}
+        <span
           className={classNames(
             {
               'text-gray-700 dark:text-gray-300': intent === Intent.None,
@@ -44,17 +99,51 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
               'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
               'text-vega-pink': intent === Intent.Danger,
             },
-            'flex items-start mt-1'
+            'flex items-start align-text-bottom p-1'
           )}
         >
-          <Icon size={4} name={icon as IconName} />
+          <Icon size={3} name={icon as IconName} />
+        </span>
+      </span>
+      <p className="dark:text-vega-light-300 text-vega-dark-300">{message}</p>
+      <p className="dark:text-vega-light-300 text-vega-dark-300">
+        {t('Involved in %s %s', [
+          signedProofs.length.toString(),
+          signedProofs.length !== 1 ? t('markets') : t('market'),
+        ])}
+      </p>
+      {links.length > 0 && (
+        <div className="flex flex-row gap-1">
+          {links.map((link) => (
+            <ExternalLink
+              key={link.url}
+              href={link.url}
+              className="flex align-items-bottom underline text-sm"
+            >
+              <span className="pt-1">
+                <VegaIcon name={getLinkIcon(link.type)} />
+              </span>
+              <span className="underline capitalize">
+                {link.type}{' '}
+                <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
+              </span>
+            </ExternalLink>
+          ))}
         </div>
-      </div>
-      <p className="text-neutral">{message}</p>
-      <div className="mt-2">
-        <p>{t('Description')}</p>
-        <ReactMarkdown>{provider.description_markdown}</ReactMarkdown>
-      </div>
+      )}
     </>
   );
+};
+
+export const getLinkIcon = (type: string) => {
+  switch (type) {
+    case 'twitter':
+      return VegaIconNames.TWITTER;
+    case 'github':
+      return VegaIconNames.GLOBE;
+    case 'linkedin':
+      return VegaIconNames.LINKEDIN;
+    default:
+      return VegaIconNames.GLOBE;
+  }
 };
