@@ -3,7 +3,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import type { GridReadyEvent } from 'ag-grid-community';
+import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
@@ -70,7 +70,7 @@ export const OrderListManager = ({
   filter,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [dataCount, setDataCount] = useState(0);
+  const [hasData, setHasData] = useState(false);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
@@ -82,7 +82,10 @@ export const OrderListManager = ({
         : { partyId },
   });
 
-  const bottomPlaceholderProps = useBottomPlaceholder<Order>({
+  const {
+    onFilterChanged: bottomPlaceholderOnFilterChanged,
+    ...bottomPlaceholderProps
+  } = useBottomPlaceholder<Order>({
     gridRef,
     disabled: !enforceBottomPlaceholder && !isReadOnly && !hasAmendableOrder,
   });
@@ -113,8 +116,17 @@ export const OrderListManager = ({
     [filter]
   );
 
+  const onFilterChanged = useCallback(
+    (event: FilterChangedEvent) => {
+      const rowCount = gridRef.current?.api?.getModel().getRowCount();
+      setHasData((rowCount ?? 0) > 0);
+      bottomPlaceholderOnFilterChanged?.();
+    },
+    [bottomPlaceholderOnFilterChanged]
+  );
+
   useEffect(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+    setHasData((gridRef.current?.api?.getModel().getRowCount() ?? 0) > 0);
   }, [data]);
 
   const cancelAll = useCallback(() => {
@@ -137,6 +149,7 @@ export const OrderListManager = ({
           setEditOrder={setEditOrder}
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
+          onFilterChanged={onFilterChanged}
           isReadOnly={isReadOnly}
           blockLoadDebounceMillis={100}
           suppressLoadingOverlay
@@ -149,7 +162,7 @@ export const OrderListManager = ({
             error={error}
             data={data}
             noDataMessage={t('No orders')}
-            noDataCondition={(data) => !dataCount}
+            noDataCondition={(data) => !hasData}
             reload={reload}
           />
         </div>
