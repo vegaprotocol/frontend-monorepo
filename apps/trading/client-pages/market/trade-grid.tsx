@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
@@ -8,7 +9,7 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { memo, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -36,6 +37,9 @@ import {
   ResizableGrid,
   ResizableGridPanel,
 } from '../../components/resizable-grid';
+import { useMarketViewPanels } from '../../stores';
+
+const PANELS_SET_DEBOUNCE_TIME = 300;
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -83,15 +87,29 @@ interface BottomPanelProps {
 
 const MarketBottomPanel = memo(
   ({ marketId, pinnedAsset }: BottomPanelProps) => {
+    const bottomPanes = useMarketViewPanels((store) => store.bottomPanes);
+    const setBottom = useMarketViewPanels((store) => store.setBottom);
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
     const onOrderTypeClick = useMarketLiquidityClickHandler(true);
-
+    const handleOnChange = useCallback(
+      debounce((args) => {
+        if (args.length) {
+          const whole = args.reduce((agg, item) => agg + item, 0);
+          const bottomPanes = [
+            `${(args[0] / whole) * 100}%`,
+            `${(args[1] / whole) * 100}%`,
+          ];
+          setBottom(bottomPanes);
+        }
+      }, PANELS_SET_DEBOUNCE_TIME),
+      [setBottom]
+    );
     return 'xxxl' === screenSize ? (
-      <ResizableGrid proportionalLayout minSize={200}>
+      <ResizableGrid proportionalLayout minSize={200} onChange={handleOnChange}>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="50%"
+          preferredSize={bottomPanes[0] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
@@ -119,7 +137,7 @@ const MarketBottomPanel = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="50%"
+          preferredSize={bottomPanes[1] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
@@ -186,22 +204,48 @@ MarketBottomPanel.displayName = 'MarketBottomPanel';
 const MainGrid = memo(
   ({
     marketId,
-    onSelect,
     pinnedAsset,
   }: {
     marketId: string;
-    onSelect: (marketId: string, metaKey?: boolean) => void;
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
+    const topone = useMarketViewPanels((store) => store.topone);
+    const setTop = useMarketViewPanels((store) => store.setTop);
+    const verticals = useMarketViewPanels((store) => store.verticals);
+    const setVertical = useMarketViewPanels((store) => store.setVertical);
+    const handleOnChangeTop = useCallback(
+      debounce((args) => {
+        if (args.length) {
+          const all = args.reduce((agg, item) => agg + item, 0);
+          const topOne = `${(args[1] / all) * 100}%`;
+          setTop(topOne);
+        }
+      }, PANELS_SET_DEBOUNCE_TIME),
+      [setTop]
+    );
+    const handleOnChange2 = useCallback(
+      debounce((args) => {
+        if (args.length) {
+          const all = args.reduce((agg, item) => agg + item, 0);
+          const verticals = [`${(args[0] / all) * 100}%`, args[1], args[2]];
+          setVertical(verticals);
+        }
+      }, PANELS_SET_DEBOUNCE_TIME),
+      [setVertical]
+    );
     return (
-      <ResizableGrid vertical>
+      <ResizableGrid vertical onChange={handleOnChangeTop}>
         <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-          <ResizableGrid proportionalLayout={false} minSize={200}>
+          <ResizableGrid
+            proportionalLayout={false}
+            minSize={200}
+            onChange={handleOnChange2}
+          >
             <ResizableGridPanel
               priority={LayoutPriority.High}
               minSize={200}
-              preferredSize="50%"
+              preferredSize={verticals[0] || '50%'}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
@@ -219,7 +263,7 @@ const MainGrid = memo(
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={330}
+              preferredSize={verticals[1] || 330}
               minSize={300}
             >
               <TradeGridChild>
@@ -238,7 +282,7 @@ const MainGrid = memo(
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={430}
+              preferredSize={verticals[2] || 430}
               minSize={200}
             >
               <TradeGridChild>
@@ -256,7 +300,7 @@ const MainGrid = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="25%"
+          preferredSize={topone || '25%'}
           minSize={50}
         >
           <MarketBottomPanel marketId={marketId} pinnedAsset={pinnedAsset} />
@@ -278,11 +322,7 @@ export const TradeGrid = ({
         <TradeMarketHeader market={market} onSelect={onSelect} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <MainGrid
-        marketId={market?.id || ''}
-        onSelect={onSelect}
-        pinnedAsset={pinnedAsset}
-      />
+      <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
     </div>
   );
 };
