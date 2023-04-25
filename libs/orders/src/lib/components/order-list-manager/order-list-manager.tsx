@@ -131,6 +131,7 @@ export const OrderListManager = ({
         <OrderListTable
           rowData={data as Order[]}
           ref={gridRef}
+          readonlyStatusFilter={Boolean(filter)}
           onGridReady={onGridReady}
           cancel={cancel}
           setEditOrder={setEditOrder}
