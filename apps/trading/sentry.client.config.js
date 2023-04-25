@@ -1,5 +1,5 @@
 import { ENV } from './lib/config/env';
-import { LocalStorage, SentryInit, SentryClose } from '@vegaprotocol/utils';
+import { LocalStorage, SentryInit } from '@vegaprotocol/utils';
 import { STORAGE_KEY } from './lib/hooks/use-telemetry-approval';
 
 const { dsn, envName } = ENV;
