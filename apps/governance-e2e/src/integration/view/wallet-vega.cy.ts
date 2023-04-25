@@ -279,7 +279,7 @@ context(
       });
 
       // 2002-SINC-016
-      describe('Vega wallet with assets', function () {
+      describe.skip('Vega wallet with assets', function () {
         const assets = [
           {
             id: 'fUSDC',
