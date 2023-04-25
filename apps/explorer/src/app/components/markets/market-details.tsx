@@ -14,7 +14,6 @@ import {
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
-import { Link } from 'react-router-dom';
 
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
@@ -97,22 +96,19 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       ),
     },
     {
-      title: t('Oracle'),
+      title: t('Settlement Oracle'),
       content: (
-        <OracleInfoPanel noBorder={false} market={market}>
-          <Link
-            className="text-xs hover:underline"
-            to={`/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id}`}
-          >
-            {t('View settlement data oracle specification')}
-          </Link>
-          <Link
-            className="text-xs hover:underline"
-            to={`/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForTradingTermination.id}`}
-          >
-            {t('View termination oracle specification')}
-          </Link>
-        </OracleInfoPanel>
+        <OracleInfoPanel
+          noBorder={false}
+          market={market}
+          type="settlementData"
+        />
+      ),
+    },
+    {
+      title: t('Termination Oracle'),
+      content: (
+        <OracleInfoPanel noBorder={false} market={market} type="termination" />
       ),
     },
   ];
