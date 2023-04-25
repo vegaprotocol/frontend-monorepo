@@ -129,7 +129,7 @@ jobs:
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
           urls=""
           for project in $projects_preview; do
-            slug="$(echo ${GITHUB_REF#refs/heads/} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
+            slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
             url=$(printf "* %s https://%s.%s.vega.rocks\n" "$project" "$project" "$slug")
             echo "$url"
             urls+="$url"
