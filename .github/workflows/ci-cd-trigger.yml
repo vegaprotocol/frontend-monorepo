@@ -114,6 +114,13 @@ jobs:
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
+          urls=""
+          for project in $(echo $projects_e2e | sed 's|-e2e||g'); do
+            project=$(echo $project | tr -d '"')
+            slug="$(echo ${{ env.GITHUB_REF_NAME }} | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)"
+            urls+=$(printf "* %s https://%s.%s.vega.rocks\n" "$project" "$project" "$slug")
+          done
+          echo URLS=$urls >> $GITHUB_ENV
 
     outputs:
       projects: ${{ env.PROJECTS }}
@@ -164,9 +171,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews
-            - explorer https://explorer.${{ env.CI_GITHUB_EVENT_REF_SLUG_URL }}.vega.rocks
-            - trading https://trading.${{ env.CI_GITHUB_EVENT_REF_SLUG_URL }}.vega.rocks
-            - governance https://governance.${{ env.CI_GITHUB_EVENT_REF_SLUG_URL }}.vega.rocks
+            ${{ env.URLS }}
 
   cypress-check:
     name: '(CI) cypress - check'
