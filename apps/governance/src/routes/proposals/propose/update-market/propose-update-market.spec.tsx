@@ -8,8 +8,8 @@ import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateMarket } from './propose-update-market';
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
-import type { ProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
-import { ProposalMarketsQueryDocument } from './__generated___/UpdateMarket';
+import type { ProposalMarketsQueryQuery } from './__generated__/UpdateMarket';
+import { ProposalMarketsQueryDocument } from './__generated__/UpdateMarket';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
