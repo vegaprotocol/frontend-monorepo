@@ -95,10 +95,10 @@ const MarketBottomPanel = memo(
     const handleOnChange = useCallback(
       debounce((args) => {
         if (args.length) {
-          const whole = args.reduce((agg, item) => agg + item, 0);
+          const all = args.reduce((agg, item) => agg + item, 0);
           const bottomPanes = [
-            `${(args[0] / whole) * 100}%`,
-            `${(args[1] / whole) * 100}%`,
+            `${(args[0] / all) * 100}%`,
+            `${(args[1] / all) * 100}%`,
           ];
           setBottom(bottomPanes);
         }
