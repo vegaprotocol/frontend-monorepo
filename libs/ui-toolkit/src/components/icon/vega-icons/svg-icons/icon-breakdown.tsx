@@ -7,7 +7,7 @@ export const IconBreakdown = ({ size = 16 }: { size: number }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="8" cy="8" r="6.5" stroke="white" />
+      <circle cx="8" cy="8" r="6.5" stroke="stroke-current" />
       <rect
         x="8.5"
         y="11"

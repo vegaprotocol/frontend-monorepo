@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useRef, useMemo, memo, useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -19,6 +20,7 @@ interface AccountManagerProps {
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
   noBottomPlaceholder?: boolean;
+  gridActionsDropdownTrigger?: ReactNode;
 }
 
 export const AccountManager = ({
@@ -29,6 +31,7 @@ export const AccountManager = ({
   isReadOnly,
   pinnedAsset,
   noBottomPlaceholder,
+  gridActionsDropdownTrigger,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -62,6 +65,7 @@ export const AccountManager = ({
         suppressNoRowsOverlay
         pinnedAsset={pinnedAsset}
         {...bottomPlaceholderProps}
+        gridActionsDropdownTrigger={gridActionsDropdownTrigger}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

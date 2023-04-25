@@ -2,13 +2,14 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
+import type { IconName } from '../icon';
 import { Icon } from '../icon';
 
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-white dark:hover:bg-neutral-500',
-  'focus:bg-white dark:focus:bg-neutral-500',
+  'hover:bg-white dark:hover:bg-vega-dark-500',
+  'focus:bg-white dark:focus:bg-vega-dark-500',
   'select-none',
   'whitespace-nowrap'
 );
@@ -16,6 +17,11 @@ const itemClass = classNames(
 type DropdownMenuProps = DropdownMenuPrimitive.DropdownMenuProps & {
   trigger: ReactNode;
 };
+
+type DropdownTriggerProps = DropdownMenuPrimitive.DropdownMenuTriggerProps & {
+  iconName?: IconName;
+};
+
 /**
  * Contains all the parts of a dropdown menu.
  */
@@ -37,22 +43,20 @@ export const DropdownMenu = ({
  */
 export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
->(({ className, children, ...props }, forwardedRef) => {
-  const triggerClasses = classNames(
-    className,
-    'text-sm py-1 px-2 rounded bg-transparent border border-neutral-500 whitespace-nowrap',
-    'dark:hover:bg-neutral-500/20 hover:bg-neutral-500/40'
-  );
+  DropdownTriggerProps
+>(({ className, children, iconName, ...props }, forwardedRef) => {
+  const defaultClasses =
+    'text-sm py-1 px-2 rounded bg-transparent border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500/20 hover:bg-vega-light-500/40';
+
   return (
     <DropdownMenuPrimitive.Trigger
       asChild={true}
       ref={forwardedRef}
-      className={triggerClasses}
+      className={className || defaultClasses}
       {...props}
     >
       <button>
-        {children} <Icon name="chevron-down" className="ml-2" />
+        {children} <Icon name={iconName || 'chevron-down'} />
       </button>
     </DropdownMenuPrimitive.Trigger>
   );
@@ -73,7 +77,7 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className="min-w-[290px] bg-neutral-100 dark:bg-neutral-900 p-2 rounded z-20 text-black dark:text-white dark:border-neutral-700 border border-neutral-300"
+    className="min-w-[290px] bg-vega-light-100 dark:bg-vega-dark-100 p-2 rounded z-20 text-black dark:text-white border-vega-light-200 dark:border-vega-dark-200"
     align="start"
     sideOffset={10}
   />
@@ -151,7 +155,7 @@ export const DropdownMenuSeparator = forwardRef<
     {...separatorProps}
     ref={forwardedRef}
     className={classNames(
-      'h-px my-1 mx-2 bg-neutral-400 dark:bg-neutral-300',
+      'h-px my-1 mx-2 bg-vega-dark-400 dark:bg-vega-dark-300',
       className
     )}
   />
