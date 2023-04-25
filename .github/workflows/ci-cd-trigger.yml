@@ -120,6 +120,8 @@ jobs:
             slug="$(echo ${{ env.GITHUB_REF_NAME }} | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)"
             urls+=$(printf "* %s https://%s.%s.vega.rocks\n" "$project" "$project" "$slug")
           done
+          echo "preview urls:"
+          echo "$urls"
           echo URLS=$urls >> $GITHUB_ENV
 
     outputs:
@@ -157,12 +159,6 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: Previews
-
-      - name: Inject slug/short variables
-        if: ${{ steps.fc.outputs.comment-id == 0 }}
-        uses: rlespinasse/github-slug-action@v4
-        with:
-          prefix: CI_
 
       - name: Create comment
         if: ${{ steps.fc.outputs.comment-id == 0 }}
