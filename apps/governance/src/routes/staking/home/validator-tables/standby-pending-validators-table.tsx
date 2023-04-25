@@ -26,7 +26,11 @@ import {
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import type { ValidatorsTableProps } from './shared';
-import { formatNumber, toBigNum } from '@vegaprotocol/utils';
+import {
+  formatNumber,
+  formatNumberPercentage,
+  toBigNum,
+} from '@vegaprotocol/utils';
 
 interface StandbyPendingValidatorsTableProps extends ValidatorsTableProps {
   stakeNeededForPromotion: string | undefined;
@@ -163,7 +167,7 @@ export const StandbyPendingValidatorsTable = ({
               : undefined,
             [ValidatorFields.PENDING_USER_STAKE]: pendingUserStake,
             [ValidatorFields.USER_STAKE_SHARE]: userStakeShare
-              ? stakedTotalPercentage(userStakeShare)
+              ? formatNumberPercentage(new BigNumber(userStakeShare))
               : undefined,
           };
         }
