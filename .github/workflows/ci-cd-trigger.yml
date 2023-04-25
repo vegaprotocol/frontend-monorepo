@@ -129,7 +129,7 @@ jobs:
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
           urls=""
           for project in $projects_preview; do
-            slug="$(echo ${{ env.GITHUB_REF_NAME }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
+            slug="$(echo ${GITHUB_REF#refs/heads/} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
             url=$(printf "* %s https://%s.%s.vega.rocks\n" "$project" "$project" "$slug")
             echo "$url"
             urls+="$url"
@@ -141,6 +141,7 @@ jobs:
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
+      urls: ${{ env.URLS }}
 
   cypress:
     needs: lint-test-build
@@ -163,7 +164,9 @@ jobs:
 
   dist-check:
     runs-on: ubuntu-latest
-    needs: publish-dist
+    needs:
+      - publish-dist
+      - lint-test-build
     if: ${{ github.event_name == 'pull_request' }}
     name: '(CD) comment preview links'
     steps:
@@ -175,13 +178,11 @@ jobs:
           body-includes: Previews
 
       - name: Create comment
-        if: ${{ steps.fc.outputs.comment-id == 0 }}
         uses: peter-evans/create-or-update-comment@v3
         with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Previews
-            ${{ env.URLS }}
+          body: ${{ needs.lint-test-build.outputs.urls }}
 
   cypress-check:
     name: '(CI) cypress - check'
