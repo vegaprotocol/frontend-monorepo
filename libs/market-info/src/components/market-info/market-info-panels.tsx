@@ -575,7 +575,10 @@ const OracleLink = ({
   return (
     <div>
       {signerProviders.map((provider) => (
-        <OracleBasicProfile provider={provider}></OracleBasicProfile>
+        <OracleBasicProfile
+          key={provider.name}
+          provider={provider}
+        ></OracleBasicProfile>
       ))}
     </div>
   );
