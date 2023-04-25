@@ -16,7 +16,7 @@ import {
 } from '@vegaprotocol/wallet';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import type { Order, OrderEdge } from '../order-data-provider';
+import type { Order } from '../order-data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 
 export enum Filter {
@@ -76,15 +76,10 @@ export const OrderListManager = ({
   const hasAmendableOrder = useHasAmendableOrder(marketId);
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
-    variables: {
-      partyId,
-      filter:
-        filter === Filter.Open
-          ? {
-              liveOnly: true,
-            }
-          : undefined,
-    },
+    variables:
+      filter && filter === Filter.Open
+        ? { partyId, filter: { liveOnly: true } }
+        : { partyId },
   });
 
   const bottomPlaceholderProps = useBottomPlaceholder<Order>({
@@ -130,18 +125,11 @@ export const OrderListManager = ({
     });
   }, [create, marketId]);
 
-  const extractedData =
-    data && !loading
-      ? data
-          .filter((item) => item !== null)
-          .map((item) => (item as OrderEdge).node)
-      : null;
-
   return (
     <>
       <div className="h-full relative">
         <OrderListTable
-          rowData={extractedData}
+          rowData={data as Order[]}
           ref={gridRef}
           onGridReady={onGridReady}
           cancel={cancel}

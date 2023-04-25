@@ -35,10 +35,7 @@ import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
 import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import {
-  activeOrdersProvider,
-  ordersWithMarketProvider,
-} from '@vegaprotocol/orders';
+import { activeOrdersProvider, allOrdersProvider } from '@vegaprotocol/orders';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -144,7 +141,7 @@ const PartyData = () => {
     skip,
   });
   useDataProvider({
-    dataProvider: ordersWithMarketProvider,
+    dataProvider: allOrdersProvider,
     variables,
     skip,
   });

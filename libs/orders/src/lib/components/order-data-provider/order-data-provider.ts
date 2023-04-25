@@ -5,8 +5,6 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
-  paginatedCombineDelta as combineDelta,
-  paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
@@ -205,6 +203,32 @@ const ordersProvider = makeDataProvider<
   additionalContext: { isEnlargedTimeout: true },
 });
 
+export const allOrdersProvider = makeDerivedDataProvider<
+  ReturnType<typeof getData>,
+  never,
+  { partyId: string; marketId?: string }
+>(
+  [
+    (callback, client, variables) =>
+      ordersProvider(callback, client, { partyId: variables.partyId }),
+  ],
+  (partsData, variables, prevData, parts, subscriptions) => {
+    const orders = partsData[0] as ReturnType<typeof getData>;
+    // load first 5000
+    if (
+      !parts[0].isUpdate &&
+      subscriptions &&
+      subscriptions[0].load &&
+      orders?.length < 5000
+    ) {
+      subscriptions[0].load();
+    }
+    return variables.marketId
+      ? orders.filter((edge) => variables.marketId === edge.node.market.id)
+      : orders;
+  }
+);
+
 export const activeOrdersProvider = makeDerivedDataProvider<
   ReturnType<typeof getData>,
   never,
@@ -220,6 +244,7 @@ export const activeOrdersProvider = makeDerivedDataProvider<
       }),
   ],
   (partsData, variables, prevData, parts, subscriptions) => {
+    // load all pages
     if (!parts[0].isUpdate && subscriptions && subscriptions[0].load) {
       subscriptions[0].load();
     }
@@ -231,7 +256,7 @@ export const activeOrdersProvider = makeDerivedDataProvider<
 );
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
-  (OrderEdge | null)[],
+  (Order | null)[],
   Order[],
   OrdersQueryVariables
 >(
@@ -239,18 +264,13 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
     ordersProvider,
     (callback, client) => marketsProvider(callback, client, undefined),
   ],
-  (partsData): OrderEdge[] =>
+  (partsData): Order[] =>
     ((partsData[0] as ReturnType<typeof getData>) || []).map((edge) => ({
-      cursor: edge.cursor,
-      node: {
-        ...edge.node,
-        market: (partsData[1] as Market[]).find(
-          (market) => market.id === edge.node.market.id
-        ),
-      },
-    })),
-  combineDelta<Order, ReturnType<typeof getDelta>['0']>,
-  combineInsertionData<Order>
+      ...edge.node,
+      market: (partsData[1] as Market[]).find(
+        (market) => market.id === edge.node.market.id
+      ),
+    }))
 );
 
 export const hasActiveOrderProvider = makeDerivedDataProvider<
