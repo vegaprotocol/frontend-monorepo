@@ -4,7 +4,9 @@ describe('Settings page', { tags: '@smoke' }, () => {
       cy.mockTradingPage();
       cy.mockSubscription();
       cy.visit('/');
-      cy.getByTestId('dialog-close').click({ multiple: true });
+      cy.get('[role=dialog]').within(() => {
+        cy.getByTestId('dialog-close').click();
+      });
       cy.get('[aria-label="cog icon"]').click();
     });
   });
