@@ -164,9 +164,9 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews
-            - explorer https://explorer.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
-            - trading https://trading.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
-            - governance https://governance.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            - explorer https://explorer.${{ env.CI_GITHUB_EVENT_REF_SLUG_URL }}.vega.rocks
+            - trading https://trading.${{ env.CI_GITHUB_EVENT_REF_SLUG_URL }}.vega.rocks
+            - governance https://governance.${{ env.CI_GITHUB_EVENT_REF_SLUG_URL }}.vega.rocks
 
   cypress-check:
     name: '(CI) cypress - check'
