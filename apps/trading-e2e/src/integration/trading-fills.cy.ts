@@ -1,7 +1,18 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { fillsQuery } from '@vegaprotocol/mock';
 
+const tabFills = 'tab-fills';
+
 describe('fills', { tags: '@regression' }, () => {
+  // 7005-FILL-001
+  // 7005-FILL-002
+  // 7005-FILL-003
+  // 7005-FILL-004
+  // 7005-FILL-005
+  // 7005-FILL-006
+  // 7005-FILL-007
+  // 7005-FILL-008
+
   beforeEach(() => {
     // Ensure page loads with correct key
     cy.window().then((window) => {
@@ -38,31 +49,37 @@ describe('fills', { tags: '@regression' }, () => {
   });
 
   function validateFillsDisplayed() {
-    cy.getByTestId('tab-fills').should('be.visible');
-
-    cy.getByTestId('tab-fills')
+    cy.getByTestId(tabFills).should('be.visible');
+    cy.getByTestId(tabFills).contains('Market');
+    cy.getByTestId(tabFills)
       .get(
         '[role="gridcell"][col-id="market.tradableInstrument.instrument.name"]'
       )
       .each(($marketSymbol) => {
         cy.wrap($marketSymbol).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-fills')
+    cy.getByTestId(tabFills).contains('Size');
+    cy.get(`[col-id='size']`).eq(1).should('contain.text', '+');
+    cy.get(`[col-id='size']`).eq(2).should('contain.text', '-');
+    cy.getByTestId(tabFills)
       .get('[role="gridcell"][col-id="size"]')
       .each(($amount) => {
         cy.wrap($amount).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-fills')
+    cy.getByTestId(tabFills).contains('Price');
+    cy.getByTestId(tabFills)
       .get('[role="gridcell"][col-id="price"]')
       .each(($prices) => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-fills')
+    cy.getByTestId(tabFills).contains('Notional');
+    cy.getByTestId(tabFills)
       .get('[role="gridcell"][col-id="price_1"]')
       .each(($total) => {
         cy.wrap($total).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-fills')
+    cy.getByTestId(tabFills).contains('Role');
+    cy.getByTestId(tabFills)
       .get('[role="gridcell"][col-id="aggressor"]')
       .each(($role) => {
         cy.wrap($role)
@@ -72,13 +89,15 @@ describe('fills', { tags: '@regression' }, () => {
             expect(roles.indexOf(text.trim())).to.be.greaterThan(-1);
           });
       });
-    cy.getByTestId('tab-fills')
+    cy.getByTestId(tabFills).contains('Fee');
+    cy.getByTestId(tabFills)
       .get(
         '[role="gridcell"][col-id="market.tradableInstrument.instrument.product"]'
       )
       .each(($fees) => {
         cy.wrap($fees).invoke('text').should('not.be.empty');
       });
+    cy.getByTestId(tabFills).contains('Date');
     const dateTimeRegex =
       /(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{1,2}):(\d{1,2})/gm;
     cy.get('[col-id="createdAt"]').each(($tradeDateTime, index) => {
