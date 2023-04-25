@@ -8,6 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/apps/trading',
-  setupFiles: ['./set-envs.ts'],
   setupFilesAfterEnv: ['./setup-tests.ts'],
 };
