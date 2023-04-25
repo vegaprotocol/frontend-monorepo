@@ -6,11 +6,10 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
-import { useOrderListData } from './use-order-list-data';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
-import type { Filter } from './use-order-list-data';
-import { FilterStatus } from './use-order-list-data';
 import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
@@ -18,6 +17,25 @@ import {
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order, OrderEdge } from '../order-data-provider';
+import { OrderStatus } from '@vegaprotocol/types';
+
+export enum Filter {
+  'Open' = 1,
+  'Closed',
+  'Rejected',
+}
+
+const FilterStatusValue = {
+  [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
+  [Filter.Closed]: [
+    OrderStatus.STATUS_CANCELLED,
+    OrderStatus.STATUS_EXPIRED,
+    OrderStatus.STATUS_FILLED,
+    OrderStatus.STATUS_PARTIALLY_FILLED,
+    OrderStatus.STATUS_STOPPED,
+  ],
+  [Filter.Rejected]: [OrderStatus.STATUS_REJECTED],
+};
 
 export interface OrderListManagerProps {
   partyId: string;
@@ -53,22 +71,23 @@ export const OrderListManager = ({
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [dataCount, setDataCount] = useState(0);
-  const scrolledToTop = useRef(false);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
-  const { data, error, loading, reload } = useOrderListData({
-    partyId,
-    filter,
-    gridRef,
-    scrolledToTop,
+  const { data, error, loading, reload } = useDataProvider({
+    dataProvider: ordersWithMarketProvider,
+    variables: {
+      partyId,
+      filter:
+        filter === Filter.Open
+          ? {
+              liveOnly: true,
+            }
+          : undefined,
+    },
   });
 
-  const {
-    onSortChanged: bottomPlaceholderOnSortChanged,
-    onFilterChanged: bottomPlaceholderOnFilterChanged,
-    ...bottomPlaceholderProps
-  } = useBottomPlaceholder<Order>({
+  const bottomPlaceholderProps = useBottomPlaceholder<Order>({
     gridRef,
     disabled: !enforceBottomPlaceholder && !isReadOnly && !hasAmendableOrder,
   });
@@ -91,7 +110,7 @@ export const OrderListManager = ({
       if (filter) {
         api.setFilterModel({
           status: {
-            value: FilterStatus[filter],
+            value: FilterStatusValue[filter],
           },
         });
       }
@@ -110,6 +129,7 @@ export const OrderListManager = ({
       },
     });
   }, [create, marketId]);
+
   const extractedData =
     data && !loading
       ? data
