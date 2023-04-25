@@ -26,7 +26,7 @@ export const useMarketViewPanels = create<{
           state.verticals = verticals;
           return state;
         }),
-      bottomone: ['50%', '50%'],
+      bottomPanes: ['50%', '50%'],
       setBottom: (bottomPanes: string[]) =>
         set((state) => {
           state.bottomPanes = bottomPanes;
