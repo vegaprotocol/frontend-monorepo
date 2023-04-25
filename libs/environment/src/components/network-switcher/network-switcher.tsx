@@ -112,7 +112,7 @@ export const NetworkSwitcher = ({
         <DropdownMenuTrigger
           ref={menuRef}
           className={classNames(
-            'flex justify-between items-center text-sm text-black dark:text-white py-1 px-2 rounded border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500 hover:bg-vega-light-500',
+            'flex justify-between items-center text-sm text-vega-dark-600 dark:text-vega-light-600 py-1 px-2 rounded border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500 hover:bg-vega-light-500',
             className
           )}
         >
