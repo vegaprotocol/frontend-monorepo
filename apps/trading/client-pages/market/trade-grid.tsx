@@ -92,6 +92,8 @@ const MarketBottomPanel = memo(
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
     const onOrderTypeClick = useMarketLiquidityClickHandler(true);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleOnChange = useCallback(
       debounce((args) => {
         if (args.length) {
@@ -214,6 +216,7 @@ const MainGrid = memo(
     const setTop = useMarketViewPanels((store) => store.setTop);
     const verticals = useMarketViewPanels((store) => store.verticals);
     const setVertical = useMarketViewPanels((store) => store.setVertical);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleOnChangeTop = useCallback(
       debounce((args) => {
         if (args.length) {
@@ -224,6 +227,7 @@ const MainGrid = memo(
       }, PANELS_SET_DEBOUNCE_TIME),
       [setTop]
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleOnChange2 = useCallback(
       debounce((args) => {
         if (args.length) {
