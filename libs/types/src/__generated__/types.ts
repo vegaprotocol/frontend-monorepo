@@ -2279,6 +2279,10 @@ export type OrderFilter = {
   /** Date range to retrieve orders from/to. Start and end time should be expressed as an integer value of nano-seconds past the Unix epoch */
   dateRange?: InputMaybe<DateRange>;
   excludeLiquidity?: InputMaybe<Scalars['Boolean']>;
+  /**
+   * If true, only orders that are live will be returned. Orders are live if they have STATUS_ACTIVE or STATUS_PARKED
+   * as per https://github.com/vegaprotocol/specs-internal/blob/master/protocol/0024-OSTA-order_status.md
+   */
   liveOnly?: InputMaybe<Scalars['Boolean']>;
   status?: InputMaybe<Array<OrderStatus>>;
   timeInForce?: InputMaybe<Array<OrderTimeInForce>>;
