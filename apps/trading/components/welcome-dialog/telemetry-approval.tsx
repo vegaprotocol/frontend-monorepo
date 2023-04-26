@@ -2,7 +2,11 @@ import { Checkbox } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 
-export const TelemetryApproval = () => {
+export const TelemetryApproval = ({
+  isSettingsPage,
+}: {
+  isSettingsPage: boolean;
+}) => {
   const [isApproved, setIsApproved] = useTelemetryApproval();
   return (
     <div className="flex flex-col px-2 py-3">
@@ -14,11 +18,13 @@ export const TelemetryApproval = () => {
           onCheckedChange={() => setIsApproved(!isApproved)}
         />
       </div>
-      <div className="text-xs text-neutral-500 dark:text-neutral-400 ml-6">
+      <div className="text-sm text-neutral-600 dark:text-neutral-300 ml-6">
         <span>
           {t(
-            'Help identify bugs and improve the service by sharing anonymous usage data. you can change this in your settings at any time.'
+            'Help identify bugs and improve the service by sharing anonymous usage data.'
           )}
+          {!isSettingsPage &&
+            ' ' + t('You can change this in your settings at any time.')}
         </span>
       </div>
     </div>

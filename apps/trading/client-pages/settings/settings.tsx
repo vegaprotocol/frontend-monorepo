@@ -13,14 +13,14 @@ export const Settings = () => {
   const text = t(theme === 'dark' ? 'Light mode' : 'Dark mode');
   return (
     <div className="py-16 px-8 flex w-full justify-center">
-      <div className="min-w-[300px]">
-        <div className="text-3xl uppercase font-alpha liga calt">
+      <div className="lg:min-w-[700px] min-w-[300px]">
+        <h1 className="text-4xl xl:text-5xl uppercase font-alpha calt">
           {t('Settings')}
+        </h1>
+        <div className="mt-8 text-base text-neutral-500 dark:text-neutral-400">
+          {t('Changes are applied automatically.')}
         </div>
-        <div className="text-sm mt-6">
-          {t('Changes are applied automatically')}
-        </div>
-        <div className="flex mt-10 w-full">
+        <div className="mt-10 w-full">
           <RoundedWrapper paddingBottom>
             <div className="flex justify-between py-3">
               <div className="flex shrink">
@@ -36,7 +36,7 @@ export const Settings = () => {
               />
             </div>
             <Divider />
-            <TelemetryApproval />
+            <TelemetryApproval isSettingsPage />
           </RoundedWrapper>
         </div>
       </div>
