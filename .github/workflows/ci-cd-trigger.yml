@@ -107,9 +107,9 @@ jobs:
 
           branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
           projects_e2e=""
-          preview_governance=""
-          preview_trading=""
-          preview_explorer=""
+          preview_governance="not deployed"
+          preview_trading="not deployed"
+          preview_explorer="not deployed"
           if [[ -z "$projects_e2e" ]]; then
             projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '
             preview_governance=$(printf "%s https://%s.%s.vega.rocks" "governance" "governance" "$branch_slug")
@@ -185,9 +185,9 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews:
-            * ${{ needs.lint-test-build.outputs.preview_governance }}
-            * ${{ needs.lint-test-build.outputs.preview_explorer }}
-            * ${{ needs.lint-test-build.outputs.preview_trading }}
+            * governance: ${{ needs.lint-test-build.outputs.preview_governance }}
+            * explorer: ${{ needs.lint-test-build.outputs.preview_explorer  }}
+            * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
 
   cypress-check:
     name: '(CI) cypress - check'
