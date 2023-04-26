@@ -6,6 +6,7 @@ import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';
 import { ValidatorTables } from './validator-tables';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { ENV } from '../../../config';
 
 export const EpochData = () => {
   // errorPolicy due to vegaprotocol/vega issue 5898
@@ -14,11 +15,23 @@ export const EpochData = () => {
     data: nodesData,
     error: nodesError,
     loading: nodesLoading,
-    refetch,
+    refetch: nodesRefetch,
   } = useNodesQuery();
-  const { data: userStakingData } = useStakingQuery({
+
+  const { delegationsPagination } = ENV;
+  const {
+    data: userStakingData,
+    error: userStakingError,
+    loading: userStakingLoading,
+    refetch: userStakingRefetch,
+  } = useStakingQuery({
     variables: {
       partyId: pubKey || '',
+      delegationsPagination: delegationsPagination
+        ? {
+            first: Number(delegationsPagination),
+          }
+        : undefined,
     },
   });
   const { data: previousEpochData } = usePreviousEpochQuery({
@@ -28,10 +41,17 @@ export const EpochData = () => {
     skip: !nodesData?.epoch.id,
   });
 
-  useRefreshAfterEpoch(nodesData?.epoch.timestamps.expiry, refetch);
+  useRefreshAfterEpoch(nodesData?.epoch.timestamps.expiry, () => {
+    nodesRefetch();
+    userStakingRefetch();
+  });
 
   return (
-    <AsyncRenderer loading={nodesLoading} error={nodesError} data={nodesData}>
+    <AsyncRenderer
+      loading={nodesLoading || userStakingLoading}
+      error={nodesError || userStakingError}
+      data={nodesData}
+    >
       {nodesData?.epoch &&
         nodesData.epoch.timestamps.start &&
         nodesData?.epoch.timestamps.expiry && (

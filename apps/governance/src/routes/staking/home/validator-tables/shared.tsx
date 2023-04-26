@@ -59,9 +59,9 @@ export const addUserDataToValidator = (
       : undefined,
     [ValidatorFields.USER_STAKE_SHARE]:
       currentEpochUserStaking && Number(currentEpochUserStaking.amount) > 0
-        ? new BigNumber(currentEpochUserStaking.amount).dividedBy(
-            new BigNumber(currentUserStakeAvailable)
-          )
+        ? new BigNumber(currentEpochUserStaking.amount)
+            .dividedBy(new BigNumber(currentUserStakeAvailable))
+            .times(100)
         : undefined,
   };
 };
