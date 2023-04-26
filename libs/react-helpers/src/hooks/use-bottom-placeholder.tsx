@@ -23,27 +23,29 @@ export const useBottomPlaceholder = <T extends {}>({
   const onBodyScrollEnd = useCallback(() => {
     const rowCont = gridRef.current?.api.getDisplayedRowCount() ?? 0;
     if (!placeholderRowRef.current && rowCont) {
-      const firstRow = gridRef.current?.api.getDisplayedRowAtIndex(0);
-      if (firstRow && firstRow.data) {
+      const lastRow = gridRef.current?.api.getDisplayedRowAtIndex(rowCont - 1);
+      if (lastRow && lastRow.data) {
         placeholderRowRef.current = setId
-          ? setId({ ...firstRow.data, isLastPlaceholder: true })
+          ? setId({ ...lastRow.data, isLastPlaceholder: true })
           : {
-              ...firstRow.data,
+              ...lastRow.data,
               isLastPlaceholder: true,
-              id: `${firstRow.data?.id || '-'}-1`,
+              id: `${lastRow.data?.id || '-'}-1`,
             };
-        gridRef.current?.api.applyTransaction({
+        const transaction = {
           add: [placeholderRowRef.current],
-        });
+        };
+        gridRef.current?.api.applyTransaction(transaction);
       }
     }
   }, [gridRef, setId]);
 
   const onRowsChanged = useCallback(() => {
     if (placeholderRowRef.current) {
-      gridRef.current?.api.applyTransaction({
+      const transaction = {
         remove: [placeholderRowRef.current],
-      });
+      };
+      gridRef.current?.api.applyTransaction(transaction);
       placeholderRowRef.current = undefined;
     }
     onBodyScrollEnd();
