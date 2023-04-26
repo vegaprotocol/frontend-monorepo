@@ -130,9 +130,9 @@ jobs:
           previews=""
           for project in $projects_preview; do
             slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
-            preview=$(printf "- %s https://%s.%s.vega.rocks" "$project" "$project" "$slug")
+            preview=$(printf "%s https://%s.%s.vega.rocks" "$project" "$project" "$slug")
             echo $preview
-            previews="${previews} $(echo ${preview}; echo)"
+            previews="${previews}- $(echo ${preview}; echo)"
           done
           echo "preview urls:"
           echo "$previews"
