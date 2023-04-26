@@ -131,8 +131,7 @@ jobs:
           for project in $projects_preview; do
             slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
             url=$(printf "* %s https://%s.%s.vega.rocks" "$project" "$project" "$slug")
-            newline=$'\n'
-            urls+="${url}${newline}"
+            urls+="$(echo ${url}; echo)"
           done
           echo "preview urls:"
           echo "$urls"
