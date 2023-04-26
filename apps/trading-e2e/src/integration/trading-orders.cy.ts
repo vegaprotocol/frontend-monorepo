@@ -29,7 +29,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.mockSubscription(subscriptionMocks);
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
     cy.wait('@Markets');
   });
 
@@ -87,7 +87,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
       cy.get('[col-id="status"] .ag-icon-menu').click();
     });
     cy.contains('Partially Filled').click();
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
 
     cy.get(`[row-id="${partiallyFilledId}"]`)
       .eq(1)
@@ -116,7 +116,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
       cy.get('[col-id="status"] .ag-icon-menu').click();
     });
     cy.contains('Reset').click();
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
 
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
@@ -146,7 +146,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.mockSubscription(subscriptionMocks);
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
     cy.getByTestId('tab-orders').within(() => {
       cy.get('[col-id="status"][role="columnheader"]')
         .focus()
@@ -370,7 +370,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     cy.mockSubscription(subscriptionMocks);
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
     cy.getByTestId('tab-orders').within(() => {
       cy.get('[col-id="status"][role="columnheader"]')
         .focus()
