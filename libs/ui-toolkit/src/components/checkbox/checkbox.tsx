@@ -57,7 +57,7 @@ export const Checkbox = ({
       </CheckboxPrimitive.Root>
       <label
         htmlFor={name}
-        className={classNames('text-sm', {
+        className={classNames('text-sm flex-1', {
           'dark:text-neutral-400 text-neutral-600': disabled,
         })}
       >
