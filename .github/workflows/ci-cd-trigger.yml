@@ -105,43 +105,44 @@ jobs:
           affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
           echo -n "Affected projects: $affected"
 
+          branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
           projects_e2e=""
-          projects_preview=""
-          if [[ $affected == *"governance"* ]]; then
-            projects_e2e+='"governance-e2e" '
-            projects_preview+="governance "
-          fi
-          if [[ $affected == *"trading"* ]]; then
-            projects_e2e+='"trading-e2e" '
-            projects_preview+="trading"
-          fi
-          if [[ $affected == *"explorer"* ]]; then
-            projects_e2e+='"explorer-e2e" '
-            projects_preview="explorer"
-          fi
+          preview_governance=""
+          preview_trading=""
+          preview_explorer=""
           if [[ -z "$projects_e2e" ]]; then
             projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '
-            projects_preview="governance trading explorer"
+            preview_governance=$(printf "%s https://%s.%s.vega.rocks" "governance" "governance" "$branch_slug")
+            preview_trading=$(printf "%s https://%s.%s.vega.rocks" "trading" "trading" "$branch_slug")
+            preview_explorer=$(printf "%s https://%s.%s.vega.rocks" "explorer" "explorer" "$branch_slug")
+          else
+            if [[ $affected == *"governance"* ]]; then
+              projects_e2e+='"governance-e2e" '
+              preview_governance=$(printf "%s https://%s.%s.vega.rocks" "governance" "governance" "$branch_slug")
+            fi
+            if [[ $affected == *"trading"* ]]; then
+              projects_e2e+='"trading-e2e" '
+              preview_trading=$(printf "%s https://%s.%s.vega.rocks" "trading" "trading" "$branch_slug")
+            fi
+            if [[ $affected == *"explorer"* ]]; then
+              projects_e2e+='"explorer-e2e" '
+              preview_explorer=$(printf "%s https://%s.%s.vega.rocks" "explorer" "explorer" "$branch_slug")
+            fi
           fi
           projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
-          previews=""
-          for project in $projects_preview; do
-            slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
-            preview=$(printf "%s https://%s.%s.vega.rocks" "$project" "$project" "$slug")
-            echo $preview
-            previews="${previews}- $(echo ${preview}; echo)"
-          done
-          echo "preview urls:"
-          echo "$previews"
-          echo PREVIEWS=$previews >> $GITHUB_ENV
+          echo PREVIEW_GOVERNANCE=$preview_governance >> $GITHUB_ENV
+          echo PREVIEW_TRADING=$preview_trading >> $GITHUB_ENV
+          echo PREVIEW_EXPLORER=$preview_explorer >> $GITHUB_ENV
 
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
-      previews: ${{ env.PREVIEWS }}
+      preview_governance: ${{ env.PREVIEW_GOVERNANCE }}
+      preview_trading: ${{ env.PREVIEW_TRADING }}
+      preview_explorer: ${{ env.PREVIEW_EXPLORER }}
 
   cypress:
     needs: lint-test-build
@@ -184,7 +185,9 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews:
-            ${{ needs.lint-test-build.outputs.previews }}
+            * ${{ needs.lint-test-build.outputs.preview_governance }}
+            * ${{ needs.lint-test-build.outputs.preview_explorer }}
+            * ${{ needs.lint-test-build.outputs.preview_trading }}
 
   cypress-check:
     name: '(CI) cypress - check'
