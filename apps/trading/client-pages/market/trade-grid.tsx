@@ -97,7 +97,7 @@ const MarketBottomPanel = memo(
     const handleOnChange = useCallback(
       debounce((args) => {
         if (args.length) {
-          const all = args.reduce((agg, item) => agg + item, 0);
+          const all = args.reduce((agg: number, item: number) => agg + item, 0);
           const bottomPanes = [
             `${(args[0] / all) * 100}%`,
             `${(args[1] / all) * 100}%`,
@@ -220,7 +220,7 @@ const MainGrid = memo(
     const handleOnChangeTop = useCallback(
       debounce((args) => {
         if (args.length) {
-          const all = args.reduce((agg, item) => agg + item, 0);
+          const all = args.reduce((agg: number, item: number) => agg + item, 0);
           const topOne = `${(args[1] / all) * 100}%`;
           setTop(topOne);
         }
@@ -231,7 +231,7 @@ const MainGrid = memo(
     const handleOnChange2 = useCallback(
       debounce((args) => {
         if (args.length) {
-          const all = args.reduce((agg, item) => agg + item, 0);
+          const all = args.reduce((agg: number, item: number) => agg + item, 0);
           const verticals = [`${(args[0] / all) * 100}%`, args[1], args[2]];
           setVertical(verticals);
         }
