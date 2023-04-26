@@ -26,8 +26,10 @@ import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
 import type { FillFieldsFragment } from './__generated__/Fills';
 
-const TAKER = 'TAKER';
-const MAKER = 'MAKER';
+const TAKER = 'Taker';
+const MAKER = 'Maker';
+
+export type Role = typeof TAKER | typeof MAKER | '-';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
@@ -180,24 +182,10 @@ const formatTotal = ({
 };
 
 const formatRole = (partyId: string) => {
-  return ({ value, data }: VegaValueFormatterParams<Trade, 'aggressor'>) => {
-    const taker = t('Taker');
-    const maker = t('Maker');
-    if (data?.buyer.id === partyId) {
-      if (value === Schema.Side.SIDE_BUY) {
-        return taker;
-      } else {
-        return maker;
-      }
-    } else if (data?.seller.id === partyId) {
-      if (value === Schema.Side.SIDE_SELL) {
-        return taker;
-      } else {
-        return maker;
-      }
-    } else {
-      return '-';
-    }
+  return ({ data }: VegaValueFormatterParams<Trade, 'aggressor'>) => {
+    if (!data) return '-';
+    const { role } = getRoleAndFees({ data, partyId });
+    return role;
   };
 };
 
@@ -222,6 +210,15 @@ const formatFee = (partyId: string) => {
   };
 };
 
+export const isEmptyFeeObj = (feeObj: Schema.TradeFee) => {
+  if (!feeObj) return true;
+  return (
+    feeObj.liquidityFee === '0' &&
+    feeObj.makerFee === '0' &&
+    feeObj.infrastructureFee === '0'
+  );
+};
+
 export const getRoleAndFees = ({
   data,
   partyId,
@@ -232,14 +229,30 @@ export const getRoleAndFees = ({
   >;
   partyId?: string;
 }) => {
-  let role;
+  let role: Role;
   let feesObj;
   if (data?.buyer.id === partyId) {
-    role = data.aggressor === Schema.Side.SIDE_BUY ? TAKER : MAKER;
-    feesObj = role === TAKER ? data?.buyerFee : data.sellerFee;
+    if (data.aggressor === Schema.Side.SIDE_BUY) {
+      role = TAKER;
+      feesObj = data?.buyerFee;
+    } else if (data.aggressor === Schema.Side.SIDE_SELL) {
+      role = MAKER;
+      feesObj = data?.sellerFee;
+    } else {
+      role = '-';
+      feesObj = !isEmptyFeeObj(data?.buyerFee) ? data.buyerFee : data.sellerFee;
+    }
   } else if (data?.seller.id === partyId) {
-    role = data.aggressor === Schema.Side.SIDE_SELL ? TAKER : MAKER;
-    feesObj = role === TAKER ? data?.sellerFee : data.buyerFee;
+    if (data.aggressor === Schema.Side.SIDE_SELL) {
+      role = TAKER;
+      feesObj = data?.sellerFee;
+    } else if (data.aggressor === Schema.Side.SIDE_BUY) {
+      role = MAKER;
+      feesObj = data?.buyerFee;
+    } else {
+      role = '-';
+      feesObj = !isEmptyFeeObj(data.sellerFee) ? data.sellerFee : data.buyerFee;
+    }
   } else {
     return { role: '-', feesObj: '-' };
   }
@@ -272,25 +285,20 @@ const FeesBreakdownTooltip = ({
           <p className="mb-1">{t('The maker will receive the maker fee.')}</p>
           <p className="mb-1">
             {t(
-              'If the market is in monitoring auction the maker will pay half of the infrastructure and liquidity fees.'
-            )}
-          </p>
-          <p className="mb-1">
-            {t(
               'If the market is active the maker will pay zero infrastructure and liquidity fees.'
             )}
           </p>
         </>
       )}
       {role === TAKER && (
-        <>
-          <p className="mb-1">{t('Fees to be paid by the taker.')}</p>
-          <p className="mb-1">
-            {t(
-              'If the market is in monitoring auction the taker will pay half of the infrastructure and liquidity fees.'
-            )}
-          </p>
-        </>
+        <p className="mb-1">{t('Fees to be paid by the taker.')}</p>
+      )}
+      {role === '-' && (
+        <p className="mb-1">
+          {t(
+            'If the market is in monitoring auction, half of the infrastructure and liquidity fees will be paid.'
+          )}
+        </p>
       )}
       <dl className="grid grid-cols-2 gap-x-1">
         <dt className="col-span-1">{t('Infrastructure fee')}</dt>
@@ -316,7 +324,7 @@ const FeesBreakdownTooltip = ({
 };
 
 export const getFeesBreakdown = (
-  role: string,
+  role: Role,
   feesObj: {
     __typename?: 'TradeFee' | undefined;
     makerFee: string;
@@ -328,6 +336,7 @@ export const getFeesBreakdown = (
     role === MAKER
       ? new BigNumber(feesObj.makerFee).times(-1).toString()
       : feesObj.makerFee;
+
   const infrastructureFee = feesObj.infrastructureFee;
   const liquidityFee = feesObj.liquidityFee;
 
