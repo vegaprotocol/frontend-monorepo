@@ -180,8 +180,8 @@ jobs:
 
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v3
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
         with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews:
