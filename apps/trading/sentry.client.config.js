@@ -1,14 +1,9 @@
-import * as Sentry from '@sentry/nextjs';
-import { BrowserTracing } from '@sentry/tracing';
 import { ENV } from './lib/config/env';
+import { LocalStorage, SentryInit } from '@vegaprotocol/utils';
+import { STORAGE_KEY } from './lib/hooks/use-telemetry-approval';
 
-const { dsn } = ENV;
-
-if (dsn) {
-  Sentry.init({
-    dsn,
-    integrations: [new BrowserTracing()],
-    tracesSampleRate: 1,
-    environment: ENV.envName,
-  });
+const { dsn, envName } = ENV;
+const isTelemetryApproved = !!LocalStorage.getItem(STORAGE_KEY);
+if (dsn && isTelemetryApproved) {
+  SentryInit(dsn, envName);
 }
