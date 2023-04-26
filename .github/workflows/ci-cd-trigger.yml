@@ -112,21 +112,21 @@ jobs:
           preview_explorer="not deployed"
           if [[ -z "$projects_e2e" ]]; then
             projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '
-            preview_governance=$(printf "%s https://%s.%s.vega.rocks" "governance" "governance" "$branch_slug")
-            preview_trading=$(printf "%s https://%s.%s.vega.rocks" "trading" "trading" "$branch_slug")
-            preview_explorer=$(printf "%s https://%s.%s.vega.rocks" "explorer" "explorer" "$branch_slug")
+            preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
+            preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
+            preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           else
             if [[ $affected == *"governance"* ]]; then
               projects_e2e+='"governance-e2e" '
-              preview_governance=$(printf "%s https://%s.%s.vega.rocks" "governance" "governance" "$branch_slug")
+              preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
             fi
             if [[ $affected == *"trading"* ]]; then
               projects_e2e+='"trading-e2e" '
-              preview_trading=$(printf "%s https://%s.%s.vega.rocks" "trading" "trading" "$branch_slug")
+              preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
             fi
             if [[ $affected == *"explorer"* ]]; then
               projects_e2e+='"explorer-e2e" '
-              preview_explorer=$(printf "%s https://%s.%s.vega.rocks" "explorer" "explorer" "$branch_slug")
+              preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
             fi
           fi
           projects_e2e=${projects_e2e%?}
@@ -166,7 +166,7 @@ jobs:
   dist-check:
     runs-on: ubuntu-latest
     needs:
-      # - publish-dist
+      - publish-dist
       - lint-test-build
     if: ${{ github.event_name == 'pull_request' }}
     name: '(CD) comment preview links'
