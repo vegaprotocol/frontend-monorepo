@@ -5,7 +5,7 @@ import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 export const TelemetryApproval = ({
   isSettingsPage,
 }: {
-  isSettingsPage: boolean;
+  isSettingsPage?: boolean;
 }) => {
   const [isApproved, setIsApproved] = useTelemetryApproval();
   return (
