@@ -105,19 +105,44 @@ jobs:
           affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
           echo -n "Affected projects: $affected"
 
+          branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
           projects_e2e=""
-          if [[ $affected == *"governance"* ]]; then projects_e2e+='"governance-e2e" '; fi
-          if [[ $affected == *"trading"* ]]; then projects_e2e+='"trading-e2e" '; fi
-          if [[ $affected == *"explorer"* ]]; then projects_e2e+='"explorer-e2e" '; fi
-          if [[ -z "$projects_e2e" ]]; then projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '; fi
+          preview_governance="not deployed"
+          preview_trading="not deployed"
+          preview_explorer="not deployed"
+          if [[ -z "$projects_e2e" ]]; then
+            projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '
+            preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
+            preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
+            preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
+          else
+            if [[ $affected == *"governance"* ]]; then
+              projects_e2e+='"governance-e2e" '
+              preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
+            fi
+            if [[ $affected == *"trading"* ]]; then
+              projects_e2e+='"trading-e2e" '
+              preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
+            fi
+            if [[ $affected == *"explorer"* ]]; then
+              projects_e2e+='"explorer-e2e" '
+              preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
+            fi
+          fi
           projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
+          echo PREVIEW_GOVERNANCE=$preview_governance >> $GITHUB_ENV
+          echo PREVIEW_TRADING=$preview_trading >> $GITHUB_ENV
+          echo PREVIEW_EXPLORER=$preview_explorer >> $GITHUB_ENV
 
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
+      preview_governance: ${{ env.PREVIEW_GOVERNANCE }}
+      preview_trading: ${{ env.PREVIEW_TRADING }}
+      preview_explorer: ${{ env.PREVIEW_EXPLORER }}
 
   cypress:
     needs: lint-test-build
@@ -140,7 +165,9 @@ jobs:
 
   dist-check:
     runs-on: ubuntu-latest
-    needs: publish-dist
+    needs:
+      - publish-dist
+      - lint-test-build
     if: ${{ github.event_name == 'pull_request' }}
     name: '(CD) comment preview links'
     steps:
@@ -151,22 +178,16 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: Previews
 
-      - name: Inject slug/short variables
-        if: ${{ steps.fc.outputs.comment-id == 0 }}
-        uses: rlespinasse/github-slug-action@v4
-        with:
-          prefix: CI_
-
       - name: Create comment
-        if: ${{ steps.fc.outputs.comment-id == 0 }}
         uses: peter-evans/create-or-update-comment@v3
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Previews
-            - explorer https://explorer.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
-            - trading https://trading.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
-            - governance https://governance.${{ env.CI_GITHUB_REF_NAME }}.vega.rocks
+            Previews:
+            * governance: ${{ needs.lint-test-build.outputs.preview_governance }}
+            * explorer: ${{ needs.lint-test-build.outputs.preview_explorer  }}
+            * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
 
   cypress-check:
     name: '(CI) cypress - check'
