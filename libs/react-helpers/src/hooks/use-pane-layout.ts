@@ -30,6 +30,7 @@ interface UsePaneLayoutProps {
 export const usePaneLayout = ({ id }: UsePaneLayoutProps) => {
   const sizes = usePaneLayoutStore((store) => store.sizes[id]) || [];
   const valueSetter = usePaneLayoutStore((store) => store.valueSetter);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleOnChange = useCallback(
     debounce((args) => {
       if (args.length) {
