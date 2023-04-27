@@ -27,7 +27,9 @@ export const usePaneLayoutStore = create<{
 interface UsePaneLayoutProps {
   id: string;
 }
-export const usePaneLayout = ({ id }: UsePaneLayoutProps) => {
+export const usePaneLayout = ({
+  id,
+}: UsePaneLayoutProps): [string[], (sizes: number[]) => void] => {
   const sizes = usePaneLayoutStore((store) => store.sizes[id]) || [];
   const valueSetter = usePaneLayoutStore((store) => store.valueSetter);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +37,7 @@ export const usePaneLayout = ({ id }: UsePaneLayoutProps) => {
     debounce((args) => {
       if (args.length) {
         const all = args.reduce((agg: number, item: number) => agg + item, 0);
-        const sizesArr = args.map((arg) => `${(arg / all) * 100}%`);
+        const sizesArr = args.map((arg: number) => `${(arg / all) * 100}%`);
         valueSetter(id, sizesArr);
       }
     }, PANELS_SET_DEBOUNCE_TIME),
