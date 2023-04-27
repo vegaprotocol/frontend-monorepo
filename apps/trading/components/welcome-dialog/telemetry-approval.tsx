@@ -18,7 +18,7 @@ export const TelemetryApproval = ({
           onCheckedChange={() => setIsApproved(!isApproved)}
         />
       </div>
-      <div className="text-sm text-neutral-600 dark:text-neutral-300 ml-6">
+      <div className="text-sm text-vega-light-300 dark:text-vega-dark-300 ml-6">
         <span>
           {t(
             'Help identify bugs and improve the service by sharing anonymous usage data.'

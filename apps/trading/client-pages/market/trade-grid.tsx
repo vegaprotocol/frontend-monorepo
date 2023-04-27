@@ -462,7 +462,10 @@ export const TradePanels = ({
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <div>
+        <TradeMarketHeader market={market} onSelect={onSelect} />
+        <OracleBanner marketId={market?.id || ''} />
+      </div>
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (

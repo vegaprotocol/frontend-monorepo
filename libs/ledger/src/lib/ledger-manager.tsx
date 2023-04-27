@@ -3,12 +3,13 @@ import type * as Schema from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
 import type { AggregatedLedgerEntriesNode } from './ledger-entries-data-provider';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
 import type * as Types from '@vegaprotocol/types';
+import { LedgerExportLink } from './ledger-export-link';
 
 export interface Filter {
   vegaTime?: {
@@ -22,6 +23,7 @@ const defaultFilter = {
     value: { start: formatRFC3339(subDays(Date.now(), 7)) },
   },
 };
+
 export const LedgerManager = ({ partyId }: { partyId: string }) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
@@ -55,6 +57,9 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
         rowData={extractedData}
         onFilterChanged={onFilterChanged}
       />
+      {extractedData && (
+        <LedgerExportLink entries={extractedData} partyId={partyId} />
+      )}
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
           loading={loading}
