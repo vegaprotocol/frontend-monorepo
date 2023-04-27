@@ -6,7 +6,7 @@ const customNodeBtn = 'custom-node';
 context.skip('Node switcher', { tags: '@regression' }, function () {
   beforeEach('visit home page', function () {
     cy.intercept('GET', 'https://static.vega.xyz/assets/capsule-network.json', {
-      hosts: ['http://localhost:3028/query'],
+      hosts: ['http://localhost:3008/graphql'],
     }).as('nodeData');
     cy.visit('/');
     cy.wait('@nodeData');

@@ -1,12 +1,12 @@
+import { closeWelcomeDialog } from '../support/helpers';
+
 describe('Settings page', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.clearLocalStorage().then(() => {
       cy.mockTradingPage();
       cy.mockSubscription();
       cy.visit('/');
-      cy.get('[role=dialog]').within(() => {
-        cy.getByTestId('dialog-close').click();
-      });
+      closeWelcomeDialog();
       cy.get('[aria-label="cog icon"]').click();
     });
   });
