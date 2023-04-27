@@ -36,6 +36,7 @@ import { Navbar } from '../components/navbar';
 import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -145,7 +146,10 @@ const PartyData = () => {
 
 const MaybeConnectEagerly = () => {
   useVegaEagerConnect(Connectors);
-  useEthereumEagerConnect(ENV.dsn);
+  const [isTelemetryApproved] = useTelemetryApproval();
+  useEthereumEagerConnect(
+    isTelemetryApproved ? { dsn: ENV.dsn, env: ENV.envName } : {}
+  );
 
   const { pubKey, connect } = useVegaWallet();
   const [searchParams] = useSearchParams();
