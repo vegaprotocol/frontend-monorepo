@@ -8,8 +8,8 @@ const STORAGE_KEY = 'vega_pane_store';
 const PANELS_SET_DEBOUNCE_TIME = 300;
 
 export const usePaneLayoutStore = create<{
-  sizes: Record<string, (string | number)[] | string>;
-  valueSetter: (id: string, value: (string | number)[] | string) => void;
+  sizes: Record<string, string[]>;
+  valueSetter: (id: string, value: string[]) => void;
 }>()(
   persist(
     immer((set) => ({
