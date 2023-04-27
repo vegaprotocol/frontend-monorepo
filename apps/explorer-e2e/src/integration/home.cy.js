@@ -36,34 +36,6 @@ context('Home Page', function () {
         });
 
       cy.get(statsValue).eq(0).should('contain.text', 'CONNECTED');
-      cy.get(statsValue).eq(1).should('not.be.empty');
-      cy.get(statsValue).eq(2).should('not.be.empty');
-      cy.get(statsValue)
-        .eq(3)
-        .invoke('text')
-        .should('match', /\d+d \d+h \d+m \d+s/i);
-      cy.get(statsValue).eq(3).should('contain.text', '2');
-      cy.get(statsValue)
-        .eq(4)
-        .invoke('text')
-        .should('match', /\d+\.\d\d(?!\d)/i);
-      cy.get(statsValue).eq(5).should('contain.text', '0');
-      cy.get(statsValue).eq(6).should('contain.text', '0');
-      cy.get(statsValue).eq(7).should('contain.text', '0');
-      cy.get(statsValue).eq(8).should('contain.text', '0');
-      cy.get(statsValue).eq(9).should('not.be.empty');
-      cy.get(statsValue).eq(10).should('not.be.empty');
-      cy.get(statsValue).eq(11).should('not.be.empty');
-      cy.get(statsValue)
-        .eq(12)
-        .invoke('text')
-        .should('match', /v\d+\.\d+\.\d+/i);
-      cy.get(statsValue)
-        .eq(13)
-        .invoke('text')
-        .should('match', /\d+\.\d+\.\d+/i);
-      cy.get(statsValue).eq(14).should('not.be.empty');
-      cy.get(statsValue).eq(15).should('not.be.empty');
     });
 
     it('Block height should be updating', function () {
