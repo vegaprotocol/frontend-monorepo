@@ -80,16 +80,18 @@ export const SetFilter = forwardRef(
             </label>
           ))}
         </fieldset>
-        <div className="ag-filter-apply-panel">
-          <button
-            type="button"
-            disabled={readonly}
-            className="ag-standard-button ag-filter-apply-panel-button"
-            onClick={() => setValue((valueRef.current = []))}
-          >
-            {t('Reset')}
-          </button>
-        </div>
+        {!readonly && (
+          <div className="ag-filter-apply-panel">
+            <button
+              type="button"
+              disabled={readonly}
+              className="ag-standard-button ag-filter-apply-panel-button"
+              onClick={() => setValue((valueRef.current = []))}
+            >
+              {t('Reset')}
+            </button>
+          </div>
+        )}
       </div>
     );
   }
