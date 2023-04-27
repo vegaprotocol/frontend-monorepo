@@ -32,13 +32,14 @@ context('Home Page', function () {
           cy.wrap($list).should('contain.text', statTitles[index]);
         })
         .then(($list) => {
-          cy.wrap($list).should('have.length', 16);
+          cy.wrap($list).should('have.length', 17);
         });
 
       cy.get(statsValue).eq(0).should('contain.text', 'CONNECTED');
       cy.get(statsValue).eq(1).should('not.be.empty');
+      cy.get(statsValue).eq(2).should('not.be.empty');
       cy.get(statsValue)
-        .eq(2)
+        .eq(3)
         .invoke('text')
         .should('match', /\d+d \d+h \d+m \d+s/i);
       cy.get(statsValue).eq(3).should('contain.text', '2');
@@ -67,7 +68,7 @@ context('Home Page', function () {
 
     it('Block height should be updating', function () {
       cy.get(statsValue)
-        .eq(1)
+        .eq(2)
         .invoke('text')
         .then((blockHeightTxt) => {
           cy.get(statsValue)
