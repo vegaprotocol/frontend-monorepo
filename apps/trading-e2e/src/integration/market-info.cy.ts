@@ -1,4 +1,5 @@
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import { MarketState } from '@vegaprotocol/types';
 
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
@@ -12,12 +13,22 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   before(() => {
-    cy.mockTradingPage();
+    cy.mockTradingPage(
+      MarketState.STATE_ACTIVE,
+      undefined,
+      undefined,
+      'COMPROMISED'
+    );
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
     cy.getByTestId(marketInfoBtn).click();
     cy.wait('@MarketInfo');
+  });
+
+  it('show oracle banner', () => {
+    cy.getByTestId(marketTitle).contains('Oracle').click();
+    cy.getByTestId('oracle-status').should('contain.text', 'COMPROMISED');
   });
 
   it('current fees displayed', () => {
