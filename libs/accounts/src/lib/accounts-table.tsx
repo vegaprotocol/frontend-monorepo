@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { forwardRef, useCallback, useMemo, useState } from 'react';
 import {
   addDecimalsFormatNumber,
@@ -17,6 +16,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -100,7 +100,6 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickDeposit?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  gridActionsDropdownTrigger?: ReactNode;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
@@ -294,9 +293,15 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     );
                   }
                   return (
-                    !props.isReadOnly &&
-                    props.gridActionsDropdownTrigger && (
-                      <DropdownMenu trigger={props.gridActionsDropdownTrigger}>
+                    !props.isReadOnly && (
+                      <DropdownMenu
+                        trigger={
+                          <DropdownMenuTrigger
+                            iconName="more"
+                            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+                          ></DropdownMenuTrigger>
+                        }
+                      >
                         <DropdownMenuContent>
                           <DropdownMenuItem
                             key={'deposit'}
