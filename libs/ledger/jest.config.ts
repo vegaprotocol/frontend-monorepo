@@ -12,4 +12,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/ledger',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

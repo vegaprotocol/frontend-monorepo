@@ -19,25 +19,29 @@ export const useMarketOracle = (marketId: string) => {
       marketInfo.tradableInstrument.instrument.product
         .dataSourceSpecForSettlementData.data;
     return data.find((provider) =>
-      provider.proofs.some(
-        (proof) =>
-          (proof.type === 'eth_address' &&
-            dataSource.sourceType.__typename ===
-              'DataSourceDefinitionExternal' &&
-            dataSource.sourceType.sourceType.signers?.some(
-              (signer) =>
-                signer.signer.__typename === 'ETHAddress' &&
-                signer.signer.address === proof.eth_address
-            )) ||
-          (proof.type === 'public_key' &&
-            dataSource.sourceType.__typename ===
-              'DataSourceDefinitionExternal' &&
-            dataSource.sourceType.sourceType.signers?.some(
-              (signer) =>
-                signer.signer.__typename === 'PubKey' &&
-                signer.signer.key === proof.public_key
-            ))
-      )
+      provider.proofs.some((proof) => {
+        if (
+          proof.type === 'eth_address' &&
+          dataSource.sourceType.__typename === 'DataSourceDefinitionExternal'
+        ) {
+          return dataSource.sourceType.sourceType.signers?.some(
+            (signer) =>
+              signer.signer.__typename === 'ETHAddress' &&
+              signer.signer.address === proof.eth_address
+          );
+        }
+        if (
+          proof.type === 'public_key' &&
+          dataSource.sourceType.__typename === 'DataSourceDefinitionExternal'
+        ) {
+          return dataSource.sourceType.sourceType.signers?.some(
+            (signer) =>
+              signer.signer.__typename === 'PubKey' &&
+              signer.signer.key === proof.public_key
+          );
+        }
+        return false;
+      })
     )?.oracle;
   }, [data, marketInfo]);
 };

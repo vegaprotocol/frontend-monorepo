@@ -17,6 +17,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -294,9 +295,15 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     );
                   }
                   return (
-                    !props.isReadOnly &&
-                    props.gridActionsDropdownTrigger && (
-                      <DropdownMenu trigger={props.gridActionsDropdownTrigger}>
+                    !props.isReadOnly && (
+                      <DropdownMenu
+                        trigger={
+                          <DropdownMenuTrigger
+                            iconName="more"
+                            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+                          ></DropdownMenuTrigger>
+                        }
+                      >
                         <DropdownMenuContent>
                           <DropdownMenuItem
                             key={'deposit'}
