@@ -67,19 +67,13 @@ const orderMatchFilters = (
   }
   if (
     variables?.filter?.dateRange?.start &&
-    !(
-      (order.updatedAt || order.createdAt) &&
-      variables.filter.dateRange.start < (order.updatedAt || order.createdAt)
-    )
+    !(order.createdAt && variables.filter.dateRange.start < order.createdAt)
   ) {
     return false;
   }
   if (
     variables?.filter?.dateRange?.end &&
-    !(
-      (order.updatedAt || order.createdAt) &&
-      variables.filter.dateRange.end > (order.updatedAt || order.createdAt)
-    )
+    !(order.createdAt && variables.filter.dateRange.end > order.createdAt)
   ) {
     return false;
   }
@@ -129,28 +123,25 @@ export const update = (
   if (!data) {
     return data;
   }
-  return produce(data, (draft) => {
-    // A single update can contain the same order with multiple updates, so we need to find
-    // the latest version of the order and only update using that
-    const incoming = uniqBy(
+  // A single update can contain the same order with multiple updates, so we need to find
+  // the latest version of the order and only update using that
+  const incoming = orderBy(
+    uniqBy(
       orderBy(delta, (order) => order.updatedAt || order.createdAt, 'desc'),
       'id'
-    );
-
+    ),
+    'createdAt'
+  );
+  return produce(data, (draft) => {
     // Add or update incoming orders
-    incoming.reverse().forEach((node) => {
+    incoming.forEach((node) => {
       const index = draft.findIndex((edge) => edge.node.id === node.id);
       const newer =
-        draft.length === 0 ||
-        (node.updatedAt || node.createdAt) >=
-          (draft[0].node.updatedAt || draft[0].node.createdAt);
+        draft.length === 0 || node.createdAt >= draft[0].node.createdAt;
       const doesFilterPass = !variables || orderMatchFilters(node, variables);
       if (index !== -1) {
         if (doesFilterPass) {
           Object.assign(draft[index].node, node);
-          if (newer) {
-            draft.unshift(...draft.splice(index, 1));
-          }
         } else {
           draft.splice(index, 1);
         }
@@ -219,7 +210,7 @@ export const allOrdersProvider = makeDerivedDataProvider<
       !parts[0].isUpdate &&
       subscriptions &&
       subscriptions[0].load &&
-      orders?.length < 5000
+      orders?.length < 50000
     ) {
       subscriptions[0].load();
     }

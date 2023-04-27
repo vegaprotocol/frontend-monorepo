@@ -238,6 +238,7 @@ export const OrderListTable = memo(
           />
           <AgGridColumn
             field="createdAt"
+            filter={DateRangeFilter}
             cellRenderer={({
               data,
               value,
@@ -252,7 +253,6 @@ export const OrderListTable = memo(
           />
           <AgGridColumn
             field="updatedAt"
-            filter={DateRangeFilter}
             cellRenderer={({
               data,
               value,

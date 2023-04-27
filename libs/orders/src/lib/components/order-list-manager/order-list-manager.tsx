@@ -20,6 +20,7 @@ import type { Order } from '../order-data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 
 export enum Filter {
+  // make filter value always truthy
   'Open' = 1,
   'Closed',
   'Rejected',
