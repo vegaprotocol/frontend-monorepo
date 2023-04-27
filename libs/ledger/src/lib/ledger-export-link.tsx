@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Link,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
@@ -55,18 +56,16 @@ export const LedgerExportLink = ({
     return null;
   }
   return (
-    <div className="flex shrink">
-      {assetId ? (
-        <Link
-          className="h-[50px] text-sm p-2"
-          title={t('Download all to .csv file')}
-          href={`${protohost}/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${assetId}`}
-        >
-          {t('Export all of')} {assetDropDown} {t('to .csv file')}
-        </Link>
-      ) : (
-        <>{t('Select asset to export')}</>
-      )}
+    <div className="flex shrink items-stretch gap-2 p-2">
+      <div className="flex items-center">Export all</div>
+      {assetDropDown}
+      <Link
+        className="text-sm"
+        title={t('Download all to .csv file')}
+        href={`${protohost}/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${assetId}`}
+      >
+        <Button size="sm">{t('Download')}</Button>
+      </Link>
     </div>
   );
 };
