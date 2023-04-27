@@ -25,7 +25,7 @@ module.exports = defineConfig({
   },
   env: {
     environment: 'CUSTOM',
-    networkQueryUrl: 'http://localhost:3028/query',
+    networkQueryUrl: 'http://localhost:3008/graphql',
     ethUrl: 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     commitHash: 'dev',
     tsConfig: 'tsconfig.json',

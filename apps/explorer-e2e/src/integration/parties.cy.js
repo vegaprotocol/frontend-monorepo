@@ -219,7 +219,7 @@ context.skip('Parties page', { tags: '@regression' }, function () {
           balance type asset {id symbol decimals}}}}}}}}';
       cy.request({
         method: 'POST',
-        url: `http://localhost:3028/query`,
+        url: `http://localhost:3008/graphql`,
         body: {
           query: mutation,
         },
