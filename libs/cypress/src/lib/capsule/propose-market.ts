@@ -4,7 +4,7 @@ import { createLog } from './logging';
 import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
 import { getProposal } from './get-proposal';
 import { sendVegaTx } from './wallet-client';
-import { ASSET_ID_FOR_MARKET } from './contants';
+import { ASSET_ID_FOR_MARKET, ASSET_SYMBOL } from './contants';
 
 const log = createLog('propose-market');
 
@@ -43,7 +43,7 @@ function createNewMarketProposal(): ProposalSubmissionBody {
               code: 'TEST.24h',
               future: {
                 settlementAsset: ASSET_ID_FOR_MARKET,
-                quoteName: ASSET_ID_FOR_MARKET,
+                quoteName: ASSET_SYMBOL,
                 dataSourceSpecForSettlementData: {
                   external: {
                     oracle: {

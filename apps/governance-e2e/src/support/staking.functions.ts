@@ -54,7 +54,7 @@ export function stakingValidatorPageRemoveStake(stake: string) {
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
     .and('be.visible')
     .click();
-  cy.contains('been removed from validator').should('be.visible');
+  cy.contains('been removed from validator', txTimeout).should('be.visible');
   closeDialog();
 }
 
@@ -185,7 +185,7 @@ export function validateValidatorListTotalStakeAndShare(
 ) {
   cy.contains('Loading...', epochTimeout).should('not.exist');
   waitForBeginningOfEpoch();
-  cy.get(`[row-id="${positionOnList}"]:visible`)
+  cy.get(`[row-id="${positionOnList}"]`)
     .eq(1)
     .within(() => {
       cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
@@ -221,12 +221,12 @@ export function ensureSpecifiedUnstakedTokensAreAssociated(
 }
 
 export function closeStakingDialog() {
-  cy.get('[data-testid="dialog-title"]:visible').should(
+  cy.getByTestId('dialog-title').should(
     'contain.text',
     'At the beginning of the next epoch'
   );
-  cy.get('[data-testid="dialog-content"]:visible')
-    .first()
+  cy.getByTestId('dialog-content')
+    .last()
     .within(() => {
       cy.get('a').should('have.text', 'Back to Staking').click();
     });

@@ -50,6 +50,8 @@ const liquidityVoteStatus = 'liquidity-votes-status';
 const tokenVoteStatus = 'token-votes-status';
 const proposalTermsSection = 'proposal';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
+const fUSDCId =
+  '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
@@ -264,7 +266,7 @@ context(
     it('Unable to submit update market proposal without minimum amount of tokens', function () {
       vegaWalletTeardown();
       vegaWalletFaucetAssetsWithoutCheck(
-        'fUSDC',
+        fUSDCId,
         '1000000',
         vegaWalletPublicKey
       );
@@ -290,7 +292,7 @@ context(
     // 3001-VOTE-092 3004-PMAC-001
     it('Able to submit update market proposal and vote for proposal', function () {
       vegaWalletFaucetAssetsWithoutCheck(
-        'fUSDC',
+        fUSDCId,
         '1000000',
         vegaWalletPublicKey
       );

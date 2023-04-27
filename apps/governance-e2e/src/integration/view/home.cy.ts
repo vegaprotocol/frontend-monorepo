@@ -131,7 +131,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         .within(() => {
           cy.get('span')
             .first()
-            .should('have.text', 'http://localhost:3028/query');
+            .should('have.text', 'http://localhost:3008/graphql');
           cy.getByTestId('link').should('exist');
         });
     });
