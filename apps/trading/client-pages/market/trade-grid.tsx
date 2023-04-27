@@ -1,4 +1,3 @@
-import debounce from 'lodash/debounce';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
@@ -9,7 +8,7 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -28,7 +27,10 @@ import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import {
+  usePaneLayout,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
@@ -37,9 +39,6 @@ import {
   ResizableGrid,
   ResizableGridPanel,
 } from '../../components/resizable-grid';
-import { useMarketViewPanels } from '../../stores';
-
-const PANELS_SET_DEBOUNCE_TIME = 300;
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -87,31 +86,20 @@ interface BottomPanelProps {
 
 const MarketBottomPanel = memo(
   ({ marketId, pinnedAsset }: BottomPanelProps) => {
-    const bottomPanes = useMarketViewPanels((store) => store.bottomPanes);
-    const setBottom = useMarketViewPanels((store) => store.setBottom);
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'bottom' });
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
     const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleOnChange = useCallback(
-      debounce((args) => {
-        if (args.length) {
-          const all = args.reduce((agg: number, item: number) => agg + item, 0);
-          const bottomPanes = [
-            `${(args[0] / all) * 100}%`,
-            `${(args[1] / all) * 100}%`,
-          ];
-          setBottom(bottomPanes);
-        }
-      }, PANELS_SET_DEBOUNCE_TIME),
-      [setBottom]
-    );
     return 'xxxl' === screenSize ? (
-      <ResizableGrid proportionalLayout minSize={200} onChange={handleOnChange}>
+      <ResizableGrid
+        proportionalLayout
+        minSize={200}
+        onChange={handleOnLayoutChange}
+      >
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize={bottomPanes[0] || '50%'}
+          preferredSize={sizes[0] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
@@ -139,7 +127,7 @@ const MarketBottomPanel = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize={bottomPanes[1] || '50%'}
+          preferredSize={sizes[1] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
@@ -212,44 +200,23 @@ const MainGrid = memo(
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
-    const topone = useMarketViewPanels((store) => store.topone);
-    const setTop = useMarketViewPanels((store) => store.setTop);
-    const verticals = useMarketViewPanels((store) => store.verticals);
-    const setVertical = useMarketViewPanels((store) => store.setVertical);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleOnChangeTop = useCallback(
-      debounce((args) => {
-        if (args.length) {
-          const all = args.reduce((agg: number, item: number) => agg + item, 0);
-          const topOne = `${(args[1] / all) * 100}%`;
-          setTop(topOne);
-        }
-      }, PANELS_SET_DEBOUNCE_TIME),
-      [setTop]
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleOnChange2 = useCallback(
-      debounce((args) => {
-        if (args.length) {
-          const all = args.reduce((agg: number, item: number) => agg + item, 0);
-          const verticals = [`${(args[0] / all) * 100}%`, args[1], args[2]];
-          setVertical(verticals);
-        }
-      }, PANELS_SET_DEBOUNCE_TIME),
-      [setVertical]
-    );
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
+    const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
+      id: 'middle',
+    });
+
     return (
-      <ResizableGrid vertical onChange={handleOnChangeTop}>
+      <ResizableGrid vertical onChange={handleOnLayoutChange}>
         <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
           <ResizableGrid
             proportionalLayout={false}
             minSize={200}
-            onChange={handleOnChange2}
+            onChange={handleOnMiddleLayoutChange}
           >
             <ResizableGridPanel
               priority={LayoutPriority.High}
               minSize={200}
-              preferredSize={verticals[0] || '50%'}
+              preferredSize={sizesMiddle[0] || '50%'}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
@@ -267,7 +234,7 @@ const MainGrid = memo(
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={verticals[1] || 330}
+              preferredSize={sizesMiddle[1] || 330}
               minSize={300}
             >
               <TradeGridChild>
@@ -286,7 +253,7 @@ const MainGrid = memo(
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={verticals[2] || 430}
+              preferredSize={sizesMiddle[2] || 430}
               minSize={200}
             >
               <TradeGridChild>
@@ -304,7 +271,7 @@ const MainGrid = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize={topone || '25%'}
+          preferredSize={sizes[1] || '25%'}
           minSize={50}
         >
           <MarketBottomPanel marketId={marketId} pinnedAsset={pinnedAsset} />
