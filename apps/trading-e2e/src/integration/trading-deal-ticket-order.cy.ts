@@ -88,7 +88,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
         'Size cannot be lower than 1'
       );
     });
-    it('must have total margin available', function () {
+    it('must have total margin available', () => {
       // 7001-COLL-011
       cy.getByTestId('tab-ticket')
         .find('.text-xs')
