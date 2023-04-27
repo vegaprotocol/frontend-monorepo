@@ -279,29 +279,33 @@ context(
       });
 
       // 2002-SINC-016
-      describe.skip('Vega wallet with assets', function () {
+      describe('Vega wallet with assets', function () {
         const assets = [
           {
-            id: 'fUSDC',
+            id: '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc',
             name: 'USDC (fake)',
+            symbol: 'fUSDC',
             amount: '1000000',
             expectedAmount: '10.00',
           },
           {
-            id: 'fDAI',
+            id: '8566db7257222b5b7ef2886394ad28b938b28680a54a169bbc795027b89d6665',
             name: 'DAI (fake)',
+            symbol: 'fDAI',
             amount: '200000',
             expectedAmount: '2.00',
           },
           {
-            id: 'fBTC',
+            id: '73174a6fb1d5802ba0ac7bd7ab79e0a3a4837b262de0a4e80815a55442692bd0',
             name: 'BTC (fake)',
+            symbol: 'fBTC',
             amount: '600000',
             expectedAmount: '6.00',
           },
           {
-            id: 'fEURO',
+            id: 'e02d4c15d790d1d2dffaf2dcd1cf06a1fe656656cf4ed18c8ce99f9e83643567',
             name: 'EURO (fake)',
+            symbol: 'fEURO',
             amount: '800000',
             expectedAmount: '8.00',
           },
@@ -322,15 +326,15 @@ context(
           });
         });
 
-        for (const { id, name, expectedAmount } of assets) {
-          it(`should see ${id} within vega wallet`, () => {
+        for (const { name, symbol, expectedAmount } of assets) {
+          it(`should see ${name} within vega wallet`, () => {
             cy.get(walletContainer).within(() => {
               cy.get(vegaWalletCurrencyTitle)
-                .contains(id, txTimeout)
+                .contains(name, txTimeout)
                 .should('be.visible');
 
               cy.get(vegaWalletCurrencyTitle)
-                .contains(id)
+                .contains(name)
                 .parent()
                 .siblings()
                 .invoke('text')
@@ -338,9 +342,9 @@ context(
                 .should('be.gte', parseFloat(expectedAmount));
 
               cy.get(vegaWalletCurrencyTitle)
-                .contains(id)
+                .contains(name)
                 .parent()
-                .contains(name);
+                .contains(symbol);
             });
           });
         }
