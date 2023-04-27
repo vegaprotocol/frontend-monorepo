@@ -26,12 +26,17 @@ const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
   ssr: false,
 });
 
+const LazySettings = dynamic(() => import('../client-pages/settings'), {
+  ssr: false,
+});
+
 export enum Routes {
   HOME = '/',
   MARKET = '/markets',
   MARKETS = '/markets/all',
   PORTFOLIO = '/portfolio',
-  LIQUIDITY = '/liquidity',
+  LIQUIDITY = 'liquidity/:marketId',
+  SETTINGS = 'settings',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -45,6 +50,7 @@ export const Links: ConsoleLinks = {
     marketId
       ? trimEnd(`${Routes.LIQUIDITY}/${marketId}`, '/')
       : Routes.LIQUIDITY,
+  [Routes.SETTINGS]: () => Routes.SETTINGS,
 };
 
 const routerConfig: RouteObject[] = [
@@ -86,6 +92,10 @@ const routerConfig: RouteObject[] = [
   {
     path: Routes.PORTFOLIO,
     element: <LazyPortfolio />,
+  },
+  {
+    path: Routes.SETTINGS,
+    element: <LazySettings />,
   },
   {
     path: '*',
