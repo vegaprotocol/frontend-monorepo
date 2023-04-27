@@ -32,7 +32,7 @@ export const ledgerEntriesQuery = (
   return merge(defaultResult, override);
 };
 
-const ledgerEntries: LedgerEntryFragment[] = [
+export const ledgerEntries: LedgerEntryFragment[] = [
   {
     vegaTime: '1669224476734364000',
     quantity: '0',
@@ -180,7 +180,6 @@ const ledgerEntries: LedgerEntryFragment[] = [
     toAccountBalance: '0',
     fromAccountBalance: '0',
   },
-
   {
     vegaTime: '2022-11-24T12:41:22.054428Z',
     quantity: '1000000000',
