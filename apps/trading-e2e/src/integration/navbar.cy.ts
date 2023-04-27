@@ -32,7 +32,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
     });
 
     it('Resources dropdown should be correctly rendered', () => {
-      const resourceSelector = 'ul li:last-child';
+      const resourceSelector = 'ul li:contains(Resources)';
       ['Docs', 'Give Feedback'].forEach((text, index) => {
         cy.get('nav').find(resourceSelector).contains('Resources').click();
         cy.get('nav')
@@ -91,7 +91,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
         cy.getByTestId('button-menu-drawer').click();
         cy.getByTestId('menu-drawer').should('be.visible');
         cy.getByTestId('menu-drawer')
-          .find('[data-testid="theme-switcher"]')
+          .find('[data-testid="Settings"]')
           .should('be.visible');
         cy.getByTestId('button-menu-drawer').click();
         cy.getByTestId('menu-drawer').should('not.be.visible');

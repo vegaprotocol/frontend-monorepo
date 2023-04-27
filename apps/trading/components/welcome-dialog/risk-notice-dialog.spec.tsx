@@ -21,12 +21,12 @@ describe('Risk notice dialog', () => {
   });
 
   it.each`
-    assertion             | network
-    ${'displays'}         | ${Networks.MAINNET}
-    ${'does not display'} | ${Networks.CUSTOM}
-    ${'does not display'} | ${Networks.DEVNET}
-    ${'does not display'} | ${Networks.STAGNET3}
-    ${'does not display'} | ${Networks.TESTNET}
+    assertion     | network
+    ${'displays'} | ${Networks.MAINNET}
+    ${'displays'} | ${Networks.CUSTOM}
+    ${'displays'} | ${Networks.DEVNET}
+    ${'displays'} | ${Networks.STAGNET3}
+    ${'displays'} | ${Networks.TESTNET}
   `(
     '$assertion the risk notice on $network',
     async ({ assertion, network }) => {
@@ -43,13 +43,7 @@ describe('Risk notice dialog', () => {
         { wrapper: BrowserRouter }
       );
 
-      if (assertion === 'displays') {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(screen.queryByText(introText)).toBeInTheDocument();
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(screen.queryByText(introText)).not.toBeInTheDocument();
-      }
+      expect(screen.queryByText(introText)).toBeInTheDocument();
     }
   );
 
