@@ -52,14 +52,14 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
 
   return (
     <div className="h-full relative">
-      {extractedData && (
-        <LedgerExportLink entries={extractedData} partyId={partyId} />
-      )}
       <LedgerTable
         ref={gridRef}
         rowData={extractedData}
         onFilterChanged={onFilterChanged}
       />
+      {extractedData && (
+        <LedgerExportLink entries={extractedData} partyId={partyId} />
+      )}
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
           loading={loading}
