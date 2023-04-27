@@ -185,16 +185,18 @@ export function validateValidatorListTotalStakeAndShare(
 ) {
   cy.contains('Loading...', epochTimeout).should('not.exist');
   waitForBeginningOfEpoch();
-  cy.get(`[row-id="${positionOnList}"]`).within(() => {
-    cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
-      'have.text',
-      expectedTotalStake
-    );
-    cy.getByTestId(stakeValidatorListTotalShare, epochTimeout).should(
-      'have.text',
-      expectedTotalShare
-    );
-  });
+  cy.get(`[row-id="${positionOnList}"]`)
+    .eq(1)
+    .within(() => {
+      cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
+        'have.text',
+        expectedTotalStake
+      );
+      cy.getByTestId(stakeValidatorListTotalShare, epochTimeout).should(
+        'have.text',
+        expectedTotalShare
+      );
+    });
 }
 
 export function ensureSpecifiedUnstakedTokensAreAssociated(
@@ -223,9 +225,11 @@ export function closeStakingDialog() {
     'contain.text',
     'At the beginning of the next epoch'
   );
-  cy.getByTestId('dialog-content').within(() => {
-    cy.get('a').should('have.text', 'Back to Staking').click();
-  });
+  cy.getByTestId('dialog-content')
+    .last()
+    .within(() => {
+      cy.get('a').should('have.text', 'Back to Staking').click();
+    });
 }
 
 export function validateWalletCurrency(
