@@ -88,5 +88,18 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
         'Size cannot be lower than 1'
       );
     });
+    it('must have total margin available', function () {
+      // 7001-COLL-011
+      cy.getByTestId('tab-ticket')
+        .find('.text-xs')
+        .eq(5)
+        .within(() => {
+          cy.get('[data-state="closed"]').should(
+            'have.text',
+            'Total margin available'
+          );
+          cy.get('.text-neutral-500').should('have.text', '~100,000.01 tDAI');
+        });
+    });
   });
 });
