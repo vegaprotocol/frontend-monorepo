@@ -17,7 +17,7 @@ import { tooltipMapping } from './tooltip-mapping';
 import type { ReactNode } from 'react';
 interface RowProps {
   field: string;
-  value: unknown;
+  value: ReactNode;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
@@ -36,8 +36,8 @@ const Row = ({
 }: RowProps) => {
   const className = 'text-black dark:text-white text-sm !px-0';
 
-  const getFormattedValue = (value: unknown) => {
-    if (typeof value !== 'string' && typeof value !== 'number') return null;
+  const getFormattedValue = (value: ReactNode) => {
+    if (typeof value !== 'string' && typeof value !== 'number') return value;
     if (unformatted || isNaN(Number(value))) {
       return value;
     }
@@ -50,7 +50,7 @@ const Row = ({
     return `${formatNumber(Number(value))} ${assetSymbol}`;
   };
 
-  const formattedValue: string | number | null = getFormattedValue(value);
+  const formattedValue = getFormattedValue(value);
 
   if (!formattedValue) return null;
   return (
@@ -70,11 +70,10 @@ const Row = ({
 };
 
 export interface MarketInfoTableProps {
-  data: unknown;
+  data: Record<string, ReactNode> | null | undefined;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
-  omits?: string[];
   children?: ReactNode;
   assetSymbol?: string;
   noBorder?: boolean;
@@ -85,7 +84,6 @@ export const MarketInfoTable = ({
   decimalPlaces,
   asPercentage,
   unformatted,
-  omits = ['__typename'],
   children,
   assetSymbol,
   noBorder,
@@ -96,20 +94,18 @@ export const MarketInfoTable = ({
   return (
     <>
       <KeyValueTable>
-        {Object.entries(data)
-          .filter(([key]) => !omits.includes(key))
-          .map(([key, value]) => (
-            <Row
-              key={key}
-              field={key}
-              value={value}
-              decimalPlaces={decimalPlaces}
-              assetSymbol={assetSymbol}
-              asPercentage={asPercentage}
-              unformatted={unformatted}
-              noBorder={noBorder}
-            />
-          ))}
+        {Object.entries(data).map(([key, value]) => (
+          <Row
+            key={key}
+            field={key}
+            value={value}
+            decimalPlaces={decimalPlaces}
+            assetSymbol={assetSymbol}
+            asPercentage={asPercentage}
+            unformatted={unformatted}
+            noBorder={noBorder}
+          />
+        ))}
       </KeyValueTable>
       <div className="flex flex-col gap-2">{children}</div>
     </>

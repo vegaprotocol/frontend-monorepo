@@ -8,6 +8,7 @@ import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
+import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import {
   AgGridDynamic as AgGrid,
   DateRangeFilter,
@@ -22,7 +23,6 @@ import {
   TooltipCellComponent,
   ExternalLink,
   Icon,
-  ProgressBarCell,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,

@@ -13,6 +13,8 @@ import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
   ButtonLink,
   FormGroup,
+  Intent,
+  Notification,
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
@@ -29,6 +31,7 @@ import type {
   DelegateSubmissionBody,
   UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
+import Routes from '../../routes';
 
 export enum FormState {
   Default,
@@ -191,51 +194,65 @@ export const StakingForm = ({
   }, [isDialogVisible]);
 
   return (
-    <>
+    <div className="my-8">
       <SubHeading title={t('Manage your stake')} />
       {formState === FormState.Default &&
         availableStakeToAdd.isEqualTo(0) &&
         availableStakeToRemove.isEqualTo(0) && (
           <div className="mb-4">
             {lien.isGreaterThan(0) ? (
-              <span className="text-vega-pink">
-                {t('stakeNodeWrongVegaKey')}
-              </span>
+              <Notification
+                intent={Intent.Warning}
+                message={t('stakeNodeWrongVegaKey')}
+              />
             ) : (
-              <span className="text-vega-orange">{t('stakeNodeNone')}</span>
+              <Notification
+                message={t('stakeNodeNone')}
+                intent={Intent.Warning}
+                buttonProps={{
+                  text: t('associateVegaNow'),
+                  action: () => navigate(Routes.ASSOCIATE),
+                  className: 'py-1',
+                  size: 'sm',
+                }}
+              />
             )}
           </div>
         )}
-      <FormGroup
-        label={t('Select if you want to add or remove stake')}
-        labelFor="radio-stake-options"
-        hideLabel={true}
-      >
-        <RadioGroup
-          name="radio-stake-options"
-          onChange={(value) => {
-            // @ts-ignore value does exist on target
-            setAction(value);
-            navigate(`?action=${value}`, {
-              replace: true,
-            });
-          }}
-          value={action}
+
+      <div className="mb-8">
+        <FormGroup
+          label={t('Select if you want to add or remove stake')}
+          labelFor="radio-stake-options"
+          hideLabel={true}
         >
-          <Radio
-            disabled={availableStakeToAdd.isEqualTo(0)}
-            value={Actions.Add}
-            label="Add"
-            id="add-stake-radio"
-          />
-          <Radio
-            disabled={availableStakeToRemove.isEqualTo(0)}
-            value={Actions.Remove}
-            label="Remove"
-            id="remove-stake-radio"
-          />
-        </RadioGroup>
-      </FormGroup>
+          <RadioGroup
+            name="radio-stake-options"
+            onChange={(value) => {
+              // @ts-ignore value does exist on target
+              setAction(value);
+              navigate(`?action=${value}`, {
+                replace: true,
+              });
+            }}
+            value={action}
+          >
+            <Radio
+              disabled={availableStakeToAdd.isEqualTo(0)}
+              value={Actions.Add}
+              label="Add"
+              id="add-stake-radio"
+            />
+            <Radio
+              disabled={availableStakeToRemove.isEqualTo(0)}
+              value={Actions.Remove}
+              label="Remove"
+              id="remove-stake-radio"
+            />
+          </RadioGroup>
+        </FormGroup>
+      </div>
+
       {action !== undefined && (
         // eslint-disable-next-line
         <>
@@ -314,6 +331,6 @@ export const StakingForm = ({
         toggleDialog={toggleDialog}
         error={error}
       />
-    </>
+    </div>
   );
 };

@@ -61,14 +61,7 @@ describe('AccountsTable', () => {
       );
     });
     const cells = await screen.findAllByRole('gridcell');
-    const expectedValues = [
-      'tBTC',
-      '1,256.00',
-      '1,256.00',
-      '2,512.00',
-      'Deposit',
-      'Withdraw',
-    ];
+    const expectedValues = ['tBTC', '1,256.00', '1,256.00', '2,512.00', ''];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });

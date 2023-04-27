@@ -1,5 +1,5 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoContainer } from '@vegaprotocol/market-info';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
@@ -12,11 +12,10 @@ import { memo, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import { OracleBanner } from '../../components/banner';
 import {
   Tab,
   LocalStoragePersistTabs as Tabs,
-  ResizableGrid,
-  ResizableGridPanel,
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
@@ -33,12 +32,16 @@ import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
 } from '../../lib/hooks/use-market-click-handler';
+import {
+  ResizableGrid,
+  ResizableGridPanel,
+} from '../../components/resizable-grid';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
   | typeof DepthChartContainer
   | typeof DealTicketContainer
-  | typeof MarketInfoContainer
+  | typeof MarketInfoAccordionContainer
   | typeof OrderbookContainer
   | typeof TradesContainer;
 
@@ -56,7 +59,7 @@ const TradingViews = {
   Depth: requiresMarket(DepthChartContainer),
   Liquidity: requiresMarket(LiquidityContainer),
   Ticket: requiresMarket(DealTicketContainer),
-  Info: requiresMarket(MarketInfoContainer),
+  Info: requiresMarket(MarketInfoAccordionContainer),
   Orderbook: requiresMarket(OrderbookContainer),
   Trades: requiresMarket(TradesContainer),
   Positions: PositionsContainer,
@@ -271,7 +274,10 @@ export const TradeGrid = ({
 }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <div>
+        <TradeMarketHeader market={market} onSelect={onSelect} />
+        <OracleBanner marketId={market?.id || ''} />
+      </div>
       <MainGrid
         marketId={market?.id || ''}
         onSelect={onSelect}
@@ -344,7 +350,10 @@ export const TradePanels = ({
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <div>
+        <TradeMarketHeader market={market} onSelect={onSelect} />
+        <OracleBanner marketId={market?.id || ''} />
+      </div>
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (

@@ -7,7 +7,7 @@ const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = '[data-testid="connect-vega-wallet"]';
 const getVegaLink = '[data-testid="link"]';
-const dialog = '[role="dialog"]';
+const dialog = '[role="dialog"]:visible';
 const dialogHeader = '[data-testid="dialog-title"]';
 const walletDialogHeader = '[data-testid="wallet-dialog-title"]';
 const connectorsList = '[data-testid="connectors-list"]';
@@ -35,6 +35,7 @@ context(
   { tags: '@regression' },
   () => {
     before('visit token home page', () => {
+      cy.clearAllLocalStorage();
       cy.visit('/');
       cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
     });
@@ -333,10 +334,8 @@ context(
                 .parent()
                 .siblings()
                 .invoke('text')
-                .then((el) => {
-                  const value = parseFloat(el);
-                  cy.wrap(value).should('be.gte', parseFloat(expectedAmount));
-                });
+                .then(parseFloat)
+                .should('be.gte', parseFloat(expectedAmount));
 
               cy.get(vegaWalletCurrencyTitle)
                 .contains(id)

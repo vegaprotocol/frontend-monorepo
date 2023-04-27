@@ -1,4 +1,5 @@
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import { MarketState } from '@vegaprotocol/types';
 
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
@@ -12,12 +13,22 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   before(() => {
-    cy.mockTradingPage();
+    cy.mockTradingPage(
+      MarketState.STATE_ACTIVE,
+      undefined,
+      undefined,
+      'COMPROMISED'
+    );
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
     cy.getByTestId(marketInfoBtn).click();
     cy.wait('@MarketInfo');
+  });
+
+  it('show oracle banner', () => {
+    cy.getByTestId(marketTitle).contains('Oracle').click();
+    cy.getByTestId('oracle-status').should('contain.text', 'COMPROMISED');
   });
 
   it('current fees displayed', () => {
@@ -108,18 +119,14 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('risk model displayed', () => {
     cy.getByTestId(marketTitle).contains('Risk model').click();
-
-    validateMarketDataRow(0, 'Typename', 'LogNormalRiskModel');
-    validateMarketDataRow(1, 'Tau', '0.0001140771161');
-    validateMarketDataRow(2, 'Risk Aversion Parameter', '0.01');
+    validateMarketDataRow(0, 'Tau', '0.0001140771161');
+    validateMarketDataRow(1, 'Risk Aversion Parameter', '0.01');
   });
 
   it('risk parameters displayed', () => {
     cy.getByTestId(marketTitle).contains('Risk parameters').click();
-
-    validateMarketDataRow(0, 'Typename', 'LogNormalModelParams');
-    validateMarketDataRow(1, 'R', '0.016');
-    validateMarketDataRow(2, 'Sigma', '0.3');
+    validateMarketDataRow(0, 'R', '0.016');
+    validateMarketDataRow(1, 'Sigma', '0.3');
   });
 
   it('risk factors displayed', () => {

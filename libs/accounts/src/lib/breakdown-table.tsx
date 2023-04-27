@@ -1,16 +1,16 @@
 import { forwardRef } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  Intent,
-  progressBarCellRendererSelector,
-} from '@vegaprotocol/ui-toolkit';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import { AccountTypeMapping } from '@vegaprotocol/types';
-import type { ValueProps } from '@vegaprotocol/ui-toolkit';
-import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
+import type {
+  ValueProps,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/datagrid';
+import { progressBarCellRendererSelector } from '@vegaprotocol/datagrid';
 import { AgGridDynamic as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import { accountValuesComparator } from './accounts-table';

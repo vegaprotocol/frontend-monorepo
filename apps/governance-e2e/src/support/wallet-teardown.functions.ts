@@ -9,7 +9,7 @@ import {
 import { ethers, Wallet } from 'ethers';
 
 const associatedAmountInWallet = '[data-testid="associated-amount"]:visible';
-const vegaWalletContainer = 'aside [data-testid="vega-wallet"]';
+const vegaWalletContainer = 'aside [data-testid="vega-wallet"]:visible';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
@@ -105,24 +105,25 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
     { timeout: transactionTimeout, log: false }
   ).then((stakeBalance) => {
     if (Number(stakeBalance) != 0) {
-      cy.get('[data-testid="vega-wallet-balance-unstaked"]:visible').within(
-        () => {
-          cy.get(associatedAmountInWallet)
-            .invoke('text')
-            .then(($walletAmount) => {
-              cy.wrap(
-                stakingBridgeContract.remove_stake(
-                  String(stakeBalance),
-                  vegaWalletPubKey
-                ),
-                { timeout: transactionTimeout, log: false }
-              );
-              cy.get(associatedAmountInWallet, {
+      cy.get(vegaWalletContainer).within(() => {
+        cy.getByTestId('currency-value')
+          .invoke('text')
+          .then(($associatedAmount) => {
+            cy.wrap(
+              stakingBridgeContract.remove_stake(
+                String(stakeBalance),
+                vegaWalletPubKey
+              ),
+              { timeout: transactionTimeout, log: false }
+            );
+            cy.get("[data-testid='currency-value']")
+              .first()
+              .invoke('text', {
                 timeout: transactionTimeout,
-              }).should('not.have.text', $walletAmount);
-            });
-        }
-      );
+              })
+              .should('not.eq', $associatedAmount);
+          });
+      });
     }
   });
 }
@@ -134,8 +135,6 @@ async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
     log: false,
   }).then((vestingAmount) => {
     if (Number(vestingAmount) != 0) {
-      // Wait needed to allow time for ganache to process tx for stakingBridgeContract.remove_stake
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wrap(
         vestingContract.remove_stake(String(vestingAmount), vegaWalletPubKey),
         { timeout: transactionTimeout, log: false }

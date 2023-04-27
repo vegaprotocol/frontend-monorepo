@@ -3,15 +3,8 @@ import type {
   MarketInfoQuery,
   MarketInfoQueryVariables,
 } from './__generated__/MarketInfo';
-import {
-  marketDataProvider,
-  marketCandlesProvider,
-} from '@vegaprotocol/market-list';
-import type {
-  MarketData,
-  Candle,
-  MarketCandlesQueryVariables,
-} from '@vegaprotocol/market-list';
+import { marketDataProvider } from '@vegaprotocol/market-list';
+import type { MarketData, Candle } from '@vegaprotocol/market-list';
 import { MarketInfoDocument } from './__generated__/MarketInfo';
 
 export type MarketInfo = NonNullable<MarketInfoQuery['market']>;
@@ -46,23 +39,6 @@ export const marketInfoWithDataProvider = makeDerivedDataProvider<
     market && {
       ...market,
       data: marketData || undefined,
-    }
-  );
-});
-
-export const marketInfoWithDataAndCandlesProvider = makeDerivedDataProvider<
-  MarketInfoWithDataAndCandles,
-  never,
-  MarketCandlesQueryVariables
->([marketInfoProvider, marketDataProvider, marketCandlesProvider], (parts) => {
-  const market: MarketInfo | null = parts[0];
-  const marketData: MarketData | null = parts[1];
-  const candles: Candle[] | null = parts[2];
-  return (
-    market && {
-      ...market,
-      data: marketData || undefined,
-      candles: candles || undefined,
     }
   );
 });

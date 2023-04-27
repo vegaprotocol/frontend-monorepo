@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import {
-  calcCandleVolume,
   totalFeesPercentage,
+  marketDataProvider,
 } from '@vegaprotocol/market-list';
 import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import {
@@ -18,8 +18,8 @@ import { MarketInfoTable } from './info-key-value-table';
 import type {
   MarketInfo,
   MarketInfoWithData,
-  MarketInfoWithDataAndCandles,
 } from './market-info-data-provider';
+import { Last24hVolume } from '../last-24h-volume';
 import BigNumber from 'bignumber.js';
 import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
 import { ConditionOperatorMapping } from '@vegaprotocol/types';
@@ -27,6 +27,7 @@ import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '@vegaprotocol/oracles';
 import { useOracleProofs } from '@vegaprotocol/oracles';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 type PanelProps = Pick<
   ComponentProps<typeof MarketInfoTable>,
@@ -37,14 +38,6 @@ type MarketInfoProps = {
   market: MarketInfo;
 };
 
-type MarketInfoWithDataProps = {
-  market: MarketInfoWithData;
-};
-
-type MarketInfoWithDataAndCandlesProps = {
-  market: MarketInfoWithDataAndCandles;
-};
-
 export const CurrentFeesInfoPanel = ({
   market,
   ...props
@@ -52,7 +45,9 @@ export const CurrentFeesInfoPanel = ({
   <>
     <MarketInfoTable
       data={{
-        ...market.fees.factors,
+        makerFee: market.fees.factors.makerFee,
+        infrastructureFee: market.fees.factors.infrastructureFee,
+        liquidityFee: market.fees.factors.liquidityFee,
         totalFees: totalFeesPercentage(market.fees.factors),
       }}
       asPercentage={true}
@@ -69,18 +64,22 @@ export const CurrentFeesInfoPanel = ({
 export const MarketPriceInfoPanel = ({
   market,
   ...props
-}: MarketInfoWithDataProps & PanelProps) => {
+}: MarketInfoProps & PanelProps) => {
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: market.id },
+  });
   return (
     <>
       <MarketInfoTable
         data={{
-          markPrice: market.data?.markPrice,
-          bestBidPrice: market.data?.bestBidPrice,
-          bestOfferPrice: market.data?.bestOfferPrice,
+          markPrice: data?.markPrice,
+          bestBidPrice: data?.bestBidPrice,
+          bestOfferPrice: data?.bestOfferPrice,
           quoteUnit: market.tradableInstrument.instrument.product.quoteName,
         }}
         decimalPlaces={market.decimalPlaces}
@@ -99,8 +98,11 @@ export const MarketPriceInfoPanel = ({
 export const MarketVolumeInfoPanel = ({
   market,
   ...props
-}: MarketInfoWithDataAndCandlesProps & PanelProps) => {
-  const last24hourVolume = market.candles && calcCandleVolume(market.candles);
+}: MarketInfoProps & PanelProps) => {
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: market.id },
+  });
 
   const dash = (value: string | undefined) =>
     value && value !== '0' ? value : '-';
@@ -108,12 +110,17 @@ export const MarketVolumeInfoPanel = ({
   return (
     <MarketInfoTable
       data={{
-        '24hourVolume': dash(last24hourVolume),
-        openInterest: dash(market.data?.openInterest),
-        bestBidVolume: dash(market.data?.bestBidVolume),
-        bestOfferVolume: dash(market.data?.bestOfferVolume),
-        bestStaticBidVolume: dash(market.data?.bestStaticBidVolume),
-        bestStaticOfferVolume: dash(market.data?.bestStaticOfferVolume),
+        '24hourVolume': (
+          <Last24hVolume
+            marketId={market.id}
+            positionDecimalPlaces={market.positionDecimalPlaces}
+          />
+        ),
+        openInterest: dash(data?.openInterest),
+        bestBidVolume: dash(data?.bestBidVolume),
+        bestOfferVolume: dash(data?.bestOfferVolume),
+        bestStaticBidVolume: dash(data?.bestStaticBidVolume),
+        bestStaticOfferVolume: dash(data?.bestStaticOfferVolume),
       }}
       decimalPlaces={market.positionDecimalPlaces}
       {...props}
@@ -176,7 +183,7 @@ export const InstrumentInfoPanel = ({
       marketName: market.tradableInstrument.instrument.name,
       code: market.tradableInstrument.instrument.code,
       productType: market.tradableInstrument.instrument.product.__typename,
-      ...market.tradableInstrument.instrument.product,
+      quoteName: market.tradableInstrument.instrument.product.quoteName,
     }}
     {...props}
   />
@@ -239,38 +246,52 @@ export const MetadataInfoPanel = ({
 export const RiskModelInfoPanel = ({
   market,
   ...props
-}: MarketInfoProps & PanelProps) => (
-  <MarketInfoTable
-    data={market.tradableInstrument.riskModel}
-    unformatted={true}
-    omits={[]}
-    {...props}
-  />
-);
+}: MarketInfoProps & PanelProps) => {
+  if (market.tradableInstrument.riskModel.__typename !== 'LogNormalRiskModel') {
+    return null;
+  }
+  const { tau, riskAversionParameter } = market.tradableInstrument.riskModel;
+  return (
+    <MarketInfoTable
+      data={{ tau, riskAversionParameter }}
+      unformatted
+      {...props}
+    />
+  );
+};
 
 export const RiskParametersInfoPanel = ({
   market,
   ...props
-}: MarketInfoProps & PanelProps) => (
-  <MarketInfoTable
-    data={market.tradableInstrument.riskModel.params}
-    unformatted={true}
-    omits={[]}
-    {...props}
-  />
-);
+}: MarketInfoProps & PanelProps) => {
+  if (market.tradableInstrument.riskModel.__typename === 'LogNormalRiskModel') {
+    const { r, sigma, mu } = market.tradableInstrument.riskModel.params;
+    return <MarketInfoTable data={{ r, sigma, mu }} unformatted {...props} />;
+  }
+  if (market.tradableInstrument.riskModel.__typename === 'SimpleRiskModel') {
+    const { factorLong, factorShort } =
+      market.tradableInstrument.riskModel.params;
+    return (
+      <MarketInfoTable
+        data={{ factorLong, factorShort }}
+        unformatted
+        {...props}
+      />
+    );
+  }
+  return null;
+};
 
 export const RiskFactorsInfoPanel = ({
   market,
   ...props
-}: MarketInfoProps & PanelProps) => (
-  <MarketInfoTable
-    data={market.riskFactors}
-    unformatted={true}
-    omits={['market', '__typename']}
-    {...props}
-  />
-);
+}: MarketInfoProps & PanelProps) => {
+  if (!market.riskFactors) {
+    return null;
+  }
+  const { short, long } = market.riskFactors;
+  return <MarketInfoTable data={{ short, long }} unformatted {...props} />;
+};
 
 export const PriceMonitoringBoundsInfoPanel = ({
   market,
@@ -278,13 +299,17 @@ export const PriceMonitoringBoundsInfoPanel = ({
   ...props
 }: {
   triggerIndex: number;
-} & MarketInfoWithDataProps &
+} & MarketInfoProps &
   PanelProps) => {
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: market.id },
+  });
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
   const trigger =
     market.priceMonitoringSettings?.parameters?.triggers?.[triggerIndex];
-  const bounds = market.data?.priceMonitoringBounds?.[triggerIndex];
+  const bounds = data?.priceMonitoringBounds?.[triggerIndex];
   if (!trigger) {
     console.error(
       `Could not find data for trigger ${triggerIndex} (market id: ${market.id})`
@@ -334,7 +359,11 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   <MarketInfoTable
     data={{
       triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
-      ...market.liquidityMonitoringParameters.targetStakeParameters,
+      timeWindow:
+        market.liquidityMonitoringParameters.targetStakeParameters.timeWindow,
+      scalingFactor:
+        market.liquidityMonitoringParameters.targetStakeParameters
+          .scalingFactor,
     }}
     {...props}
   />
@@ -343,17 +372,21 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 export const LiquidityInfoPanel = ({
   market,
   ...props
-}: MarketInfoWithDataProps & PanelProps) => {
+}: MarketInfoProps & PanelProps) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: market.id },
+  });
   return (
     <MarketInfoTable
       data={{
-        targetStake: market.data && market.data.targetStake,
-        suppliedStake: market.data && market.data?.suppliedStake,
-        marketValueProxy: market.data && market.data.marketValueProxy,
+        targetStake: data?.targetStake,
+        suppliedStake: data?.suppliedStake,
+        marketValueProxy: data?.marketValueProxy,
       }}
       decimalPlaces={assetDecimals}
       assetSymbol={assetSymbol}
@@ -365,12 +398,16 @@ export const LiquidityInfoPanel = ({
 export const LiquidityPriceRangeInfoPanel = ({
   market,
   ...props
-}: MarketInfoWithDataProps & PanelProps) => {
+}: MarketInfoProps & PanelProps) => {
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
   const liquidityPriceRange = formatNumberPercentage(
     new BigNumber(market.lpPriceRange).times(100)
   );
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: market.id },
+  });
   return (
     <>
       <p className="text-xs mb-4">
@@ -386,20 +423,20 @@ export const LiquidityPriceRangeInfoPanel = ({
           data={{
             liquidityPriceRange: `${liquidityPriceRange} of mid price`,
             lowestPrice:
-              market.data?.midPrice &&
+              data?.midPrice &&
               `${addDecimalsFormatNumber(
                 new BigNumber(1)
                   .minus(market.lpPriceRange)
-                  .times(market.data.midPrice)
+                  .times(data.midPrice)
                   .toString(),
                 market.decimalPlaces
               )} ${quoteUnit}`,
             highestPrice:
-              market.data?.midPrice &&
+              data?.midPrice &&
               `${addDecimalsFormatNumber(
                 new BigNumber(1)
                   .plus(market.lpPriceRange)
-                  .times(market.data.midPrice)
+                  .times(data.midPrice)
                   .toString(),
                 market.decimalPlaces
               )} ${quoteUnit}`,
@@ -418,7 +455,15 @@ export const OracleInfoPanel = ({
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
   return (
-    <MarketInfoTable data={product.dataSourceSpecBinding} {...props}>
+    <MarketInfoTable
+      data={{
+        settlementDataProperty:
+          product.dataSourceSpecBinding.settlementDataProperty,
+        tradingTerminationProperty:
+          product.dataSourceSpecBinding.tradingTerminationProperty,
+      }}
+      {...props}
+    >
       <div
         className="flex flex-col gap-2 mt-4"
         data-testid="oracle-proof-links"

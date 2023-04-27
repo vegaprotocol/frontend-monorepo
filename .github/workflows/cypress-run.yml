@@ -20,7 +20,7 @@ jobs:
         project: ${{ fromJSON(inputs.projects) }}
     name: ${{ matrix.project }}
     runs-on: self-hosted-runner
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       # Checks if skip cache was requested
       - name: Set skip-nx-cache flag
@@ -93,3 +93,9 @@ jobs:
         with:
           name: logs-${{ matrix.project }}
           path: /home/runner/.vegacapsule/testnet/logs
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ failure() }}
+        with:
+          name: test-report-${{ matrix.project }}
+          path: frontend-monorepo/apps/trading-e2e/cypress/reports

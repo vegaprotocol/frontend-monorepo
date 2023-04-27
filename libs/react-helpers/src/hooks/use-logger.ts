@@ -1,26 +1,18 @@
 import { useRef } from 'react';
-import { BrowserTracing } from '@sentry/tracing';
-import * as Sentry from '@sentry/browser';
-import type { LocalLogger } from '@vegaprotocol/utils';
-import { localLoggerFactory } from '@vegaprotocol/utils';
+import type { LocalLogger, LoggerConf } from '@vegaprotocol/utils';
+import { localLoggerFactory, SentryInit } from '@vegaprotocol/utils';
 
-interface Props {
+export interface LoggerProps extends LoggerConf {
   dsn?: string;
-  application?: string;
-  tags?: string[];
+  env?: string;
 }
 
-export const useLogger = ({ dsn, ...props }: Props) => {
+export const useLogger = ({ dsn, env, ...props }: LoggerProps) => {
   const logger = useRef<LocalLogger | null>(null);
   if (!logger.current) {
     logger.current = localLoggerFactory(props);
     if (dsn) {
-      Sentry.init({
-        dsn,
-        integrations: [new BrowserTracing()],
-        tracesSampleRate: 1,
-        defaultIntegrations: false,
-      });
+      SentryInit(dsn, env);
     }
   }
   return logger.current;
