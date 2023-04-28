@@ -90,6 +90,7 @@ export function getSubmittedProposalFromProposalList(proposalTitle: string) {
 export function getProposalIdFromList(proposalTitle: string) {
   cy.contains(proposalTitle)
     .parentsUntil(proposalListItem)
+    .last()
     .within(() => {
       cy.get(proposalDetails)
         .invoke('text')
@@ -133,7 +134,7 @@ export function waitForProposalSync() {
   // before proposal appears in the list - so rather than hard coded wait - we just wait on the
   // delegation checks that are performed on the governance page.
 
-  cy.intercept('POST', '/query', (req) => {
+  cy.intercept('POST', '/graphql', (req) => {
     if (req.body.operationName === 'Delegations') {
       req.alias = 'proposalDelegationsCompletion';
     }
@@ -143,7 +144,7 @@ export function waitForProposalSync() {
   cy.wait(['@proposalDelegationsCompletion', '@proposalDelegationsCompletion']);
 
   // Turn off this intercept from here on in
-  cy.intercept('POST', '/query', (req) => {
+  cy.intercept('POST', '/graphql', (req) => {
     if (req.body.operationName === 'Delegations') {
       req.continue();
     }

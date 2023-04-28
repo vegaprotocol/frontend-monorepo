@@ -42,11 +42,13 @@ context(
       cy.visit('/');
       // When running tests locally, will fail if run without restarting capsule
       cy.updateCapsuleMultiSig().then(() => {
-        depositAsset(usdcEthAddress, '100');
+        ethereumWalletConnect();
+        depositAsset(usdcEthAddress, '1000', 5);
       });
     });
 
     beforeEach('Navigate to withdrawal page', function () {
+      cy.clearLocalStorage();
       cy.reload();
       waitForSpinner();
       navigateTo(navigation.withdraw);
@@ -146,7 +148,8 @@ context(
             .should('have.attr', 'href')
             .and('contain', 'https://sepolia.etherscan.io/address/');
           cy.get('[col-id="withdrawnTimestamp"]').should('not.be.empty');
-          cy.get('[col-id="status"]').should('have.text', 'Completed');
+          cy.get('[col-id="status"]').invoke('text').as('withdrawalStatus');
+          cy.get('withdrawalStatus').should('eq', 'Completed');
           cy.get('[col-id="txHash"]')
             .find('a')
             .should('have.attr', 'href')
@@ -155,7 +158,7 @@ context(
     });
 
     // Skipping because of bug #1857
-    it.skip('Able to withdraw asset: -eth wallet not connected', function () {
+    it('Able to withdraw asset: -eth wallet not connected', function () {
       const ethWalletAddress = Cypress.env('ethWalletPublicKey');
       cy.reload();
       waitForAssetsDisplayed(usdtName);
@@ -202,7 +205,7 @@ context(
       const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
       // Disconnect vega wallet
-      cy.getByTestId('manage-vega-wallet').click();
+      cy.getByTestId('manage-vega-wallet').last().click();
       cy.getByTestId('disconnect').click();
 
       cy.connectPublicKey(vegaWalletPubKey);
@@ -214,14 +217,16 @@ context(
         cy.getByTestId(submitWithdrawalButton).click();
       });
 
-      cy.getByTestId('dialog-content').within(() => {
-        cy.get('h1').should('have.text', 'Transaction failed');
-        cy.getByTestId('Error').should('have.text', expectedErrorTxt);
-      });
+      cy.getByTestId('dialog-content')
+        .last()
+        .within(() => {
+          cy.get('h1').should('have.text', 'Transaction failed');
+          cy.getByTestId('Error').should('have.text', expectedErrorTxt);
+        });
     });
 
     function waitForAssetsDisplayed(expectedAsset: string) {
-      cy.contains(expectedAsset, txTimeout).should('be.visible');
+      cy.getByTestId('currency-title').should('contain.text', expectedAsset);
     }
   }
 );
