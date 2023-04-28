@@ -142,10 +142,11 @@ describe('VegaConnectDialog', () => {
       await act(async () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
+      await waitFor(() => {
+        expect(spy).toHaveBeenCalledWith(fields);
 
-      expect(spy).toHaveBeenCalledWith(fields);
-
-      expect(mockCloseVegaDialog).toHaveBeenCalled();
+        expect(mockCloseVegaDialog).toHaveBeenCalled();
+      });
     });
 
     it('handles failed connection', async () => {
