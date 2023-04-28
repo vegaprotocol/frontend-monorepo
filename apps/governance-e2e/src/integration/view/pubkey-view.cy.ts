@@ -17,10 +17,15 @@ const banner = 'view-banner';
 
 context('View functionality with public key', { tags: '@smoke' }, function () {
   before('send asset to wallet', function () {
-    vegaWalletFaucetAssetsWithoutCheck('fUSDC', '1000000', vegaWalletPubKey);
+    vegaWalletFaucetAssetsWithoutCheck(
+      '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc',
+      '1000000',
+      vegaWalletPubKey
+    );
   });
 
   beforeEach('visit home page', function () {
+    cy.clearLocalStorage();
     cy.visit('/');
     waitForSpinner();
     cy.connectPublicKey(vegaWalletPubKey);

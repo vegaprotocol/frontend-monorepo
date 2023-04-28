@@ -17,6 +17,7 @@ export const ThemeSwitcher = ({
       onClick={() => setTheme()}
       className={className}
       data-testid="theme-switcher"
+      id="theme-switcher"
     >
       {theme === 'dark' && <SunIcon />}
       {theme === 'light' && <MoonIcon />}

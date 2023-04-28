@@ -30,7 +30,10 @@ export type LedgerEntry = LedgerEntryFragment & {
 };
 
 export type AggregatedLedgerEntriesEdge = Schema.AggregatedLedgerEntriesEdge;
-export type AggregatedLedgerEntriesNode = AggregatedLedgerEntriesEdge & {
+export type AggregatedLedgerEntriesNode = Omit<
+  AggregatedLedgerEntriesEdge,
+  'node'
+> & {
   node: LedgerEntry;
 };
 

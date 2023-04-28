@@ -26,7 +26,8 @@ export const OracleBanner = ({ marketId }: { marketId: string }) => {
   return (
     <NotificationBanner intent={Intent.Danger}>
       <div>
-        Oracle status for this market is {oracle.status}.{' '}
+        Oracle status for this market is{' '}
+        <span data-testId="oracle-status">{oracle.status}</span>.{' '}
         {oracleStatuses[oracle.status]}
       </div>
       {oracle.status_reason ? (

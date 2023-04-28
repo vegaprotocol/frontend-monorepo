@@ -172,7 +172,7 @@ export const OrderRejectionReasonMapping: {
     'Cannot send IOC order during auction',
   ORDER_ERROR_EDIT_NOT_ALLOWED: 'Edit not allowed',
   ORDER_ERROR_EXPIRYAT_BEFORE_CREATEDAT: 'Expiry time before creation time',
-  ORDER_ERROR_GFA_CANNOT_SEND_ORDER_DURING_CONTINUOUS_TRADING:
+  ORDER_ERROR_CANNOT_SEND_GFA_ORDER_DURING_CONTINUOUS_TRADING:
     'Cannot send GFA order during continuous trading',
   ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE: 'Insufficient asset balance',
   ORDER_ERROR_INSUFFICIENT_FUNDS_TO_PAY_FEES: 'Insufficient funds to pay fees',
@@ -209,6 +209,11 @@ export const OrderRejectionReasonMapping: {
     'Unable to amend price on pegged order',
   ORDER_ERROR_UNABLE_TO_REPRICE_PEGGED_ORDER: 'Unable to reprice pegged order',
   ORDER_ERROR_WITHOUT_REFERENCE_PRICE: 'Without reference price',
+  ORDER_ERROR_INCORRECT_MARKET_TYPE: 'Incorrect market type',
+  ORDER_ERROR_POST_ONLY_ORDER_WOULD_TRADE: 'Post only order would trade',
+  ORDER_ERROR_REDUCE_ONLY_ORDER_WOULD_NOT_REDUCE:
+    'Reduce only order would not reduce',
+  ORDER_ERROR_TOO_MANY_PEGGED_ORDERS: 'Too many pegged orders',
 };
 
 /**
@@ -345,6 +350,7 @@ export const SideMapping: {
 } = {
   SIDE_BUY: 'Long',
   SIDE_SELL: 'Short',
+  SIDE_UNSPECIFIED: 'Unspecified',
 };
 
 /**
@@ -458,6 +464,7 @@ export const PositionStatusMapping: {
   POSITION_STATUS_CLOSED_OUT: 'Closed by network',
   POSITION_STATUS_ORDERS_CLOSED: 'Maintained by network',
   POSITION_STATUS_UNSPECIFIED: 'Normal',
+  POSITION_STATUS_DISTRESSED: 'Distressed',
 };
 
 export const ConditionOperatorMapping: { [C in ConditionOperator]: string } = {

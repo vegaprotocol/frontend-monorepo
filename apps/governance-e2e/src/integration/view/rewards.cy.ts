@@ -13,6 +13,7 @@ context(
   { tags: '@regression' },
   function () {
     before('navigate to rewards page', function () {
+      cy.clearLocalStorage();
       cy.visit('/');
       navigateTo(navigation.rewards);
     });
