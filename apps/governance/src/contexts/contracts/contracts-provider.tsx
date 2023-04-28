@@ -14,13 +14,17 @@ import { ContractsContext } from './contracts-context';
 import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { ENV } from '../../config/env';
+import { ENV } from '../../config';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
-  const { provider: activeProvider, account } = useWeb3React();
+  const {
+    provider: activeProvider,
+    account,
+    chainId: activeChainId,
+  } = useWeb3React();
   const { config } = useEthereumConfig();
   const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const [contracts, setContracts] =
@@ -39,7 +43,11 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
           ETHEREUM_PROVIDER_URL,
           Number(config.chain_id)
         );
-        const provider = activeProvider ? activeProvider : defaultProvider;
+
+        const provider =
+          activeProvider && activeChainId === Number(config.chain_id)
+            ? activeProvider
+            : defaultProvider;
 
         if (
           account &&
@@ -84,7 +92,14 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       //  TODO: hacky quick fix for release to prevent race condition, find a better fix for this.
       cancelled = true;
     };
-  }, [activeProvider, account, config, VEGA_ENV, ETHEREUM_PROVIDER_URL]);
+  }, [
+    activeProvider,
+    activeChainId,
+    account,
+    config,
+    VEGA_ENV,
+    ETHEREUM_PROVIDER_URL,
+  ]);
 
   if (!contracts) {
     return (
