@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Notification, Intent } from '@vegaprotocol/ui-toolkit';
 
 import {
   AppStateActionType,
@@ -26,7 +26,8 @@ import {
 import { Loader } from '@vegaprotocol/ui-toolkit';
 import colors from 'tailwindcss/colors';
 import { useBalances } from '../../lib/balances/balances-store';
-import { useWeb3Disconnect } from '@vegaprotocol/web3';
+import { useEthereumConfig, useWeb3Disconnect } from '@vegaprotocol/web3';
+import { getChainName } from '@vegaprotocol/web3';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -182,16 +183,27 @@ const ConnectedKey = () => {
 
 export const EthWallet = () => {
   const { t } = useTranslation();
-  const { appDispatch } = useAppState();
+  const { appDispatch, appState } = useAppState();
   const { account, connector } = useWeb3React();
   const pendingTxs = usePendingTransactions();
   const disconnect = useWeb3Disconnect(connector);
+  const { config } = useEthereumConfig();
 
   return (
     <WalletCard>
       <section data-testid="ethereum-wallet">
         <WalletCardHeader>
           <h1 className="m-0 uppercase">{t('ethereumKey')}</h1>
+          {appState.disconnectNotice && (
+            <div className="col-span-full">
+              <Notification
+                message={t('disconnectedNotice', {
+                  correctNetwork: getChainName(Number(config?.chain_id)),
+                })}
+                intent={Intent.Danger}
+              />
+            </div>
+          )}
           {account && (
             <div className="place-self-end font-mono">
               <div

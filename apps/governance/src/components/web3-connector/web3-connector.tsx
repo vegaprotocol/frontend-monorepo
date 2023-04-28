@@ -1,6 +1,5 @@
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import {
-  getChainName,
   useWeb3ConnectStore,
   useWeb3Disconnect,
   Web3ConnectDialog,
@@ -26,7 +25,6 @@ export function Web3Connector({
   connectors,
   chainId,
 }: Web3ConnectorProps) {
-  const [showDisconnectBanner, setShowDisconnectBanner] = useState(false);
   const { appState, appDispatch } = useAppState();
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
@@ -37,13 +35,7 @@ export function Web3Connector({
   const appChainId = Number(chainId);
   return (
     <>
-      <Web3Content
-        appChainId={appChainId}
-        setShowDisconnectBanner={setShowDisconnectBanner}
-        showDisconnectBanner={showDisconnectBanner}
-      >
-        {children}
-      </Web3Content>
+      <Web3Content appChainId={appChainId}>{children}</Web3Content>
       <Web3ConnectDialog
         connectors={connectors}
         dialogOpen={appState.ethConnectOverlay}
@@ -57,20 +49,23 @@ export function Web3Connector({
 interface Web3ContentProps {
   children: ReactElement;
   appChainId: number;
-  setShowDisconnectBanner: (show: boolean) => void;
-  showDisconnectBanner: boolean;
 }
 
-export const Web3Content = ({
-  children,
-  appChainId,
-  setShowDisconnectBanner,
-  showDisconnectBanner,
-}: Web3ContentProps) => {
+export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
+  const { appState, appDispatch } = useAppState();
   const { connector, chainId } = useWeb3React();
   const [previousChainId, setPreviousChainId] = useState(chainId);
   const error = useWeb3ConnectStore((store) => store.error);
   const disconnect = useWeb3Disconnect(connector);
+
+  const showDisconnectNotice = useCallback(
+    (isVisible: boolean) =>
+      appDispatch({
+        type: AppStateActionType.SET_DISCONNECT_NOTICE,
+        isVisible,
+      }),
+    [appDispatch]
+  );
 
   useEffect(() => {
     if (connector?.connectEagerly) {
@@ -89,20 +84,24 @@ export const Web3Content = ({
       if (chainId !== appChainId) {
         disconnect();
 
-        // If the user was previously connected, show the disconnect explanation banner.
-        if (previousChainId !== undefined) {
-          setShowDisconnectBanner(true);
+        // If the user was previously connected, show the disconnect explanation notice.
+        if (previousChainId !== undefined && !appState.disconnectNotice) {
+          showDisconnectNotice(true);
         }
       } else {
-        setShowDisconnectBanner(false);
+        if (appState.disconnectNotice) {
+          showDisconnectNotice(false);
+        }
       }
     }
   }, [
     appChainId,
+    appDispatch,
+    appState.disconnectNotice,
     chainId,
     disconnect,
     previousChainId,
-    setShowDisconnectBanner,
+    showDisconnectNotice,
   ]);
 
   if (error) {
@@ -116,15 +115,5 @@ export const Web3Content = ({
     );
   }
 
-  return (
-    <>
-      {showDisconnectBanner && (
-        <div>
-          You have been disconnected. Connect your ethereum wallet to{' '}
-          {getChainName(appChainId)} to use this app.
-        </div>
-      )}
-      {children}
-    </>
-  );
+  return children;
 };
