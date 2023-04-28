@@ -6,11 +6,14 @@ const defaultOptions = {} as const;
 export type StatsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type StatsQuery = { __typename?: 'Query', nodeData?: { __typename?: 'NodeData', stakedTotal: string, totalNodes: number, inactiveNodes: number } | null, statistics: { __typename?: 'Statistics', status: string, blockHeight: string, blockDuration: string, backlogLength: string, txPerBlock: string, tradesPerSecond: string, ordersPerSecond: string, averageOrdersPerBlock: string, vegaTime: any, appVersion: string, chainVersion: string, chainId: string, genesisTime: any } };
+export type StatsQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, nodeData?: { __typename?: 'NodeData', stakedTotal: string, totalNodes: number, inactiveNodes: number } | null, statistics: { __typename?: 'Statistics', status: string, blockHeight: string, blockDuration: string, backlogLength: string, txPerBlock: string, tradesPerSecond: string, ordersPerSecond: string, averageOrdersPerBlock: string, vegaTime: any, appVersion: string, chainVersion: string, chainId: string, genesisTime: any } };
 
 
 export const StatsDocument = gql`
     query Stats {
+  epoch {
+    id
+  }
   nodeData {
     stakedTotal
     totalNodes

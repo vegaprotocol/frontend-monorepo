@@ -9,7 +9,17 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
@@ -122,7 +132,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         params.data.asset.id === pinnedAssetId &&
         new BigNumber(params.data.total).isLessThanOrEqualTo(0)
           ? 32
-          : 22,
+          : 24,
       [pinnedAssetId]
     );
 
@@ -256,7 +266,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               colId="accounts-actions"
               headerName=""
               sortable={false}
-              minWidth={200}
+              maxWidth={200}
               type="rightAligned"
               cellRenderer={({
                 data,
@@ -283,30 +293,66 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     );
                   }
                   return (
-                    <>
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="deposit"
-                          onClick={() => {
-                            onClickDeposit && onClickDeposit(data.asset.id);
-                          }}
-                        >
-                          {t('Deposit')}
-                        </ButtonLink>
-                      )}
-                      <span className="mx-1" />
-                      {!props.isReadOnly && (
-                        <ButtonLink
-                          data-testid="withdraw"
-                          onClick={() =>
-                            onClickWithdraw && onClickWithdraw(data.asset.id)
-                          }
-                        >
-                          {t('Withdraw')}
-                        </ButtonLink>
-                      )}
-                    </>
+                    !props.isReadOnly && (
+                      <DropdownMenu
+                        trigger={
+                          <DropdownMenuTrigger
+                            iconName="more"
+                            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+                            data-testid="dropdown-menu"
+                          ></DropdownMenuTrigger>
+                        }
+                      >
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            key={'deposit'}
+                            data-testid="deposit"
+                            onClick={() => {
+                              onClickDeposit && onClickDeposit(data.asset.id);
+                            }}
+                          >
+                            <span>
+                              <VegaIcon
+                                name={VegaIconNames.DEPOSIT}
+                                size={16}
+                              />
+                              {t('Deposit')}
+                            </span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            key={'withdraw'}
+                            data-testid="withdraw"
+                            onClick={() =>
+                              onClickWithdraw && onClickWithdraw(data.asset.id)
+                            }
+                          >
+                            <span>
+                              <VegaIcon
+                                name={VegaIconNames.WITHDRAW}
+                                size={16}
+                              />
+                              {t('Withdraw')}
+                            </span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            key={'breakdown'}
+                            data-testid="breakdown"
+                            onClick={() => {
+                              setOpenBreakdown(!openBreakdown);
+                              setRow(data);
+                            }}
+                          >
+                            <span>
+                              <VegaIcon
+                                name={VegaIconNames.BREAKDOWN}
+                                size={16}
+                              />
+                              {t('Breakdown')}
+                            </span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )
                   );
                 }
               }}
@@ -314,7 +360,10 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           }
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
-          <div className="h-[35vh] w-full m-auto flex flex-col">
+          <div
+            className="h-[35vh] w-full m-auto flex flex-col"
+            data-testid="usage-breakdown"
+          >
             <h1 className="text-xl mb-4">
               {row?.asset?.symbol} {t('usage breakdown')}
             </h1>

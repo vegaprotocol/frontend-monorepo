@@ -1,6 +1,7 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
+import type { Provider, Status } from '@vegaprotocol/oracles';
 import {
   accountsQuery,
   assetQuery,
@@ -155,7 +156,6 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'ProposalsList', proposalListQuery());
   aliasGQLQuery(req, 'Deposits', depositsQuery());
 };
-
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -164,50 +164,56 @@ declare global {
       mockTradingPage(
         state?: Schema.MarketState,
         tradingMode?: Schema.MarketTradingMode,
-        trigger?: Schema.AuctionTrigger
+        trigger?: Schema.AuctionTrigger,
+        oracleStatus?: Status
       ): void;
     }
   }
 }
+
 export const addMockTradingPage = () => {
   Cypress.Commands.add(
     'mockTradingPage',
-    (state = Schema.MarketState.STATE_ACTIVE, tradingMode, trigger) => {
+    (
+      state = Schema.MarketState.STATE_ACTIVE,
+      tradingMode,
+      trigger,
+      oracleStatus
+    ) => {
       cy.mockGQL((req) => {
         mockTradingPage(req, state, tradingMode, trigger);
       });
 
+      const oracle: Provider = {
+        name: 'Another oracle',
+        url: 'https://zombo.com',
+        description_markdown:
+          'Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n',
+        oracle: {
+          status: oracleStatus || 'GOOD',
+          status_reason: '',
+          first_verified: '2022-01-01T00:00:00.000Z',
+          last_verified: '2022-12-31T00:00:00.000Z',
+          type: 'public_key',
+          public_key: ORACLE_PUBKEY,
+        },
+        proofs: [
+          {
+            format: 'signed_message',
+            available: true,
+            type: 'public_key',
+            public_key: ORACLE_PUBKEY,
+            message: 'SOMEHEX',
+          },
+        ],
+        github_link: `https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/public_key-${ORACLE_PUBKEY}.toml`,
+      };
       // Prevent request to github, return some dummy content
       cy.intercept(
         'GET',
         /^https:\/\/raw.githubusercontent.com\/vegaprotocol\/well-known/,
         {
-          body: [
-            {
-              name: 'Another oracle',
-              url: 'https://zombo.com',
-              description_markdown:
-                'Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n',
-              oracle: {
-                status: 'GOOD',
-                status_reason: '',
-                first_verified: '2022-01-01T00:00:00.000Z',
-                last_verified: '2022-12-31T00:00:00.000Z',
-                type: 'public_key',
-                public_key: ORACLE_PUBKEY,
-              },
-              proofs: [
-                {
-                  format: 'signed_message',
-                  available: true,
-                  type: 'public_key',
-                  public_key: ORACLE_PUBKEY,
-                  message: 'SOMEHEX',
-                },
-              ],
-              github_link: `https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/public_key-${ORACLE_PUBKEY}.toml`,
-            },
-          ],
+          body: [oracle],
         }
       );
     }
