@@ -1,8 +1,10 @@
 import type { ReactNode, FunctionComponent } from 'react';
 import dynamic from 'next/dynamic';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
+import type { ColumnResizedEvent } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useColumnSizes } from './use-column-sizes';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 
 interface GridProps {
@@ -21,6 +23,7 @@ const AgGridDarkTheme = dynamic(
 ) as FunctionComponent<GridProps>;
 
 export const AgGridThemed = ({
+  id,
   style,
   className,
   gridRef,
@@ -33,11 +36,18 @@ export const AgGridThemed = ({
   customThemeParams?: string;
 }) => {
   const { theme } = useThemeSwitcher();
+  const [, setValues] = useColumnSizes({ id });
   const defaultProps = {
     rowHeight: 22,
     headerHeight: 22,
     enableCellTextSelection: true,
+    onColumnResized: (event: ColumnResizedEvent) => {
+      if (event.source === 'uiColumnDragged') {
+        setValues(event.columns);
+      }
+    },
   };
+
   return (
     <div
       className={`${className ?? ''} ${

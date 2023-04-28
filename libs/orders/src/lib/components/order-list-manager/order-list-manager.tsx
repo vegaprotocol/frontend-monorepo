@@ -172,6 +172,8 @@ export const OrderListManager = ({
           blockLoadDebounceMillis={100}
           suppressLoadingOverlay
           suppressNoRowsOverlay
+          suppressAutoSize
+          suppressSizeToFit
           {...bottomPlaceholderProps}
         />
         <div className="pointer-events-none absolute inset-0">

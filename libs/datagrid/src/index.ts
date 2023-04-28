@@ -1,5 +1,6 @@
 export * from './lib/ag-grid/ag-grid-dynamic';
 export * from './lib/ag-grid/ag-grid-lazy';
+export * from './lib/ag-grid/use-column-sizes';
 
 export * from './lib/cells/cumulative-vol-cell';
 export * from './lib/cells/flash-cell';

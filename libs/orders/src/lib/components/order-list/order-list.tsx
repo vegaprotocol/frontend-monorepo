@@ -17,6 +17,7 @@ import {
   positiveClassNames,
   MarketNameCell,
   OrderTypeCell,
+  useColumnSizes,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -42,11 +43,12 @@ export const OrderListTable = memo(
       { cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
       ref
     ) => {
+      const [columnSizes] = useColumnSizes({ id: 'orders' });
       return (
         <AgGrid
+          id="orders"
           ref={ref}
           defaultColDef={{
-            flex: 1,
             resizable: true,
             sortable: true,
             filterParams: { buttons: ['reset'] },
@@ -65,6 +67,7 @@ export const OrderListTable = memo(
             cellRenderer="MarketNameCell"
             cellRendererParams={{ idPath: 'market.id', onMarketClick }}
             minWidth={150}
+            width={columnSizes['market.tradableInstrument.instrument.code']}
           />
           <AgGridColumn
             headerName={t('Size')}
@@ -101,6 +104,7 @@ export const OrderListTable = memo(
               );
             }}
             minWidth={80}
+            width={columnSizes['size']}
           />
           <AgGridColumn
             field="type"
@@ -113,6 +117,7 @@ export const OrderListTable = memo(
               onClick: onOrderTypeClick,
             }}
             minWidth={80}
+            width={columnSizes['type']}
           />
           <AgGridColumn
             field="status"
@@ -145,6 +150,7 @@ export const OrderListTable = memo(
               </span>
             )}
             minWidth={100}
+            width={columnSizes['status']}
           />
           <AgGridColumn
             headerName={t('Filled')}
@@ -172,6 +178,7 @@ export const OrderListTable = memo(
               )}/${addDecimalsFormatNumber(size.toString(), dps)}`;
             }}
             minWidth={100}
+            width={columnSizes['remaining']}
           />
           <AgGridColumn
             field="price"
@@ -195,6 +202,7 @@ export const OrderListTable = memo(
               return addDecimalsFormatNumber(value, data.market.decimalPlaces);
             }}
             minWidth={100}
+            width={columnSizes['price']}
           />
           <AgGridColumn
             field="timeInForce"
@@ -226,6 +234,7 @@ export const OrderListTable = memo(
               return label;
             }}
             minWidth={150}
+            width={columnSizes['timeInForce']}
           />
           <AgGridColumn
             field="createdAt"
@@ -240,6 +249,7 @@ export const OrderListTable = memo(
               );
             }}
             minWidth={150}
+            width={columnSizes['createdAt']}
           />
           <AgGridColumn
             field="updatedAt"
@@ -258,6 +268,7 @@ export const OrderListTable = memo(
               );
             }}
             minWidth={150}
+            width={columnSizes['updatedAt']}
           />
           <AgGridColumn
             colId="amend"
@@ -282,6 +293,7 @@ export const OrderListTable = memo(
               ) : null;
             }}
             sortable={false}
+            width={columnSizes['amend']}
           />
         </AgGrid>
       );
