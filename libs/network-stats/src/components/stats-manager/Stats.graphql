@@ -1,4 +1,7 @@
 query Stats {
+  epoch {
+    id
+  }
   nodeData {
     stakedTotal
     totalNodes

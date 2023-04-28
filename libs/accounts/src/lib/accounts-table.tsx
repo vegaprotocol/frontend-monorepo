@@ -301,6 +301,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                           <DropdownMenuTrigger
                             iconName="more"
                             className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+                            data-testid="dropdown-menu"
                           ></DropdownMenuTrigger>
                         }
                       >
@@ -361,7 +362,10 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           }
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
-          <div className="h-[35vh] w-full m-auto flex flex-col">
+          <div
+            className="h-[35vh] w-full m-auto flex flex-col"
+            data-testid="usage-breakdown"
+          >
             <h1 className="text-xl mb-4">
               {row?.asset?.symbol} {t('usage breakdown')}
             </h1>
