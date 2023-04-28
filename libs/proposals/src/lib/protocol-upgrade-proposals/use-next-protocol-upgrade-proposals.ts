@@ -20,10 +20,7 @@ export const useNextProtocolUpgradeProposals = (since?: number) => {
 
     const proposals = removePaginationWrapper(
       data?.protocolUpgradeProposals?.edges
-    ).map((p) => ({
-      ...p,
-      upgradeBlockHeight: Number(p.upgradeBlockHeight) + 1000000,
-    }));
+    );
 
     return proposals
       .filter(
