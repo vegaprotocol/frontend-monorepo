@@ -10,9 +10,9 @@ const Template: Story = (args) => (
   <OracleBasicProfile provider={args['provider']} />
 );
 
-export const Primary = Template.bind({});
+export const Default = Template.bind({});
 
-Primary.args = {
+Default.args = {
   provider: {
     name: 'Test oracle',
     url: 'https://zombo.com',

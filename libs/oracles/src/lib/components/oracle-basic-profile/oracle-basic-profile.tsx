@@ -83,8 +83,13 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
             target="_blank"
           >
             <span>
-              <span className="underline pr-1">{provider.name}</span>
-              <span className="dark:text-vega-light-300 text-vega-dark-300">
+              <span data-testid="provider-name" className="underline pr-1">
+                {provider.name}
+              </span>
+              <span
+                data-testid="verified-proofs"
+                className="dark:text-vega-light-300 text-vega-dark-300"
+              >
                 ({verifiedProofs.length})
               </span>
             </span>
@@ -106,7 +111,10 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
         </span>
       </span>
       <p className="dark:text-vega-light-300 text-vega-dark-300">{message}</p>
-      <p className="dark:text-vega-light-300 text-vega-dark-300">
+      <p
+        data-testid="signed-proofs"
+        className="dark:text-vega-light-300 text-vega-dark-300"
+      >
         {t('Involved in %s %s', [
           signedProofs.length.toString(),
           signedProofs.length !== 1 ? t('markets') : t('market'),
@@ -118,6 +126,7 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
             <ExternalLink
               key={link.url}
               href={link.url}
+              data-testid={link.url}
               className="flex align-items-bottom underline text-sm"
             >
               <span className="pt-1">
