@@ -120,7 +120,11 @@ describe('VegaConnectDialog', () => {
         .mockImplementation(() =>
           Promise.resolve({ success: true, error: null })
         );
-
+      jest
+        .spyOn(connectors.rest, 'connect')
+        .mockImplementation(() =>
+          Promise.resolve([{ publicKey: 'pubkey', name: 'test key 1' }])
+        );
       render(generateJSX());
       // Switches to rest form
       fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
