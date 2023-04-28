@@ -25,7 +25,7 @@ import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
 import type { NodesFragmentFragment } from '../staking/home/__generated__/Nodes';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { useProtocolUpgradesQuery } from '@vegaprotocol/proposals';
+import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 
 const nodesToShow = 6;
 
@@ -181,7 +181,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     data: protocolUpgradesData,
     loading: protocolUpgradesLoading,
     error: protocolUpgradesError,
-  } = useProtocolUpgradesQuery({
+  } = useProtocolUpgradeProposalsQuery({
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',

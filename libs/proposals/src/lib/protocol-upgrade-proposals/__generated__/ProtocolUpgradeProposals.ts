@@ -5,10 +5,12 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ProtocolUpgradeProposalFieldsFragment = { __typename?: 'ProtocolUpgradeProposal', upgradeBlockHeight: string, vegaReleaseTag: string, approvers: Array<string>, status: Types.ProtocolUpgradeProposalStatus };
 
-export type ProtocolUpgradesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type ProtocolUpgradeProposalsQueryVariables = Types.Exact<{
+  inState?: Types.InputMaybe<Types.ProtocolUpgradeProposalStatus>;
+}>;
 
 
-export type ProtocolUpgradesQuery = { __typename?: 'Query', lastBlockHeight: string, protocolUpgradeProposals?: { __typename?: 'ProtocolUpgradeProposalConnection', edges?: Array<{ __typename?: 'ProtocolUpgradeProposalEdge', node: { __typename?: 'ProtocolUpgradeProposal', upgradeBlockHeight: string, vegaReleaseTag: string, approvers: Array<string>, status: Types.ProtocolUpgradeProposalStatus } }> | null } | null };
+export type ProtocolUpgradeProposalsQuery = { __typename?: 'Query', lastBlockHeight: string, protocolUpgradeProposals?: { __typename?: 'ProtocolUpgradeProposalConnection', edges?: Array<{ __typename?: 'ProtocolUpgradeProposalEdge', node: { __typename?: 'ProtocolUpgradeProposal', upgradeBlockHeight: string, vegaReleaseTag: string, approvers: Array<string>, status: Types.ProtocolUpgradeProposalStatus } }> | null } | null };
 
 export const ProtocolUpgradeProposalFieldsFragmentDoc = gql`
     fragment ProtocolUpgradeProposalFields on ProtocolUpgradeProposal {
@@ -18,10 +20,10 @@ export const ProtocolUpgradeProposalFieldsFragmentDoc = gql`
   status
 }
     `;
-export const ProtocolUpgradesDocument = gql`
-    query ProtocolUpgrades {
+export const ProtocolUpgradeProposalsDocument = gql`
+    query ProtocolUpgradeProposals($inState: ProtocolUpgradeProposalStatus) {
   lastBlockHeight
-  protocolUpgradeProposals {
+  protocolUpgradeProposals(inState: $inState) {
     edges {
       node {
         ...ProtocolUpgradeProposalFields
@@ -32,28 +34,29 @@ export const ProtocolUpgradesDocument = gql`
     ${ProtocolUpgradeProposalFieldsFragmentDoc}`;
 
 /**
- * __useProtocolUpgradesQuery__
+ * __useProtocolUpgradeProposalsQuery__
  *
- * To run a query within a React component, call `useProtocolUpgradesQuery` and pass it any options that fit your needs.
- * When your component renders, `useProtocolUpgradesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProtocolUpgradeProposalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProtocolUpgradeProposalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProtocolUpgradesQuery({
+ * const { data, loading, error } = useProtocolUpgradeProposalsQuery({
  *   variables: {
+ *      inState: // value for 'inState'
  *   },
  * });
  */
-export function useProtocolUpgradesQuery(baseOptions?: Apollo.QueryHookOptions<ProtocolUpgradesQuery, ProtocolUpgradesQueryVariables>) {
+export function useProtocolUpgradeProposalsQuery(baseOptions?: Apollo.QueryHookOptions<ProtocolUpgradeProposalsQuery, ProtocolUpgradeProposalsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProtocolUpgradesQuery, ProtocolUpgradesQueryVariables>(ProtocolUpgradesDocument, options);
+        return Apollo.useQuery<ProtocolUpgradeProposalsQuery, ProtocolUpgradeProposalsQueryVariables>(ProtocolUpgradeProposalsDocument, options);
       }
-export function useProtocolUpgradesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProtocolUpgradesQuery, ProtocolUpgradesQueryVariables>) {
+export function useProtocolUpgradeProposalsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProtocolUpgradeProposalsQuery, ProtocolUpgradeProposalsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProtocolUpgradesQuery, ProtocolUpgradesQueryVariables>(ProtocolUpgradesDocument, options);
+          return Apollo.useLazyQuery<ProtocolUpgradeProposalsQuery, ProtocolUpgradeProposalsQueryVariables>(ProtocolUpgradeProposalsDocument, options);
         }
-export type ProtocolUpgradesQueryHookResult = ReturnType<typeof useProtocolUpgradesQuery>;
-export type ProtocolUpgradesLazyQueryHookResult = ReturnType<typeof useProtocolUpgradesLazyQuery>;
-export type ProtocolUpgradesQueryResult = Apollo.QueryResult<ProtocolUpgradesQuery, ProtocolUpgradesQueryVariables>;
+export type ProtocolUpgradeProposalsQueryHookResult = ReturnType<typeof useProtocolUpgradeProposalsQuery>;
+export type ProtocolUpgradeProposalsLazyQueryHookResult = ReturnType<typeof useProtocolUpgradeProposalsLazyQuery>;
+export type ProtocolUpgradeProposalsQueryResult = Apollo.QueryResult<ProtocolUpgradeProposalsQuery, ProtocolUpgradeProposalsQueryVariables>;

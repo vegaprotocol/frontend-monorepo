@@ -37,6 +37,10 @@ import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
+import {
+  ProtocolUpgradeCountdownMode,
+  ProtocolUpgradeProposalNotification,
+} from '@vegaprotocol/proposals';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -89,7 +93,12 @@ function AppBody({ Component }: AppProps) {
       <div className={gridClasses}>
         <AnnouncementBanner />
         <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
-        <ViewingBanner />
+        <div data-testid="banners">
+          <ProtocolUpgradeProposalNotification
+            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
+          />
+          <ViewingBanner />
+        </div>
         <main data-testid={location.pathname}>
           <Component />
         </main>

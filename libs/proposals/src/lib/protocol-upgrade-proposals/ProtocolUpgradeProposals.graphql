@@ -5,9 +5,9 @@ fragment ProtocolUpgradeProposalFields on ProtocolUpgradeProposal {
   status
 }
 
-query ProtocolUpgrades {
+query ProtocolUpgradeProposals($inState: ProtocolUpgradeProposalStatus) {
   lastBlockHeight
-  protocolUpgradeProposals {
+  protocolUpgradeProposals(inState: $inState) {
     edges {
       node {
         ...ProtocolUpgradeProposalFields
