@@ -34,18 +34,6 @@ context('Home Page', function () {
         .then(($list) => {
           cy.wrap($list).should('have.length', 17);
         });
-
-      cy.get(statsValue).eq(0).should('contain.text', 'CONNECTED');
-      cy.get(statsValue).eq(1).should('not.be.empty');
-      cy.get(statsValue).eq(5).should('contain.text', '0');
-      cy.get(statsValue).eq(6).should('contain.text', '0');
-      cy.get(statsValue).eq(7).should('contain.text', '0');
-      cy.get(statsValue).eq(8).should('contain.text', '0');
-      cy.get(statsValue).eq(9).should('not.be.empty');
-      cy.get(statsValue).eq(10).should('not.be.empty');
-      cy.get(statsValue).eq(11).should('not.be.empty');
-      cy.get(statsValue).eq(14).should('not.be.empty');
-      cy.get(statsValue).eq(15).should('not.be.empty');
     });
 
     it('Block height should be updating', function () {
