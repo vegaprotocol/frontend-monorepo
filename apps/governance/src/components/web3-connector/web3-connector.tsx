@@ -7,7 +7,7 @@ import {
 } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   AppStateActionType,
   useAppState,
@@ -26,6 +26,7 @@ export function Web3Connector({
   connectors,
   chainId,
 }: Web3ConnectorProps) {
+  const [showDisconnectBanner, setShowDisconnectBanner] = useState(false);
   const { appState, appDispatch } = useAppState();
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
@@ -36,7 +37,11 @@ export function Web3Connector({
   const appChainId = Number(chainId);
   return (
     <>
-      <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>
+      <Web3Content
+        appChainId={appChainId}
+        setShowDisconnectBanner={setShowDisconnectBanner}
+        showDisconnectBanner={showDisconnectBanner}
+      >
         {children}
       </Web3Content>
       <Web3ConnectDialog
@@ -52,11 +57,18 @@ export function Web3Connector({
 interface Web3ContentProps {
   children: ReactElement;
   appChainId: number;
-  setDialogOpen: (isOpen: boolean) => void;
+  setShowDisconnectBanner: (show: boolean) => void;
+  showDisconnectBanner: boolean;
 }
 
-export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
+export const Web3Content = ({
+  children,
+  appChainId,
+  setShowDisconnectBanner,
+  showDisconnectBanner,
+}: Web3ContentProps) => {
   const { connector, chainId } = useWeb3React();
+  const [previousChainId, setPreviousChainId] = useState(chainId);
   const error = useWeb3ConnectStore((store) => store.error);
   const disconnect = useWeb3Disconnect(connector);
 
@@ -64,10 +76,34 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
     if (connector?.connectEagerly) {
       connector.connectEagerly();
     }
-    // wallet connect doesnt handle connectEagerly being called when connector is also in the
+    // wallet connect doesn't handle connectEagerly being called when connector is also in the
     // deps array.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (chainId !== undefined) {
+      // We use this to detect when the user switches networks.
+      setPreviousChainId(chainId);
+
+      if (chainId !== appChainId) {
+        disconnect();
+
+        // If the user was previously connected, show the disconnect explanation banner.
+        if (previousChainId !== undefined) {
+          setShowDisconnectBanner(true);
+        }
+      } else {
+        setShowDisconnectBanner(false);
+      }
+    }
+  }, [
+    appChainId,
+    chainId,
+    disconnect,
+    previousChainId,
+    setShowDisconnectBanner,
+  ]);
 
   if (error) {
     return (
@@ -80,18 +116,15 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
     );
   }
 
-  if (chainId !== undefined && chainId !== appChainId) {
-    return (
-      <Splash>
-        <div className="flex flex-col items-center gap-12">
-          <p className="text-white">
-            This app only works on {getChainName(appChainId)}
-          </p>
-          <Button onClick={() => disconnect()}>Disconnect</Button>
+  return (
+    <>
+      {showDisconnectBanner && (
+        <div>
+          You have been disconnected. Connect your ethereum wallet to{' '}
+          {getChainName(appChainId)} to use this app.
         </div>
-      </Splash>
-    );
-  }
-
-  return children;
+      )}
+      {children}
+    </>
+  );
 };
