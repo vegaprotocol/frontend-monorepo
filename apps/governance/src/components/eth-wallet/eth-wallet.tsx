@@ -2,7 +2,8 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button, Notification, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { DisconnectedNotice } from '../disconnected-notice';
 
 import {
   AppStateActionType,
@@ -194,16 +195,10 @@ export const EthWallet = () => {
       <section data-testid="ethereum-wallet">
         <WalletCardHeader>
           <h1 className="m-0 uppercase">{t('ethereumKey')}</h1>
-          {appState.disconnectNotice && (
-            <div className="col-span-full">
-              <Notification
-                message={t('disconnectedNotice', {
-                  correctNetwork: getChainName(Number(config?.chain_id)),
-                })}
-                intent={Intent.Danger}
-              />
-            </div>
-          )}
+          <DisconnectedNotice
+            isDisconnected={appState.disconnectNotice}
+            correctNetworkChainId={getChainName(Number(config?.chain_id))}
+          />
           {account && (
             <div className="place-self-end font-mono">
               <div
