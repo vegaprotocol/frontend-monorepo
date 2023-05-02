@@ -88,10 +88,8 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
         if (previousChainId !== undefined && !appState.disconnectNotice) {
           showDisconnectNotice(true);
         }
-      } else {
-        if (appState.disconnectNotice) {
-          showDisconnectNotice(false);
-        }
+      } else if (appState.disconnectNotice) {
+        showDisconnectNotice(false);
       }
     }
   }, [
