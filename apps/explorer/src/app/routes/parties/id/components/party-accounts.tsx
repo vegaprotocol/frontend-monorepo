@@ -71,7 +71,7 @@ export const PartyAccounts = ({ accounts }: PartyAccountsProps) => {
                 />
               </td>
               <td className="text-md">
-                <AssetLink assetId={account.asset.id} />
+                <AssetLink assetId={account.asset.id} asDialog={true} />
               </td>
             </TableRow>
           );

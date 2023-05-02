@@ -43,7 +43,7 @@ export const AssetLink = ({
         if (asDialog) {
           open(assetId, e.target as HTMLElement);
         } else {
-          navigate(`${Routes.ASSETS}/${asset?.id}`);
+          navigate(`/${Routes.ASSETS}/${asset?.id}`);
         }
       }}
       {...props}

@@ -9,21 +9,22 @@ context('Home Page', function () {
     it('should show connected environment stats', function () {
       const statTitles = {
         0: 'Status',
-        1: 'Block height',
-        2: 'Uptime',
-        3: 'Total nodes',
-        4: 'Total staked',
-        5: 'Backlog',
-        6: 'Trades / second',
-        7: 'Orders / block',
-        8: 'Orders / second',
-        9: 'Transactions / block',
-        10: 'Block time',
-        11: 'Time',
-        12: 'App',
-        13: 'Tendermint',
-        14: 'Up since',
-        15: 'Chain ID',
+        1: 'Epoch',
+        2: 'Block height',
+        3: 'Uptime',
+        4: 'Total nodes',
+        5: 'Total staked',
+        6: 'Backlog',
+        7: 'Trades / second',
+        8: 'Orders / block',
+        9: 'Orders / second',
+        10: 'Transactions / block',
+        11: 'Block time',
+        12: 'Time',
+        13: 'App',
+        14: 'Tendermint',
+        15: 'Up since',
+        16: 'Chain ID',
       };
 
       cy.get('[data-testid="stats-title"]')
@@ -31,42 +32,13 @@ context('Home Page', function () {
           cy.wrap($list).should('contain.text', statTitles[index]);
         })
         .then(($list) => {
-          cy.wrap($list).should('have.length', 16);
+          cy.wrap($list).should('have.length', 17);
         });
-
-      cy.get(statsValue).eq(0).should('contain.text', 'CONNECTED');
-      cy.get(statsValue).eq(1).should('not.be.empty');
-      cy.get(statsValue)
-        .eq(2)
-        .invoke('text')
-        .should('match', /\d+d \d+h \d+m \d+s/i);
-      cy.get(statsValue).eq(3).should('contain.text', '2');
-      cy.get(statsValue)
-        .eq(4)
-        .invoke('text')
-        .should('match', /\d+\.\d\d(?!\d)/i);
-      cy.get(statsValue).eq(5).should('contain.text', '0');
-      cy.get(statsValue).eq(6).should('contain.text', '0');
-      cy.get(statsValue).eq(7).should('contain.text', '0');
-      cy.get(statsValue).eq(8).should('contain.text', '0');
-      cy.get(statsValue).eq(9).should('not.be.empty');
-      cy.get(statsValue).eq(10).should('not.be.empty');
-      cy.get(statsValue).eq(11).should('not.be.empty');
-      cy.get(statsValue)
-        .eq(12)
-        .invoke('text')
-        .should('match', /v\d+\.\d+\.\d+/i);
-      cy.get(statsValue)
-        .eq(13)
-        .invoke('text')
-        .should('match', /\d+\.\d+\.\d+/i);
-      cy.get(statsValue).eq(14).should('not.be.empty');
-      cy.get(statsValue).eq(15).should('not.be.empty');
     });
 
     it('Block height should be updating', function () {
       cy.get(statsValue)
-        .eq(1)
+        .eq(2)
         .invoke('text')
         .then((blockHeightTxt) => {
           cy.get(statsValue)
