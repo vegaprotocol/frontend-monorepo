@@ -1,9 +1,8 @@
-import { format, isFuture } from 'date-fns';
+import { isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import {
-  DATE_FORMAT_DETAILED,
   formatDateWithLocalTimezone,
 } from '../../../../lib/date-formats';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
