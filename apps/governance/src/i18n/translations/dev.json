@@ -790,5 +790,6 @@
   "approval (% validator voting power)": "approval (% validator voting power)",
   "67% voting power required": "67% voting power required",
   "Token": "Token",
-  "associateVegaNow": "Associate $VEGA now"
+  "associateVegaNow": "Associate $VEGA now",
+  "disconnectedNotice": "You have been disconnected. Connect your ETH wallet to the {{correctNetwork}} network to use this app."
 }
