@@ -173,7 +173,6 @@ export const OrderListManager = ({
           suppressLoadingOverlay
           suppressNoRowsOverlay
           suppressAutoSize
-          suppressSizeToFit
           {...bottomPlaceholderProps}
         />
         <div className="pointer-events-none absolute inset-0">

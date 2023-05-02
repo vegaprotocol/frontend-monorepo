@@ -26,6 +26,7 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
+import * as React from 'react';
 
 type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 
@@ -37,13 +38,13 @@ export type OrderListTableProps = OrderListProps & {
   isReadOnly: boolean;
 };
 
-export const OrderListTable = memo(
+export const OrderListTable = memo<OrderListTableProps>(
   forwardRef<AgGridReact, OrderListTableProps>(
     (
       { cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
       ref
     ) => {
-      const [columnSizes] = useColumnSizes({ id: 'orders' });
+      const [columnSizes] = useColumnSizes({ id: 'orders', ref });
       return (
         <AgGrid
           id="orders"

@@ -12,6 +12,7 @@ type Props = (AgGridReactProps | AgReactUiProps) & {
   className?: string;
   gridRef?: React.Ref<AgGridReact>;
   customThemeParams?: string;
+  id?: string;
 };
 
 // https://stackoverflow.com/questions/69433673/nextjs-reactdomserver-does-not-yet-support-suspense
@@ -22,7 +23,7 @@ const AgGridDynamicInternal = dynamic<Props>(
     // https://nextjs.org/docs/messages/invalid-dynamic-suspense
     // suspense: true
   }
-) as React.FunctionComponent<Props>;
+);
 
 export const AgGridDynamic = React.forwardRef<AgGridReact, Props>(
   (props, ref) => <AgGridDynamicInternal {...props} gridRef={ref} />

@@ -1,4 +1,6 @@
+import type { ForwardedRef } from 'react';
 import { useCallback } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
 import type { Column } from 'ag-grid-community';
 import debounce from 'lodash/debounce';
 import { create } from 'zustand';
@@ -9,8 +11,8 @@ const STORAGE_KEY = 'vega_columns_sizes_store';
 const COLUMNS_SET_DEBOUNCE_TIME = 300;
 
 export const useColumnSizesStore = create<{
-  sizes: Record<string, Record<string, string>>;
-  valueSetter: (id: string, value: Record<string, string>) => void;
+  sizes: Record<string, Record<string, number>>;
+  valueSetter: (id: string, value: Record<string, number>) => void;
 }>()(
   persist(
     immer((set) => ({
@@ -29,12 +31,13 @@ export const useColumnSizesStore = create<{
 );
 
 interface UseColumnSizesProps {
-  id: string;
+  id?: string;
+  ref?: ForwardedRef<AgGridReact>;
 }
 export const useColumnSizes = ({
-  id,
+  id = '',
 }: UseColumnSizesProps): [
-  Record<string, string>,
+  Record<string, number>,
   (columns: Column[]) => void
 ] => {
   const sizes = useColumnSizesStore((store) => store.sizes[id]) || {};
@@ -46,7 +49,7 @@ export const useColumnSizes = ({
         const sizesObj = columns.reduce((aggr, column) => {
           aggr[column.getColId()] = column.getActualWidth();
           return aggr;
-        }, {});
+        }, {} as Record<string, number>);
         valueSetter(id, sizesObj);
       }
     }, COLUMNS_SET_DEBOUNCE_TIME),
