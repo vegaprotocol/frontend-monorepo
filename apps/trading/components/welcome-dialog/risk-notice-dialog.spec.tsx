@@ -1,9 +1,6 @@
-import { BrowserRouter } from 'react-router-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { RiskNoticeDialog } from './risk-notice-dialog';
-import { WelcomeDialog } from './welcome-dialog';
 
 jest.mock('@vegaprotocol/environment');
 
