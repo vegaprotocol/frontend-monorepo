@@ -4,10 +4,7 @@ import {
   waitForSpinner,
 } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import {
-  depositAsset,
-  vegaWalletTeardown,
-} from '../../support/wallet-teardown.functions';
+import { depositAsset } from '../../support/wallet-teardown.functions';
 
 const withdraw = 'withdraw';
 const withdrawalForm = 'withdraw-form';
@@ -25,6 +22,13 @@ const withdrawalAmount = 'withdrawal-amount';
 const withdrawalRecipient = 'withdrawal-recipient';
 const withdrawFundsButton = 'withdraw-funds';
 const completeWithdrawalButton = 'complete-withdrawal';
+const tableTxHash = '[col-id="txHash"]';
+const tableAssetSymbol = '[col-id="asset.symbol"]';
+const tableAmount = '[col-id="amount"]';
+const tableReceiverAddress = '[col-id="details.receiverAddress"]';
+const tableWithdrawnTimeStamp = '[col-id="withdrawnTimestamp"]';
+const tableWithdrawnStatus = '[col-id="status"]';
+const tableCreatedTimeStamp = '[col-id="createdTimestamp"]';
 const usdtName = 'USDC (local)';
 const usdcEthAddress = '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0';
 const usdcSymbol = 'tUSDC';
@@ -54,16 +58,11 @@ context(
       navigateTo(navigation.withdraw);
       cy.connectVegaWallet();
       ethereumWalletConnect();
-      vegaWalletTeardown();
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
-      // needs to reload page for withdrawal form to be displayed in ci - not reproducible outside of ci
-      cy.reload();
-      waitForSpinner();
-      ethereumWalletConnect();
       cy.getByTestId(withdraw).should('be.visible').click();
-      cy.getByTestId(withdrawalForm).within(() => {
+      cy.getByTestId(withdrawalForm, txTimeout).within(() => {
         cy.get('select').find('option').should('have.length.at.least', 2);
         cy.getByTestId(ethAddressInput).should('be.visible');
         cy.getByTestId(amountInput).should('be.visible');
@@ -72,7 +71,7 @@ context(
 
     it('Unable to submit withdrawal with invalid fields', function () {
       cy.getByTestId(withdraw).should('be.visible').click();
-      cy.getByTestId(withdrawalForm).within(() => {
+      cy.getByTestId(withdrawalForm, txTimeout).within(() => {
         cy.get('select').select(usdtSelectValue, { force: true });
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(submitWithdrawalButton).click();
@@ -96,7 +95,7 @@ context(
     it('Able to withdraw asset: -eth wallet connected -withdraw funds button', function () {
       // fill in withdrawal form
       cy.getByTestId(withdraw).should('be.visible').click();
-      cy.getByTestId(withdrawalForm).within(() => {
+      cy.getByTestId(withdrawalForm, txTimeout).within(() => {
         cy.get('select').select(usdtSelectValue, { force: true });
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(withdrawalThreshold).should(
@@ -104,7 +103,7 @@ context(
           '100,000.00000T'
         );
         cy.getByTestId(delayTime).should('have.text', 'None');
-        cy.getByTestId(amountInput).click().type('100');
+        cy.getByTestId(amountInput).click().type('120');
         cy.getByTestId(submitWithdrawalButton).click();
       });
 
@@ -118,7 +117,7 @@ context(
         .should('have.attr', 'href')
         .and('contain', '/txs/');
       cy.getByTestId(withdrawalAssetSymbol).should('have.text', usdcSymbol);
-      cy.getByTestId(withdrawalAmount).should('have.text', '100.00');
+      cy.getByTestId(withdrawalAmount).should('have.text', '120.00');
       cy.getByTestId(withdrawalRecipient)
         .should('have.text', truncatedWithdrawalEthAddress)
         .and('have.attr', 'href')
@@ -130,27 +129,20 @@ context(
         'Withdraw asset complete'
       );
       cy.getByTestId(dialogClose).click();
-
-      // need to reload page to see withdrawal history complete
-      cy.reload();
-      waitForAssetsDisplayed(usdtName);
-
       // withdrawal history for complete withdrawal displayed
-      cy.get('[col-id="txHash"]', txTimeout)
-        .should('have.length.above', 1)
-        .eq(1)
+      cy.get(tableWithdrawnStatus)
+        .eq(1, txTimeout)
+        .should('have.text', 'Completed')
         .parent()
         .within(() => {
-          cy.get('[col-id="asset.symbol"]').should('have.text', usdcSymbol);
-          cy.get('[col-id="amount"]').should('have.text', '100.00');
-          cy.get('[col-id="details.receiverAddress"]')
+          cy.get(tableAssetSymbol).should('have.text', usdcSymbol);
+          cy.get(tableAmount).should('have.text', '120.00');
+          cy.get(tableReceiverAddress)
             .find('a')
             .should('have.attr', 'href')
             .and('contain', 'https://sepolia.etherscan.io/address/');
-          cy.get('[col-id="withdrawnTimestamp"]').should('not.be.empty');
-          cy.get('[col-id="status"]').invoke('text').as('withdrawalStatus');
-          cy.get('withdrawalStatus').should('eq', 'Completed');
-          cy.get('[col-id="txHash"]')
+          cy.get(tableWithdrawnTimeStamp).should('not.be.empty');
+          cy.get(tableTxHash)
             .find('a')
             .should('have.attr', 'href')
             .and('contain', 'https://sepolia.etherscan.io/tx/');
@@ -164,10 +156,10 @@ context(
       waitForAssetsDisplayed(usdtName);
       // fill in withdrawal form
       cy.getByTestId(withdraw).should('be.visible').click();
-      cy.getByTestId(withdrawalForm).within(() => {
+      cy.getByTestId(withdrawalForm, txTimeout).within(() => {
         cy.get('select').select(usdtSelectValue, { force: true });
         cy.getByTestId(ethAddressInput).should('be.empty');
-        cy.getByTestId(amountInput).click().type('100');
+        cy.getByTestId(amountInput).click().type('110');
         cy.getByTestId(submitWithdrawalButton).click();
 
         // Need eth address to submit withdrawal
@@ -183,20 +175,20 @@ context(
         'Transaction complete'
       );
       cy.getByTestId(dialogClose).click();
-
-      cy.getByTestId(completeWithdrawalButton)
-        .eq(0)
-        .parent()
+      cy.get(tableTxHash)
+        .eq(1)
+        .should('have.text', 'Complete withdrawal')
         .parent()
         .within(() => {
-          cy.get('[col-id="asset.symbol"]').should('have.text', usdcSymbol);
-          cy.get('[col-id="amount"]').should('have.text', '100.00');
-          cy.get('[col-id="details.receiverAddress"]')
+          cy.get(tableAssetSymbol).should('have.text', usdcSymbol);
+          cy.get(tableAmount).should('have.text', '110.00');
+          cy.get(tableReceiverAddress)
             .find('a')
             .should('have.attr', 'href')
             .and('contain', 'https://sepolia.etherscan.io/address/');
-          cy.get('[col-id="createdTimestamp"]').should('not.be.empty');
+          cy.get(tableCreatedTimeStamp).should('not.be.empty');
           cy.getByTestId(completeWithdrawalButton).click();
+          // Unable to complete withdrawal in Capsule
         });
     });
 
@@ -210,7 +202,7 @@ context(
 
       cy.connectPublicKey(vegaWalletPubKey);
       cy.getByTestId(withdraw).should('be.visible').click();
-      cy.getByTestId(withdrawalForm).within(() => {
+      cy.getByTestId(withdrawalForm, txTimeout).within(() => {
         cy.get('select').select(usdtSelectValue, { force: true });
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(amountInput).click().type('100');
