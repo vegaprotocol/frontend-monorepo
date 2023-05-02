@@ -2,11 +2,7 @@ import { Checkbox } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 
-export const TelemetryApproval = ({
-  isSettingsPage,
-}: {
-  isSettingsPage?: boolean;
-}) => {
+export const TelemetryApproval = ({ helpText }: { helpText: string }) => {
   const [isApproved, setIsApproved] = useTelemetryApproval();
   return (
     <div className="flex flex-col px-2 py-3">
@@ -19,13 +15,7 @@ export const TelemetryApproval = ({
         />
       </div>
       <div className="text-sm text-vega-light-300 dark:text-vega-dark-300 ml-6">
-        <span>
-          {t(
-            'Help identify bugs and improve the service by sharing anonymous usage data.'
-          )}
-          {!isSettingsPage &&
-            ' ' + t('You can change this in your settings at any time.')}
-        </span>
+        <span>{helpText}</span>
       </div>
     </div>
   );
