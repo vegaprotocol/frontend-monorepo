@@ -1,7 +1,7 @@
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter as Router } from 'react-router-dom';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { mockWalletContext } from '../../test-helpers/mocks';
@@ -10,6 +10,7 @@ import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 import type { ProposalMarketsQueryQuery } from './__generated__/UpdateMarket';
 import { ProposalMarketsQueryDocument } from './__generated__/UpdateMarket';
+import { ProposalState } from '@vegaprotocol/types';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -89,6 +90,10 @@ const marketQueryMock: MockedResponse<ProposalMarketsQueryQuery> = {
                   code: 'ETHiUSDT',
                 },
               },
+              proposal: {
+                __typename: 'Proposal',
+                state: ProposalState.STATE_ENACTED,
+              },
             },
           },
           {
@@ -101,11 +106,16 @@ const marketQueryMock: MockedResponse<ProposalMarketsQueryQuery> = {
                 instrument: {
                   __typename: 'Instrument',
                   name: 'Las Vegas nuggets',
-                  code: 'Nuggets2',
+                  code: 'Nuggets',
                 },
+              },
+              proposal: {
+                __typename: 'Proposal',
+                state: ProposalState.STATE_OPEN,
               },
             },
           },
+
           {
             __typename: 'MarketEdge',
             node: {
@@ -115,9 +125,13 @@ const marketQueryMock: MockedResponse<ProposalMarketsQueryQuery> = {
                 __typename: 'TradableInstrument',
                 instrument: {
                   __typename: 'Instrument',
-                  name: 'Nuggets',
-                  code: 'Nuggets',
+                  name: 'California Nuggets',
+                  code: 'Nuggets2',
                 },
+              },
+              proposal: {
+                __typename: 'Proposal',
+                state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
               },
             },
           },
@@ -130,9 +144,70 @@ const marketQueryMock: MockedResponse<ProposalMarketsQueryQuery> = {
                 __typename: 'TradableInstrument',
                 instrument: {
                   __typename: 'Instrument',
-                  name: 'CELUSD (June 2022)',
-                  code: 'CELUSD',
+                  name: 'Nevada Nuggets',
+                  code: 'Nugetts3',
                 },
+              },
+              proposal: {
+                __typename: 'Proposal',
+                state: ProposalState.STATE_REJECTED,
+              },
+            },
+          },
+          {
+            __typename: 'MarketEdge',
+            node: {
+              __typename: 'Market',
+              id: 'asdfe1755208914b6f258a28babd19ae8dfbaf4084d8867d8a120c50dca1e17f',
+              tradableInstrument: {
+                __typename: 'TradableInstrument',
+                instrument: {
+                  __typename: 'Instrument',
+                  name: 'NZ Nuggets',
+                  code: 'Nugetts4',
+                },
+              },
+              proposal: {
+                __typename: 'Proposal',
+                state: ProposalState.STATE_DECLINED,
+              },
+            },
+          },
+          {
+            __typename: 'MarketEdge',
+            node: {
+              __typename: 'Market',
+              id: 'asdfe1755208914b6f258a28babd19ae8dfbaf4084d8867d8a120c50dca1e17f',
+              tradableInstrument: {
+                __typename: 'TradableInstrument',
+                instrument: {
+                  __typename: 'Instrument',
+                  name: 'Aussie Nuggets',
+                  code: 'Nugetts5',
+                },
+              },
+              proposal: {
+                __typename: 'Proposal',
+                state: ProposalState.STATE_PASSED,
+              },
+            },
+          },
+          {
+            __typename: 'MarketEdge',
+            node: {
+              __typename: 'Market',
+              id: 'xcvbe1755208914b6f258a28babd19ae8dfbaf4084d8867d8a120c50dca1e17f',
+              tradableInstrument: {
+                __typename: 'TradableInstrument',
+                instrument: {
+                  __typename: 'Instrument',
+                  name: 'Tasmanian Nuggets',
+                  code: 'Nugetts6',
+                },
+              },
+              proposal: {
+                __typename: 'Proposal',
+                state: ProposalState.STATE_FAILED,
               },
             },
           },
@@ -197,6 +272,27 @@ describe('Propose Update Market', () => {
       await screen.findByText('Update market proposal')
     ).toBeInTheDocument();
     expect(screen.getByTestId('proposal-market-select')).toHaveValue('');
+  });
+
+  it('should only render enacted markets', async () => {
+    renderComponent();
+    expect(
+      await screen.findByText('Update market proposal')
+    ).toBeInTheDocument();
+    // (state enacted)
+    expect(screen.getByText('ETHUSD (September Market)')).toBeInTheDocument();
+    // (state open)
+    expect(screen.queryByText('Las Vegas nuggets')).not.toBeInTheDocument();
+    // (state waiting for node vote)
+    expect(screen.queryByText('California nuggets')).not.toBeInTheDocument();
+    // (state rejected)
+    expect(screen.queryByText('Nevada nuggets')).not.toBeInTheDocument();
+    // (state declined)
+    expect(screen.queryByText('NZ nuggets')).not.toBeInTheDocument();
+    // (state passed)
+    expect(screen.queryByText('Aussie nuggets')).not.toBeInTheDocument();
+    // (state failed)
+    expect(screen.queryByText('Tasmanian nuggets')).not.toBeInTheDocument();
   });
 
   it('should render the correct market details when the market select is used', async () => {
