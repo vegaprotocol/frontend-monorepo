@@ -46,7 +46,9 @@ const marketDataOverride = (
       {
         node: {
           data: {
+            // @ts-ignore conflict between incoming and outgoing types
             trigger: data.trigger,
+            // @ts-ignore same as above
             marketTradingMode: data.tradingMode,
             marketState: data.state,
           },
@@ -63,6 +65,7 @@ const marketsDataOverride = (
     edges: [
       {
         node: {
+          // @ts-ignore conflict between incoming and outgoing types
           tradingMode: data.tradingMode,
           state: data.state,
         },
