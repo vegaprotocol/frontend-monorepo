@@ -2,7 +2,10 @@ import { format, isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
+import {
+  DATE_FORMAT_DETAILED,
+  formatDateWithLocalTimezone,
+} from '../../../../lib/date-formats';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { CurrentProposalState } from '../current-proposal-state';
 
@@ -29,13 +32,13 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
         {isFuture(new Date(terms.closingDatetime))
           ? t('closesOn')
           : t('closedOn')}
-        {format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}
+        {formatDateWithLocalTimezone(new Date(terms.closingDatetime))}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {isFuture(new Date(terms.enactmentDatetime || 0))
           ? t('proposedEnactment')
           : t('enactedOn')}
-        {format(new Date(terms.enactmentDatetime || 0), DATE_FORMAT_DETAILED)}
+        {formatDateWithLocalTimezone(new Date(terms.enactmentDatetime || 0))}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('proposedBy')}
@@ -43,7 +46,7 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('proposedOn')}
-        {format(new Date(proposal.datetime), DATE_FORMAT_DETAILED)}
+        {formatDateWithLocalTimezone(new Date(proposal.datetime))}
       </KeyValueTableRow>
       {proposal.rejectionReason ? (
         <KeyValueTableRow>
