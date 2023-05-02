@@ -16,6 +16,7 @@
     "**/*.spec.jsx",
     "**/*.d.ts",
     "jest.config.ts",
-    "../../index.d.ts"
+    "../../index.d.ts",
+    "src/lib/use-oracle-spec-binding-data.spec.tsx"
   ]
 }

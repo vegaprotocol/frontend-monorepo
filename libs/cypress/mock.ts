@@ -17,6 +17,7 @@ export * from '../market-list/src/lib/market-data.mock';
 export * from '../market-list/src/lib/markets-candles.mock';
 export * from '../market-list/src/lib/markets-data.mock';
 export * from '../market-list/src/lib/markets.mock';
+export * from '../oracles/src/lib/oracle-spec-data-connection.mock';
 export * from '../orders/src/lib/components/order-data-provider/orders.mock';
 export * from '../positions/src/lib/positions.mock';
 export * from '../react-helpers/src/hooks/network-params.mock';

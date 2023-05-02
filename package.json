@@ -195,7 +195,7 @@
     "ts-jest": "27.1.4",
     "ts-node": "10.9.1",
     "tslib": "^2.0.0",
-    "type-fest": "^2.12.2",
+    "type-fest": "^3.8.0",
     "typescript": "^5.0.4",
     "url-loader": "^3.0.0"
   },

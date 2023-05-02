@@ -1,5 +1,7 @@
 import { checkSorting } from '@vegaprotocol/cypress';
 
+const dialogClose = 'dialog-close';
+
 describe('accounts', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
@@ -66,16 +68,44 @@ describe('accounts', { tags: '@smoke' }, () => {
 
   it('should open asset details dialog when clicked on symbol', () => {
     // 7001-COLL-008
+    // 6501-ASSE-001
+    // 6501-ASSE-002
+    // 6501-ASSE-003
+    // 6501-ASSE-004
+    // 6501-ASSE-005
+    // 6501-ASSE-006
+    // 6501-ASSE-007
+    // 6501-ASSE-008
+    // 6501-ASSE-009
+    // 6501-ASSE-010
+    // 6501-ASSE-011
+    // 6501-ASSE-012
+    // 6501-ASSE-013
+    const titles = [
+      'ID',
+      'Type',
+      'Name',
+      'Symbol',
+      'Decimals',
+      'Quantum',
+      'Status',
+      'Contract address',
+      'Withdrawal threshold',
+      'Lifetime limit',
+      'Infrastructure fee account balance',
+      'Global reward pool account balance',
+      'Maker paid fees account balance',
+      'Maker received fees account balance',
+      'Liquidity provision fee reward account balance',
+      'Market proposer reward account balance',
+    ];
     cy.getByTestId('asset').contains('tEURO').click();
     cy.get('[data-testid$="_label"]').should('have.length', 16);
-    cy.get('[data-testid="dialog-close"]').click();
-  });
-
-  it('should open asset details dialog when clicked on symbol', () => {
-    // 7001-COLL-008
-    cy.getByTestId('asset').contains('tEURO').click();
-    cy.get('[data-testid$="_label"]').should('have.length', 16);
-    cy.get('[data-testid="dialog-close"]').click();
+    cy.get('[data-testid$="_label"]').each((element, index) => {
+      cy.wrap(element).should('have.text', titles[index]);
+    });
+    cy.getByTestId(dialogClose).click();
+    cy.getByTestId(dialogClose).should('not.exist');
   });
 
   it('should open usage breakdown dialog when clicked on used', () => {
@@ -89,7 +119,7 @@ describe('accounts', { tags: '@smoke' }, () => {
           cy.wrap($header).should('have.text', headers[i]);
         });
     });
-    cy.get('[data-testid="dialog-close"]').click();
+    cy.getByTestId(dialogClose).click();
   });
 
   it('sorting usage breakdown columns should work well', () => {
@@ -108,7 +138,7 @@ describe('accounts', { tags: '@smoke' }, () => {
       .eq(3)
       .should('have.text', 'General');
 
-    cy.get('[data-testid="dialog-close"]').click();
+    cy.getByTestId(dialogClose).click();
   });
 
   describe('sorting by ag-grid columns should work well', () => {

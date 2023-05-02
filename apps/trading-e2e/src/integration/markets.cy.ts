@@ -222,6 +222,7 @@ describe('markets table', { tags: '@smoke' }, () => {
           ],
         },
       };
+      // @ts-ignore partial deep check failing
       const market = marketsQuery(override);
       aliasGQLQuery(req, 'Market', market);
       aliasGQLQuery(req, 'ProposalOfMarket', {
