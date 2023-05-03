@@ -202,11 +202,10 @@ export const MarketListTable = forwardRef<
       />
       {actions && (
         <AgGridColumn
-          colId="actions"
           headerName=""
           field="id"
-          resizable={false}
           maxWidth={50}
+          resizable={false}
           filter={false}
           sortable={false}
           cellRenderer={actions}

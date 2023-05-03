@@ -22,6 +22,7 @@ import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { MarketTableActions } from '../../components/market-table-actions';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -262,9 +263,13 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
         ),
       },
       {
-        headerName: t('Market ID'),
+        headerName: '',
         field: 'id',
-        flex: 1,
+        maxWidth: 50,
+        resizable: false,
+        filter: false,
+        sortable: false,
+        cellRenderer: MarketTableActions,
       },
     ];
     return cols;
