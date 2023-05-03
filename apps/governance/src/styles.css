@@ -1,3 +1,7 @@
+@import 'ag-grid-community/dist/styles/ag-grid.css';
+@import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+@import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,4 +22,44 @@
   .border-default {
     @apply border-vega-dark-200;
   }
+}
+
+/* AG GRID - Do not edit without updating other global stylesheets for each app */
+
+.vega-ag-grid .ag-root-wrapper {
+  border: solid 0px;
+}
+
+.vega-ag-grid .ag-react-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vega-ag-grid .ag-cell,
+.vega-ag-grid .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+  line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
+}
+
+/* Light variables */
+.ag-theme-balham {
+  --ag-background-color: theme(colors.white);
+  --ag-border-color: theme(colors.neutral[300]);
+  --ag-header-background-color: theme(colors.white);
+  --ag-odd-row-background-color: theme(colors.white);
+  --ag-header-column-separator-color: theme(colors.neutral[300]);
+  --ag-row-border-color: theme(colors.white);
+  --ag-row-hover-color: theme(colors.neutral[100]);
+  --ag-font-size: 12px;
+}
+
+/* Dark variables */
+.ag-theme-balham-dark {
+  --ag-background-color: theme(colors.black);
+  --ag-border-color: theme(colors.neutral[700]);
+  --ag-header-background-color: theme(colors.black);
+  --ag-odd-row-background-color: theme(colors.black);
+  --ag-header-column-separator-color: theme(colors.neutral[600]);
+  --ag-row-border-color: theme(colors.black);
+  --ag-row-hover-color: theme(colors.neutral[800]);
+  --ag-font-size: 12px;
 }

@@ -1,45 +1,32 @@
-import * as React from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import 'ag-grid-community/dist/styles/ag-grid.css';
+import classNames from 'classnames';
 
-const AgGridLightTheme = React.lazy(() =>
-  import('./ag-grid-light').then((module) => ({
-    default: module.AgGrid,
-  }))
-);
-
-const AgGridDarkTheme = React.lazy(() =>
-  import('./ag-grid-dark').then((module) => ({
-    default: module.AgGrid,
-  }))
-);
-
-export const AgGridThemed = React.forwardRef<
-  AgGridReact,
-  (AgGridReactProps | AgReactUiProps) & {
-    style?: React.CSSProperties;
-    className?: string;
-  }
->(({ style, className, ...props }, ref) => {
+export const AgGridThemed = ({
+  style,
+  className,
+  gridRef,
+  ...props
+}: (AgGridReactProps | AgReactUiProps) & {
+  style?: React.CSSProperties;
+  className?: string;
+  gridRef?: React.ForwardedRef<AgGridReact>;
+}) => {
   const { theme } = useThemeSwitcher();
+  const defaultProps = {
+    rowHeight: 22,
+    headerHeight: 22,
+    enableCellTextSelection: true,
+  };
+  const wrapperClasses = classNames(className, 'vega-ag-grid', {
+    'ag-theme-balham': theme === 'light',
+    'ag-theme-balham-dark': theme === 'dark',
+  });
+
   return (
-    <div
-      className={`${className ?? ''} ${
-        theme === 'dark' ? 'ag-theme-balham-dark' : 'ag-theme-balham'
-      }`}
-      style={style}
-    >
-      {theme === 'dark' ? (
-        <AgGridDarkTheme>
-          <AgGridReact {...props} ref={ref} enableCellTextSelection={true} />
-        </AgGridDarkTheme>
-      ) : (
-        <AgGridLightTheme>
-          <AgGridReact {...props} ref={ref} enableCellTextSelection={true} />
-        </AgGridLightTheme>
-      )}
+    <div className={wrapperClasses} style={style}>
+      <AgGridReact {...defaultProps} {...props} ref={gridRef} />
     </div>
   );
-});
+};

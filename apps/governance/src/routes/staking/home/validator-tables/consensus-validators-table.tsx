@@ -3,7 +3,7 @@ import { forwardRef, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button, Icon } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
@@ -17,7 +17,6 @@ import {
 } from '../../shared';
 import {
   defaultColDef,
-  NODE_LIST_GRID_STYLES,
   PendingStakeRenderer,
   stakedTotalPercentage,
   StakeShareRenderer,
@@ -382,12 +381,14 @@ export const ConsensusValidatorsTable = ({
     );
 
     return (
-      <div data-testid="consensus-validators-table">
+      <div
+        data-testid="consensus-validators-table"
+        className="validators-table"
+      >
         {nodes.length > 0 && (
           <AgGrid
             domLayout="autoHeight"
             style={{ width: '100%' }}
-            customThemeParams={NODE_LIST_GRID_STYLES}
             getRowHeight={(params: RowHeightParams) => getRowHeight(params)}
             defaultColDef={defaultColDef}
             tooltipShowDelay={0}
