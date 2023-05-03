@@ -1,0 +1,18 @@
+query OracleSpecDataConnection($oracleSpecId: ID!) {
+  oracleSpec(oracleSpecId: $oracleSpecId) {
+    dataConnection {
+      edges {
+        node {
+          externalData {
+            data {
+              data {
+                name
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

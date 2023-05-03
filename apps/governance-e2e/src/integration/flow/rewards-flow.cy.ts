@@ -25,9 +25,10 @@ const rewardsTimeOut = { timeout: 60000 };
 
 context('rewards - flow', { tags: '@slow' }, function () {
   before('set up environment to allow rewards', function () {
+    cy.clearLocalStorage();
     cy.visit('/');
     waitForSpinner();
-    depositAsset(vegaAssetAddress, '1000');
+    depositAsset(vegaAssetAddress, '1000', 18);
     cy.validatorsSelfDelegate();
     ethereumWalletConnect();
     cy.connectVegaWallet();
@@ -56,7 +57,7 @@ context('rewards - flow', { tags: '@slow' }, function () {
     cy.getByTestId(rewardsTable)
       .first()
       .within(() => {
-        cy.getByTestId('asset').should('have.text', 'Vega');
+        cy.getByTestId('asset', rewardsTimeOut).should('have.text', 'Vega');
         cy.getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD').should('have.text', '1');
         cy.getByTestId('ACCOUNT_TYPE_FEES_INFRASTRUCTURE').should(
           'have.text',
@@ -93,13 +94,13 @@ context('rewards - flow', { tags: '@slow' }, function () {
       .within(() => {
         cy.get('h2').first().should('contain.text', 'EPOCH');
         cy.getByTestId('individual-rewards-asset').should('have.text', 'Vega');
-        cy.getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD')
-          .should('contain.text', '0.1177')
-          .and('contain.text', '(11.7733%)');
+        cy.getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD', rewardsTimeOut)
+          .should('contain.text', '0.4415')
+          .and('contain.text', '(44.15%)');
         cy.getByTestId('ACCOUNT_TYPE_FEES_INFRASTRUCTURE')
-          .should('contain.text', '0.0001')
-          .and('contain.text', '(11.7733%)');
-        cy.getByTestId('total').should('have.text', '0.1179');
+          .should('contain.text', '0.0004')
+          .and('contain.text', '(44.15%)');
+        cy.getByTestId('total').should('have.text', '0.4419');
       });
   });
 });

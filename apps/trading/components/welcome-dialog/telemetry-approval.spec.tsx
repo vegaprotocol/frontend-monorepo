@@ -3,7 +3,8 @@ import { TelemetryApproval } from './telemetry-approval';
 
 describe('TelemetryApproval', () => {
   it('click on checkbox should be properly handled', () => {
-    render(<TelemetryApproval />);
+    const helpText = 'My help text';
+    render(<TelemetryApproval helpText={helpText} />);
     expect(screen.getByRole('checkbox')).toHaveAttribute(
       'data-state',
       'unchecked'
@@ -15,5 +16,7 @@ describe('TelemetryApproval', () => {
       'data-state',
       'checked'
     );
+    expect(screen.getByText('Share usage data')).toBeInTheDocument();
+    expect(screen.getByText(helpText)).toBeInTheDocument();
   });
 });

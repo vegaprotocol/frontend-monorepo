@@ -19,6 +19,7 @@ const mockAppState: AppState = {
   ethConnectOverlay: false,
   transactionOverlay: false,
   bannerMessage: '',
+  disconnectNotice: false,
 };
 
 jest.mock('../../../contexts/app-state/app-state-context', () => ({

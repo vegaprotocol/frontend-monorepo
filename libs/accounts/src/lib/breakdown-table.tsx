@@ -11,7 +11,7 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { progressBarCellRendererSelector } from '@vegaprotocol/datagrid';
-import { AgGridDynamic as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import { accountValuesComparator } from './accounts-table';
 

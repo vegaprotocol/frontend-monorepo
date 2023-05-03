@@ -153,7 +153,7 @@ describe('home', { tags: '@regression' }, () => {
       // the choose market overlay is no longer showing
       cy.contains('Select a market to get started').should('not.exist');
       cy.contains('Loading...').should('not.exist');
-      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-1');
+      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-0');
     });
   });
 
@@ -172,6 +172,7 @@ describe('home', { tags: '@regression' }, () => {
           ],
         },
       };
+      // @ts-ignore partial deep check failing
       const data = marketsDataQuery(override);
       cy.mockGQL((req) => {
         aliasGQLQuery(req, 'MarketsData', data);

@@ -66,7 +66,7 @@ context(
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
-          cy.clearAllLocalStorage();
+          cy.clearLocalStorage();
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();

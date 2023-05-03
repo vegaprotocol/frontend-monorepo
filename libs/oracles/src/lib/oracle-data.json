@@ -1,0 +1,73 @@
+[
+  {
+    "name": "Test oracle",
+    "url": "https://zombo.com",
+    "description_markdown": "Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n",
+    "oracle": {
+      "status": "GOOD",
+      "status_reason": "",
+      "first_verified": "2023-02-28T00:00:00.000Z",
+      "last_verified": "2023-02-28T00:00:00.000Z",
+      "type": "eth_address",
+      "eth_address": "0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC"
+    },
+    "proofs": [
+      {
+        "format": "signed_message",
+        "available": true,
+        "type": "eth_address",
+        "eth_address": "0x949AF81E51D57831AE52591d17fBcdd1014a5f52",
+        "message": "SOMEHEX"
+      }
+    ],
+    "github_link": "https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/eth_address-0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC.toml"
+  },
+  {
+    "name": "Vega Admin Oracle for Testnet",
+    "url": "https://fairground.wtf",
+    "description_markdown": "The Vega Fairground admin oracle, uses a json file to settle based on Binance Spot price.\nE.g. in case the market is BTC/USDC the spot price for BTC/USDC on Binance will be used.\n\nTwitter: @VegaFairground\n",
+    "oracle": {
+      "status": "GOOD",
+      "status_reason": "",
+      "first_verified": "2022-01-01T00:00:00.000Z",
+      "last_verified": "2022-12-31T00:00:00.000Z",
+      "type": "public_key",
+      "public_key": "69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f"
+    },
+    "proofs": [
+      {
+        "format": "url",
+        "available": true,
+        "type": "twitter",
+        "url": "https://twitter.com/vegaprotocol/status/956833487230730241"
+      },
+      {
+        "format": "url",
+        "available": true,
+        "type": "web",
+        "url": "https://fairground.wtf/"
+      },
+      {
+        "format": "url",
+        "available": true,
+        "type": "github",
+        "url": "https://github.com"
+      },
+      {
+        "format": "signed_message",
+        "available": true,
+        "type": "public_key",
+        "public_key": "69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f",
+        "message": "SOMEHEX"
+      },
+      {
+        "format": "signed_message",
+        "available": true,
+        "type": "eth_address",
+        "eth_address": "0x0b38D0e7391CF427d309991A110a84daF37114eF",
+        "message": "SOMEHEX"
+      }
+    ],
+    "github_link": "https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/public_key-69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f.toml"
+  }
+]

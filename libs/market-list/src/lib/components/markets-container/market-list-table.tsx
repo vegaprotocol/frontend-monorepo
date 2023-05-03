@@ -8,7 +8,7 @@ import type {
   TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   PriceFlashCell,
   MarketNameCell,
   SetFilter,

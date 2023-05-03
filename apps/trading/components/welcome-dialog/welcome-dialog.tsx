@@ -9,8 +9,11 @@ import { RiskNoticeDialog } from './risk-notice-dialog';
 import { WelcomeNoticeDialog } from './welcome-notice-dialog';
 import { WelcomeLandingDialog } from './welcome-landing-dialog';
 import { useGlobalStore } from '../../stores';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks } from '@vegaprotocol/environment';
 
 export const WelcomeDialog = () => {
+  const { VEGA_ENV } = useEnvironment();
   const { pathname } = useLocation();
   let dialogContent: React.ReactNode;
   let title = '';
@@ -33,8 +36,10 @@ export const WelcomeDialog = () => {
   }, [update, isRiskDialogNeeded]);
 
   if (isRiskDialogNeeded) {
-    dialogContent = <RiskNoticeDialog onClose={onCloseDialog} />;
-    title = t('WARNING');
+    dialogContent = (
+      <RiskNoticeDialog onClose={onCloseDialog} network={VEGA_ENV} />
+    );
+    title = VEGA_ENV === Networks.MAINNET ? t('WARNING') : t('Vega Console');
     size = 'medium';
   } else if (isWelcomeDialogNeeded && data?.length === 0) {
     dialogContent = <WelcomeNoticeDialog />;

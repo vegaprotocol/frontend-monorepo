@@ -1,12 +1,18 @@
-import * as React from 'react';
-import type { AgGridReact } from 'ag-grid-react';
+import { forwardRef, lazy } from 'react';
+import type { AgGridReactProps, AgGridReact } from 'ag-grid-react';
 
-export const AgGridLazyInternal = React.lazy(() =>
+type Props = AgGridReactProps & {
+  style?: React.CSSProperties;
+  gridRef?: React.Ref<AgGridReact>;
+  id?: string;
+};
+
+export const AgGridLazyInternal = lazy(() =>
   import('./ag-grid-lazy-themed').then((module) => ({
     default: module.AgGridThemed,
   }))
 );
 
-export const AgGridLazy = React.forwardRef<AgGridReact>((props, ref) => (
-  <AgGridLazyInternal {...props} ref={ref} />
+export const AgGridLazy = forwardRef<AgGridReact, Props>((props, ref) => (
+  <AgGridLazyInternal {...props} gridRef={ref} />
 ));

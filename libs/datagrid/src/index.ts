@@ -1,4 +1,3 @@
-export * from './lib/ag-grid/ag-grid-dynamic';
 export * from './lib/ag-grid/ag-grid-lazy';
 export * from './lib/ag-grid/use-column-sizes';
 

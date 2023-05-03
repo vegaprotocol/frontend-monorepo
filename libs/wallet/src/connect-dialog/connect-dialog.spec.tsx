@@ -120,7 +120,11 @@ describe('VegaConnectDialog', () => {
         .mockImplementation(() =>
           Promise.resolve({ success: true, error: null })
         );
-
+      jest
+        .spyOn(connectors.rest, 'connect')
+        .mockImplementation(() =>
+          Promise.resolve([{ publicKey: 'pubkey', name: 'test key 1' }])
+        );
       render(generateJSX());
       // Switches to rest form
       fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
@@ -138,10 +142,11 @@ describe('VegaConnectDialog', () => {
       await act(async () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
+      await waitFor(() => {
+        expect(spy).toHaveBeenCalledWith(fields);
 
-      expect(spy).toHaveBeenCalledWith(fields);
-
-      expect(mockCloseVegaDialog).toHaveBeenCalled();
+        expect(mockCloseVegaDialog).toHaveBeenCalled();
+      });
     });
 
     it('handles failed connection', async () => {
