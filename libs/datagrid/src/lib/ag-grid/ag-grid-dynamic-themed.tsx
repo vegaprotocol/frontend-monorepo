@@ -1,5 +1,10 @@
-import React from 'react';
-import type { ReactNode, FunctionComponent, CSSProperties } from 'react';
+import React, { useCallback, useRef } from 'react';
+import type {
+  ReactElement,
+  ReactNode,
+  FunctionComponent,
+  CSSProperties,
+} from 'react';
 import dynamic from 'next/dynamic';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { ColumnResizedEvent } from 'ag-grid-community';
@@ -29,6 +34,7 @@ export const AgGridThemed = ({
   className,
   gridRef,
   customThemeParams,
+  children,
   ...props
 }: (AgGridReactProps | AgReactUiProps) & {
   style?: CSSProperties;
@@ -36,34 +42,56 @@ export const AgGridThemed = ({
   gridRef?: React.ForwardedRef<AgGridReact>;
   customThemeParams?: string;
   id?: string;
+  children?: ReactNode[];
 }) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const { theme } = useThemeSwitcher();
-  const [, setValues] = useColumnSizes({ id, ref: gridRef });
+  const [sizes, setValues] = useColumnSizes({ id, container: containerRef });
   const defaultProps = {
     rowHeight: 22,
     headerHeight: 22,
     enableCellTextSelection: true,
-    onColumnResized: (event: ColumnResizedEvent) => {
-      if (event.source === 'uiColumnDragged' && event.columns) {
-        setValues(event.columns);
-      }
-    },
+    onColumnResized: useCallback(
+      (event: ColumnResizedEvent) => {
+        if (event.source === 'uiColumnDragged' && event.columns) {
+          setValues(event.columns);
+        }
+      },
+      [setValues]
+    ),
   };
-
+  const sizedChildren = children.map((child: ReactElement) => {
+    return {
+      ...child,
+      props: {
+        ...(child?.props ?? {}),
+        width: sizes[child?.props.field],
+        headerName:
+          (child?.props.headerName || ' - ') +
+          ' ' +
+          (sizes[child?.props.field] || 'unk'),
+      },
+    };
+  });
   return (
     <div
       className={`${className ?? ''} ${
         theme === 'dark' ? 'ag-theme-balham-dark' : 'ag-theme-balham'
       }`}
       style={style}
+      ref={containerRef}
     >
       {theme === 'dark' ? (
         <AgGridDarkTheme customThemeParams={customThemeParams}>
-          <AgGridReact {...defaultProps} {...props} ref={gridRef} />
+          <AgGridReact {...defaultProps} {...props} ref={gridRef}>
+            {sizedChildren}
+          </AgGridReact>
         </AgGridDarkTheme>
       ) : (
         <AgGridLightTheme customThemeParams={customThemeParams}>
-          <AgGridReact {...defaultProps} {...props} ref={gridRef} />
+          <AgGridReact {...defaultProps} {...props} ref={gridRef}>
+            {sizedChildren}
+          </AgGridReact>
         </AgGridLightTheme>
       )}
     </div>

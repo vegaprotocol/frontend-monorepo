@@ -60,6 +60,7 @@ export const Portfolio = () => {
                   <OrderListContainer
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
+                    id="portfolioOrders"
                   />
                 </VegaWalletContainer>
               </Tab>

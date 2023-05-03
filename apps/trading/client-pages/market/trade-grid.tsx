@@ -103,6 +103,7 @@ const MarketBottomPanel = memo(
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
                     enforceBottomPlaceholder
+                    id="bottomOrders"
                   />
                 </VegaWalletContainer>
               </Tab>

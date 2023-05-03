@@ -8,11 +8,13 @@ export const OrderListContainer = ({
   onMarketClick,
   onOrderTypeClick,
   enforceBottomPlaceholder,
+  id,
 }: {
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   enforceBottomPlaceholder?: boolean;
+  id?: string;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
 
@@ -28,6 +30,7 @@ export const OrderListContainer = ({
       onOrderTypeClick={onOrderTypeClick}
       isReadOnly={isReadOnly}
       enforceBottomPlaceholder={enforceBottomPlaceholder}
+      id={id}
     />
   );
 };

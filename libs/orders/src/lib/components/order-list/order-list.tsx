@@ -8,6 +8,7 @@ import * as Schema from '@vegaprotocol/types';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
+import type { ForwardedRef } from 'react';
 import { memo, forwardRef } from 'react';
 import {
   AgGridDynamic as AgGrid,
@@ -17,7 +18,6 @@ import {
   positiveClassNames,
   MarketNameCell,
   OrderTypeCell,
-  useColumnSizes,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -36,18 +36,20 @@ export type OrderListTableProps = OrderListProps & {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
+  id?: string;
 };
 
-export const OrderListTable = memo<OrderListTableProps>(
+export const OrderListTable = memo<
+  OrderListTableProps & { ref?: ForwardedRef<AgGridReact> }
+>(
   forwardRef<AgGridReact, OrderListTableProps>(
     (
-      { cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
+      { id, cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
       ref
     ) => {
-      const [columnSizes] = useColumnSizes({ id: 'orders', ref });
       return (
         <AgGrid
-          id="orders"
+          id={id}
           ref={ref}
           defaultColDef={{
             resizable: true,
@@ -68,7 +70,6 @@ export const OrderListTable = memo<OrderListTableProps>(
             cellRenderer="MarketNameCell"
             cellRendererParams={{ idPath: 'market.id', onMarketClick }}
             minWidth={150}
-            width={columnSizes['market.tradableInstrument.instrument.code']}
           />
           <AgGridColumn
             headerName={t('Size')}
@@ -105,7 +106,6 @@ export const OrderListTable = memo<OrderListTableProps>(
               );
             }}
             minWidth={80}
-            width={columnSizes['size']}
           />
           <AgGridColumn
             field="type"
@@ -118,7 +118,6 @@ export const OrderListTable = memo<OrderListTableProps>(
               onClick: onOrderTypeClick,
             }}
             minWidth={80}
-            width={columnSizes['type']}
           />
           <AgGridColumn
             field="status"
@@ -151,7 +150,6 @@ export const OrderListTable = memo<OrderListTableProps>(
               </span>
             )}
             minWidth={100}
-            width={columnSizes['status']}
           />
           <AgGridColumn
             headerName={t('Filled')}
@@ -161,7 +159,6 @@ export const OrderListTable = memo<OrderListTableProps>(
             valueFormatter={({
               data,
               value,
-              node,
             }: VegaValueFormatterParams<Order, 'remaining'>) => {
               if (!data) {
                 return undefined;
@@ -179,7 +176,6 @@ export const OrderListTable = memo<OrderListTableProps>(
               )}/${addDecimalsFormatNumber(size.toString(), dps)}`;
             }}
             minWidth={100}
-            width={columnSizes['remaining']}
           />
           <AgGridColumn
             field="price"
@@ -188,7 +184,6 @@ export const OrderListTable = memo<OrderListTableProps>(
             valueFormatter={({
               value,
               data,
-              node,
             }: VegaValueFormatterParams<Order, 'price'>) => {
               if (!data) {
                 return undefined;
@@ -203,7 +198,6 @@ export const OrderListTable = memo<OrderListTableProps>(
               return addDecimalsFormatNumber(value, data.market.decimalPlaces);
             }}
             minWidth={100}
-            width={columnSizes['price']}
           />
           <AgGridColumn
             field="timeInForce"
@@ -235,12 +229,10 @@ export const OrderListTable = memo<OrderListTableProps>(
               return label;
             }}
             minWidth={150}
-            width={columnSizes['timeInForce']}
           />
           <AgGridColumn
             field="createdAt"
             cellRenderer={({
-              data,
               value,
             }: VegaICellRendererParams<Order, 'createdAt'>) => {
               return (
@@ -250,7 +242,6 @@ export const OrderListTable = memo<OrderListTableProps>(
               );
             }}
             minWidth={150}
-            width={columnSizes['createdAt']}
           />
           <AgGridColumn
             field="updatedAt"
@@ -269,7 +260,6 @@ export const OrderListTable = memo<OrderListTableProps>(
               );
             }}
             minWidth={150}
-            width={columnSizes['updatedAt']}
           />
           <AgGridColumn
             colId="amend"
@@ -294,7 +284,7 @@ export const OrderListTable = memo<OrderListTableProps>(
               ) : null;
             }}
             sortable={false}
-            width={columnSizes['amend']}
+            flex={1}
           />
         </AgGrid>
       );

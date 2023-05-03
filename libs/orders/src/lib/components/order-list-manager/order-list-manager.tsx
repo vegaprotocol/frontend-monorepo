@@ -28,6 +28,7 @@ export interface OrderListManagerProps {
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   enforceBottomPlaceholder?: boolean;
+  id?: string;
 }
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
@@ -56,6 +57,7 @@ export const OrderListManager = ({
   onOrderTypeClick,
   isReadOnly,
   enforceBottomPlaceholder,
+  id,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [dataCount, setDataCount] = useState(0);
@@ -159,6 +161,7 @@ export const OrderListManager = ({
     <>
       <div className="h-full relative">
         <OrderListTable
+          id={id}
           rowData={extractedData}
           ref={gridRef}
           onGridReady={onGridReady}
