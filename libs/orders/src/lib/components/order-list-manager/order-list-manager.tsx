@@ -20,8 +20,7 @@ import type { Order } from '../order-data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 
 export enum Filter {
-  // make filter value always truthy
-  'Open' = 1,
+  'Open',
   'Closed',
   'Rejected',
 }
@@ -78,7 +77,7 @@ export const OrderListManager = ({
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables:
-      filter && filter === Filter.Open
+      filter === Filter.Open
         ? { partyId, filter: { liveOnly: true } }
         : { partyId },
   });
@@ -106,7 +105,7 @@ export const OrderListManager = ({
 
   const onGridReady = useCallback(
     ({ api }: GridReadyEvent) => {
-      if (filter) {
+      if (filter !== undefined) {
         api.setFilterModel({
           status: {
             value: FilterStatusValue[filter],
@@ -144,7 +143,7 @@ export const OrderListManager = ({
         <OrderListTable
           rowData={data as Order[]}
           ref={gridRef}
-          readonlyStatusFilter={Boolean(filter)}
+          readonlyStatusFilter={filter !== undefined}
           onGridReady={onGridReady}
           cancel={cancel}
           setEditOrder={setEditOrder}
