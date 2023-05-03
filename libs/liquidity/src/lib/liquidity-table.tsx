@@ -54,13 +54,13 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
 
     return (
       <AgGrid
+        id="liquidityProvisionTable"
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No liquidity provisions')}
         getRowId={({ data }) => getId(data)}
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
-          flex: 1,
           resizable: true,
           minWidth: 100,
           tooltipComponent: TooltipCellComponent,

@@ -181,7 +181,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 </ButtonLink>
               );
             }}
-            maxWidth={300}
           />
           <AgGridColumn
             headerName={t('Used')}
