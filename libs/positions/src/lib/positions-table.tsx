@@ -10,7 +10,7 @@ import type {
 } from '@vegaprotocol/datagrid';
 import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   DateRangeFilter,
   PriceFlashCell,
   signedNumberCssClass,

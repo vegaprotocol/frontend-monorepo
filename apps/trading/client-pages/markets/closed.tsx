@@ -4,7 +4,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
