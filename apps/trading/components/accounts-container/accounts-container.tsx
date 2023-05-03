@@ -13,10 +13,12 @@ export const AccountsContainer = ({
   pinnedAsset,
   hideButtons,
   noBottomPlaceholder,
+  id,
 }: {
   pinnedAsset?: PinnedAsset;
   hideButtons?: boolean;
   noBottomPlaceholder?: boolean;
+  id?: string;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
@@ -42,6 +44,7 @@ export const AccountsContainer = ({
   return (
     <div className="h-full relative">
       <AccountManager
+        id={id}
         partyId={pubKey}
         onClickAsset={onClickAsset}
         onClickWithdraw={openWithdrawalDialog}

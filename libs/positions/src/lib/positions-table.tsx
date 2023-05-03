@@ -46,6 +46,7 @@ interface Props extends TypedDataAgGrid<Position> {
   onMarketClick?: (id: string, metaKey?: boolean) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
+  id?: string;
 }
 
 export interface AmountCellProps {
@@ -89,7 +90,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
-          flex: 1,
           resizable: true,
           sortable: true,
           filter: true,
@@ -368,6 +368,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             return getDateTimeFormat().format(new Date(value));
           }}
           minWidth={150}
+          flex={1}
         />
         {onClose && !props.isReadOnly ? (
           <AgGridColumn
@@ -383,6 +384,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ) : null
             }
             minWidth={80}
+            flex={1}
           />
         ) : null}
       </AgGrid>

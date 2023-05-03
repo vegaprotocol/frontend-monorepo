@@ -111,7 +111,7 @@ const MarketBottomPanel = memo(
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
                     enforceBottomPlaceholder
-                    id="bottomOrders"
+                    id="marketOrders"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -120,6 +120,7 @@ const MarketBottomPanel = memo(
                   <TradingViews.Fills
                     marketId={marketId}
                     onMarketClick={onMarketClick}
+                    id="marketFills"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -138,6 +139,7 @@ const MarketBottomPanel = memo(
                   <TradingViews.Positions
                     onMarketClick={onMarketClick}
                     noBottomPlaceholder
+                    id="marketPositions"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -147,6 +149,7 @@ const MarketBottomPanel = memo(
                     pinnedAsset={pinnedAsset}
                     noBottomPlaceholder
                     hideButtons
+                    id="marketCollateral"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -159,7 +162,10 @@ const MarketBottomPanel = memo(
         <Tabs storageKey="console-trade-grid-bottom">
           <Tab id="positions" name={t('Positions')}>
             <VegaWalletContainer>
-              <TradingViews.Positions onMarketClick={onMarketClick} />
+              <TradingViews.Positions
+                onMarketClick={onMarketClick}
+                id="marketPositions"
+              />
             </VegaWalletContainer>
           </Tab>
           <Tab id="orders" name={t('Orders')}>
@@ -169,6 +175,7 @@ const MarketBottomPanel = memo(
                 onMarketClick={onMarketClick}
                 onOrderTypeClick={onOrderTypeClick}
                 enforceBottomPlaceholder
+                id="marketOrders"
               />
             </VegaWalletContainer>
           </Tab>
@@ -177,12 +184,17 @@ const MarketBottomPanel = memo(
               <TradingViews.Fills
                 marketId={marketId}
                 onMarketClick={onMarketClick}
+                id="marketFills"
               />
             </VegaWalletContainer>
           </Tab>
           <Tab id="accounts" name={t('Collateral')}>
             <VegaWalletContainer>
-              <TradingViews.Collateral pinnedAsset={pinnedAsset} hideButtons />
+              <TradingViews.Collateral
+                pinnedAsset={pinnedAsset}
+                hideButtons
+                id="marketCollateral"
+              />
             </VegaWalletContainer>
           </Tab>
         </Tabs>

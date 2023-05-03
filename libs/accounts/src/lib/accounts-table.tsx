@@ -100,6 +100,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickDeposit?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
+  id?: string;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
@@ -149,7 +150,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             (data) => data.asset.id !== pinnedAssetId
           )}
           defaultColDef={{
-            flex: 1,
             resizable: true,
             tooltipComponent: TooltipCellComponent,
             sortable: true,
@@ -356,6 +356,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                   );
                 }
               }}
+              flex={1}
             />
           }
         </AgGrid>

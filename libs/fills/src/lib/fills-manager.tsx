@@ -12,12 +12,14 @@ interface FillsManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  id?: string;
 }
 
 export const FillsManager = ({
   partyId,
   marketId,
   onMarketClick,
+  id,
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
@@ -70,6 +72,7 @@ export const FillsManager = ({
   return (
     <div className="h-full relative">
       <FillsTable
+        id={id}
         ref={gridRef}
         partyId={partyId}
         rowModelType="infinite"

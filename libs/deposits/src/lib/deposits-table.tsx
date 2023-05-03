@@ -24,6 +24,7 @@ export const DepositsTable = forwardRef<
 >((props, ref) => {
   return (
     <AgGrid
+      id="depositTable"
       ref={ref}
       overlayNoRowsTemplate={t('No deposits')}
       defaultColDef={{ flex: 1, resizable: true }}

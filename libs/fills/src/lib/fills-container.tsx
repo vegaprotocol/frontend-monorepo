@@ -6,9 +6,11 @@ import { FillsManager } from './fills-manager';
 export const FillsContainer = ({
   marketId,
   onMarketClick,
+  id,
 }: {
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  id?: string;
 }) => {
   const { pubKey } = useVegaWallet();
 
@@ -25,6 +27,7 @@ export const FillsContainer = ({
       partyId={pubKey}
       marketId={marketId}
       onMarketClick={onMarketClick}
+      id={id}
     />
   );
 };

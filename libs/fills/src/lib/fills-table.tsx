@@ -34,6 +34,7 @@ export type Role = typeof TAKER | typeof MAKER | '-';
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  id?: string;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
@@ -42,7 +43,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
       <AgGrid
         ref={ref}
         overlayNoRowsTemplate={t('No fills')}
-        defaultColDef={{ flex: 1, resizable: true }}
+        defaultColDef={{ resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data?.id}
         tooltipShowDelay={0}

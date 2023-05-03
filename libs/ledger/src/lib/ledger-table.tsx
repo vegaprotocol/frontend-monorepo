@@ -49,11 +49,11 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
   (props, ref) => {
     return (
       <AgGrid
+        id="ledgerTable"
         style={{ width: '100%', height: 'calc(100% - 50px)' }}
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
-          flex: 1,
           resizable: true,
           sortable: true,
           tooltipComponent: TransferTooltipCellComponent,
@@ -203,6 +203,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           }
           filterParams={dateRangeFilterParams}
           filter={DateRangeFilter}
+          flex={1}
         />
       </AgGrid>
     );
