@@ -35,7 +35,17 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {
-            id: '',
+            __typename: 'DataSourceSpec',
+            id: 'oracleId',
+          },
+          dataSourceSpecForSettlementData: {
+            __typename: 'DataSourceSpec',
+            id: 'oracleId',
+          },
+          dataSourceSpecBinding: {
+            __typename: 'DataSourceSpecToFutureBinding',
+            tradingTerminationProperty: 'trading-termination-property',
+            settlementDataProperty: 'settlement-data-property',
           },
           quoteName: 'BTC',
           __typename: 'Future',

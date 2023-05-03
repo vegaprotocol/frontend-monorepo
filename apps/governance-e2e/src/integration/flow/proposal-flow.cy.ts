@@ -84,6 +84,7 @@ context(
     });
 
     beforeEach('visit governance tab', function () {
+      cy.clearLocalStorage();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();

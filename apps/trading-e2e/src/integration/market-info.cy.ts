@@ -180,25 +180,21 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('oracle displayed', () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
 
-    validateMarketDataRow(0, 'Settlement Data Property', 'prices.BTC.value');
-    validateMarketDataRow(
-      1,
-      'Trading Termination Property',
-      'termination.BTC.value'
-    );
-
-    // check that links to github for oracle proofs are shown
     cy.getByTestId(accordionContent)
-      .getByTestId('oracle-proof-links')
-      .find(`[data-testid="${externalLink}"]`)
-      .should('have.attr', 'href')
-      .and('contain', 'https://github.com/vegaprotocol/well-known');
+      .getByTestId('provider-name')
+      .and('contain', 'Another oracle');
 
     cy.getByTestId(accordionContent)
-      .getByTestId('oracle-spec-links')
-      .find(`[data-testid="${externalLink}"]`)
-      .should('have.attr', 'href')
-      .and('contain', '/oracles');
+      .getByTestId('signed-proofs')
+      .and('contain', '1');
+
+    cy.getByTestId(accordionContent)
+      .getByTestId('verified-proofs')
+      .and('contain', '1');
+
+    cy.getByTestId(accordionContent)
+      .getByTestId('signed-proofs')
+      .and('contain', '1');
   });
 
   it('proposal displayed', () => {

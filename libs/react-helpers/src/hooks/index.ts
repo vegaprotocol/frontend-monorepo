@@ -17,3 +17,4 @@ export * from './use-yesterday';
 export * from './use-previous';
 export * from './use-logger';
 export * from './use-bottom-placeholder';
+export * from './use-pane-layout';

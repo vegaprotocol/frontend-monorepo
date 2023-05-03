@@ -2,25 +2,28 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import {
+  doesValueEquateToParam,
   getClosingTimestamp,
   getEnactmentTimestamp,
   useProposalSubmit,
-  doesValueEquateToParam,
 } from '@vegaprotocol/proposals';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import {
   ProposalFormDescription,
+  ProposalFormDownloadJson,
   ProposalFormSubheader,
   ProposalFormSubmit,
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
-  ProposalFormDownloadJson,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
-import { ProposalMinRequirements } from '../../components/shared';
+import {
+  ProposalMinRequirements,
+  ProposalUserAction,
+} from '../../components/shared';
 import {
   AsyncRenderer,
   ExternalLink,
@@ -31,9 +34,9 @@ import {
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
-import { ProposalUserAction } from '../../components/shared';
-import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
+import { useProposalMarketsQueryQuery } from './__generated__/UpdateMarket';
 import { downloadJson } from '../../../../lib/download-json';
+import { ProposalState } from '@vegaprotocol/types';
 
 export interface UpdateMarketProposalFormFields {
   proposalVoteDeadline: string;
@@ -73,6 +76,9 @@ export const ProposeUpdateMarket = () => {
 
     return marketsData.marketsConnection.edges
       .map((edge) => edge.node)
+      .filter(
+        (market) => market.proposal?.state === ProposalState.STATE_ENACTED
+      )
       .sort((a, b) => {
         const aName = a.tradableInstrument.instrument.name;
         const bName = b.tradableInstrument.instrument.name;

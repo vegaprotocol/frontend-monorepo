@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
-import { format } from 'date-fns';
+import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
 
-import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalChangeTable } from './proposal-change-table';
 
@@ -24,16 +23,15 @@ it('Renders all data for table', () => {
   expect(screen.getByText('Closes on')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(new Date(proposal?.terms.closingDatetime), DATE_FORMAT_DETAILED)
+      formatDateWithLocalTimezone(new Date(proposal?.terms.closingDatetime))
     )
   ).toBeInTheDocument();
 
   expect(screen.getByText('Proposed enactment')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(
-        new Date(proposal?.terms.enactmentDatetime || 0),
-        DATE_FORMAT_DETAILED
+      formatDateWithLocalTimezone(
+        new Date(proposal?.terms.enactmentDatetime || 0)
       )
     )
   ).toBeInTheDocument();
@@ -43,7 +41,7 @@ it('Renders all data for table', () => {
 
   expect(screen.getByText('Proposed on')).toBeInTheDocument();
   expect(
-    screen.getByText(format(new Date(proposal?.datetime), DATE_FORMAT_DETAILED))
+    screen.getByText(formatDateWithLocalTimezone(new Date(proposal?.datetime)))
   ).toBeInTheDocument();
 
   expect(screen.getByText('Type')).toBeInTheDocument();
@@ -62,16 +60,15 @@ it('Changes data based on if data is in future or past', () => {
   expect(screen.getByText('Closed on')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(new Date(proposal?.terms.closingDatetime), DATE_FORMAT_DETAILED)
+      formatDateWithLocalTimezone(new Date(proposal?.terms.closingDatetime))
     )
   ).toBeInTheDocument();
 
   expect(screen.getByText('Enacted on')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(
-        new Date(proposal?.terms.enactmentDatetime || 0),
-        DATE_FORMAT_DETAILED
+      formatDateWithLocalTimezone(
+        new Date(proposal?.terms.enactmentDatetime || 0)
       )
     )
   ).toBeInTheDocument();
@@ -91,9 +88,8 @@ it('Does not render enactment time for freeform proposal', () => {
   expect(screen.queryByText('Enacted on')).not.toBeInTheDocument();
   expect(
     screen.queryByText(
-      format(
-        new Date(proposal?.terms.enactmentDatetime || 0),
-        DATE_FORMAT_DETAILED
+      formatDateWithLocalTimezone(
+        new Date(proposal?.terms.enactmentDatetime || 0)
       )
     )
   ).not.toBeInTheDocument();

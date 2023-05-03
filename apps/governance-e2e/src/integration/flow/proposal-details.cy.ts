@@ -49,6 +49,7 @@ describe(
     });
 
     beforeEach('visit proposals tab', function () {
+      cy.clearLocalStorage();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
@@ -217,9 +218,9 @@ describe(
       vegaWalletSetSpecifiedApprovalAmount('1000');
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getSubmittedProposalFromProposalList(rawProposal.rationale.title)
-          .as('submittedProposal')
-          .within(() => cy.get(viewProposalButton).click());
+        getSubmittedProposalFromProposalList(
+          rawProposal.rationale.title
+        ).within(() => cy.get(viewProposalButton).click());
       });
       voteForProposal('for');
       // 3001-VOTE-079
@@ -237,9 +238,9 @@ describe(
           );
           navigateTo(navigation.proposals);
           cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-            getSubmittedProposalFromProposalList(rawProposal.rationale.title)
-              .as('submittedProposal')
-              .within(() => cy.get(viewProposalButton).click());
+            getSubmittedProposalFromProposalList(
+              rawProposal.rationale.title
+            ).within(() => cy.get(viewProposalButton).click());
           });
           cy.get(proposalVoteProgressForPercentage)
             .contains('100.00%')
