@@ -76,6 +76,7 @@ context(
     });
 
     beforeEach('visit governance tab', function () {
+      cy.clearLocalStorage();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
@@ -304,7 +305,10 @@ context(
         cy.get('dd').eq(0).should('have.text', 'Test market 1');
         cy.get('dd').eq(1).should('have.text', 'TEST.24h');
         cy.get('dd').eq(2).should('not.be.empty');
-        cy.get('dd').eq(2).invoke('text').as('EnactedMarketId');
+        cy.get('dd')
+          .eq(2)
+          .invoke('text')
+          .as('EnactedMarketId', { type: 'static' });
       });
       cy.get('@EnactedMarketId').then((marketId) => {
         cy.VegaWalletSubmitLiquidityProvision(String(marketId), '1');
@@ -322,6 +326,7 @@ context(
       cy.get('@EnactedMarketId').then((marketId) => {
         cy.contains(String(marketId))
           .parentsUntil(proposalListItem)
+          .last()
           .within(() => {
             cy.getByTestId(viewProposalBtn).click();
           });
@@ -375,16 +380,19 @@ context(
       cy.get(newProposalSubmitButton).should('be.visible').click();
       // cannot submit a proposal with ERC20 address already in use
       cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
-      cy.getByTestId('dialog-content').within(() => {
-        cy.get('p').should(
-          'have.text',
-          'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE'
-        );
-      });
+      cy.getByTestId('dialog-content')
+        .last()
+        .within(() => {
+          cy.get('p').should(
+            'have.text',
+            'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE'
+          );
+        });
       closeDialog();
       navigateTo(navigation.proposals);
       cy.contains(proposalTitle)
         .parentsUntil(proposalListItem)
+        .last()
         .within(() => {
           cy.getByTestId(viewProposalBtn).click();
         });
@@ -422,6 +430,7 @@ context(
         cy.get(proposalType)
           .contains('Update asset')
           .parentsUntil(proposalListItem)
+          .last()
           .within(() => {
             cy.get(proposalDetails).should('contain.text', assetId); // 3001-VOTE-029
             cy.getByTestId(viewProposalBtn).click();

@@ -16,6 +16,7 @@ import {
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
 
+const proposalListItem = '[data-testid="proposals-list-item"]';
 const closedProposals = '[data-testid="closed-proposals"]';
 const proposalStatus = '[data-testid="proposal-status"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
@@ -35,6 +36,7 @@ context(
     });
 
     beforeEach('visit proposals', function () {
+      cy.clearLocalStorage();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
@@ -51,7 +53,8 @@ context(
       waitForSpinner();
       cy.get(closedProposals).within(() => {
         cy.contains(proposalTitle)
-          .parentsUntil('[data-testid="proposals-list-item"]')
+          .parentsUntil(proposalListItem)
+          .last()
           .within(() => {
             cy.get(proposalStatus).should('have.text', 'Enacted ');
             cy.get(viewProposalButton).click();
@@ -78,7 +81,8 @@ context(
       waitForSpinner();
       cy.get(openProposals).within(() => {
         cy.contains(proposalTitle)
-          .parentsUntil('[data-testid="proposals-list-item"]')
+          .parentsUntil(proposalListItem)
+          .last()
           .within(() => cy.get(viewProposalButton).click());
       });
       getProposalInformationFromTable('State')
@@ -111,7 +115,8 @@ context(
       waitForSpinner();
       cy.get(openProposals, { timeout: 6000 }).within(() => {
         cy.contains(proposalTitle)
-          .parentsUntil('[data-testid="proposals-list-item"]')
+          .parentsUntil(proposalListItem)
+          .last()
           .within(() => cy.get(viewProposalButton).click());
       });
       getProposalInformationFromTable('State')
@@ -133,7 +138,8 @@ context(
       waitForSpinner();
       cy.get(openProposals).within(() => {
         cy.contains(proposalTitle)
-          .parentsUntil('[data-testid="proposals-list-item"]')
+          .parentsUntil(proposalListItem)
+          .last()
           .within(() => cy.get(viewProposalButton).click());
       });
       getProposalInformationFromTable('State')

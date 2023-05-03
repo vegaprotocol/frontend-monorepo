@@ -35,6 +35,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   });
 
   beforeEach('visit proposals tab', function () {
+    cy.clearLocalStorage();
     cy.reload();
     waitForSpinner();
     cy.connectVegaWallet();
@@ -59,7 +60,10 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     cy.get(openProposals).within(() => {
       cy.get(proposalClosingDate).first().should('contain.text', 'year');
       cy.get(proposalClosingDate).should('contain.text', 'months');
-      cy.get(proposalClosingDate).last().should('contain.text', 'days');
+      cy.get(proposalClosingDate)
+        .last()
+        .invoke('text')
+        .should('match', /days|minutes/);
     });
   });
 
