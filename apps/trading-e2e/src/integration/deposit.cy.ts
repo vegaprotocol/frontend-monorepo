@@ -101,7 +101,7 @@ describe('deposit actions', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.setVegaWallet();
-    cy.visit('/');
+    cy.visit('/#/markets/market-1');
     cy.wait('@MarketsCandles');
     cy.getByTestId('dialog-close').click();
   });
@@ -112,7 +112,6 @@ describe('deposit actions', { tags: '@smoke' }, () => {
       'be.visible'
     );
     cy.contains('[data-testid="deposit"]', 'Deposit to trade').click();
-    connectEthereumWallet('MetaMask');
     cy.getByTestId('deposit-submit').should('be.visible');
   });
 });

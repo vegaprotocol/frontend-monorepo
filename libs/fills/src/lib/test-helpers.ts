@@ -78,7 +78,17 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
             },
             quoteName: '',
             dataSourceSpecForTradingTermination: {
-              id: '',
+              __typename: 'DataSourceSpec',
+              id: 'oracleId',
+            },
+            dataSourceSpecForSettlementData: {
+              __typename: 'DataSourceSpec',
+              id: 'oracleId',
+            },
+            dataSourceSpecBinding: {
+              __typename: 'DataSourceSpecToFutureBinding',
+              tradingTerminationProperty: 'trading-termination-property',
+              settlementDataProperty: 'settlement-data-property',
             },
           },
         },

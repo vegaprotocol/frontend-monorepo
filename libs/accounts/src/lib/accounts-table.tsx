@@ -22,7 +22,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   CenteredGridCellWrapper,
 } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';

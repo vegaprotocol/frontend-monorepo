@@ -10,7 +10,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { memo, forwardRef } from 'react';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   SetFilter,
   DateRangeFilter,
   negativeClassNames,

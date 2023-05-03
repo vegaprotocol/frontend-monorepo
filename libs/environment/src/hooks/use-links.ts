@@ -100,6 +100,7 @@ export const TOKEN_VALIDATOR = '/validators/:id';
 
 // Explorer pages
 export const EXPLORER_TX = '/txs/:hash';
+export const EXPLORER_ORACLE = '/oracles/:id';
 
 // Etherscan pages
 export const ETHERSCAN_ADDRESS = '/address/:hash';
