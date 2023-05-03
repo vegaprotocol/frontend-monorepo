@@ -122,6 +122,16 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       {
         headerName: t('Market'),
         field: 'code',
+        cellRenderer: ({
+          value,
+          data,
+        }: VegaICellRendererParams<Row, 'code'>) => {
+          return (
+            <span data-testid="market-code" data-market-id={data?.id}>
+              {value}
+            </span>
+          );
+        },
       },
       {
         headerName: t('Description'),

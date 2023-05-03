@@ -214,7 +214,7 @@ describe('Closed', () => {
       'Settlement price',
       'Realised PNL',
       'Settlement asset',
-      'Market ID',
+      '', // actions row
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
@@ -236,7 +236,7 @@ describe('Closed', () => {
       addDecimalsFormatNumber(property.value, market.decimalPlaces),
       addDecimalsFormatNumber(position.realisedPNL, market.decimalPlaces),
       market.tradableInstrument.instrument.product.settlementAsset.symbol,
-      market.id,
+      '', // actions row
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
@@ -328,8 +328,13 @@ describe('Closed', () => {
     // check that only included ids are shown
     const cells = screen
       .getAllByRole('gridcell')
-      .filter((cell) => cell.getAttribute('col-id') === 'id')
-      .map((cell) => cell.textContent?.trim());
+      .filter((cell) => cell.getAttribute('col-id') === 'code')
+      .map((cell) => {
+        const marketId = within(cell)
+          .getByTestId('market-code')
+          .getAttribute('data-market-id');
+        return marketId;
+      });
     expect(cells).toEqual(expectedRows.map((m) => m.node.id));
   });
 });
