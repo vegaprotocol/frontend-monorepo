@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { ComponentType, MouseEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { t } from '@vegaprotocol/i18n';
@@ -8,12 +8,17 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { CellClickedEvent } from 'ag-grid-community';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
 import type { MarketMaybeWithData } from '../../markets-provider';
+import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
 
 interface MarketsContainerProps {
   onSelect: (marketId: string, metaKey?: boolean) => void;
+  actions: ComponentType<VegaICellRendererParams<MarketMaybeWithData, 'id'>>;
 }
 
-export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
+export const MarketsContainer = ({
+  onSelect,
+  actions,
+}: MarketsContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [dataCount, setDataCount] = useState(0);
   const { data, error, loading, reload } = useDataProvider({
@@ -53,6 +58,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
         }}
         onMarketClick={onSelect}
         onFilterChanged={onFilterChanged}
+        actions={actions}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

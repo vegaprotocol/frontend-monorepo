@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { forwardRef } from 'react';
 import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -28,8 +29,9 @@ export const MarketListTable = forwardRef<
   AgGridReact,
   TypedDataAgGrid<MarketMaybeWithData> & {
     onMarketClick: (marketId: string, metaKey?: boolean) => void;
+    actions: ComponentType<VegaICellRendererParams<MarketMaybeWithData, 'id'>>;
   }
->(({ onMarketClick, ...props }, ref) => {
+>(({ onMarketClick, actions, ...props }, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
@@ -198,7 +200,18 @@ export const MarketListTable = forwardRef<
           );
         }}
       />
-      <AgGridColumn headerName={t('Market ID')} field="id" flex={1} />
+      {actions && (
+        <AgGridColumn
+          colId="actions"
+          headerName=""
+          field="id"
+          resizable={false}
+          maxWidth={50}
+          filter={false}
+          sortable={false}
+          cellRenderer={actions}
+        />
+      )}
     </AgGrid>
   );
 });

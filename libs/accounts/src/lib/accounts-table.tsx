@@ -305,7 +305,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                             iconName="more"
                             className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
                             data-testid="dropdown-menu"
-                          ></DropdownMenuTrigger>
+                          />
                         }
                       >
                         <DropdownMenuContent>
