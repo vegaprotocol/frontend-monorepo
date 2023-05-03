@@ -7,7 +7,7 @@ interface Asset {
       };
 }
 
-interface ERC20Asset {
+export interface ERC20Asset {
   __typename?: 'Asset';
   source: {
     __typename: 'ERC20';

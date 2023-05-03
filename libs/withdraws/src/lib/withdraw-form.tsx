@@ -33,6 +33,7 @@ import {
   useWeb3ConnectStore,
   useWeb3Disconnect,
 } from '@vegaprotocol/web3';
+import { AssetBalance } from './asset-balance';
 
 interface FormFields {
   asset: string;
@@ -154,7 +155,11 @@ export const WithdrawForm = ({
         hasError={Boolean(errors.asset?.message)}
       >
         {assets.filter(isAssetTypeERC20).map((a) => (
-          <AssetOption key={a.id} asset={a} />
+          <AssetOption
+            key={a.id}
+            asset={a}
+            balance={<AssetBalance asset={a} />}
+          />
         ))}
       </RichSelect>
     );
