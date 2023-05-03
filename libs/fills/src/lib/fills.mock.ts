@@ -152,6 +152,16 @@ const fills = (id?: string): FillFieldsFragment[] => [
       id: id || 'buyer-id',
     },
   }),
+  fillFieldsFragment({
+    id: '4',
+    aggressor: Schema.Side.SIDE_UNSPECIFIED,
+    market: {
+      id: 'market-2',
+    },
+    buyer: {
+      id: id || 'buyer-id',
+    },
+  }),
 ];
 
 export const fillsEventSubscription = (
