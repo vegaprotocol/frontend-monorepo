@@ -3,7 +3,7 @@ import { VoteProgress } from '@vegaprotocol/proposals';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
