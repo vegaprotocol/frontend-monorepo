@@ -40,18 +40,6 @@
   line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
 }
 
-/* Light variables */
-.ag-theme-balham {
-  --ag-background-color: theme(colors.white);
-  --ag-border-color: theme(colors.neutral[300]);
-  --ag-header-background-color: theme(colors.white);
-  --ag-odd-row-background-color: theme(colors.white);
-  --ag-header-column-separator-color: theme(colors.neutral[300]);
-  --ag-row-border-color: theme(colors.white);
-  --ag-row-hover-color: theme(colors.neutral[100]);
-  --ag-font-size: 12px;
-}
-
 /* Dark variables */
 .ag-theme-balham-dark {
   --ag-background-color: theme(colors.black);
@@ -62,4 +50,11 @@
   --ag-row-border-color: theme(colors.black);
   --ag-row-hover-color: theme(colors.neutral[800]);
   --ag-font-size: 12px;
+}
+
+.validators-table .ag-theme-balham-dark .ag-body-horizontal-scroll {
+  opacity: 0.75;
+}
+.validators-table .ag-theme-balham-dark *:hover {
+  cursor: pointer;
 }
