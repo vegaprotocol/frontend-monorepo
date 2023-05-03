@@ -3,10 +3,9 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["jest", "node"]
+    "types": ["jest", "node", "@testing-library/jest-dom"]
   },
   "include": [
-    "jest.config.ts",
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/*.test.tsx",
@@ -16,6 +15,8 @@
     "**/*.test.jsx",
     "**/*.spec.jsx",
     "**/*.d.ts",
+    "jest.config.ts",
+    "../../index.d.ts",
     "src/lib/use-oracle-spec-binding-data.spec.tsx"
   ]
 }

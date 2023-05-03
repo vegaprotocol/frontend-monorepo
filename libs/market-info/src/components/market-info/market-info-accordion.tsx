@@ -103,6 +103,7 @@ const MarketInfoAccordion = ({
         content: <InsurancePoolInfoPanel market={market} account={a} />,
       })),
   ];
+  const product = market.tradableInstrument.instrument.product;
 
   const marketSpecPanels = [
     {
@@ -113,9 +114,13 @@ const MarketInfoAccordion = ({
       title: t('Instrument'),
       content: <InstrumentInfoPanel market={market} />,
     },
-    {
-      title: t('Oracle'),
-      content: <OracleInfoPanel market={market} />,
+    product.dataSourceSpecForSettlementData && {
+      title: t('Settlement Oracle'),
+      content: <OracleInfoPanel market={market} type="settlementData" />,
+    },
+    product.dataSourceSpecForTradingTermination && {
+      title: t('Termination Oracle'),
+      content: <OracleInfoPanel market={market} type="termination" />,
     },
     {
       title: t('Settlement asset'),
