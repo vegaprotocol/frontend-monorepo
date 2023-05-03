@@ -8,6 +8,11 @@ import type { Asset } from '@vegaprotocol/assets';
 
 jest.mock('@web3-react/core');
 
+jest.mock('@vegaprotocol/accounts', () => ({
+  ...jest.requireActual('@vegaprotocol/accounts'),
+  useAccountBalance: jest.fn(() => ({ accountBalance: 0, accountDecimals: 0 })),
+}));
+
 const MOCK_ETH_ADDRESS = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
 let assets: Asset[];
