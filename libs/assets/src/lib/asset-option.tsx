@@ -9,10 +9,6 @@ type AssetOptionProps = {
   balance?: ReactNode;
 };
 
-export const FetchingBalance = () => (
-  <div className="text-vega-orange-500">{t('Fetching balance…')}</div>
-);
-
 export const Balance = ({
   balance,
   symbol,
