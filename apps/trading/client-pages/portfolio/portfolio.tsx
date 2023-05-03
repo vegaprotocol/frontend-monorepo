@@ -7,6 +7,7 @@ import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
+import { usePaneLayout } from '@vegaprotocol/react-helpers';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { LayoutPriority } from 'allotment';
@@ -34,11 +35,11 @@ export const Portfolio = () => {
 
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler(true);
-
+  const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
-      <ResizableGrid vertical>
+      <ResizableGrid vertical onChange={handleOnLayoutChange}>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
             <Tabs storageKey="console-portfolio-top">
@@ -78,7 +79,7 @@ export const Portfolio = () => {
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize={300}
+          preferredSize={sizes[1] || 300}
           minSize={50}
         >
           <PortfolioGridChild>
