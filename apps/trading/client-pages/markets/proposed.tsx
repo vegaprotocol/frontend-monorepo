@@ -12,7 +12,9 @@ export const Proposed = () => {
   const externalLink = tokenLink(TOKEN_NEW_MARKET_PROPOSAL);
   return (
     <>
-      <ProposalsList />
+      <div className="min-h-[200px]">
+        <ProposalsList />
+      </div>
       <ExternalLink className="py-4 px-[11px] text-sm" href={externalLink}>
         {t('Propose a new market')}
       </ExternalLink>
