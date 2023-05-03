@@ -44,12 +44,11 @@ export const OrderListTable = memo<
 >(
   forwardRef<AgGridReact, OrderListTableProps>(
     (
-      { id, cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
+      { cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
       ref
     ) => {
       return (
         <AgGrid
-          id={id}
           ref={ref}
           defaultColDef={{
             resizable: true,

@@ -129,6 +129,7 @@ export const useColumnDefs = () => {
           'terms.enactmentDatetime'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
         filter: DateRangeFilter,
+        flex: 1,
       },
     ];
   }, [VEGA_TOKEN_URL, requiredMajorityPercentage]);
@@ -136,7 +137,6 @@ export const useColumnDefs = () => {
     return {
       sortable: true,
       cellClass: cellCss,
-      flex: 1,
       resizable: true,
       filter: true,
       filterParams: { buttons: ['reset'] },

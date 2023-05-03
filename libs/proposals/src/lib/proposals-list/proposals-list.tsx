@@ -21,9 +21,6 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
 export const ProposalsList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [dataCount, setDataCount] = useState(0);
-  const handleOnGridReady = useCallback(() => {
-    gridRef.current?.api?.sizeColumnsToFit();
-  }, [gridRef]);
   const { data, loading, error, reload } = useDataProvider({
     dataProvider: proposalsDataProvider,
     variables: {
@@ -41,13 +38,13 @@ export const ProposalsList = () => {
   return (
     <div className="relative">
       <AgGrid
+        id="proposedMarkets"
         ref={gridRef}
         className="w-full h-full"
         domLayout="autoHeight"
         columnDefs={columnDefs}
         rowData={filteredData}
         defaultColDef={defaultColDef}
-        onGridReady={handleOnGridReady}
         suppressLoadingOverlay
         suppressNoRowsOverlay
         onFilterChanged={onFilterChanged}

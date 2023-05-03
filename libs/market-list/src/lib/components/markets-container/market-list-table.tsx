@@ -33,11 +33,11 @@ export const MarketListTable = forwardRef<
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
+      id="allMarkets"
       style={{ width: '100%', height: '100%' }}
       getRowId={getRowId}
       ref={ref}
       defaultColDef={{
-        flex: 1,
         resizable: true,
         sortable: true,
         filter: true,
@@ -198,7 +198,7 @@ export const MarketListTable = forwardRef<
           );
         }}
       />
-      <AgGridColumn headerName={t('Market ID')} field="id" />
+      <AgGridColumn headerName={t('Market ID')} field="id" flex={1} />
     </AgGrid>
   );
 });

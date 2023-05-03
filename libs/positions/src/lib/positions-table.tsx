@@ -368,7 +368,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             return getDateTimeFormat().format(new Date(value));
           }}
           minWidth={150}
-          flex={1}
         />
         {onClose && !props.isReadOnly ? (
           <AgGridColumn

@@ -264,6 +264,7 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       {
         headerName: t('Market ID'),
         field: 'id',
+        flex: 1,
       },
     ];
     return cols;
@@ -271,12 +272,12 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
 
   return (
     <AgGrid
+      id="closedMarkets"
       style={{ width: '100%', height: '100%' }}
       rowData={rowData}
       columnDefs={colDefs}
       getRowId={({ data }) => data.id}
       defaultColDef={{
-        flex: 1,
         resizable: true,
       }}
       overlayNoRowsTemplate="No data"
