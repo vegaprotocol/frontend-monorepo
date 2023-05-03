@@ -4,22 +4,32 @@ import {
   useScreenDimensions,
 } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
 import { toNonHex } from '../../../components/search/detect-search';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import { Icon, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  Icon,
+  Intent,
+  Notification,
+  Splash,
+  truncateMiddle,
+} from '@vegaprotocol/ui-toolkit';
 import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { PartyBlockStake } from './components/party-block-stake';
 import { PartyBlockAccounts } from './components/party-block-accounts';
+import { isValidPartyId } from './components/party-id-error';
+import EmptyList from '../../../components/empty-list/empty-list';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
 
   useDocumentTitle(['Public keys', party || '-']);
+  const navigate = useNavigate();
+
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
@@ -38,6 +48,23 @@ const Party = () => {
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
+
+  if (!isValidPartyId(partyId)) {
+    return (
+      <div className="max-w-sm mx-auto">
+        <Notification
+          message={t('Invalid party ID')}
+          intent={Intent.Danger}
+          buttonProps={{
+            text: t('Go back'),
+            action: () => navigate(-1),
+            className: 'py-1',
+            size: 'sm',
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <section>
@@ -63,7 +90,7 @@ const Party = () => {
       </div>
 
       <SubHeading>{t('Transactions')}</SubHeading>
-      {!error ? (
+      {!error && txsData ? (
         <TxsInfiniteList
           hasMoreTxs={hasMoreTxs}
           areTxsLoading={loading}

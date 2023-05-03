@@ -12,6 +12,12 @@ export interface PartyBlockAccountProps {
   accountError?: Error;
 }
 
+/**
+ * Displays an overview of a party's assets. This uses existing data
+ * providers to structure the details by asset, rather than looking at
+ * it by account. The assumption is that this is a more natural way to
+ * get an idea of the assets and activity of a party.
+ */
 export const PartyBlockAccounts = ({
   partyId,
   accountData,
@@ -20,19 +26,21 @@ export const PartyBlockAccounts = ({
 }: PartyBlockAccountProps) => {
   const navigate = useNavigate();
 
-  return (
-    <PartyBlock
-      title={t('Assets')}
-      action={
-        <Button
-          size="sm"
-          onClick={(e) => navigate(`/${Routes.PARTIES}/${partyId}/accounts`)}
-        >
-          {t('Show all')}
-        </Button>
-      }
+  const shouldShowActionButton =
+    accountData && accountData.length > 0 && !accountLoading && !accountError;
+
+  const action = shouldShowActionButton ? (
+    <Button
+      size="sm"
+      onClick={() => navigate(`/${Routes.PARTIES}/${partyId}/assets`)}
     >
-      {accountData ? (
+      {t('Show all')}
+    </Button>
+  ) : null;
+
+  return (
+    <PartyBlock title={t('Assets')} action={action}>
+      {accountData && accountData.length > 0 ? (
         <p>
           {accountData.length} {t('assets, including')}{' '}
           {accountData
@@ -42,6 +50,8 @@ export const PartyBlockAccounts = ({
         </p>
       ) : accountLoading && !accountError ? (
         <Loader size="small" />
+      ) : accountData && accountData.length === 0 ? (
+        <p>{t('No accounts found')}</p>
       ) : (
         <p>
           <Icon className="mr-1" name="error" />

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 export interface PartyBlockProps {
   children: ReactNode;
   title: string;
-  action: ReactNode;
+  action?: ReactNode;
 }
 
 export function PartyBlock({ children, title, action }: PartyBlockProps) {

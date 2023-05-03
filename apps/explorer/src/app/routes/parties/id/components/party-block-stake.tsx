@@ -1,9 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
-import { toNonHex } from '../../../../components/search/detect-search';
 import { useExplorerPartyAssetsQuery } from '../__generated__/Party-assets';
 import GovernanceAssetBalance from '../../../../components/asset-balance/governance-asset-balance';
 import {
-  Button,
   Icon,
   KeyValueTable,
   KeyValueTableRow,
@@ -18,6 +16,13 @@ export interface PartyBlockStakeProps {
   accountError?: Error;
 }
 
+/**
+ * Displays an overview of a single party's staking balance, importantly maintaining'
+ * the same height before and after the details are loaded in.
+ *
+ * Unlike PartyBlockAccounts there is not action button in the title of this block as
+ * there is no page for it to link to currently. That's a future task.
+ */
 export const PartyBlockStake = ({
   partyId,
   accountLoading,
@@ -45,10 +50,7 @@ export const PartyBlockStake = ({
       : '0';
 
   return (
-    <PartyBlock
-      title={t('Staking')}
-      action={<Button size="xs">{t('Show all')}</Button>}
-    >
+    <PartyBlock title={t('Staking')}>
       {p?.stakingSummary.currentStakeAvailable ? (
         <KeyValueTable>
           <KeyValueTableRow noBorder={true}>
@@ -68,6 +70,8 @@ export const PartyBlockStake = ({
         </KeyValueTable>
       ) : accountLoading && !accountError ? (
         <Loader size="small" />
+      ) : !accountError ? (
+        <p>{t('No staking balance')}</p>
       ) : (
         <p>
           <Icon className="mr-1" name="error" />

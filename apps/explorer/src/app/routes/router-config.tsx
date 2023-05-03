@@ -76,6 +76,7 @@ const partiesRoutes: Route[] = flags.parties
           {
             path: ':party',
             element: <Party />,
+
             children: [
               {
                 index: true,
@@ -89,8 +90,8 @@ const partiesRoutes: Route[] = flags.parties
                 },
               },
               {
-                path: 'accounts',
-                element: <PartyAccountsByAsset />,
+                path: 'assets',
+                element: <Party />,
                 handle: {
                   breadcrumb: (params: Params<string>) => (
                     <Link to={linkTo(Routes.PARTIES, params.party)}>
@@ -98,6 +99,17 @@ const partiesRoutes: Route[] = flags.parties
                     </Link>
                   ),
                 },
+                children: [
+                  {
+                    index: true,
+                    element: <PartyAccountsByAsset />,
+                    handle: {
+                      breadcrumb: () => {
+                        return t('Assets');
+                      },
+                    },
+                  },
+                ],
               },
             ],
           },
