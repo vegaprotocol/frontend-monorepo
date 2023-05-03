@@ -1,13 +1,8 @@
 import { forwardRef, lazy } from 'react';
-import type {
-  AgGridReactProps,
-  AgReactUiProps,
-  AgGridReact,
-} from 'ag-grid-react';
+import type { AgGridReactProps, AgGridReact } from 'ag-grid-react';
 
-type Props = (AgGridReactProps | AgReactUiProps) & {
+type Props = AgGridReactProps & {
   style?: React.CSSProperties;
-  className?: string;
   gridRef?: React.Ref<AgGridReact>;
 };
 

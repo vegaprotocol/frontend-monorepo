@@ -5,12 +5,10 @@ import classNames from 'classnames';
 
 export const AgGridThemed = ({
   style,
-  className,
   gridRef,
   ...props
 }: (AgGridReactProps | AgReactUiProps) & {
   style?: React.CSSProperties;
-  className?: string;
   gridRef?: React.ForwardedRef<AgGridReact>;
 }) => {
   const { theme } = useThemeSwitcher();
@@ -19,7 +17,7 @@ export const AgGridThemed = ({
     headerHeight: 22,
     enableCellTextSelection: true,
   };
-  const wrapperClasses = classNames(className, 'vega-ag-grid', {
+  const wrapperClasses = classNames('vega-ag-grid', {
     'ag-theme-balham': theme === 'light',
     'ag-theme-balham-dark': theme === 'dark',
   });
