@@ -43,6 +43,15 @@ export const filterAndSortMarkets = (markets: Market[]) => {
   );
 };
 
+export const filterAndSortClosedMarkets = (markets: Market[]) => {
+  return markets.filter((m) => {
+    return [
+      MarketState.STATE_SETTLED,
+      MarketState.STATE_TRADING_TERMINATED,
+    ].includes(m.state);
+  });
+};
+
 export const calcCandleLow = (candles: Candle[]): string | undefined => {
   return candles
     ?.reduce((acc: BigNumber, c) => {

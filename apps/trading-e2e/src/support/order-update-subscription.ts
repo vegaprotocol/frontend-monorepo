@@ -26,6 +26,7 @@ export function updateOrder(
   override?: PartialDeep<OrderUpdateFieldsFragment>
 ): void {
   const update: OrdersUpdateSubscription = orderUpdateSubscription({
+    // @ts-ignore partial deep check failing
     orders: [override],
   });
   if (!sendOrderUpdate) {

@@ -43,6 +43,11 @@ export interface AppState {
    * Message to display in a banner at the top of the screen, currently always shown as a warning/error
    */
   bannerMessage: string;
+  /**
+   * Displays a notice to the user that they have been disconnected because they've changed their
+   * ethereum network to an incompatible one.
+   */
+  disconnectNotice: boolean;
 }
 
 export enum AppStateActionType {
@@ -58,6 +63,7 @@ export enum AppStateActionType {
   SET_ASSOCIATION_BREAKDOWN,
   SET_TRANSACTION_OVERLAY,
   SET_BANNER_MESSAGE,
+  SET_DISCONNECT_NOTICE,
 }
 
 export type AppStateAction =
@@ -90,6 +96,10 @@ export type AppStateAction =
   | {
       type: AppStateActionType.SET_BANNER_MESSAGE;
       message: string;
+    }
+  | {
+      type: AppStateActionType.SET_DISCONNECT_NOTICE;
+      isVisible: boolean;
     };
 
 type AppStateContextShape = {

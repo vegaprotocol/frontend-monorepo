@@ -84,10 +84,16 @@ export const OracleBasicProfile = ({
       <span className="flex gap-1">
         {provider.url && (
           <span className="flex align-items-bottom text-md gap-1">
-            <ButtonLink onClick={() => onClick && onClick(true)}>
+            <ButtonLink
+              onClick={() => onClick && onClick(true)}
+              data-testid="provider-name"
+            >
               {provider.name}
             </ButtonLink>
-            <span className="dark:text-vega-light-300 text-vega-dark-300">
+            <span
+              className="dark:text-vega-light-300 text-vega-dark-300"
+              data-testid="verified-proofs"
+            >
               ({verifiedProofs.length})
             </span>
           </span>
@@ -108,7 +114,10 @@ export const OracleBasicProfile = ({
         </span>
       </span>
       <p className="dark:text-vega-light-300 text-vega-dark-300">{message}</p>
-      <p className="dark:text-vega-light-300 text-vega-dark-300">
+      <p
+        data-testid="signed-proofs"
+        className="dark:text-vega-light-300 text-vega-dark-300"
+      >
         {t('Involved in %s %s', [
           signedProofs.length.toString(),
           signedProofs.length !== 1 ? t('markets') : t('market'),
@@ -120,6 +129,7 @@ export const OracleBasicProfile = ({
             <ExternalLink
               key={link.url}
               href={link.url}
+              data-testid={link.url}
               className="flex align-items-bottom underline text-sm"
             >
               <span className="pt-1">

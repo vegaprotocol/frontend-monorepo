@@ -9,7 +9,7 @@
       "name": "Token test market",
       "code": "Token.24h",
       "future": {
-        "settlementAsset": "fBTC",
+        "settlementAsset": "73174a6fb1d5802ba0ac7bd7ab79e0a3a4837b262de0a4e80815a55442692bd0",
         "quoteName": "fBTC",
         "dataSourceSpecForSettlementData": {
           "external": {

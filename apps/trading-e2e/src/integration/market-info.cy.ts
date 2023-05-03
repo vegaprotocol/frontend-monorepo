@@ -1,4 +1,5 @@
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import { MarketState } from '@vegaprotocol/types';
 
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
@@ -12,12 +13,22 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   before(() => {
-    cy.mockTradingPage();
+    cy.mockTradingPage(
+      MarketState.STATE_ACTIVE,
+      undefined,
+      undefined,
+      'COMPROMISED'
+    );
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
     cy.getByTestId(marketInfoBtn).click();
     cy.wait('@MarketInfo');
+  });
+
+  it('show oracle banner', () => {
+    cy.getByTestId(marketTitle).contains('Oracle').click();
+    cy.getByTestId('oracle-status').should('contain.text', 'COMPROMISED');
   });
 
   it('current fees displayed', () => {
@@ -169,25 +180,21 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('oracle displayed', () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
 
-    validateMarketDataRow(0, 'Settlement Data Property', 'prices.BTC.value');
-    validateMarketDataRow(
-      1,
-      'Trading Termination Property',
-      'termination.BTC.value'
-    );
-
-    // check that links to github for oracle proofs are shown
     cy.getByTestId(accordionContent)
-      .getByTestId('oracle-proof-links')
-      .find(`[data-testid="${externalLink}"]`)
-      .should('have.attr', 'href')
-      .and('contain', 'https://github.com/vegaprotocol/well-known');
+      .getByTestId('provider-name')
+      .and('contain', 'Another oracle');
 
     cy.getByTestId(accordionContent)
-      .getByTestId('oracle-spec-links')
-      .find(`[data-testid="${externalLink}"]`)
-      .should('have.attr', 'href')
-      .and('contain', '/oracles');
+      .getByTestId('signed-proofs')
+      .and('contain', '1');
+
+    cy.getByTestId(accordionContent)
+      .getByTestId('verified-proofs')
+      .and('contain', '1');
+
+    cy.getByTestId(accordionContent)
+      .getByTestId('signed-proofs')
+      .and('contain', '1');
   });
 
   it('proposal displayed', () => {

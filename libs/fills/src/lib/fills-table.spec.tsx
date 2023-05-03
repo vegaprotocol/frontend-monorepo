@@ -120,6 +120,40 @@ describe('FillsTable', () => {
     expect(amountCell).toHaveClass('text-vega-pink');
   });
 
+  it('should format cells correctly for side unspecified', async () => {
+    const partyId = 'party-id';
+    const buyerFill = generateFill({
+      ...defaultFill,
+      seller: {
+        id: partyId,
+      },
+      aggressor: Schema.Side.SIDE_UNSPECIFIED,
+      sellerFee: {
+        makerFee: '1',
+        infrastructureFee: '1',
+        liquidityFee: '1',
+      },
+    });
+    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
+
+    const cells = screen.getAllByRole('gridcell');
+    const expectedValues = [
+      buyerFill.market?.tradableInstrument.instrument.name || '',
+      '-3.00',
+      '1.00 BTC',
+      '3.00 BTC',
+      '-',
+      '0.03 BTC',
+      getDateTimeFormat().format(new Date(buyerFill.createdAt)),
+    ];
+    cells.forEach((cell, i) => {
+      expect(cell).toHaveTextContent(expectedValues[i]);
+    });
+
+    const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
+    expect(amountCell).toHaveClass('text-vega-pink');
+  });
+
   it('should render correct maker or taker role', async () => {
     const partyId = 'party-id';
     const takerFill = generateFill({
@@ -190,7 +224,7 @@ describe('FillsTable', () => {
         makerFee: '1000',
         totalFee: '6000',
       };
-      expect(getFeesBreakdown('TAKER', fees)).toEqual(expectedBreakdown);
+      expect(getFeesBreakdown('Taker', fees)).toEqual(expectedBreakdown);
     });
 
     it('should return correct fees breakdown for a maker', () => {
@@ -205,7 +239,7 @@ describe('FillsTable', () => {
         makerFee: '-1000',
         totalFee: '4000',
       };
-      expect(getFeesBreakdown('MAKER', fees)).toEqual(expectedBreakdown);
+      expect(getFeesBreakdown('Maker', fees)).toEqual(expectedBreakdown);
     });
   });
 });

@@ -478,7 +478,11 @@ export const OracleInfoPanel = ({
       />
       <ExternalLink
         data-testid="oracle-spec-links"
-        href={`${VEGA_EXPLORER_URL}/oracles/${oracleId}`}
+        href={`${VEGA_EXPLORER_URL}/oracles/${
+          type === 'settlementData'
+            ? product.dataSourceSpecForSettlementData.id
+            : product.dataSourceSpecForTradingTermination.id
+        }`}
       >
         {type === 'settlementData'
           ? t('View settlement data specification')

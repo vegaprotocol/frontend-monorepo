@@ -8,8 +8,8 @@ import { Icon } from '../icon';
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-white dark:hover:bg-vega-dark-500',
-  'focus:bg-white dark:focus:bg-vega-dark-500',
+  'hover:bg-white dark:hover:bg-vega-dark-200',
+  'focus:bg-white dark:focus:bg-vega-dark-200',
   'select-none',
   'whitespace-nowrap'
 );

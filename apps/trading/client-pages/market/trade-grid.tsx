@@ -27,7 +27,10 @@ import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import {
+  usePaneLayout,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
@@ -83,15 +86,20 @@ interface BottomPanelProps {
 
 const MarketBottomPanel = memo(
   ({ marketId, pinnedAsset }: BottomPanelProps) => {
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'bottom' });
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
     const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
     return 'xxxl' === screenSize ? (
-      <ResizableGrid proportionalLayout minSize={200}>
+      <ResizableGrid
+        proportionalLayout
+        minSize={200}
+        onChange={handleOnLayoutChange}
+      >
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="50%"
+          preferredSize={sizes[0] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
@@ -119,7 +127,7 @@ const MarketBottomPanel = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="50%"
+          preferredSize={sizes[1] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
@@ -186,22 +194,29 @@ MarketBottomPanel.displayName = 'MarketBottomPanel';
 const MainGrid = memo(
   ({
     marketId,
-    onSelect,
     pinnedAsset,
   }: {
     marketId: string;
-    onSelect: (marketId: string, metaKey?: boolean) => void;
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
+    const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
+      id: 'middle',
+    });
+
     return (
-      <ResizableGrid vertical>
+      <ResizableGrid vertical onChange={handleOnLayoutChange}>
         <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-          <ResizableGrid proportionalLayout={false} minSize={200}>
+          <ResizableGrid
+            proportionalLayout={false}
+            minSize={200}
+            onChange={handleOnMiddleLayoutChange}
+          >
             <ResizableGridPanel
               priority={LayoutPriority.High}
               minSize={200}
-              preferredSize="50%"
+              preferredSize={sizesMiddle[0] || '50%'}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
@@ -219,7 +234,7 @@ const MainGrid = memo(
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={330}
+              preferredSize={sizesMiddle[1] || 330}
               minSize={300}
             >
               <TradeGridChild>
@@ -238,7 +253,7 @@ const MainGrid = memo(
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={430}
+              preferredSize={sizesMiddle[2] || 430}
               minSize={200}
             >
               <TradeGridChild>
@@ -256,7 +271,7 @@ const MainGrid = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="25%"
+          preferredSize={sizes[1] || '25%'}
           minSize={50}
         >
           <MarketBottomPanel marketId={marketId} pinnedAsset={pinnedAsset} />
@@ -278,11 +293,7 @@ export const TradeGrid = ({
         <TradeMarketHeader market={market} onSelect={onSelect} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <MainGrid
-        marketId={market?.id || ''}
-        onSelect={onSelect}
-        pinnedAsset={pinnedAsset}
-      />
+      <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
     </div>
   );
 };
@@ -350,7 +361,10 @@ export const TradePanels = ({
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <div>
+        <TradeMarketHeader market={market} onSelect={onSelect} />
+        <OracleBanner marketId={market?.id || ''} />
+      </div>
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (

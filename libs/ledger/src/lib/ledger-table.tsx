@@ -10,7 +10,7 @@ import type {
   TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   DateRangeFilter,
   SetFilter,
 } from '@vegaprotocol/datagrid';
@@ -49,7 +49,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
   (props, ref) => {
     return (
       <AgGrid
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: 'calc(100% - 50px)' }}
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{

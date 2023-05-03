@@ -9,7 +9,7 @@ import SizeInMarket from '../size-in-market/size-in-market';
 export interface DeterministicOrderDetailsProps {
   id: string;
   // Version to fetch, with 0 being 'latest' and 1 being 'first'. Defaults to 0
-  version?: number;
+  version?: number | null;
 }
 
 export const wrapperClasses =
@@ -28,7 +28,7 @@ export const wrapperClasses =
  */
 const DeterministicOrderDetails = ({
   id,
-  version = 0,
+  version = null,
 }: DeterministicOrderDetailsProps) => {
   const { data, error } = useExplorerDeterministicOrderQuery({
     variables: { orderId: id, version },

@@ -7,4 +7,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/oracles',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

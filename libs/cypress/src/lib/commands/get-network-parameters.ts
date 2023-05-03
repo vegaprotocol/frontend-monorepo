@@ -24,7 +24,7 @@ export function addGetNetworkParameters() {
   }`;
     cy.request({
       method: 'POST',
-      url: `http://localhost:3028/query`,
+      url: `http://localhost:3008/graphql`,
       body: {
         query: mutation,
       },

@@ -20,7 +20,7 @@ export type FieldValue = any;
 export type GoodThreshold = (...args: FieldValue[]) => boolean;
 
 export interface Stats {
-  field: keyof NodeData | keyof Statistics;
+  field: keyof NodeData | keyof Statistics | 'epoch';
   title: string;
   goodThreshold?: GoodThreshold;
   // eslint-disable-next-line
@@ -161,6 +161,11 @@ const VEGA_TIME: Stats = {
   description: t('The time on the blockchain'),
 };
 
+const EPOCH: Stats = {
+  field: 'epoch',
+  title: 'Epoch',
+};
+
 const APP_VERSION: Stats = {
   field: 'appVersion',
   title: t('App'),
@@ -217,6 +222,7 @@ const CHAIN_ID: Stats = {
 
 export const fieldsDefinition: Stats[] = [
   STATUS,
+  EPOCH,
   BLOCK_HEIGHT,
   UPTIME,
   TOTAL_NODES,
