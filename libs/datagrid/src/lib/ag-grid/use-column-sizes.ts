@@ -43,11 +43,12 @@ export const useColumnSizes = ({
 ] => {
   const sizes = useColumnSizesStore((store) => store.sizes[id] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
-  const getWidthOfAll = useCallback(() => {
-    return (
-      (container?.current as HTMLDivElement)?.getBoundingClientRect().width ?? 0
-    );
-  }, [container]);
+  const getWidthOfAll = useCallback(
+    () =>
+      (container?.current as HTMLDivElement)?.getBoundingClientRect().width ??
+      0,
+    [container]
+  );
   const recalculateSizes = useCallback(
     (sizes: Record<string, number>) => {
       const width = getWidthOfAll();

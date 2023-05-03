@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { ColumnResizedEvent } from 'ag-grid-community';
+import type { ColumnResizedEvent, ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useColumnSizes } from './use-column-sizes';
@@ -49,9 +49,12 @@ export const AgGridThemed = ({
     id && props?.columnDefs
       ? {
           ...props,
-          columnDefs: props.columnDefs.map((columnDef) => ({
+          columnDefs: props.columnDefs.map((columnDef: ColDef) => ({
             ...columnDef,
-            width: sizes[columnDef.colId || columnDef.field],
+            width:
+              (columnDef.colId && sizes[columnDef.colId]) ||
+              (columnDef.field && sizes[columnDef.field]) ||
+              undefined,
           })),
         }
       : props;
