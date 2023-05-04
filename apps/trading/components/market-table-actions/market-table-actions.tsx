@@ -29,7 +29,7 @@ export const MarketTableActions = ({
         />
       }
     >
-      <DropdownMenuContent>
+      <DropdownMenuContent data-testid="market-actions-content">
         <DropdownMenuCopyItem value={value} text={t('Copy Market ID')} />
         <DropdownMenuItem>
           <Link

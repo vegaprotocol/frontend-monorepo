@@ -321,7 +321,8 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     cy.get(rowSelector)
       .first()
       .find('[col-id="id"]')
-      .should('have.text', settledMarket.id);
+      .find('button svg[aria-label="more icon"]')
+      .should('exist');
   });
 
   // test market list for market in terminated state
@@ -373,5 +374,29 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       'have.text',
       `Asset details - ${settlementAsset.symbol}`
     );
+
+    cy.get('[data-testid="dialog-close"]').click();
+  });
+
+  it('can open row actions', () => {
+    cy.get(rowSelector).first().find('[col-id="id"]').find('button').click();
+
+    const dropdownContent = '[data-testid="market-actions-content"]';
+    const dropdownContentItem = '[role="menuitem"]';
+    cy.get(dropdownContent)
+      .find(dropdownContentItem)
+      .eq(0)
+      // Cannot click the copy button as it falls back to window.prompt, blocking the test.
+      .should('have.text', 'Copy Market ID');
+
+    cy.get(dropdownContent)
+      .find(dropdownContentItem)
+      .eq(1)
+      .find('a')
+      .then(($el) => {
+        const href = $el.attr('href');
+        expect(/\/markets\/0/.test(href || '')).to.equal(true);
+      })
+      .should('have.text', 'View on Explorer');
   });
 });
