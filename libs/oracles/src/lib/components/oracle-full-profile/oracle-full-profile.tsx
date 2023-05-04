@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
-import { MarketStateMapping } from '@vegaprotocol/types';
+import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
   ButtonLink,
   ExternalLink,
@@ -170,7 +170,14 @@ export const OracleFullProfile = ({
               <div className="col-span-1">
                 {market.tradableInstrument.instrument.code}
               </div>
-              <div className="col-span-1 dark:text-vega-light-300 text-vega-dark-300">
+              <div
+                className={classNames('col-span-1', {
+                  'dark:text-vega-light-300 text-vega-dark-300': ![
+                    MarketState.STATE_ACTIVE,
+                    MarketState.STATE_PROPOSED,
+                  ].includes(market.state),
+                })}
+              >
                 {MarketStateMapping[market.state]}
               </div>
               <div className="col-span-1">
