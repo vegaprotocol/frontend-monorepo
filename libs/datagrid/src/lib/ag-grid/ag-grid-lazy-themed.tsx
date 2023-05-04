@@ -20,7 +20,10 @@ export const AgGridThemed = ({
   children?: ReactNode[];
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [sizes, setValues] = useColumnSizes({ id, container: containerRef });
+  const [setValues, reshapeChildren, reshapeProps] = useColumnSizes({
+    id,
+    container: containerRef,
+  });
   const { theme } = useThemeSwitcher();
   const defaultProps = {
     rowHeight: 22,
@@ -35,40 +38,18 @@ export const AgGridThemed = ({
       [setValues]
     ),
   };
-  const reshapedChildren =
-    id && children?.length && Object.keys(sizes).length
-      ? children.map((child: ReactElement) => ({
-          ...child,
-          props: {
-            ...(child?.props ?? {}),
-            width: sizes[child?.props.field],
-          },
-        }))
-      : children;
-  const reshapedProps =
-    id && props?.columnDefs && Object.keys(sizes).length
-      ? {
-          ...props,
-          columnDefs: props.columnDefs.map((columnDef: ColDef) => ({
-            ...columnDef,
-            width:
-              (columnDef.colId && sizes[columnDef.colId]) ||
-              (columnDef.field && sizes[columnDef.field]) ||
-              undefined,
-          })),
-        }
-      : {
-          ...props,
-          defaultColDef: { ...(props.defaultColDef || null), flex: 1 },
-        };
+
+  children = reshapeChildren(children);
+  props = reshapeProps(props, children);
+
   const wrapperClasses = classNames('vega-ag-grid', {
     'ag-theme-balham': theme === 'light',
     'ag-theme-balham-dark': theme === 'dark',
   });
   return (
     <div className={wrapperClasses} style={style} ref={containerRef}>
-      <AgGridReact {...defaultProps} {...reshapedProps} ref={gridRef}>
-        {reshapedChildren}
+      <AgGridReact {...defaultProps} {...props} ref={gridRef}>
+        {children}
       </AgGridReact>
     </div>
   );
