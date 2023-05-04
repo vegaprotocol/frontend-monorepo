@@ -6,14 +6,14 @@ import * as Schema from '@vegaprotocol/types';
 
 import { ProtocolUpgradeProposal } from './protocol-upgrade-proposal';
 import { ProposalNotFound } from '../components/proposal-not-found';
-import { useProtocolUpgradesQuery } from './__generated__/ProtocolUpgradeProposals';
 import { useNodesQuery } from '../../staking/home/__generated__/Nodes';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
+import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 
 export const ProtocolUpgradeProposalContainer = () => {
   const params = useParams<{ proposalReleaseTag: string }>();
 
-  const { data, loading, error, refetch } = useProtocolUpgradesQuery({
+  const { data, loading, error, refetch } = useProtocolUpgradeProposalsQuery({
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
     skip: !params.proposalReleaseTag,
