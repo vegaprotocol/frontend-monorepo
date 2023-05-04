@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { ColumnResizedEvent, ColDef } from 'ag-grid-community';
+import type { ColumnResizedEvent } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useColumnSizes } from './use-column-sizes';
