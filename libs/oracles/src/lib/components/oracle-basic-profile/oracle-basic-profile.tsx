@@ -11,6 +11,7 @@ import {
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
+import { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
 
 export const getVerifiedStatusIcon = (provider: Provider) => {
   const getIconIntent = () => {
@@ -57,18 +58,16 @@ export const getVerifiedStatusIcon = (provider: Provider) => {
 export const OracleBasicProfile = ({
   provider,
   onClick,
+  markets: oracleMarkets,
 }: {
   provider: Provider;
+  markets?: OracleMarketSpecFieldsFragment[] | undefined;
   onClick?: (value?: boolean) => void;
 }) => {
   const { icon, message, intent } = getVerifiedStatusIcon(provider);
 
   const verifiedProofs = provider.proofs.filter(
     (proof) => proof.available === true
-  );
-
-  const signedProofs = provider.proofs.filter(
-    (proof) => proof.format === 'signed_message' && proof.available === true
   );
 
   const links = provider.proofs
@@ -118,10 +117,11 @@ export const OracleBasicProfile = ({
         data-testid="signed-proofs"
         className="dark:text-vega-light-300 text-vega-dark-300"
       >
-        {t('Involved in %s %s', [
-          signedProofs.length.toString(),
-          signedProofs.length !== 1 ? t('markets') : t('market'),
-        ])}
+        {oracleMarkets &&
+          t('Involved in %s %s', [
+            oracleMarkets.length.toString(),
+            oracleMarkets.length !== 1 ? t('markets') : t('market'),
+          ])}
       </p>
       {links.length > 0 && (
         <div className="flex flex-row gap-1">
@@ -136,7 +136,7 @@ export const OracleBasicProfile = ({
                 <VegaIcon name={getLinkIcon(link.type)} />
               </span>
               <span className="underline capitalize">
-                {link.type}{' '}
+                {link.type}
                 <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
               </span>
             </ExternalLink>

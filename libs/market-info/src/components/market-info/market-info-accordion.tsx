@@ -35,6 +35,8 @@ import {
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
 } from './market-info-panels';
+import { DataSourceDefinition } from '@vegaprotocol/types';
+import isEqual from 'lodash/isEqual';
 
 export interface MarketInfoAccordionProps {
   market: MarketInfo;
@@ -105,6 +107,66 @@ const MarketInfoAccordion = ({
   ];
   const product = market.tradableInstrument.instrument.product;
 
+  const settlementData =
+    market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
+      .data;
+  const terminationData =
+    market.tradableInstrument.instrument.product
+      .dataSourceSpecForTradingTermination.data;
+
+  const getSigners = (data: DataSourceDefinition) => {
+    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
+      const signers = data.sourceType.sourceType.signers || [];
+
+      return signers.map(({ signer }, i) => {
+        return (
+          (signer.__typename === 'ETHAddress' && signer.address) ||
+          (signer.__typename === 'PubKey' && signer.key)
+        );
+      });
+    }
+    return [];
+  };
+  console.log('  getSigners(settlementData)', getSigners(settlementData));
+  console.log('      getSigners(terminationData)', getSigners(terminationData));
+  const oraclePanels = isEqual(
+    getSigners(settlementData),
+    getSigners(terminationData)
+  )
+    ? [
+        {
+          title: t('Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="settlementData"
+            />
+          ),
+        },
+      ]
+    : [
+        {
+          title: t('Settlement Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="settlementData"
+            />
+          ),
+        },
+        {
+          title: t('Termination Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="termination"
+            />
+          ),
+        },
+      ];
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -114,14 +176,15 @@ const MarketInfoAccordion = ({
       title: t('Instrument'),
       content: <InstrumentInfoPanel market={market} />,
     },
-    product.dataSourceSpecForSettlementData && {
-      title: t('Settlement Oracle'),
-      content: <OracleInfoPanel market={market} type="settlementData" />,
-    },
-    product.dataSourceSpecForTradingTermination && {
-      title: t('Termination Oracle'),
-      content: <OracleInfoPanel market={market} type="termination" />,
-    },
+    // product.dataSourceSpecForSettlementData && {
+    //   title: t('Settlement Oracle'),
+    //   content: <OracleInfoPanel market={market} type="settlementData" />,
+    // },
+    // product.dataSourceSpecForTradingTermination && {
+    //   title: t('Termination Oracle'),
+    //   content: <OracleInfoPanel market={market} type="termination" />,
+    // },
+    ...oraclePanels,
     {
       title: t('Settlement asset'),
       content: <SettlementAssetInfoPanel market={market} />,

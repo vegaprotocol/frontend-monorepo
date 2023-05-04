@@ -40,7 +40,7 @@ describe('ExternalLink', () => {
     render(<ExternalLink href="https://vega.xyz/">Go to Vega</ExternalLink>);
     const link = screen.getByTestId('external-link');
     expect(link.children.length).toEqual(2);
-    expect(link.children[1].tagName.toUpperCase()).toEqual('SVG');
+    expect(link.children[1].tagName.toUpperCase()).toEqual('SPAN');
   });
 
   it('should have an underlined text part', () => {

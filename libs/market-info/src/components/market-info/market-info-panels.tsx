@@ -28,7 +28,11 @@ import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '@vegaprotocol/oracles';
 import { OracleProfileTitle, OracleFullProfile } from '@vegaprotocol/oracles';
-import { OracleBasicProfile, useOracleProofs } from '@vegaprotocol/oracles';
+import {
+  OracleBasicProfile,
+  useOracleProofs,
+  useOracleMarkets,
+} from '@vegaprotocol/oracles';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 type PanelProps = Pick<
@@ -458,7 +462,7 @@ export const OracleInfoPanel = ({
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
 
-  const oracleId =
+  const dataSourceSpecId =
     type === 'settlementData'
       ? product.dataSourceSpecForSettlementData.id
       : product.dataSourceSpecForTradingTermination.id;
@@ -474,7 +478,7 @@ export const OracleInfoPanel = ({
         }
         providers={data}
         type={type}
-        id={oracleId}
+        id={dataSourceSpecId}
       />
       <ExternalLink
         data-testid="oracle-spec-links"
@@ -557,7 +561,6 @@ const OracleLink = ({
   type: 'settlementData' | 'termination';
   id: string;
 }) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const signerProviders = providers.filter((p) => {
     if (signer.__typename === 'PubKey') {
       if (
@@ -587,20 +590,7 @@ const OracleLink = ({
   return (
     <div>
       {signerProviders.map((provider) => (
-        <div key={provider.name}>
-          <OracleBasicProfile
-            provider={provider}
-            onClick={() => setDialogOpen(!dialogOpen)}
-          ></OracleBasicProfile>
-          <Dialog
-            title={<OracleProfileTitle provider={provider} />}
-            open={dialogOpen}
-            onChange={() => setDialogOpen(!dialogOpen)}
-            aria-labelledby="oracle-proof-dialog"
-          >
-            <OracleFullProfile provider={provider} id={id} />
-          </Dialog>
-        </div>
+        <OracleProfile key={id} provider={provider} id={id} />
       ))}
     </div>
   );
@@ -618,5 +608,38 @@ const NoOracleProof = ({
         type === 'settlementData' ? 'settlement data' : 'termination'
       )}
     </p>
+  );
+};
+
+const OracleProfile = ({
+  provider,
+  id,
+}: {
+  provider: Provider;
+  id: string;
+}) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const oracleMarkets = useOracleMarkets(provider);
+  return (
+    <div key={provider.name}>
+      <OracleBasicProfile
+        provider={provider}
+        onClick={() => setDialogOpen(!dialogOpen)}
+        markets={oracleMarkets}
+      ></OracleBasicProfile>
+      <Dialog
+        title={<OracleProfileTitle provider={provider} />}
+        open={dialogOpen}
+        onChange={() => setDialogOpen(!dialogOpen)}
+        aria-labelledby="oracle-proof-dialog"
+      >
+        <OracleFullProfile
+          provider={provider}
+          id={id}
+          key={id}
+          markets={oracleMarkets}
+        />
+      </Dialog>
+    </div>
   );
 };

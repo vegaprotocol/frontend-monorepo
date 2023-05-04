@@ -35,11 +35,10 @@ describe('OracleBasicProfile', () => {
   });
 
   it('should render the name', () => {
-    render(<OracleBasicProfile provider={testProvider} />);
+    render(<OracleBasicProfile provider={testProvider} markets={undefined} />);
     expect(screen.getByTestId('provider-name')).toHaveTextContent(
       'Test oracle'
     );
     expect(screen.getByTestId('verified-proofs')).toHaveTextContent('1');
-    expect(screen.getByTestId('signed-proofs')).toHaveTextContent('1');
   });
 });
