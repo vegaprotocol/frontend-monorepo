@@ -1,23 +1,28 @@
+import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { Intent, Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { CurrentProposalState } from '../current-proposal-state';
 
 export const ProposalHeader = ({
   proposal,
   useSubHeading = true,
+  smallText = true,
 }: {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   useSubHeading?: boolean;
+  smallText?: boolean;
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
+  const inlineTitleClasses = 'uppercase mr-2';
 
   let details: ReactNode;
-  let proposalType: ReactNode;
+  let proposalType = '';
 
   let title = proposal?.rationale.title.trim();
   let description = proposal?.rationale.description.trim();
@@ -30,10 +35,13 @@ export const ProposalHeader = ({
 
   switch (change?.__typename) {
     case 'NewMarket': {
-      proposalType = t('NewMarket');
+      proposalType = 'NewMarket';
       details = (
         <>
-          {t('Code')}: {change.instrument.code}.{' '}
+          <span className={inlineTitleClasses}>{t('NewMarket')}:</span>
+          <span>
+            {t('Code')}: {change.instrument.code}.
+          </span>
           {change.instrument.futureProduct?.settlementAsset.symbol ? (
             <>
               <span className="font-semibold">
@@ -49,15 +57,23 @@ export const ProposalHeader = ({
       break;
     }
     case 'UpdateMarket': {
-      proposalType = t('UpdateMarket');
-      details = `${t('Market change')}: ${change.marketId}`;
+      proposalType = 'UpdateMarket';
+      details = (
+        <>
+          <span className={inlineTitleClasses}>{t('Market change')}:</span>
+          <span>{change.marketId}</span>
+        </>
+      );
       break;
     }
     case 'NewAsset': {
-      proposalType = t('NewAsset');
+      proposalType = 'NewAsset';
       details = (
         <>
-          {t('Symbol')}: {change.symbol}.{' '}
+          <span className={inlineTitleClasses}>{t('New asset')}:</span>
+          <span>
+            {t('Symbol')}: {change.symbol}.
+          </span>{' '}
           <Lozenge>
             {change.source.__typename === 'ERC20' &&
               `ERC20 ${change.source.contractAddress}`}
@@ -71,10 +87,11 @@ export const ProposalHeader = ({
       break;
     }
     case 'UpdateNetworkParameter': {
-      proposalType = t('NetworkParameter');
+      proposalType = 'NetworkParameter';
       const parametersClasses = 'font-mono leading-none';
       details = (
         <>
+          <span className="uppercase mr-2">{t('parameter')}:</span>
           <span className={`${parametersClasses} mr-2`}>
             {change.networkParameter.key}
           </span>{' '}
@@ -87,15 +104,20 @@ export const ProposalHeader = ({
       break;
     }
     case 'NewFreeform': {
-      proposalType = t('Freeform');
-      details = `${t('FreeformProposal')}: ${proposal?.id}`;
+      proposalType = 'Freeform';
+      details = (
+        <>
+          <span className={inlineTitleClasses}>{t('FreeformProposalId')}:</span>
+          <span>{proposal?.id}</span>
+        </>
+      );
       break;
     }
     case 'UpdateAsset': {
-      proposalType = t('UpdateAsset');
+      proposalType = 'UpdateAsset';
       details = (
         <>
-          `${t('Update asset')}`;
+          <span className="uppercase mr-2">{t('Update asset')}:</span>
           <Lozenge>{change.assetId}</Lozenge>
         </>
       );
@@ -103,8 +125,13 @@ export const ProposalHeader = ({
     }
   }
 
+  const proposalHeaderClasses = classnames('mb-2', {
+    'text-sm': smallText,
+    'text-base': !smallText,
+  });
+
   return (
-    <div className="text-sm mb-2">
+    <div className={proposalHeaderClasses}>
       <div data-testid="proposal-title">
         {useSubHeading ? (
           <header>
@@ -115,17 +142,22 @@ export const ProposalHeader = ({
         )}
       </div>
 
-      <div className="flex items-center gap-2 mb-4">
-        {proposalType && (
-          <div data-testid="proposal-type">
-            <Lozenge variant={Intent.None}>{proposalType}</Lozenge>
-          </div>
-        )}
+      <div className="flex gap-2 mb-5">
+        <div data-testid="proposal-type">
+          <Lozenge className="font-alpha">{t(`${proposalType}`)}</Lozenge>
+        </div>
 
-        {description && (
-          <div data-testid="proposal-description">{description}</div>
-        )}
+        <div data-testid="proposal-state">
+          <CurrentProposalState proposal={proposal} />
+        </div>
       </div>
+
+      {description && (
+        <div data-testid="proposal-description" className="mb-3">
+          <span className="uppercase mr-2">{t('ProposalDescription')}:</span>
+          {description}
+        </div>
+      )}
 
       {details && <div data-testid="proposal-details">{details}</div>}
     </div>

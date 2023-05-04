@@ -9,11 +9,11 @@ export enum Intent {
 export const getIntentBorder = (intent = Intent.None) => {
   return {
     border: true,
-    'border-danger': intent === Intent.Danger,
-    'border-warning': intent === Intent.Warning,
+    'border-vega-pink': intent === Intent.Danger,
+    'border-vega-orange': intent === Intent.Warning,
     'border-neutral-500': intent === Intent.None,
     'border-vega-blue-300': intent === Intent.Primary,
-    'border-success': intent === Intent.Success,
+    'border-vega-green': intent === Intent.Success,
   };
 };
 
@@ -22,8 +22,8 @@ export const getIntentBackground = (intent?: Intent) => {
     'bg-neutral-200 dark:bg-neutral-800': intent === undefined,
     'bg-black dark:bg-white': intent === Intent.None,
     'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
-    'bg-danger': intent === Intent.Danger,
-    'bg-warning': intent === Intent.Warning,
+    'bg-vega-pink': intent === Intent.Danger,
+    'bg-vega-orange': intent === Intent.Warning,
     // contrast issues with light mode
     'bg-vega-green-550 dark:bg-vega-green': intent === Intent.Success,
   };

@@ -1,5 +1,5 @@
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
@@ -74,7 +74,13 @@ export const Proposal = ({ proposal }: ProposalProps) => {
   return (
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
-        <ProposalHeader proposal={proposal} useSubHeading={false} />
+        <div className="mb-10">
+          <ProposalHeader
+            proposal={proposal}
+            useSubHeading={false}
+            smallText={false}
+          />
+        </div>
         <div className="mb-10">
           <ProposalChangeTable proposal={proposal} />
         </div>
@@ -88,14 +94,18 @@ export const Proposal = ({ proposal }: ProposalProps) => {
           />
         ) : null}
         <div className="mb-12">
-          <VoteDetails
-            proposal={proposal}
-            proposalType={proposalType}
-            minVoterBalance={minVoterBalance}
-            spamProtectionMinTokens={params?.spam_protection_voting_min_tokens}
-          />
+          <RoundedWrapper paddingBottom={true}>
+            <VoteDetails
+              proposal={proposal}
+              proposalType={proposalType}
+              minVoterBalance={minVoterBalance}
+              spamProtectionMinTokens={
+                params?.spam_protection_voting_min_tokens
+              }
+            />
+          </RoundedWrapper>
         </div>
-        <div className="mb-10">
+        <div className="mb-4">
           <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
         </div>
         <ProposalTermsJson terms={proposal.terms} />
