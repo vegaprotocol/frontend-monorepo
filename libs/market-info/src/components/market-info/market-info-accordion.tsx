@@ -174,14 +174,6 @@ export const MarketInfoAccordion = ({
       title: t('Instrument'),
       content: <InstrumentInfoPanel market={market} />,
     },
-    // product.dataSourceSpecForSettlementData && {
-    //   title: t('Settlement Oracle'),
-    //   content: <OracleInfoPanel market={market} type="settlementData" />,
-    // },
-    // product.dataSourceSpecForTradingTermination && {
-    //   title: t('Termination Oracle'),
-    //   content: <OracleInfoPanel market={market} type="termination" />,
-    // },
     ...oraclePanels,
     {
       title: t('Settlement asset'),

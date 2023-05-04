@@ -49,12 +49,6 @@ export const AccountsContainer = ({
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
         noBottomPlaceholder={noBottomPlaceholder}
-        gridActionsDropdownTrigger={
-          <DropdownMenuTrigger
-            iconName="more"
-            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
-          ></DropdownMenuTrigger>
-        }
       />
       {!isReadOnly && !hideButtons && (
         <div className="flex gap-2 justify-end p-2 px-[11px] absolute lg:fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">
