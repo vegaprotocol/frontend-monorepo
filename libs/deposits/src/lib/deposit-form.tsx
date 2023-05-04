@@ -41,6 +41,7 @@ import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
 import { ApproveNotification } from './approve-notification';
 import { usePersistentDeposit } from './use-persistent-deposit';
+import { AssetBalance } from './asset-balance';
 
 interface FormFields {
   asset: string;
@@ -253,9 +254,15 @@ export const DepositForm = ({
               value={selectedAsset?.id}
               hasError={Boolean(errors.asset?.message)}
             >
-              {assets.filter(isAssetTypeERC20).map((a) => (
-                <AssetOption asset={a} key={a.id} />
-              ))}
+              {assets
+                .filter((asset) => isAssetTypeERC20(asset))
+                .map((asset) => (
+                  <AssetOption
+                    asset={asset}
+                    key={asset.id}
+                    balance={<AssetBalance asset={asset} />}
+                  />
+                ))}
             </RichSelect>
           )}
         />

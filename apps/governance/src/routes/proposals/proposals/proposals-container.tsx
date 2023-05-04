@@ -13,10 +13,9 @@ import {
 } from '@vegaprotocol/types';
 import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
 import type { ProposalFieldsFragment } from './__generated__/Proposals';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
-
 import orderBy from 'lodash/orderBy';
-import { useProtocolUpgradesQuery } from '../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
@@ -73,7 +72,7 @@ export const ProposalsContainer = () => {
     data: protocolUpgradesData,
     loading: protocolUpgradesLoading,
     error: protocolUpgradesError,
-  } = useProtocolUpgradesQuery({
+  } = useProtocolUpgradeProposalsQuery({
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',

@@ -1,13 +1,50 @@
 import { Option } from '@vegaprotocol/ui-toolkit';
 import type { AssetFieldsFragment } from './__generated__/Asset';
+import classNames from 'classnames';
+import { t } from '@vegaprotocol/i18n';
+import type { ReactNode } from 'react';
 
-export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
+type AssetOptionProps = {
+  asset: AssetFieldsFragment;
+  balance?: ReactNode;
+};
+
+export const Balance = ({
+  balance,
+  symbol,
+}: {
+  balance?: string;
+  symbol: string;
+}) =>
+  balance ? (
+    <div className="mt-1 font-alpha">
+      {balance} {symbol}
+    </div>
+  ) : (
+    <div className="text-vega-orange-500">{t('Fetching balance…')}</div>
+  );
+
+export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
   return (
     <Option key={asset.id} value={asset.id}>
       <div className="flex flex-col items-start">
-        <span>{asset.name}</span>
-        <div className="text-[10px] font-mono w-full text-left break-all">
-          <span className="text-gray-500">{asset.id} -</span> {asset.symbol}
+        <div className="flex flex-row align-baseline gap-2">
+          <span>{asset.name}</span>{' '}
+          <span
+            className={classNames(
+              'bg-vega-light-200 dark:bg-vega-dark-200',
+              'text-black dark:text-white text-xs',
+              'py-[2px] px-[4px] rounded'
+            )}
+          >
+            {asset.symbol}
+          </span>
+        </div>
+        {balance}
+        <div className="text-[12px] font-mono w-full text-left break-all">
+          <span className="text-vega-light-300 dark:text-vega-dark-300">
+            {asset.id}
+          </span>
         </div>
       </div>
     </Option>

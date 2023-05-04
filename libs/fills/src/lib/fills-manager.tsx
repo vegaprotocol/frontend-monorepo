@@ -62,7 +62,7 @@ export const FillsManager = ({
     scrolledToTop.current = event.top <= 0;
   }, []);
 
-  const { isFullWidthRow, fullWidthCellRenderer, rowClassRules } =
+  const { isFullWidthRow, fullWidthCellRenderer, rowClassRules, getRowHeight } =
     useBottomPlaceholder<Trade>({
       gridRef,
     });
@@ -82,6 +82,7 @@ export const FillsManager = ({
         isFullWidthRow={isFullWidthRow}
         fullWidthCellRenderer={fullWidthCellRenderer}
         rowClassRules={rowClassRules}
+        getRowHeight={getRowHeight}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

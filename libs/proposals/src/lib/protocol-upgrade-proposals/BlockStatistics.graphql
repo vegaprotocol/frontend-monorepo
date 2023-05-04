@@ -1,0 +1,6 @@
+query BlockStatistics {
+  statistics {
+    blockHeight
+    blockDuration
+  }
+}

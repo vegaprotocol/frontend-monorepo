@@ -128,14 +128,20 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       return currentPinnedAssetRow;
     }, [pinnedAssetId, props.pinnedAsset, props.rowData]);
 
-    const getRowHeight = useCallback(
-      (params: RowHeightParams) =>
-        params.node.rowPinned &&
-        params.data.asset.id === pinnedAssetId &&
-        new BigNumber(params.data.total).isLessThanOrEqualTo(0)
-          ? 32
-          : 24,
-      [pinnedAssetId]
+    const { getRowHeight } = props;
+
+    const getPinnedAssetRowHeight = useCallback(
+      (params: RowHeightParams) => {
+        if (
+          params.node.rowPinned &&
+          params.data.asset.id === pinnedAssetId &&
+          new BigNumber(params.data.total).isLessThanOrEqualTo(0)
+        ) {
+          return 32;
+        }
+        return getRowHeight ? getRowHeight(params) : undefined;
+      },
+      [pinnedAssetId, getRowHeight]
     );
 
     return (
@@ -157,7 +163,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             sortable: true,
             comparator: accountValuesComparator,
           }}
-          getRowHeight={getRowHeight}
+          getRowHeight={getPinnedAssetRowHeight}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
         >
           <AgGridColumn
