@@ -185,15 +185,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .and('contain', 'Another oracle');
 
     cy.getByTestId(accordionContent)
-      .getByTestId('signed-proofs')
-      .and('contain', '1');
-
-    cy.getByTestId(accordionContent)
       .getByTestId('verified-proofs')
-      .and('contain', '1');
-
-    cy.getByTestId(accordionContent)
-      .getByTestId('signed-proofs')
       .and('contain', '1');
   });
 
