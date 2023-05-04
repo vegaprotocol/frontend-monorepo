@@ -36,7 +36,7 @@ export const AgGridThemed = ({
     ),
   };
   const reshapedChildren =
-    id && children?.length
+    id && children?.length && Object.keys(sizes).length
       ? children.map((child: ReactElement) => ({
           ...child,
           props: {
@@ -46,7 +46,7 @@ export const AgGridThemed = ({
         }))
       : children;
   const reshapedProps =
-    id && props?.columnDefs
+    id && props?.columnDefs && Object.keys(sizes).length
       ? {
           ...props,
           columnDefs: props.columnDefs.map((columnDef: ColDef) => ({
@@ -57,7 +57,10 @@ export const AgGridThemed = ({
               undefined,
           })),
         }
-      : props;
+      : {
+          ...props,
+          defaultColDef: { ...(props.defaultColDef || null), flex: 1 },
+        };
   const wrapperClasses = classNames('vega-ag-grid', {
     'ag-theme-balham': theme === 'light',
     'ag-theme-balham-dark': theme === 'dark',
