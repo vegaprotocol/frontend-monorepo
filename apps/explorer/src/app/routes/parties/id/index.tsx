@@ -11,18 +11,11 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import {
-  Icon,
-  Intent,
-  Notification,
-  Splash,
-  truncateMiddle,
-} from '@vegaprotocol/ui-toolkit';
+import { Icon, Intent, Notification, Splash } from '@vegaprotocol/ui-toolkit';
 import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { PartyBlockStake } from './components/party-block-stake';
 import { PartyBlockAccounts } from './components/party-block-accounts';
 import { isValidPartyId } from './components/party-id-error';
-import EmptyList from '../../../components/empty-list/empty-list';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();

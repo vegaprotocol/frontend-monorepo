@@ -1,8 +1,4 @@
-import {
-  AsyncRenderer,
-  Loader,
-  SyntaxHighlighter,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../../components/route-title';
 import { t } from '@vegaprotocol/i18n';
 import { useExplorerOracleSpecsQuery } from '../__generated__/Oracles';
