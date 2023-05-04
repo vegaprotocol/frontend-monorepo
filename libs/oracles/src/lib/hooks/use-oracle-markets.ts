@@ -1,9 +1,6 @@
 import type { Provider } from '../oracle-schema';
-import type {
-  OracleMarketSpecFieldsFragment} from '../__generated__/OracleMarketsSpec';
-import {
-  useOracleMarketsSpecQuery
-} from '../__generated__/OracleMarketsSpec';
+import type { OracleMarketSpecFieldsFragment } from '../__generated__/OracleMarketsSpec';
+import { useOracleMarketsSpecQuery } from '../__generated__/OracleMarketsSpec';
 
 export const useOracleMarkets = (
   provider: Provider
