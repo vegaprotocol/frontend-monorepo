@@ -5,8 +5,6 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
-  paginatedCombineDelta as combineDelta,
-  paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
@@ -28,6 +26,11 @@ export type Order = Omit<OrderFieldsFragment, 'market'> & {
 };
 export type OrderEdge = Edge<Order>;
 
+const liveOnlyOrderStatuses = [
+  OrderStatus.STATUS_ACTIVE,
+  OrderStatus.STATUS_PARKED,
+];
+
 const orderMatchFilters = (
   order: OrderUpdateFieldsFragment,
   variables: OrdersQueryVariables
@@ -38,6 +41,12 @@ const orderMatchFilters = (
   if (
     variables?.filter?.status &&
     !(order.status && variables.filter.status.includes(order.status))
+  ) {
+    return false;
+  }
+  if (
+    variables?.filter?.liveOnly &&
+    !(order.status && liveOnlyOrderStatuses.includes(order.status))
   ) {
     return false;
   }
@@ -58,19 +67,13 @@ const orderMatchFilters = (
   }
   if (
     variables?.filter?.dateRange?.start &&
-    !(
-      (order.updatedAt || order.createdAt) &&
-      variables.filter.dateRange.start < (order.updatedAt || order.createdAt)
-    )
+    !(order.createdAt && variables.filter.dateRange.start < order.createdAt)
   ) {
     return false;
   }
   if (
     variables?.filter?.dateRange?.end &&
-    !(
-      (order.updatedAt || order.createdAt) &&
-      variables.filter.dateRange.end > (order.updatedAt || order.createdAt)
-    )
+    !(order.createdAt && variables.filter.dateRange.end > order.createdAt)
   ) {
     return false;
   }
@@ -120,28 +123,25 @@ export const update = (
   if (!data) {
     return data;
   }
-  return produce(data, (draft) => {
-    // A single update can contain the same order with multiple updates, so we need to find
-    // the latest version of the order and only update using that
-    const incoming = uniqBy(
+  // A single update can contain the same order with multiple updates, so we need to find
+  // the latest version of the order and only update using that
+  const incoming = orderBy(
+    uniqBy(
       orderBy(delta, (order) => order.updatedAt || order.createdAt, 'desc'),
       'id'
-    );
-
+    ),
+    'createdAt'
+  );
+  return produce(data, (draft) => {
     // Add or update incoming orders
-    incoming.reverse().forEach((node) => {
+    incoming.forEach((node) => {
       const index = draft.findIndex((edge) => edge.node.id === node.id);
       const newer =
-        draft.length === 0 ||
-        (node.updatedAt || node.createdAt) >=
-          (draft[0].node.updatedAt || draft[0].node.createdAt);
+        draft.length === 0 || node.createdAt >= draft[0].node.createdAt;
       const doesFilterPass = !variables || orderMatchFilters(node, variables);
       if (index !== -1) {
         if (doesFilterPass) {
           Object.assign(draft[index].node, node);
-          if (newer) {
-            draft.unshift(...draft.splice(index, 1));
-          }
         } else {
           draft.splice(index, 1);
         }
@@ -194,6 +194,34 @@ const ordersProvider = makeDataProvider<
   additionalContext: { isEnlargedTimeout: true },
 });
 
+const allOrderMaxCount = 50000;
+
+export const allOrdersProvider = makeDerivedDataProvider<
+  ReturnType<typeof getData>,
+  never,
+  { partyId: string; marketId?: string }
+>(
+  [
+    (callback, client, variables) =>
+      ordersProvider(callback, client, { partyId: variables.partyId }),
+  ],
+  (partsData, variables, prevData, parts, subscriptions) => {
+    const orders = partsData[0] as ReturnType<typeof getData>;
+    // load next pages until allOrderMaxCount reached
+    if (
+      !parts[0].isUpdate &&
+      subscriptions &&
+      subscriptions[0].load &&
+      orders?.length < allOrderMaxCount
+    ) {
+      subscriptions[0].load();
+    }
+    return variables.marketId
+      ? orders.filter((edge) => variables.marketId === edge.node.market.id)
+      : orders;
+  }
+);
+
 export const activeOrdersProvider = makeDerivedDataProvider<
   ReturnType<typeof getData>,
   never,
@@ -204,11 +232,12 @@ export const activeOrdersProvider = makeDerivedDataProvider<
       ordersProvider(callback, client, {
         partyId: variables.partyId,
         filter: {
-          status: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
+          liveOnly: true,
         },
       }),
   ],
   (partsData, variables, prevData, parts, subscriptions) => {
+    // load all pages
     if (!parts[0].isUpdate && subscriptions && subscriptions[0].load) {
       subscriptions[0].load();
     }
@@ -220,7 +249,7 @@ export const activeOrdersProvider = makeDerivedDataProvider<
 );
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
-  (OrderEdge | null)[],
+  (Order | null)[],
   Order[],
   OrdersQueryVariables
 >(
@@ -228,18 +257,13 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
     ordersProvider,
     (callback, client) => marketsProvider(callback, client, undefined),
   ],
-  (partsData): OrderEdge[] =>
+  (partsData): Order[] =>
     ((partsData[0] as ReturnType<typeof getData>) || []).map((edge) => ({
-      cursor: edge.cursor,
-      node: {
-        ...edge.node,
-        market: (partsData[1] as Market[]).find(
-          (market) => market.id === edge.node.market.id
-        ),
-      },
-    })),
-  combineDelta<Order, ReturnType<typeof getDelta>['0']>,
-  combineInsertionData<Order>
+      ...edge.node,
+      market: (partsData[1] as Market[]).find(
+        (market) => market.id === edge.node.market.id
+      ),
+    }))
 );
 
 export const hasActiveOrderProvider = makeDerivedDataProvider<

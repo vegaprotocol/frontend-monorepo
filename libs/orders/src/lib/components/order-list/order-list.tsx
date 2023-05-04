@@ -33,13 +33,21 @@ export type OrderListTableProps = OrderListProps & {
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
+  readonlyStatusFilter?: boolean;
   isReadOnly: boolean;
 };
 
 export const OrderListTable = memo(
   forwardRef<AgGridReact, OrderListTableProps>(
     (
-      { cancel, setEditOrder, onMarketClick, onOrderTypeClick, ...props },
+      {
+        cancel,
+        setEditOrder,
+        onMarketClick,
+        onOrderTypeClick,
+        readonlyStatusFilter,
+        ...props
+      },
       ref
     ) => {
       return (
@@ -119,6 +127,7 @@ export const OrderListTable = memo(
             filter={SetFilter}
             filterParams={{
               set: Schema.OrderStatusMapping,
+              readonly: readonlyStatusFilter,
             }}
             valueFormatter={({
               value,
@@ -229,6 +238,7 @@ export const OrderListTable = memo(
           />
           <AgGridColumn
             field="createdAt"
+            filter={DateRangeFilter}
             cellRenderer={({
               data,
               value,
@@ -243,7 +253,6 @@ export const OrderListTable = memo(
           />
           <AgGridColumn
             field="updatedAt"
-            filter={DateRangeFilter}
             cellRenderer={({
               data,
               value,

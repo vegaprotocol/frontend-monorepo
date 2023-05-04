@@ -55,10 +55,10 @@ export const PositionsManager = ({
       },
     });
 
-  const setId = useCallback((data: Position) => {
+  const setId = useCallback((data: Position, id: string) => {
     return {
       ...data,
-      marketId: `${data.marketId}-1`,
+      marketId: id,
     };
   }, []);
   const bottomPlaceholderProps = useBottomPlaceholder<Position>({

@@ -35,7 +35,7 @@ import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
 import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { activeOrdersProvider, allOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
 import {
   ProtocolUpgradeCountdownMode,
@@ -147,6 +147,11 @@ const PartyData = () => {
   const skip = !pubKey;
   useDataProvider({
     dataProvider: activeOrdersProvider,
+    variables,
+    skip,
+  });
+  useDataProvider({
+    dataProvider: allOrdersProvider,
     variables,
     skip,
   });
