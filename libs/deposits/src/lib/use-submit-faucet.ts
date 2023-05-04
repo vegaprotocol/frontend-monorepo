@@ -5,6 +5,7 @@ import {
 } from '@vegaprotocol/web3';
 import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import type { Asset } from '@vegaprotocol/assets';
+import { useBalancesStore } from '@vegaprotocol/assets';
 import { useEffect, useState } from 'react';
 
 export const useSubmitFaucet = (
@@ -25,8 +26,9 @@ export const useSubmitFaucet = (
   useEffect(() => {
     if (tx?.status === EthTxStatus.Confirmed) {
       getBalances();
+      if (asset) useBalancesStore.getState().refetch(asset.id);
     }
-  }, [tx?.status, getBalances]);
+  }, [tx?.status, getBalances, asset]);
 
   return {
     id,

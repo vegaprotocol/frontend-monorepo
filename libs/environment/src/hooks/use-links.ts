@@ -2,6 +2,7 @@ import trim from 'lodash/trim';
 import { useCallback } from 'react';
 import { Networks } from '../types';
 import { useEnvironment } from './use-environment';
+import { stripFullStops } from '@vegaprotocol/utils';
 
 type Net = Exclude<Networks, 'CUSTOM'>;
 export enum DApp {
@@ -89,14 +90,30 @@ export const useEtherscanLink = () => {
 // Vega blog
 export const BLOG = 'https://blog.vega.xyz/';
 
-// Token pages
+// Governance pages
 export const TOKEN_NEW_MARKET_PROPOSAL = '/proposals/propose/new-market';
 export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =
   '/proposals/propose/network-parameter';
 export const TOKEN_GOVERNANCE = '/proposals';
 export const TOKEN_PROPOSALS = '/proposals';
 export const TOKEN_PROPOSAL = '/proposals/:id';
+export const TOKEN_PROTOCOL_UPGRADE_PROPOSAL =
+  '/proposals/protocol-upgrade/:tag';
 export const TOKEN_VALIDATOR = '/validators/:id';
+
+/**
+ * Generates link to the protocol upgrade proposal details on Governance
+ */
+export const useProtocolUpgradeProposalLink = () => {
+  const governance = useLinks(DApp.Token);
+  return (releaseTag: string) =>
+    governance(
+      TOKEN_PROTOCOL_UPGRADE_PROPOSAL.replace(
+        ':tag',
+        stripFullStops(releaseTag)
+      )
+    );
+};
 
 // Explorer pages
 export const EXPLORER_TX = '/txs/:hash';

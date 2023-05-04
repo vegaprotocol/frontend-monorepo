@@ -11,8 +11,8 @@ import { stripFullStops } from '@vegaprotocol/utils';
 import { ProtocolUpgradeProposalStatus } from '@vegaprotocol/types';
 import { SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
 import Routes from '../../../routes';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
 interface ProtocolProposalsListItemProps {
   proposal: ProtocolUpgradeProposalFieldsFragment;
