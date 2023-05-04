@@ -11,7 +11,7 @@ import {
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
+import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
 
 export const getVerifiedStatusIcon = (provider: Provider) => {
   const getIconIntent = () => {

@@ -1,4 +1,4 @@
-import { Provider } from '../oracle-schema';
+import type { Provider } from '../oracle-schema';
 import { useOracleMarkets } from './use-oracle-markets';
 
 describe('useOracleMarkets', () => {

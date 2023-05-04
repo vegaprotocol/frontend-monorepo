@@ -14,7 +14,7 @@ import {
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
-import { DataSourceDefinition } from '@vegaprotocol/types';
+import type { DataSourceDefinition } from '@vegaprotocol/types';
 import isEqual from 'lodash/isEqual';
 
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {

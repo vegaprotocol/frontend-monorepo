@@ -35,7 +35,7 @@ import {
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
 } from './market-info-panels';
-import { DataSourceDefinition } from '@vegaprotocol/types';
+import type { DataSourceDefinition } from '@vegaprotocol/types';
 import isEqual from 'lodash/isEqual';
 
 export interface MarketInfoAccordionProps {
