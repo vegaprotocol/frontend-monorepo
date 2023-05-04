@@ -89,6 +89,6 @@ export function mockNetworkUpgradeProposal() {
   cy.mockGQL((req) => {
     aliasGQLQuery(req, 'Nodes', nodeData);
     aliasGQLQuery(req, 'Proposals', proposalsData);
-    aliasGQLQuery(req, 'ProtocolUpgrades', upgradeProposalsData);
+    aliasGQLQuery(req, 'ProtocolUpgradeProposals', upgradeProposalsData);
   });
 }

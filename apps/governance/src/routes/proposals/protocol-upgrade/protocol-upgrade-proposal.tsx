@@ -3,8 +3,8 @@ import { ProtocolUpgradeProposalDetailHeader } from '../components/protocol-upgr
 import { ProtocolUpdateProposalDetailApprovals } from '../components/protocol-upgrade-proposal-detail-approvals';
 import { ProtocolUpgradeProposalDetailInfo } from '../components/protocol-upgrade-proposal-detail-info';
 import { getNormalisedVotingPower } from '../../staking/shared';
-import type { ProtocolUpgradeProposalFieldsFragment } from './__generated__/ProtocolUpgradeProposals';
 import type { NodesFragmentFragment } from '../../staking/home/__generated__/Nodes';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
 export interface ProtocolUpgradeProposalProps {
   proposal: ProtocolUpgradeProposalFieldsFragment;

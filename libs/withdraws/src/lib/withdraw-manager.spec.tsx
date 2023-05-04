@@ -25,6 +25,11 @@ jest.mock('./use-withdraw-asset', () => ({
   useWithdrawAsset: () => withdrawAsset,
 }));
 
+jest.mock('@vegaprotocol/accounts', () => ({
+  ...jest.requireActual('@vegaprotocol/accounts'),
+  useAccountBalance: jest.fn(() => ({ accountBalance: 0, accountDecimals: 0 })),
+}));
+
 jest.mock('@vegaprotocol/web3', () => ({
   ...jest.requireActual('@vegaprotocol/web3'),
   useGetWithdrawThreshold: () => {
