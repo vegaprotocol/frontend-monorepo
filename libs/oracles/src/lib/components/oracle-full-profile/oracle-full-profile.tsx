@@ -167,46 +167,48 @@ export const OracleFullProfile = ({
             <div className="col-span-1">{t('Status')}</div>
             <div className="col-span-1">{t('Specifications')}</div>
           </div>
-          {oracleMarkets?.map((market) => (
-            <div
-              className="grid grid-cols-4 gap-1 capitalize mb-2 last:mb-0"
-              key={`oracle-market-${market.id}`}
-            >
-              <div className="col-span-1">
-                {market.tradableInstrument.instrument.code}
-              </div>
+          <div className="max-h-60 overflow-auto">
+            {oracleMarkets?.map((market) => (
               <div
-                className={classNames('col-span-1', {
-                  'dark:text-vega-light-300 text-vega-dark-300': ![
-                    MarketState.STATE_ACTIVE,
-                    MarketState.STATE_PROPOSED,
-                  ].includes(market.state),
-                })}
+                className="grid grid-cols-4 gap-1 capitalize mb-2 last:mb-0"
+                key={`oracle-market-${market.id}`}
               >
-                {MarketStateMapping[market.state]}
+                <div className="col-span-1">
+                  {market.tradableInstrument.instrument.code}
+                </div>
+                <div
+                  className={classNames('col-span-1', {
+                    'dark:text-vega-light-300 text-vega-dark-300': ![
+                      MarketState.STATE_ACTIVE,
+                      MarketState.STATE_PROPOSED,
+                    ].includes(market.state),
+                  })}
+                >
+                  {MarketStateMapping[market.state]}
+                </div>
+                <div className="col-span-1">
+                  {
+                    <ExternalLink
+                      href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForSettlementData.id}`}
+                      data-testid="block-explorer-link-settlement"
+                    >
+                      {t('Settlement')}
+                    </ExternalLink>
+                  }
+                </div>
+                <div className="col-span-1">
+                  {
+                    <ExternalLink
+                      href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForTradingTermination.id}`}
+                      data-testid="block-explorer-link-termination"
+                    >
+                      {t('Termination')}
+                    </ExternalLink>
+                  }
+                </div>
               </div>
-              <div className="col-span-1">
-                {
-                  <ExternalLink
-                    href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForSettlementData.id}`}
-                    data-testid="block-explorer-link-settlement"
-                  >
-                    {t('Settlement')}
-                  </ExternalLink>
-                }
-              </div>
-              <div className="col-span-1">
-                {
-                  <ExternalLink
-                    href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForTradingTermination.id}`}
-                    data-testid="block-explorer-link-termination"
-                  >
-                    {t('Termination')}
-                  </ExternalLink>
-                }
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>
