@@ -19,7 +19,7 @@ export const ProposalHeader = ({
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
-  const inlineTitleClasses = 'uppercase mr-2';
+  const inlineTitleClasses = 'font-mono uppercase mr-2';
 
   let details: ReactNode;
   let proposalType = '';
@@ -108,7 +108,7 @@ export const ProposalHeader = ({
       details = (
         <>
           <span className={inlineTitleClasses}>{t('FreeformProposalId')}:</span>
-          <span>{proposal?.id}</span>
+          <span className="break-words">{proposal?.id}</span>
         </>
       );
       break;

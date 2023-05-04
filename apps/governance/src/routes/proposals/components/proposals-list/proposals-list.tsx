@@ -106,7 +106,7 @@ export const ProposalsList = ({
       {proposals.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
-      <section className="-mx-4 p-4 mb-8 bg-neutral-800">
+      <section className="-mx-4 p-4 mb-8 bg-vega-dark-100">
         <SubHeading title={t('openProposals')} />
         {sortedProposals.open.length > 0 ||
         sortedProtocolUpgradeProposals.open.length > 0 ? (

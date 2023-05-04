@@ -1,11 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Button, Icon } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { useVoteInformation } from '../../hooks';
 import { useUserVote } from '../vote-details/use-user-vote';
-import {
-  StatusPass,
-  StatusFail,
-} from '../current-proposal-status/current-proposal-status';
+import { StatusPass } from '../current-proposal-status/current-proposal-status';
 import { format, formatDistanceToNowStrict } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
@@ -22,7 +19,7 @@ const MajorityNotReached = () => {
   const { t } = useTranslation();
   return (
     <>
-      {t('Majority')} <StatusFail>{t('not reached')}</StatusFail>
+      {t('Majority')} {t('not reached')}
     </>
   );
 };
@@ -30,7 +27,7 @@ const ParticipationNotReached = () => {
   const { t } = useTranslation();
   return (
     <>
-      {t('Participation')} <StatusFail>{t('not reached')}</StatusFail>
+      {t('Participation')} {t('not reached')}
     </>
   );
 };
@@ -57,17 +54,11 @@ export const ProposalsListItemDetails = ({
     ? t('byTokenVote')
     : t('byLPVote');
 
-  let proposalStatus: ReactNode;
   let voteDetails: ReactNode;
   let voteStatus: ReactNode;
 
   switch (state) {
     case ProposalState.STATE_ENACTED: {
-      proposalStatus = (
-        <>
-          {t('voteState_Enacted')} <Icon name={'tick'} />
-        </>
-      );
       voteDetails = proposal?.terms.enactmentDatetime && (
         <>
           {format(
@@ -79,11 +70,6 @@ export const ProposalsListItemDetails = ({
       break;
     }
     case ProposalState.STATE_PASSED: {
-      proposalStatus = (
-        <>
-          {t('voteState_Passed')} <Icon name={'tick'} />
-        </>
-      );
       voteDetails = proposal?.terms.change.__typename !== 'NewFreeform' && (
         <>
           {t('toEnactOn')}{' '}
@@ -97,11 +83,6 @@ export const ProposalsListItemDetails = ({
       break;
     }
     case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
-      proposalStatus = (
-        <>
-          {t('voteState_WaitingForNodeVote')} <Icon name={'time'} />
-        </>
-      );
       voteDetails = proposal?.terms.change.__typename !== 'NewFreeform' && (
         <>
           {t('toEnactOn')}{' '}
@@ -115,19 +96,14 @@ export const ProposalsListItemDetails = ({
       break;
     }
     case ProposalState.STATE_OPEN: {
-      proposalStatus = (
-        <>
-          {t('voteState_Open')} <Icon name={'hand'} />
-        </>
-      );
       voteDetails = (voteState === 'Yes' && (
         <>
-          {t('youVoted')} <StatusPass>{t('voteState_Yes')}</StatusPass>
+          {t('youVoted')} {t('voteState_Yes')}
         </>
       )) ||
         (voteState === 'No' && (
           <>
-            {t('youVoted')} <StatusFail>{t('voteState_No')}</StatusFail>
+            {t('youVoted')} {t('voteState_No')}
           </>
         )) || (
           <>
@@ -148,40 +124,29 @@ export const ProposalsListItemDetails = ({
             </>
           ) : (
             <>
-              {t('Set to')} <StatusFail>{t('fail')}</StatusFail>
+              {t('Set to')} {t('fail')}
             </>
           ))) ||
         (!participationMet && <ParticipationNotReached />) ||
         (!majorityMet && <MajorityNotReached />) ||
         (willPassByTokenVote ? (
           <>
-            {t('Set to')} <StatusPass>{t('pass')}</StatusPass>
+            {t('Set to')} {t('pass')}
           </>
         ) : (
           <>
-            {t('Set to')} <StatusFail>{t('fail')}</StatusFail>
+            {t('Set to')} {t('fail')}
           </>
         ));
       break;
     }
     case ProposalState.STATE_DECLINED: {
-      proposalStatus = (
-        <>
-          {t('voteState_Declined')} <Icon name={'cross'} />
-        </>
-      );
       voteStatus =
         (!participationMet && <ParticipationNotReached />) ||
         (!majorityMet && <MajorityNotReached />);
       break;
     }
     case ProposalState.STATE_REJECTED: {
-      proposalStatus = (
-        <>
-          <StatusFail>{t('voteState_Rejected')}</StatusFail>{' '}
-          <Icon name={'warning-sign'} />
-        </>
-      );
       voteStatus = proposal?.rejectionReason && (
         <>{t(ProposalRejectionReasonMapping[proposal.rejectionReason])}</>
       );
@@ -190,13 +155,7 @@ export const ProposalsListItemDetails = ({
   }
 
   return (
-    <div className="grid grid-cols-[1fr_auto] mt-2 items-start gap-2 text-sm">
-      <div
-        className="col-start-1 row-start-1 flex items-center gap-2 text-white"
-        data-testid="proposal-status"
-      >
-        {proposalStatus}
-      </div>
+    <div className="grid grid-cols-[1fr_auto] mt-4 items-start gap-2 text-sm">
       {voteDetails && (
         <div
           className="col-start-1 row-start-2 text-neutral-500"
