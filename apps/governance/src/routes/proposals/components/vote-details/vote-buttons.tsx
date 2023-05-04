@@ -164,22 +164,20 @@ export const VoteButtons = ({
     <>
       {changeVote || (voteState === VoteState.NotCast && proposalVotable) ? (
         <div className="flex gap-4" data-testid="vote-buttons">
-          <div className="flex-1">
-            <Button
-              data-testid="vote-for"
-              onClick={() => submitVote(VoteValue.VALUE_YES)}
-            >
-              {t('voteFor')}
-            </Button>
-          </div>
-          <div className="flex-1">
-            <Button
-              data-testid="vote-against"
-              onClick={() => submitVote(VoteValue.VALUE_NO)}
-            >
-              {t('voteAgainst')}
-            </Button>
-          </div>
+          <Button
+            data-testid="vote-for"
+            onClick={() => submitVote(VoteValue.VALUE_YES)}
+            variant="primary"
+          >
+            {t('voteFor')}
+          </Button>
+          <Button
+            data-testid="vote-against"
+            onClick={() => submitVote(VoteValue.VALUE_NO)}
+            variant="primary"
+          >
+            {t('voteAgainst')}
+          </Button>
         </div>
       ) : (
         (voteState === VoteState.Yes || voteState === VoteState.No) && (

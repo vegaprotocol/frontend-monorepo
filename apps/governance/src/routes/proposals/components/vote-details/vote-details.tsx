@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
+import { RoundedWrapper, Icon, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
 import { useVoteSubmit, VoteProgress } from '@vegaprotocol/proposals';
@@ -199,10 +200,11 @@ export const VoteDetails = ({
         {proposalType === ProposalType.PROPOSAL_UPDATE_MARKET && (
           <p>{t('votingThresholdInfo')}</p>
         )}
-        {pubKey ? (
-          <section className="mt-10">
-            <SubHeading title={t('yourVote')} />
-            {proposal && (
+
+        <section className="mt-10">
+          <SubHeading title={t('castYourVote')} />
+          {pubKey ? (
+            proposal && (
               <VoteButtonsContainer
                 voteState={voteState}
                 voteDatetime={voteDatetime}
@@ -214,11 +216,22 @@ export const VoteDetails = ({
                 submit={submit}
                 dialog={Dialog}
               />
-            )}
-          </section>
-        ) : (
-          <ConnectToVega />
-        )}
+            )
+          ) : (
+            <RoundedWrapper paddingBottom={true}>
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon name={'info-sign'} />
+                  <div>{t('connectAVegaWalletToVote')}</div>
+                </div>
+                <ExternalLink href="https://github.com/vega-builders-club/askvega-ai">
+                  {t('findOutMoreAboutHowToVote')}
+                </ExternalLink>
+              </div>
+              <ConnectToVega />
+            </RoundedWrapper>
+          )}
+        </section>
       </section>
     </>
   );

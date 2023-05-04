@@ -63,7 +63,10 @@ export const ProposalVotesTable = ({
 
   return (
     <>
-      <button onClick={() => setShowDetails(!showDetails)}>
+      <button
+        onClick={() => setShowDetails(!showDetails)}
+        data-testid="vote-breakdown-toggle"
+      >
         <div className="flex items-center gap-3">
           <SubHeading title={t('voteBreakdown')} />
           <div className={showDetailsIconClasses}>

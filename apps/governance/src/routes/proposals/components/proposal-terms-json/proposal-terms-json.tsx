@@ -19,7 +19,10 @@ export const ProposalTermsJson = ({
 
   return (
     <section>
-      <button onClick={() => setShowDetails(!showDetails)}>
+      <button
+        onClick={() => setShowDetails(!showDetails)}
+        data-testid="proposal-terms-toggle"
+      >
         <div className="flex items-center gap-3">
           <SubHeading title={t('proposalTerms')} />
           <div className={showDetailsIconClasses}>

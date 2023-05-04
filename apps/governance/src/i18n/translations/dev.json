@@ -201,7 +201,7 @@
   "NewFreeform": "Freeform",
   "tokenVotes": "Token votes",
   "liquidityVotes": "Liquidity votes",
-  "yourVote": "Your vote",
+  "castYourVote": "Cast your vote",
   "for": "For",
   "against": "Against",
   "majorityRequired": "Majority Required",
@@ -793,5 +793,7 @@
   "67% voting power required": "67% voting power required",
   "Token": "Token",
   "associateVegaNow": "Associate $VEGA now",
-  "disconnectedNotice": "You have been disconnected. Connect your ETH wallet to the {{correctNetwork}} network to use this app."
+  "disconnectedNotice": "You have been disconnected. Connect your ETH wallet to the {{correctNetwork}} network to use this app.",
+  "connectAVegaWalletToVote": "Connect a Vega wallet with $VEGA tokens to vote on a proposal.",
+  "findOutMoreAboutHowToVote": "Find out more about how to vote on Vega"
 }

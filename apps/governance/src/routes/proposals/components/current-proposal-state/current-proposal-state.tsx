@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { Icon, Intent, Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalState } from '@vegaprotocol/types';
+import { ProposalInfoLabel } from '../proposal-info-label';
 import type { ReactNode } from 'react';
+import type { ProposalInfoLabelVariant } from '../proposal-info-label';
 
 export const CurrentProposalState = ({
   proposal,
@@ -12,7 +14,7 @@ export const CurrentProposalState = ({
 }) => {
   const { t } = useTranslation();
   let proposalStatus: ReactNode;
-  let intent = undefined;
+  let variant = undefined;
 
   switch (proposal?.state) {
     case ProposalState.STATE_ENACTED: {
@@ -43,7 +45,7 @@ export const CurrentProposalState = ({
       break;
     }
     case ProposalState.STATE_OPEN: {
-      intent = Intent.None;
+      variant = 'secondary' as ProposalInfoLabelVariant;
       proposalStatus = <>{t('voteState_Open')}</>;
       break;
     }
@@ -68,8 +70,6 @@ export const CurrentProposalState = ({
   }
 
   return (
-    <Lozenge variant={intent} className="font-alpha">
-      {proposalStatus}
-    </Lozenge>
+    <ProposalInfoLabel variant={variant}>{proposalStatus}</ProposalInfoLabel>
   );
 };

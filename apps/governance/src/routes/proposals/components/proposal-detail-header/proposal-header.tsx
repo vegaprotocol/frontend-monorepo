@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { CurrentProposalState } from '../current-proposal-state';
+import { ProposalInfoLabel } from '../proposal-info-label';
 
 export const ProposalHeader = ({
   proposal,
@@ -19,7 +20,7 @@ export const ProposalHeader = ({
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
-  const inlineTitleClasses = 'font-mono uppercase mr-2';
+  const inlineTitleClasses = 'uppercase mr-2';
 
   let details: ReactNode;
   let proposalType = '';
@@ -144,7 +145,7 @@ export const ProposalHeader = ({
 
       <div className="flex gap-2 mb-5">
         <div data-testid="proposal-type">
-          <Lozenge className="font-alpha">{t(`${proposalType}`)}</Lozenge>
+          <ProposalInfoLabel>{t(`${proposalType}`)}</ProposalInfoLabel>
         </div>
 
         <div data-testid="proposal-state">

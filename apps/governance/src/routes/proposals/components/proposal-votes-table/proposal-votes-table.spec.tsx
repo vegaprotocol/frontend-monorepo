@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalVotesTable } from './proposal-votes-table';
@@ -46,6 +46,7 @@ describe('Proposal Votes Table', () => {
 
   it('should show vote breakdown fields, excluding custom update market fields', () => {
     renderComponent();
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('Expected to pass')).toBeInTheDocument();
     expect(screen.getByText('Token majority met')).toBeInTheDocument();
     expect(screen.getByText('Token participation met')).toBeInTheDocument();
@@ -70,6 +71,7 @@ describe('Proposal Votes Table', () => {
 
   it('displays different breakdown fields for update market proposal', () => {
     renderComponent(updateMarketProposal, updateMarketProposalType);
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('Liquidity majority met')).toBeInTheDocument();
     expect(screen.getByText('Liquidity participation met')).toBeInTheDocument();
     expect(
@@ -86,6 +88,7 @@ describe('Proposal Votes Table', () => {
 
   it('displays if an update market proposal will pass by token vote', () => {
     renderComponent(updateMarketProposal, updateMarketProposalType);
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('👍 by token vote')).toBeInTheDocument();
   });
 
@@ -110,6 +113,7 @@ describe('Proposal Votes Table', () => {
       }),
       updateMarketProposalType
     );
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('👍 by liquidity vote')).toBeInTheDocument();
   });
 });
