@@ -1,0 +1,19 @@
+name: 'Assert Branch Naming Convention'
+on: pull_request
+
+jobs:
+  branch-naming-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-branch-name@master
+        with:
+          # regex: '([a-z])+\/([a-z])+' # Regex the branch should match. This example enforces grouping
+          # allowed_prefixes: 'feature,stable,fix' # All branches should start with the given prefix
+          # ignore: master,develop # Ignore exactly matching branch names from convention
+          min_length: 1 # Min length of the branch name
+          max_length: 51 # Max length of the branch name
+
+      # branch slug snippet comes from ci-cd-trigger.yml
+      - run: |
+          echo "branches that are longer than 51 chars can't be parsed by kubernetes to create previews. Each app has prefix of it's name like: 'governance-' (12 chars), what leaves 51 max branch length"
+          current parsable length: $( echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | wc -c)
