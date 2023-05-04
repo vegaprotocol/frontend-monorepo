@@ -22,7 +22,6 @@ import type {
   LiquidityProvisionsQueryVariables,
   LiquidityProvisionsUpdateSubscription,
 } from './__generated__/MarketLiquidity';
-import type { IterableElement } from 'type-fest';
 
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
@@ -39,8 +38,8 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   ) => {
     return produce(data || [], (draft) => {
       deltas?.forEach((delta) => {
-        const id = getId(delta);
-        const index = draft.findIndex((a) => getId(a) === id);
+        const id = delta.id;
+        const index = draft.findIndex((a) => delta.id === id);
         if (index !== -1) {
           draft[index].commitmentAmount = delta.commitmentAmount;
           draft[index].fee = delta.fee;
@@ -75,27 +74,6 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
     return subscriptionData.liquidityProvisions;
   },
 });
-
-function isLpFragment(
-  entry:
-    | LiquidityProvisionFieldsFragment
-    | IterableElement<
-        LiquidityProvisionsUpdateSubscription['liquidityProvisions']
-      >
-): entry is LiquidityProvisionFieldsFragment {
-  return entry.__typename === 'LiquidityProvision';
-}
-
-export const getId = (
-  entry:
-    | LiquidityProvisionFieldsFragment
-    | IterableElement<
-        LiquidityProvisionsUpdateSubscription['liquidityProvisions']
-      >
-) =>
-  isLpFragment(entry)
-    ? `${entry.party.id}${entry.status}${entry.createdAt}`
-    : `${entry.partyID}${entry.status}${entry.createdAt}`;
 
 export const marketLiquidityDataProvider = makeDataProvider<
   MarketLpQuery,
