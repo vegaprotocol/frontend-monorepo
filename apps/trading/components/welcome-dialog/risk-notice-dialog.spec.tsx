@@ -20,7 +20,6 @@ describe('Risk notice dialog', () => {
     assertion     | network
     ${'displays'} | ${Networks.CUSTOM}
     ${'displays'} | ${Networks.DEVNET}
-    ${'displays'} | ${Networks.STAGNET3}
     ${'displays'} | ${Networks.TESTNET}
   `(
     '$assertion a generic message on $network',
