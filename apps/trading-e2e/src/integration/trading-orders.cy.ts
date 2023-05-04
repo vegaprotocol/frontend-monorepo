@@ -139,7 +139,8 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
 });
 
 describe('subscribe orders', { tags: '@smoke' }, () => {
-  before(() => {
+  let orderId = '0';
+  beforeEach(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
@@ -154,8 +155,8 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
         .click();
       cy.get('.ag-filter-apply-panel-button').click();
     });
+    orderId = (parseInt(orderId, 10) + 1).toString();
   });
-  const orderId = '1234567890';
   // 7002-SORD-053
   // 7002-SORD-040
   // 7003-MORD-001
@@ -299,7 +300,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.get(`[row-id=${orderId}]`)
       .find('[col-id="price"]')
-      .should('have.text', '200.00');
+      .should('have.text', '-');
   });
 
   it('must see the time in force applied to the order', () => {

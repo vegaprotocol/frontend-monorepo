@@ -1,16 +1,17 @@
 import type { RefObject } from 'react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { IsFullWidthRowParams, RowHeightParams } from 'ag-grid-community';
 
 const NO_HOVER_CSS_RULE = { 'no-hover': 'data?.isLastPlaceholder' };
+const ROW_ID = 'bottomPlaceholder';
 const fullWidthCellRenderer = () => null;
 const isFullWidthRow = (params: IsFullWidthRowParams) =>
   params.rowNode.data?.isLastPlaceholder;
 
 interface Props<T> {
   gridRef: RefObject<AgGridReact>;
-  setId?: (data: T) => T;
+  setId?: (data: T, id: string) => T;
   disabled?: boolean;
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -19,34 +20,33 @@ export const useBottomPlaceholder = <T extends {}>({
   setId,
   disabled,
 }: Props<T>) => {
-  const placeholderRowRef = useRef<T | undefined>();
   const onBodyScrollEnd = useCallback(() => {
     const rowCont = gridRef.current?.api.getDisplayedRowCount() ?? 0;
-    if (!placeholderRowRef.current && rowCont) {
+    if (rowCont) {
       const lastRow = gridRef.current?.api.getDisplayedRowAtIndex(rowCont - 1);
       if (lastRow && lastRow.data) {
-        placeholderRowRef.current = setId
-          ? setId({ ...lastRow.data, isLastPlaceholder: true })
+        const placeholderRow = setId
+          ? setId({ ...lastRow.data, isLastPlaceholder: true }, ROW_ID)
           : {
               ...lastRow.data,
               isLastPlaceholder: true,
-              id: `${lastRow.data?.id || '-'}-1`,
+              id: ROW_ID,
             };
-        const transaction = {
-          add: [placeholderRowRef.current],
-        };
+        const transaction = gridRef.current?.api.getRowNode(ROW_ID)
+          ? { update: [placeholderRow] }
+          : { add: [placeholderRow] };
         gridRef.current?.api.applyTransaction(transaction);
       }
     }
   }, [gridRef, setId]);
 
   const onRowsChanged = useCallback(() => {
-    if (placeholderRowRef.current) {
+    const placeholderNode = gridRef.current?.api.getRowNode(ROW_ID);
+    if (placeholderNode) {
       const transaction = {
-        remove: [placeholderRowRef.current],
+        remove: [placeholderNode.data],
       };
       gridRef.current?.api.applyTransaction(transaction);
-      placeholderRowRef.current = undefined;
     }
     onBodyScrollEnd();
   }, [gridRef, onBodyScrollEnd]);
