@@ -15,7 +15,7 @@ import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   positiveClassNames,
   negativeClassNames,
   MarketNameCell,

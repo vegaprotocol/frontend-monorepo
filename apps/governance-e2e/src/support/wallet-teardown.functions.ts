@@ -9,7 +9,7 @@ import {
 import { ethers, Wallet } from 'ethers';
 
 const associatedAmountInWallet = '[data-testid="associated-amount"]:visible';
-const vegaWalletContainer = 'aside [data-testid="vega-wallet"]:visible';
+const vegaWalletContainer = 'aside [data-testid="vega-wallet"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
@@ -35,18 +35,25 @@ const stakingBridgeContract = new StakingBridge(
 );
 const vestingContract = new TokenVesting(vegaTokenContractAddress, signer);
 
-export async function depositAsset(assetEthAddress: string, amount: string) {
+export async function depositAsset(
+  assetEthAddress: string,
+  amount: string,
+  decimalPlaces: number
+) {
   // Approve asset
   const faucet = new TokenFaucetable(assetEthAddress, signer);
-  cy.wrap(faucet.approve(Erc20BridgeAddress, amount + '0'.repeat(19)), {
-    timeout: transactionTimeout,
-    log: false,
-  }).then(() => {
+  cy.wrap(
+    faucet.approve(Erc20BridgeAddress, amount + '0'.repeat(decimalPlaces + 1)),
+    {
+      timeout: transactionTimeout,
+      log: false,
+    }
+  ).then(() => {
     const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
     cy.wrap(
       collateralBridge.deposit_asset(
         assetEthAddress,
-        amount + '0'.repeat(18),
+        amount + '0'.repeat(decimalPlaces),
         '0x' + vegaWalletPubKey
       ),
       { timeout: transactionTimeout, log: false }
@@ -102,11 +109,12 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
   cy.highlight('Tearing down staking tokens from vega wallet if present');
   cy.wrap(
     stakingBridgeContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
-    { timeout: transactionTimeout, log: false }
+    { timeout: transactionTimeout }
   ).then((stakeBalance) => {
     if (Number(stakeBalance) != 0) {
       cy.get(vegaWalletContainer).within(() => {
         cy.getByTestId('currency-value')
+          .first()
           .invoke('text')
           .then(($associatedAmount) => {
             cy.wrap(
@@ -114,14 +122,34 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
                 String(stakeBalance),
                 vegaWalletPubKey
               ),
-              { timeout: transactionTimeout, log: false }
+              { timeout: transactionTimeout }
             );
-            cy.get("[data-testid='currency-value']")
-              .first()
-              .invoke('text', {
+            cy.wrap(
+              vestingContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
+              {
                 timeout: transactionTimeout,
-              })
-              .should('not.eq', $associatedAmount);
+                log: false,
+              }
+            ).then((vestingAmount) => {
+              if (Number(vestingAmount) != 0) {
+                cy.contains('Associated', {
+                  timeout: transactionTimeout,
+                })
+                  .parent()
+                  .parent()
+                  .within(() => {
+                    cy.getByTestId('currency-value', {
+                      timeout: transactionTimeout,
+                    })
+                      .should('have.length', 1)
+                      .invoke('text')
+                      .as('displayedAmount');
+                    cy.get('@displayedAmount', {
+                      timeout: transactionTimeout,
+                    }).should('not.eq', $associatedAmount);
+                  });
+              }
+            });
           });
       });
     }
@@ -137,7 +165,7 @@ async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
     if (Number(vestingAmount) != 0) {
       cy.wrap(
         vestingContract.remove_stake(String(vestingAmount), vegaWalletPubKey),
-        { timeout: transactionTimeout, log: false }
+        { timeout: transactionTimeout }
       );
     }
   });

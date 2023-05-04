@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
@@ -13,7 +13,6 @@ import {
 } from '../../shared';
 import {
   defaultColDef,
-  NODE_LIST_GRID_STYLES,
   StakeNeededForPromotionRenderer,
   stakedTotalPercentage,
   ValidatorFields,
@@ -248,11 +247,13 @@ export const StandbyPendingValidatorsTable = ({
     );
 
     return (
-      <div data-testid="standby-pending-validators-table">
+      <div
+        data-testid="standby-pending-validators-table"
+        className="validators-table"
+      >
         <AgGrid
           domLayout="autoHeight"
           style={{ width: '100%' }}
-          customThemeParams={NODE_LIST_GRID_STYLES}
           rowHeight={68}
           defaultColDef={defaultColDef}
           tooltipShowDelay={0}

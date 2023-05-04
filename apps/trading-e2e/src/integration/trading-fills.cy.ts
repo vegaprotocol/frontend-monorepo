@@ -85,7 +85,7 @@ describe('fills', { tags: '@regression' }, () => {
         cy.wrap($role)
           .invoke('text')
           .then((text) => {
-            const roles = ['Maker', 'Taker'];
+            const roles = ['Maker', 'Taker', '-'];
             expect(roles.indexOf(text.trim())).to.be.greaterThan(-1);
           });
       });

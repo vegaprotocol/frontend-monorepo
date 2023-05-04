@@ -1,5 +1,6 @@
 import once from 'lodash/once';
 import { getUserLocale } from '../get-user-locale';
+import { utcToZonedTime, format as tzFormat } from 'date-fns-tz';
 
 export const isValidDate = (date: Date) =>
   date instanceof Date && !isNaN(date.getTime());
@@ -50,4 +51,17 @@ export const formatForInput = (date: Date) => {
   const secs = padZero(date.getSeconds());
 
   return `${year}-${month}-${day}T${hours}:${minutes}:${secs}`;
+};
+
+/** Format a user's local date and time with the time zone abbreviation */
+export const formatDateWithLocalTimezone = (
+  date: Date,
+  formatStr = 'dd MMMM yyyy HH:mm (z)'
+) => {
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const localDatetime = utcToZonedTime(date, userTimeZone);
+
+  return tzFormat(localDatetime, formatStr, {
+    timeZone: userTimeZone,
+  });
 };

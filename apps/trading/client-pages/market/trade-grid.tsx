@@ -1,7 +1,8 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { OrderListContainer } from '@vegaprotocol/orders';
+import { OrderListContainer, Filter } from '@vegaprotocol/orders';
+import type { OrderListContainerProps } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { TradesContainer } from '@vegaprotocol/trades';
@@ -27,7 +28,10 @@ import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
 import { useNavigate } from 'react-router-dom';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import {
+  usePaneLayout,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
@@ -55,17 +59,59 @@ const requiresMarket = (View: MarketDependantView) => {
 };
 
 const TradingViews = {
-  Candles: requiresMarket(CandlesChartContainer),
-  Depth: requiresMarket(DepthChartContainer),
-  Liquidity: requiresMarket(LiquidityContainer),
-  Ticket: requiresMarket(DealTicketContainer),
-  Info: requiresMarket(MarketInfoAccordionContainer),
-  Orderbook: requiresMarket(OrderbookContainer),
-  Trades: requiresMarket(TradesContainer),
-  Positions: PositionsContainer,
-  Orders: OrderListContainer,
-  Collateral: AccountsContainer,
-  Fills: FillsContainer,
+  candles: {
+    label: 'Candles',
+    component: requiresMarket(CandlesChartContainer),
+  },
+  depth: {
+    label: 'Depth',
+    component: requiresMarket(DepthChartContainer),
+  },
+  liquidity: {
+    label: 'Liquidity',
+    component: requiresMarket(LiquidityContainer),
+  },
+  ticket: {
+    label: 'Ticket',
+    component: requiresMarket(DealTicketContainer),
+  },
+  info: {
+    label: 'Info',
+    component: requiresMarket(MarketInfoAccordionContainer),
+  },
+  orderbook: {
+    label: 'Orderbook',
+    component: requiresMarket(OrderbookContainer),
+  },
+  trades: {
+    label: 'Trades',
+    component: requiresMarket(TradesContainer),
+  },
+  positions: { label: 'Positions', component: PositionsContainer },
+  activeOrders: {
+    label: 'Active',
+    component: (props: OrderListContainerProps) => (
+      <OrderListContainer {...props} filter={Filter.Open} />
+    ),
+  },
+  closedOrders: {
+    label: 'Closed',
+    component: (props: OrderListContainerProps) => (
+      <OrderListContainer {...props} filter={Filter.Closed} />
+    ),
+  },
+  rejectedOrders: {
+    label: 'Rejected',
+    component: (props: OrderListContainerProps) => (
+      <OrderListContainer {...props} filter={Filter.Rejected} />
+    ),
+  },
+  orders: {
+    label: 'All',
+    component: OrderListContainer,
+  },
+  collateral: { label: 'Collateral', component: AccountsContainer },
+  fills: { label: 'Fills', component: FillsContainer },
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -83,22 +129,60 @@ interface BottomPanelProps {
 
 const MarketBottomPanel = memo(
   ({ marketId, pinnedAsset }: BottomPanelProps) => {
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'bottom' });
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
     const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
     return 'xxxl' === screenSize ? (
-      <ResizableGrid proportionalLayout minSize={200}>
+      <ResizableGrid
+        proportionalLayout
+        minSize={200}
+        onChange={handleOnLayoutChange}
+      >
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="50%"
+          preferredSize={sizes[0] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
             <Tabs storageKey="console-trade-grid-bottom-left">
-              <Tab id="orders" name={t('Orders')}>
+              <Tab id="open-orders" name={t('Open')}>
                 <VegaWalletContainer>
-                  <TradingViews.Orders
+                  <TradingViews.orders.component
+                    marketId={marketId}
+                    filter={Filter.Open}
+                    onMarketClick={onMarketClick}
+                    onOrderTypeClick={onOrderTypeClick}
+                    enforceBottomPlaceholder
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="closed-orders" name={t('Closed')}>
+                <VegaWalletContainer>
+                  <TradingViews.orders.component
+                    marketId={marketId}
+                    filter={Filter.Closed}
+                    onMarketClick={onMarketClick}
+                    onOrderTypeClick={onOrderTypeClick}
+                    enforceBottomPlaceholder
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="rejected-orders" name={t('Rejected')}>
+                <VegaWalletContainer>
+                  <TradingViews.orders.component
+                    marketId={marketId}
+                    filter={Filter.Rejected}
+                    onMarketClick={onMarketClick}
+                    onOrderTypeClick={onOrderTypeClick}
+                    enforceBottomPlaceholder
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="orders" name={t('All')}>
+                <VegaWalletContainer>
+                  <TradingViews.orders.component
                     marketId={marketId}
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
@@ -108,7 +192,7 @@ const MarketBottomPanel = memo(
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <TradingViews.Fills
+                  <TradingViews.fills.component
                     marketId={marketId}
                     onMarketClick={onMarketClick}
                   />
@@ -119,14 +203,14 @@ const MarketBottomPanel = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="50%"
+          preferredSize={sizes[1] || '50%'}
           minSize={50}
         >
           <TradeGridChild>
             <Tabs storageKey="console-trade-grid-bottom-right">
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <TradingViews.Positions
+                  <TradingViews.positions.component
                     onMarketClick={onMarketClick}
                     noBottomPlaceholder
                   />
@@ -134,7 +218,7 @@ const MarketBottomPanel = memo(
               </Tab>
               <Tab id="accounts" name={t('Collateral')}>
                 <VegaWalletContainer>
-                  <TradingViews.Collateral
+                  <TradingViews.collateral.component
                     pinnedAsset={pinnedAsset}
                     noBottomPlaceholder
                     hideButtons
@@ -150,12 +234,45 @@ const MarketBottomPanel = memo(
         <Tabs storageKey="console-trade-grid-bottom">
           <Tab id="positions" name={t('Positions')}>
             <VegaWalletContainer>
-              <TradingViews.Positions onMarketClick={onMarketClick} />
+              <TradingViews.positions.component onMarketClick={onMarketClick} />
             </VegaWalletContainer>
           </Tab>
-          <Tab id="orders" name={t('Orders')}>
+          <Tab id="open-orders" name={t('Open')}>
             <VegaWalletContainer>
-              <TradingViews.Orders
+              <TradingViews.orders.component
+                marketId={marketId}
+                filter={Filter.Open}
+                onMarketClick={onMarketClick}
+                onOrderTypeClick={onOrderTypeClick}
+                enforceBottomPlaceholder
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="closed-orders" name={t('Closed')}>
+            <VegaWalletContainer>
+              <TradingViews.orders.component
+                marketId={marketId}
+                filter={Filter.Closed}
+                onMarketClick={onMarketClick}
+                onOrderTypeClick={onOrderTypeClick}
+                enforceBottomPlaceholder
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="rejected-orders" name={t('Rejected')}>
+            <VegaWalletContainer>
+              <TradingViews.orders.component
+                marketId={marketId}
+                filter={Filter.Rejected}
+                onMarketClick={onMarketClick}
+                onOrderTypeClick={onOrderTypeClick}
+                enforceBottomPlaceholder
+              />
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="orders" name={t('All')}>
+            <VegaWalletContainer>
+              <TradingViews.orders.component
                 marketId={marketId}
                 onMarketClick={onMarketClick}
                 onOrderTypeClick={onOrderTypeClick}
@@ -165,7 +282,7 @@ const MarketBottomPanel = memo(
           </Tab>
           <Tab id="fills" name={t('Fills')}>
             <VegaWalletContainer>
-              <TradingViews.Fills
+              <TradingViews.fills.component
                 marketId={marketId}
                 onMarketClick={onMarketClick}
               />
@@ -173,7 +290,10 @@ const MarketBottomPanel = memo(
           </Tab>
           <Tab id="accounts" name={t('Collateral')}>
             <VegaWalletContainer>
-              <TradingViews.Collateral pinnedAsset={pinnedAsset} hideButtons />
+              <TradingViews.collateral.component
+                pinnedAsset={pinnedAsset}
+                hideButtons
+              />
             </VegaWalletContainer>
           </Tab>
         </Tabs>
@@ -186,68 +306,75 @@ MarketBottomPanel.displayName = 'MarketBottomPanel';
 const MainGrid = memo(
   ({
     marketId,
-    onSelect,
     pinnedAsset,
   }: {
     marketId: string;
-    onSelect: (marketId: string, metaKey?: boolean) => void;
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
+    const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
+      id: 'middle',
+    });
+
     return (
-      <ResizableGrid vertical>
+      <ResizableGrid vertical onChange={handleOnLayoutChange}>
         <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-          <ResizableGrid proportionalLayout={false} minSize={200}>
+          <ResizableGrid
+            proportionalLayout={false}
+            minSize={200}
+            onChange={handleOnMiddleLayoutChange}
+          >
             <ResizableGridPanel
               priority={LayoutPriority.High}
               minSize={200}
-              preferredSize="50%"
+              preferredSize={sizesMiddle[0] || '50%'}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
                   <Tab id="chart" name={t('Chart')}>
-                    <TradingViews.Candles marketId={marketId} />
+                    <TradingViews.candles.component marketId={marketId} />
                   </Tab>
                   <Tab id="depth" name={t('Depth')}>
-                    <TradingViews.Depth marketId={marketId} />
+                    <TradingViews.depth.component marketId={marketId} />
                   </Tab>
                   <Tab id="liquidity" name={t('Liquidity')}>
-                    <TradingViews.Liquidity marketId={marketId} />
+                    <TradingViews.liquidity.component marketId={marketId} />
                   </Tab>
                 </Tabs>
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={330}
+              preferredSize={sizesMiddle[1] || 330}
               minSize={300}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-center">
                   <Tab id="ticket" name={t('Ticket')}>
-                    <TradingViews.Ticket
+                    <TradingViews.ticket.component
                       marketId={marketId}
                       onClickCollateral={() => navigate('/portfolio')}
                     />
                   </Tab>
                   <Tab id="info" name={t('Info')}>
-                    <TradingViews.Info marketId={marketId} />
+                    <TradingViews.info.component marketId={marketId} />
                   </Tab>
                 </Tabs>
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize={430}
+              preferredSize={sizesMiddle[2] || 430}
               minSize={200}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-right">
                   <Tab id="orderbook" name={t('Orderbook')}>
-                    <TradingViews.Orderbook marketId={marketId} />
+                    <TradingViews.orderbook.component marketId={marketId} />
                   </Tab>
                   <Tab id="trades" name={t('Trades')}>
-                    <TradingViews.Trades marketId={marketId} />
+                    <TradingViews.trades.component marketId={marketId} />
                   </Tab>
                 </Tabs>
               </TradeGridChild>
@@ -256,7 +383,7 @@ const MainGrid = memo(
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="25%"
+          preferredSize={sizes[1] || '25%'}
           minSize={50}
         >
           <MarketBottomPanel marketId={marketId} pinnedAsset={pinnedAsset} />
@@ -278,11 +405,7 @@ export const TradeGrid = ({
         <TradeMarketHeader market={market} onSelect={onSelect} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <MainGrid
-        marketId={market?.id || ''}
-        onSelect={onSelect}
-        pinnedAsset={pinnedAsset}
-      />
+      <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
     </div>
   );
 };
@@ -319,7 +442,7 @@ export const TradePanels = ({
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
-  const [view, setView] = useState<TradingView>('Candles');
+  const [view, setView] = useState<TradingView>('candles');
   const renderView = () => {
     const Component = memo<{
       marketId: string;
@@ -328,7 +451,7 @@ export const TradePanels = ({
       onOrderTypeClick?: (marketId: string) => void;
       onClickCollateral: () => void;
       pinnedAsset?: PinnedAsset;
-    }>(TradingViews[view]);
+    }>(TradingViews[view].component);
 
     if (!Component) {
       throw new Error(`No component for view: ${view}`);
@@ -377,7 +500,7 @@ export const TradePanels = ({
               className={className}
               key={key}
             >
-              {key}
+              {TradingViews[key as keyof typeof TradingViews].label}
             </button>
           );
         })}

@@ -29,7 +29,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.mockSubscription(subscriptionMocks);
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
     cy.wait('@Markets');
   });
 
@@ -87,7 +87,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
       cy.get('[col-id="status"] .ag-icon-menu').click();
     });
     cy.contains('Partially Filled').click();
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
 
     cy.get(`[row-id="${partiallyFilledId}"]`)
       .eq(1)
@@ -116,7 +116,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
       cy.get('[col-id="status"] .ag-icon-menu').click();
     });
     cy.contains('Reset').click();
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
 
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
@@ -139,14 +139,15 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
 });
 
 describe('subscribe orders', { tags: '@smoke' }, () => {
-  before(() => {
+  let orderId = '0';
+  beforeEach(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
     cy.mockSubscription(subscriptionMocks);
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
     cy.getByTestId('tab-orders').within(() => {
       cy.get('[col-id="status"][role="columnheader"]')
         .focus()
@@ -154,8 +155,8 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
         .click();
       cy.get('.ag-filter-apply-panel-button').click();
     });
+    orderId = (parseInt(orderId, 10) + 1).toString();
   });
-  const orderId = '1234567890';
   // 7002-SORD-053
   // 7002-SORD-040
   // 7003-MORD-001
@@ -299,7 +300,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.get(`[row-id=${orderId}]`)
       .find('[col-id="price"]')
-      .should('have.text', '200.00');
+      .should('have.text', '-');
   });
 
   it('must see the time in force applied to the order', () => {
@@ -370,7 +371,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     cy.mockSubscription(subscriptionMocks);
     cy.setVegaWallet();
     cy.visit('/#/markets/market-0');
-    cy.getByTestId('Orders').click();
+    cy.getByTestId('All').click();
     cy.getByTestId('tab-orders').within(() => {
       cy.get('[col-id="status"][role="columnheader"]')
         .focus()
@@ -455,7 +456,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       });
   });
   it('must be warned (pre-submit) if the input price has too many digits after the decimal place for the market', () => {
-    // 7003-MORD-016
+    // 7003-MORD-013
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,

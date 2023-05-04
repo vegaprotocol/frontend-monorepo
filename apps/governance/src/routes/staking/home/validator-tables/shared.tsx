@@ -79,17 +79,6 @@ export interface ValidatorsTableProps {
   validatorsView: ValidatorsView;
 }
 
-// Custom styling to account for the scrollbar. This is needed because the
-// AG Grid places the scrollbar over the bottom validator, which obstructs
-export const NODE_LIST_GRID_STYLES = `
-  .ag-theme-balham-dark .ag-body-horizontal-scroll {
-    opacity: 0.75;
-  }
-  .ag-theme-balham-dark *:hover {
-    cursor: pointer;
-  }
-`;
-
 export const stakedTotalPercentage = (stakeScore: string) =>
   formatNumberPercentage(toBigNum(stakeScore, 0).times(100), 2);
 

@@ -24,6 +24,10 @@ import {
 import { Links, Routes } from '../../pages/client-router';
 import { createDocsLinks } from '@vegaprotocol/utils';
 import { SettingsButton } from '../../client-pages/settings';
+import {
+  ProtocolUpgradeCountdown,
+  ProtocolUpgradeCountdownMode,
+} from '@vegaprotocol/proposals';
 
 export const Navbar = ({
   theme = 'system',
@@ -45,11 +49,14 @@ export const Navbar = ({
       theme={theme}
       actions={
         <>
+          <ProtocolUpgradeCountdown
+            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
+          />
           <SettingsButton />
           <VegaWalletConnectButton />
         </>
       }
-      breakpoints={[521, 1067]}
+      breakpoints={[521, 1122]}
     >
       <NavigationList
         className="[.drawer-content_&]:border-b [.drawer-content_&]:border-b-vega-light-200 dark:[.drawer-content_&]:border-b-vega-dark-200 [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"

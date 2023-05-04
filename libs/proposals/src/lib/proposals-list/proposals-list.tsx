@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
@@ -8,13 +8,6 @@ import { proposalsDataProvider } from '../proposals-data-provider';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
-
-// prevent cutting filter windows by auto-height layout
-const CUSTOM_GRID_STYLES = `
-  .ag-layout-auto-height {
-    min-height: 200px !important;
-  }
-`;
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
@@ -58,7 +51,6 @@ export const ProposalsList = () => {
         suppressLoadingOverlay
         suppressNoRowsOverlay
         onFilterChanged={onFilterChanged}
-        customThemeParams={CUSTOM_GRID_STYLES}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

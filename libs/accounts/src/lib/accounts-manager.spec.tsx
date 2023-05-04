@@ -23,7 +23,7 @@ describe('AccountManager', () => {
             data: [],
           };
         })
-        .mockImplementationOnce((args) => {
+        .mockImplementation((args) => {
           return {
             data: [
               { asset: { id: 'a1' }, party: { id: 't1' } },
@@ -49,7 +49,7 @@ describe('AccountManager', () => {
         (helpers.useDataProvider as jest.Mock).mock.calls[0][0].variables
           .partyId
       ).toEqual('partyOne');
-      await act(() => {
+      await act(async () => {
         rerender(
           <AccountManager
             partyId="partyTwo"
@@ -66,7 +66,7 @@ describe('AccountManager', () => {
 
     it('update method should return proper result', async () => {
       let rerenderer: (ui: React.ReactElement) => void;
-      await act(() => {
+      await act(async () => {
         const { rerender } = render(
           <AccountManager
             partyId="partyOne"
@@ -79,7 +79,7 @@ describe('AccountManager', () => {
       await waitFor(() => {
         expect(screen.getByText('No accounts')).toBeInTheDocument();
       });
-      await act(() => {
+      await act(async () => {
         rerenderer(
           <AccountManager
             partyId="partyOne"

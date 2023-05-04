@@ -19,10 +19,14 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
     return () => stopPolling();
   }, [startPolling, stopPolling]);
 
-  const getValue = (field: keyof NodeData | keyof Statistics) =>
-    ['stakedTotal', 'totalNodes', 'inactiveNodes'].includes(field)
-      ? data?.nodeData?.[field as keyof NodeData]
-      : data?.statistics?.[field as keyof Statistics];
+  const getValue = (field: keyof NodeData | keyof Statistics | 'epoch') => {
+    if (['stakedTotal', 'totalNodes', 'inactiveNodes'].includes(field)) {
+      return data?.nodeData?.[field as keyof NodeData];
+    } else if (field === 'epoch') {
+      return data?.epoch.id;
+    }
+    return data?.statistics?.[field as keyof Statistics];
+  };
 
   const panels = fieldsDefinition.map(
     ({ field, title, description, formatter, goodThreshold }) => ({
@@ -50,7 +54,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
           className={classNames(
             'border rounded p-2 relative border-vega-light-200 dark:border-vega-dark-200',
             {
-              'col-span-2': field === 'chainId' || field === 'status',
+              'col-span-2': field === 'chainId',
             },
             {
               'bg-transparent border-vega-light-200 dark:border-vega-dark-200':

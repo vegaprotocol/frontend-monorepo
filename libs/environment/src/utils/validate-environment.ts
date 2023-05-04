@@ -5,7 +5,6 @@ export enum Networks {
   CUSTOM = 'CUSTOM',
   TESTNET = 'TESTNET',
   STAGNET1 = 'STAGNET1',
-  STAGNET3 = 'STAGNET3',
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',
 }

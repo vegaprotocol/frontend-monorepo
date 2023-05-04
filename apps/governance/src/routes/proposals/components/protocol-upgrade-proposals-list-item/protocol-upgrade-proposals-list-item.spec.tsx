@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ProtocolUpgradeProposalsListItem } from './protocol-upgrade-proposals-list-item';
 import { ProtocolUpgradeProposalStatus } from '@vegaprotocol/types';
-import type { ProtocolUpgradeProposalFieldsFragment } from '../../protocol-upgrade/__generated__/ProtocolUpgradeProposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
 const proposal = {
   status:

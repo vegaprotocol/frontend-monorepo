@@ -10,7 +10,7 @@ import type {
   TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   DateRangeFilter,
   SetFilter,
 } from '@vegaprotocol/datagrid';

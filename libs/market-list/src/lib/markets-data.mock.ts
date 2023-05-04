@@ -25,8 +25,10 @@ export const marketsDataQuery = (
   return merge(defaultResult, override);
 };
 
-const marketsDataFieldsFragments: MarketsDataFieldsFragment[] = [
-  {
+export const createMarketsDataFragment = (
+  override?: PartialDeep<MarketsDataFieldsFragment>
+): MarketsDataFieldsFragment => {
+  const defaultResult = {
     market: {
       id: 'market-0',
       __typename: 'Market',
@@ -42,56 +44,28 @@ const marketsDataFieldsFragments: MarketsDataFieldsFragment[] = [
     markPrice: '4612690058',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
     __typename: 'MarketData',
-  },
-  {
+  };
+  return merge(defaultResult, override);
+};
+
+const marketsDataFieldsFragments: MarketsDataFieldsFragment[] = [
+  createMarketsDataFragment(),
+  createMarketsDataFragment({
     market: {
       id: 'market-1',
-      __typename: 'Market',
     },
-    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    staticMidPrice: '0',
-    indicativePrice: '0',
-    bestStaticBidPrice: '0',
-    bestStaticOfferPrice: '0',
-    indicativeVolume: '0',
-    bestBidPrice: '0',
-    bestOfferPrice: '0',
     markPrice: '8441',
-    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-    __typename: 'MarketData',
-  },
-  {
+  }),
+  createMarketsDataFragment({
     market: {
       id: 'market-2',
-      __typename: 'Market',
     },
-    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    staticMidPrice: '0',
-    indicativePrice: '0',
-    bestStaticBidPrice: '0',
-    bestStaticOfferPrice: '0',
-    indicativeVolume: '0',
-    bestBidPrice: '0',
-    bestOfferPrice: '0',
-    markPrice: '4612690058',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET,
-    __typename: 'MarketData',
-  },
-  {
+  }),
+  createMarketsDataFragment({
     market: {
       id: 'market-3',
-      __typename: 'Market',
     },
-    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    staticMidPrice: '0',
-    indicativePrice: '0',
-    bestStaticBidPrice: '0',
-    bestStaticOfferPrice: '0',
-    indicativeVolume: '0',
-    bestBidPrice: '0',
-    bestOfferPrice: '0',
-    markPrice: '4612690058',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET,
-    __typename: 'MarketData',
-  },
+  }),
 ];

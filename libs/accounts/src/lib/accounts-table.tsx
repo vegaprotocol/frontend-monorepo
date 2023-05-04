@@ -22,7 +22,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
-  AgGridDynamic as AgGrid,
+  AgGridLazy as AgGrid,
   CenteredGridCellWrapper,
 } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
@@ -126,14 +126,20 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       return currentPinnedAssetRow;
     }, [pinnedAssetId, props.pinnedAsset, props.rowData]);
 
-    const getRowHeight = useCallback(
-      (params: RowHeightParams) =>
-        params.node.rowPinned &&
-        params.data.asset.id === pinnedAssetId &&
-        new BigNumber(params.data.total).isLessThanOrEqualTo(0)
-          ? 32
-          : 24,
-      [pinnedAssetId]
+    const { getRowHeight } = props;
+
+    const getPinnedAssetRowHeight = useCallback(
+      (params: RowHeightParams) => {
+        if (
+          params.node.rowPinned &&
+          params.data.asset.id === pinnedAssetId &&
+          new BigNumber(params.data.total).isLessThanOrEqualTo(0)
+        ) {
+          return 32;
+        }
+        return getRowHeight ? getRowHeight(params) : undefined;
+      },
+      [pinnedAssetId, getRowHeight]
     );
 
     return (
@@ -155,7 +161,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             sortable: true,
             comparator: accountValuesComparator,
           }}
-          getRowHeight={getRowHeight}
+          getRowHeight={getPinnedAssetRowHeight}
           pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
         >
           <AgGridColumn
@@ -299,6 +305,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                           <DropdownMenuTrigger
                             iconName="more"
                             className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+                            data-testid="dropdown-menu"
                           ></DropdownMenuTrigger>
                         }
                       >
@@ -359,7 +366,10 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           }
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
-          <div className="h-[35vh] w-full m-auto flex flex-col">
+          <div
+            className="h-[35vh] w-full m-auto flex flex-col"
+            data-testid="usage-breakdown"
+          >
             <h1 className="text-xl mb-4">
               {row?.asset?.symbol} {t('usage breakdown')}
             </h1>

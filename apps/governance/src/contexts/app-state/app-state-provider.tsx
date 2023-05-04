@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { BigNumber } from '../../lib/bignumber';
-import { AppStateActionType, AppStateContext } from './app-state-context';
 import type { AppState, AppStateAction } from './app-state-context';
+import { AppStateActionType, AppStateContext } from './app-state-context';
 
 interface AppStateProviderProps {
   children: React.ReactNode;
@@ -19,6 +19,7 @@ const initialAppState: AppState = {
   ethConnectOverlay: false,
   transactionOverlay: false,
   bannerMessage: '',
+  disconnectNotice: false,
 };
 
 function appStateReducer(state: AppState, action: AppStateAction): AppState {
@@ -66,6 +67,12 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
       return {
         ...state,
         bannerMessage: action.message,
+      };
+    }
+    case AppStateActionType.SET_DISCONNECT_NOTICE: {
+      return {
+        ...state,
+        disconnectNotice: action.isVisible,
       };
     }
   }

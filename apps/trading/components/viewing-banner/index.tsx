@@ -5,7 +5,5 @@ export const ViewingBanner = () => {
   const { isReadOnly, pubKey, disconnect } = useVegaWallet();
   return isReadOnly ? (
     <ViewingAsBanner pubKey={pubKey} disconnect={disconnect} />
-  ) : (
-    <div />
-  );
+  ) : null;
 };

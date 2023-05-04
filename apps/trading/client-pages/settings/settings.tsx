@@ -36,7 +36,11 @@ export const Settings = () => {
               />
             </div>
             <Divider />
-            <TelemetryApproval isSettingsPage />
+            <TelemetryApproval
+              helpText={t(
+                'Help identify bugs and improve the service by sharing anonymous usage data.'
+              )}
+            />
           </RoundedWrapper>
         </div>
       </div>

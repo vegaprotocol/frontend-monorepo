@@ -1,6 +1,7 @@
 import { render, screen, act, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Account } from '@vegaprotocol/accounts';
+import { useAccountBalance } from '@vegaprotocol/accounts';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import * as Types from '@vegaprotocol/types';
 import { useWeb3React } from '@web3-react/core';
@@ -12,6 +13,7 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
   }),
 }));
 jest.mock('@web3-react/core');
+jest.mock('@vegaprotocol/accounts');
 
 describe('WithdrawFormContainer', () => {
   const props = {
@@ -91,6 +93,10 @@ describe('WithdrawFormContainer', () => {
 
   beforeEach(() => {
     (useWeb3React as jest.Mock).mockReturnValue({ account: MOCK_ETH_ADDRESS });
+    (useAccountBalance as jest.Mock).mockReturnValue({
+      accountBalance: 0,
+      accountDecimals: null,
+    });
   });
   afterEach(() => {
     jest.resetAllMocks();
@@ -148,7 +154,17 @@ describe('WithdrawFormContainer', () => {
                   decimals: 5,
                 },
                 dataSourceSpecForTradingTermination: {
-                  id: '',
+                  __typename: 'DataSourceSpec',
+                  id: 'oracleId',
+                },
+                dataSourceSpecForSettlementData: {
+                  __typename: 'DataSourceSpec',
+                  id: 'oracleId',
+                },
+                dataSourceSpecBinding: {
+                  __typename: 'DataSourceSpecToFutureBinding',
+                  tradingTerminationProperty: 'trading-termination-property',
+                  settlementDataProperty: 'settlement-data-property',
                 },
                 quoteName: 'USD',
               },

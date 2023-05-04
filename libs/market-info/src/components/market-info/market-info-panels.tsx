@@ -26,7 +26,7 @@ import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '@vegaprotocol/oracles';
-import { useOracleProofs } from '@vegaprotocol/oracles';
+import { OracleBasicProfile, useOracleProofs } from '@vegaprotocol/oracles';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 type PanelProps = Pick<
@@ -449,49 +449,38 @@ export const LiquidityPriceRangeInfoPanel = ({
 
 export const OracleInfoPanel = ({
   market,
-  ...props
-}: MarketInfoProps & PanelProps) => {
+  type,
+}: MarketInfoProps &
+  PanelProps & { type: 'settlementData' | 'termination' }) => {
   const product = market.tradableInstrument.instrument.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
+
   return (
-    <MarketInfoTable
-      data={{
-        settlementDataProperty:
-          product.dataSourceSpecBinding.settlementDataProperty,
-        tradingTerminationProperty:
-          product.dataSourceSpecBinding.tradingTerminationProperty,
-      }}
-      {...props}
-    >
-      <div
-        className="flex flex-col gap-2 mt-4"
+    <div className="flex flex-col gap-4">
+      <DataSourceProof
         data-testid="oracle-proof-links"
+        data={
+          type === 'settlementData'
+            ? product.dataSourceSpecForSettlementData.data
+            : product.dataSourceSpecForTradingTermination.data
+        }
+        providers={data}
+        type={type}
+      />
+      <ExternalLink
+        data-testid="oracle-spec-links"
+        href={`${VEGA_EXPLORER_URL}/oracles/${
+          type === 'settlementData'
+            ? product.dataSourceSpecForSettlementData.id
+            : product.dataSourceSpecForTradingTermination.id
+        }`}
       >
-        <DataSourceProof
-          data={product.dataSourceSpecForSettlementData.data}
-          providers={data}
-          type="settlementData"
-        />
-        <DataSourceProof
-          data={product.dataSourceSpecForTradingTermination.data}
-          providers={data}
-          type="termination"
-        />
-      </div>
-      <div className="flex flex-col gap-2" data-testid="oracle-spec-links">
-        <ExternalLink
-          href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForSettlementData.id}`}
-        >
-          {t('View settlement data specification')}
-        </ExternalLink>
-        <ExternalLink
-          href={`${VEGA_EXPLORER_URL}/oracles#${product.dataSourceSpecForTradingTermination.id}`}
-        >
-          {t('View termination specification')}
-        </ExternalLink>
-      </div>
-    </MarketInfoTable>
+        {type === 'settlementData'
+          ? t('View settlement data specification')
+          : t('View termination specification')}
+      </ExternalLink>
+    </div>
   );
 };
 
@@ -551,20 +540,13 @@ const OracleLink = ({
   providers,
   signer,
   type,
-  index,
 }: {
   providers: Provider[];
   signer: SignerKind;
   type: 'settlementData' | 'termination';
   index: number;
 }) => {
-  const text =
-    type === 'settlementData'
-      ? t('View settlement oracle details')
-      : t('View termination oracle details');
-  const textWithCount = index > 0 ? `${text} (${index + 1})` : text;
-
-  const provider = providers.find((p) => {
+  const signerProviders = providers.filter((p) => {
     if (signer.__typename === 'PubKey') {
       if (
         p.oracle.type === 'public_key' &&
@@ -586,14 +568,19 @@ const OracleLink = ({
     return false;
   });
 
-  if (!provider) {
+  if (!signerProviders.length) {
     return <NoOracleProof type={type} />;
   }
 
   return (
-    <p>
-      <ExternalLink href={provider.github_link}>{textWithCount}</ExternalLink>
-    </p>
+    <div>
+      {signerProviders.map((provider) => (
+        <OracleBasicProfile
+          key={provider.name}
+          provider={provider}
+        ></OracleBasicProfile>
+      ))}
+    </div>
   );
 };
 

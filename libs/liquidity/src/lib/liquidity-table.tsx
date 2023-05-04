@@ -9,7 +9,7 @@ import type {
   VegaValueFormatterParams,
   TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';

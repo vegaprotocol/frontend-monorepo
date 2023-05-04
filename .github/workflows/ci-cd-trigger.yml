@@ -50,7 +50,7 @@ jobs:
     secrets: inherit
 
   lint-test-build:
-    timeout-minutes: 35
+    timeout-minutes: 60
     needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + unit test + build'
@@ -105,7 +105,7 @@ jobs:
           affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
           echo -n "Affected projects: $affected"
 
-          branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g )"
+          branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           projects_e2e=""
           preview_governance="not deployed"
           preview_trading="not deployed"
