@@ -2,6 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import { MarketStateMapping } from '@vegaprotocol/types';
 import {
+  ButtonLink,
   ExternalLink,
   Icon,
   Intent,
@@ -13,6 +14,7 @@ import classNames from 'classnames';
 import { getLinkIcon, getVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
+import { useState } from 'react';
 
 export const OracleProfileTitle = ({ provider }: { provider: Provider }) => {
   const { icon, intent } = getVerifiedStatusIcon(provider);
@@ -58,6 +60,7 @@ export const OracleFullProfile = ({
 }) => {
   const { message } = getVerifiedStatusIcon(provider);
   const { VEGA_EXPLORER_URL } = useEnvironment();
+  const [showMore, setShowMore] = useState(false);
 
   const links = provider.proofs
     .filter((proof) => proof.format === 'url' && proof.available === true)
@@ -72,6 +75,27 @@ export const OracleFullProfile = ({
       <p className="dark:text-vega-light-300 text-vega-dark-300 pb-2">
         {message}
       </p>
+      {!showMore && (
+        <p className="dark:text-vega-light-300 text-vega-dark-300 pb-2">
+          {provider.description_markdown.slice(0, 100)}
+          {'... '}
+          <span className="dark:text-vega-light-300 text-vega-dark-300 ml-2">
+            <ButtonLink onClick={() => setShowMore(!showMore)}>
+              Read more
+            </ButtonLink>
+          </span>
+        </p>
+      )}
+      {showMore && (
+        <p className="dark:text-vega-light-300 text-vega-dark-300 pb-2">
+          {provider.description_markdown}
+          <span className="dark:text-vega-light-300 text-vega-dark-300 ml-2">
+            <ButtonLink onClick={() => setShowMore(!showMore)}>
+              Show less
+            </ButtonLink>
+          </span>
+        </p>
+      )}
       <div className="grid grid-cols-2 gap-6">
         <div className="col-span-1">
           <p
@@ -146,7 +170,7 @@ export const OracleFullProfile = ({
               <div className="col-span-1">
                 {market.tradableInstrument.instrument.code}
               </div>
-              <div className="col-span-1">
+              <div className="col-span-1 dark:text-vega-light-300 text-vega-dark-300">
                 {MarketStateMapping[market.state]}
               </div>
               <div className="col-span-1">
