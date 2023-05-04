@@ -2,20 +2,25 @@ import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { OrderListManager } from './order-list-manager';
+import type { Filter } from './order-list-manager';
+
+export interface OrderListContainerProps {
+  marketId?: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
+  enforceBottomPlaceholder?: boolean;
+  filter?: Filter;
+  id?: string;
+}
 
 export const OrderListContainer = ({
   marketId,
   onMarketClick,
   onOrderTypeClick,
   enforceBottomPlaceholder,
+  filter,
   id,
-}: {
-  marketId?: string;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
-  enforceBottomPlaceholder?: boolean;
-  id?: string;
-}) => {
+}: OrderListContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
 
   if (!pubKey) {
@@ -26,6 +31,7 @@ export const OrderListContainer = ({
     <OrderListManager
       partyId={pubKey}
       marketId={marketId}
+      filter={filter}
       onMarketClick={onMarketClick}
       onOrderTypeClick={onOrderTypeClick}
       isReadOnly={isReadOnly}

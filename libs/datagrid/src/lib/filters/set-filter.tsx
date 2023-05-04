@@ -9,85 +9,90 @@ import {
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
 
-export const SetFilter = forwardRef((props: IFilterParams, ref) => {
-  const [value, setValue] = useState<string[]>([]);
-  const valueRef = useRef(value);
+export const SetFilter = forwardRef(
+  (props: IFilterParams & { readonly?: boolean }, ref) => {
+    const [value, setValue] = useState<string[]>([]);
+    const valueRef = useRef(value);
+    const { readonly } = props;
+    // expose AG Grid Filter Lifecycle callbacks
+    useImperativeHandle(ref, () => {
+      return {
+        doesFilterPass(params: IDoesFilterPassParams) {
+          const { api, colDef, column, columnApi, context } = props;
+          const { node } = params;
+          const getValue = props.valueGetter({
+            api,
+            colDef,
+            column,
+            columnApi,
+            context,
+            data: node.data,
+            getValue: (field) => node.data[field],
+            node,
+          });
+          return Array.isArray(value)
+            ? value.includes(getValue)
+            : getValue === value;
+        },
 
-  // expose AG Grid Filter Lifecycle callbacks
-  useImperativeHandle(ref, () => {
-    return {
-      doesFilterPass(params: IDoesFilterPassParams) {
-        const { api, colDef, column, columnApi, context } = props;
-        const { node } = params;
-        const getValue = props.valueGetter({
-          api,
-          colDef,
-          column,
-          columnApi,
-          context,
-          data: node.data,
-          getValue: (field) => node.data[field],
-          node,
-        });
-        return Array.isArray(value)
-          ? value.includes(getValue)
-          : getValue === value;
-      },
+        isFilterActive() {
+          return valueRef.current.length !== 0;
+        },
 
-      isFilterActive() {
-        return valueRef.current.length !== 0;
-      },
+        getModel() {
+          if (!this.isFilterActive()) {
+            return null;
+          }
+          return { value: valueRef.current };
+        },
 
-      getModel() {
-        if (!this.isFilterActive()) {
-          return null;
-        }
-        return { value: valueRef.current };
-      },
+        setModel(model?: { value: string[] } | null) {
+          valueRef.current = !model ? [] : model.value;
+          setValue(valueRef.current);
+        },
+      };
+    });
 
-      setModel(model?: { value: string[] } | null) {
-        valueRef.current = !model ? [] : model.value;
-        setValue(valueRef.current);
-      },
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+      valueRef.current = event.target.checked
+        ? [...value, event.target.value]
+        : value.filter((v) => v !== event.target.value);
+      setValue(valueRef.current);
     };
-  });
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    valueRef.current = event.target.checked
-      ? [...value, event.target.value]
-      : value.filter((v) => v !== event.target.value);
-    setValue(valueRef.current);
-  };
-
-  useEffect(() => {
-    props.filterChangedCallback();
-  }, [value]); //eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <div className="ag-filter-body-wrapper">
-      <fieldset className="ag-simple-filter-body-wrapper">
-        {Object.keys(props.colDef.filterParams.set).map((key) => (
-          <label className="flex" key={key}>
-            <input
-              type="checkbox"
-              value={key}
-              className="mr-1"
-              checked={value.includes(key)}
-              onChange={onChange}
-            />
-            <span>{props.colDef.filterParams.set[key]}</span>
-          </label>
-        ))}
-      </fieldset>
-      <div className="ag-filter-apply-panel">
-        <button
-          type="button"
-          className="ag-standard-button ag-filter-apply-panel-button"
-          onClick={() => setValue((valueRef.current = []))}
-        >
-          {t('Reset')}
-        </button>
+    useEffect(() => {
+      props.filterChangedCallback();
+    }, [value]); //eslint-disable-line react-hooks/exhaustive-deps
+    return (
+      <div className="ag-filter-body-wrapper">
+        <fieldset className="ag-simple-filter-body-wrapper">
+          {Object.keys(props.colDef.filterParams.set).map((key) => (
+            <label className="flex" key={key}>
+              <input
+                type="checkbox"
+                value={key}
+                disabled={readonly}
+                className="mr-1"
+                checked={value.includes(key)}
+                onChange={onChange}
+              />
+              <span>{props.colDef.filterParams.set[key]}</span>
+            </label>
+          ))}
+        </fieldset>
+        {!readonly && (
+          <div className="ag-filter-apply-panel">
+            <button
+              type="button"
+              disabled={readonly}
+              className="ag-standard-button ag-filter-apply-panel-button"
+              onClick={() => setValue((valueRef.current = []))}
+            >
+              {t('Reset')}
+            </button>
+          </div>
+        )}
       </div>
-    </div>
-  );
-});
+    );
+  }
+);

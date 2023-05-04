@@ -39,9 +39,9 @@ export const AccountManager = ({
     variables,
   });
   const setId = useCallback(
-    (data: AccountFields) => ({
+    (data: AccountFields, id: string) => ({
       ...data,
-      asset: { ...data.asset, id: `${data.asset.id}-1` },
+      asset: { ...data.asset, id },
     }),
     []
   );

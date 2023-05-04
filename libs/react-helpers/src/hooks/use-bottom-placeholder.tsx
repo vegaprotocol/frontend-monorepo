@@ -1,16 +1,17 @@
 import type { RefObject } from 'react';
 import { useCallback, useMemo } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { IsFullWidthRowParams } from 'ag-grid-community';
+import type { IsFullWidthRowParams, RowHeightParams } from 'ag-grid-community';
 
 const NO_HOVER_CSS_RULE = { 'no-hover': 'data?.isLastPlaceholder' };
+const ROW_ID = 'bottomPlaceholder';
 const fullWidthCellRenderer = () => null;
 const isFullWidthRow = (params: IsFullWidthRowParams) =>
   params.rowNode.data?.isLastPlaceholder;
 
 interface Props<T> {
   gridRef: RefObject<AgGridReact>;
-  setId?: (data: T) => T;
+  setId?: (data: T, id: string) => T;
   disabled?: boolean;
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -20,44 +21,41 @@ export const useBottomPlaceholder = <T extends {}>({
   disabled,
 }: Props<T>) => {
   const onBodyScrollEnd = useCallback(() => {
-    const rowCont = gridRef.current?.api.getModel().getRowCount() ?? 0;
-    const lastRowIndex = gridRef.current?.api.getLastDisplayedRow() ?? 0;
-    if (lastRowIndex && rowCont - 1 === lastRowIndex) {
-      const lastRow = gridRef.current?.api.getDisplayedRowAtIndex(lastRowIndex);
-      if (lastRow?.data && !lastRow?.data.isLastPlaceholder) {
-        const newData = setId
-          ? setId({ ...lastRow.data, isLastPlaceholder: true })
+    const rowCont = gridRef.current?.api.getDisplayedRowCount() ?? 0;
+    if (rowCont) {
+      const lastRow = gridRef.current?.api.getDisplayedRowAtIndex(rowCont - 1);
+      if (lastRow && lastRow.data) {
+        const placeholderRow = setId
+          ? setId({ ...lastRow.data, isLastPlaceholder: true }, ROW_ID)
           : {
               ...lastRow.data,
               isLastPlaceholder: true,
-              id: `${lastRow.data?.id || '-'}-1`,
+              id: ROW_ID,
             };
-        const add = [newData];
-        const newIndex = lastRowIndex + 1;
-        gridRef.current?.api.applyTransaction({
-          add,
-          addIndex: newIndex,
-        });
-        const newLastRow =
-          gridRef.current?.api.getDisplayedRowAtIndex(newIndex);
-        newLastRow?.setRowHeight(50);
-        gridRef.current?.api.onRowHeightChanged();
+        const transaction = gridRef.current?.api.getRowNode(ROW_ID)
+          ? { update: [placeholderRow] }
+          : { add: [placeholderRow] };
+        gridRef.current?.api.applyTransaction(transaction);
       }
     }
   }, [gridRef, setId]);
 
   const onRowsChanged = useCallback(() => {
-    const remove: T[] = [];
-    gridRef.current?.api.forEachNodeAfterFilterAndSort((rowNode) => {
-      if (rowNode.data.isLastPlaceholder) {
-        remove.push(rowNode.data);
-      }
-    });
-    gridRef.current?.api.applyTransaction({
-      remove,
-    });
+    const placeholderNode = gridRef.current?.api.getRowNode(ROW_ID);
+    if (placeholderNode) {
+      const transaction = {
+        remove: [placeholderNode.data],
+      };
+      gridRef.current?.api.applyTransaction(transaction);
+    }
     onBodyScrollEnd();
   }, [gridRef, onBodyScrollEnd]);
+
+  const getRowHeight = useCallback(
+    (params: RowHeightParams) =>
+      params.data?.isLastPlaceholder ? 50 : undefined,
+    []
+  );
 
   return useMemo(
     () =>
@@ -69,8 +67,9 @@ export const useBottomPlaceholder = <T extends {}>({
             fullWidthCellRenderer,
             onSortChanged: onRowsChanged,
             onFilterChanged: onRowsChanged,
+            getRowHeight,
           }
         : {},
-    [onBodyScrollEnd, onRowsChanged, disabled]
+    [onBodyScrollEnd, onRowsChanged, disabled, getRowHeight]
   );
 };
