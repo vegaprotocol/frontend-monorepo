@@ -194,6 +194,8 @@ const ordersProvider = makeDataProvider<
   additionalContext: { isEnlargedTimeout: true },
 });
 
+const allOrderMaxCount = 50000;
+
 export const allOrdersProvider = makeDerivedDataProvider<
   ReturnType<typeof getData>,
   never,
@@ -205,12 +207,12 @@ export const allOrdersProvider = makeDerivedDataProvider<
   ],
   (partsData, variables, prevData, parts, subscriptions) => {
     const orders = partsData[0] as ReturnType<typeof getData>;
-    // load first 5000
+    // load next pages until allOrderMaxCount reached
     if (
       !parts[0].isUpdate &&
       subscriptions &&
       subscriptions[0].load &&
-      orders?.length < 50000
+      orders?.length < allOrderMaxCount
     ) {
       subscriptions[0].load();
     }
