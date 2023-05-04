@@ -125,8 +125,6 @@ export const MarketInfoAccordion = ({
     }
     return [];
   };
-  console.log('  getSigners(settlementData)', getSigners(settlementData));
-  console.log('      getSigners(terminationData)', getSigners(terminationData));
   const oraclePanels = isEqual(
     getSigners(settlementData),
     getSigners(terminationData)

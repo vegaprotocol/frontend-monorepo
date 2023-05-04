@@ -5,14 +5,11 @@ import { useOracleMarketsSpecQuery } from '../__generated__/OracleMarketsSpec';
 export const useOracleMarkets = (
   provider: Provider
 ): OracleMarketSpecFieldsFragment[] | undefined => {
-  console.log('provider', provider);
   const signedProofs = provider.proofs.filter(
     (proof) => proof.format === 'signed_message' && proof.available === true
   );
 
   const { data: markets } = useOracleMarketsSpecQuery();
-
-  console.log('markets spec', markets);
 
   const oracleMarkets = markets?.marketsConnection?.edges
     ?.map((edge) => edge.node)
@@ -40,7 +37,5 @@ export const useOracleMarkets = (
       const key = signedProofsKeys.find((key) => signerKeys?.includes(key));
       return !!key;
     });
-
-  console.log('useOracleMarkets called', oracleMarkets);
   return oracleMarkets;
 };
