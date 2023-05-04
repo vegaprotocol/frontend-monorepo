@@ -72,7 +72,7 @@ export const MarketInfoAccordionContainer = ({
   );
 };
 
-const MarketInfoAccordion = ({
+export const MarketInfoAccordion = ({
   market,
   onSelect,
 }: MarketInfoAccordionProps) => {
@@ -105,8 +105,6 @@ const MarketInfoAccordion = ({
         content: <InsurancePoolInfoPanel market={market} account={a} />,
       })),
   ];
-  const product = market.tradableInstrument.instrument.product;
-
   const settlementData =
     market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
       .data;
@@ -245,33 +243,37 @@ const MarketInfoAccordion = ({
       title: t('Proposal'),
       content: (
         <div className="">
-          <ExternalLink
-            className="mb-2 w-full"
-            href={generatePath(TokenLinks.PROPOSAL_PAGE, {
-              tokenUrl: VEGA_TOKEN_URL,
-              proposalId: market.proposal?.id || '',
-            })}
-            title={
-              market.proposal?.rationale.title ||
-              market.proposal?.rationale.description ||
-              ''
-            }
-          >
-            {t('View governance proposal')}
-          </ExternalLink>
-          <ExternalLink
-            className="w-full"
-            href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
-              tokenUrl: VEGA_TOKEN_URL,
-            })}
-            title={
-              market.proposal?.rationale.title ||
-              market.proposal?.rationale.description ||
-              ''
-            }
-          >
-            {t('Propose a change to market')}
-          </ExternalLink>
+          {VEGA_TOKEN_URL && (
+            <ExternalLink
+              className="mb-2 w-full"
+              href={generatePath(TokenLinks.PROPOSAL_PAGE, {
+                tokenUrl: VEGA_TOKEN_URL,
+                proposalId: market.proposal?.id || '',
+              })}
+              title={
+                market.proposal?.rationale.title ||
+                market.proposal?.rationale.description ||
+                ''
+              }
+            >
+              {t('View governance proposal')}
+            </ExternalLink>
+          )}
+          {VEGA_TOKEN_URL && (
+            <ExternalLink
+              className="w-full"
+              href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
+                tokenUrl: VEGA_TOKEN_URL,
+              })}
+              title={
+                market.proposal?.rationale.title ||
+                market.proposal?.rationale.description ||
+                ''
+              }
+            >
+              {t('Propose a change to market')}
+            </ExternalLink>
+          )}
         </div>
       ),
     },
@@ -288,7 +290,7 @@ const MarketInfoAccordion = ({
         <h3 className={headerClassName}>{t('Market specification')}</h3>
         <Accordion panels={marketSpecPanels} />
       </div>
-      {VEGA_TOKEN_URL && market.proposal?.id && (
+      {VEGA_TOKEN_URL && marketGovPanels && market.proposal?.id && (
         <div>
           <h3 className={headerClassName}>{t('Market governance')}</h3>
           <Accordion panels={marketGovPanels} />
