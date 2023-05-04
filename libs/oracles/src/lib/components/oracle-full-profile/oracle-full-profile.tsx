@@ -102,7 +102,7 @@ export const OracleFullProfile = ({
             className="dark:text-vega-light-300 text-vega-dark-300 uppercase"
             data-testid="verified-accounts"
           >
-            {t('%s verified accounts', links.length.toString())}
+            {t('%s proofs of ownership', links.length.toString())}
           </p>
           {links.length > 0 ? (
             <div className="flex flex-col gap-1">
@@ -160,8 +160,13 @@ export const OracleFullProfile = ({
       {oracleMarkets && oracleMarkets.length > 0 && (
         <div
           data-testid="oracle-markets"
-          className="border-vega-light-200 dark:border-vega-dark-200 border-solid border-2 p-4 rounded-lg my-2"
+          className="border-vega-light-200 dark:border-vega-dark-200 border-solid border-2 py-4 px-2 rounded-lg my-2"
         >
+          <div className="grid grid-cols-4 gap-1 uppercase mb-2 font-alpha calt dark:text-vega-light-300 text-vega-dark-300">
+            <div className="col-span-1">{t('Market')}</div>
+            <div className="col-span-1">{t('Status')}</div>
+            <div className="col-span-1">{t('Specifications')}</div>
+          </div>
           {oracleMarkets?.map((market) => (
             <div
               className="grid grid-cols-4 gap-1 capitalize mb-2 last:mb-0"
