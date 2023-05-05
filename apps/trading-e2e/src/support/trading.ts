@@ -10,7 +10,7 @@ import {
   chainIdQuery,
   chartQuery,
   depositsQuery,
-  estimateOrderQuery,
+  estimateFeesQuery,
   marginsQuery,
   marketCandlesQuery,
   marketDataQuery,
@@ -157,7 +157,7 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Candles', candlesQuery());
   aliasGQLQuery(req, 'Withdrawals', withdrawalsQuery());
   aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
-  aliasGQLQuery(req, 'EstimateOrder', estimateOrderQuery());
+  aliasGQLQuery(req, 'EstimateFees', estimateFeesQuery());
   aliasGQLQuery(req, 'ProposalsList', proposalListQuery());
   aliasGQLQuery(req, 'Deposits', depositsQuery());
 };

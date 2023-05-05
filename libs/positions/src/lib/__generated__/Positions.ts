@@ -35,6 +35,16 @@ export type MarginsSubscriptionSubscriptionVariables = Types.Exact<{
 
 export type MarginsSubscriptionSubscription = { __typename?: 'Subscription', margins: { __typename?: 'MarginLevelsUpdate', marketId: string, asset: string, partyId: string, maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, timestamp: any } };
 
+export type EstimatePositionQueryVariables = Types.Exact<{
+  marketId: Types.Scalars['ID'];
+  openVolume: Types.Scalars['String'];
+  orders?: Types.InputMaybe<Array<Types.OrderInfo> | Types.OrderInfo>;
+  collateralAvailable?: Types.InputMaybe<Types.Scalars['String']>;
+}>;
+
+
+export type EstimatePositionQuery = { __typename?: 'Query', estimatePosition?: { __typename?: 'PositionEstimate', margin: { __typename?: 'MarginEstimate', worstCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string }, bestCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string } }, liquidation?: { __typename?: 'LiquidationEstimate', worstCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string }, bestCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string } } | null } | null };
+
 export const PositionFieldsFragmentDoc = gql`
     fragment PositionFields on Position {
   realisedPNL
@@ -221,3 +231,71 @@ export function useMarginsSubscriptionSubscription(baseOptions: Apollo.Subscript
       }
 export type MarginsSubscriptionSubscriptionHookResult = ReturnType<typeof useMarginsSubscriptionSubscription>;
 export type MarginsSubscriptionSubscriptionResult = Apollo.SubscriptionResult<MarginsSubscriptionSubscription>;
+export const EstimatePositionDocument = gql`
+    query EstimatePosition($marketId: ID!, $openVolume: String!, $orders: [OrderInfo!], $collateralAvailable: String) {
+  estimatePosition(
+    marketId: $marketId
+    openVolume: $openVolume
+    orders: $orders
+    collateralAvailable: $collateralAvailable
+  ) {
+    margin {
+      worstCase {
+        maintenanceLevel
+        searchLevel
+        initialLevel
+        collateralReleaseLevel
+      }
+      bestCase {
+        maintenanceLevel
+        searchLevel
+        initialLevel
+        collateralReleaseLevel
+      }
+    }
+    liquidation {
+      worstCase {
+        open_volume_only
+        including_buy_orders
+        including_sell_orders
+      }
+      bestCase {
+        open_volume_only
+        including_buy_orders
+        including_sell_orders
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useEstimatePositionQuery__
+ *
+ * To run a query within a React component, call `useEstimatePositionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEstimatePositionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEstimatePositionQuery({
+ *   variables: {
+ *      marketId: // value for 'marketId'
+ *      openVolume: // value for 'openVolume'
+ *      orders: // value for 'orders'
+ *      collateralAvailable: // value for 'collateralAvailable'
+ *   },
+ * });
+ */
+export function useEstimatePositionQuery(baseOptions: Apollo.QueryHookOptions<EstimatePositionQuery, EstimatePositionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EstimatePositionQuery, EstimatePositionQueryVariables>(EstimatePositionDocument, options);
+      }
+export function useEstimatePositionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EstimatePositionQuery, EstimatePositionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EstimatePositionQuery, EstimatePositionQueryVariables>(EstimatePositionDocument, options);
+        }
+export type EstimatePositionQueryHookResult = ReturnType<typeof useEstimatePositionQuery>;
+export type EstimatePositionLazyQueryHookResult = ReturnType<typeof useEstimatePositionLazyQuery>;
+export type EstimatePositionQueryResult = Apollo.QueryResult<EstimatePositionQuery, EstimatePositionQueryVariables>;

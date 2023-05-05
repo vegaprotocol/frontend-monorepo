@@ -28,14 +28,6 @@ import {
   PositionsSubscriptionDocument,
 } from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
-import { calculateMargins } from './margin-calculator';
-import { Side } from '@vegaprotocol/types';
-import { marketInfoProvider } from '@vegaprotocol/market-info';
-import type { MarketInfoQuery } from '@vegaprotocol/market-info';
-import { marketDataProvider } from '@vegaprotocol/market-list';
-import type { MarketData } from '@vegaprotocol/market-list';
-import { activeOrdersProvider } from '@vegaprotocol/orders';
-import type { OrderFieldsFragment } from '@vegaprotocol/orders';
 import type { PositionStatus } from '@vegaprotocol/types';
 
 type PositionMarginLevel = Pick<
@@ -335,99 +327,4 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
       );
       return !(previousRow && isEqual(previousRow, row));
     })
-);
-
-export const volumeAndMarginProvider = makeDerivedDataProvider<
-  {
-    buyVolume: string;
-    sellVolume: string;
-    buyInitialMargin: string;
-    sellInitialMargin: string;
-  },
-  never,
-  PositionsQueryVariables & MarketDataQueryVariables
->(
-  [
-    (callback, client, { partyId, marketId }) =>
-      activeOrdersProvider(callback, client, {
-        partyId,
-        marketId,
-      }),
-    (callback, client, { marketId }) =>
-      marketDataProvider(callback, client, { marketId }),
-    (callback, client, { marketId }) =>
-      marketInfoProvider(callback, client, { marketId }),
-    openVolumeDataProvider,
-  ],
-  (data) => {
-    const orders = data[0] as (Edge<OrderFieldsFragment> | null)[] | null;
-    const marketData = data[1] as MarketData | null;
-    const marketInfo = data[2] as MarketInfoQuery['market'];
-    let openVolume = (data[3] as string | null) || '0';
-    const shortPosition = openVolume?.startsWith('-');
-    if (shortPosition) {
-      openVolume = openVolume.substring(1);
-    }
-    let buyVolume = BigInt(shortPosition ? 0 : openVolume);
-    let sellVolume = BigInt(shortPosition ? openVolume : 0);
-    let buyInitialMargin = BigInt(0);
-    let sellInitialMargin = BigInt(0);
-    if (marketInfo?.riskFactors && marketData) {
-      const {
-        positionDecimalPlaces,
-        decimalPlaces,
-        tradableInstrument,
-        riskFactors,
-      } = marketInfo;
-      const { marginCalculator, instrument } = tradableInstrument;
-      const { decimals } = instrument.product.settlementAsset;
-      const calculatorParams = {
-        positionDecimalPlaces,
-        decimalPlaces,
-        decimals,
-        scalingFactors: marginCalculator?.scalingFactors,
-        riskFactors,
-      };
-      if (openVolume !== '0') {
-        const { initialMargin } = calculateMargins({
-          side: shortPosition ? Side.SIDE_SELL : Side.SIDE_BUY,
-          size: openVolume,
-          price: marketData.markPrice,
-          ...calculatorParams,
-        });
-        if (shortPosition) {
-          sellInitialMargin += BigInt(initialMargin);
-        } else {
-          buyInitialMargin += BigInt(initialMargin);
-        }
-      }
-      orders?.forEach((order) => {
-        if (!order) {
-          return;
-        }
-        const { side, remaining: size } = order.node;
-        const initialMargin = BigInt(
-          calculateMargins({
-            side,
-            size,
-            price: marketData.markPrice, //getDerivedPrice(order.node, marketData), same use-initial-margin
-            ...calculatorParams,
-          }).initialMargin
-        );
-        if (order.node.side === Side.SIDE_BUY) {
-          buyVolume += BigInt(size);
-          buyInitialMargin += initialMargin;
-        } else {
-          sellVolume += BigInt(size);
-          sellInitialMargin += initialMargin;
-        }
-      });
-    }
-    return {
-      buyVolume: buyVolume.toString(),
-      sellVolume: sellVolume.toString(),
-      buyInitialMargin: buyInitialMargin.toString(),
-      sellInitialMargin: sellInitialMargin.toString(),
-    };
-  }
 );

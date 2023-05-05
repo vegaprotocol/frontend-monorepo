@@ -3,7 +3,7 @@ import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import {
   accountsQuery,
   amendGeneralAccountBalance,
-  estimateOrderQuery,
+  estimateFeesQuery,
 } from '@vegaprotocol/mock';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
@@ -49,7 +49,7 @@ describe(
           aliasGQLQuery(req, 'Accounts', accounts);
         });
         cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'EstimateOrder', estimateOrderQuery());
+          aliasGQLQuery(req, 'EstimateFee', estimateFeesQuery());
         });
         cy.mockSubscription();
         cy.visit('/#/markets/market-0');
