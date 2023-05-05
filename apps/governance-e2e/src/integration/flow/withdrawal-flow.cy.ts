@@ -29,6 +29,8 @@ const tableReceiverAddress = '[col-id="details.receiverAddress"]';
 const tableWithdrawnTimeStamp = '[col-id="withdrawnTimestamp"]';
 const tableWithdrawnStatus = '[col-id="status"]';
 const tableCreatedTimeStamp = '[col-id="createdTimestamp"]';
+const toastContent = 'toast-content';
+const toastPanel = 'toast-panel';
 const usdtName = 'USDC (local)';
 const usdcEthAddress = '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0';
 const usdcSymbol = 'tUSDC';
@@ -149,7 +151,6 @@ context(
         });
     });
 
-    // Skipping because of bug #1857
     it('Able to withdraw asset: -eth wallet not connected', function () {
       const ethWalletAddress = Cypress.env('ethWalletPublicKey');
       cy.reload();
@@ -187,8 +188,26 @@ context(
             .should('have.attr', 'href')
             .and('contain', 'https://sepolia.etherscan.io/address/');
           cy.get(tableCreatedTimeStamp).should('not.be.empty');
-          cy.getByTestId(completeWithdrawalButton).click();
-          // Unable to complete withdrawal in Capsule
+        });
+      ethereumWalletConnect();
+      cy.getByTestId(completeWithdrawalButton).click();
+      cy.getByTestId(toastContent)
+        .last()
+        .should('contain.text', 'Awaiting confirmation')
+        .within(() => {
+          cy.getByTestId('external-link').should('exist');
+        });
+      cy.getByTestId(toastContent)
+        .first()
+        .should('contain.text', 'The withdrawal has been approved.')
+        .within(() => {
+          cy.getByTestId(toastPanel).should('contain.text', '110.00', 'tUSDC');
+        });
+      cy.getByTestId(toastContent)
+        .last()
+        .should('contain.text', 'Transaction confirmed')
+        .within(() => {
+          cy.getByTestId('external-link').should('exist');
         });
     });
 
@@ -218,7 +237,10 @@ context(
     });
 
     function waitForAssetsDisplayed(expectedAsset: string) {
-      cy.getByTestId('currency-title').should('contain.text', expectedAsset);
+      cy.getByTestId('currency-title', txTimeout).should(
+        'contain.text',
+        expectedAsset
+      );
     }
   }
 );
