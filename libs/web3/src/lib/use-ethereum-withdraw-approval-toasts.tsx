@@ -6,11 +6,12 @@ import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Intent } from '@vegaprotocol/ui-toolkit';
-import { ApprovalStatus, VerificationStatus } from '@vegaprotocol/withdraws';
 import { useCallback } from 'react';
 import compact from 'lodash/compact';
-import type { EthWithdrawalApprovalState } from '@vegaprotocol/web3';
-import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
+import type { EthWithdrawalApprovalState } from './use-ethereum-withdraw-approvals-store';
+import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
+import { ApprovalStatus } from './use-ethereum-withdraw-approvals-store';
+import { VerificationStatus } from './withdrawal-approval-status';
 
 const intentMap: { [s in ApprovalStatus]: Intent } = {
   Pending: Intent.Warning,

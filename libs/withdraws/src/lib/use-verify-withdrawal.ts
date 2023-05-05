@@ -4,24 +4,17 @@ import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
-  useGetWithdrawThreshold,
+  ApprovalStatus,
   useGetWithdrawDelay,
+  useGetWithdrawThreshold,
 } from '@vegaprotocol/web3';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
-import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
   Erc20ApprovalQuery,
   Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
+import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import { useApolloClient } from '@apollo/client';
-
-export enum ApprovalStatus {
-  Idle = 'Idle',
-  Pending = 'Pending',
-  Delayed = 'Delayed',
-  Error = 'Error',
-  Ready = 'Ready',
-}
 
 export interface VerifyState {
   status: ApprovalStatus;

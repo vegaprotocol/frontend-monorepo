@@ -11,13 +11,11 @@ import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { Intent, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { useCallback } from 'react';
 import compact from 'lodash/compact';
-import type { EthStoredTxState } from '@vegaprotocol/web3';
-import {
-  EthTxStatus,
-  isEthereumError,
-  TransactionContent,
-  useEthTransactionStore,
-} from '@vegaprotocol/web3';
+import type { EthStoredTxState } from './use-ethereum-transaction-store';
+import { EthTxStatus } from './use-ethereum-transaction';
+import { isEthereumError } from './ethereum-error';
+import { TransactionContent } from './ethereum-transaction-dialog';
+import { useEthTransactionStore } from './use-ethereum-transaction-store';
 
 const intentMap: { [s in EthTxStatus]: Intent } = {
   Default: Intent.Primary,
