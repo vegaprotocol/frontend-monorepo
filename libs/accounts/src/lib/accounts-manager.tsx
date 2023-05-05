@@ -19,7 +19,6 @@ interface AccountManagerProps {
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
   noBottomPlaceholder?: boolean;
-  id?: string;
 }
 
 export const AccountManager = ({
@@ -30,7 +29,6 @@ export const AccountManager = ({
   isReadOnly,
   pinnedAsset,
   noBottomPlaceholder,
-  id,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -54,7 +52,6 @@ export const AccountManager = ({
   return (
     <div className="relative h-full">
       <AccountTable
-        id={id}
         ref={gridRef}
         rowData={error ? [] : data}
         onClickAsset={onClickAsset}

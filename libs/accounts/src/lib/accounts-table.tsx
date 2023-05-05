@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import {
   addDecimalsFormatNumber,
   isNumeric,
@@ -9,6 +9,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
+import { useColumnSizes } from '@vegaprotocol/datagrid';
 import {
   Button,
   ButtonLink,
@@ -105,6 +106,11 @@ export interface AccountTableProps extends AgGridReactProps {
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
   ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const { onGridReady, onColumnResized } = useColumnSizes({
+      id: 'accounts',
+      container: containerRef,
+    });
     const [openBreakdown, setOpenBreakdown] = useState(false);
     const [row, setRow] = useState<AccountFields>();
     const pinnedAssetId = props.pinnedAsset?.id;
@@ -144,7 +150,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     );
 
     return (
-      <>
+      <div className="w-full h-full" ref={containerRef}>
         <AgGrid
           {...props}
           style={{ width: '100%', height: '100%' }}
@@ -155,6 +161,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           rowData={props.rowData?.filter(
             (data) => data.asset.id !== pinnedAssetId
           )}
+          onGridReady={onGridReady}
+          onColumnResized={onColumnResized}
           defaultColDef={{
             resizable: true,
             tooltipComponent: TooltipCellComponent,
@@ -387,7 +395,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             />
           </div>
         </Dialog>
-      </>
+      </div>
     );
   }
 );

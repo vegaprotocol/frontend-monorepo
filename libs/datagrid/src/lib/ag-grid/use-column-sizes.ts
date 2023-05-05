@@ -1,7 +1,12 @@
 import type { MutableRefObject, ReactElement } from 'react';
 import { useCallback, useState } from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { Column, ColDef } from 'ag-grid-community';
+import type {
+  Column,
+  ColDef,
+  ColumnResizedEvent,
+  GridReadyEvent,
+} from 'ag-grid-community';
 import debounce from 'lodash/debounce';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -35,17 +40,7 @@ interface UseColumnSizesProps {
   id?: string;
   container?: MutableRefObject<HTMLDivElement | null>;
 }
-export const useColumnSizes = ({
-  id = '',
-  container,
-}: UseColumnSizesProps): [
-  (columns: Column[]) => void,
-  (children?: ReactElement[]) => ReactElement[] | undefined,
-  (
-    props: AgGridReactProps | AgReactUiProps,
-    children?: ReactElement[]
-  ) => AgGridReactProps | AgReactUiProps
-] => {
+export const useColumnSizes = ({ id = '', container }: UseColumnSizesProps) => {
   const sizes = useColumnSizesStore((store) => store.sizes[id] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
   const getWidthOfAll = useCallback(
@@ -54,85 +49,73 @@ export const useColumnSizes = ({
       0,
     [container]
   );
-  const recalculateSizes = useCallback(
-    (sizes: Record<string, number>) => {
-      const width = getWidthOfAll();
-      if (width && sizes['width'] && width !== sizes['width']) {
-        const oldWidth = sizes['width'];
-        const ratio = width / oldWidth;
-        return {
-          ...Object.entries(sizes).reduce((agg, [key, value]) => {
-            agg[key] = value * ratio;
-            return agg;
-          }, {} as Record<string, number>),
-          width,
-        } as Record<string, number>;
-      }
-      return sizes;
-    },
-    [getWidthOfAll]
-  );
-  const [calculatedSizes, setCalculatedSizes] = useState(
-    recalculateSizes(sizes)
-  );
-  const onResize = useCallback(() => {
-    const width = getWidthOfAll();
-    if (width && sizes['width'] && width !== sizes['width']) {
-      setCalculatedSizes(recalculateSizes(sizes));
-    }
-  }, [getWidthOfAll, recalculateSizes, sizes]);
-  useResizeObserver(container?.current as Element, onResize);
+  // const recalculateSizes = useCallback(
+  //   (sizes: Record<string, number>) => {
+  //     const width = getWidthOfAll();
+  //     if (width && sizes['width'] && width !== sizes['width']) {
+  //       const oldWidth = sizes['width'];
+  //       const ratio = width / oldWidth;
+  //       return {
+  //         ...Object.entries(sizes).reduce((agg, [key, value]) => {
+  //           agg[key] = value * ratio;
+  //           return agg;
+  //         }, {} as Record<string, number>),
+  //         width,
+  //       } as Record<string, number>;
+  //     }
+  //     return sizes;
+  //   },
+  //   [getWidthOfAll]
+  // );
+  // const [calculatedSizes, setCalculatedSizes] = useState(
+  //   recalculateSizes(sizes)
+  // );
+  // const onResize = useCallback(() => {
+  //   const width = getWidthOfAll();
+  //   if (width && sizes['width'] && width !== sizes['width']) {
+  //     setCalculatedSizes(recalculateSizes(sizes));
+  //   }
+  // }, [getWidthOfAll, recalculateSizes, sizes]);
+  // useResizeObserver(container?.current as Element, onResize);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleOnChange = useCallback(
-    debounce((columns: Column[]) => {
-      if (id && columns.length) {
-        const sizesObj = columns.reduce((aggr, column) => {
-          aggr[column.getColId()] = column.getActualWidth();
-          return aggr;
-        }, {} as Record<string, number>);
-        sizesObj['width'] = getWidthOfAll();
-        valueSetter(id, sizesObj);
+  const onColumnResized = useCallback(
+    (event: ColumnResizedEvent) => {
+      if (
+        event.finished &&
+        event.source === 'uiColumnDragged' &&
+        event.columns
+      ) {
+        const colState = event.columnApi.getColumnState();
+        const store: { [colId: string]: number } = {};
+        colState.forEach((c) => {
+          if (c.width) {
+            store[c.colId] = c.width;
+          }
+        });
+        valueSetter(id, store);
       }
-    }, COLUMNS_SET_DEBOUNCE_TIME),
+    },
     [valueSetter, id]
   );
-  const reshapeAgGridChildren = useCallback(
-    (children?: ReactElement[]) =>
-      id && children?.length && Object.keys(calculatedSizes).length
-        ? children.map((child: ReactElement) => ({
-            ...child,
-            props: {
-              ...(child?.props ?? {}),
-              width:
-                (child?.props.colId && calculatedSizes[child?.props.colId]) ||
-                (child?.props.field && calculatedSizes[child?.props.field]) ||
-                undefined,
-            },
-          }))
-        : children,
-    [calculatedSizes, id]
+
+  const onGridReady = useCallback(
+    (event: GridReadyEvent) => {
+      console.log(event);
+      if (!Object.keys(sizes).length) {
+        event.columnApi.sizeColumnsToFit(getWidthOfAll());
+      } else {
+        const initialSizes = Object.entries(sizes).map(([key, newWidth]) => ({
+          key,
+          newWidth,
+        }));
+        event.columnApi.setColumnWidths(initialSizes);
+      }
+    },
+    [sizes, getWidthOfAll]
   );
-  const reshapeAgGridProps = useCallback(
-    (props: AgGridReactProps | AgReactUiProps, children?: ReactElement[]) =>
-      id && props?.columnDefs && Object.keys(calculatedSizes).length
-        ? ({
-            ...props,
-            columnDefs: props.columnDefs.map((columnDef: ColDef) => ({
-              ...columnDef,
-              width:
-                (columnDef.colId && calculatedSizes[columnDef.colId]) ||
-                (columnDef.field && calculatedSizes[columnDef.field]) ||
-                undefined,
-            })),
-          } as AgGridReactProps | AgReactUiProps)
-        : children?.length
-        ? props
-        : ({
-            ...props,
-            defaultColDef: { ...(props.defaultColDef || null), flex: 1 },
-          } as AgGridReactProps | AgReactUiProps),
-    [calculatedSizes, id]
-  );
-  return [handleOnChange, reshapeAgGridChildren, reshapeAgGridProps];
+
+  return {
+    onColumnResized,
+    onGridReady,
+  };
 };
