@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
-import { RoundedWrapper, Icon, ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { RoundedWrapper, Icon } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
 import { useVoteSubmit, VoteProgress } from '@vegaprotocol/proposals';
@@ -224,9 +224,6 @@ export const VoteDetails = ({
                   <Icon name={'info-sign'} />
                   <div>{t('connectAVegaWalletToVote')}</div>
                 </div>
-                <ExternalLink href="https://github.com/vega-builders-club/askvega-ai">
-                  {t('findOutMoreAboutHowToVote')}
-                </ExternalLink>
               </div>
               <ConnectToVega />
             </RoundedWrapper>
