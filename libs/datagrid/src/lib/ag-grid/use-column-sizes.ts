@@ -1,4 +1,4 @@
-import type { MutableRefObject, ForwardedRef } from 'react';
+import type { MutableRefObject } from 'react';
 import { useCallback } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Column } from 'ag-grid-community';
