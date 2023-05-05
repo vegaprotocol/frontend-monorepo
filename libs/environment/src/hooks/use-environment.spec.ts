@@ -55,7 +55,6 @@ const mockEnvVars = {
   VEGA_NETWORKS: {
     DEVNET: 'https://devnet.url',
     TESTNET: 'https://testnet.url',
-    STAGNET3: 'https://stagnet3.url',
     MAINNET: 'https://mainnet.url',
   },
   VEGA_WALLET_URL: 'https://localhost:1234',

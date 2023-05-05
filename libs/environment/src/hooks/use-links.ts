@@ -19,7 +19,6 @@ const EmptyLinks: DAppLinks = {
   [Networks.VALIDATOR_TESTNET]: '',
   [Networks.DEVNET]: '',
   [Networks.STAGNET1]: '',
-  [Networks.STAGNET3]: '',
   [Networks.TESTNET]: '',
   [Networks.MAINNET]: '',
 };
@@ -34,14 +33,12 @@ const ExplorerLinks = {
 const ConsoleLinks = {
   ...EmptyLinks,
   [Networks.STAGNET1]: 'https://stagnet1.console.vega.xyz',
-  [Networks.STAGNET3]: 'https://stagnet3.console.vega.xyz',
   [Networks.TESTNET]: 'https://console.fairground.wtf',
 };
 
 const TokenLinks = {
   ...EmptyLinks,
   [Networks.DEVNET]: 'https://dev.token.vega.xyz',
-  [Networks.STAGNET3]: 'https://stagnet3.token.vega.xyz',
   [Networks.TESTNET]: 'https://token.fairground.wtf',
   [Networks.VALIDATOR_TESTNET]: 'https://validator-testnet.governance.vega.xyz',
   [Networks.MAINNET]: 'https://token.vega.xyz',

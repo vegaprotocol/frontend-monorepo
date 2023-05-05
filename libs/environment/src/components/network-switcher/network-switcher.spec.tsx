@@ -14,12 +14,11 @@ jest.mock('../../hooks/use-environment');
 
 describe('Network switcher', () => {
   it.each`
-    network              | label
-    ${Networks.CUSTOM}   | ${envTriggerMapping[Networks.CUSTOM]}
-    ${Networks.DEVNET}   | ${envTriggerMapping[Networks.DEVNET]}
-    ${Networks.STAGNET3} | ${envTriggerMapping[Networks.STAGNET3]}
-    ${Networks.TESTNET}  | ${envTriggerMapping[Networks.TESTNET]}
-    ${Networks.MAINNET}  | ${envTriggerMapping[Networks.MAINNET]}
+    network             | label
+    ${Networks.CUSTOM}  | ${envTriggerMapping[Networks.CUSTOM]}
+    ${Networks.DEVNET}  | ${envTriggerMapping[Networks.DEVNET]}
+    ${Networks.TESTNET} | ${envTriggerMapping[Networks.TESTNET]}
+    ${Networks.MAINNET} | ${envTriggerMapping[Networks.MAINNET]}
   `(
     'displays the correct selection label for $network',
     ({ network, label }) => {
@@ -137,7 +136,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: 'https://main.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
-      [Networks.STAGNET3]: 'https://stag3.net',
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
     };
@@ -154,12 +152,7 @@ describe('Network switcher', () => {
       screen.getByRole('menuitem', { name: t('Advanced') })
     );
 
-    [
-      Networks.MAINNET,
-      Networks.TESTNET,
-      Networks.STAGNET3,
-      Networks.DEVNET,
-    ].forEach((network) => {
+    [Networks.MAINNET, Networks.TESTNET, Networks.DEVNET].forEach((network) => {
       expect(
         screen.getByRole('link', { name: envNameMapping[network] })
       ).toHaveAttribute('href', VEGA_NETWORKS[network]);
@@ -176,7 +169,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: 'https://main.net',
       [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
       [Networks.TESTNET]: 'https://test.net',
-      [Networks.STAGNET3]: 'https://stag3.net',
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
     };
@@ -208,7 +200,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: undefined,
       [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
       [Networks.TESTNET]: 'https://test.net',
-      [Networks.STAGNET3]: 'https://stag3.net',
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
     };
