@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Provider } from './oracle-schema';
-import { providersSchema } from './oracle-schema';
+import type { Provider } from '../oracle-schema';
+import { providersSchema } from '../oracle-schema';
 
 export let cache: {
   [url: string]: Provider[];

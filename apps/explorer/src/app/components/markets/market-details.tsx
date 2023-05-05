@@ -14,9 +14,71 @@ import {
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/market-info';
 import { MarketInfoTable } from '@vegaprotocol/market-info';
+import type { DataSourceDefinition } from '@vegaprotocol/types';
+import isEqual from 'lodash/isEqual';
 
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
+
+  const settlementData =
+    market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
+      .data;
+  const terminationData =
+    market.tradableInstrument.instrument.product
+      .dataSourceSpecForTradingTermination.data;
+
+  const getSigners = (data: DataSourceDefinition) => {
+    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
+      const signers = data.sourceType.sourceType.signers || [];
+
+      return signers.map(({ signer }, i) => {
+        return (
+          (signer.__typename === 'ETHAddress' && signer.address) ||
+          (signer.__typename === 'PubKey' && signer.key)
+        );
+      });
+    }
+    return [];
+  };
+
+  const oraclePanels = isEqual(
+    getSigners(settlementData),
+    getSigners(terminationData)
+  )
+    ? [
+        {
+          title: t('Settlement Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="settlementData"
+            />
+          ),
+        },
+        {
+          title: t('Termination Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="termination"
+            />
+          ),
+        },
+      ]
+    : [
+        {
+          title: t('Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="settlementData"
+            />
+          ),
+        },
+      ];
 
   const panels = [
     {
@@ -95,22 +157,7 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
         <LiquidityPriceRangeInfoPanel market={market} noBorder={false} />
       ),
     },
-    {
-      title: t('Settlement Oracle'),
-      content: (
-        <OracleInfoPanel
-          noBorder={false}
-          market={market}
-          type="settlementData"
-        />
-      ),
-    },
-    {
-      title: t('Termination Oracle'),
-      content: (
-        <OracleInfoPanel noBorder={false} market={market} type="termination" />
-      ),
-    },
+    ...oraclePanels,
   ];
 
   return (

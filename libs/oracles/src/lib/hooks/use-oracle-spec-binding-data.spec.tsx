@@ -4,8 +4,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { useOracleSpecBindingData } from './use-oracle-spec-binding-data';
 import type { Property } from '@vegaprotocol/types';
-import type { OracleSpecDataConnectionQuery } from './__generated__/OracleSpecDataConnection';
-import { OracleSpecDataConnectionDocument } from './__generated__/OracleSpecDataConnection';
+import type { OracleSpecDataConnectionQuery } from '../__generated__/OracleSpecDataConnection';
+import { OracleSpecDataConnectionDocument } from '../__generated__/OracleSpecDataConnection';
 
 describe('useSettlementPrice', () => {
   const setup = (

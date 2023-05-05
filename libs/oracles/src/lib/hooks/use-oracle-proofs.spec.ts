@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import type { Provider } from './oracle-schema';
+import type { Provider } from '../oracle-schema';
 import { useOracleProofs, cache, invalidateCache } from './use-oracle-proofs';
 
 global.fetch = jest.fn();
