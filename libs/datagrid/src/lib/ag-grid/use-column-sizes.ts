@@ -1,7 +1,6 @@
-import type { MutableRefObject, ReactElement } from 'react';
+import type { MutableRefObject } from 'react';
 import { useCallback, useState } from 'react';
-import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { Column, ColDef } from 'ag-grid-community';
+import type { Column } from 'ag-grid-community';
 import debounce from 'lodash/debounce';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -39,12 +38,8 @@ export const useColumnSizes = ({
   id = '',
   container,
 }: UseColumnSizesProps): [
-  (columns: Column[]) => void,
-  (children?: ReactElement[]) => ReactElement[] | undefined,
-  (
-    props: AgGridReactProps | AgReactUiProps,
-    children?: ReactElement[]
-  ) => AgGridReactProps | AgReactUiProps
+  Record<string, number>,
+  (columns: Column[]) => void
 ] => {
   const sizes = useColumnSizesStore((store) => store.sizes[id] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
@@ -97,42 +92,5 @@ export const useColumnSizes = ({
     }, COLUMNS_SET_DEBOUNCE_TIME),
     [valueSetter, id]
   );
-  const reshapeAgGridChildren = useCallback(
-    (children?: ReactElement[]) =>
-      id && children?.length && Object.keys(calculatedSizes).length
-        ? children.map((child: ReactElement) => ({
-            ...child,
-            props: {
-              ...(child?.props ?? {}),
-              width:
-                (child?.props.colId && calculatedSizes[child?.props.colId]) ||
-                (child?.props.field && calculatedSizes[child?.props.field]) ||
-                undefined,
-            },
-          }))
-        : children,
-    [calculatedSizes, id]
-  );
-  const reshapeAgGridProps = useCallback(
-    (props: AgGridReactProps | AgReactUiProps, children?: ReactElement[]) =>
-      id && props?.columnDefs && Object.keys(calculatedSizes).length
-        ? ({
-            ...props,
-            columnDefs: props.columnDefs.map((columnDef: ColDef) => ({
-              ...columnDef,
-              width:
-                (columnDef.colId && calculatedSizes[columnDef.colId]) ||
-                (columnDef.field && calculatedSizes[columnDef.field]) ||
-                undefined,
-            })),
-          } as AgGridReactProps | AgReactUiProps)
-        : children?.length
-        ? props
-        : ({
-            ...props,
-            defaultColDef: { ...(props.defaultColDef || null), flex: 1 },
-          } as AgGridReactProps | AgReactUiProps),
-    [calculatedSizes, id]
-  );
-  return [handleOnChange, reshapeAgGridChildren, reshapeAgGridProps];
+  return [calculatedSizes, handleOnChange];
 };

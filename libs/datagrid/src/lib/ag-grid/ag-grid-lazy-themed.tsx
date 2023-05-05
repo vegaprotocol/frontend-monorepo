@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { ColumnResizedEvent } from 'ag-grid-community';
+import type { ColumnResizedEvent, GridReadyEvent } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useColumnSizes } from './use-column-sizes';
@@ -20,7 +20,7 @@ export const AgGridThemed = ({
   children?: ReactNode[];
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [setValues, reshapeChildren, reshapeProps] = useColumnSizes({
+  const [sizes, setValues] = useColumnSizes({
     id,
     container: containerRef,
   });
@@ -39,8 +39,28 @@ export const AgGridThemed = ({
     ),
   };
 
-  children = reshapeChildren(children);
-  props = reshapeProps(props, children);
+  const defaultOnGridReady = useCallback(
+    (event: GridReadyEvent) => {
+      if (!Object.keys(sizes).length) {
+        event.api.sizeColumnsToFit();
+      } else {
+        const newSizes = Object.entries(sizes).map(([key, size]) => ({
+          key,
+          newWidth: size,
+        }));
+        event.columnApi.setColumnWidths(newSizes);
+      }
+    },
+    [sizes]
+  );
+  const { onGridReady } = props;
+  const onGridReadyInternal = useCallback(
+    (event: GridReadyEvent) => {
+      onGridReady?.(event);
+      defaultOnGridReady(event);
+    },
+    [defaultOnGridReady, onGridReady]
+  );
 
   const wrapperClasses = classNames('vega-ag-grid', {
     'ag-theme-balham': theme === 'light',
@@ -48,7 +68,12 @@ export const AgGridThemed = ({
   });
   return (
     <div className={wrapperClasses} style={style} ref={containerRef}>
-      <AgGridReact {...defaultProps} {...props} ref={gridRef}>
+      <AgGridReact
+        {...defaultProps}
+        {...props}
+        ref={gridRef}
+        onGridReady={onGridReadyInternal}
+      >
         {children}
       </AgGridReact>
     </div>
