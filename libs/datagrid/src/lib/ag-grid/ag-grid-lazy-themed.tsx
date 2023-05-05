@@ -38,9 +38,10 @@ export const AgGridThemed = ({
       [setValues]
     ),
   };
-
-  const defaultOnGridReady = useCallback(
+  const { onGridReady } = props;
+  const onGridReadyInternal = useCallback(
     (event: GridReadyEvent) => {
+      onGridReady?.(event);
       if (!Object.keys(sizes).length) {
         event.api.sizeColumnsToFit();
       } else {
@@ -51,15 +52,7 @@ export const AgGridThemed = ({
         event.columnApi.setColumnWidths(newSizes);
       }
     },
-    [sizes]
-  );
-  const { onGridReady } = props;
-  const onGridReadyInternal = useCallback(
-    (event: GridReadyEvent) => {
-      onGridReady?.(event);
-      defaultOnGridReady(event);
-    },
-    [defaultOnGridReady, onGridReady]
+    [sizes, onGridReady]
   );
 
   const wrapperClasses = classNames('vega-ag-grid', {
