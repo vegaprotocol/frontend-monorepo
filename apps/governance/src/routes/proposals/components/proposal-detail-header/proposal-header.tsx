@@ -106,12 +106,7 @@ export const ProposalHeader = ({
     }
     case 'NewFreeform': {
       proposalType = 'Freeform';
-      details = (
-        <>
-          <span className={inlineTitleClasses}>{t('FreeformProposalId')}:</span>
-          <span className="break-words">{proposal?.id}</span>
-        </>
-      );
+      details = <span />;
       break;
     }
     case 'UpdateAsset': {

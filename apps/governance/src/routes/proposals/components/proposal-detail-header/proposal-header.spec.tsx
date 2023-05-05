@@ -167,7 +167,7 @@ describe('Proposal header', () => {
     );
   });
 
-  it('Renders Freeform network - short rationale', () => {
+  it('Renders Freeform proposal - short rationale', () => {
     render(
       renderComponent(
         generateProposal({
@@ -188,7 +188,6 @@ describe('Proposal header', () => {
     expect(
       screen.queryByTestId('proposal-description')
     ).not.toBeInTheDocument();
-    expect(screen.getByTestId('proposal-details')).toHaveTextContent('short');
   });
 
   it('Renders Freeform proposal - long rationale (105 chars)', () => {
@@ -216,7 +215,6 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-description')).toHaveTextContent(
       'Class aptent taciti sociosqu ad litora torquent per conubia'
     );
-    expect(screen.getByTestId('proposal-details')).toHaveTextContent('long');
   });
 
   // Remove once proposals have rationale and re-enable above tests
@@ -241,9 +239,6 @@ describe('Proposal header', () => {
     expect(
       screen.queryByTestId('proposal-description')
     ).not.toBeInTheDocument();
-    expect(screen.queryByTestId('proposal-details')).toHaveTextContent(
-      'freeform id'
-    );
   });
 
   it('Renders asset change proposal header', () => {
