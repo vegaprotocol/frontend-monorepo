@@ -21,18 +21,27 @@ export const useOracleMarkets = (
       }
       const signers = sourceType?.sourceType.signers;
 
-      const signerKeys = signers?.map(
-        (signer) =>
-          (signer?.signer.__typename === 'ETHAddress' &&
-            signer?.signer.address) ||
-          (signer?.signer.__typename === 'PubKey' && signer?.signer.key)
-      );
+      const signerKeys = signers?.filter(Boolean).map((signer) => {
+        if (signer.signer.__typename === 'ETHAddress') {
+          return signer.signer.address;
+        }
 
-      const signedProofsKeys = signedProofs.map(
-        (proof) =>
-          ('public_key' in proof && proof.public_key) ||
-          ('eth_address' in proof && proof.eth_address)
-      );
+        if (signer.signer.__typename === 'PubKey') {
+          return signer.signer.key;
+        }
+
+        return undefined;
+      });
+
+      const signedProofsKeys = signedProofs.map((proof) => {
+        if ('public_key' in proof && proof.public_key) {
+          return proof.public_key;
+        }
+        if ('eth_address' in proof && proof.eth_address) {
+          return proof.eth_address;
+        }
+        return undefined;
+      });
 
       const key = signedProofsKeys.find((key) => signerKeys?.includes(key));
       return !!key;

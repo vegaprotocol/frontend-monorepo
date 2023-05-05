@@ -72,30 +72,30 @@ export const OracleFullProfile = ({
 
   return (
     <div className="flex flex-col text-sm">
-      <p className="dark:text-vega-light-300 text-vega-dark-300 pb-2">
-        {message}
-      </p>
-      {!showMore && (
-        <p className="dark:text-vega-light-300 text-vega-dark-300 pb-2">
-          {provider.description_markdown.slice(0, 100)}
-          {'... '}
-          <span className="dark:text-vega-light-300 text-vega-dark-300 ml-2">
-            <ButtonLink onClick={() => setShowMore(!showMore)}>
-              Read more
-            </ButtonLink>
-          </span>
-        </p>
-      )}
-      {showMore && (
-        <p className="dark:text-vega-light-300 text-vega-dark-300 pb-2">
-          {provider.description_markdown}
-          <span className="dark:text-vega-light-300 text-vega-dark-300 ml-2">
-            <ButtonLink onClick={() => setShowMore(!showMore)}>
-              Show less
-            </ButtonLink>
-          </span>
-        </p>
-      )}
+      <div className="dark:text-vega-light-300 text-vega-dark-300">
+        <p className=" pb-2">{message}</p>
+        {!showMore && (
+          <p className="pb-2">
+            {provider.description_markdown.slice(0, 100)}
+            {'... '}
+            <span className="ml-2">
+              <ButtonLink onClick={() => setShowMore(!showMore)}>
+                Read more
+              </ButtonLink>
+            </span>
+          </p>
+        )}
+        {showMore && (
+          <p className="pb-2">
+            {provider.description_markdown}
+            <span className="ml-2">
+              <ButtonLink onClick={() => setShowMore(!showMore)}>
+                Show less
+              </ButtonLink>
+            </span>
+          </p>
+        )}
+      </div>
       <div className="grid grid-cols-2 gap-6">
         <div className="col-span-1">
           <p

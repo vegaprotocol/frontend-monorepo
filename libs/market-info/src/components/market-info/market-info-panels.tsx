@@ -626,7 +626,7 @@ const OracleProfile = ({
         provider={provider}
         onClick={() => setDialogOpen(!dialogOpen)}
         markets={oracleMarkets}
-      ></OracleBasicProfile>
+      />
       <Dialog
         title={<OracleProfileTitle provider={provider} />}
         open={dialogOpen}
