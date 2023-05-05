@@ -2,26 +2,24 @@ import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
-  getDateTimeFormat,
-  truncateByChars,
   addDecimalsFormatNumber,
+  getDateTimeFormat,
   isNumeric,
+  truncateByChars,
 } from '@vegaprotocol/utils';
 import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
-import type { VerifyState } from './use-verify-withdrawal';
-import { ApprovalStatus } from './use-verify-withdrawal';
 
 export const WithdrawalsTable = (
   props: TypedDataAgGrid<WithdrawalFieldsFragment>
@@ -194,32 +192,4 @@ const RecipientCell = ({
       {valueFormatted}
     </EtherscanLink>
   );
-};
-
-export const VerificationStatus = ({ state }: { state: VerifyState }) => {
-  if (state.status === ApprovalStatus.Error) {
-    return <p>{state.message || t('Something went wrong')}</p>;
-  }
-
-  if (state.status === ApprovalStatus.Pending) {
-    return <p>{t('Verifying...')}</p>;
-  }
-
-  if (state.status === ApprovalStatus.Delayed && state.completeTimestamp) {
-    const formattedTime = getDateTimeFormat().format(
-      new Date(state.completeTimestamp)
-    );
-    return (
-      <>
-        <p>{t("The amount you're withdrawing has triggered a time delay")}</p>
-        <p>{t(`Cannot be completed until ${formattedTime}`)}</p>
-      </>
-    );
-  }
-
-  if (state.status === ApprovalStatus.Ready) {
-    return <p>{t('The withdrawal has been approved.')}</p>;
-  }
-
-  return null;
 };
