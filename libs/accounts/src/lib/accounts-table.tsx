@@ -100,7 +100,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickDeposit?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  id?: string;
+  storeKey?: string;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(

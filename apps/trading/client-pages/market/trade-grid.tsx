@@ -155,7 +155,7 @@ const MarketBottomPanel = memo(
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
                     enforceBottomPlaceholder
-                    id="marketOpenOrders"
+                    storeKey="marketOpenOrders"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -167,7 +167,7 @@ const MarketBottomPanel = memo(
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
                     enforceBottomPlaceholder
-                    id="marketClosedOrders"
+                    storeKey="marketClosedOrders"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -179,7 +179,7 @@ const MarketBottomPanel = memo(
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
                     enforceBottomPlaceholder
-                    id="marketRejectOrders"
+                    storeKey="marketRejectOrders"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -199,7 +199,7 @@ const MarketBottomPanel = memo(
                   <TradingViews.fills.component
                     marketId={marketId}
                     onMarketClick={onMarketClick}
-                    id="marketFills"
+                    storeKey="marketFills"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -228,7 +228,7 @@ const MarketBottomPanel = memo(
                     pinnedAsset={pinnedAsset}
                     noBottomPlaceholder
                     hideButtons
-                    id="marketCollateral"
+                    storeKey="marketCollateral"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -243,7 +243,7 @@ const MarketBottomPanel = memo(
             <VegaWalletContainer>
               <TradingViews.positions.component
                 onMarketClick={onMarketClick}
-                id="marketPositions"
+                storeKey="marketPositions"
               />
             </VegaWalletContainer>
           </Tab>
@@ -255,7 +255,7 @@ const MarketBottomPanel = memo(
                 onMarketClick={onMarketClick}
                 onOrderTypeClick={onOrderTypeClick}
                 enforceBottomPlaceholder
-                id="marketOpenOrders"
+                storeKey="marketOpenOrders"
               />
             </VegaWalletContainer>
           </Tab>
@@ -267,7 +267,7 @@ const MarketBottomPanel = memo(
                 onMarketClick={onMarketClick}
                 onOrderTypeClick={onOrderTypeClick}
                 enforceBottomPlaceholder
-                id="marketClosedOrders"
+                storeKey="marketClosedOrders"
               />
             </VegaWalletContainer>
           </Tab>
@@ -279,7 +279,7 @@ const MarketBottomPanel = memo(
                 onMarketClick={onMarketClick}
                 onOrderTypeClick={onOrderTypeClick}
                 enforceBottomPlaceholder
-                id="marketRejectedOrders"
+                storeKey="marketRejectedOrders"
               />
             </VegaWalletContainer>
           </Tab>
@@ -290,7 +290,7 @@ const MarketBottomPanel = memo(
                 onMarketClick={onMarketClick}
                 onOrderTypeClick={onOrderTypeClick}
                 enforceBottomPlaceholder
-                id="marketAllOrders"
+                storeKey="marketAllOrders"
               />
             </VegaWalletContainer>
           </Tab>
@@ -299,7 +299,7 @@ const MarketBottomPanel = memo(
               <TradingViews.fills.component
                 marketId={marketId}
                 onMarketClick={onMarketClick}
-                id="marketFills"
+                storeKey="marketFills"
               />
             </VegaWalletContainer>
           </Tab>
@@ -308,7 +308,7 @@ const MarketBottomPanel = memo(
               <TradingViews.collateral.component
                 pinnedAsset={pinnedAsset}
                 hideButtons
-                id="marketCollateral"
+                storeKey="marketCollateral"
               />
             </VegaWalletContainer>
           </Tab>

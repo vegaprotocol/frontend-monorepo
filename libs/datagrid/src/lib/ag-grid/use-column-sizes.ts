@@ -12,15 +12,15 @@ const COLUMNS_SET_DEBOUNCE_TIME = 300;
 
 export const useColumnSizesStore = create<{
   sizes: Record<string, Record<string, number>>;
-  valueSetter: (id: string, value: Record<string, number>) => void;
+  valueSetter: (storeKey: string, value: Record<string, number>) => void;
 }>()(
   persist(
     immer((set) => ({
       sizes: {},
-      valueSetter: (id, value) =>
+      valueSetter: (storeKey, value) =>
         set((state) => {
-          state.sizes[id] = {
-            ...(state.sizes[id] || {}),
+          state.sizes[storeKey] = {
+            ...(state.sizes[storeKey] || {}),
             ...value,
           };
           return state;
@@ -31,17 +31,17 @@ export const useColumnSizesStore = create<{
 );
 
 interface UseColumnSizesProps {
-  id?: string;
+  storeKey?: string;
   container?: MutableRefObject<HTMLDivElement | null>;
 }
 export const useColumnSizes = ({
-  id = '',
+  storeKey = '',
   container,
 }: UseColumnSizesProps): [
   Record<string, number>,
   (columns: Column[]) => void
 ] => {
-  const sizes = useColumnSizesStore((store) => store.sizes[id] || {});
+  const sizes = useColumnSizesStore((store) => store.sizes[storeKey] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
   const getWidthOfAll = useCallback(
     () =>
@@ -81,16 +81,16 @@ export const useColumnSizes = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleOnChange = useCallback(
     debounce((columns: Column[]) => {
-      if (id && columns.length) {
+      if (storeKey && columns.length) {
         const sizesObj = columns.reduce((aggr, column) => {
           aggr[column.getColId()] = column.getActualWidth();
           return aggr;
         }, {} as Record<string, number>);
         sizesObj['width'] = getWidthOfAll();
-        valueSetter(id, sizesObj);
+        valueSetter(storeKey, sizesObj);
       }
     }, COLUMNS_SET_DEBOUNCE_TIME),
-    [valueSetter, id]
+    [valueSetter, storeKey]
   );
   return [calculatedSizes, handleOnChange];
 };

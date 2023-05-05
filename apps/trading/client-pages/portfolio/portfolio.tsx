@@ -53,7 +53,7 @@ export const Portfolio = () => {
                   <PositionsContainer
                     onMarketClick={onMarketClick}
                     noBottomPlaceholder
-                    id="portfolioPositions"
+                    storeKey="portfolioPositions"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -62,7 +62,7 @@ export const Portfolio = () => {
                   <OrderListContainer
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
-                    id="portfolioOrders"
+                    storeKey="portfolioOrders"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -70,7 +70,7 @@ export const Portfolio = () => {
                 <VegaWalletContainer>
                   <FillsContainer
                     onMarketClick={onMarketClick}
-                    id="portfolioFills"
+                    storeKey="portfolioFills"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -91,7 +91,7 @@ export const Portfolio = () => {
             <Tabs storageKey="console-portfolio-bottom">
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
-                  <AccountsContainer id="portfolioCollateral" />
+                  <AccountsContainer storeKey="portfolioCollateral" />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="deposits" name={t('Deposits')}>

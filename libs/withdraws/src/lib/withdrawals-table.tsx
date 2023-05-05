@@ -34,7 +34,6 @@ export const WithdrawalsTable = (
   const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
   return (
     <AgGrid
-      id="withdrawals"
       overlayNoRowsTemplate={t('No withdrawals')}
       defaultColDef={{ resizable: true }}
       style={{ width: '100%', height: '100%' }}
@@ -46,6 +45,7 @@ export const WithdrawalsTable = (
       }}
       suppressCellFocus
       ref={gridRef}
+      storeKey="withdrawals"
       {...bottomPlaceholderProps}
       {...props}
     >

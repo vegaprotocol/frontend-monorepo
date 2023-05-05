@@ -28,16 +28,15 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
 import * as React from 'react';
 
-type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
-
-export type OrderListTableProps = OrderListProps & {
+export type OrderListTableProps = TypedDataAgGrid<Order> & {
+  marketId?: string;
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   readonlyStatusFilter?: boolean;
   isReadOnly: boolean;
-  id?: string;
+  storeKey?: string;
 };
 
 export const OrderListTable = memo<

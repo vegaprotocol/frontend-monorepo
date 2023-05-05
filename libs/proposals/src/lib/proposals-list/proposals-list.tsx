@@ -38,7 +38,6 @@ export const ProposalsList = () => {
   return (
     <div className="relative">
       <AgGrid
-        id="proposedMarkets"
         ref={gridRef}
         className="w-full h-full"
         domLayout="autoHeight"
@@ -48,6 +47,7 @@ export const ProposalsList = () => {
         suppressLoadingOverlay
         suppressNoRowsOverlay
         onFilterChanged={onFilterChanged}
+        storeKey="proposedMarkets"
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

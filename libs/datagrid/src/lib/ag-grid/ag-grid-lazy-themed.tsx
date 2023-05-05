@@ -10,18 +10,18 @@ import classNames from 'classnames';
 export const AgGridThemed = ({
   style,
   gridRef,
-  id,
+  storeKey,
   children,
   ...props
 }: (AgGridReactProps | AgReactUiProps) & {
   style?: React.CSSProperties;
   gridRef?: React.ForwardedRef<AgGridReact>;
-  id?: string;
+  storeKey?: string;
   children?: ReactNode[];
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [sizes, setValues] = useColumnSizes({
-    id,
+    storeKey,
     container: containerRef,
   });
   const { theme } = useThemeSwitcher();
@@ -42,7 +42,7 @@ export const AgGridThemed = ({
   const onGridReadyInternal = useCallback(
     (event: GridReadyEvent) => {
       onGridReady?.(event);
-      if (!Object.keys(sizes).length) {
+      if (!storeKey || !Object.keys(sizes).length) {
         event.api.sizeColumnsToFit();
       } else {
         const newSizes = Object.entries(sizes).map(([key, size]) => ({
@@ -52,7 +52,7 @@ export const AgGridThemed = ({
         event.columnApi.setColumnWidths(newSizes);
       }
     },
-    [sizes, onGridReady]
+    [sizes, storeKey, onGridReady]
   );
 
   const wrapperClasses = classNames('vega-ag-grid', {

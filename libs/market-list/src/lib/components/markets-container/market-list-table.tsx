@@ -33,7 +33,6 @@ export const MarketListTable = forwardRef<
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
-      id="allMarkets"
       style={{ width: '100%', height: '100%' }}
       getRowId={getRowId}
       ref={ref}
@@ -45,6 +44,7 @@ export const MarketListTable = forwardRef<
       }}
       suppressCellFocus
       components={{ PriceFlashCell, MarketNameCell }}
+      storeKey="allMarkets"
       {...props}
     >
       <AgGridColumn

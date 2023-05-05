@@ -45,7 +45,7 @@ export interface OrderListManagerProps {
   isReadOnly: boolean;
   enforceBottomPlaceholder?: boolean;
   filter?: Filter;
-  id?: string;
+  storeKey?: string;
 }
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
@@ -69,7 +69,7 @@ export const OrderListManager = ({
   isReadOnly,
   enforceBottomPlaceholder,
   filter,
-  id,
+  storeKey,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [hasData, setHasData] = useState(false);
@@ -143,7 +143,6 @@ export const OrderListManager = ({
     <>
       <div className="h-full relative">
         <OrderListTable
-          id={id}
           rowData={data as Order[]}
           ref={gridRef}
           readonlyStatusFilter={filter !== undefined}
@@ -155,6 +154,7 @@ export const OrderListManager = ({
           onFilterChanged={onFilterChanged}
           isReadOnly={isReadOnly}
           blockLoadDebounceMillis={100}
+          storeKey={storeKey}
           suppressLoadingOverlay
           suppressNoRowsOverlay
           suppressAutoSize

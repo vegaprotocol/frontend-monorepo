@@ -34,7 +34,7 @@ export type Role = typeof TAKER | typeof MAKER | '-';
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  id?: string;
+  storeKey?: string;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
