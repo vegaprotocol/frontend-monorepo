@@ -1,4 +1,4 @@
-import { useOracleSpecDataConnectionQuery } from './__generated__/OracleSpecDataConnection';
+import { useOracleSpecDataConnectionQuery } from '../__generated__/OracleSpecDataConnection';
 
 export const useOracleSpecBindingData = (
   oracleSpecId: string | undefined,

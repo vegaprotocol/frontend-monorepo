@@ -1,9 +1,19 @@
-import { OracleBasicProfile } from './oracle-basic-profile';
-import type { Provider } from '../../oracle-schema';
-import { render, screen } from '@testing-library/react';
+import type { Story, Meta } from '@storybook/react';
+import { OracleFullProfile } from './oracle-full-profile';
 
-describe('OracleBasicProfile', () => {
-  const testProvider = {
+export default {
+  component: OracleFullProfile,
+  title: 'OracleFullProfile',
+} as Meta;
+
+const Template: Story = (args) => (
+  <OracleFullProfile provider={args['provider']} id="4578" />
+);
+
+export const OraclePrimary = Template.bind({});
+
+OraclePrimary.args = {
+  provider: {
     name: 'Test oracle',
     url: 'https://zombo.com',
     description_markdown:
@@ -27,18 +37,5 @@ describe('OracleBasicProfile', () => {
     ],
     github_link:
       'https://github.com/vegaprotocol/well-known/blob/main/oracle-providers/eth_address-0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC.toml',
-  } as Provider;
-
-  it('should render successfully', () => {
-    const component = <OracleBasicProfile provider={testProvider} />;
-    expect(component).toBeTruthy();
-  });
-
-  it('should render the name', () => {
-    render(<OracleBasicProfile provider={testProvider} markets={undefined} />);
-    expect(screen.getByTestId('provider-name')).toHaveTextContent(
-      'Test oracle'
-    );
-    expect(screen.getByTestId('verified-proofs')).toHaveTextContent('1');
-  });
-});
+  },
+};

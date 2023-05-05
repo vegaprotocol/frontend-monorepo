@@ -1,8 +1,8 @@
-import { OracleBasicProfile } from './oracle-basic-profile';
+import { OracleFullProfile } from './oracle-full-profile';
 import type { Provider } from '../../oracle-schema';
 import { render, screen } from '@testing-library/react';
 
-describe('OracleBasicProfile', () => {
+describe('OracleFullProfile', () => {
   const testProvider = {
     name: 'Test oracle',
     url: 'https://zombo.com',
@@ -30,15 +30,25 @@ describe('OracleBasicProfile', () => {
   } as Provider;
 
   it('should render successfully', () => {
-    const component = <OracleBasicProfile provider={testProvider} />;
+    const component = (
+      <OracleFullProfile provider={testProvider} id={''} markets={[]} />
+    );
     expect(component).toBeTruthy();
   });
 
   it('should render the name', () => {
-    render(<OracleBasicProfile provider={testProvider} markets={undefined} />);
-    expect(screen.getByTestId('provider-name')).toHaveTextContent(
-      'Test oracle'
+    render(
+      <OracleFullProfile
+        provider={testProvider}
+        id={'oracle-id'}
+        markets={[]}
+      />
     );
-    expect(screen.getByTestId('verified-proofs')).toHaveTextContent('1');
+    expect(screen.getByTestId('github-link')).toHaveTextContent(
+      'Oracle repository'
+    );
+    expect(screen.getByTestId('block-explorer-link')).toHaveTextContent(
+      'Block explorer'
+    );
   });
 });

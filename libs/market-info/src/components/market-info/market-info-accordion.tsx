@@ -35,6 +35,8 @@ import {
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
 } from './market-info-panels';
+import type { DataSourceDefinition } from '@vegaprotocol/types';
+import isEqual from 'lodash/isEqual';
 
 export interface MarketInfoAccordionProps {
   market: MarketInfo;
@@ -70,7 +72,7 @@ export const MarketInfoAccordionContainer = ({
   );
 };
 
-const MarketInfoAccordion = ({
+export const MarketInfoAccordion = ({
   market,
   onSelect,
 }: MarketInfoAccordionProps) => {
@@ -103,8 +105,64 @@ const MarketInfoAccordion = ({
         content: <InsurancePoolInfoPanel market={market} account={a} />,
       })),
   ];
-  const product = market.tradableInstrument.instrument.product;
+  const settlementData =
+    market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
+      .data;
+  const terminationData =
+    market.tradableInstrument.instrument.product
+      .dataSourceSpecForTradingTermination.data;
 
+  const getSigners = (data: DataSourceDefinition) => {
+    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
+      const signers = data.sourceType.sourceType.signers || [];
+
+      return signers.map(({ signer }, i) => {
+        return (
+          (signer.__typename === 'ETHAddress' && signer.address) ||
+          (signer.__typename === 'PubKey' && signer.key)
+        );
+      });
+    }
+    return [];
+  };
+  const oraclePanels = isEqual(
+    getSigners(settlementData),
+    getSigners(terminationData)
+  )
+    ? [
+        {
+          title: t('Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="settlementData"
+            />
+          ),
+        },
+      ]
+    : [
+        {
+          title: t('Settlement Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="settlementData"
+            />
+          ),
+        },
+        {
+          title: t('Termination Oracle'),
+          content: (
+            <OracleInfoPanel
+              noBorder={false}
+              market={market}
+              type="termination"
+            />
+          ),
+        },
+      ];
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -114,14 +172,7 @@ const MarketInfoAccordion = ({
       title: t('Instrument'),
       content: <InstrumentInfoPanel market={market} />,
     },
-    product.dataSourceSpecForSettlementData && {
-      title: t('Settlement Oracle'),
-      content: <OracleInfoPanel market={market} type="settlementData" />,
-    },
-    product.dataSourceSpecForTradingTermination && {
-      title: t('Termination Oracle'),
-      content: <OracleInfoPanel market={market} type="termination" />,
-    },
+    ...oraclePanels,
     {
       title: t('Settlement asset'),
       content: <SettlementAssetInfoPanel market={market} />,
@@ -182,33 +233,37 @@ const MarketInfoAccordion = ({
       title: t('Proposal'),
       content: (
         <div className="">
-          <ExternalLink
-            className="mb-2 w-full"
-            href={generatePath(TokenLinks.PROPOSAL_PAGE, {
-              tokenUrl: VEGA_TOKEN_URL,
-              proposalId: market.proposal?.id || '',
-            })}
-            title={
-              market.proposal?.rationale.title ||
-              market.proposal?.rationale.description ||
-              ''
-            }
-          >
-            {t('View governance proposal')}
-          </ExternalLink>
-          <ExternalLink
-            className="w-full"
-            href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
-              tokenUrl: VEGA_TOKEN_URL,
-            })}
-            title={
-              market.proposal?.rationale.title ||
-              market.proposal?.rationale.description ||
-              ''
-            }
-          >
-            {t('Propose a change to market')}
-          </ExternalLink>
+          {VEGA_TOKEN_URL && (
+            <ExternalLink
+              className="mb-2 w-full"
+              href={generatePath(TokenLinks.PROPOSAL_PAGE, {
+                tokenUrl: VEGA_TOKEN_URL,
+                proposalId: market.proposal?.id || '',
+              })}
+              title={
+                market.proposal?.rationale.title ||
+                market.proposal?.rationale.description ||
+                ''
+              }
+            >
+              {t('View governance proposal')}
+            </ExternalLink>
+          )}
+          {VEGA_TOKEN_URL && (
+            <ExternalLink
+              className="w-full"
+              href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
+                tokenUrl: VEGA_TOKEN_URL,
+              })}
+              title={
+                market.proposal?.rationale.title ||
+                market.proposal?.rationale.description ||
+                ''
+              }
+            >
+              {t('Propose a change to market')}
+            </ExternalLink>
+          )}
         </div>
       ),
     },
@@ -225,7 +280,7 @@ const MarketInfoAccordion = ({
         <h3 className={headerClassName}>{t('Market specification')}</h3>
         <Accordion panels={marketSpecPanels} />
       </div>
-      {VEGA_TOKEN_URL && market.proposal?.id && (
+      {VEGA_TOKEN_URL && marketGovPanels && market.proposal?.id && (
         <div>
           <h3 className={headerClassName}>{t('Market governance')}</h3>
           <Accordion panels={marketGovPanels} />
