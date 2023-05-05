@@ -4,7 +4,10 @@ import { renderHook } from '@testing-library/react';
 import { useColumnSizes } from './use-column-sizes';
 
 const mockValueSetter = jest.fn();
-const mockStore = { sizes: {}, valueSetter: mockValueSetter };
+const mockStore = {
+  sizes: { testid: { col1: 100 } },
+  valueSetter: mockValueSetter,
+};
 jest.mock('zustand', () => ({
   ...jest.requireActual('zustand'),
   create: () =>
@@ -30,12 +33,8 @@ describe('UseColumnSizes hook', () => {
     const { result } = renderHook(() =>
       useColumnSizes({ storeKey, container })
     );
-    expect(result.current).toHaveLength(3);
-    expect(result.current).toStrictEqual([
-      expect.any(Function),
-      expect.any(Function),
-      expect.any(Function),
-    ]);
+    expect(result.current).toHaveLength(2);
+    expect(result.current).toStrictEqual([{ col1: 100 }, expect.any(Function)]);
   });
 
   it('handleOnChange should fill up store', () => {
