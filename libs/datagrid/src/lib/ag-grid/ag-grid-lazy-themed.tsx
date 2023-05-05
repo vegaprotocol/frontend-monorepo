@@ -1,3 +1,4 @@
+import type { MutableRefObject } from 'react';
 import React, { useCallback, useRef } from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { ColumnResizedEvent, GridReadyEvent } from 'ag-grid-community';
@@ -56,7 +57,7 @@ export const AgGridThemed = ({
   );
 
   const onResize = useCallback(() => {
-    onResizeCallback(gridRef);
+    onResizeCallback(gridRef as MutableRefObject<AgGridReact>);
   }, [onResizeCallback, gridRef]);
   useResizeObserver(containerRef?.current as Element, onResize);
 

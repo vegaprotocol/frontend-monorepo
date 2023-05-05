@@ -40,7 +40,7 @@ export const useColumnSizes = ({
 }: UseColumnSizesProps): [
   Record<string, number>,
   (columns: Column[]) => void,
-  (gridRef?: ForwardedRef<AgGridReact>) => void
+  (gridRef?: MutableRefObject<AgGridReact>) => void
 ] => {
   const sizes = useColumnSizesStore((store) => store.sizes[storeKey] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
@@ -84,7 +84,7 @@ export const useColumnSizes = ({
     [valueSetter, storeKey]
   );
   const onResize = useCallback(
-    (gridRef?: ForwardedRef<AgGridReact>) => {
+    (gridRef?: MutableRefObject<AgGridReact>) => {
       if (storeKey && gridRef?.current) {
         const recalulated = recalculateSizes(sizes);
         const newSizes = Object.entries(recalulated).map(([key, size]) => ({
