@@ -20,12 +20,17 @@ import type { EthereumConfig } from '@vegaprotocol/web3';
 import {
   createConnectors,
   useEthTransactionManager,
+  useEthTransactionUpdater,
   useEthWithdrawApprovalsManager,
   useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import {
+  useVegaTransactionManager,
+  useVegaTransactionUpdater,
+  VegaWalletProvider,
+} from '@vegaprotocol/wallet';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import {
@@ -37,6 +42,7 @@ import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { WithdrawalDialog } from '@vegaprotocol/withdraws';
 import { SplashLoader } from './components/splash-loader';
+import { ToastsManager } from './toasts-manager';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -81,7 +87,10 @@ const Web3Container = ({
   providerUrl: string;
 }) => {
   const InitializeHandlers = () => {
+    useVegaTransactionManager();
+    useVegaTransactionUpdater();
     useEthTransactionManager();
+    useEthTransactionUpdater();
     useEthWithdrawApprovalsManager();
     return null;
   };
@@ -135,6 +144,7 @@ const Web3Container = ({
                       <NetworkInfo />
                     </footer>
                   </AppLayout>
+                  <ToastsManager />
                   <InitializeHandlers />
                   <VegaWalletDialogs />
                   <TransactionModal />
