@@ -14,7 +14,7 @@ jest.mock('zustand', () => ({
       })
     ),
 }));
-describe('UseColumnsSizes hook', () => {
+describe('UseColumnSizes hook', () => {
   const id = 'testid';
   const container = {
     current: { getBoundingClientRect: () => ({ width: 1000 }) },
