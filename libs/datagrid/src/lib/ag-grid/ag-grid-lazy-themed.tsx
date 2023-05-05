@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from 'react';
-import type { ReactNode } from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { ColumnResizedEvent, GridReadyEvent } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
