@@ -2,7 +2,10 @@ import React, { useCallback, useRef } from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { ColumnResizedEvent, GridReadyEvent } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import {
+  useResizeObserver,
+  useThemeSwitcher,
+} from '@vegaprotocol/react-helpers';
 import { useColumnSizes } from './use-column-sizes';
 import classNames from 'classnames';
 
@@ -17,7 +20,7 @@ export const AgGridThemed = ({
   storeKey?: string;
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [sizes, setValues] = useColumnSizes({
+  const [sizes, setValues, onResizeCallback] = useColumnSizes({
     storeKey,
     container: containerRef,
   });
@@ -28,11 +31,7 @@ export const AgGridThemed = ({
     enableCellTextSelection: true,
     onColumnResized: useCallback(
       (event: ColumnResizedEvent) => {
-        if (
-          event.source === 'uiColumnDragged' &&
-          event.columns &&
-          event.finished
-        ) {
+        if (event.source === 'uiColumnDragged' && event.columns) {
           setValues(event.columns);
         }
       },
@@ -55,6 +54,11 @@ export const AgGridThemed = ({
     },
     [sizes, storeKey, onGridReady]
   );
+
+  const onResize = useCallback(() => {
+    onResizeCallback(gridRef);
+  }, [onResizeCallback, gridRef]);
+  useResizeObserver(containerRef?.current as Element, onResize);
 
   const wrapperClasses = classNames('vega-ag-grid', {
     'ag-theme-balham': theme === 'light',

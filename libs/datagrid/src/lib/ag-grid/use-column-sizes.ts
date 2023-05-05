@@ -1,11 +1,11 @@
-import type { MutableRefObject } from 'react';
-import { useCallback, useState } from 'react';
+import type { MutableRefObject, ForwardedRef } from 'react';
+import { useCallback } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
 import type { Column } from 'ag-grid-community';
 import debounce from 'lodash/debounce';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { useResizeObserver } from '@vegaprotocol/react-helpers';
 
 const STORAGE_KEY = 'vega_columns_sizes_store';
 const COLUMNS_SET_DEBOUNCE_TIME = 300;
@@ -39,7 +39,8 @@ export const useColumnSizes = ({
   container,
 }: UseColumnSizesProps): [
   Record<string, number>,
-  (columns: Column[]) => void
+  (columns: Column[]) => void,
+  (gridRef?: ForwardedRef<AgGridReact>) => void
 ] => {
   const sizes = useColumnSizesStore((store) => store.sizes[storeKey] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
@@ -67,16 +68,6 @@ export const useColumnSizes = ({
     },
     [getWidthOfAll]
   );
-  const [calculatedSizes, setCalculatedSizes] = useState(
-    recalculateSizes(sizes)
-  );
-  const onResize = useCallback(() => {
-    const width = getWidthOfAll();
-    if (width && sizes['width'] && width !== sizes['width']) {
-      setCalculatedSizes(recalculateSizes(sizes));
-    }
-  }, [getWidthOfAll, recalculateSizes, sizes]);
-  useResizeObserver(container?.current as Element, onResize);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleOnChange = useCallback(
@@ -92,5 +83,19 @@ export const useColumnSizes = ({
     }, COLUMNS_SET_DEBOUNCE_TIME),
     [valueSetter, storeKey]
   );
-  return [calculatedSizes, handleOnChange];
+  const onResize = useCallback(
+    (gridRef?: ForwardedRef<AgGridReact>) => {
+      if (storeKey && gridRef?.current) {
+        const recalulated = recalculateSizes(sizes);
+        const newSizes = Object.entries(recalulated).map(([key, size]) => ({
+          key,
+          newWidth: size,
+        }));
+        gridRef.current.columnApi.setColumnWidths(newSizes);
+      }
+    },
+    [storeKey, recalculateSizes, sizes]
+  );
+
+  return [recalculateSizes(sizes), handleOnChange, onResize];
 };

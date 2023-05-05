@@ -33,8 +33,12 @@ describe('UseColumnSizes hook', () => {
     const { result } = renderHook(() =>
       useColumnSizes({ storeKey, container })
     );
-    expect(result.current).toHaveLength(2);
-    expect(result.current).toStrictEqual([{ col1: 100 }, expect.any(Function)]);
+    expect(result.current).toHaveLength(3);
+    expect(result.current).toStrictEqual([
+      { col1: 100 },
+      expect.any(Function),
+      expect.any(Function),
+    ]);
   });
 
   it('handleOnChange should fill up store', () => {
