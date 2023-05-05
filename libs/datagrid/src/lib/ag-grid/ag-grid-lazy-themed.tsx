@@ -11,13 +11,11 @@ export const AgGridThemed = ({
   style,
   gridRef,
   storeKey,
-  children,
   ...props
 }: (AgGridReactProps | AgReactUiProps) & {
   style?: React.CSSProperties;
   gridRef?: React.ForwardedRef<AgGridReact>;
   storeKey?: string;
-  children?: ReactNode[];
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [sizes, setValues] = useColumnSizes({
@@ -31,7 +29,11 @@ export const AgGridThemed = ({
     enableCellTextSelection: true,
     onColumnResized: useCallback(
       (event: ColumnResizedEvent) => {
-        if (event.source === 'uiColumnDragged' && event.columns) {
+        if (
+          event.source === 'uiColumnDragged' &&
+          event.columns &&
+          event.finished
+        ) {
           setValues(event.columns);
         }
       },
@@ -66,9 +68,7 @@ export const AgGridThemed = ({
         {...props}
         ref={gridRef}
         onGridReady={onGridReadyInternal}
-      >
-        {children}
-      </AgGridReact>
+      />
     </div>
   );
 };
