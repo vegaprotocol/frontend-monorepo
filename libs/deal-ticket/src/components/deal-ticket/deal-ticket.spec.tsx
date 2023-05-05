@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
@@ -40,12 +40,21 @@ describe('DealTicket', () => {
   });
 
   it('should display ticket defaults', () => {
-    render(generateJsx());
+    const { container } = render(generateJsx());
 
     // Assert defaults are used
     expect(
       screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`)
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
+    ).toBeInTheDocument();
+
+    const oderTypeLimitToggle = container.querySelector(
+      `[data-testid="order-type-${Schema.OrderType.TYPE_LIMIT}"] input[type="radio"]`
+    );
+    expect(oderTypeLimitToggle).toBeChecked();
+
     expect(
       screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
     ).toBeChecked();
@@ -54,8 +63,15 @@ describe('DealTicket', () => {
     ).not.toBeChecked();
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('0');
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
+  });
+
+  it('should display last price for market type order', () => {
+    render(generateJsx());
+    act(() => {
+      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`).click();
+    });
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
@@ -206,7 +222,11 @@ describe('DealTicket', () => {
   it('handles TIF select box dependent on order type', async () => {
     render(generateJsx());
 
-    // Only FOK and IOC should be present by default (type market order)
+    act(() => {
+      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`).click();
+    });
+
+    // Only FOK and IOC should be present for type market order
     expect(
       Array.from(screen.getByTestId('order-tif').children).map(
         (o) => o.textContent
