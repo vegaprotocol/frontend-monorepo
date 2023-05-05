@@ -46,7 +46,7 @@ interface Props extends TypedDataAgGrid<Position> {
   onMarketClick?: (id: string, metaKey?: boolean) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
-  id?: string;
+  storeKey?: string;
 }
 
 export interface AmountCellProps {

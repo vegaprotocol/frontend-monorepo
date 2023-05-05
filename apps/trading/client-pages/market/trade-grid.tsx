@@ -190,7 +190,7 @@ const MarketBottomPanel = memo(
                     onMarketClick={onMarketClick}
                     onOrderTypeClick={onOrderTypeClick}
                     enforceBottomPlaceholder
-                    id="marketAllOrders"
+                    storeKey="marketAllOrders"
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -218,7 +218,7 @@ const MarketBottomPanel = memo(
                   <TradingViews.positions.component
                     onMarketClick={onMarketClick}
                     noBottomPlaceholder
-                    id="marketPositions"
+                    storeKey="marketPositions"
                   />
                 </VegaWalletContainer>
               </Tab>
