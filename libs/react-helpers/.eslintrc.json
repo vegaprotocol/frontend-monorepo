@@ -11,7 +11,9 @@
           "@vegaprotocol/data-provider",
           "graphql",
           "graphql-tag",
-          "graphql-ws"
+          "graphql-ws",
+          "ethers",
+          "@ethersproject"
         ]
       }
     },
