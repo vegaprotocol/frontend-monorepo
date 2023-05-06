@@ -52,7 +52,8 @@ jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: jest.fn((args) => mockEnvironment()),
 }));
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
+jest.mock('@vegaprotocol/data-provider', () => ({
+  ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn((args) => mockDataProvider()),
 }));
 

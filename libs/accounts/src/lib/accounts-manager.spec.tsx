@@ -5,12 +5,12 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import * as helpers from '@vegaprotocol/react-helpers';
+import * as helpers from '@vegaprotocol/data-provider';
 import { AccountManager } from './accounts-manager';
 
 const mockedUseDataProvider = jest.fn();
-
 jest.mock('@vegaprotocol/data-provider', () => ({
+  ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn(() => mockedUseDataProvider()),
 }));
 

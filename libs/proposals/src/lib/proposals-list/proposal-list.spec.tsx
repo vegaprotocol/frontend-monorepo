@@ -44,6 +44,7 @@ const useDataProvider = () => {
   };
 };
 jest.mock('@vegaprotocol/data-provider', () => ({
+  ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn(() => useDataProvider()),
 }));
 

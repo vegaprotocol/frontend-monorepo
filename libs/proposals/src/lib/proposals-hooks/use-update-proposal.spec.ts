@@ -203,8 +203,8 @@ const mockDataProviderData: {
 const mockDataProvider = jest.fn(() => {
   return mockDataProviderData;
 });
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
+jest.mock('@vegaprotocol/data-provider', () => ({
+  ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn((args) => mockDataProvider()),
 }));
 

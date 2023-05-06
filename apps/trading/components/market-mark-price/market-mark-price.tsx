@@ -1,7 +1,7 @@
 import type { RefObject } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
-import { useThrottledDataProvider } from '@vegaprotocol/react-helpers';
+import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import { THROTTLE_UPDATE_TIME } from '../constants';

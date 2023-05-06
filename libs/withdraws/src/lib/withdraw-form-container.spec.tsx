@@ -6,8 +6,9 @@ import { WithdrawFormContainer } from './withdraw-form-container';
 import * as Types from '@vegaprotocol/types';
 import { useWeb3React } from '@web3-react/core';
 let mockData: Account[] | null = null;
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
+
+jest.mock('@vegaprotocol/data-provider', () => ({
+  ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: () => ({
     data: mockData,
   }),
