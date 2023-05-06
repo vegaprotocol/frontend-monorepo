@@ -1,6 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useOracleProofs } from '@vegaprotocol/oracles';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketInfoProvider } from '../components/market-info/market-info-data-provider';
 import { useMemo } from 'react';
 

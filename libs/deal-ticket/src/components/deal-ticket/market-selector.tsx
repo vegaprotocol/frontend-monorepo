@@ -18,8 +18,8 @@ import {
 import {
   useScreenDimensions,
   useOutsideClick,
-  useDataProvider,
 } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import * as Schema from '@vegaprotocol/types';

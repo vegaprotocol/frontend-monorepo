@@ -1,7 +1,5 @@
-export * from './lib/apollo-client';
 export * from './lib/flag-emoji';
 export * from './lib/format';
-export * from './lib/generic-data-provider';
 export * from './lib/get-events';
 export * from './lib/get-nodes';
 export * from './lib/get-user-locale';

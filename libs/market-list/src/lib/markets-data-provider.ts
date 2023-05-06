@@ -1,7 +1,5 @@
-import {
-  makeDataProvider,
-  marketDataErrorPolicyGuard,
-} from '@vegaprotocol/utils';
+import { marketDataErrorPolicyGuard } from '@vegaprotocol/data-provider';
+import { makeDataProvider } from '@vegaprotocol/data-provider';
 import type { MarketsDataQuery } from './__generated__/markets-data';
 import { MarketsDataDocument } from './__generated__/markets-data';
 import type { MarketData } from './market-data-provider';

@@ -5,6 +5,10 @@
     "declaration": true,
     "types": []
   },
-  "include": ["**/*.ts", "../ui-toolkit/src/utils/cell-class-rules.ts"],
+  "include": [
+    "**/*.ts",
+    "../ui-toolkit/src/utils/cell-class-rules.ts",
+    "../data-provider/src/generic-data-provider.ts"
+  ],
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
 }

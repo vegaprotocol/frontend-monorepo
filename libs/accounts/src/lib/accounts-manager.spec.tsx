@@ -9,8 +9,8 @@ import * as helpers from '@vegaprotocol/react-helpers';
 import { AccountManager } from './accounts-manager';
 
 const mockedUseDataProvider = jest.fn();
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
+
+jest.mock('@vegaprotocol/data-provider', () => ({
   useDataProvider: jest.fn(() => mockedUseDataProvider()),
 }));
 

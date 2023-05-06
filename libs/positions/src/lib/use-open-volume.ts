@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { openVolumeDataProvider } from './positions-data-providers';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export const useOpenVolume = (
   partyId: string | null | undefined,

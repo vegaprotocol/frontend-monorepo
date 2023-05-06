@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
-import { makeDerivedDataProvider } from '@vegaprotocol/utils';
+import { makeDerivedDataProvider } from '@vegaprotocol/data-provider';
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 import {

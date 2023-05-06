@@ -14,10 +14,10 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
-  useDataProvider,
   useNetworkParams,
   updateGridData,
 } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   AsyncRenderer,
   Tab,

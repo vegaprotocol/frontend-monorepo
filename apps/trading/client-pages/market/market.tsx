@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import {
   useDataProvider,
-  useScreenDimensions,
   useThrottledDataProvider,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/data-provider';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';

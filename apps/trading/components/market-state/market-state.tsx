@@ -2,7 +2,7 @@ import throttle from 'lodash/throttle';
 import type { MarketData, Market } from '@vegaprotocol/market-list';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
 import { useCallback, useRef, useState } from 'react';

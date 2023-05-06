@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';

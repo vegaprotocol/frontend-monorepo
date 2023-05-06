@@ -1,15 +1,17 @@
 import produce from 'immer';
 import orderBy from 'lodash/orderBy';
 import {
-  makeDataProvider,
-  makeDerivedDataProvider,
-  defaultAppend as append,
   paginatedCombineDelta as combineDelta,
   paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/utils';
+import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+  defaultAppend as append,
+} from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import type { PageInfo, Edge } from '@vegaprotocol/utils';
 import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 import type {
   FillsQuery,

@@ -1,5 +1,4 @@
-import { makeDataProvider } from '@vegaprotocol/utils';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider, useDataProvider } from '@vegaprotocol/data-provider';
 
 import type {
   AssetQuery,
