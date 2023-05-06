@@ -54,7 +54,6 @@
   --ag-header-column-separator-color: theme(colors.neutral[600]);
   --ag-row-border-color: theme(colors.black);
   --ag-row-hover-color: theme(colors.neutral[800]);
-  --ag-font-size: 12px;
 }
 
 .validators-table .ag-theme-balham-dark .ag-body-horizontal-scroll {

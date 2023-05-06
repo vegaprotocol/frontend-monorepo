@@ -88,10 +88,6 @@ html [data-theme='light'] {
   text-overflow: ellipsis;
 }
 
-.vega-ag-grid .ag-row {
-  border: 0px !important;
-}
-
 .vega-ag-grid .ag-cell,
 .vega-ag-grid .ag-full-width-row .ag-cell-wrapper.ag-row-group {
   line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
@@ -111,7 +107,6 @@ html [data-theme='light'] {
   --ag-header-column-separator-color: theme(colors.neutral[300]);
   --ag-row-border-color: theme(colors.white);
   --ag-row-hover-color: theme(colors.neutral[100]);
-  --ag-font-size: 12px;
 }
 
 /* Dark variables */
@@ -123,7 +118,6 @@ html [data-theme='light'] {
   --ag-header-column-separator-color: theme(colors.neutral[600]);
   --ag-row-border-color: theme(colors.black);
   --ag-row-hover-color: theme(colors.neutral[800]);
-  --ag-font-size: 12px;
 }
 .ag-theme-balham-dark .ag-row.no-hover,
 .ag-theme-balham-dark .ag-row.no-hover:hover,

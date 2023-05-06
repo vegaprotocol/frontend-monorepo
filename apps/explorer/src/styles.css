@@ -46,7 +46,6 @@
   --ag-header-column-separator-color: theme(colors.neutral[300]);
   --ag-row-border-color: theme(colors.white);
   --ag-row-hover-color: theme(colors.neutral[100]);
-  --ag-font-size: 12px;
 }
 
 /* Dark variables */
@@ -58,7 +57,6 @@
   --ag-header-column-separator-color: theme(colors.neutral[600]);
   --ag-row-border-color: theme(colors.black);
   --ag-row-hover-color: theme(colors.neutral[800]);
-  --ag-font-size: 12px;
 }
 
 .voteicon svg {
