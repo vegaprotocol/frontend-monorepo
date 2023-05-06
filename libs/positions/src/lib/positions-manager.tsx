@@ -6,7 +6,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
-import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 
 interface PositionsManagerProps {
   partyId: string;
