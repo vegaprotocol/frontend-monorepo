@@ -4,7 +4,16 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          "@apollo/client",
+          "@vegaprotocol/data-provider",
+          "graphql",
+          "graphql-tag",
+          "graphql-ws"
+        ]
+      }
     },
     {
       "files": ["*.ts", "*.tsx"],
