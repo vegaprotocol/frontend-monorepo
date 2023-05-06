@@ -1,4 +1,3 @@
-export * from './use-apply-grid-transaction';
 export * from './use-fetch';
 export * from './use-local-storage';
 export * from './use-mutation-observer';
