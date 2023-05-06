@@ -1,6 +1,5 @@
 import type { MutableRefObject, RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { IGetRowsParams } from 'ag-grid-community';
 
 type AnyArray = Array<any> | null; // eslint-disable-line @typescript-eslint/no-explicit-any
 
