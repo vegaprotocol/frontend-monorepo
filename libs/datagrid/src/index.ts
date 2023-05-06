@@ -19,4 +19,5 @@ export * from './lib/type-helpers';
 
 export * from './lib/cells/grid-progress-bar';
 
+export * from './lib/ag-grid-update';
 export * from './lib/use-bottom-placeholder';

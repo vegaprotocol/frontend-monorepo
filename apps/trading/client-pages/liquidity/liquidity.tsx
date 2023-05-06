@@ -12,7 +12,7 @@ import {
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { updateGridData } from '@vegaprotocol/react-helpers';
+import { updateGridData } from '@vegaprotocol/datagrid';
 import {
   NetworkParams,
   useNetworkParams,
