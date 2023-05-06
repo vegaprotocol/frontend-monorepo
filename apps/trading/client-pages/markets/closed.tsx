@@ -14,7 +14,10 @@ import {
 } from '@vegaprotocol/utils';
 import { usePositionsQuery } from '@vegaprotocol/positions';
 import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
-import { closedMarketsWithDataProvider } from '@vegaprotocol/market-list';
+import {
+  MarketTableActions,
+  closedMarketsWithDataProvider,
+} from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
@@ -22,7 +25,6 @@ import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { MarketTableActions } from '../../components/market-table-actions';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];

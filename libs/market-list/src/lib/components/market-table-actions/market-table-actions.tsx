@@ -1,4 +1,4 @@
-import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithData } from '../../markets-provider';
 import { t } from '@vegaprotocol/i18n';
 import {
   DropdownMenu,

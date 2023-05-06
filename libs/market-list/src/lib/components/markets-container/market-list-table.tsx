@@ -1,4 +1,3 @@
-import type { ComponentType } from 'react';
 import { forwardRef } from 'react';
 import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -19,6 +18,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketMaybeWithData } from '../../';
+import { MarketTableActions } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
@@ -29,9 +29,8 @@ export const MarketListTable = forwardRef<
   AgGridReact,
   TypedDataAgGrid<MarketMaybeWithData> & {
     onMarketClick: (marketId: string, metaKey?: boolean) => void;
-    actions: ComponentType<VegaICellRendererParams<MarketMaybeWithData, 'id'>>;
   }
->(({ onMarketClick, actions, ...props }, ref) => {
+>(({ onMarketClick, ...props }, ref) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
@@ -200,17 +199,15 @@ export const MarketListTable = forwardRef<
           );
         }}
       />
-      {actions && (
-        <AgGridColumn
-          headerName=""
-          field="id"
-          maxWidth={50}
-          resizable={false}
-          filter={false}
-          sortable={false}
-          cellRenderer={actions}
-        />
-      )}
+      <AgGridColumn
+        headerName=""
+        field="id"
+        maxWidth={50}
+        resizable={false}
+        filter={false}
+        sortable={false}
+        cellRenderer={MarketTableActions}
+      />
     </AgGrid>
   );
 });
