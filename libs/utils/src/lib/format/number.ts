@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import { BigNumber as EthersBigNumber } from 'ethers';
 import isNil from 'lodash/isNil';
 import memoize from 'lodash/memoize';
 
@@ -15,16 +14,14 @@ export function toDecimal(numberOfDecimals: number) {
 }
 
 export function toBigNum(
-  rawValue: string | number | EthersBigNumber,
+  rawValue: string | number,
   decimals: number
 ): BigNumber {
-  return new BigNumber(
-    rawValue instanceof EthersBigNumber ? rawValue.toString() : rawValue || 0
-  ).dividedBy(Math.pow(10, decimals));
+  return new BigNumber(rawValue || 0).dividedBy(Math.pow(10, decimals));
 }
 
 export function addDecimal(
-  value: string | number | EthersBigNumber,
+  value: string | number,
   decimals: number,
   decimalPrecision = decimals
 ): string {
