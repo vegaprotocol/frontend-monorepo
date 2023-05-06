@@ -277,7 +277,8 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       {
         headerName: '',
         field: 'id',
-        maxWidth: 50,
+        maxWidth: 45,
+        minWidth: 45,
         resizable: false,
         filter: false,
         sortable: false,

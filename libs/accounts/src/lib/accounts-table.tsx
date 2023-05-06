@@ -9,17 +9,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import {
-  Button,
-  ButtonLink,
-  Dialog,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridLazy as AgGrid,
@@ -38,6 +28,7 @@ import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
+import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 
 const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames({
@@ -271,8 +262,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               colId="accounts-actions"
               headerName=""
               sortable={false}
-              maxWidth={200}
+              resizable={false}
+              minWidth={45}
+              maxWidth={45}
               type="rightAligned"
+              pinned="right"
               cellRenderer={({
                 data,
               }: VegaICellRendererParams<AccountFields>) => {
@@ -299,64 +293,24 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                   }
                   return (
                     !props.isReadOnly && (
-                      <DropdownMenu
-                        trigger={
-                          <DropdownMenuTrigger
-                            iconName="more"
-                            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
-                            data-testid="dropdown-menu"
-                          />
+                      <AccountsActionsDropdown
+                        assetId={data.asset.id}
+                        assetContractAddress={
+                          data.asset.source.__typename === 'ERC20'
+                            ? data.asset.source.contractAddress
+                            : undefined
                         }
-                      >
-                        <DropdownMenuContent>
-                          <DropdownMenuItem
-                            key={'deposit'}
-                            data-testid="deposit"
-                            onClick={() => {
-                              onClickDeposit && onClickDeposit(data.asset.id);
-                            }}
-                          >
-                            <span className="flex gap-2">
-                              <VegaIcon
-                                name={VegaIconNames.DEPOSIT}
-                                size={16}
-                              />
-                              {t('Deposit')}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            key={'withdraw'}
-                            data-testid="withdraw"
-                            onClick={() =>
-                              onClickWithdraw && onClickWithdraw(data.asset.id)
-                            }
-                          >
-                            <span className="flex gap-2">
-                              <VegaIcon
-                                name={VegaIconNames.WITHDRAW}
-                                size={16}
-                              />
-                              {t('Withdraw')}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            key={'breakdown'}
-                            data-testid="breakdown"
-                            onClick={() => {
-                              setOpenBreakdown(!openBreakdown);
-                              setRow(data);
-                            }}
-                          >
-                            <span className="flex gap-2">
-                              <VegaIcon
-                                name={VegaIconNames.BREAKDOWN}
-                                size={16}
-                              />
-                              {t('Breakdown')}
-                            </span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                        onClickDeposit={() => {
+                          onClickDeposit && onClickDeposit(data.asset.id);
+                        }}
+                        onClickWithdraw={() => {
+                          onClickWithdraw && onClickWithdraw(data.asset.id);
+                        }}
+                        onClickBreakdown={() => {
+                          setOpenBreakdown(!openBreakdown);
+                          setRow(data);
+                        }}
+                      />
                     )
                   );
                 }

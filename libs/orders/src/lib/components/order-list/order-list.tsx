@@ -272,8 +272,10 @@ export const OrderListTable = memo<
             colId="amend"
             headerName=""
             field="id"
-            minWidth={100}
+            minWidth={120}
+            maxWidth={120}
             type="rightAligned"
+            pinned="right"
             cellRenderer={({
               data,
               value,

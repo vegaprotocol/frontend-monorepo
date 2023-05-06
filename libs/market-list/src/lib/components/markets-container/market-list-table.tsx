@@ -202,7 +202,9 @@ export const MarketListTable = forwardRef<
       <AgGridColumn
         headerName=""
         field="id"
-        maxWidth={50}
+        pinned="right"
+        maxWidth={45}
+        minWidth={45}
         resizable={false}
         filter={false}
         sortable={false}

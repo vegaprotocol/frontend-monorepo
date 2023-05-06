@@ -88,6 +88,10 @@ html [data-theme='light'] {
   text-overflow: ellipsis;
 }
 
+.vega-ag-grid .ag-row {
+  border: 0px !important;
+}
+
 .vega-ag-grid .ag-cell,
 .vega-ag-grid .ag-full-width-row .ag-cell-wrapper.ag-row-group {
   line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
