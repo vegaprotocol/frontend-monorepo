@@ -22,9 +22,9 @@ export const useGetUserBalances = (account: string | undefined) => {
       ]);
 
       const balance = toBigNum(b, decimals);
-      const walletBalance = toBigNum(w, decimals);
+      const walletBalance = toBigNum(w.toString(), decimals);
       const lien = toBigNum(stats.lien, decimals);
-      const allowance = toBigNum(a, decimals);
+      const allowance = toBigNum(a.toString(), decimals);
 
       return {
         balanceFormatted: balance,

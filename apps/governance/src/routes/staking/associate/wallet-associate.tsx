@@ -54,7 +54,7 @@ export const WalletAssociate = ({
           address,
           ethereumConfig.staking_bridge_contract.address
         );
-        const allowance = toBigNum(a, decimals);
+        const allowance = toBigNum(a.toString(), decimals);
         setAllowance(allowance);
       }
     };
