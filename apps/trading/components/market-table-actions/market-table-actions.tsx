@@ -5,14 +5,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuCopyItem,
   Link,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { DApp, EXPLORER_MARKET, useLinks } from '@vegaprotocol/environment';
-import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 
 export const MarketTableActions = ({
   value,
@@ -42,35 +41,5 @@ export const MarketTableActions = ({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
-
-const DropdownMenuCopyItem = ({
-  value,
-  text,
-}: {
-  value: string;
-  text: string;
-}) => {
-  const [copied, setCopied] = useCopyTimeout();
-
-  return (
-    <DropdownMenuItem>
-      <span>
-        <CopyToClipboard text={value} onCopy={() => setCopied(true)}>
-          <button
-            // Prevent dropdown closing on click
-            onClick={(e) => e.stopPropagation()}
-            className="mr-2"
-          >
-            <VegaIcon name={VegaIconNames.COPY} size={16} />
-            {text}
-          </button>
-        </CopyToClipboard>
-        {copied && (
-          <span className="text-xs text-neutral-500">{t('Copied')}</span>
-        )}
-      </span>
-    </DropdownMenuItem>
   );
 };

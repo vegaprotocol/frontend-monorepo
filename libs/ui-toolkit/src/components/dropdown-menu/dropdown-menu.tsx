@@ -3,7 +3,11 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import type { IconName } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 import { Icon } from '../icon';
+import { useCopyTimeout } from '@vegaprotocol/react-helpers';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { t } from '@vegaprotocol/i18n';
 
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
@@ -163,3 +167,36 @@ export const DropdownMenuSeparator = forwardRef<
     )}
   />
 ));
+
+/**
+ * Wraps a regular DropdownMenuItem with copy to clip board functionality
+ */
+export const DropdownMenuCopyItem = ({
+  value,
+  text,
+}: {
+  value: string;
+  text: string;
+}) => {
+  const [copied, setCopied] = useCopyTimeout();
+
+  return (
+    <DropdownMenuItem>
+      <span>
+        <CopyToClipboard text={value} onCopy={() => setCopied(true)}>
+          <button
+            // Prevent dropdown closing on click
+            onClick={(e) => e.stopPropagation()}
+            className="mr-2"
+          >
+            <VegaIcon name={VegaIconNames.COPY} size={16} />
+            {text}
+          </button>
+        </CopyToClipboard>
+        {copied && (
+          <span className="text-xs text-neutral-500">{t('Copied')}</span>
+        )}
+      </span>
+    </DropdownMenuItem>
+  );
+};

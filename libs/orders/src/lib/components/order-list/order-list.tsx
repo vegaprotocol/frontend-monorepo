@@ -26,7 +26,7 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
-import * as React from 'react';
+import { OrderActionsDropdown } from '../order-actions-dropdown/order-actions-dropdown';
 
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
   marketId?: string;
@@ -271,24 +271,36 @@ export const OrderListTable = memo<
           <AgGridColumn
             colId="amend"
             headerName=""
-            field="status"
+            field="id"
             minWidth={100}
             type="rightAligned"
-            cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
-              return data && isOrderAmendable(data) && !props.isReadOnly ? (
-                <>
-                  <ButtonLink
-                    data-testid="edit"
-                    onClick={() => setEditOrder(data)}
-                  >
-                    {t('Edit')}
-                  </ButtonLink>
-                  <span className="mx-1" />
-                  <ButtonLink data-testid="cancel" onClick={() => cancel(data)}>
-                    {t('Cancel')}
-                  </ButtonLink>
-                </>
-              ) : null;
+            cellRenderer={({
+              data,
+              value,
+            }: VegaICellRendererParams<Order, 'id'>) => {
+              if (!value || !data) return null;
+
+              return (
+                <div className="flex gap-2 items-center justify-end">
+                  {isOrderAmendable(data) && !props.isReadOnly && (
+                    <>
+                      <ButtonLink
+                        data-testid="edit"
+                        onClick={() => setEditOrder(data)}
+                      >
+                        {t('Edit')}
+                      </ButtonLink>
+                      <ButtonLink
+                        data-testid="cancel"
+                        onClick={() => cancel(data)}
+                      >
+                        {t('Cancel')}
+                      </ButtonLink>
+                    </>
+                  )}
+                  <OrderActionsDropdown id={value} />
+                </div>
+              );
             }}
             sortable={false}
             flex={1}
