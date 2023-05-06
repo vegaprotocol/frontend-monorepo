@@ -15,7 +15,6 @@
     "**/*.test.jsx",
     "**/*.spec.jsx",
     "**/*.d.ts",
-    "jest.config.ts",
-    "../data-provider/src/use-data-provider.spec.ts"
+    "jest.config.ts"
   ]
 }

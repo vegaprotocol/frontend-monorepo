@@ -10,7 +10,6 @@ export * from './lib/links';
 export * from './lib/local-logger';
 export * from './lib/local-storage';
 export * from './lib/markets';
-export * from './lib/pagination';
 export * from './lib/remove-0x';
 export * from './lib/remove-pagination-wrapper';
 export * from './lib/time';

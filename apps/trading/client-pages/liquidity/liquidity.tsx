@@ -12,11 +12,11 @@ import {
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { updateGridData } from '@vegaprotocol/react-helpers';
 import {
   NetworkParams,
   useNetworkParams,
-  updateGridData,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   AsyncRenderer,

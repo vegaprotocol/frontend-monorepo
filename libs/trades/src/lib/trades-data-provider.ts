@@ -1,11 +1,9 @@
 import {
-  paginatedCombineDelta as combineDelta,
-  paginatedCombineInsertionData as combineInsertionData,
-} from '@vegaprotocol/utils';
-import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
+  paginatedCombineDelta as combineDelta,
+  paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/data-provider';
 import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/market-list';
