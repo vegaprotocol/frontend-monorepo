@@ -381,8 +381,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 </ButtonLink>
               ) : null
             }
-            minWidth={80}
-            flex={1}
+            pinned="right"
+            minWidth={55}
+            maxWidth={55}
           />
         ) : null}
       </AgGrid>
