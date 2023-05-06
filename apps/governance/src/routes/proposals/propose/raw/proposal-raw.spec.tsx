@@ -10,8 +10,8 @@ import { ProposeRaw } from './propose-raw';
 import { ProposalEventDocument } from '@vegaprotocol/proposals';
 import type { ProposalEventSubscription } from '@vegaprotocol/proposals';
 
-import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
+import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
+import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 
 const paramsDelay = 20;
 

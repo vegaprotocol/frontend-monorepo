@@ -36,6 +36,9 @@
       "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
       "@vegaprotocol/mock": ["libs/cypress/mock.ts"],
       "@vegaprotocol/network-info": ["libs/network-info/src/index.ts"],
+      "@vegaprotocol/network-parameters": [
+        "libs/network-parameters/src/index.ts"
+      ],
       "@vegaprotocol/network-stats": ["libs/network-stats/src/index.ts"],
       "@vegaprotocol/oracles": ["libs/oracles/src/index.ts"],
       "@vegaprotocol/orders": ["libs/orders/src/index.ts"],

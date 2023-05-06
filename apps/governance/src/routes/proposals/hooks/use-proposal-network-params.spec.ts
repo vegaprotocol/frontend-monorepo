@@ -3,8 +3,8 @@ import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
 import { generateProposal } from '../test-helpers/generate-proposals';
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
+jest.mock('@vegaprotocol/network-parameters', () => ({
+  ...jest.requireActual('@vegaprotocol/network-parameters'),
   useNetworkParams: jest.fn(() => ({
     params: {
       governance_proposal_updateMarket_requiredMajority: '0.1',
