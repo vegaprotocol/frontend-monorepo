@@ -5,13 +5,15 @@ import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import ReactMarkdown from 'react-markdown';
+import { truncateMiddle } from '../../../../lib/truncate-middle';
 
 export const ProposalHeader = ({
   proposal,
-  useSubHeading = true,
+  isListItem = true,
 }: {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
-  useSubHeading?: boolean;
+  isListItem?: boolean;
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
@@ -95,8 +97,8 @@ export const ProposalHeader = ({
       proposalType = t('UpdateAsset');
       details = (
         <>
-          `${t('Update asset')}`;
-          <Lozenge>{change.assetId}</Lozenge>
+          <span>{t('Asset ID')}:</span>
+          <Lozenge>{truncateMiddle(change.assetId)}</Lozenge>
         </>
       );
       break;
@@ -106,7 +108,7 @@ export const ProposalHeader = ({
   return (
     <div className="text-sm mb-2">
       <div data-testid="proposal-title">
-        {useSubHeading ? (
+        {isListItem ? (
           <header>
             <SubHeading title={titleContent || t('Unknown proposal')} />
           </header>
@@ -121,9 +123,23 @@ export const ProposalHeader = ({
             <Lozenge variant={Intent.None}>{proposalType}</Lozenge>
           </div>
         )}
-
+      </div>
+      <div className="flex items-center gap-2">
         {description && (
-          <div data-testid="proposal-description">{description}</div>
+          <div data-testid="proposal-description" className="mb-4">
+            {!isListItem && (
+              <ReactMarkdown
+                className="react-markdown-container"
+                /* Prevents HTML embedded in the description from rendering */
+                skipHtml={true}
+                /* Stops users embedding images which could be used for tracking  */
+                disallowedElements={['img']}
+                linkTarget="_blank"
+              >
+                {description}
+              </ReactMarkdown>
+            )}
+          </div>
         )}
       </div>
 

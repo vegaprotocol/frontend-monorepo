@@ -74,7 +74,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
   return (
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
-        <ProposalHeader proposal={proposal} useSubHeading={false} />
+        <ProposalHeader proposal={proposal} isListItem={false} />
         <div className="mb-10">
           <ProposalChangeTable proposal={proposal} />
         </div>
