@@ -72,34 +72,32 @@ export const ProposalHeader = ({
       details = (
         <>
           <span className={inlineTitleClasses}>{t('New asset')}:</span>
-          <span>
-            {t('Symbol')}: {change.symbol}.
-          </span>{' '}
-          <Lozenge>
-            {change.source.__typename === 'ERC20' &&
-              `ERC20 ${change.source.contractAddress}`}
-            {change.source.__typename === 'BuiltinAsset' &&
-              `${t('Max faucet amount mint')}: ${
-                change.source.maxFaucetAmountMint
-              }`}
-          </Lozenge>
+          <span className="mr-2">{t('Symbol')}:</span>
+          <Lozenge>{change.symbol}.</Lozenge>
+          {change.source.__typename === 'ERC20' && (
+            <>
+              <span className="mx-2">{t('ERC20ContractAddress')}:</span>
+              <Lozenge>{change.source.contractAddress}</Lozenge>
+            </>
+          )}
+          {change.source.__typename === 'BuiltinAsset' && (
+            <>
+              <span className="mx-2">{t('MaxFaucetAmountMint')}:</span>
+              <Lozenge>{change.source.maxFaucetAmountMint}</Lozenge>
+            </>
+          )}
         </>
       );
       break;
     }
     case 'UpdateNetworkParameter': {
       proposalType = 'NetworkParameter';
-      const parametersClasses = 'font-mono leading-none';
       details = (
         <>
-          <span className="uppercase mr-2">{t('parameter')}:</span>
-          <span className={`${parametersClasses} mr-2`}>
-            {change.networkParameter.key}
-          </span>{' '}
-          {t('to')}{' '}
-          <span className={`${parametersClasses} ml-2`}>
-            {change.networkParameter.value}
-          </span>
+          <span className={inlineTitleClasses}>{t('Change')}:</span>
+          <Lozenge>{change.networkParameter.key}</Lozenge>
+          <span className="mx-2">{t('to')}</span>
+          <Lozenge>{change.networkParameter.value}</Lozenge>
         </>
       );
       break;
