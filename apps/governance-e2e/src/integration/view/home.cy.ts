@@ -27,7 +27,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('app-announcement').should('not.exist');
     });
 
-    it('should show open or enacted proposals with proposal summary', function () {
+    it('should show open or enacted proposals without proposal summary', function () {
       cy.get('body').then(($body) => {
         if (!$body.find('[data-testid="proposals-list-item"]').length) {
           cy.createMarket();
@@ -43,12 +43,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
             .invoke('text')
             .should('not.be.empty');
           cy.getByTestId('proposal-type').invoke('text').should('not.be.empty');
-          cy.getByTestId('proposal-description')
-            .invoke('text')
-            .should('not.be.empty');
-          cy.getByTestId('proposal-details')
-            .invoke('text')
-            .should('not.be.empty');
           cy.getByTestId('proposal-status')
             .invoke('text')
             .should('not.be.empty');

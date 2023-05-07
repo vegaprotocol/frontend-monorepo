@@ -125,20 +125,18 @@ export const ProposalHeader = ({
         )}
       </div>
       <div className="flex items-center gap-2">
-        {description && (
+        {description && !isListItem && (
           <div data-testid="proposal-description" className="mb-4">
-            {!isListItem && (
-              <ReactMarkdown
-                className="react-markdown-container"
-                /* Prevents HTML embedded in the description from rendering */
-                skipHtml={true}
-                /* Stops users embedding images which could be used for tracking  */
-                disallowedElements={['img']}
-                linkTarget="_blank"
-              >
-                {description}
-              </ReactMarkdown>
-            )}
+            <ReactMarkdown
+              className="react-markdown-container"
+              /* Prevents HTML embedded in the description from rendering */
+              skipHtml={true}
+              /* Stops users embedding images which could be used for tracking  */
+              disallowedElements={['img']}
+              linkTarget="_blank"
+            >
+              {description}
+            </ReactMarkdown>
           </div>
         )}
       </div>

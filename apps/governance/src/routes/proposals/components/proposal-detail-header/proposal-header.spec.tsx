@@ -3,9 +3,10 @@ import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalHeader } from './proposal-header';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
-const renderComponent = (proposal: ProposalQuery['proposal']) => (
-  <ProposalHeader proposal={proposal} />
-);
+const renderComponent = (
+  proposal: ProposalQuery['proposal'],
+  isListItem = true
+) => <ProposalHeader proposal={proposal} isListItem={isListItem} />;
 
 describe('Proposal header', () => {
   it('Renders New market proposal', () => {
@@ -40,9 +41,6 @@ describe('Proposal header', () => {
       'New some market'
     );
     expect(screen.getByTestId('proposal-type')).toHaveTextContent('New market');
-    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
-      'A new some market'
-    );
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'tGBP settled future.'
     );
@@ -191,7 +189,7 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-details')).toHaveTextContent('short');
   });
 
-  it('Renders Freeform proposal - long rationale (105 chars)', () => {
+  it('Renders Freeform proposal - long rationale (105 chars) - listing', () => {
     render(
       renderComponent(
         generateProposal({
@@ -209,14 +207,37 @@ describe('Proposal header', () => {
         })
       )
     );
-    // For a rationale over 100 chars, we expect the header to be truncated at
-    // 100 chars with ellipsis and the details-one element to contain the rest.
     expect(screen.getByTestId('proposal-title')).toHaveTextContent('0x0');
     expect(screen.getByTestId('proposal-type')).toHaveTextContent('Freeform');
-    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
-      'Class aptent taciti sociosqu ad litora torquent per conubia'
-    );
+    // Rationale in list view is not rendered
+    expect(
+      screen.queryByTestId('proposal-description')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('proposal-details')).toHaveTextContent('long');
+  });
+
+  it('Renders Freeform proposal - long rationale (105 chars) - details', () => {
+    render(
+      renderComponent(
+        generateProposal({
+          id: 'long',
+          rationale: {
+            title: '0x0',
+            description:
+              'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
+          },
+          terms: {
+            change: {
+              __typename: 'NewFreeform',
+            },
+          },
+        }),
+        false
+      )
+    );
+    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
+      /Class aptent/
+    );
   });
 
   // Remove once proposals have rationale and re-enable above tests
@@ -260,9 +281,6 @@ describe('Proposal header', () => {
       )
     );
     expect(screen.getByTestId('proposal-type')).toHaveTextContent(
-      'Update asset'
-    );
-    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'Update asset'
     );
     expect(screen.getByText('foo')).toBeInTheDocument();
