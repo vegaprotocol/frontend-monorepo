@@ -1,7 +1,6 @@
-import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import type { ReactNode, AnchorHTMLAttributes } from 'react';
-import { Icon } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 
 type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   children?: ReactNode;
@@ -24,7 +23,7 @@ export const Link = ({ className, children, ...props }: LinkProps) => {
   };
 
   // if no href is passed just render a span, this is so that we can wrap an
-  // element with our links styles with a react router link compoment
+  // element with our links styles with a react router link component
   if (!props.href) {
     return (
       <span {...shared} {...props}>
@@ -43,7 +42,10 @@ Link.displayName = 'Link';
 
 export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
   <Link
-    className={classNames(className, 'inline-flex items-baseline')}
+    className={classNames(
+      className,
+      'inline-flex items-baseline underline-offset-4'
+    )}
     target="_blank"
     data-testid="external-link"
     rel="noreferrer nofollow noopener"
@@ -56,7 +58,7 @@ export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
         >
           {children}
         </span>
-        <Icon size={3} name={IconNames.SHARE} className="ml-1" />
+        <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
       </>
     ) : (
       children

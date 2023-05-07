@@ -13,7 +13,7 @@ interface DialogProps {
   onChange?: (isOpen: boolean) => void;
   onCloseAutoFocus?: (e: Event) => void;
   onInteractOutside?: (e: Event) => void;
-  title?: string;
+  title?: string | ReactNode;
   icon?: ReactNode;
   intent?: Intent;
   size?: 'small' | 'medium';

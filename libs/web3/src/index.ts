@@ -22,3 +22,7 @@ export * from './lib/web3-connect-dialog';
 export * from './lib/web3-connect-store';
 export * from './lib/web3-connectors';
 export * from './lib/web3-provider';
+export * from './lib/use-vega-transaction-toasts';
+export * from './lib/use-ethereum-transaction-toasts';
+export * from './lib/use-ethereum-withdraw-approval-toasts';
+export * from './lib/withdrawal-approval-status';

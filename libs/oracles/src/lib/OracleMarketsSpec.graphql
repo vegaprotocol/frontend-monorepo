@@ -1,0 +1,63 @@
+fragment OracleMarketSpecFields on Market {
+  id
+  state
+  tradingMode
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      product {
+        ... on Future {
+          dataSourceSpecForSettlementData {
+            id
+            data {
+              ...DataSourceSpec
+            }
+          }
+          dataSourceSpecForTradingTermination {
+            id
+            data {
+              ...DataSourceSpec
+            }
+          }
+          dataSourceSpecBinding {
+            settlementDataProperty
+            tradingTerminationProperty
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment DataSourceSpec on DataSourceDefinition {
+  sourceType {
+    ... on DataSourceDefinitionExternal {
+      sourceType {
+        ... on DataSourceSpecConfiguration {
+          signers {
+            signer {
+              ... on PubKey {
+                key
+              }
+              ... on ETHAddress {
+                address
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query OracleMarketsSpec {
+  marketsConnection {
+    edges {
+      node {
+        ...OracleMarketSpecFields
+      }
+    }
+  }
+}

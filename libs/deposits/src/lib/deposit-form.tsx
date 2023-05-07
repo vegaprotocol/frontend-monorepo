@@ -260,7 +260,9 @@ export const DepositForm = ({
                   <AssetOption
                     asset={asset}
                     key={asset.id}
-                    balance={<AssetBalance asset={asset} />}
+                    balance={
+                      isActive && account && <AssetBalance asset={asset} />
+                    }
                   />
                 ))}
             </RichSelect>

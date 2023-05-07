@@ -1,4 +1,5 @@
 import type { ComponentProps } from 'react';
+import { useState } from 'react';
 import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
@@ -6,7 +7,7 @@ import {
   totalFeesPercentage,
   marketDataProvider,
 } from '@vegaprotocol/market-list';
-import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
+import { Dialog, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -26,7 +27,12 @@ import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '@vegaprotocol/oracles';
-import { OracleBasicProfile, useOracleProofs } from '@vegaprotocol/oracles';
+import { OracleProfileTitle, OracleFullProfile } from '@vegaprotocol/oracles';
+import {
+  OracleBasicProfile,
+  useOracleProofs,
+  useOracleMarkets,
+} from '@vegaprotocol/oracles';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 
 type PanelProps = Pick<
@@ -456,6 +462,11 @@ export const OracleInfoPanel = ({
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
 
+  const dataSourceSpecId =
+    type === 'settlementData'
+      ? product.dataSourceSpecForSettlementData.id
+      : product.dataSourceSpecForTradingTermination.id;
+
   return (
     <div className="flex flex-col gap-4">
       <DataSourceProof
@@ -467,6 +478,7 @@ export const OracleInfoPanel = ({
         }
         providers={data}
         type={type}
+        id={dataSourceSpecId}
       />
       <ExternalLink
         data-testid="oracle-spec-links"
@@ -488,10 +500,12 @@ export const DataSourceProof = ({
   data,
   providers,
   type,
+  id,
 }: {
   data: DataSourceDefinition;
   providers: Provider[] | undefined;
   type: 'settlementData' | 'termination';
+  id: string;
 }) => {
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
@@ -509,7 +523,7 @@ export const DataSourceProof = ({
               providers={providers}
               signer={signer}
               type={type}
-              index={i}
+              id={id}
             />
           );
         })}
@@ -540,11 +554,12 @@ const OracleLink = ({
   providers,
   signer,
   type,
+  id,
 }: {
   providers: Provider[];
   signer: SignerKind;
   type: 'settlementData' | 'termination';
-  index: number;
+  id: string;
 }) => {
   const signerProviders = providers.filter((p) => {
     if (signer.__typename === 'PubKey') {
@@ -575,10 +590,7 @@ const OracleLink = ({
   return (
     <div>
       {signerProviders.map((provider) => (
-        <OracleBasicProfile
-          key={provider.name}
-          provider={provider}
-        ></OracleBasicProfile>
+        <OracleProfile key={id} provider={provider} id={id} />
       ))}
     </div>
   );
@@ -596,5 +608,38 @@ const NoOracleProof = ({
         type === 'settlementData' ? 'settlement data' : 'termination'
       )}
     </p>
+  );
+};
+
+const OracleProfile = ({
+  provider,
+  id,
+}: {
+  provider: Provider;
+  id: string;
+}) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const oracleMarkets = useOracleMarkets(provider);
+  return (
+    <div key={provider.name}>
+      <OracleBasicProfile
+        provider={provider}
+        onClick={() => setDialogOpen(!dialogOpen)}
+        markets={oracleMarkets}
+      />
+      <Dialog
+        title={<OracleProfileTitle provider={provider} />}
+        open={dialogOpen}
+        onChange={() => setDialogOpen(!dialogOpen)}
+        aria-labelledby="oracle-proof-dialog"
+      >
+        <OracleFullProfile
+          provider={provider}
+          id={id}
+          key={id}
+          markets={oracleMarkets}
+        />
+      </Dialog>
+    </div>
   );
 };

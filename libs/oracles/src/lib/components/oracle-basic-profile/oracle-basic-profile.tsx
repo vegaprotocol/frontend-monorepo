@@ -1,18 +1,19 @@
 import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import {
+  ButtonLink,
   ExternalLink,
   Icon,
   Intent,
-  Link,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
+import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
 
-const getVerifiedStatusIcon = (provider: Provider) => {
+export const getVerifiedStatusIcon = (provider: Provider) => {
   const getIconIntent = () => {
     switch (provider.oracle.status) {
       case 'GOOD':
@@ -54,15 +55,19 @@ const getVerifiedStatusIcon = (provider: Provider) => {
   };
 };
 
-export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
+export const OracleBasicProfile = ({
+  provider,
+  onClick,
+  markets: oracleMarkets,
+}: {
+  provider: Provider;
+  markets?: OracleMarketSpecFieldsFragment[] | undefined;
+  onClick?: (value?: boolean) => void;
+}) => {
   const { icon, message, intent } = getVerifiedStatusIcon(provider);
 
   const verifiedProofs = provider.proofs.filter(
     (proof) => proof.available === true
-  );
-
-  const signedProofs = provider.proofs.filter(
-    (proof) => proof.format === 'signed_message' && proof.available === true
   );
 
   const links = provider.proofs
@@ -77,23 +82,20 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
     <>
       <span className="flex gap-1">
         {provider.url && (
-          <Link
-            href={provider.github_link}
-            className="flex align-items-bottom text-md"
-            target="_blank"
-          >
-            <span>
-              <span data-testid="provider-name" className="underline pr-1">
-                {provider.name}
-              </span>
-              <span
-                data-testid="verified-proofs"
-                className="dark:text-vega-light-300 text-vega-dark-300"
-              >
-                ({verifiedProofs.length})
-              </span>
+          <span className="flex align-items-bottom text-md gap-1">
+            <ButtonLink
+              onClick={() => onClick && onClick(true)}
+              data-testid="provider-name"
+            >
+              {provider.name}
+            </ButtonLink>
+            <span
+              className="dark:text-vega-light-300 text-vega-dark-300"
+              data-testid="verified-proofs"
+            >
+              ({verifiedProofs.length})
             </span>
-          </Link>
+          </span>
         )}
         <span
           className={classNames(
@@ -115,10 +117,11 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
         data-testid="signed-proofs"
         className="dark:text-vega-light-300 text-vega-dark-300"
       >
-        {t('Involved in %s %s', [
-          signedProofs.length.toString(),
-          signedProofs.length !== 1 ? t('markets') : t('market'),
-        ])}
+        {oracleMarkets &&
+          t('Involved in %s %s', [
+            oracleMarkets.length.toString(),
+            oracleMarkets.length !== 1 ? t('markets') : t('market'),
+          ])}
       </p>
       {links.length > 0 && (
         <div className="flex flex-row gap-1">
@@ -133,7 +136,7 @@ export const OracleBasicProfile = ({ provider }: { provider: Provider }) => {
                 <VegaIcon name={getLinkIcon(link.type)} />
               </span>
               <span className="underline capitalize">
-                {link.type}{' '}
+                {link.type}
                 <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
               </span>
             </ExternalLink>

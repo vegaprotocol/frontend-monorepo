@@ -6,17 +6,17 @@ import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import ReactMarkdown from 'react-markdown';
+import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
 
 export const ProposalHeader = ({
   proposal,
-  useSubHeading = true,
-  smallText = true,
+  isListItem = true,
 }: {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
-  useSubHeading?: boolean;
-  smallText?: boolean;
+  isListItem?: boolean;
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
@@ -62,7 +62,7 @@ export const ProposalHeader = ({
       details = (
         <>
           <span className={inlineTitleClasses}>{t('Market change')}:</span>
-          <span>{change.marketId}</span>
+          <span>{truncateMiddle(change.marketId)}</span>
         </>
       );
       break;
@@ -112,22 +112,17 @@ export const ProposalHeader = ({
       details = (
         <>
           <span className="uppercase mr-2">{t('Update asset')}:</span>
-          <Lozenge>{change.assetId}</Lozenge>
+          <Lozenge>{truncateMiddle(change.assetId)}</Lozenge>
         </>
       );
       break;
     }
   }
 
-  const proposalHeaderClasses = classnames('mb-2', {
-    'text-sm': smallText,
-    'text-base': !smallText,
-  });
-
   return (
-    <div className={proposalHeaderClasses}>
+    <>
       <div data-testid="proposal-title">
-        {useSubHeading ? (
+        {isListItem ? (
           <header>
             <SubHeading title={titleContent || t('Unknown proposal')} />
           </header>
@@ -136,7 +131,7 @@ export const ProposalHeader = ({
         )}
       </div>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex items-center gap-2 mb-4">
         <div data-testid="proposal-type">
           <ProposalInfoLabel>{t(`${proposalType}`)}</ProposalInfoLabel>
         </div>
@@ -146,14 +141,23 @@ export const ProposalHeader = ({
         </div>
       </div>
 
-      {description && (
-        <div data-testid="proposal-description" className="mb-3">
-          <span className="uppercase mr-2">{t('ProposalDescription')}:</span>
-          {description}
+      {description && !isListItem && (
+        <div data-testid="proposal-description" className="mb-4">
+          <div className="uppercase mr-2">{t('ProposalDescription')}:</div>
+          <ReactMarkdown
+            className="react-markdown-container"
+            /* Prevents HTML embedded in the description from rendering */
+            skipHtml={true}
+            /* Stops users embedding images which could be used for tracking  */
+            disallowedElements={['img']}
+            linkTarget="_blank"
+          >
+            {description}
+          </ReactMarkdown>
         </div>
       )}
 
       {details && <div data-testid="proposal-details">{details}</div>}
-    </div>
+    </>
   );
 };
