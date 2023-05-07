@@ -75,7 +75,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
         <ProposalHeader proposal={proposal} isListItem={false} />
-        <div className="mb-10">
+        <div className="my-10">
           <ProposalChangeTable proposal={proposal} />
         </div>
         {proposal.terms.change.__typename === 'NewAsset' &&

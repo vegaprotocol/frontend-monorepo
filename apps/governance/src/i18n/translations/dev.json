@@ -698,6 +698,7 @@
   "UpdateMarket": "Update market",
   "NewAsset": "New asset",
   "UpdateAsset": "Update asset",
+  "AssetID": "Asset ID",
   "Freeform": "Freeform",
   "RawProposal": "Let me choose (raw proposal)",
   "UseMin": "Use minimum",

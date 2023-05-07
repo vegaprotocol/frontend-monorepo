@@ -14,7 +14,7 @@ export const CurrentProposalState = ({
 }) => {
   const { t } = useTranslation();
   let proposalStatus: ReactNode;
-  let variant = undefined;
+  let variant = 'tertiary' as ProposalInfoLabelVariant;
 
   switch (proposal?.state) {
     case ProposalState.STATE_ENACTED: {
@@ -45,7 +45,7 @@ export const CurrentProposalState = ({
       break;
     }
     case ProposalState.STATE_OPEN: {
-      variant = 'secondary' as ProposalInfoLabelVariant;
+      variant = 'primary' as ProposalInfoLabelVariant;
       proposalStatus = <>{t('voteState_Open')}</>;
       break;
     }

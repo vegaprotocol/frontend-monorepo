@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
@@ -20,7 +19,7 @@ export const ProposalHeader = ({
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
-  const inlineTitleClasses = 'uppercase mr-2';
+  const inlineTitleClasses = 'mr-2';
 
   let details: ReactNode;
   let proposalType = '';
@@ -39,7 +38,6 @@ export const ProposalHeader = ({
       proposalType = 'NewMarket';
       details = (
         <>
-          <span className={inlineTitleClasses}>{t('NewMarket')}:</span>
           <span>
             {t('Code')}: {change.instrument.code}.
           </span>
@@ -71,7 +69,6 @@ export const ProposalHeader = ({
       proposalType = 'NewAsset';
       details = (
         <>
-          <span className={inlineTitleClasses}>{t('New asset')}:</span>
           <span className="mr-2">{t('Symbol')}:</span>
           <Lozenge>{change.symbol}.</Lozenge>
           {change.source.__typename === 'ERC20' && (
@@ -97,7 +94,9 @@ export const ProposalHeader = ({
           <span className={inlineTitleClasses}>{t('Change')}:</span>
           <Lozenge>{change.networkParameter.key}</Lozenge>
           <span className="mx-2">{t('to')}</span>
-          <Lozenge>{change.networkParameter.value}</Lozenge>
+          <span className="whitespace-nowrap">
+            <Lozenge>{change.networkParameter.value}</Lozenge>
+          </span>
         </>
       );
       break;
@@ -111,7 +110,7 @@ export const ProposalHeader = ({
       proposalType = 'UpdateAsset';
       details = (
         <>
-          <span className="uppercase mr-2">{t('Update asset')}:</span>
+          <span className={inlineTitleClasses}>{t('AssetID')}:</span>
           <Lozenge>{truncateMiddle(change.assetId)}</Lozenge>
         </>
       );
@@ -133,7 +132,9 @@ export const ProposalHeader = ({
 
       <div className="flex items-center gap-2 mb-4">
         <div data-testid="proposal-type">
-          <ProposalInfoLabel>{t(`${proposalType}`)}</ProposalInfoLabel>
+          <ProposalInfoLabel variant="secondary">
+            {t(`${proposalType}`)}
+          </ProposalInfoLabel>
         </div>
 
         <div data-testid="proposal-state">
@@ -142,8 +143,9 @@ export const ProposalHeader = ({
       </div>
 
       {description && !isListItem && (
-        <div data-testid="proposal-description" className="mb-4">
-          <div className="uppercase mr-2">{t('ProposalDescription')}:</div>
+        <div data-testid="proposal-description" className="my-10">
+          {/*<div className="uppercase mr-2">{t('ProposalDescription')}:</div>*/}
+          <SubHeading title={t('ProposalDescription')} />
           <ReactMarkdown
             className="react-markdown-container"
             /* Prevents HTML embedded in the description from rendering */
@@ -157,7 +159,11 @@ export const ProposalHeader = ({
         </div>
       )}
 
-      {details && <div data-testid="proposal-details">{details}</div>}
+      {details && (
+        <div data-testid="proposal-details" className="break-words">
+          {details}
+        </div>
+      )}
     </>
   );
 };

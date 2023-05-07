@@ -158,7 +158,7 @@ export const ProposalsListItemDetails = ({
     <div className="grid grid-cols-[1fr_auto] mt-4 items-start gap-2 text-sm">
       {voteDetails && (
         <div
-          className="col-start-1 row-start-2 text-neutral-500"
+          className="col-start-1 row-start-2 text-vega-light-300"
           data-testid="vote-details"
         >
           {voteDetails}
@@ -175,9 +175,7 @@ export const ProposalsListItemDetails = ({
       {proposal?.id && (
         <div className="col-start-2 row-start-2 justify-self-end">
           <Link to={`${Routes.PROPOSALS}/${proposal.id}`}>
-            <Button data-testid="view-proposal-btn" size="sm">
-              {t('View')}
-            </Button>
+            <Button data-testid="view-proposal-btn">{t('View')}</Button>
           </Link>
         </div>
       )}
