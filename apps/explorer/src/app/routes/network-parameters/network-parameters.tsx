@@ -53,6 +53,8 @@ const BIG_NUMBER_PARAMS = [
   'governance.proposal.asset.minProposerBalance',
   'governance.proposal.market.minProposerBalance',
   'governance.proposal.market.minVoterBalance',
+  'governance.proposal.updateAsset.minProposerBalance',
+  'governance.proposal.updateAsset.minVoterBalance',
 ];
 
 export const NetworkParameterRow = ({
