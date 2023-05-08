@@ -19,7 +19,6 @@ export const ProposalHeader = ({
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
-  const inlineTitleClasses = 'mr-2';
 
   let details: ReactNode;
   let proposalType = '';
@@ -40,7 +39,7 @@ export const ProposalHeader = ({
         <>
           <span>
             {t('Code')}: {change.instrument.code}.
-          </span>
+          </span>{' '}
           {change.instrument.futureProduct?.settlementAsset.symbol ? (
             <>
               <span className="font-semibold">
@@ -59,7 +58,7 @@ export const ProposalHeader = ({
       proposalType = 'UpdateMarket';
       details = (
         <>
-          <span className={inlineTitleClasses}>{t('Market change')}:</span>
+          <span>{t('Market change')}:</span>{' '}
           <span>{truncateMiddle(change.marketId)}</span>
         </>
       );
@@ -69,17 +68,16 @@ export const ProposalHeader = ({
       proposalType = 'NewAsset';
       details = (
         <>
-          <span className="mr-2">{t('Symbol')}:</span>
-          <Lozenge>{change.symbol}.</Lozenge>
+          <span>{t('Symbol')}:</span> <Lozenge>{change.symbol}.</Lozenge>{' '}
           {change.source.__typename === 'ERC20' && (
             <>
-              <span className="mx-2">{t('ERC20ContractAddress')}:</span>
+              <span>{t('ERC20ContractAddress')}:</span>{' '}
               <Lozenge>{change.source.contractAddress}</Lozenge>
             </>
-          )}
+          )}{' '}
           {change.source.__typename === 'BuiltinAsset' && (
             <>
-              <span className="mx-2">{t('MaxFaucetAmountMint')}:</span>
+              <span>{t('MaxFaucetAmountMint')}:</span>{' '}
               <Lozenge>{change.source.maxFaucetAmountMint}</Lozenge>
             </>
           )}
@@ -91,9 +89,9 @@ export const ProposalHeader = ({
       proposalType = 'NetworkParameter';
       details = (
         <>
-          <span className={inlineTitleClasses}>{t('Change')}:</span>
-          <Lozenge>{change.networkParameter.key}</Lozenge>
-          <span className="mx-2">{t('to')}</span>
+          <span>{t('Change')}:</span>{' '}
+          <Lozenge>{change.networkParameter.key}</Lozenge>{' '}
+          <span>{t('to')}</span>{' '}
           <span className="whitespace-nowrap">
             <Lozenge>{change.networkParameter.value}</Lozenge>
           </span>
@@ -110,7 +108,7 @@ export const ProposalHeader = ({
       proposalType = 'UpdateAsset';
       details = (
         <>
-          <span className={inlineTitleClasses}>{t('AssetID')}:</span>
+          <span>{t('AssetID')}:</span>{' '}
           <Lozenge>{truncateMiddle(change.assetId)}</Lozenge>
         </>
       );
@@ -137,7 +135,7 @@ export const ProposalHeader = ({
           </ProposalInfoLabel>
         </div>
 
-        <div data-testid="proposal-state">
+        <div data-testid="proposal-status">
           <CurrentProposalState proposal={proposal} />
         </div>
       </div>
