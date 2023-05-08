@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import * as Schema from '@vegaprotocol/types';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { ProposalState } from '@vegaprotocol/types';
+import { ProposalInfoLabel } from '../proposal-info-label';
+import type { ReactNode } from 'react';
+import type { ProposalInfoLabelVariant } from '../proposal-info-label';
 
 export const CurrentProposalState = ({
   proposal,
@@ -9,19 +13,63 @@ export const CurrentProposalState = ({
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
   const { t } = useTranslation();
-  let className = 'text-white';
+  let proposalStatus: ReactNode;
+  let variant = 'tertiary' as ProposalInfoLabelVariant;
 
-  if (
-    proposal?.state === Schema.ProposalState.STATE_DECLINED ||
-    proposal?.state === Schema.ProposalState.STATE_FAILED ||
-    proposal?.state === Schema.ProposalState.STATE_REJECTED
-  ) {
-    className = 'text-danger';
-  } else if (
-    proposal?.state === Schema.ProposalState.STATE_ENACTED ||
-    proposal?.state === Schema.ProposalState.STATE_PASSED
-  ) {
-    className = 'text-white';
+  switch (proposal?.state) {
+    case ProposalState.STATE_ENACTED: {
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Enacted')}</span>
+          <Icon name={'tick'} />
+        </>
+      );
+      break;
+    }
+    case ProposalState.STATE_PASSED: {
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Passed')}</span>
+          <Icon name={'tick'} />
+        </>
+      );
+      break;
+    }
+    case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_WaitingForNodeVote')}</span>
+          <Icon name={'time'} />
+        </>
+      );
+      break;
+    }
+    case ProposalState.STATE_OPEN: {
+      variant = 'primary' as ProposalInfoLabelVariant;
+      proposalStatus = <>{t('voteState_Open')}</>;
+      break;
+    }
+    case ProposalState.STATE_DECLINED: {
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Declined')}</span>
+          <Icon name={'cross'} />
+        </>
+      );
+      break;
+    }
+    case ProposalState.STATE_REJECTED: {
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Rejected')}</span>
+          <Icon name={'warning-sign'} />
+        </>
+      );
+      break;
+    }
   }
-  return <span className={className}>{t(`${proposal?.state}`)}</span>;
+
+  return (
+    <ProposalInfoLabel variant={variant}>{proposalStatus}</ProposalInfoLabel>
+  );
 };

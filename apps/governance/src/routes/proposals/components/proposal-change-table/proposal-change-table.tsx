@@ -6,7 +6,6 @@ import {
   KeyValueTableRow,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
-import { CurrentProposalState } from '../current-proposal-state';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
@@ -20,15 +19,11 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
   const terms = proposal?.terms;
 
   return (
-    <RoundedWrapper>
+    <RoundedWrapper paddingBottom={true}>
       <KeyValueTable data-testid="proposal-change-table">
         <KeyValueTableRow>
           {t('id')}
           {proposal?.id}
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {t('state')}
-          <CurrentProposalState proposal={proposal} />
         </KeyValueTableRow>
         <KeyValueTableRow>
           {isFuture(new Date(terms?.closingDatetime))
@@ -50,26 +45,24 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
           {t('proposedBy')}
           <span style={{ wordBreak: 'break-word' }}>{proposal?.party.id}</span>
         </KeyValueTableRow>
-        <KeyValueTableRow>
+        <KeyValueTableRow
+          noBorder={!proposal?.rejectionReason && !proposal?.errorDetails}
+        >
           {t('proposedOn')}
           {formatDateWithLocalTimezone(new Date(proposal?.datetime))}
         </KeyValueTableRow>
         {proposal?.rejectionReason ? (
-          <KeyValueTableRow>
+          <KeyValueTableRow noBorder={!proposal?.errorDetails}>
             {t('rejectionReason')}
             {proposal.rejectionReason}
           </KeyValueTableRow>
         ) : null}
         {proposal?.errorDetails ? (
-          <KeyValueTableRow>
+          <KeyValueTableRow noBorder={true}>
             {t('errorDetails')}
             {proposal.errorDetails}
           </KeyValueTableRow>
         ) : null}
-        <KeyValueTableRow>
-          {t('type')}
-          {t(`${proposal?.terms.change.__typename}`)}
-        </KeyValueTableRow>
       </KeyValueTable>
     </RoundedWrapper>
   );

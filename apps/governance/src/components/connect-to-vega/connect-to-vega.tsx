@@ -23,6 +23,7 @@ export const ConnectToVega = () => {
         openVegaWalletDialog();
       }}
       data-testid="connect-to-vega-wallet-btn"
+      variant="primary"
     >
       {t('connectVegaWallet')}
     </Button>
