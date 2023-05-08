@@ -427,10 +427,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       'contain.text',
       `You can't deposit more than you have in your Ethereum wallet`
     );
-    // cy.getByTestId('reapprove-default').should(
-    //   'contain.text',
-    //   `You can't deposit more than you have in your Ethereum wallet`
-    // );
   });
 
   it('withdraw - delay verification', function () {
