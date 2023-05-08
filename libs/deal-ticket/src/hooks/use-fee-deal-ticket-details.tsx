@@ -49,6 +49,31 @@ export interface FeeDetails {
   positionEstimate: EstimatePositionQuery['estimatePosition'];
 }
 
+const emptyValue = '-';
+const formatValue = (
+  value: string | number | null | undefined,
+  formatDecimals: number
+): string => {
+  return value && !isNaN(Number(value))
+    ? formatNumber(value, formatDecimals)
+    : emptyValue;
+};
+const formatRange = (
+  min: string | number | null | undefined,
+  max: string | number | null | undefined,
+  formatDecimals: number
+) => {
+  const minFormatted = formatValue(min, formatDecimals);
+  const maxFormatted = formatValue(max, formatDecimals);
+  if (minFormatted !== maxFormatted) {
+    return `${minFormatted} - ${maxFormatted}`;
+  }
+  if (minFormatted !== emptyValue) {
+    return minFormatted;
+  }
+  return maxFormatted;
+};
+
 export const getFeeDetailsValues = ({
   marginAccountBalance,
   generalAccountBalance,
@@ -66,20 +91,6 @@ export const getFeeDetailsValues = ({
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
-  const formatValueWithMarketDp = (
-    value: string | number | null | undefined
-  ): string => {
-    return value && !isNaN(Number(value))
-      ? formatNumber(value, market.decimalPlaces)
-      : '-';
-  };
-  const formatValueWithAssetDp = (
-    value: string | number | null | undefined
-  ): string => {
-    return value && !isNaN(Number(value))
-      ? addDecimalsFormatNumber(value, assetDecimals)
-      : '-';
-  };
   const details: {
     label: string;
     value?: string | null;
@@ -89,7 +100,7 @@ export const getFeeDetailsValues = ({
   }[] = [
     {
       label: t('Notional'),
-      value: formatValueWithMarketDp(notionalSize),
+      value: formatValue(notionalSize, market.decimalPlaces),
       symbol: assetSymbol,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol),
     },
@@ -97,7 +108,7 @@ export const getFeeDetailsValues = ({
       label: t('Fees'),
       value:
         estimateFees?.totalFeeAmount &&
-        `~${formatValueWithAssetDp(estimateFees?.totalFeeAmount)}`,
+        `~${formatValue(estimateFees?.totalFeeAmount, assetDecimals)}`,
       labelDescription: (
         <>
           <span>
@@ -119,26 +130,20 @@ export const getFeeDetailsValues = ({
   if (marginEstimate) {
     details.push({
       label: t('Margin required'),
-      value: `~${formatValueWithAssetDp(
+      value: `~${formatRange(
         currentInitialMargin
           ? (
               BigInt(marginEstimate.bestCase.initialLevel) -
               BigInt(currentInitialMargin)
             ).toString()
-          : marginEstimate.bestCase.initialLevel
-      )}`,
-      symbol: assetSymbol,
-      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
-    });
-    details.push({
-      label: t('Margin required worst case'),
-      value: `~${formatValueWithAssetDp(
+          : marginEstimate.bestCase.initialLevel,
         currentInitialMargin
           ? (
               BigInt(marginEstimate.worstCase.initialLevel) -
               BigInt(currentInitialMargin)
             ).toString()
-          : marginEstimate.worstCase.initialLevel
+          : marginEstimate.worstCase.initialLevel,
+        assetDecimals
       )}`,
       symbol: assetSymbol,
       labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
@@ -154,12 +159,12 @@ export const getFeeDetailsValues = ({
     details.push({
       indent: true,
       label: t('Total margin available'),
-      value: `~${formatValueWithAssetDp(totalMarginAvailable)}`,
+      value: `~${formatValue(totalMarginAvailable, assetDecimals)}`,
       symbol: assetSymbol,
       labelDescription: TOTAL_MARGIN_AVAILABLE(
-        formatValueWithAssetDp(generalAccountBalance),
-        formatValueWithAssetDp(marginAccountBalance),
-        formatValueWithAssetDp(currentMaintenanceMargin),
+        formatValue(generalAccountBalance, assetDecimals),
+        formatValue(marginAccountBalance, assetDecimals),
+        formatValue(currentMaintenanceMargin, assetDecimals),
         assetSymbol
       ),
     });
@@ -170,29 +175,21 @@ export const getFeeDetailsValues = ({
         BigInt(marginEstimate.bestCase.initialLevel) -
         BigInt(marginAccountBalance);
 
-      details.push({
-        indent: true,
-        label: t('Deduction from collateral'),
-        value: `~${formatValueWithAssetDp(
-          deductionFromCollateralBestCase > 0
-            ? deductionFromCollateralBestCase.toString()
-            : '0'
-        )}`,
-        symbol: assetSymbol,
-        labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
-      });
-
       const deductionFromCollateralWorstCase =
         BigInt(marginEstimate.worstCase.initialLevel) -
         BigInt(marginAccountBalance);
 
       details.push({
         indent: true,
-        label: t('Deduction from collateral worst case'),
-        value: `~${formatValueWithAssetDp(
+        label: t('Deduction from collateral'),
+        value: `~${formatRange(
+          deductionFromCollateralBestCase > 0
+            ? deductionFromCollateralBestCase.toString()
+            : '0',
           deductionFromCollateralWorstCase > 0
             ? deductionFromCollateralWorstCase.toString()
-            : '0'
+            : '0',
+          assetDecimals
         )}`,
         symbol: assetSymbol,
         labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
@@ -201,15 +198,10 @@ export const getFeeDetailsValues = ({
 
     details.push({
       label: t('Projected margin'),
-      value: `~${formatValueWithAssetDp(marginEstimate.bestCase.initialLevel)}`,
-      symbol: assetSymbol,
-      labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
-    });
-
-    details.push({
-      label: t('Projected margin worst case'),
-      value: `~${formatValueWithAssetDp(
-        marginEstimate.worstCase.initialLevel
+      value: `~${formatRange(
+        marginEstimate.bestCase.initialLevel,
+        marginEstimate.worstCase.initialLevel,
+        assetDecimals
       )}`,
       symbol: assetSymbol,
       labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
@@ -217,7 +209,7 @@ export const getFeeDetailsValues = ({
   }
   details.push({
     label: t('Current margin allocation'),
-    value: `${formatValueWithAssetDp(marginAccountBalance)}`,
+    value: `${formatValue(marginAccountBalance, assetDecimals)}`,
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
   });
@@ -233,14 +225,6 @@ export const getFeeDetailsValues = ({
       liquidationEstimateBestCaseIncludingSellOrders
         ? liquidationEstimateBestCaseIncludingBuyOrders
         : liquidationEstimateBestCaseIncludingSellOrders;
-    details.push({
-      label: t('Liquidation price estimate'),
-      value: `${formatValueWithAssetDp(
-        liquidationEstimateBestCase.toString()
-      )}`,
-      symbol: assetSymbol,
-      labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
-    });
 
     const liquidationEstimateWorstCaseIncludingBuyOrders = BigInt(
       liquidationEstimate.worstCase.including_buy_orders.replace(/\..*/, '')
@@ -253,10 +237,13 @@ export const getFeeDetailsValues = ({
       liquidationEstimateWorstCaseIncludingSellOrders
         ? liquidationEstimateWorstCaseIncludingBuyOrders
         : liquidationEstimateWorstCaseIncludingSellOrders;
+
     details.push({
-      label: t('Liquidation price estimate worst case'),
-      value: `${formatValueWithAssetDp(
-        liquidationEstimateWorstCase.toString()
+      label: t('Liquidation price estimate'),
+      value: `${formatRange(
+        liquidationEstimateBestCase.toString(),
+        liquidationEstimateWorstCase.toString(),
+        assetDecimals
       )}`,
       symbol: assetSymbol,
       labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
