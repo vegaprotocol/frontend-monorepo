@@ -1,8 +1,21 @@
+import { create } from 'zustand';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Button } from '@vegaprotocol/ui-toolkit';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
+
+type TelemetryDialogState = {
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
+};
+
+const useTelemetryDialogStore = create<TelemetryDialogState>((set) => ({
+  isOpen: false,
+  open: () => set({ isOpen: true }),
+  close: () => set({ isOpen: false }),
+}));
 
 export const TELEMETRY_DIALOG_PREVIOUSLY_OPENED =
   'telemetry_dialog_previously_opened';
@@ -20,9 +33,8 @@ export const useTelemetryDialog = () => {
 
   const defaultTelemetryAccepted = isMainnet ? 'false' : 'true';
 
-  const [isOpen, setIsOpen] = useState(
-    !JSON.parse(getPreviouslyOpened || 'false')
-  );
+  const { isOpen, open, close } = useTelemetryDialogStore();
+
   const [telemetryAccepted, setTelemetryAcceptedState] = useState(
     JSON.parse(getTelemetryAccepted || defaultTelemetryAccepted)
   );
@@ -39,13 +51,13 @@ export const useTelemetryDialog = () => {
 
   useEffect(() => {
     if (JSON.parse(getPreviouslyOpened || 'false') === false) {
-      setIsOpen(true);
+      open();
     }
-  }, [getPreviouslyOpened]);
+  }, [getPreviouslyOpened, open]);
 
   const handleClose = () => {
     setPreviouslyOpened('true');
-    setIsOpen(false);
+    close();
   };
 
   const handleSetTelemetryAccepted = (value: boolean) => {
@@ -55,7 +67,7 @@ export const useTelemetryDialog = () => {
 
   return {
     isOpen,
-    open: () => setIsOpen(true),
+    open: open,
     close: handleClose,
     telemetryAccepted,
     setTelemetryAccepted: handleSetTelemetryAccepted,
@@ -97,6 +109,7 @@ export const TelemetryDialog = () => {
             close();
           }}
           variant={telemetryAccepted ? 'default' : 'primary'}
+          data-testid="do-not-share-data-button"
         >
           {t('NoThanks')}
         </Button>
@@ -107,6 +120,7 @@ export const TelemetryDialog = () => {
             close();
           }}
           variant={telemetryAccepted ? 'primary' : 'default'}
+          data-testid="share-data-button"
         >
           {telemetryAccepted ? t('ContinueSharingData') : t('ShareData')}
         </Button>

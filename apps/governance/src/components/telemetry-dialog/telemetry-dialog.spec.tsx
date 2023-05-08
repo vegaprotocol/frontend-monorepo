@@ -53,4 +53,9 @@ describe('useTelemetryDialog', () => {
 
     expect(result.current.isOpen).toBe(true);
   });
+
+  it('should open the dialog if TELEMETRY_DIALOG_PREVIOUSLY_OPENED is not set', () => {
+    const { result } = renderHook(() => useTelemetryDialog());
+    expect(result.current.isOpen).toBe(true);
+  });
 });
