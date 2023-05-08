@@ -9,9 +9,8 @@ declare global {
 }
 
 export function addGetNetworkParameters() {
-  // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
   Cypress.Commands.add('get_network_parameters', () => {
-    const mutation = `
+    const query = `
   {
     networkParametersConnection {
       edges {
@@ -26,17 +25,17 @@ export function addGetNetworkParameters() {
       method: 'POST',
       url: `http://localhost:3008/graphql`,
       body: {
-        query: mutation,
+        query,
       },
       headers: { 'content-type': 'application/json' },
     })
       .its('body.data.networkParametersConnection.edges')
       .then(function (response) {
-        // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
-        const object = response.reduce(function (r, e) {
-          const { value, key } = e.node;
-          r[key] = value;
-          return r;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const object = response.reduce(function (obj: any, edge: any) {
+          const { value, key } = edge.node;
+          obj[key] = value;
+          return obj;
         }, {});
         return cy.wrap(object);
       });
