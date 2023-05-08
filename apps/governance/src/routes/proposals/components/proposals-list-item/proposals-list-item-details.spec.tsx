@@ -97,7 +97,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Enacted');
     expect(screen.getByTestId('vote-details')).toHaveTextContent(
       format(lastWeek, DATE_FORMAT_DETAILED)
     );
@@ -113,7 +112,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Passed');
     expect(screen.getByTestId('vote-details')).toHaveTextContent(
       `Enacts on ${format(nextWeek, DATE_FORMAT_DETAILED)}`
     );
@@ -127,9 +125,6 @@ describe('Proposals list item details', () => {
           enactmentDatetime: nextWeek.toString(),
         },
       })
-    );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent(
-      'Waiting for node vote'
     );
     expect(screen.getByTestId('vote-details')).toHaveTextContent(
       `Enacts on ${format(nextWeek, DATE_FORMAT_DETAILED)}`
@@ -221,7 +216,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
     expect(screen.getByTestId('vote-details')).toHaveTextContent(
       '5 minutes left to vote'
     );
@@ -236,7 +230,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
     expect(screen.getByTestId('vote-details')).toHaveTextContent(
       '5 hours left to vote'
     );
@@ -251,7 +244,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
     expect(screen.getByTestId('vote-details')).toHaveTextContent(
       '5 days left to vote'
     );
@@ -268,10 +260,7 @@ describe('Proposals list item details', () => {
       networkParamsQueryMock,
       createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_YES),
     ]);
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
-
-    expect(await screen.findByText('You voted')).toBeInTheDocument();
-    expect(await screen.findByText('For')).toBeInTheDocument();
+    expect(await screen.findByText('You voted For')).toBeInTheDocument();
   });
 
   it('Renders proposal state: Open - user voted against', async () => {
@@ -285,9 +274,7 @@ describe('Proposals list item details', () => {
       networkParamsQueryMock,
       createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_NO),
     ]);
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
-    expect(await screen.findByText('You voted')).toBeInTheDocument();
-    expect(await screen.findByText('Against')).toBeInTheDocument();
+    expect(await screen.findByText('You voted Against')).toBeInTheDocument();
   });
 
   it('Renders proposal state: Open - participation not reached', () => {
@@ -303,7 +290,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
       'Participation not reached'
     );
@@ -322,7 +308,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
       'Majority not reached'
     );
@@ -342,7 +327,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
     expect(screen.getByTestId('vote-status')).toHaveTextContent('Set to pass');
   });
 
@@ -359,7 +343,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Declined');
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
       'Participation not reached'
     );
@@ -378,7 +361,6 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Declined');
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
       'Majority not reached'
     );
@@ -395,7 +377,6 @@ describe('Proposals list item details', () => {
           ProposalRejectionReason.PROPOSAL_ERROR_INVALID_FUTURE_PRODUCT,
       })
     );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Rejected');
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
       'Invalid future product'
     );

@@ -107,10 +107,6 @@ export const VoteButtons = ({
       );
     }
 
-    if (currentStakeAvailable.isLessThanOrEqualTo(0)) {
-      return t('noGovernanceTokens');
-    }
-
     if (minVoterBalance && spamProtectionMinTokens) {
       const formattedMinVoterBalance = new BigNumber(
         addDecimal(minVoterBalance, 18)
@@ -163,24 +159,30 @@ export const VoteButtons = ({
   return (
     <>
       {changeVote || (voteState === VoteState.NotCast && proposalVotable) ? (
-        <div className="flex gap-4" data-testid="vote-buttons">
-          <div className="flex-1">
+        <>
+          {currentStakeAvailable.isLessThanOrEqualTo(0) && (
+            <p data-testid="no-stake-available">{t('noGovernanceTokens')}</p>
+          )}
+
+          <div className="flex gap-4" data-testid="vote-buttons">
             <Button
               data-testid="vote-for"
               onClick={() => submitVote(VoteValue.VALUE_YES)}
+              variant="primary"
+              disabled={currentStakeAvailable.isLessThanOrEqualTo(0)}
             >
               {t('voteFor')}
             </Button>
-          </div>
-          <div className="flex-1">
             <Button
               data-testid="vote-against"
               onClick={() => submitVote(VoteValue.VALUE_NO)}
+              variant="primary"
+              disabled={currentStakeAvailable.isLessThanOrEqualTo(0)}
             >
               {t('voteAgainst')}
             </Button>
           </div>
-        </div>
+        </>
       ) : (
         (voteState === VoteState.Yes || voteState === VoteState.No) && (
           <p data-testid="you-voted">
