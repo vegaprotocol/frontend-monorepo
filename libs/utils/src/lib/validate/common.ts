@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { ethers } from 'ethers';
 import { t } from '@vegaprotocol/i18n';
 
 export const required = (value: string) => {
@@ -10,14 +9,14 @@ export const required = (value: string) => {
 };
 
 export const ethereumAddress = (value: string) => {
-  if (!ethers.utils.isAddress(value)) {
+  if (!/^0x[0-9a-fA-F]{40}$/i.test(value)) {
     return t('Invalid Ethereum address');
   }
   return true;
 };
 
 export const vegaPublicKey = (value: string) => {
-  if (value.length !== 64 || !/^[A-Fa-f0-9]*$/i.test(value)) {
+  if (!/^[A-Fa-f0-9]{64}$/i.test(value)) {
     return t('Invalid Vega key');
   }
   return true;

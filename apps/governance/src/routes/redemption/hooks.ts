@@ -34,8 +34,9 @@ export const useUserTrancheBalances = (address: string | undefined) => {
         vesting.get_vested_for_tranche(address, tId),
       ]);
 
-      const total = toBigNum(t, decimals);
-      const vested = toBigNum(v, decimals);
+      // Convert t and v EthersBigNumbers to regular BigNumbers
+      const total = toBigNum(t.toString(), decimals);
+      const vested = toBigNum(v.toString(), decimals);
 
       return {
         id: tId,

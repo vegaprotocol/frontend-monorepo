@@ -31,12 +31,18 @@ export const useRefreshBalances = (address: string) => {
           pubKey ? vesting.stake_balance(address, pubKey) : null,
         ]);
 
-      const balance = toBigNum(b, decimals);
-      const walletBalance = toBigNum(w, decimals);
-      const lien = toBigNum(stats.lien, decimals);
-      const allowance = toBigNum(a, decimals);
-      const walletAssociatedBalance = toBigNum(walletStakeBalance, decimals);
-      const vestingAssociatedBalance = toBigNum(vestingStakeBalance, decimals);
+      const balance = toBigNum(b.toString(), decimals);
+      const walletBalance = toBigNum(w.toString(), decimals);
+      const lien = toBigNum(stats.lien.toString(), decimals);
+      const allowance = toBigNum(a.toString(), decimals);
+      const walletAssociatedBalance = toBigNum(
+        walletStakeBalance ? walletStakeBalance.toString() : 0,
+        decimals
+      );
+      const vestingAssociatedBalance = toBigNum(
+        vestingStakeBalance ? vestingStakeBalance.toString() : 0,
+        decimals
+      );
 
       updateBalances({
         balanceFormatted: balance,

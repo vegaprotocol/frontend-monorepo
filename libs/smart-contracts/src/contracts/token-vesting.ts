@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import abi from '../abis/vesting_abi.json';
 import { calcGasBuffer, prepend0x } from '../utils';
+import type { BigNumber as EthersBigNum } from 'ethers';
 
 export class TokenVesting {
   public contract: ethers.Contract;
@@ -29,13 +30,15 @@ export class TokenVesting {
       gasLimit,
     });
   }
-  stake_balance(address: string, vegaPublicKey: string) {
+  stake_balance(address: string, vegaPublicKey: string): Promise<EthersBigNum> {
     return this.contract.stake_balance(address, prepend0x(vegaPublicKey));
   }
   total_staked() {
     return this.contract.total_staked();
   }
-  user_stats(address: string) {
+  user_stats(
+    address: string
+  ): Promise<{ lien: EthersBigNum; total_in_all_tranches: EthersBigNum }> {
     return this.contract.user_stats(address);
   }
   get_tranche_balance(address: string, trancheId: number) {
@@ -44,7 +47,7 @@ export class TokenVesting {
   get_vested_for_tranche(address: string, trancheId: number) {
     return this.contract.get_vested_for_tranche(address, trancheId);
   }
-  user_total_all_tranches(address: string) {
+  user_total_all_tranches(address: string): Promise<EthersBigNum> {
     return this.contract.user_total_all_tranches(address);
   }
   async withdraw_from_tranche(trancheId: number) {
