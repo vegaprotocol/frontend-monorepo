@@ -24,7 +24,8 @@ import { PriceChart } from 'pennant';
 import 'pennant/dist/style.css';
 import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
-import { useDataProvider, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/market-list';
 
 const DateRange = {

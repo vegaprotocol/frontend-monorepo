@@ -1,6 +1,5 @@
 import type { IGetRowsParams } from 'ag-grid-community';
-import type { Load, DerivedPart } from './generic-data-provider';
-import type { Node, Edge } from './generic-data-provider';
+import type { Load, DerivedPart, Node, Edge } from './generic-data-provider';
 import type { MutableRefObject } from 'react';
 
 const getLastRow = (

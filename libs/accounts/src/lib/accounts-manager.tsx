@@ -1,9 +1,7 @@
 import { useRef, useMemo, memo, useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import {
-  useDataProvider,
-  useBottomPlaceholder,
-} from '@vegaprotocol/react-helpers';
+import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';

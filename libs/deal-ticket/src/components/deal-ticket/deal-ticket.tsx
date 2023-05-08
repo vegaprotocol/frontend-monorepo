@@ -44,7 +44,7 @@ import {
 
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 import { marketMarginDataProvider } from '@vegaprotocol/positions';
 

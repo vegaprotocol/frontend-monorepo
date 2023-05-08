@@ -13,8 +13,8 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../components/route-title';
 import orderBy from 'lodash/orderBy';
-import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { useNetworkParamsQuery } from '@vegaprotocol/network-parameters';
+import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 

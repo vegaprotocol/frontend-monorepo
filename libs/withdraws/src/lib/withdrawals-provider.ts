@@ -1,9 +1,6 @@
 import uniqBy from 'lodash/uniqBy';
-import {
-  makeDataProvider,
-  removePaginationWrapper,
-  getEvents,
-} from '@vegaprotocol/utils';
+import { removePaginationWrapper, getEvents } from '@vegaprotocol/utils';
+import { makeDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
   WithdrawalsDocument,

@@ -33,7 +33,7 @@ import {
   useOracleProofs,
   useOracleMarkets,
 } from '@vegaprotocol/oracles';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 type PanelProps = Pick<
   ComponentProps<typeof MarketInfoTable>,

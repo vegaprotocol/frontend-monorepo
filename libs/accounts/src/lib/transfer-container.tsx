@@ -3,9 +3,9 @@ import { addDecimal, truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
-  useDataProvider,
   useNetworkParam,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/network-parameters';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';

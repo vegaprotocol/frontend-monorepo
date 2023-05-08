@@ -10,7 +10,10 @@ import {
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import { useProposalSubmit } from '@vegaprotocol/proposals';
 import {
   ProposalFormSubmit,

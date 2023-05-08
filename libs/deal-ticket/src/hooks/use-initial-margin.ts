@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import {
