@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import {
   useTelemetryDialog,
   TELEMETRY_DIALOG_PREVIOUSLY_OPENED,
-  TELEMETRY_ACCEPTED,
+  TELEMETRY_ON,
 } from './telemetry-dialog';
 
 describe('useTelemetryDialog', () => {
@@ -12,7 +12,7 @@ describe('useTelemetryDialog', () => {
 
   it('should have the correct initial state based on localStorage', () => {
     localStorage.setItem(TELEMETRY_DIALOG_PREVIOUSLY_OPENED, 'true');
-    localStorage.setItem(TELEMETRY_ACCEPTED, 'true');
+    localStorage.setItem(TELEMETRY_ON, 'true');
 
     const { result } = renderHook(() => useTelemetryDialog());
 
@@ -28,7 +28,7 @@ describe('useTelemetryDialog', () => {
     });
 
     expect(result.current.telemetryAccepted).toBe(true);
-    expect(localStorage.getItem(TELEMETRY_ACCEPTED)).toBe('true');
+    expect(localStorage.getItem(TELEMETRY_ON)).toBe('true');
   });
 
   it('should update localStorage and the isOpen state when close is called', () => {

@@ -19,14 +19,13 @@ const useTelemetryDialogStore = create<TelemetryDialogState>((set) => ({
 
 export const TELEMETRY_DIALOG_PREVIOUSLY_OPENED =
   'telemetry_dialog_previously_opened';
-export const TELEMETRY_ACCEPTED = 'telemetry_accepted';
+export const TELEMETRY_ON = 'telemetry_on';
 
 export const useTelemetryDialog = () => {
   const [getPreviouslyOpened, setPreviouslyOpened] = useLocalStorage(
     TELEMETRY_DIALOG_PREVIOUSLY_OPENED
   );
-  const [getTelemetryAccepted, setTelemetryAccepted] =
-    useLocalStorage(TELEMETRY_ACCEPTED);
+  const [getTelemetryOn, setTelemetryOn] = useLocalStorage(TELEMETRY_ON);
 
   const { VEGA_ENV } = useEnvironment();
   const isMainnet = VEGA_ENV === Networks.MAINNET;
@@ -36,18 +35,18 @@ export const useTelemetryDialog = () => {
   const { isOpen, open, close } = useTelemetryDialogStore();
 
   const [telemetryAccepted, setTelemetryAcceptedState] = useState(
-    JSON.parse(getTelemetryAccepted || defaultTelemetryAccepted)
+    JSON.parse(getTelemetryOn || defaultTelemetryAccepted)
   );
 
   useEffect(() => {
-    if (getTelemetryAccepted === null || getTelemetryAccepted === undefined) {
+    if (getTelemetryOn === null || getTelemetryOn === undefined) {
       // Sets an initial value in local storage based on the network
-      setTelemetryAccepted(defaultTelemetryAccepted);
+      setTelemetryOn(defaultTelemetryAccepted);
     } else {
       // Ensures the component state is in sync with local storage
-      setTelemetryAcceptedState(JSON.parse(getTelemetryAccepted));
+      setTelemetryAcceptedState(JSON.parse(getTelemetryOn));
     }
-  }, [getTelemetryAccepted, setTelemetryAccepted, defaultTelemetryAccepted]);
+  }, [getTelemetryOn, setTelemetryOn, defaultTelemetryAccepted]);
 
   useEffect(() => {
     if (JSON.parse(getPreviouslyOpened || 'false') === false) {
@@ -61,7 +60,7 @@ export const useTelemetryDialog = () => {
   };
 
   const handleSetTelemetryAccepted = (value: boolean) => {
-    setTelemetryAccepted(JSON.stringify(value));
+    setTelemetryOn(JSON.stringify(value));
     setTelemetryAcceptedState(value);
   };
 

@@ -43,7 +43,11 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 import { WithdrawalDialog } from '@vegaprotocol/withdraws';
 import { SplashLoader } from './components/splash-loader';
 import { ToastsManager } from './toasts-manager';
-import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog';
+import {
+  TelemetryDialog,
+  TELEMETRY_ON,
+} from './components/telemetry-dialog/telemetry-dialog';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -179,9 +183,10 @@ const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
   const { VEGA_ENV, GIT_COMMIT_HASH, GIT_BRANCH, ETHEREUM_PROVIDER_URL } =
     useEnvironment();
+  const [telemetryOn] = useLocalStorage(TELEMETRY_ON);
 
   useEffect(() => {
-    if (ENV.dsn) {
+    if (ENV.dsn && telemetryOn) {
       Sentry.init({
         dsn: ENV.dsn,
         integrations: [new Integrations.BrowserTracing()],
@@ -205,7 +210,7 @@ const AppContainer = () => {
       Sentry.setTag('branch', GIT_BRANCH);
       Sentry.setTag('commit', GIT_COMMIT_HASH);
     }
-  }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV]);
+  }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV, telemetryOn]);
 
   return (
     <Router>
