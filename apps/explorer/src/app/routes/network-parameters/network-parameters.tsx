@@ -21,6 +21,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 const PERCENTAGE_PARAMS = [
   'governance.proposal.asset.requiredMajority',
   'governance.proposal.asset.requiredParticipation',
+  'governance.proposal.updateAsset.requiredParticipation',
   'governance.proposal.freeform.requiredMajority',
   'governance.proposal.freeform.requiredParticipation',
   'governance.proposal.market.requiredMajority',
