@@ -10,6 +10,8 @@
     "governance.proposal.updateMarket.minVoterBalance",
     "governance.proposal.updateNetParam.minProposerBalance",
     "governance.proposal.updateNetParam.minVoterBalance",
+    "governance.proposal.updateAsset.minProposerBalance",
+    "governance.proposal.updateAsset.minVoterBalance",
     "reward.staking.delegation.maxPayoutPerEpoch",
     "reward.staking.delegation.maxPayoutPerParticipant",
     "reward.staking.delegation.minimumValidatorStake",
@@ -19,9 +21,6 @@
     "validators.delegation.minAmount"
   ],
   "fiveDecimal": [
-    "governance.proposal.updateAsset.minProposerBalance",
-    "governance.proposal.updateAsset.minVoterBalance",
-    "governance.proposal.updateAsset.requiredParticipation",
     "market.fee.factors.infrastructureFee",
     "market.fee.factors.makerFee",
     "market.liquidity.bondPenaltyParameter",
@@ -77,6 +76,7 @@
     "governance.proposal.updateNetParam.requiredMajority",
     "governance.proposal.updateNetParam.requiredParticipation",
     "governance.proposal.updateMarket.minProposerEquityLikeShare",
+    "governance.proposal.updateAsset.requiredParticipation",
     "validators.vote.required"
   ],
   "duration": [
