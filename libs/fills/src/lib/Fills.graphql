@@ -34,25 +34,22 @@ fragment FillEdge on TradeEdge {
   cursor
 }
 
-query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
-  party(id: $partyId) {
-    id
-    tradesConnection(marketId: $marketId, pagination: $pagination) {
-      edges {
-        ...FillEdge
-      }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
+query Fills($filter: TradesFilter, $pagination: Pagination) {
+  trades(filter: $filter, pagination: $pagination) {
+    edges {
+      ...FillEdge
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }
 
-subscription FillsEvent($partyId: ID!) {
-  trades(partyId: $partyId) {
+subscription FillsEvent($filter: TradesSubscriptionFilter!) {
+  tradesStream(filter: $filter) {
     id
     marketId
     buyOrder

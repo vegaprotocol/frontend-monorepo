@@ -12,24 +12,20 @@ export const fillsQuery = (
   vegaPublicKey?: string
 ): FillsQuery => {
   const defaultResult: FillsQuery = {
-    party: {
-      id: vegaPublicKey || 'vega-0',
-      tradesConnection: {
-        __typename: 'TradeConnection',
-        edges: fills(vegaPublicKey).map((node) => ({
-          __typename: 'TradeEdge',
-          cursor: '3',
-          node,
-        })),
-        pageInfo: {
-          __typename: 'PageInfo',
-          startCursor: '1',
-          endCursor: '2',
-          hasNextPage: false,
-          hasPreviousPage: false,
-        },
+    trades: {
+      __typename: 'TradeConnection',
+      edges: fills(vegaPublicKey).map((node) => ({
+        __typename: 'TradeEdge',
+        cursor: '3',
+        node,
+      })),
+      pageInfo: {
+        __typename: 'PageInfo',
+        startCursor: '1',
+        endCursor: '2',
+        hasNextPage: false,
+        hasPreviousPage: false,
       },
-      __typename: 'Party',
     },
   };
 
@@ -169,7 +165,7 @@ export const fillsEventSubscription = (
 ): FillsEventSubscription => {
   const defaultResult: FillsEventSubscription = {
     __typename: 'Subscription',
-    trades: [
+    tradesStream: [
       {
         __typename: 'TradeUpdate',
         id: '0',
