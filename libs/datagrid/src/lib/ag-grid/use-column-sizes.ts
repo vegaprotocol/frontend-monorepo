@@ -1,14 +1,15 @@
-import type { MutableRefObject } from 'react';
-import { useCallback } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
-import type { Column } from 'ag-grid-community';
-import debounce from 'lodash/debounce';
+import { useCallback, useState } from 'react';
+import type {
+  GridSizeChangedEvent,
+  GridReadyEvent,
+  ColumnResizedEvent,
+} from 'ag-grid-community';
+import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
 const STORAGE_KEY = 'vega_columns_sizes_store';
-const COLUMNS_SET_DEBOUNCE_TIME = 300;
 
 export const useColumnSizesStore = create<{
   sizes: Record<string, Record<string, number>>;
@@ -31,30 +32,30 @@ export const useColumnSizesStore = create<{
 );
 
 interface UseColumnSizesProps {
+  props: AgGridReactProps | AgReactUiProps;
   storeKey?: string;
-  container?: MutableRefObject<HTMLDivElement | null>;
 }
+
 export const useColumnSizes = ({
   storeKey = '',
-  container,
-}: UseColumnSizesProps): [
-  Record<string, number>,
-  (columns: Column[]) => void,
-  (gridRef?: MutableRefObject<AgGridReact>) => void
-] => {
+  props,
+}: UseColumnSizesProps): {
+  onColumnResized?: (event: ColumnResizedEvent) => void;
+  onGridReady?: (event: GridReadyEvent) => void;
+  onGridSizeChanged?: (event: GridSizeChangedEvent) => void;
+} => {
   const sizes = useColumnSizesStore((store) => store.sizes[storeKey] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
-  const getWidthOfAll = useCallback(
-    () =>
-      (container?.current as HTMLDivElement)?.getBoundingClientRect().width ??
-      0,
-    [container]
-  );
+  const [width, setWidth] = useState<number>(sizes['clientWidth'] || 0);
+  const {
+    onColumnResized: parentOnColumnResized,
+    onGridReady: parentOnGridReady,
+    onGridSizeChanged: parentOnGridSizeChanged,
+  } = props;
   const recalculateSizes = useCallback(
     (sizes: Record<string, number>) => {
-      const width = getWidthOfAll();
-      if (width && sizes['width'] && width !== sizes['width']) {
-        const oldWidth = sizes['width'];
+      if (width && sizes['clientWidth'] && width !== sizes['clientWidth']) {
+        const oldWidth = sizes['clientWidth'];
         const ratio = width / oldWidth;
         return {
           ...Object.entries(sizes).reduce((agg, [key, value]) => {
@@ -66,36 +67,76 @@ export const useColumnSizes = ({
       }
       return sizes;
     },
-    [getWidthOfAll]
+    [width]
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleOnChange = useCallback(
-    debounce((columns: Column[]) => {
-      if (storeKey && columns.length) {
-        const sizesObj = columns.reduce((aggr, column) => {
-          aggr[column.getColId()] = column.getActualWidth();
-          return aggr;
-        }, {} as Record<string, number>);
-        sizesObj['width'] = getWidthOfAll();
-        valueSetter(storeKey, sizesObj);
-      }
-    }, COLUMNS_SET_DEBOUNCE_TIME),
-    [valueSetter, storeKey]
-  );
-  const onResize = useCallback(
-    (gridRef?: MutableRefObject<AgGridReact>) => {
-      if (storeKey && gridRef?.current) {
-        const recalulated = recalculateSizes(sizes);
-        const newSizes = Object.entries(recalulated).map(([key, size]) => ({
-          key,
-          newWidth: size,
-        }));
-        gridRef.current.columnApi.setColumnWidths(newSizes);
+  const onColumnResized = useCallback(
+    (event: ColumnResizedEvent) => {
+      parentOnColumnResized?.(event);
+      if (
+        storeKey &&
+        event.source === 'uiColumnDragged' &&
+        event.finished &&
+        width
+      ) {
+        const columns = event.columns;
+        if (columns?.length) {
+          const sizesObj = columns.reduce((aggr, column) => {
+            aggr[column.getColId()] = column.getActualWidth();
+            return aggr;
+          }, {} as Record<string, number>);
+          sizesObj['clientWidth'] = width;
+          valueSetter(storeKey, sizesObj);
+        }
       }
     },
-    [storeKey, recalculateSizes, sizes]
+    [valueSetter, storeKey, width, parentOnColumnResized]
   );
 
-  return [recalculateSizes(sizes), handleOnChange, onResize];
+  const setSizes = useCallback(
+    (apiEvent: GridReadyEvent | GridSizeChangedEvent) => {
+      if (!storeKey || !Object.keys(sizes).length || !width) {
+        apiEvent.api.sizeColumnsToFit();
+      } else {
+        const recalculatedSizes = recalculateSizes(sizes);
+        const newSizes = Object.entries(recalculatedSizes).map(
+          ([key, size]) => ({
+            key,
+            newWidth: size,
+          })
+        );
+        apiEvent.columnApi.setColumnWidths(newSizes);
+      }
+    },
+    [storeKey, recalculateSizes, sizes, width]
+  );
+
+  const onGridReady = useCallback(
+    (event: GridReadyEvent) => {
+      parentOnGridReady?.(event);
+      setSizes(event);
+    },
+    [setSizes, parentOnGridReady]
+  );
+
+  const onGridSizeChanged = useCallback(
+    (event: GridSizeChangedEvent) => {
+      parentOnGridSizeChanged?.(event);
+      setWidth(event.clientWidth);
+      setSizes(event);
+    },
+    [setWidth, parentOnGridSizeChanged, setSizes]
+  );
+  if (storeKey) {
+    return {
+      onColumnResized,
+      onGridReady,
+      onGridSizeChanged,
+    };
+  }
+  return {
+    onColumnResized: parentOnColumnResized,
+    onGridReady: parentOnGridReady,
+    onGridSizeChanged: parentOnGridSizeChanged,
+  };
 };

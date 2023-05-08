@@ -1,7 +1,19 @@
-import type { MutableRefObject } from 'react';
-import type { Column } from 'ag-grid-community';
-import { renderHook } from '@testing-library/react';
+import type {
+  Column,
+  ColumnResizedEvent,
+  GridSizeChangedEvent,
+} from 'ag-grid-community';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { useColumnSizes } from './use-column-sizes';
+
+const mockApis = {
+  api: {
+    sizeColumnsToFit: jest.fn(),
+  },
+  columnApi: {
+    setColumnWidths: jest.fn(),
+  },
+};
 
 const mockValueSetter = jest.fn();
 const mockStore = {
@@ -19,9 +31,6 @@ jest.mock('zustand', () => ({
 }));
 describe('UseColumnSizes hook', () => {
   const storeKey = 'testid';
-  const container = {
-    current: { getBoundingClientRect: () => ({ width: 1000 }) },
-  } as MutableRefObject<HTMLDivElement>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -31,28 +40,41 @@ describe('UseColumnSizes hook', () => {
   });
   it('should return proper methods', () => {
     const { result } = renderHook(() =>
-      useColumnSizes({ storeKey, container })
+      useColumnSizes({ storeKey, props: {} })
     );
-    expect(result.current).toHaveLength(3);
-    expect(result.current).toStrictEqual([
-      { col1: 100 },
-      expect.any(Function),
-      expect.any(Function),
-    ]);
+    expect(Object.keys(result.current)).toHaveLength(3);
+    expect(result.current).toStrictEqual({
+      onColumnResized: expect.any(Function),
+      onGridReady: expect.any(Function),
+      onGridSizeChanged: expect.any(Function),
+    });
   });
 
-  it('handleOnChange should fill up store', () => {
-    jest.useFakeTimers();
+  it('handleOnChange should fill up store', async () => {
     const columns: Column[] = [
       { getColId: () => 'col1', getActualWidth: () => 100 },
       { getColId: () => 'col2', getActualWidth: () => 200 },
     ] as Column[];
-    const sizeObj = { col1: 100, col2: 200, width: 1000 };
+    const sizeObj = { col1: 100, col2: 200, clientWidth: 1000 };
     const { result } = renderHook(() =>
-      useColumnSizes({ storeKey, container })
+      useColumnSizes({ storeKey, props: {} })
     );
-    result.current[1](columns);
-    jest.runAllTimers();
-    expect(mockValueSetter).toHaveBeenCalledWith(storeKey, sizeObj);
+    await act(() => {
+      result.current.onGridSizeChanged({
+        clientWidth: 1000,
+        ...mockApis,
+      } as GridSizeChangedEvent);
+    });
+    await act(() => {
+      result.current.onColumnResized({
+        columns,
+        finished: true,
+        source: 'uiColumnDragged',
+        ...mockApis,
+      } as ColumnResizedEvent);
+    });
+    await waitFor(() => {
+      expect(mockValueSetter).toHaveBeenCalledWith(storeKey, sizeObj);
+    });
   });
 });
