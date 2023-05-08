@@ -80,7 +80,7 @@ export const useColumnSizes = ({
         event.finished &&
         widthRef.current
       ) {
-        const columns = event.columns;
+        const { columns } = event;
         if (columns?.length) {
           const sizesObj = columns.reduce((aggr, column) => {
             aggr[column.getColId()] = column.getActualWidth();
