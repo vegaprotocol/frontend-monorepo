@@ -92,7 +92,7 @@ export const ProtocolUpgradeProposalsListItem = ({
             data-testid="protocol-upgrade-proposal-release-tag"
             className="mb-2"
           >
-            <span className="pr-2 uppercase">{t('vegaReleaseTag')}:</span>
+            <span>{t('vegaReleaseTag')}:</span>{' '}
             <Lozenge>{proposal.vegaReleaseTag}</Lozenge>
           </div>
 
@@ -100,7 +100,7 @@ export const ProtocolUpgradeProposalsListItem = ({
             data-testid="protocol-upgrade-proposal-block-height"
             className="mb-2"
           >
-            <span className="pr-2 uppercase">{t('upgradeBlockHeight')}:</span>
+            <span>{t('upgradeBlockHeight')}:</span>{' '}
             <Lozenge>{proposal.upgradeBlockHeight}</Lozenge>
           </div>
 
@@ -111,9 +111,7 @@ export const ProtocolUpgradeProposalsListItem = ({
                   proposal.vegaReleaseTag
                 )}`}
               >
-                <Button data-testid="view-proposal-btn" size="sm">
-                  {t('View')}
-                </Button>
+                <Button data-testid="view-proposal-btn">{t('View')}</Button>
               </Link>
             </div>
           </div>

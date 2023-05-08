@@ -587,7 +587,7 @@
   "tokensAgainstProposal": "Tokens against proposal",
   "participationRequired": "Participation required",
   "numberOfVotingParties": "Number of voting parties",
-  "totalTokensVotes": "Total yes tokens",
+  "totalTokensVotes": "Total tokens voted",
   "totalTokenVotedPercentage": "Total tokens voted percentage",
   "numberOfForVotes": "Number of votes for",
   "numberOfAgainstVotes": "Number of votes against",

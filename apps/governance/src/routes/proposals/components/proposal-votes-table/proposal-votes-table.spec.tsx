@@ -56,7 +56,7 @@ describe('Proposal Votes Table', () => {
     expect(screen.getByText('Participation required')).toBeInTheDocument();
     expect(screen.getByText('Majority Required')).toBeInTheDocument();
     expect(screen.getByText('Number of voting parties')).toBeInTheDocument();
-    expect(screen.getByText('Total yes tokens')).toBeInTheDocument();
+    expect(screen.getByText('Total tokens voted')).toBeInTheDocument();
     expect(
       screen.getByText('Total tokens voted percentage')
     ).toBeInTheDocument();
@@ -78,7 +78,7 @@ describe('Proposal Votes Table', () => {
       screen.getByText('Liquidity shares for proposal')
     ).toBeInTheDocument();
     expect(screen.queryByText('Number of voting parties')).toBeNull();
-    expect(screen.queryByText('Total yes tokens')).toBeNull();
+    expect(screen.queryByText('Total tokens voted')).toBeNull();
     expect(screen.queryByText('Total tokens voted percentage')).toBeNull();
     expect(screen.queryByText('Number of votes for')).toBeNull();
     expect(screen.queryByText('Number of votes against')).toBeNull();
