@@ -1,9 +1,9 @@
 import produce from 'immer';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
-  removePaginationWrapper,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/data-provider';
 import {
   MarginsSubscriptionDocument,
   MarginsDocument,

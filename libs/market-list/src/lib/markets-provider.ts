@@ -1,5 +1,9 @@
-import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
-import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
+import { useYesterday } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+  useDataProvider,
+} from '@vegaprotocol/data-provider';
 import type {
   MarketsQuery,
   MarketFieldsFragment,

@@ -2,16 +2,18 @@ import { renderHook, waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { NetworkParamsKey } from './use-network-params';
-import { toRealKey } from './use-network-params';
 import {
+  toRealKey,
   NetworkParams,
   useNetworkParam,
   useNetworkParams,
 } from './use-network-params';
 import type { ReactNode } from 'react';
 import type { NetworkParamsQuery } from './__generated__/NetworkParams';
-import { NetworkParamDocument } from './__generated__/NetworkParams';
-import { NetworkParamsDocument } from './__generated__/NetworkParams';
+import {
+  NetworkParamDocument,
+  NetworkParamsDocument,
+} from './__generated__/NetworkParams';
 
 describe('useNetworkParam', () => {
   const setup = (arg: NetworkParamsKey) => {

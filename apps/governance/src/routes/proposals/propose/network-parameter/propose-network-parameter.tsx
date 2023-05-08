@@ -5,7 +5,7 @@ import {
   createDocsLinks,
   suitableForSyntaxHighlighter,
 } from '@vegaprotocol/utils';
-import { useNetworkParams } from '@vegaprotocol/react-helpers';
+import { useNetworkParams } from '@vegaprotocol/network-parameters';
 import {
   getClosingTimestamp,
   getEnactmentTimestamp,

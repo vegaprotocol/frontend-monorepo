@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
   NetworkParams,
-  useDataProvider,
   useNetworkParams,
-} from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/network-parameters';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { MarketData } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';

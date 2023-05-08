@@ -13,8 +13,8 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../components/route-title';
 import orderBy from 'lodash/orderBy';
-import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { useNetworkParamsQuery } from '@vegaprotocol/network-parameters';
+import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 
@@ -53,6 +53,8 @@ const BIG_NUMBER_PARAMS = [
   'governance.proposal.asset.minProposerBalance',
   'governance.proposal.market.minProposerBalance',
   'governance.proposal.market.minVoterBalance',
+  'governance.proposal.updateAsset.minProposerBalance',
+  'governance.proposal.updateAsset.minVoterBalance',
 ];
 
 export const NetworkParameterRow = ({

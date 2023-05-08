@@ -19,7 +19,10 @@ import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { createDocsLinks } from '@vegaprotocol/utils';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import { ProposalUserAction } from '../../components/shared';
 import { downloadJson } from '../../../../lib/download-json';
 

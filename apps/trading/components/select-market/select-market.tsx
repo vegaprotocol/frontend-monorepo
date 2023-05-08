@@ -3,7 +3,7 @@ import type { RefObject } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ExternalLink, Icon, Loader, Popover } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {

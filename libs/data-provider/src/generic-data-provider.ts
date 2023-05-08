@@ -11,7 +11,7 @@ import type {
 import type { GraphQLErrors } from '@apollo/client/errors';
 import type { Subscription } from 'zen-observable-ts';
 import isEqualWith from 'lodash/isEqualWith';
-import { isNotFoundGraphQLError } from './apollo-client';
+import { isNotFoundGraphQLError } from './helpers';
 import type * as Schema from '@vegaprotocol/types';
 interface UpdateData<Data, Delta> {
   delta?: Delta;

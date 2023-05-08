@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import * as Schema from '@vegaprotocol/types';
-import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
-import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+  useDataProvider,
+} from '@vegaprotocol/data-provider';
+import { useYesterday } from '@vegaprotocol/react-helpers';
 import type {
   MarketCandles,
   MarketMaybeWithDataAndCandles,

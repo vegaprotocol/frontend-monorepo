@@ -1,4 +1,4 @@
-import { makeDataProvider } from '@vegaprotocol/utils';
+import { makeDataProvider } from '@vegaprotocol/data-provider';
 import { MarketsCandlesDocument } from './__generated__/markets-candles';
 import type {
   MarketsCandlesQuery,

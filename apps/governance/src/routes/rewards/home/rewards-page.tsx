@@ -12,7 +12,10 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { createDocsLinks } from '@vegaprotocol/utils';
-import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  useNetworkParams,
+  NetworkParams,
+} from '@vegaprotocol/network-parameters';
 import { useEpochQuery } from './__generated__/Rewards';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading, SubHeading } from '../../../components/heading';

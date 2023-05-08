@@ -9,7 +9,10 @@ import {
 } from '@vegaprotocol/proposals';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import {
   ProposalFormDescription,
   ProposalFormDownloadJson,
