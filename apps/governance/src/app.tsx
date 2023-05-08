@@ -43,6 +43,7 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 import { WithdrawalDialog } from '@vegaprotocol/withdraws';
 import { SplashLoader } from './components/splash-loader';
 import { ToastsManager } from './toasts-manager';
+import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -149,6 +150,7 @@ const Web3Container = ({
                   <VegaWalletDialogs />
                   <TransactionModal />
                   <WithdrawalDialog />
+                  <TelemetryDialog />
                 </>
               </BalanceManager>
             </AppLoader>

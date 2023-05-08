@@ -409,7 +409,7 @@ export const DealTicket = ({
         <DealTicketButton
           disabled={Object.keys(errors).length >= 1 || isReadOnly}
           variant={
-            order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'
+            order.side === Schema.Side.SIDE_BUY ? 'tertiary' : 'secondary'
           }
         />
         <DealTicketFeeDetails
