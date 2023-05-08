@@ -22,6 +22,7 @@ import {
   networkParamsQuery,
   nodeGuardQuery,
   ordersQuery,
+  estimatePositionQuery,
   positionsQuery,
   proposalListQuery,
   statisticsQuery,
@@ -158,6 +159,7 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Withdrawals', withdrawalsQuery());
   aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
   aliasGQLQuery(req, 'EstimateFees', estimateFeesQuery());
+  aliasGQLQuery(req, 'EstimatePosition', estimatePositionQuery());
   aliasGQLQuery(req, 'ProposalsList', proposalListQuery());
   aliasGQLQuery(req, 'Deposits', depositsQuery());
 };

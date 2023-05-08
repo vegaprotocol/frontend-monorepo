@@ -4,6 +4,7 @@ import {
   accountsQuery,
   amendGeneralAccountBalance,
   estimateFeesQuery,
+  estimatePositionQuery,
 } from '@vegaprotocol/mock';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
@@ -50,6 +51,9 @@ describe(
         });
         cy.mockGQL((req) => {
           aliasGQLQuery(req, 'EstimateFee', estimateFeesQuery());
+        });
+        cy.mockGQL((req) => {
+          aliasGQLQuery(req, 'EstimatePosition', estimatePositionQuery());
         });
         cy.mockSubscription();
         cy.visit('/#/markets/market-0');
