@@ -4,8 +4,8 @@ import {
   defaultAppend as append,
   paginatedCombineDelta as combineDelta,
   paginatedCombineInsertionData as combineInsertionData,
-} from '@vegaprotocol/utils';
-import type { PageInfo, Edge } from '@vegaprotocol/utils';
+} from '@vegaprotocol/data-provider';
+import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import type {

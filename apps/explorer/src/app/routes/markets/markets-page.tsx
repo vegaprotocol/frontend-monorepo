@@ -4,7 +4,7 @@ import { marketsProvider } from '@vegaprotocol/market-list';
 import { RouteTitle } from '../../components/route-title';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { MarketsTable } from '../../components/markets/markets-table';
 
 export const MarketsPage = () => {

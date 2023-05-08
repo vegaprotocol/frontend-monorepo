@@ -1,4 +1,7 @@
-import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/data-provider';
 import type {
   MarketInfoQuery,
   MarketInfoQueryVariables,

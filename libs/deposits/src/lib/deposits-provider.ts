@@ -1,10 +1,7 @@
 import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
-import {
-  getEvents,
-  makeDataProvider,
-  removePaginationWrapper,
-} from '@vegaprotocol/utils';
+import { getEvents, removePaginationWrapper } from '@vegaprotocol/utils';
+import { makeDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
   DepositsDocument,

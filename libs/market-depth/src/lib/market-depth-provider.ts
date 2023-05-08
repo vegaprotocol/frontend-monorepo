@@ -1,6 +1,6 @@
-import { makeDataProvider } from '@vegaprotocol/utils';
+import type { Update } from '@vegaprotocol/data-provider';
+import { makeDataProvider } from '@vegaprotocol/data-provider';
 import { updateLevels } from './orderbook-data';
-import type { Update } from '@vegaprotocol/utils';
 import { captureException } from '@sentry/react';
 
 import {

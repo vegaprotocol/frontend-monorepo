@@ -2,10 +2,8 @@ import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useDepositDialog, DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
-import {
-  useDataProvider,
-  useBottomPlaceholder,
-} from '@vegaprotocol/react-helpers';
+import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';

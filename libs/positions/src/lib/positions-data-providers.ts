@@ -4,12 +4,12 @@ import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
 import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
+import { toBigNum, removePaginationWrapper } from '@vegaprotocol/utils';
+import type { Edge } from '@vegaprotocol/data-provider';
 import {
-  toBigNum,
   makeDataProvider,
   makeDerivedDataProvider,
-  removePaginationWrapper,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import type {
   MarketMaybeWithData,
@@ -29,7 +29,6 @@ import {
 } from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
 import { calculateMargins } from './margin-calculator';
-import type { Edge } from '@vegaprotocol/utils';
 import { Side } from '@vegaprotocol/types';
 import { marketInfoProvider } from '@vegaprotocol/market-info';
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';

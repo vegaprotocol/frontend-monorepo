@@ -1,7 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { removePaginationWrapper, TokenLinks } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
   Accordion,

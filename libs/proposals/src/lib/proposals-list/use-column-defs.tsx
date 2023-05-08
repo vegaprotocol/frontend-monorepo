@@ -5,7 +5,10 @@ import { DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,

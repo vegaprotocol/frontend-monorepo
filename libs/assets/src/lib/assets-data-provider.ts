@@ -1,5 +1,8 @@
-import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/data-provider';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AssetsDocument } from './__generated__/Assets';
 import * as Schema from '@vegaprotocol/types';
 import type { AssetsQuery } from './__generated__/Assets';

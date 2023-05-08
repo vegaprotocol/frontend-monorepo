@@ -9,15 +9,6 @@ const isApolloGraphQLError = (
   return !!error && !!(error as ApolloError).graphQLErrors;
 };
 
-const hasNotFoundGraphQLErrors = (errors: GraphQLErrors, path?: string[]) => {
-  return errors.some(
-    (e) =>
-      e.extensions &&
-      e.extensions['type'] === NOT_FOUND &&
-      (!path || path.every((item, i) => item === e?.path?.[i]))
-  );
-};
-
 export const isNotFoundGraphQLError = (
   error: Error | ApolloError | undefined,
   path?: string[]
@@ -25,6 +16,15 @@ export const isNotFoundGraphQLError = (
   return (
     isApolloGraphQLError(error) &&
     hasNotFoundGraphQLErrors(error.graphQLErrors, path)
+  );
+};
+
+const hasNotFoundGraphQLErrors = (errors: GraphQLErrors, path?: string[]) => {
+  return errors.some(
+    (e) =>
+      e.extensions &&
+      e.extensions['type'] === NOT_FOUND &&
+      (!path || path.every((item, i) => item === e?.path?.[i]))
   );
 };
 

@@ -1,4 +1,4 @@
-import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { useNetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 

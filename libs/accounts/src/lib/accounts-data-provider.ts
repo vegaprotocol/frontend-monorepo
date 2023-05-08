@@ -1,10 +1,10 @@
 import { assetsProvider } from '@vegaprotocol/assets';
 import { marketsProvider } from '@vegaprotocol/market-list';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
-  removePaginationWrapper,
-} from '@vegaprotocol/utils';
+} from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import produce from 'immer';
 

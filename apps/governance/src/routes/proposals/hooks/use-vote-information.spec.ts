@@ -28,8 +28,8 @@ jest.mock('../../../contexts/app-state/app-state-context', () => ({
   }),
 }));
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
+jest.mock('@vegaprotocol/network-parameters', () => ({
+  ...jest.requireActual('@vegaprotocol/network-parameters'),
   useNetworkParams: jest.fn(() => ({
     params: {
       governance_proposal_updateMarket_requiredMajority: '0.5',

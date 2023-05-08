@@ -1,4 +1,4 @@
-import { makeDataProvider } from '@vegaprotocol/utils';
+import { makeDataProvider } from '@vegaprotocol/data-provider';
 import type {
   MarketCandlesQuery,
   MarketCandlesQueryVariables,
