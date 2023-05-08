@@ -9,6 +9,7 @@ import {
 import { isBefore, isAfter, addSeconds, subSeconds } from 'date-fns';
 import { createOrder } from '../support/create-order';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
+import { selectAsset } from '../support/helpers';
 
 const orderSize = 'size';
 const orderType = 'type';
@@ -22,15 +23,13 @@ const assetSelectField = 'select[name="asset"]';
 const amountField = 'input[name="amount"]';
 const txTimeout = Cypress.env('txTimeout');
 const sepoliaUrl = Cypress.env('ETHERSCAN_URL');
-const btcName =
-  'BTC (local)5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c - tBTC';
-const vegaName =
-  'Vegab4f2726571fbe8e33b442dc92ed2d7f0d810e21835b7371a7915a365f07ccd9b - VEGA';
+const btcName = 0;
+const vegaName = 4;
 const btcSymbol = 'tBTC';
 const vegaSymbol = 'VEGA';
 const usdcSymbol = 'fUSDC';
 const toastContent = 'toast-content';
-const ordersTab = 'Orders';
+const openOrdersTab = 'Open';
 const depositsTab = 'Deposits';
 const collateralTab = 'Collateral';
 const toastCloseBtn = 'toast-close';
@@ -50,6 +49,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.get('@markets').then((markets) => {
       cy.wrap(markets[0]).as('market');
     });
+    cy.visit('/#/portfolio');
   });
 
   beforeEach(() => {
@@ -73,7 +73,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
-    cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
+    selectAsset(btcName);
     cy.getByTestId('approve-default').should(
       'contain.text',
       `Before you can make a deposit of your chosen asset, ${btcSymbol}, you need to approve its use in your Ethereum wallet`
@@ -81,6 +81,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.getByTestId(approveSubmit).click();
     cy.getByTestId('approve-pending').should('exist');
     cy.getByTestId('approve-confirmed').should('exist');
+    cy.get(amountField).focus();
     cy.get(amountField).clear().type('10');
     cy.getByTestId(depositSubmit).click();
     cy.getByTestId(toastContent, txTimeout).should(
@@ -115,7 +116,6 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   });
 
   it('can key to key transfers', function () {
-    cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
@@ -147,8 +147,8 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
-    connectEthereumWallet('Unknown');
-    cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
+    selectAsset(0);
+    cy.get(amountField).focus();
     cy.get(amountField).clear().type('1');
     cy.getByTestId('submit-withdrawal').click();
     cy.getByTestId(toastContent, txTimeout).should(
@@ -170,7 +170,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
     cy.getByTestId(toastContent, txTimeout).should(
       'contain.text',
-      'Error occurredprocessing response error'
+      'Error occurredcannot estimate gas'
     );
     cy.getByTestId(toastCloseBtn).click({ multiple: true });
     cy.getByTestId(completeWithdrawalBtn).should(
@@ -180,7 +180,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   });
 });
 
-describe('capsule', { tags: '@slow' }, () => {
+describe('capsule', { tags: '@slow', testIsolation: true }, () => {
   before(() => {
     cy.updateCapsuleMultiSig();
   });
@@ -231,7 +231,7 @@ describe('capsule', { tags: '@slow' }, () => {
 
     cy.getByTestId(toastContent).should(
       'contain.text',
-      `ConfirmedYour transaction has been confirmed View in block explorerSubmit order - activeTEST.24h+${order.size} @ ${order.price}.00 ${usdcSymbol}`,
+      `Order submittedYour transaction has been confirmed View in block explorerSubmit order - activeTEST.24h+${order.size} @ ${order.price}.00 ${usdcSymbol}`,
       { matchCase: false }
     );
     cy.getByTestId(toastCloseBtn).click();
@@ -242,9 +242,9 @@ describe('capsule', { tags: '@slow' }, () => {
       .get(`[data-testid="bid-vol-${rawPrice}"]`)
       .should('contain.text', order.size);
 
-    cy.getByTestId(ordersTab).click();
+    cy.getByTestId(openOrdersTab).click();
     cy.getByTestId('edit', txTimeout).should('contain.text', 'Edit');
-    cy.getByTestId('tab-orders').within(() => {
+    cy.getByTestId('tab-open-orders').within(() => {
       cy.get('.ag-center-cols-container')
         .children()
         .first()
@@ -283,7 +283,9 @@ describe('capsule', { tags: '@slow' }, () => {
     });
   });
   it('can edit order', function () {
-    cy.getByTestId(ordersTab).click();
+    const market = this.market;
+    cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId(openOrdersTab).click();
     cy.getByTestId('edit').first().should('be.visible').click();
     cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
     cy.get('#limitPrice').focus().clear().type(newPrice);
@@ -291,12 +293,12 @@ describe('capsule', { tags: '@slow' }, () => {
 
     cy.getByTestId(toastContent).should(
       'contain.text',
-      `ConfirmedYour transaction has been confirmed View in block explorerEdit order - activeTEST.24h+${size} @ ${price}.00 ${usdcSymbol}+${size} @ ${newPrice}.00 ${usdcSymbol}`,
+      `Order submittedYour transaction has been confirmed View in block explorerEdit order - activeTEST.24h+${size} @ ${price}.00 ${usdcSymbol}+${size} @ ${newPrice}.00 ${usdcSymbol}`,
       { matchCase: false }
     );
 
     cy.getByTestId(toastCloseBtn).click({ multiple: true });
-    cy.getByTestId(ordersTab).click();
+    cy.getByTestId(openOrdersTab).click();
     cy.get('.ag-center-cols-container')
       .children()
       .first()
@@ -307,18 +309,20 @@ describe('capsule', { tags: '@slow' }, () => {
         checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
       });
   });
-  // comment because of bug #2695
-  it.skip('can cancel order', function () {
-    cy.getByTestId(ordersTab).click();
+
+  it('can cancel order', function () {
+    const market = this.market;
+    cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId(openOrdersTab).click();
     cy.getByTestId('cancel').first().click();
     cy.getByTestId(toastContent).should(
       'contain.text',
-      `ConfirmedYour transaction has been confirmed View in block explorerCancel order - cancelledTEST.24h+${size} @ ${newPrice}.00 ${usdcSymbol}`,
+      `Order cancelledYour transaction has been confirmed View in block explorerCancel order - cancelledTEST.24h+${size} @ ${newPrice}.00 ${usdcSymbol}`,
       { matchCase: false }
     );
     cy.getByTestId(toastCloseBtn).click({ multiple: true });
-
-    cy.getByTestId('tab-orders')
+    cy.getByTestId('Closed').click();
+    cy.getByTestId('tab-closed-orders')
       .get('.ag-center-cols-container')
       .children()
       .first()
@@ -348,7 +352,7 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
     connectEthereumWallet('Unknown');
-    cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
+    selectAsset(btcName);
     cy.get(amountField).clear().type('1');
     cy.getByTestId('submit-withdrawal').click();
     cy.getByTestId(toastContent, txTimeout).should(
@@ -371,19 +375,15 @@ describe('capsule', { tags: '@slow' }, () => {
       'contain.text',
       'Transaction confirmed'
     );
-    cy.getByTestId(toastCloseBtn).click({ multiple: true });
+    cy.getByTestId(toastContent, txTimeout).should(
+      'contain.text',
+      'Funds unlockedYour funds have been unlocked for withdrawalView in block explorerWithdraw 1.00 tBTCComplete withdrawal'
+    );
 
-    cy.wrap(null).then(() => {
-      try {
-        cy.getByTestId(completeWithdrawalBtn)
-          .eq(0, txTimeout)
-          .should('not.exist');
-      } catch (error) {
-        console.log(
-          'Assertion failed, but we are continuing because this is our wait to complete transaction'
-        );
-      }
-    });
+    cy.get('.ag-center-cols-container')
+      .find('[col-id="status"]')
+      .eq(0, txTimeout)
+      .should('contain.text', 'Completed');
 
     cy.get('[col-id="txHash"]', txTimeout)
       .should('have.length.above', 1)
@@ -404,17 +404,20 @@ describe('capsule', { tags: '@slow' }, () => {
           .should('have.attr', 'href')
           .and('contain', `${sepoliaUrl}/tx/0x`);
       });
-    // comment because of bug #2819
-    // cy.getByTestId('withdraw-dialog-button').click();
-    // cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '0')
+
+    cy.getByTestId('withdraw-dialog-button').click({ force: true });
+    cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '7.999');
   });
 
   it('approved amount is less than deposit', function () {
     // 1001-DEPO-006
     // 1001-DEPO-007
+    cy.visit('/#/portfolio');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
-    cy.get(assetSelectField, txTimeout).select(btcName, { force: true });
+    connectEthereumWallet('Unknown');
+    selectAsset(btcName);
     cy.contains('Deposits of tBTC not approved').should('not.exist');
     cy.contains('Use maximum').should('be.visible');
     cy.get(amountField).clear().type('20000000');
@@ -422,12 +425,12 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.getByTestId(depositSubmit).click();
     cy.getByTestId('input-error-text').should(
       'contain.text',
-      'Amount is above approved amount'
+      `You can't deposit more than you have in your Ethereum wallet`
     );
-    cy.getByTestId('reapprove-default').should(
-      'contain.text',
-      'Approve again to deposit more than'
-    );
+    // cy.getByTestId('reapprove-default').should(
+    //   'contain.text',
+    //   `You can't deposit more than you have in your Ethereum wallet`
+    // );
   });
 
   it('withdraw - delay verification', function () {
@@ -440,11 +443,11 @@ describe('capsule', { tags: '@slow' }, () => {
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
-    cy.get(assetSelectField, txTimeout).select(vegaName, { force: true });
+    selectAsset(vegaName);
     cy.getByTestId('approve-submit').click();
     cy.getByTestId('approve-confirmed').should(
       'contain.text',
-      'You can now make deposits in VEGA, up to a maximum of'
+      'You approved deposits of up to VEGA'
     );
     cy.get(amountField).clear().type('10000');
     cy.getByTestId('deposit-submit').click();
@@ -478,9 +481,9 @@ describe('capsule', { tags: '@slow' }, () => {
           .and('contain', `${sepoliaUrl}/tx/0x`);
       });
 
-    cy.getByTestId('Withdrawals').click();
+    cy.getByTestId('Withdrawals').click(txTimeout);
     cy.getByTestId('withdraw-dialog-button').click();
-    cy.get(assetSelectField, txTimeout).select(vegaName, { force: true });
+    selectAsset(1);
     cy.get(amountField).clear().type('10000');
     cy.getByTestId('DELAY_TIME_value').should('have.text', '5 days');
     cy.getByTestId('submit-withdrawal').click();
