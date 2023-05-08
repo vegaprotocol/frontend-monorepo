@@ -140,8 +140,14 @@ export const ProposalHeader = ({
         </div>
       </div>
 
+      {details && (
+        <div data-testid="proposal-details" className="break-words my-10">
+          {details}
+        </div>
+      )}
+
       {description && !isListItem && (
-        <div data-testid="proposal-description" className="my-10">
+        <div data-testid="proposal-description">
           {/*<div className="uppercase mr-2">{t('ProposalDescription')}:</div>*/}
           <SubHeading title={t('ProposalDescription')} />
           <ReactMarkdown
@@ -154,12 +160,6 @@ export const ProposalHeader = ({
           >
             {description}
           </ReactMarkdown>
-        </div>
-      )}
-
-      {details && (
-        <div data-testid="proposal-details" className="break-words">
-          {details}
         </div>
       )}
     </>
