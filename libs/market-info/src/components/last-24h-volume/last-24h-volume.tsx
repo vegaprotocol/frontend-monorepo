@@ -5,10 +5,8 @@ import {
   marketCandlesProvider,
 } from '@vegaprotocol/market-list';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
-import {
-  useThrottledDataProvider,
-  useYesterday,
-} from '@vegaprotocol/react-helpers';
+import { useYesterday } from '@vegaprotocol/react-helpers';
+import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 
 interface Props {

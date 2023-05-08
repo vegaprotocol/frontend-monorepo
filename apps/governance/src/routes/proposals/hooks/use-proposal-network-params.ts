@@ -1,4 +1,7 @@
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import { BigNumber } from '../../../lib/bignumber';
 import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../proposal/__generated__/Proposal';

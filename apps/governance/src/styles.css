@@ -58,3 +58,39 @@
 .validators-table .ag-theme-balham-dark *:hover {
   cursor: pointer;
 }
+
+/* Styles required to (effectively) un-override the 
+ * reset styles so that the Proposal description fields
+ * render as you'd expect them to.
+ *
+ * Notes:
+ * - image embeds are disabled, so no styles are required
+ * - strong may not be required
+ * - skipHTML is enabled, so no nested HTML will be rendered. Only
+ * . valid markdown
+ */
+
+.dark .react-markdown-container,
+.dark .react-markdown-container li,
+.dark .react-markdown-container p {
+  color: #fff;
+}
+.react-markdown-container strong {
+  font-weight: bold;
+}
+
+.react-markdown-container ol {
+  margin-left: 1em;
+}
+.react-markdown-container li {
+  margin-left: 1em;
+  padding-left: 1em;
+}
+
+.react-markdown-container ol li {
+  list-style: decimal;
+}
+
+.react-markdown-container ul li {
+  list-style: circle;
+}

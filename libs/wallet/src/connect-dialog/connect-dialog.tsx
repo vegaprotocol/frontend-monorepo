@@ -12,7 +12,6 @@ import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { ExternalLinks } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
@@ -27,6 +26,7 @@ import {
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
 import { ViewConnectorForm } from './view-connector-form';
+import { useChainIdQuery } from './__generated__/ChainId';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };

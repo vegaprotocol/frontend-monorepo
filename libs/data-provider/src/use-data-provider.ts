@@ -3,8 +3,8 @@ import throttle from 'lodash/throttle';
 import isEqualWith from 'lodash/isEqualWith';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import type { Subscribe, Load, UpdateCallback } from '@vegaprotocol/utils';
-import { variablesIsEqualCustomizer } from '@vegaprotocol/utils';
+import type { Subscribe, Load, UpdateCallback } from './generic-data-provider';
+import { variablesIsEqualCustomizer } from './generic-data-provider';
 
 export interface useDataProviderParams<
   Data,

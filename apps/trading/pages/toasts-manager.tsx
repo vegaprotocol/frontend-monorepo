@@ -1,8 +1,8 @@
 import { ToastsContainer, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useUpdateNetworkParametersToasts } from '@vegaprotocol/proposals';
-import { useVegaTransactionToasts } from '../lib/hooks/use-vega-transaction-toasts';
-import { useEthereumTransactionToasts } from '../lib/hooks/use-ethereum-transaction-toasts';
-import { useEthereumWithdrawApprovalsToasts } from '../lib/hooks/use-ethereum-withdraw-approval-toasts';
+import { useVegaTransactionToasts } from '@vegaprotocol/web3';
+import { useEthereumTransactionToasts } from '@vegaprotocol/web3';
+import { useEthereumWithdrawApprovalsToasts } from '@vegaprotocol/web3';
 
 export const ToastsManager = () => {
   useUpdateNetworkParametersToasts();

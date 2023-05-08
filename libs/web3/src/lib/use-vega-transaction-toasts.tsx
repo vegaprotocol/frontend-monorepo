@@ -37,7 +37,7 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
-import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
+import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import {
   getOrderToastIntent,

@@ -1,5 +1,8 @@
 import compact from 'lodash/compact';
-import { makeDataProvider, makeDerivedDataProvider } from '@vegaprotocol/utils';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import produce from 'immer';

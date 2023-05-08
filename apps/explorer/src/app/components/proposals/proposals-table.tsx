@@ -12,7 +12,10 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';

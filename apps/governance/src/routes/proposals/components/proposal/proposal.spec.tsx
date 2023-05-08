@@ -3,8 +3,8 @@ import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
+jest.mock('@vegaprotocol/network-parameters', () => ({
+  ...jest.requireActual('@vegaprotocol/network-parameters'),
   useNetworkParams: jest.fn(() => ({
     params: {
       governance_proposal_asset_minVoterBalance: '1',

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { hasAmendableOrderProvider } from '../components/order-data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export const useHasAmendableOrder = (marketId?: string) => {
   const { pubKey } = useVegaWallet();
