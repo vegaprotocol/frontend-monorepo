@@ -81,7 +81,7 @@ function AppBody({ Component }: AppProps) {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[repeat(3,min-content),1fr]'
+    'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
 
   return (
@@ -103,7 +103,7 @@ function AppBody({ Component }: AppProps) {
         <main data-testid={location.pathname}>
           <Component />
         </main>
-        <Footer />
+        {/* <Footer /> */}
       </div>
       <DialogsContainer />
       <ToastsManager />

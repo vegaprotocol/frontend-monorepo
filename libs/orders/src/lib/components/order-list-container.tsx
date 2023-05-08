@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { OrderListManager } from './order-list-manager';
-import type { Filter } from './order-list-manager';
+import { Filter } from './order-list-manager';
 
 export interface OrderListContainerProps {
   marketId?: string;
@@ -31,7 +31,7 @@ export const OrderListContainer = ({
     <OrderListManager
       partyId={pubKey}
       marketId={marketId}
-      filter={filter}
+      filter={Filter.Open}
       onMarketClick={onMarketClick}
       onOrderTypeClick={onOrderTypeClick}
       isReadOnly={isReadOnly}
