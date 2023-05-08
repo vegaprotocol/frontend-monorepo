@@ -2,6 +2,7 @@ import type {
   Column,
   ColumnResizedEvent,
   GridSizeChangedEvent,
+  GridReadyEvent,
 } from 'ag-grid-community';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useColumnSizes } from './use-column-sizes';
@@ -35,9 +36,6 @@ describe('UseColumnSizes hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  afterEach(() => {
-    jest.useRealTimers();
-  });
   it('should return proper methods', () => {
     const { result } = renderHook(() =>
       useColumnSizes({ storeKey, props: {} })
@@ -50,7 +48,24 @@ describe('UseColumnSizes hook', () => {
     });
   });
 
-  it('handleOnChange should fill up store', async () => {
+  it('onGridSizeChanged should call setSize', async () => {
+    const { result } = renderHook(() =>
+      useColumnSizes({ storeKey, props: {} })
+    );
+    await act(() => {
+      result.current.onGridSizeChanged?.({
+        clientWidth: 1000,
+        ...mockApis,
+      } as GridSizeChangedEvent);
+    });
+    await waitFor(() => {
+      expect(mockApis.columnApi.setColumnWidths).toHaveBeenCalledWith([
+        { key: 'col1', newWidth: 100 },
+      ]);
+    });
+  });
+
+  it('onColumnResized should fill up store', async () => {
     const columns: Column[] = [
       { getColId: () => 'col1', getActualWidth: () => 100 },
       { getColId: () => 'col2', getActualWidth: () => 200 },
@@ -60,13 +75,13 @@ describe('UseColumnSizes hook', () => {
       useColumnSizes({ storeKey, props: {} })
     );
     await act(() => {
-      result.current.onGridSizeChanged({
+      result.current.onGridSizeChanged?.({
         clientWidth: 1000,
         ...mockApis,
       } as GridSizeChangedEvent);
     });
     await act(() => {
-      result.current.onColumnResized({
+      result.current.onColumnResized?.({
         columns,
         finished: true,
         source: 'uiColumnDragged',
@@ -75,6 +90,28 @@ describe('UseColumnSizes hook', () => {
     });
     await waitFor(() => {
       expect(mockValueSetter).toHaveBeenCalledWith(storeKey, sizeObj);
+    });
+  });
+
+  it('onGridReady should call setSizes', async () => {
+    const props = { onGridReady: jest.fn() };
+    const { result } = renderHook(() => useColumnSizes({ storeKey, props }));
+    const obTest = { cool: 1, ...mockApis };
+    await act(() => {
+      result.current.onGridReady?.(obTest as GridReadyEvent);
+    });
+    expect(props.onGridReady).toHaveBeenCalledWith(obTest);
+    expect(mockApis.api.sizeColumnsToFit).toHaveBeenCalledWith();
+  });
+
+  it('if no storeKey should be transparent', () => {
+    const { result } = renderHook(() =>
+      useColumnSizes({ storeKey: '', props: {} })
+    );
+    expect(result.current).toStrictEqual({
+      onColumnResized: undefined,
+      onGridReady: undefined,
+      onGridSizeChanged: undefined,
     });
   });
 });

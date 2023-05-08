@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import type {
   GridSizeChangedEvent,
   GridReadyEvent,
@@ -46,29 +46,30 @@ export const useColumnSizes = ({
 } => {
   const sizes = useColumnSizesStore((store) => store.sizes[storeKey] || {});
   const valueSetter = useColumnSizesStore((store) => store.valueSetter);
-  const [width, setWidth] = useState<number>(sizes['clientWidth'] || 0);
+  const widthRef = useRef(sizes['clientWidth'] || 0);
   const {
     onColumnResized: parentOnColumnResized,
     onGridReady: parentOnGridReady,
     onGridSizeChanged: parentOnGridSizeChanged,
   } = props;
-  const recalculateSizes = useCallback(
-    (sizes: Record<string, number>) => {
-      if (width && sizes['clientWidth'] && width !== sizes['clientWidth']) {
-        const oldWidth = sizes['clientWidth'];
-        const ratio = width / oldWidth;
-        return {
-          ...Object.entries(sizes).reduce((agg, [key, value]) => {
-            agg[key] = value * ratio;
-            return agg;
-          }, {} as Record<string, number>),
-          width,
-        } as Record<string, number>;
-      }
-      return sizes;
-    },
-    [width]
-  );
+  const recalculateSizes = useCallback((sizes: Record<string, number>) => {
+    if (
+      widthRef.current &&
+      sizes['clientWidth'] &&
+      widthRef.current !== sizes['clientWidth']
+    ) {
+      const oldWidth = sizes['clientWidth'];
+      const ratio = widthRef.current / oldWidth;
+      return {
+        ...Object.entries(sizes).reduce((agg, [key, value]) => {
+          agg[key] = value * ratio;
+          return agg;
+        }, {} as Record<string, number>),
+        width: widthRef.current,
+      } as Record<string, number>;
+    }
+    return sizes;
+  }, []);
 
   const onColumnResized = useCallback(
     (event: ColumnResizedEvent) => {
@@ -77,7 +78,7 @@ export const useColumnSizes = ({
         storeKey &&
         event.source === 'uiColumnDragged' &&
         event.finished &&
-        width
+        widthRef.current
       ) {
         const columns = event.columns;
         if (columns?.length) {
@@ -85,17 +86,17 @@ export const useColumnSizes = ({
             aggr[column.getColId()] = column.getActualWidth();
             return aggr;
           }, {} as Record<string, number>);
-          sizesObj['clientWidth'] = width;
+          sizesObj['clientWidth'] = widthRef.current;
           valueSetter(storeKey, sizesObj);
         }
       }
     },
-    [valueSetter, storeKey, width, parentOnColumnResized]
+    [valueSetter, storeKey, parentOnColumnResized]
   );
 
   const setSizes = useCallback(
     (apiEvent: GridReadyEvent | GridSizeChangedEvent) => {
-      if (!storeKey || !Object.keys(sizes).length || !width) {
+      if (!storeKey || !Object.keys(sizes).length || !widthRef.current) {
         apiEvent.api.sizeColumnsToFit();
       } else {
         const recalculatedSizes = recalculateSizes(sizes);
@@ -108,7 +109,7 @@ export const useColumnSizes = ({
         apiEvent.columnApi.setColumnWidths(newSizes);
       }
     },
-    [storeKey, recalculateSizes, sizes, width]
+    [storeKey, recalculateSizes, sizes]
   );
 
   const onGridReady = useCallback(
@@ -122,21 +123,21 @@ export const useColumnSizes = ({
   const onGridSizeChanged = useCallback(
     (event: GridSizeChangedEvent) => {
       parentOnGridSizeChanged?.(event);
-      setWidth(event.clientWidth);
+      widthRef.current = event.clientWidth;
       setSizes(event);
     },
-    [setWidth, parentOnGridSizeChanged, setSizes]
+    [parentOnGridSizeChanged, setSizes]
   );
   if (storeKey) {
     return {
-      onColumnResized,
       onGridReady,
       onGridSizeChanged,
+      onColumnResized,
     };
   }
   return {
-    onColumnResized: parentOnColumnResized,
     onGridReady: parentOnGridReady,
     onGridSizeChanged: parentOnGridSizeChanged,
+    onColumnResized: parentOnColumnResized,
   };
 };
