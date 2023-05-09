@@ -96,7 +96,13 @@ jobs:
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
       - name: Print affected
-        run: yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects
+        run: |
+          yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects
+          branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
+          projects_e2e=""
+          preview_governance="not deployed"
+          preview_trading="not deployed"
+          preview_explorer="not deployed"
 
       # See affected apps
       - name: See affected apps
@@ -107,7 +113,6 @@ jobs:
           echo ">>>> eof debug"
 
           affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
-          echo -n "Affected projects: $affected"
 
           branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           projects_e2e=""
