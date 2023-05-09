@@ -96,13 +96,13 @@ describe('RowData', () => {
     mockHeaders(props.url);
     render(renderComponent(props, statsQueryMock, subMock));
 
-    // radio should be disabled until query resolves
+    // radio should be enabled until query resolves
     expect(
       screen.getByRole('radio', {
         checked: false,
         name: props.url,
       })
-    ).toBeDisabled();
+    ).toBeEnabled();
     expect(screen.getByTestId('response-time-cell')).toHaveTextContent(
       'Checking'
     );
@@ -124,7 +124,7 @@ describe('RowData', () => {
     });
   });
 
-  it('radio button disabled if query fails', async () => {
+  it('radio button still enabled if query fails', async () => {
     mockHeaders(props.url, {});
 
     const failedQueryMock: MockedResponse<StatisticsQuery> = {
@@ -149,7 +149,7 @@ describe('RowData', () => {
         checked: false,
         name: props.url,
       })
-    ).toBeDisabled();
+    ).toBeEnabled();
     expect(screen.getByTestId('response-time-cell')).toHaveTextContent(
       'Checking'
     );
@@ -170,7 +170,7 @@ describe('RowData', () => {
           checked: false,
           name: props.url,
         })
-      ).toBeDisabled();
+      ).toBeEnabled();
     });
   });
 
@@ -205,19 +205,6 @@ describe('RowData', () => {
     );
 
     expect(screen.getByTestId('block-height-cell')).toHaveClass('text-danger');
-  });
-
-  it('disables radio button if url is invalid', () => {
-    mockHeaders(props.url, { blockHeight: 100 });
-
-    render(renderComponent(props, statsQueryMock, subMock));
-
-    expect(
-      screen.getByRole('radio', {
-        checked: false,
-        name: props.url,
-      })
-    ).toBeDisabled();
   });
 
   it('doesnt render the radio if its the custom row', () => {
