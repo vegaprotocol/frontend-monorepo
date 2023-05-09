@@ -16,6 +16,7 @@ export const createDocsLinks = (docsUrl: string) => ({
   LOSS_SOCIALIZATION: `${docsUrl}/concepts/trading-on-vega/market-protections#loss-socialisation`,
   POSITION_RESOLUTION: `${docsUrl}/concepts/trading-on-vega/market-protections#position-resolution`,
   LIQUIDITY: `${docsUrl}/concepts/liquidity/provision`,
+  WITHDRAWAL_LIMIT: `${docsUrl}/testnet/concepts/deposits-withdrawals#withdrawal-limit`,
 });
 
 export const ExternalLinks = {

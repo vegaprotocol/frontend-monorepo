@@ -7,6 +7,7 @@ import {
   required,
   isAssetTypeERC20,
   formatNumber,
+  createDocsLinks,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -34,6 +35,7 @@ import {
   useWeb3Disconnect,
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface FormFields {
   asset: string;
@@ -67,6 +69,7 @@ const WithdrawDelayNotification = ({
     symbol,
     delay ? formatDistanceToNow(Date.now() + delay * 1000) : ' ',
   ];
+  const { VEGA_DOCS_URL } = useEnvironment();
   return (
     <Notification
       intent={Intent.Warning}
@@ -82,12 +85,14 @@ const WithdrawDelayNotification = ({
               formatNumber(threshold, decimals),
               ...replacements,
             ]),
-        <ExternalLink
-          className="ml-1"
-          href="https://docs.vega.xyz/testnet/concepts/deposits-withdrawals#withdrawal-limits"
-        >
-          {t('Read more')}
-        </ExternalLink>,
+        VEGA_DOCS_URL && (
+          <ExternalLink
+            className="ml-1"
+            href={createDocsLinks(VEGA_DOCS_URL).WITHDRAWAL_LIMIT}
+          >
+            {t('Read more')}
+          </ExternalLink>
+        ),
       ]}
     />
   );
