@@ -1,5 +1,9 @@
-import { useEnvironment } from '@vegaprotocol/environment';
-import { removePaginationWrapper, TokenLinks } from '@vegaprotocol/utils';
+import {
+  PROPOSAL_PAGE,
+  UPDATE_PROPOSAL_PAGE,
+  useEnvironment,
+} from '@vegaprotocol/environment';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
@@ -236,7 +240,7 @@ export const MarketInfoAccordion = ({
           {VEGA_TOKEN_URL && (
             <ExternalLink
               className="mb-2 w-full"
-              href={generatePath(TokenLinks.PROPOSAL_PAGE, {
+              href={generatePath(PROPOSAL_PAGE, {
                 tokenUrl: VEGA_TOKEN_URL,
                 proposalId: market.proposal?.id || '',
               })}
@@ -252,7 +256,7 @@ export const MarketInfoAccordion = ({
           {VEGA_TOKEN_URL && (
             <ExternalLink
               className="w-full"
-              href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
+              href={generatePath(UPDATE_PROPOSAL_PAGE, {
                 tokenUrl: VEGA_TOKEN_URL,
               })}
               title={

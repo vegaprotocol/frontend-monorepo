@@ -84,6 +84,20 @@ export const useEtherscanLink = () => {
   return link;
 };
 
+/** useDocsLink returns external documentation links that are specific to an environment
+ *  ex. https://docs.vega.xyz/testnet or https://docs.vega.xyz/mainnet (based on NX_VEGA_DOCS_URL)
+ * @param {string} path - the documentation path
+ */
+export const useDocsLink = () => {
+  const { VEGA_DOCS_URL } = useEnvironment();
+  const baseUrl = trim(VEGA_DOCS_URL, '/');
+  const link = useCallback(
+    (url?: string) => `${baseUrl}/${trim(url, '/') || ''}`,
+    [baseUrl]
+  );
+  return link;
+};
+
 // Vega blog
 export const BLOG = 'https://blog.vega.xyz/';
 
@@ -97,6 +111,8 @@ export const TOKEN_PROPOSAL = '/proposals/:id';
 export const TOKEN_PROTOCOL_UPGRADE_PROPOSAL =
   '/proposals/protocol-upgrade/:tag';
 export const TOKEN_VALIDATOR = '/validators/:id';
+export const PROPOSAL_PAGE = ':tokenUrl/proposals/:proposalId';
+export const UPDATE_PROPOSAL_PAGE = ':tokenUrl/proposals/propose/update-market';
 
 /**
  * Generates link to the protocol upgrade proposal details on Governance
@@ -125,3 +141,41 @@ export const CONSOLE_MARKET = '/markets/:marketId';
 export const CONSOLE_MARKETS = '/markets/all';
 export const CONSOLE_PORTFOLIO = '/portfolio';
 export const CONSOLE_LIQUIDITY = 'liquidity/:marketId';
+
+// Vega XYZ
+export const GET_VEGA_WALLET_URL = 'https://vega.xyz/wallet/';
+
+// Docs
+export const DOCS_VEGA_WALLET = '/tools/vega-wallet';
+
+// Vega Docs
+export const DOCS = {
+  NEW_TO_VEGA: `/concepts/new-to-vega`,
+  AUCTION_TYPE_OPENING: `/concepts/trading-on-vega/trading-modes#auction-type-opening`,
+  AUCTION_TYPE_LIQUIDITY_MONITORING: `/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring`,
+  AUCTION_TYPE_PRICE_MONITORING: `/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring`,
+  AUCTION_TYPE_CLOSING: `/concepts/trading-on-vega/trading-modes#auction-type-closing`,
+  STAKING_GUIDE: `/concepts/vega-chain/#staking-on-vega`,
+  REWARDS_GUIDE: `/concepts/trading-on-vega/fees-rewards#trading-rewards`,
+  VEGA_WALLET_CONCEPTS_URL: `/concepts/vega-wallet`,
+  PROPOSALS_GUIDE: `/tutorials/proposals`,
+  NODE_OPERATORS: `/node-operators`,
+  LOSS_SOCIALIZATION: `/concepts/trading-on-vega/market-protections#loss-socialisation`,
+  POSITION_RESOLUTION: `/concepts/trading-on-vega/market-protections#position-resolution`,
+  LIQUIDITY: `/concepts/liquidity/provision`,
+  WITHDRAWAL_LIMIT: `/testnet/concepts/deposits-withdrawals#withdrawal-limit`,
+  VEGA_WALLET: `/tools/vega-wallet`,
+};
+
+// External links
+export const ExternalLinks = {
+  FEEDBACK: 'https://github.com/vegaprotocol/feedback/discussions',
+  GITHUB: 'https://github.com/vegaprotocol/token-frontend',
+  DISCORD: 'https://vega.xyz/discord',
+  GOVERNANCE_PAGE: 'https://vega.xyz/governance',
+  VALIDATOR_FORUM: 'https://community.vega.xyz/c/mainnet-validator-candidates',
+  MARGIN_CREDIT_RISK:
+    'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
+  VEGA_WALLET_URL: 'https://vega.xyz/wallet',
+  VEGA_WALLET_HOSTED_URL: 'https://vega-hosted-wallet.on.fleek.co/',
+};

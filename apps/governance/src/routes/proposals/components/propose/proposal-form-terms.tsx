@@ -5,8 +5,7 @@ import {
   ExternalLink,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import { createDocsLinks } from '@vegaprotocol/utils';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useDocsLink, useEnvironment, DOCS } from '@vegaprotocol/environment';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface ProposalFormTermsProps {
@@ -24,6 +23,9 @@ export const ProposalFormTerms = ({
 }: ProposalFormTermsProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
+  const useLink = useDocsLink();
+  const PROPOSALS_GUIDE = `${useLink(DOCS.PROPOSALS_GUIDE)}${docsLink}`;
+
   return (
     <FormGroup
       label={labelOverride || t('ProposalTerms')}
@@ -32,13 +34,8 @@ export const ProposalFormTerms = ({
       {docsLink && VEGA_DOCS_URL && (
         <div className="mt-[-4px] mb-2 text-sm font-light">
           <span className="mr-1">{t('ProposalTermsText')}</span>
-          <ExternalLink
-            href={`${
-              createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-            }${docsLink}`}
-            target="_blank"
-          >
-            {`${createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}${docsLink}`}
+          <ExternalLink href={PROPOSALS_GUIDE} target="_blank">
+            {PROPOSALS_GUIDE}
           </ExternalLink>
         </div>
       )}

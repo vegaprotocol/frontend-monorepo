@@ -7,7 +7,6 @@ import {
   required,
   isAssetTypeERC20,
   formatNumber,
-  createDocsLinks,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -35,7 +34,7 @@ import {
   useWeb3Disconnect,
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { DOCS, useDocsLink, useEnvironment } from '@vegaprotocol/environment';
 
 interface FormFields {
   asset: string;
@@ -70,6 +69,7 @@ const WithdrawDelayNotification = ({
     delay ? formatDistanceToNow(Date.now() + delay * 1000) : ' ',
   ];
   const { VEGA_DOCS_URL } = useEnvironment();
+  const docs = useDocsLink();
   return (
     <Notification
       intent={Intent.Warning}
@@ -86,10 +86,7 @@ const WithdrawDelayNotification = ({
               ...replacements,
             ]),
         VEGA_DOCS_URL && (
-          <ExternalLink
-            className="ml-1"
-            href={createDocsLinks(VEGA_DOCS_URL).WITHDRAWAL_LIMIT}
-          >
+          <ExternalLink className="ml-1" href={docs(DOCS.WITHDRAWAL_LIMIT)}>
             {t('Read more')}
           </ExternalLink>
         ),
