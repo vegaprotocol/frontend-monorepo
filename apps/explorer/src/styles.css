@@ -32,8 +32,13 @@
   line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
 }
 
+.vega-ag-grid .ag-row {
+  border-width: 1px 0;
+  border-bottom: 1px solid transparent;
+}
+
 /* Light variables */
-.vega-ag-grid.ag-theme-balham {
+.ag-theme-balham {
   --ag-background-color: theme(colors.white);
   --ag-border-color: theme(colors.neutral[300]);
   --ag-header-background-color: theme(colors.white);
@@ -45,7 +50,7 @@
 }
 
 /* Dark variables */
-.vega-ag-grid.ag-theme-balham-dark {
+.ag-theme-balham-dark {
   --ag-background-color: theme(colors.black);
   --ag-border-color: theme(colors.neutral[700]);
   --ag-header-background-color: theme(colors.black);
