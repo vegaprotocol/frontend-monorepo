@@ -22,7 +22,7 @@ import type {
 
 const update = (
   data: FillEdgeFragment[] | null,
-  delta: FillsEventSubscription['trades']
+  delta: FillsEventSubscription['tradesStream']
 ) => {
   return produce(data, (draft) => {
     orderBy(delta, 'createdAt').forEach((node) => {
@@ -36,7 +36,10 @@ const update = (
         }
       } else {
         const firstNode = draft[0]?.node;
-        if (firstNode && node.createdAt >= firstNode.createdAt) {
+        if (
+          (firstNode && node.createdAt >= firstNode.createdAt) ||
+          !firstNode
+        ) {
           const { buyerId, sellerId, marketId, ...trade } = node;
           draft.unshift({
             node: {
@@ -65,13 +68,13 @@ export type Trade = Omit<FillFieldsFragment, 'market'> & {
 export type TradeEdge = Edge<Trade>;
 
 const getData = (responseData: FillsQuery | null): FillEdgeFragment[] =>
-  responseData?.party?.tradesConnection?.edges || [];
+  responseData?.trades?.edges || [];
 
 const getPageInfo = (responseData: FillsQuery | null): PageInfo | null =>
-  responseData?.party?.tradesConnection?.pageInfo || null;
+  responseData?.trades?.pageInfo || null;
 
 const getDelta = (subscriptionData: FillsEventSubscription) =>
-  subscriptionData.trades || [];
+  subscriptionData.tradesStream || [];
 
 export const fillsProvider = makeDataProvider<
   Parameters<typeof getData>['0'],

@@ -2,6 +2,7 @@ import type { RefObject } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef } from 'react';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/data-provider';
+import type * as Types from '@vegaprotocol/types';
 import { updateGridData } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Trade, TradeEdge } from './fills-data-provider';
@@ -89,11 +90,18 @@ export const useFillsList = ({
     [gridRef]
   );
 
+  const filter: Types.TradesFilter & Types.TradesSubscriptionFilter = {
+    partyIds: [partyId],
+  };
+  if (marketId) {
+    filter.marketIds = [marketId];
+  }
+
   const { data, error, loading, load, totalCount, reload } = useDataProvider({
     dataProvider: fillsWithMarketProvider,
     update,
     insert,
-    variables: { partyId, marketId: marketId || '' },
+    variables: { filter },
   });
   totalCountRef.current = totalCount;
 

@@ -8,20 +8,19 @@ export type FillFieldsFragment = { __typename?: 'Trade', id: string, createdAt: 
 export type FillEdgeFragment = { __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
 
 export type FillsQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-  marketId?: Types.InputMaybe<Types.Scalars['ID']>;
+  filter?: Types.InputMaybe<Types.TradesFilter>;
   pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
-export type FillsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
+export type FillsQuery = { __typename?: 'Query', trades?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
 
 export type FillsEventSubscriptionVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
+  filter: Types.TradesSubscriptionFilter;
 }>;
 
 
-export type FillsEventSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: any, type: Types.TradeType, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } }> | null };
+export type FillsEventSubscription = { __typename?: 'Subscription', tradesStream?: Array<{ __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: any, type: Types.TradeType, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } }> | null };
 
 export const FillFieldsFragmentDoc = gql`
     fragment FillFields on Trade {
@@ -62,19 +61,16 @@ export const FillEdgeFragmentDoc = gql`
 }
     ${FillFieldsFragmentDoc}`;
 export const FillsDocument = gql`
-    query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
-  party(id: $partyId) {
-    id
-    tradesConnection(marketId: $marketId, pagination: $pagination) {
-      edges {
-        ...FillEdge
-      }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
+    query Fills($filter: TradesFilter, $pagination: Pagination) {
+  trades(filter: $filter, pagination: $pagination) {
+    edges {
+      ...FillEdge
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }
@@ -92,13 +88,12 @@ export const FillsDocument = gql`
  * @example
  * const { data, loading, error } = useFillsQuery({
  *   variables: {
- *      partyId: // value for 'partyId'
- *      marketId: // value for 'marketId'
+ *      filter: // value for 'filter'
  *      pagination: // value for 'pagination'
  *   },
  * });
  */
-export function useFillsQuery(baseOptions: Apollo.QueryHookOptions<FillsQuery, FillsQueryVariables>) {
+export function useFillsQuery(baseOptions?: Apollo.QueryHookOptions<FillsQuery, FillsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<FillsQuery, FillsQueryVariables>(FillsDocument, options);
       }
@@ -110,8 +105,8 @@ export type FillsQueryHookResult = ReturnType<typeof useFillsQuery>;
 export type FillsLazyQueryHookResult = ReturnType<typeof useFillsLazyQuery>;
 export type FillsQueryResult = Apollo.QueryResult<FillsQuery, FillsQueryVariables>;
 export const FillsEventDocument = gql`
-    subscription FillsEvent($partyId: ID!) {
-  trades(partyId: $partyId) {
+    subscription FillsEvent($filter: TradesSubscriptionFilter!) {
+  tradesStream(filter: $filter) {
     id
     marketId
     buyOrder
@@ -149,7 +144,7 @@ export const FillsEventDocument = gql`
  * @example
  * const { data, loading, error } = useFillsEventSubscription({
  *   variables: {
- *      partyId: // value for 'partyId'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
