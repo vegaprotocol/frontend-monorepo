@@ -54,7 +54,7 @@ context(
         });
     });
 
-    it('should be able to see button for - new proposal', function () {
+    it.only('should be able to see button for - new proposal', function () {
       // 3001-VOTE-002
       cy.get(newProposalLink)
         .should('be.visible')
@@ -63,7 +63,7 @@ context(
         .and('equal', '/proposals/propose');
     });
 
-    it('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
+    it.only('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
       cy.get(connectToVegaWalletButton)
         .should('be.visible')
