@@ -4,6 +4,7 @@ import type { AgGridReactProps, AgGridReact } from 'ag-grid-react';
 type Props = AgGridReactProps & {
   style?: React.CSSProperties;
   gridRef?: React.Ref<AgGridReact>;
+  storeKey?: string;
 };
 
 export const AgGridLazyInternal = lazy(() =>

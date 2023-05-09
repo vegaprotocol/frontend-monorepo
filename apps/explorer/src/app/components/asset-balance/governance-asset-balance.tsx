@@ -13,11 +13,17 @@ const DEFAULT_DECIMALS = 18;
  * the governance asset first, which is set by a network parameter
  */
 const GovernanceAssetBalance = ({ price }: GovernanceAssetBalanceProps) => {
-  const { data } = useExplorerGovernanceAssetQuery();
+  const { data, loading } = useExplorerGovernanceAssetQuery();
 
-  if (data && data.networkParameter?.value) {
+  if (!loading && data && data.networkParameter?.value) {
     const governanceAssetId = data.networkParameter.value;
-    return <AssetBalance price={price} assetId={governanceAssetId} />;
+    return (
+      <AssetBalance
+        price={price}
+        showAssetSymbol={true}
+        assetId={governanceAssetId}
+      />
+    );
   } else {
     return (
       <div className="inline-block">

@@ -264,6 +264,7 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       {
         headerName: t('Market ID'),
         field: 'id',
+        flex: 1,
       },
     ];
     return cols;
@@ -276,10 +277,10 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       columnDefs={colDefs}
       getRowId={({ data }) => data.id}
       defaultColDef={{
-        flex: 1,
         resizable: true,
       }}
       overlayNoRowsTemplate="No data"
+      storeKey="closedMarkets"
     />
   );
 };

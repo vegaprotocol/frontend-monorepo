@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import abi from '../abis/staking_abi.json';
 import { calcGasBuffer, prepend0x } from '../utils';
+import type { BigNumber as EthersBigNum } from 'ethers';
 
 export class StakingBridge {
   public contract: ethers.Contract;
@@ -51,7 +52,7 @@ export class StakingBridge {
   staking_token() {
     return this.contract.staking_token();
   }
-  stake_balance(target: string, vegaPublicKey: string) {
+  stake_balance(target: string, vegaPublicKey: string): Promise<EthersBigNum> {
     return this.contract.stake_balance(target, prepend0x(vegaPublicKey));
   }
   total_staked() {

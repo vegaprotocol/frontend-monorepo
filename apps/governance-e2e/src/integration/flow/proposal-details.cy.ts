@@ -4,12 +4,11 @@ import {
   navigation,
 } from '../../support/common.functions';
 import {
-  convertUnixTimestampToDateformat,
   createRawProposal,
   createTenDigitUnixTimeStampForSpecifiedDays,
   enterUniqueFreeFormProposalBody,
   generateFreeFormProposalTitle,
-  getGovernanceProposalDateFormatForSpecifiedDays,
+  getDateFormatForSpecifiedDays,
   getProposalIdFromList,
   getProposalInformationFromTable,
   getSubmittedProposalFromProposalList,
@@ -23,6 +22,7 @@ import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../../../governan
 import { ethereumWalletConnect } from '../../../../governance-e2e/src/support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../../../governance-e2e/src/support/wallet-teardown.functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
+import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
 
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
@@ -99,20 +99,22 @@ describe(
       getSubmittedProposalFromProposalList(proposalTitle).within(() =>
         cy.get(viewProposalButton).click()
       );
-      convertUnixTimestampToDateformat(proposalTimeStamp).then(
-        (closingDate) => {
-          getProposalInformationFromTable('Closes on')
-            .contains(closingDate)
-            .should('be.visible');
-        }
-      );
-      getGovernanceProposalDateFormatForSpecifiedDays(0).then(
-        (proposalDate) => {
-          getProposalInformationFromTable('Proposed on')
-            .contains(proposalDate)
-            .should('be.visible');
-        }
-      );
+      cy.wrap(
+        formatDateWithLocalTimezone(new Date(proposalTimeStamp * 1000))
+      ).then((closingDate) => {
+        getProposalInformationFromTable('Closes on')
+          .contains(closingDate)
+          .should('be.visible');
+      });
+      cy.wrap(
+        formatDateWithLocalTimezone(
+          new Date(createTenDigitUnixTimeStampForSpecifiedDays(0) * 1000)
+        )
+      ).then((proposalDate) => {
+        getProposalInformationFromTable('Proposed on')
+          .contains(proposalDate)
+          .should('be.visible');
+      });
     });
 
     it('Newly created proposal details - shows default status set to fail', function () {
@@ -155,18 +157,16 @@ describe(
       cy.getByTestId('vote-buttons').contains('against').should('be.visible');
       cy.getByTestId('vote-buttons').contains('for').should('be.visible');
       voteForProposal('for');
-      getGovernanceProposalDateFormatForSpecifiedDays(0, 'shortMonth').then(
-        (votedDate) => {
-          // 3001-VOTE-051
-          // 3001-VOTE-093
-          cy.contains('You voted:')
-            .siblings()
-            .contains('For')
-            .siblings()
-            .contains(votedDate)
-            .should('be.visible');
-        }
-      );
+      getDateFormatForSpecifiedDays(0).then((votedDate) => {
+        // 3001-VOTE-051
+        // 3001-VOTE-093
+        cy.contains('You voted:')
+          .siblings()
+          .contains('For')
+          .siblings()
+          .contains(votedDate)
+          .should('be.visible');
+      });
       cy.get(proposalVoteProgressForPercentage) // 3001-VOTE-072
         .contains('100.00%')
         .and('be.visible');

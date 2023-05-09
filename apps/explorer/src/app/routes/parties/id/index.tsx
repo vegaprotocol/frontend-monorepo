@@ -1,24 +1,28 @@
-import { getNodes } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import {
+  useDataProvider,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
-import { Panel } from '../../../components/panel';
 import { toNonHex } from '../../../components/search/detect-search';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
-import { useExplorerPartyAssetsQuery } from './__generated__/Party-assets';
-import type { ExplorerPartyAssetsAccountsFragment } from './__generated__/Party-assets';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import GovernanceAssetBalance from '../../../components/asset-balance/governance-asset-balance';
-import { PartyAccounts } from './components/party-accounts';
+import { Icon, Intent, Notification, Splash } from '@vegaprotocol/ui-toolkit';
+import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
+import { PartyBlockStake } from './components/party-block-stake';
+import { PartyBlockAccounts } from './components/party-block-accounts';
+import { isValidPartyId } from './components/party-id-error';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
 
   useDocumentTitle(['Public keys', party || '-']);
+  const navigate = useNavigate();
+
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
@@ -28,71 +32,72 @@ const Party = () => {
     filters,
   });
 
-  const partyRes = useExplorerPartyAssetsQuery({
-    // Don't cache data for this query, party information can move quite quickly
-    fetchPolicy: 'network-only',
-    variables: { partyId: partyId },
-    skip: !party,
+  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const {
+    data: AccountData,
+    loading: AccountLoading,
+    error: AccountError,
+  } = useDataProvider({
+    dataProvider: aggregatedAccountsDataProvider,
+    variables,
   });
 
-  const p = partyRes.data?.partiesConnection?.edges[0].node;
-
-  const header = p?.id ? (
-    <PageHeader
-      title={p.id}
-      copy
-      truncateStart={visibleChars}
-      truncateEnd={visibleChars}
-    />
-  ) : (
-    <Panel>
-      <p>No data found for public key {party}</p>
-    </Panel>
-  );
-
-  const staking = (
-    <section>
-      {p?.stakingSummary?.currentStakeAvailable ? (
-        <div className="mt-4 leading-3">
-          <strong className="font-semibold">{t('Staking Balance: ')}</strong>
-          <GovernanceAssetBalance
-            price={p.stakingSummary.currentStakeAvailable}
-          />
-        </div>
-      ) : null}
-    </section>
-  );
-
-  const accounts = getNodes<ExplorerPartyAssetsAccountsFragment>(
-    p?.accountsConnection
-  );
+  if (!isValidPartyId(partyId)) {
+    return (
+      <div className="max-w-sm mx-auto">
+        <Notification
+          message={t('Invalid party ID')}
+          intent={Intent.Danger}
+          buttonProps={{
+            text: t('Go back'),
+            action: () => navigate(-1),
+            className: 'py-1',
+            size: 'sm',
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <section>
-      <h1
-        className="font-alpha calt uppercase font-xl mb-4 text-vega-dark-100 dark:text-vega-light-100"
-        data-testid="parties-header"
-      >
-        {t('Public key')}
-      </h1>
-      {partyRes.data ? (
-        <>
-          {header}
-          <SubHeading>{t('Asset data')}</SubHeading>
-          {accounts ? <PartyAccounts accounts={accounts} /> : null}
-          {staking}
+      <PageHeader
+        title={partyId}
+        copy
+        truncateStart={visibleChars}
+        truncateEnd={visibleChars}
+      />
 
-          <SubHeading>{t('Transactions')}</SubHeading>
-          <TxsInfiniteList
-            hasMoreTxs={hasMoreTxs}
-            areTxsLoading={loading}
-            txs={txsData}
-            loadMoreTxs={loadTxs}
-            error={error}
-            className="mb-28"
-          />
-        </>
-      ) : null}
+      <div className="grid md:grid-flow-col grid-flow-row md:space-x-4 grid-cols-1 md:grid-cols-2 w-full">
+        <PartyBlockAccounts
+          accountError={AccountError}
+          accountLoading={AccountLoading}
+          accountData={AccountData}
+          partyId={partyId}
+        />
+        <PartyBlockStake
+          accountError={AccountError}
+          accountLoading={AccountLoading}
+          partyId={partyId}
+        />
+      </div>
+
+      <SubHeading>{t('Transactions')}</SubHeading>
+      {!error && txsData ? (
+        <TxsInfiniteList
+          hasMoreTxs={hasMoreTxs}
+          areTxsLoading={loading}
+          txs={txsData}
+          loadMoreTxs={loadTxs}
+          error={error}
+          className="mb-28"
+        />
+      ) : (
+        <Splash>
+          <Icon name="error" className="mr-1" />
+          &nbsp;{t('Could not load transaction list for party')}
+        </Splash>
+      )}
     </section>
   );
 };

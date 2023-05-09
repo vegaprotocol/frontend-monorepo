@@ -13,10 +13,12 @@ export const AccountsContainer = ({
   pinnedAsset,
   hideButtons,
   noBottomPlaceholder,
+  storeKey,
 }: {
   pinnedAsset?: PinnedAsset;
   hideButtons?: boolean;
   noBottomPlaceholder?: boolean;
+  storeKey?: string;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
@@ -49,6 +51,7 @@ export const AccountsContainer = ({
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
         noBottomPlaceholder={noBottomPlaceholder}
+        storeKey={storeKey}
       />
       {!isReadOnly && !hideButtons && (
         <div className="flex gap-2 justify-end p-2 px-[11px] absolute lg:fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">

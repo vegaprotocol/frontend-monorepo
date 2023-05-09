@@ -101,15 +101,15 @@ context(
             );
             cy.getByTestId('protocol-upgrade-proposal-release-tag').should(
               'have.text',
-              'Vega release tagv1'
+              'Vega release tag: v1'
             );
             cy.getByTestId('protocol-upgrade-proposal-block-height').should(
               'have.text',
-              'Upgrade block height2015942'
+              'Upgrade block height: 2015942'
             );
             cy.getByTestId('protocol-upgrade-proposal-status').should(
               'have.text',
-              'Approved'
+              'Approved '
             );
           });
       });

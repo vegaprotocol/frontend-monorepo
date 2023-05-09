@@ -6,18 +6,20 @@ import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { useFillsList } from './use-fills-list';
 import type { Trade } from './fills-data-provider';
-import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 
 interface FillsManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  storeKey?: string;
 }
 
 export const FillsManager = ({
   partyId,
   marketId,
   onMarketClick,
+  storeKey,
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
@@ -83,6 +85,7 @@ export const FillsManager = ({
         fullWidthCellRenderer={fullWidthCellRenderer}
         rowClassRules={rowClassRules}
         getRowHeight={getRowHeight}
+        storeKey={storeKey}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

@@ -26,9 +26,10 @@ export const DepositsTable = forwardRef<
     <AgGrid
       ref={ref}
       overlayNoRowsTemplate={t('No deposits')}
-      defaultColDef={{ flex: 1, resizable: true }}
+      defaultColDef={{ resizable: true }}
       style={{ width: '100%', height: '100%' }}
       suppressCellFocus={true}
+      storeKey="depositTable"
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />
@@ -80,6 +81,7 @@ export const DepositsTable = forwardRef<
             </EtherscanLink>
           );
         }}
+        flex={1}
       />
     </AgGrid>
   );

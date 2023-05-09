@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { DATA_SOURCES } from '../../../config';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
@@ -12,9 +11,8 @@ import {
   TableCell,
 } from '../../../components/table';
 import { TxsPerBlock } from '../../../components/txs/txs-per-block';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../route-names';
-import { RenderFetched } from '../../../components/render-fetched';
 import { t } from '@vegaprotocol/i18n';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { NodeLink } from '../../../components/links';
@@ -34,7 +32,7 @@ const Block = () => {
   return (
     <section>
       <RouteTitle data-testid="block-header">{t(`BLOCK ${block}`)}</RouteTitle>
-      <RenderFetched error={error} loading={loading}>
+      <AsyncRenderer data={blockData} error={error} loading={!!loading}>
         <>
           <div className="grid grid-cols-2 gap-2 mb-8">
             <Link
@@ -123,7 +121,7 @@ const Block = () => {
             </>
           )}
         </>
-      </RenderFetched>
+      </AsyncRenderer>
     </section>
   );
 };

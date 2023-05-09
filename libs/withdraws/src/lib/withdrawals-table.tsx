@@ -7,7 +7,7 @@ import {
   isNumeric,
   truncateByChars,
 } from '@vegaprotocol/utils';
-import { useBottomPlaceholder } from '@vegaprotocol/react-helpers';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type {
@@ -33,7 +33,7 @@ export const WithdrawalsTable = (
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
-      defaultColDef={{ flex: 1, resizable: true }}
+      defaultColDef={{ resizable: true }}
       style={{ width: '100%', height: '100%' }}
       components={{
         RecipientCell,
@@ -43,6 +43,7 @@ export const WithdrawalsTable = (
       }}
       suppressCellFocus
       ref={gridRef}
+      storeKey="withdrawals"
       {...bottomPlaceholderProps}
       {...props}
     >

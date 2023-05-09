@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalVotesTable } from './proposal-votes-table';
@@ -46,6 +46,7 @@ describe('Proposal Votes Table', () => {
 
   it('should show vote breakdown fields, excluding custom update market fields', () => {
     renderComponent();
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('Expected to pass')).toBeInTheDocument();
     expect(screen.getByText('Token majority met')).toBeInTheDocument();
     expect(screen.getByText('Token participation met')).toBeInTheDocument();
@@ -55,7 +56,7 @@ describe('Proposal Votes Table', () => {
     expect(screen.getByText('Participation required')).toBeInTheDocument();
     expect(screen.getByText('Majority Required')).toBeInTheDocument();
     expect(screen.getByText('Number of voting parties')).toBeInTheDocument();
-    expect(screen.getByText('Total yes tokens')).toBeInTheDocument();
+    expect(screen.getByText('Total tokens voted')).toBeInTheDocument();
     expect(
       screen.getByText('Total tokens voted percentage')
     ).toBeInTheDocument();
@@ -70,13 +71,14 @@ describe('Proposal Votes Table', () => {
 
   it('displays different breakdown fields for update market proposal', () => {
     renderComponent(updateMarketProposal, updateMarketProposalType);
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('Liquidity majority met')).toBeInTheDocument();
     expect(screen.getByText('Liquidity participation met')).toBeInTheDocument();
     expect(
       screen.getByText('Liquidity shares for proposal')
     ).toBeInTheDocument();
     expect(screen.queryByText('Number of voting parties')).toBeNull();
-    expect(screen.queryByText('Total yes tokens')).toBeNull();
+    expect(screen.queryByText('Total tokens voted')).toBeNull();
     expect(screen.queryByText('Total tokens voted percentage')).toBeNull();
     expect(screen.queryByText('Number of votes for')).toBeNull();
     expect(screen.queryByText('Number of votes against')).toBeNull();
@@ -86,6 +88,7 @@ describe('Proposal Votes Table', () => {
 
   it('displays if an update market proposal will pass by token vote', () => {
     renderComponent(updateMarketProposal, updateMarketProposalType);
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('👍 by token vote')).toBeInTheDocument();
   });
 
@@ -110,6 +113,7 @@ describe('Proposal Votes Table', () => {
       }),
       updateMarketProposalType
     );
+    fireEvent.click(screen.getByTestId('vote-breakdown-toggle'));
     expect(screen.getByText('👍 by liquidity vote')).toBeInTheDocument();
   });
 });

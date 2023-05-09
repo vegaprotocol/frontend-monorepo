@@ -21,8 +21,14 @@ export function useRefreshAssociatedBalances() {
         ]);
 
       updateBalances({
-        walletAssociatedBalance: toBigNum(walletAssociatedBalance, decimals),
-        vestingAssociatedBalance: toBigNum(vestingAssociatedBalance, decimals),
+        walletAssociatedBalance: toBigNum(
+          walletAssociatedBalance.toString(),
+          decimals
+        ),
+        vestingAssociatedBalance: toBigNum(
+          vestingAssociatedBalance.toString(),
+          decimals
+        ),
       });
     },
     [staking, vesting, updateBalances, decimals]

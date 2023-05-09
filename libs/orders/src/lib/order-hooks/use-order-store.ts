@@ -109,9 +109,9 @@ export const useOrder = (marketId: string) => {
 
 export const getDefaultOrder = (marketId: string): OrderObj => ({
   marketId,
-  type: OrderType.TYPE_MARKET,
+  type: OrderType.TYPE_LIMIT,
   side: Side.SIDE_BUY,
-  timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+  timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
   size: '0',
   price: '0',
   expiresAt: undefined,

@@ -21,10 +21,10 @@ export const useGetUserBalances = (account: string | undefined) => {
         token.allowance(account, config.staking_bridge_contract.address),
       ]);
 
-      const balance = toBigNum(b, decimals);
-      const walletBalance = toBigNum(w, decimals);
-      const lien = toBigNum(stats.lien, decimals);
-      const allowance = toBigNum(a, decimals);
+      const balance = toBigNum(b.toString(), decimals);
+      const walletBalance = toBigNum(w.toString(), decimals);
+      const lien = toBigNum(stats.lien.toString(), decimals);
+      const allowance = toBigNum(a.toString(), decimals);
 
       return {
         balanceFormatted: balance,

@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { closeDialog, navigateTo, navigation } from './common.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from './staking.functions';
 
@@ -15,41 +16,19 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
-export function convertUnixTimestampToDateformat(
-  unixTimestamp: number,
-  monthTextLength = 'longMonth'
-) {
-  const dateSupplied = new Date(unixTimestamp * 1000);
-  const year = dateSupplied.getFullYear();
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  const month = months[dateSupplied.getMonth()];
-  const shortMonth = months[dateSupplied.getMonth()].substring(0, 3),
-    date = dateSupplied.getDate();
-
-  if (monthTextLength === 'longMonth') {
-    return cy.wrap(`${date} ${month} ${year}`);
-  } else return cy.wrap(`${date} ${shortMonth} ${year}`);
-}
-
 export function createTenDigitUnixTimeStampForSpecifiedDays(
   durationDays: number
 ) {
   const today = new Date();
   let timestamp = today.setDate(today.getDate() + durationDays);
   return (timestamp = Math.floor(timestamp / 1000));
+}
+
+export function getDateFormatForSpecifiedDays(days: number) {
+  const date = new Date(
+    createTenDigitUnixTimeStampForSpecifiedDays(days) * 1000
+  );
+  return cy.wrap(format(date, 'dd MMM yyyy'));
 }
 
 export function enterRawProposalBody(timestamp: number) {
@@ -102,16 +81,6 @@ export function getProposalIdFromList(proposalTitle: string) {
           cy.wrap(newProposalId).as('proposalIdText');
         });
     });
-}
-
-export function getGovernanceProposalDateFormatForSpecifiedDays(
-  days: number,
-  shortOrLong?: string
-) {
-  return convertUnixTimestampToDateformat(
-    createTenDigitUnixTimeStampForSpecifiedDays(days),
-    shortOrLong
-  );
 }
 
 export function getProposalInformationFromTable(heading: string) {

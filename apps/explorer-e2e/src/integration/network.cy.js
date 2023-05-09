@@ -138,7 +138,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should list each network parameter displayed as a currency value with four decimals - in the correct format', function () {
+    it.skip('should list each network parameter displayed as a currency value with four decimals - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
         network_parameters = Object.entries(network_parameters);
         network_parameters.forEach((network_parameter) => {

@@ -144,12 +144,12 @@ afterEach(() => {
 describe('Block', () => {
   it('renders error state if error is present', async () => {
     (useFetch as jest.Mock).mockReturnValue({
-      state: { data: null, loading: false, error: 'asd' },
+      state: { data: null, loading: false, error: new Error('asd') },
     });
     render(renderComponent());
 
     expect(screen.getByText(`BLOCK ${blockId}`)).toBeInTheDocument();
-    expect(screen.getByText('Error retrieving data')).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong: asd')).toBeInTheDocument();
   });
 
   it('renders loading state if present', async () => {

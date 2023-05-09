@@ -20,8 +20,8 @@ interface TypeSelectorProps {
 }
 
 const toggles = [
-  { label: t('Market'), value: Schema.OrderType.TYPE_MARKET },
   { label: t('Limit'), value: Schema.OrderType.TYPE_LIMIT },
+  { label: t('Market'), value: Schema.OrderType.TYPE_MARKET },
 ];
 
 export const TypeSelector = ({

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Intent, Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
@@ -7,6 +7,8 @@ import type { ProposalFieldsFragment } from '../../proposals/__generated__/Propo
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import ReactMarkdown from 'react-markdown';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
+import { CurrentProposalState } from '../current-proposal-state';
+import { ProposalInfoLabel } from '../proposal-info-label';
 
 export const ProposalHeader = ({
   proposal,
@@ -19,7 +21,7 @@ export const ProposalHeader = ({
   const change = proposal?.terms.change;
 
   let details: ReactNode;
-  let proposalType: ReactNode;
+  let proposalType = '';
 
   let title = proposal?.rationale.title.trim();
   let description = proposal?.rationale.description.trim();
@@ -32,10 +34,12 @@ export const ProposalHeader = ({
 
   switch (change?.__typename) {
     case 'NewMarket': {
-      proposalType = t('NewMarket');
+      proposalType = 'NewMarket';
       details = (
         <>
-          {t('Code')}: {change.instrument.code}.{' '}
+          <span>
+            {t('Code')}: {change.instrument.code}.
+          </span>{' '}
           {change.instrument.futureProduct?.settlementAsset.symbol ? (
             <>
               <span className="font-semibold">
@@ -51,53 +55,60 @@ export const ProposalHeader = ({
       break;
     }
     case 'UpdateMarket': {
-      proposalType = t('UpdateMarket');
-      details = `${t('Market change')}: ${change.marketId}`;
+      proposalType = 'UpdateMarket';
+      details = (
+        <>
+          <span>{t('Market change')}:</span>{' '}
+          <span>{truncateMiddle(change.marketId)}</span>
+        </>
+      );
       break;
     }
     case 'NewAsset': {
-      proposalType = t('NewAsset');
+      proposalType = 'NewAsset';
       details = (
         <>
-          {t('Symbol')}: {change.symbol}.{' '}
-          <Lozenge>
-            {change.source.__typename === 'ERC20' &&
-              `ERC20 ${change.source.contractAddress}`}
-            {change.source.__typename === 'BuiltinAsset' &&
-              `${t('Max faucet amount mint')}: ${
-                change.source.maxFaucetAmountMint
-              }`}
-          </Lozenge>
+          <span>{t('Symbol')}:</span> <Lozenge>{change.symbol}.</Lozenge>{' '}
+          {change.source.__typename === 'ERC20' && (
+            <>
+              <span>{t('ERC20ContractAddress')}:</span>{' '}
+              <Lozenge>{change.source.contractAddress}</Lozenge>
+            </>
+          )}{' '}
+          {change.source.__typename === 'BuiltinAsset' && (
+            <>
+              <span>{t('MaxFaucetAmountMint')}:</span>{' '}
+              <Lozenge>{change.source.maxFaucetAmountMint}</Lozenge>
+            </>
+          )}
         </>
       );
       break;
     }
     case 'UpdateNetworkParameter': {
-      proposalType = t('NetworkParameter');
-      const parametersClasses = 'font-mono leading-none';
+      proposalType = 'NetworkParameter';
       details = (
         <>
-          <span className={`${parametersClasses} mr-2`}>
-            {change.networkParameter.key}
-          </span>{' '}
-          {t('to')}{' '}
-          <span className={`${parametersClasses} ml-2`}>
-            {change.networkParameter.value}
+          <span>{t('Change')}:</span>{' '}
+          <Lozenge>{change.networkParameter.key}</Lozenge>{' '}
+          <span>{t('to')}</span>{' '}
+          <span className="whitespace-nowrap">
+            <Lozenge>{change.networkParameter.value}</Lozenge>
           </span>
         </>
       );
       break;
     }
     case 'NewFreeform': {
-      proposalType = t('Freeform');
-      details = `${t('FreeformProposal')}: ${proposal?.id}`;
+      proposalType = 'Freeform';
+      details = <span />;
       break;
     }
     case 'UpdateAsset': {
-      proposalType = t('UpdateAsset');
+      proposalType = 'UpdateAsset';
       details = (
         <>
-          <span>{t('Asset ID')}:</span>
+          <span>{t('AssetID')}:</span>{' '}
           <Lozenge>{truncateMiddle(change.assetId)}</Lozenge>
         </>
       );
@@ -106,7 +117,7 @@ export const ProposalHeader = ({
   }
 
   return (
-    <div className="text-sm mb-2">
+    <>
       <div data-testid="proposal-title">
         {isListItem ? (
           <header>
@@ -118,30 +129,39 @@ export const ProposalHeader = ({
       </div>
 
       <div className="flex items-center gap-2 mb-4">
-        {proposalType && (
-          <div data-testid="proposal-type">
-            <Lozenge variant={Intent.None}>{proposalType}</Lozenge>
-          </div>
-        )}
-      </div>
-      <div className="flex items-center gap-2">
-        {description && !isListItem && (
-          <div data-testid="proposal-description" className="mb-4">
-            <ReactMarkdown
-              className="react-markdown-container"
-              /* Prevents HTML embedded in the description from rendering */
-              skipHtml={true}
-              /* Stops users embedding images which could be used for tracking  */
-              disallowedElements={['img']}
-              linkTarget="_blank"
-            >
-              {description}
-            </ReactMarkdown>
-          </div>
-        )}
+        <div data-testid="proposal-type">
+          <ProposalInfoLabel variant="secondary">
+            {t(`${proposalType}`)}
+          </ProposalInfoLabel>
+        </div>
+
+        <div data-testid="proposal-status">
+          <CurrentProposalState proposal={proposal} />
+        </div>
       </div>
 
-      {details && <div data-testid="proposal-details">{details}</div>}
-    </div>
+      {details && (
+        <div data-testid="proposal-details" className="break-words my-10">
+          {details}
+        </div>
+      )}
+
+      {description && !isListItem && (
+        <div data-testid="proposal-description">
+          {/*<div className="uppercase mr-2">{t('ProposalDescription')}:</div>*/}
+          <SubHeading title={t('ProposalDescription')} />
+          <ReactMarkdown
+            className="react-markdown-container"
+            /* Prevents HTML embedded in the description from rendering */
+            skipHtml={true}
+            /* Stops users embedding images which could be used for tracking  */
+            disallowedElements={['img']}
+            linkTarget="_blank"
+          >
+            {description}
+          </ReactMarkdown>
+        </div>
+      )}
+    </>
   );
 };
