@@ -32,6 +32,11 @@
   line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
 }
 
+.vega-ag-grid .ag-row {
+  border-width: 1px 0;
+  border-bottom: 1px solid transparent;
+}
+
 /* Light variables */
 .ag-theme-balham {
   --ag-background-color: theme(colors.white);

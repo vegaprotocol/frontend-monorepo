@@ -3,7 +3,7 @@ import { assetsProvider } from '@vegaprotocol/assets';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/data-provider';
-import { updateGridData } from '@vegaprotocol/react-helpers';
+import { updateGridData } from '@vegaprotocol/datagrid';
 import {
   makeDataProvider,
   makeDerivedDataProvider,

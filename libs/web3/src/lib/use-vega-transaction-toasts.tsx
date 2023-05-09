@@ -48,7 +48,7 @@ import {
 import { useMarketList } from '@vegaprotocol/market-list';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
-import { Size } from '@vegaprotocol/react-helpers';
+import { Size } from '@vegaprotocol/datagrid';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
   Default: Intent.Primary,
