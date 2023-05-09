@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 interface OrderTypeCellProps {
   value?: Schema.OrderType;
@@ -23,7 +24,13 @@ export const OrderTypeCell = ({
     }
     if (!value) return '-';
     if (order?.peggedOrder) {
-      return t('Pegged');
+      const offset = addDecimalsFormatNumber(
+        order.peggedOrder?.offset,
+        order.market.decimalPlaces
+      );
+      const reference =
+        Schema.PeggedReferenceMapping[order.peggedOrder?.reference];
+      return t('%s - %s Peg limit', [reference, offset]);
     }
     if (order?.liquidityProvision) {
       return t('Liquidity provision');
