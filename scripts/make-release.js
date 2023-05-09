@@ -68,7 +68,7 @@ inquirer
       })
       .then(() => {
         for (const env of answers.envs) {
-          const branch = env === 'mainnet' ? 'master' : `release/${env}`;
+          const branch = env === 'mainnet' ? 'main' : `release/${env}`;
           release(answers.tag, branch);
         }
         execSync('git checkout develop');
