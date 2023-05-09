@@ -6,7 +6,7 @@ import type {
 import { forwardRef } from 'react';
 import classnames from 'classnames';
 
-export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'tertiary';
+export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'ternary';
 export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
 const base =
@@ -36,7 +36,7 @@ const secondary = [
   'enabled:hover:bg-vega-pink enabled:hover:border-vega-pink',
   'enabled:active:bg-vega-pink enabled:active:border-vega-pink',
 ];
-const tertiary = [
+const ternary = [
   'text-white dark:text-black',
   'border-vega-green',
   'dark:bg-vega-green bg-vega-green-550',
@@ -59,7 +59,7 @@ const getClassname = ({
     [defaultClasses.join(' ')]: variant === 'default',
     [primary.join(' ')]: variant === 'primary',
     [secondary.join(' ')]: variant === 'secondary',
-    [tertiary.join(' ')]: variant === 'tertiary',
+    [ternary.join(' ')]: variant === 'ternary',
 
     [lg]: size === 'lg',
     [md]: size === 'md',
