@@ -6,10 +6,7 @@ export const nodeGuardQuery = (
   override?: PartialDeep<NodeGuardQuery>
 ): NodeGuardQuery => {
   const defaultResult: NodeGuardQuery = {
-    statistics: {
-      __typename: 'Statistics',
-      blockHeight: '11',
-    },
+    lastBlockHeight: '11',
     networkParametersConnection: {
       __typename: 'NetworkParametersConnection',
       edges: [

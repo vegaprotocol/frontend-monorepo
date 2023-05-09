@@ -1,7 +1,5 @@
 query NodeGuard {
-  statistics {
-    blockHeight
-  }
+  lastBlockHeight
   networkParametersConnection {
     edges {
       node {
