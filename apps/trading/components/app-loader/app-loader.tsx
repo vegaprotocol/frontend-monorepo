@@ -1,5 +1,6 @@
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
+  AppFailure,
   NetworkLoader,
   NodeGuard,
   useEnvironment,
@@ -9,7 +10,6 @@ import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import dynamic from 'next/dynamic';
 import type { ReactNode } from 'react';
-import { AppFailure } from './app-failure';
 import { Web3Provider } from './web3-provider';
 
 export const DynamicLoader = dynamic(() => import('../preloader/preloader'), {

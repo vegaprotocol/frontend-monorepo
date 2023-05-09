@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useStatisticsQuery } from '../../utils/__generated__/Node';
+import { useNodeGuardQuery } from './__generated__/NodeGuard';
 
 export const NodeGuard = ({
   children,
@@ -10,14 +10,19 @@ export const NodeGuard = ({
   failure: ReactNode;
   skeleton: ReactNode;
 }) => {
-  const { error, loading } = useStatisticsQuery();
-  const wrapperClasses = 'h-full min-h-screen flex items-center justify-center';
+  const { data, error, loading } = useNodeGuardQuery();
+  const wrapperClasses =
+    'h-full min-h-screen flex items-center justify-center text-black dark:text-white';
 
   if (loading) {
     return <div className={wrapperClasses}>{skeleton}</div>;
   }
 
-  if (error) {
+  // It is possible for nodes to have a functioning datanode, but not return
+  // any net params. The app cannot safely function without net params
+  const netParamEdges = data?.networkParametersConnection.edges;
+
+  if (error || !netParamEdges || !netParamEdges.length) {
     return <div className={wrapperClasses}>{failure}</div>;
   }
 
