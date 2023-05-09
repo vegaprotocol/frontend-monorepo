@@ -122,10 +122,8 @@ html [data-theme='light'] {
   --ag-font-size: 12px;
 }
 .ag-theme-balham-dark .ag-row.no-hover,
-.ag-theme-balham-dark .ag-row.no-hover:hover {
-  background: black;
-}
+.ag-theme-balham-dark .ag-row.no-hover:hover,
 .ag-theme-balham .ag-row.no-hover,
 .ag-theme-balham .ag-row.no-hover:hover {
-  background: white;
+  background: var(--ag-background-color);
 }
