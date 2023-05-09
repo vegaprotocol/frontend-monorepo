@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Button } from '@vegaprotocol/ui-toolkit';
@@ -17,16 +17,10 @@ const useTelemetryDialogStore = create<TelemetryDialogState>((set) => ({
   close: () => set({ isOpen: false }),
 }));
 
-export const TELEMETRY_DIALOG_PREVIOUSLY_OPENED =
-  'telemetry_dialog_previously_opened';
-export const TELEMETRY_ON = 'telemetry_on';
+export const TELEMETRY_ON = 'vega_telemetry_on';
 
 export const useTelemetryDialog = () => {
-  const [getPreviouslyOpened, setPreviouslyOpened] = useLocalStorage(
-    TELEMETRY_DIALOG_PREVIOUSLY_OPENED
-  );
-  const [getTelemetryOn, setTelemetryOn] = useLocalStorage(TELEMETRY_ON);
-
+  const [telemetryOn, setTelemetryOn] = useLocalStorage(TELEMETRY_ON);
   const { VEGA_ENV } = useEnvironment();
   const isMainnet = VEGA_ENV === Networks.MAINNET;
 
@@ -34,42 +28,21 @@ export const useTelemetryDialog = () => {
 
   const { isOpen, open, close } = useTelemetryDialogStore();
 
-  const [telemetryAccepted, setTelemetryAcceptedState] = useState(
-    JSON.parse(getTelemetryOn || defaultTelemetryAccepted)
-  );
-
   useEffect(() => {
-    if (getTelemetryOn === null || getTelemetryOn === undefined) {
-      // Sets an initial value in local storage based on the network
-      setTelemetryOn(defaultTelemetryAccepted);
-    } else {
-      // Ensures the component state is in sync with local storage
-      setTelemetryAcceptedState(JSON.parse(getTelemetryOn));
-    }
-  }, [getTelemetryOn, setTelemetryOn, defaultTelemetryAccepted]);
-
-  useEffect(() => {
-    if (JSON.parse(getPreviouslyOpened || 'false') === false) {
+    if (telemetryOn === null || telemetryOn === undefined) {
       open();
+      setTelemetryOn(defaultTelemetryAccepted);
     }
-  }, [getPreviouslyOpened, open]);
-
-  const handleClose = () => {
-    setPreviouslyOpened('true');
-    close();
-  };
-
-  const handleSetTelemetryAccepted = (value: boolean) => {
-    setTelemetryOn(JSON.stringify(value));
-    setTelemetryAcceptedState(value);
-  };
+  }, [defaultTelemetryAccepted, open, setTelemetryOn, telemetryOn]);
 
   return {
     isOpen,
     open: open,
-    close: handleClose,
-    telemetryAccepted,
-    setTelemetryAccepted: handleSetTelemetryAccepted,
+    close: close,
+    telemetryAccepted: telemetryOn === 'true',
+    setTelemetryAccepted: (value: boolean) => {
+      setTelemetryOn(value.toString());
+    },
   };
 };
 

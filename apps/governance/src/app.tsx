@@ -209,6 +209,8 @@ const AppContainer = () => {
       });
       Sentry.setTag('branch', GIT_BRANCH);
       Sentry.setTag('commit', GIT_COMMIT_HASH);
+    } else {
+      Sentry.close();
     }
   }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV, telemetryOn]);
 

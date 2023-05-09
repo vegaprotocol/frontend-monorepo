@@ -24,6 +24,8 @@ if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
 }
 
 before(() => {
+  // Ensuring the telemetry modal doesn't disrupt the tests
+  cy.window.then((win) => win.localStorage.set('vega_telemetry_on', false));
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockGQL((req) => {
     aliasGQLQuery(req, 'ChainId', chainIdQuery());
