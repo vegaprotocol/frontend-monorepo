@@ -5,6 +5,8 @@ on:
     branches:
       - release/*
       - develop
+    tags:
+      - v*
   pull_request:
     types:
       - opened
@@ -97,15 +99,13 @@ jobs:
       - name: See affected apps
         run: |
           echo ">>>> debug"
-          echo "NX Version: $nx_version"
           echo "NX_BASE: ${{ env.NX_BASE }}"
           echo "NX_HEAD: ${{ env.NX_HEAD }}"
           echo ">>>> eof debug"
 
           affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
-          echo -n "Affected projects: $affected"
 
-          branch_slug="$(echo ${{ github.head_ref || github.ref_name }} | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
+          branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           projects_e2e=""
           preview_governance="not deployed"
           preview_trading="not deployed"

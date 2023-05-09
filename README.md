@@ -103,25 +103,68 @@ In CI linting, formatting and also run. These checks can be seen in the [CI work
 
 Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more.
 
-# Docker & Vegacapsule
+# 🐋 Hosting a console
 
-## Docker
+To host a console there are two possible build scenarios for running the frontends: nx performed **outside** or **inside** docker build. For specific build instructions follow [build instructions](#build-instructions).
 
-The [Dockerfile](./dockerfiles) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environment variables to the containers. See configuration below for how to do this.
-
-You can build any of the containers locally with the following command:
-
-```bash
-docker build --dockerfile dockerfiles/Dockerfile.cra . --build-arg APP=[YOUR APP] --tag=[TAG]
-```
-
-In order to run a container:
+In order to run a container on port 3000:
 
 ```bash
 docker run -p 3000:80 [TAG]
 ```
 
-Images ending with `.dist` are to pack locally created transpiled HTML files into nginx container for non-compatible with yarn architectures like M1 Mac
+## Build instructions
+
+The [`docker`](./docker) subfolder has some docker configurations for easily setting up your own hosted version of console either for the web, or ready for pinning on IPFS
+
+### nx build outside the docker
+
+Packaging prepared dist into [`nginx`](https://hub.docker.com/_/nginx)([server configuration](./nginx/nginx.conf)) docker image involves building the application on docker host machine from source.
+
+As a prerequisite you need to perform build of `dist` directory and move its content for specific application to `dist-result` directory. Use following script to do it with a single command:
+
+```bash
+./docker/prepare-dist.sh
+```
+
+You can build any of the containers locally with the following command:
+
+```bash
+docker build --dockerfile docker/node-outside-docker.Dockerfile . --tag=[TAG]
+```
+
+### nx build inside the docker
+
+Using multistage dockerfile dist is compiled using [node](https://hub.docker.com/_/node) image and later packed to nginx as in [dist build](#dist-build) example.
+
+```bash
+docker build --build-arg APP=[YOUR APP] --build-arg NODE_VERSION=$(cat .nvmrc) --build-arg ENV_NAME=mainnet -t [TAG] -f docker/node-inside-docker.Dockerfile .
+```
+
+### Computing ipfs-hash of the build
+
+At the moment this feature is important only for `trading` (console) releases.
+
+Each docker build finishes with hash calculation for dist directory. Resulting hash is added to file named as `/ipfs-hash`. Once docker image is produced you can run following commad to display ipfs-hash:
+
+```bash
+make recalculate-ipfs TAG=vegaprotocol/trading:{YOUR_VERSION}
+```
+
+**updating hash:** recompiling dist directory (even if there are no changed to source code) results in different hash computed by ipfs command.
+
+### Verifying ipfs-hash of existing current application version
+
+An IPFS CID will be attached to every [release](https://github.com/vegaprotocol/frontend-monorepo/releases). If you are intending to pin an application on IPFS, you can check that your build matches by running the following steps:
+
+1. Show latest release by runnning: `make latest-release`. You need to configure [`gh`](https://cli.github.com/) for this step to work, otherwise please provide release manually from [github](https://github.com/vegaprotocol/frontend-monorepo/releases) or [dockerhub](https://hub.docker.com/r/vegaprotocol/trading)
+2. Set RELEASE environment variable to value that you want to validate: `export RELEASE=$(make latest-release)` or `export RELEASE=vXX.XX.XX`
+3. Set TAG environment variable to image that you want to validate: `export TAG=vegaprotocol/trading:$RELEASE`
+4. Download docker image with the desired release `docker pull $TAG`.
+5. Recalculate hash: `make recalculate-ipfs`
+6. You should see exactly same hash produced by ipfs command as one placed with the release notes: `make show-latest-release`
+7. If you want to extract dist from docker image to your local filesystem you can run following command: `make unpack`
+8. Now `dist` directory contains valid application build. **it is not possible to calculate same ipfs hash on files that are result of copy operation**
 
 ## Config
 
