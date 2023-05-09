@@ -94,7 +94,7 @@ html [data-theme='light'] {
 }
 
 /* Light variables */
-.ag-theme-balham {
+.vega-ag-grid.ag-theme-balham {
   --ag-background-color: theme(colors.white);
   --ag-border-color: theme(colors.neutral[300]);
   --ag-header-background-color: theme(colors.white);
@@ -106,7 +106,7 @@ html [data-theme='light'] {
 }
 
 /* Dark variables */
-.ag-theme-balham-dark {
+.vega-ag-grid.ag-theme-balham-dark {
   --ag-background-color: theme(colors.black);
   --ag-border-color: theme(colors.neutral[700]);
   --ag-header-background-color: theme(colors.black);
