@@ -4,6 +4,7 @@ import {
   waitForSpinner,
   navigateTo,
   navigation,
+  turnTelemetryOff,
 } from '../../support/common.functions';
 import {
   stakingPageAssociateTokens,
@@ -54,6 +55,7 @@ context(
         'teardown wallet & drill into a specific validator',
         function () {
           cy.clearLocalStorage();
+          turnTelemetryOff();
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();

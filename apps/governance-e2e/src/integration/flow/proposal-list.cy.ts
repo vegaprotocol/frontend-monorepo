@@ -2,6 +2,7 @@ import type { testFreeformProposal } from '../../support/common-interfaces';
 import {
   navigateTo,
   navigation,
+  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
@@ -36,6 +37,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
 
   beforeEach('visit proposals tab', function () {
     cy.clearLocalStorage();
+    turnTelemetryOff();
     cy.reload();
     waitForSpinner();
     cy.connectVegaWallet();

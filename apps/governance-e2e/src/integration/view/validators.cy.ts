@@ -33,7 +33,6 @@ const stakeNumberRegex = /^\d*\.?\d*$/;
 
 context('Validators Page - verify elements on page', function () {
   before('navigate to validators page', function () {
-    cy.clearAllLocalStorage();
     cy.visit('/validators');
   });
 

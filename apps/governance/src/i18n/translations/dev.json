@@ -799,5 +799,14 @@
   "associateVegaNow": "Associate $VEGA now",
   "disconnectedNotice": "You have been disconnected. Connect your ETH wallet to the {{correctNetwork}} network to use this app.",
   "connectAVegaWalletToVote": "Connect a Vega wallet with $VEGA tokens to vote on a proposal.",
-  "findOutMoreAboutHowToVote": "Find out more about how to vote on Vega"
+  "findOutMoreAboutHowToVote": "Find out more about how to vote on Vega",
+  "ImproveVegaGovernance": "Improve Vega governance",
+  "TelemetryModalIntro": "Help us identify bugs and improve Vega Governance by sharing anonymous usage data.",
+  "Anonymous": "Anonymous",
+  "YourIdentityAnonymous": "Your identity is always anonymous on Vega",
+  "Optional": "Optional",
+  "OptOutOfTelemetry": "You can opt out any time via settings",
+  "NoThanks": "No thanks",
+  "ShareData": "Share data",
+  "ContinueSharingData": "Continue sharing data"
 }

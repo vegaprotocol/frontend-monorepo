@@ -3,6 +3,7 @@
 import {
   navigateTo,
   navigation,
+  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
@@ -26,6 +27,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
 
   beforeEach('visit home page', function () {
     cy.clearLocalStorage();
+    turnTelemetryOff();
     cy.visit('/');
     waitForSpinner();
     cy.connectPublicKey(vegaWalletPubKey);

@@ -2,6 +2,7 @@
 import {
   navigateTo,
   navigation,
+  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
@@ -37,6 +38,7 @@ context(
 
     beforeEach('visit proposals', function () {
       cy.clearLocalStorage();
+      turnTelemetryOff();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
