@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { useGlobalStore } from '../../stores';
+import { useNodeSwitcherStore } from '../../hooks/use-node-switcher-store';
 
 export const AppFailure = ({
   title,
@@ -9,17 +9,13 @@ export const AppFailure = ({
   title: string;
   error?: string | null;
 }) => {
-  const { setNodeSwitcher } = useGlobalStore((store) => ({
-    nodeSwitcherOpen: store.nodeSwitcherDialog,
-    setNodeSwitcher: (open: boolean) =>
-      store.update({ nodeSwitcherDialog: open }),
-  }));
+  const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   const nonIdealWrapperClasses =
     'h-full min-h-screen flex items-center justify-center';
   return (
     <div className={nonIdealWrapperClasses}>
       <div className="text-center">
-        <h1 className="text-xl mb-4">{title}</h1>
+        <p className="text-xl mb-4">{title}</p>
         {error && <p className="text-sm mb-8">{error}</p>}
         <Button onClick={() => setNodeSwitcher(true)}>
           {t('Change node')}

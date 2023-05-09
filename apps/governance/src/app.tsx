@@ -37,6 +37,10 @@ import {
   useEnvironment,
   NetworkLoader,
   useInitializeEnv,
+  NodeGuard,
+  AppFailure,
+  NodeSwitcherDialog,
+  useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
 import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
@@ -48,6 +52,7 @@ import {
   TELEMETRY_ON,
 } from './components/telemetry-dialog/telemetry-dialog';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import { useTranslation } from 'react-i18next';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -181,9 +186,19 @@ const ScrollToTop = () => {
 
 const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
-  const { VEGA_ENV, GIT_COMMIT_HASH, GIT_BRANCH, ETHEREUM_PROVIDER_URL } =
-    useEnvironment();
+  const {
+    VEGA_ENV,
+    VEGA_URL,
+    GIT_COMMIT_HASH,
+    GIT_BRANCH,
+    ETHEREUM_PROVIDER_URL,
+  } = useEnvironment();
   const [telemetryOn] = useLocalStorage(TELEMETRY_ON);
+  const { t } = useTranslation();
+  const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
+    store.dialogOpen,
+    store.setDialogOpen,
+  ]);
 
   useEffect(() => {
     if (ENV.dsn && telemetryOn) {
@@ -219,21 +234,29 @@ const AppContainer = () => {
       <ScrollToTop />
       <AppStateProvider>
         <div className="grid min-h-full text-white">
-          <AsyncRenderer<EthereumConfig | null>
-            loading={loading}
-            data={config}
-            error={error}
-            render={(cnf) =>
-              cnf && (
-                <Web3Container
-                  chainId={Number(cnf.chain_id)}
-                  providerUrl={ETHEREUM_PROVIDER_URL}
-                />
-              )
+          <NodeGuard
+            skeleton={<div>{t('Loading')}</div>}
+            failure={
+              <AppFailure title={t('NodeUnsuitable', { url: VEGA_URL })} />
             }
-          />
+          >
+            <AsyncRenderer<EthereumConfig | null>
+              loading={loading}
+              data={config}
+              error={error}
+              render={(cnf) =>
+                cnf && (
+                  <Web3Container
+                    chainId={Number(cnf.chain_id)}
+                    providerUrl={ETHEREUM_PROVIDER_URL}
+                  />
+                )
+              }
+            />
+          </NodeGuard>
         </div>
       </AppStateProvider>
+      <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </Router>
   );
 };

@@ -11,7 +11,8 @@ export const NodeGuard = ({
   skeleton: ReactNode;
 }) => {
   const { error, loading } = useStatisticsQuery();
-  const wrapperClasses = 'h-full min-h-screen flex items-center justify-center';
+  const wrapperClasses =
+    'h-full min-h-screen flex items-center justify-center text-black dark:text-white';
 
   if (loading) {
     return <div className={wrapperClasses}>{skeleton}</div>;
