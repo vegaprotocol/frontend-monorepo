@@ -14,7 +14,6 @@ import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
 import { TxsList } from './txs/home';
-import { PendingTxs } from './pending';
 import flags from '../config/flags';
 import { t } from '@vegaprotocol/i18n';
 import { Routes } from './route-names';
@@ -29,6 +28,7 @@ import compact from 'lodash/compact';
 import { AssetLink, MarketLink } from '../components/links';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { remove0x } from '@vegaprotocol/utils';
+import { PartyAccountsByAsset } from './parties/id/accounts';
 
 export type Navigable = {
   path: string;
@@ -75,14 +75,43 @@ const partiesRoutes: Route[] = flags.parties
           },
           {
             path: ':party',
-            element: <PartySingle />,
-            handle: {
-              breadcrumb: (params: Params<string>) => (
-                <Link to={linkTo(Routes.PARTIES, params.party)}>
-                  {truncateMiddle(params.party as string)}
-                </Link>
-              ),
-            },
+            element: <Party />,
+
+            children: [
+              {
+                index: true,
+                element: <PartySingle />,
+                handle: {
+                  breadcrumb: (params: Params<string>) => (
+                    <Link to={linkTo(Routes.PARTIES, params.party)}>
+                      {truncateMiddle(params.party as string)}
+                    </Link>
+                  ),
+                },
+              },
+              {
+                path: 'assets',
+                element: <Party />,
+                handle: {
+                  breadcrumb: (params: Params<string>) => (
+                    <Link to={linkTo(Routes.PARTIES, params.party)}>
+                      {truncateMiddle(params.party as string)}
+                    </Link>
+                  ),
+                },
+                children: [
+                  {
+                    index: true,
+                    element: <PartyAccountsByAsset />,
+                    handle: {
+                      breadcrumb: () => {
+                        return t('Assets');
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -237,17 +266,6 @@ export const routerConfig: Route[] = [
           breadcrumb: () => <Link to={Routes.TX}>{t('Transactions')}</Link>,
         },
         children: [
-          {
-            path: 'pending',
-            element: <PendingTxs />,
-            handle: {
-              breadcrumb: () => (
-                <Link to={linkTo(Routes.TX, 'pending')}>
-                  {t('Pending transactions')}
-                </Link>
-              ),
-            },
-          },
           {
             path: ':txHash',
             element: <Tx />,

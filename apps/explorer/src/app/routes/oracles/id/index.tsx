@@ -1,12 +1,11 @@
 import { RouteTitle } from '../../../components/route-title';
-import { RenderFetched } from '../../../components/render-fetched';
 import { truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import { useParams } from 'react-router-dom';
 import { useExplorerOracleSpecByIdQuery } from '../__generated__/Oracles';
 import { OracleDetails } from '../components/oracle';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import filter from 'recursive-key-filter';
 import { TruncateInline } from '../../../components/truncate/truncate';
 
@@ -27,7 +26,14 @@ export const Oracle = () => {
         {t(`Oracle `)}
         <TruncateInline startChars={5} endChars={5} text={id || '1'} />
       </RouteTitle>
-      <RenderFetched error={error} loading={loading}>
+      <AsyncRenderer
+        data={data}
+        error={error}
+        loading={loading}
+        noDataCondition={(data) => !data?.oracleSpec}
+        errorMessage={t('Could not load oracle data')}
+        loadingMessage={t('Loading oracle data...')}
+      >
         {data?.oracleSpec ? (
           <div id={id} key={id} className="mb-10">
             <OracleDetails
@@ -44,7 +50,7 @@ export const Oracle = () => {
         ) : (
           <span></span>
         )}
-      </RenderFetched>
+      </AsyncRenderer>
     </section>
   );
 };

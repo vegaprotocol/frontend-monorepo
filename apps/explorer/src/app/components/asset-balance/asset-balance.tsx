@@ -6,6 +6,7 @@ export type AssetBalanceProps = {
   assetId: string;
   price: string;
   showAssetLink?: boolean;
+  showAssetSymbol?: boolean;
 };
 
 /**
@@ -16,18 +17,21 @@ const AssetBalance = ({
   assetId,
   price,
   showAssetLink = true,
+  showAssetSymbol = false,
 }: AssetBalanceProps) => {
-  const { data: asset } = useAssetDataProvider(assetId);
+  const { data: asset, loading } = useAssetDataProvider(assetId);
 
   const label =
-    asset && asset.decimals
+    !loading && asset && asset.decimals
       ? addDecimalsFormatNumber(price, asset.decimals)
       : price;
 
   return (
     <div className="inline-block">
       <span>{label}</span>{' '}
-      {showAssetLink && asset?.id ? <AssetLink assetId={assetId} /> : null}
+      {showAssetLink && asset?.id ? (
+        <AssetLink showAssetSymbol={showAssetSymbol} assetId={assetId} />
+      ) : null}
     </div>
   );
 };

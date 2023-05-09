@@ -28,6 +28,7 @@ import {
 } from '@vegaprotocol/environment';
 import classNames from 'classnames';
 import { NodeStatus, NodeStatusMapping } from '@vegaprotocol/types';
+import { PartyLink } from '../../components/links';
 
 type RateProps = {
   value: BigNumber | number | undefined;
@@ -191,7 +192,9 @@ export const ValidatorsPage = () => {
                       <KeyValueTable>
                         <KeyValueTableRow>
                           <div>{t('ID')}</div>
-                          <div className="break-all text-xs">{v.id}</div>
+                          <div className="break-all text-xs font-mono">
+                            {v.id}
+                          </div>
                         </KeyValueTableRow>
                         <KeyValueTableRow>
                           <div>{t('Status')}</div>
@@ -218,12 +221,14 @@ export const ValidatorsPage = () => {
                           </div>
                         </KeyValueTableRow>
                         <KeyValueTableRow>
-                          <div>{t('Public key')}</div>
-                          <div className="break-all text-xs">{v.pubkey}</div>
+                          <div>{t('Key')}</div>
+                          <div className="break-all text-xs">
+                            <PartyLink id={v.pubkey} />
+                          </div>
                         </KeyValueTableRow>
                         <KeyValueTableRow>
                           <div>{t('Ethereum address')}</div>
-                          <div className="break-all text-xs">
+                          <div className="break-all text-xs font-mono">
                             <EtherscanLink address={v.ethereumAddress} />{' '}
                             <CopyWithTooltip text={v.ethereumAddress}>
                               <button title={t('Copy address to clipboard')}>
@@ -234,7 +239,9 @@ export const ValidatorsPage = () => {
                         </KeyValueTableRow>
                         <KeyValueTableRow>
                           <div>{t('Tendermint public key')}</div>
-                          <div className="break-all text-xs">{v.tmPubkey}</div>
+                          <div className="break-all text-xs font-mono">
+                            {v.tmPubkey}
+                          </div>
                         </KeyValueTableRow>
 
                         <KeyValueTableRow>

@@ -7,7 +7,7 @@ import { toHex } from '../search/detect-search';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import isNumber from 'lodash/isNumber';
 
-const TRUNCATE_LENGTH = 5;
+const TRUNCATE_LENGTH = 10;
 
 export const TxsInfiniteListItem = ({
   hash,
@@ -34,10 +34,10 @@ export const TxsInfiniteListItem = ({
       className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10 py-2"
     >
       <div
-        className="text-sm col-span-10 xl:col-span-3 leading-none"
+        className="text-sm col-span-10 md:col-span-3 leading-none"
         data-testid="tx-hash"
       >
-        <span className="xl:hidden uppercase text-vega-dark-300">
+        <span className="md:hidden uppercase text-vega-dark-300">
           ID:&nbsp;
         </span>
         <TruncatedLink
@@ -48,10 +48,10 @@ export const TxsInfiniteListItem = ({
         />
       </div>
       <div
-        className="text-sm col-span-10 xl:col-span-3 leading-none"
+        className="text-sm col-span-10 md:col-span-3 leading-none"
         data-testid="pub-key"
       >
-        <span className="xl:hidden uppercase text-vega-dark-300">
+        <span className="md:hidden uppercase text-vega-dark-300">
           By:&nbsp;
         </span>
         <TruncatedLink
@@ -61,14 +61,14 @@ export const TxsInfiniteListItem = ({
           endChars={TRUNCATE_LENGTH}
         />
       </div>
-      <div className="text-sm col-span-5 xl:col-span-2 leading-none	flex items-center">
+      <div className="text-sm col-span-5 md:col-span-2 leading-none	flex items-center">
         <TxOrderType orderType={type} command={command} />
       </div>
       <div
-        className="text-sm col-span-3 xl:col-span-1 leading-none flex items-center"
+        className="text-sm col-span-3 md:col-span-1 leading-none flex items-center"
         data-testid="tx-block"
       >
-        <span className="xl:hidden uppercase text-vega-dark-300">
+        <span className="md:hidden uppercase text-vega-dark-300">
           Block:&nbsp;
         </span>
         <TruncatedLink
@@ -79,10 +79,10 @@ export const TxsInfiniteListItem = ({
         />
       </div>
       <div
-        className="text-sm col-span-2 xl:col-span-1 leading-none flex items-center"
+        className="text-sm col-span-2 md:col-span-1 leading-none flex items-center"
         data-testid="tx-success"
       >
-        <span className="xl:hidden uppercase text-vega-dark-300">
+        <span className="md:hidden uppercase text-vega-dark-300">
           Success:&nbsp;
         </span>
         {isNumber(code) ? (

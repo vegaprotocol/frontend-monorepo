@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
-import { Loader, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
 import type { TendermintGenesisResponse } from './tendermint-genesis-response';
 import { useDocumentTitle } from '../../hooks/use-document-title';
@@ -10,21 +10,26 @@ const Genesis = () => {
   useDocumentTitle(['Genesis']);
 
   const {
-    state: { data: genesis, loading },
+    state: { data, loading, error },
   } = useFetch<TendermintGenesisResponse>(
     `${DATA_SOURCES.tendermintUrl}/genesis`
   );
-  if (!genesis?.result.genesis) {
-    if (loading) {
-      return <Loader />;
-    }
-    return null;
-  }
+
   return (
-    <section>
+    <>
       <RouteTitle data-testid="genesis-header">{t('Genesis')}</RouteTitle>
-      <SyntaxHighlighter data={genesis?.result.genesis} />
-    </section>
+      <AsyncRenderer
+        data={data}
+        error={error}
+        loading={!!loading}
+        loadingMessage={t('Loading genesis information...')}
+        errorMessage={t('Could not fetch genesis data')}
+      >
+        <section>
+          <SyntaxHighlighter data={data?.result.genesis} />
+        </section>
+      </AsyncRenderer>
+    </>
   );
 };
 

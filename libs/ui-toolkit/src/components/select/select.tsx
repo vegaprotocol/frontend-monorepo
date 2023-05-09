@@ -50,9 +50,7 @@ export const RichSelect = forwardRef<
 
   const setWidth = () => {
     if (contentRef.current) {
-      contentRef.current.style.width = containerRef.current
-        ? `${containerRef.current.getBoundingClientRect().width}px`
-        : 'auto';
+      contentRef.current.style.width = containerRef.current ? `450px` : 'auto';
     }
   };
 

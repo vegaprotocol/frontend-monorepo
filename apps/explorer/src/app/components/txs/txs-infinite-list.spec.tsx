@@ -64,9 +64,7 @@ describe('Txs infinite list', () => {
         error={Error('test error!')}
       />
     );
-    expect(
-      screen.getByText('Cannot fetch transaction: Error: test error!')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Cannot fetch transaction')).toBeInTheDocument();
   });
 
   it('item renders data of n length into list of n length', () => {

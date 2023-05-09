@@ -30,7 +30,7 @@ const NOOP = () => {};
 const Item = ({ index, style, isLoading, error }: ItemProps) => {
   let content;
   if (error) {
-    content = t(`Cannot fetch transaction: ${error}`);
+    content = t(`Cannot fetch transaction`);
   } else if (isLoading) {
     content = <Loader />;
   } else {
@@ -68,7 +68,7 @@ export const TxsInfiniteList = ({
   className,
 }: TxsInfiniteListProps) => {
   const { screenSize } = useScreenDimensions();
-  const isStacked = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
+  const isStacked = ['xs', 'sm'].includes(screenSize);
 
   if (!txs) {
     if (!areTxsLoading) {
@@ -95,15 +95,15 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="transactions-list">
-      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-vega-dark-300 uppercase">
+      <div className="lg:grid grid-cols-10 w-full mb-3 hidden text-vega-dark-300 uppercase">
         <div className="col-span-3">
-          <span className="hidden xl:inline">Transaction &nbsp;</span>
+          <span className="hidden xl:inline">{t('Transaction')} &nbsp;</span>
           <span>ID</span>
         </div>
-        <div className="col-span-3">Submitted By</div>
-        <div className="col-span-2">Type</div>
-        <div className="col-span-1">Block</div>
-        <div className="col-span-1">Success</div>
+        <div className="col-span-3">{t('Submitted By')}</div>
+        <div className="col-span-2">{t('Type')}</div>
+        <div className="col-span-1">{t('Block')}</div>
+        <div className="col-span-1">{t('Success')}</div>
       </div>
       <div data-testid="infinite-scroll-wrapper">
         <InfiniteLoader

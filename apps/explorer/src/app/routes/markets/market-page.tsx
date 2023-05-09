@@ -49,6 +49,7 @@ export const MarketPage = () => {
         />
         <AsyncRenderer
           noDataMessage={t('This chain has no markets')}
+          errorMessage={t('Could not fetch market') + ' ' + marketId}
           data={data}
           loading={loading}
           error={error}
