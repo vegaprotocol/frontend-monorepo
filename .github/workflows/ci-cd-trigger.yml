@@ -104,7 +104,6 @@ jobs:
           echo ">>>> eof debug"
           branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
 
-
       # See affected apps
       - name: See affected apps
         run: |
