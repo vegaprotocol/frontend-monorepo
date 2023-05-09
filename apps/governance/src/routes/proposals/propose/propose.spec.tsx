@@ -15,10 +15,10 @@ describe('Propose', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should render the heading, proposal type question and options', () => {
+  it('should render the heading, proposals title and options', () => {
     renderComponent();
     expect(
-      screen.getByText('What type of proposal would you like to make?')
+      screen.getByText('Create proposal and download JSON to share')
     ).toBeTruthy();
     expect(screen.getByText('Network parameter')).toBeTruthy();
     expect(screen.getByText('New market')).toBeTruthy();
@@ -26,6 +26,9 @@ describe('Propose', () => {
     expect(screen.getByText('New asset')).toBeTruthy();
     expect(screen.getByText('Update asset')).toBeTruthy();
     expect(screen.getByText('Freeform')).toBeTruthy();
-    expect(screen.getByText('Let me choose (raw proposal)')).toBeTruthy();
+    expect(
+      screen.getByText('Submit an agreed proposal from the forum')
+    ).toBeTruthy();
+    expect(screen.getByText('Submit agreed raw proposal')).toBeTruthy();
   });
 });

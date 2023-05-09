@@ -9,7 +9,6 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormDescription,
   ProposalFormSubheader,
-  ProposalFormSubmit,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormDownloadJson,
@@ -48,7 +47,7 @@ export const ProposeFreeform = () => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
     setValue,
     watch,
   } = useForm<FreeformProposalFormFields>();
@@ -165,7 +164,6 @@ export const ProposeFreeform = () => {
                 voteMaxClose={params.governance_proposal_freeform_maxClose}
               />
 
-              <ProposalFormSubmit isSubmitting={isSubmitting} />
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
