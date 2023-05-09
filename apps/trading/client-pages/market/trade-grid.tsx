@@ -330,7 +330,7 @@ export const TradeGrid = ({
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_1fr]',
-    'grid-cols-[400px_1fr]'
+    'grid-cols-[300px_1fr]'
   );
 
   return (
@@ -348,7 +348,9 @@ export const TradeGrid = ({
         {/* <OracleBanner marketId={market?.id || ''} /> */}
       </div>
       <div className="border-r border-default min-h-0">
-        <MarketSelector />
+        <div className="h-full">
+          <AutoSizer>{(size) => <MarketSelector {...size} />}</AutoSizer>
+        </div>
       </div>
       <div className="min-h-0 overflow-hidden">
         <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
