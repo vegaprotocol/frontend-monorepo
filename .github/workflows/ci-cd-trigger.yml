@@ -5,6 +5,8 @@ on:
     branches:
       - release/*
       - develop
+    tags:
+      - v*
   pull_request:
     types:
       - opened
@@ -93,11 +95,13 @@ jobs:
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
+      - name: Print affected
+        run: yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects
+
       # See affected apps
       - name: See affected apps
         run: |
           echo ">>>> debug"
-          echo "NX Version: $nx_version"
           echo "NX_BASE: ${{ env.NX_BASE }}"
           echo "NX_HEAD: ${{ env.NX_HEAD }}"
           echo ">>>> eof debug"
