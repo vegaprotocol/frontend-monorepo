@@ -18,7 +18,7 @@ export const PROPOSAL_STATES_TO_TOAST = [
   ProposalState.STATE_OPEN,
   ProposalState.STATE_PASSED,
 ];
-const CLOSE_AFTER = 5000;
+const CLOSE_AFTER = 0;
 type Proposal = UpdateNetworkParameterProposalFragment;
 
 const UpdateNetworkParameterToastContent = ({
