@@ -1,8 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import {
-  useDataProvider,
-  useScreenDimensions,
-} from '@vegaprotocol/react-helpers';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
@@ -16,6 +13,7 @@ import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { PartyBlockStake } from './components/party-block-stake';
 import { PartyBlockAccounts } from './components/party-block-accounts';
 import { isValidPartyId } from './components/party-id-error';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
