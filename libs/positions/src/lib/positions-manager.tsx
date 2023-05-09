@@ -13,6 +13,7 @@ interface PositionsManagerProps {
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
   noBottomPlaceholder?: boolean;
+  storeKey?: string;
 }
 
 export const PositionsManager = ({
@@ -20,6 +21,7 @@ export const PositionsManager = ({
   onMarketClick,
   isReadOnly,
   noBottomPlaceholder,
+  storeKey,
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, reload } = usePositionsData(partyId, gridRef);
@@ -82,6 +84,7 @@ export const PositionsManager = ({
         onFilterChanged={updateRowCount}
         onRowDataUpdated={updateRowCount}
         {...bottomPlaceholderProps}
+        storeKey={storeKey}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

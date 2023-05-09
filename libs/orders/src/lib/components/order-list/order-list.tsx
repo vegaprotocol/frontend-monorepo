@@ -8,6 +8,7 @@ import * as Schema from '@vegaprotocol/types';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
+import type { ForwardedRef } from 'react';
 import { memo, forwardRef } from 'react';
 import {
   AgGridLazy as AgGrid,
@@ -25,19 +26,22 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
+import * as React from 'react';
 
-type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
-
-export type OrderListTableProps = OrderListProps & {
+export type OrderListTableProps = TypedDataAgGrid<Order> & {
+  marketId?: string;
   cancel: (order: Order) => void;
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   readonlyStatusFilter?: boolean;
   isReadOnly: boolean;
+  storeKey?: string;
 };
 
-export const OrderListTable = memo(
+export const OrderListTable = memo<
+  OrderListTableProps & { ref?: ForwardedRef<AgGridReact> }
+>(
   forwardRef<AgGridReact, OrderListTableProps>(
     (
       {
@@ -54,7 +58,6 @@ export const OrderListTable = memo(
         <AgGrid
           ref={ref}
           defaultColDef={{
-            flex: 1,
             resizable: true,
             sortable: true,
             filterParams: { buttons: ['reset'] },
@@ -163,7 +166,6 @@ export const OrderListTable = memo(
             valueFormatter={({
               data,
               value,
-              node,
             }: VegaValueFormatterParams<Order, 'remaining'>) => {
               if (!data) {
                 return undefined;
@@ -189,7 +191,6 @@ export const OrderListTable = memo(
             valueFormatter={({
               value,
               data,
-              node,
             }: VegaValueFormatterParams<Order, 'price'>) => {
               if (!data) {
                 return undefined;
@@ -240,7 +241,6 @@ export const OrderListTable = memo(
             field="createdAt"
             filter={DateRangeFilter}
             cellRenderer={({
-              data,
               value,
             }: VegaICellRendererParams<Order, 'createdAt'>) => {
               return (
@@ -291,6 +291,7 @@ export const OrderListTable = memo(
               ) : null;
             }}
             sortable={false}
+            flex={1}
           />
         </AgGrid>
       );

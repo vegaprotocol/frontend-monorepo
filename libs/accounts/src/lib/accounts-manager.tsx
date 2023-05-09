@@ -17,6 +17,7 @@ interface AccountManagerProps {
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
   noBottomPlaceholder?: boolean;
+  storeKey?: string;
 }
 
 export const AccountManager = ({
@@ -27,6 +28,7 @@ export const AccountManager = ({
   isReadOnly,
   pinnedAsset,
   noBottomPlaceholder,
+  storeKey,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -59,6 +61,7 @@ export const AccountManager = ({
         suppressLoadingOverlay
         suppressNoRowsOverlay
         pinnedAsset={pinnedAsset}
+        storeKey={storeKey}
         {...bottomPlaceholderProps}
       />
       <div className="pointer-events-none absolute inset-0">

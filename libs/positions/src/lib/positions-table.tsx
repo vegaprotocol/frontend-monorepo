@@ -46,6 +46,7 @@ interface Props extends TypedDataAgGrid<Position> {
   onMarketClick?: (id: string, metaKey?: boolean) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
+  storeKey?: string;
 }
 
 export interface AmountCellProps {
@@ -89,7 +90,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
-          flex: 1,
           resizable: true,
           sortable: true,
           filter: true,
@@ -383,6 +383,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ) : null
             }
             minWidth={80}
+            flex={1}
           />
         ) : null}
       </AgGrid>

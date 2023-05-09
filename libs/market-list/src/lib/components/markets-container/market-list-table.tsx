@@ -37,7 +37,6 @@ export const MarketListTable = forwardRef<
       getRowId={getRowId}
       ref={ref}
       defaultColDef={{
-        flex: 1,
         resizable: true,
         sortable: true,
         filter: true,
@@ -45,6 +44,7 @@ export const MarketListTable = forwardRef<
       }}
       suppressCellFocus
       components={{ PriceFlashCell, MarketNameCell }}
+      storeKey="allMarkets"
       {...props}
     >
       <AgGridColumn
@@ -198,7 +198,7 @@ export const MarketListTable = forwardRef<
           );
         }}
       />
-      <AgGridColumn headerName={t('Market ID')} field="id" />
+      <AgGridColumn headerName={t('Market ID')} field="id" flex={1} />
     </AgGrid>
   );
 });
