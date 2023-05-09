@@ -20,6 +20,7 @@ import {
   navigateTo,
   navigation,
   closeDialog,
+  turnTelemetryOff,
 } from '../../support/common.functions';
 import {
   clickOnValidatorFromList,
@@ -85,6 +86,7 @@ context(
 
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
+      turnTelemetryOff();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();

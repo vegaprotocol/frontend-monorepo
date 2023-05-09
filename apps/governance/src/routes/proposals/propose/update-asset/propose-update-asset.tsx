@@ -15,7 +15,6 @@ import {
 import {
   ProposalFormDescription,
   ProposalFormSubheader,
-  ProposalFormSubmit,
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
@@ -57,7 +56,7 @@ export const ProposeUpdateAsset = () => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
     setValue,
     watch,
   } = useForm<UpdateAssetProposalFormFields>();
@@ -212,7 +211,6 @@ export const ProposeUpdateAsset = () => {
                 }
               />
 
-              <ProposalFormSubmit isSubmitting={isSubmitting} />
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}

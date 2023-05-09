@@ -1,6 +1,7 @@
 import {
   navigateTo,
   navigation,
+  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
@@ -55,6 +56,7 @@ context(
 
     beforeEach('Navigate to withdrawal page', function () {
       cy.clearLocalStorage();
+      turnTelemetryOff();
       cy.reload();
       waitForSpinner();
       navigateTo(navigation.withdraw);

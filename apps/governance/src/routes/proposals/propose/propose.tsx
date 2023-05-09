@@ -39,8 +39,8 @@ export const Propose = () => {
       </section>
 
       <section>
-        <h2 className="text-h5">{t('ProposalTypeQuestion')}</h2>
-        <ul>
+        <h2 className="text-h5">{t('CreateProposalAndDownloadJSONToShare')}</h2>
+        <ul className="mb-6">
           <li>
             <p>
               <Link
@@ -101,17 +101,14 @@ export const Propose = () => {
               </Link>
             </p>
           </li>
-          <li>
-            <p>
-              <Link
-                className="underline"
-                to={`${Routes.PROPOSALS}/propose/raw`}
-              >
-                {t('RawProposal')}
-              </Link>
-            </p>
-          </li>
         </ul>
+
+        <h2 className="text-h5">{t('SubmitAnAgreedProposalFromTheForum')}</h2>
+        <p>
+          <Link className="underline" to={`${Routes.PROPOSALS}/propose/raw`}>
+            {t('SubmitAgreedRawProposal')}
+          </Link>
+        </p>
       </section>
     </>
   );

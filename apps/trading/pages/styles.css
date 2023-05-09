@@ -121,3 +121,9 @@ html [data-theme='light'] {
   --ag-row-hover-color: theme(colors.neutral[800]);
   --ag-font-size: 12px;
 }
+.ag-theme-balham-dark .ag-row.no-hover,
+.ag-theme-balham-dark .ag-row.no-hover:hover,
+.ag-theme-balham .ag-row.no-hover,
+.ag-theme-balham .ag-row.no-hover:hover {
+  background: var(--ag-background-color);
+}

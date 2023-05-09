@@ -11,6 +11,7 @@ import './proposal.functions.ts';
 import registerCypressGrep from '@cypress/grep';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
+import { turnTelemetryOff } from './common.functions.ts';
 registerCypressGrep();
 
 // Hide fetch/XHR requests - They create a lot of noise in command log
@@ -24,6 +25,9 @@ if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
 }
 
 before(() => {
+  cy.clearLocalStorage();
+  // // Ensuring the telemetry modal doesn't disrupt the tests
+  turnTelemetryOff();
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockGQL((req) => {
     aliasGQLQuery(req, 'ChainId', chainIdQuery());

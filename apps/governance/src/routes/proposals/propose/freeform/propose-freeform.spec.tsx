@@ -108,7 +108,7 @@ describe('Propose Freeform', () => {
     expect(screen.getByTestId('proposal-title')).toBeTruthy();
     expect(screen.getByTestId('proposal-description')).toBeTruthy();
     expect(screen.getByTestId('proposal-vote-deadline')).toBeTruthy();
-    expect(screen.getByTestId('proposal-submit')).toBeTruthy();
+
     expect(screen.getByTestId('proposal-download-json')).toBeTruthy();
     expect(screen.getByTestId('proposal-transaction-dialog')).toBeTruthy();
   });

@@ -16,7 +16,6 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormDescription,
   ProposalFormSubheader,
-  ProposalFormSubmit,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
@@ -90,7 +89,7 @@ export const ProposeNetworkParameter = () => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
     setValue,
     watch,
   } = useForm<NetworkParameterProposalFormFields>();
@@ -310,7 +309,6 @@ export const ProposeNetworkParameter = () => {
                 }
               />
 
-              <ProposalFormSubmit isSubmitting={isSubmitting} />
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}

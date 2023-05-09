@@ -38,10 +38,10 @@ const ConsoleLinks = {
 
 const TokenLinks = {
   ...EmptyLinks,
-  [Networks.DEVNET]: 'https://dev.token.vega.xyz',
-  [Networks.TESTNET]: 'https://token.fairground.wtf',
+  [Networks.DEVNET]: 'https://dev.governance.vega.xyz',
+  [Networks.TESTNET]: 'https://governance.fairground.wtf',
   [Networks.VALIDATOR_TESTNET]: 'https://validator-testnet.governance.vega.xyz',
-  [Networks.MAINNET]: 'https://token.vega.xyz',
+  [Networks.MAINNET]: 'https://governance.vega.xyz',
 };
 
 const Links: { [k in DApp]: DAppLinks } = {

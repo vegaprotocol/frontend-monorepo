@@ -2,6 +2,7 @@ import {
   navigateTo,
   waitForSpinner,
   navigation,
+  turnTelemetryOff,
 } from '../../support/common.functions';
 import {
   createRawProposal,
@@ -50,6 +51,7 @@ describe(
 
     beforeEach('visit proposals tab', function () {
       cy.clearLocalStorage();
+      turnTelemetryOff();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
