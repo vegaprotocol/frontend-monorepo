@@ -80,7 +80,7 @@ export const TelemetryDialog = () => {
             setTelemetryAccepted(false);
             close();
           }}
-          variant={telemetryAccepted ? 'default' : 'primary'}
+          variant="default"
           data-testid="do-not-share-data-button"
         >
           {t('NoThanks')}
@@ -91,7 +91,7 @@ export const TelemetryDialog = () => {
             setTelemetryAccepted(true);
             close();
           }}
-          variant={telemetryAccepted ? 'primary' : 'default'}
+          variant="primary"
           data-testid="share-data-button"
         >
           {telemetryAccepted ? t('ContinueSharingData') : t('ShareData')}

@@ -1,9 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import {
-  useTelemetryDialog,
-  TELEMETRY_DIALOG_PREVIOUSLY_OPENED,
-  TELEMETRY_ON,
-} from './telemetry-dialog';
+import { useTelemetryDialog, TELEMETRY_ON } from './telemetry-dialog';
 
 describe('useTelemetryDialog', () => {
   beforeEach(() => {
@@ -11,7 +7,6 @@ describe('useTelemetryDialog', () => {
   });
 
   it('should have the correct initial state based on localStorage', () => {
-    localStorage.setItem(TELEMETRY_DIALOG_PREVIOUSLY_OPENED, 'true');
     localStorage.setItem(TELEMETRY_ON, 'true');
 
     const { result } = renderHook(() => useTelemetryDialog());
@@ -39,9 +34,6 @@ describe('useTelemetryDialog', () => {
     });
 
     expect(result.current.isOpen).toBe(false);
-    expect(localStorage.getItem(TELEMETRY_DIALOG_PREVIOUSLY_OPENED)).toBe(
-      'true'
-    );
   });
 
   it('should update the isOpen state when open is called', () => {
@@ -54,7 +46,7 @@ describe('useTelemetryDialog', () => {
     expect(result.current.isOpen).toBe(true);
   });
 
-  it('should open the dialog if TELEMETRY_DIALOG_PREVIOUSLY_OPENED is not set', () => {
+  it('should open the dialog if TELEMETRY_ON is not set', () => {
     const { result } = renderHook(() => useTelemetryDialog());
     expect(result.current.isOpen).toBe(true);
   });
