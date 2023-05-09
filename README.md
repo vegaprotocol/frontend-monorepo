@@ -130,7 +130,7 @@ As a prerequisite you need to perform build of `dist` directory and move its con
 You can build any of the containers locally with the following command:
 
 ```bash
-docker build --dockerfile dockerfiles/node-outside-docker.Dockerfile . --tag=[TAG]
+docker build --dockerfile docker/node-outside-docker.Dockerfile . --tag=[TAG]
 ```
 
 ### nx build inside the docker

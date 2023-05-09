@@ -48,7 +48,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
 
@@ -103,7 +103,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: dockerfiles/node-outside-docker.Dockerfile
+          file: docker/node-outside-docker.Dockerfile
           load: true
           build-args: |
             APP=${{ matrix.app }}
@@ -128,7 +128,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' || (matrix.app == 'trading' && github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') ) }}
         with:
           context: .
-          file: dockerfiles/node-outside-docker.Dockerfile
+          file: docker/node-outside-docker.Dockerfile
           push: true
           build-args: |
             APP=${{ matrix.app }}
@@ -141,7 +141,7 @@ jobs:
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
         with:
           context: .
-          file: dockerfiles/node-outside-docker.Dockerfile
+          file: docker/node-outside-docker.Dockerfile
           push: true
           build-args: |
             APP=${{ matrix.app }}
@@ -159,8 +159,8 @@ jobs:
           AWS_S3_BUCKET: ${{ env.BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'eu-west-1'
-          SOURCE_DIR: 'dist-result'
+          AWS_REGION: "eu-west-1"
+          SOURCE_DIR: "dist-result"
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
