@@ -15,7 +15,6 @@ import {
 import {
   ProposalFormDescription,
   ProposalFormSubheader,
-  ProposalFormSubmit,
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
@@ -57,7 +56,7 @@ export const ProposeNewMarket = () => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
     setValue,
     watch,
   } = useForm<NewMarketProposalFormFields>();
@@ -208,7 +207,6 @@ export const ProposeNewMarket = () => {
                 enactmentMaxClose={params.governance_proposal_market_maxEnact}
               />
 
-              <ProposalFormSubmit isSubmitting={isSubmitting} />
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}

@@ -2,6 +2,7 @@ import {
   closeDialog,
   navigateTo,
   navigation,
+  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
@@ -77,6 +78,7 @@ context(
 
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
+      turnTelemetryOff();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();

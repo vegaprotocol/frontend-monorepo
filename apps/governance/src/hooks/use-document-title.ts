@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function useDocumentTitle(name?: string) {
-  const base = 'VEGA token';
+  const base = 'VEGA Governance';
 
   React.useEffect(() => {
     if (name) {

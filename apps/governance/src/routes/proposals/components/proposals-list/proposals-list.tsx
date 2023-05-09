@@ -6,13 +6,14 @@ import { ProposalsListItem } from '../proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
-import { ExternalLinks } from '@vegaprotocol/utils';
+import { createDocsLinks, ExternalLinks } from '@vegaprotocol/utils';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface ProposalsListProps {
   proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
@@ -35,6 +36,7 @@ export const ProposalsList = ({
   protocolUpgradeProposals,
   lastBlockHeight,
 }: ProposalsListProps) => {
+  const { VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
   const sortedProposals = proposals.reduce(
@@ -81,15 +83,18 @@ export const ProposalsList = ({
           marginBottom={false}
           title={t('pageTitleProposals')}
         />
-        <Link
-          className="xs:justify-self-end"
-          data-testid="new-proposal-link"
-          to={`${Routes.PROPOSALS}/propose`}
-        >
-          <Button variant="primary" size="sm">
-            {t('NewProposal')}
-          </Button>
-        </Link>
+        {VEGA_DOCS_URL && (
+          <div className="xs:justify-self-end" data-testid="new-proposal-link">
+            <ExternalLink href={createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}>
+              <Button variant="primary" size="sm">
+                <div className="flex items-center gap-1">
+                  {t('NewProposal')}
+                  <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
+                </div>
+              </Button>
+            </ExternalLink>
+          </div>
+        )}
       </div>
       <p className="mb-8">
         {t(
