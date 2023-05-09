@@ -17,7 +17,6 @@ import {
   ProposalFormDescription,
   ProposalFormDownloadJson,
   ProposalFormSubheader,
-  ProposalFormSubmit,
   ProposalFormTerms,
   ProposalFormTitle,
   ProposalFormTransactionDialog,
@@ -104,7 +103,7 @@ export const ProposeUpdateMarket = () => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
     setValue,
     watch,
   } = useForm<UpdateMarketProposalFormFields>();
@@ -317,7 +316,6 @@ export const ProposeUpdateMarket = () => {
                 }
               />
 
-              <ProposalFormSubmit isSubmitting={isSubmitting} />
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
