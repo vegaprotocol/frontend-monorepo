@@ -5,7 +5,6 @@ import sortBy from 'lodash/sortBy';
 import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum, removePaginationWrapper } from '@vegaprotocol/utils';
-import type { Edge } from '@vegaprotocol/data-provider';
 import {
   makeDataProvider,
   makeDerivedDataProvider,

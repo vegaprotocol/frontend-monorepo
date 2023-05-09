@@ -21,7 +21,6 @@ const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
     }
     if (durations.length === polls) {
       const averageBlockDuration = sum(durations) / durations.length; // ms
-      console.log('setting avg', averageBlockDuration);
       setAvg(averageBlockDuration);
     }
   }, [data, polls]);

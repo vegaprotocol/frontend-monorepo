@@ -29,9 +29,9 @@ import {
   useEstimatePositionQuery,
   useOpenVolume,
 } from '@vegaprotocol/positions';
-import { addDecimal, toBigNum } from '@vegaprotocol/utils';
+import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { useFeeDealTicketDetails } from '../../hooks/use-fee-deal-ticket-details';
+import { useEstimateFees } from '../../hooks/use-fee-deal-ticket-details';
 import { getDerivedPrice } from '../../utils/get-price';
 import type { OrderInfo } from '@vegaprotocol/types';
 
@@ -119,9 +119,13 @@ export const DealTicket = ({
 
   const notionalSize = useMemo(() => {
     if (price && normalizedOrder?.size) {
-      return toBigNum(normalizedOrder.size, market.positionDecimalPlaces)
-        .multipliedBy(addDecimal(price, market.decimalPlaces))
-        .toString();
+      return removeDecimal(
+        toBigNum(
+          normalizedOrder.size,
+          market.positionDecimalPlaces
+        ).multipliedBy(toBigNum(price, market.decimalPlaces)),
+        asset.decimals
+      );
     }
     return null;
   }, [
@@ -129,9 +133,10 @@ export const DealTicket = ({
     normalizedOrder?.size,
     market.decimalPlaces,
     market.positionDecimalPlaces,
+    asset.decimals,
   ]);
 
-  const estimateFees = useFeeDealTicketDetails(
+  const feeEstimate = useEstimateFees(
     normalizedOrder && { ...normalizedOrder, price }
   );
   const { data: activeOrders } = useDataProvider({
@@ -480,7 +485,7 @@ export const DealTicket = ({
           }
         />
         <DealTicketFeeDetails
-          estimateFees={estimateFees}
+          feeEstimate={feeEstimate}
           notionalSize={notionalSize}
           assetSymbol={assetSymbol}
           marginAccountBalance={marginAccountBalance}
