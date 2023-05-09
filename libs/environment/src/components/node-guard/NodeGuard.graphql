@@ -1,0 +1,13 @@
+query NodeGuard {
+  statistics {
+    blockHeight
+  }
+  networkParametersConnection {
+    edges {
+      node {
+        key
+        value
+      }
+    }
+  }
+}
