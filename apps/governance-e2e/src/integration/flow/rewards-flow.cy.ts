@@ -1,6 +1,7 @@
 import {
   navigateTo,
   navigation,
+  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
@@ -26,6 +27,7 @@ const rewardsTimeOut = { timeout: 60000 };
 context('rewards - flow', { tags: '@slow' }, function () {
   before('set up environment to allow rewards', function () {
     cy.clearLocalStorage();
+    turnTelemetryOff();
     cy.visit('/');
     waitForSpinner();
     depositAsset(vegaAssetAddress, '1000', 18);

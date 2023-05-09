@@ -90,3 +90,10 @@ export function verifyEthWalletAssociatedBalance(amount: string) {
 export function closeDialog() {
   cy.getByTestId('dialog-close').click();
 }
+
+export function turnTelemetryOff() {
+  // Ensuring the telemetry modal doesn't disrupt the tests
+  cy.window().then((win) =>
+    win.localStorage.setItem('vega_telemetry_on', 'false')
+  );
+}
