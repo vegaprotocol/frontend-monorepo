@@ -6,7 +6,7 @@ import {
   validateAmount,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { Size } from '@vegaprotocol/react-helpers';
+import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
   FormGroup,
