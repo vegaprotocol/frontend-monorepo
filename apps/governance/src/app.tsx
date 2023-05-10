@@ -222,7 +222,7 @@ const AppContainer = () => {
             event.request.url = removeQueryParams(event.request.url);
           }
 
-          if (event.transaction && event.transaction.includes('/test?')) {
+          if (event.transaction && event.transaction.includes('/claim?')) {
             event.transaction = removeQueryParams(event.transaction);
           }
 
