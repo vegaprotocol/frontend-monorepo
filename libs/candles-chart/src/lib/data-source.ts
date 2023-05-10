@@ -254,22 +254,22 @@ const getDuration = (
 
 const getDifference = (
   interval: PennantInterval,
-  dateLeft: string,
-  dateRight: string
+  dateLeft: Date,
+  dateRight: Date
 ): number => {
   switch (interval) {
     case 'I1D':
-      return differenceInDays(new Date(dateRight), new Date(dateLeft));
+      return differenceInDays(dateRight, dateLeft);
     case 'I6H':
-      return differenceInHours(new Date(dateRight), new Date(dateLeft)) / 6;
+      return differenceInHours(dateRight, dateLeft) / 6;
     case 'I1H':
-      return differenceInHours(new Date(dateRight), new Date(dateLeft));
+      return differenceInHours(dateRight, dateLeft);
     case 'I15M':
-      return differenceInMinutes(new Date(dateRight), new Date(dateLeft)) / 15;
+      return differenceInMinutes(dateRight, dateLeft) / 15;
     case 'I5M':
-      return differenceInMinutes(new Date(dateRight), new Date(dateLeft)) / 5;
+      return differenceInMinutes(dateRight, dateLeft) / 5;
     case 'I1M':
-      return differenceInMinutes(new Date(dateRight), new Date(dateLeft));
+      return differenceInMinutes(dateRight, dateLeft);
   }
 };
 
@@ -282,23 +282,20 @@ const checkGranulationContinuity =
   ): CandleFieldsFragment[] => {
     if (agg.length && i) {
       const previous = agg[agg.length - 1];
+      const previousStartDate = new Date(previous.periodStart);
+      const candleStartDate = new Date(candle.periodStart);
       const difference = getDifference(
         interval,
-        previous.periodStart,
-        candle.periodStart
+        previousStartDate,
+        candleStartDate
       );
       if (difference > 1) {
         for (let j = 1; j < difference; j++) {
           const duration = getDuration(interval, j);
+          const newStartDate = add(previousStartDate, duration);
           agg.push({
-            periodStart: add(
-              new Date(previous.periodStart),
-              duration
-            ).toISOString(),
-            lastUpdateInPeriod: add(
-              new Date(previous.lastUpdateInPeriod),
-              duration
-            ).toISOString(),
+            periodStart: newStartDate.toISOString(),
+            lastUpdateInPeriod: add(newStartDate, duration).toISOString(),
             high: previous.close,
             low: previous.close,
             open: previous.close,
