@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 interface EpochIndividualRewardsGridProps {
   data: EpochIndividualReward;
+  marketCreationQuantumMultiple: string | null;
 }
 
 interface RewardItemProps {
@@ -80,9 +81,11 @@ const RewardItem = ({
 
 export const EpochIndividualRewardsTable = ({
   data,
+  marketCreationQuantumMultiple,
 }: EpochIndividualRewardsGridProps) => {
   return (
     <RewardsTable
+      marketCreationQuantumMultiple={marketCreationQuantumMultiple}
       dataTestId="epoch-individual-rewards-table"
       epoch={Number(data.epoch)}
     >

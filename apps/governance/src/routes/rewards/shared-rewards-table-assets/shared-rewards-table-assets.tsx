@@ -77,7 +77,11 @@ const ColumnHeader = ({
   </div>
 );
 
-const ColumnHeaders = () => {
+const ColumnHeaders = ({
+  marketCreationQuantumMultiple,
+}: {
+  marketCreationQuantumMultiple: string | null;
+}) => {
   const { t } = useTranslation();
   return (
     <div className="contents">
@@ -89,7 +93,9 @@ const ColumnHeaders = () => {
         <ColumnHeader
           key={columnTitle}
           title={t(columnTitle)}
-          tooltipContent={t(description)}
+          tooltipContent={t(description, {
+            marketCreationQuantumMultiple,
+          })}
           className={headerGridItemStyles()}
         />
       ))}
@@ -105,6 +111,7 @@ export interface RewardTableProps {
   dataTestId: string;
   epoch: number;
   children: ReactNode;
+  marketCreationQuantumMultiple: string | null;
 }
 
 // Rewards table children will be the row items. Make sure they contain
@@ -113,12 +120,15 @@ export const RewardsTable = ({
   dataTestId,
   epoch,
   children,
+  marketCreationQuantumMultiple,
 }: RewardTableProps) => (
   <div data-testid={dataTestId} className="mb-12">
     <SubHeading title={`EPOCH ${epoch}`} />
 
     <div className={gridStyles}>
-      <ColumnHeaders />
+      <ColumnHeaders
+        marketCreationQuantumMultiple={marketCreationQuantumMultiple}
+      />
       {children}
     </div>
   </div>
