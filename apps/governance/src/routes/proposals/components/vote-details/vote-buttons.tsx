@@ -2,7 +2,12 @@ import { format } from 'date-fns';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  Button,
+  ButtonLink,
+  ExternalLink,
+} from '@vegaprotocol/ui-toolkit';
 import { addDecimal, toBigNum } from '@vegaprotocol/utils';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
 import {
@@ -161,7 +166,12 @@ export const VoteButtons = ({
       {changeVote || (voteState === VoteState.NotCast && proposalVotable) ? (
         <>
           {currentStakeAvailable.isLessThanOrEqualTo(0) && (
-            <p data-testid="no-stake-available">{t('noGovernanceTokens')}</p>
+            <>
+              <p data-testid="no-stake-available">{t('noGovernanceTokens')}.</p>
+              <ExternalLink href="https://blog.vega.xyz/how-to-vote-on-vega-2195d1e52ec5">
+                {t('findOutMoreAboutHowToVote')}
+              </ExternalLink>
+            </>
           )}
 
           <div className="flex gap-4" data-testid="vote-buttons">
