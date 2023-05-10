@@ -10,16 +10,16 @@ export const estimatePositionQuery = (
       __typename: 'PositionEstimate',
       margin: {
         bestCase: {
-          collateralReleaseLevel: '100',
-          initialLevel: '50',
-          maintenanceLevel: '20',
-          searchLevel: '30',
+          collateralReleaseLevel: '1000000',
+          initialLevel: '500000',
+          maintenanceLevel: '200000',
+          searchLevel: '300000',
         },
         worstCase: {
-          collateralReleaseLevel: '110',
-          initialLevel: '60',
-          maintenanceLevel: '30',
-          searchLevel: '40',
+          collateralReleaseLevel: '1100000',
+          initialLevel: '600000',
+          maintenanceLevel: '300000',
+          searchLevel: '400000',
         },
       },
       liquidation: {

@@ -16,6 +16,10 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
     cy.wait('@Markets');
   });
 
+  beforeEach(() => {
+    cy.mockTradingPage();
+  });
+
   describe('limit order', () => {
     before(() => {
       cy.getByTestId(toggleLimit).click();
