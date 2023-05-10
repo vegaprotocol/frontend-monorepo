@@ -214,38 +214,41 @@ const AppContainer = () => {
         environment: VEGA_ENV,
         release: GIT_COMMIT_HASH,
         beforeSend(event) {
-          if (
-            event.request &&
-            event.request.url &&
-            event.request.url.includes('/claim?')
-          ) {
-            event.request.url = removeQueryParams(event.request.url);
-          }
+          const requestUrl = event.request?.url;
+          const transaction = event.transaction;
 
-          if (event.transaction && event.transaction.includes('/claim?')) {
-            event.transaction = removeQueryParams(event.transaction);
-          }
+          const updatedRequest =
+            requestUrl && requestUrl.includes('/test?')
+              ? { ...event.request, url: removeQueryParams(requestUrl) }
+              : event.request;
 
-          if (event.breadcrumbs) {
-            event.breadcrumbs = event.breadcrumbs.map((breadcrumb) => {
-              if (
-                breadcrumb.type === 'navigation' &&
-                breadcrumb.data &&
-                breadcrumb.data.to &&
-                breadcrumb.data.to.includes('/claim?')
-              ) {
-                return {
-                  ...breadcrumb,
-                  data: {
-                    ...breadcrumb.data,
-                    to: removeQueryParams(breadcrumb.data.to),
-                  },
-                };
-              }
-              return breadcrumb;
-            });
-          }
-          return event;
+          const updatedTransaction =
+            transaction && transaction.includes('/test?')
+              ? removeQueryParams(transaction)
+              : transaction;
+
+          const updatedBreadcrumbs = event.breadcrumbs?.map((breadcrumb) => {
+            if (
+              breadcrumb.type === 'navigation' &&
+              breadcrumb.data?.to?.includes('/test?')
+            ) {
+              return {
+                ...breadcrumb,
+                data: {
+                  ...breadcrumb.data,
+                  to: removeQueryParams(breadcrumb.data.to),
+                },
+              };
+            }
+            return breadcrumb;
+          });
+
+          return {
+            ...event,
+            request: updatedRequest,
+            transaction: updatedTransaction,
+            breadcrumbs: updatedBreadcrumbs ?? event.breadcrumbs,
+          };
         },
       });
       Sentry.setTag('branch', GIT_BRANCH);
