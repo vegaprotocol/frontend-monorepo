@@ -175,9 +175,6 @@ export class VegaDataSource implements DataSource {
             ),
             []
           );
-        /*.map((node) =>
-            parseCandle(node, decimalPlaces, positionDecimalPlaces)
-          );*/
 
         return candles;
       } else {
