@@ -1,3 +1,5 @@
+import { Icon } from '@vegaprotocol/ui-toolkit';
+
 // https://github.com/vegaprotocol/vega/blob/develop/core/blockchain/response.go
 export const ErrorCodes = new Map([
   [51, 'Transaction failed validation'],
@@ -28,7 +30,11 @@ export const ChainResponseCode = ({
 }: ChainResponseCodeProps) => {
   const isSuccess = successCodes.has(code);
 
-  const icon = isSuccess ? '✅' : '❌';
+  const icon = isSuccess ? (
+    <Icon name="tick-circle" className="fill-vega-green-550" />
+  ) : (
+    <Icon name="cross" className="fill-vega-pink-550" />
+  );
   const label = ErrorCodes.get(code) || 'Unknown response code';
 
   // Hack for batches with many errors - see https://github.com/vegaprotocol/vega/issues/7245
@@ -36,7 +42,7 @@ export const ChainResponseCode = ({
     error && error.length > 100 ? error.replace(/,/g, ',\r\n') : error;
 
   return (
-    <div title={`Response code: ${code} - ${label}`} className="inline-block">
+    <div title={`Response code: ${code} - ${label}`} className=" inline-block">
       <span
         className="mr-2"
         aria-label={isSuccess ? 'Success' : 'Warning'}

@@ -4,6 +4,7 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import ProposalLink from '../../links/proposal-link/proposal-link';
+import { VoteIcon } from '../../vote-icon/vote-icon';
 
 interface TxProposalVoteProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -30,14 +31,11 @@ export const TxProposalVote = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const vote = txData.command.voteSubmission.value ? '👍' : '👎';
+  const vote = txData.command.voteSubmission.value === 'VALUE_YES';
+
   return (
     <TableWithTbody className="mb-8" allowWrap={true}>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Proposal ID')}</TableCell>
-        <TableCell>{txData.command.voteSubmission.proposalId}</TableCell>
-      </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Proposal details')}</TableCell>
         <TableCell>
@@ -45,12 +43,10 @@ export const TxProposalVote = ({
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>{t('Proposal')}</TableCell>
-        <TableCell>{txData.command.voteSubmission.proposalId}</TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
         <TableCell>{t('Vote')}</TableCell>
-        <TableCell>{vote}</TableCell>
+        <TableCell>
+          <VoteIcon vote={vote} />
+        </TableCell>
       </TableRow>
     </TableWithTbody>
   );
