@@ -1,6 +1,6 @@
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { CopyWithTooltip, Icon, Toast } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
@@ -50,13 +50,34 @@ const EthWithdrawalApprovalToastContent = ({
       </strong>
     </Panel>
   );
+  const signatureBundleInfo = tx.approval?.signatures ? (
+    <div className="mt-3">
+      <p>{t('Please copy your signature...')}</p>
+      <Panel
+        className="flex align-middle max-w-full"
+        title={tx.approval.signatures}
+      >
+        <div className="truncate text-ellipsis">{tx.approval.signatures}</div>
+        <CopyWithTooltip text={tx.approval?.signatures}>
+          <button
+            data-testid="copy-withdrawal-signatures"
+            className="underline"
+          >
+            <Icon name="duplicate" className="ml-2" />
+          </button>
+        </CopyWithTooltip>
+      </Panel>
+    </div>
+  ) : (
+    ''
+  );
+
   return (
     <>
-      {title.length > 0 && (
-        <ToastHeading className="font-bold">{title}</ToastHeading>
-      )}
+      {title.length > 0 && <ToastHeading>{title}</ToastHeading>}
       <VerificationStatus state={tx} />
       {details}
+      {signatureBundleInfo}
     </>
   );
 };
@@ -88,7 +109,9 @@ export const useEthereumWithdrawApprovalsToasts = () => {
       },
       loader: tx.status === ApprovalStatus.Pending,
       content: <EthWithdrawalApprovalToastContent tx={tx} />,
-      closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
+      // TODO: Decide whether to make it dismissable manually or auto
+      // closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
+      closeAfter: undefined,
     }),
     [deleteTx, dismissTx, remove]
   );

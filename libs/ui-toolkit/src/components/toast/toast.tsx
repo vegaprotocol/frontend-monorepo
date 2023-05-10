@@ -66,8 +66,12 @@ export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 export const ToastHeading = forwardRef<
   HTMLHeadingElement,
   HtmlHTMLAttributes<HTMLHeadingElement>
->(({ children, ...props }, ref) => (
-  <h3 ref={ref} className="text-sm uppercase mb-1" {...props}>
+>(({ children, className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={classNames('text-sm uppercase mb-1', className)}
+    {...props}
+  >
     {children}
   </h3>
 ));
