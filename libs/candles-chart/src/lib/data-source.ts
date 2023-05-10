@@ -167,10 +167,17 @@ export class VegaDataSource implements DataSource {
         const candles = data.market.candlesConnection.edges
           .map((edge) => edge?.node)
           .filter((node): node is CandleFieldsFragment => !!node)
-          .reduce(checkGranulationContinuity(interval), [])
-          .map((node) =>
-            parseCandle(node, decimalPlaces, positionDecimalPlaces)
+          .reduce(
+            checkGranulationContinuity(
+              interval,
+              decimalPlaces,
+              positionDecimalPlaces
+            ),
+            []
           );
+        /*.map((node) =>
+            parseCandle(node, decimalPlaces, positionDecimalPlaces)
+          );*/
 
         return candles;
       } else {
@@ -274,15 +281,15 @@ const getDifference = (
 };
 
 const checkGranulationContinuity =
-  (interval: PennantInterval) =>
   (
-    agg: CandleFieldsFragment[],
-    candle: CandleFieldsFragment,
-    i: number
-  ): CandleFieldsFragment[] => {
+    interval: PennantInterval,
+    decimalPlaces: number,
+    positionDecimalPlaces: number
+  ) =>
+  (agg: Candle[], candle: CandleFieldsFragment, i: number): Candle[] => {
     if (agg.length && i) {
       const previous = agg[agg.length - 1];
-      const previousStartDate = new Date(previous.periodStart);
+      const previousStartDate = previous.date;
       const candleStartDate = new Date(candle.periodStart);
       const difference = getDifference(
         interval,
@@ -293,19 +300,29 @@ const checkGranulationContinuity =
         for (let j = 1; j < difference; j++) {
           const duration = getDuration(interval, j);
           const newStartDate = add(previousStartDate, duration);
-          agg.push({
-            periodStart: newStartDate.toISOString(),
-            lastUpdateInPeriod: add(newStartDate, duration).toISOString(),
+
+          const newParsedCandle: Candle = {
+            date: newStartDate,
             high: previous.close,
             low: previous.close,
             open: previous.close,
             close: previous.close,
-            volume: '0',
-          });
+            volume: 0,
+          };
+          agg.push(newParsedCandle);
         }
       }
+      agg.push({
+        date: candleStartDate,
+        high: Number(addDecimal(candle.high, decimalPlaces)),
+        low: Number(addDecimal(candle.low, decimalPlaces)),
+        open: Number(addDecimal(candle.open, decimalPlaces)),
+        close: Number(addDecimal(candle.close, decimalPlaces)),
+        volume: Number(addDecimal(candle.volume, positionDecimalPlaces)),
+      });
+    } else {
+      agg.push(parseCandle(candle, decimalPlaces, positionDecimalPlaces));
     }
-    agg.push(candle);
     return agg;
   };
 
