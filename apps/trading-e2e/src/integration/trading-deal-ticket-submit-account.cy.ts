@@ -49,12 +49,6 @@ describe(
         cy.mockGQL((req) => {
           aliasGQLQuery(req, 'Accounts', accounts);
         });
-        cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'EstimateFee', estimateFeesQuery());
-        });
-        cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'EstimatePosition', estimatePositionQuery());
-        });
         cy.mockSubscription();
         cy.visit('/#/markets/market-0');
         cy.wait('@Markets');

@@ -171,7 +171,7 @@ export const getFeeDetailsValues = ({
     details.push({
       indent: true,
       label: t('Total margin available'),
-      value: formatValue(totalMarginAvailable, assetDecimals),
+      value: `~${formatValue(totalMarginAvailable, assetDecimals)}`,
       symbol: assetSymbol,
       labelDescription: TOTAL_MARGIN_AVAILABLE(
         formatValue(generalAccountBalance, assetDecimals),

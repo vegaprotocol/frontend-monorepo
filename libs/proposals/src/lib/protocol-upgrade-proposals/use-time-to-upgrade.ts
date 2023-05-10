@@ -8,12 +8,22 @@ const durations = [] as number[];
 
 const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
   const [avg, setAvg] = useState<number | undefined>(undefined);
-  const { data } = useBlockStatisticsQuery({
-    pollInterval: INTERVAL,
+  const { data, startPolling, stopPolling, error } = useBlockStatisticsQuery({
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
     skip: durations.length === polls,
   });
+
+  useEffect(() => {
+    if (error) {
+      stopPolling();
+      return;
+    }
+
+    if (!('Cypress' in window) && window.location.hostname !== 'localhost') {
+      startPolling(INTERVAL);
+    }
+  }, [error, startPolling, stopPolling]);
 
   useEffect(() => {
     if (durations.length < polls && data) {

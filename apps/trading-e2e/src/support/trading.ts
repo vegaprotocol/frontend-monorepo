@@ -28,6 +28,8 @@ import {
   statisticsQuery,
   tradesQuery,
   withdrawalsQuery,
+  protocolUpgradeProposalsQuery,
+  blockStatisticsQuery,
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
 import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/market-list';
@@ -162,6 +164,12 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'EstimatePosition', estimatePositionQuery());
   aliasGQLQuery(req, 'ProposalsList', proposalListQuery());
   aliasGQLQuery(req, 'Deposits', depositsQuery());
+  aliasGQLQuery(
+    req,
+    'ProtocolUpgradeProposals',
+    protocolUpgradeProposalsQuery()
+  );
+  aliasGQLQuery(req, 'BlockStatistics', blockStatisticsQuery());
 };
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
