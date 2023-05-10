@@ -1,7 +1,7 @@
 #!/bin/bash -e
 yarn --pure-lockfile
-app={$1:-trading}
-flags="--env=${$2:-mainnet}"
+app=${1:-trading}
+flags="--env=${2:-mainnet}"
 yarn install
 if [ "${app}" = "trading" ]; then
   yarn nx export trading $flags
