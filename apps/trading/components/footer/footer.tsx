@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
-import { useEnvironment, useNodeHealth } from '@vegaprotocol/environment';
+import {
+  useEnvironment,
+  useNodeHealth,
+  useNodeSwitcherStore,
+} from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import { Indicator, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { useGlobalStore } from '../../stores';
 
 export const Footer = () => {
   return (
@@ -20,9 +23,7 @@ export const Footer = () => {
 
 export const NodeHealth = () => {
   const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
-  const setNodeSwitcher = useGlobalStore(
-    (store) => (open: boolean) => store.update({ nodeSwitcherDialog: open })
-  );
+  const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   const { datanodeBlockHeight, text, intent } = useNodeHealth();
   const onClick = useCallback(() => {
     setNodeSwitcher(true);

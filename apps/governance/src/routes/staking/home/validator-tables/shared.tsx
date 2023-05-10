@@ -16,6 +16,7 @@ import type { PreviousEpochQuery } from '../../__generated__/PreviousEpoch';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import type { StakingDelegationFieldsFragment } from '../../__generated__/Staking';
 import type { ValidatorsView } from './validator-tables';
+import { VALIDATOR_LOGO_MAP } from './logo-map';
 
 export enum ValidatorFields {
   RANKING_INDEX = 'rankingIndex',
@@ -102,13 +103,18 @@ interface ValidatorRendererProps {
 export const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { t } = useTranslation();
   const { avatarUrl, name } = data.validator;
+  const logo = VALIDATOR_LOGO_MAP[data.id]
+    ? VALIDATOR_LOGO_MAP[data.id]
+    : avatarUrl
+    ? avatarUrl
+    : null;
   return (
     <div className="w-[238px] grid grid-cols-[1fr_auto] gap-2 items-center">
       <span className="flex overflow-hidden">
-        {avatarUrl && (
+        {logo && (
           <img
             className="h-6 w-6 rounded-full mr-2"
-            src={avatarUrl}
+            src={logo}
             alt={`Avatar icon for ${name}`}
             onError={(e) => (e.currentTarget.style.display = 'none')}
           />

@@ -20,6 +20,7 @@ import {
   marketsDataQuery,
   marketsQuery,
   networkParamsQuery,
+  nodeGuardQuery,
   ordersQuery,
   positionsQuery,
   proposalListQuery,
@@ -82,6 +83,7 @@ const mockTradingPage = (
 ) => {
   aliasGQLQuery(req, 'ChainId', chainIdQuery());
   aliasGQLQuery(req, 'Statistics', statisticsQuery());
+  aliasGQLQuery(req, 'NodeGuard', nodeGuardQuery());
   aliasGQLQuery(
     req,
     'Markets',

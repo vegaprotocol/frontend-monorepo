@@ -58,9 +58,15 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
           token.decimals(),
         ]);
 
-        const totalSupply = toBigNum(supply, decimals);
-        const totalWallet = toBigNum(totalAssociatedWallet, decimals);
-        const totalVesting = toBigNum(totalAssociatedVesting, decimals);
+        const totalSupply = toBigNum(supply.toString(), decimals);
+        const totalWallet = toBigNum(
+          totalAssociatedWallet.toString(),
+          decimals
+        );
+        const totalVesting = toBigNum(
+          totalAssociatedVesting.toString(),
+          decimals
+        );
 
         appDispatch({
           type: AppStateActionType.SET_TOKEN,

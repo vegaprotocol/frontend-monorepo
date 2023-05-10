@@ -78,37 +78,38 @@ export const ValidatorTables = ({
           const nextDelegation = delegations?.find(
             (d) => d.node.id === validatorId && d.epoch === Number(epochId) + 1
           );
-
-          switch (validator.rankingScore?.status) {
-            case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT:
-              acc.consensusValidators.push(
-                addUserDataToValidator(
-                  validator,
-                  currentDelegation,
-                  nextDelegation,
-                  currentUserStakeAvailable
-                )
-              );
-              break;
-            case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ:
-              acc.standbyValidators.push(
-                addUserDataToValidator(
-                  validator,
-                  currentDelegation,
-                  nextDelegation,
-                  currentUserStakeAvailable
-                )
-              );
-              break;
-            case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING:
-              acc.pendingValidators.push(
-                addUserDataToValidator(
-                  validator,
-                  currentDelegation,
-                  nextDelegation,
-                  currentUserStakeAvailable
-                )
-              );
+          if (validator.stakedByOperator !== '0') {
+            switch (validator.rankingScore?.status) {
+              case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT:
+                acc.consensusValidators.push(
+                  addUserDataToValidator(
+                    validator,
+                    currentDelegation,
+                    nextDelegation,
+                    currentUserStakeAvailable
+                  )
+                );
+                break;
+              case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ:
+                acc.standbyValidators.push(
+                  addUserDataToValidator(
+                    validator,
+                    currentDelegation,
+                    nextDelegation,
+                    currentUserStakeAvailable
+                  )
+                );
+                break;
+              case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING:
+                acc.pendingValidators.push(
+                  addUserDataToValidator(
+                    validator,
+                    currentDelegation,
+                    nextDelegation,
+                    currentUserStakeAvailable
+                  )
+                );
+            }
           }
           return acc;
         },

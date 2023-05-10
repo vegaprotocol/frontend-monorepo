@@ -34,6 +34,7 @@ import {
   formatNumberPercentage,
   toBigNum,
 } from '@vegaprotocol/utils';
+import { VALIDATOR_LOGO_MAP } from './logo-map';
 
 interface CanonisedConsensusNodeProps {
   id: string;
@@ -131,7 +132,7 @@ export const ConsensusValidatorsTable = ({
   const gridRef = useRef<AgGridReact | null>(null);
 
   const nodes = useMemo(() => {
-    if (!data || !previousEpochData) return [];
+    if (!data) return [];
     let canonisedNodes = data
       .sort((a, b) => {
         const aVotingPower = new BigNumber(a.rankingScore.votingPower);
@@ -161,6 +162,11 @@ export const ConsensusValidatorsTable = ({
           pendingUserStake,
           userStakeShare,
         }) => {
+          const logo = VALIDATOR_LOGO_MAP[id]
+            ? VALIDATOR_LOGO_MAP[id]
+            : avatarUrl
+            ? avatarUrl
+            : null;
           const {
             rawValidatorScore: previousEpochValidatorScore,
             performanceScore: previousEpochPerformanceScore,
@@ -171,7 +177,7 @@ export const ConsensusValidatorsTable = ({
             id,
             [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
             [ValidatorFields.VALIDATOR]: {
-              avatarUrl,
+              avatarUrl: logo,
               name,
             },
             [ValidatorFields.STAKE]: stakedTotal,
