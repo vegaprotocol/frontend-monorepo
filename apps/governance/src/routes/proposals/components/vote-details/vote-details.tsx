@@ -202,7 +202,12 @@ export const VoteDetails = ({
         )}
 
         <section className="mt-10">
-          <SubHeading title={t('castYourVote')} />
+          {proposal?.state === ProposalState.STATE_OPEN ? (
+            <SubHeading title={t('castYourVote')} />
+          ) : (
+            <SubHeading title={t('yourVote')} />
+          )}
+
           {pubKey ? (
             proposal && (
               <VoteButtonsContainer

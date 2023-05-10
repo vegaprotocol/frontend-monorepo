@@ -202,6 +202,7 @@
   "tokenVotes": "Token votes",
   "liquidityVotes": "Liquidity votes",
   "castYourVote": "Cast your vote",
+  "yourVote": "Your vote",
   "for": "For",
   "against": "Against",
   "majorityRequired": "Majority Required",
