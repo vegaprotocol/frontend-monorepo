@@ -1,9 +1,18 @@
-import { NetworkLoader, useInitializeEnv } from '@vegaprotocol/environment';
+import {
+  AppFailure,
+  NetworkLoader,
+  NodeGuard,
+  NodeSwitcherDialog,
+  useEnvironment,
+  useInitializeEnv,
+  useNodeSwitcherStore,
+} from '@vegaprotocol/environment';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { DEFAULT_CACHE_CONFIG } from '@vegaprotocol/apollo-client';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/router-config';
+import { t } from '@vegaprotocol/i18n';
 
 const splashLoading = (
   <Splash>
@@ -12,10 +21,23 @@ const splashLoading = (
 );
 
 function App() {
+  const { VEGA_URL } = useEnvironment();
+  const [nodeSwitcherOpen, setNodeSwitcherOpen] = useNodeSwitcherStore(
+    (store) => [store.dialogOpen, store.setDialogOpen]
+  );
   return (
     <TendermintWebsocketProvider>
       <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
-        <RouterProvider router={router} fallbackElement={splashLoading} />
+        <NodeGuard
+          skeleton={<div>{t('Loading')}</div>}
+          failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
+        >
+          <RouterProvider router={router} fallbackElement={splashLoading} />
+        </NodeGuard>
+        <NodeSwitcherDialog
+          open={nodeSwitcherOpen}
+          setOpen={setNodeSwitcherOpen}
+        />
       </NetworkLoader>
     </TendermintWebsocketProvider>
   );

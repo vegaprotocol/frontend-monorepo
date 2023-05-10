@@ -12,6 +12,7 @@ import {
   createMarketsDataFragment,
   assetQuery,
   networkParamsQuery,
+  nodeGuardQuery,
 } from '@vegaprotocol/mock';
 import {
   addDecimalsFormatNumber,
@@ -158,6 +159,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'ChainId', chainIdQuery());
       aliasGQLQuery(req, 'Statistics', statisticsQuery());
+      aliasGQLQuery(req, 'NodeGuard', nodeGuardQuery());
       aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
       aliasGQLQuery(
         req,

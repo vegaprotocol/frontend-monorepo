@@ -4,18 +4,15 @@ import { NodeHealth, NodeUrl, HealthIndicator } from './footer';
 import { MockedProvider } from '@apollo/client/testing';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 
+const mockSetNodeSwitcher = jest.fn();
+
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
   useEnvironment: jest.fn().mockImplementation(() => ({
     VEGA_URL: 'https://vega-url.wtf',
     VEGA_INCIDENT_URL: 'https://blog.vega.community',
   })),
-}));
-
-const mockSetNodeSwitcher = jest.fn();
-jest.mock('../../stores', () => ({
-  ...jest.requireActual('../../stores'),
-  useGlobalStore: () => mockSetNodeSwitcher,
+  useNodeSwitcherStore: jest.fn(() => mockSetNodeSwitcher),
 }));
 
 describe('NodeHealth', () => {

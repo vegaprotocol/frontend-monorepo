@@ -1,0 +1,11 @@
+query NodeGuard {
+  lastBlockHeight
+  networkParametersConnection {
+    edges {
+      node {
+        key
+        value
+      }
+    }
+  }
+}

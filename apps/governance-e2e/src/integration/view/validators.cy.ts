@@ -29,7 +29,10 @@ const performancePenaltyToolTip = '[data-testid="performance-penalty-tooltip"]';
 const overstakedPenaltyToolTip = '[data-testid="overstaked-penalty-tooltip"]';
 const totalPenaltyToolTip = '[data-testid="total-penalty-tooltip"]';
 const epochCountDown = '[data-testid="epoch-countdown"]';
-const stakeNumberRegex = /^\d*\.?\d*$/;
+const stakeNumberRegex = /^\d{1,3}(,\d{3})*(\.\d+)?$/;
+
+// If running locally, validators need to have self-stake to be displayed
+// Run cy.validatorsSelfDelegate() in before hook
 
 context('Validators Page - verify elements on page', function () {
   before('navigate to validators page', function () {
@@ -84,13 +87,13 @@ context('Validators Page - verify elements on page', function () {
 
           cy.get(stakedByOperatorToolTip)
             .invoke('text')
-            .should('contain', 'Staked by operator: 0.00');
+            .should('contain', 'Staked by operator: 3,000.00');
           cy.get(stakedByDelegatesToolTip)
             .invoke('text')
             .should('contain', 'Staked by delegates: 0.00');
           cy.get(totalStakedToolTip)
             .invoke('text')
-            .should('contain', 'Total stake: 0.00');
+            .should('contain', 'Total stake: 3,000.00');
         });
 
         it('Should be able to see validator normalised voting power', function () {
@@ -106,10 +109,10 @@ context('Validators Page - verify elements on page', function () {
 
           cy.get(unnormalisedVotingPowerToolTip)
             .invoke('text')
-            .should('contain', 'Unnormalised voting power: 0.00%');
+            .should('contain', 'Unnormalised voting power: 20.00%');
           cy.get(normalisedVotingPowerToolTip)
             .invoke('text')
-            .should('contain', 'Normalised voting power: 0.10%');
+            .should('contain', 'Normalised voting power: 50.00%');
         });
 
         // 2002-SINC-018
@@ -126,13 +129,13 @@ context('Validators Page - verify elements on page', function () {
 
           cy.get(performancePenaltyToolTip)
             .invoke('text')
-            .should('contain', 'Performance penalty: 100.00%');
+            .should('contain', 'Performance penalty: 0.00%');
           cy.get(overstakedPenaltyToolTip)
             .invoke('text')
-            .should('contain', 'Overstaked penalty:'); // value not asserted due to #2886
+            .should('contain', 'Overstaked penalty: 60.00%'); // value not asserted due to #2886
           cy.get(totalPenaltyToolTip)
             .invoke('text')
-            .should('contain', 'Total penalties: 0.00%');
+            .should('contain', 'Total penalties: 60.00%');
         });
 
         it('Should be able to see validator pending stake', function () {
