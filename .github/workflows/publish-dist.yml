@@ -119,7 +119,7 @@ jobs:
         run: |
           echo "Check ipfs-hash"
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash > ${{ matirx.app }}-ipfs-hash
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash > ${{ matrix.app }}-ipfs-hash
           echo "List html directory"
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree /usr/share/nginx/html'
 
