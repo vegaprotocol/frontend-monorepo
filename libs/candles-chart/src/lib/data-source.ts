@@ -167,15 +167,10 @@ export class VegaDataSource implements DataSource {
         const candles = data.market.candlesConnection.edges
           .map((edge) => edge?.node)
           .filter((node): node is CandleFieldsFragment => !!node)
-          .reduce(
-            checkGranulationContinuity(
-              interval,
-              decimalPlaces,
-              positionDecimalPlaces
-            ),
-            []
-          );
-
+          .map((node) =>
+            parseCandle(node, decimalPlaces, positionDecimalPlaces)
+          )
+          .reduce(checkGranulationContinuity(interval), []);
         return candles;
       } else {
         return [];
@@ -278,26 +273,15 @@ const getDifference = (
 };
 
 const checkGranulationContinuity =
-  (
-    interval: PennantInterval,
-    decimalPlaces: number,
-    positionDecimalPlaces: number
-  ) =>
-  (agg: Candle[], candle: CandleFieldsFragment, i: number): Candle[] => {
+  (interval: PennantInterval) =>
+  (agg: Candle[], candle: Candle, i: number): Candle[] => {
     if (agg.length && i) {
       const previous = agg[agg.length - 1];
-      const previousStartDate = previous.date;
-      const candleStartDate = new Date(candle.periodStart);
-      const difference = getDifference(
-        interval,
-        previousStartDate,
-        candleStartDate
-      );
+      const difference = getDifference(interval, previous.date, candle.date);
       if (difference > 1) {
         for (let j = 1; j < difference; j++) {
           const duration = getDuration(interval, j);
-          const newStartDate = add(previousStartDate, duration);
-
+          const newStartDate = add(previous.date, duration);
           const newParsedCandle: Candle = {
             date: newStartDate,
             high: previous.close,
@@ -309,17 +293,8 @@ const checkGranulationContinuity =
           agg.push(newParsedCandle);
         }
       }
-      agg.push({
-        date: candleStartDate,
-        high: Number(addDecimal(candle.high, decimalPlaces)),
-        low: Number(addDecimal(candle.low, decimalPlaces)),
-        open: Number(addDecimal(candle.open, decimalPlaces)),
-        close: Number(addDecimal(candle.close, decimalPlaces)),
-        volume: Number(addDecimal(candle.volume, positionDecimalPlaces)),
-      });
-    } else {
-      agg.push(parseCandle(candle, decimalPlaces, positionDecimalPlaces));
     }
+    agg.push(candle);
     return agg;
   };
 
