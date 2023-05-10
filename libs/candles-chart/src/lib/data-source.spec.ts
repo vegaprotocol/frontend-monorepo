@@ -1,9 +1,13 @@
 import { VegaDataSource } from './data-source';
 import type { ApolloClient } from '@apollo/client';
 import { Interval } from 'pennant';
-import type { CandleFieldsFragment } from './__generated__/Candles';
+import type {
+  CandleFieldsFragment,
+  CandlesQuery,
+} from './__generated__/Candles';
+import * as Schema from '@vegaprotocol/types';
 
-const returnDataMocks = (nodes: CandleFieldsFragment[]) => {
+const returnDataMocks = (nodes: CandleFieldsFragment[]): CandlesQuery => {
   return {
     data: {
       market: {
@@ -14,119 +18,120 @@ const returnDataMocks = (nodes: CandleFieldsFragment[]) => {
         },
       },
     },
+  } as CandlesQuery;
+};
+
+const dataMocks: { [key in Schema.Interval]: Partial<CandleFieldsFragment>[] } =
+  {
+    [Schema.Interval.INTERVAL_I1M]: [
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T12:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '10',
+        volume: '1',
+      },
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T12:05:00Z',
+        lastUpdateInPeriod: '',
+        close: '5',
+        volume: '2',
+      },
+    ],
+    [Schema.Interval.INTERVAL_I5M]: [
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T12:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '10',
+        volume: '1',
+      },
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T12:25:00Z',
+        lastUpdateInPeriod: '',
+        close: '5',
+        volume: '2',
+      },
+    ],
+    [Schema.Interval.INTERVAL_I15M]: [
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T12:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '10',
+        volume: '1',
+      },
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T13:15:00Z',
+        lastUpdateInPeriod: '',
+        close: '5',
+        volume: '2',
+      },
+    ],
+    [Schema.Interval.INTERVAL_I1H]: [
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T12:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '10',
+        volume: '1',
+      },
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T17:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '5',
+        volume: '2',
+      },
+    ],
+    [Schema.Interval.INTERVAL_I6H]: [
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T12:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '10',
+        volume: '1',
+      },
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-11T18:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '5',
+        volume: '2',
+      },
+    ],
+    [Schema.Interval.INTERVAL_I1D]: [
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-10T00:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '10',
+        volume: '1',
+      },
+      {
+        __typename: 'Candle',
+        periodStart: '2023-05-15T00:00:00Z',
+        lastUpdateInPeriod: '',
+        close: '5',
+        volume: '2',
+      },
+    ],
+    [Schema.Interval.INTERVAL_BLOCK]: [],
   };
-};
-
-const dataMocks = {
-  INTERVAL_I1M: [
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T12:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '10',
-      volume: '1',
-    },
-
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T12:05:00Z',
-      lastUpdateInPeriod: '',
-      close: '5',
-      volume: '2',
-    },
-  ],
-  INTERVAL_I5M: [
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T12:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '10',
-      volume: '1',
-    },
-
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T12:25:00Z',
-      lastUpdateInPeriod: '',
-      close: '5',
-      volume: '2',
-    },
-  ],
-  INTERVAL_I15M: [
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T12:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '10',
-      volume: '1',
-    },
-
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T13:15:00Z',
-      lastUpdateInPeriod: '',
-      close: '5',
-      volume: '2',
-    },
-  ],
-  INTERVAL_I1H: [
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T12:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '10',
-      volume: '1',
-    },
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T17:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '5',
-      volume: '2',
-    },
-  ],
-  INTERVAL_I6H: [
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T12:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '10',
-      volume: '1',
-    },
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-11T18:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '5',
-      volume: '2',
-    },
-  ],
-  INTERVAL_I1D: [
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-10T00:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '10',
-      volume: '1',
-    },
-    {
-      __typename: 'Candle',
-      periodStart: '2023-05-15T00:00:00Z',
-      lastUpdateInPeriod: '',
-      close: '5',
-      volume: '2',
-    },
-  ],
-};
 
 describe('VegaDataSource', () => {
   const marketId = 'marketId';
   const partyId = 'partyId';
   const client = {
     query: jest.fn().mockImplementation(({ variables: { interval } }) => {
-      return returnDataMocks(dataMocks[interval]);
+      return returnDataMocks(
+        dataMocks[interval as Schema.Interval] as CandleFieldsFragment[]
+      );
     }),
-  } as ApolloClient<object>;
+  } as unknown as ApolloClient<object>;
 
   it('should be properly initialized', () => {
     const dataSource = new VegaDataSource(client, marketId, partyId);
