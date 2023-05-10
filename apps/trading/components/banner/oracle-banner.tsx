@@ -19,10 +19,17 @@ const oracleStatuses = {
 };
 
 export const OracleBanner = ({ marketId }: { marketId: string }) => {
-  const oracle = useMarketOracle(marketId);
-  if (!oracle || oracle.status === 'GOOD') {
+  const settlementOracle = useMarketOracle(marketId);
+  const terminationOracle = useMarketOracle(
+    marketId,
+    'dataSourceSpecForTradingTermination'
+  );
+  if (!settlementOracle || settlementOracle.status === 'GOOD') {
+    return null;
+  } else if (!terminationOracle || terminationOracle.status === 'GOOD') {
     return null;
   }
+  const oracle = settlementOracle;
   return (
     <NotificationBanner intent={Intent.Danger}>
       <div>
