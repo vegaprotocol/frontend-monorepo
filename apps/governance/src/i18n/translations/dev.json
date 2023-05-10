@@ -787,9 +787,9 @@
   "homeVegaTokenButtonText": "Manage tokens",
   "downloadProposalJson": "Download proposal as JSON",
   "networkUpgrade": "Network Upgrade",
-  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED": "Approved",
-  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_PENDING": "Pending",
-  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED": "Rejected",
+  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED": "Approved by validators",
+  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_PENDING": "Waiting for validator votes",
+  "PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED": "Declined by validators",
   "PROTOCOL_UPGRADE_PROPOSAL_STATUS_UNSPECIFIED": "Unspecified",
   "vegaRelease{release}": "Vega Release {{release}}",
   "upgradeBlockHeight": "Upgrade block height",
@@ -814,3 +814,4 @@
   "ContinueSharingData": "Continue sharing data",
   "NodeUnsuitable": "Node: {{url}} is unsuitable"
 }
+
