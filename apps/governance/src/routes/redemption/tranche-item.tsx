@@ -54,22 +54,16 @@ export const TrancheItem = ({
           {formatNumber(total, 2)}
         </span>
       </div>
-      <table className="w-full">
-        <tbody>
-          <tr>
-            <td>{t('Starts unlocking')}</td>
-            <td className="text-right">
-              {format(tranche.tranche_start, DATE_FORMAT_LONG)}
-            </td>
-          </tr>
-          <tr>
-            <td>{t('Fully unlocked')}</td>
-            <td className="text-right">
-              {format(tranche.tranche_end, DATE_FORMAT_LONG)}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="grid grid-cols-2 my-2">
+        <div>
+          <span>{t('Starts unlocking')}:</span>{' '}
+          <span>{format(tranche.tranche_start, DATE_FORMAT_LONG)}</span>
+        </div>
+        <div className="justify-self-end">
+          <span>{t('Fully unlocked')}:</span>{' '}
+          <span>{format(tranche.tranche_end, DATE_FORMAT_LONG)}</span>
+        </div>
+      </div>
       <LockedProgress
         locked={locked}
         unlocked={unlocked}
