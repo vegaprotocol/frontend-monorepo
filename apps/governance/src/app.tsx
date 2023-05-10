@@ -2,7 +2,6 @@ import './i18n';
 
 import React, { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
-import { Integrations } from '@sentry/tracing';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
@@ -208,7 +207,6 @@ const AppContainer = () => {
     if (ENV.dsn && telemetryOn) {
       Sentry.init({
         dsn: ENV.dsn,
-        integrations: [new Integrations.BrowserTracing()],
         tracesSampleRate: 0.1,
         enabled: true,
         environment: VEGA_ENV,
