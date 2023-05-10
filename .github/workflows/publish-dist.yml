@@ -30,12 +30,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Log in to the Container registry
+      - name: Log in to the Container registry (ghcr)
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to the Container registry (docker hub)
+        uses: docker/login-action@v2
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        with:
+          # registry: registry.hub.docker.com
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -54,30 +62,24 @@ jobs:
       - name: Define variables
         run: |
           envName=''
-          dockerfile="dist.Dockerfile"
           if [[ "${{ github.event_name }}" = "push" ]]; then
             domain="vega.rocks"
             if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
               envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
               if [[ "${{ github.ref }}" =~ .*mainnet.* ]]; then
                 domain="vega.community"
-                if [[ "${{ matrix.app }}" = "trading" ]]; then
-                  dockerfile="ipfs.Dockerfile"
-                fi
               fi
             elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
               envName="stagnet1"
+            elif [[ "${{ matrix.app}}" = "trading" ]] && [[ ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }} = "true" ]]; then
+              envName="mainnet"
             fi
             bucketName="${{ matrix.app }}.${envName}.${domain}"
             echo BUCKET_NAME=${bucketName} >> $GITHUB_ENV
           fi
-          nodeVersion=$(cat .nvmrc | head -n 1)
           echo ENV_NAME=${envName} >> $GITHUB_ENV
-          echo NODE_VERSION=${nodeVersion} >> $GITHUB_ENV
-          echo DOCKERFILE=docker/${dockerfile} >> $GITHUB_ENV
 
       - name: Build local dist
-        if: ${{ env.DOCKERFILE != 'docker/ipfs.Dockerfile' }}
         run: |
           flags=""
           if [[ ! -z "${{ env.ENV_NAME }}" ]]; then
@@ -98,62 +100,59 @@ jobs:
 
       - name: Build and export to local Docker
         id: docker_build
-        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ${{ env.DOCKERFILE }}
+          file: docker/node-outside-docker.Dockerfile
           load: true
           build-args: |
             APP=${{ matrix.app }}
-            NODE_VERSION=${{ env.NODE_VERSION }}
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
       - name: Image digest
-        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Sanity check docker image
-        if: ${{ github.event_name == 'pull_request' || ( env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' ) }}
         run: |
           echo "Check ipfs-hash"
-          if [[ "${{ env.DOCKERFILE }}" = "docker/ipfs.Dockerfile" ]];  then
-            docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash
-          fi
-
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash > ${{ matrix.app }}-ipfs-hash
           echo "List html directory"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree .'
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree /usr/share/nginx/html'
 
-      - name: Copy dist to local filesystem
-        if: ${{ env.DOCKERFILE == 'docker/ipfs.Dockerfile' && github.event_name == 'push' }}
-        run: |
-          docker create --name=dist ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
-          docker cp dist:/usr/share/nginx/html dist
-
-          echo "check local dist files"
-          tree dist/html
-          mv dist/html dist-result
-
-      - name: Publish dist as docker image
+      - name: Publish dist as docker image (ghcr)
         uses: docker/build-push-action@v3
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' || (matrix.app == 'trading' && github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') ) }}
         with:
           context: .
-          file: ${{ env.DOCKERFILE }}
+          file: docker/node-outside-docker.Dockerfile
           push: true
           build-args: |
             APP=${{ matrix.app }}
-            NODE_VERSION=${{ env.NODE_VERSION }}
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
 
+      - name: Publish dist as docker image (docker hub)
+        uses: docker/build-push-action@v3
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        with:
+          context: .
+          file: docker/node-outside-docker.Dockerfile
+          push: true
+          build-args: |
+            APP=${{ matrix.app }}
+            ENV_NAME=${{ env.ENV_NAME }}
+          tags: |
+            vegaprotocol/${{ matrix.app }}:${{ github.ref_name }}
+
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
         uses: jakejarvis/s3-sync-action@master
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') }}
         with:
           args: --acl private --follow-symlinks --delete
         env:
@@ -169,3 +168,9 @@ jobs:
         with:
           labels: ${{ matrix.app }}-preview
           number: ${{ github.event.number }}
+
+      - name: Add ipfs hash to release
+        uses: softprops/action-gh-release@v1
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        with:
+          files: ${{ matrix.app }}-ipfs-hash

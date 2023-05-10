@@ -15,6 +15,7 @@ import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
 import { tomlConfigSchema } from '../utils/validate-configuration';
+import uniq from 'lodash/uniq';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -32,7 +33,8 @@ type Actions = {
 export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
 
-export const STORAGE_KEY = 'vega_url';
+const VERSION = 1;
+export const STORAGE_KEY = `vega_url_${VERSION}`;
 const SUBSCRIPTION_TIMEOUT = 3000;
 
 export const useEnvironment = create<EnvStore>()((set, get) => ({
@@ -69,7 +71,10 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
     let nodes: string[] | undefined;
     try {
       nodes = await fetchConfig(state.VEGA_CONFIG_URL);
-      set({ nodes });
+      const enrichedNodes = uniq(
+        [...nodes, state.VEGA_URL, storedUrl].filter(Boolean) as string[]
+      );
+      set({ nodes: enrichedNodes });
     } catch (err) {
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }

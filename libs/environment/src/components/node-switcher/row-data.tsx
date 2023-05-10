@@ -124,29 +124,6 @@ export const RowData = ({
     return false;
   };
 
-  const getIsNodeDisabled = () => {
-    if (!isValidUrl(url)) {
-      return true;
-    }
-
-    // if still waiting or query errored disable node
-    if (loading || error) {
-      return true;
-    }
-
-    if (subLoading || subError) {
-      return true;
-    }
-
-    // if we are still waiting for a header entry for this
-    // url disable the node
-    if (!headers) {
-      return true;
-    }
-
-    return false;
-  };
-
   const getSubFailed = (
     subError: ApolloError | undefined,
     subFailed: boolean
@@ -160,12 +137,7 @@ export const RowData = ({
     <>
       {id !== CUSTOM_NODE_KEY && (
         <div className="break-all" data-testid="node">
-          <Radio
-            id={`node-url-${id}`}
-            value={url}
-            label={url}
-            disabled={getIsNodeDisabled()}
-          />
+          <Radio id={`node-url-${id}`} value={url} label={url} />
         </div>
       )}
       <LayoutCell

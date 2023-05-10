@@ -2,6 +2,7 @@
 
 # compiled output
 /dist
+/dist-result
 /tmp
 /out-tsc
 /tools/executors/**/*.js

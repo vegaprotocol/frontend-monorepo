@@ -21,9 +21,10 @@ import {
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
+  useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
 import './styles.css';
-import { useGlobalStore, usePageTitleStore } from '../stores';
+import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
@@ -115,11 +116,10 @@ function AppBody({ Component }: AppProps) {
 
 function VegaTradingApp(props: AppProps) {
   const status = useEnvironment((store) => store.status);
-  const { nodeSwitcherOpen, setNodeSwitcher } = useGlobalStore((store) => ({
-    nodeSwitcherOpen: store.nodeSwitcherDialog,
-    setNodeSwitcher: (open: boolean) =>
-      store.update({ nodeSwitcherDialog: open }),
-  }));
+  const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
+    store.dialogOpen,
+    store.setDialogOpen,
+  ]);
 
   useInitializeEnv();
 

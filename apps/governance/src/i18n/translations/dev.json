@@ -811,5 +811,6 @@
   "OptOutOfTelemetry": "You can opt out any time via settings",
   "NoThanks": "No thanks",
   "ShareData": "Share data",
-  "ContinueSharingData": "Continue sharing data"
+  "ContinueSharingData": "Continue sharing data",
+  "NodeUnsuitable": "Node: {{url}} is unsuitable"
 }
