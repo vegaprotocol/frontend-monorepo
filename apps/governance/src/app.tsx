@@ -184,6 +184,10 @@ const ScrollToTop = () => {
   return null;
 };
 
+const removeQueryParams = (url: string) => {
+  return url.split('?')[0];
+};
+
 const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
   const {
@@ -210,14 +214,36 @@ const AppContainer = () => {
         environment: VEGA_ENV,
         release: GIT_COMMIT_HASH,
         beforeSend(event) {
-          if (event.request?.url?.includes('/claim?')) {
-            return {
-              ...event,
-              request: {
-                ...event.request,
-                url: event.request?.url.split('?')[0],
-              },
-            };
+          if (
+            event.request &&
+            event.request.url &&
+            event.request.url.includes('/claim?')
+          ) {
+            event.request.url = removeQueryParams(event.request.url);
+          }
+
+          if (event.transaction && event.transaction.includes('/test?')) {
+            event.transaction = removeQueryParams(event.transaction);
+          }
+
+          if (event.breadcrumbs) {
+            event.breadcrumbs = event.breadcrumbs.map((breadcrumb) => {
+              if (
+                breadcrumb.type === 'navigation' &&
+                breadcrumb.data &&
+                breadcrumb.data.to &&
+                breadcrumb.data.to.includes('/claim?')
+              ) {
+                return {
+                  ...breadcrumb,
+                  data: {
+                    ...breadcrumb.data,
+                    to: removeQueryParams(breadcrumb.data.to),
+                  },
+                };
+              }
+              return breadcrumb;
+            });
           }
           return event;
         },
