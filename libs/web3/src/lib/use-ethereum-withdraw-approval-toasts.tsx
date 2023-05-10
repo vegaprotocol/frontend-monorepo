@@ -1,6 +1,7 @@
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { CopyWithTooltip, Icon, Toast } from '@vegaprotocol/ui-toolkit';
+import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
