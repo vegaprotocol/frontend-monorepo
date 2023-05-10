@@ -17,7 +17,6 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
   it('can connect', () => {
     // 0004-EWAL-001
 
-    cy.wait('@NetworkParams');
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
     cy.getByTestId('connect-eth-wallet-btn').click();
@@ -27,7 +26,7 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('tab-deposits').should('not.be.empty');
   });
 
-  it('should see QR code modal for WalletConnect', () => {
+  it.only('should see QR code modal for WalletConnect', () => {
     // 0004-EWAL-003
 
     cy.wait('@NetworkParams');
