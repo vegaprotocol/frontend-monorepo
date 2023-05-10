@@ -98,6 +98,6 @@ describe('Txs infinite list item', () => {
     expect(screen.getByTestId('pub-key')).toHaveTextContent('testPubKey');
     expect(screen.getByTestId('tx-type')).toHaveTextContent('testType');
     expect(screen.getByTestId('tx-block')).toHaveTextContent('1');
-    expect(screen.getByTestId('tx-success')).toHaveTextContent('Success: ✅');
+    expect(screen.getByTestId('tx-success')).toHaveTextContent('Success');
   });
 });

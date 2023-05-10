@@ -83,7 +83,7 @@ export const TxsInfiniteListItem = ({
         data-testid="tx-success"
       >
         <span className="md:hidden uppercase text-vega-dark-300">
-          Success:&nbsp;
+          Success&nbsp;
         </span>
         {isNumber(code) ? (
           <ChainResponseCode code={code} hideLabel={true} />

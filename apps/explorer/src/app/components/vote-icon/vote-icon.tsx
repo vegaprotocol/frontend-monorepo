@@ -32,7 +32,9 @@ export function VoteIcon({
       className={`voteicon inline-block my-1 py-1 px-2 py rounded-md text-white leading-one sm align-top ${bg}`}
     >
       <Icon name={icon} size={3} className={`mr-2 p-0 fill-${fill}`} />
-      <span className={`text-base text-${text}`}>{label}</span>
+      <span className={`text-base text-${text}`} data-testid="label">
+        {label}
+      </span>
     </div>
   );
 }
