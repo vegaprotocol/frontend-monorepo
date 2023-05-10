@@ -24,7 +24,6 @@ export const OrderTypeCell = ({
     }
     if (!value) return '-';
     if (order?.peggedOrder) {
-      // reference (bid, ask or mid)
       const reference =
         Schema.PeggedReferenceMapping[order.peggedOrder?.reference];
       // the offset (e.g. + 0.001 for a Sell, or -1231.023 for a Buy)
