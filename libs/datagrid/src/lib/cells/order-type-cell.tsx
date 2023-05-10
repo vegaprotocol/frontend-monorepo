@@ -24,13 +24,16 @@ export const OrderTypeCell = ({
     }
     if (!value) return '-';
     if (order?.peggedOrder) {
+      // reference (bid, ask or mid)
+      const reference =
+        Schema.PeggedReferenceMapping[order.peggedOrder?.reference];
+      // the offset (e.g. + 0.001 for a Sell, or -1231.023 for a Buy)
+      const side = order.side === Schema.Side.SIDE_BUY ? '-' : '+';
       const offset = addDecimalsFormatNumber(
         order.peggedOrder?.offset,
         order.market.decimalPlaces
       );
-      const reference =
-        Schema.PeggedReferenceMapping[order.peggedOrder?.reference];
-      return t('%s - %s Peg limit', [reference, offset]);
+      return t('%s %s %s Peg limit', [reference, side, offset]);
     }
     if (order?.liquidityProvision) {
       return t('Liquidity provision');
