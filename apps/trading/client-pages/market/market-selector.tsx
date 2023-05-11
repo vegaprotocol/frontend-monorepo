@@ -5,6 +5,7 @@ import {
   useMarketList,
 } from '@vegaprotocol/market-list';
 import {
+  MarketState,
   MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
@@ -23,13 +24,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import classNames from 'classnames';
 
 export const MarketSelector = ({
-  width,
-  height,
+  currentMarketId,
 }: {
-  width: number;
-  height: number;
+  currentMarketId?: string;
 }) => {
   const { data, loading, error } = useMarketList();
   const [search, setSearch] = useState('');
@@ -42,22 +42,31 @@ export const MarketSelector = ({
     return <div>{error.message}</div>;
   }
 
-  const filteredList = data.filter((m) => {
-    const code = m.tradableInstrument.instrument.code.toLowerCase();
-    if (code.includes(search)) {
-      return true;
-    }
-    return false;
-  });
+  const filteredList = data
+    .filter((m) => {
+      return m.state === MarketState.STATE_ACTIVE;
+    })
+    // filter based on search term
+    .filter((m) => {
+      const code = m.tradableInstrument.instrument.code.toLowerCase();
+      if (code.includes(search)) {
+        return true;
+      }
+      return false;
+    });
 
   const row = ({ index, style }: { index: number; style: CSSProperties }) => {
     const market = filteredList[index];
+    const wrapperClasses = classNames(
+      'block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4',
+      {
+        'ring-1 ring-vega-light-300 dark:ring-vega-dark-300':
+          currentMarketId === market.id,
+      }
+    );
     return (
       <div style={style} className="mb-0.5 px-2">
-        <Link
-          to={`/markets/${market.id}`}
-          className="block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4"
-        >
+        <Link to={`/markets/${market.id}`} className={wrapperClasses}>
           <div>{market.tradableInstrument.instrument.code}</div>
           <div
             title={market.tradableInstrument.instrument.name}
@@ -65,9 +74,9 @@ export const MarketSelector = ({
           >
             {market.tradableInstrument.instrument.name}
           </div>
-          <div className="flex justify-between items-center mt-1">
-            <div>
-              <div>
+          <div className="flex flex-nowrap justify-between items-center mt-1">
+            <div className="w-1/2">
+              <div className="text-ellipsis whitespace-nowrap overflow-hidden">
                 {market.data
                   ? addDecimalsFormatNumber(
                       market.data.markPrice,
@@ -77,7 +86,7 @@ export const MarketSelector = ({
               </div>
               <div className="text-vega-pink text-xs">-1.02%</div>
             </div>
-            <div>
+            <div className="w-1/2">
               {market.candles ? (
                 <Sparkline
                   width={120}
