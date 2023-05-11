@@ -4,14 +4,15 @@ import {
   useMarketDataUpdateSubscription,
   useMarketList,
 } from '@vegaprotocol/market-list';
-import {
-  MarketState,
-  MarketStateMapping,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
+import { MarketState } from '@vegaprotocol/types';
 import { Input, Sparkline, TinyScroll } from '@vegaprotocol/ui-toolkit';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { CSSProperties, ReactNode } from 'react';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  priceChangePercentage,
+  priceChangePercentage2,
+} from '@vegaprotocol/utils';
+import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
@@ -109,10 +110,6 @@ const MarketList = ({
         })
         // only selected product type
         .filter((m) => {
-          console.log(
-            m.tradableInstrument.instrument.product.__typename,
-            productType
-          );
           if (
             m.tradableInstrument.instrument.product.__typename === productType
           ) {
@@ -188,33 +185,7 @@ const List = ({
           >
             {market.tradableInstrument.instrument.name}
           </div>
-          <div className="flex flex-nowrap justify-between items-center mt-1">
-            <div className="w-1/2">
-              <div className="text-ellipsis whitespace-nowrap overflow-hidden">
-                {market.data
-                  ? addDecimalsFormatNumber(
-                      market.data.markPrice,
-                      market.decimalPlaces
-                    )
-                  : '-'}
-              </div>
-              <div className="text-vega-pink text-xs">-1.02%</div>
-            </div>
-            <div className="w-1/2">
-              {market.candles ? (
-                <Sparkline
-                  width={120}
-                  height={20}
-                  data={market.candles
-                    .filter(Boolean)
-                    .map((c) => Number(c.close))}
-                />
-              ) : (
-                '-'
-              )}
-            </div>
-          </div>
-          {/* <MarketData market={market} /> */}
+          <MarketData market={market} />
         </Link>
       </div>
     );
@@ -275,36 +246,49 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   const marketData = data?.marketsData[0];
 
   return (
-    <div className="text-xs">
-      <div>
-        {marketData ? MarketStateMapping[marketData.marketState] : '-'}
-        {' | '}
-        {marketData
-          ? MarketTradingModeMapping[marketData.marketTradingMode]
-          : '-'}
-      </div>
-      <div className="flex justify-between">
-        <div>{t('Best bid price')}</div>
-        <div>
+    <div className="flex flex-nowrap justify-between items-center mt-1">
+      <div className="w-1/2">
+        <div className="text-ellipsis whitespace-nowrap overflow-hidden">
           {marketData
             ? addDecimalsFormatNumber(
-                marketData.bestBidPrice,
+                marketData.markPrice,
                 market.decimalPlaces
               )
             : '-'}
         </div>
+        {market.candles && (
+          <PriceChange candles={market.candles.map((c) => c.close)} />
+        )}
       </div>
-      <div className="flex justify-between">
-        <div>{t('Best bid volume')}</div>
-        <div>
-          {marketData
-            ? addDecimalsFormatNumber(
-                marketData.bestBidVolume,
-                market.positionDecimalPlaces
-              )
-            : '-'}
-        </div>
+      <div className="w-1/2">
+        {market.candles ? (
+          <Sparkline
+            width={120}
+            height={20}
+            data={market.candles.filter(Boolean).map((c) => Number(c.close))}
+          />
+        ) : (
+          '-'
+        )}
       </div>
+    </div>
+  );
+};
+
+const PriceChange = ({ candles }: { candles: string[] }) => {
+  const priceChange = candles ? priceChangePercentage(candles) : undefined;
+  const priceChangeClasses = classNames('text-xs', {
+    'text-vega-pink': priceChange && priceChange < 0,
+    'text-vega-green': priceChange && priceChange > 0,
+  });
+  let prefix = '';
+  if (priceChange && priceChange > 0) {
+    prefix = '+';
+  }
+  const formattedChange = formatNumber(Number(priceChange), 2);
+  return (
+    <div className={priceChangeClasses}>
+      {priceChange ? `${prefix}${formattedChange}%` : '-'}
     </div>
   );
 };
