@@ -20,8 +20,11 @@ import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
     arr,
-    [(p) => new Date(p?.terms?.closingDatetime).getTime(), (p) => p.id],
-    ['desc', 'desc']
+    [
+      (p) => new Date(p?.terms?.closingDatetime).getTime(),
+      (p) => new Date(p?.datetime).getTime(),
+    ],
+    ['asc', 'asc']
   );
 
 const orderByUpgradeBlockHeight = (
