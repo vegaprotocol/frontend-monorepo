@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/react';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
@@ -47,7 +47,12 @@ export const useWithdrawAsset = (
         threshold = result[0];
         delay = result[1];
       } catch (err) {
-        captureException(err);
+        const logger = localLoggerFactory({ application: 'withdraws' });
+        if (err.message.match(/call revert exception/)) {
+          logger.info('call revert eth exception', err);
+        } else {
+          logger.error(err);
+        }
       }
 
       update({ asset, balance, min, threshold, delay });

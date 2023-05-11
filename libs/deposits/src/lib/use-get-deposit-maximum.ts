@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
 export const useGetDepositMaximum = (
@@ -20,7 +20,12 @@ export const useGetDepositMaximum = (
       const max = new BigNumber(addDecimal(res.toString(), asset.decimals));
       return max.isEqualTo(0) ? new BigNumber(Infinity) : max;
     } catch (err) {
-      Sentry.captureException(err);
+      const logger = localLoggerFactory({ application: 'deposits' });
+      if (err.message.match(/call revert exception/)) {
+        logger.info('call revert eth exception', err);
+      } else {
+        logger.error(err);
+      }
       return;
     }
   }, [contract, asset]);

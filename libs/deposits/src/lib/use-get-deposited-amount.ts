@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import { useWeb3React } from '@web3-react/core';
 
 export const useGetDepositedAmount = (asset: Asset | undefined) => {
@@ -41,7 +41,12 @@ export const useGetDepositedAmount = (asset: Asset | undefined) => {
       const value = new BigNumber(res, 16).toString();
       return new BigNumber(addDecimal(value, asset.decimals));
     } catch (err) {
-      Sentry.captureException(err);
+      const logger = localLoggerFactory({ application: 'deposits' });
+      if (err.message.match(/call revert exception/)) {
+        logger.info('call revert eth exception', err);
+      } else {
+        logger.error(err);
+      }
       return;
     }
   }, [provider, asset, config, account]);

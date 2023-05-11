@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 
 export const useGetAllowance = (
   contract: Token | null,
@@ -26,7 +26,12 @@ export const useGetAllowance = (
 
       return new BigNumber(addDecimal(res.toString(), asset.decimals));
     } catch (err) {
-      Sentry.captureException(err);
+      const logger = localLoggerFactory({ application: 'deposits' });
+      if (err.message.match(/call revert exception/)) {
+        logger.info('call revert eth exception', err);
+      } else {
+        logger.error(err);
+      }
       return;
     }
   }, [contract, account, config, asset]);

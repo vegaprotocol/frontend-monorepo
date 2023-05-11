@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { captureException } from '@sentry/react';
 import BigNumber from 'bignumber.js';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   ApprovalStatus,
@@ -120,7 +120,12 @@ export const useVerifyWithdrawal = () => {
 
         return true;
       } catch (err) {
-        captureException(err);
+        const logger = localLoggerFactory({ application: 'withdraws' });
+        if (err.message.match(/call revert exception/)) {
+          logger.info('call revert eth exception', err);
+        } else {
+          logger.error(err);
+        }
         setState({
           status: ApprovalStatus.Error,
         });

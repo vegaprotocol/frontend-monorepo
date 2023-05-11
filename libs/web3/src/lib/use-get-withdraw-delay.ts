@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { useBridgeContract } from './use-bridge-contract';
 import { useCallback } from 'react';
+import { localLoggerFactory } from '@vegaprotocol/utils';
 
 /**
  * Gets the delay in seconds thats required if the withdrawal amount is
@@ -13,7 +14,12 @@ export const useGetWithdrawDelay = () => {
       const res = await contract?.default_withdraw_delay();
       return res.toNumber();
     } catch (err) {
-      Sentry.captureException(err);
+      const logger = localLoggerFactory({ application: 'web3' });
+      if (err.message.match(/call revert exception/)) {
+        logger.info('call revert eth exception', err);
+      } else {
+        logger.error(err);
+      }
     }
   }, [contract]);
 

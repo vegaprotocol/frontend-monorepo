@@ -7,6 +7,7 @@ import {
   useEthereumTransaction,
 } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
+import { localLoggerFactory } from '@vegaprotocol/utils';
 import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
   Erc20ApprovalQuery,
@@ -55,7 +56,12 @@ export const useCompleteWithdraw = () => {
           approval.signatures
         );
       } catch (err) {
-        captureException(err);
+        const logger = localLoggerFactory({ application: 'deposits' });
+        if (err.message.match(/call revert exception/)) {
+          logger.info('call revert eth exception', err);
+        } else {
+          logger.error(err);
+        }
       }
     },
     [contract, query, perform]

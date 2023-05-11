@@ -6,7 +6,7 @@ import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
-import { isAssetTypeERC20 } from '@vegaprotocol/utils';
+import { isAssetTypeERC20, localLoggerFactory } from '@vegaprotocol/utils';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 
@@ -63,7 +63,12 @@ export const useDepositBalances = (
         allowance: allowance ?? initialState.allowance,
       });
     } catch (err) {
-      Sentry.captureException(err);
+      const logger = localLoggerFactory({ application: 'deposits' });
+      if (err.message.match(/call revert exception/)) {
+        logger.info('call revert eth exception', err);
+      } else {
+        logger.error(err);
+      }
       setState(null);
     }
   }, [asset, getAllowance, getBalance, getDepositMaximum, getDepositedAmount]);
