@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import type { Severity } from '@sentry/types/types/severity';
 import { LocalLogger, localLoggerFactory } from './local-logger';
 

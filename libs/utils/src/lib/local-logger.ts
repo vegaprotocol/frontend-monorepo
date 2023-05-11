@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import type { Scope } from '@sentry/browser';
 import type { Severity, Breadcrumb, Primitive } from '@sentry/types';
 
@@ -13,7 +13,14 @@ const LogLevels = [
   'silent',
 ];
 type LogLevelsType = typeof LogLevels[number];
-type ConsoleArg = string | number | boolean | bigint | symbol | object;
+type ConsoleArg =
+  | string
+  | number
+  | boolean
+  | bigint
+  | symbol
+  | object
+  | unknown;
 type ConsoleMethod = {
   [K in keyof Console]: Console[K] extends (...args: ConsoleArg[]) => unknown
     ? K
@@ -110,7 +117,7 @@ export class LocalLogger {
     if (this.tags.length) {
       this.tags.forEach((tag) => {
         const found = args.reduce((aggr, arg) => {
-          if (typeof arg === 'object' && tag in arg) {
+          if (arg && typeof arg === 'object' && tag in arg) {
             // @ts-ignore change object to record
             aggr = arg[tag] as unknown as Primitive | object;
           }

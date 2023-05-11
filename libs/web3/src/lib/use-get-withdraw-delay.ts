@@ -14,7 +14,7 @@ export const useGetWithdrawDelay = () => {
       return res.toNumber();
     } catch (err) {
       const logger = localLoggerFactory({ application: 'web3' });
-      if (err.message.match(/call revert exception/)) {
+      if ((err as Error).message.match(/call revert exception/)) {
         logger.info('call revert eth exception', err);
       } else {
         logger.error(err);

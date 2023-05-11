@@ -120,7 +120,7 @@ export const useVerifyWithdrawal = () => {
         return true;
       } catch (err) {
         const logger = localLoggerFactory({ application: 'withdraws' });
-        if (err.message.match(/call revert exception/)) {
+        if ((err as Error).message.match(/call revert exception/)) {
           logger.info('call revert eth exception', err);
         } else {
           logger.error(err);

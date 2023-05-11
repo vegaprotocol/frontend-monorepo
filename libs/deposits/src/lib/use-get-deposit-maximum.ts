@@ -20,7 +20,7 @@ export const useGetDepositMaximum = (
       return max.isEqualTo(0) ? new BigNumber(Infinity) : max;
     } catch (err) {
       const logger = localLoggerFactory({ application: 'deposits' });
-      if (err.message.match(/call revert exception/)) {
+      if ((err as Error).message.match(/call revert exception/)) {
         logger.info('call revert eth exception', err);
       } else {
         logger.error(err);
