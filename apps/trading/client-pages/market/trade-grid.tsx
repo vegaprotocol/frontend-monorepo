@@ -25,7 +25,7 @@ import { TradingViews } from './trade-views';
 import { Filter } from '@vegaprotocol/orders';
 import classNames from 'classnames';
 import { MarketSelector } from './market-selector';
-import { HeaderStat, HeaderTitle } from '../../components/header';
+import { HeaderTitle } from '../../components/header';
 import { HeaderStats } from './header-stats';
 
 interface TradeGridProps {
@@ -331,7 +331,7 @@ export const TradeGrid = ({
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_1fr]',
-    'grid-cols-[240px_1fr]'
+    'grid-cols-[300px_1fr]'
   );
   const paneWrapperClasses = classNames('min-h-0', {
     'col-span-2 col-start-1': !sidebarOpen,
@@ -350,7 +350,7 @@ export const TradeGrid = ({
           </button>
         </div>
       </div>
-      <div className="border-b border-default">
+      <div className="border-b border-default min-w-0">
         <HeaderStats market={market} />
         {/* <OracleBanner marketId={market?.id || ''} /> */}
       </div>

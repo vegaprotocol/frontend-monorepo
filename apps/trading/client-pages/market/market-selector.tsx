@@ -10,7 +10,6 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   priceChangePercentage,
-  priceChangePercentage2,
 } from '@vegaprotocol/utils';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
@@ -106,7 +105,10 @@ const MarketList = ({
     ? data
         // only active
         .filter((m) => {
-          return m.state === MarketState.STATE_ACTIVE;
+          return [
+            MarketState.STATE_ACTIVE,
+            MarketState.STATE_SUSPENDED,
+          ].includes(m.state);
         })
         // only selected product type
         .filter((m) => {
@@ -176,7 +178,7 @@ const List = ({
       }
     );
     return (
-      <div style={style} className="mb-0.5 px-2">
+      <div style={style} className="my-0.5 px-2">
         <Link to={`/markets/${market.id}`} className={wrapperClasses}>
           <div>{market.tradableInstrument.instrument.code}</div>
           <div
@@ -260,7 +262,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           <PriceChange candles={market.candles.map((c) => c.close)} />
         )}
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2 max-w-[120px]">
         {market.candles ? (
           <Sparkline
             width={120}

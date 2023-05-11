@@ -24,7 +24,7 @@ export const HeaderStats = ({ market }: HeaderStatsProps) => {
   const asset = market?.tradableInstrument.instrument.product?.settlementAsset;
 
   return (
-    <div className="flex flex-col justify-end h-full">
+    <div className="flex flex-col justify-end lg:pt-4">
       <div className="xl:flex xl:gap-4 items-end">
         <div
           data-testid="header-summary"

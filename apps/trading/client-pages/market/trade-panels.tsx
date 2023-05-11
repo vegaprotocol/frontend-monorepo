@@ -7,12 +7,14 @@ import {
 import type { TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
 import { memo, useState } from 'react';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import { NO_MARKET } from './constants';
-import { TradeMarketHeader } from './trade-market-header';
-import { OracleBanner } from '../../components/banner';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
+import { HeaderStats } from './header-stats';
+import * as DialogPrimitives from '@radix-ui/react-dialog';
+import { HeaderTitle } from '../../components/header';
+import { MarketSelector } from './market-selector';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -29,6 +31,7 @@ export const TradePanels = ({
   onClickCollateral,
   pinnedAsset,
 }: TradePanelsProps) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler(true);
 
@@ -63,9 +66,19 @@ export const TradePanels = ({
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <div>
-        <TradeMarketHeader market={market} onSelect={onSelect} />
-        <OracleBanner marketId={market?.id || ''} />
+      <div className="border-b border-default min-w-0">
+        <div className="flex gap-4 items-center px-4 py-2">
+          <HeaderTitle
+            primaryContent={market?.tradableInstrument.instrument.code}
+            secondaryContent={market?.tradableInstrument.instrument.name}
+          />
+          <button onClick={() => setDrawerOpen((x) => !x)}>
+            {drawerOpen ? '<' : '>'}
+          </button>
+        </div>
+        <HeaderStats market={market} />
+        {/* <TradeMarketHeader market={market} onSelect={onSelect} />
+          <OracleBanner marketId={market?.id || ''} /> */}
       </div>
       <div className="h-full">
         <AutoSizer>
@@ -95,6 +108,23 @@ export const TradePanels = ({
           );
         })}
       </div>
+      <DialogPrimitives.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DialogPrimitives.Portal>
+          <DialogPrimitives.Overlay />
+          <DialogPrimitives.Content
+            className={classNames(
+              'fixed h-full max-w-[500px] w-[90vw] z-10 top-0 left-0 transition-transform',
+              'bg-white dark:bg-black',
+              'border-r border-default'
+            )}
+          >
+            <DialogPrimitives.Close className="absolute top-0 right-0 p-2">
+              <Icon name="cross" />
+            </DialogPrimitives.Close>
+            {drawerOpen && <MarketSelector />}
+          </DialogPrimitives.Content>
+        </DialogPrimitives.Portal>
+      </DialogPrimitives.Root>
     </div>
   );
 };
