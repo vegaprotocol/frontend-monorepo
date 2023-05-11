@@ -1,5 +1,5 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Market } from '@vegaprotocol/market-list';
@@ -55,7 +55,7 @@ const formatValue = (
   value: string | number | null | undefined,
   formatDecimals: number
 ): string => {
-  return value && !isNaN(Number(value))
+  return isNumeric(value)
     ? addDecimalsFormatNumber(value, formatDecimals)
     : emptyValue;
 };
@@ -224,7 +224,7 @@ export const getFeeDetailsValues = ({
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
   });
 
-  let liquidationPriceEstimate = '-';
+  let liquidationPriceEstimate = emptyValue;
 
   if (liquidationEstimate) {
     const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
