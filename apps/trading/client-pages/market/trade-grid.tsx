@@ -330,7 +330,7 @@ export const TradeGrid = ({
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_1fr]',
-    'grid-cols-[300px_1fr]'
+    'grid-cols-[240px_1fr]'
   );
 
   return (

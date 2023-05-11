@@ -8,7 +8,7 @@ import {
   MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { TinyScroll } from '@vegaprotocol/ui-toolkit';
+import { Sparkline, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
@@ -34,13 +34,45 @@ export const MarketSelector = ({
   const row = ({ index, style }: { index: number; style: CSSProperties }) => {
     const market = data[index];
     return (
-      <div style={style}>
+      <div style={style} className="mb-0.5 px-2">
         <Link
           to={`/markets/${market.id}`}
-          className="block py-1 px-4 hover:bg-vega-light-100"
+          className="block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4"
         >
           <div>{market.tradableInstrument.instrument.code}</div>
-          <MarketData market={market} />
+          <div
+            title={market.tradableInstrument.instrument.name}
+            className="text-sm text-vega-light-300 dark:text-vega-dark-300 text-ellipsis whitespace-nowrap overflow-hidden"
+          >
+            {market.tradableInstrument.instrument.name}
+          </div>
+          <div className="flex justify-between items-center mt-1">
+            <div>
+              <div>
+                {market.data
+                  ? addDecimalsFormatNumber(
+                      market.data.markPrice,
+                      market.decimalPlaces
+                    )
+                  : '-'}
+              </div>
+              <div className="text-vega-pink text-xs">-1.02%</div>
+            </div>
+            <div>
+              {market.candles ? (
+                <Sparkline
+                  width={120}
+                  height={20}
+                  data={market.candles
+                    .filter(Boolean)
+                    .map((c) => Number(c.close))}
+                />
+              ) : (
+                '-'
+              )}
+            </div>
+          </div>
+          {/* <MarketData market={market} /> */}
         </Link>
       </div>
     );
@@ -51,7 +83,7 @@ export const MarketSelector = ({
       <FixedSizeList
         className="virtualized-list"
         itemCount={data.length}
-        itemSize={80}
+        itemSize={130}
         width={width}
         height={height}
       >
