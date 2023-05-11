@@ -349,7 +349,7 @@ export const TradeGrid = ({
       </div>
       <div className="border-r border-default min-h-0">
         <div className="h-full">
-          <AutoSizer>{(size) => <MarketSelector {...size} />}</AutoSizer>
+          <MarketSelector />
         </div>
       </div>
       <div className="min-h-0 overflow-hidden">
