@@ -2,7 +2,6 @@ import { LayoutPriority } from 'allotment';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { OracleBanner } from '@vegaprotocol/market-info';
 import {
   Tab,
   LocalStoragePersistTabs as Tabs,
@@ -14,6 +13,7 @@ import type { Market } from '@vegaprotocol/market-list';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { useNavigate } from 'react-router-dom';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
+import { OracleBanner } from '@vegaprotocol/market-info';
 import {
   usePaneLayout,
   useScreenDimensions,
@@ -331,7 +331,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const wrapperClasses = classNames(
     'h-full grid',
-    'grid-rows-[min-content_1fr]',
+    'grid-rows-[min-content_min-content_1fr]',
     'grid-cols-[300px_1fr]'
   );
   const paneWrapperClasses = classNames('min-h-0', {
@@ -360,7 +360,9 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
       </div>
       <div className="border-b border-default min-w-0">
         <HeaderStats market={market} />
-        {/* <OracleBanner marketId={market?.id || ''} /> */}
+      </div>
+      <div className="col-span-2 bg-vega-green">
+        <OracleBanner marketId={market?.id || ''} />
       </div>
       {sidebarOpen && (
         <div className="border-r border-default min-h-0">
