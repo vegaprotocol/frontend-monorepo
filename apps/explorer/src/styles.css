@@ -60,3 +60,7 @@
   --ag-row-hover-color: theme(colors.neutral[800]);
   --ag-font-size: 12px;
 }
+
+.voteicon svg {
+  vertical-align: baseline;
+}

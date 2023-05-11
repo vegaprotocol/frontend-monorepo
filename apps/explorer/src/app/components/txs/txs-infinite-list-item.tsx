@@ -31,7 +31,7 @@ export const TxsInfiniteListItem = ({
   return (
     <div
       data-testid="transaction-row"
-      className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10 py-2"
+      className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10"
     >
       <div
         className="text-sm col-span-10 md:col-span-3 leading-none"
@@ -83,7 +83,7 @@ export const TxsInfiniteListItem = ({
         data-testid="tx-success"
       >
         <span className="md:hidden uppercase text-vega-dark-300">
-          Success:&nbsp;
+          Success&nbsp;
         </span>
         {isNumber(code) ? (
           <ChainResponseCode code={code} hideLabel={true} />
