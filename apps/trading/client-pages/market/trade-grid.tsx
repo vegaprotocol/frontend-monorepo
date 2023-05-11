@@ -1,6 +1,6 @@
 import { LayoutPriority } from 'allotment';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { OracleBanner } from '@vegaprotocol/market-info';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
@@ -327,32 +327,41 @@ export const TradeGrid = ({
   onSelect,
   pinnedAsset,
 }: TradeGridProps) => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_1fr]',
     'grid-cols-[240px_1fr]'
   );
+  const paneWrapperClasses = classNames('min-h-0', {
+    'col-span-2 col-start-1': !sidebarOpen,
+  });
 
   return (
     <div className={wrapperClasses}>
       <div className="border-b border-r border-default">
-        <div className="px-4 py-2">
+        <div className="flex gap-2 justify-between items-center px-4 py-2">
           <HeaderTitle
             primaryContent={market?.tradableInstrument.instrument.code}
             secondaryContent={market?.tradableInstrument.instrument.name}
           />
+          <button onClick={() => setSidebarOpen((x) => !x)}>
+            {sidebarOpen ? '<' : '>'}
+          </button>
         </div>
       </div>
       <div className="border-b border-default">
         <HeaderStats market={market} />
         {/* <OracleBanner marketId={market?.id || ''} /> */}
       </div>
-      <div className="border-r border-default min-h-0">
-        <div className="h-full">
-          <MarketSelector currentMarketId={market.id} />
+      {sidebarOpen && (
+        <div className="border-r border-default min-h-0">
+          <div className="h-full">
+            <MarketSelector currentMarketId={market?.id} />
+          </div>
         </div>
-      </div>
-      <div className="min-h-0 overflow-hidden">
+      )}
+      <div className={paneWrapperClasses}>
         <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
       </div>
     </div>
