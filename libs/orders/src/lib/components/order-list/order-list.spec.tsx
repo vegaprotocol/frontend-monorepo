@@ -213,6 +213,8 @@ describe('OrderListTable', () => {
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         peggedOrder: {
           __typename: 'PeggedOrder',
+          reference: Schema.PeggedReference.PEGGED_REFERENCE_MID,
+          offset: '100',
         },
       });
 
@@ -222,7 +224,7 @@ describe('OrderListTable', () => {
 
       const amendCell = getAmendCell();
       const typeCell = screen.getAllByRole('gridcell')[2];
-      expect(typeCell).toHaveTextContent('Pegged');
+      expect(typeCell).toHaveTextContent('Mid - 10.0 Peg limit');
       expect(amendCell.queryAllByRole('button')).toHaveLength(0);
     });
 

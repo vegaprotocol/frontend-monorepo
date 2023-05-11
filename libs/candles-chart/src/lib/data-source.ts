@@ -1,4 +1,11 @@
 import type { ApolloClient } from '@apollo/client';
+import type { Duration } from 'date-fns';
+import {
+  add,
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+} from 'date-fns';
 import type { Candle, DataSource } from 'pennant';
 import { Interval as PennantInterval } from 'pennant';
 
@@ -153,7 +160,6 @@ export class VegaDataSource implements DataSource {
         },
         fetchPolicy: 'no-cache',
       });
-
       if (data?.market?.candlesConnection?.edges) {
         const decimalPlaces = data.market.decimalPlaces;
         const positionDecimalPlaces = data.market.positionDecimalPlaces;
@@ -163,8 +169,8 @@ export class VegaDataSource implements DataSource {
           .filter((node): node is CandleFieldsFragment => !!node)
           .map((node) =>
             parseCandle(node, decimalPlaces, positionDecimalPlaces)
-          );
-
+          )
+          .reduce(checkGranulationContinuity(interval), []);
         return candles;
       } else {
         return [];
@@ -212,6 +218,85 @@ export class VegaDataSource implements DataSource {
     this.candlesSub && this.candlesSub.unsubscribe();
   }
 }
+
+const getDuration = (
+  interval: PennantInterval,
+  multiplier: number
+): Duration => {
+  switch (interval) {
+    case 'I1D':
+      return {
+        days: 1 * multiplier,
+      };
+    case 'I1H':
+      return {
+        hours: 1 * multiplier,
+      };
+    case 'I1M':
+      return {
+        minutes: 1 * multiplier,
+      };
+    case 'I5M':
+      return {
+        minutes: 5 * multiplier,
+      };
+    case 'I6H':
+      return {
+        hours: 6 * multiplier,
+      };
+    case 'I15M':
+      return {
+        minutes: 15 * multiplier,
+      };
+  }
+};
+
+const getDifference = (
+  interval: PennantInterval,
+  dateLeft: Date,
+  dateRight: Date
+): number => {
+  switch (interval) {
+    case 'I1D':
+      return differenceInDays(dateRight, dateLeft);
+    case 'I6H':
+      return differenceInHours(dateRight, dateLeft) / 6;
+    case 'I1H':
+      return differenceInHours(dateRight, dateLeft);
+    case 'I15M':
+      return differenceInMinutes(dateRight, dateLeft) / 15;
+    case 'I5M':
+      return differenceInMinutes(dateRight, dateLeft) / 5;
+    case 'I1M':
+      return differenceInMinutes(dateRight, dateLeft);
+  }
+};
+
+const checkGranulationContinuity =
+  (interval: PennantInterval) =>
+  (agg: Candle[], candle: Candle, i: number): Candle[] => {
+    if (agg.length && i) {
+      const previous = agg[agg.length - 1];
+      const difference = getDifference(interval, previous.date, candle.date);
+      if (difference > 1) {
+        for (let j = 1; j < difference; j++) {
+          const duration = getDuration(interval, j);
+          const newStartDate = add(previous.date, duration);
+          const newParsedCandle: Candle = {
+            date: newStartDate,
+            high: previous.close,
+            low: previous.close,
+            open: previous.close,
+            close: previous.close,
+            volume: 0,
+          };
+          agg.push(newParsedCandle);
+        }
+      }
+    }
+    agg.push(candle);
+    return agg;
+  };
 
 function parseCandle(
   candle: CandleFieldsFragment,

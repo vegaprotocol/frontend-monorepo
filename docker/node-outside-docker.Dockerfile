@@ -5,6 +5,6 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY ./dist-result/ /usr/share/nginx/html/
 RUN apk add --no-cache go-ipfs==0.16.0-r6 \
       && ipfs init \
-      && echo "$(ipfs add -rwQ /usr/share/nginx/html)" > /ipfs-hash \
+      && echo "$(ipfs add -rQ /usr/share/nginx/html)" > /ipfs-hash \
       && echo "ipfs hash of this build: $(cat /ipfs-hash)"
 

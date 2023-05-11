@@ -50,7 +50,22 @@ export const useTranches = create<TranchesStore>()((set) => ({
         ?.map((t) => {
           const tranche_progress =
             t.duration !== 0 ? (now - t.cliff_start) / t.duration : 0;
-          const lockedDecimal = tranche_progress < 0 ? 1 : 1 - tranche_progress;
+          let lockedDecimal;
+          if (t.duration !== 0) {
+            if (tranche_progress < 0) {
+              lockedDecimal = 1;
+            } else {
+              lockedDecimal = 1 - tranche_progress;
+            }
+          } else {
+            if (now < t.cliff_start) {
+              lockedDecimal = 1;
+            } else {
+              lockedDecimal = 0;
+            }
+          }
+          const clampedLockedDecimal = Math.max(0, Math.min(1, lockedDecimal));
+
           return {
             tranche_id: t.tranche_id,
             tranche_start: secondsToDate(t.cliff_start),
@@ -60,7 +75,7 @@ export const useTranches = create<TranchesStore>()((set) => ({
               toBigNum(t.current_balance, decimals)
             ),
             locked_amount: toBigNum(t.initial_balance, decimals).times(
-              lockedDecimal
+              clampedLockedDecimal
             ),
             users: t.users,
           };

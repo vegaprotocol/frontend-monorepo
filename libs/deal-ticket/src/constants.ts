@@ -59,6 +59,10 @@ export const EST_FEES_TOOLTIP_TEXT = t(
   'When you execute a new buy or sell order, you must pay a small amount of commission to the network for doing so. This fee is used to provide income to the node operates of the network and market makers who make prices on the futures market you are trading.'
 );
 
+export const LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT = t(
+  'This is a approximation to the liquidation price for that particular contract position, assuming nothing else changes, which may affect your margin and collateral balances.'
+);
+
 export const EST_SLIPPAGE = t(
   'When you execute a trade on Vega, the price obtained in the market may differ from the best available price displayed at the time of placing the trade. The estimated slippage shows the difference between the best available price and the estimated execution price, determined by market liquidity and your chosen order size.'
 );

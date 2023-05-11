@@ -1,4 +1,4 @@
-import type { ConditionOperator } from './__generated__/types';
+import type { ConditionOperator, PeggedReference } from './__generated__/types';
 import type {
   AccountType,
   AuctionTrigger,
@@ -473,4 +473,10 @@ export const ConditionOperatorMapping: { [C in ConditionOperator]: string } = {
   OPERATOR_GREATER_THAN_OR_EQUAL: 'Greater than or equal to',
   OPERATOR_LESS_THAN: 'Less than',
   OPERATOR_LESS_THAN_OR_EQUAL: 'Less than or equal to',
+};
+
+export const PeggedReferenceMapping: { [R in PeggedReference]: string } = {
+  PEGGED_REFERENCE_BEST_ASK: 'Ask',
+  PEGGED_REFERENCE_BEST_BID: 'Bid',
+  PEGGED_REFERENCE_MID: 'Mid',
 };

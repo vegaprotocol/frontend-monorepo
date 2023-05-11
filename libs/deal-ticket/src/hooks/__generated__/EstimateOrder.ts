@@ -3,7 +3,7 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type EstimateOrderQueryVariables = Types.Exact<{
+export type EstimateFeesQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
   partyId: Types.Scalars['ID'];
   price?: Types.InputMaybe<Types.Scalars['String']>;
@@ -15,12 +15,12 @@ export type EstimateOrderQueryVariables = Types.Exact<{
 }>;
 
 
-export type EstimateOrderQuery = { __typename?: 'Query', estimateOrder: { __typename?: 'OrderEstimate', totalFeeAmount: string, fee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, marginLevels: { __typename?: 'MarginLevels', initialLevel: string } } };
+export type EstimateFeesQuery = { __typename?: 'Query', estimateFees: { __typename?: 'FeeEstimate', totalFeeAmount: string, fees: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
 
 
-export const EstimateOrderDocument = gql`
-    query EstimateOrder($marketId: ID!, $partyId: ID!, $price: String, $size: String!, $side: Side!, $timeInForce: OrderTimeInForce!, $expiration: Timestamp, $type: OrderType!) {
-  estimateOrder(
+export const EstimateFeesDocument = gql`
+    query EstimateFees($marketId: ID!, $partyId: ID!, $price: String, $size: String!, $side: Side!, $timeInForce: OrderTimeInForce!, $expiration: Timestamp, $type: OrderType!) {
+  estimateFees(
     marketId: $marketId
     partyId: $partyId
     price: $price
@@ -30,13 +30,10 @@ export const EstimateOrderDocument = gql`
     expiration: $expiration
     type: $type
   ) {
-    fee {
+    fees {
       makerFee
       infrastructureFee
       liquidityFee
-    }
-    marginLevels {
-      initialLevel
     }
     totalFeeAmount
   }
@@ -44,16 +41,16 @@ export const EstimateOrderDocument = gql`
     `;
 
 /**
- * __useEstimateOrderQuery__
+ * __useEstimateFeesQuery__
  *
- * To run a query within a React component, call `useEstimateOrderQuery` and pass it any options that fit your needs.
- * When your component renders, `useEstimateOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useEstimateFeesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEstimateFeesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEstimateOrderQuery({
+ * const { data, loading, error } = useEstimateFeesQuery({
  *   variables: {
  *      marketId: // value for 'marketId'
  *      partyId: // value for 'partyId'
@@ -66,14 +63,14 @@ export const EstimateOrderDocument = gql`
  *   },
  * });
  */
-export function useEstimateOrderQuery(baseOptions: Apollo.QueryHookOptions<EstimateOrderQuery, EstimateOrderQueryVariables>) {
+export function useEstimateFeesQuery(baseOptions: Apollo.QueryHookOptions<EstimateFeesQuery, EstimateFeesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EstimateOrderQuery, EstimateOrderQueryVariables>(EstimateOrderDocument, options);
+        return Apollo.useQuery<EstimateFeesQuery, EstimateFeesQueryVariables>(EstimateFeesDocument, options);
       }
-export function useEstimateOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EstimateOrderQuery, EstimateOrderQueryVariables>) {
+export function useEstimateFeesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EstimateFeesQuery, EstimateFeesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EstimateOrderQuery, EstimateOrderQueryVariables>(EstimateOrderDocument, options);
+          return Apollo.useLazyQuery<EstimateFeesQuery, EstimateFeesQueryVariables>(EstimateFeesDocument, options);
         }
-export type EstimateOrderQueryHookResult = ReturnType<typeof useEstimateOrderQuery>;
-export type EstimateOrderLazyQueryHookResult = ReturnType<typeof useEstimateOrderLazyQuery>;
-export type EstimateOrderQueryResult = Apollo.QueryResult<EstimateOrderQuery, EstimateOrderQueryVariables>;
+export type EstimateFeesQueryHookResult = ReturnType<typeof useEstimateFeesQuery>;
+export type EstimateFeesLazyQueryHookResult = ReturnType<typeof useEstimateFeesLazyQuery>;
+export type EstimateFeesQueryResult = Apollo.QueryResult<EstimateFeesQuery, EstimateFeesQueryVariables>;

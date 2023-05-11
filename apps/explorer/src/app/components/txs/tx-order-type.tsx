@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../types/explorer';
+import { VoteIcon } from '../vote-icon/vote-icon';
 
 interface TxOrderTypeProps {
   orderType: string;
@@ -137,17 +138,30 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   let type = displayString[orderType] || orderType;
 
   let colours =
-    'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-150';
+    'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-250';
 
   // This will get unwieldy and should probably produce a different colour of tag
   if (type === 'Chain Event' && !!command?.chainEvent) {
     type = getLabelForChainEvent(command.chainEvent);
     colours = 'text-white dark-text-white bg-vega-pink dark:bg-vega-pink';
+  } else if (type === 'Validator Heartbeat') {
+    colours =
+      'text-white dark-text-white bg-vega-light-200 dark:bg-vega-dark-100';
   } else if (type === 'Proposal' || type === 'Governance Proposal') {
     if (command && !!command.proposalSubmission) {
       type = getLabelForProposal(command.proposalSubmission);
     }
     colours = 'text-black bg-vega-yellow';
+  }
+
+  if (type === 'Vote on Proposal') {
+    return (
+      <VoteIcon
+        vote={command?.voteSubmission?.value === 'VALUE_YES'}
+        yesText="Proposal vote"
+        noText="Proposal vote"
+      />
+    );
   }
 
   if (type === 'Vote on Proposal' || type === 'Vote Submission') {

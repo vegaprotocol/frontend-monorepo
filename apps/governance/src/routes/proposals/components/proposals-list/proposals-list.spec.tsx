@@ -24,7 +24,6 @@ const openProposalClosesNextMonth = generateProposal({
   },
   terms: {
     closingDatetime: nextMonth.toString(),
-    enactmentDatetime: nextMonth.toString(),
   },
 });
 
@@ -36,7 +35,6 @@ const openProposalClosesNextWeek = generateProposal({
   },
   terms: {
     closingDatetime: nextWeek.toString(),
-    enactmentDatetime: nextWeek.toString(),
   },
 });
 
@@ -45,7 +43,6 @@ const enactedProposalClosedLastWeek = generateProposal({
   state: ProposalState.STATE_ENACTED,
   terms: {
     closingDatetime: lastWeek.toString(),
-    enactmentDatetime: lastWeek.toString(),
   },
 });
 
@@ -54,7 +51,6 @@ const failedProposalClosedLastMonth = generateProposal({
   state: ProposalState.STATE_FAILED,
   terms: {
     closingDatetime: lastMonth.toString(),
-    enactmentDatetime: lastMonth.toString(),
   },
 });
 
