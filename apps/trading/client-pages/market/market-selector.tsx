@@ -1,4 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
+import uniqBy from 'lodash/uniqBy';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
 import {
   useMarketDataUpdateSubscription,
@@ -6,6 +7,13 @@ import {
 } from '@vegaprotocol/market-list';
 import { MarketState } from '@vegaprotocol/types';
 import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuItemIndicator,
+  DropdownMenuTrigger,
+  Icon,
   Input,
   Sparkline,
   TinyScroll,
@@ -19,7 +27,6 @@ import {
 } from '@vegaprotocol/utils';
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
-import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
@@ -48,8 +55,47 @@ export const MarketSelector = ({
 }: {
   currentMarketId?: string;
 }) => {
+  const { data, loading, error } = useMarketList();
   const [search, setSearch] = useState('');
   const [productType, setProductType] = useState<ProductType>(Product.Future);
+  const [checkedAssets, setCheckedAssets] = useState<string[]>([]);
+
+  const filteredList = useMemo(() => {
+    if (!data?.length) return [];
+    return (
+      data
+        // only active
+        .filter((m) => {
+          return [
+            MarketState.STATE_ACTIVE,
+            MarketState.STATE_SUSPENDED,
+          ].includes(m.state);
+        })
+        // only selected product type
+        .filter((m) => {
+          if (
+            m.tradableInstrument.instrument.product.__typename === productType
+          ) {
+            return true;
+          }
+          return false;
+        })
+        .filter((m) => {
+          if (checkedAssets.length === 0) return true;
+          return checkedAssets.includes(
+            m.tradableInstrument.instrument.product.settlementAsset.id
+          );
+        })
+        // filter based on search term
+        .filter((m) => {
+          const code = m.tradableInstrument.instrument.code.toLowerCase();
+          if (code.includes(search)) {
+            return true;
+          }
+          return false;
+        })
+    );
+  }, [data, productType, search, checkedAssets]);
 
   return (
     <div className="grid grid-rows-[min-content_1fr_min-content] h-full">
@@ -73,16 +119,55 @@ export const MarketSelector = ({
             );
           })}
         </div>
-        <Input
-          placeholder={t('Search')}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div className="text-sm flex gap-1 items-stretch">
+          <input
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder={t('Search')}
+            className="block border border-vega-light-200 dark:border-vega-dark-200 p-2 rounded bg-transparent w-48"
+          />
+          <AssetDropdown
+            assets={uniqBy(
+              data?.map(
+                (d) => d.tradableInstrument.instrument.product.settlementAsset
+              ),
+              'id'
+            )}
+            checkedAssets={checkedAssets}
+            onSelect={(id: string, checked) => {
+              setCheckedAssets((curr) => {
+                if (checked) {
+                  if (curr.includes(id)) {
+                    return curr;
+                  } else {
+                    return [...curr, id];
+                  }
+                } else {
+                  if (curr.includes(id)) {
+                    return curr.filter((x) => x !== id);
+                  }
+                }
+                return curr;
+              });
+            }}
+          />
+          <SortDropdown />
+        </div>
       </div>
       <div>
         <MarketList
+          data={filteredList}
+          loading={loading}
+          error={error}
           searchTerm={search}
           currentMarketId={currentMarketId}
-          productType={productType}
+          noItems={
+            productType === Product.Perpetual
+              ? t('Perpetual markets coming soon.')
+              : productType === Product.Spot
+              ? t('Spot markets coming soon.')
+              : t('No markets')
+          }
         />
       </div>
       <div className="px-4 py-2">
@@ -98,47 +183,19 @@ export const MarketSelector = ({
 };
 
 const MarketList = ({
-  searchTerm,
-  productType,
+  data,
+  error,
+  loading,
   currentMarketId,
+  noItems,
 }: {
+  data: MarketMaybeWithDataAndCandles[];
+  error: Error | undefined;
+  loading: boolean;
   searchTerm: string;
-  productType: ProductType;
   currentMarketId?: string;
+  noItems: string;
 }) => {
-  const { data, loading, error } = useMarketList();
-
-  const filteredList = useMemo(() => {
-    if (!data?.length) return [];
-    return (
-      data
-        // only active
-        .filter((m) => {
-          return [
-            MarketState.STATE_ACTIVE,
-            MarketState.STATE_SUSPENDED,
-          ].includes(m.state);
-        })
-        // only selected product type
-        .filter((m) => {
-          if (
-            m.tradableInstrument.instrument.product.__typename === productType
-          ) {
-            return true;
-          }
-          return false;
-        })
-        // filter based on search term
-        .filter((m) => {
-          const code = m.tradableInstrument.instrument.code.toLowerCase();
-          if (code.includes(searchTerm)) {
-            return true;
-          }
-          return false;
-        })
-    );
-  }, [data, productType, searchTerm]);
-
   if (error) {
     return <div>{error.message}</div>;
   }
@@ -148,18 +205,12 @@ const MarketList = ({
       {({ width, height }) => (
         <TinyScroll>
           <List
-            data={filteredList}
+            data={data}
             loading={loading}
             width={width}
             height={height}
             currentMarketId={currentMarketId}
-            noItems={
-              productType === Product.Perpetual
-                ? t('Perpetual markets coming soon.')
-                : productType === Product.Spot
-                ? t('Spot markets coming soon.')
-                : t('No markets')
-            }
+            noItems={noItems}
           />
         </TinyScroll>
       )}
@@ -308,5 +359,55 @@ const PriceChange = ({ candles }: { candles: string[] }) => {
     <div className={priceChangeClasses}>
       {priceChange ? `${prefix}${formattedChange}%` : '-'}
     </div>
+  );
+};
+
+const AssetDropdown = ({
+  assets,
+  checkedAssets,
+  onSelect,
+}: {
+  assets: Array<{ id: string; symbol: string }> | undefined;
+  checkedAssets: string[];
+  onSelect: (id: string, checked: boolean) => void;
+}) => {
+  if (!assets?.length) {
+    return null;
+  }
+
+  return (
+    <DropdownMenu trigger={<DropdownMenuTrigger iconName="dollar" />}>
+      <DropdownMenuContent>
+        {assets?.map((a) => {
+          return (
+            <DropdownMenuCheckboxItem
+              key={a.id}
+              checked={checkedAssets.includes(a.id)}
+              onCheckedChange={(checked) => {
+                if (typeof checked === 'boolean') {
+                  onSelect(a.id, checked);
+                }
+              }}
+            >
+              {a.symbol}
+              <DropdownMenuItemIndicator />
+            </DropdownMenuCheckboxItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const SortDropdown = () => {
+  return (
+    <DropdownMenu trigger={<DropdownMenuTrigger iconName="arrow-top-right" />}>
+      <DropdownMenuContent>
+        <DropdownMenuItem>{t('Top traded')}</DropdownMenuItem>
+        <DropdownMenuItem>{t('Top gaining')}</DropdownMenuItem>
+        <DropdownMenuItem>{t('Top losing')}</DropdownMenuItem>
+        <DropdownMenuItem>{t('New markets')}</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
