@@ -12,6 +12,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
   Icon,
   Input,
@@ -23,6 +25,7 @@ import {
 import {
   addDecimalsFormatNumber,
   formatNumber,
+  priceChange,
   priceChangePercentage,
 } from '@vegaprotocol/utils';
 import type { CSSProperties } from 'react';
@@ -32,6 +35,8 @@ import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
+import { orderBy } from 'lodash';
+import BigNumber from 'bignumber.js';
 
 // Make sure these match the available __typename properties on product
 const Product = {
@@ -50,6 +55,46 @@ const ProductTypeMapping: {
   [Product.Perpetual]: 'Perpeturals',
 };
 
+const Sort = {
+  Alphabetical: 'Alphabetical',
+  Volume: 'Volume',
+  Gained: 'Gained',
+  Lost: 'Lost',
+  New: 'New',
+} as const;
+
+type SortType = keyof typeof Sort;
+
+const SortTypeMapping: {
+  [key in SortType]: string;
+} = {
+  [Sort.Alphabetical]: 'Alphabetical',
+  [Sort.Volume]: 'Top traded',
+  [Sort.Gained]: 'Top gained',
+  [Sort.Lost]: 'Top losing',
+  [Sort.New]: 'New markets',
+};
+
+// const sortMap: {
+//   [key in SortType]: (
+//     a: MarketMaybeWithDataAndCandles,
+//     b: MarketMaybeWithDataAndCandles
+//   ) => number;
+// } = {
+//   [Sort.Volume]: () => {
+//     return 0;
+//   },
+//   [Sort.Gained]: () => {
+//     return 0;
+//   },
+//   [Sort.Lost]: () => {
+//     return 0;
+//   },
+//   [Sort.New]: () => {
+//     return 0;
+//   },
+// };
+
 export const MarketSelector = ({
   currentMarketId,
 }: {
@@ -58,44 +103,102 @@ export const MarketSelector = ({
   const { data, loading, error } = useMarketList();
   const [search, setSearch] = useState('');
   const [productType, setProductType] = useState<ProductType>(Product.Future);
+  const [sortType, setSortType] = useState<SortType>(Sort.Alphabetical);
   const [checkedAssets, setCheckedAssets] = useState<string[]>([]);
 
   const filteredList = useMemo(() => {
     if (!data?.length) return [];
-    return (
-      data
-        // only active
-        .filter((m) => {
-          return [
-            MarketState.STATE_ACTIVE,
-            MarketState.STATE_SUSPENDED,
-          ].includes(m.state);
-        })
-        // only selected product type
-        .filter((m) => {
-          if (
-            m.tradableInstrument.instrument.product.__typename === productType
-          ) {
-            return true;
-          }
-          return false;
-        })
-        .filter((m) => {
-          if (checkedAssets.length === 0) return true;
-          return checkedAssets.includes(
-            m.tradableInstrument.instrument.product.settlementAsset.id
-          );
-        })
-        // filter based on search term
-        .filter((m) => {
-          const code = m.tradableInstrument.instrument.code.toLowerCase();
-          if (code.includes(search)) {
-            return true;
-          }
-          return false;
-        })
-    );
-  }, [data, productType, search, checkedAssets]);
+    const markets = data
+      // only active
+      .filter((m) => {
+        return [MarketState.STATE_ACTIVE, MarketState.STATE_SUSPENDED].includes(
+          m.state
+        );
+      })
+      // only selected product type
+      .filter((m) => {
+        if (
+          m.tradableInstrument.instrument.product.__typename === productType
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .filter((m) => {
+        if (checkedAssets.length === 0) return true;
+        return checkedAssets.includes(
+          m.tradableInstrument.instrument.product.settlementAsset.id
+        );
+      })
+      // filter based on search term
+      .filter((m) => {
+        const code = m.tradableInstrument.instrument.code.toLowerCase();
+        if (code.includes(search)) {
+          return true;
+        }
+        return false;
+      });
+
+    if (sortType === Sort.Alphabetical) {
+      return orderBy(markets, ['tradableInstrument.instrument.code'], ['asc']);
+    }
+
+    if (sortType === Sort.Volume) {
+      return markets.sort((a, b) => {
+        const sumVolume = (candles: string[]) => {
+          return candles.reduce((total, c) => total + Number(c), 0);
+        };
+        const aVolume = a.candles
+          ? sumVolume(a.candles.map((c) => c.volume))
+          : 0;
+
+        const bVolume = b.candles
+          ? sumVolume(b.candles.map((c) => c.volume))
+          : 0;
+
+        return bVolume - aVolume;
+      });
+    }
+
+    // TODO: fix Gained and Lost, they dont seem to show the right values
+    if (sortType === Sort.Gained) {
+      return markets.sort((a, b) => {
+        const aChange = a.candles
+          ? new BigNumber(priceChange(a.candles.map((c) => c.close)).toString())
+          : new BigNumber(0);
+        const bChange = b.candles
+          ? new BigNumber(priceChange(b.candles.map((c) => c.close)).toString())
+          : new BigNumber(0);
+
+        const res = bChange.comparedTo(aChange);
+        return res;
+      });
+    }
+
+    if (sortType === Sort.Lost) {
+      return markets.sort((a, b) => {
+        const aChange = a.candles
+          ? new BigNumber(priceChange(a.candles.map((c) => c.close)).toString())
+          : new BigNumber(0);
+        const bChange = b.candles
+          ? new BigNumber(priceChange(b.candles.map((c) => c.close)).toString())
+          : new BigNumber(0);
+
+        const res = aChange.comparedTo(bChange);
+        return res;
+      });
+    }
+
+    if (sortType === Sort.New) {
+      return markets.sort((a, b) => {
+        const aTimestamp = new Date(a.marketTimestamps.open).getTime();
+        const bTimestamp = new Date(b.marketTimestamps.open).getTime();
+        return bTimestamp - aTimestamp;
+      });
+    }
+
+    return markets;
+  }, [data, productType, search, checkedAssets, sortType]);
 
   return (
     <div className="grid grid-rows-[min-content_1fr_min-content] h-full">
@@ -151,7 +254,12 @@ export const MarketSelector = ({
               });
             }}
           />
-          <SortDropdown />
+          <SortDropdown
+            currentSort={sortType}
+            onSelect={(sort) => {
+              setSortType(sort);
+            }}
+          />
         </div>
       </div>
       <div>
@@ -399,14 +507,29 @@ const AssetDropdown = ({
   );
 };
 
-const SortDropdown = () => {
+const SortDropdown = ({
+  currentSort,
+  onSelect,
+}: {
+  currentSort: SortType;
+  onSelect: (sort: SortType) => void;
+}) => {
   return (
     <DropdownMenu trigger={<DropdownMenuTrigger iconName="arrow-top-right" />}>
       <DropdownMenuContent>
-        <DropdownMenuItem>{t('Top traded')}</DropdownMenuItem>
-        <DropdownMenuItem>{t('Top gaining')}</DropdownMenuItem>
-        <DropdownMenuItem>{t('Top losing')}</DropdownMenuItem>
-        <DropdownMenuItem>{t('New markets')}</DropdownMenuItem>
+        <DropdownMenuRadioGroup
+          value={currentSort}
+          onValueChange={(value) => onSelect(value as SortType)}
+        >
+          {Object.keys(Sort).map((key) => {
+            return (
+              <DropdownMenuRadioItem inset key={key} value={key}>
+                {SortTypeMapping[key as SortType]}
+                <DropdownMenuItemIndicator />
+              </DropdownMenuRadioItem>
+            );
+          })}
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
