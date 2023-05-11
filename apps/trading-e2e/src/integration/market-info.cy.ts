@@ -6,6 +6,7 @@ const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
 const externalLink = 'external-link';
 const accordionContent = 'accordion-content';
+const providerName = 'provider-name';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -181,8 +182,19 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
 
     cy.getByTestId(accordionContent)
-      .getByTestId('provider-name')
+      .getByTestId(providerName)
       .and('contain', 'Another oracle');
+
+    cy.getByTestId(providerName).should('be.visible').click();
+
+    cy.getByTestId('dialog-content')
+      .eq(1)
+      .within(() => {
+        cy.getByTestId('block-explorer-link').contains('Block explorer');
+        cy.getByTestId('github-link').contains('Oracle repository');
+        cy.getByTestId('verified-accounts').contains('0 proofs of ownership');
+      });
+    cy.getByTestId('dialog-close').click();
 
     cy.getByTestId(accordionContent)
       .getByTestId('verified-proofs')

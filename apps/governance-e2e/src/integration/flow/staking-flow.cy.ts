@@ -7,6 +7,7 @@ import {
   waitForSpinner,
   navigateTo,
   navigation,
+  turnTelemetryOff,
 } from '../../support/common.functions';
 import {
   clickOnValidatorFromList,
@@ -56,6 +57,7 @@ context(
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
+      cy.validatorsSelfDelegate();
       ethereumWalletConnect();
       // this is a workaround for #2422 which can be removed once issue is resolved
       cy.associateTokensToVegaWallet('4');
@@ -67,6 +69,7 @@ context(
         'teardown wallet & drill into a specific validator',
         function () {
           cy.clearLocalStorage();
+          turnTelemetryOff();
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();
@@ -252,10 +255,10 @@ context(
           waitForBeginningOfEpoch();
           cy.getByTestId(stakeValidatorListStakePercentage).should(
             'have.text',
-            '100%'
+            '50.02%'
           );
           navigateTo(navigation.validators);
-          validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
+          validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
         }
       );
 
