@@ -128,10 +128,10 @@ describe('WithdrawManager', () => {
   });
 
   it('shows withdraw delay notification if threshold is 0', async () => {
-    withdrawAsset.threshold = new BigNumber(Infinity);
+    withdrawAsset.threshold = new BigNumber(0);
     render(generateJsx(props));
     fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.01' },
+      target: { value: '0.00' },
     });
     expect(
       await screen.findByTestId('withdrawals-delay-notification')
