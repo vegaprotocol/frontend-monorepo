@@ -38,7 +38,7 @@ export const useNodeHealth = () => {
       return;
     }
 
-    if (!('Cypress' in window)) {
+    if (!('Cypress' in window) && window.location.hostname !== 'localhost') {
       startPolling(POLL_INTERVAL);
     }
   }, [error, startPolling, stopPolling]);

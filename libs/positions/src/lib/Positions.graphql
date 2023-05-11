@@ -75,3 +75,44 @@ subscription MarginsSubscription($partyId: ID!) {
     timestamp
   }
 }
+
+query EstimatePosition(
+  $marketId: ID!
+  $openVolume: String!
+  $orders: [OrderInfo!]
+  $collateralAvailable: String
+) {
+  estimatePosition(
+    marketId: $marketId
+    openVolume: $openVolume
+    orders: $orders
+    collateralAvailable: $collateralAvailable
+  ) {
+    margin {
+      worstCase {
+        maintenanceLevel
+        searchLevel
+        initialLevel
+        collateralReleaseLevel
+      }
+      bestCase {
+        maintenanceLevel
+        searchLevel
+        initialLevel
+        collateralReleaseLevel
+      }
+    }
+    liquidation {
+      worstCase {
+        open_volume_only
+        including_buy_orders
+        including_sell_orders
+      }
+      bestCase {
+        open_volume_only
+        including_buy_orders
+        including_sell_orders
+      }
+    }
+  }
+}

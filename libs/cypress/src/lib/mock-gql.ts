@@ -17,7 +17,12 @@ const hasOperationName = (
   operationName: string
 ) => {
   const { body } = req;
-  return 'operationName' in body && body.operationName === operationName;
+  return (
+    typeof body === 'object' &&
+    body !== null &&
+    'operationName' in body &&
+    body.operationName === operationName
+  );
 };
 
 export function addMockGQLCommand() {

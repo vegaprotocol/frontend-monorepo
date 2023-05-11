@@ -1,4 +1,4 @@
-query EstimateOrder(
+query EstimateFees(
   $marketId: ID!
   $partyId: ID!
   $price: String
@@ -8,7 +8,7 @@ query EstimateOrder(
   $expiration: Timestamp
   $type: OrderType!
 ) {
-  estimateOrder(
+  estimateFees(
     marketId: $marketId
     partyId: $partyId
     price: $price
@@ -18,13 +18,10 @@ query EstimateOrder(
     expiration: $expiration
     type: $type
   ) {
-    fee {
+    fees {
       makerFee
       infrastructureFee
       liquidityFee
-    }
-    marginLevels {
-      initialLevel
     }
     totalFeeAmount
   }

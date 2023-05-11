@@ -1,19 +1,30 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useProtocolUpgradeProposalsQuery } from './__generated__/ProtocolUpgradeProposals';
 
 export const useNextProtocolUpgradeProposals = (since?: number) => {
-  const { data, loading, error } = useProtocolUpgradeProposalsQuery({
-    pollInterval: 5000,
-    fetchPolicy: 'network-only',
-    errorPolicy: 'ignore',
-    variables: {
-      inState:
-        Schema.ProtocolUpgradeProposalStatus
-          .PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED,
-    },
-  });
+  const { data, loading, error, startPolling, stopPolling } =
+    useProtocolUpgradeProposalsQuery({
+      fetchPolicy: 'network-only',
+      errorPolicy: 'ignore',
+      variables: {
+        inState:
+          Schema.ProtocolUpgradeProposalStatus
+            .PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED,
+      },
+    });
+
+  useEffect(() => {
+    if (error) {
+      stopPolling();
+      return;
+    }
+
+    if (!('Cypress' in window) && window.location.hostname !== 'localhost') {
+      startPolling(5000);
+    }
+  }, [error, startPolling, stopPolling]);
 
   const nextUpgrades = useMemo(() => {
     if (!data) return [];
