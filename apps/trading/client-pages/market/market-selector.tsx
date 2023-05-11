@@ -9,15 +9,7 @@ import {
   MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import {
-  Button,
-  Icon,
-  Input,
-  Sparkline,
-  TinyScroll,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Input, Sparkline, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
@@ -31,29 +23,55 @@ export const MarketSelector = ({
 }: {
   currentMarketId?: string;
 }) => {
-  const { data, loading, error } = useMarketList();
   const [search, setSearch] = useState('');
 
-  if (loading || !data) {
-    return <div>Loading...</div>;
-  }
+  return (
+    <div className="grid grid-rows-[min-content_1fr_min-content] h-full">
+      <div className="p-2">
+        <Input
+          placeholder={t('Search')}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+      <div>
+        <MarketList searchTerm={search} currentMarketId={currentMarketId} />
+      </div>
+      <div className="px-4 py-2">
+        <Link to={'/markets/all'} className="underline">
+          {t('All markets')}
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const MarketList = ({
+  searchTerm,
+  currentMarketId,
+}: {
+  searchTerm: string;
+  currentMarketId?: string;
+}) => {
+  const { data, loading, error } = useMarketList();
 
   if (error) {
     return <div>{error.message}</div>;
   }
 
   const filteredList = data
-    .filter((m) => {
-      return m.state === MarketState.STATE_ACTIVE;
-    })
-    // filter based on search term
-    .filter((m) => {
-      const code = m.tradableInstrument.instrument.code.toLowerCase();
-      if (code.includes(search)) {
-        return true;
-      }
-      return false;
-    });
+    ? data
+        .filter((m) => {
+          return m.state === MarketState.STATE_ACTIVE;
+        })
+        // filter based on search term
+        .filter((m) => {
+          const code = m.tradableInstrument.instrument.code.toLowerCase();
+          if (code.includes(searchTerm)) {
+            return true;
+          }
+          return false;
+        })
+    : [];
 
   const row = ({ index, style }: { index: number; style: CSSProperties }) => {
     const market = filteredList[index];
@@ -107,29 +125,37 @@ export const MarketSelector = ({
   };
 
   return (
-    <div className="grid grid-rows-[min-content_1fr] h-full">
-      <div className="p-2">
-        <Input
-          placeholder={t('Search')}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-      <div>
-        <AutoSizer>
-          {({ width, height }) => (
-            <TinyScroll>
-              <FixedSizeList
-                className="virtualized-list"
-                itemCount={filteredList.length}
-                itemSize={130}
-                width={width}
-                height={height}
-              >
-                {row}
-              </FixedSizeList>
-            </TinyScroll>
+    <AutoSizer>
+      {({ width, height }) => (
+        <TinyScroll>
+          {!data || loading ? (
+            <div style={{ width, height }}>
+              <Skeleton />
+              <Skeleton />
+            </div>
+          ) : (
+            <FixedSizeList
+              className="virtualized-list"
+              itemCount={filteredList.length}
+              itemSize={130}
+              width={width}
+              height={height}
+            >
+              {row}
+            </FixedSizeList>
           )}
-        </AutoSizer>
+        </TinyScroll>
+      )}
+    </AutoSizer>
+  );
+};
+
+const Skeleton = () => {
+  return (
+    <div className="mb-2 px-2">
+      <div className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4">
+        <div className="w-full h-3 bg-white dark:bg-vega-dark-200 mb-2" />
+        <div className="w-2/3 h-3 bg-vega-light-300 dark:bg-vega-dark-200" />
       </div>
     </div>
   );
