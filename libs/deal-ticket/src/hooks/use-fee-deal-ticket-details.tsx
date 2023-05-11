@@ -12,6 +12,7 @@ import {
   MARGIN_DIFF_TOOLTIP_TEXT,
   DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
   TOTAL_MARGIN_AVAILABLE,
+  LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
 } from '../constants';
 
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
@@ -127,9 +128,9 @@ export const getFeeDetailsValues = ({
       symbol: assetSymbol,
     },
   ];
+  let marginRequiredBestCase: string | undefined = undefined;
+  let marginRequiredWorstCase: string | undefined = undefined;
   if (marginEstimate) {
-    let marginRequiredBestCase = '0';
-    let marginRequiredWorstCase = '0';
     if (currentInitialMargin) {
       marginRequiredBestCase = (
         BigInt(marginEstimate.bestCase.initialLevel) -
@@ -149,70 +150,67 @@ export const getFeeDetailsValues = ({
       marginRequiredBestCase = marginEstimate.bestCase.initialLevel;
       marginRequiredWorstCase = marginEstimate.worstCase.initialLevel;
     }
-
-    details.push({
-      label: t('Margin required'),
-      value: formatRange(
-        marginRequiredBestCase,
-        marginRequiredWorstCase,
-        assetDecimals
-      ),
-      symbol: assetSymbol,
-      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
-    });
   }
-  if (totalBalance) {
-    const totalMarginAvailable = (
-      currentMaintenanceMargin
-        ? totalBalance - BigInt(currentMaintenanceMargin)
-        : totalBalance
-    ).toString();
+  details.push({
+    label: t('Margin required'),
+    value: formatRange(
+      marginRequiredBestCase,
+      marginRequiredWorstCase,
+      assetDecimals
+    ),
+    symbol: assetSymbol,
+    labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
+  });
+
+  const totalMarginAvailable = (
+    currentMaintenanceMargin
+      ? totalBalance - BigInt(currentMaintenanceMargin)
+      : totalBalance
+  ).toString();
+
+  details.push({
+    indent: true,
+    label: t('Total margin available'),
+    value: formatValue(totalMarginAvailable, assetDecimals),
+    symbol: assetSymbol,
+    labelDescription: TOTAL_MARGIN_AVAILABLE(
+      formatValue(generalAccountBalance, assetDecimals),
+      formatValue(marginAccountBalance, assetDecimals),
+      formatValue(currentMaintenanceMargin, assetDecimals),
+      assetSymbol
+    ),
+  });
+
+  if (marginAccountBalance) {
+    const deductionFromCollateralBestCase =
+      BigInt(marginEstimate?.bestCase.initialLevel ?? 0) -
+      BigInt(marginAccountBalance);
+
+    const deductionFromCollateralWorstCase =
+      BigInt(marginEstimate?.worstCase.initialLevel ?? 0) -
+      BigInt(marginAccountBalance);
 
     details.push({
       indent: true,
-      label: t('Total margin available'),
-      value: `~${formatValue(totalMarginAvailable, assetDecimals)}`,
-      symbol: assetSymbol,
-      labelDescription: TOTAL_MARGIN_AVAILABLE(
-        formatValue(generalAccountBalance, assetDecimals),
-        formatValue(marginAccountBalance, assetDecimals),
-        formatValue(currentMaintenanceMargin, assetDecimals),
-        assetSymbol
+      label: t('Deduction from collateral'),
+      value: formatRange(
+        deductionFromCollateralBestCase > 0
+          ? deductionFromCollateralBestCase.toString()
+          : '0',
+        deductionFromCollateralWorstCase > 0
+          ? deductionFromCollateralWorstCase.toString()
+          : '0',
+        assetDecimals
       ),
+      symbol: assetSymbol,
+      labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
     });
-  }
-  if (marginEstimate) {
-    if (marginAccountBalance) {
-      const deductionFromCollateralBestCase =
-        BigInt(marginEstimate.bestCase.initialLevel) -
-        BigInt(marginAccountBalance);
-
-      const deductionFromCollateralWorstCase =
-        BigInt(marginEstimate.worstCase.initialLevel) -
-        BigInt(marginAccountBalance);
-
-      details.push({
-        indent: true,
-        label: t('Deduction from collateral'),
-        value: formatRange(
-          deductionFromCollateralBestCase > 0
-            ? deductionFromCollateralBestCase.toString()
-            : '0',
-          deductionFromCollateralWorstCase > 0
-            ? deductionFromCollateralWorstCase.toString()
-            : '0',
-          assetDecimals
-        ),
-        symbol: assetSymbol,
-        labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
-      });
-    }
 
     details.push({
       label: t('Projected margin'),
       value: formatRange(
-        marginEstimate.bestCase.initialLevel,
-        marginEstimate.worstCase.initialLevel,
+        marginEstimate?.bestCase.initialLevel,
+        marginEstimate?.worstCase.initialLevel,
         assetDecimals
       ),
       symbol: assetSymbol,
@@ -221,10 +219,13 @@ export const getFeeDetailsValues = ({
   }
   details.push({
     label: t('Current margin allocation'),
-    value: `${formatValue(marginAccountBalance, assetDecimals)}`,
+    value: formatValue(marginAccountBalance, assetDecimals),
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
   });
+
+  let liquidationPriceEstimate = '-';
+
   if (liquidationEstimate) {
     const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
       liquidationEstimate.bestCase.including_buy_orders.replace(/\..*/, '')
@@ -249,23 +250,24 @@ export const getFeeDetailsValues = ({
       liquidationEstimateWorstCaseIncludingSellOrders
         ? liquidationEstimateWorstCaseIncludingBuyOrders
         : liquidationEstimateWorstCaseIncludingSellOrders;
-
-    details.push({
-      label: t('Liquidation price estimate'),
-      value: `${formatRange(
-        (liquidationEstimateBestCase < liquidationEstimateWorstCase
-          ? liquidationEstimateBestCase
-          : liquidationEstimateWorstCase
-        ).toString(),
-        (liquidationEstimateBestCase > liquidationEstimateWorstCase
-          ? liquidationEstimateBestCase
-          : liquidationEstimateWorstCase
-        ).toString(),
-        assetDecimals
-      )}`,
-      symbol: assetSymbol,
-      labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
-    });
+    liquidationPriceEstimate = formatRange(
+      (liquidationEstimateBestCase < liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      (liquidationEstimateBestCase > liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      assetDecimals
+    );
   }
+
+  details.push({
+    label: t('Liquidation price estimate'),
+    value: liquidationPriceEstimate,
+    symbol: assetSymbol,
+    labelDescription: LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
+  });
   return details;
 };
