@@ -1,5 +1,4 @@
 import type { Token } from '@vegaprotocol/smart-contracts';
-import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { useEthereumConfig } from '@vegaprotocol/web3';

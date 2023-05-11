@@ -1,5 +1,4 @@
 import { useApolloClient } from '@apollo/client';
-import { captureException } from '@sentry/react';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import {
   EthTxStatus,

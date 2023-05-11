@@ -1,7 +1,6 @@
 import { useBridgeContract, useTokenContract } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import * as Sentry from '@sentry/react';
 import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';

@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { captureException } from '@sentry/react';
 import BigNumber from 'bignumber.js';
 import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';

@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import * as Sentry from '@sentry/react';
 import { ethers } from 'ethers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';

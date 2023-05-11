@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/react';
 import { useBridgeContract } from './use-bridge-contract';
 import { useCallback } from 'react';
 import { localLoggerFactory } from '@vegaprotocol/utils';

@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/react';
 import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
