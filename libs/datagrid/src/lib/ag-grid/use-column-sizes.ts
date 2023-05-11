@@ -97,7 +97,7 @@ export const useColumnSizes = ({
   const setSizes = useCallback(
     (apiEvent: GridReadyEvent | GridSizeChangedEvent) => {
       if (!storeKey || !Object.keys(sizes).length || !widthRef.current) {
-        apiEvent.api.sizeColumnsToFit();
+        apiEvent?.api.sizeColumnsToFit();
       } else {
         const recalculatedSizes = recalculateSizes(sizes);
         const newSizes = Object.entries(recalculatedSizes).map(
