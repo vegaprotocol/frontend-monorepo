@@ -32,7 +32,9 @@ describe('ProtocolUpgradeProposalDetailInfo', () => {
 
   it('should render the state', () => {
     const { getByTestId } = renderComponent();
-    expect(getByTestId('protocol-upgrade-state')).toHaveTextContent('Pending');
+    expect(getByTestId('protocol-upgrade-state')).toHaveTextContent(
+      'Waiting for validator votes'
+    );
   });
 
   it('should render the vega release tag', () => {
