@@ -5,13 +5,21 @@ import {
   useMarketList,
 } from '@vegaprotocol/market-list';
 import { MarketState } from '@vegaprotocol/types';
-import { Input, Sparkline, TinyScroll } from '@vegaprotocol/ui-toolkit';
+import {
+  Input,
+  Sparkline,
+  TinyScroll,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
   priceChangePercentage,
 } from '@vegaprotocol/utils';
 import type { CSSProperties } from 'react';
+import { useMemo } from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
@@ -78,9 +86,12 @@ export const MarketSelector = ({
         />
       </div>
       <div className="px-4 py-2">
-        <Link to={'/markets/all'} className="underline">
-          {t('All markets')}
-        </Link>
+        <span className="inline-block border-b border-white">
+          <Link to={'/markets/all'} className="flex items-center gap-x-2">
+            {t('All markets')}
+            <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+          </Link>
+        </span>
       </div>
     </div>
   );
@@ -97,12 +108,10 @@ const MarketList = ({
 }) => {
   const { data, loading, error } = useMarketList();
 
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
-  const filteredList = data
-    ? data
+  const filteredList = useMemo(() => {
+    if (!data?.length) return [];
+    return (
+      data
         // only active
         .filter((m) => {
           return [
@@ -127,7 +136,12 @@ const MarketList = ({
           }
           return false;
         })
-    : [];
+    );
+  }, [data, productType, searchTerm]);
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <AutoSizer>
@@ -170,6 +184,7 @@ const List = ({
 }) => {
   const row = ({ index, style }: { index: number; style: CSSProperties }) => {
     const market = data[index];
+
     const wrapperClasses = classNames(
       'block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4',
       {
@@ -177,6 +192,7 @@ const List = ({
           currentMarketId === market.id,
       }
     );
+
     return (
       <div style={style} className="my-0.5 px-2">
         <Link to={`/markets/${market.id}`} className={wrapperClasses}>
