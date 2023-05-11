@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { useOracleProofs } from '@vegaprotocol/oracles';
+import { useOracleProofs } from './use-oracle-proofs';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketInfoProvider } from '../components/market-info/market-info-data-provider';
 import { useMemo } from 'react';
@@ -15,10 +15,11 @@ export const useMarketOracle = (marketId: string) => {
     if (!data || !marketInfo) {
       return undefined;
     }
-    const dataSource =
+    const dataSourceSpec =
       marketInfo.tradableInstrument.instrument.product
-        .dataSourceSpecForSettlementData.data;
-    return data.find((provider) =>
+        .dataSourceSpecForSettlementData;
+    const { data: dataSource, id: dataSourceSpecId } = dataSourceSpec;
+    const provider = data.find((provider) =>
       provider.proofs.some((proof) => {
         if (
           proof.type === 'eth_address' &&
@@ -42,6 +43,10 @@ export const useMarketOracle = (marketId: string) => {
         }
         return false;
       })
-    )?.oracle;
+    );
+    if (provider) {
+      return { provider, dataSourceSpecId };
+    }
+    return undefined;
   }, [data, marketInfo]);
 };

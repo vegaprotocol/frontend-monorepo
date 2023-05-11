@@ -13,7 +13,7 @@ import { memo, useState } from 'react';
 import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { OracleBanner } from '../../components/banner';
+import { OracleBanner } from '@vegaprotocol/market-info';
 import {
   Tab,
   LocalStoragePersistTabs as Tabs,

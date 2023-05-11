@@ -26,13 +26,13 @@ import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
 import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { Provider } from '@vegaprotocol/oracles';
-import { OracleProfileTitle, OracleFullProfile } from '@vegaprotocol/oracles';
+import type { Provider } from '../../oracle-schema';
 import {
   OracleBasicProfile,
-  useOracleProofs,
-  useOracleMarkets,
-} from '@vegaprotocol/oracles';
+  OracleProfileTitle,
+  OracleFullProfile,
+} from '../../components';
+import { useOracleProofs, useOracleMarkets } from '../../hooks';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 type PanelProps = Pick<
@@ -478,7 +478,7 @@ export const OracleInfoPanel = ({
         }
         providers={data}
         type={type}
-        id={dataSourceSpecId}
+        dataSourceSpecId={dataSourceSpecId}
       />
       <ExternalLink
         data-testid="oracle-spec-links"
@@ -500,12 +500,12 @@ export const DataSourceProof = ({
   data,
   providers,
   type,
-  id,
+  dataSourceSpecId,
 }: {
   data: DataSourceDefinition;
   providers: Provider[] | undefined;
   type: 'settlementData' | 'termination';
-  id: string;
+  dataSourceSpecId: string;
 }) => {
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
@@ -523,7 +523,7 @@ export const DataSourceProof = ({
               providers={providers}
               signer={signer}
               type={type}
-              id={id}
+              dataSourceSpecId={dataSourceSpecId}
             />
           );
         })}
@@ -554,12 +554,12 @@ const OracleLink = ({
   providers,
   signer,
   type,
-  id,
+  dataSourceSpecId,
 }: {
   providers: Provider[];
   signer: SignerKind;
   type: 'settlementData' | 'termination';
-  id: string;
+  dataSourceSpecId: string;
 }) => {
   const signerProviders = providers.filter((p) => {
     if (signer.__typename === 'PubKey') {
@@ -590,7 +590,11 @@ const OracleLink = ({
   return (
     <div>
       {signerProviders.map((provider) => (
-        <OracleProfile key={id} provider={provider} id={id} />
+        <OracleProfile
+          key={dataSourceSpecId}
+          provider={provider}
+          dataSourceSpecId={dataSourceSpecId}
+        />
       ))}
     </div>
   );
@@ -611,35 +615,46 @@ const NoOracleProof = ({
   );
 };
 
-const OracleProfile = ({
+export const OracleDialog = ({
   provider,
-  id,
+  dataSourceSpecId,
+  open,
+  onChange,
 }: {
+  dataSourceSpecId: string;
   provider: Provider;
-  id: string;
+  open: boolean;
+  onChange?: (isOpen: boolean) => void;
 }) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const oracleMarkets = useOracleMarkets(provider);
   return (
-    <div key={provider.name}>
-      <OracleBasicProfile
+    <Dialog
+      title={<OracleProfileTitle provider={provider} />}
+      aria-labelledby="oracle-proof-dialog"
+      open={open}
+      onChange={onChange}
+    >
+      <OracleFullProfile
         provider={provider}
-        onClick={() => setDialogOpen(!dialogOpen)}
+        dataSourceSpecId={dataSourceSpecId}
         markets={oracleMarkets}
       />
-      <Dialog
-        title={<OracleProfileTitle provider={provider} />}
-        open={dialogOpen}
-        onChange={() => setDialogOpen(!dialogOpen)}
-        aria-labelledby="oracle-proof-dialog"
-      >
-        <OracleFullProfile
-          provider={provider}
-          id={id}
-          key={id}
-          markets={oracleMarkets}
-        />
-      </Dialog>
+    </Dialog>
+  );
+};
+
+const OracleProfile = (props: {
+  provider: Provider;
+  dataSourceSpecId: string;
+}) => {
+  const [open, onChange] = useState(false);
+  return (
+    <div key={props.provider.name}>
+      <OracleBasicProfile
+        provider={props.provider}
+        onClick={() => onChange(!open)}
+      />
+      <OracleDialog {...props} open={open} onChange={onChange} />
     </div>
   );
 };
