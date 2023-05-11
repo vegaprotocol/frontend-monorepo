@@ -33,9 +33,9 @@ export const useAccountBalance = (assetId?: string) => {
 
   return useMemo(
     () => ({
-      accountBalance,
-      accountDecimals,
+      accountBalance: pubKey ? accountBalance : '',
+      accountDecimals: pubKey ? accountDecimals : null,
     }),
-    [accountBalance, accountDecimals]
+    [accountBalance, accountDecimals, pubKey]
   );
 };

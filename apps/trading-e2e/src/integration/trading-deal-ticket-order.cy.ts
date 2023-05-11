@@ -16,6 +16,10 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
     cy.wait('@Markets');
   });
 
+  beforeEach(() => {
+    cy.mockTradingPage();
+  });
+
   describe('limit order', () => {
     before(() => {
       cy.getByTestId(toggleLimit).click();
@@ -98,7 +102,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
             'have.text',
             'Total margin available'
           );
-          cy.get('.text-neutral-500').should('have.text', '~100,000.01 tDAI');
+          cy.get('.text-neutral-500').should('have.text', '100,000.01 tDAI');
         });
     });
   });

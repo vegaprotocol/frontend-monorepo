@@ -1,10 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import {
-  accountsQuery,
-  amendGeneralAccountBalance,
-  estimateOrderQuery,
-} from '@vegaprotocol/mock';
+import { accountsQuery, amendGeneralAccountBalance } from '@vegaprotocol/mock';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
 
@@ -44,12 +40,9 @@ describe(
         cy.setVegaWallet();
         cy.mockTradingPage();
         const accounts = accountsQuery();
-        amendGeneralAccountBalance(accounts, 'market-0', '100000000');
+        amendGeneralAccountBalance(accounts, 'market-0', '1');
         cy.mockGQL((req) => {
           aliasGQLQuery(req, 'Accounts', accounts);
-        });
-        cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'EstimateOrder', estimateOrderQuery());
         });
         cy.mockSubscription();
         cy.visit('/#/markets/market-0');
@@ -66,7 +59,7 @@ describe(
         );
         cy.getByTestId('dealticket-warning-margin').should(
           'contain.text',
-          'You may not have enough margin available to open this position. 2,354.72283 tDAI is currently required. You have only 1,000.01 tDAI available.'
+          'You may not have enough margin available to open this position. 5.00 tDAI is currently required. You have only 0.01001 tDAI available.'
         );
         cy.getByTestId('deal-ticket-deposit-dialog-button').click();
         cy.getByTestId('dialog-content')

@@ -26,6 +26,16 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import {
+  useEstimatePositionQuery,
+  useOpenVolume,
+} from '@vegaprotocol/positions';
+import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
+import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { useEstimateFees } from '../../hooks/use-fee-deal-ticket-details';
+import { getDerivedPrice } from '../../utils/get-price';
+import type { OrderInfo } from '@vegaprotocol/types';
+
+import {
   validateExpiration,
   validateMarketState,
   validateMarketTradingMode,
@@ -34,7 +44,6 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
-import { useInitialMargin } from '../../hooks/use-initial-margin';
 import type { Market, MarketData } from '@vegaprotocol/market-list';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
@@ -104,7 +113,67 @@ export const DealTicket = ({
       market.positionDecimalPlaces
     );
 
-  const { margin, totalMargin } = useInitialMargin(market.id, normalizedOrder);
+  const price = useMemo(() => {
+    return normalizedOrder && getDerivedPrice(normalizedOrder, marketData);
+  }, [normalizedOrder, marketData]);
+
+  const notionalSize = useMemo(() => {
+    if (price && normalizedOrder?.size) {
+      return removeDecimal(
+        toBigNum(
+          normalizedOrder.size,
+          market.positionDecimalPlaces
+        ).multipliedBy(toBigNum(price, market.decimalPlaces)),
+        asset.decimals
+      );
+    }
+    return null;
+  }, [
+    price,
+    normalizedOrder?.size,
+    market.decimalPlaces,
+    market.positionDecimalPlaces,
+    asset.decimals,
+  ]);
+
+  const feeEstimate = useEstimateFees(
+    normalizedOrder && { ...normalizedOrder, price }
+  );
+  const { data: activeOrders } = useDataProvider({
+    dataProvider: activeOrdersProvider,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
+  const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
+  const orders = activeOrders
+    ? activeOrders.map<OrderInfo>(({ node: order }) => ({
+        isMarketOrder: order.type === OrderType.TYPE_MARKET,
+        price: order.price,
+        remaining: order.remaining,
+        side: order.side,
+      }))
+    : [];
+  if (normalizedOrder) {
+    orders.push({
+      isMarketOrder: normalizedOrder.type === OrderType.TYPE_MARKET,
+      price: normalizedOrder.price ?? '0',
+      remaining: normalizedOrder.size,
+      side: normalizedOrder.side,
+    });
+  }
+  const { data: positionEstimate } = useEstimatePositionQuery({
+    variables: {
+      marketId: market.id,
+      openVolume,
+      orders,
+      collateralAvailable:
+        marginAccountBalance || generalAccountBalance ? balance : undefined,
+    },
+    skip: !normalizedOrder,
+  });
+
+  const assetSymbol =
+    market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
   const { data: currentMargins } = useDataProvider({
     dataProvider: marketMarginDataProvider,
@@ -401,7 +470,10 @@ export const DealTicket = ({
           asset={asset}
           marketTradingMode={marketData.marketTradingMode}
           balance={balance}
-          margin={totalMargin}
+          margin={
+            positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
+            '0'
+          }
           isReadOnly={isReadOnly}
           pubKey={pubKey}
           onClickCollateral={onClickCollateral}
@@ -413,15 +485,15 @@ export const DealTicket = ({
           }
         />
         <DealTicketFeeDetails
-          order={normalizedOrder}
-          market={market}
-          marketData={marketData}
-          estimatedInitialMargin={margin}
-          estimatedTotalInitialMargin={totalMargin}
-          currentInitialMargin={currentMargins?.initialLevel}
-          currentMaintenanceMargin={currentMargins?.maintenanceLevel}
+          feeEstimate={feeEstimate}
+          notionalSize={notionalSize}
+          assetSymbol={assetSymbol}
           marginAccountBalance={marginAccountBalance}
           generalAccountBalance={generalAccountBalance}
+          positionEstimate={positionEstimate?.estimatePosition}
+          market={market}
+          currentInitialMargin={currentMargins?.initialLevel}
+          currentMaintenanceMargin={currentMargins?.maintenanceLevel}
         />
       </form>
     </TinyScroll>

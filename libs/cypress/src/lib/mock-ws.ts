@@ -20,8 +20,12 @@ const mockSocketServer = Cypress.env('VEGA_URL')
   : null;
 
 // DO NOT REMOVE: PASSTHROUGH for walletconnect
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const relayServer = new Server('wss://relay.walletconnect.com', {
+new Server('wss://relay.walletconnect.com', {
+  mock: false,
+});
+
+// DO NOT REMOVE: PASSTHROUGH for hot module reload
+new Server('ws://localhost:4200/_next/webpack-hmr', {
   mock: false,
 });
 

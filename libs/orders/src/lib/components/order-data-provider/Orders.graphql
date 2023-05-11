@@ -21,6 +21,8 @@ fragment OrderFields on Order {
   }
   peggedOrder {
     __typename
+    reference
+    offset
   }
 }
 
@@ -64,6 +66,7 @@ fragment OrderUpdateFields on OrderUpdate {
   type
   side
   size
+  remaining
   status
   rejectionReason
   price
@@ -75,6 +78,8 @@ fragment OrderUpdateFields on OrderUpdate {
   liquidityProvisionId
   peggedOrder {
     __typename
+    reference
+    offset
   }
 }
 

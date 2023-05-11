@@ -32,8 +32,10 @@ export function addDecimal(
   return toBigNum(value, decimals).toFixed(decimalPrecision);
 }
 
-export function removeDecimal(value: string, decimals: number): string {
-  if (!decimals) return value;
+export function removeDecimal(
+  value: string | BigNumber,
+  decimals: number
+): string {
   return new BigNumber(value || 0).times(Math.pow(10, decimals)).toFixed(0);
 }
 

@@ -23,5 +23,8 @@ export * from '../orders/src/lib/components/order-data-provider/orders.mock';
 export * from '../positions/src/lib/positions.mock';
 export * from '../network-parameters/src/network-params.mock';
 export * from '../wallet/src/connect-dialog/chain-id.mock';
+export * from '../positions/src/lib/estimate-position.mock';
 export * from '../trades/src/lib/trades.mock';
 export * from '../withdraws/src/lib/withdrawal.mock';
+export * from '../proposals/src/lib/protocol-upgrade-proposals/protocol-statistics-proposals.mock';
+export * from '../proposals/src/lib/protocol-upgrade-proposals/block-statistics.mock';

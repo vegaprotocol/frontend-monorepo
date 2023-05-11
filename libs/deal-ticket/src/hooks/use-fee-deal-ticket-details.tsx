@@ -1,14 +1,9 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import {
-  addDecimal,
-  addDecimalsFormatNumber,
-  formatNumber,
-  toBigNum,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useMemo } from 'react';
-import type { Market, MarketData } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
+import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
@@ -17,58 +12,30 @@ import {
   MARGIN_DIFF_TOOLTIP_TEXT,
   DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
   TOTAL_MARGIN_AVAILABLE,
+  LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
 } from '../constants';
-import { useMarketAccountBalance } from '@vegaprotocol/accounts';
-import { getDerivedPrice } from '../utils/get-price';
-import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
-import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 
-export const useFeeDealTicketDetails = (
-  order: OrderSubmissionBody['orderSubmission'],
-  market: Market,
-  marketData: MarketData
+import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
+import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
+
+export const useEstimateFees = (
+  order?: OrderSubmissionBody['orderSubmission']
 ) => {
   const { pubKey } = useVegaWallet();
-  const { accountBalance } = useMarketAccountBalance(market.id);
 
-  const price = useMemo(() => {
-    return getDerivedPrice(order, marketData);
-  }, [order, marketData]);
-
-  const { data: estMargin } = useEstimateOrderQuery({
-    variables: {
-      marketId: market.id,
+  const { data } = useEstimateFeesQuery({
+    variables: order && {
+      marketId: order.marketId,
       partyId: pubKey || '',
-      price,
+      price: order.price,
       size: order.size,
       side: order.side,
       timeInForce: order.timeInForce,
       type: order.type,
     },
-    skip: !pubKey || !market || !order.size || !price,
+    skip: !pubKey || !order?.size || !order?.price,
   });
-
-  const notionalSize = useMemo(() => {
-    if (price && order.size) {
-      return toBigNum(order.size, market.positionDecimalPlaces)
-        .multipliedBy(addDecimal(price, market.decimalPlaces))
-        .toString();
-    }
-    return null;
-  }, [price, order.size, market.decimalPlaces, market.positionDecimalPlaces]);
-
-  const assetSymbol =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
-
-  return useMemo(() => {
-    return {
-      market,
-      assetSymbol,
-      notionalSize,
-      accountBalance,
-      estimateOrder: estMargin?.estimateOrder,
-    };
-  }, [market, assetSymbol, notionalSize, accountBalance, estMargin]);
+  return data?.estimateFees;
 };
 
 export interface FeeDetails {
@@ -77,42 +44,54 @@ export interface FeeDetails {
   market: Market;
   assetSymbol: string;
   notionalSize: string | null;
-  estimateOrder: EstimateOrderQuery['estimateOrder'] | undefined;
-  estimatedInitialMargin: string;
-  estimatedTotalInitialMargin: string;
+  feeEstimate: EstimateFeesQuery['estimateFees'] | undefined;
   currentInitialMargin?: string;
   currentMaintenanceMargin?: string;
+  positionEstimate: EstimatePositionQuery['estimatePosition'];
 }
+
+const emptyValue = '-';
+const formatValue = (
+  value: string | number | null | undefined,
+  formatDecimals: number
+): string => {
+  return isNumeric(value)
+    ? addDecimalsFormatNumber(value, formatDecimals)
+    : emptyValue;
+};
+const formatRange = (
+  min: string | number | null | undefined,
+  max: string | number | null | undefined,
+  formatDecimals: number
+) => {
+  const minFormatted = formatValue(min, formatDecimals);
+  const maxFormatted = formatValue(max, formatDecimals);
+  if (minFormatted !== maxFormatted) {
+    return `${minFormatted} - ${maxFormatted}`;
+  }
+  if (minFormatted !== emptyValue) {
+    return minFormatted;
+  }
+  return maxFormatted;
+};
 
 export const getFeeDetailsValues = ({
   marginAccountBalance,
   generalAccountBalance,
   assetSymbol,
-  estimateOrder,
+  feeEstimate,
   market,
   notionalSize,
-  estimatedTotalInitialMargin,
   currentInitialMargin,
   currentMaintenanceMargin,
+  positionEstimate,
 }: FeeDetails) => {
+  const liquidationEstimate = positionEstimate?.liquidation;
+  const marginEstimate = positionEstimate?.margin;
   const totalBalance =
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
-  const formatValueWithMarketDp = (
-    value: string | number | null | undefined
-  ): string => {
-    return value && !isNaN(Number(value))
-      ? formatNumber(value, market.decimalPlaces)
-      : '-';
-  };
-  const formatValueWithAssetDp = (
-    value: string | number | null | undefined
-  ): string => {
-    return value && !isNaN(Number(value))
-      ? addDecimalsFormatNumber(value, assetDecimals)
-      : '-';
-  };
   const details: {
     label: string;
     value?: string | null;
@@ -122,15 +101,15 @@ export const getFeeDetailsValues = ({
   }[] = [
     {
       label: t('Notional'),
-      value: formatValueWithMarketDp(notionalSize),
+      value: formatValue(notionalSize, assetDecimals),
       symbol: assetSymbol,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol),
     },
     {
       label: t('Fees'),
       value:
-        estimateOrder?.totalFeeAmount &&
-        `~${formatValueWithAssetDp(estimateOrder?.totalFeeAmount)}`,
+        feeEstimate?.totalFeeAmount &&
+        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`,
       labelDescription: (
         <>
           <span>
@@ -139,7 +118,7 @@ export const getFeeDetailsValues = ({
             )}
           </span>
           <FeesBreakdown
-            fees={estimateOrder?.fee}
+            fees={feeEstimate?.fees}
             feeFactors={market.fees.factors}
             symbol={assetSymbol}
             decimals={assetDecimals}
@@ -148,66 +127,147 @@ export const getFeeDetailsValues = ({
       ),
       symbol: assetSymbol,
     },
-    {
-      label: t('Margin required'),
-      value: `~${formatValueWithAssetDp(
-        currentInitialMargin
-          ? (
-              BigInt(estimatedTotalInitialMargin) - BigInt(currentInitialMargin)
-            ).toString()
-          : estimatedTotalInitialMargin
-      )}`,
-      symbol: assetSymbol,
-      labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
-    },
   ];
-  if (totalBalance) {
-    const totalMarginAvailable = (
-      currentMaintenanceMargin
-        ? totalBalance - BigInt(currentMaintenanceMargin)
-        : totalBalance
-    ).toString();
+  let marginRequiredBestCase: string | undefined = undefined;
+  let marginRequiredWorstCase: string | undefined = undefined;
+  if (marginEstimate) {
+    if (currentInitialMargin) {
+      marginRequiredBestCase = (
+        BigInt(marginEstimate.bestCase.initialLevel) -
+        BigInt(currentInitialMargin)
+      ).toString();
+      if (marginRequiredBestCase.startsWith('-')) {
+        marginRequiredBestCase = '0';
+      }
+      marginRequiredWorstCase = (
+        BigInt(marginEstimate.worstCase.initialLevel) -
+        BigInt(currentInitialMargin)
+      ).toString();
+      if (marginRequiredWorstCase.startsWith('-')) {
+        marginRequiredWorstCase = '0';
+      }
+    } else {
+      marginRequiredBestCase = marginEstimate.bestCase.initialLevel;
+      marginRequiredWorstCase = marginEstimate.worstCase.initialLevel;
+    }
+  }
+  details.push({
+    label: t('Margin required'),
+    value: formatRange(
+      marginRequiredBestCase,
+      marginRequiredWorstCase,
+      assetDecimals
+    ),
+    symbol: assetSymbol,
+    labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
+  });
+
+  const totalMarginAvailable = (
+    currentMaintenanceMargin
+      ? totalBalance - BigInt(currentMaintenanceMargin)
+      : totalBalance
+  ).toString();
+
+  details.push({
+    indent: true,
+    label: t('Total margin available'),
+    value: formatValue(totalMarginAvailable, assetDecimals),
+    symbol: assetSymbol,
+    labelDescription: TOTAL_MARGIN_AVAILABLE(
+      formatValue(generalAccountBalance, assetDecimals),
+      formatValue(marginAccountBalance, assetDecimals),
+      formatValue(currentMaintenanceMargin, assetDecimals),
+      assetSymbol
+    ),
+  });
+
+  if (marginAccountBalance) {
+    const deductionFromCollateralBestCase =
+      BigInt(marginEstimate?.bestCase.initialLevel ?? 0) -
+      BigInt(marginAccountBalance);
+
+    const deductionFromCollateralWorstCase =
+      BigInt(marginEstimate?.worstCase.initialLevel ?? 0) -
+      BigInt(marginAccountBalance);
 
     details.push({
       indent: true,
-      label: t('Total margin available'),
-      value: `~${formatValueWithAssetDp(totalMarginAvailable)}`,
-      symbol: assetSymbol,
-      labelDescription: TOTAL_MARGIN_AVAILABLE(
-        formatValueWithAssetDp(generalAccountBalance),
-        formatValueWithAssetDp(marginAccountBalance),
-        formatValueWithAssetDp(currentMaintenanceMargin),
-        assetSymbol
+      label: t('Deduction from collateral'),
+      value: formatRange(
+        deductionFromCollateralBestCase > 0
+          ? deductionFromCollateralBestCase.toString()
+          : '0',
+        deductionFromCollateralWorstCase > 0
+          ? deductionFromCollateralWorstCase.toString()
+          : '0',
+        assetDecimals
       ),
+      symbol: assetSymbol,
+      labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
     });
-
-    if (marginAccountBalance) {
-      const deductionFromCollateral =
-        BigInt(estimatedTotalInitialMargin) - BigInt(marginAccountBalance);
-
-      details.push({
-        indent: true,
-        label: t('Deduction from collateral'),
-        value: `~${formatValueWithAssetDp(
-          deductionFromCollateral > 0 ? deductionFromCollateral.toString() : '0'
-        )}`,
-        symbol: assetSymbol,
-        labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
-      });
-    }
 
     details.push({
       label: t('Projected margin'),
-      value: `~${formatValueWithAssetDp(estimatedTotalInitialMargin)}`,
+      value: formatRange(
+        marginEstimate?.bestCase.initialLevel,
+        marginEstimate?.worstCase.initialLevel,
+        assetDecimals
+      ),
       symbol: assetSymbol,
       labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
     });
   }
   details.push({
     label: t('Current margin allocation'),
-    value: `${formatValueWithAssetDp(marginAccountBalance)}`,
+    value: formatValue(marginAccountBalance, assetDecimals),
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
+  });
+
+  let liquidationPriceEstimate = emptyValue;
+
+  if (liquidationEstimate) {
+    const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
+      liquidationEstimate.bestCase.including_buy_orders.replace(/\..*/, '')
+    );
+    const liquidationEstimateBestCaseIncludingSellOrders = BigInt(
+      liquidationEstimate.bestCase.including_sell_orders.replace(/\..*/, '')
+    );
+    const liquidationEstimateBestCase =
+      liquidationEstimateBestCaseIncludingBuyOrders >
+      liquidationEstimateBestCaseIncludingSellOrders
+        ? liquidationEstimateBestCaseIncludingBuyOrders
+        : liquidationEstimateBestCaseIncludingSellOrders;
+
+    const liquidationEstimateWorstCaseIncludingBuyOrders = BigInt(
+      liquidationEstimate.worstCase.including_buy_orders.replace(/\..*/, '')
+    );
+    const liquidationEstimateWorstCaseIncludingSellOrders = BigInt(
+      liquidationEstimate.worstCase.including_sell_orders.replace(/\..*/, '')
+    );
+    const liquidationEstimateWorstCase =
+      liquidationEstimateWorstCaseIncludingBuyOrders >
+      liquidationEstimateWorstCaseIncludingSellOrders
+        ? liquidationEstimateWorstCaseIncludingBuyOrders
+        : liquidationEstimateWorstCaseIncludingSellOrders;
+    liquidationPriceEstimate = formatRange(
+      (liquidationEstimateBestCase < liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      (liquidationEstimateBestCase > liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      assetDecimals
+    );
+  }
+
+  details.push({
+    label: t('Liquidation price estimate'),
+    value: liquidationPriceEstimate,
+    symbol: assetSymbol,
+    labelDescription: LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
   });
   return details;
 };
