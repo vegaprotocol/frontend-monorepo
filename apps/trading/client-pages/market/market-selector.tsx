@@ -11,12 +11,29 @@ import {
 } from '@vegaprotocol/types';
 import { Input, Sparkline, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
+
+// Make sure these match the available __typename properties on product
+const Product = {
+  Spot: 'Spot',
+  Future: 'Future',
+  Perpetual: 'Perpetual',
+} as const;
+
+type ProductType = keyof typeof Product;
+
+const ProductTypeMapping: {
+  [key in ProductType]: string;
+} = {
+  [Product.Spot]: 'Spot',
+  [Product.Future]: 'Futures',
+  [Product.Perpetual]: 'Perpeturals',
+};
 
 export const MarketSelector = ({
   currentMarketId,
@@ -24,17 +41,41 @@ export const MarketSelector = ({
   currentMarketId?: string;
 }) => {
   const [search, setSearch] = useState('');
+  const [productType, setProductType] = useState<ProductType>(Product.Future);
 
   return (
     <div className="grid grid-rows-[min-content_1fr_min-content] h-full">
       <div className="p-2">
+        <div className="flex gap-3 mb-3">
+          {Object.keys(Product).map((t) => {
+            const classes = classNames('py-1 border-b-2', {
+              'border-vega-yellow text-black dark:text-white':
+                t === productType,
+              'border-transparent text-vega-light-300 dark:text-vega-dark-300':
+                t !== productType,
+            });
+            return (
+              <button
+                key={t}
+                onClick={() => setProductType(t as ProductType)}
+                className={classes}
+              >
+                {ProductTypeMapping[t as ProductType]}
+              </button>
+            );
+          })}
+        </div>
         <Input
           placeholder={t('Search')}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
       <div>
-        <MarketList searchTerm={search} currentMarketId={currentMarketId} />
+        <MarketList
+          searchTerm={search}
+          currentMarketId={currentMarketId}
+          productType={productType}
+        />
       </div>
       <div className="px-4 py-2">
         <Link to={'/markets/all'} className="underline">
@@ -47,9 +88,11 @@ export const MarketSelector = ({
 
 const MarketList = ({
   searchTerm,
+  productType,
   currentMarketId,
 }: {
   searchTerm: string;
+  productType: ProductType;
   currentMarketId?: string;
 }) => {
   const { data, loading, error } = useMarketList();
@@ -60,8 +103,22 @@ const MarketList = ({
 
   const filteredList = data
     ? data
+        // only active
         .filter((m) => {
           return m.state === MarketState.STATE_ACTIVE;
+        })
+        // only selected product type
+        .filter((m) => {
+          console.log(
+            m.tradableInstrument.instrument.product.__typename,
+            productType
+          );
+          if (
+            m.tradableInstrument.instrument.product.__typename === productType
+          ) {
+            return true;
+          }
+          return false;
         })
         // filter based on search term
         .filter((m) => {
@@ -73,8 +130,47 @@ const MarketList = ({
         })
     : [];
 
+  return (
+    <AutoSizer>
+      {({ width, height }) => (
+        <TinyScroll>
+          <List
+            data={filteredList}
+            loading={loading}
+            width={width}
+            height={height}
+            currentMarketId={currentMarketId}
+            noItems={
+              productType === Product.Perpetual
+                ? t('Perpetual markets coming soon.')
+                : productType === Product.Spot
+                ? t('Spot markets coming soon.')
+                : t('No markets')
+            }
+          />
+        </TinyScroll>
+      )}
+    </AutoSizer>
+  );
+};
+
+const List = ({
+  data,
+  loading,
+  width,
+  height,
+  noItems,
+  currentMarketId,
+}: {
+  data: MarketMaybeWithDataAndCandles[];
+  loading: boolean;
+  width: number;
+  height: number;
+  noItems: string;
+  currentMarketId?: string;
+}) => {
   const row = ({ index, style }: { index: number; style: CSSProperties }) => {
-    const market = filteredList[index];
+    const market = data[index];
     const wrapperClasses = classNames(
       'block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4',
       {
@@ -124,29 +220,37 @@ const MarketList = ({
     );
   };
 
+  if (!data || loading) {
+    return (
+      <div style={{ width, height }}>
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <div style={{ width, height }}>
+        <div className="mb-2 px-2">
+          <div className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg px-4 py-2">
+            {noItems}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <AutoSizer>
-      {({ width, height }) => (
-        <TinyScroll>
-          {!data || loading ? (
-            <div style={{ width, height }}>
-              <Skeleton />
-              <Skeleton />
-            </div>
-          ) : (
-            <FixedSizeList
-              className="virtualized-list"
-              itemCount={filteredList.length}
-              itemSize={130}
-              width={width}
-              height={height}
-            >
-              {row}
-            </FixedSizeList>
-          )}
-        </TinyScroll>
-      )}
-    </AutoSizer>
+    <FixedSizeList
+      className="virtualized-list"
+      itemCount={data.length}
+      itemSize={130}
+      width={width}
+      height={height}
+    >
+      {row}
+    </FixedSizeList>
   );
 };
 
