@@ -2,7 +2,6 @@ import { Fragment } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { Link, Lozenge } from '@vegaprotocol/ui-toolkit';
 import {
-  NodeSwitcherDialog,
   useEnvironment,
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
