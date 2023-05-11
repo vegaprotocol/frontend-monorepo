@@ -3,7 +3,12 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { OracleBanner } from '@vegaprotocol/market-info';
-import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
+import {
+  Tab,
+  LocalStoragePersistTabs as Tabs,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import type { Market } from '@vegaprotocol/market-list';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
@@ -322,11 +327,7 @@ const MainGrid = memo(
 );
 MainGrid.displayName = 'MainGrid';
 
-export const TradeGrid = ({
-  market,
-  onSelect,
-  pinnedAsset,
-}: TradeGridProps) => {
+export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const wrapperClasses = classNames(
     'h-full grid',
@@ -345,8 +346,15 @@ export const TradeGrid = ({
             primaryContent={market?.tradableInstrument.instrument.code}
             secondaryContent={market?.tradableInstrument.instrument.name}
           />
-          <button onClick={() => setSidebarOpen((x) => !x)}>
-            {sidebarOpen ? '<' : '>'}
+          <button onClick={() => setSidebarOpen((x) => !x)} className="p-2">
+            <span
+              className={classNames('block', {
+                'rotate-90 translate-x-1': !sidebarOpen,
+                '-rotate-90 -translate-x-1': sidebarOpen,
+              })}
+            >
+              <VegaIcon name={VegaIconNames.CHEVRON_UP} />
+            </span>
           </button>
         </div>
       </div>
