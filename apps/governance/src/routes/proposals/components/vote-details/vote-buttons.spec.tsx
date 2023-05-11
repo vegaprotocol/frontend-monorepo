@@ -111,7 +111,9 @@ describe('Vote buttons', () => {
       </AppStateProvider>
     );
     expect(
-      screen.getByText('You need some VEGA tokens to participate in governance')
+      screen.getByText(
+        'You need some VEGA tokens to participate in governance.'
+      )
     ).toBeTruthy();
   });
 
