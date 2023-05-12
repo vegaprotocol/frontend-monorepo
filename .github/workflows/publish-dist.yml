@@ -216,8 +216,9 @@ jobs:
           branch_name=${{ github.ref_name }}-hash-update
           git checkout -b "${branch_name}"
           git add interstitial-allow.json netlify.toml
-          commit_msg="feat(ci): Update CID for console release ${{ github.ref }}"
+          commit_msg="feat(ci): Update CID for console release @ ${{ github.ref }}"
           git commit -m "${commit_msg}"
           git push -u origin "${branch_name}"
-          pr_url="$(gh pr create --title "${commit_msg}" --body 'This is automated pull request that will be merged after pipeline passes')"
+          pr_url="$(gh pr create --title "${commit_msg}" --body 'update ipfs hash for console @ ${{ github.ref }}')"
           echo $pr_url
+          gh pr merge --auto $pr_url
