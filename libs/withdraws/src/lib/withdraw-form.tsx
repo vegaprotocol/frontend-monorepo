@@ -167,10 +167,7 @@ export const WithdrawForm = ({
   };
 
   const showWithdrawDelayNotification =
-    delay &&
-    selectedAsset &&
-    (!threshold.isFinite() ||
-      new BigNumber(amount).isGreaterThanOrEqualTo(threshold));
+    delay && selectedAsset && new BigNumber(amount).isGreaterThan(threshold);
 
   return (
     <>

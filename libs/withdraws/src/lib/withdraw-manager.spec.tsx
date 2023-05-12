@@ -120,7 +120,7 @@ describe('WithdrawManager', () => {
   it('shows withdraw delay notification if amount greater than threshold', async () => {
     render(generateJsx(props));
     fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '1000' },
+      target: { value: '1001' },
     });
     expect(
       await screen.findByTestId('amount-withdrawal-delay-notification')
@@ -131,7 +131,7 @@ describe('WithdrawManager', () => {
     withdrawAsset.threshold = new BigNumber(0);
     render(generateJsx(props));
     fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.00' },
+      target: { value: '0.01' },
     });
     expect(
       await screen.findByTestId('withdrawals-delay-notification')

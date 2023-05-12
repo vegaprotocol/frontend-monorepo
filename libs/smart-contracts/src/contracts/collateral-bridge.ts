@@ -44,7 +44,7 @@ export class CollateralBridge {
   is_asset_listed(address: string) {
     return this.contract.is_asset_listed(address);
   }
-  get_withdraw_threshold(assetSource: string) {
+  get_withdraw_threshold(assetSource: string): Promise<BigNumber> {
     return this.contract.get_withdraw_threshold(assetSource);
   }
   default_withdraw_delay() {
