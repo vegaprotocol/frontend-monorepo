@@ -130,6 +130,7 @@ export const WithdrawalsTable = (
           component: data?.txHash ? 'EtherscanLinkCell' : 'CompleteCell',
         })}
       />
+      <AgGridColumn field="id" />
     </AgGrid>
   );
 };

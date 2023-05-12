@@ -1,6 +1,6 @@
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { CollapsablePanel, Toast } from '@vegaprotocol/ui-toolkit';
 import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
@@ -51,23 +51,57 @@ const EthWithdrawalApprovalToastContent = ({
       </strong>
     </Panel>
   );
+
+  const bundle = [
+    ['asset_source', tx.approval?.assetSource],
+    ['amount', tx.approval?.amount],
+    ['target_address', tx.approval?.targetAddress],
+    ['creation', tx.approval?.creation],
+    ['nonce', tx.approval?.nonce],
+    ['signatures', tx.approval?.signatures],
+  ];
+
+  const bundleCopy = bundle.map((item) => item.join('\n')).join('\n\n');
+
+  console.log(bundleCopy);
+
+  const panel = (
+    <Panel
+      className="flex align-middle max-w-full"
+      title={tx.approval?.signatures}
+    >
+      <div className="truncate text-ellipsis">{tx.approval?.signatures}</div>
+      <CopyWithTooltip text={tx.approval?.signatures}>
+        <button data-testid="copy-withdrawal-signatures" className="underline">
+          {t('Copy bundle')} <Icon name="duplicate" className="ml-2" />
+        </button>
+      </CopyWithTooltip>
+    </Panel>
+  );
+
   const signatureBundleInfo = tx.approval?.signatures ? (
     <div className="mt-3">
-      <p>{t('Please copy your signature...')}</p>
-      <Panel
-        className="flex align-middle max-w-full"
-        title={tx.approval.signatures}
+      <p>{t('Transaction details:')}</p>
+      <CollapsablePanel
+        actions={
+          <CopyWithTooltip text={bundleCopy}>
+            <button
+              data-testid="copy-withdrawal-signatures"
+              className="underline"
+              title={t('Copy transaction details bundle')}
+            >
+              <Icon name="duplicate" size={3} />
+            </button>
+          </CopyWithTooltip>
+        }
       >
-        <div className="truncate text-ellipsis">{tx.approval.signatures}</div>
-        <CopyWithTooltip text={tx.approval?.signatures}>
-          <button
-            data-testid="copy-withdrawal-signatures"
-            className="underline"
-          >
-            <Icon name="duplicate" className="ml-2" />
-          </button>
-        </CopyWithTooltip>
-      </Panel>
+        {bundle.map(([key, value]) => (
+          <div className="mb-1">
+            <div className="font-bold">{key}</div>
+            <div className="break-all">{value}</div>
+          </div>
+        ))}
+      </CollapsablePanel>
     </div>
   ) : (
     ''
