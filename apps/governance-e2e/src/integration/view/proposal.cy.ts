@@ -4,16 +4,11 @@ import {
   verifyPageHeader,
   verifyTabHighlighted,
 } from '../../support/common.functions';
-import {
-  goToMakeNewProposal,
-  governanceProposalType,
-} from '../../support/governance.functions';
 import { mockNetworkUpgradeProposal } from '../../support/proposal.functions';
 
 const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
 const newProposalLink = '[data-testid="new-proposal-link"]';
 const governanceDocsUrl = 'https://vega.xyz/governance';
-const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 
 context(
   'Governance Page - verify elements on page',
@@ -54,20 +49,14 @@ context(
         });
     });
 
-    it.skip('should be able to see button for - new proposal', function () {
+    it('should be able to see button for - new proposal', function () {
       // 3001-VOTE-002
       cy.get(newProposalLink)
         .should('be.visible')
         .and('have.text', 'New proposal')
-        .and('have.attr', 'href')
-        .and('equal', '/proposals/propose');
-    });
-
-    it.skip('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
-      goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
-      cy.get(connectToVegaWalletButton)
-        .should('be.visible')
-        .and('have.text', 'Connect Vega wallet');
+        .find('[data-testid="external-link"]')
+        .should('have.attr', 'href')
+        .and('equal', 'https://docs.vega.xyz/mainnet/tutorials/proposals');
     });
 
     it('should see open network upgrade proposal on homepage', function () {

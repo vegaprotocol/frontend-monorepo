@@ -121,8 +121,7 @@ export function waitForProposalSync() {
 }
 
 export function goToMakeNewProposal(proposalType: string) {
-  navigateTo(navigation.proposals);
-  cy.get(newProposalButton).should('be.visible').click();
+  cy.visit('/proposals/propose');
   cy.url().should('include', '/proposals/propose');
   cy.get(navigation.pageSpinner, { timeout: 20000 }).should('not.exist');
   cy.get('li').should('contain.text', proposalType).and('be.visible');
