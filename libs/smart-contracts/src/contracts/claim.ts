@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { hexlify } from 'ethers/lib/utils';
+import { hexlify, toUtf8Bytes } from 'ethers/lib/utils';
 import abi from '../abis/claim_abi.json';
 import { calcGasBuffer } from '../utils';
 
@@ -70,7 +70,7 @@ export class Claim {
         tranche,
         expiry,
       },
-      hexlify(country),
+      hexlify(toUtf8Bytes(country)),
       target,
     ].filter(Boolean);
     const res = await this.contract.estimateGas[method](...args);
@@ -110,7 +110,9 @@ export class Claim {
    * @return {Promise<boolean>}
    */
   async isCountryBlocked(country: string): Promise<boolean> {
-    const isAllowed = await this.contract.allowed_countries(hexlify(country));
+    const isAllowed = await this.contract.allowed_countries(
+      hexlify(toUtf8Bytes(country))
+    );
     return !isAllowed;
   }
 }
