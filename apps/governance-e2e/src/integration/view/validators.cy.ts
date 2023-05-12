@@ -31,9 +31,6 @@ const totalPenaltyToolTip = '[data-testid="total-penalty-tooltip"]';
 const epochCountDown = '[data-testid="epoch-countdown"]';
 const stakeNumberRegex = /^\d{1,3}(,\d{3})*(\.\d+)?$/;
 
-// If running locally, validators need to have self-stake to be displayed
-// Run cy.validatorsSelfDelegate() in before hook
-
 context('Validators Page - verify elements on page', function () {
   before('navigate to validators page', function () {
     cy.visit('/validators');
