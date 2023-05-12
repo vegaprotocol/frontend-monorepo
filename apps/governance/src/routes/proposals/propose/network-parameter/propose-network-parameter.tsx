@@ -88,12 +88,11 @@ export const ProposeNetworkParameter = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit,
     formState: { errors },
     setValue,
     watch,
   } = useForm<NetworkParameterProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, Dialog } = useProposalSubmit();
 
   const selectedParamEntry = params
     ? Object.entries(params).find(([key]) => key === selectedNetworkParam)
@@ -147,10 +146,6 @@ export const ProposeNetworkParameter = () => {
     };
   };
 
-  const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
-    await submit(assembleProposal(fields));
-  };
-
   const viewJson = () => {
     const formData = watch();
     downloadJson(
@@ -200,7 +195,7 @@ export const ProposeNetworkParameter = () => {
           )}
 
           <div data-testid="network-parameter-proposal-form">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form>
               <ProposalFormSubheader>
                 {t('ProposalRationale')}
               </ProposalFormSubheader>

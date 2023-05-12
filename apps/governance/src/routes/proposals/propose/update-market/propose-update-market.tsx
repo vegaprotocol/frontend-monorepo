@@ -102,12 +102,11 @@ export const ProposeUpdateMarket = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit,
     formState: { errors },
     setValue,
     watch,
   } = useForm<UpdateMarketProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, Dialog } = useProposalSubmit();
 
   const assembleProposal = (fields: UpdateMarketProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
@@ -151,10 +150,6 @@ export const ProposeUpdateMarket = () => {
         ),
       },
     };
-  };
-
-  const onSubmit = async (fields: UpdateMarketProposalFormFields) => {
-    await submit(assembleProposal(fields));
   };
 
   const viewJson = () => {
@@ -206,7 +201,7 @@ export const ProposeUpdateMarket = () => {
           )}
 
           <div data-testid="update-market-proposal-form">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form>
               <ProposalFormSubheader>
                 {t('ProposalRationale')}
               </ProposalFormSubheader>

@@ -46,12 +46,11 @@ export const ProposeFreeform = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit,
     formState: { errors },
     setValue,
     watch,
   } = useForm<FreeformProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, Dialog } = useProposalSubmit();
 
   const assembleProposal = (fields: FreeformProposalFormFields) => {
     const isVoteDeadlineAtMinimum =
@@ -80,10 +79,6 @@ export const ProposeFreeform = () => {
         ),
       },
     };
-  };
-
-  const onSubmit = async (fields: FreeformProposalFormFields) => {
-    await submit(assembleProposal(fields));
   };
 
   const viewJson = () => {
@@ -136,7 +131,7 @@ export const ProposeFreeform = () => {
           )}
 
           <div data-testid="freeform-proposal-form">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form>
               <ProposalFormSubheader>
                 {t('ProposalRationale')}
               </ProposalFormSubheader>

@@ -57,12 +57,11 @@ export const ProposeNewAsset = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit,
     formState: { errors },
     setValue,
     watch,
   } = useForm<NewAssetProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, Dialog } = useProposalSubmit();
 
   const assembleProposal = (fields: NewAssetProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
@@ -111,10 +110,6 @@ export const ProposeNewAsset = () => {
         ),
       },
     };
-  };
-
-  const onSubmit = async (fields: NewAssetProposalFormFields) => {
-    await submit(assembleProposal(fields));
   };
 
   const viewJson = () => {
@@ -167,7 +162,7 @@ export const ProposeNewAsset = () => {
           )}
 
           <div data-testid="new-asset-proposal-form">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form>
               <ProposalFormSubheader>
                 {t('ProposalRationale')}
               </ProposalFormSubheader>
