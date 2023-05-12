@@ -213,12 +213,6 @@ jobs:
           ./interstital-allow-update.sh ${new_hash}
           git config --global user.email "vega-ci-bot@vega.xyz"
           git config --global user.name "vega-ci-bot"
-          branch_name=${{ github.ref_name }}-hash-update
-          git checkout -b "${branch_name}"
           git add interstitial-allow.json netlify.toml
-          commit_msg="feat(ci): Update CID for console release @ ${{ github.ref }}"
-          git commit -m "${commit_msg}"
-          git push -u origin "${branch_name}"
-          pr_url="$(gh pr create --title "${commit_msg}" --body 'update ipfs hash for console @ ${{ github.ref }}')"
-          echo $pr_url
-          gh pr merge --auto $pr_url
+          git commit -m "feat(ci): Update CID for console release @ ${{ github.ref }}"
+          git push origin main
