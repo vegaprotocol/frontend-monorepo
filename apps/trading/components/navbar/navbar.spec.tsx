@@ -14,7 +14,7 @@ describe('Navbar', () => {
           <VegaWalletContext.Provider
             value={{ pubKey } as VegaWalletContextShape}
           >
-            <Navbar theme="black" />
+            <Navbar theme="dark" />
           </VegaWalletContext.Provider>
         </MemoryRouter>
       </MockedProvider>
@@ -31,7 +31,7 @@ describe('Navbar', () => {
           <VegaWalletContext.Provider
             value={{ pubKey } as VegaWalletContextShape}
           >
-            <Navbar theme="black" />
+            <Navbar theme="dark" />
           </VegaWalletContext.Provider>
         </MemoryRouter>
       </MockedProvider>
