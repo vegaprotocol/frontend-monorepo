@@ -180,13 +180,13 @@ jobs:
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
         run: |
           # display info about app
-          curl -H "Authorization: $FLEEK_API_KEY" \
+          curl -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"query": "query{getSiteById(siteId:\"f8f2e051-f18e-49e6-b876-0a39369dc0d8\"){id latestDeploy{id status}}}"}' \
             https://api.fleek.co/graphql
 
           # trigger new deployment as base image is always set to vegaprotocol/trading:mainnet
-          curl -H "Authorization: $FLEEK_API_KEY" \
+          curl -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"query": "mutation{triggerDeploy(siteId:\"f8f2e051-f18e-49e6-b876-0a39369dc0d8\"){id status}}"}' \
             https://api.fleek.co/graphql
