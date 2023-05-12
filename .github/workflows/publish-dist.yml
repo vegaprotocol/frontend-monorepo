@@ -214,5 +214,14 @@ jobs:
           git config --global user.email "vega-ci-bot@vega.xyz"
           git config --global user.name "vega-ci-bot"
           git add interstitial-allow.json netlify.toml
-          git commit -m "feat(ci): Update CID for console release @ ${{ github.ref }}"
-          git push origin main
+          commit_msg="feat(ci): Update CID for console release @ ${{ github.ref }}"
+          git commit -m "${commit_msg}"
+          # git push origin main
+
+          branch_name=${{ github.ref_name }}-hash-update
+          git checkout -b "${branch_name}"
+          git add interstitial-allow.json netlify.toml
+          git push -u origin "${branch_name}"
+          pr_url="$(gh pr create --title "${commit_msg}" --body 'update ipfs hash for console @ ${{ github.ref }}')"
+          echo $pr_url
+          gh pr merge --admin --auto $pr_url
