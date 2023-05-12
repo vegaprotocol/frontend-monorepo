@@ -136,7 +136,7 @@ context(
         );
         cy.getByTestId('protocol-upgrade-state').should(
           'have.text',
-          'Approved'
+          'Approved by validators'
         );
         cy.getByTestId('protocol-upgrade-release-tag').should(
           'have.text',
