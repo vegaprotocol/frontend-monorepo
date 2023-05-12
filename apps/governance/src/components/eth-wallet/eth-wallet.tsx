@@ -27,7 +27,11 @@ import {
 import { Loader } from '@vegaprotocol/ui-toolkit';
 import colors from 'tailwindcss/colors';
 import { useBalances } from '../../lib/balances/balances-store';
-import { useEthereumConfig, useWeb3Disconnect } from '@vegaprotocol/web3';
+import {
+  useEthereumConfig,
+  useWeb3ConnectStore,
+  useWeb3Disconnect,
+} from '@vegaprotocol/web3';
 import { getChainName } from '@vegaprotocol/web3';
 
 const removeLeadingAddressSymbol = (key: string) => {
@@ -189,6 +193,7 @@ export const EthWallet = () => {
   const pendingTxs = usePendingTransactions();
   const disconnect = useWeb3Disconnect(connector);
   const { config } = useEthereumConfig();
+  const { open } = useWeb3ConnectStore();
 
   return (
     <WalletCard>
@@ -233,12 +238,7 @@ export const EthWallet = () => {
           ) : (
             <Button
               fill={true}
-              onClick={() =>
-                appDispatch({
-                  type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
-                  isOpen: true,
-                })
-              }
+              onClick={open}
               data-testid="connect-to-eth-wallet-button"
             >
               {t('connectEthWalletToAssociate')}

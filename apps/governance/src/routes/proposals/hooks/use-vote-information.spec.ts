@@ -16,7 +16,6 @@ const mockAppState: AppState = {
   totalSupply: mockTotalSupply,
   vegaWalletOverlay: false,
   vegaWalletManageOverlay: false,
-  ethConnectOverlay: false,
   transactionOverlay: false,
   bannerMessage: '',
   disconnectNotice: false,

@@ -16,7 +16,6 @@ const initialAppState: AppState = {
   totalSupply: new BigNumber(0),
   vegaWalletOverlay: false,
   vegaWalletManageOverlay: false,
-  ethConnectOverlay: false,
   transactionOverlay: false,
   bannerMessage: '',
   disconnectNotice: false,
@@ -43,12 +42,6 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
         ...state,
         vegaWalletManageOverlay: action.isOpen,
         vegaWalletOverlay: action.isOpen ? false : state.vegaWalletOverlay,
-      };
-    }
-    case AppStateActionType.SET_ETH_WALLET_OVERLAY: {
-      return {
-        ...state,
-        ethConnectOverlay: action.isOpen,
       };
     }
     case AppStateActionType.SET_DRAWER: {
