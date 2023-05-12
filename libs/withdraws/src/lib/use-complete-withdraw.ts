@@ -28,10 +28,12 @@ export const useCompleteWithdraw = () => {
     async (withdrawalId: string) => {
       setId(withdrawalId);
 
+      const logger = localLoggerFactory({ application: 'deposits' });
       try {
         if (!contract) {
           return;
         }
+        logger.info('get withdraw approval', { withdrawalId });
         const res = await query<
           Erc20ApprovalQuery,
           Erc20ApprovalQueryVariables
@@ -45,7 +47,7 @@ export const useCompleteWithdraw = () => {
         if (!approval) {
           throw new Error('Could not retrieve withdrawal approval');
         }
-
+        logger.info('withdraw transaction', { approval });
         perform(
           approval.assetSource,
           approval.amount,
@@ -55,12 +57,7 @@ export const useCompleteWithdraw = () => {
           approval.signatures
         );
       } catch (err) {
-        const logger = localLoggerFactory({ application: 'deposits' });
-        if ((err as Error).message.match(/call revert exception/)) {
-          logger.info('call revert eth exception', err);
-        } else {
-          logger.error(err);
-        }
+        logger.error('withdraw transaction', err);
       }
     },
     [contract, query, perform]

@@ -12,19 +12,16 @@ export const useGetDepositMaximum = (
     if (!contract || !asset || asset.source.__typename !== 'ERC20') {
       return;
     }
+    const logger = localLoggerFactory({ application: 'deposits' });
     try {
+      logger.info('get deposit maximum', { asset: asset.id });
       const res = await contract.get_deposit_maximum(
         asset.source.contractAddress
       );
       const max = new BigNumber(addDecimal(res.toString(), asset.decimals));
       return max.isEqualTo(0) ? new BigNumber(Infinity) : max;
     } catch (err) {
-      const logger = localLoggerFactory({ application: 'deposits' });
-      if ((err as Error).message.match(/call revert exception/)) {
-        logger.info('call revert eth exception', err);
-      } else {
-        logger.error(err);
-      }
+      logger.error('get deposit maximum', err);
       return;
     }
   }, [contract, asset]);

@@ -46,7 +46,9 @@ export const useDepositBalances = (
 
   const getBalances = useCallback(async () => {
     if (!asset) return;
+    const logger = localLoggerFactory({ application: 'deposits' });
     try {
+      logger.info('get deposit balances', { asset: asset.id });
       setState(null);
       const [max, deposited, balance, allowance] = await Promise.all([
         getDepositMaximum(),
@@ -62,12 +64,7 @@ export const useDepositBalances = (
         allowance: allowance ?? initialState.allowance,
       });
     } catch (err) {
-      const logger = localLoggerFactory({ application: 'deposits' });
-      if ((err as Error).message.match(/call revert exception/)) {
-        logger.info('call revert eth exception', err);
-      } else {
-        logger.error(err);
-      }
+      logger.error('get deposit balances', err);
       setState(null);
     }
   }, [asset, getAllowance, getBalance, getDepositMaximum, getDepositedAmount]);

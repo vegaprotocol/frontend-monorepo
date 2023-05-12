@@ -40,18 +40,14 @@ export const useWithdrawAsset = (
       // and subsequent delay if withdrawal amount is larger than it
       let threshold = new BigNumber(0);
       let delay = 0;
-
+      const logger = localLoggerFactory({ application: 'withdraws' });
       try {
+        logger.info('get withdraw asset data', { asset: asset?.id });
         const result = await Promise.all([getThreshold(asset), getDelay()]);
         threshold = result[0];
         delay = result[1];
       } catch (err) {
-        const logger = localLoggerFactory({ application: 'withdraws' });
-        if ((err as Error).message.match(/call revert exception/)) {
-          logger.info('call revert eth exception', err);
-        } else {
-          logger.error(err);
-        }
+        logger.error('get withdraw asset data', err);
       }
 
       update({ asset, balance, min, threshold, delay });

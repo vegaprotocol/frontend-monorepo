@@ -2,6 +2,11 @@ import * as Sentry from '@sentry/react';
 import type { Scope } from '@sentry/browser';
 import type { Severity, Breadcrumb, Primitive } from '@sentry/types';
 
+declare global {
+  // eslint-disable-next-line no-var
+  var __LOGGER_SILENT_MODE__: boolean;
+}
+
 const LogLevels = [
   'fatal',
   'error',
@@ -90,7 +95,10 @@ export class LocalLogger {
     logMethod: ConsoleMethod,
     args: ConsoleArg[]
   ) {
-    if (this.numberLogLevel <= LocalLogger.levelLogMap[level]) {
+    if (
+      this.numberLogLevel <= LocalLogger.levelLogMap[level] &&
+      !global.__LOGGER_SILENT_MODE__
+    ) {
       console[logMethod].apply(console, [
         `${this._application}:${level}: `,
         ...args,

@@ -9,16 +9,13 @@ import { localLoggerFactory } from '@vegaprotocol/utils';
 export const useGetWithdrawDelay = () => {
   const contract = useBridgeContract();
   const getDelay = useCallback(async () => {
+    const logger = localLoggerFactory({ application: 'web3' });
     try {
+      logger.info('get withdraw delay', { contract: contract?.toString() });
       const res = await contract?.default_withdraw_delay();
       return res.toNumber();
     } catch (err) {
-      const logger = localLoggerFactory({ application: 'web3' });
-      if ((err as Error).message.match(/call revert exception/)) {
-        logger.info('call revert eth exception', err);
-      } else {
-        logger.error(err);
-      }
+      logger.error('get withdraw delay', err);
     }
   }, [contract]);
 

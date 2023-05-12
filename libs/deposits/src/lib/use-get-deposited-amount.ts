@@ -21,8 +21,9 @@ export const useGetDepositedAmount = (asset: Asset | undefined) => {
     ) {
       return;
     }
-
+    const logger = localLoggerFactory({ application: 'deposits' });
     try {
+      logger.info('get deposited amount', { asset: asset.id });
       const abicoder = new ethers.utils.AbiCoder();
       const innerHash = ethers.utils.keccak256(
         abicoder.encode(['address', 'uint256'], [account, 4])
@@ -40,12 +41,7 @@ export const useGetDepositedAmount = (asset: Asset | undefined) => {
       const value = new BigNumber(res, 16).toString();
       return new BigNumber(addDecimal(value, asset.decimals));
     } catch (err) {
-      const logger = localLoggerFactory({ application: 'deposits' });
-      if ((err as Error).message.match(/call revert exception/)) {
-        logger.info('call revert eth exception', err);
-      } else {
-        logger.error(err);
-      }
+      logger.error('get deposited amount', err);
       return;
     }
   }, [provider, asset, config, account]);
