@@ -190,3 +190,35 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{"query": "mutation{triggerDeploy(siteId:\"f8f2e051-f18e-49e6-b876-0a39369dc0d8\"){id status}}"}' \
             https://api.fleek.co/graphql
+
+      - name: Checkout vega.xyz
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        uses: actions/checkout@v3
+        with:
+          repository: vegaprotocol/vega.xyz
+          path: './vega-xyz'
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+
+      - name: Update hash on interstitial page
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+        run: |
+          curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
+          tar -xzf kubo.tgz
+          export PATH="$PATH:$PWD/kubo"
+          which ipfs
+          new_hash=$(cat ${{ matrix.app }}-ipfs-hash)
+          cd vega-xyz
+          ./interstital-allow-update.sh ${new_hash}
+          git config --global user.email "vega-ci-bot@vega.xyz"
+          git config --global user.name "vega-ci-bot"
+          branch_name=${{ github.ref_name }}-hash-update
+          git checkout -b "${branch_name}"
+          git add interstitial-allow.json netlify.toml
+          commit_msg="feat(ci): Update CID for console release @ ${{ github.ref }}"
+          git commit -m "${commit_msg}"
+          git push -u origin "${branch_name}"
+          pr_url="$(gh pr create --title "${commit_msg}" --body 'update ipfs hash for console @ ${{ github.ref }}')"
+          echo $pr_url
+          gh pr merge --auto $pr_url
