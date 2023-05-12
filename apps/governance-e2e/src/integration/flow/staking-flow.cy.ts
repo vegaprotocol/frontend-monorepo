@@ -57,7 +57,6 @@ context(
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
-      cy.validatorsSelfDelegate();
       ethereumWalletConnect();
       // this is a workaround for #2422 which can be removed once issue is resolved
       cy.associateTokensToVegaWallet('4');
