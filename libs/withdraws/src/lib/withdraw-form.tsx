@@ -70,13 +70,14 @@ const WithdrawDelayNotification = ({
   return (
     <Notification
       intent={Intent.Warning}
+      key={symbol}
       testId={
-        threshold.isFinite()
-          ? 'amount-withdrawal-delay-notification'
-          : 'withdrawals-delay-notification'
+        threshold.isEqualTo(0)
+          ? 'withdrawals-delay-notification'
+          : 'amount-withdrawal-delay-notification'
       }
       message={[
-        !threshold.isFinite()
+        threshold.isEqualTo(0)
           ? t('All %s withdrawals are subject to a %s delay.', replacements)
           : t('Withdrawals of %s %s or more will be delayed for %s.', [
               formatNumber(threshold, decimals),
@@ -166,10 +167,7 @@ export const WithdrawForm = ({
   };
 
   const showWithdrawDelayNotification =
-    delay &&
-    selectedAsset &&
-    (!threshold.isFinite() ||
-      new BigNumber(amount).isGreaterThanOrEqualTo(threshold));
+    delay && selectedAsset && new BigNumber(amount).isGreaterThan(threshold);
 
   return (
     <>
