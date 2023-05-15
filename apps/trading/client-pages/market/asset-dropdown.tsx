@@ -20,7 +20,11 @@ export const AssetDropdown = ({
   }
 
   return (
-    <DropdownMenu trigger={<DropdownMenuTrigger iconName="dollar" />}>
+    <DropdownMenu
+      trigger={
+        <DropdownMenuTrigger iconName="dollar" data-testid="asset-trigger" />
+      }
+    >
       <DropdownMenuContent>
         {assets?.map((a) => {
           return (
@@ -32,6 +36,7 @@ export const AssetDropdown = ({
                   onSelect(a.id, checked);
                 }
               }}
+              data-testid={`asset-id-${a.id}`}
             >
               {a.symbol}
               <DropdownMenuItemIndicator />

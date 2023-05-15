@@ -16,7 +16,7 @@ export const Sort = {
 
 export type SortType = keyof typeof Sort;
 
-const SortTypeMapping: {
+export const SortTypeMapping: {
   [key in SortType]: string;
 } = {
   [Sort.None]: 'None',
@@ -33,7 +33,14 @@ export const SortDropdown = ({
   onSelect: (sort: SortType) => void;
 }) => {
   return (
-    <DropdownMenu trigger={<DropdownMenuTrigger iconName="arrow-top-right" />}>
+    <DropdownMenu
+      trigger={
+        <DropdownMenuTrigger
+          iconName="arrow-top-right"
+          data-testid="sort-trigger"
+        />
+      }
+    >
       <DropdownMenuContent>
         <DropdownMenuRadioGroup
           value={currentSort}
@@ -43,7 +50,12 @@ export const SortDropdown = ({
             .filter((s) => s !== Sort.None)
             .map((key) => {
               return (
-                <DropdownMenuRadioItem inset key={key} value={key}>
+                <DropdownMenuRadioItem
+                  inset
+                  key={key}
+                  value={key}
+                  data-testid={`sort-item-${key}`}
+                >
                   {SortTypeMapping[key as SortType]}
                   <DropdownMenuItemIndicator />
                 </DropdownMenuRadioItem>

@@ -39,6 +39,7 @@ export const ProductSelector = ({
               onSelect(t as ProductType);
             }}
             className={classes}
+            data-testid={`product-${t}`}
           >
             {ProductTypeMapping[t as ProductType]}
           </button>

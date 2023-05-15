@@ -57,6 +57,7 @@ export const MarketSelector = ({
             type="text"
             placeholder={t('Search')}
             className="flex-1 block border border-vega-light-300 dark:border-vega-dark-300 p-2 rounded bg-transparent w-48"
+            data-testid="search-term"
           />
           <AssetDropdown
             assets={uniqBy(
@@ -204,7 +205,7 @@ const List = ({
 
   if (!data.length) {
     return (
-      <div style={{ width, height }}>
+      <div style={{ width, height }} data-testid="no-items">
         <div className="mb-2 px-4">
           <div className="text-sm bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg px-4 py-2">
             {noItems}
