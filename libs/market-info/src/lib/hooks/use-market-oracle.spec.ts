@@ -1,12 +1,13 @@
 import { renderHook } from '@testing-library/react';
 import { useMarketOracle } from './use-market-oracle';
 import type { MarketInfoQuery } from '../components/market-info/__generated__/MarketInfo';
-import type { Provider } from '@vegaprotocol/oracles';
+import type { Provider } from '../oracle-schema';
 
 const ORACLE_PROOFS_URL = 'ORACLE_PROOFS_URL';
 
 const address = 'address';
 const key = 'key';
+const dataSourceSpecId = 'dataSourceSpecId';
 
 const mockEnvironment = jest.fn(() => ({ ORACLE_PROOFS_URL }));
 const mockDataProvider = jest.fn<
@@ -18,6 +19,7 @@ const mockDataProvider = jest.fn<
       instrument: {
         product: {
           dataSourceSpecForSettlementData: {
+            id: dataSourceSpecId,
             data: {
               sourceType: {
                 __typename: 'DataSourceDefinitionExternal',
@@ -57,7 +59,7 @@ jest.mock('@vegaprotocol/data-provider', () => ({
   useDataProvider: jest.fn((args) => mockDataProvider()),
 }));
 
-jest.mock('@vegaprotocol/oracles', () => ({
+jest.mock('./use-oracle-proofs', () => ({
   useOracleProofs: jest.fn((args) => mockOracleProofs()),
 }));
 
@@ -100,7 +102,8 @@ describe('useMarketOracle', () => {
       data,
     });
     const { result } = renderHook(() => useMarketOracle(marketId));
-    expect(result.current).toBe(data[1].oracle);
+    expect(result.current?.dataSourceSpecId).toBe(dataSourceSpecId);
+    expect(result.current?.provider).toBe(data[1]);
   });
 
   it('returns oracle matching by public_key', () => {
@@ -128,6 +131,7 @@ describe('useMarketOracle', () => {
       data,
     });
     const { result } = renderHook(() => useMarketOracle(marketId));
-    expect(result.current).toBe(data[1].oracle);
+    expect(result.current?.dataSourceSpecId).toBe(dataSourceSpecId);
+    expect(result.current?.provider).toBe(data[1]);
   });
 });

@@ -6,8 +6,8 @@ import { MarketState } from '@vegaprotocol/types';
 import { subDays } from 'date-fns';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OracleSpecDataConnectionQuery } from '@vegaprotocol/oracles';
-import { OracleSpecDataConnectionDocument } from '@vegaprotocol/oracles';
+import type { OracleSpecDataConnectionQuery } from '@vegaprotocol/market-info';
+import { OracleSpecDataConnectionDocument } from '@vegaprotocol/market-info';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import type {

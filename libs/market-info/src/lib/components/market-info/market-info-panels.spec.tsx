@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/types';
 import { DataSourceProof } from './market-info-panels';
 
-jest.mock('@vegaprotocol/oracles', () => ({
+jest.mock('../../hooks/use-oracle-markets', () => ({
   useOracleMarkets: () => [],
 }));
 
@@ -35,7 +35,7 @@ describe('DataSourceProof', () => {
       providers: [],
       type: 'termination' as const,
     };
-    render(<DataSourceProof id={''} {...props} />);
+    render(<DataSourceProof dataSourceSpecId={''} {...props} />);
     expect(
       screen.getByText('No oracle proof for termination')
     ).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe('DataSourceProof', () => {
       ],
       type: 'settlementData' as const,
     };
-    render(<DataSourceProof id={''} {...props} />);
+    render(<DataSourceProof dataSourceSpecId={''} {...props} />);
     expect(
       screen.getByText('No oracle proof for settlement data')
     ).toBeInTheDocument();
@@ -128,7 +128,7 @@ describe('DataSourceProof', () => {
       providers: [],
       type: 'termination' as const,
     };
-    render(<DataSourceProof id={''} {...props} />);
+    render(<DataSourceProof dataSourceSpecId={''} {...props} />);
     expect(screen.getByText('Internal conditions')).toBeInTheDocument();
     expect(
       screen.getByText(
