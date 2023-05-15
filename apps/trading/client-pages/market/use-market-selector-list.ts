@@ -68,11 +68,11 @@ export const useMarketSelectorList = ({
     }
 
     if (sort === Sort.New) {
-      return markets.sort((a, b) => {
-        const aTimestamp = new Date(a.marketTimestamps.open).getTime();
-        const bTimestamp = new Date(b.marketTimestamps.open).getTime();
-        return bTimestamp - aTimestamp;
-      });
+      return orderBy(
+        markets,
+        [(m) => new Date(m.marketTimestamps.open).getTime()],
+        ['desc']
+      );
     }
 
     return markets;
