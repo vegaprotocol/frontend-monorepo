@@ -229,19 +229,19 @@ const AppContainer = () => {
           }
 
           const updatedRequest =
-            requestUrl && requestUrl.includes('/test?')
+            requestUrl && requestUrl.includes('/claim?')
               ? { ...event.request, url: removeQueryParams(requestUrl) }
               : event.request;
 
           const updatedTransaction =
-            transaction && transaction.includes('/test?')
+            transaction && transaction.includes('/claim?')
               ? removeQueryParams(transaction)
               : transaction;
 
           const updatedBreadcrumbs = event.breadcrumbs?.map((breadcrumb) => {
             if (
               breadcrumb.type === 'navigation' &&
-              breadcrumb.data?.to?.includes('/test?')
+              breadcrumb.data?.to?.includes('/claim?')
             ) {
               return {
                 ...breadcrumb,
