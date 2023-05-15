@@ -3,7 +3,6 @@ import {
   StakingBridge,
   Token,
   TokenVesting,
-  TokenFaucetable,
   CollateralBridge,
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
@@ -41,7 +40,7 @@ export async function depositAsset(
   decimalPlaces: number
 ) {
   // Approve asset
-  const faucet = new TokenFaucetable(assetEthAddress, signer);
+  const faucet = new Token(assetEthAddress, signer);
   cy.wrap(
     faucet.approve(Erc20BridgeAddress, amount + '0'.repeat(decimalPlaces + 1)),
     {
@@ -62,7 +61,7 @@ export async function depositAsset(
 }
 
 export async function faucetAsset(assetEthAddress: string) {
-  const faucet = new TokenFaucetable(assetEthAddress, signer);
+  const faucet = new Token(assetEthAddress, signer);
   await promiseWithTimeout(faucet.faucet(), 10 * 60 * 1000, 'faucet asset');
 }
 
