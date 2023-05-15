@@ -121,16 +121,16 @@ const MainnetContent = ({
         <ul className="list-disc ml-6 text-lg">
           <li>
             {t(
-              'No party hosts or operates this IFPS website or offers any financial advice'
+              'No party hosts or operates this IFPS website or offers any financial advice.'
             )}
           </li>
           <li>
             {t(
-              'You may encounter bugs, loss of functionality or loss of assets'
+              'You may encounter bugs, loss of functionality or loss of assets.'
             )}
           </li>
           <li>
-            {t('No party accepts any liability for any losses whatsoever')}
+            {t('No party accepts any liability for any losses whatsoever.')}
           </li>
         </ul>
       </div>

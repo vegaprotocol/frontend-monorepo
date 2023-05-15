@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { RiskNoticeDialog } from './risk-notice-dialog';
 
 jest.mock('@vegaprotocol/environment');
@@ -49,7 +51,9 @@ describe('Risk notice dialog', () => {
   );
 
   it('displays a risk message for mainnet', () => {
-    const introText = 'Regulation may apply to use of this app';
+    const pubKey = 'pubKey';
+    const introText =
+      'No party hosts or operates this IFPS website or offers any financial advice.';
     const network = Networks.MAINNET;
 
     // @ts-ignore ignore mock implementation
@@ -58,12 +62,16 @@ describe('Risk notice dialog', () => {
       VEGA_ENV: network,
     }));
 
-    render(<RiskNoticeDialog onClose={mockOnClose} network={network} />);
+    render(
+      <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
+        <RiskNoticeDialog onClose={mockOnClose} network={network} />
+      </VegaWalletContext.Provider>
+    );
 
     expect(screen.getByText(introText)).toBeInTheDocument();
 
     const button = screen.getByRole('button', {
-      name: 'I understand, Continue',
+      name: 'I agree',
     });
     fireEvent.click(button);
     expect(mockOnClose).toHaveBeenCalled();
