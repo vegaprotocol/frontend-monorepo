@@ -204,7 +204,7 @@ const AppContainer = () => {
   ]);
 
   useEffect(() => {
-    if (ENV.dsn && telemetryOn) {
+    if (ENV.dsn && telemetryOn === 'true') {
       Sentry.init({
         dsn: ENV.dsn,
         tracesSampleRate: 0.1,

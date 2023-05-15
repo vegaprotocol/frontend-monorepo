@@ -33,4 +33,6 @@ before(() => {
     aliasGQLQuery(req, 'ChainId', chainIdQuery());
     aliasGQLQuery(req, 'Statistics', statisticsQuery());
   });
+  // Self stake validators so they are displayed
+  cy.validatorsSelfDelegate();
 });
