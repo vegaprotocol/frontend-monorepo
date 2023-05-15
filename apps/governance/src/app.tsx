@@ -211,9 +211,22 @@ const AppContainer = () => {
         enabled: true,
         environment: VEGA_ENV,
         release: GIT_COMMIT_HASH,
-        beforeSend(event) {
+        beforeSend(event, hint) {
+          const error = hint?.originalException;
+          const errorIsString = typeof error === 'string';
+          const errorIsObject = error instanceof Error;
           const requestUrl = event.request?.url;
           const transaction = event.transaction;
+
+          if (
+            (errorIsString && error.includes('failed to get party ID')) ||
+            (errorIsObject &&
+              error?.message?.includes('failed to get party ID'))
+          ) {
+            // This error is caused by a pubkey making an API request before
+            // it has interacted with the chain. This isn't needed in Sentry.
+            return null;
+          }
 
           const updatedRequest =
             requestUrl && requestUrl.includes('/test?')
