@@ -2,19 +2,19 @@ import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
-  ButtonLink,
   ExternalLink,
   Icon,
   Intent,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { oracleStatuses } from '../oracle-banner';
 import type { IconName } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import { getLinkIcon, getVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
-import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 export const OracleProfileTitle = ({ provider }: { provider: Provider }) => {
   const { icon, intent } = getVerifiedStatusIcon(provider);
@@ -49,18 +49,35 @@ export const OracleProfileTitle = ({ provider }: { provider: Provider }) => {
   );
 };
 
+const OracleStatus = ({ oracle }: { oracle: Provider['oracle'] }) => (
+  <div>
+    {t(`Oracle status`)}: {oracle.status}. {oracleStatuses[oracle.status]}
+    {oracle.status_reason ? (
+      <div>
+        <ReactMarkdown
+          className="react-markdown-container"
+          skipHtml={true}
+          disallowedElements={['img']}
+          linkTarget="_blank"
+        >
+          {oracle.status_reason}
+        </ReactMarkdown>
+      </div>
+    ) : null}
+  </div>
+);
+
 export const OracleFullProfile = ({
   provider,
-  id,
+  dataSourceSpecId,
   markets: oracleMarkets,
 }: {
   provider: Provider;
-  id: string;
+  dataSourceSpecId: string;
   markets?: OracleMarketSpecFieldsFragment[] | undefined;
 }) => {
   const { message } = getVerifiedStatusIcon(provider);
   const { VEGA_EXPLORER_URL } = useEnvironment();
-  const [showMore, setShowMore] = useState(false);
 
   const links = provider.proofs
     .filter((proof) => proof.format === 'url' && proof.available === true)
@@ -71,30 +88,24 @@ export const OracleFullProfile = ({
     }));
 
   return (
-    <div className="flex flex-col text-sm">
+    <div className="flex flex-col text-sm" data-testid="oracle-full-profile">
       <div className="dark:text-vega-light-300 text-vega-dark-300">
-        <p className=" pb-2">{message}</p>
-        {!showMore && (
-          <p className="pb-2">
-            {provider.description_markdown.slice(0, 100)}
-            {'... '}
-            <span className="ml-2">
-              <ButtonLink onClick={() => setShowMore(!showMore)}>
-                Read more
-              </ButtonLink>
-            </span>
-          </p>
-        )}
-        {showMore && (
-          <p className="pb-2">
+        {provider.oracle.status !== 'GOOD' ? (
+          <div className="mb-2">
+            <OracleStatus oracle={provider.oracle} />
+          </div>
+        ) : null}
+        <div className="mb-2">{message}</div>
+        <div className="mb-2">
+          <ReactMarkdown
+            className="react-markdown-container"
+            skipHtml={true}
+            disallowedElements={['img']}
+            linkTarget="_blank"
+          >
             {provider.description_markdown}
-            <span className="ml-2">
-              <ButtonLink onClick={() => setShowMore(!showMore)}>
-                Show less
-              </ButtonLink>
-            </span>
-          </p>
-        )}
+          </ReactMarkdown>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-6">
         <div className="col-span-1">
@@ -132,9 +143,9 @@ export const OracleFullProfile = ({
           <p className="dark:text-vega-light-300 text-vega-dark-300 uppercase">
             {t('Details')}
           </p>
-          {id && (
+          {dataSourceSpecId && (
             <ExternalLink
-              href={`${VEGA_EXPLORER_URL}/oracles/${id}`}
+              href={`${VEGA_EXPLORER_URL}/oracles/${dataSourceSpecId}`}
               data-testid="block-explorer-link"
             >
               {t('Block explorer')}

@@ -28,7 +28,6 @@
     "network-info": "libs/network-info",
     "network-parameters": "libs/network-parameters",
     "network-stats": "libs/network-stats",
-    "oracles": "libs/oracles",
     "orders": "libs/orders",
     "positions": "libs/positions",
     "proposals": "libs/proposals",

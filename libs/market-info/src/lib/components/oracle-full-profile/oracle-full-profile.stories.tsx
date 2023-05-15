@@ -7,7 +7,7 @@ export default {
 } as Meta;
 
 const Template: Story = (args) => (
-  <OracleFullProfile provider={args['provider']} id="4578" />
+  <OracleFullProfile provider={args['provider']} dataSourceSpecId="4578" />
 );
 
 export const OraclePrimary = Template.bind({});

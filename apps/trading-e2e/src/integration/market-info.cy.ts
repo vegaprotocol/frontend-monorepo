@@ -7,6 +7,9 @@ const marketTitle = 'accordion-title';
 const externalLink = 'external-link';
 const accordionContent = 'accordion-content';
 const providerName = 'provider-name';
+const oracleBannerStatus = 'oracle-banner-status';
+const oracleBannerDialogTrigger = 'oracle-banner-dialog-trigger';
+const oracleFullProfile = 'oracle-full-profile';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -29,7 +32,11 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('show oracle banner', () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
-    cy.getByTestId('oracle-status').should('contain.text', 'COMPROMISED');
+    cy.getByTestId(oracleBannerStatus).should('contain.text', 'COMPROMISED');
+    cy.getByTestId(oracleBannerDialogTrigger)
+      .should('contain.text', 'Show more')
+      .click();
+    cy.getByTestId(oracleFullProfile).should('exist');
   });
 
   it('current fees displayed', () => {

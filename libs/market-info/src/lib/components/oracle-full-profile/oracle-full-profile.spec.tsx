@@ -31,7 +31,11 @@ describe('OracleFullProfile', () => {
 
   it('should render successfully', () => {
     const component = (
-      <OracleFullProfile provider={testProvider} id={''} markets={[]} />
+      <OracleFullProfile
+        provider={testProvider}
+        dataSourceSpecId={''}
+        markets={[]}
+      />
     );
     expect(component).toBeTruthy();
   });
@@ -40,7 +44,7 @@ describe('OracleFullProfile', () => {
     render(
       <OracleFullProfile
         provider={testProvider}
-        id={'oracle-id'}
+        dataSourceSpecId={'oracle-id'}
         markets={[]}
       />
     );

@@ -1,7 +1,7 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
-import type { Provider, Status } from '@vegaprotocol/oracles';
+import type { Provider, Status } from '@vegaprotocol/market-info';
 import {
   accountsQuery,
   assetQuery,

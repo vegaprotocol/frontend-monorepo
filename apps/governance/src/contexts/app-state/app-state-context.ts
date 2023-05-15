@@ -34,9 +34,6 @@ export interface AppState {
   /** Whether or not the manage VEGA wallet overlay is open */
   vegaWalletManageOverlay: boolean;
 
-  /** Whether or not the connect to Ethereum wallet overlay is open */
-  ethConnectOverlay: boolean;
-
   /**  Whether or not the transaction modal is open */
   transactionOverlay: boolean;
   /**
@@ -57,7 +54,6 @@ export enum AppStateActionType {
   REFRESH_BALANCES,
   SET_VEGA_WALLET_OVERLAY,
   SET_VEGA_WALLET_MANAGE_OVERLAY,
-  SET_ETH_WALLET_OVERLAY,
   SET_DRAWER,
   REFRESH_ASSOCIATED_BALANCES,
   SET_ASSOCIATION_BREAKDOWN,
@@ -79,10 +75,6 @@ export type AppStateAction =
     }
   | {
       type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY;
-      isOpen: boolean;
-    }
-  | {
-      type: AppStateActionType.SET_ETH_WALLET_OVERLAY;
       isOpen: boolean;
     }
   | {
