@@ -120,7 +120,10 @@ export const OracleFullProfile = ({
             className="dark:text-vega-light-300 text-vega-dark-300 uppercase"
             data-testid="verified-accounts"
           >
-            {t('%s proofs of ownership', provider.proofs.length.toString())}
+            {t('%s %s of ownership', [
+              provider.proofs.length.toString(),
+              provider.proofs.length === 1 ? 'proof' : 'proofs',
+            ])}
           </p>
           {provider.proofs.length > 0 ? (
             <div className="flex flex-col gap-1">
