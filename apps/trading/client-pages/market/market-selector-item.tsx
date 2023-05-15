@@ -21,6 +21,7 @@ export const MarketSelectorItem = ({
 }) => {
   const wrapperClasses = classNames(
     'block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4',
+    'min-h-[120px]',
     {
       'ring-1 ring-vega-light-300 dark:ring-vega-dark-300':
         currentMarketId === market.id,
@@ -54,7 +55,10 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   return (
     <div className="flex flex-nowrap justify-between items-center mt-1">
       <div className="w-1/2">
-        <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+        <div
+          className="text-ellipsis whitespace-nowrap overflow-hidden"
+          data-testid="market-item-price"
+        >
           {marketData
             ? addDecimalsFormatNumber(
                 marketData.markPrice,
@@ -93,7 +97,7 @@ const PriceChange = ({ candles }: { candles: string[] }) => {
   }
   const formattedChange = formatNumber(Number(priceChange), 2);
   return (
-    <div className={priceChangeClasses}>
+    <div className={priceChangeClasses} data-testid="market-item-change">
       {priceChange ? `${prefix}${formattedChange}%` : '-'}
     </div>
   );
