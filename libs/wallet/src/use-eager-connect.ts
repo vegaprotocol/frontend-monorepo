@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import type { VegaConnector } from './connectors/vega-connector';
 import { getConfig } from './storage';
 
-export function useEagerConnect(Connectors: {
+export function useEagerConnect(Connectors?: {
   [connector: string]: VegaConnector;
 }) {
   const [connecting, setConnecting] = useState(true);
@@ -12,8 +12,8 @@ export function useEagerConnect(Connectors: {
   useEffect(() => {
     const attemptConnect = async () => {
       const cfg = getConfig();
-      // No stored config, or config was malformed
-      if (!cfg || !cfg.connector) {
+      // No stored config, or config was malformed or no risk accepted
+      if (!cfg || !cfg.connector || !Connectors) {
         setConnecting(false);
         return;
       }

@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   useEagerConnect as useVegaEagerConnect,
   useVegaTransactionManager,
@@ -34,6 +35,7 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { AnnouncementBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
+import * as constants from '../components/constants';
 import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider, allOrdersProvider } from '@vegaprotocol/orders';
@@ -159,7 +161,8 @@ const PartyData = () => {
 };
 
 const MaybeConnectEagerly = () => {
-  useVegaEagerConnect(Connectors);
+  const [riskAccepted] = useLocalStorage(constants.RISK_ACCEPTED_KEY);
+  useVegaEagerConnect(riskAccepted === 'true' ? Connectors : undefined);
   const [isTelemetryApproved] = useTelemetryApproval();
   useEthereumEagerConnect(
     isTelemetryApproved ? { dsn: ENV.dsn, env: ENV.envName } : {}
