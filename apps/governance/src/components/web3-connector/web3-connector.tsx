@@ -25,20 +25,26 @@ export function Web3Connector({
   connectors,
   chainId,
 }: Web3ConnectorProps) {
-  const { appState, appDispatch } = useAppState();
+  const { open, close, isOpen } = useWeb3ConnectStore();
+
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
-      appDispatch({ type: AppStateActionType.SET_ETH_WALLET_OVERLAY, isOpen });
+      if (isOpen) {
+        open();
+      } else {
+        close();
+      }
     },
-    [appDispatch]
+    [open, close]
   );
+
   const appChainId = Number(chainId);
   return (
     <>
       <Web3Content appChainId={appChainId}>{children}</Web3Content>
       <Web3ConnectDialog
         connectors={connectors}
-        dialogOpen={appState.ethConnectOverlay}
+        dialogOpen={isOpen}
         setDialogOpen={setDialogOpen}
         desiredChainId={appChainId}
       />

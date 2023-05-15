@@ -1,23 +1,14 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-
-import {
-  AppStateActionType,
-  useAppState,
-} from '../../contexts/app-state/app-state-context';
+import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 
 export const EthConnectPrompt = () => {
   const { t } = useTranslation();
-  const { appDispatch } = useAppState();
+  const { open } = useWeb3ConnectStore();
   return (
     <Button
       variant="default"
-      onClick={() =>
-        appDispatch({
-          type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
-          isOpen: true,
-        })
-      }
+      onClick={open}
       fill={true}
       data-testid="connect-to-eth-btn"
     >
