@@ -18,8 +18,7 @@ export const useSubmitFaucet = (
     return state.transactions.find((t) => t?.id === id);
   });
   const contract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
-    true
+    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
   );
 
   // When tx is confirmed refresh balances

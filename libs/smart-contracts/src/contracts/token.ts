@@ -40,6 +40,8 @@ export class Token {
     return this.contract.decimals();
   }
   async faucet() {
-    /* No op */
+    const res = await this.contract.estimateGas.faucet();
+    const gasLimit = calcGasBuffer(res);
+    return this.contract.faucet({ gasLimit });
   }
 }
