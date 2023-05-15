@@ -14,6 +14,7 @@ import classNames from 'classnames';
 import { getLinkIcon, getVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
+import ReactMarkdown from 'react-markdown';
 import { useState } from 'react';
 
 export const OracleProfileTitle = ({ provider }: { provider: Provider }) => {
@@ -69,31 +70,48 @@ export const OracleFullProfile = ({
       url: 'url' in proof ? proof.url : '',
       icon: getLinkIcon(proof.type),
     }));
+  const signedMessageProofs = provider.proofs.filter(
+    (proof) => proof.format === 'signed_message' && proof.available === true
+  );
 
   return (
     <div className="flex flex-col text-sm">
-      <div className="dark:text-vega-light-300 text-vega-dark-300">
-        <p className=" pb-2">{message}</p>
+      <div className="dark:text-vega-light-300 text-vega-dark-300 mb-2">
+        <p className="pb-2">{message}</p>
         {!showMore && (
-          <p className="pb-2">
-            {provider.description_markdown.slice(0, 100)}
-            {'... '}
+          <span>
+            <ReactMarkdown
+              className="react-markdown-container"
+              skipHtml={true}
+              disallowedElements={['img']}
+              linkTarget="_blank"
+            >
+              {provider.description_markdown.slice(0, 100)}
+            </ReactMarkdown>{' '}
+            {'...'}
             <span className="ml-2">
               <ButtonLink onClick={() => setShowMore(!showMore)}>
                 Read more
               </ButtonLink>
             </span>
-          </p>
+          </span>
         )}
         {showMore && (
-          <p className="pb-2">
-            {provider.description_markdown}
+          <span>
+            <ReactMarkdown
+              className="react-markdown-container"
+              skipHtml={true}
+              disallowedElements={['img']}
+              linkTarget="_blank"
+            >
+              {provider.description_markdown}
+            </ReactMarkdown>
             <span className="ml-2">
               <ButtonLink onClick={() => setShowMore(!showMore)}>
                 Show less
               </ButtonLink>
             </span>
-          </p>
+          </span>
         )}
       </div>
       <div className="grid grid-cols-2 gap-6">
@@ -102,9 +120,9 @@ export const OracleFullProfile = ({
             className="dark:text-vega-light-300 text-vega-dark-300 uppercase"
             data-testid="verified-accounts"
           >
-            {t('%s proofs of ownership', links.length.toString())}
+            {t('%s proofs of ownership', provider.proofs.length.toString())}
           </p>
-          {links.length > 0 ? (
+          {provider.proofs.length > 0 ? (
             <div className="flex flex-col gap-1">
               {links.map((link) => (
                 <ExternalLink
@@ -121,6 +139,31 @@ export const OracleFullProfile = ({
                   </span>
                 </ExternalLink>
               ))}
+              {signedMessageProofs.length > 0 && (
+                <ExternalLink
+                  key={'more-proofs'}
+                  href={provider.github_link}
+                  className="flex align-items-bottom underline text-sm pt-2"
+                >
+                  {links.length > 0 ? (
+                    <span className="underline">
+                      {t('And %s more %s', [
+                        signedMessageProofs.length.toString(),
+                        signedMessageProofs.length === 1 ? 'proof' : 'proofs',
+                      ])}{' '}
+                      <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
+                    </span>
+                  ) : (
+                    <span className="underline">
+                      {t('Verify %s %s of ownership', [
+                        signedMessageProofs.length.toString(),
+                        signedMessageProofs.length === 1 ? 'proof' : 'proofs',
+                      ])}{' '}
+                      <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
+                    </span>
+                  )}
+                </ExternalLink>
+              )}
             </div>
           ) : (
             <p className="dark:text-vega-light-300 text-vega-dark-300">

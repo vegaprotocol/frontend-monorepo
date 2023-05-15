@@ -24,27 +24,30 @@ export const OracleBanner = ({ marketId }: { marketId: string }) => {
     marketId,
     'dataSourceSpecForTradingTermination'
   );
-  if (!settlementOracle || settlementOracle.status === 'GOOD') {
-    return null;
-  } else if (!terminationOracle || terminationOracle.status === 'GOOD') {
-    return null;
+  let maliciousOracle;
+  const showBanner =
+    settlementOracle?.status !== 'GOOD' || terminationOracle?.status !== 'GOOD';
+  if (settlementOracle?.status !== 'GOOD') {
+    maliciousOracle = settlementOracle;
+  } else if (terminationOracle?.status !== 'GOOD') {
+    maliciousOracle = terminationOracle;
   }
-  const oracle = settlementOracle;
+  if (!showBanner || !maliciousOracle) return null;
   return (
     <NotificationBanner intent={Intent.Danger}>
       <div>
         Oracle status for this market is{' '}
-        <span data-testId="oracle-status">{oracle.status}</span>.{' '}
-        {oracleStatuses[oracle.status]}
+        <span data-testId="oracle-status">{maliciousOracle.status}</span>.{' '}
+        {oracleStatuses[maliciousOracle.status]}
       </div>
-      {oracle.status_reason ? (
+      {maliciousOracle.status_reason ? (
         <ReactMarkdown
           className="react-markdown-container"
           skipHtml={true}
           disallowedElements={['img']}
           linkTarget="_blank"
         >
-          {oracle.status_reason}
+          {maliciousOracle.status_reason}
         </ReactMarkdown>
       ) : null}
     </NotificationBanner>
