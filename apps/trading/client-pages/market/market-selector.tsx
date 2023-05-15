@@ -1,19 +1,12 @@
 import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
-import { useMarketDataUpdateSubscription } from '@vegaprotocol/market-list';
-import {
-  Sparkline,
-  TinyScroll,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { TinyScroll, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import classNames from 'classnames';
 import { useMarketSelectorList } from './use-market-selector-list';
 import type { ProductType } from './product-selector';
 import { Product, ProductSelector } from './product-selector';
@@ -49,7 +42,7 @@ export const MarketSelector = ({
 
   return (
     <div className="grid grid-rows-[min-content_1fr_min-content] h-full">
-      <div className="p-2">
+      <div className="px-4 py-2">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
@@ -212,8 +205,8 @@ const List = ({
   if (!data.length) {
     return (
       <div style={{ width, height }}>
-        <div className="mb-2 px-2">
-          <div className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg px-4 py-2">
+        <div className="mb-2 px-4">
+          <div className="text-sm bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg px-4 py-2">
             {noItems}
           </div>
         </div>

@@ -27,7 +27,7 @@ export const MarketSelectorItem = ({
     }
   );
   return (
-    <div style={style} className="my-0.5 px-2">
+    <div style={style} className="my-0.5 pl-4 pr-3">
       <Link to={`/markets/${market.id}`} className={wrapperClasses}>
         <div>{market.tradableInstrument.instrument.code}</div>
         <div
