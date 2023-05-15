@@ -346,7 +346,11 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
             primaryContent={market?.tradableInstrument.instrument.code}
             secondaryContent={market?.tradableInstrument.instrument.name}
           />
-          <button onClick={() => setSidebarOpen((x) => !x)} className="p-2">
+          <button
+            onClick={() => setSidebarOpen((x) => !x)}
+            className="p-2"
+            data-testid="sidebar-toggle"
+          >
             <span
               className={classNames('block', {
                 'rotate-90 translate-x-1': !sidebarOpen,

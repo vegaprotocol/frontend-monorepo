@@ -41,7 +41,10 @@ export const MarketSelector = ({
   const { markets, data, loading, error } = useMarketSelectorList(filter);
 
   return (
-    <div className="grid grid-rows-[min-content_1fr_min-content] h-full">
+    <div
+      className="grid grid-rows-[min-content_1fr_min-content] h-full"
+      data-testid="market-selector"
+    >
       <div className="px-4 py-2">
         <ProductSelector
           product={filter.product}
@@ -103,7 +106,7 @@ export const MarketSelector = ({
           />
         </div>
       </div>
-      <div>
+      <div data-testid="market-selector-list">
         <MarketList
           data={markets}
           loading={loading}

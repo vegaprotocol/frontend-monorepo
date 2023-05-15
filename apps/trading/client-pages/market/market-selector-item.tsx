@@ -30,13 +30,13 @@ export const MarketSelectorItem = ({
   return (
     <div style={style} className="my-0.5 pl-4 pr-3">
       <Link to={`/markets/${market.id}`} className={wrapperClasses}>
-        <div>{market.tradableInstrument.instrument.code}</div>
-        <div
+        <h3>{market.tradableInstrument.instrument.code}</h3>
+        <h4
           title={market.tradableInstrument.instrument.name}
           className="text-sm text-vega-light-300 dark:text-vega-dark-300 text-ellipsis whitespace-nowrap overflow-hidden"
         >
           {market.tradableInstrument.instrument.name}
-        </div>
+        </h4>
         <MarketData market={market} />
       </Link>
     </div>
@@ -52,6 +52,14 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
 
   const marketData = data?.marketsData[0];
 
+  // use market data price if available as this is comes from
+  // the subscription
+  const price = marketData
+    ? addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
+    : market.data
+    ? addDecimalsFormatNumber(market.data.markPrice, market.decimalPlaces)
+    : '-';
+
   return (
     <div className="flex flex-nowrap justify-between items-center mt-1">
       <div className="w-1/2">
@@ -59,12 +67,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           className="text-ellipsis whitespace-nowrap overflow-hidden"
           data-testid="market-item-price"
         >
-          {marketData
-            ? addDecimalsFormatNumber(
-                marketData.markPrice,
-                market.decimalPlaces
-              )
-            : '-'}
+          {price}
         </div>
         {market.candles && (
           <PriceChange candles={market.candles.map((c) => c.close)} />
