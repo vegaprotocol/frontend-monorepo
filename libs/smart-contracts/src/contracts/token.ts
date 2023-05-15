@@ -4,6 +4,8 @@ import erc20Abi from '../abis/erc20_abi.json';
 import erc20AbiTether from '../abis/erc20_abi_tether.json';
 import { calcGasBuffer } from '../utils';
 
+const TETHER_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+
 export class Token {
   public contract: ethers.Contract;
   public address: string;
@@ -14,7 +16,7 @@ export class Token {
   ) {
     let abi: typeof erc20Abi | typeof erc20AbiTether = erc20Abi;
     // USDT (Tether) has a different ABI
-    if (address === '0xdAC17F958D2ee523a2206206994597C13D831ec7') {
+    if (address === TETHER_ADDRESS) {
       abi = erc20AbiTether;
     }
 
