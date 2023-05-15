@@ -21,7 +21,7 @@ export const useSubmitApproval = (
   const { config } = useEthereumConfig();
   const contract = useTokenContract(
     isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
-    true
+    false
   );
 
   // When tx is confirmed refresh balances
