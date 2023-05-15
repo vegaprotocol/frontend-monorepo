@@ -53,7 +53,6 @@ const mockAppState: AppState = {
   totalSupply: new BigNumber(65000000),
   vegaWalletOverlay: false,
   vegaWalletManageOverlay: false,
-  ethConnectOverlay: false,
   transactionOverlay: false,
   bannerMessage: '',
   disconnectNotice: false,
