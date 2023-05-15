@@ -31,7 +31,7 @@ describe('Market trading page', () => {
     // 7002-SORD-001
     // 7002-SORD-002
     it('must display market name', () => {
-      cy.getByTestId('popover-trigger').should('not.be.empty');
+      cy.getByTestId('header-title').should('not.be.empty');
     });
 
     it('must see market expiry', () => {

@@ -72,7 +72,7 @@ export const HeaderTitle = ({
   secondaryContent: ReactNode;
 }) => {
   return (
-    <div className="text-left">
+    <div className="text-left" data-testid="header-title">
       <div className="text-sm md:text-md lg:text-lg whitespace-nowrap leading-4">
         {primaryContent}
       </div>
