@@ -28,6 +28,7 @@ import {
   ProtocolUpgradeCountdown,
   ProtocolUpgradeCountdownMode,
 } from '@vegaprotocol/proposals';
+import { useCallback } from 'react';
 
 export const Navbar = ({
   theme = 'system',
@@ -36,9 +37,11 @@ export const Navbar = ({
 }) => {
   const { VEGA_DOCS_URL, GITHUB_FEEDBACK_URL } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
-  const { marketId } = useGlobalStore((store) => ({
-    marketId: store.marketId,
-  }));
+  const marketId = useGlobalStore((store) => store.marketId);
+  const update = useGlobalStore((store) => store.update);
+  const showDisclaimer = useCallback(() => {
+    update({ shouldDisplayDisclaimerDialog: true });
+  }, [update]);
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
@@ -108,6 +111,16 @@ export const Navbar = ({
                   <NavExternalLink href={GITHUB_FEEDBACK_URL}>
                     {t('Give Feedback')}
                   </NavExternalLink>
+                </NavigationItem>
+                <NavigationItem>
+                  <NavigationLink
+                    data-testid="Portfolio"
+                    to="/#"
+                    onClick={showDisclaimer}
+                    end
+                  >
+                    {t('Disclaimer')}
+                  </NavigationLink>
                 </NavigationItem>
               </NavigationList>
             </NavigationContent>
