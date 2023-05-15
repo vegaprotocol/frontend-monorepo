@@ -2,6 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
+  ButtonLink,
   ExternalLink,
   Icon,
   Intent,
@@ -79,6 +80,7 @@ export const OracleFullProfile = ({
 }) => {
   const { message } = getVerifiedStatusIcon(provider);
   const { VEGA_EXPLORER_URL } = useEnvironment();
+  const [showMore, setShowMore] = useState(false);
 
   const links = provider.proofs
     .filter((proof) => proof.format === 'url' && proof.available === true)
@@ -92,44 +94,6 @@ export const OracleFullProfile = ({
   );
 
   return (
-    // <div className="flex flex-col text-sm">
-    //   <div className="dark:text-vega-light-300 text-vega-dark-300 mb-2">
-    //     <p className="pb-2">{message}</p>
-    //     {!showMore && (
-    //       <span>
-    //         <ReactMarkdown
-    //           className="react-markdown-container"
-    //           skipHtml={true}
-    //           disallowedElements={['img']}
-    //           linkTarget="_blank"
-    //         >
-    //           {provider.description_markdown.slice(0, 100)}
-    //         </ReactMarkdown>{' '}
-    //         {'...'}
-    //         <span className="ml-2">
-    //           <ButtonLink onClick={() => setShowMore(!showMore)}>
-    //             Read more
-    //           </ButtonLink>
-    //         </span>
-    //       </span>
-    //     )}
-    //     {showMore && (
-    //       <span>
-    //         <ReactMarkdown
-    //           className="react-markdown-container"
-    //           skipHtml={true}
-    //           disallowedElements={['img']}
-    //           linkTarget="_blank"
-    //         >
-    //           {provider.description_markdown}
-    //         </ReactMarkdown>
-    //         <span className="ml-2">
-    //           <ButtonLink onClick={() => setShowMore(!showMore)}>
-    //             Show less
-    //           </ButtonLink>
-    //         </span>
-    //       </span>
-    //     )}
     <div className="flex flex-col text-sm" data-testid="oracle-full-profile">
       <div className="dark:text-vega-light-300 text-vega-dark-300">
         {provider.oracle.status !== 'GOOD' ? (
@@ -145,8 +109,15 @@ export const OracleFullProfile = ({
             disallowedElements={['img']}
             linkTarget="_blank"
           >
-            {provider.description_markdown}
+            {showMore
+              ? provider.description_markdown
+              : provider.description_markdown.slice(0, 100) + '...'}
           </ReactMarkdown>
+          <span>
+            <ButtonLink onClick={() => setShowMore(!showMore)}>
+              {!showMore ? t('Read more') : t('Show less')}
+            </ButtonLink>
+          </span>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-6">
