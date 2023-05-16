@@ -2,6 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
+  ButtonLink,
   ExternalLink,
   Icon,
   Intent,
@@ -15,6 +16,7 @@ import { getLinkIcon, getVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
 import ReactMarkdown from 'react-markdown';
+import { useState } from 'react';
 
 export const OracleProfileTitle = ({ provider }: { provider: Provider }) => {
   const { icon, intent } = getVerifiedStatusIcon(provider);
@@ -78,6 +80,7 @@ export const OracleFullProfile = ({
 }) => {
   const { message } = getVerifiedStatusIcon(provider);
   const { VEGA_EXPLORER_URL } = useEnvironment();
+  const [showMore, setShowMore] = useState(false);
 
   const links = provider.proofs
     .filter((proof) => proof.format === 'url' && proof.available === true)
@@ -86,6 +89,9 @@ export const OracleFullProfile = ({
       url: 'url' in proof ? proof.url : '',
       icon: getLinkIcon(proof.type),
     }));
+  const signedMessageProofs = provider.proofs.filter(
+    (proof) => proof.format === 'signed_message' && proof.available === true
+  );
 
   return (
     <div className="flex flex-col text-sm" data-testid="oracle-full-profile">
@@ -103,8 +109,15 @@ export const OracleFullProfile = ({
             disallowedElements={['img']}
             linkTarget="_blank"
           >
-            {provider.description_markdown}
+            {showMore
+              ? provider.description_markdown
+              : provider.description_markdown.slice(0, 100) + '...'}
           </ReactMarkdown>
+          <span>
+            <ButtonLink onClick={() => setShowMore(!showMore)}>
+              {!showMore ? t('Read more') : t('Show less')}
+            </ButtonLink>
+          </span>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-6">
@@ -113,9 +126,12 @@ export const OracleFullProfile = ({
             className="dark:text-vega-light-300 text-vega-dark-300 uppercase"
             data-testid="verified-accounts"
           >
-            {t('%s proofs of ownership', links.length.toString())}
+            {t('%s %s of ownership', [
+              provider.proofs.length.toString(),
+              provider.proofs.length === 1 ? 'proof' : 'proofs',
+            ])}
           </p>
-          {links.length > 0 ? (
+          {provider.proofs.length > 0 ? (
             <div className="flex flex-col gap-1">
               {links.map((link) => (
                 <ExternalLink
@@ -132,6 +148,31 @@ export const OracleFullProfile = ({
                   </span>
                 </ExternalLink>
               ))}
+              {signedMessageProofs.length > 0 && (
+                <ExternalLink
+                  key={'more-proofs'}
+                  href={provider.github_link}
+                  className="flex align-items-bottom underline text-sm pt-2"
+                >
+                  {links.length > 0 ? (
+                    <span className="underline">
+                      {t('And %s more %s', [
+                        signedMessageProofs.length.toString(),
+                        signedMessageProofs.length === 1 ? 'proof' : 'proofs',
+                      ])}{' '}
+                      <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
+                    </span>
+                  ) : (
+                    <span className="underline">
+                      {t('Verify %s %s of ownership', [
+                        signedMessageProofs.length.toString(),
+                        signedMessageProofs.length === 1 ? 'proof' : 'proofs',
+                      ])}{' '}
+                      <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
+                    </span>
+                  )}
+                </ExternalLink>
+              )}
             </div>
           ) : (
             <p className="dark:text-vega-light-300 text-vega-dark-300">
