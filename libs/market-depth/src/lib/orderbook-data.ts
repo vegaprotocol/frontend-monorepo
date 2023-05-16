@@ -3,7 +3,7 @@ import uniqBy from 'lodash/uniqBy';
 import reverse from 'lodash/reverse';
 import cloneDeep from 'lodash/cloneDeep';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketData } from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/markets';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
 export enum VolumeType {

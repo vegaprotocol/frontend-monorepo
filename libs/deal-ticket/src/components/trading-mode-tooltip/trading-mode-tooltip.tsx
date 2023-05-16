@@ -8,7 +8,7 @@ import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, SimpleGrid } from '@vegaprotocol/ui-toolkit';
 import { compileGridData } from './compile-grid-data';
-import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
+import { useMarket, useStaticMarketData } from '@vegaprotocol/markets';
 
 type TradingModeTooltipProps = {
   marketId?: string;

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
 import { MarketState } from '@vegaprotocol/types';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from './market-selector';
 import { Sort } from './sort-dropdown';

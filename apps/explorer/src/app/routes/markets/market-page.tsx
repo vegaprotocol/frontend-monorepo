@@ -8,7 +8,7 @@ import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import compact from 'lodash/compact';
 import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
-import { marketInfoWithDataProvider } from '@vegaprotocol/market-info';
+import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
 import { PageTitle } from '../../components/page-helpers/page-title';
 
 export const MarketPage = () => {

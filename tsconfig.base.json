@@ -32,8 +32,7 @@
       "@vegaprotocol/ledger": ["libs/ledger/src/index.ts"],
       "@vegaprotocol/liquidity": ["libs/liquidity/src/index.ts"],
       "@vegaprotocol/market-depth": ["libs/market-depth/src/index.ts"],
-      "@vegaprotocol/market-info": ["libs/market-info/src/index.ts"],
-      "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
+      "@vegaprotocol/markets": ["libs/markets/src/index.ts"],
       "@vegaprotocol/mock": ["libs/cypress/mock.ts"],
       "@vegaprotocol/network-info": ["libs/network-info/src/index.ts"],
       "@vegaprotocol/network-parameters": [

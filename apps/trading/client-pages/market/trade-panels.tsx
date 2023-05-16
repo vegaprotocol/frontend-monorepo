@@ -1,6 +1,6 @@
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import type { Market } from '@vegaprotocol/market-list';
-import { OracleBanner } from '@vegaprotocol/market-info';
+import type { Market } from '@vegaprotocol/markets';
+import { OracleBanner } from '@vegaprotocol/markets';
 import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,

@@ -2,7 +2,7 @@ import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
-import { useMarket, marketDataProvider } from '@vegaprotocol/market-list';
+import { useMarket, marketDataProvider } from '@vegaprotocol/markets';
 import { DealTicket } from './deal-ticket';
 
 export interface DealTicketContainerProps {

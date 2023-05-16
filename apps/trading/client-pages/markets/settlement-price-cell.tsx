@@ -1,6 +1,6 @@
 import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { useOracleSpecBindingData } from '@vegaprotocol/market-info';
+import { useOracleSpecBindingData } from '@vegaprotocol/markets';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 

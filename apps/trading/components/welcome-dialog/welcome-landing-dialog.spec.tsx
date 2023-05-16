@@ -6,7 +6,7 @@ import type {
   MarketMaybeWithCandles,
   MarketMaybeWithData,
   MarketData,
-} from '@vegaprotocol/market-list';
+} from '@vegaprotocol/markets';
 import { SelectMarketLandingTable } from './welcome-landing-dialog';
 const mockMarketClickHandler = jest.fn();
 jest.mock('../../lib/hooks/use-market-click-handler', () => ({
@@ -43,10 +43,28 @@ const MARKET_A: PartialMarket = {
         dataSourceSpecForTradingTermination: {
           __typename: 'DataSourceSpec',
           id: 'oracleId',
+          data: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionExternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfiguration',
+              },
+            },
+          },
         },
         dataSourceSpecForSettlementData: {
           __typename: 'DataSourceSpec',
           id: 'oracleId',
+          data: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionExternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfiguration',
+              },
+            },
+          },
         },
         dataSourceSpecBinding: {
           __typename: 'DataSourceSpecToFutureBinding',
@@ -129,10 +147,28 @@ const MARKET_B: PartialMarket = {
         dataSourceSpecForTradingTermination: {
           __typename: 'DataSourceSpec',
           id: 'oracleId',
+          data: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionExternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfiguration',
+              },
+            },
+          },
         },
         dataSourceSpecForSettlementData: {
           __typename: 'DataSourceSpec',
           id: 'oracleId',
+          data: {
+            __typename: 'DataSourceDefinition',
+            sourceType: {
+              __typename: 'DataSourceDefinitionExternal',
+              sourceType: {
+                __typename: 'DataSourceSpecConfiguration',
+              },
+            },
+          },
         },
         dataSourceSpecBinding: {
           __typename: 'DataSourceSpecToFutureBinding',

@@ -45,7 +45,7 @@ import {
   getRejectionReason,
   useOrderByIdQuery,
 } from '@vegaprotocol/orders';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';

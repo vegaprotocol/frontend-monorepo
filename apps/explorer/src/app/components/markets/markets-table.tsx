@@ -1,4 +1,4 @@
-import type { MarketFieldsFragment } from '@vegaprotocol/market-list';
+import type { MarketFieldsFragment } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';

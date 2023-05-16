@@ -7,7 +7,7 @@ import {
   useThrottledDataProvider,
 } from '@vegaprotocol/data-provider';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
-import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
+import { marketProvider, marketDataProvider } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';

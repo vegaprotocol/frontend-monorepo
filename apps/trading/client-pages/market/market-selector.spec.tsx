@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MarketSelector } from './market-selector';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/markets';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { MarketState } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { SortTypeMapping } from './sort-dropdown';
 import { Sort } from './sort-dropdown';
 import { subDays } from 'date-fns';
 
-jest.mock('@vegaprotocol/market-list');
+jest.mock('@vegaprotocol/markets');
 const mockUseMarketList = useMarketList as jest.Mock;
 
 // mock market list items to avoid subscriptions starting

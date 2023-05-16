@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { useStaticMarketData } from '@vegaprotocol/market-list';
+import { useStaticMarketData } from '@vegaprotocol/markets';
 
 const getTradingModeLabel = (
   marketTradingMode?: Schema.MarketTradingMode,

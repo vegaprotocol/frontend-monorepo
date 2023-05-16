@@ -10,8 +10,8 @@ import {
   displayChange,
 } from '@vegaprotocol/liquidity';
 
-import type { Candle } from '@vegaprotocol/market-list';
-import { marketCandlesProvider } from '@vegaprotocol/market-list';
+import type { Candle } from '@vegaprotocol/markets';
+import { marketCandlesProvider } from '@vegaprotocol/markets';
 
 const THROTTLE_UPDATE_TIME = 500;
 

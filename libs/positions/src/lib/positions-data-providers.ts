@@ -13,8 +13,8 @@ import * as Schema from '@vegaprotocol/types';
 import type {
   MarketMaybeWithData,
   MarketDataQueryVariables,
-} from '@vegaprotocol/market-list';
-import { marketsWithDataProvider } from '@vegaprotocol/market-list';
+} from '@vegaprotocol/markets';
+import { marketsWithDataProvider } from '@vegaprotocol/markets';
 import type {
   PositionsQuery,
   PositionFieldsFragment,

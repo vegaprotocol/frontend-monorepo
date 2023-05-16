@@ -1,7 +1,7 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
-import type { Provider, Status } from '@vegaprotocol/market-info';
+import type { Provider, Status } from '@vegaprotocol/markets';
 import {
   accountsQuery,
   assetQuery,
@@ -32,7 +32,7 @@ import {
   blockStatisticsQuery,
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
-import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/market-list';
+import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/markets';
 
 type MarketPageMockData = {
   state: Schema.MarketState;

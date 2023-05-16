@@ -5,7 +5,7 @@ import {
   lpAggregatedDataProvider,
   useCheckLiquidityStatus,
 } from '@vegaprotocol/liquidity';
-import { tooltipMapping } from '@vegaprotocol/market-info';
+import { tooltipMapping } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
@@ -37,7 +37,7 @@ import type { LiquidityProvisionData, Filter } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 
-import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
+import { useMarket, useStaticMarketData } from '@vegaprotocol/markets';
 import { DocsLinks } from '@vegaprotocol/environment';
 
 const enum LiquidityTabs {

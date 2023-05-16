@@ -1,8 +1,8 @@
 import { t } from '@vegaprotocol/i18n';
-import type { MarketInfoWithData } from '@vegaprotocol/market-info';
-import { LiquidityInfoPanel } from '@vegaprotocol/market-info';
-import { LiquidityMonitoringParametersInfoPanel } from '@vegaprotocol/market-info';
+import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import {
+  LiquidityInfoPanel,
+  LiquidityMonitoringParametersInfoPanel,
   InstrumentInfoPanel,
   KeyDetailsInfoPanel,
   LiquidityPriceRangeInfoPanel,
@@ -12,8 +12,8 @@ import {
   RiskModelInfoPanel,
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
-} from '@vegaprotocol/market-info';
-import { MarketInfoTable } from '@vegaprotocol/market-info';
+} from '@vegaprotocol/markets';
+import { MarketInfoTable } from '@vegaprotocol/markets';
 import type { DataSourceDefinition } from '@vegaprotocol/types';
 import isEqual from 'lodash/isEqual';
 
