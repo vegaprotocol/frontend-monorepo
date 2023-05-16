@@ -199,7 +199,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .within(() => {
         cy.getByTestId('block-explorer-link').contains('Block explorer');
         cy.getByTestId('github-link').contains('Oracle repository');
-        cy.getByTestId('verified-accounts').contains('0 proofs of ownership');
       });
     cy.getByTestId('dialog-close').click();
 

@@ -79,7 +79,24 @@ export const generateEpochIndividualRewardsList = ({
       epoch?.rewards.push(asset);
     }
 
-    asset.rewardTypes[rewardType] = { amount, percentageOfTotal };
+    if (!asset.rewardTypes[rewardType]) {
+      asset.rewardTypes[rewardType] = { amount, percentageOfTotal };
+    } else {
+      const previousAmount = asset.rewardTypes[rewardType]?.amount;
+      const previousPercentageOfTotal =
+        asset.rewardTypes[rewardType]?.percentageOfTotal;
+
+      asset.rewardTypes[rewardType] = {
+        amount: previousAmount
+          ? new BigNumber(previousAmount).plus(amount).toString()
+          : amount,
+        percentageOfTotal: previousPercentageOfTotal
+          ? new BigNumber(previousPercentageOfTotal)
+              .plus(percentageOfTotal)
+              .toString()
+          : percentageOfTotal,
+      };
+    }
 
     // totalAmount is the sum of all rewardTypes amounts
     asset.totalAmount = Object.values(asset.rewardTypes).reduce(

@@ -4,7 +4,12 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketInfoProvider } from '../components/market-info/market-info-data-provider';
 import { useMemo } from 'react';
 
-export const useMarketOracle = (marketId: string) => {
+export const useMarketOracle = (
+  marketId: string,
+  dataSourceSpecKey:
+    | 'dataSourceSpecForSettlementData'
+    | 'dataSourceSpecForTradingTermination' = 'dataSourceSpecForSettlementData'
+) => {
   const { ORACLE_PROOFS_URL } = useEnvironment();
   const { data: marketInfo } = useDataProvider({
     dataProvider: marketInfoProvider,
@@ -16,8 +21,7 @@ export const useMarketOracle = (marketId: string) => {
       return undefined;
     }
     const dataSourceSpec =
-      marketInfo.tradableInstrument.instrument.product
-        .dataSourceSpecForSettlementData;
+      marketInfo.tradableInstrument.instrument.product[dataSourceSpecKey];
     const { data: dataSource, id: dataSourceSpecId } = dataSourceSpec;
     const provider = data.find((provider) =>
       provider.proofs.some((proof) => {
@@ -48,5 +52,5 @@ export const useMarketOracle = (marketId: string) => {
       return { provider, dataSourceSpecId };
     }
     return undefined;
-  }, [data, marketInfo]);
+  }, [data, dataSourceSpecKey, marketInfo]);
 };

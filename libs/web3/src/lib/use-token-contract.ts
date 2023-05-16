@@ -1,8 +1,8 @@
-import { Token, TokenFaucetable } from '@vegaprotocol/smart-contracts';
+import { Token } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
-export const useTokenContract = (address?: string, faucetable = false) => {
+export const useTokenContract = (address?: string) => {
   const { provider } = useWeb3React();
 
   const contract = useMemo(() => {
@@ -11,13 +11,8 @@ export const useTokenContract = (address?: string, faucetable = false) => {
     }
 
     const signer = provider.getSigner();
-
-    if (faucetable) {
-      return new TokenFaucetable(address, signer || provider);
-    } else {
-      return new Token(address, signer || provider);
-    }
-  }, [provider, address, faucetable]);
+    return new Token(address, signer || provider);
+  }, [provider, address]);
 
   return contract;
 };
