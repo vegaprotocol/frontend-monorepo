@@ -1,3 +1,24 @@
+fragment DataSourceSpec on DataSourceDefinition {
+  sourceType {
+    ... on DataSourceDefinitionExternal {
+      sourceType {
+        ... on DataSourceSpecConfiguration {
+          signers {
+            signer {
+              ... on PubKey {
+                key
+              }
+              ... on ETHAddress {
+                address
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 fragment MarketFields on Market {
   id
   decimalPlaces
@@ -30,9 +51,15 @@ fragment MarketFields on Market {
           quoteName
           dataSourceSpecForTradingTermination {
             id
+            data {
+              ...DataSourceSpec
+            }
           }
           dataSourceSpecForSettlementData {
             id
+            data {
+              ...DataSourceSpec
+            }
           }
           dataSourceSpecBinding {
             settlementDataProperty

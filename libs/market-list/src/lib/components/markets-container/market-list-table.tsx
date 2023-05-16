@@ -1,4 +1,9 @@
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
+import { useEnvironment } from '@vegaprotocol/environment';
+import {
+  getMatchingOracleProvider,
+  useOracleProofs,
+} from '@vegaprotocol/market-info';
 import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type {
@@ -17,12 +22,80 @@ import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
-import type { MarketMaybeWithData } from '../../';
+import type { MarketMaybeWithData, Market } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
+
+const OracleStatus = ({
+  dataSourceSpecForSettlementData,
+  dataSourceSpecForTradingTermination,
+}: Pick<
+  Market['tradableInstrument']['instrument']['product'],
+  'dataSourceSpecForSettlementData' | 'dataSourceSpecForTradingTermination'
+>) => {
+  const { ORACLE_PROOFS_URL } = useEnvironment();
+  const { data: providers } = useOracleProofs(ORACLE_PROOFS_URL);
+  return useMemo(() => {
+    if (providers) {
+      const settlementDataProvider = getMatchingOracleProvider(
+        dataSourceSpecForSettlementData.data,
+        providers
+      );
+      const tradingTerminationDataProvider = getMatchingOracleProvider(
+        dataSourceSpecForTradingTermination.data,
+        providers
+      );
+      if (
+        (settlementDataProvider &&
+          settlementDataProvider.oracle.status !== 'GOOD') ||
+        (tradingTerminationDataProvider &&
+          tradingTerminationDataProvider.oracle.status !== 'GOOD')
+      ) {
+        return (
+          <span
+            className="ml-1"
+            role="img"
+            aria-label={t('oracle status not healthy')}
+          >
+            ⛔
+          </span>
+        );
+      }
+    }
+    return null;
+  }, [
+    providers,
+    dataSourceSpecForSettlementData,
+    dataSourceSpecForTradingTermination,
+  ]);
+};
+
+interface MarketNameCellProps {
+  value?: string;
+  data?: MarketMaybeWithData;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+}
+
+const MarketName = (props: MarketNameCellProps) => (
+  <>
+    <MarketNameCell {...props} />
+    {props.data ? (
+      <OracleStatus
+        dataSourceSpecForSettlementData={
+          props.data.tradableInstrument.instrument.product
+            .dataSourceSpecForSettlementData
+        }
+        dataSourceSpecForTradingTermination={
+          props.data.tradableInstrument.instrument.product
+            .dataSourceSpecForTradingTermination
+        }
+      />
+    ) : null}
+  </>
+);
 
 export const MarketListTable = forwardRef<
   AgGridReact,
@@ -43,14 +116,14 @@ export const MarketListTable = forwardRef<
         filterParams: { buttons: ['reset'] },
       }}
       suppressCellFocus
-      components={{ PriceFlashCell, MarketNameCell }}
+      components={{ PriceFlashCell, MarketName }}
       storeKey="allMarkets"
       {...props}
     >
       <AgGridColumn
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
-        cellRenderer="MarketNameCell"
+        cellRenderer="MarketName"
         cellRendererParams={{ onMarketClick }}
       />
       <AgGridColumn
