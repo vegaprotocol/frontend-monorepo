@@ -1,36 +1,36 @@
-import { LayoutPriority } from 'allotment';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { LayoutPriority } from 'allotment';
+import classNames from 'classnames';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import type { PinnedAsset } from '@vegaprotocol/accounts';
+import { t } from '@vegaprotocol/i18n';
+import { OracleBanner } from '@vegaprotocol/market-info';
+import type { Market } from '@vegaprotocol/market-list';
+import { Filter } from '@vegaprotocol/orders';
+import {
+  usePaneLayout,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import {
   Tab,
   LocalStoragePersistTabs as Tabs,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
-import type { Market } from '@vegaprotocol/market-list';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { useNavigate } from 'react-router-dom';
-import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { OracleBanner } from '@vegaprotocol/market-info';
-import {
-  usePaneLayout,
-  useScreenDimensions,
-} from '@vegaprotocol/react-helpers';
 import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
 } from '../../lib/hooks/use-market-click-handler';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { HeaderTitle } from '../../components/header';
 import {
   ResizableGrid,
   ResizableGridPanel,
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
-import { Filter } from '@vegaprotocol/orders';
-import classNames from 'classnames';
 import { MarketSelector } from './market-selector';
-import { HeaderTitle } from '../../components/header';
 import { HeaderStats } from './header-stats';
 
 interface TradeGridProps {
