@@ -3,6 +3,7 @@ import { Header } from './header';
 import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('@vegaprotocol/environment', () => ({
+  ...jest.requireActual('@vegaprotocol/environment'),
   NetworkSwitcher: () => (
     <div data-testid="network-switcher">NetworkSwitcher</div>
   ),
