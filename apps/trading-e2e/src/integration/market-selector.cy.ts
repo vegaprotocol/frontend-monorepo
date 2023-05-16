@@ -78,7 +78,6 @@ describe('markets selector', { tags: '@smoke' }, () => {
       .find('a')
       .each((item, i) => {
         const market = sortedMarkets[i];
-        console.log(market);
         expect(item.find('h3').text()).equals(
           market.tradableInstrument.instrument.code
         );
