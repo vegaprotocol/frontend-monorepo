@@ -11,11 +11,10 @@ import {
   createTenDigitUnixTimeStampForSpecifiedDays,
   enterRawProposalBody,
   generateFreeFormProposalTitle,
-  getProposalIdFromList,
   getProposalInformationFromTable,
-  getSubmittedProposalFromProposalList,
   goToMakeNewProposal,
   governanceProposalType,
+  submitUniqueRawProposal,
   voteForProposal,
   waitForProposalSubmitted,
   waitForProposalSync,
@@ -24,6 +23,7 @@ import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/stakin
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
 
+const proposalListItem = 'proposals-list-item'
 const openProposals = '[data-testid="open-proposals"]';
 const voteStatus = '[data-testid="vote-status"]';
 const proposalClosingDate = '[data-testid="vote-details"]';
@@ -60,12 +60,12 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
 
     navigateTo(navigation.proposals);
     cy.get(openProposals).within(() => {
-      cy.get(proposalClosingDate).first().should('contain.text', 'year');
-      cy.get(proposalClosingDate).should('contain.text', 'months');
       cy.get(proposalClosingDate)
-        .last()
-        .invoke('text')
-        .should('match', /days|minutes/);
+      .first()
+      .invoke('text')
+      .should('match', /days|minutes/);
+      cy.get(proposalClosingDate).should('contain.text', 'months');
+      cy.get(proposalClosingDate).last().should('contain.text', 'year');
     });
   });
 
@@ -73,36 +73,25 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     const proposerId = Cypress.env('vegaWalletPublicKey');
     const proposalTitle = generateFreeFormProposalTitle();
 
-    createFreeformProposal(proposalTitle);
-    getProposalIdFromList(proposalTitle);
-    cy.get('@proposalIdText').then((proposalId) => {
-      cy.get('[data-testid="set-proposals-filter-visible"]').click();
-      cy.get('[data-testid="filter-input"]').type(proposerId);
-      cy.get(`#${proposalId}`).should('contain', proposalId);
-    });
+    // createFreeformProposal(proposalTitle);
+    submitUniqueRawProposal({proposalTitle: proposalTitle})
+    cy.get('[data-testid="set-proposals-filter-visible"]').click();
+    cy.get('[data-testid="filter-input"]').type(proposerId);
+    // cy.get(`#${proposalId}`).should('contain', proposalId);
+    cy.contains(proposalTitle).should('be.visible')
+    cy.get('[data-testid="filter-input"]').type('123');
+    cy.getByTestId(proposalListItem).should('not.exist')
   });
 
   it('Newly created proposals list - shows title and portion of summary', function () {
-    createRawProposal(this.minProposerBalance); // 3001-VOTE-052
-    cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-      getProposalIdFromList(rawProposal.rationale.title);
-      cy.get('@proposalIdText').then((proposalId) => {
-        cy.get(openProposals).within(() => {
-          // 3001-VOTE-008
-          // 3001-VOTE-034
-          cy.get(`#${proposalId}`)
-            // 3001-VOTE-097
-            .should('contain', rawProposal.rationale.title)
-            .and('be.visible');
-          cy.get(`#${proposalId}`)
-            .should(
-              'contain',
-              rawProposal.rationale.description.substring(0, 59)
-            )
-            .and('be.visible');
-        });
-      });
-    });
+    const proposalPath = '/proposals/new-market-raw.json'
+    const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+    submitUniqueRawProposal({proposalBody: proposalPath, enactmentTimestamp: enactmentTimestamp} ) // 3001-VOTE-052
+    // 3001-VOTE-008
+    // 3001-VOTE-034
+    // 3001-VOTE-097
+    cy.contains('New Market Proposal E2E submission')
+    cy.contains('Code: TEST.24h. fBTC settled future.').should('be.visible')
   });
 
   it('Newly created proposals list - shows open proposals in an open state', function () {

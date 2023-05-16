@@ -8,6 +8,7 @@ import {
 import {
   getProposalInformationFromTable,
   goToMakeNewProposal,
+  governanceProposalType,
   voteForProposal,
   waitForProposalSubmitted,
 } from '../../support/governance.functions';
@@ -55,16 +56,6 @@ const fUSDCId =
   '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
-
-const governanceProposalType = {
-  NETWORK_PARAMETER: 'Network parameter',
-  NEW_MARKET: 'New market',
-  UPDATE_MARKET: 'Update market',
-  NEW_ASSET: 'New asset',
-  UPDATE_ASSET: 'Update asset',
-  FREEFORM: 'Freeform',
-  RAW: 'raw proposal',
-};
 
 // 3001-VOTE-007
 context(
