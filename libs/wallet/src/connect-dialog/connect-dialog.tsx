@@ -10,14 +10,17 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
-import { ExternalLinks } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { VegaConnector } from '../connectors';
 import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import {
+  Networks,
+  useEnvironment,
+  ExternalLinks,
+} from '@vegaprotocol/environment';
 import {
   ConnectDialogContent,
   ConnectDialogFooter,

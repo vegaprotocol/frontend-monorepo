@@ -3,7 +3,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Heading, SubHeading } from '../../components/heading';
-import { ExternalLinks, toBigNum } from '@vegaprotocol/utils';
+import { ExternalLinks } from '@vegaprotocol/environment';
+import { toBigNum } from '@vegaprotocol/utils';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';

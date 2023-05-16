@@ -6,7 +6,6 @@ export * from './lib/get-user-locale';
 export * from './lib/helpers';
 export * from './lib/is-asset-erc20';
 export * from './lib/is-valid-url';
-export * from './lib/links';
 export * from './lib/local-logger';
 export * from './lib/local-storage';
 export * from './lib/markets';

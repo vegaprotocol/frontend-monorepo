@@ -8,7 +8,6 @@ import {
 import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
-  createDocsLinks,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -39,7 +38,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 
 import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
 
 const enum LiquidityTabs {
   Active = 'active',
@@ -216,8 +215,8 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
         <div className="break-word">{marketId}</div>
       </HeaderStat>
       <HeaderStat heading={t('Learn more')}>
-        {VEGA_DOCS_URL && (
-          <ExternalLink href={createDocsLinks(VEGA_DOCS_URL).LIQUIDITY}>
+        {Boolean(DocsLinks) && (
+          <ExternalLink href={DocsLinks.LIQUIDITY}>
             {t('Providing liquidity')}
           </ExternalLink>
         )}

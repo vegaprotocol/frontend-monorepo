@@ -4,6 +4,8 @@ import { Networks } from '../types';
 import { useEnvironment } from './use-environment';
 import { stripFullStops } from '@vegaprotocol/utils';
 
+const VEGA_DOCS_URL = process.env['NX_VEGA_DOCS_URL'] || '';
+
 type Net = Exclude<Networks, 'CUSTOM'>;
 export enum DApp {
   Explorer = 'Explorer',
@@ -49,6 +51,25 @@ const Links: { [k in DApp]: DAppLinks } = {
   [DApp.Console]: ConsoleLinks,
   [DApp.Token]: TokenLinks,
 };
+
+export const DocsLinks = VEGA_DOCS_URL
+  ? {
+      NEW_TO_VEGA: `${VEGA_DOCS_URL}/concepts/new-to-vega`,
+      AUCTION_TYPE_OPENING: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-opening`,
+      AUCTION_TYPE_LIQUIDITY_MONITORING: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring`,
+      AUCTION_TYPE_PRICE_MONITORING: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring`,
+      AUCTION_TYPE_CLOSING: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-closing`,
+      STAKING_GUIDE: `${VEGA_DOCS_URL}/concepts/vega-chain/#staking-on-vega`,
+      REWARDS_GUIDE: `${VEGA_DOCS_URL}/concepts/trading-on-vega/fees-rewards#trading-rewards`,
+      VEGA_WALLET_CONCEPTS_URL: `${VEGA_DOCS_URL}/concepts/vega-wallet`,
+      VEGA_WALLET_TOOLS_URL: `${VEGA_DOCS_URL}/tools/vega-wallet`,
+      PROPOSALS_GUIDE: `${VEGA_DOCS_URL}/tutorials/proposals`,
+      NODE_OPERATORS: `${VEGA_DOCS_URL}/node-operators`,
+      LOSS_SOCIALIZATION: `${VEGA_DOCS_URL}/concepts/trading-on-vega/market-protections#loss-socialisation`,
+      POSITION_RESOLUTION: `${VEGA_DOCS_URL}/concepts/trading-on-vega/market-protections#position-resolution`,
+      LIQUIDITY: `${VEGA_DOCS_URL}/concepts/liquidity/provision`,
+    }
+  : undefined;
 
 export const useLinks = (dapp: DApp, network?: Net) => {
   const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL } = useEnvironment();
@@ -116,3 +137,21 @@ export const EXPLORER_ORACLE = '/oracles/:id';
 // Etherscan pages
 export const ETHERSCAN_ADDRESS = '/address/:hash';
 export const ETHERSCAN_TX = '/tx/:hash';
+
+export const ExternalLinks = {
+  FEEDBACK: 'https://github.com/vegaprotocol/feedback/discussions',
+  GITHUB: 'https://github.com/vegaprotocol/token-frontend',
+  DISCORD: 'https://vega.xyz/discord',
+  GOVERNANCE_PAGE: 'https://vega.xyz/governance',
+  VALIDATOR_FORUM: 'https://community.vega.xyz/c/mainnet-validator-candidates',
+  MARGIN_CREDIT_RISK:
+    'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
+  VEGA_WALLET_URL: 'https://vega.xyz/wallet',
+  VEGA_WALLET_HOSTED_URL: 'https://vega-hosted-wallet.on.fleek.co/',
+  BLOG: 'https://blog.vega.xyz/',
+};
+
+export const TokenStaticLinks = {
+  PROPOSAL_PAGE: ':tokenUrl/proposals/:proposalId',
+  UPDATE_PROPOSAL_PAGE: ':tokenUrl/proposals/propose/update-market',
+};

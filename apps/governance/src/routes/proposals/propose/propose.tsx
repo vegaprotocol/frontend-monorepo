@@ -2,12 +2,11 @@ import Routes from '../../routes';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
 import { Heading } from '../../../components/heading';
-import { createDocsLinks } from '@vegaprotocol/utils';
 
 export const Propose = () => {
-  const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
 
   return (
@@ -15,14 +14,11 @@ export const Propose = () => {
       <section className="pb-6">
         <Heading title={t('NewProposal')} />
         <div className="text-sm">
-          {VEGA_DOCS_URL && (
+          {DocsLinks && (
             <p>
               <span className="mr-1">{t('ProposalTermsText')}</span>
-              <ExternalLink
-                href={createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
-                target="_blank"
-              >
-                {createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
+              <ExternalLink href={DocsLinks.PROPOSALS_GUIDE} target="_blank">
+                {DocsLinks.PROPOSALS_GUIDE}
               </ExternalLink>
             </p>
           )}

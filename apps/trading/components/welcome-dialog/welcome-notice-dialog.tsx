@@ -7,8 +7,8 @@ import {
   TOKEN_PROPOSALS,
   useEnvironment,
   useLinks,
+  ExternalLinks,
 } from '@vegaprotocol/environment';
-import { ExternalLinks } from '@vegaprotocol/utils';
 import { ProposedMarkets } from './proposed-markets';
 
 export const WelcomeNoticeDialog = () => {

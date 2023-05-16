@@ -1,7 +1,11 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { createDocsLinks, ExternalLinks, toBigNum } from '@vegaprotocol/utils';
+import {
+  useEnvironment,
+  DocsLinks,
+  ExternalLinks,
+} from '@vegaprotocol/environment';
+import { toBigNum } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   Link as UTLink,
@@ -64,7 +68,7 @@ export const ValidatorTable = ({
   stakedTotal,
   previousEpochData,
 }: ValidatorTableProps) => {
-  const { ETHERSCAN_URL, VEGA_DOCS_URL } = useEnvironment();
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     appState: { decimals },
@@ -90,9 +94,9 @@ export const ValidatorTable = ({
     <>
       <p className="mb-12">
         {t('validatorFormIntro')}{' '}
-        {VEGA_DOCS_URL && (
+        {DocsLinks && (
           <ExternalLink
-            href={createDocsLinks(VEGA_DOCS_URL).STAKING_GUIDE}
+            href={DocsLinks.STAKING_GUIDE}
             target="_blank"
             data-testid="validator-table-staking-guide-link"
             className="text-white"
