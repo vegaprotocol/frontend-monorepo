@@ -114,7 +114,7 @@ export const Navbar = ({
                 </NavigationItem>
                 <NavigationItem>
                   <NavigationLink
-                    data-testid="Portfolio"
+                    data-testid="Disclaimer"
                     to="/#"
                     onClick={showDisclaimer}
                     end
