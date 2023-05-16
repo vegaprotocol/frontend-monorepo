@@ -25,14 +25,30 @@ export const oracleStatuses = {
 
 export const OracleBanner = ({ marketId }: { marketId: string }) => {
   const [open, onChange] = useState(false);
-  const oracle = useMarketOracle(marketId);
-  if (!oracle || oracle.provider.oracle.status === 'GOOD') {
-    return null;
+  const settlementOracle = useMarketOracle(marketId);
+  const tradingTerminationOracle = useMarketOracle(
+    marketId,
+    'dataSourceSpecForTradingTermination'
+  );
+  let maliciousOracle = null;
+  if (settlementOracle?.provider.oracle.status !== 'GOOD') {
+    maliciousOracle = settlementOracle;
+  } else if (tradingTerminationOracle?.provider.oracle.status !== 'GOOD') {
+    maliciousOracle = tradingTerminationOracle;
   }
-  const { provider } = oracle;
+  if (!settlementOracle && !tradingTerminationOracle) {
+    return (
+      <NotificationBanner intent={Intent.Primary}>
+        <div>{t('There is no oracle for this market yet.')} </div>
+      </NotificationBanner>
+    );
+  }
+  if (!maliciousOracle) return null;
+
+  const { provider } = maliciousOracle;
   return (
     <>
-      <OracleDialog open={open} onChange={onChange} {...oracle} />
+      <OracleDialog open={open} onChange={onChange} {...maliciousOracle} />
       <NotificationBanner intent={Intent.Danger}>
         <div>
           Oracle status for this market is{' '}
