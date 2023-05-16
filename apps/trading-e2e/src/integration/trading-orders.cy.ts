@@ -399,6 +399,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
     });
     cy.get(`[row-id=${orderId}]`)
       .find(`[data-testid="cancel"]`)
