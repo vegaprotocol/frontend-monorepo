@@ -1,17 +1,8 @@
-import orderBy from 'lodash/orderBy';
 import {
   AuctionTrigger,
   MarketState,
   MarketTradingMode,
 } from '@vegaprotocol/types';
-import {
-  addDecimalsFormatNumber,
-  removePaginationWrapper,
-} from '@vegaprotocol/utils';
-import type {
-  MarketFieldsFragment,
-  MarketsDataFieldsFragment,
-} from '@vegaprotocol/market-list';
 
 describe('markets selector', { tags: '@smoke' }, () => {
   const list = 'market-selector-list';
@@ -28,21 +19,10 @@ describe('markets selector', { tags: '@smoke' }, () => {
     );
     cy.mockSubscription();
     cy.visit('/');
+
     cy.wait('@Markets');
     cy.wait('@MarketsData');
     cy.wait('@MarketsCandles');
-
-    cy.get('@Markets').then((r) => {
-      // @ts-ignore cypress thinks r is a query element
-      // its actually a response object
-      cy.wrap(r.response.body.data).as('markets');
-    });
-
-    cy.get('@MarketsData').then((r) => {
-      // @ts-ignore cypress thinks r is a query element
-      // its actually a response object
-      cy.wrap(r.response.body.data).as('marketsData');
-    });
   });
 
   it('can toggle the sidebar', () => {
@@ -54,48 +34,49 @@ describe('markets selector', { tags: '@smoke' }, () => {
   });
 
   // need function keyword as we need 'this' to access market data
-  it('displays data as expected', function () {
-    const markets: MarketFieldsFragment[] = removePaginationWrapper(
-      this.markets.marketsConnection.edges
-    );
-    const data: Array<{
-      __typname: 'Market';
-      data: MarketsDataFieldsFragment;
-    }> = removePaginationWrapper(this.marketsData.marketsConnection.edges);
-    const sortedMarkets = orderBy(
-      markets.map((m) => {
-        const d = data.find((d) => d.data.market.id === m.id);
-        return {
-          ...m,
-          data: d?.data,
-        };
-      }),
-      ['tradableInstrument.instrument.code'],
-      ['asc']
-    );
-
+  it('displays data as expected', () => {
+    // TODO: load data from mocks in. Using alias and wrap intermittently fails
+    const data = [
+      {
+        code: 'AAPL.MF21',
+        name: 'Apple Monthly (30 Jun 2022)',
+        markPrice: '46,126.90058',
+        change: '+200.00%',
+      },
+      {
+        code: 'BTCUSD.MF21',
+        name: 'ACTIVE MARKET',
+        markPrice: '46,126.90058',
+        change: '+200.00%',
+      },
+      {
+        code: 'ETHBTC.QM21',
+        name: 'ETHBTC Quarterly (30 Jun 2022)',
+        markPrice: '46,126.90058',
+        change: '+200.00%',
+      },
+      {
+        code: 'SOLUSD',
+        name: 'SUSPENDED MARKET',
+        markPrice: '84.41',
+        change: '+200.00%',
+      },
+    ];
     cy.getByTestId(list)
       .find('a')
       .each((item, i) => {
-        const market = sortedMarkets[i];
+        const market = data[i];
         // 6001-MARK-021
-        expect(item.find('h3').text()).equals(
-          market.tradableInstrument.instrument.code
-        );
+        expect(item.find('h3').text()).equals(market.code);
         // 6001-MARK-022
-        expect(item.find('h4').text()).equals(
-          market.tradableInstrument.instrument.name
-        );
+        expect(item.find('h4').text()).equals(market.name);
         // 6001-MARK-024
         expect(item.find('[data-testid="market-item-price"]').text()).equals(
-          addDecimalsFormatNumber(
-            market.data?.markPrice || '',
-            market.decimalPlaces
-          )
+          market.markPrice
         );
         // 6001-MARK-023
         expect(item.find('[data-testid="market-item-change"]').text()).equals(
-          '+200.00%'
+          market.change
         );
         // 6001-MARK-025
         expect(item.find('[data-testid="sparkline-svg"]')).to.exist;
