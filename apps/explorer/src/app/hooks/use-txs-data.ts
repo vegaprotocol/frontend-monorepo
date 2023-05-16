@@ -33,7 +33,7 @@ export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
   // Hacky fix for param as array
   let urlAsString = url.toString();
   if (filters) {
-    urlAsString += '&' + filters;
+    urlAsString += '&' + filters.replace(' ', '%20');
   }
 
   return urlAsString;
