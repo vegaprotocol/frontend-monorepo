@@ -280,6 +280,17 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       .should('have.text', '+5');
   });
 
+  it('for limit typy must see the Limit price that was set on the order', () => {
+    // 7003-MORD-005
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="price"]')
+      .should('have.text', '200.00');
+  });
+
   it('must see a pegged order - ask', () => {
     updateOrder({
       id: orderId,
