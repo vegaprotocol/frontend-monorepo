@@ -78,25 +78,31 @@ describe('markets selector', { tags: '@smoke' }, () => {
       .find('a')
       .each((item, i) => {
         const market = sortedMarkets[i];
+        // 6001-MARK-021
         expect(item.find('h3').text()).equals(
           market.tradableInstrument.instrument.code
         );
+        // 6001-MARK-022
         expect(item.find('h4').text()).equals(
           market.tradableInstrument.instrument.name
         );
+        // 6001-MARK-024
         expect(item.find('[data-testid="market-item-price"]').text()).equals(
           addDecimalsFormatNumber(
             market.data?.markPrice || '',
             market.decimalPlaces
           )
         );
+        // 6001-MARK-023
         expect(item.find('[data-testid="market-item-change"]').text()).equals(
           '+200.00%'
         );
+        // 6001-MARK-025
         expect(item.find('[data-testid="sparkline-svg"]')).to.exist;
       });
   });
 
+  // 6001-MARK-27
   it('can use the filter options', () => {
     // product type
     cy.getByTestId('product-Spot').click();
@@ -106,6 +112,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
     cy.getByTestId('product-Future').click();
     cy.getByTestId(list).find('a').should('have.length', 4);
 
+    // 6001-MARK-29
     cy.getByTestId(searchInput).clear().type('btc');
     cy.getByTestId(list).find('a').should('have.length', 2);
     cy.getByTestId(list).find('a').eq(0).contains('BTCUSD.MF21');
