@@ -1,6 +1,6 @@
-import { formatRange, formatValue } from './use-fee-deal-ticket-details';
+import { formatRange, formatValue } from './deal-ticket-fee-details';
 
-describe('useFeeDealTicketDetails', () => {
+describe('formatRange, formatValue', () => {
   it.each([
     { v: 123000, d: 5, o: '1.23' },
     { v: 123000, d: 3, o: '123.00' },

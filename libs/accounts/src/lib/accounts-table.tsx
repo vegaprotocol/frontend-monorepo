@@ -44,7 +44,7 @@ const colorClass = (percentageUsed: number, neutral = false) => {
 
 export const percentageValue = (part?: string, total?: string) =>
   new BigNumber(part || 0)
-    .dividedBy(total || 1)
+    .dividedBy(!total || total === '0' ? 1 : total)
     .multipliedBy(100)
     .toNumber();
 

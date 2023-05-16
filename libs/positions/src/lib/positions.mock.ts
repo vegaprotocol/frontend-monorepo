@@ -4,9 +4,12 @@ import type { PartialDeep } from 'type-fest';
 import type {
   PositionsQuery,
   PositionFieldsFragment,
+} from './__generated__/Positions';
+
+import type {
   MarginsQuery,
   MarginFieldsFragment,
-} from './__generated__/Positions';
+} from '@vegaprotocol/accounts';
 
 export const positionsQuery = (
   override?: PartialDeep<PositionsQuery>

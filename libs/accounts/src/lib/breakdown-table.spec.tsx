@@ -4,6 +4,8 @@ import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 
+jest.mock('./margin-health-chart');
+
 const singleRow = {
   __typename: 'AccountBalance',
   type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
@@ -37,10 +39,10 @@ describe('BreakdownTable', () => {
       render(<BreakdownTable data={singleRowData} />);
     });
     const headers = await screen.findAllByRole('columnheader');
-    expect(headers).toHaveLength(3);
+    expect(headers).toHaveLength(4);
     expect(
       headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-    ).toEqual(['Market', 'Account type', 'Balance']);
+    ).toEqual(['Market', 'Account type', 'Balance', 'Margin health']);
   });
 
   it('should apply correct formatting', async () => {
@@ -55,7 +57,7 @@ describe('BreakdownTable', () => {
       '1,256.00',
       '1,256.00',
     ];
-    cells.forEach((cell, i) => {
+    cells.slice(0, -1).forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });
   });

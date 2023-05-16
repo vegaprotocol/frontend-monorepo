@@ -143,6 +143,7 @@ const MarketBottomPanel = memo(
                 <VegaWalletContainer>
                   <TradingViews.collateral.component
                     pinnedAsset={pinnedAsset}
+                    onMarketClick={onMarketClick}
                     noBottomPlaceholder
                     hideButtons
                     storeKey="marketCollateral"
@@ -224,6 +225,7 @@ const MarketBottomPanel = memo(
             <VegaWalletContainer>
               <TradingViews.collateral.component
                 pinnedAsset={pinnedAsset}
+                onMarketClick={onMarketClick}
                 hideButtons
                 storeKey="marketCollateral"
               />

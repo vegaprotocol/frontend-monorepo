@@ -31,7 +31,7 @@ import {
 } from '@vegaprotocol/positions';
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { useEstimateFees } from '../../hooks/use-fee-deal-ticket-details';
+import { useEstimateFees } from '../../hooks/use-estimate-fees';
 import { getDerivedPrice } from '../../utils/get-price';
 import type { OrderInfo } from '@vegaprotocol/types';
 
@@ -54,8 +54,6 @@ import {
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-
-import { marketMarginDataProvider } from '@vegaprotocol/positions';
 
 export interface DealTicketProps {
   market: Market;
@@ -175,12 +173,6 @@ export const DealTicket = ({
 
   const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
-
-  const { data: currentMargins } = useDataProvider({
-    dataProvider: marketMarginDataProvider,
-    variables: { marketId: market.id, partyId: pubKey || '' },
-    skip: !pubKey,
-  });
 
   useEffect(() => {
     if (!pubKey) {
@@ -494,8 +486,6 @@ export const DealTicket = ({
           generalAccountBalance={generalAccountBalance}
           positionEstimate={positionEstimate?.estimatePosition}
           market={market}
-          currentInitialMargin={currentMargins?.initialLevel}
-          currentMaintenanceMargin={currentMargins?.maintenanceLevel}
         />
       </form>
     </TinyScroll>
@@ -536,7 +526,7 @@ const SummaryMessage = memo(
     if (isReadOnly) {
       return (
         <div className="mb-2">
-          <InputError testId="dealticket-error-message-summary">
+          <InputError testId="deal-ticket-error-message-summary">
             {
               'You need to connect your own wallet to start trading on this market'
             }
@@ -585,7 +575,7 @@ const SummaryMessage = memo(
     if (errorMessage) {
       return (
         <div className="mb-2">
-          <InputError testId="dealticket-error-message-summary">
+          <InputError testId="deal-ticket-error-message-summary">
             {errorMessage}
           </InputError>
         </div>
@@ -613,7 +603,7 @@ const SummaryMessage = memo(
         <div className="mb-2">
           <Notification
             intent={Intent.Warning}
-            testId={'dealticket-warning-auction'}
+            testId={'deal-ticket-warning-auction'}
             message={t(
               'Any orders placed now will not trade until the auction ends'
             )}

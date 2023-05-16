@@ -92,7 +92,10 @@ export const Portfolio = () => {
             <Tabs storageKey="console-portfolio-bottom">
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
-                  <AccountsContainer storeKey="portfolioCollateral" />
+                  <AccountsContainer
+                    storeKey="portfolioCollateral"
+                    onMarketClick={onMarketClick}
+                  />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="deposits" name={t('Deposits')}>

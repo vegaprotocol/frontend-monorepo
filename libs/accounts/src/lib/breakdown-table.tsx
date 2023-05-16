@@ -9,11 +9,15 @@ import { AccountTypeMapping } from '@vegaprotocol/types';
 import type {
   ValueProps,
   VegaValueFormatterParams,
+  VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
-import { progressBarCellRendererSelector } from '@vegaprotocol/datagrid';
+import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import { AgGridLazy as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import { accountValuesComparator } from './accounts-table';
+import { MarginHealthChart } from './margin-health-chart';
+import { MarketNameCell } from '@vegaprotocol/datagrid';
+import { AccountType } from '@vegaprotocol/types';
 
 export const progressBarValueFormatter = ({
   data,
@@ -36,10 +40,11 @@ export const progressBarValueFormatter = ({
 
 interface BreakdownTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }
 
 const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
-  ({ data }, ref) => {
+  ({ data, onMarketClick }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -50,7 +55,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         }
         ref={ref}
         rowHeight={34}
-        components={{ PriceCell }}
+        components={{ PriceCell, MarketNameCell, ProgressBarCell }}
         tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,
@@ -61,21 +66,18 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.name"
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<
-            AccountFields,
-            'market.tradableInstrument.instrument.name'
-          >) => {
-            if (!value) return 'None';
-            return value;
+          cellRendererParams={{
+            onMarketClick,
+            defaultValue: t('None'),
+            idPath: 'market.id',
           }}
+          cellRenderer="MarketNameCell"
           minWidth={200}
         />
         <AgGridColumn
           headerName={t('Account type')}
           field="type"
-          maxWidth={300}
+          width={100}
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<AccountFields, 'type'>) =>
@@ -90,9 +92,28 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           field="used"
           flex={2}
           maxWidth={500}
-          cellRendererSelector={progressBarCellRendererSelector}
+          cellRenderer="ProgressBarCell"
           valueFormatter={progressBarValueFormatter}
           comparator={accountValuesComparator}
+        />
+        <AgGridColumn
+          headerName={t('Margin health')}
+          field="market.id"
+          flex={2}
+          maxWidth={500}
+          sortable={false}
+          cellRenderer={({
+            data,
+          }: VegaICellRendererParams<AccountFields, 'market.id'>) =>
+            data?.market?.id &&
+            data.type === AccountType['ACCOUNT_TYPE_MARGIN'] &&
+            data?.asset.id ? (
+              <MarginHealthChart
+                marketId={data.market.id}
+                assetId={data.asset.id}
+              />
+            ) : null
+          }
         />
       </AgGrid>
     );

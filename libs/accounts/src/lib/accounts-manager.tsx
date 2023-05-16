@@ -18,14 +18,25 @@ import BreakdownTable from './breakdown-table';
 const AccountBreakdown = ({
   assetId,
   partyId,
+  onMarketClick,
 }: {
   assetId: string;
   partyId: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
+  const gridRef = useRef<AgGridReact>(null);
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId, assetId },
+    update: ({ data }) => {
+      if (gridRef.current?.api && data?.breakdown) {
+        gridRef.current?.api.setRowData(data?.breakdown);
+        return true;
+      }
+      return false;
+    },
   });
+
   return (
     <div
       className="h-[35vh] w-full m-auto flex flex-col"
@@ -42,7 +53,12 @@ const AccountBreakdown = ({
           ])}
         </p>
       )}
-      <BreakdownTable data={data?.breakdown || null} domLayout="autoHeight" />
+      <BreakdownTable
+        ref={gridRef}
+        data={data?.breakdown || null}
+        domLayout="autoHeight"
+        onMarketClick={onMarketClick}
+      />
     </div>
   );
 };
@@ -52,6 +68,7 @@ interface AccountManagerProps {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
   noBottomPlaceholder?: boolean;
@@ -67,6 +84,7 @@ export const AccountManager = ({
   pinnedAsset,
   noBottomPlaceholder,
   storeKey,
+  onMarketClick,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
@@ -109,6 +127,16 @@ export const AccountManager = ({
     disabled: noBottomPlaceholder,
   });
 
+  const onMarketClickInternal = useCallback(
+    (...args: Parameters<NonNullable<typeof onMarketClick>>) => {
+      setBreakdownAssetId(undefined);
+      if (onMarketClick) {
+        onMarketClick(...args);
+      }
+    },
+    [onMarketClick]
+  );
+
   return (
     <div className="relative h-full">
       <AccountTable
@@ -134,7 +162,11 @@ export const AccountManager = ({
         }}
       >
         {breakdownAssetId && (
-          <AccountBreakdown assetId={breakdownAssetId} partyId={partyId} />
+          <AccountBreakdown
+            assetId={breakdownAssetId}
+            partyId={partyId}
+            onMarketClick={onMarketClick ? onMarketClickInternal : undefined}
+          />
         )}
       </Dialog>
     </div>
