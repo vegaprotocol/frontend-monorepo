@@ -60,15 +60,32 @@ export const MarketSelector = ({
           }}
         />
         <div className="text-sm flex gap-1 items-stretch">
-          <Input
-            onChange={(e) =>
-              setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
-            }
-            type="text"
-            placeholder={t('Search')}
-            data-testid="search-term"
-            className="w-48"
-          />
+          <div className="flex-1">
+            <Input
+              onChange={(e) =>
+                setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
+              }
+              value={filter.searchTerm}
+              type="text"
+              placeholder={t('Search')}
+              data-testid="search-term"
+              className="w-full"
+              appendElement={
+                filter.searchTerm.length ? (
+                  <button
+                    onClick={() =>
+                      setFilter((curr) => ({ ...curr, searchTerm: '' }))
+                    }
+                    className="text-vega-light-200 dark:text-vega-dark-200"
+                  >
+                    <VegaIcon name={VegaIconNames.CROSS} />
+                  </button>
+                ) : (
+                  <span />
+                )
+              }
+            />
+          </div>
           <AssetDropdown
             assets={uniqBy(
               data?.map(
