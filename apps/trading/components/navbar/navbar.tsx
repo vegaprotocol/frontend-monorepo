@@ -34,7 +34,7 @@ export const Navbar = ({
 }: {
   theme: ComponentProps<typeof Navigation>['theme'];
 }) => {
-  const { VEGA_DOCS_URL, GITHUB_FEEDBACK_URL } = useEnvironment();
+  const { GITHUB_FEEDBACK_URL } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
   const { marketId } = useGlobalStore((store) => ({
     marketId: store.marketId,

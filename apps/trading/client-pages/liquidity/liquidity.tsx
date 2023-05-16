@@ -38,7 +38,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 
 import { useMarket, useStaticMarketData } from '@vegaprotocol/market-list';
-import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
+import { DocsLinks } from '@vegaprotocol/environment';
 
 const enum LiquidityTabs {
   Active = 'active',
@@ -146,7 +146,6 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
     market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
   const symbol =
     market?.tradableInstrument.instrument.product.settlementAsset.symbol;
-  const { VEGA_DOCS_URL } = useEnvironment();
 
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,
