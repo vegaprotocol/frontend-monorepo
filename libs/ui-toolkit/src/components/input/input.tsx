@@ -57,6 +57,7 @@ type AffixProps = InputPrepend | InputAppend;
 
 export type InputProps = InputRootProps & AffixProps;
 
+// className="flex-1 block border border-vega-light-300 dark:border-vega-dark-300 p-2 rounded bg-transparent"
 export const inputStyle = ({
   style,
   disabled,

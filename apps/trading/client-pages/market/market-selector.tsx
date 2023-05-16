@@ -1,7 +1,12 @@
 import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
-import { TinyScroll, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Input,
+  TinyScroll,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -55,14 +60,14 @@ export const MarketSelector = ({
           }}
         />
         <div className="text-sm flex gap-1 items-stretch">
-          <input
+          <Input
             onChange={(e) =>
               setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
             }
             type="text"
             placeholder={t('Search')}
-            className="flex-1 block border border-vega-light-300 dark:border-vega-dark-300 p-2 rounded bg-transparent w-48"
             data-testid="search-term"
+            className="w-48"
           />
           <AssetDropdown
             assets={uniqBy(
@@ -246,8 +251,8 @@ const Skeleton = () => {
   return (
     <div className="mb-2 px-2">
       <div className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4">
-        <div className="w-full h-3 bg-white dark:bg-vega-dark-200 mb-2" />
-        <div className="w-2/3 h-3 bg-vega-light-300 dark:bg-vega-dark-200" />
+        <div className="w-full h-3 bg-vega-light-200 dark:bg-vega-dark-200 mb-2" />
+        <div className="w-2/3 h-3 bg-vega-light-200 dark:bg-vega-dark-200" />
       </div>
     </div>
   );
