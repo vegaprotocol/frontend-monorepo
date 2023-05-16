@@ -1,7 +1,9 @@
+import { t } from '@vegaprotocol/i18n';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuItemIndicator,
   DropdownMenuTrigger,
 } from '@vegaprotocol/ui-toolkit';
@@ -10,10 +12,12 @@ export const AssetDropdown = ({
   assets,
   checkedAssets,
   onSelect,
+  onReset,
 }: {
   assets: Array<{ id: string; symbol: string }> | undefined;
   checkedAssets: string[];
   onSelect: (id: string, checked: boolean) => void;
+  onReset: () => void;
 }) => {
   if (!assets?.length) {
     return null;
@@ -26,6 +30,7 @@ export const AssetDropdown = ({
       }
     >
       <DropdownMenuContent>
+        <DropdownMenuItem onClick={onReset}>{t('Reset')}</DropdownMenuItem>
         {assets?.map((a) => {
           return (
             <DropdownMenuCheckboxItem
