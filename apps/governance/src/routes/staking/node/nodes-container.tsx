@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { ENV } from '../../../config';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -28,6 +29,7 @@ export const NodeContainer = ({
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const { delegationsPagination } = ENV;
+
   const { data, loading, error, refetch } = useStakingQuery({
     variables: {
       partyId: pubKey || '',
@@ -38,6 +40,20 @@ export const NodeContainer = ({
         : undefined,
     },
   });
+
+  const [isRefetching, setIsRefetching] = useState(false);
+
+  useEffect(() => {
+    if (error && error.message.includes('failed to get party for ID')) {
+      setIsRefetching(true);
+      // The API errors if there is a pubkey, but it hasn't interacted with the
+      // chain before. In that case, retry the query with empty pubKey
+      refetch({
+        partyId: '',
+      }).finally(() => setIsRefetching(false));
+    }
+  }, [error, refetch, delegationsPagination]);
+
   const { data: previousEpochData } = usePreviousEpochQuery({
     variables: {
       epochId: (Number(data?.epoch.id) - 1).toString(),
@@ -47,7 +63,7 @@ export const NodeContainer = ({
 
   useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
 
-  if (error) {
+  if (error && !isRefetching) {
     return (
       <Callout intent={Intent.Danger} title={t('Something went wrong')}>
         <pre>
@@ -59,7 +75,7 @@ export const NodeContainer = ({
     );
   }
 
-  if (loading) {
+  if (loading || isRefetching) {
     return (
       <Splash>
         <SplashLoader />
