@@ -201,7 +201,8 @@ jobs:
           export PATH="$PATH:$PWD/kubo"
           which ipfs
           new_hash=$(cat ${{ matrix.app }}-ipfs-hash)
-          echo "$new_hash" > .github/terraform/console-cid.txt
+          cid_hash=$(ipfs cid format -v 1 -b base32 $new_hash)
+          echo "$cid_hash" > .github/terraform/console-cid.txt
           git config --global user.email "vega-ci-bot@vega.xyz"
           git config --global user.name "vega-ci-bot"
           git add .github/terraform/console-cid.txt
