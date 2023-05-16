@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { MarketSelectorItem } from './market-selector-item';
 import { MemoryRouter } from 'react-router-dom';
@@ -64,6 +65,8 @@ describe('MarketSelectorItem', () => {
     },
   };
 
+  const mockOnSelect = jest.fn();
+
   const renderJsx = () => {
     return render(
       <MemoryRouter>
@@ -72,6 +75,7 @@ describe('MarketSelectorItem', () => {
             market={market}
             currentMarketId={market.id}
             style={{}}
+            onSelect={mockOnSelect}
           />
         </MockedProvider>
       </MemoryRouter>
@@ -81,12 +85,11 @@ describe('MarketSelectorItem', () => {
   it('renders market information', async () => {
     renderJsx();
 
+    const link = screen.getByRole('link');
     // link renders and is styled
-    expect(screen.getByRole('link')).toHaveAttribute(
-      'href',
-      '/markets/' + market.id
-    );
-    expect(screen.getByRole('link')).toHaveClass('ring-1');
+    expect(link).toHaveAttribute('href', '/markets/' + market.id);
+
+    expect(link).toHaveClass('ring-1');
 
     expect(screen.getByTestId('market-item-price')).toHaveTextContent('-');
 
@@ -100,5 +103,9 @@ describe('MarketSelectorItem', () => {
         addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
       );
     });
+
+    await userEvent.click(link);
+
+    expect(mockOnSelect).toHaveBeenCalledWith(market.id);
   });
 });
