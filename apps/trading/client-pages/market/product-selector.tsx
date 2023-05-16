@@ -14,7 +14,7 @@ const ProductTypeMapping: {
 } = {
   [Product.Spot]: 'Spot',
   [Product.Future]: 'Futures',
-  [Product.Perpetual]: 'Perpeturals',
+  [Product.Perpetual]: 'Perpetuals',
 };
 
 export const ProductSelector = ({

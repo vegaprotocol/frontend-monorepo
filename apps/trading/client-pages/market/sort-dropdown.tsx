@@ -20,7 +20,7 @@ export const SortTypeMapping: {
   [key in SortType]: string;
 } = {
   [Sort.None]: 'None',
-  [Sort.Gained]: 'Top gained',
+  [Sort.Gained]: 'Top gaining',
   [Sort.Lost]: 'Top losing',
   [Sort.New]: 'New markets',
 };
