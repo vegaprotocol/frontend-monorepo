@@ -141,7 +141,9 @@ describe('MarketSelector', () => {
         <MarketSelector currentMarketId="market-0" />
       </MemoryRouter>
     );
-    expect(screen.getAllByTestId(/market-/)).toHaveLength(activeMarkets.length);
+    expect(screen.getAllByTestId(/market-\d/)).toHaveLength(
+      activeMarkets.length
+    );
     expect(screen.getByRole('link')).toHaveTextContent('All markets');
   });
 
@@ -153,19 +155,19 @@ describe('MarketSelector', () => {
     );
 
     await userEvent.click(screen.getByTestId('product-Spot'));
-    expect(screen.queryAllByTestId(/market-/)).toHaveLength(0);
+    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(0);
     expect(screen.getByTestId('no-items')).toHaveTextContent(
       'Spot markets coming soon.'
     );
 
     await userEvent.click(screen.getByTestId('product-Perpetual'));
-    expect(screen.queryAllByTestId(/market-/)).toHaveLength(0);
+    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(0);
     expect(screen.getByTestId('no-items')).toHaveTextContent(
       'Perpetual markets coming soon.'
     );
 
     await userEvent.click(screen.getByTestId('product-Future'));
-    expect(screen.queryAllByTestId(/market-/)).toHaveLength(
+    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(
       activeMarkets.length
     );
     expect(screen.queryByTestId('no-items')).not.toBeInTheDocument();
