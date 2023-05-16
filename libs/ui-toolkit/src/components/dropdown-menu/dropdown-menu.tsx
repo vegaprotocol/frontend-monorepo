@@ -56,7 +56,7 @@ export const DropdownMenuTrigger = forwardRef<
       {...props}
     >
       <button>
-        {children} <Icon name={iconName || 'chevron-down'} />
+        {children} {iconName && <Icon name={iconName || 'chevron-down'} />}
       </button>
     </DropdownMenuPrimitive.Trigger>
   );
@@ -155,7 +155,7 @@ export const DropdownMenuSeparator = forwardRef<
     {...separatorProps}
     ref={forwardedRef}
     className={classNames(
-      'h-px my-1 mx-2 bg-vega-dark-400 dark:bg-vega-dark-300',
+      'h-px my-1 mx-2 bg-vega-light-150 dark:bg-vega-dark-150',
       className
     )}
   />

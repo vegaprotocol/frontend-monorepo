@@ -106,6 +106,7 @@ export const MarketSelector = ({
                 };
               });
             }}
+            onReset={() => setFilter((curr) => ({ ...curr, sort: Sort.None }))}
           />
         </div>
       </div>
