@@ -5,13 +5,7 @@ import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import type { Market } from '@vegaprotocol/market-list';
 import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  ColumnKind,
-  SelectMarketPopover,
-} from '../../components/select-market';
-import type { OnCellClickHandler } from '../../components/select-market';
-import { Header, HeaderStat } from '../../components/header';
-import { NO_MARKET } from './constants';
+import { HeaderStat } from '../../components/header';
 import { MarketMarkPrice } from '../../components/market-mark-price';
 import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/market-info';
 import { MarketState } from '../../components/market-state';
@@ -19,102 +13,90 @@ import { HeaderStatMarketTradingMode } from '../../components/market-trading-mod
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { MarketState as State } from '@vegaprotocol/types';
 
-interface TradeMarketHeaderProps {
+interface HeaderStatsProps {
   market: Market | null;
-  onSelect: (marketId: string, metaKey?: boolean) => void;
 }
 
-export const TradeMarketHeader = ({
-  market,
-  onSelect,
-}: TradeMarketHeaderProps) => {
+export const HeaderStats = ({ market }: HeaderStatsProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const asset = market?.tradableInstrument.instrument.product?.settlementAsset;
 
-  const onCellClick: OnCellClickHandler = (e, kind, value) => {
-    if (value && kind === ColumnKind.Asset) {
-      openAssetDetailsDialog(value, e.target as HTMLElement);
-    }
-  };
-
   return (
-    <Header
-      title={
-        <SelectMarketPopover
-          marketCode={market?.tradableInstrument.instrument.code || NO_MARKET}
-          marketName={market?.tradableInstrument.instrument.name || NO_MARKET}
-          onSelect={onSelect}
-          onCellClick={onCellClick}
-        />
-      }
-    >
-      <HeaderStat
-        heading={t('Expiry')}
-        description={
-          market && (
-            <ExpiryTooltipContent
-              market={market}
-              explorerUrl={VEGA_EXPLORER_URL}
-            />
-          )
-        }
-        testId="market-expiry"
-      >
-        <ExpiryLabel market={market} />
-      </HeaderStat>
-      <HeaderStat heading={t('Price')} testId="market-price">
-        <MarketMarkPrice
-          marketId={market?.id}
-          decimalPlaces={market?.decimalPlaces}
-        />
-      </HeaderStat>
-      <HeaderStat heading={t('Change (24h)')} testId="market-change">
-        <Last24hPriceChange
-          marketId={market?.id}
-          decimalPlaces={market?.decimalPlaces}
-        />
-      </HeaderStat>
-      <HeaderStat
-        heading={t('Volume (24h)')}
-        testId="market-volume"
-        description={t(
-          'The total number of contracts traded in the last 24 hours.'
-        )}
-      >
-        <Last24hVolume
-          marketId={market?.id}
-          positionDecimalPlaces={market?.positionDecimalPlaces}
-        />
-      </HeaderStat>
-      <HeaderStatMarketTradingMode
-        marketId={market?.id}
-        initialTradingMode={market?.tradingMode}
-      />
-      <MarketState market={market} />
-      {asset ? (
-        <HeaderStat
-          heading={t('Settlement asset')}
-          testId="market-settlement-asset"
+    <div className="flex flex-col justify-end lg:pt-4">
+      <div className="xl:flex xl:gap-4 items-end">
+        <div
+          data-testid="header-summary"
+          className="flex flex-nowrap items-end xl:flex-1 w-full overflow-x-auto text-xs"
         >
-          <div>
-            <ButtonLink
-              onClick={(e) => {
-                openAssetDetailsDialog(asset.id, e.target as HTMLElement);
-              }}
+          <HeaderStat
+            heading={t('Expiry')}
+            description={
+              market && (
+                <ExpiryTooltipContent
+                  market={market}
+                  explorerUrl={VEGA_EXPLORER_URL}
+                />
+              )
+            }
+            testId="market-expiry"
+          >
+            <ExpiryLabel market={market} />
+          </HeaderStat>
+          <HeaderStat heading={t('Price')} testId="market-price">
+            <MarketMarkPrice
+              marketId={market?.id}
+              decimalPlaces={market?.decimalPlaces}
+            />
+          </HeaderStat>
+          <HeaderStat heading={t('Change (24h)')} testId="market-change">
+            <Last24hPriceChange
+              marketId={market?.id}
+              decimalPlaces={market?.decimalPlaces}
+            />
+          </HeaderStat>
+          <HeaderStat
+            heading={t('Volume (24h)')}
+            testId="market-volume"
+            description={t(
+              'The total number of contracts traded in the last 24 hours.'
+            )}
+          >
+            <Last24hVolume
+              marketId={market?.id}
+              positionDecimalPlaces={market?.positionDecimalPlaces}
+            />
+          </HeaderStat>
+          <HeaderStatMarketTradingMode
+            marketId={market?.id}
+            initialTradingMode={market?.tradingMode}
+          />
+          <MarketState market={market} />
+          {asset ? (
+            <HeaderStat
+              heading={t('Settlement asset')}
+              testId="market-settlement-asset"
             >
-              {asset.symbol}
-            </ButtonLink>
-          </div>
-        </HeaderStat>
-      ) : null}
-      <MarketLiquiditySupplied
-        marketId={market?.id}
-        assetDecimals={asset?.decimals || 0}
-      />
-      <MarketProposalNotification marketId={market?.id} />
-    </Header>
+              <div>
+                <ButtonLink
+                  onClick={(e) => {
+                    openAssetDetailsDialog(asset.id, e.target as HTMLElement);
+                  }}
+                >
+                  {asset.symbol}
+                </ButtonLink>
+              </div>
+            </HeaderStat>
+          ) : null}
+          <MarketLiquiditySupplied
+            marketId={market?.id}
+            assetDecimals={asset?.decimals || 0}
+          />
+          <MarketProposalNotification marketId={market?.id} />
+        </div>
+      </div>
+    </div>
   );
 };
 

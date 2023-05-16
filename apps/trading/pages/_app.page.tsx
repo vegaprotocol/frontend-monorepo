@@ -81,7 +81,7 @@ function AppBody({ Component }: AppProps) {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[repeat(3,min-content),1fr]'
+    'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
 
   return (
@@ -93,7 +93,7 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
