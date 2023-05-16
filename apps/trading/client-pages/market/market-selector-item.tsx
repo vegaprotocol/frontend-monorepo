@@ -14,10 +14,12 @@ export const MarketSelectorItem = ({
   market,
   style,
   currentMarketId,
+  onSelect,
 }: {
   market: MarketMaybeWithDataAndCandles;
   style: CSSProperties;
   currentMarketId?: string;
+  onSelect?: (marketId: string) => void;
 }) => {
   const wrapperClasses = classNames(
     'block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4',
@@ -29,7 +31,13 @@ export const MarketSelectorItem = ({
   );
   return (
     <div style={style} className="my-0.5 px-4">
-      <Link to={`/markets/${market.id}`} className={wrapperClasses}>
+      <Link
+        to={`/markets/${market.id}`}
+        className={wrapperClasses}
+        onClick={() => {
+          onSelect && onSelect(market.id);
+        }}
+      >
         <h3>{market.tradableInstrument.instrument.code}</h3>
         <h4
           title={market.tradableInstrument.instrument.name}

@@ -93,10 +93,7 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar
-          // theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}
-          theme="dark"
-        />
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
@@ -106,7 +103,7 @@ function AppBody({ Component }: AppProps) {
         <main data-testid={location.pathname}>
           <Component />
         </main>
-        {/* <Footer /> */}
+        <Footer />
       </div>
       <DialogsContainer />
       <ToastsManager />

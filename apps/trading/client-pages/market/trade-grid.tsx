@@ -370,7 +370,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
       </div>
       {sidebarOpen && (
         <div className="border-r border-default min-h-0">
-          <div className="h-full">
+          <div className="h-full pb-8">
             <MarketSelector currentMarketId={market?.id} />
           </div>
         </div>

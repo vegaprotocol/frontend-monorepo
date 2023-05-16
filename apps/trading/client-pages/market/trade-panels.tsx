@@ -1,5 +1,6 @@
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import type { Market } from '@vegaprotocol/market-list';
+import { OracleBanner } from '@vegaprotocol/market-info';
 import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
@@ -20,7 +21,6 @@ import { HeaderStats } from './header-stats';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { HeaderTitle } from '../../components/header';
 import { MarketSelector } from './market-selector';
-import { OracleBanner } from '../../components/banner';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -135,7 +135,9 @@ export const TradePanels = ({
             <DialogPrimitives.Close className="absolute top-0 right-0 p-2">
               <Icon name="cross" />
             </DialogPrimitives.Close>
-            {drawerOpen && <MarketSelector />}
+            {drawerOpen && (
+              <MarketSelector onSelect={() => setDrawerOpen(false)} />
+            )}
           </DialogPrimitives.Content>
         </DialogPrimitives.Portal>
       </DialogPrimitives.Root>

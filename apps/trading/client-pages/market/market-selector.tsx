@@ -28,8 +28,10 @@ export type Filter = {
  */
 export const MarketSelector = ({
   currentMarketId,
+  onSelect,
 }: {
   currentMarketId?: string;
+  onSelect?: (marketId: string) => void;
 }) => {
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
@@ -113,6 +115,7 @@ export const MarketSelector = ({
           error={error}
           searchTerm={filter.searchTerm}
           currentMarketId={currentMarketId}
+          onSelect={onSelect}
           noItems={
             filter.product === Product.Perpetual
               ? t('Perpetual markets coming soon.')
@@ -139,6 +142,7 @@ const MarketList = ({
   error,
   loading,
   currentMarketId,
+  onSelect,
   noItems,
 }: {
   data: MarketMaybeWithDataAndCandles[];
@@ -146,6 +150,7 @@ const MarketList = ({
   loading: boolean;
   searchTerm: string;
   currentMarketId?: string;
+  onSelect?: (marketId: string) => void;
   noItems: string;
 }) => {
   if (error) {
@@ -162,6 +167,7 @@ const MarketList = ({
             width={width}
             height={height}
             currentMarketId={currentMarketId}
+            onSelect={onSelect}
             noItems={noItems}
           />
         </TinyScroll>
@@ -175,6 +181,7 @@ const List = ({
   loading,
   width,
   height,
+  onSelect,
   noItems,
   currentMarketId,
 }: {
@@ -183,6 +190,7 @@ const List = ({
   width: number;
   height: number;
   noItems: string;
+  onSelect?: (marketId: string) => void;
   currentMarketId?: string;
 }) => {
   const row = ({ index, style }: { index: number; style: CSSProperties }) => {
@@ -193,6 +201,7 @@ const List = ({
         market={market}
         currentMarketId={currentMarketId}
         style={style}
+        onSelect={onSelect}
       />
     );
   };
