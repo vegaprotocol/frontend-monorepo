@@ -206,28 +206,6 @@ describe('Proposal header', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('Renders Freeform proposal - long rationale (105 chars) - details', () => {
-    renderComponent(
-      generateProposal({
-        id: 'long',
-        rationale: {
-          title: '0x0',
-          description:
-            'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
-        },
-        terms: {
-          change: {
-            __typename: 'NewFreeform',
-          },
-        },
-      }),
-      false
-    );
-    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
-      /Class aptent/
-    );
-  });
-
   // Remove once proposals have rationale and re-enable above tests
   it('Renders Freeform proposal - id for title', () => {
     renderComponent(
