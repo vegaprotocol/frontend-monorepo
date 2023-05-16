@@ -11,7 +11,6 @@ import {
   Icon,
   Splash,
   VegaIcon,
-  VegaIconNameMap,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { NO_MARKET } from './constants';
