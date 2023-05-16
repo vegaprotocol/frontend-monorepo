@@ -11,6 +11,7 @@ export const createDocsLinks = (docsUrl: string) => ({
   STAKING_GUIDE: `${docsUrl}/concepts/vega-chain/#staking-on-vega`,
   REWARDS_GUIDE: `${docsUrl}/concepts/trading-on-vega/fees-rewards#trading-rewards`,
   VEGA_WALLET_CONCEPTS_URL: `${docsUrl}/concepts/vega-wallet`,
+  VEGA_WALLET_TOOLS_URL: `${docsUrl}/tools/vega-wallet`,
   PROPOSALS_GUIDE: `${docsUrl}/tutorials/proposals`,
   NODE_OPERATORS: `${docsUrl}/node-operators`,
   LOSS_SOCIALIZATION: `${docsUrl}/concepts/trading-on-vega/market-protections#loss-socialisation`,
@@ -28,6 +29,7 @@ export const ExternalLinks = {
     'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
   VEGA_WALLET_URL: 'https://vega.xyz/wallet',
   VEGA_WALLET_HOSTED_URL: 'https://vega-hosted-wallet.on.fleek.co/',
+  BLOG: 'https://blog.vega.xyz/',
 };
 
 export const TokenLinks = {

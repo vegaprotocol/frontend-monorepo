@@ -84,19 +84,6 @@ export const useEtherscanLink = () => {
   return link;
 };
 
-export const useDocsLink = () => {
-  const { VEGA_DOCS_URL } = useEnvironment();
-  const baseUrl = trim(VEGA_DOCS_URL, '/');
-  const link = useCallback(
-    (url?: string) => `${baseUrl}/${trim(url, '/') || ''}`,
-    [baseUrl]
-  );
-  return link;
-};
-
-// Vega blog
-export const BLOG = 'https://blog.vega.xyz/';
-
 // Governance pages
 export const TOKEN_NEW_MARKET_PROPOSAL = '/proposals/propose/new-market';
 export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =
@@ -129,15 +116,3 @@ export const EXPLORER_ORACLE = '/oracles/:id';
 // Etherscan pages
 export const ETHERSCAN_ADDRESS = '/address/:hash';
 export const ETHERSCAN_TX = '/tx/:hash';
-
-// Console pages
-export const CONSOLE_MARKET = '/markets/:marketId';
-export const CONSOLE_MARKETS = '/markets/all';
-export const CONSOLE_PORTFOLIO = '/portfolio';
-export const CONSOLE_LIQUIDITY = 'liquidity/:marketId';
-
-// Vega XYZ
-export const GET_VEGA_WALLET_URL = 'https://vega.xyz/wallet/';
-
-// Docs
-export const DOCS_VEGA_WALLET = '/tools/vega-wallet';
