@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import type { Property } from '@vegaprotocol/types';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OracleSpecDataConnectionQuery } from '@vegaprotocol/market-info';
-import { OracleSpecDataConnectionDocument } from '@vegaprotocol/market-info';
+import type { OracleSpecDataConnectionQuery } from '@vegaprotocol/markets';
+import { OracleSpecDataConnectionDocument } from '@vegaprotocol/markets';
 import type { SettlementPriceCellProps } from './settlement-price-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 

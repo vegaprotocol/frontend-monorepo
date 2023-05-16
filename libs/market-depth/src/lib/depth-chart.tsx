@@ -7,8 +7,8 @@ import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
-import type { MarketData } from '@vegaprotocol/market-list';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
+import type { MarketData } from '@vegaprotocol/markets';
 import type {
   MarketDepthQuery,
   MarketDepthUpdateSubscription,

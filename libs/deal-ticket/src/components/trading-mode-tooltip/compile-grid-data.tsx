@@ -8,7 +8,7 @@ import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { SimpleGridProps } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { Market, MarketData } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/markets';
 
 export const compileGridData = (
   market: Pick<

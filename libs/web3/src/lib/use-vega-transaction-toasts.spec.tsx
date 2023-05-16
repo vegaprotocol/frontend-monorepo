@@ -27,7 +27,7 @@ jest.mock('@vegaprotocol/assets', () => {
   };
 });
 
-jest.mock('@vegaprotocol/market-list', () => {
+jest.mock('@vegaprotocol/markets', () => {
   const M1 = {
     id: 'market-1',
     decimalPlaces: 2,
@@ -49,7 +49,7 @@ jest.mock('@vegaprotocol/market-list', () => {
     },
   };
   return {
-    ...jest.requireActual('@vegaprotocol/market-list'),
+    ...jest.requireActual('@vegaprotocol/markets'),
     useMarketList: jest.fn(() => ({ data: [M1] })),
   };
 });

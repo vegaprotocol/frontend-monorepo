@@ -6,8 +6,8 @@ import {
   formatNumber,
   priceChangePercentage,
 } from '@vegaprotocol/utils';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
-import { useMarketDataUpdateSubscription } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 
 export const MarketSelectorItem = ({

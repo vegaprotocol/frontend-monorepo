@@ -8,8 +8,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import type {
   MarketDataUpdateFieldsFragment,
   MarketDataUpdateSubscription,
-} from '@vegaprotocol/market-list';
-import { MarketDataUpdateDocument } from '@vegaprotocol/market-list';
+} from '@vegaprotocol/markets';
+import { MarketDataUpdateDocument } from '@vegaprotocol/markets';
 import {
   AuctionTrigger,
   MarketState,

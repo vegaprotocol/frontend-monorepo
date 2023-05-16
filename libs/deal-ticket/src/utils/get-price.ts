@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { isMarketInAuction } from './is-market-in-auction';
-import type { MarketData } from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/markets';
 
 /**
  * Get the market price based on market mode (auction or not auction)

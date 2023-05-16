@@ -1,6 +1,6 @@
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { marketsProvider } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/markets';
 import { RouteTitle } from '../../components/route-title';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';

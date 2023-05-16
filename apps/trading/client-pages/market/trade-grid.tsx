@@ -6,8 +6,8 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { t } from '@vegaprotocol/i18n';
-import { OracleBanner } from '@vegaprotocol/market-info';
-import type { Market } from '@vegaprotocol/market-list';
+import { OracleBanner } from '@vegaprotocol/markets';
+import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
 import {
   usePaneLayout,

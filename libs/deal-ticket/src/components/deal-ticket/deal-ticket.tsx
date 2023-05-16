@@ -44,7 +44,7 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
-import type { Market, MarketData } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/markets';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
   useMarketAccountBalance,

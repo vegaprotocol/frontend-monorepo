@@ -1,6 +1,6 @@
 import throttle from 'lodash/throttle';
-import type { MarketData, Market } from '@vegaprotocol/market-list';
-import { marketDataProvider } from '@vegaprotocol/market-list';
+import type { MarketData, Market } from '@vegaprotocol/markets';
+import { marketDataProvider } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
