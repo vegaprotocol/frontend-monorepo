@@ -52,7 +52,7 @@ export const MarketSelector = ({
       className="grid grid-rows-[min-content_1fr_min-content] h-full"
       data-testid="market-selector"
     >
-      <div className="px-4 py-2">
+      <div className="px-4 pt-2 pb-4">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
@@ -150,7 +150,7 @@ export const MarketSelector = ({
         />
       </div>
       <div className="px-4 py-2">
-        <span className="inline-block border-b border-white">
+        <span className="inline-block border-b border-black dark:border-white">
           <Link to={'/markets/all'} className="flex items-center gap-x-2">
             {t('All markets')}
             <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
