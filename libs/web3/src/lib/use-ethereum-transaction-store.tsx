@@ -3,7 +3,6 @@ import produce from 'immer';
 import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import type { Token } from '@vegaprotocol/smart-contracts';
-import type { TokenFaucetable } from '@vegaprotocol/smart-contracts';
 
 import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
 
@@ -11,12 +10,11 @@ import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
 import { subscribeWithSelector } from 'zustand/middleware';
 
-type Contract = MultisigControl | CollateralBridge | Token | TokenFaucetable;
+type Contract = MultisigControl | CollateralBridge | Token;
 type ContractMethod =
   | keyof MultisigControl
   | keyof CollateralBridge
-  | keyof Token
-  | keyof TokenFaucetable;
+  | keyof Token;
 
 export interface EthStoredTxState extends EthTxState {
   id: number;

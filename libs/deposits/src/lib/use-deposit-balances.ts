@@ -28,13 +28,9 @@ const initialState: DepositBalances = {
  * Hook which fetches all the balances required for depositing
  * whenever the asset changes in the form
  */
-export const useDepositBalances = (
-  asset: Asset | undefined,
-  isFaucetable: boolean
-) => {
+export const useDepositBalances = (asset: Asset | undefined) => {
   const tokenContract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
-    isFaucetable
+    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
   );
   const bridgeContract = useBridgeContract();
   const getAllowance = useGetAllowance(tokenContract, asset);

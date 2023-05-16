@@ -36,10 +36,7 @@ export const DepositManager = ({
   const bridgeContract = useBridgeContract();
   const closeDepositDialog = useDepositDialog((state) => state.close);
 
-  const { getBalances, reset, balances } = useDepositBalances(
-    asset,
-    isFaucetable
-  );
+  const { getBalances, reset, balances } = useDepositBalances(asset);
 
   // Set up approve transaction
   const approve = useSubmitApproval(asset, getBalances);
