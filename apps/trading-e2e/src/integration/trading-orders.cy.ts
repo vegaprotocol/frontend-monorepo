@@ -367,6 +367,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
       liquidityProvisionId: '6536',
     });
     cy.get(`[row-id=${orderId}]`)
@@ -382,6 +383,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
       liquidityProvisionId: '6536',
     });
     cy.get(`[row-id=${orderId}]`)
