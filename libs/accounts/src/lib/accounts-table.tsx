@@ -10,7 +10,13 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { COL_DEFS } from '@vegaprotocol/datagrid';
-import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridLazy as AgGrid,
@@ -101,7 +107,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     const [row, setRow] = useState<AccountFields>();
     const pinnedAssetId = props.pinnedAsset?.id;
 
-    const pinnedAssetRow = useMemo(() => {
+    const pinnedAsset = useMemo(() => {
       const currentPinnedAssetRow = props.rowData?.find(
         (row) => row.asset.id === pinnedAssetId
       );
@@ -135,6 +141,16 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       [pinnedAssetId, getRowHeight]
     );
 
+    const accountForPinnedAsset = props?.rowData?.find(
+      (a) => a.asset.id === pinnedAssetId
+    );
+    console.log(accountForPinnedAsset);
+    const showDepositButton = accountForPinnedAsset
+      ? new BigNumber(accountForPinnedAsset.total).isLessThanOrEqualTo(0)
+      : true;
+
+    console.log(showDepositButton);
+
     return (
       <>
         <AgGrid
@@ -154,7 +170,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             comparator: accountValuesComparator,
           }}
           getRowHeight={getPinnedAssetRowHeight}
-          pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
+          pinnedTopRowData={pinnedAsset ? [pinnedAsset] : undefined}
         >
           <AgGridColumn
             headerName={t('Asset')}
@@ -258,60 +274,57 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               formatWithAssetDecimals(data, data?.total)
             }
           />
-          {
-            <AgGridColumn
-              colId="accounts-actions"
-              {...COL_DEFS.actions}
-              cellRenderer={({
-                data,
-              }: VegaICellRendererParams<AccountFields>) => {
-                if (!data) return null;
-                else {
-                  if (
-                    data.asset.id === pinnedAssetId &&
-                    new BigNumber(data.total).isLessThanOrEqualTo(0)
-                  ) {
-                    return (
-                      <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
-                        <Button
-                          size="xs"
-                          variant="primary"
-                          data-testid="deposit"
-                          onClick={() => {
-                            onClickDeposit && onClickDeposit(data.asset.id);
-                          }}
-                        >
-                          {t('Deposit to trade')}
-                        </Button>
-                      </CenteredGridCellWrapper>
-                    );
-                  }
+          <AgGridColumn
+            colId="accounts-actions"
+            {...COL_DEFS.actions}
+            minWidth={showDepositButton ? 130 : COL_DEFS.actions.minWidth}
+            maxWidth={showDepositButton ? 130 : COL_DEFS.actions.maxWidth}
+            cellRenderer={({
+              data,
+            }: VegaICellRendererParams<AccountFields>) => {
+              if (!data) return null;
+              else {
+                if (showDepositButton && data.asset.id === pinnedAssetId) {
                   return (
-                    !props.isReadOnly && (
-                      <AccountsActionsDropdown
-                        assetId={data.asset.id}
-                        assetContractAddress={
-                          data.asset.source.__typename === 'ERC20'
-                            ? data.asset.source.contractAddress
-                            : undefined
-                        }
-                        onClickDeposit={() => {
+                    <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
+                      <Button
+                        size="xs"
+                        variant="primary"
+                        data-testid="deposit"
+                        onClick={() => {
                           onClickDeposit && onClickDeposit(data.asset.id);
                         }}
-                        onClickWithdraw={() => {
-                          onClickWithdraw && onClickWithdraw(data.asset.id);
-                        }}
-                        onClickBreakdown={() => {
-                          setOpenBreakdown(!openBreakdown);
-                          setRow(data);
-                        }}
-                      />
-                    )
+                      >
+                        <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
+                      </Button>
+                    </CenteredGridCellWrapper>
                   );
                 }
-              }}
-            />
-          }
+                return (
+                  !props.isReadOnly && (
+                    <AccountsActionsDropdown
+                      assetId={data.asset.id}
+                      assetContractAddress={
+                        data.asset.source?.__typename === 'ERC20'
+                          ? data.asset.source.contractAddress
+                          : undefined
+                      }
+                      onClickDeposit={() => {
+                        onClickDeposit && onClickDeposit(data.asset.id);
+                      }}
+                      onClickWithdraw={() => {
+                        onClickWithdraw && onClickWithdraw(data.asset.id);
+                      }}
+                      onClickBreakdown={() => {
+                        setOpenBreakdown(!openBreakdown);
+                        setRow(data);
+                      }}
+                    />
+                  )
+                );
+              }
+            }}
+          />
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div
