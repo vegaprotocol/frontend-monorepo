@@ -4,8 +4,6 @@ import classnames from 'classnames';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import { getFeeDetailsValues } from '../../hooks/use-estimate-fees';
-import type { FeeDetails } from '../../hooks/use-estimate-fees';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 import type { Market } from '@vegaprotocol/markets';
@@ -17,9 +15,7 @@ import { marketMarginDataProvider } from '@vegaprotocol/positions';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 import {
-  EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
-  MARGIN_ACCOUNT_TOOLTIP_TEXT,
   MARGIN_DIFF_TOOLTIP_TEXT,
   DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
   TOTAL_MARGIN_AVAILABLE,
@@ -66,7 +62,10 @@ export const DealTicketFeeDetail = ({
   indent,
 }: DealTicketFeeDetailPros) => (
   <div
-    key={typeof label === 'string' ? label : 'value-dropdown'}
+    data-testid={
+      'deal-ticket-fee-' + label.toLocaleLowerCase().replace(/\s/g, '-')
+    }
+    key={label}
     className={classnames(
       'text-xs mt-2 flex justify-between items-center gap-4 flex-wrap',
       { 'ml-2': indent }
@@ -90,48 +89,113 @@ export const MarginStackChart = (
     | 'initialLevel'
     | 'maintenanceLevel'
     | 'searchLevel'
-  >
+  > & {
+    max: string;
+    min: string;
+    balance?: string;
+    decimals: number;
+  }
 ) => {
-  const collateralReleaseLevel = Number(props.collateralReleaseLevel);
-  const initialLevel = Number(props.initialLevel);
-  const maintenanceLevel = Number(props.maintenanceLevel);
-  const searchLevel = Number(props.searchLevel);
-  const red = maintenanceLevel / collateralReleaseLevel;
-  const orange = (searchLevel - maintenanceLevel) / collateralReleaseLevel;
-  const yellow =
-    ((searchLevel + initialLevel) / 2 - searchLevel) / collateralReleaseLevel;
+  let max = Number(props.max);
+  let min = Number(props.min);
+  min = min - (max - min) * 0.05;
+  max = max - min;
+
+  const collateralReleaseLevel = Number(props.collateralReleaseLevel) - min;
+  const initialLevel = Number(props.initialLevel) - min;
+  const maintenanceLevel = Number(props.maintenanceLevel) - min;
+  const searchLevel = Number(props.searchLevel) - min;
+  const balance = props.balance ? Number(props.balance) - min : 0;
+
+  const red = maintenanceLevel / max;
+  const orange = (searchLevel - maintenanceLevel) / max;
+  const yellow = ((searchLevel + initialLevel) / 2 - searchLevel) / max;
+  const green = (collateralReleaseLevel - initialLevel) / max + yellow;
+  const initialLevelMarker = initialLevel / max;
+  const balanceMarker = balance / max;
+
+  const tooltipContent = (
+    <>
+      maintenance: {formatValue(maintenanceLevel, props.decimals)}
+      <br />
+      search: {formatValue(searchLevel, props.decimals)}
+      <br />
+      initial: {formatValue(initialLevel, props.decimals)}
+      <br />
+      release: {formatValue(collateralReleaseLevel, props.decimals)}
+      <br />
+      {balance ? `balance: ${formatValue(balance, props.decimals)}` : null}
+    </>
+  );
 
   return (
-    <div style={{ height: '15px', display: 'flex', backgroundColor: 'green' }}>
+    <Tooltip description={tooltipContent}>
       <div
+        className="relative"
         style={{
-          height: '100%',
-          width: `${red * 100}%`,
-          backgroundColor: 'red',
+          height: '15px',
+          display: 'flex',
+          backgroundColor: 'darkgreen',
         }}
-      ></div>
-      <div
-        style={{
-          height: '100%',
-          width: `${orange * 100}%`,
-          backgroundColor: 'orange',
-        }}
-      ></div>
-      <div
-        style={{
-          height: '100%',
-          width: `${yellow * 100}%`,
-          backgroundColor: 'yellow',
-        }}
-      ></div>
-      <div
-        style={{
-          borderRight: '1px solid black',
-          height: '100%',
-          marginLeft: `${yellow * 100}%`,
-        }}
-      ></div>
-    </div>
+      >
+        <div
+          style={{
+            height: '100%',
+            width: `${red * 100}%`,
+            backgroundColor: 'red',
+          }}
+        ></div>
+        <div
+          style={{
+            height: '100%',
+            width: `${orange * 100}%`,
+            backgroundColor: 'orange',
+          }}
+        ></div>
+        <div
+          style={{
+            height: '100%',
+            width: `${yellow * 100}%`,
+            backgroundColor: 'yellow',
+          }}
+        ></div>
+        <div
+          style={{
+            height: '100%',
+            width: `${green * 100}%`,
+            backgroundColor: 'forestgreen',
+          }}
+        ></div>
+        <div
+          className="absolute"
+          style={{
+            bottom: '-5px',
+            height: '0px',
+            width: '0px',
+            transform: 'translate(-2px, 0px)',
+            borderLeft: '5px solid transparent',
+            borderRight: '5px solid transparent',
+            borderBottom: '5px solid gray',
+            left: `${initialLevelMarker * 100}%`,
+          }}
+        ></div>
+        {balanceMarker > 0 && balanceMarker < 100 && (
+          <div
+            className="absolute"
+            style={{
+              top: '-5px',
+              height: '0px',
+              width: '0px',
+              transform: 'translate(-2px, 0px)',
+              borderLeft: '5px solid transparent',
+              borderRight: '5px solid transparent',
+              borderTop: '5px solid gray',
+              left: `${balanceMarker * 100}%`,
+            }}
+          ></div>
+        )}
+      </div>
+    </Tooltip>
   );
 };
 
@@ -263,6 +327,42 @@ export const DealTicketFeeDetails = ({
     );
   }
 
+  let maxCollateralReleaseLevel = BigInt(
+    currentMargins?.collateralReleaseLevel ?? '0'
+  );
+
+  let minMaintenanceLevel = BigInt(currentMargins?.maintenanceLevel ?? '0');
+
+  if (positionEstimate) {
+    let collateralReleaseLevel = BigInt(
+      positionEstimate.margin.bestCase.collateralReleaseLevel
+    );
+    if (collateralReleaseLevel > maxCollateralReleaseLevel) {
+      maxCollateralReleaseLevel = collateralReleaseLevel;
+    }
+    collateralReleaseLevel = BigInt(
+      positionEstimate.margin.worstCase.collateralReleaseLevel
+    );
+    if (collateralReleaseLevel > maxCollateralReleaseLevel) {
+      maxCollateralReleaseLevel = collateralReleaseLevel;
+    }
+    let maintenanceLevel = BigInt(
+      positionEstimate.margin.bestCase.maintenanceLevel
+    );
+    if (maintenanceLevel < minMaintenanceLevel) {
+      minMaintenanceLevel = maintenanceLevel;
+    }
+    maintenanceLevel = BigInt(
+      positionEstimate.margin.worstCase.maintenanceLevel
+    );
+    if (maintenanceLevel < minMaintenanceLevel) {
+      minMaintenanceLevel = maintenanceLevel;
+    }
+  }
+
+  const maxMargin = maxCollateralReleaseLevel.toString();
+  const minMargin = minMaintenanceLevel.toString();
+
   return (
     <div>
       <DealTicketFeeDetail
@@ -307,19 +407,35 @@ export const DealTicketFeeDetails = ({
       {currentMargins ? (
         <div>
           <div className="text-xs mt-2 mb-1">Current margin</div>
-          <MarginStackChart {...currentMargins} />
+          <MarginStackChart
+            {...currentMargins}
+            balance={marginAccountBalance}
+            decimals={assetDecimals}
+            max={maxMargin}
+            min={minMargin}
+          />
         </div>
       ) : null}
       {positionEstimate ? (
         <div>
           <div className="text-xs mt-2 mb-1">Projected margin best case</div>
-          <MarginStackChart {...positionEstimate.margin.bestCase} />
+          <MarginStackChart
+            {...positionEstimate.margin.bestCase}
+            decimals={assetDecimals}
+            max={maxMargin}
+            min={minMargin}
+          />
         </div>
       ) : null}
       {positionEstimate ? (
         <div>
           <div className="text-xs mt-2 mb-1">Projected margin worst case</div>
-          <MarginStackChart {...positionEstimate.margin.worstCase} />
+          <MarginStackChart
+            {...positionEstimate.margin.worstCase}
+            decimals={assetDecimals}
+            max={maxMargin}
+            min={minMargin}
+          />
         </div>
       ) : null}
       <DealTicketFeeDetail
