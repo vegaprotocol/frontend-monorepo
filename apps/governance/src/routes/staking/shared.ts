@@ -60,9 +60,14 @@ export const getOverstakingPenalty = (
   }
 
   return formatNumberPercentage(
-    new BigNumber(1)
-      .minus(new BigNumber(validatorScore).dividedBy(new BigNumber(stakeScore)))
-      .times(100),
+    BigNumber.max(
+      new BigNumber(1)
+        .minus(
+          new BigNumber(validatorScore).dividedBy(new BigNumber(stakeScore))
+        )
+        .times(100),
+      new BigNumber(0)
+    ),
     2
   );
 };
