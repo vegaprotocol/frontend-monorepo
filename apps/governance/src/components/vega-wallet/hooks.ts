@@ -77,8 +77,6 @@ export const usePollForDelegations = () => {
           .then((res) => {
             if (!mounted) return;
 
-            console.log(res.error);
-
             const canonisedDelegations = removePaginationWrapper(
               res.data.party?.delegationsConnection?.edges
             );
