@@ -6,8 +6,10 @@ import { AsyncRenderer, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
-import { ProposalTermsJson } from '../proposal-terms-json';
+import { ProposalJson } from '../proposal-json';
+import { ProposalTerms } from '../proposal-terms';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
 import { ListAsset } from '../list-asset';
@@ -20,7 +22,7 @@ export enum ProposalType {
   PROPOSAL_NETWORK_PARAMETER = 'PROPOSAL_NETWORK_PARAMETER',
   PROPOSAL_FREEFORM = 'PROPOSAL_FREEFORM',
 }
-interface ProposalProps {
+export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }
 
@@ -78,9 +80,11 @@ export const Proposal = ({ proposal }: ProposalProps) => {
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
         <ProposalHeader proposal={proposal} isListItem={false} />
+
         <div className="my-10">
           <ProposalChangeTable proposal={proposal} />
         </div>
+
         {proposal.terms.change.__typename === 'NewAsset' &&
         proposal.terms.change.source.__typename === 'ERC20' &&
         proposal.id ? (
@@ -90,7 +94,20 @@ export const Proposal = ({ proposal }: ProposalProps) => {
             lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
           />
         ) : null}
-        <div className="mb-12">
+
+        <div className="mb-4">
+          <ProposalDescription description={proposal.rationale.description} />
+        </div>
+
+        <div className="mb-4">
+          <ProposalTerms data={proposal.terms} />
+        </div>
+
+        <div className="mb-6">
+          <ProposalJson proposal={proposal} />
+        </div>
+
+        <div className="mb-10">
           <RoundedWrapper paddingBottom={true}>
             <VoteDetails
               proposal={proposal}
@@ -102,10 +119,10 @@ export const Proposal = ({ proposal }: ProposalProps) => {
             />
           </RoundedWrapper>
         </div>
+
         <div className="mb-4">
           <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
         </div>
-        <ProposalTermsJson terms={proposal.terms} />
       </section>
     </AsyncRenderer>
   );

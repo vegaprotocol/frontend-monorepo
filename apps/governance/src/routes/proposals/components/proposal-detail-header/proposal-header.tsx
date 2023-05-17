@@ -5,7 +5,6 @@ import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import ReactMarkdown from 'react-markdown';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
@@ -23,12 +22,7 @@ export const ProposalHeader = ({
   let details: ReactNode;
   let proposalType = '';
 
-  let title = proposal?.rationale.title.trim();
-  let description = proposal?.rationale.description.trim();
-  if (title?.length === 0 && description && description.length > 0) {
-    title = description;
-    description = '';
-  }
+  const title = proposal?.rationale.title.trim();
 
   const titleContent = shorten(title ?? '', 100);
 
@@ -143,23 +137,6 @@ export const ProposalHeader = ({
       {details && (
         <div data-testid="proposal-details" className="break-words my-10">
           {details}
-        </div>
-      )}
-
-      {description && !isListItem && (
-        <div data-testid="proposal-description">
-          {/*<div className="uppercase mr-2">{t('ProposalDescription')}:</div>*/}
-          <SubHeading title={t('ProposalDescription')} />
-          <ReactMarkdown
-            className="react-markdown-container"
-            /* Prevents HTML embedded in the description from rendering */
-            skipHtml={true}
-            /* Stops users embedding images which could be used for tracking  */
-            disallowedElements={['img']}
-            linkTarget="_blank"
-          >
-            {description}
-          </ReactMarkdown>
         </div>
       )}
     </>
