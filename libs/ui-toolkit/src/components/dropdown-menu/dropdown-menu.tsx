@@ -22,10 +22,6 @@ type DropdownMenuProps = DropdownMenuPrimitive.DropdownMenuProps & {
   trigger: ReactNode;
 };
 
-type DropdownTriggerProps = DropdownMenuPrimitive.DropdownMenuTriggerProps & {
-  iconName?: IconName;
-};
-
 /**
  * Contains all the parts of a dropdown menu.
  */
@@ -47,8 +43,8 @@ export const DropdownMenu = ({
  */
 export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
-  DropdownTriggerProps
->(({ className, children, iconName, ...props }, forwardedRef) => {
+  DropdownMenuPrimitive.DropdownMenuTriggerProps
+>(({ className, children, ...props }, forwardedRef) => {
   const defaultClasses = [
     'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
     'border-vega-light-200 dark:border-vega-dark-200',
@@ -62,9 +58,7 @@ export const DropdownMenuTrigger = forwardRef<
       className={className || defaultClasses}
       {...props}
     >
-      <button>
-        {children} {iconName && <Icon name={iconName || 'chevron-down'} />}
-      </button>
+      <button>{children}</button>
     </DropdownMenuPrimitive.Trigger>
   );
 });

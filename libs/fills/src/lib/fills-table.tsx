@@ -19,6 +19,7 @@ import {
   positiveClassNames,
   negativeClassNames,
   MarketNameCell,
+  COL_DEFS,
 } from '@vegaprotocol/datagrid';
 import type {
   VegaValueFormatterParams,
@@ -113,10 +114,8 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={''}
           colId="fill-actions"
-          type="rightAligned"
-          pinned="right"
+          {...COL_DEFS.actions}
           cellRenderer={({ data }: VegaICellRendererParams<Trade, 'id'>) => {
             if (!data) return null;
             return (
@@ -127,9 +126,6 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
               />
             );
           }}
-          maxWidth={45}
-          resizable={false}
-          sortable={false}
         />
       </AgGrid>
     );

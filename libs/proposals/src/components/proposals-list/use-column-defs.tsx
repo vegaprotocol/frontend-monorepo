@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
-import { DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
+import { COL_DEFS, DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -137,14 +137,7 @@ export const useColumnDefs = () => {
       },
       {
         colId: 'proposal-actions',
-        headerName: '',
-        sortable: false,
-        resizable: false,
-        filter: false,
-        minWidth: 45,
-        maxWidth: 45,
-        type: 'rightAligned',
-        pinned: 'right',
+        ...COL_DEFS.actions,
         cellRenderer: ({
           data,
         }: VegaICellRendererParams<ProposalListFieldsFragment>) => {

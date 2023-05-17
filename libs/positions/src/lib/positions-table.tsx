@@ -8,6 +8,7 @@ import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
+import { COL_DEFS } from '@vegaprotocol/datagrid';
 import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
@@ -385,7 +386,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         {onClose && !props.isReadOnly ? (
           <AgGridColumn
-            type="rightAligned"
+            {...COL_DEFS.actions}
             cellRenderer={({ data }: VegaICellRendererParams<Position>) => {
               return (
                 <div className="flex gap-2 items-center justify-end">
@@ -403,9 +404,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 </div>
               );
             }}
-            pinned="right"
-            resizable={false}
-            sortable={false}
             minWidth={90}
             maxWidth={90}
           />

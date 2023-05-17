@@ -7,6 +7,7 @@ import type {
   VegaICellRendererParams,
   TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
+import { COL_DEFS } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
   PriceFlashCell,
@@ -198,14 +199,8 @@ export const MarketListTable = forwardRef<
         }}
       />
       <AgGridColumn
-        headerName=""
         colId="market-actions"
-        pinned="right"
-        maxWidth={45}
-        minWidth={45}
-        resizable={false}
-        filter={false}
-        sortable={false}
+        {...COL_DEFS.actions}
         cellRenderer={({
           data,
         }: VegaICellRendererParams<MarketMaybeWithData>) => {

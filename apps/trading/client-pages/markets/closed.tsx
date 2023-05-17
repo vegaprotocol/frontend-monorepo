@@ -4,7 +4,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
@@ -275,14 +275,8 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
         ),
       },
       {
-        headerName: '',
         colId: 'market-actions',
-        pinned: 'right',
-        maxWidth: 45,
-        minWidth: 45,
-        resizable: false,
-        filter: false,
-        sortable: false,
+        ...COL_DEFS.actions,
         cellRenderer: ({ data }: VegaICellRendererParams<Row>) => {
           if (!data) return null;
           return (

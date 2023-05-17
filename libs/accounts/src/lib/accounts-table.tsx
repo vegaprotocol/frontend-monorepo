@@ -9,6 +9,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
+import { COL_DEFS } from '@vegaprotocol/datagrid';
 import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import {
@@ -260,13 +261,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           {
             <AgGridColumn
               colId="accounts-actions"
-              headerName=""
-              sortable={false}
-              resizable={false}
-              minWidth={45}
-              maxWidth={45}
-              type="rightAligned"
-              pinned="right"
+              {...COL_DEFS.actions}
               cellRenderer={({
                 data,
               }: VegaICellRendererParams<AccountFields>) => {
@@ -315,7 +310,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                   );
                 }
               }}
-              flex={1}
             />
           }
         </AgGrid>

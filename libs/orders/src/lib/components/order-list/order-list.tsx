@@ -18,6 +18,7 @@ import {
   positiveClassNames,
   MarketNameCell,
   OrderTypeCell,
+  COL_DEFS,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -270,12 +271,10 @@ export const OrderListTable = memo<
           />
           <AgGridColumn
             colId="amend"
-            headerName=""
             field="id"
+            {...COL_DEFS.actions}
             minWidth={120}
             maxWidth={120}
-            type="rightAligned"
-            pinned="right"
             cellRenderer={({
               data,
               value,
@@ -304,8 +303,6 @@ export const OrderListTable = memo<
                 </div>
               );
             }}
-            sortable={false}
-            flex={1}
           />
         </AgGrid>
       );
