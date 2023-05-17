@@ -144,12 +144,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     const accountForPinnedAsset = props?.rowData?.find(
       (a) => a.asset.id === pinnedAssetId
     );
-    console.log(accountForPinnedAsset);
     const showDepositButton = accountForPinnedAsset
       ? new BigNumber(accountForPinnedAsset.total).isLessThanOrEqualTo(0)
       : true;
-
-    console.log(showDepositButton);
 
     return (
       <>
