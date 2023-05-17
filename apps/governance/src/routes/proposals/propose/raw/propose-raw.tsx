@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
 import { Heading } from '../../../../components/heading';
 import {
   AsyncRenderer,
@@ -9,7 +9,7 @@ import {
   InputError,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import { createDocsLinks, validateJson } from '@vegaprotocol/utils';
+import { validateJson } from '@vegaprotocol/utils';
 import {
   NetworkParams,
   useNetworkParams,
@@ -39,7 +39,7 @@ export const ProposeRaw = () => {
     NetworkParams.governance_proposal_freeform_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-  const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -79,14 +79,11 @@ export const ProposeRaw = () => {
             spamProtectionMin={params.spam_protection_proposal_min_tokens}
           />
 
-          {VEGA_DOCS_URL && (
+          {DocsLinks && (
             <p className="text-sm" data-testid="proposal-docs-link">
               <span className="mr-1">{t('ProposalTermsText')}</span>
-              <ExternalLink
-                href={createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
-                target="_blank"
-              >
-                {createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
+              <ExternalLink href={DocsLinks.PROPOSALS_GUIDE} target="_blank">
+                {DocsLinks.PROPOSALS_GUIDE}
               </ExternalLink>
             </p>
           )}

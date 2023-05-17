@@ -8,11 +8,10 @@ import {
 import { RISK_ACCEPTED_KEY } from '../constants';
 import { TelemetryApproval } from './telemetry-approval';
 import {
-  DOCS_VEGA_WALLET,
-  GET_VEGA_WALLET_URL,
   Networks,
-  useDocsLink,
   useEnvironment,
+  DocsLinks,
+  ExternalLinks,
 } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 
@@ -53,8 +52,6 @@ export const RiskNoticeDialog = ({ onClose, network }: Props) => {
 
 const TestnetContent = ({ network }: { network: Networks }) => {
   const { GITHUB_FEEDBACK_URL } = useEnvironment();
-  const docsLink = useDocsLink();
-
   return (
     <>
       <p className="mb-4">
@@ -69,16 +66,16 @@ const TestnetContent = ({ network }: { network: Networks }) => {
           [network]
         )}
       </p>
-      {GITHUB_FEEDBACK_URL && GET_VEGA_WALLET_URL && docsLink && (
+      {GITHUB_FEEDBACK_URL && DocsLinks && (
         <ul className="list-disc pl-4">
           <li className="mb-1">
-            <Link href={GET_VEGA_WALLET_URL} target="_blank">
+            <Link href={ExternalLinks.VEGA_WALLET_URL} target="_blank">
               <span className="underline">{t('Get a Vega Wallet')}</span>{' '}
               <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
             </Link>
           </li>
           <li className="mb-1">
-            <Link href={docsLink(DOCS_VEGA_WALLET)} target="_blank">
+            <Link href={DocsLinks.VEGA_WALLET_TOOLS_URL} target="_blank">
               <span className="underline">{t('Learn about Vega Wallet')}</span>{' '}
               <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
             </Link>

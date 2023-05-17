@@ -1,13 +1,13 @@
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import {
-  BLOG,
   DApp,
   Networks,
   TOKEN_NEW_MARKET_PROPOSAL,
   TOKEN_PROPOSALS,
   useEnvironment,
   useLinks,
+  ExternalLinks,
 } from '@vegaprotocol/environment';
 import { ProposedMarkets } from './proposed-markets';
 
@@ -52,7 +52,7 @@ export const WelcomeNoticeDialog = () => {
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink target="_blank" href={BLOG}>
+          <ExternalLink target="_blank" href={ExternalLinks.BLOG}>
             {t('Read about the mainnet launch')}
           </ExternalLink>
         </li>

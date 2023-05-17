@@ -5,7 +5,7 @@ import {
   useProposalSubmit,
   deadlineToRoundedHours,
 } from '@vegaprotocol/proposals';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
 import {
   ProposalFormDescription,
   ProposalFormSubheader,
@@ -17,7 +17,6 @@ import {
 import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
-import { createDocsLinks } from '@vegaprotocol/utils';
 import {
   NetworkParams,
   useNetworkParams,
@@ -42,7 +41,7 @@ export const ProposeFreeform = () => {
     NetworkParams.governance_proposal_freeform_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-  const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -111,17 +110,13 @@ export const ProposeFreeform = () => {
             userAction={ProposalUserAction.CREATE}
           />
 
-          {VEGA_DOCS_URL && (
+          {DocsLinks && (
             <p className="text-sm" data-testid="proposal-docs-link">
               <span className="mr-1">{t('ProposalTermsText')}</span>
               <ExternalLink
-                href={`${
-                  createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                }${DOCS_LINK}`}
+                href={`${DocsLinks.PROPOSALS_GUIDE}${DOCS_LINK}`}
                 target="_blank"
-              >{`${
-                createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-              }${DOCS_LINK}`}</ExternalLink>
+              >{`${DocsLinks.PROPOSALS_GUIDE}${DOCS_LINK}`}</ExternalLink>
             </p>
           )}
 

@@ -11,7 +11,6 @@ import {
   ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { createDocsLinks } from '@vegaprotocol/utils';
 import {
   useNetworkParams,
   NetworkParams,
@@ -21,7 +20,7 @@ import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading, SubHeading } from '../../../components/heading';
 import { EpochIndividualRewards } from '../epoch-individual-rewards/epoch-individual-rewards';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { DocsLinks } from '@vegaprotocol/environment';
 import { ConnectToSeeRewards } from '../connect-to-see-rewards';
 import { EpochTotalRewards } from '../epoch-total-rewards/epoch-total-rewards';
 
@@ -29,7 +28,6 @@ type RewardsView = 'total' | 'individual';
 
 export const RewardsPage = () => {
   const { t } = useTranslation();
-  const { VEGA_DOCS_URL } = useEnvironment();
   const { pubKey, pubKeys } = useVegaWallet();
   const [toggleRewardsView, setToggleRewardsView] =
     useState<RewardsView>('total');
@@ -68,9 +66,9 @@ export const RewardsPage = () => {
           <Heading title={t('pageTitleRewards')} />
           <p className="mb-12">
             {t('rewardsIntro')}{' '}
-            {VEGA_DOCS_URL && (
+            {DocsLinks && (
               <ExternalLink
-                href={createDocsLinks(VEGA_DOCS_URL).REWARDS_GUIDE}
+                href={DocsLinks.REWARDS_GUIDE}
                 target="_blank"
                 data-testid="rewards-guide-link"
                 className="text-white"

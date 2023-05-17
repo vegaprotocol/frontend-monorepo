@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import {
-  createDocsLinks,
-  suitableForSyntaxHighlighter,
-} from '@vegaprotocol/utils';
+import { suitableForSyntaxHighlighter } from '@vegaprotocol/utils';
 import { useNetworkParams } from '@vegaprotocol/network-parameters';
 import {
   getClosingTimestamp,
@@ -12,7 +9,7 @@ import {
   useProposalSubmit,
   doesValueEquateToParam,
 } from '@vegaprotocol/proposals';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
 import {
   ProposalFormDescription,
   ProposalFormSubheader,
@@ -84,7 +81,7 @@ export const ProposeNetworkParameter = () => {
     loading: networkParamsLoading,
     error: networkParamsError,
   } = useNetworkParams();
-  const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -175,17 +172,13 @@ export const ProposeNetworkParameter = () => {
             userAction={ProposalUserAction.CREATE}
           />
 
-          {VEGA_DOCS_URL && (
+          {DocsLinks && (
             <p className="text-sm" data-testid="proposal-docs-link">
               <span className="mr-1">{t('ProposalTermsText')}</span>
               <ExternalLink
-                href={`${
-                  createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-                }${DOCS_LINK}`}
+                href={`${DocsLinks.PROPOSALS_GUIDE}${DOCS_LINK}`}
                 target="_blank"
-              >{`${
-                createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
-              }${DOCS_LINK}`}</ExternalLink>
+              >{`${DocsLinks.PROPOSALS_GUIDE}${DOCS_LINK}`}</ExternalLink>
             </p>
           )}
 
