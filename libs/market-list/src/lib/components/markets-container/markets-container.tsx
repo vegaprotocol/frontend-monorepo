@@ -36,9 +36,12 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
         suppressNoRowsOverlay
         onCellClicked={(cellEvent: CellClickedEvent) => {
           const { data, column, event } = cellEvent;
+          // prevent navigating to the market page if any of the below cells are clicked
+          // event.preventDefault or event.stopPropagation dont seem to apply for aggird
           const colId = column.getColId();
           if (
             [
+              'id',
               'tradableInstrument.instrument.code',
               'tradableInstrument.instrument.product.settlementAsset',
             ].includes(colId)

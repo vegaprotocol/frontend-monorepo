@@ -276,13 +276,22 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       },
       {
         headerName: '',
-        field: 'id',
+        colId: 'market-actions',
+        pinned: 'right',
         maxWidth: 45,
         minWidth: 45,
         resizable: false,
         filter: false,
         sortable: false,
-        cellRenderer: MarketTableActions,
+        cellRenderer: ({ data }: VegaICellRendererParams<Row>) => {
+          if (!data) return null;
+          return (
+            <MarketTableActions
+              marketId={data.id}
+              assetId={data.settlementAsset.id}
+            />
+          );
+        },
       },
     ];
     return cols;

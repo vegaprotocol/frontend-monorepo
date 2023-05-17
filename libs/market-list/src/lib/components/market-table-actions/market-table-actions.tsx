@@ -1,4 +1,3 @@
-import type { MarketMaybeWithData } from '../../markets-provider';
 import { t } from '@vegaprotocol/i18n';
 import {
   DropdownMenu,
@@ -10,14 +9,18 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
 import { DApp, EXPLORER_MARKET, useLinks } from '@vegaprotocol/environment';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 export const MarketTableActions = ({
-  value,
-}: VegaICellRendererParams<MarketMaybeWithData, 'id'>) => {
+  marketId,
+  assetId,
+}: {
+  marketId: string;
+  assetId: string;
+}) => {
+  const open = useAssetDetailsDialogStore((store) => store.open);
   const linkCreator = useLinks(DApp.Explorer);
-  if (!value) return <span />;
   return (
     <DropdownMenu
       trigger={
@@ -29,15 +32,25 @@ export const MarketTableActions = ({
       }
     >
       <DropdownMenuContent data-testid="market-actions-content">
-        <DropdownMenuCopyItem value={value} text={t('Copy Market ID')} />
+        <DropdownMenuCopyItem value={marketId} text={t('Copy Market ID')} />
         <DropdownMenuItem>
           <Link
-            href={linkCreator(EXPLORER_MARKET.replace(':id', value))}
+            href={linkCreator(EXPLORER_MARKET.replace(':id', marketId))}
             target="_blank"
           >
             <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
             {t('View on Explorer')}
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={(e) => {
+            open(assetId, e.target as HTMLElement);
+          }}
+        >
+          <span>
+            <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
+            {t('View asset')}
+          </span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

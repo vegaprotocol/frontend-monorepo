@@ -17,6 +17,7 @@ import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
+import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
 
 export const useColumnDefs = () => {
   const { VEGA_TOKEN_URL } = useEnvironment();
@@ -132,6 +133,23 @@ export const useColumnDefs = () => {
           'terms.enactmentDatetime'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
         filter: DateRangeFilter,
+        flex: 1,
+      },
+      {
+        colId: 'proposal-actions',
+        headerName: '',
+        sortable: false,
+        resizable: false,
+        minWidth: 45,
+        maxWidth: 45,
+        type: 'rightAligned',
+        pinned: 'right',
+        cellRenderer: ({
+          data,
+        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+          if (!data?.id) return null;
+          return <ProposalActionsDropdown id={data.id} />;
+        },
         flex: 1,
       },
     ];
