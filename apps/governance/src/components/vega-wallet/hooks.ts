@@ -26,6 +26,7 @@ import type {
   WalletDelegationFieldsFragment,
 } from './__generated__/Delegations';
 import { DelegationsDocument } from './__generated__/Delegations';
+import { isPartyNotFoundError } from '../../lib/party';
 
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
@@ -75,6 +76,9 @@ export const usePollForDelegations = () => {
           })
           .then((res) => {
             if (!mounted) return;
+
+            console.log(res.error);
+
             const canonisedDelegations = removePaginationWrapper(
               res.data.party?.delegationsConnection?.edges
             );
@@ -203,6 +207,15 @@ export const usePollForDelegations = () => {
             setDelegatedNodes(delegatedAmounts);
           })
           .catch((err: Error) => {
+            // if party isn't found, dont log to Sentry, just clear state as, user
+            // will not have any delagations or accounts
+            if (isPartyNotFoundError(err)) {
+              setDelegations([]);
+              setAccounts([]);
+              setDelegatedNodes([]);
+              setCurrentStakeAvailable(new BigNumber(0));
+              return;
+            }
             Sentry.captureException(err);
             // If query fails stop interval. Its almost certain that the query
             // will just continue to fail
