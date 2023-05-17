@@ -18,7 +18,7 @@ export const MarginWarning = ({ margin, balance, asset }: Props) => {
   return (
     <Notification
       intent={Intent.Warning}
-      testId="dealticket-warning-margin"
+      testId="deal-ticket-warning-margin"
       message={`You may not have enough margin available to open this position. ${addDecimalsFormatNumber(
         margin,
         asset.decimals

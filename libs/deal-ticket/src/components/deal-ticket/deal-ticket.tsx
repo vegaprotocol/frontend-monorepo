@@ -524,7 +524,7 @@ const SummaryMessage = memo(
     if (isReadOnly) {
       return (
         <div className="mb-2">
-          <InputError testId="dealticket-error-message-summary">
+          <InputError testId="deal-ticket-error-message-summary">
             {
               'You need to connect your own wallet to start trading on this market'
             }
@@ -573,7 +573,7 @@ const SummaryMessage = memo(
     if (errorMessage) {
       return (
         <div className="mb-2">
-          <InputError testId="dealticket-error-message-summary">
+          <InputError testId="deal-ticket-error-message-summary">
             {errorMessage}
           </InputError>
         </div>
@@ -601,7 +601,7 @@ const SummaryMessage = memo(
         <div className="mb-2">
           <Notification
             intent={Intent.Warning}
-            testId={'dealticket-warning-auction'}
+            testId={'deal-ticket-warning-auction'}
             message={t(
               'Any orders placed now will not trade until the auction ends'
             )}

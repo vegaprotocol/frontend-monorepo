@@ -18,7 +18,7 @@ export const ZeroBalanceError = ({
   return (
     <Notification
       intent={Intent.Warning}
-      testId="dealticket-error-message-zero-balance"
+      testId="deal-ticket-error-message-zero-balance"
       message={
         <>
           You need {asset.symbol} in your wallet to trade in this market.
