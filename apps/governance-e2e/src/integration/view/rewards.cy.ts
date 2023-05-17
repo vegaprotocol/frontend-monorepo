@@ -63,7 +63,6 @@ context(
       });
 
       it('should have option to go to last and newest page', function () {
-        waitForBeginningOfEpoch();
         cy.getByTestId('goto-last-page').click();
         cy.getByTestId('epoch-total-rewards-table')
           .last()
