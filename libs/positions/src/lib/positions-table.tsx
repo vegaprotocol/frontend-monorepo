@@ -40,6 +40,7 @@ import { getRowId } from './use-positions-data';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionTableActions } from './position-actions-dropdown';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -82,6 +83,7 @@ AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
   ({ onClose, onMarketClick, ...props }, ref) => {
+    const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -213,8 +215,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         <AgGridColumn
           headerName={t('Settlement asset')}
-          field="assetSymbol"
+          colId="asset"
           minWidth={100}
+          cellRenderer={({ data }: VegaICellRendererParams<Position>) => {
+            if (!data) return null;
+            return (
+              <ButtonLink
+                onClick={(e) => {
+                  openAssetDetailsDialog(data.assetId, e.target as HTMLElement);
+                }}
+              >
+                {data?.assetSymbol}
+              </ButtonLink>
+            );
+          }}
         />
         <AgGridColumn
           headerName={t('Entry price')}
