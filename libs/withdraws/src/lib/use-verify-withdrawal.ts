@@ -53,7 +53,9 @@ export const useVerifyWithdrawal = () => {
 
   const verify = useCallback(
     async (withdrawal: WithdrawalFieldsFragment) => {
+      const logger = localLoggerFactory({ application: 'withdraws' });
       try {
+        logger.info('verify withdrawal', withdrawal);
         setState({ dialogOpen: true });
 
         if (withdrawal.asset.source.__typename !== 'ERC20') {
@@ -119,12 +121,7 @@ export const useVerifyWithdrawal = () => {
 
         return true;
       } catch (err) {
-        const logger = localLoggerFactory({ application: 'withdraws' });
-        if ((err as Error).message.match(/call revert exception/)) {
-          logger.info('call revert eth exception', err);
-        } else {
-          logger.error(err);
-        }
+        logger.error('use verify withdrawal', err);
         setState({
           status: ApprovalStatus.Error,
         });

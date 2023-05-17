@@ -17,20 +17,20 @@ export const useGetAllowance = (
     if (!contract || !account || !config || !asset) {
       return;
     }
+
+    const logger = localLoggerFactory({ application: 'deposits' });
     try {
+      logger.info('get allowance', {
+        account,
+        contractAddress: config.collateral_bridge_contract.address,
+      });
       const res = await contract.allowance(
         account,
         config.collateral_bridge_contract.address
       );
-
       return new BigNumber(addDecimal(res.toString(), asset.decimals));
     } catch (err) {
-      const logger = localLoggerFactory({ application: 'deposits' });
-      if ((err as Error).message.match(/call revert exception/)) {
-        logger.info('call revert eth exception', err);
-      } else {
-        logger.error(err);
-      }
+      logger.error('get allowance', err);
       return;
     }
   }, [contract, account, config, asset]);
