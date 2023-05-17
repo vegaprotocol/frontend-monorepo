@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { ENV } from '../../../config';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';

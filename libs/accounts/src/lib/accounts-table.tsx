@@ -316,7 +316,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                               onClickDeposit && onClickDeposit(data.asset.id);
                             }}
                           >
-                            <span>
+                            <span className="flex gap-2">
                               <VegaIcon
                                 name={VegaIconNames.DEPOSIT}
                                 size={16}
@@ -331,7 +331,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                               onClickWithdraw && onClickWithdraw(data.asset.id)
                             }
                           >
-                            <span>
+                            <span className="flex gap-2">
                               <VegaIcon
                                 name={VegaIconNames.WITHDRAW}
                                 size={16}
@@ -347,7 +347,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                               setRow(data);
                             }}
                           >
-                            <span>
+                            <span className="flex gap-2">
                               <VegaIcon
                                 name={VegaIconNames.BREAKDOWN}
                                 size={16}

@@ -43,7 +43,7 @@ export const HeaderStat = ({
   testId?: string;
 }) => {
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default text-neutral-500 dark:text-neutral-400';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default first:border-none text-neutral-500 dark:text-neutral-400';
   const itemHeading = 'text-black dark:text-white';
 
   return (
@@ -72,7 +72,7 @@ export const HeaderTitle = ({
   secondaryContent: ReactNode;
 }) => {
   return (
-    <div className="text-left">
+    <div className="text-left" data-testid="header-title">
       <div className="text-sm md:text-md lg:text-lg whitespace-nowrap leading-4">
         {primaryContent}
       </div>

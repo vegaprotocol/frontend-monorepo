@@ -1,12 +1,11 @@
 import { useBridgeContract, useTokenContract } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import * as Sentry from '@sentry/react';
 import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
-import { isAssetTypeERC20 } from '@vegaprotocol/utils';
+import { isAssetTypeERC20, localLoggerFactory } from '@vegaprotocol/utils';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 
@@ -28,13 +27,9 @@ const initialState: DepositBalances = {
  * Hook which fetches all the balances required for depositing
  * whenever the asset changes in the form
  */
-export const useDepositBalances = (
-  asset: Asset | undefined,
-  isFaucetable: boolean
-) => {
+export const useDepositBalances = (asset: Asset | undefined) => {
   const tokenContract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined,
-    isFaucetable
+    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
   );
   const bridgeContract = useBridgeContract();
   const getAllowance = useGetAllowance(tokenContract, asset);
@@ -47,7 +42,9 @@ export const useDepositBalances = (
 
   const getBalances = useCallback(async () => {
     if (!asset) return;
+    const logger = localLoggerFactory({ application: 'deposits' });
     try {
+      logger.info('get deposit balances', { asset: asset.id });
       setState(null);
       const [max, deposited, balance, allowance] = await Promise.all([
         getDepositMaximum(),
@@ -63,7 +60,7 @@ export const useDepositBalances = (
         allowance: allowance ?? initialState.allowance,
       });
     } catch (err) {
-      Sentry.captureException(err);
+      logger.error('get deposit balances', err);
       setState(null);
     }
   }, [asset, getAllowance, getBalance, getDepositMaximum, getDepositedAmount]);

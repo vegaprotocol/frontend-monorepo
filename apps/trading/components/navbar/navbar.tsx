@@ -75,7 +75,7 @@ export const Navbar = ({
           </NavigationLink>
         </NavigationItem>
         <NavigationItem>
-          <NavigationLink data-testid="Trading" to={tradingPath}>
+          <NavigationLink data-testid="Trading" to={tradingPath} end>
             {t('Trading')}
           </NavigationLink>
         </NavigationItem>

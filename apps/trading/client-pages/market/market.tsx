@@ -9,7 +9,8 @@ import {
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
-import { TradeGrid, TradePanels } from './trade-grid';
+import { TradeGrid } from './trade-grid';
+import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
@@ -100,6 +101,7 @@ export const MarketPage = () => {
       />
     );
   }, [largeScreen, data, onSelect, navigate]);
+
   if (!data && marketId) {
     return (
       <Splash>

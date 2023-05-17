@@ -291,12 +291,58 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       .should('have.text', '200.00');
   });
 
+  it('must see a pegged order - ask', () => {
+    updateOrder({
+      id: orderId,
+      side: Schema.Side.SIDE_BUY,
+      peggedOrder: {
+        __typename: 'PeggedOrder',
+        reference: Schema.PeggedReference.PEGGED_REFERENCE_BEST_ASK,
+        offset: '250000',
+      },
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="type"]')
+      .should('have.text', 'Ask - 2.50 Peg limit');
+  });
+
+  it('must see a pegged order - bid', () => {
+    updateOrder({
+      id: orderId,
+      side: Schema.Side.SIDE_SELL,
+      peggedOrder: {
+        __typename: 'PeggedOrder',
+        reference: Schema.PeggedReference.PEGGED_REFERENCE_BEST_BID,
+        offset: '100',
+      },
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="type"]')
+      .should('have.text', 'Bid + 0.001 Peg limit');
+  });
+
+  it('must see a pegged order - mid', () => {
+    updateOrder({
+      id: orderId,
+      side: Schema.Side.SIDE_SELL,
+      peggedOrder: {
+        __typename: 'PeggedOrder',
+        reference: Schema.PeggedReference.PEGGED_REFERENCE_MID,
+        offset: '0.5',
+      },
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="type"]')
+      .should('have.text', 'Mid + 0.00001 Peg limit');
+  });
+
   it('for market typy must not see a price for active or parked orders', () => {
     // 7003-MORD-005
     updateOrder({
       id: orderId,
       type: Schema.OrderType.TYPE_MARKET,
       status: Schema.OrderStatus.STATUS_PARKED,
+      peggedOrder: null,
     });
     cy.get(`[row-id=${orderId}]`)
       .find('[col-id="price"]')
@@ -337,6 +383,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
       liquidityProvisionId: '6536',
     });
     cy.get(`[row-id=${orderId}]`)

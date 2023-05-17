@@ -28,7 +28,7 @@ export const marketsDataQuery = (
 export const createMarketsDataFragment = (
   override?: PartialDeep<MarketsDataFieldsFragment>
 ): MarketsDataFieldsFragment => {
-  const defaultResult = {
+  const defaultResult: MarketsDataFieldsFragment = {
     market: {
       id: 'market-0',
       __typename: 'Market',
@@ -42,6 +42,10 @@ export const createMarketsDataFragment = (
     bestBidPrice: '0',
     bestOfferPrice: '0',
     markPrice: '4612690058',
+    targetStake: '0',
+    suppliedStake: '0',
+    auctionStart: new Date().toISOString(),
+    auctionEnd: null,
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
     __typename: 'MarketData',
   };

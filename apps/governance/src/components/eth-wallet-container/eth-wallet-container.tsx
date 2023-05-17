@@ -2,10 +2,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  AppStateActionType,
-  useAppState,
-} from '../../contexts/app-state/app-state-context';
+import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 
 export const EthWalletContainer = ({
   children,
@@ -14,21 +11,12 @@ export const EthWalletContainer = ({
 }) => {
   const { account } = useWeb3React();
   const { t } = useTranslation();
-  const { appDispatch } = useAppState();
+  const { open } = useWeb3ConnectStore();
 
   if (!account) {
     return (
       <div className="w-full text-center">
-        <Button
-          onClick={() =>
-            appDispatch({
-              type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
-              isOpen: true,
-            })
-          }
-        >
-          {t('connectEthWallet')}
-        </Button>
+        <Button onClick={open}>{t('connectEthWallet')}</Button>
       </div>
     );
   }
