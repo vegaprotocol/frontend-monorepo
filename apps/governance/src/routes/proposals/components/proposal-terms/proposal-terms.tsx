@@ -33,22 +33,28 @@ const getParsedValue = (value: unknown) => {
   }
 };
 
-const renderKeyValue = (key: string, value: string | number) => (
+const RenderKeyValue = ({
+  title,
+  value,
+}: {
+  title: string;
+  value: string | number;
+}) => (
   <KeyValueTable>
     <KeyValueTableRow>
-      {key}
+      {title}
       {value}
     </KeyValueTableRow>
   </KeyValueTable>
 );
 
-const renderArray = (key: string, array: unknown[]) => {
+const RenderArray = ({ title, array }: { title: string; array: unknown[] }) => {
   if (array.every((item) => typeof item === 'string')) {
-    return renderKeyValue(key, array.join(', '));
+    return <RenderKeyValue title={title} value={array.join(', ')} />;
   } else {
     return (
       <div>
-        <div className="mb-2">{key}</div>
+        <div className="mb-2">{title}</div>
         {array.map((item, index) => (
           <div key={index}>
             <ProposalTermsRenderer data={item as Record<string, unknown>} />
@@ -60,31 +66,33 @@ const renderArray = (key: string, array: unknown[]) => {
 };
 
 // Working with 'unknown' type as a proposal's terms can be in many shapes
-const renderTerm = (key: string, value: unknown) => {
+const RenderTerm = ({ title, value }: { title: string; value: unknown }) => {
   const parsedValue = getParsedValue(value);
 
   if (parsedValue === null || typeof parsedValue === 'boolean') {
-    return renderKeyValue(key, String(parsedValue));
+    return <RenderKeyValue title={title} value={String(parsedValue)} />;
   } else if (
     typeof parsedValue === 'string' ||
     typeof parsedValue === 'number'
   ) {
-    return renderKeyValue(key, parsedValue);
+    return <RenderKeyValue title={title} value={parsedValue} />;
   } else if (typeof parsedValue === 'object') {
     if (Array.isArray(parsedValue)) {
-      return renderArray(key, parsedValue);
+      return <RenderArray title={title} array={parsedValue} />;
     } else {
       return (
         <div>
-          <div className="my-2">{key}</div>
+          <div className="my-2">{title}</div>
           <ProposalTermsRenderer
             data={parsedValue as Record<string, unknown>}
           />
         </div>
       );
     }
+  } else if (parsedValue === undefined) {
+    return <span>{'undefined'}</span>;
   } else {
-    return JSON.stringify(parsedValue);
+    return <span>{String(parsedValue)}</span>;
   }
 };
 
@@ -99,7 +107,9 @@ const ProposalTermsRenderer = ({ data }: ProposalTermsProps) => {
             )
         )
         .map((key, index) => (
-          <div key={index}>{renderTerm(key, data[key])}</div>
+          <div key={index}>
+            <RenderTerm title={key} value={data[key]} />
+          </div>
         ))}
     </RoundedWrapper>
   );
