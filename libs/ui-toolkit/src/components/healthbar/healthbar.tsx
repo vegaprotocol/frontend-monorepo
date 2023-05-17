@@ -181,6 +181,7 @@ export const HealthBar = ({
                   prevLevel={prevLevel}
                   decimals={0}
                   intent={intent}
+                  key={'healthbar-segment-' + index}
                 />
               ) : null;
             })}

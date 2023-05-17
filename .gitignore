@@ -49,4 +49,4 @@ cypress.env.json
 .next
 
 #cypress
-/apps/trading-e2e/cypress/reports/
+/apps/**/cypress/reports/
