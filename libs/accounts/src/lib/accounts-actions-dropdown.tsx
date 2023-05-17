@@ -15,6 +15,8 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { useTransferDialog } from './transfer-dialog';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 export const AccountsActionsDropdown = ({
   assetId,
@@ -30,6 +32,8 @@ export const AccountsActionsDropdown = ({
   onClickBreakdown: () => void;
 }) => {
   const etherscanLink = useEtherscanLink();
+  const openTransferDialog = useTransferDialog((store) => store.open);
+  const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   return (
     <DropdownMenu
       trigger={
@@ -62,13 +66,33 @@ export const AccountsActionsDropdown = ({
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem
+          key={'transfer'}
+          data-testid="transfer"
+          onClick={() => openTransferDialog(true)}
+        >
+          <span>
+            <VegaIcon name={VegaIconNames.WITHDRAW} size={16} />
+            {t('Transfer')}
+          </span>
+        </DropdownMenuItem>
+        <DropdownMenuItem
           key={'breakdown'}
           data-testid="breakdown"
           onClick={onClickBreakdown}
         >
           <span>
             <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
-            {t('Breakdown')}
+            {t('View accounts')}
+          </span>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={(e) => {
+            openAssetDialog(assetId, e.target as HTMLElement);
+          }}
+        >
+          <span>
+            <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
+            {t('View asset')}
           </span>
         </DropdownMenuItem>
         <DropdownMenuCopyItem value={assetId} text={t('Copy asset ID')} />
