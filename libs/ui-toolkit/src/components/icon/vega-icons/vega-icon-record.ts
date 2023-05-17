@@ -11,6 +11,10 @@ import { IconTwitter } from './svg-icons/icon-twitter';
 import { IconQuestionMark } from './svg-icons/icon-question-mark';
 import { IconForum } from './svg-icons/icon-forum';
 import { IconOpenExternal } from './svg-icons/icon-open-external';
+import { IconArrowRight } from './svg-icons/icon-arrow-right';
+import { IconChevronUp } from './svg-icons/icon-chevron-up';
+import { IconTrendUp } from './svg-icons/icon-trend-up';
+import { IconCross } from './svg-icons/icon-cross';
 
 export enum VegaIconNames {
   BREAKDOWN = 'breakdown',
@@ -26,6 +30,10 @@ export enum VegaIconNames {
   MOON = 'moon',
   OPEN_EXTERNAL = 'open-external',
   QUESTION_MARK = 'question-mark',
+  ARROW_RIGHT = 'arrow-right',
+  CHEVRON_UP = 'chevron-up',
+  TREND_UP = 'trend-up',
+  CROSS = 'cross',
 }
 
 export const VegaIconNameMap: Record<
@@ -45,4 +53,8 @@ export const VegaIconNameMap: Record<
   'question-mark': IconQuestionMark,
   forum: IconForum,
   'open-external': IconOpenExternal,
+  'arrow-right': IconArrowRight,
+  'chevron-up': IconChevronUp,
+  'trend-up': IconTrendUp,
+  cross: IconCross,
 };

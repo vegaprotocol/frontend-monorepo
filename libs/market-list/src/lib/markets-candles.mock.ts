@@ -20,7 +20,15 @@ export const marketsCandlesQuery = (
               edges: [
                 {
                   __typename: 'CandleEdge',
-                  node: marketCandlesField,
+                  node: createCandle({ close: '100' }),
+                },
+                {
+                  __typename: 'CandleEdge',
+                  node: createCandle({ close: '200' }),
+                },
+                {
+                  __typename: 'CandleEdge',
+                  node: createCandle({ close: '300' }),
                 },
               ],
             },
@@ -32,12 +40,17 @@ export const marketsCandlesQuery = (
   return merge(defaultResult, override);
 };
 
-const marketCandlesField: MarketCandlesFieldsFragment = {
-  __typename: 'Candle',
-  open: '100',
-  close: '100',
-  high: '110',
-  low: '90',
-  volume: '1',
-  periodStart: '2022-11-01T15:49:00Z',
+const createCandle = (
+  override?: Partial<MarketCandlesFieldsFragment>
+): MarketCandlesFieldsFragment => {
+  const defaultCandle = {
+    __typename: 'Candle',
+    open: '100',
+    close: '100',
+    high: '110',
+    low: '90',
+    volume: '1',
+    periodStart: '2022-11-01T15:49:00Z',
+  };
+  return merge(defaultCandle, override);
 };

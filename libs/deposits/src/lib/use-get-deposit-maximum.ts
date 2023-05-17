@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
-import * as Sentry from '@sentry/react';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
 export const useGetDepositMaximum = (
@@ -13,14 +12,16 @@ export const useGetDepositMaximum = (
     if (!contract || !asset || asset.source.__typename !== 'ERC20') {
       return;
     }
+    const logger = localLoggerFactory({ application: 'deposits' });
     try {
+      logger.info('get deposit maximum', { asset: asset.id });
       const res = await contract.get_deposit_maximum(
         asset.source.contractAddress
       );
       const max = new BigNumber(addDecimal(res.toString(), asset.decimals));
       return max.isEqualTo(0) ? new BigNumber(Infinity) : max;
     } catch (err) {
-      Sentry.captureException(err);
+      logger.error('get deposit maximum', err);
       return;
     }
   }, [contract, asset]);

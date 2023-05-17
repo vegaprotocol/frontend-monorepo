@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
-import * as Sentry from '@sentry/react';
 import { ethers } from 'ethers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import { useWeb3React } from '@web3-react/core';
 
 export const useGetDepositedAmount = (asset: Asset | undefined) => {
@@ -22,8 +21,9 @@ export const useGetDepositedAmount = (asset: Asset | undefined) => {
     ) {
       return;
     }
-
+    const logger = localLoggerFactory({ application: 'deposits' });
     try {
+      logger.info('get deposited amount', { asset: asset.id });
       const abicoder = new ethers.utils.AbiCoder();
       const innerHash = ethers.utils.keccak256(
         abicoder.encode(['address', 'uint256'], [account, 4])
@@ -41,7 +41,7 @@ export const useGetDepositedAmount = (asset: Asset | undefined) => {
       const value = new BigNumber(res, 16).toString();
       return new BigNumber(addDecimal(value, asset.decimals));
     } catch (err) {
-      Sentry.captureException(err);
+      logger.error('get deposited amount', err);
       return;
     }
   }, [provider, asset, config, account]);

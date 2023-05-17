@@ -139,7 +139,7 @@ export const OracleFullProfile = ({
                   href={link.url}
                   className="flex align-items-bottom underline text-sm"
                 >
-                  <span className="pt-1">
+                  <span className="pt-1 pr-1">
                     <VegaIcon name={getLinkIcon(link.type)} />
                   </span>
                   <span className="underline capitalize">

@@ -1,7 +1,6 @@
 import { columnHeaders } from './select-market-columns';
 import classNames from 'classnames';
 import type { Column } from './select-market-columns';
-import type { ReactNode } from 'react';
 
 export const SelectMarketTableHeader = ({
   detailed = false,
@@ -59,26 +58,6 @@ export const SelectMarketTableRow = ({
         }
         return null;
       })}
-    </tr>
-  );
-};
-
-export const SelectMarketTableRowSplash = ({
-  children,
-  colSpan,
-}: {
-  children: ReactNode;
-  colSpan: number;
-}) => {
-  return (
-    <tr className={`relative`}>
-      <td
-        className="text-center p-10 pt-14 text-xs"
-        key="splash"
-        colSpan={colSpan}
-      >
-        {children}
-      </td>
     </tr>
   );
 };

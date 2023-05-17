@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
-import { captureException } from '@sentry/react';
 import BigNumber from 'bignumber.js';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   ApprovalStatus,
@@ -54,7 +53,9 @@ export const useVerifyWithdrawal = () => {
 
   const verify = useCallback(
     async (withdrawal: WithdrawalFieldsFragment) => {
+      const logger = localLoggerFactory({ application: 'withdraws' });
       try {
+        logger.info('verify withdrawal', withdrawal);
         setState({ dialogOpen: true });
 
         if (withdrawal.asset.source.__typename !== 'ERC20') {
@@ -120,7 +121,7 @@ export const useVerifyWithdrawal = () => {
 
         return true;
       } catch (err) {
-        captureException(err);
+        logger.error('use verify withdrawal', err);
         setState({
           status: ApprovalStatus.Error,
         });

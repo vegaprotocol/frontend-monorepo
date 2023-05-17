@@ -20,7 +20,7 @@ module.exports = defineConfig({
     chromeWebSecurity: false,
     projectId: 'et4snf',
     defaultCommandTimeout: 10000,
-    viewportWidth: 1440,
+    viewportWidth: 1800,
     viewportHeight: 900,
     responseTimeout: 50000,
     requestTimeout: 20000,
