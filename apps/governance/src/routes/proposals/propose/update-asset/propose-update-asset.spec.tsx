@@ -10,9 +10,10 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 
 jest.mock('@vegaprotocol/environment', () => ({
-  useEnvironment: () => ({
-    VEGA_DOCS_URL: 'https://docs.vega.xyz',
-  }),
+  ...jest.requireActual('@vegaprotocol/environment'),
+  DocsLinks: {
+    PROPOSALS_GUIDE: 'https://docs.vega.xyz/tutorials/proposals',
+  },
 }));
 
 const updateAssetNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {

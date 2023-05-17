@@ -30,7 +30,6 @@ import {
   formatNumber,
   getDateTimeFormat,
   addDecimalsFormatNumber,
-  createDocsLinks,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { AgGridColumn } from 'ag-grid-react';
@@ -39,7 +38,7 @@ import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
 import { getRowId } from './use-positions-data';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { DocsLinks } from '@vegaprotocol/environment';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -397,9 +396,7 @@ export const PNLCell = ({
   valueFormatted,
   data,
 }: VegaICellRendererParams<Position, 'realisedPNL'>) => {
-  const { VEGA_DOCS_URL } = useEnvironment();
-  const LOSS_SOCIALIZATION_LINK =
-    VEGA_DOCS_URL && createDocsLinks(VEGA_DOCS_URL).LOSS_SOCIALIZATION;
+  const LOSS_SOCIALIZATION_LINK = DocsLinks?.LOSS_SOCIALIZATION ?? '';
 
   if (!data) {
     return <>-</>;
@@ -423,7 +420,7 @@ export const PNLCell = ({
           <p className="mb-2">
             {t('Lifetime loss socialisation deductions: %s', lossesFormatted)}
           </p>
-          {VEGA_DOCS_URL && (
+          {LOSS_SOCIALIZATION_LINK && (
             <ExternalLink href={LOSS_SOCIALIZATION_LINK}>
               {t('Read more about loss socialisation')}
             </ExternalLink>
@@ -440,8 +437,6 @@ export const OpenVolumeCell = ({
   valueFormatted,
   data,
 }: VegaICellRendererParams<Position, 'openVolume'>) => {
-  const { VEGA_DOCS_URL } = useEnvironment();
-
   if (!data) {
     return <>-</>;
   }
@@ -451,8 +446,7 @@ export const OpenVolumeCell = ({
     return <>{valueFormatted}</>;
   }
 
-  const POSITION_RESOLUTION_LINK =
-    VEGA_DOCS_URL && createDocsLinks(VEGA_DOCS_URL).POSITION_RESOLUTION;
+  const POSITION_RESOLUTION_LINK = DocsLinks?.POSITION_RESOLUTION ?? '';
 
   return (
     <WarningCell
@@ -469,7 +463,7 @@ export const OpenVolumeCell = ({
               ]
             )}
           </p>
-          {VEGA_DOCS_URL && (
+          {POSITION_RESOLUTION_LINK && (
             <ExternalLink href={POSITION_RESOLUTION_LINK}>
               {t('Read more about position resolution')}
             </ExternalLink>

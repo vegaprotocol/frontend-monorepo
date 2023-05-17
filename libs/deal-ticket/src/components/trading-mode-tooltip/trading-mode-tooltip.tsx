@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
 import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { createDocsLinks, getDateTimeFormat } from '@vegaprotocol/utils';
+import { DocsLinks } from '@vegaprotocol/environment';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, SimpleGrid } from '@vegaprotocol/ui-toolkit';
@@ -23,7 +23,6 @@ export const TradingModeTooltip = ({
   skip,
   skipGrid,
 }: TradingModeTooltipProps) => {
-  const { VEGA_DOCS_URL } = useEnvironment();
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useStaticMarketData(marketId, skip);
   const { marketTradingMode, trigger } = marketData || {};
@@ -102,9 +101,9 @@ export const TradingModeTooltip = ({
                 </span>
               </>
             )}
-            {VEGA_DOCS_URL && (
+            {DocsLinks && (
               <ExternalLink
-                href={createDocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}
+                href={DocsLinks.AUCTION_TYPE_OPENING}
                 className="ml-1"
               >
                 {t('Find out more')}
@@ -126,12 +125,9 @@ export const TradingModeTooltip = ({
                     'This market is in auction until it reaches sufficient liquidity.'
                   )}
                 </span>
-                {VEGA_DOCS_URL && (
+                {DocsLinks && (
                   <ExternalLink
-                    href={
-                      createDocsLinks(VEGA_DOCS_URL)
-                        .AUCTION_TYPE_LIQUIDITY_MONITORING
-                    }
+                    href={DocsLinks.AUCTION_TYPE_LIQUIDITY_MONITORING}
                     className="ml-1"
                   >
                     {t('Find out more')}
@@ -151,12 +147,9 @@ export const TradingModeTooltip = ({
                     'This market may have sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.'
                   )}
                 </span>
-                {VEGA_DOCS_URL && (
+                {DocsLinks && (
                   <ExternalLink
-                    href={
-                      createDocsLinks(VEGA_DOCS_URL)
-                        .AUCTION_TYPE_LIQUIDITY_MONITORING
-                    }
+                    href={DocsLinks.AUCTION_TYPE_LIQUIDITY_MONITORING}
                     className="ml-1"
                   >
                     {t('Find out more')}
@@ -174,12 +167,9 @@ export const TradingModeTooltip = ({
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
-                {VEGA_DOCS_URL && (
+                {DocsLinks && (
                   <ExternalLink
-                    href={
-                      createDocsLinks(VEGA_DOCS_URL)
-                        .AUCTION_TYPE_PRICE_MONITORING
-                    }
+                    href={DocsLinks.AUCTION_TYPE_PRICE_MONITORING}
                     className="ml-1"
                   >
                     {t('Find out more')}

@@ -2,9 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { ProposalFormTerms } from './proposal-form-terms';
 
 jest.mock('@vegaprotocol/environment', () => ({
-  useEnvironment: () => ({
-    VEGA_DOCS_URL: 'https://docs.vega.xyz',
-  }),
+  ...jest.requireActual('@vegaprotocol/environment'),
+  DocsLinks: {
+    PROPOSALS_GUIDE: 'https://docs.vega.xyz/tutorials/proposals',
+  },
 }));
 
 const renderComponent = () => {

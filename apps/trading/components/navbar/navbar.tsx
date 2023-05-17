@@ -5,6 +5,7 @@ import {
   TOKEN_GOVERNANCE,
   useEnvironment,
   useLinks,
+  DocsLinks,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
@@ -22,7 +23,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import { Links, Routes } from '../../pages/client-router';
-import { createDocsLinks } from '@vegaprotocol/utils';
 import { SettingsButton } from '../../client-pages/settings';
 import {
   ProtocolUpgradeCountdown,
@@ -35,7 +35,7 @@ export const Navbar = ({
 }: {
   theme: ComponentProps<typeof Navigation>['theme'];
 }) => {
-  const { VEGA_DOCS_URL, GITHUB_FEEDBACK_URL } = useEnvironment();
+  const { GITHUB_FEEDBACK_URL } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
   const marketId = useGlobalStore((store) => store.marketId);
   const update = useGlobalStore((store) => store.update);
@@ -95,15 +95,13 @@ export const Navbar = ({
             {t('Governance')}
           </NavExternalLink>
         </NavigationItem>
-        {VEGA_DOCS_URL && GITHUB_FEEDBACK_URL && (
+        {DocsLinks?.NEW_TO_VEGA && GITHUB_FEEDBACK_URL && (
           <NavigationItem>
             <NavigationTrigger>{t('Resources')}</NavigationTrigger>
             <NavigationContent>
               <NavigationList>
                 <NavigationItem>
-                  <NavExternalLink
-                    href={createDocsLinks(VEGA_DOCS_URL).NEW_TO_VEGA}
-                  >
+                  <NavExternalLink href={DocsLinks.NEW_TO_VEGA}>
                     {t('Docs')}
                   </NavExternalLink>
                 </NavigationItem>

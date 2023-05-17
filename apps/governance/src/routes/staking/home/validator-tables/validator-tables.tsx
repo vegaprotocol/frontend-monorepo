@@ -2,12 +2,8 @@ import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import BigNumber from 'bignumber.js';
 import * as Schema from '@vegaprotocol/types';
-import {
-  createDocsLinks,
-  removePaginationWrapper,
-  toBigNum,
-} from '@vegaprotocol/utils';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { removePaginationWrapper, toBigNum } from '@vegaprotocol/utils';
+import { DocsLinks } from '@vegaprotocol/environment';
 import { Link as UTLink, Toggle } from '@vegaprotocol/ui-toolkit';
 
 import { formatNumber } from '../../../../lib/format-number';
@@ -42,7 +38,6 @@ export const ValidatorTables = ({
   previousEpochData,
 }: ValidatorsTableProps) => {
   const { t } = useTranslation();
-  const { VEGA_DOCS_URL } = useEnvironment();
   const {
     appState: { decimals },
   } = useAppState();
@@ -213,12 +208,12 @@ export const ValidatorTables = ({
         <>
           <SubHeading title={t('status-pending')} />
           <p>
-            {VEGA_DOCS_URL && (
+            {DocsLinks && (
               <>
                 <span>{t('pendingDescription1')} </span>
                 <span>
                   <UTLink
-                    href={createDocsLinks(VEGA_DOCS_URL).STAKING_GUIDE}
+                    href={DocsLinks.STAKING_GUIDE}
                     target="_blank"
                     data-testid="validator-forum-link"
                   >
