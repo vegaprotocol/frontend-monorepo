@@ -8,6 +8,7 @@ import './wallet-eth.functions.ts';
 import './wallet-teardown.functions.ts';
 import './wallet-vega.functions.ts';
 import './proposal.functions.ts';
+import 'cypress-mochawesome-reporter/register';
 import registerCypressGrep from '@cypress/grep';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
