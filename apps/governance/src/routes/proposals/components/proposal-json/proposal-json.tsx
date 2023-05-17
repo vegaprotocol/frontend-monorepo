@@ -1,15 +1,15 @@
+import classnames from 'classnames';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Icon, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
-import type { PartialDeep } from 'type-fest';
-import type * as Schema from '@vegaprotocol/types';
-import { useState } from 'react';
-import classnames from 'classnames';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
-export const ProposalTermsJson = ({
-  terms,
+export const ProposalJson = ({
+  proposal,
 }: {
-  terms: PartialDeep<Schema.ProposalTerms>;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
   const { t } = useTranslation();
   const [showDetails, setShowDetails] = useState(false);
@@ -18,20 +18,20 @@ export const ProposalTermsJson = ({
   });
 
   return (
-    <section>
+    <section data-testid="proposal-json">
       <button
         onClick={() => setShowDetails(!showDetails)}
-        data-testid="proposal-terms-toggle"
+        data-testid="proposal-json-toggle"
       >
         <div className="flex items-center gap-3">
-          <SubHeading title={t('proposalTerms')} />
+          <SubHeading title={t('proposalJson')} />
           <div className={showDetailsIconClasses}>
             <Icon name="chevron-down" size={8} />
           </div>
         </div>
       </button>
 
-      {showDetails && <SyntaxHighlighter data={terms} />}
+      {showDetails && <SyntaxHighlighter data={proposal} />}
     </section>
   );
 };
