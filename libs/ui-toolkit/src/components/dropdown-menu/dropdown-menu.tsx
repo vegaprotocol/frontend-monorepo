@@ -10,7 +10,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { t } from '@vegaprotocol/i18n';
 
 const itemClass = classNames(
-  'relative flex items-center justify-between rounded-sm p-2 text-sm',
+  'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
   'hover:bg-white dark:hover:bg-vega-dark-200',
   'focus:bg-white dark:focus:bg-vega-dark-200',
@@ -114,7 +114,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, className)}
+    className={classNames(itemClass, 'justify-between', className)}
   />
 ));
 
@@ -130,7 +130,7 @@ export const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     {...radioItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, className)}
+    className={classNames(itemClass, 'justify-between', className)}
   />
 ));
 
@@ -187,10 +187,8 @@ export const DropdownMenuCopyItem = ({
           e.preventDefault();
         }}
       >
-        <span>
-          <VegaIcon name={VegaIconNames.COPY} size={16} />
-          {text}
-        </span>
+        <VegaIcon name={VegaIconNames.COPY} size={16} />
+        {text}
         {copied && (
           <span className="text-xs text-neutral-500">{t('Copied')}</span>
         )}

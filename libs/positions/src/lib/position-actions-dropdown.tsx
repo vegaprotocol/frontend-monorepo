@@ -27,10 +27,8 @@ export const PositionTableActions = ({ assetId }: { assetId: string }) => {
             open(assetId, e.target as HTMLElement);
           }}
         >
-          <span>
-            <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
-            {t('View asset')}
-          </span>
+          <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
+          {t('View asset')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

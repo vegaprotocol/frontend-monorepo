@@ -12,7 +12,7 @@ export const VegaIcon = ({ size = 16, name }: VegaIconProps) => {
   const effectiveClassName = classNames(
     'inline-block',
     'align-text-bottom',
-    'stroke-current'
+    'fill-current stroke-none'
   );
   const Element = VegaIconNameMap[name];
   return (

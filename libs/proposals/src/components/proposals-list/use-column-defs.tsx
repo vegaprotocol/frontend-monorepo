@@ -140,6 +140,7 @@ export const useColumnDefs = () => {
         headerName: '',
         sortable: false,
         resizable: false,
+        filter: false,
         minWidth: 45,
         maxWidth: 45,
         type: 'rightAligned',
@@ -154,6 +155,7 @@ export const useColumnDefs = () => {
       },
     ];
   }, [VEGA_TOKEN_URL, requiredMajorityPercentage]);
+
   const defaultColDef: ColDef = useMemo(() => {
     return {
       sortable: true,
@@ -163,6 +165,7 @@ export const useColumnDefs = () => {
       filterParams: { buttons: ['reset'] },
     };
   }, []);
+
   return useMemo(
     () => ({
       columnDefs,

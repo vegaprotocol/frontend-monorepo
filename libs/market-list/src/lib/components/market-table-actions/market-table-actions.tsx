@@ -38,8 +38,10 @@ export const MarketTableActions = ({
             href={linkCreator(EXPLORER_MARKET.replace(':id', marketId))}
             target="_blank"
           >
-            <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
-            {t('View on Explorer')}
+            <span className="flex gap-2">
+              <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
+              {t('View on Explorer')}
+            </span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
@@ -47,10 +49,8 @@ export const MarketTableActions = ({
             open(assetId, e.target as HTMLElement);
           }}
         >
-          <span>
-            <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
-            {t('View asset')}
-          </span>
+          <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
+          {t('View asset')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
