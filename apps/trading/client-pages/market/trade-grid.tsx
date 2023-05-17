@@ -1,120 +1,37 @@
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
-import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { OrderListContainer, Filter } from '@vegaprotocol/orders';
-import type { OrderListContainerProps } from '@vegaprotocol/orders';
-import { FillsContainer } from '@vegaprotocol/fills';
-import { PositionsContainer } from '@vegaprotocol/positions';
-import { TradesContainer } from '@vegaprotocol/trades';
+import { memo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { memo, useState } from 'react';
-import type { ReactNode, ComponentProps } from 'react';
-import { DepthChartContainer } from '@vegaprotocol/market-depth';
-import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { OracleBanner } from '@vegaprotocol/market-info';
-import {
-  Tab,
-  LocalStoragePersistTabs as Tabs,
-  Splash,
-} from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
-import { AccountsContainer } from '../../components/accounts-container';
-import type { Market } from '@vegaprotocol/market-list';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { TradeMarketHeader } from './trade-market-header';
-import { NO_MARKET } from './constants';
-import { LiquidityContainer } from '../liquidity/liquidity';
-import { useNavigate } from 'react-router-dom';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
+import { t } from '@vegaprotocol/i18n';
+import { OracleBanner } from '@vegaprotocol/market-info';
+import type { Market } from '@vegaprotocol/market-list';
+import { Filter } from '@vegaprotocol/orders';
 import {
   usePaneLayout,
   useScreenDimensions,
 } from '@vegaprotocol/react-helpers';
 import {
+  Tab,
+  LocalStoragePersistTabs as Tabs,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
+import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
 } from '../../lib/hooks/use-market-click-handler';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { HeaderTitle } from '../../components/header';
 import {
   ResizableGrid,
   ResizableGridPanel,
 } from '../../components/resizable-grid';
-
-type MarketDependantView =
-  | typeof CandlesChartContainer
-  | typeof DepthChartContainer
-  | typeof DealTicketContainer
-  | typeof MarketInfoAccordionContainer
-  | typeof OrderbookContainer
-  | typeof TradesContainer;
-
-type MarketDependantViewProps = ComponentProps<MarketDependantView>;
-
-const requiresMarket = (View: MarketDependantView) => {
-  const WrappedComponent = (props: MarketDependantViewProps) =>
-    props.marketId ? <View {...props} /> : <Splash>{NO_MARKET}</Splash>;
-  WrappedComponent.displayName = `RequiresMarket(${View.name})`;
-  return WrappedComponent;
-};
-
-const TradingViews = {
-  candles: {
-    label: 'Candles',
-    component: requiresMarket(CandlesChartContainer),
-  },
-  depth: {
-    label: 'Depth',
-    component: requiresMarket(DepthChartContainer),
-  },
-  liquidity: {
-    label: 'Liquidity',
-    component: requiresMarket(LiquidityContainer),
-  },
-  ticket: {
-    label: 'Ticket',
-    component: requiresMarket(DealTicketContainer),
-  },
-  info: {
-    label: 'Info',
-    component: requiresMarket(MarketInfoAccordionContainer),
-  },
-  orderbook: {
-    label: 'Orderbook',
-    component: requiresMarket(OrderbookContainer),
-  },
-  trades: {
-    label: 'Trades',
-    component: requiresMarket(TradesContainer),
-  },
-  positions: { label: 'Positions', component: PositionsContainer },
-  activeOrders: {
-    label: 'Active',
-    component: (props: OrderListContainerProps) => (
-      <OrderListContainer {...props} filter={Filter.Open} />
-    ),
-  },
-  closedOrders: {
-    label: 'Closed',
-    component: (props: OrderListContainerProps) => (
-      <OrderListContainer {...props} filter={Filter.Closed} />
-    ),
-  },
-  rejectedOrders: {
-    label: 'Rejected',
-    component: (props: OrderListContainerProps) => (
-      <OrderListContainer {...props} filter={Filter.Rejected} />
-    ),
-  },
-  orders: {
-    label: 'All',
-    component: OrderListContainer,
-  },
-  collateral: { label: 'Collateral', component: AccountsContainer },
-  fills: { label: 'Fills', component: FillsContainer },
-};
-
-type TradingView = keyof typeof TradingViews;
+import { TradingViews } from './trade-views';
+import { MarketSelector } from './market-selector';
+import { HeaderStats } from './header-stats';
 
 interface TradeGridProps {
   market: Market | null;
@@ -410,18 +327,57 @@ const MainGrid = memo(
 );
 MainGrid.displayName = 'MainGrid';
 
-export const TradeGrid = ({
-  market,
-  onSelect,
-  pinnedAsset,
-}: TradeGridProps) => {
+export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const wrapperClasses = classNames(
+    'h-full grid',
+    'grid-rows-[min-content_min-content_1fr]',
+    'grid-cols-[320px_1fr]'
+  );
+  const paneWrapperClasses = classNames('min-h-0', {
+    'col-span-2 col-start-1': !sidebarOpen,
+  });
+
   return (
-    <div className="h-full grid grid-rows-[min-content_1fr]">
-      <div>
-        <TradeMarketHeader market={market} onSelect={onSelect} />
+    <div className={wrapperClasses}>
+      <div className="border-b border-r border-default">
+        <div className="flex gap-2 justify-between items-center px-4 py-2">
+          <HeaderTitle
+            primaryContent={market?.tradableInstrument.instrument.code}
+            secondaryContent={market?.tradableInstrument.instrument.name}
+          />
+          <button
+            onClick={() => setSidebarOpen((x) => !x)}
+            className="p-2"
+            data-testid="sidebar-toggle"
+          >
+            <span
+              className={classNames('block', {
+                'rotate-90 translate-x-1': !sidebarOpen,
+                '-rotate-90 -translate-x-1': sidebarOpen,
+              })}
+            >
+              <VegaIcon name={VegaIconNames.CHEVRON_UP} />
+            </span>
+          </button>
+        </div>
+      </div>
+      <div className="border-b border-default min-w-0">
+        <HeaderStats market={market} />
+      </div>
+      <div className="col-span-2 bg-vega-green">
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
+      {sidebarOpen && (
+        <div className="border-r border-default min-h-0">
+          <div className="h-full pb-8">
+            <MarketSelector currentMarketId={market?.id} />
+          </div>
+        </div>
+      )}
+      <div className={paneWrapperClasses}>
+        <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
+      </div>
     </div>
   );
 };
@@ -437,90 +393,5 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
         {({ width, height }) => <div style={{ width, height }}>{children}</div>}
       </AutoSizer>
     </section>
-  );
-};
-
-interface TradePanelsProps {
-  market: Market | null;
-  onSelect: (marketId: string, metaKey?: boolean) => void;
-  onMarketClick?: (marketId: string) => void;
-  onOrderTypeClick?: (marketId: string) => void;
-  onClickCollateral: () => void;
-  pinnedAsset?: PinnedAsset;
-}
-
-export const TradePanels = ({
-  market,
-  onSelect,
-  onClickCollateral,
-  pinnedAsset,
-}: TradePanelsProps) => {
-  const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
-
-  const [view, setView] = useState<TradingView>('candles');
-  const renderView = () => {
-    const Component = memo<{
-      marketId: string;
-      onSelect: (marketId: string, metaKey?: boolean) => void;
-      onMarketClick?: (marketId: string) => void;
-      onOrderTypeClick?: (marketId: string) => void;
-      onClickCollateral: () => void;
-      pinnedAsset?: PinnedAsset;
-    }>(TradingViews[view].component);
-
-    if (!Component) {
-      throw new Error(`No component for view: ${view}`);
-    }
-
-    if (!market) return <Splash>{NO_MARKET}</Splash>;
-
-    return (
-      <Component
-        marketId={market?.id}
-        onSelect={onSelect}
-        onClickCollateral={onClickCollateral}
-        pinnedAsset={pinnedAsset}
-        onMarketClick={onMarketClick}
-        onOrderTypeClick={onOrderTypeClick}
-      />
-    );
-  };
-
-  return (
-    <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <div>
-        <TradeMarketHeader market={market} onSelect={onSelect} />
-        <OracleBanner marketId={market?.id || ''} />
-      </div>
-      <div className="h-full">
-        <AutoSizer>
-          {({ width, height }) => (
-            <div style={{ width, height }} className="overflow-auto">
-              {renderView()}
-            </div>
-          )}
-        </AutoSizer>
-      </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
-        {Object.keys(TradingViews).map((key) => {
-          const isActive = view === key;
-          const className = classNames('p-4 min-w-[100px] capitalize', {
-            'text-black dark:text-vega-yellow': isActive,
-            'bg-neutral-200 dark:bg-neutral-800': isActive,
-          });
-          return (
-            <button
-              data-testid={key}
-              onClick={() => setView(key as TradingView)}
-              className={className}
-              key={key}
-            >
-              {TradingViews[key as keyof typeof TradingViews].label}
-            </button>
-          );
-        })}
-      </div>
-    </div>
   );
 };

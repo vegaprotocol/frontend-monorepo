@@ -9,6 +9,7 @@ export * from './lib/is-valid-url';
 export * from './lib/local-logger';
 export * from './lib/local-storage';
 export * from './lib/markets';
+export * from './lib/price-change';
 export * from './lib/remove-0x';
 export * from './lib/remove-pagination-wrapper';
 export * from './lib/time';

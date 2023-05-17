@@ -1,5 +1,4 @@
 import { useApolloClient } from '@apollo/client';
-import { captureException } from '@sentry/react';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import {
   EthTxStatus,
@@ -7,6 +6,7 @@ import {
   useEthereumTransaction,
 } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
+import { localLoggerFactory } from '@vegaprotocol/utils';
 import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
   Erc20ApprovalQuery,
@@ -28,10 +28,12 @@ export const useCompleteWithdraw = () => {
     async (withdrawalId: string) => {
       setId(withdrawalId);
 
+      const logger = localLoggerFactory({ application: 'deposits' });
       try {
         if (!contract) {
           return;
         }
+        logger.info('get withdraw approval', { withdrawalId });
         const res = await query<
           Erc20ApprovalQuery,
           Erc20ApprovalQueryVariables
@@ -45,7 +47,7 @@ export const useCompleteWithdraw = () => {
         if (!approval) {
           throw new Error('Could not retrieve withdrawal approval');
         }
-
+        logger.info('withdraw transaction', { approval });
         perform(
           approval.assetSource,
           approval.amount,
@@ -55,7 +57,7 @@ export const useCompleteWithdraw = () => {
           approval.signatures
         );
       } catch (err) {
-        captureException(err);
+        logger.error('withdraw transaction', err);
       }
     },
     [contract, query, perform]

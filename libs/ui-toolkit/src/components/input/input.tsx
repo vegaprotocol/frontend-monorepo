@@ -85,8 +85,8 @@ const getAffixElement = ({
   const className = classNames(
     ['fill-black dark:fill-white', 'absolute', 'z-10'],
     {
-      'left-4': position === 'pre',
-      'right-4': position === 'post',
+      'left-3': position === 'pre',
+      'right-3': position === 'post',
     }
   );
 
@@ -134,8 +134,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       'appearance-none dark:color-scheme-dark',
       className,
       {
-        'pl-10': hasPrepended,
-        'pr-10': hasAppended,
+        'pl-9': hasPrepended,
+        'pr-9': hasAppended,
       }
     );
 
