@@ -1,12 +1,14 @@
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { StakingWalletsContainer } from './components/staking-wallets-container/staking-wallets-container';
+import { StakingWalletsContainer } from './components/staking-wallets-container';
 import { AssociatePage } from './associate-page';
 import { AssociatePageNoVega } from './associate-page-no-vega';
 import { Heading } from '../../../components/heading';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
+import type { RouteChildProps } from '../../index';
 
-export const AssociateContainer = () => {
+export const AssociateContainer = ({ name }: RouteChildProps) => {
+  useDocumentTitle(name);
   const { t } = useTranslation();
   const { config } = useEthereumConfig();
 
