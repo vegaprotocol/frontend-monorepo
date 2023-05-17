@@ -25,7 +25,7 @@ const mockData = {
           amount: '0',
           percentageOfTotal: '0',
         },
-        ACCOUNT_TYPE_FEES_LIQUIDITY: {
+        ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: {
           amount: '0',
           percentageOfTotal: '0',
         },
@@ -55,7 +55,9 @@ describe('EpochIndividualRewardsTable', () => {
     expect(
       getByTestId('ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES')
     ).toBeInTheDocument();
-    expect(getByTestId('ACCOUNT_TYPE_FEES_LIQUIDITY')).toBeInTheDocument();
+    expect(
+      getByTestId('ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES')
+    ).toBeInTheDocument();
     expect(
       getByTestId('ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS')
     ).toBeInTheDocument();
