@@ -60,6 +60,7 @@ export function addVegaWalletConnect() {
 export function addSetVegaWallet() {
   Cypress.Commands.add('setVegaWallet', () => {
     cy.window().then((win) => {
+      win.localStorage.setItem('vega_risk_accepted', 'true');
       win.localStorage.setItem(
         'vega_wallet_config',
         JSON.stringify({
