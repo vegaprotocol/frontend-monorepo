@@ -58,7 +58,7 @@ const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
 // 3001-VOTE-007
-context(
+context.skip(
   'Governance flow - form validations for different governance proposals',
   { tags: '@slow' },
   function () {

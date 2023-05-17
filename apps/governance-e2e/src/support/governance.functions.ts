@@ -93,16 +93,20 @@ export function submitUniqueRawProposal(proposalFields: {
   });
 }
 
-export function enterUniqueFreeFormProposalBody(
-  timestamp: string,
-  proposalTitle: string
-) {
-  cy.get(newProposalTitle).type(proposalTitle);
-  cy.get(newProposalDescription).type(
-    'this is a e2e freeform proposal description'
-  );
-  cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-  cy.getByTestId('proposal-submit').should('be.visible').click();
+// export function enterUniqueFreeFormProposalBody(
+//   timestamp: string,
+//   proposalTitle: string
+// ) {
+//   cy.get(newProposalTitle).type(proposalTitle);
+//   cy.get(newProposalDescription).type(
+//     'this is a e2e freeform proposal description'
+//   );
+//   cy.get(proposalVoteDeadline).clear().click().type(timestamp);
+//   cy.getByTestId('proposal-submit').should('be.visible').click();
+// }
+
+export function getProposalFromTitle(proposalTitle: string) {
+  return cy.contains(proposalTitle).parentsUntil(proposalListItem).last();
 }
 
 // export function getSubmittedProposalFromProposalList(proposalTitle: string) {
