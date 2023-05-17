@@ -1,7 +1,7 @@
 import { mockConnectWallet } from '@vegaprotocol/cypress';
 
 describe('Navbar', { tags: '@smoke' }, () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearAllLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
