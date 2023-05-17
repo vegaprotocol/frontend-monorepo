@@ -103,7 +103,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
           <ProposalTerms data={proposal.terms} />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-6">
           <ProposalJson proposal={proposal} />
         </div>
 
