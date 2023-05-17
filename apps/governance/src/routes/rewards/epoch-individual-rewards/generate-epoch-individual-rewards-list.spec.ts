@@ -24,7 +24,7 @@ describe('generateEpochIndividualRewardsList', () => {
   };
 
   const reward3: RewardFieldsFragment = {
-    rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+    rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
     amount: '200',
     percentageOfTotal: '0.2',
     receivedAt: new Date(),
@@ -34,7 +34,7 @@ describe('generateEpochIndividualRewardsList', () => {
   };
 
   const reward4: RewardFieldsFragment = {
-    rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+    rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
     amount: '100',
     percentageOfTotal: '0.1',
     receivedAt: new Date(),
@@ -44,7 +44,7 @@ describe('generateEpochIndividualRewardsList', () => {
   };
 
   const reward5: RewardFieldsFragment = {
-    rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+    rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
     amount: '150',
     percentageOfTotal: '0.15',
     receivedAt: new Date(),
@@ -105,7 +105,7 @@ describe('generateEpochIndividualRewardsList', () => {
               amount: '0',
               percentageOfTotal: '0',
             },
-            [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+            [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
               amount: '0',
               percentageOfTotal: '0',
             },
@@ -172,7 +172,7 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
                 amount: '200',
                 percentageOfTotal: '0.2',
               },
@@ -202,7 +202,7 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
                 amount: '0',
                 percentageOfTotal: '0',
               },
@@ -237,7 +237,7 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
                 amount: '100',
                 percentageOfTotal: '0.1',
               },
@@ -285,7 +285,7 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
                 amount: '150',
                 percentageOfTotal: '0.15',
               },
@@ -320,7 +320,7 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
                 amount: '200',
                 percentageOfTotal: '0.2',
               },
@@ -350,7 +350,7 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
                 amount: '0',
                 percentageOfTotal: '0',
               },
@@ -395,7 +395,7 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
                 amount: '100',
                 percentageOfTotal: '0.1',
               },

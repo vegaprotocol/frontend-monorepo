@@ -26,7 +26,7 @@ export const RowAccountTypes = {
     columnTitle: 'rewardsColPriceMakingHeader',
     description: 'rewardsColPriceMakingTooltip',
   },
-  [AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY]: {
+  [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
     columnTitle: 'rewardsColLiquidityProvisionHeader',
     description: 'rewardsColLiquidityProvisionTooltip',
   },
