@@ -15,5 +15,6 @@
 
 import '@vegaprotocol/cypress';
 import './common.functions.js';
+import 'cypress-mochawesome-reporter/register';
 import registerCypressGrep from '@cypress/grep';
 registerCypressGrep();
