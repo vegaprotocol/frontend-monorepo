@@ -51,6 +51,8 @@ export const ToastsContainer = ({
         { 'bottom-0 left-0': position === 1 },
         { 'top-0 left-0': position === 2 },
         { 'top-0 right-0': position === 3 },
+        { 'top-0 toast-center': position === 4 },
+        { 'bottom-0 toast-center': position === 5 },
         'p-[8px_16px_16px_16px]',
         'max-w-full max-h-full overflow-x-hidden overflow-y-auto',
         {

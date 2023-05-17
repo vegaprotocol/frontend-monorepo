@@ -18,7 +18,7 @@ export const ToastPositionSetter = () => {
       <span>{t('Toast location')}</span>
       <div
         className={classNames(
-          'grid grid-cols-2 grid-rows-2 w-[42px] h-[42px] gap-[2px]'
+          'grid grid-cols-3 grid-rows-2 w-[64px] h-[42px] gap-[2px]'
         )}
       >
         <Button
@@ -34,6 +34,20 @@ export const ToastPositionSetter = () => {
             size={3}
             name={IconNames.ARROW_TOP_LEFT}
           />{' '}
+        </Button>
+        <Button
+          className={classNames(
+            buttonCssClasses,
+            position === 4 && activeButton
+          )}
+          onClick={() => setPostion(4)}
+          size="xs"
+        >
+          <Icon
+            className={classNames(iconCssClasses, position === 4 && activeIcon)}
+            size={3}
+            name={IconNames.ARROW_UP}
+          />
         </Button>
         <Button
           className={classNames(
@@ -61,6 +75,20 @@ export const ToastPositionSetter = () => {
             className={classNames(iconCssClasses, position === 1 && activeIcon)}
             size={3}
             name={IconNames.ARROW_BOTTOM_LEFT}
+          />
+        </Button>
+        <Button
+          className={classNames(
+            buttonCssClasses,
+            position === 5 && activeButton
+          )}
+          onClick={() => setPostion(5)}
+          size="xs"
+        >
+          <Icon
+            className={classNames(iconCssClasses, position === 5 && activeIcon)}
+            size={3}
+            name={IconNames.ARROW_DOWN}
           />
         </Button>
         <Button

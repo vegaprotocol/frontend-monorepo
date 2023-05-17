@@ -51,6 +51,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.rtl-dir': {
       direction: 'rtl',
     },
+    '.toast-center': {
+      left: 'calc(50% - 160px)',
+    },
   });
 });
 

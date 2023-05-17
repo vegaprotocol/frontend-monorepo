@@ -48,9 +48,9 @@ type Actions = {
    */
   removeAll: () => void;
   /**
-   * Set position of portal: bottom right | bottom left | top left | top right
+   * Set position of portal: bottom right | bottom left | top left | top right | top center | bottom center
    */
-  setPosition: (position: 0 | 1 | 2 | 3) => void;
+  setPosition: (position: 0 | 1 | 2 | 3 | 4 | 5) => void;
 };
 
 type ToastsStore = State & Actions;
@@ -104,7 +104,7 @@ export const useToasts = create<ToastsStore>()(
           }
         }),
       removeAll: () => set({ toasts: {}, count: 0 }),
-      setPosition: (position: 0 | 1 | 2 | 3) => set({ position }),
+      setPosition: (position: 0 | 1 | 2 | 3 | 4 | 5) => set({ position }),
     })),
     { name: STORAGE_KEY }
   )
