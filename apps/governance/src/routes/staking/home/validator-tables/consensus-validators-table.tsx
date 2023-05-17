@@ -131,20 +131,25 @@ export const ConsensusValidatorsTable = ({
 
   const gridRef = useRef<AgGridReact | null>(null);
 
+  const thirdOfTotalStake = useMemo(
+    () => new BigNumber(totalStake).dividedBy(3),
+    [totalStake]
+  );
+
   const nodes = useMemo(() => {
     if (!data) return [];
     let canonisedNodes = data
       .sort((a, b) => {
-        const aVotingPower = new BigNumber(a.rankingScore.votingPower);
-        const bVotingPower = new BigNumber(b.rankingScore.votingPower);
-        return bVotingPower.minus(aVotingPower).toNumber();
+        const aStakedTotal = new BigNumber(a.stakedTotal);
+        const bStakedTotal = new BigNumber(b.stakedTotal);
+        return bStakedTotal.minus(aStakedTotal).toNumber();
       })
       .map((node, index) => {
-        const votingPowerRanking = index + 1;
+        const stakedTotalRanking = index + 1;
 
         return {
           ...node,
-          votingPowerRanking,
+          stakedTotalRanking,
         };
       })
       .map(
@@ -157,7 +162,7 @@ export const ConsensusValidatorsTable = ({
           stakedTotal,
           rankingScore: { stakeScore, votingPower },
           pendingStake,
-          votingPowerRanking,
+          stakedTotalRanking,
           stakedByUser,
           pendingUserStake,
           userStakeShare,
@@ -175,7 +180,7 @@ export const ConsensusValidatorsTable = ({
 
           return {
             id,
-            [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
+            [ValidatorFields.RANKING_INDEX]: stakedTotalRanking,
             [ValidatorFields.VALIDATOR]: {
               avatarUrl: logo,
               name,
@@ -236,16 +241,12 @@ export const ConsensusValidatorsTable = ({
       return canonisedNodes;
     }
 
-    // The point of identifying and hiding the group that could halt the network
-    // is that we assume the top 1/3 of stake is held by considerably less than
-    // 1/3 of the validators and we really want people not to stake any more to
-    // that group, because we want to make it require as many difference
-    // validators to collude as possible to halt the network, so we hide them.
     const { topThird, remaining } = canonisedNodes.reduce(
       (acc, node) => {
-        if (acc.cumulativeScore < 100 / 3) {
-          acc.cumulativeScore += parseFloat(
-            node[ValidatorFields.NORMALISED_VOTING_POWER]
+        if (acc.cumulativeScore.isLessThan(thirdOfTotalStake)) {
+          const prev = acc.cumulativeScore;
+          acc.cumulativeScore = prev.plus(
+            new BigNumber(node[ValidatorFields.STAKE])
           );
           acc.topThird.push(node);
           return acc;
@@ -253,61 +254,70 @@ export const ConsensusValidatorsTable = ({
         acc.remaining.push(node);
         return acc;
       },
-      { topThird: [], remaining: [], cumulativeScore: 0 } as {
+      { topThird: [], remaining: [], cumulativeScore: new BigNumber(0) } as {
         topThird: CanonisedConsensusNodeProps[];
         remaining: CanonisedConsensusNodeProps[];
-        cumulativeScore: number;
+        cumulativeScore: BigNumber;
       }
     );
 
     // We need to combine the top third of validators into a single node, this
     // way the combined values can be passed to AG grid so that the combined cell's
     // values are correct for ordering.
-    const combinedTopThird = topThird.reduce((acc, node) => {
-      const {
-        [ValidatorFields.STAKE]: stake,
-        [ValidatorFields.STAKE_SHARE]: stakeShare,
-        [ValidatorFields.PENDING_STAKE]: pendingStake,
-        [ValidatorFields.NORMALISED_VOTING_POWER]: normalisedVotingPower,
-        [ValidatorFields.TOTAL_PENALTIES]: totalPenalties,
-      } = node;
+    const combinedTopThird = topThird.reduce(
+      (acc, node) => {
+        const {
+          [ValidatorFields.STAKE]: stake,
+          [ValidatorFields.STAKE_SHARE]: stakeShare,
+          [ValidatorFields.PENDING_STAKE]: pendingStake,
+          [ValidatorFields.NORMALISED_VOTING_POWER]: normalisedVotingPower,
+          [ValidatorFields.TOTAL_PENALTIES]: totalPenalties,
+        } = node;
 
-      const {
-        [ValidatorFields.STAKE]: accStake,
-        [ValidatorFields.STAKE_SHARE]: accStakeShare,
-        [ValidatorFields.PENDING_STAKE]: accPendingStake,
-        [ValidatorFields.NORMALISED_VOTING_POWER]: accNormalisedVotingPower,
-        [ValidatorFields.TOTAL_PENALTIES]: accTotalPenalties,
-      } = acc;
+        const {
+          [ValidatorFields.STAKE]: accStake,
+          [ValidatorFields.STAKE_SHARE]: accStakeShare,
+          [ValidatorFields.PENDING_STAKE]: accPendingStake,
+          [ValidatorFields.NORMALISED_VOTING_POWER]: accNormalisedVotingPower,
+          [ValidatorFields.TOTAL_PENALTIES]: accTotalPenalties,
+        } = acc;
 
-      return {
-        ...acc,
-        [ValidatorFields.STAKE]: toBigNum(accStake, decimals)
-          .plus(toBigNum(stake, decimals))
-          .toString(),
-        [ValidatorFields.STAKE_SHARE]: formatNumberPercentage(
-          new BigNumber(parseFloat(accStakeShare)).plus(
-            new BigNumber(parseFloat(stakeShare))
+        return {
+          ...acc,
+          [ValidatorFields.STAKE]: new BigNumber(accStake)
+            .plus(new BigNumber(stake))
+            .toString(),
+          [ValidatorFields.STAKE_SHARE]: formatNumberPercentage(
+            new BigNumber(parseFloat(accStakeShare)).plus(
+              new BigNumber(parseFloat(stakeShare))
+            ),
+            2
           ),
-          2
-        ),
-        [ValidatorFields.PENDING_STAKE]: toBigNum(accPendingStake, decimals)
-          .plus(toBigNum(pendingStake, decimals))
-          .toString(),
-        [ValidatorFields.NORMALISED_VOTING_POWER]: formatNumberPercentage(
-          new BigNumber(parseFloat(accNormalisedVotingPower)).plus(
-            new BigNumber(parseFloat(normalisedVotingPower))
+          [ValidatorFields.PENDING_STAKE]: toBigNum(accPendingStake, decimals)
+            .plus(toBigNum(pendingStake, decimals))
+            .toString(),
+          [ValidatorFields.NORMALISED_VOTING_POWER]: formatNumberPercentage(
+            new BigNumber(parseFloat(accNormalisedVotingPower)).plus(
+              new BigNumber(parseFloat(normalisedVotingPower))
+            ),
+            2
           ),
-          2
-        ),
-        [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
-          new BigNumber(parseFloat(accTotalPenalties)).plus(
-            new BigNumber(parseFloat(totalPenalties))
+          [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
+            new BigNumber(parseFloat(accTotalPenalties)).plus(
+              new BigNumber(parseFloat(totalPenalties))
+            ),
+            2
           ),
-          2
-        ),
-      };
-    });
+        };
+      },
+      {
+        [ValidatorFields.STAKE]: '0',
+        [ValidatorFields.STAKE_SHARE]: '0',
+        [ValidatorFields.PENDING_STAKE]: '0',
+        [ValidatorFields.NORMALISED_VOTING_POWER]: '0',
+        [ValidatorFields.TOTAL_PENALTIES]: '0',
+      }
+    );
 
     return [
       {
@@ -322,6 +332,7 @@ export const ConsensusValidatorsTable = ({
     decimals,
     hideTopThird,
     previousEpochData,
+    thirdOfTotalStake,
     totalStake,
     validatorsView,
   ]);
@@ -352,6 +363,7 @@ export const ConsensusValidatorsTable = ({
           headerTooltip: t('StakeDescription').toString(),
           cellRenderer: TotalStakeRenderer,
           width: 120,
+          sort: 'desc',
         },
         {
           field: ValidatorFields.PENDING_STAKE,
@@ -373,7 +385,6 @@ export const ConsensusValidatorsTable = ({
           headerTooltip: t('NormalisedVotingPowerDescription').toString(),
           cellRenderer: VotingPowerRenderer,
           width: 200,
-          sort: 'desc',
         },
         {
           field: ValidatorFields.TOTAL_PENALTIES,
