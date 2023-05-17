@@ -114,15 +114,22 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         />
         <AgGridColumn
           headerName={''}
-          field="id"
+          colId="fill-actions"
           type="rightAligned"
           pinned="right"
-          cellRenderer={({ value }: VegaICellRendererParams<Trade, 'id'>) => {
-            if (!value) return null;
-            return <FillActionsDropdown id={value} />;
+          cellRenderer={({ data }: VegaICellRendererParams<Trade, 'id'>) => {
+            if (!data) return null;
+            return (
+              <FillActionsDropdown
+                buyOrderId={data.buyOrder}
+                sellOrderId={data.sellOrder}
+                tradeId={data.id}
+              />
+            );
           }}
           maxWidth={45}
           resizable={false}
+          sortable={false}
         />
       </AgGrid>
     );

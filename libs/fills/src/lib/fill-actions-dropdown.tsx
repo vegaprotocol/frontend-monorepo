@@ -6,7 +6,15 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
-export const FillActionsDropdown = ({ id }: { id: string }) => {
+export const FillActionsDropdown = ({
+  tradeId,
+  buyOrderId,
+  sellOrderId,
+}: {
+  tradeId: string;
+  buyOrderId: string;
+  sellOrderId: string;
+}) => {
   return (
     <DropdownMenu
       trigger={
@@ -18,7 +26,15 @@ export const FillActionsDropdown = ({ id }: { id: string }) => {
       }
     >
       <DropdownMenuContent data-testid="market-actions-content">
-        <DropdownMenuCopyItem value={id} text={t('Copy order ID')} />
+        <DropdownMenuCopyItem value={tradeId} text={t('Copy trade ID')} />
+        <DropdownMenuCopyItem
+          value={buyOrderId}
+          text={t('Copy buy order ID')}
+        />
+        <DropdownMenuCopyItem
+          value={sellOrderId}
+          text={t('Copy sell order ID')}
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );
