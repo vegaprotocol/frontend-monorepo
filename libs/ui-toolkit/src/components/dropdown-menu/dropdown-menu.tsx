@@ -2,7 +2,6 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
-import type { IconName } from '../icon';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { Icon } from '../icon';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
