@@ -92,7 +92,7 @@ export const Navbar = ({
             {t('Governance')}
           </NavExternalLink>
         </NavigationItem>
-        {Boolean(DocsLinks) && GITHUB_FEEDBACK_URL && (
+        {DocsLinks?.NEW_TO_VEGA && GITHUB_FEEDBACK_URL && (
           <NavigationItem>
             <NavigationTrigger>{t('Resources')}</NavigationTrigger>
             <NavigationContent>

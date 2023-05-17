@@ -214,10 +214,12 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
         <div className="break-word">{marketId}</div>
       </HeaderStat>
       <HeaderStat heading={t('Learn more')}>
-        {Boolean(DocsLinks) && (
+        {DocsLinks ? (
           <ExternalLink href={DocsLinks.LIQUIDITY}>
             {t('Providing liquidity')}
           </ExternalLink>
+        ) : (
+          (null as React.ReactNode)
         )}
       </HeaderStat>
     </Header>
