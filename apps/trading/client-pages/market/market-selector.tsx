@@ -1,7 +1,12 @@
 import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
-import { TinyScroll, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Input,
+  TinyScroll,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -47,7 +52,7 @@ export const MarketSelector = ({
       className="grid grid-rows-[min-content_1fr_min-content] h-full"
       data-testid="market-selector"
     >
-      <div className="px-4 py-2">
+      <div className="px-4 pt-2 pb-4">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
@@ -55,15 +60,32 @@ export const MarketSelector = ({
           }}
         />
         <div className="text-sm flex gap-1 items-stretch">
-          <input
-            onChange={(e) =>
-              setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
-            }
-            type="text"
-            placeholder={t('Search')}
-            className="flex-1 block border border-vega-light-300 dark:border-vega-dark-300 p-2 rounded bg-transparent w-48"
-            data-testid="search-term"
-          />
+          <div className="flex-1">
+            <Input
+              onChange={(e) =>
+                setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
+              }
+              value={filter.searchTerm}
+              type="text"
+              placeholder={t('Search')}
+              data-testid="search-term"
+              className="w-full"
+              appendElement={
+                filter.searchTerm.length ? (
+                  <button
+                    onClick={() =>
+                      setFilter((curr) => ({ ...curr, searchTerm: '' }))
+                    }
+                    className="text-vega-light-200 dark:text-vega-dark-200"
+                  >
+                    <VegaIcon name={VegaIconNames.CROSS} />
+                  </button>
+                ) : (
+                  <span />
+                )
+              }
+            />
+          </div>
           <AssetDropdown
             assets={uniqBy(
               data?.map(
@@ -106,6 +128,7 @@ export const MarketSelector = ({
                 };
               });
             }}
+            onReset={() => setFilter((curr) => ({ ...curr, sort: Sort.None }))}
           />
         </div>
       </div>
@@ -127,7 +150,7 @@ export const MarketSelector = ({
         />
       </div>
       <div className="px-4 py-2">
-        <span className="inline-block border-b border-white">
+        <span className="inline-block border-b border-black dark:border-white">
           <Link to={'/markets/all'} className="flex items-center gap-x-2">
             {t('All markets')}
             <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
@@ -245,8 +268,8 @@ const Skeleton = () => {
   return (
     <div className="mb-2 px-2">
       <div className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4">
-        <div className="w-full h-3 bg-white dark:bg-vega-dark-200 mb-2" />
-        <div className="w-2/3 h-3 bg-vega-light-300 dark:bg-vega-dark-200" />
+        <div className="w-full h-3 bg-vega-light-200 dark:bg-vega-dark-200 mb-2" />
+        <div className="w-2/3 h-3 bg-vega-light-200 dark:bg-vega-dark-200" />
       </div>
     </div>
   );

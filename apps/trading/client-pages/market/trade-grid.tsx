@@ -332,7 +332,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_min-content_1fr]',
-    'grid-cols-[300px_1fr]'
+    'grid-cols-[320px_1fr]'
   );
   const paneWrapperClasses = classNames('min-h-0', {
     'col-span-2 col-start-1': !sidebarOpen,

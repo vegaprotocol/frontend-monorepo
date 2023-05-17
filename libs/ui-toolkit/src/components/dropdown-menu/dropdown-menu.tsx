@@ -45,8 +45,11 @@ export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   DropdownTriggerProps
 >(({ className, children, iconName, ...props }, forwardedRef) => {
-  const defaultClasses =
-    'text-sm py-1 px-2 rounded bg-transparent border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500/20 hover:bg-vega-light-500/40';
+  const defaultClasses = [
+    'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
+    'border-vega-light-200 dark:border-vega-dark-200',
+    'hover:border-vega-light-300 dark:hover:border-vega-dark-300',
+  ].join(' ');
 
   return (
     <DropdownMenuPrimitive.Trigger
@@ -56,7 +59,7 @@ export const DropdownMenuTrigger = forwardRef<
       {...props}
     >
       <button>
-        {children} <Icon name={iconName || 'chevron-down'} />
+        {children} {iconName && <Icon name={iconName || 'chevron-down'} />}
       </button>
     </DropdownMenuPrimitive.Trigger>
   );
@@ -155,7 +158,7 @@ export const DropdownMenuSeparator = forwardRef<
     {...separatorProps}
     ref={forwardedRef}
     className={classNames(
-      'h-px my-1 mx-2 bg-vega-dark-400 dark:bg-vega-dark-300',
+      'h-px my-1 mx-2 bg-vega-light-150 dark:bg-vega-dark-150',
       className
     )}
   />

@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuItemIndicator,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@vegaprotocol/ui-toolkit';
 
 export const AssetDropdown = ({
@@ -26,11 +27,14 @@ export const AssetDropdown = ({
   return (
     <DropdownMenu
       trigger={
-        <DropdownMenuTrigger iconName="dollar" data-testid="asset-trigger" />
+        <DropdownMenuTrigger data-testid="asset-trigger">
+          <span className="px-1">$</span>
+        </DropdownMenuTrigger>
       }
     >
       <DropdownMenuContent>
         <DropdownMenuItem onClick={onReset}>{t('Reset')}</DropdownMenuItem>
+        <DropdownMenuSeparator />
         {assets?.map((a) => {
           return (
             <DropdownMenuCheckboxItem
