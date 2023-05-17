@@ -31,7 +31,7 @@ export const ExpirySelector = ({
         min={minDate}
       />
       {errorMessage && (
-        <InputError testId="dealticket-error-message-expiry">
+        <InputError testId="deal-ticket-error-message-expiry">
           {errorMessage}
         </InputError>
       )}

@@ -25,7 +25,7 @@ describe(
       it('should show an error if your balance is zero', () => {
         cy.getByTestId('place-order').should('be.disabled');
         // 7002-SORD-003
-        cy.getByTestId('dealticket-error-message-zero-balance').should(
+        cy.getByTestId('deal-ticket-error-message-zero-balance').should(
           'have.text',
           'You need ' +
             'tDAI' +
@@ -53,11 +53,11 @@ describe(
         // 7002-SORD-003
 
         // warning should show immediately
-        cy.getByTestId('dealticket-warning-margin').should(
+        cy.getByTestId('deal-ticket-warning-margin').should(
           'contain.text',
           'You may not have enough margin available to open this position'
         );
-        cy.getByTestId('dealticket-warning-margin').should(
+        cy.getByTestId('deal-ticket-warning-margin').should(
           'contain.text',
           'You may not have enough margin available to open this position. 5.00 tDAI is currently required. You have only 0.01001 tDAI available.'
         );
