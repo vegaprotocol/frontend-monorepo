@@ -28,6 +28,7 @@ import type {
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
 import { OrderActionsDropdown } from '../order-actions-dropdown/order-actions-dropdown';
+import { Filter } from '../order-list-manager';
 
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
   marketId?: string;
@@ -35,7 +36,7 @@ export type OrderListTableProps = TypedDataAgGrid<Order> & {
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
-  readonlyStatusFilter?: boolean;
+  filter?: Filter;
   isReadOnly: boolean;
   storeKey?: string;
 };
@@ -50,11 +51,14 @@ export const OrderListTable = memo<
         setEditOrder,
         onMarketClick,
         onOrderTypeClick,
-        readonlyStatusFilter,
+        filter,
         ...props
       },
       ref
     ) => {
+      const showAllActions =
+        filter === undefined || filter === Filter.Open ? true : false;
+
       return (
         <AgGrid
           ref={ref}
@@ -131,7 +135,7 @@ export const OrderListTable = memo<
             filter={SetFilter}
             filterParams={{
               set: Schema.OrderStatusMapping,
-              readonly: readonlyStatusFilter,
+              readonly: filter !== undefined,
             }}
             valueFormatter={({
               value,
@@ -273,8 +277,8 @@ export const OrderListTable = memo<
             colId="amend"
             field="id"
             {...COL_DEFS.actions}
-            minWidth={120}
-            maxWidth={120}
+            minWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
+            maxWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
             cellRenderer={({
               data,
               value,
