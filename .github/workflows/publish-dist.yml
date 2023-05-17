@@ -213,7 +213,8 @@ jobs:
           # docs: https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord
           dnsimple_account_id=84895
           dnsimple_zone_name=vega.trading
-          dnsimple_record_id=44407398
+          dnsimple_record_id=44409591
+          # see: https://dnsimple.com/a/84895/domains/vega.trading/records/44409591/edit
 
           curl  -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
                 -H 'Accept: application/json' \
