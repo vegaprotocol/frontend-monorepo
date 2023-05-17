@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FeesBreakdown } from '@vegaprotocol/market-info';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import isEqual from 'lodash/isEqual';
 
 import type { Market } from '@vegaprotocol/market-list';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
@@ -362,6 +363,12 @@ export const DealTicketFeeDetails = ({
 
   const maxMargin = maxCollateralReleaseLevel.toString();
   const minMargin = minMaintenanceLevel.toString();
+  const worstAndBestMarginEstimatesAreEqual =
+    positionEstimate &&
+    isEqual(
+      positionEstimate.margin.bestCase,
+      positionEstimate.margin.worstCase
+    );
 
   return (
     <div>
@@ -406,7 +413,7 @@ export const DealTicketFeeDetails = ({
       />
       {currentMargins ? (
         <div>
-          <div className="text-xs mt-2 mb-1">Current margin</div>
+          <div className="text-xs mt-2 mb-1">{t('Current margin')}</div>
           <MarginStackChart
             {...currentMargins}
             balance={marginAccountBalance}
@@ -418,7 +425,13 @@ export const DealTicketFeeDetails = ({
       ) : null}
       {positionEstimate ? (
         <div>
-          <div className="text-xs mt-2 mb-1">Projected margin best case</div>
+          <div className="text-xs mt-2 mb-1">
+            {t(
+              worstAndBestMarginEstimatesAreEqual
+                ? 'Projected margin'
+                : 'Projected margin best case'
+            )}
+          </div>
           <MarginStackChart
             {...positionEstimate.margin.bestCase}
             decimals={assetDecimals}
@@ -427,9 +440,11 @@ export const DealTicketFeeDetails = ({
           />
         </div>
       ) : null}
-      {positionEstimate ? (
+      {positionEstimate && !worstAndBestMarginEstimatesAreEqual ? (
         <div>
-          <div className="text-xs mt-2 mb-1">Projected margin worst case</div>
+          <div className="text-xs mt-2 mb-1">
+            {t('Projected margin worst case')}
+          </div>
           <MarginStackChart
             {...positionEstimate.margin.worstCase}
             decimals={assetDecimals}
