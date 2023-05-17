@@ -57,6 +57,7 @@ export interface Position {
   positionDecimalPlaces: number;
   totalBalance: string;
   assetSymbol: string;
+  assetId: string;
   lowMarginLevel: boolean;
   marketId: string;
   marketTradingMode: Schema.MarketTradingMode;
@@ -155,6 +156,7 @@ export const getMetrics = (
       decimals,
       assetSymbol:
         market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      assetId: market.tradableInstrument.instrument.product.settlementAsset.id,
       totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       lowMarginLevel,
       marketId: market.id,

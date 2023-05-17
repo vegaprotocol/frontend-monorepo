@@ -39,6 +39,7 @@ import * as Schema from '@vegaprotocol/types';
 import { getRowId } from './use-positions-data';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { PositionTableActions } from './position-actions-dropdown';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -371,19 +372,28 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         {onClose && !props.isReadOnly ? (
           <AgGridColumn
             type="rightAligned"
-            cellRenderer={({ data }: VegaICellRendererParams<Position>) =>
-              data?.openVolume && data?.openVolume !== '0' ? (
-                <ButtonLink
-                  data-testid="close-position"
-                  onClick={() => data && onClose(data)}
-                >
-                  {t('Close')}
-                </ButtonLink>
-              ) : null
-            }
+            cellRenderer={({ data }: VegaICellRendererParams<Position>) => {
+              return (
+                <div className="flex gap-2 items-center justify-end">
+                  {data?.openVolume && data?.openVolume !== '0' ? (
+                    <ButtonLink
+                      data-testid="close-position"
+                      onClick={() => data && onClose(data)}
+                    >
+                      {t('Close')}
+                    </ButtonLink>
+                  ) : null}
+                  {data?.assetId && (
+                    <PositionTableActions assetId={data?.assetId} />
+                  )}
+                </div>
+              );
+            }}
             pinned="right"
-            minWidth={55}
-            maxWidth={55}
+            resizable={false}
+            sortable={false}
+            minWidth={90}
+            maxWidth={90}
           />
         ) : null}
       </AgGrid>
