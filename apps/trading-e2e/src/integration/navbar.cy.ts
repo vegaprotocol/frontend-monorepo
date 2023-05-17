@@ -47,6 +47,26 @@ describe('Navbar', { tags: '@smoke' }, () => {
           });
       });
     });
+
+    it('Disclaimer should be presented after choosing from menu', () => {
+      cy.get('nav')
+        .find('ul li:contains(Resources)')
+        .contains('Resources')
+        .click();
+      cy.getByTestId('Disclaimer').eq(0).click();
+      cy.getByTestId('dialog-content').should('be.visible');
+      cy.getByTestId('dialog-content')
+        .eq(0)
+        .within(() => {
+          cy.getByTestId('dialog-title').contains('Disclaimer');
+          cy.get('p')
+            .eq(0)
+            .contains(
+              'Vega is a decentralised peer-to-peer protocol that can be used to create liquidity and trade derivatives of cryptocurrencies.'
+            );
+          cy.getByTestId('dialog-close').click();
+        });
+    });
   });
 
   describe('mobile view', () => {
