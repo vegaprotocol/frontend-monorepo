@@ -1,6 +1,5 @@
-import { captureException } from '@sentry/react';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
@@ -41,13 +40,14 @@ export const useWithdrawAsset = (
       // and subsequent delay if withdrawal amount is larger than it
       let threshold = new BigNumber(0);
       let delay = 0;
-
+      const logger = localLoggerFactory({ application: 'withdraws' });
       try {
+        logger.info('get withdraw asset data', { asset: asset?.id });
         const result = await Promise.all([getThreshold(asset), getDelay()]);
         threshold = result[0];
         delay = result[1];
       } catch (err) {
-        captureException(err);
+        logger.error('get withdraw asset data', err);
       }
 
       update({ asset, balance, min, threshold, delay });
