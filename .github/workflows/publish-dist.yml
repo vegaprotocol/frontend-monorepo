@@ -220,7 +220,7 @@ jobs:
                 -H 'Accept: application/json' \
                 -H 'Content-Type: application/json' \
                 -X PATCH \
-                -d '{
-                      "content": "${new_console_url}"
-                }' \
+                -d "{
+                      \"content\": \"${new_console_url}\"
+                }" \
                 https://api.dnsimple.com/v2/${dnsimple_account_id}/zones/${dnsimple_zone_name}/records/${dnsimple_record_id}
