@@ -15,7 +15,7 @@ import type {
 } from '@vegaprotocol/datagrid';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalStateMapping } from '@vegaprotocol/types';
-import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
+import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
 
 export const useColumnDefs = () => {

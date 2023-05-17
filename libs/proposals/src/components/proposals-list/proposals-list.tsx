@@ -4,10 +4,10 @@ import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
-import { proposalsDataProvider } from '../proposals-data-provider';
+import { proposalsDataProvider } from '../../lib/proposals-data-provider';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
-import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
+import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
