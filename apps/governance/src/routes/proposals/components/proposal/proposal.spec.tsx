@@ -43,13 +43,17 @@ jest.mock('../list-asset', () => ({
 
 it('Renders with data-testid', async () => {
   const proposal = generateProposal();
-  render(<Proposal proposal={proposal as ProposalQuery['proposal']} />);
+  render(
+    <Proposal restData={{}} proposal={proposal as ProposalQuery['proposal']} />
+  );
   expect(await screen.findByTestId('proposal')).toBeInTheDocument();
 });
 
 it('renders each section', async () => {
   const proposal = generateProposal();
-  render(<Proposal proposal={proposal as ProposalQuery['proposal']} />);
+  render(
+    <Proposal restData={{}} proposal={proposal as ProposalQuery['proposal']} />
+  );
   expect(await screen.findByTestId('proposal-header')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-change-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-json')).toBeInTheDocument();
@@ -76,6 +80,8 @@ it('renders whitelist section if proposal is new asset and source is erc20', asy
       },
     },
   });
-  render(<Proposal proposal={proposal as ProposalQuery['proposal']} />);
+  render(
+    <Proposal restData={{}} proposal={proposal as ProposalQuery['proposal']} />
+  );
   expect(screen.getByTestId('proposal-list-asset')).toBeInTheDocument();
 });
