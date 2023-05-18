@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
@@ -9,7 +9,16 @@ import {
 } from '@vegaprotocol/utils';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  ButtonLink,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Icon,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
@@ -18,7 +27,10 @@ import type {
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
-import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
+import {
+  useEthWithdrawApprovalsStore,
+  useWithdrawalApprovalDialog,
+} from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
 
 export const WithdrawalsTable = (
@@ -119,6 +131,7 @@ export const WithdrawalsTable = (
         headerName={t('Transaction')}
         field="txHash"
         flex={2}
+        type="rightAligned"
         cellRendererParams={{
           complete: (withdrawal: WithdrawalFieldsFragment) => {
             createWithdrawApproval(withdrawal);
@@ -130,7 +143,6 @@ export const WithdrawalsTable = (
           component: data?.txHash ? 'EtherscanLinkCell' : 'CompleteCell',
         })}
       />
-      <AgGridColumn field="id" />
     </AgGrid>
   );
 };
@@ -140,18 +152,62 @@ export type CompleteCellProps = {
   complete: (withdrawal: WithdrawalFieldsFragment) => void;
 };
 export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
+  const open = useWithdrawalApprovalDialog((state) => state.open);
+  const ref = useRef<HTMLDivElement>(null);
+
   if (!data) {
     return null;
   }
   return data.pendingOnForeignChain ? (
     '-'
   ) : (
-    <ButtonLink
-      data-testid="complete-withdrawal"
-      onClick={() => complete(data)}
-    >
-      {t('Complete withdrawal')}
-    </ButtonLink>
+    <div className="flex justify-end gap-1">
+      <ButtonLink
+        data-testid="complete-withdrawal"
+        onClick={() => complete(data)}
+      >
+        {t('Complete withdrawal')}
+      </ButtonLink>
+
+      <DropdownMenu
+        trigger={
+          <DropdownMenuTrigger
+            iconName="more"
+            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+            data-testid="dropdown-menu"
+          ></DropdownMenuTrigger>
+        }
+      >
+        <DropdownMenuContent>
+          {/* <DropdownMenuItem
+            key={'complete-withdrawal'}
+            data-testid="complete-withdrawal"
+            onClick={() => {
+              complete(data);
+            }}
+          >
+            <span>
+              <VegaIcon name={VegaIconNames.WITHDRAW} size={16} />
+              {t('Complete withdrawal')}
+            </span>
+          </DropdownMenuItem> */}
+          <DropdownMenuItem
+            key={'withdrawal-approval'}
+            data-testid="withdrawal-approval"
+            ref={ref}
+            onClick={() => {
+              if (data.id) {
+                open(data.id, ref.current, false);
+              }
+            }}
+          >
+            <span>
+              <Icon name="info-sign" size={4} /> {t('See withdrawal details')}
+            </span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };
 

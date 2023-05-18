@@ -1,7 +1,6 @@
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { CollapsablePanel, Toast } from '@vegaprotocol/ui-toolkit';
-import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';
+import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
@@ -52,67 +51,11 @@ const EthWithdrawalApprovalToastContent = ({
     </Panel>
   );
 
-  const bundle = [
-    ['asset_source', tx.approval?.assetSource],
-    ['amount', tx.approval?.amount],
-    ['target_address', tx.approval?.targetAddress],
-    ['creation', tx.approval?.creation],
-    ['nonce', tx.approval?.nonce],
-    ['signatures', tx.approval?.signatures],
-  ];
-
-  const bundleCopy = bundle.map((item) => item.join('\n')).join('\n\n');
-
-  console.log(bundleCopy);
-
-  const panel = (
-    <Panel
-      className="flex align-middle max-w-full"
-      title={tx.approval?.signatures}
-    >
-      <div className="truncate text-ellipsis">{tx.approval?.signatures}</div>
-      <CopyWithTooltip text={tx.approval?.signatures}>
-        <button data-testid="copy-withdrawal-signatures" className="underline">
-          {t('Copy bundle')} <Icon name="duplicate" className="ml-2" />
-        </button>
-      </CopyWithTooltip>
-    </Panel>
-  );
-
-  const signatureBundleInfo = tx.approval?.signatures ? (
-    <div className="mt-3">
-      <p>{t('Transaction details:')}</p>
-      <CollapsablePanel
-        actions={
-          <CopyWithTooltip text={bundleCopy}>
-            <button
-              data-testid="copy-withdrawal-signatures"
-              className="underline"
-              title={t('Copy transaction details bundle')}
-            >
-              <Icon name="duplicate" size={3} />
-            </button>
-          </CopyWithTooltip>
-        }
-      >
-        {bundle.map(([key, value]) => (
-          <div className="mb-1">
-            <div className="font-bold">{key}</div>
-            <div className="break-all">{value}</div>
-          </div>
-        ))}
-      </CollapsablePanel>
-    </div>
-  ) : (
-    ''
-  );
-
   return (
     <>
       {title.length > 0 && <ToastHeading>{title}</ToastHeading>}
       <VerificationStatus state={tx} />
       {details}
-      {signatureBundleInfo}
     </>
   );
 };
@@ -144,9 +87,7 @@ export const useEthereumWithdrawApprovalsToasts = () => {
       },
       loader: tx.status === ApprovalStatus.Pending,
       content: <EthWithdrawalApprovalToastContent tx={tx} />,
-      // TODO: Decide whether to make it dismissable manually or auto
-      // closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
-      closeAfter: undefined,
+      closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
     }),
     [deleteTx, dismissTx, remove]
   );

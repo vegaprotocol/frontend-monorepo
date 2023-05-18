@@ -3,7 +3,8 @@ import styles from './toast.module.css';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import { HTMLAttributes, HtmlHTMLAttributes, ReactNode, useState } from 'react';
+import type { HTMLAttributes, HtmlHTMLAttributes, ReactNode } from 'react';
+import { useState } from 'react';
 import { forwardRef, useEffect } from 'react';
 import { useCallback } from 'react';
 import { useLayoutEffect } from 'react';
@@ -64,15 +65,16 @@ export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   }
 );
 
-type CollapsablePanelProps = {
+type CollapsiblePanelProps = {
   actions?: ReactNode;
 };
-export const CollapsablePanel = forwardRef<
+export const CollapsiblePanel = forwardRef<
   HTMLDivElement,
-  CollapsablePanelProps & HTMLAttributes<HTMLDivElement>
+  CollapsiblePanelProps & HTMLAttributes<HTMLDivElement>
 >(({ children, className, actions, ...props }, ref) => {
   const [collapsed, setCollapsed] = useState(true);
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       data-panel
       ref={ref}
