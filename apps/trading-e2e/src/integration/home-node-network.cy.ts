@@ -1,8 +1,11 @@
+import { closeWelcomeDialog } from '../support/helpers';
+
 const dialogContent = 'dialog-content';
 const nodeHealth = 'node-health';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
+    cy.clearLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
@@ -10,14 +13,34 @@ describe('home', { tags: '@regression' }, () => {
 
   describe('footer', () => {
     it('shows current block height', () => {
+      closeWelcomeDialog();
       // 0006-NETW-004
+      // 0006-NETW-005
       // 0006-NETW-008
       // 0006-NETW-009
       // 0006-NETW-011
+
+      cy.intercept('POST', 'http://localhost:3008/graphql', (req) => {
+        req.on('response', (res) => {
+          res.setDelay(3000);
+        });
+      });
+
       cy.getByTestId(nodeHealth)
         .children()
         .first()
-        .should('contain.text', 'Operational')
+        .should('contain.text', 'Warning');
+
+      cy.intercept('POST', 'http://localhost:3008/graphql', (req) => {
+        req.on('response', (res) => {
+          res.setDelay(0);
+        });
+      });
+
+      cy.getByTestId(nodeHealth)
+        .children()
+        .first()
+        .should('contain.text', 'Operational', { timeout: 10000 })
         .next()
         .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
         .next()
