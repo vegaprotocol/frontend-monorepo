@@ -5,7 +5,6 @@ import * as Schema from '@vegaprotocol/types';
 
 const selectMarketOverlay = 'select-market-list';
 const dialogContent = 'dialog-content';
-const nodeHealth = 'node-health';
 
 const generateProposal = (code: string): ProposalListFieldsFragment => ({
   __typename: 'Proposal',
