@@ -2,9 +2,10 @@ const dialogContent = 'dialog-content';
 const nodeHealth = 'node-health';
 
 describe('home', { tags: '@regression' }, () => {
-  beforeEach(() => {
+  before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.visit('/');
   });
 
   describe('footer', () => {
@@ -13,7 +14,6 @@ describe('home', { tags: '@regression' }, () => {
       // 0006-NETW-008
       // 0006-NETW-009
       // 0006-NETW-011
-      cy.visit('/');
       cy.getByTestId(nodeHealth)
         .children()
         .first()
@@ -71,10 +71,15 @@ describe('home', { tags: '@regression' }, () => {
     });
   });
   describe('Network switcher', () => {
+    before(() => {
+      cy.mockTradingPage();
+      cy.mockSubscription();
+      cy.visit('/');
+    });
+
     // 0006-NETW-002
     // 0006-NETW-003
-    it('switch network dropdown', () => {
-      cy.visit('/');
+    it('switch to fairground network', () => {
       cy.getByTestId('network-switcher').click();
       cy.getByTestId('network-item').contains('Fairground testnet').click();
       cy.get('[aria-haspopup="menu"]').should('contain.text', 'Fairground');
