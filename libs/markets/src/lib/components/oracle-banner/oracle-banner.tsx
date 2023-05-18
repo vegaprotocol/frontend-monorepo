@@ -36,14 +36,15 @@ export const OracleBanner = ({ marketId }: { marketId: string }) => {
   } else if (tradingTerminationOracle?.provider.oracle.status !== 'GOOD') {
     maliciousOracle = tradingTerminationOracle;
   }
+
+  if (!maliciousOracle) return null;
   if (!settlementOracle && !tradingTerminationOracle) {
     return (
       <NotificationBanner intent={Intent.Primary}>
-        <div>{t('There is no oracle for this market yet.')} </div>
+        <div>{t('There is no oracle for this market.')} </div>
       </NotificationBanner>
     );
   }
-  if (!maliciousOracle) return null;
 
   const { provider } = maliciousOracle;
   return (
