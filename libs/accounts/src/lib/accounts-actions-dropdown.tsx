@@ -60,7 +60,7 @@ export const AccountsActionsDropdown = ({
         <DropdownMenuItem
           key={'transfer'}
           data-testid="transfer"
-          onClick={() => openTransferDialog(true)}
+          onClick={() => openTransferDialog(true, assetId)}
         >
           <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
           {t('Transfer')}
