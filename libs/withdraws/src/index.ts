@@ -7,7 +7,6 @@ export * from './lib/use-verify-withdrawal';
 export * from './lib/withdraw-form-container';
 export * from './lib/withdraw-form';
 export * from './lib/withdraw-manager';
-export * from '../../web3/src/lib/withdrawal-approval-dialog';
 export * from './lib/withdrawal-dialog';
 export * from './lib/withdrawal-feedback';
 export * from './lib/withdrawals-provider';

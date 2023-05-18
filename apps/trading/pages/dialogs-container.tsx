@@ -4,12 +4,12 @@ import {
 } from '@vegaprotocol/assets';
 import { VegaConnectDialog } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/vega-connectors';
-import {
-  CreateWithdrawalDialog,
-  WithdrawalApprovalDialogContainer,
-} from '@vegaprotocol/withdraws';
+import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { DepositDialog } from '@vegaprotocol/deposits';
-import { Web3ConnectUncontrolledDialog } from '@vegaprotocol/web3';
+import {
+  Web3ConnectUncontrolledDialog,
+  WithdrawalApprovalDialogContainer,
+} from '@vegaprotocol/web3';
 import { WelcomeDialog } from '../components/welcome-dialog';
 import { TransferDialog } from '@vegaprotocol/accounts';
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
@@ -16,8 +16,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Icon,
-  VegaIcon,
-  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type {
   TypedDataAgGrid,
