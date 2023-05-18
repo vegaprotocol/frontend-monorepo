@@ -27,12 +27,14 @@ jobs:
 
       - name: resolve ipfs hashes for release
         run: |
-          echo "Name: ${{ github.event.release.name }} Description: ${{ github.event.release.body }}"
-          until docker pull vegaprotocol/trading:${{ github.event.release.name }}; do
+          echo "Tag name: ${{ github.event.release.tag_name }}"
+          echo "Name: ${{ github.event.release.name }}"
+          echo "Description: ${{ github.event.release.body }}"
+          until docker pull vegaprotocol/trading:${{ github.event.release.tag_name }}; do
             echo "Image not pushed yet, waiting 60 seconds"
             sleep 60
           done
-          docker run --rm vegaprotocol/trading:${{ github.event.release.name }} cat /ipfs-hash > ipfs-hash
+          docker run --rm vegaprotocol/trading:${{ github.event.release.tag_name }} cat /ipfs-hash > ipfs-hash
           curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
           tar -xzf kubo.tgz
           export PATH="$PATH:$PWD/kubo"
