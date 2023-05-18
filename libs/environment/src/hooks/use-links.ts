@@ -72,10 +72,12 @@ export const DocsLinks = VEGA_DOCS_URL
   : undefined;
 
 export const useLinks = (dapp: DApp, network?: Net) => {
-  const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL } = useEnvironment();
+  const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL, VEGA_CONSOLE_URL } =
+    useEnvironment();
   const fallback = {
     [DApp.Explorer]: VEGA_EXPLORER_URL,
     [DApp.Token]: VEGA_TOKEN_URL,
+    [DApp.Console]: VEGA_CONSOLE_URL,
   };
 
   let net = network || VEGA_ENV;

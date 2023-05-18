@@ -19,6 +19,7 @@ const schemaObject = {
   GITHUB_FEEDBACK_URL: z.optional(z.string()),
   ORACLE_PROOFS_URL: z.optional(z.string().url()),
   VEGA_ENV: z.nativeEnum(Networks),
+  VEGA_CONSOLE_URL: z.optional(z.string()),
   VEGA_EXPLORER_URL: z.optional(z.string()),
   VEGA_TOKEN_URL: z.optional(z.string()),
   VEGA_DOCS_URL: z.optional(z.string()),
