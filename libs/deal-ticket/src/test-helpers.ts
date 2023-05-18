@@ -1,4 +1,4 @@
-import type { Market, MarketData } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/markets';
 import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
@@ -37,10 +37,28 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
           dataSourceSpecForTradingTermination: {
             __typename: 'DataSourceSpec',
             id: 'oracleId',
+            data: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionExternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfiguration',
+                },
+              },
+            },
           },
           dataSourceSpecForSettlementData: {
             __typename: 'DataSourceSpec',
             id: 'oracleId',
+            data: {
+              __typename: 'DataSourceDefinition',
+              sourceType: {
+                __typename: 'DataSourceDefinitionExternal',
+                sourceType: {
+                  __typename: 'DataSourceSpecConfiguration',
+                },
+              },
+            },
           },
           dataSourceSpecBinding: {
             __typename: 'DataSourceSpecToFutureBinding',

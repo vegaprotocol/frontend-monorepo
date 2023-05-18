@@ -4,8 +4,8 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { MarketData } from '@vegaprotocol/market-list';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/markets';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
 import { HeaderStat } from '../header';
 import {
   ExternalLink,

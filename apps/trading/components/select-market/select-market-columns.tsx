@@ -1,20 +1,21 @@
 import type { RefObject, MouseEvent } from 'react';
-import { FeesCell } from '@vegaprotocol/market-info';
 import {
+  FeesCell,
   calcCandleHigh,
   calcCandleLow,
   calcCandleVolume,
-} from '@vegaprotocol/market-list';
+  Last24hPriceChange,
+  Last24hVolume,
+} from '@vegaprotocol/markets';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
 import type { CandleClose } from '@vegaprotocol/types';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { Link } from 'react-router-dom';
 import { MarketMarkPrice } from '../market-mark-price';
-import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/market-info';
 import { MarketTradingMode } from '../market-trading-mode';
 import { Links, Routes } from '../../pages/client-router';
 

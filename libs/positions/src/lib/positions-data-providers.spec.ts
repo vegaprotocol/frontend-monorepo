@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
-import type { MarketWithData } from '@vegaprotocol/market-list';
+import type { MarketWithData } from '@vegaprotocol/markets';
 import type {
   PositionFieldsFragment,
   MarginFieldsFragment,

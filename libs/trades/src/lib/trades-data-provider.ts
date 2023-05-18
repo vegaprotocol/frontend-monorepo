@@ -6,8 +6,8 @@ import {
   paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/data-provider';
 import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/market-list';
-import { marketsProvider } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/markets';
+import { marketsProvider } from '@vegaprotocol/markets';
 import type {
   TradesQuery,
   TradesQueryVariables,

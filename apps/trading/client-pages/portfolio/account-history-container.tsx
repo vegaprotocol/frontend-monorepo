@@ -26,7 +26,7 @@ import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/markets';
 
 const DateRange = {
   RANGE_1D: '1D',

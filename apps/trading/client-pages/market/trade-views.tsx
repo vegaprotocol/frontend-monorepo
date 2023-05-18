@@ -1,5 +1,5 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoAccordionContainer } from '@vegaprotocol/market-info';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer, Filter } from '@vegaprotocol/orders';
 import type { OrderListContainerProps } from '@vegaprotocol/orders';
