@@ -19,12 +19,17 @@ import {
   positiveClassNames,
   negativeClassNames,
   MarketNameCell,
+  COL_DEFS,
 } from '@vegaprotocol/datagrid';
-import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
+import type {
+  VegaValueFormatterParams,
+  VegaICellRendererParams,
+} from '@vegaprotocol/datagrid';
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
 import type { FillFieldsFragment } from './__generated__/Fills';
+import { FillActionsDropdown } from './fill-actions-dropdown';
 
 const TAKER = 'Taker';
 const MAKER = 'Maker';
@@ -106,6 +111,20 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
             value,
           }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '';
+          }}
+        />
+        <AgGridColumn
+          colId="fill-actions"
+          {...COL_DEFS.actions}
+          cellRenderer={({ data }: VegaICellRendererParams<Trade, 'id'>) => {
+            if (!data) return null;
+            return (
+              <FillActionsDropdown
+                buyOrderId={data.buyOrder}
+                sellOrderId={data.sellOrder}
+                tradeId={data.id}
+              />
+            );
           }}
         />
       </AgGrid>

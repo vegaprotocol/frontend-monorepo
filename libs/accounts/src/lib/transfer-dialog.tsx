@@ -5,24 +5,26 @@ import { TransferContainer } from './transfer-container';
 
 interface State {
   isOpen: boolean;
+  assetId: string | undefined;
 }
 
 interface Actions {
-  open: (open?: boolean) => void;
+  open: (open?: boolean, assetId?: string) => void;
 }
 
 export const useTransferDialog = create<State & Actions>()((set) => ({
   isOpen: false,
-  open: (open = true) => {
-    set(() => ({ isOpen: open }));
+  assetId: undefined,
+  open: (open = true, assetId) => {
+    set(() => ({ isOpen: open, assetId }));
   },
 }));
 
 export const TransferDialog = () => {
-  const { isOpen, open } = useTransferDialog();
+  const { isOpen, open, assetId } = useTransferDialog();
   return (
     <Dialog title={t('Transfer')} open={isOpen} onChange={open} size="small">
-      <TransferContainer />
+      <TransferContainer assetId={assetId} />
     </Dialog>
   );
 };

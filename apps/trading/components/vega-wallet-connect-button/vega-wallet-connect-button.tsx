@@ -21,6 +21,7 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { WalletIcon } from '../icons/wallet';
 import { useTransferDialog } from '@vegaprotocol/accounts';
+import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 
 const MobileWalletButton = ({
   isConnected,
@@ -237,21 +238,7 @@ export const VegaWalletConnectButton = () => {
 };
 
 const KeypairItem = ({ pk }: { pk: PubKey }) => {
-  const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line
-    let timeout: any;
-
-    if (copied) {
-      timeout = setTimeout(() => {
-        setCopied(false);
-      }, 800);
-    }
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [copied]);
+  const [copied, setCopied] = useCopyTimeout();
 
   return (
     <DropdownMenuRadioItem value={pk.publicKey}>

@@ -14,7 +14,7 @@ import { TransferForm } from './transfer-form';
 import { useTransferDialog } from './transfer-dialog';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 
-export const TransferContainer = () => {
+export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
   const open = useTransferDialog((store) => store.open);
   const { param } = useNetworkParam(NetworkParams.transfer_fee_factor);
@@ -59,6 +59,7 @@ export const TransferContainer = () => {
         pubKey={pubKey}
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
         assets={assets}
+        assetId={assetId}
         feeFactor={param}
         submitTransfer={transfer}
       />

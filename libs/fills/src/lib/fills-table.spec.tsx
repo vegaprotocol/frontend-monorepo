@@ -48,6 +48,7 @@ describe('FillsTable', () => {
       'Role',
       'Fee',
       'Date',
+      '', // action column
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
@@ -77,6 +78,7 @@ describe('FillsTable', () => {
       'Maker',
       '2.00 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
+      '', // action column
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
@@ -111,6 +113,7 @@ describe('FillsTable', () => {
       'Taker',
       '0.03 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
+      '', // action column
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
@@ -145,6 +148,7 @@ describe('FillsTable', () => {
       '-',
       '0.03 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
+      '', // action column
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);

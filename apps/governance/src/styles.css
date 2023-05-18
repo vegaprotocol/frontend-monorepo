@@ -40,9 +40,9 @@
   line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
 }
 
-.vega-ag-grid .ag-row {
-  border-width: 1px 0;
-  border-bottom: 1px solid transparent;
+.vega-ag-grid .ag-row,
+.vega-ag-grid .ag-cell {
+  border-width: 0;
 }
 
 /* Dark variables */
@@ -54,7 +54,6 @@
   --ag-header-column-separator-color: theme(colors.neutral[600]);
   --ag-row-border-color: theme(colors.black);
   --ag-row-hover-color: theme(colors.neutral[800]);
-  --ag-font-size: 12px;
 }
 
 .validators-table .ag-theme-balham-dark .ag-body-horizontal-scroll {
