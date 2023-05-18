@@ -1,0 +1,74 @@
+name: After Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  after-release:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to the Container registry (ghcr)
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to the Container registry (docker hub)
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: resolve ipfs hashes for release
+        run: |
+          echo "Name: ${{ github.event.release.name }} Description: ${{ github.event.release.body }}"
+          until docker pull vegaprotocol/trading:${{ github.event.release.name }}; do
+            echo "Image not pushed yet, waiting 60 seconds"
+            sleep 60
+          done
+          docker run --rm vegaprotocol/trading:${{ github.event.release.name }} cat /ipfs-hash > ipfs-hash
+          curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
+          tar -xzf kubo.tgz
+          export PATH="$PATH:$PWD/kubo"
+          which ipfs
+          echo IPFS_V0=$(cat ipfs-hash) >> $GITHUB_ENV
+          echo IPFS_V1=$(ipfs cid format -v 1 -b base32 $(cat ipfs-hash)) >> $GITHUB_ENV
+
+      - name: Edit Release
+        uses: irongut/EditRelease@v1.2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          id: ${{ github.event.release.id }}
+          body: |
+            ${{ github.event.release.body }}
+
+            ---
+
+            # Deployments
+            * https://explorer.vega.xyz
+            * https://governance.vega.xyz
+
+            # IPFS releases
+            Tye IPFS hash of this release of the Trading app is:
+
+            CIDv0: ${{ env.IPFS_V0 }}
+            CIDv1: ${{ env.IPFS_V1 }}
+
+            You can always access the latest IPFS release by visiting [vega.trading](https://vega.trading).
+
+            You can also access Trading directly from an IPFS gateway.
+            BEWARE: The Trading interface uses [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) to remember your settings, such as which tokens you have imported. You should always use an IPFS gateway that enforces [origin separation](https://ipfs.github.io/public-gateway-checker/).
+
+            Your settings are not remembered across different URLs.
+
+            IPFS gateways:
+
+            https://${{ env.IPFS_V1 }}.dweb.link/
+            https://${{ env.IPFS_V1 }}.cf-ipfs.com/
+            ipfs://${{ env.IPFS_V0 }}/
