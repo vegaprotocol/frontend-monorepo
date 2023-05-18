@@ -56,6 +56,7 @@ export function submitUniqueRawProposal(proposalFields: {
   proposalDescription?: string;
   closingTimestamp?: number;
   enactmentTimestamp?: number;
+  submit?: boolean;
 }) {
   goToMakeNewProposal(governanceProposalType.RAW);
   let proposalBodyPath = '/proposals/raw.json';
@@ -85,11 +86,14 @@ export function submitUniqueRawProposal(proposalFields: {
       parseSpecialCharSequences: false,
       delay: 2,
     });
-    cy.get(newProposalSubmitButton).should('be.visible').click();
-    cy.wrap(rawProposal).as('rawProposal');
-    waitForProposalSubmitted();
-    waitForProposalSync();
-    navigateTo(navigation.proposals);
+
+    if (proposalFields.submit !== false) {
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wrap(rawProposal).as('rawProposal');
+      waitForProposalSubmitted();
+      waitForProposalSync();
+      navigateTo(navigation.proposals);
+    }
   });
 }
 
@@ -209,14 +213,14 @@ export function generateFreeFormProposalTitle() {
   return randomNum + ': Freeform e2e proposal';
 }
 
-export function createFreeformProposal(proposalTitle: string) {
-  goToMakeNewProposal(governanceProposalType.FREEFORM);
-  enterUniqueFreeFormProposalBody('50', proposalTitle);
-  waitForProposalSubmitted();
-  waitForProposalSync();
-  cy.getByTestId('proposal-title').invoke('text').as('proposalTitle');
-  navigateTo(navigation.proposals);
-}
+// export function createFreeformProposal(proposalTitle: string) {
+//   goToMakeNewProposal(governanceProposalType.FREEFORM);
+//   enterUniqueFreeFormProposalBody('50', proposalTitle);
+//   waitForProposalSubmitted();
+//   waitForProposalSync();
+//   cy.getByTestId('proposal-title').invoke('text').as('proposalTitle');
+//   navigateTo(navigation.proposals);
+// }
 
 export enum governanceProposalType {
   NETWORK_PARAMETER = 'Network parameter',

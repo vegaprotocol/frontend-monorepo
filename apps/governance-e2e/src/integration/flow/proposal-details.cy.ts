@@ -43,7 +43,7 @@ describe(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       ethereumWalletConnect();
-      // cy.associateTokensToVegaWallet('1');
+      cy.associateTokensToVegaWallet('1');
     });
 
     beforeEach('visit proposals tab', function () {
