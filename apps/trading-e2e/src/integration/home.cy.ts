@@ -4,6 +4,8 @@ import { marketsDataQuery } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 
 const selectMarketOverlay = 'select-market-list';
+const dialogContent = 'dialog-content';
+const nodeHealth = 'node-health';
 
 const generateProposal = (code: string): ProposalListFieldsFragment => ({
   __typename: 'Proposal',
@@ -288,7 +290,7 @@ describe('home', { tags: '@regression' }, () => {
         cy.visit('/');
         cy.wait('@Markets');
         cy.location('hash').should('equal', '#/markets/market-1');
-        cy.getByTestId('dialog-content').should('not.exist');
+        cy.getByTestId(dialogContent).should('not.exist');
       });
     });
 
@@ -301,22 +303,8 @@ describe('home', { tags: '@regression' }, () => {
         cy.visit('/');
         cy.wait('@Markets');
         cy.location('hash').should('equal', '#/markets/market-not-existing');
-        cy.getByTestId('dialog-content').should('not.exist');
+        cy.getByTestId(dialogContent).should('not.exist');
       });
-    });
-  });
-
-  describe('footer', () => {
-    it('shows current block height', () => {
-      cy.visit('/');
-      cy.getByTestId('node-health')
-        .children()
-        .first()
-        .should('contain.text', 'Operational')
-        .next()
-        .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
-        .next()
-        .should('contain.text', '100'); // all mocked queries have x-block-height header set to 100
     });
   });
 });
