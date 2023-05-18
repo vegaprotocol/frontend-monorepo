@@ -7,6 +7,7 @@ import type {
   VegaICellRendererParams,
   TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
+import { COL_DEFS } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
   PriceFlashCell,
@@ -18,6 +19,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import type { MarketMaybeWithData } from '../../';
+import { MarketTableActions } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
@@ -176,15 +178,13 @@ export const MarketListTable = forwardRef<
       />
       <AgGridColumn
         headerName={t('Settlement asset')}
-        field="tradableInstrument.instrument.product.settlementAsset.symbol"
+        field="tradableInstrument.instrument.product.settlementAsset"
         cellRenderer={({
-          data,
+          value,
         }: VegaICellRendererParams<
           MarketMaybeWithData,
-          'tradableInstrument.instrument.product.settlementAsset.symbol'
+          'tradableInstrument.instrument.product.settlementAsset'
         >) => {
-          const value =
-            data?.tradableInstrument.instrument.product.settlementAsset;
           return value ? (
             <ButtonLink
               onClick={(e) => {
@@ -198,7 +198,23 @@ export const MarketListTable = forwardRef<
           );
         }}
       />
-      <AgGridColumn headerName={t('Market ID')} field="id" flex={1} />
+      <AgGridColumn
+        colId="market-actions"
+        {...COL_DEFS.actions}
+        cellRenderer={({
+          data,
+        }: VegaICellRendererParams<MarketMaybeWithData>) => {
+          if (!data) return null;
+          return (
+            <MarketTableActions
+              marketId={data.id}
+              assetId={
+                data.tradableInstrument.instrument.product.settlementAsset.id
+              }
+            />
+          );
+        }}
+      />
     </AgGrid>
   );
 });

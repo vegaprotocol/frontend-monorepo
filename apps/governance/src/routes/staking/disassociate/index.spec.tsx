@@ -39,7 +39,7 @@ jest.mock('@vegaprotocol/wallet', () => ({
 }));
 
 const renderComponent = () => {
-  return render(<Disassociate />);
+  return render(<Disassociate name="Disassociate" />);
 };
 
 describe('Disassociate', () => {

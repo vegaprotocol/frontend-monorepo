@@ -160,7 +160,6 @@ describe('OrderListTable', () => {
         );
       });
       const amendCell = getAmendCell();
-      expect(amendCell.getAllByRole('button')).toHaveLength(2);
       await userEvent.click(amendCell.getByTestId('edit'));
       expect(mockEdit).toHaveBeenCalledWith(order);
       await userEvent.click(amendCell.getByTestId('cancel'));
@@ -187,7 +186,8 @@ describe('OrderListTable', () => {
         );
       });
       const amendCell = getAmendCell();
-      expect(amendCell.queryAllByRole('button')).toHaveLength(0);
+      expect(amendCell.queryByTestId('edit')).not.toBeInTheDocument();
+      expect(amendCell.queryByTestId('cancel')).not.toBeInTheDocument();
     });
 
     it('shows if an order is a liquidity provision order and does not show order actions', async () => {
@@ -204,7 +204,8 @@ describe('OrderListTable', () => {
       const amendCell = getAmendCell();
       const typeCell = screen.getAllByRole('gridcell')[2];
       expect(typeCell).toHaveTextContent('Liquidity provision');
-      expect(amendCell.queryAllByRole('button')).toHaveLength(0);
+      expect(amendCell.queryByTestId('edit')).not.toBeInTheDocument();
+      expect(amendCell.queryByTestId('cancel')).not.toBeInTheDocument();
     });
 
     it('shows if an order is a pegged order and does not show order actions', async () => {
@@ -225,7 +226,8 @@ describe('OrderListTable', () => {
       const amendCell = getAmendCell();
       const typeCell = screen.getAllByRole('gridcell')[2];
       expect(typeCell).toHaveTextContent('Mid - 10.0 Peg limit');
-      expect(amendCell.queryAllByRole('button')).toHaveLength(0);
+      expect(amendCell.queryByTestId('edit')).not.toBeInTheDocument();
+      expect(amendCell.queryByTestId('cancel')).not.toBeInTheDocument();
     });
 
     it.each([
@@ -242,7 +244,7 @@ describe('OrderListTable', () => {
       });
 
       const amendCell = getAmendCell();
-      expect(amendCell.getAllByRole('button')).toHaveLength(2);
+      expect(amendCell.getAllByRole('button')).toHaveLength(3);
     });
 
     it.each([
@@ -251,19 +253,23 @@ describe('OrderListTable', () => {
       Schema.OrderStatus.STATUS_FILLED,
       Schema.OrderStatus.STATUS_REJECTED,
       Schema.OrderStatus.STATUS_STOPPED,
-    ])('does not show buttons for %s orders', async (status) => {
-      const order = generateOrder({
-        type: Schema.OrderType.TYPE_LIMIT,
-        status,
-      });
+    ])(
+      'does not show edit and cancel buttons for %s orders',
+      async (status) => {
+        const order = generateOrder({
+          type: Schema.OrderType.TYPE_LIMIT,
+          status,
+        });
 
-      await act(async () => {
-        render(generateJsx({ rowData: [order] }));
-      });
+        await act(async () => {
+          render(generateJsx({ rowData: [order] }));
+        });
 
-      const amendCell = getAmendCell();
-      expect(amendCell.queryAllByRole('button')).toHaveLength(0);
-    });
+        const amendCell = getAmendCell();
+        expect(amendCell.queryByTestId('edit')).not.toBeInTheDocument();
+        expect(amendCell.queryByTestId('cancel')).not.toBeInTheDocument();
+      }
+    );
 
     const getAmendCell = () => {
       const cells = screen.getAllByRole('gridcell');

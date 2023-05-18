@@ -229,7 +229,7 @@ const redirects = [
 const routerConfig = [
   {
     path: Routes.HOME,
-    element: <LazyHome name="Token" />,
+    element: <LazyHome name="Home" />,
   },
   {
     path: Routes.PROPOSALS,
@@ -291,7 +291,7 @@ const routerConfig = [
     // Not lazy as loaded when a user first hits the site
     children: [
       {
-        element: <Home name="Home" />,
+        element: <Home name="Token" />,
         index: true,
       },
       {
@@ -325,8 +325,11 @@ const routerConfig = [
           },
         ],
       },
-      { path: 'associate', element: <LazyStakingAssociate /> },
-      { path: 'disassociate', element: <LazyStakingDisassociate /> },
+      { path: 'associate', element: <LazyStakingAssociate name="Associate" /> },
+      {
+        path: 'disassociate',
+        element: <LazyStakingDisassociate name="Disassociate" />,
+      },
     ],
   },
   {

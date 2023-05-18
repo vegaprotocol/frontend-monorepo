@@ -9,14 +9,11 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
+import { COL_DEFS } from '@vegaprotocol/datagrid';
 import {
   Button,
   ButtonLink,
   Dialog,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -38,6 +35,7 @@ import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
+import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 
 const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames({
@@ -109,7 +107,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     const [row, setRow] = useState<AccountFields>();
     const pinnedAssetId = props.pinnedAsset?.id;
 
-    const pinnedAssetRow = useMemo(() => {
+    const pinnedAsset = useMemo(() => {
       const currentPinnedAssetRow = props.rowData?.find(
         (row) => row.asset.id === pinnedAssetId
       );
@@ -143,6 +141,13 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       [pinnedAssetId, getRowHeight]
     );
 
+    const accountForPinnedAsset = props?.rowData?.find(
+      (a) => a.asset.id === pinnedAssetId
+    );
+    const showDepositButton = accountForPinnedAsset
+      ? new BigNumber(accountForPinnedAsset.total).isLessThanOrEqualTo(0)
+      : true;
+
     return (
       <>
         <AgGrid
@@ -162,7 +167,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             comparator: accountValuesComparator,
           }}
           getRowHeight={getPinnedAssetRowHeight}
-          pinnedTopRowData={pinnedAssetRow ? [pinnedAssetRow] : undefined}
+          pinnedTopRowData={pinnedAsset ? [pinnedAsset] : undefined}
         >
           <AgGridColumn
             headerName={t('Asset')}
@@ -266,104 +271,57 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               formatWithAssetDecimals(data, data?.total)
             }
           />
-          {
-            <AgGridColumn
-              colId="accounts-actions"
-              headerName=""
-              sortable={false}
-              maxWidth={200}
-              type="rightAligned"
-              cellRenderer={({
-                data,
-              }: VegaICellRendererParams<AccountFields>) => {
-                if (!data) return null;
-                else {
-                  if (
-                    data.asset.id === pinnedAssetId &&
-                    new BigNumber(data.total).isLessThanOrEqualTo(0)
-                  ) {
-                    return (
-                      <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
-                        <Button
-                          size="xs"
-                          variant="primary"
-                          data-testid="deposit"
-                          onClick={() => {
-                            onClickDeposit && onClickDeposit(data.asset.id);
-                          }}
-                        >
-                          {t('Deposit to trade')}
-                        </Button>
-                      </CenteredGridCellWrapper>
-                    );
-                  }
+          <AgGridColumn
+            colId="accounts-actions"
+            {...COL_DEFS.actions}
+            minWidth={showDepositButton ? 130 : COL_DEFS.actions.minWidth}
+            maxWidth={showDepositButton ? 130 : COL_DEFS.actions.maxWidth}
+            cellRenderer={({
+              data,
+            }: VegaICellRendererParams<AccountFields>) => {
+              if (!data) return null;
+              else {
+                if (showDepositButton && data.asset.id === pinnedAssetId) {
                   return (
-                    !props.isReadOnly && (
-                      <DropdownMenu
-                        trigger={
-                          <DropdownMenuTrigger
-                            iconName="more"
-                            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
-                            data-testid="dropdown-menu"
-                          ></DropdownMenuTrigger>
-                        }
+                    <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
+                      <Button
+                        size="xs"
+                        variant="primary"
+                        data-testid="deposit"
+                        onClick={() => {
+                          onClickDeposit && onClickDeposit(data.asset.id);
+                        }}
                       >
-                        <DropdownMenuContent>
-                          <DropdownMenuItem
-                            key={'deposit'}
-                            data-testid="deposit"
-                            onClick={() => {
-                              onClickDeposit && onClickDeposit(data.asset.id);
-                            }}
-                          >
-                            <span className="flex gap-2">
-                              <VegaIcon
-                                name={VegaIconNames.DEPOSIT}
-                                size={16}
-                              />
-                              {t('Deposit')}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            key={'withdraw'}
-                            data-testid="withdraw"
-                            onClick={() =>
-                              onClickWithdraw && onClickWithdraw(data.asset.id)
-                            }
-                          >
-                            <span className="flex gap-2">
-                              <VegaIcon
-                                name={VegaIconNames.WITHDRAW}
-                                size={16}
-                              />
-                              {t('Withdraw')}
-                            </span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            key={'breakdown'}
-                            data-testid="breakdown"
-                            onClick={() => {
-                              setOpenBreakdown(!openBreakdown);
-                              setRow(data);
-                            }}
-                          >
-                            <span className="flex gap-2">
-                              <VegaIcon
-                                name={VegaIconNames.BREAKDOWN}
-                                size={16}
-                              />
-                              {t('Breakdown')}
-                            </span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )
+                        <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
+                      </Button>
+                    </CenteredGridCellWrapper>
                   );
                 }
-              }}
-              flex={1}
-            />
-          }
+                return (
+                  !props.isReadOnly && (
+                    <AccountsActionsDropdown
+                      assetId={data.asset.id}
+                      assetContractAddress={
+                        data.asset.source?.__typename === 'ERC20'
+                          ? data.asset.source.contractAddress
+                          : undefined
+                      }
+                      onClickDeposit={() => {
+                        onClickDeposit && onClickDeposit(data.asset.id);
+                      }}
+                      onClickWithdraw={() => {
+                        onClickWithdraw && onClickWithdraw(data.asset.id);
+                      }}
+                      onClickBreakdown={() => {
+                        setOpenBreakdown(!openBreakdown);
+                        setRow(data);
+                      }}
+                    />
+                  )
+                );
+              }
+            }}
+          />
         </AgGrid>
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div

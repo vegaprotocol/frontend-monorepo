@@ -52,6 +52,7 @@ import {
 } from './components/telemetry-dialog/telemetry-dialog';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useTranslation } from 'react-i18next';
+import { isPartyNotFoundError } from './lib/party';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -219,9 +220,8 @@ const AppContainer = () => {
           const transaction = event.transaction;
 
           if (
-            (errorIsString && error.includes('failed to get party ID')) ||
-            (errorIsObject &&
-              error?.message?.includes('failed to get party ID'))
+            (errorIsString && isPartyNotFoundError({ message: error })) ||
+            (errorIsObject && isPartyNotFoundError(error))
           ) {
             // This error is caused by a pubkey making an API request before
             // it has interacted with the chain. This isn't needed in Sentry.

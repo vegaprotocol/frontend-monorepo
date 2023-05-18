@@ -41,6 +41,7 @@ interface TransferFormProps {
     decimals: number;
     balance: string;
   }>;
+  assetId?: string;
   feeFactor: string | null;
   submitTransfer: (transfer: Transfer) => void;
 }
@@ -49,6 +50,7 @@ export const TransferForm = ({
   pubKey,
   pubKeys,
   assets,
+  assetId: initialAssetId,
   feeFactor,
   submitTransfer,
 }: TransferFormProps) => {
@@ -59,7 +61,11 @@ export const TransferForm = ({
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<FormFields>();
+  } = useForm<FormFields>({
+    defaultValues: {
+      asset: initialAssetId,
+    },
+  });
 
   const amount = watch('amount');
   const assetId = watch('asset');

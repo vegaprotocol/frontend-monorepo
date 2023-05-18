@@ -18,6 +18,7 @@ import {
   positiveClassNames,
   MarketNameCell,
   OrderTypeCell,
+  COL_DEFS,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -26,7 +27,8 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
-import * as React from 'react';
+import { OrderActionsDropdown } from '../order-actions-dropdown';
+import { Filter } from '../order-list-manager';
 
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
   marketId?: string;
@@ -34,7 +36,7 @@ export type OrderListTableProps = TypedDataAgGrid<Order> & {
   setEditOrder: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
-  readonlyStatusFilter?: boolean;
+  filter?: Filter;
   isReadOnly: boolean;
   storeKey?: string;
 };
@@ -49,11 +51,14 @@ export const OrderListTable = memo<
         setEditOrder,
         onMarketClick,
         onOrderTypeClick,
-        readonlyStatusFilter,
+        filter,
         ...props
       },
       ref
     ) => {
+      const showAllActions =
+        filter === undefined || filter === Filter.Open ? true : false;
+
       return (
         <AgGrid
           ref={ref}
@@ -130,7 +135,7 @@ export const OrderListTable = memo<
             filter={SetFilter}
             filterParams={{
               set: Schema.OrderStatusMapping,
-              readonly: readonlyStatusFilter,
+              readonly: filter !== undefined,
             }}
             valueFormatter={({
               value,
@@ -270,28 +275,38 @@ export const OrderListTable = memo<
           />
           <AgGridColumn
             colId="amend"
-            headerName=""
-            field="status"
-            minWidth={100}
-            type="rightAligned"
-            cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
-              return data && isOrderAmendable(data) && !props.isReadOnly ? (
-                <>
-                  <ButtonLink
-                    data-testid="edit"
-                    onClick={() => setEditOrder(data)}
-                  >
-                    {t('Edit')}
-                  </ButtonLink>
-                  <span className="mx-1" />
-                  <ButtonLink data-testid="cancel" onClick={() => cancel(data)}>
-                    {t('Cancel')}
-                  </ButtonLink>
-                </>
-              ) : null;
+            field="id"
+            {...COL_DEFS.actions}
+            minWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
+            maxWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
+            cellRenderer={({
+              data,
+              value,
+            }: VegaICellRendererParams<Order, 'id'>) => {
+              if (!value || !data) return null;
+
+              return (
+                <div className="flex gap-2 items-center justify-end">
+                  {isOrderAmendable(data) && !props.isReadOnly && (
+                    <>
+                      <ButtonLink
+                        data-testid="edit"
+                        onClick={() => setEditOrder(data)}
+                      >
+                        {t('Edit')}
+                      </ButtonLink>
+                      <ButtonLink
+                        data-testid="cancel"
+                        onClick={() => cancel(data)}
+                      >
+                        {t('Cancel')}
+                      </ButtonLink>
+                    </>
+                  )}
+                  <OrderActionsDropdown id={value} />
+                </div>
+              );
             }}
-            sortable={false}
-            flex={1}
           />
         </AgGrid>
       );

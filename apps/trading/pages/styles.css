@@ -93,9 +93,9 @@ html [data-theme='light'] {
   line-height: calc(min(var(--ag-line-height, 26px), 26px) - 4px);
 }
 
-.vega-ag-grid .ag-row {
-  border-width: 1px 0;
-  border-bottom: 1px solid transparent;
+.vega-ag-grid .ag-row,
+.vega-ag-grid .ag-cell {
+  border-width: 0;
 }
 
 /* Light variables */
@@ -107,7 +107,6 @@ html [data-theme='light'] {
   --ag-header-column-separator-color: theme(colors.neutral[300]);
   --ag-row-border-color: theme(colors.white);
   --ag-row-hover-color: theme(colors.neutral[100]);
-  --ag-font-size: 12px;
 }
 
 /* Dark variables */
@@ -119,7 +118,6 @@ html [data-theme='light'] {
   --ag-header-column-separator-color: theme(colors.neutral[600]);
   --ag-row-border-color: theme(colors.black);
   --ag-row-hover-color: theme(colors.neutral[800]);
-  --ag-font-size: 12px;
 }
 .ag-theme-balham-dark .ag-row.no-hover,
 .ag-theme-balham-dark .ag-row.no-hover:hover,
