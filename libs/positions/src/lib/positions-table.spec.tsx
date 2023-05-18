@@ -17,6 +17,7 @@ const singleRow: Position = {
   decimals: 2,
   totalBalance: '123456',
   assetSymbol: 'BTC',
+  assetId: 'asset-id',
   lowMarginLevel: false,
   marketId: 'string',
   marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
