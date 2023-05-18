@@ -318,10 +318,10 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .should('have.text', product.settlementAsset.symbol);
 
     // 6001-MARK-020
-    cy.get(rowSelector)
+    cy.get('.ag-pinned-right-cols-container')
+      .find('[col-id="market-actions"]')
       .first()
-      .find('[col-id="id"]')
-      .find('button svg[aria-label="more icon"]')
+      .find('button svg')
       .should('exist');
   });
 
@@ -379,7 +379,11 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   });
 
   it('can open row actions', () => {
-    cy.get(rowSelector).first().find('[col-id="id"]').find('button').click();
+    cy.get('.ag-pinned-right-cols-container')
+      .find('[col-id="market-actions"]')
+      .first()
+      .find('button')
+      .click();
 
     const dropdownContent = '[data-testid="market-actions-content"]';
     const dropdownContentItem = '[role="menuitem"]';
