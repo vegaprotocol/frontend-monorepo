@@ -48,8 +48,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           id: ${{ github.event.release.id }}
           body: |
-            ${{ github.event.release.body }}
-
             ---
 
             # Deployments
