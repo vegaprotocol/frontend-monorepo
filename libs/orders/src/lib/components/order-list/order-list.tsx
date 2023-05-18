@@ -27,7 +27,7 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
-import { OrderActionsDropdown } from '../order-actions-dropdown/order-actions-dropdown';
+import { OrderActionsDropdown } from '../order-actions-dropdown';
 import { Filter } from '../order-list-manager';
 
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
