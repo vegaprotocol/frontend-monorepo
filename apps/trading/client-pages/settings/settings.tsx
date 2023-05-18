@@ -5,6 +5,7 @@ import {
   RoundedWrapper,
   Switch,
   ThemeSwitcher,
+  ToastPositionSetter,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
@@ -41,6 +42,8 @@ export const Settings = () => {
                 'Help identify bugs and improve the service by sharing anonymous usage data.'
               )}
             />
+            <Divider />
+            <ToastPositionSetter />
           </RoundedWrapper>
         </div>
       </div>

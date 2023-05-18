@@ -1,8 +1,11 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import type { Toast } from './toast';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
+
+const STORAGE_KEY = 'vega_toast_store';
 
 export type Toasts = Record<string, Toast>;
 
@@ -95,4 +98,28 @@ export const useToasts = create<ToastsStore>()(
       }),
     removeAll: () => set({ toasts: {}, count: 0 }),
   }))
+);
+
+export enum ToastPosition {
+  BottomRight,
+  BottomLeft,
+  TopLeft,
+  TopRight,
+  TopCenter,
+  BottomCenter,
+}
+
+type ToastConfiguration = {
+  position: ToastPosition;
+  setPosition: (position: ToastPosition) => void;
+};
+
+export const useToastsConfiguration = create<ToastConfiguration>()(
+  persist(
+    immer((set) => ({
+      position: ToastPosition.BottomRight,
+      setPosition: (position: ToastPosition) => set({ position }),
+    })),
+    { name: STORAGE_KEY }
+  )
 );
