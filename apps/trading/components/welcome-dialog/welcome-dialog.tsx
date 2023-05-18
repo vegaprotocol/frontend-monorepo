@@ -9,7 +9,6 @@ import * as constants from '../constants';
 import { RiskNoticeDialog } from './risk-notice-dialog';
 import { WelcomeNoticeDialog } from './welcome-notice-dialog';
 import { WelcomeLandingDialog } from './welcome-landing-dialog';
-import { Disclaimer } from './disclaimer';
 import { useGlobalStore } from '../../stores';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Networks } from '@vegaprotocol/environment';
@@ -31,15 +30,10 @@ export const WelcomeDialog = () => {
   const shouldDisplayWelcomeDialog = useGlobalStore(
     (store) => store.shouldDisplayWelcomeDialog
   );
-  const shouldDisplayDisclaimerDialog = useGlobalStore(
-    (store) => store.shouldDisplayDisclaimerDialog
-  );
-  const shouldDisplayMainnetRiskDialog = useGlobalStore(
-    (store) => store.shouldDisplayMainnetRiskDialog
-  );
+
   const isRiskDialogNeeded =
     riskAccepted !== 'true' &&
-    (VEGA_ENV !== Networks.MAINNET || shouldDisplayMainnetRiskDialog) &&
+    VEGA_ENV !== Networks.MAINNET &&
     !('Cypress' in window);
 
   const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
@@ -50,12 +44,7 @@ export const WelcomeDialog = () => {
         isRiskDialogNeeded && VEGA_ENV !== Networks.MAINNET,
     });
   }, [update, isRiskDialogNeeded, VEGA_ENV]);
-  if (shouldDisplayDisclaimerDialog) {
-    title = t('Disclaimer');
-    dialogContent = <Disclaimer />;
-    size = 'medium';
-    onClose = () => update({ shouldDisplayDisclaimerDialog: false });
-  } else if (isRiskDialogNeeded) {
+  if (isRiskDialogNeeded) {
     dialogContent = (
       <RiskNoticeDialog onClose={onCloseDialog} network={VEGA_ENV} />
     );

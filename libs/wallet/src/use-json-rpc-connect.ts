@@ -13,9 +13,13 @@ export enum Status {
   ListingKeys = 'ListingKeys',
   Connected = 'Connected',
   Error = 'Error',
+  NeedsAcknowledge = 'NeedAcknowledge',
 }
 
-export const useJsonRpcConnect = (onConnect: () => void) => {
+export const useJsonRpcConnect = (
+  onConnect: () => void,
+  needsAcknowledge?: boolean
+) => {
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState(Status.Idle);
   const [error, setError] = useState<WalletClientError | null>(null);
@@ -52,9 +56,12 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         // Call connect in the wallet provider. The connector will be stored for
         // future actions such as sending transactions
         await connect(connector);
-
-        setStatus(Status.Connected);
-        onConnect();
+        if (needsAcknowledge) {
+          setStatus(Status.NeedsAcknowledge);
+        } else {
+          setStatus(Status.Connected);
+          onConnect();
+        }
       } catch (err) {
         if (err instanceof WalletClientError) {
           setError(err);
@@ -62,7 +69,7 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         setStatus(Status.Error);
       }
     },
-    [onConnect, connect]
+    [onConnect, connect, needsAcknowledge]
   );
 
   return {

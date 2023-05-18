@@ -14,6 +14,7 @@ const Routes = {
   SUPPLY: '/token/tranches',
   ASSOCIATE: '/token/associate',
   DISASSOCIATE: '/token/disassociate',
+  DISCLAIMER: '/disclaimer',
 };
 
 export default Routes;

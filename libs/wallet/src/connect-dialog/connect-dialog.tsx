@@ -38,6 +38,8 @@ type WalletType = 'jsonRpc' | 'hosted' | 'view';
 export interface VegaConnectDialogProps {
   connectors: Connectors;
   onChangeOpen?: (open: boolean) => void;
+  riskMessage?: React.ReactNode;
+  onRiskAcknowledge?: () => void;
 }
 
 export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
@@ -60,26 +62,22 @@ export interface VegaWalletDialogStore {
 export const VegaConnectDialog = ({
   connectors,
   onChangeOpen,
+  riskMessage,
+  onRiskAcknowledge,
 }: VegaConnectDialogProps) => {
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
     (store) => store.vegaWalletDialogOpen
   );
-  const updateVegaWalletDialog = useVegaWalletDialogStore((store) =>
-    onChangeOpen
-      ? (open: boolean) => {
-          store.updateVegaWalletDialog(open);
-          onChangeOpen(open);
-        }
-      : store.updateVegaWalletDialog
+  const updateVegaWalletDialog = useVegaWalletDialogStore(
+    (store) => (open: boolean) => {
+      store.updateVegaWalletDialog(open);
+      onChangeOpen?.(open);
+    }
   );
-  const closeVegaWalletDialog = useVegaWalletDialogStore((store) =>
-    onChangeOpen
-      ? () => {
-          store.closeVegaWalletDialog();
-          onChangeOpen(false);
-        }
-      : store.closeVegaWalletDialog
-  );
+  const closeVegaWalletDialog = useVegaWalletDialogStore((store) => () => {
+    store.closeVegaWalletDialog();
+    onChangeOpen?.(false);
+  });
 
   const { data, error, loading } = useChainIdQuery();
 
@@ -112,6 +110,8 @@ export const VegaConnectDialog = ({
         connectors={connectors}
         closeDialog={closeVegaWalletDialog}
         appChainId={data.statistics.chainId}
+        riskMessage={riskMessage}
+        onRiskAcknowledge={onRiskAcknowledge}
       />
     );
   };
@@ -131,16 +131,20 @@ const ConnectDialogContainer = ({
   connectors,
   closeDialog,
   appChainId,
+  riskMessage,
+  onRiskAcknowledge,
 }: {
   connectors: Connectors;
   closeDialog: () => void;
   appChainId: string;
+  riskMessage?: React.ReactNode;
+  onRiskAcknowledge?: () => void;
 }) => {
   const { VEGA_WALLET_URL, VEGA_ENV, HOSTED_WALLET_URL } = useEnvironment();
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
   const [walletType, setWalletType] = useState<WalletType>();
-
+  const isMainnet = VEGA_ENV === Networks.MAINNET;
   const reset = useCallback(() => {
     setSelectedConnector(undefined);
     setWalletType(undefined);
@@ -151,8 +155,13 @@ const ConnectDialogContainer = ({
       closeDialog();
     }, CLOSE_DELAY);
   }, [closeDialog]);
-
-  const { connect, ...jsonRpcState } = useJsonRpcConnect(delayedOnConnect);
+  const needsAcknowledge = Boolean(
+    isMainnet && riskMessage && onRiskAcknowledge
+  );
+  const { connect, ...jsonRpcState } = useJsonRpcConnect(
+    delayedOnConnect,
+    needsAcknowledge
+  );
 
   const handleSelect = (type: WalletType, isHosted = false) => {
     let connector;
@@ -189,13 +198,15 @@ const ConnectDialogContainer = ({
       onConnect={closeDialog}
       appChainId={appChainId}
       reset={reset}
+      riskMessage={riskMessage}
+      onRiskAcknowledge={onRiskAcknowledge}
     />
   ) : (
     <ConnectorList
       walletUrl={walletUrl}
       setWalletUrl={setWalletUrl}
       onSelect={handleSelect}
-      isMainnet={VEGA_ENV === Networks.MAINNET}
+      isMainnet={isMainnet}
     />
   );
 };
@@ -255,6 +266,8 @@ const SelectedForm = ({
   jsonRpcState,
   reset,
   onConnect,
+  riskMessage,
+  onRiskAcknowledge,
 }: {
   type: WalletType;
   connector: VegaConnector;
@@ -265,6 +278,8 @@ const SelectedForm = ({
   };
   reset: () => void;
   onConnect: () => void;
+  riskMessage?: React.ReactNode;
+  onRiskAcknowledge?: () => void;
 }) => {
   if (connector instanceof RestConnector) {
     return (
@@ -317,6 +332,8 @@ const SelectedForm = ({
             onConnect={onConnect}
             appChainId={appChainId}
             reset={reset}
+            riskMessage={riskMessage}
+            onRiskAcknowledge={onRiskAcknowledge}
           />
         </ConnectDialogContent>
         <ConnectDialogFooter />

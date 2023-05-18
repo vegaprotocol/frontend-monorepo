@@ -1,6 +1,7 @@
 import capitalize from 'lodash/capitalize';
 import { t } from '@vegaprotocol/i18n';
 import {
+  Button,
   ButtonLink,
   Diamond,
   Link,
@@ -14,6 +15,7 @@ import { ClientErrors } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { useVegaWallet } from '../use-vega-wallet';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
@@ -26,6 +28,9 @@ export const JsonRpcConnectorForm = ({
   status,
   error,
   reset,
+  onConnect,
+  riskMessage,
+  onRiskAcknowledge,
 }: {
   connector: JsonRpcConnector;
   appChainId: string;
@@ -33,35 +38,14 @@ export const JsonRpcConnectorForm = ({
   error: WalletClientError | null;
   onConnect: () => void;
   reset: () => void;
+  riskMessage?: React.ReactNode;
+  onRiskAcknowledge?: () => void;
 }) => {
+  const { disconnect } = useVegaWallet();
   if (status === Status.Idle) {
     return null;
   }
 
-  return (
-    <Connecting
-      status={status}
-      error={error}
-      connector={connector}
-      appChainId={appChainId}
-      reset={reset}
-    />
-  );
-};
-
-const Connecting = ({
-  status,
-  error,
-  connector,
-  appChainId,
-  reset,
-}: {
-  status: Status;
-  error: WalletClientError | null;
-  connector: JsonRpcConnector;
-  appChainId: string;
-  reset: () => void;
-}) => {
   if (status === Status.Error) {
     return (
       <Error
@@ -125,6 +109,34 @@ const Connecting = ({
     );
   }
 
+  if (status === Status.NeedsAcknowledge) {
+    const setConnection = () => {
+      onRiskAcknowledge?.();
+      onConnect();
+    };
+    const handleDisagree = () => {
+      disconnect();
+      onConnect();
+    };
+    return (
+      <>
+        <ConnectDialogTitle>{t('Understand the risk')}</ConnectDialogTitle>
+        {riskMessage}
+        <div className="grid grid-cols-2 gap-5">
+          <div>
+            <Button onClick={handleDisagree} fill>
+              {t('Cancel')}
+            </Button>
+          </div>
+          <div>
+            <Button onClick={setConnection} variant="primary" fill>
+              {t('I agree')}
+            </Button>
+          </div>
+        </div>
+      </>
+    );
+  }
   return null;
 };
 
