@@ -6,8 +6,16 @@ import { MarketState } from '@vegaprotocol/types';
 import { subDays } from 'date-fns';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OracleSpecDataConnectionQuery } from '@vegaprotocol/market-info';
-import { OracleSpecDataConnectionDocument } from '@vegaprotocol/market-info';
+import type {
+  OracleSpecDataConnectionQuery,
+  MarketsDataQuery,
+  MarketsQuery,
+} from '@vegaprotocol/markets';
+import {
+  OracleSpecDataConnectionDocument,
+  MarketsDataDocument,
+  MarketsDocument,
+} from '@vegaprotocol/markets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import type {
@@ -16,9 +24,6 @@ import type {
 } from '@vegaprotocol/positions';
 import { PositionsDocument } from '@vegaprotocol/positions';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { MarketsDataQuery, MarketsQuery } from '@vegaprotocol/market-list';
-import { MarketsDataDocument } from '@vegaprotocol/market-list';
-import { MarketsDocument } from '@vegaprotocol/market-list';
 import {
   createMarketFragment,
   marketsQuery,

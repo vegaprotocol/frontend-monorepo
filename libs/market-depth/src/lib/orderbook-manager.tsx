@@ -3,8 +3,8 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
-import type { MarketData } from '@vegaprotocol/market-list';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
+import type { MarketData } from '@vegaprotocol/markets';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   MarketDepthUpdateSubscription,

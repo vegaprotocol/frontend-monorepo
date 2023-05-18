@@ -13,11 +13,11 @@ import {
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
 import { usePositionsQuery } from '@vegaprotocol/positions';
-import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithData } from '@vegaprotocol/markets';
 import {
   MarketTableActions,
   closedMarketsWithDataProvider,
-} from '@vegaprotocol/market-list';
+} from '@vegaprotocol/markets';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';

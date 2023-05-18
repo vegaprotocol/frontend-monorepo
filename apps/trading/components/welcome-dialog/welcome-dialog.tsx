@@ -4,7 +4,7 @@ import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { activeMarketsProvider } from '@vegaprotocol/market-list';
+import { activeMarketsProvider } from '@vegaprotocol/markets';
 import * as constants from '../constants';
 import { RiskNoticeDialog } from './risk-notice-dialog';
 import { WelcomeNoticeDialog } from './welcome-notice-dialog';

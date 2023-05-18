@@ -3,7 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { PriceCell } from '@vegaprotocol/datagrid';
-import { marketDataProvider } from '@vegaprotocol/market-list';
+import { marketDataProvider } from '@vegaprotocol/markets';
 import { THROTTLE_UPDATE_TIME } from '../constants';
 
 interface Props {

@@ -1,5 +1,5 @@
 import { assetsProvider } from '@vegaprotocol/assets';
-import { marketsProvider } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/markets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
@@ -20,7 +20,7 @@ import type {
   AccountEventsSubscription,
   AccountsQueryVariables,
 } from './__generated__/Accounts';
-import type { Market } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/markets';
 import type { Asset } from '@vegaprotocol/assets';
 
 const AccountType = Schema.AccountType;

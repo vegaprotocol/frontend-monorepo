@@ -8,11 +8,11 @@ import { Product } from './product-selector';
 import { Sort } from './sort-dropdown';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { MarketState } from '@vegaprotocol/types';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/markets';
 import type { Filter } from './market-selector';
 import { subDays } from 'date-fns';
 
-jest.mock('@vegaprotocol/market-list');
+jest.mock('@vegaprotocol/markets');
 const mockUseMarketList = useMarketList as jest.Mock;
 
 describe('useMarketSelectorList', () => {

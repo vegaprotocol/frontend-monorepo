@@ -9,8 +9,8 @@ import {
   paginatedCombineDelta as combineDelta,
   paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/market-list';
-import { marketsProvider } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/markets';
+import { marketsProvider } from '@vegaprotocol/markets';
 import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 import type {
   FillsQuery,

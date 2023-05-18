@@ -45,10 +45,11 @@ import {
   getRejectionReason,
   useOrderByIdQuery,
 } from '@vegaprotocol/orders';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';
+import { useWithdrawalApprovalDialog } from './withdrawal-approval-dialog';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
   Default: Intent.Primary,
@@ -457,20 +458,41 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         </Button>
       </p>
     );
+
+    const dialogTrigger = (
+      // It has to stay as <a> due to the word breaking issue
+      // eslint-disable-next-line jsx-a11y/anchor-is-valid
+      <a
+        href="#"
+        className="inline underline underline-offset-4 cursor-pointer text-inherit break-words"
+        onClick={(e) => {
+          e.preventDefault();
+          if (tx.withdrawal?.id) {
+            useWithdrawalApprovalDialog.getState().open(tx.withdrawal?.id);
+          }
+        }}
+      >
+        {t('save your withdrawal details')}
+      </a>
+    );
+
     return (
       <>
         <ToastHeading>{t('Funds unlocked')}</ToastHeading>
-        <p>{t('Your funds have been unlocked for withdrawal')}</p>
+        <p>{t('Your funds have been unlocked for withdrawal.')}</p>
         {tx.txHash && (
-          <p className="break-all">
-            <ExternalLink
-              href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
-              rel="noreferrer"
-            >
-              {t('View in block explorer')}
-            </ExternalLink>
-          </p>
+          <ExternalLink
+            className="block mb-[5px] break-all"
+            href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
+            rel="noreferrer"
+          >
+            {t('View in block explorer')}
+          </ExternalLink>
         )}
+        {/* TODO: Delay message - This withdrawal is subject to a delay. Come back in 5 days to complete the withdrawal. */}
+        <p className="break-words">
+          {t('You can')} {dialogTrigger} {t('for extra security.')}
+        </p>
         <VegaTransactionDetails tx={tx} />
         {completeWithdrawalButton}
       </>
@@ -638,8 +660,9 @@ export const useVegaTransactionToasts = () => {
   );
 
   const fromVegaTransaction = (tx: VegaStoredTxState): Toast => {
-    const closeAfter = isFinal(tx) ? CLOSE_AFTER : undefined;
     const { intent, content } = getVegaTransactionContentIntent(tx);
+    const closeAfter =
+      isFinal(tx) && !isWithdrawTransaction(tx.body) ? CLOSE_AFTER : undefined;
 
     return {
       id: `vega-${tx.id}`,
@@ -680,10 +703,22 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
   }
 
   // Transaction can be successful but the order can be rejected by the network
+  const intentForRejectedOrder =
+    tx.order &&
+    !isOrderAmendmentTransaction(tx.body) &&
+    getOrderToastIntent(tx.order.status);
+
+  // Although the transaction is completed on the vega network the whole
+  // withdrawal process is not - funds are only released at this point
+  const intentForCompletedWithdrawal =
+    tx.status === VegaTxStatus.Complete &&
+    isWithdrawTransaction(tx.body) &&
+    Intent.Warning;
+
   const intent =
-    (tx.order &&
-      !isOrderAmendmentTransaction(tx.body) &&
-      getOrderToastIntent(tx.order.status)) ||
+    intentForRejectedOrder ||
+    intentForCompletedWithdrawal ||
     intentMap[tx.status];
+
   return { intent, content };
 };

@@ -1,4 +1,4 @@
-import { MarketsContainer } from '@vegaprotocol/market-list';
+import { MarketsContainer } from '@vegaprotocol/markets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 export const Markets = () => {

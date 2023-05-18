@@ -10,9 +10,9 @@ import type {
   MarketCandles,
   MarketMaybeWithDataAndCandles,
   MarketsCandlesQueryVariables,
-} from '@vegaprotocol/market-list';
+} from '@vegaprotocol/markets';
 
-import { marketListProvider } from '@vegaprotocol/market-list';
+import { marketListProvider } from '@vegaprotocol/markets';
 
 import type { LiquidityProvisionMarketsQuery } from './__generated__/MarketsLiquidity';
 import { LiquidityProvisionMarketsDocument } from './__generated__/MarketsLiquidity';

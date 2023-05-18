@@ -1,5 +1,5 @@
 import type { Control } from 'react-hook-form';
-import type { Market, MarketData } from '@vegaprotocol/market-list';
+import type { Market, MarketData } from '@vegaprotocol/markets';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
 import * as Schema from '@vegaprotocol/types';

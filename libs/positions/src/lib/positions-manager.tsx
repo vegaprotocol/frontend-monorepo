@@ -1,7 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { Position } from '../';
-import { usePositionsData, PositionsTable } from '../';
+import type { Position } from './positions-data-providers';
+import { usePositionsData } from './use-positions-data';
+import { PositionsTable } from './positions-table';
 import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';

@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import {
   Input,
   TinyScroll,

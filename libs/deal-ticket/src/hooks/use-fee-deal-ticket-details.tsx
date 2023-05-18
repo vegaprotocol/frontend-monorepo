@@ -1,8 +1,8 @@
-import { FeesBreakdown } from '@vegaprotocol/market-info';
+import { FeesBreakdown } from '@vegaprotocol/markets';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { Market } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {

@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Link as UILink, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import type { OnCellClickHandler } from '../select-market';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/market-list';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import {
   ColumnKind,
   columns,
