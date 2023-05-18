@@ -48,7 +48,7 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="accounts-actions"]')
-      .should('have.text', ' ');
+      .should('have.text', '');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)

@@ -108,10 +108,9 @@ describe('deposit actions', { tags: '@smoke' }, () => {
 
   it('Deposit to trade is visble', () => {
     cy.getByTestId('Collateral').click();
-    cy.contains('[data-testid="deposit"]', 'Deposit to trade').should(
-      'be.visible'
-    );
-    cy.contains('[data-testid="deposit"]', 'Deposit to trade').click();
+    cy.contains('[data-testid="deposit"]', 'Deposit')
+      .should('be.visible')
+      .click();
     cy.getByTestId('deposit-submit').should('be.visible');
   });
 });

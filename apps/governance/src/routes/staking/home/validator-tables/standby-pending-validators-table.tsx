@@ -57,16 +57,16 @@ export const StandbyPendingValidatorsTable = ({
 
     return data
       .sort((a, b) => {
-        const aVotingPower = new BigNumber(a.rankingScore.votingPower);
-        const bVotingPower = new BigNumber(b.rankingScore.votingPower);
-        return bVotingPower.minus(aVotingPower).toNumber();
+        const aStakedTotal = new BigNumber(a.stakedTotal);
+        const bStakedTotal = new BigNumber(b.stakedTotal);
+        return bStakedTotal.minus(aStakedTotal).toNumber();
       })
       .map((node, index) => {
-        const votingPowerRanking = index + 1;
+        const stakedTotalRanking = index + 1;
 
         return {
           ...node,
-          votingPowerRanking,
+          stakedTotalRanking,
         };
       })
       .map(
@@ -79,7 +79,7 @@ export const StandbyPendingValidatorsTable = ({
           stakedTotal,
           rankingScore: { stakeScore },
           pendingStake,
-          votingPowerRanking,
+          stakedTotalRanking,
           stakedByUser,
           pendingUserStake,
           userStakeShare,
@@ -125,7 +125,7 @@ export const StandbyPendingValidatorsTable = ({
 
           return {
             id,
-            [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
+            [ValidatorFields.RANKING_INDEX]: stakedTotalRanking,
             [ValidatorFields.VALIDATOR]: {
               avatarUrl,
               name,
@@ -166,7 +166,7 @@ export const StandbyPendingValidatorsTable = ({
               : undefined,
             [ValidatorFields.PENDING_USER_STAKE]: pendingUserStake,
             [ValidatorFields.USER_STAKE_SHARE]: userStakeShare
-              ? formatNumberPercentage(new BigNumber(userStakeShare))
+              ? formatNumberPercentage(new BigNumber(userStakeShare), 2)
               : undefined,
           };
         }
@@ -210,6 +210,7 @@ export const StandbyPendingValidatorsTable = ({
           headerTooltip: t('StakeDescription').toString(),
           cellRenderer: TotalStakeRenderer,
           width: 120,
+          sort: 'desc',
         },
         {
           field: ValidatorFields.PENDING_STAKE,
@@ -233,7 +234,6 @@ export const StandbyPendingValidatorsTable = ({
           }),
           cellRenderer: StakeNeededForPromotionRenderer,
           width: 210,
-          sort: 'asc',
         },
         {
           field: ValidatorFields.TOTAL_PENALTIES,

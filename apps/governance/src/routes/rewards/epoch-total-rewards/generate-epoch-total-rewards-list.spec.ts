@@ -162,9 +162,10 @@ describe('generateEpochAssetRewardsList', () => {
                       },
                     ],
                     [
-                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                       {
-                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                         amount: '0',
                       },
                     ],
@@ -227,7 +228,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 2,
               assetId: '1',
-              rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+              rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
               amount: '5',
             },
           },
@@ -287,9 +288,10 @@ describe('generateEpochAssetRewardsList', () => {
                       },
                     ],
                     [
-                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                       {
-                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                         amount: '0',
                       },
                     ],
@@ -351,9 +353,10 @@ describe('generateEpochAssetRewardsList', () => {
                       },
                     ],
                     [
-                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                       {
-                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                         amount: '5',
                       },
                     ],
@@ -416,7 +419,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 2,
               assetId: '1',
-              rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+              rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
               amount: '6',
             },
           },
@@ -424,7 +427,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 2,
               assetId: '1',
-              rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+              rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
               amount: '27',
             },
           },
@@ -497,9 +500,10 @@ describe('generateEpochAssetRewardsList', () => {
                       },
                     ],
                     [
-                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                       {
-                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                         amount: '33',
                       },
                     ],
@@ -561,9 +565,10 @@ describe('generateEpochAssetRewardsList', () => {
                       },
                     ],
                     [
-                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                       {
-                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                         amount: '0',
                       },
                     ],
@@ -637,9 +642,10 @@ describe('generateEpochAssetRewardsList', () => {
                       },
                     ],
                     [
-                      AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                       {
-                        rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+                        rewardType:
+                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
                         amount: '0',
                       },
                     ],

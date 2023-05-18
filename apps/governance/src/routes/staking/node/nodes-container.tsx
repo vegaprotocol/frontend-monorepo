@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { ENV } from '../../../config';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -10,6 +9,7 @@ import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';
 import type { ReactElement } from 'react';
 import type { StakingQuery } from '../__generated__/Staking';
 import type { PreviousEpochQuery } from '../__generated__/PreviousEpoch';
+import { isPartyNotFoundError } from '../../../lib/party';
 
 // TODO should only request a single node. When migrating from deprecated APIs we should address this.
 
@@ -39,20 +39,8 @@ export const NodeContainer = ({
           }
         : undefined,
     },
+    errorPolicy: 'all',
   });
-
-  const [isRefetching, setIsRefetching] = useState(false);
-
-  useEffect(() => {
-    if (error && error.message.includes('failed to get party for ID')) {
-      setIsRefetching(true);
-      // The API errors if there is a pubkey, but it hasn't interacted with the
-      // chain before. In that case, retry the query with empty pubKey
-      refetch({
-        partyId: '',
-      }).finally(() => setIsRefetching(false));
-    }
-  }, [error, refetch, delegationsPagination]);
 
   const { data: previousEpochData } = usePreviousEpochQuery({
     variables: {
@@ -63,7 +51,7 @@ export const NodeContainer = ({
 
   useRefreshAfterEpoch(data?.epoch.timestamps.expiry, refetch);
 
-  if (error && !isRefetching) {
+  if (error && !isPartyNotFoundError(error)) {
     return (
       <Callout intent={Intent.Danger} title={t('Something went wrong')}>
         <pre>
@@ -75,7 +63,7 @@ export const NodeContainer = ({
     );
   }
 
-  if (loading || isRefetching) {
+  if (loading) {
     return (
       <Splash>
         <SplashLoader />

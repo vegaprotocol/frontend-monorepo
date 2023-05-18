@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { ProposalsList } from './proposals-list';
-import type { ProposalListFieldsFragment } from '../proposals-data-provider';
+import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider';
 import * as Types from '@vegaprotocol/types';
 
 const votesMock = {

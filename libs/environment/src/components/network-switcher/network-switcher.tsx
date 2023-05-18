@@ -154,19 +154,21 @@ export const NetworkSwitcher = ({
           <>
             {advancedNetworkKeys.map((key) => (
               <DropdownMenuItem key={key} data-testid="network-item-advanced">
-                <div className="mr-4">
-                  <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
-                  <NetworkLabel
-                    isCurrent={current === key}
-                    isAvailable={!!VEGA_NETWORKS[key]}
-                  />
+                <div className="w-full flex justify-between gap-2">
+                  <div>
+                    <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
+                    <NetworkLabel
+                      isCurrent={current === key}
+                      isAvailable={!!VEGA_NETWORKS[key]}
+                    />
+                  </div>
+                  <span
+                    className="hidden md:inline"
+                    data-testid="network-item-description"
+                  >
+                    {envDescriptionMapping[key]}
+                  </span>
                 </div>
-                <span
-                  className="hidden md:inline"
-                  data-testid="network-item-description"
-                >
-                  {envDescriptionMapping[key]}
-                </span>
               </DropdownMenuItem>
             ))}
           </>

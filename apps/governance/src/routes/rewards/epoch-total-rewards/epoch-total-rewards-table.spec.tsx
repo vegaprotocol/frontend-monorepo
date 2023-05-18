@@ -29,7 +29,7 @@ const rewardsList = [
     amount: '0',
   },
   {
-    rewardType: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+    rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
     amount: '0',
   },
   {
@@ -78,7 +78,9 @@ describe('EpochTotalRewardsTable', () => {
     expect(
       getByTestId('ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES')
     ).toBeInTheDocument();
-    expect(getByTestId('ACCOUNT_TYPE_FEES_LIQUIDITY')).toBeInTheDocument();
+    expect(
+      getByTestId('ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES')
+    ).toBeInTheDocument();
     expect(
       getByTestId('ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS')
     ).toBeInTheDocument();

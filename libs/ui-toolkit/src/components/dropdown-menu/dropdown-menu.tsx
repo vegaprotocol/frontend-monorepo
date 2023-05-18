@@ -2,11 +2,14 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
-import type { IconName } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 import { Icon } from '../icon';
+import { useCopyTimeout } from '@vegaprotocol/react-helpers';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { t } from '@vegaprotocol/i18n';
 
 const itemClass = classNames(
-  'relative flex items-center justify-between rounded-sm p-2 text-sm',
+  'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
   'hover:bg-white dark:hover:bg-vega-dark-200',
   'focus:bg-white dark:focus:bg-vega-dark-200',
@@ -16,10 +19,6 @@ const itemClass = classNames(
 
 type DropdownMenuProps = DropdownMenuPrimitive.DropdownMenuProps & {
   trigger: ReactNode;
-};
-
-type DropdownTriggerProps = DropdownMenuPrimitive.DropdownMenuTriggerProps & {
-  iconName?: IconName;
 };
 
 /**
@@ -43,8 +42,8 @@ export const DropdownMenu = ({
  */
 export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
-  DropdownTriggerProps
->(({ className, children, iconName, ...props }, forwardedRef) => {
+  DropdownMenuPrimitive.DropdownMenuTriggerProps
+>(({ className, children, ...props }, forwardedRef) => {
   const defaultClasses = [
     'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
     'border-vega-light-200 dark:border-vega-dark-200',
@@ -58,9 +57,7 @@ export const DropdownMenuTrigger = forwardRef<
       className={className || defaultClasses}
       {...props}
     >
-      <button>
-        {children} {iconName && <Icon name={iconName || 'chevron-down'} />}
-      </button>
+      <button>{children}</button>
     </DropdownMenuPrimitive.Trigger>
   );
 });
@@ -110,7 +107,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, className)}
+    className={classNames(itemClass, 'justify-between', className)}
   />
 ));
 
@@ -126,7 +123,7 @@ export const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     {...radioItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, className)}
+    className={classNames(itemClass, 'justify-between', className)}
   />
 ));
 
@@ -163,3 +160,32 @@ export const DropdownMenuSeparator = forwardRef<
     )}
   />
 ));
+
+/**
+ * Wraps a regular DropdownMenuItem with copy to clip board functionality
+ */
+export const DropdownMenuCopyItem = ({
+  value,
+  text,
+}: {
+  value: string;
+  text: string;
+}) => {
+  const [copied, setCopied] = useCopyTimeout();
+
+  return (
+    <CopyToClipboard text={value} onCopy={() => setCopied(true)}>
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <VegaIcon name={VegaIconNames.COPY} size={16} />
+        {text}
+        {copied && (
+          <span className="text-xs text-neutral-500">{t('Copied')}</span>
+        )}
+      </DropdownMenuItem>
+    </CopyToClipboard>
+  );
+};

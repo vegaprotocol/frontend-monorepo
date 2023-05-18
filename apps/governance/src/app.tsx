@@ -52,6 +52,7 @@ import {
 } from './components/telemetry-dialog/telemetry-dialog';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useTranslation } from 'react-i18next';
+import { isPartyNotFoundError } from './lib/party';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -211,24 +212,36 @@ const AppContainer = () => {
         enabled: true,
         environment: VEGA_ENV,
         release: GIT_COMMIT_HASH,
-        beforeSend(event) {
+        beforeSend(event, hint) {
+          const error = hint?.originalException;
+          const errorIsString = typeof error === 'string';
+          const errorIsObject = error instanceof Error;
           const requestUrl = event.request?.url;
           const transaction = event.transaction;
 
+          if (
+            (errorIsString && isPartyNotFoundError({ message: error })) ||
+            (errorIsObject && isPartyNotFoundError(error))
+          ) {
+            // This error is caused by a pubkey making an API request before
+            // it has interacted with the chain. This isn't needed in Sentry.
+            return null;
+          }
+
           const updatedRequest =
-            requestUrl && requestUrl.includes('/test?')
+            requestUrl && requestUrl.includes('/claim?')
               ? { ...event.request, url: removeQueryParams(requestUrl) }
               : event.request;
 
           const updatedTransaction =
-            transaction && transaction.includes('/test?')
+            transaction && transaction.includes('/claim?')
               ? removeQueryParams(transaction)
               : transaction;
 
           const updatedBreadcrumbs = event.breadcrumbs?.map((breadcrumb) => {
             if (
               breadcrumb.type === 'navigation' &&
-              breadcrumb.data?.to?.includes('/test?')
+              breadcrumb.data?.to?.includes('/claim?')
             ) {
               return {
                 ...breadcrumb,

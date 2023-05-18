@@ -4,7 +4,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
@@ -14,7 +14,10 @@ import {
 } from '@vegaprotocol/utils';
 import { usePositionsQuery } from '@vegaprotocol/positions';
 import type { MarketMaybeWithData } from '@vegaprotocol/market-list';
-import { closedMarketsWithDataProvider } from '@vegaprotocol/market-list';
+import {
+  MarketTableActions,
+  closedMarketsWithDataProvider,
+} from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
@@ -121,6 +124,16 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       {
         headerName: t('Market'),
         field: 'code',
+        cellRenderer: ({
+          value,
+          data,
+        }: VegaICellRendererParams<Row, 'code'>) => {
+          return (
+            <span data-testid="market-code" data-market-id={data?.id}>
+              {value}
+            </span>
+          );
+        },
       },
       {
         headerName: t('Description'),
@@ -262,9 +275,17 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
         ),
       },
       {
-        headerName: t('Market ID'),
-        field: 'id',
-        flex: 1,
+        colId: 'market-actions',
+        ...COL_DEFS.actions,
+        cellRenderer: ({ data }: VegaICellRendererParams<Row>) => {
+          if (!data) return null;
+          return (
+            <MarketTableActions
+              marketId={data.id}
+              assetId={data.settlementAsset.id}
+            />
+          );
+        },
       },
     ];
     return cols;

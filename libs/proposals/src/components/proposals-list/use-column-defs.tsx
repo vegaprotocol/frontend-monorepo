@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
-import { DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
+import { COL_DEFS, DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -15,8 +15,9 @@ import type {
 } from '@vegaprotocol/datagrid';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalStateMapping } from '@vegaprotocol/types';
-import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated__/Proposals';
+import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
+import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
 
 export const useColumnDefs = () => {
   const { VEGA_TOKEN_URL } = useEnvironment();
@@ -134,8 +135,20 @@ export const useColumnDefs = () => {
         filter: DateRangeFilter,
         flex: 1,
       },
+      {
+        colId: 'proposal-actions',
+        ...COL_DEFS.actions,
+        cellRenderer: ({
+          data,
+        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+          if (!data?.id) return null;
+          return <ProposalActionsDropdown id={data.id} />;
+        },
+        flex: 1,
+      },
     ];
   }, [VEGA_TOKEN_URL, requiredMajorityPercentage]);
+
   const defaultColDef: ColDef = useMemo(() => {
     return {
       sortable: true,
@@ -145,6 +158,7 @@ export const useColumnDefs = () => {
       filterParams: { buttons: ['reset'] },
     };
   }, []);
+
   return useMemo(
     () => ({
       columnDefs,
