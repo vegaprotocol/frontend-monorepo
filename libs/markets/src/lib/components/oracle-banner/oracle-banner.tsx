@@ -11,30 +11,18 @@ import { oracleStatuses } from './oracle-statuses';
 
 export const OracleBanner = ({ marketId }: { marketId: string }) => {
   const [open, onChange] = useState(false);
-  const { data: settlementOracle, loading: settlementOracleLoading } =
-    useMarketOracle(marketId);
-  const {
-    data: tradingTerminationOracle,
-    loading: tradingTerminationOracleLoading,
-  } = useMarketOracle(marketId, 'dataSourceSpecForTradingTermination');
-  if (settlementOracleLoading || tradingTerminationOracleLoading) {
-    return null;
-  }
+  const { data: settlementOracle } = useMarketOracle(marketId);
+  const { data: tradingTerminationOracle } = useMarketOracle(
+    marketId,
+    'dataSourceSpecForTradingTermination'
+  );
   let maliciousOracle = null;
   if (settlementOracle?.provider.oracle.status !== 'GOOD') {
     maliciousOracle = settlementOracle;
   } else if (tradingTerminationOracle?.provider.oracle.status !== 'GOOD') {
     maliciousOracle = tradingTerminationOracle;
   }
-
   if (!maliciousOracle) return null;
-  if (!settlementOracle && !tradingTerminationOracle) {
-    return (
-      <NotificationBanner intent={Intent.Primary}>
-        <div>{t('There is no oracle for this market.')} </div>
-      </NotificationBanner>
-    );
-  }
 
   const { provider } = maliciousOracle;
   return (
