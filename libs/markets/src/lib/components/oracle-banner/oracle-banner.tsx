@@ -6,30 +6,20 @@ import {
   NotificationBanner,
   ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
-import { OracleDialog } from '../market-info';
-
-export const oracleStatuses = {
-  UNKNOWN: t(
-    "This public key's proofs have not been verified yet, or no proofs have been provided yet."
-  ),
-  GOOD: t("This public key's proofs have been verified."),
-  SUSPICIOUS: t(
-    'This public key is suspected to be acting in bad faith, pending investigation.'
-  ),
-  MALICIOUS: t('This public key has been observed acting in bad faith.'),
-  RETIRED: t('This public key is no longer in use.'),
-  COMPROMISED: t(
-    'This public key is no longer in the control of its original owners.'
-  ),
-};
+import { OracleDialog } from '../oracle-dialog';
+import { oracleStatuses } from './oracle-statuses';
 
 export const OracleBanner = ({ marketId }: { marketId: string }) => {
   const [open, onChange] = useState(false);
-  const settlementOracle = useMarketOracle(marketId);
-  const tradingTerminationOracle = useMarketOracle(
-    marketId,
-    'dataSourceSpecForTradingTermination'
-  );
+  const { data: settlementOracle, loading: settlementOracleLoading } =
+    useMarketOracle(marketId);
+  const {
+    data: tradingTerminationOracle,
+    loading: tradingTerminationOracleLoading,
+  } = useMarketOracle(marketId, 'dataSourceSpecForTradingTermination');
+  if (settlementOracleLoading || tradingTerminationOracleLoading) {
+    return null;
+  }
   let maliciousOracle = null;
   if (settlementOracle?.provider.oracle.status !== 'GOOD') {
     maliciousOracle = settlementOracle;
