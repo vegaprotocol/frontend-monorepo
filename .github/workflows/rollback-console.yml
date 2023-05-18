@@ -11,15 +11,8 @@ on:
 jobs:
   rollback:
     runs-on: ubuntu-22.04
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
-      - name: Set up QEMU
-        id: quemu
-        uses: docker/setup-qemu-action@v2
-
-      - name: Available platforms
-        run: echo ${{ steps.qemu.outputs.platforms }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
