@@ -5,11 +5,13 @@ import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';
 import type {
-  BlockTimeSubscription,
-  StatisticsQuery,
-} from '../utils/__generated__/Node';
-import { BlockTimeDocument } from '../utils/__generated__/Node';
-import { StatisticsDocument } from '../utils/__generated__/Node';
+  NodeCheckTimeUpdateSubscription,
+  NodeCheckQuery,
+} from '../utils/__generated__/NodeCheck';
+import {
+  NodeCheckDocument,
+  NodeCheckTimeUpdateDocument,
+} from '../utils/__generated__/NodeCheck';
 import type { Environment } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
@@ -220,8 +222,8 @@ const testNode = async (
  */
 const testQuery = async (client: Client) => {
   try {
-    const result = await client.query<StatisticsQuery>({
-      query: StatisticsDocument,
+    const result = await client.query<NodeCheckQuery>({
+      query: NodeCheckDocument,
     });
     if (!result || result.error) {
       return false;
@@ -240,8 +242,8 @@ const testQuery = async (client: Client) => {
 const testSubscription = (client: Client) => {
   return new Promise((resolve) => {
     const sub = client
-      .subscribe<BlockTimeSubscription>({
-        query: BlockTimeDocument,
+      .subscribe<NodeCheckTimeUpdateSubscription>({
+        query: NodeCheckTimeUpdateDocument,
         errorPolicy: 'all',
       })
       .subscribe({
