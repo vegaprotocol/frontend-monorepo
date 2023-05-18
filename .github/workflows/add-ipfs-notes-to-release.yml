@@ -69,6 +69,6 @@ jobs:
 
             IPFS gateways:
 
-            https://${{ env.IPFS_V1 }}.dweb.link/
-            https://${{ env.IPFS_V1 }}.cf-ipfs.com/
+            https://${{ env.IPFS_V1 }}.ipfs.dweb.link/
+            https://${{ env.IPFS_V1 }}.ipfs.cf-ipfs.com/
             ipfs://${{ env.IPFS_V0 }}/
