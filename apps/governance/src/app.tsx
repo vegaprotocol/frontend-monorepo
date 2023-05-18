@@ -16,6 +16,7 @@ import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
 import type { EthereumConfig } from '@vegaprotocol/web3';
+import { WithdrawalApprovalDialogContainer } from '@vegaprotocol/web3';
 import {
   createConnectors,
   useEthTransactionManager,
@@ -43,7 +44,7 @@ import {
 } from '@vegaprotocol/environment';
 import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
-import { WithdrawalDialog } from '@vegaprotocol/withdraws';
+import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { SplashLoader } from './components/splash-loader';
 import { ToastsManager } from './toasts-manager';
 import {
@@ -158,7 +159,8 @@ const Web3Container = ({
                   <InitializeHandlers />
                   <VegaWalletDialogs />
                   <TransactionModal />
-                  <WithdrawalDialog />
+                  <CreateWithdrawalDialog />
+                  <WithdrawalApprovalDialogContainer />
                   <TelemetryDialog />
                 </>
               </BalanceManager>

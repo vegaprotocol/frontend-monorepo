@@ -50,11 +50,10 @@ const EthWithdrawalApprovalToastContent = ({
       </strong>
     </Panel>
   );
+
   return (
     <>
-      {title.length > 0 && (
-        <ToastHeading className="font-bold">{title}</ToastHeading>
-      )}
+      {title.length > 0 && <ToastHeading>{title}</ToastHeading>}
       <VerificationStatus state={tx} />
       {details}
     </>

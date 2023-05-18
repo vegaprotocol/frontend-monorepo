@@ -3,7 +3,8 @@ import styles from './toast.module.css';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import type { HTMLAttributes, HtmlHTMLAttributes } from 'react';
+import type { HTMLAttributes, HtmlHTMLAttributes, ReactNode } from 'react';
+import { useState } from 'react';
 import { forwardRef, useEffect } from 'react';
 import { useCallback } from 'react';
 import { useLayoutEffect } from 'react';
@@ -11,6 +12,7 @@ import { useRef } from 'react';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
 import { Loader } from '../loader';
+import { t } from '@vegaprotocol/i18n';
 
 export type ToastContent = JSX.Element | undefined;
 
@@ -63,11 +65,88 @@ export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   }
 );
 
+type CollapsiblePanelProps = {
+  actions?: ReactNode;
+};
+export const CollapsiblePanel = forwardRef<
+  HTMLDivElement,
+  CollapsiblePanelProps & HTMLAttributes<HTMLDivElement>
+>(({ children, className, actions, ...props }, ref) => {
+  const [collapsed, setCollapsed] = useState(true);
+  return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      data-panel
+      ref={ref}
+      data-test
+      className={classNames(
+        'relative',
+        'p-2 rounded mt-[10px]',
+        'font-mono text-[12px] leading-[16px] font-normal',
+        '[&>h4]:font-bold',
+        'overflow-auto',
+        {
+          'h-[64px] overflow-hidden': collapsed,
+          'pb-4': !collapsed,
+        },
+        className
+      )}
+      aria-expanded={!collapsed}
+      onDoubleClick={(e) => {
+        e.preventDefault();
+        setCollapsed(!collapsed);
+      }}
+      {...props}
+    >
+      {children}
+      {collapsed && (
+        <div
+          data-panel-curtain
+          className={classNames(
+            'bg-gradient-to-b from-transparent to-inherit',
+            'absolute bottom-0 left-0 h-8 w-full pointer-events-none'
+          )}
+        ></div>
+      )}
+      <div
+        data-panel-actions
+        className={classNames(
+          'absolute bottom-0 right-0',
+          'p-2',
+          'rounded-tl',
+          'flex align-middle gap-1'
+        )}
+      >
+        {actions}
+        <button
+          className="cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            setCollapsed(!collapsed);
+          }}
+          title={collapsed ? t('Expand') : t('Collapse')}
+          aria-label={collapsed ? t('Expand') : t('Collapse')}
+        >
+          {collapsed ? (
+            <Icon name="expand-all" size={3} />
+          ) : (
+            <Icon name="collapse-all" size={3} />
+          )}
+        </button>
+      </div>
+    </div>
+  );
+});
+
 export const ToastHeading = forwardRef<
   HTMLHeadingElement,
   HtmlHTMLAttributes<HTMLHeadingElement>
->(({ children, ...props }, ref) => (
-  <h3 ref={ref} className="text-sm uppercase mb-1" {...props}>
+>(({ children, className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={classNames('text-sm uppercase mb-1', className)}
+    {...props}
+  >
     {children}
   </h3>
 ));
@@ -167,7 +246,7 @@ export const Toast = ({
         },
         // panel's colours
         {
-          '[&_[data-panel]]:bg-vega-light-150 [&_[data-panel]]:dark:bg-vega-dark-150 ':
+          '[&_[data-panel]]:bg-vega-light-150 [&_[data-panel]]:dark:bg-vega-dark-150':
             intent === Intent.None,
           '[&_[data-panel]]:bg-vega-blue-350 [&_[data-panel]]:dark:bg-vega-blue-650':
             intent === Intent.Primary,
@@ -176,6 +255,31 @@ export const Toast = ({
           '[&_[data-panel]]:bg-vega-orange-350 [&_[data-panel]]:dark:bg-vega-orange-650':
             intent === Intent.Warning,
           '[&_[data-panel]]:bg-vega-pink-350 [&_[data-panel]]:dark:bg-vega-pink-650':
+            intent === Intent.Danger,
+        },
+        {
+          '[&_[data-panel]]:to-vega-light-150 [&_[data-panel]]:dark:to-vega-dark-150':
+            intent === Intent.None,
+          '[&_[data-panel]]:to-vega-blue-350 [&_[data-panel]]:dark:to-vega-blue-650':
+            intent === Intent.Primary,
+          '[&_[data-panel]]:to-vega-green-350 [&_[data-panel]]:dark:to-vega-green-650':
+            intent === Intent.Success,
+          '[&_[data-panel]]:to-vega-orange-350 [&_[data-panel]]:dark:to-vega-orange-650':
+            intent === Intent.Warning,
+          '[&_[data-panel]]:to-vega-pink-350 [&_[data-panel]]:dark:to-vega-pink-650':
+            intent === Intent.Danger,
+        },
+        // panel's actions
+        {
+          '[&_[data-panel-actions]]:bg-vega-light-200 [&_[data-panel-actions]]:dark:bg-vega-dark-100 ':
+            intent === Intent.None,
+          '[&_[data-panel-actions]]:bg-vega-blue-400 [&_[data-panel-actions]]:dark:bg-vega-blue-600':
+            intent === Intent.Primary,
+          '[&_[data-panel-actions]]:bg-vega-green-400 [&_[data-panel-actions]]:dark:bg-vega-green-600':
+            intent === Intent.Success,
+          '[&_[data-panel-actions]]:bg-vega-orange-400 [&_[data-panel-actions]]:dark:bg-vega-orange-600':
+            intent === Intent.Warning,
+          '[&_[data-panel-actions]]:bg-vega-pink-400 [&_[data-panel-actions]]:dark:bg-vega-pink-600':
             intent === Intent.Danger,
         },
         // panels's progress bar colours
