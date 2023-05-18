@@ -465,15 +465,17 @@ export const OracleInfoPanel = ({
       ? product.dataSourceSpecForSettlementData.id
       : product.dataSourceSpecForTradingTermination.id;
 
+  const dataSourceSpec = (
+    type === 'settlementData'
+      ? product.dataSourceSpecForSettlementData.data
+      : product.dataSourceSpecForTradingTermination.data
+  ) as DataSourceDefinition;
+
   return (
     <div className="flex flex-col gap-4">
       <DataSourceProof
         data-testid="oracle-proof-links"
-        data={
-          type === 'settlementData'
-            ? product.dataSourceSpecForSettlementData.data
-            : product.dataSourceSpecForTradingTermination.data
-        }
+        data={dataSourceSpec}
         providers={data}
         type={type}
         dataSourceSpecId={dataSourceSpecId}
@@ -533,7 +535,7 @@ export const DataSourceProof = ({
     return (
       <div>
         <h3>{t('Internal conditions')}</h3>
-        {data.sourceType.sourceType.conditions.map((condition, i) => {
+        {data.sourceType.sourceType?.conditions.map((condition, i) => {
           if (!condition) return null;
           return (
             <p key={i}>
