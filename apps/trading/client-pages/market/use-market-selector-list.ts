@@ -18,11 +18,7 @@ export const useMarketSelectorList = ({
     if (!data?.length) return [];
     const markets = data
       // only active
-      .filter((m) => {
-        return [MarketState.STATE_ACTIVE, MarketState.STATE_SUSPENDED].includes(
-          m.state
-        );
-      })
+      .filter((m) => isMarketActive(m.state))
       // only selected product type
       .filter((m) => {
         if (m.tradableInstrument.instrument.product.__typename === product) {
@@ -79,4 +75,12 @@ export const useMarketSelectorList = ({
   }, [data, product, searchTerm, assets, sort]);
 
   return { markets, data, loading, error };
+};
+
+export const isMarketActive = (state: MarketState) => {
+  return [
+    MarketState.STATE_ACTIVE,
+    MarketState.STATE_SUSPENDED,
+    MarketState.STATE_PENDING,
+  ].includes(state);
 };

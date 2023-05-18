@@ -10,6 +10,7 @@ import type { SortType } from './sort-dropdown';
 import { SortTypeMapping } from './sort-dropdown';
 import { Sort } from './sort-dropdown';
 import { subDays } from 'date-fns';
+import { isMarketActive } from './use-market-selector-list';
 
 jest.mock('@vegaprotocol/market-list');
 const mockUseMarketList = useMarketList as jest.Mock;
@@ -126,9 +127,7 @@ describe('MarketSelector', () => {
     }),
   ];
 
-  const activeMarkets = markets.filter((m) =>
-    [MarketState.STATE_ACTIVE, MarketState.STATE_SUSPENDED].includes(m.state)
-  );
+  const activeMarkets = markets.filter((m) => isMarketActive(m.state));
   mockUseMarketList.mockReturnValue({
     data: markets,
     loading: false,
