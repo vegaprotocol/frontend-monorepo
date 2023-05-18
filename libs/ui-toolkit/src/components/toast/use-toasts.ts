@@ -15,7 +15,6 @@ const isUpdateable = (a: Toast, b: Toast) =>
 type State = {
   toasts: Toasts;
   count: number;
-  position: number;
 };
 
 type Actions = {
@@ -47,64 +46,79 @@ type Actions = {
    * Arbitrary removes all toasts
    */
   removeAll: () => void;
-  /**
-   * Set position of portal: bottom right | bottom left | top left | top right | top center | bottom center
-   */
-  setPosition: (position: 0 | 1 | 2 | 3 | 4 | 5) => void;
 };
 
 type ToastsStore = State & Actions;
 
 export const useToasts = create<ToastsStore>()(
-  persist(
-    immer((set) => ({
-      toasts: {},
-      count: 0,
-      position: 0,
-      add: (toast) =>
-        set((state) => {
+  immer((set) => ({
+    toasts: {},
+    count: 0,
+    add: (toast) =>
+      set((state) => {
+        state.toasts[toast.id] = toast;
+        ++state.count;
+      }),
+    update: (id, toastData) =>
+      set((state) => {
+        const found = state.toasts[id];
+        if (found) {
+          Object.assign(found, toastData);
+        }
+      }),
+    setToast: (toast: Toast) =>
+      set((state) => {
+        const found = state.toasts[toast.id];
+        if (found) {
+          if (!isUpdateable(found, toast)) {
+            Object.assign(found, toast);
+          }
+        } else {
           state.toasts[toast.id] = toast;
           ++state.count;
-        }),
-      update: (id, toastData) =>
-        set((state) => {
-          const found = state.toasts[id];
-          if (found) {
-            Object.assign(found, toastData);
-          }
-        }),
-      setToast: (toast: Toast) =>
-        set((state) => {
-          const found = state.toasts[toast.id];
-          if (found) {
-            if (!isUpdateable(found, toast)) {
-              Object.assign(found, toast);
-            }
-          } else {
-            state.toasts[toast.id] = toast;
-            ++state.count;
-          }
-        }),
-      close: (id) =>
-        set((state) => {
-          const found = state.toasts[id];
-          if (found) {
-            found.signal = 'close';
-          }
-        }),
-      closeAll: () =>
-        set((state) => {
-          Object.values(state.toasts).forEach((t) => (t.signal = 'close'));
-        }),
-      remove: (id) =>
-        set((state) => {
-          if (state.toasts[id]) {
-            delete state.toasts[id];
-            --state.count;
-          }
-        }),
-      removeAll: () => set({ toasts: {}, count: 0 }),
-      setPosition: (position: 0 | 1 | 2 | 3 | 4 | 5) => set({ position }),
+        }
+      }),
+    close: (id) =>
+      set((state) => {
+        const found = state.toasts[id];
+        if (found) {
+          found.signal = 'close';
+        }
+      }),
+    closeAll: () =>
+      set((state) => {
+        Object.values(state.toasts).forEach((t) => (t.signal = 'close'));
+      }),
+    remove: (id) =>
+      set((state) => {
+        if (state.toasts[id]) {
+          delete state.toasts[id];
+          --state.count;
+        }
+      }),
+    removeAll: () => set({ toasts: {}, count: 0 }),
+  }))
+);
+
+export enum ToastPosition {
+  BottomRight,
+  BottomLeft,
+  TopLeft,
+  TopRight,
+  TopCenter,
+  BottomCenter,
+}
+
+type ToastConfiguration = {
+  position: ToastPosition;
+  setPosition: (position: ToastPosition) => void;
+};
+
+export const useToastsConfiguration = create<ToastConfiguration>()(
+  persist(
+    immer((set) => ({
+      position: ToastPosition.BottomRight,
+      setPosition: (position: ToastPosition) => set({ position }),
     })),
     { name: STORAGE_KEY }
   )

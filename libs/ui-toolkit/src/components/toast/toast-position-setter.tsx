@@ -3,11 +3,27 @@ import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import { Icon } from '../icon';
 import { Button } from '../button';
-import { useToasts } from './use-toasts';
+import { ToastPosition, useToastsConfiguration, useToasts } from './use-toasts';
+import { useCallback } from 'react';
+import { Intent } from '../../utils/intent';
+
+const testToast = {
+  id: 'test-toast',
+  intent: Intent.Primary,
+  content: <>{t('This is an example of a toast notification')}</>,
+};
 
 export const ToastPositionSetter = () => {
-  const setPostion = useToasts((store) => store.setPosition);
-  const position = useToasts((store) => store.position);
+  const setPostion = useToastsConfiguration((store) => store.setPosition);
+  const position = useToastsConfiguration((store) => store.position);
+  const setToast = useToasts((store) => store.setToast);
+  const handleChange = useCallback(
+    (position: ToastPosition) => {
+      setPostion(position);
+      setToast(testToast);
+    },
+    [setToast, setPostion]
+  );
   const iconCssClasses = 'absolute top-[4px] left-[4px]';
   const buttonCssClasses =
     'relative border-none bg-neutral-500/20 dark:bg-neutral-500/40';
@@ -24,13 +40,16 @@ export const ToastPositionSetter = () => {
         <Button
           className={classNames(
             buttonCssClasses,
-            position === 2 && activeButton
+            position === ToastPosition.TopLeft && activeButton
           )}
-          onClick={() => setPostion(2)}
+          onClick={() => handleChange(ToastPosition.TopLeft)}
           size="xs"
         >
           <Icon
-            className={classNames(iconCssClasses, position === 2 && activeIcon)}
+            className={classNames(
+              iconCssClasses,
+              position === ToastPosition.TopLeft && activeIcon
+            )}
             size={3}
             name={IconNames.ARROW_TOP_LEFT}
           />{' '}
@@ -38,13 +57,16 @@ export const ToastPositionSetter = () => {
         <Button
           className={classNames(
             buttonCssClasses,
-            position === 4 && activeButton
+            position === ToastPosition.TopCenter && activeButton
           )}
-          onClick={() => setPostion(4)}
+          onClick={() => handleChange(ToastPosition.TopCenter)}
           size="xs"
         >
           <Icon
-            className={classNames(iconCssClasses, position === 4 && activeIcon)}
+            className={classNames(
+              iconCssClasses,
+              position === ToastPosition.TopCenter && activeIcon
+            )}
             size={3}
             name={IconNames.ARROW_UP}
           />
@@ -52,13 +74,16 @@ export const ToastPositionSetter = () => {
         <Button
           className={classNames(
             buttonCssClasses,
-            position === 3 && activeButton
+            position === ToastPosition.TopRight && activeButton
           )}
-          onClick={() => setPostion(3)}
+          onClick={() => handleChange(ToastPosition.TopRight)}
           size="xs"
         >
           <Icon
-            className={classNames(iconCssClasses, position === 3 && activeIcon)}
+            className={classNames(
+              iconCssClasses,
+              position === ToastPosition.TopRight && activeIcon
+            )}
             size={3}
             name={IconNames.ARROW_TOP_RIGHT}
           />
@@ -66,13 +91,16 @@ export const ToastPositionSetter = () => {
         <Button
           className={classNames(
             buttonCssClasses,
-            position === 1 && activeButton
+            position === ToastPosition.BottomLeft && activeButton
           )}
-          onClick={() => setPostion(1)}
+          onClick={() => handleChange(ToastPosition.BottomLeft)}
           size="xs"
         >
           <Icon
-            className={classNames(iconCssClasses, position === 1 && activeIcon)}
+            className={classNames(
+              iconCssClasses,
+              position === ToastPosition.BottomLeft && activeIcon
+            )}
             size={3}
             name={IconNames.ARROW_BOTTOM_LEFT}
           />
@@ -80,24 +108,33 @@ export const ToastPositionSetter = () => {
         <Button
           className={classNames(
             buttonCssClasses,
-            position === 5 && activeButton
+            position === ToastPosition.BottomCenter && activeButton
           )}
-          onClick={() => setPostion(5)}
+          onClick={() => handleChange(ToastPosition.BottomCenter)}
           size="xs"
         >
           <Icon
-            className={classNames(iconCssClasses, position === 5 && activeIcon)}
+            className={classNames(
+              iconCssClasses,
+              position === ToastPosition.BottomCenter && activeIcon
+            )}
             size={3}
             name={IconNames.ARROW_DOWN}
           />
         </Button>
         <Button
-          className={classNames(buttonCssClasses, !position && activeButton)}
-          onClick={() => setPostion(0)}
+          className={classNames(
+            buttonCssClasses,
+            position === ToastPosition.BottomRight && activeButton
+          )}
+          onClick={() => handleChange(ToastPosition.BottomRight)}
           size="xs"
         >
           <Icon
-            className={classNames(iconCssClasses, !position && activeIcon)}
+            className={classNames(
+              iconCssClasses,
+              position === ToastPosition.BottomRight && activeIcon
+            )}
             size={3}
             name={IconNames.ARROW_BOTTOM_RIGHT}
           />

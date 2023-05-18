@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { Button } from '../button';
 import { Toast } from './toast';
 import type { Toasts } from './use-toasts';
-import { useToasts } from './use-toasts';
+import { ToastPosition, useToasts, useToastsConfiguration } from './use-toasts';
 
 import { Portal } from '@radix-ui/react-portal';
 
@@ -21,7 +21,7 @@ export const ToastsContainer = ({
 }: ToastsContainerProps) => {
   const ref = useRef<HTMLDivElement>();
   const closeAll = useToasts((store) => store.closeAll);
-  const position = useToasts((store) => store.position);
+  const position = useToastsConfiguration((store) => store.position);
   // Scroll to top for desc, bottom for asc when a toast is added.
   const count = usePrevious(Object.keys(toasts).length) || 0;
   useLayoutEffect(() => {
@@ -47,12 +47,18 @@ export const ToastsContainer = ({
       className={classNames(
         'group',
         'absolute z-20',
-        { 'bottom-0 right-0': !position },
-        { 'bottom-0 left-0': position === 1 },
-        { 'top-0 left-0': position === 2 },
-        { 'top-0 right-0': position === 3 },
-        { 'top-0 toast-center': position === 4 },
-        { 'bottom-0 toast-center': position === 5 },
+        { 'bottom-0 right-0': position === ToastPosition.BottomRight },
+        { 'bottom-0 left-0': position === ToastPosition.BottomLeft },
+        { 'top-0 left-0': position === ToastPosition.TopLeft },
+        { 'top-0 right-0': position === ToastPosition.TopRight },
+        {
+          'top-0 left-[50%] translate-x-[-50%]':
+            position === ToastPosition.TopCenter,
+        },
+        {
+          'bottom-0 left-[50%] translate-x-[-50%]':
+            position === ToastPosition.BottomCenter,
+        },
         'p-[8px_16px_16px_16px]',
         'max-w-full max-h-full overflow-x-hidden overflow-y-auto',
         {
