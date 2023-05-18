@@ -177,18 +177,6 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
         }
       >
         <DropdownMenuContent>
-          {/* <DropdownMenuItem
-            key={'complete-withdrawal'}
-            data-testid="complete-withdrawal"
-            onClick={() => {
-              complete(data);
-            }}
-          >
-            <span>
-              <VegaIcon name={VegaIconNames.WITHDRAW} size={16} />
-              {t('Complete withdrawal')}
-            </span>
-          </DropdownMenuItem> */}
           <DropdownMenuItem
             key={'withdrawal-approval'}
             data-testid="withdrawal-approval"
