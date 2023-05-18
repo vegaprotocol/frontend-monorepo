@@ -48,8 +48,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           id: ${{ github.event.release.id }}
           body: |
-            ${{ github.event.release.body }}
-
             ---
 
             # Deployments
@@ -71,6 +69,6 @@ jobs:
 
             IPFS gateways:
 
-            https://${{ env.IPFS_V1 }}.dweb.link/
-            https://${{ env.IPFS_V1 }}.cf-ipfs.com/
+            https://${{ env.IPFS_V1 }}.ipfs.dweb.link/
+            https://${{ env.IPFS_V1 }}.ipfs.cf-ipfs.com/
             ipfs://${{ env.IPFS_V0 }}/
