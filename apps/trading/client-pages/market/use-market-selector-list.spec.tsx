@@ -1,6 +1,9 @@
 import merge from 'lodash/merge';
 import { renderHook } from '@testing-library/react';
-import { useMarketSelectorList } from './use-market-selector-list';
+import {
+  isMarketActive,
+  useMarketSelectorList,
+} from './use-market-selector-list';
 import { Product } from './product-selector';
 import { Sort } from './sort-dropdown';
 import { createMarketFragment } from '@vegaprotocol/mock';
@@ -38,6 +41,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-3',
+        state: MarketState.STATE_CLOSED,
+      }),
+      createMarketFragment({
+        id: 'market-4',
         state: MarketState.STATE_PENDING,
       }),
     ];
@@ -48,7 +55,7 @@ describe('useMarketSelectorList', () => {
     });
     const { result } = setup();
     const expectedFilteredMarkets = markets.filter((m) =>
-      [MarketState.STATE_ACTIVE, MarketState.STATE_SUSPENDED].includes(m.state)
+      isMarketActive(m.state)
     );
     expect(result.current).toEqual({
       data: markets,
