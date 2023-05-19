@@ -29,11 +29,11 @@ describe('home', { tags: '@regression' }, () => {
       cy.getByTestId(nodeHealth)
         .children()
         .first()
-        .should('contain.text', 'Warning');
+        .should('contain.text', 'Warning delay ( >3 sec)');
 
       cy.intercept('POST', 'http://localhost:3008/graphql', (req) => {
         req.on('response', (res) => {
-          res.setDelay(0);
+          res.setDelay(1);
         });
       });
 
