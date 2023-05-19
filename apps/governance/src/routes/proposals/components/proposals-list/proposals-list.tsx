@@ -80,7 +80,9 @@ export const ProposalsList = ({
           : [],
       closed:
         initialSorting.closed.length > 0
-          ? (initialSorting.closed as ProposalFieldsFragment[]).reverse()
+          ? orderByDate(
+              initialSorting.closed as ProposalFieldsFragment[]
+            ).reverse()
           : [],
     };
   }, [proposals]);

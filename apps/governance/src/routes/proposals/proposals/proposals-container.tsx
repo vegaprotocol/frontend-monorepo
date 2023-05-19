@@ -1,3 +1,4 @@
+import flow from 'lodash/flow';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,23 +16,29 @@ import type { ProposalFieldsFragment } from './__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 
-export function getNotRejectedProposals(
-  data?: NodeConnection<NodeEdge<ProposalFieldsFragment>> | null
-): ProposalFieldsFragment[] {
-  return getNodes<ProposalFieldsFragment>(data, (p) =>
-    p ? p.state !== ProposalState.STATE_REJECTED : false
-  );
+export function getNotRejectedProposals<T extends ProposalFieldsFragment>(
+  data?: NodeConnection<NodeEdge<T>> | null
+): T[] {
+  return flow([
+    (data) =>
+      getNodes<ProposalFieldsFragment>(data, (p) =>
+        p ? p.state !== ProposalState.STATE_REJECTED : false
+      ),
+  ])(data);
 }
 
-export function getNotRejectedProtocolUpgradeProposals(
-  data?: NodeConnection<NodeEdge<ProtocolUpgradeProposalFieldsFragment>> | null
-): ProtocolUpgradeProposalFieldsFragment[] {
-  return getNodes<ProtocolUpgradeProposalFieldsFragment>(data, (p) =>
-    p
-      ? p.status !==
-        ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED
-      : false
-  );
+export function getNotRejectedProtocolUpgradeProposals<
+  T extends ProtocolUpgradeProposalFieldsFragment
+>(data?: NodeConnection<NodeEdge<T>> | null): T[] {
+  return flow([
+    (data) =>
+      getNodes<ProtocolUpgradeProposalFieldsFragment>(data, (p) =>
+        p
+          ? p.status !==
+            ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED
+          : false
+      ),
+  ])(data);
 }
 
 export const ProposalsContainer = () => {
