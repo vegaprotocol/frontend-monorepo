@@ -13,6 +13,11 @@ export const RiskMessage = () => {
         <ul className="list-[square] ml-4">
           <li className="mb-1">
             {t(
+              'Conduct your own due diligence and consult your financial advisor before making any investment decisions.'
+            )}
+          </li>
+          <li className="mb-1">
+            {t(
               'You may encounter bugs, loss of functionality or loss of assets.'
             )}
           </li>
