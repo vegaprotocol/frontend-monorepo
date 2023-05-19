@@ -43,6 +43,7 @@ describe('VegaWalletProvider', () => {
 
     // Default state
     expect(result.current).toEqual({
+      acknowledgeNeeded: false,
       pubKey: null,
       pubKeys: null,
       isReadOnly: false,
@@ -83,6 +84,7 @@ describe('VegaWalletProvider', () => {
 
     // Default state
     expect(result.current).toEqual({
+      acknowledgeNeeded: false,
       pubKey: null,
       pubKeys: null,
       isReadOnly: false,

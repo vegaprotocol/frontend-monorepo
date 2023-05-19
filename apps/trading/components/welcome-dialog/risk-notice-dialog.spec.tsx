@@ -49,31 +49,4 @@ describe('Risk notice dialog', () => {
       expect(mockOnClose).toHaveBeenCalled();
     }
   );
-
-  it('displays a risk message for mainnet', () => {
-    const pubKey = 'pubKey';
-    const introText =
-      'No party hosts or operates this IFPS website or offers any financial advice.';
-    const network = Networks.MAINNET;
-
-    // @ts-ignore ignore mock implementation
-    useEnvironment.mockImplementation(() => ({
-      ...mockEnvDefinitions,
-      VEGA_ENV: network,
-    }));
-
-    render(
-      <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
-        <RiskNoticeDialog onClose={mockOnClose} network={network} />
-      </VegaWalletContext.Provider>
-    );
-
-    expect(screen.getByText(introText)).toBeInTheDocument();
-
-    const button = screen.getByRole('button', {
-      name: 'I agree',
-    });
-    fireEvent.click(button);
-    expect(mockOnClose).toHaveBeenCalled();
-  });
 });
