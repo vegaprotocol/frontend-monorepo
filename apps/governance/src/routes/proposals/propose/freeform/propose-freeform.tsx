@@ -49,6 +49,7 @@ export const ProposeFreeform = () => {
     formState: { errors },
     setValue,
     watch,
+    trigger,
   } = useForm<FreeformProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
@@ -85,7 +86,13 @@ export const ProposeFreeform = () => {
     await submit(assembleProposal(fields));
   };
 
-  const viewJson = () => {
+  const viewJson = async () => {
+    const isValid = await trigger();
+
+    if (!isValid) {
+      return;
+    }
+
     const formData = watch();
     downloadJson(
       JSON.stringify(assembleProposal(formData)),
