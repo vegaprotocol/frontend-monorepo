@@ -13,11 +13,6 @@ export const RiskMessage = () => {
         <ul className="list-[square] ml-4">
           <li className="mb-1">
             {t(
-              'No party hosts or operates this IFPS website or offers any financial advice.'
-            )}
-          </li>
-          <li className="mb-1">
-            {t(
               'You may encounter bugs, loss of functionality or loss of assets.'
             )}
           </li>
