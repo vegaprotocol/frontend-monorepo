@@ -9,6 +9,7 @@ describe('home', { tags: '@regression' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
+    closeWelcomeDialog();
   });
 
   describe('footer', () => {
@@ -53,7 +54,6 @@ describe('home', { tags: '@regression' }, () => {
       // 0006-NETW-014
       // 0006-NETW-015
       // 0006-NETW-016
-      closeWelcomeDialog();
       cy.getByTestId(nodeHealth).click();
       cy.getByTestId(dialogContent).should('contain.text', 'Connected node');
       cy.getByTestId(dialogContent).should(
