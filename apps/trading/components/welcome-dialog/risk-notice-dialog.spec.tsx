@@ -1,7 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { RiskNoticeDialog } from './risk-notice-dialog';
 
 jest.mock('@vegaprotocol/environment');

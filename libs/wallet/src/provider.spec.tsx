@@ -7,6 +7,8 @@ import { VegaWalletProvider } from './provider';
 import { LocalStorage } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 import { WALLET_KEY } from './storage';
+import * as Environment from '@vegaprotocol/environment';
+import * as ReactHelpers from '@vegaprotocol/react-helpers';
 
 const restConnector = new RestConnector();
 const viewConnector = new ViewConnector();
@@ -138,6 +140,23 @@ describe('VegaWalletProvider', () => {
       .mockImplementation(() => Promise.resolve(mockPubKeys));
     const { result } = setup();
     expect(result.current.pubKey).toBe(null);
+
+    await act(async () => {
+      result.current.connect(viewConnector);
+    });
+    expect(result.current.isReadOnly).toBe(true);
+  });
+
+  it('acknowledgeNeeded will set on', async () => {
+    jest
+      .spyOn(Environment, 'useEnvironment')
+      .mockReturnValue({ VEGA_ENV: 'MAINNET' });
+    jest.spyOn(ReactHelpers, 'useLocalStorage').mockImplementation(() => ['']);
+    jest
+      .spyOn(viewConnector, 'connect')
+      .mockImplementation(() => Promise.resolve(mockPubKeys));
+    const { result } = setup();
+    expect(result.current.acknowledgeNeeded).toBe(true);
 
     await act(async () => {
       result.current.connect(viewConnector);
