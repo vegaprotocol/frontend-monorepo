@@ -107,7 +107,7 @@ export const ProtocolUpgradeProposalsListItem = ({
           <div className="grid grid-cols-1 mt-3">
             <div className="justify-self-end">
               <Link
-                to={`${Routes.PROPOSALS}/protocol-upgrade/${stripFullStops(
+                to={`${Routes.PROTOCOL_UPGRADES}/${stripFullStops(
                   proposal.vegaReleaseTag
                 )}`}
               >
