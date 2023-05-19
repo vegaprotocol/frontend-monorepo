@@ -13,7 +13,10 @@ import {
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
 import { usePositionsQuery } from '@vegaprotocol/positions';
-import type { MarketMaybeWithData } from '@vegaprotocol/markets';
+import type {
+  DataSourceFilterFragment,
+  MarketMaybeWithData,
+} from '@vegaprotocol/markets';
 import {
   MarketTableActions,
   closedMarketsWithDataProvider,
@@ -42,6 +45,7 @@ interface Row {
   markPrice: string | undefined;
   settlementDataOracleId: string;
   settlementDataSpecBinding: string;
+  setlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
   realisedPNL: string | undefined;
@@ -74,28 +78,40 @@ export const Closed = () => {
       }
     );
 
+    const instrument = market.tradableInstrument.instrument;
+
+    const spec =
+      instrument.product.dataSourceSpecForSettlementData.data.sourceType
+        .__typename === 'DataSourceDefinitionExternal'
+        ? instrument.product.dataSourceSpecForSettlementData.data.sourceType
+            .sourceType
+        : undefined;
+    const filters = spec?.filters || [];
+
+    const settlementDataSpecBinding =
+      instrument.product.dataSourceSpecBinding.settlementDataProperty;
+    const filter = filters?.find((filter) => {
+      return filter.key.name === settlementDataSpecBinding;
+    });
+
     const row: Row = {
       id: market.id,
-      code: market.tradableInstrument.instrument.code,
-      name: market.tradableInstrument.instrument.name,
+      code: instrument.code,
+      name: instrument.name,
       decimalPlaces: market.decimalPlaces,
       state: market.state,
-      metadata: market.tradableInstrument.instrument.metadata.tags ?? [],
+      metadata: instrument.metadata.tags ?? [],
       closeTimestamp: market.marketTimestamps.close,
       bestBidPrice: market.data?.bestBidPrice,
       bestOfferPrice: market.data?.bestOfferPrice,
       markPrice: market.data?.markPrice,
       settlementDataOracleId:
-        market.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementData.id,
-      settlementDataSpecBinding:
-        market.tradableInstrument.instrument.product.dataSourceSpecBinding
-          .settlementDataProperty,
+        instrument.product.dataSourceSpecForSettlementData.id,
+      settlementDataSpecBinding,
+      setlementDataSourceFilter: filter,
       tradingTerminationOracleId:
-        market.tradableInstrument.instrument.product
-          .dataSourceSpecForTradingTermination.id,
-      settlementAsset:
-        market.tradableInstrument.instrument.product.settlementAsset,
+        instrument.product.dataSourceSpecForTradingTermination.id,
+      settlementAsset: instrument.product.settlementAsset,
       realisedPNL: position?.node.realisedPNL,
     };
 
@@ -238,8 +254,8 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
         }: VegaICellRendererParams<Row, 'settlementDataOracleId'>) => (
           <SettlementPriceCell
             oracleSpecId={value}
-            decimalPlaces={data?.decimalPlaces ?? 0}
             settlementDataSpecBinding={data?.settlementDataSpecBinding}
+            filter={data?.setlementDataSourceFilter}
           />
         ),
       },

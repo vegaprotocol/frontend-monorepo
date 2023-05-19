@@ -1,6 +1,6 @@
 import { act, render, screen, within } from '@testing-library/react';
 import { Closed } from './closed';
-import { MarketStateMapping } from '@vegaprotocol/types';
+import { MarketStateMapping, PropertyKeyType } from '@vegaprotocol/types';
 import { PositionStatus } from '@vegaprotocol/types';
 import { MarketState } from '@vegaprotocol/types';
 import { subDays } from 'date-fns';
@@ -55,6 +55,23 @@ describe('Closed', () => {
         product: {
           dataSourceSpecForSettlementData: {
             id: settlementDataId,
+            data: {
+              sourceType: {
+                sourceType: {
+                  filters: [
+                    {
+                      __typename: 'Filter',
+                      key: {
+                        __typename: 'PropertyKey',
+                        name: settlementDataProperty,
+                        type: PropertyKeyType.TYPE_INTEGER,
+                        numberDecimalPlaces: 5,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
           },
           dataSourceSpecBinding: {
             settlementDataProperty,

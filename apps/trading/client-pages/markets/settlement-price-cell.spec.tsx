@@ -1,13 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import type { Property } from '@vegaprotocol/types';
+import { PropertyKeyType } from '@vegaprotocol/types';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { OracleSpecDataConnectionQuery } from '@vegaprotocol/markets';
 import { OracleSpecDataConnectionDocument } from '@vegaprotocol/markets';
 import type { SettlementPriceCellProps } from './settlement-price-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 describe('SettlementPriceCell', () => {
+  const settlementDataSpecBinding = 'settlement-data-spec-binding';
+
   const createMock = (
     id: string,
     property: Property
@@ -40,11 +44,19 @@ describe('SettlementPriceCell', () => {
       },
     };
   };
-  const createProps = (): SettlementPriceCellProps => {
+  const createProps = (
+    filterKey = {
+      name: settlementDataSpecBinding,
+      type: PropertyKeyType.TYPE_INTEGER,
+      numberDecimalPlaces: 2,
+    }
+  ): SettlementPriceCellProps => {
     return {
       oracleSpecId: 'oracle-spec-id',
-      decimalPlaces: 2,
-      settlementDataSpecBinding: 'settlement-data-spec-binding',
+      filter: {
+        key: filterKey,
+      },
+      settlementDataSpecBinding,
     };
   };
   it('renders fetches and renders the settlment data value', async () => {
@@ -65,14 +77,19 @@ describe('SettlementPriceCell', () => {
 
     expect(screen.getByText('-')).toBeInTheDocument();
     const link = await screen.findByRole('link');
-    expect(link).toHaveTextContent('12.34');
+    expect(link).toHaveTextContent(
+      addDecimalsFormatNumber(
+        property.value,
+        props.filter?.key.numberDecimalPlaces || 0
+      )
+    );
     expect(link).toHaveAttribute(
       'href',
       expect.stringContaining(`/oracles/${props.oracleSpecId}`)
     );
   });
 
-  it('renders "-" if no spec value is found', async () => {
+  it('renders "Unknown" if no spec value is found', async () => {
     const props = createProps();
     const property = {
       __typename: 'Property' as const,
@@ -90,7 +107,7 @@ describe('SettlementPriceCell', () => {
 
     expect(screen.getByText('-')).toBeInTheDocument();
     const link = await screen.findByRole('link');
-    expect(link).toHaveTextContent('-');
+    expect(link).toHaveTextContent('Unknown');
     expect(link).toHaveAttribute(
       'href',
       expect.stringContaining(`/oracles/${props.oracleSpecId}`)
@@ -109,5 +126,34 @@ describe('SettlementPriceCell', () => {
 
     expect(screen.getByText('-')).toBeInTheDocument();
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('does not format value if property key type is not integer', async () => {
+    const props = createProps({
+      name: settlementDataSpecBinding,
+      type: PropertyKeyType.TYPE_TIMESTAMP,
+      numberDecimalPlaces: 2,
+    });
+    const property = {
+      __typename: 'Property' as const,
+      name: props.settlementDataSpecBinding as string,
+      value: '1234',
+    };
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const mock = createMock(props.oracleSpecId!, property);
+
+    render(
+      <MockedProvider mocks={[mock]}>
+        <SettlementPriceCell {...props} />
+      </MockedProvider>
+    );
+
+    expect(screen.getByText('-')).toBeInTheDocument();
+    const link = await screen.findByRole('link');
+    expect(link).toHaveTextContent(property.value);
+    expect(link).toHaveAttribute(
+      'href',
+      expect.stringContaining(`/oracles/${props.oracleSpecId}`)
+    );
   });
 });

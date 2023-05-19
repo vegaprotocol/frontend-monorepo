@@ -80,6 +80,17 @@ export const createMarketFragment = (
                       },
                     },
                   ],
+                  filters: [
+                    {
+                      __typename: 'Filter',
+                      key: {
+                        __typename: 'PropertyKey',
+                        name: 'settlement-data-property',
+                        type: Schema.PropertyKeyType.TYPE_TIMESTAMP,
+                        numberDecimalPlaces: null,
+                      },
+                    },
+                  ],
                 },
               },
             },
@@ -99,6 +110,17 @@ export const createMarketFragment = (
                       signer: {
                         __typename: 'PubKey',
                         key: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                      },
+                    },
+                  ],
+                  filters: [
+                    {
+                      __typename: 'Filter',
+                      key: {
+                        __typename: 'PropertyKey',
+                        name: 'settlement-data-property',
+                        type: Schema.PropertyKeyType.TYPE_INTEGER,
+                        numberDecimalPlaces: 2,
                       },
                     },
                   ],

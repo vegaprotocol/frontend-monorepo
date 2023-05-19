@@ -4,7 +4,7 @@ import { useMarket } from '../markets-provider';
 
 import { useMemo } from 'react';
 import type { Provider } from '../oracle-schema';
-import type { DataSourceSpecFragment } from '../__generated__/OracleMarketsSpec';
+import type { DataSourceSpecFragment } from '../__generated__';
 
 export const getMatchingOracleProvider = (
   dataSourceSpec: DataSourceSpecFragment,
