@@ -4,6 +4,94 @@ import {
 } from '@vegaprotocol/utils';
 import type { PreviousEpochQuery } from './__generated__/PreviousEpoch';
 import { BigNumber } from '../../lib/bignumber';
+import type { LastArrayElement } from 'type-fest';
+
+type Node = NonNullable<
+  LastArrayElement<
+    NonNullable<
+      NonNullable<PreviousEpochQuery['epoch']['validatorsConnection']>['edges']
+    >
+  >
+>['node'];
+
+/**
+ * Calculates theoretical stake score for a given node
+ * @param nodeId Id of a node for which a score is calculated
+ * @param nodes A collection of all nodes
+ * @returns Theoretical stake score for given node based on the staked total
+ * of all node of the same type (status)
+ */
+const calculateTheoreticalStakeScore = (nodeId: string, nodes: Node[]) => {
+  const node = nodes.find((n) => n.id === nodeId);
+  if (!node) {
+    return new BigNumber(0);
+  }
+  const all = nodes
+    .filter((n) => n.rankingScore.status === node.rankingScore.status)
+    .map((n) => new BigNumber(n.stakedTotal));
+  const sumOfSameType = all.reduce((acc, a) => acc.plus(a), new BigNumber(0));
+  if (sumOfSameType.isZero()) {
+    return new BigNumber(0);
+  }
+  return new BigNumber(node.stakedTotal).dividedBy(sumOfSameType);
+};
+
+/**
+ * Calculates overall penalty for a given node
+ * @param nodeId Id of a node for which a penalty is calculated
+ * @param nodes A collection of all nodes - needed to calculate theoretical stake score
+ * @returns %
+ */
+export const calculateOverallPenalty = (nodeId: string, nodes: Node[]) => {
+  const node = nodes.find((n) => n.id === nodeId);
+  const tts = calculateTheoreticalStakeScore(nodeId, nodes);
+  if (!node || tts.isZero()) {
+    return new BigNumber(0);
+  }
+  const penalty = new BigNumber(1)
+    .minus(new BigNumber(node.rewardScore?.validatorScore || 0).dividedBy(tts))
+    .times(100);
+  return penalty.isLessThan(0) ? new BigNumber(0) : penalty;
+};
+
+/**
+ *  Calculates over-staked penalty for a given node
+ * @param nodeId Id of a node for which a penalty is calculated
+ * @param nodes A collection of all nodes - needed to calculate theoretical stake score
+ * @returns %
+ */
+export const calculateOverstakedPenalty = (nodeId: string, nodes: Node[]) => {
+  const node = nodes.find((n) => n.id === nodeId);
+  const tts = calculateTheoreticalStakeScore(nodeId, nodes);
+  if (!node || tts.isZero()) {
+    return new BigNumber(0);
+  }
+  const penalty = new BigNumber(1)
+    .minus(
+      new BigNumber(node.rewardScore?.rawValidatorScore || 0).dividedBy(tts)
+    )
+    .times(100);
+  console.log(
+    nodeId,
+    new BigNumber(node.rewardScore?.rawValidatorScore || 0).toString(),
+    tts.toString(),
+    new BigNumber(node.rewardScore?.rawValidatorScore || 0)
+      .dividedBy(tts)
+      .toString()
+  );
+  return penalty.isLessThan(0) ? new BigNumber(0) : penalty;
+};
+
+/**
+ * Calculates performance penalty based on the given performance score.
+ * @returns %
+ */
+export const calculatesPerformancePenalty = (performanceScore: string) => {
+  const penalty = new BigNumber(1)
+    .minus(new BigNumber(performanceScore))
+    .times(100);
+  return penalty.isLessThan(0) ? new BigNumber(0) : penalty;
+};
 
 export const getLastEpochScoreAndPerformance = (
   previousEpochData: PreviousEpochQuery | undefined,
@@ -15,7 +103,7 @@ export const getLastEpochScoreAndPerformance = (
 
   return {
     rawValidatorScore: validator?.rewardScore?.rawValidatorScore,
-    performanceScore: validator?.rewardScore?.performanceScore,
+    performanceScore: validator?.rankingScore?.performanceScore,
     stakeScore: validator?.rankingScore?.stakeScore,
   };
 };

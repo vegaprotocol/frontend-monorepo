@@ -7,12 +7,12 @@ import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
+  calculateOverallPenalty,
+  calculateOverstakedPenalty,
+  calculatesPerformancePenalty,
   getFormattedPerformanceScore,
   getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
-  getOverstakingPenalty,
-  getPerformancePenalty,
-  getTotalPenalties,
   getUnnormalisedVotingPower,
 } from '../../shared';
 import {
@@ -32,6 +32,7 @@ import type { ValidatorsTableProps } from './shared';
 import {
   formatNumber,
   formatNumberPercentage,
+  removePaginationWrapper,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { VALIDATOR_LOGO_MAP } from './logo-map';
@@ -136,6 +137,10 @@ export const ConsensusValidatorsTable = ({
     [totalStake]
   );
 
+  const allNodesInPreviousEpoch = removePaginationWrapper(
+    previousEpochData?.epoch.validatorsConnection?.edges
+  );
+
   const nodes = useMemo(() => {
     if (!data) return [];
     let canonisedNodes = data
@@ -160,7 +165,7 @@ export const ConsensusValidatorsTable = ({
           stakedByDelegates,
           stakedByOperator,
           stakedTotal,
-          rankingScore: { stakeScore, votingPower },
+          rankingScore: { stakeScore, votingPower, performanceScore },
           pendingStake,
           stakedTotalRanking,
           stakedByUser,
@@ -172,11 +177,8 @@ export const ConsensusValidatorsTable = ({
             : avatarUrl
             ? avatarUrl
             : null;
-          const {
-            rawValidatorScore: previousEpochValidatorScore,
-            performanceScore: previousEpochPerformanceScore,
-            stakeScore: previousEpochStakeScore,
-          } = getLastEpochScoreAndPerformance(previousEpochData, id);
+          const { rawValidatorScore: previousEpochValidatorScore } =
+            getLastEpochScoreAndPerformance(previousEpochData, id);
 
           return {
             id,
@@ -199,21 +201,19 @@ export const ConsensusValidatorsTable = ({
               toBigNum(stakedByOperator, decimals),
               2
             ),
-            [ValidatorFields.PERFORMANCE_SCORE]: getFormattedPerformanceScore(
-              previousEpochPerformanceScore
-            ).toString(),
-            [ValidatorFields.PERFORMANCE_PENALTY]: getPerformancePenalty(
-              previousEpochPerformanceScore
+            [ValidatorFields.PERFORMANCE_SCORE]:
+              getFormattedPerformanceScore(performanceScore).toString(),
+            [ValidatorFields.PERFORMANCE_PENALTY]: formatNumberPercentage(
+              calculatesPerformancePenalty(performanceScore),
+              2
             ),
-            [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
-              previousEpochValidatorScore,
-              previousEpochStakeScore
+            [ValidatorFields.OVERSTAKING_PENALTY]: formatNumberPercentage(
+              calculateOverstakedPenalty(id, allNodesInPreviousEpoch),
+              2
             ),
-            [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
-              previousEpochValidatorScore,
-              previousEpochPerformanceScore,
-              stakedTotal,
-              totalStake
+            [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
+              calculateOverallPenalty(id, allNodesInPreviousEpoch),
+              2
             ),
             [ValidatorFields.PENDING_STAKE]: pendingStake,
             [ValidatorFields.STAKED_BY_USER]: stakedByUser
@@ -328,12 +328,12 @@ export const ConsensusValidatorsTable = ({
       ...remaining,
     ];
   }, [
+    allNodesInPreviousEpoch,
     data,
     decimals,
     hideTopThird,
     previousEpochData,
     thirdOfTotalStake,
-    totalStake,
     validatorsView,
   ]);
 
