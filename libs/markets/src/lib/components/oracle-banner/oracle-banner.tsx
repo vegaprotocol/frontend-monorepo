@@ -6,27 +6,13 @@ import {
   NotificationBanner,
   ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
-import { OracleDialog } from '../market-info';
-
-export const oracleStatuses = {
-  UNKNOWN: t(
-    "This public key's proofs have not been verified yet, or no proofs have been provided yet."
-  ),
-  GOOD: t("This public key's proofs have been verified."),
-  SUSPICIOUS: t(
-    'This public key is suspected to be acting in bad faith, pending investigation.'
-  ),
-  MALICIOUS: t('This public key has been observed acting in bad faith.'),
-  RETIRED: t('This public key is no longer in use.'),
-  COMPROMISED: t(
-    'This public key is no longer in the control of its original owners.'
-  ),
-};
+import { OracleDialog } from '../oracle-dialog';
+import { oracleStatuses } from './oracle-statuses';
 
 export const OracleBanner = ({ marketId }: { marketId: string }) => {
   const [open, onChange] = useState(false);
-  const settlementOracle = useMarketOracle(marketId);
-  const tradingTerminationOracle = useMarketOracle(
+  const { data: settlementOracle } = useMarketOracle(marketId);
+  const { data: tradingTerminationOracle } = useMarketOracle(
     marketId,
     'dataSourceSpecForTradingTermination'
   );
@@ -36,15 +22,7 @@ export const OracleBanner = ({ marketId }: { marketId: string }) => {
   } else if (tradingTerminationOracle?.provider.oracle.status !== 'GOOD') {
     maliciousOracle = tradingTerminationOracle;
   }
-
   if (!maliciousOracle) return null;
-  if (!settlementOracle && !tradingTerminationOracle) {
-    return (
-      <NotificationBanner intent={Intent.Primary}>
-        <div>{t('There is no oracle for this market.')} </div>
-      </NotificationBanner>
-    );
-  }
 
   const { provider } = maliciousOracle;
   return (

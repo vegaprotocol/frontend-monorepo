@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { useMarketOracle } from './use-market-oracle';
-import type { MarketInfoQuery } from '../components/market-info/__generated__/MarketInfo';
+import type { MarketFieldsFragment } from '../__generated__/markets';
 import type { Provider } from '../oracle-schema';
 
 const ORACLE_PROOFS_URL = 'ORACLE_PROOFS_URL';
@@ -10,43 +10,42 @@ const key = 'key';
 const dataSourceSpecId = 'dataSourceSpecId';
 
 const mockEnvironment = jest.fn(() => ({ ORACLE_PROOFS_URL }));
-const mockDataProvider = jest.fn<
-  { data: MarketInfoQuery['market'] },
-  unknown[]
->(() => ({
-  data: {
-    tradableInstrument: {
-      instrument: {
-        product: {
-          dataSourceSpecForSettlementData: {
-            id: dataSourceSpecId,
-            data: {
-              sourceType: {
-                __typename: 'DataSourceDefinitionExternal',
+const mockMarket = jest.fn<{ data: MarketFieldsFragment | null }, unknown[]>(
+  () => ({
+    data: {
+      tradableInstrument: {
+        instrument: {
+          product: {
+            dataSourceSpecForSettlementData: {
+              id: dataSourceSpecId,
+              data: {
                 sourceType: {
-                  signers: [
-                    {
-                      signer: {
-                        __typename: 'ETHAddress',
-                        address,
+                  __typename: 'DataSourceDefinitionExternal',
+                  sourceType: {
+                    signers: [
+                      {
+                        signer: {
+                          __typename: 'ETHAddress',
+                          address,
+                        },
                       },
-                    },
-                    {
-                      signer: {
-                        __typename: 'PubKey',
-                        key,
+                      {
+                        signer: {
+                          __typename: 'PubKey',
+                          key,
+                        },
                       },
-                    },
-                  ],
+                    ],
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  } as MarketInfoQuery['market'],
-}));
+    } as MarketFieldsFragment,
+  })
+);
 
 const mockOracleProofs = jest.fn<{ data?: Provider[] }, unknown[]>(() => ({}));
 
@@ -54,9 +53,8 @@ jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: jest.fn((args) => mockEnvironment()),
 }));
 
-jest.mock('@vegaprotocol/data-provider', () => ({
-  ...jest.requireActual('@vegaprotocol/data-provider'),
-  useDataProvider: jest.fn((args) => mockDataProvider()),
+jest.mock('../markets-provider', () => ({
+  useMarket: jest.fn((args) => mockMarket()),
 }));
 
 jest.mock('./use-oracle-proofs', () => ({
@@ -66,15 +64,15 @@ jest.mock('./use-oracle-proofs', () => ({
 const marketId = 'marketId';
 describe('useMarketOracle', () => {
   it('returns undefined if no market info present', () => {
-    mockDataProvider.mockReturnValueOnce({ data: null });
+    mockMarket.mockReturnValueOnce({ data: null });
     const { result } = renderHook(() => useMarketOracle(marketId));
-    expect(result.current).toBeUndefined();
+    expect(result.current?.data).toBeUndefined();
   });
 
   it('returns undefined if no oracle proofs present', () => {
     mockOracleProofs.mockReturnValueOnce({ data: undefined });
     const { result } = renderHook(() => useMarketOracle(marketId));
-    expect(result.current).toBeUndefined();
+    expect(result.current?.data).toBeUndefined();
   });
 
   it('returns oracle matched by eth_address', () => {
@@ -102,8 +100,8 @@ describe('useMarketOracle', () => {
       data,
     });
     const { result } = renderHook(() => useMarketOracle(marketId));
-    expect(result.current?.dataSourceSpecId).toBe(dataSourceSpecId);
-    expect(result.current?.provider).toBe(data[1]);
+    expect(result.current?.data?.dataSourceSpecId).toBe(dataSourceSpecId);
+    expect(result.current?.data?.provider).toBe(data[1]);
   });
 
   it('returns oracle matching by public_key', () => {
@@ -131,7 +129,7 @@ describe('useMarketOracle', () => {
       data,
     });
     const { result } = renderHook(() => useMarketOracle(marketId));
-    expect(result.current?.dataSourceSpecId).toBe(dataSourceSpecId);
-    expect(result.current?.provider).toBe(data[1]);
+    expect(result.current?.data?.dataSourceSpecId).toBe(dataSourceSpecId);
+    expect(result.current?.data?.provider).toBe(data[1]);
   });
 });
