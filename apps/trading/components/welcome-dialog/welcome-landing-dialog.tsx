@@ -16,6 +16,8 @@ import { Link } from 'react-router-dom';
 import { ProposedMarkets } from './proposed-markets';
 import { Links, Routes } from '../../pages/client-router';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { TelemetryApproval } from './telemetry-approval';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
 export const SelectMarketLandingTable = ({
   markets,
@@ -94,6 +96,8 @@ export const WelcomeLandingDialog = ({
   onClose,
 }: LandingDialogContainerProps) => {
   const { data, loading, error } = useMarketList();
+  const { VEGA_ENV } = useEnvironment();
+  const isMainnet = VEGA_ENV === Networks.MAINNET;
   if (error) {
     return (
       <div className="flex justify-center items-center">
@@ -114,6 +118,13 @@ export const WelcomeLandingDialog = ({
     <>
       <WelcomeDialogHeader />
       <SelectMarketLandingTable markets={data} onClose={onClose} />
+      {isMainnet && (
+        <TelemetryApproval
+          helpText={t(
+            'Help identify bugs and improve the service by sharing anonymous usage data. You can change this in your settings at any time.'
+          )}
+        />
+      )}
     </>
   );
 };

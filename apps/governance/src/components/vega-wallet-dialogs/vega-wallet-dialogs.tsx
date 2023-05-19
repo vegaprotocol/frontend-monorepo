@@ -4,9 +4,11 @@ import {
   useAppState,
 } from '../../contexts/app-state/app-state-context';
 import { Connectors } from '../../lib/vega-connectors';
+import { RiskMessage } from './risk-message';
 
 export const VegaWalletDialogs = () => {
   const { appState, appDispatch } = useAppState();
+
   return (
     <>
       <VegaConnectDialog
@@ -17,6 +19,7 @@ export const VegaWalletDialogs = () => {
             isOpen: open,
           })
         }
+        riskMessage={<RiskMessage />}
       />
 
       <VegaManageDialog

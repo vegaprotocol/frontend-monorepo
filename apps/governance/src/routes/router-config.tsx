@@ -207,6 +207,13 @@ const LazyWithdrawals = React.lazy(
     )
 );
 
+const LazyDisclaimer = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-disclaimer", webpackPrefetch: true */ './disclaimer'
+    )
+);
+
 const redirects = [
   {
     path: Routes.VALIDATORS,
@@ -348,6 +355,10 @@ const routerConfig = [
   {
     path: Routes.CONTRACTS,
     element: <LazyContracts name="Contracts" />,
+  },
+  {
+    path: Routes.DISCLAIMER,
+    element: <LazyDisclaimer name="Disclaimer" />,
   },
   {
     path: '*',

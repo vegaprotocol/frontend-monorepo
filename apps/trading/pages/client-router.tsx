@@ -30,6 +30,10 @@ const LazySettings = dynamic(() => import('../client-pages/settings'), {
   ssr: false,
 });
 
+const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
+  ssr: false,
+});
+
 export enum Routes {
   HOME = '/',
   MARKET = '/markets',
@@ -37,6 +41,7 @@ export enum Routes {
   PORTFOLIO = '/portfolio',
   LIQUIDITY = 'liquidity/:marketId',
   SETTINGS = 'settings',
+  DISCLAIMER = 'disclaimer',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -51,6 +56,7 @@ export const Links: ConsoleLinks = {
       ? trimEnd(`${Routes.LIQUIDITY}/${marketId}`, '/')
       : Routes.LIQUIDITY,
   [Routes.SETTINGS]: () => Routes.SETTINGS,
+  [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
 };
 
 const routerConfig: RouteObject[] = [
@@ -96,6 +102,10 @@ const routerConfig: RouteObject[] = [
   {
     path: Routes.SETTINGS,
     element: <LazySettings />,
+  },
+  {
+    path: Routes.DISCLAIMER,
+    element: <LazyDisclaimer />,
   },
   {
     path: '*',
