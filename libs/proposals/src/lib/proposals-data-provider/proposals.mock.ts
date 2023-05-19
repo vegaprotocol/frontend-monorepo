@@ -11,6 +11,7 @@ export const proposalListQuery = (
 ): ProposalsListQuery => {
   const defaultResult: ProposalsListQuery = {
     proposalsConnection: {
+      __typename: 'ProposalsConnection',
       edges: proposalListFields.map((node) => ({
         __typename: 'ProposalEdge',
         node,
@@ -104,8 +105,10 @@ export const marketUpdateProposal: ProposalListFieldsFragment = {
   },
 };
 
-const proposalListFields: ProposalListFieldsFragment[] = [
-  {
+export const createProposalListFieldsFragment = (
+  override?: PartialDeep<ProposalListFieldsFragment>
+): ProposalListFieldsFragment => {
+  const defaultProposal: ProposalListFieldsFragment = {
     id: 'e9ec6d5c46a7e7bcabf9ba7a893fa5a5eeeec08b731f06f7a6eb7bf0e605b829',
     reference: 'injected_at_runtime',
     state: Schema.ProposalState.STATE_OPEN,
@@ -194,7 +197,12 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       __typename: 'ProposalTerms',
     },
     __typename: 'Proposal',
-  },
+  };
+  return merge(defaultProposal, override);
+};
+
+const proposalListFields: ProposalListFieldsFragment[] = [
+  createProposalListFieldsFragment(),
   {
     id: '1cd1deb532b97fbeb9262fe94499ecec5835e60ae564b7c5af530c90a13c29cb',
     reference: 'injected_at_runtime',
