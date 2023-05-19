@@ -11,9 +11,8 @@ import { ENV } from '../../../config';
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
   const {
-    state: { loading: restLoading, error: restError, data: restData },
+    state: { data: restData },
   } = useFetch(`${ENV.rest}governance?proposalId=${params.proposalId}`);
-  console.log(restLoading, restError, restData);
   const { data, loading, error, refetch } = useProposalQuery({
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',

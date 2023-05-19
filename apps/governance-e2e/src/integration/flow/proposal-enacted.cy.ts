@@ -58,14 +58,12 @@ context(
           .parentsUntil(proposalListItem)
           .last()
           .within(() => {
-            cy.get(proposalStatus).should('have.text', 'Enacted ');
+            cy.get(proposalStatus).should('have.text', 'Enacted');
             cy.get(viewProposalButton).click();
           });
       });
       cy.getByTestId('proposal-type').should('have.text', 'New market');
-      getProposalInformationFromTable('State')
-        .contains('Enacted')
-        .and('be.visible');
+      cy.get(proposalStatus).should('have.text', 'Enacted');
       cy.get(votesTable).within(() => {
         cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');
@@ -87,16 +85,10 @@ context(
           .last()
           .within(() => cy.get(viewProposalButton).click());
       });
-      getProposalInformationFromTable('State')
-        .contains('Open')
-        .and('be.visible');
+      cy.get(proposalStatus).should('have.text', 'Open');
       voteForProposal('for');
-      getProposalInformationFromTable('State') // 3001-VOTE-047
-        .contains('Passed', proposalTimeout)
-        .and('be.visible');
-      getProposalInformationFromTable('State')
-        .contains('Enacted', proposalTimeout)
-        .and('be.visible');
+      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Passed');
+      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Enacted');
       cy.get(votesTable).within(() => {
         cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');
@@ -121,13 +113,9 @@ context(
           .last()
           .within(() => cy.get(viewProposalButton).click());
       });
-      getProposalInformationFromTable('State')
-        .contains('Open')
-        .and('be.visible');
+      cy.get(proposalStatus).should('have.text', 'Open');
       voteForProposal('for');
-      getProposalInformationFromTable('State')
-        .contains('Enacted', proposalTimeout)
-        .and('be.visible');
+      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Enacted');
     });
 
     // 3001-VOTE-048 3001-VOTE-049 3001-VOTE-050
@@ -144,12 +132,8 @@ context(
           .last()
           .within(() => cy.get(viewProposalButton).click());
       });
-      getProposalInformationFromTable('State')
-        .contains('Open')
-        .and('be.visible');
-      getProposalInformationFromTable('State') // 3001-VOTE-047
-        .contains('Declined', proposalTimeout)
-        .and('be.visible');
+      cy.get(proposalStatus).should('have.text', 'Open');
+      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Declined');
       getProposalInformationFromTable('Rejection reason')
         .contains('PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED')
         .and('be.visible');

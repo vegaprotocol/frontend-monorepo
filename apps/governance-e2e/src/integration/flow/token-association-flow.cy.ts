@@ -111,10 +111,10 @@ context(
         // 1004-ASSO-028
         // 1004-ASSO-029
         // 1004-ASSO-031
-
+        vegaWalletTeardown();
         stakingPageAssociateTokens('2');
         verifyEthWalletAssociatedBalance('2.0');
-        verifyEthWalletTotalAssociatedBalance('2.0');
+        verifyEthWalletTotalAssociatedBalance('6,002.00');
         cy.get('button').contains('Select a validator to nominate').click();
         stakingPageDisassociateTokens('2');
         cy.getByTestId('currency-title', txTimeout).should(
@@ -125,17 +125,18 @@ context(
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '0.00');
         cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
-        cy.getByTestId('eth-wallet-associated-balances', txTimeout).should(
-          'not.exist'
-        );
-        verifyEthWalletTotalAssociatedBalance('0.00');
+        cy.get(
+          '[data-testid="eth-wallet-associated-balances"]:visible',
+          txTimeout
+        ).should('have.length', 2);
+        verifyEthWalletTotalAssociatedBalance('6,000.00');
       });
 
       it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
         //1004-ASSO-011
         stakingPageAssociateTokens('1001', { approve: true });
         verifyEthWalletAssociatedBalance('1,001.00');
-        verifyEthWalletTotalAssociatedBalance('1,001.00');
+        verifyEthWalletTotalAssociatedBalance('7,001.00');
         cy.get(vegaWallet)
           .last()
           .within(() => {
