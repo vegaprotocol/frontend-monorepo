@@ -329,7 +329,7 @@ export const isOrderActive = (status: Schema.OrderStatus) => {
 };
 
 export const isOrderAmendable = (order: Order | undefined) => {
-  if (!order || order.peggedOrder || order.liquidityProvision) {
+  if (!order || order.liquidityProvision) {
     return false;
   }
 
