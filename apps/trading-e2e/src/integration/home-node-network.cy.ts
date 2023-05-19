@@ -5,7 +5,7 @@ const nodeHealth = 'node-health';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
-    cy.clearLocalStorage();
+    cy.clearAllLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
@@ -48,13 +48,12 @@ describe('home', { tags: '@regression' }, () => {
     });
 
     it('shows node switcher details', () => {
-      closeWelcomeDialog();
       // 0006-NETW-012
       // 0006-NETW-013
       // 0006-NETW-014
       // 0006-NETW-015
       // 0006-NETW-016
-
+      closeWelcomeDialog();
       cy.getByTestId(nodeHealth).click();
       cy.getByTestId(dialogContent).should('contain.text', 'Connected node');
       cy.getByTestId(dialogContent).should(
@@ -79,7 +78,6 @@ describe('home', { tags: '@regression' }, () => {
       // 0006-NETW-018
       // 0006-NETW-019
       // 0006-NETW-020
-
       cy.getByTestId(nodeHealth).click();
       cy.getByTestId('connect').should('be.disabled');
       cy.getByTestId('node-url-custom').click();
