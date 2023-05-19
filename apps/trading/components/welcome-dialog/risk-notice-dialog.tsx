@@ -1,23 +1,19 @@
 import { t } from '@vegaprotocol/i18n';
 import {
   Button,
-  ExternalLink,
-  Icon,
   Link,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { RISK_ACCEPTED_KEY } from '../constants';
 import { TelemetryApproval } from './telemetry-approval';
+import type { Networks } from '@vegaprotocol/environment';
 import {
-  Networks,
   useEnvironment,
   DocsLinks,
   ExternalLinks,
 } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import { useGlobalStore } from '../../stores';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface Props {
   onClose: () => void;
@@ -32,13 +28,7 @@ export const RiskNoticeDialog = ({ onClose, network }: Props) => {
   };
 
   return (
-    <>
-      {network === Networks.MAINNET ? (
-        <MainnetContent handleAcceptRisk={handleAcceptRisk} />
-      ) : (
-        <TestnetContent network={network} handleAcceptRisk={handleAcceptRisk} />
-      )}
-    </>
+    <TestnetContent network={network} handleAcceptRisk={handleAcceptRisk} />
   );
 };
 
@@ -95,66 +85,5 @@ const TestnetContent = ({
       </div>
       <Button onClick={handleAcceptRisk}>{t('Continue')}</Button>
     </>
-  );
-};
-
-const MainnetContent = ({
-  handleAcceptRisk,
-}: {
-  handleAcceptRisk: () => void;
-}) => {
-  const updateStore = useGlobalStore((store) => store.update);
-  const { disconnect } = useVegaWallet();
-  const revokeWalletConnection = () => {
-    updateStore({ shouldDisplayMainnetRiskDialog: false });
-    disconnect();
-  };
-  const openDisclaimer = () => {
-    updateStore({ shouldDisplayDisclaimerDialog: true });
-  };
-  return (
-    <div className="mt-6">
-      <div className="bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 p-6 mb-6">
-        <ul className="list-disc ml-6 text-lg">
-          <li>
-            {t(
-              'No party hosts or operates this IFPS website or offers any financial advice.'
-            )}
-          </li>
-          <li>
-            {t(
-              'You may encounter bugs, loss of functionality or loss of assets.'
-            )}
-          </li>
-          <li>
-            {t('No party accepts any liability for any losses whatsoever.')}
-          </li>
-        </ul>
-      </div>
-      <p className="mb-8">
-        {t(
-          'By using the Vega Console, you acknowledge that you have read and understood the'
-        )}{' '}
-        <ExternalLink onClick={openDisclaimer} className="underline">
-          <span className="flex items-center gap-2">
-            <span>{t('Vega Console Disclaimer')}</span>
-            <Icon name="arrow-top-right" size={3} />
-          </span>
-        </ExternalLink>
-        .
-      </p>
-      <div className="grid grid-cols-2 gap-5">
-        <div>
-          <Button onClick={revokeWalletConnection} fill>
-            {t('Cancel')}
-          </Button>
-        </div>
-        <div>
-          <Button onClick={handleAcceptRisk} variant="primary" fill>
-            {t('I agree')}
-          </Button>
-        </div>
-      </div>
-    </div>
   );
 };

@@ -35,7 +35,6 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { AnnouncementBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
-import * as constants from '../components/constants';
 import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider, allOrdersProvider } from '@vegaprotocol/orders';
@@ -161,8 +160,7 @@ const PartyData = () => {
 };
 
 const MaybeConnectEagerly = () => {
-  const [riskAccepted] = useLocalStorage(constants.RISK_ACCEPTED_KEY);
-  useVegaEagerConnect(riskAccepted === 'true' ? Connectors : undefined);
+  useVegaEagerConnect(Connectors);
   const [isTelemetryApproved] = useTelemetryApproval();
   useEthereumEagerConnect(
     isTelemetryApproved ? { dsn: ENV.dsn, env: ENV.envName } : {}

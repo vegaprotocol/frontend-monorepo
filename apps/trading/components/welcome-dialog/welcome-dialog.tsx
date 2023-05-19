@@ -40,19 +40,15 @@ export const WelcomeDialog = () => {
 
   const onCloseDialog = useCallback(() => {
     update({
-      shouldDisplayWelcomeDialog:
-        isRiskDialogNeeded && VEGA_ENV !== Networks.MAINNET,
+      shouldDisplayWelcomeDialog: isRiskDialogNeeded,
     });
-  }, [update, isRiskDialogNeeded, VEGA_ENV]);
+  }, [update, isRiskDialogNeeded]);
   if (isRiskDialogNeeded) {
     dialogContent = (
       <RiskNoticeDialog onClose={onCloseDialog} network={VEGA_ENV} />
     );
-    title =
-      VEGA_ENV === Networks.MAINNET
-        ? t('Understand the risk')
-        : t('Vega Console');
-    size = VEGA_ENV === Networks.MAINNET ? 'small' : 'medium';
+    title = t('Vega Console');
+    size = 'medium';
   } else if (isWelcomeDialogNeeded && data?.length === 0) {
     dialogContent = <WelcomeNoticeDialog />;
     onClose = onCloseDialog;

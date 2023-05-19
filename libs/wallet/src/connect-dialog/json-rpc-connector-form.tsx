@@ -16,6 +16,7 @@ import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useVegaWallet } from '../use-vega-wallet';
+import { setAcknowledged } from '../storage';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
@@ -30,7 +31,6 @@ export const JsonRpcConnectorForm = ({
   reset,
   onConnect,
   riskMessage,
-  onRiskAcknowledge,
 }: {
   connector: JsonRpcConnector;
   appChainId: string;
@@ -39,7 +39,6 @@ export const JsonRpcConnectorForm = ({
   onConnect: () => void;
   reset: () => void;
   riskMessage?: React.ReactNode;
-  onRiskAcknowledge?: () => void;
 }) => {
   const { disconnect } = useVegaWallet();
   if (status === Status.Idle) {
@@ -109,14 +108,14 @@ export const JsonRpcConnectorForm = ({
     );
   }
 
-  if (status === Status.NeedsAcknowledge) {
+  if (status === Status.AcknowledgeNeeded) {
     const setConnection = () => {
-      onRiskAcknowledge?.();
+      setAcknowledged();
       onConnect();
     };
     const handleDisagree = () => {
       disconnect();
-      onConnect();
+      onConnect(); // this is dialog closing
     };
     return (
       <>

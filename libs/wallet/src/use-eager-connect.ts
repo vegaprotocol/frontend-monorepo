@@ -3,17 +3,17 @@ import { useEffect, useState } from 'react';
 import type { VegaConnector } from './connectors/vega-connector';
 import { getConfig } from './storage';
 
-export function useEagerConnect(Connectors?: {
+export function useEagerConnect(Connectors: {
   [connector: string]: VegaConnector;
 }) {
   const [connecting, setConnecting] = useState(true);
-  const { connect } = useVegaWallet();
+  const { connect, acknowledgeNeeded } = useVegaWallet();
 
   useEffect(() => {
     const attemptConnect = async () => {
       const cfg = getConfig();
       // No stored config, or config was malformed or no risk accepted
-      if (!cfg || !cfg.connector || !Connectors) {
+      if (!cfg || !cfg.connector || acknowledgeNeeded) {
         setConnecting(false);
         return;
       }

@@ -30,6 +30,7 @@ import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
 import { ViewConnectorForm } from './view-connector-form';
 import { useChainIdQuery } from './__generated__/ChainId';
+import { useVegaWallet } from '../use-vega-wallet';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
@@ -39,7 +40,6 @@ export interface VegaConnectDialogProps {
   connectors: Connectors;
   onChangeOpen?: (open: boolean) => void;
   riskMessage?: React.ReactNode;
-  onRiskAcknowledge?: () => void;
 }
 
 export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
@@ -63,7 +63,6 @@ export const VegaConnectDialog = ({
   connectors,
   onChangeOpen,
   riskMessage,
-  onRiskAcknowledge,
 }: VegaConnectDialogProps) => {
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
     (store) => store.vegaWalletDialogOpen
@@ -78,6 +77,16 @@ export const VegaConnectDialog = ({
     store.closeVegaWalletDialog();
     onChangeOpen?.(false);
   });
+  const { disconnect, acknowledgeNeeded } = useVegaWallet();
+  const onVegaWalletDialogChange = useCallback(
+    (open: boolean) => {
+      updateVegaWalletDialog(open);
+      if (!open && acknowledgeNeeded) {
+        disconnect();
+      }
+    },
+    [updateVegaWalletDialog, acknowledgeNeeded, disconnect]
+  );
 
   const { data, error, loading } = useChainIdQuery();
 
@@ -110,8 +119,8 @@ export const VegaConnectDialog = ({
         connectors={connectors}
         closeDialog={closeVegaWalletDialog}
         appChainId={data.statistics.chainId}
+        /*appChainId="vega-fairground-202305051805"*/
         riskMessage={riskMessage}
-        onRiskAcknowledge={onRiskAcknowledge}
       />
     );
   };
@@ -120,7 +129,7 @@ export const VegaConnectDialog = ({
     <Dialog
       open={vegaWalletDialogOpen}
       size="small"
-      onChange={updateVegaWalletDialog}
+      onChange={onVegaWalletDialogChange}
     >
       {renderContent()}
     </Dialog>
@@ -132,19 +141,16 @@ const ConnectDialogContainer = ({
   closeDialog,
   appChainId,
   riskMessage,
-  onRiskAcknowledge,
 }: {
   connectors: Connectors;
   closeDialog: () => void;
   appChainId: string;
   riskMessage?: React.ReactNode;
-  onRiskAcknowledge?: () => void;
 }) => {
   const { VEGA_WALLET_URL, VEGA_ENV, HOSTED_WALLET_URL } = useEnvironment();
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
   const [walletType, setWalletType] = useState<WalletType>();
-  const isMainnet = VEGA_ENV === Networks.MAINNET;
   const reset = useCallback(() => {
     setSelectedConnector(undefined);
     setWalletType(undefined);
@@ -155,13 +161,8 @@ const ConnectDialogContainer = ({
       closeDialog();
     }, CLOSE_DELAY);
   }, [closeDialog]);
-  const needsAcknowledge = Boolean(
-    isMainnet && riskMessage && onRiskAcknowledge
-  );
-  const { connect, ...jsonRpcState } = useJsonRpcConnect(
-    delayedOnConnect,
-    needsAcknowledge
-  );
+
+  const { connect, ...jsonRpcState } = useJsonRpcConnect(delayedOnConnect);
 
   const handleSelect = (type: WalletType, isHosted = false) => {
     let connector;
@@ -199,14 +200,13 @@ const ConnectDialogContainer = ({
       appChainId={appChainId}
       reset={reset}
       riskMessage={riskMessage}
-      onRiskAcknowledge={onRiskAcknowledge}
     />
   ) : (
     <ConnectorList
       walletUrl={walletUrl}
       setWalletUrl={setWalletUrl}
       onSelect={handleSelect}
-      isMainnet={isMainnet}
+      isMainnet={VEGA_ENV === Networks.MAINNET}
     />
   );
 };
@@ -267,7 +267,6 @@ const SelectedForm = ({
   reset,
   onConnect,
   riskMessage,
-  onRiskAcknowledge,
 }: {
   type: WalletType;
   connector: VegaConnector;
@@ -279,7 +278,6 @@ const SelectedForm = ({
   reset: () => void;
   onConnect: () => void;
   riskMessage?: React.ReactNode;
-  onRiskAcknowledge?: () => void;
 }) => {
   if (connector instanceof RestConnector) {
     return (
@@ -333,7 +331,6 @@ const SelectedForm = ({
             appChainId={appChainId}
             reset={reset}
             riskMessage={riskMessage}
-            onRiskAcknowledge={onRiskAcknowledge}
           />
         </ConnectDialogContent>
         <ConnectDialogFooter />
