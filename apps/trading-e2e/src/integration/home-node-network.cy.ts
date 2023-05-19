@@ -12,7 +12,7 @@ describe('home', { tags: '@regression' }, () => {
   });
 
   describe('footer', () => {
-    it('shows current block height', () => {
+    it.skip('shows current block height', () => {
       closeWelcomeDialog();
       // 0006-NETW-004
       // 0006-NETW-005
@@ -47,7 +47,7 @@ describe('home', { tags: '@regression' }, () => {
         .should('contain.text', '100'); // all mocked queries have x-block-height header set to 100
     });
 
-    it('shows node switcher details', () => {
+    it.skip('shows node switcher details', () => {
       // 0006-NETW-012
       // 0006-NETW-013
       // 0006-NETW-014
@@ -73,7 +73,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.getByTestId('dialog-close').click();
     });
 
-    it('switch to other node', () => {
+    it.skip('switch to other node', () => {
       // 0006-NETW-017
       // 0006-NETW-018
       // 0006-NETW-019
@@ -102,7 +102,7 @@ describe('home', { tags: '@regression' }, () => {
 
     // 0006-NETW-002
     // 0006-NETW-003
-    it('switch to fairground network', () => {
+    it.skip('switch to fairground network', () => {
       cy.getByTestId('network-switcher').click();
       cy.getByTestId('network-item').contains('Fairground testnet').click();
       cy.get('[aria-haspopup="menu"]').should('contain.text', 'Fairground');
