@@ -14,7 +14,7 @@ import {
   lastMonth,
   nextMonth,
 } from '../../test-helpers/mocks';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 
 const openProposalClosesNextMonth = generateProposal({
   id: 'proposal1',
@@ -54,7 +54,7 @@ const failedProposalClosedLastMonth = generateProposal({
   },
 });
 
-const renderComponent = (proposals: ProposalQuery['proposal'][]) => (
+const renderComponent = (proposals: ProposalFieldsFragment[]) => (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>
@@ -132,10 +132,10 @@ describe('Proposals list', () => {
     const closedProposalsItems = closedProposals.getAllByTestId(
       'proposals-list-item'
     );
-    expect(openProposalsItems[0]).toHaveAttribute('id', 'proposal1');
-    expect(openProposalsItems[1]).toHaveAttribute('id', 'proposal2');
-    expect(closedProposalsItems[0]).toHaveAttribute('id', 'proposal4');
-    expect(closedProposalsItems[1]).toHaveAttribute('id', 'proposal3');
+    expect(openProposalsItems[0]).toHaveAttribute('id', 'proposal2');
+    expect(openProposalsItems[1]).toHaveAttribute('id', 'proposal1');
+    expect(closedProposalsItems[0]).toHaveAttribute('id', 'proposal3');
+    expect(closedProposalsItems[1]).toHaveAttribute('id', 'proposal4');
   });
 
   it('Displays info on no proposals', () => {
