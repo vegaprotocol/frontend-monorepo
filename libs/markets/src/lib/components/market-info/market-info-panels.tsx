@@ -532,19 +532,27 @@ export const DataSourceProof = ({
   }
 
   if (data.sourceType.__typename === 'DataSourceDefinitionInternal') {
-    return (
-      <div>
-        <h3>{t('Internal conditions')}</h3>
-        {data.sourceType.sourceType?.conditions.map((condition, i) => {
-          if (!condition) return null;
-          return (
-            <p key={i}>
-              {ConditionOperatorMapping[condition.operator]} {condition.value}
-            </p>
-          );
-        })}
-      </div>
-    );
+    if (data.sourceType.sourceType) {
+      return (
+        <div>
+          <h3>{t('Internal conditions')}</h3>
+          {data.sourceType.sourceType?.conditions.map((condition, i) => {
+            if (!condition) return null;
+            return (
+              <p key={i}>
+                {ConditionOperatorMapping[condition.operator]} {condition.value}
+              </p>
+            );
+          })}
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          {t('No oracle spec for trading termination. Internal timestamp used')}
+        </div>
+      );
+    }
   }
 
   return <div>{t('Invalid data source')}</div>;
