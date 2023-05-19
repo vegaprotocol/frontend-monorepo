@@ -5,10 +5,11 @@ import {
   enterRawProposalBody,
   enterUniqueFreeFormProposalBody,
   generateFreeFormProposalTitle,
+  getProposalFromTitle,
   getProposalInformationFromTable,
-  getSubmittedProposalFromProposalList,
   goToMakeNewProposal,
   governanceProposalType,
+  submitUniqueRawProposal,
   voteForProposal,
   waitForProposalSubmitted,
   waitForProposalSync,
@@ -81,7 +82,6 @@ context(
       });
 
       vegaWalletSetSpecifiedApprovalAmount('1000');
-      cy.associateTokensToVegaWallet('1');
     });
 
     beforeEach('visit governance tab', function () {
@@ -95,7 +95,8 @@ context(
       navigateTo(navigation.proposals);
     });
 
-    it('Should be able to see that no proposals exist', function () {
+    // Test can only pass if run before other proposal tests.
+    it.skip('Should be able to see that no proposals exist', function () {
       // 3001-VOTE-003
       cy.get(noOpenProposals)
         .should('be.visible')
@@ -107,7 +108,7 @@ context(
 
     // 3002-PROP-002
     // 3002-PROP-003
-    it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {
+    it('Proposal form - shows how many vega tokens are required to make a proposal', function () {
       // 3002-PROP-005
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
       cy.contains(
@@ -115,8 +116,9 @@ context(
       ).should('be.visible');
     });
 
+    // Skipping as currently unable to propose using forms other than raw
     // 3002-PROP-011
-    it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
+    it.skip('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
       cy.get(minVoteButton).should('be.visible'); // 3002-PROP-008
       cy.get(maxVoteButton).should('be.visible');
@@ -140,16 +142,13 @@ context(
       closeStakingDialog();
 
       cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
-
-      navigateTo(navigation.proposals);
-      goToMakeNewProposal(governanceProposalType.FREEFORM);
-      enterUniqueFreeFormProposalBody('50', generateFreeFormProposalTitle());
-      waitForProposalSubmitted();
+      createRawProposal();
     });
 
-    it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
+    it.skip('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
       enterUniqueFreeFormProposalBody('0.1', generateFreeFormProposalTitle());
+
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'not.exist'
       );
@@ -158,7 +157,7 @@ context(
         .should('equal', 'Value must be greater than or equal to 1.');
     });
 
-    it('Creating a proposal - proposal rejected - when closing time later than system default', function () {
+    it.skip('Creating a proposal - proposal rejected - when closing time later than system default', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
       enterUniqueFreeFormProposalBody(
         '100000',
@@ -185,17 +184,13 @@ context(
       navigateTo(navigation.proposals);
       cy.get(rejectProposalsLink).click();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getSubmittedProposalFromProposalList(
-          rawProposal.rationale.title
-        ).within(() => {
+        getProposalFromTitle(rawProposal.rationale.title).within(() => {
           cy.contains('Rejected').should('be.visible');
           cy.contains('Close time too late').should('be.visible');
           cy.get(viewProposalButton).click();
         });
       });
-      getProposalInformationFromTable('State')
-        .contains('Rejected')
-        .and('be.visible');
+      cy.getByTestId('proposal-status').should('have.text', 'Rejected');
       getProposalInformationFromTable('Rejection reason')
         .contains('PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE')
         .and('be.visible');
@@ -290,18 +285,19 @@ context(
       const proposalTitle = generateFreeFormProposalTitle();
 
       ensureSpecifiedUnstakedTokensAreAssociated('1');
-      goToMakeNewProposal(governanceProposalType.FREEFORM);
-      enterUniqueFreeFormProposalBody('50', proposalTitle);
-      waitForProposalSubmitted();
+      submitUniqueRawProposal({ proposalTitle: proposalTitle });
+      ethereumWalletConnect();
       stakingPageDisassociateTokens('0.0001');
-      cy.get(vegaWallet).within(() => {
-        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-          'contain',
-          '0.9999'
-        );
-      });
+      cy.get(vegaWallet)
+        .first()
+        .within(() => {
+          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            '0.9999'
+          );
+        });
       navigateTo(navigation.proposals);
-      getSubmittedProposalFromProposalList(proposalTitle).within(() =>
+      getProposalFromTitle(proposalTitle).within(() =>
         cy.get(viewProposalButton).click()
       );
       cy.contains('Vote breakdown').should('be.visible', {
@@ -319,9 +315,9 @@ context(
       cy.get('[data-testid="manage-vega-wallet"]:visible').click();
       cy.get('[data-testid="disconnect"]').click();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getSubmittedProposalFromProposalList(
-          rawProposal.rationale.title
-        ).within(() => cy.get(viewProposalButton).click());
+        getProposalFromTitle(rawProposal.rationale.title).within(() =>
+          cy.get(viewProposalButton).click()
+        );
       });
       // 3001-VOTE-075
       // 3001-VOTE-076

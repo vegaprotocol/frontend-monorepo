@@ -67,7 +67,6 @@ export async function faucetAsset(assetEthAddress: string) {
 
 export async function vegaWalletTeardown() {
   cy.get(associatedAmountInWallet)
-    .should('be.visible')
     .invoke('text')
     .then((associatedAmount) => {
       cy.get('body').then(($body) => {
@@ -82,9 +81,11 @@ export async function vegaWalletTeardown() {
       cy.get(vegaWalletContainer).within(() => {
         cy.get(associatedAmountInWallet, {
           timeout: transactionTimeout,
-        }).contains('0.00', {
-          timeout: transactionTimeout,
-        });
+        })
+          .should('have.length', 1, { timeout: transactionTimeout })
+          .contains('0.00', {
+            timeout: transactionTimeout,
+          });
       });
     });
 }
