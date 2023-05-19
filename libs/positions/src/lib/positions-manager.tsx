@@ -10,7 +10,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 
 interface PositionsManagerProps {
-  partyId: string;
+  partyIds: string[];
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
   noBottomPlaceholder?: boolean;
@@ -18,14 +18,14 @@ interface PositionsManagerProps {
 }
 
 export const PositionsManager = ({
-  partyId,
+  partyIds,
   onMarketClick,
   isReadOnly,
   noBottomPlaceholder,
   storeKey,
 }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading, reload } = usePositionsData(partyId, gridRef);
+  const { data, error, loading, reload } = usePositionsData(partyIds, gridRef);
   const [dataCount, setDataCount] = useState(data?.length ?? 0);
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
@@ -86,6 +86,7 @@ export const PositionsManager = ({
         onRowDataUpdated={updateRowCount}
         {...bottomPlaceholderProps}
         storeKey={storeKey}
+        multipleKeys={partyIds.length > 1}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

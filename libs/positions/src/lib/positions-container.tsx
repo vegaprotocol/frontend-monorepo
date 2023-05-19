@@ -7,12 +7,14 @@ export const PositionsContainer = ({
   onMarketClick,
   noBottomPlaceholder,
   storeKey,
+  allKeys,
 }: {
   onMarketClick?: (marketId: string) => void;
   noBottomPlaceholder?: boolean;
   storeKey?: string;
+  allKeys?: boolean;
 }) => {
-  const { pubKey, isReadOnly } = useVegaWallet();
+  const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
 
   if (!pubKey) {
     return (
@@ -21,9 +23,14 @@ export const PositionsContainer = ({
       </Splash>
     );
   }
+
   return (
     <PositionsManager
-      partyId={pubKey}
+      partyIds={
+        allKeys && pubKeys
+          ? pubKeys?.map(({ publicKey }) => publicKey)
+          : [pubKey]
+      }
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
       noBottomPlaceholder={noBottomPlaceholder}

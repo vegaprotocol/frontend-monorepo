@@ -1,10 +1,7 @@
 import * as Schema from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
 import type { MarketWithData } from '@vegaprotocol/markets';
-import type {
-  PositionFieldsFragment,
-  MarginFieldsFragment,
-} from './__generated__/Positions';
+import type { PositionFieldsFragment } from './__generated__/Positions';
 import { getMetrics, rejoinPositionData } from './positions-data-providers';
 import { PositionStatus } from '@vegaprotocol/types';
 
@@ -79,6 +76,9 @@ const positions: PositionFieldsFragment[] = [
       __typename: 'Market',
       id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
     },
+    party: {
+      id: 'partyId',
+    },
     lossSocializationAmount: '0',
     positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
   },
@@ -92,6 +92,9 @@ const positions: PositionFieldsFragment[] = [
     market: {
       __typename: 'Market',
       id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
+    },
+    party: {
+      id: 'partyId',
     },
     lossSocializationAmount: '100',
     positionStatus: PositionStatus.POSITION_STATUS_ORDERS_CLOSED,
@@ -155,65 +158,23 @@ const marketsData = [
   },
 ] as MarketWithData[];
 
-const margins: MarginFieldsFragment[] = [
-  {
-    __typename: 'MarginLevels',
-    maintenanceLevel: '0',
-    searchLevel: '0',
-    initialLevel: '0',
-    collateralReleaseLevel: '0',
-    market: {
-      __typename: 'Market',
-      id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
-    },
-    asset: {
-      __typename: 'Asset',
-      id: 'tDAI-id',
-    },
-  },
-  {
-    __typename: 'MarginLevels',
-    maintenanceLevel: '0',
-    searchLevel: '0',
-    initialLevel: '0',
-    collateralReleaseLevel: '0',
-    market: {
-      __typename: 'Market',
-      id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
-    },
-    asset: {
-      __typename: 'Asset',
-      id: 'tDAI-id',
-    },
-  },
-];
 describe('getMetrics && rejoinPositionData', () => {
   it('returns positions metrics', () => {
-    const positionsRejoined = rejoinPositionData(
-      positions,
-      marketsData,
-      margins
-    );
+    const positionsRejoined = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(positionsRejoined, accounts || null);
     expect(metrics.length).toEqual(2);
   });
 
   it('calculates metrics', () => {
-    const positionsRejoined = rejoinPositionData(
-      positions,
-      marketsData,
-      margins
-    );
+    const positionsRejoined = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(positionsRejoined, accounts || null);
 
     expect(metrics[0].assetSymbol).toEqual('tDAI');
     expect(metrics[0].averageEntryPrice).toEqual('8993727');
-    expect(metrics[0].capitalUtilisation).toEqual(4);
     expect(metrics[0].currentLeverage).toBeCloseTo(1.02);
     expect(metrics[0].marketDecimalPlaces).toEqual(5);
     expect(metrics[0].positionDecimalPlaces).toEqual(0);
     expect(metrics[0].decimals).toEqual(5);
-    expect(metrics[0].lowMarginLevel).toEqual(false);
     expect(metrics[0].markPrice).toEqual('9431775');
     expect(metrics[0].marketId).toEqual(
       '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8'
@@ -225,7 +186,6 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[0].notional).toEqual('943177500');
     expect(metrics[0].openVolume).toEqual('100');
     expect(metrics[0].realisedPNL).toEqual('0');
-    expect(metrics[0].searchPrice).toEqual('9098238');
     expect(metrics[0].totalBalance).toEqual('926178496');
     expect(metrics[0].unrealisedPNL).toEqual('43804770');
     expect(metrics[0].updatedAt).toEqual('2022-07-28T14:53:54.725477Z');
@@ -236,12 +196,10 @@ describe('getMetrics && rejoinPositionData', () => {
 
     expect(metrics[1].assetSymbol).toEqual('tDAI');
     expect(metrics[1].averageEntryPrice).toEqual('840158');
-    expect(metrics[1].capitalUtilisation).toEqual(0);
     expect(metrics[1].currentLeverage).toBeCloseTo(0.097);
     expect(metrics[1].marketDecimalPlaces).toEqual(5);
     expect(metrics[1].positionDecimalPlaces).toEqual(0);
     expect(metrics[1].decimals).toEqual(5);
-    expect(metrics[1].lowMarginLevel).toEqual(false);
     expect(metrics[1].markPrice).toEqual('869762');
     expect(metrics[1].marketId).toEqual(
       '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e'
@@ -251,7 +209,6 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[1].notional).toEqual('86976200');
     expect(metrics[1].openVolume).toEqual('-100');
     expect(metrics[1].realisedPNL).toEqual('0');
-    expect(metrics[1].searchPrice).toEqual('902503');
     expect(metrics[1].totalBalance).toEqual('896098819');
     expect(metrics[1].unrealisedPNL).toEqual('-9112700');
     expect(metrics[1].updatedAt).toEqual('2022-07-28T15:09:34.441143Z');

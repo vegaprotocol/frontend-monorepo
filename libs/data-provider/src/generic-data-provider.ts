@@ -164,7 +164,9 @@ interface DataProviderParams<
   Data,
   SubscriptionData,
   Delta,
-  Variables extends OperationVariables | undefined = undefined
+  Variables extends OperationVariables | undefined = undefined,
+  SubscriptionVariables extends OperationVariables | undefined = Variables,
+  QueryVariables extends OperationVariables | undefined = Variables
 > {
   query: Query<QueryData>;
   subscriptionQuery?: Query<SubscriptionData>;
@@ -181,6 +183,8 @@ interface DataProviderParams<
   resetDelay?: number;
   additionalContext?: Record<string, unknown>;
   errorPolicyGuard?: (graphqlErrors: GraphQLErrors) => boolean;
+  getQueryVariables?: (variables: Variables) => QueryVariables;
+  getSubscriptionVariables?: (variables: Variables) => SubscriptionVariables;
 }
 
 /**
@@ -199,7 +203,9 @@ function makeDataProviderInternal<
   Data,
   SubscriptionData,
   Delta,
-  Variables extends OperationVariables | undefined = undefined
+  Variables extends OperationVariables | undefined = undefined,
+  QueryVariables extends OperationVariables | undefined = Variables,
+  SubscriptionVariables extends OperationVariables | undefined = Variables
 >({
   query,
   subscriptionQuery,
@@ -211,12 +217,16 @@ function makeDataProviderInternal<
   resetDelay,
   additionalContext,
   errorPolicyGuard,
+  getQueryVariables,
+  getSubscriptionVariables,
 }: DataProviderParams<
   QueryData,
   Data,
   SubscriptionData,
   Delta,
-  Variables
+  Variables,
+  QueryVariables,
+  SubscriptionVariables
 >): Subscribe<Data, Delta, Variables> {
   // list of callbacks passed through subscribe call
   const callbacks: UpdateCallback<Data, Delta>[] = [];
@@ -263,7 +273,7 @@ function makeDataProviderInternal<
       .query<QueryData>({
         query,
         variables: {
-          ...variables,
+          ...(getQueryVariables ? getQueryVariables(variables) : variables),
           ...(pagination && {
             // let the variables pagination be prior to provider param
             pagination: {
@@ -463,7 +473,9 @@ function makeDataProviderInternal<
       subscription = client
         .subscribe<SubscriptionData>({
           query: subscriptionQuery,
-          variables,
+          variables: getSubscriptionVariables
+            ? getSubscriptionVariables(variables)
+            : variables,
           fetchPolicy,
         })
         .subscribe(onNext, onError);
@@ -590,14 +602,18 @@ export function makeDataProvider<
   Data,
   SubscriptionData,
   Delta,
-  Variables extends OperationVariables | undefined = undefined
+  Variables extends OperationVariables | undefined = undefined,
+  SubscriptionVariables extends OperationVariables | undefined = Variables,
+  QueryVariables extends OperationVariables | undefined = Variables
 >(
   params: DataProviderParams<
     QueryData,
     Data,
     SubscriptionData,
     Delta,
-    Variables
+    Variables,
+    SubscriptionVariables,
+    QueryVariables
   >
 ): Subscribe<Data, Delta, Variables> {
   const getInstance = memoize<Data, Delta, Variables>(() =>
