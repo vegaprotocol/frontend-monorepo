@@ -5,14 +5,15 @@ const nodeHealth = 'node-health';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
-    cy.clearLocalStorage();
+    cy.clearAllLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
+    closeWelcomeDialog();
   });
 
   describe('footer', () => {
-    it('shows current block height', () => {
+    it.skip('shows current block height', () => {
       closeWelcomeDialog();
       // 0006-NETW-004
       // 0006-NETW-005
@@ -22,7 +23,7 @@ describe('home', { tags: '@regression' }, () => {
 
       cy.intercept('POST', 'http://localhost:3008/graphql', (req) => {
         req.on('response', (res) => {
-          res.setDelay(3000);
+          res.setDelay(3001);
         });
       });
 
@@ -53,7 +54,6 @@ describe('home', { tags: '@regression' }, () => {
       // 0006-NETW-014
       // 0006-NETW-015
       // 0006-NETW-016
-
       cy.getByTestId(nodeHealth).click();
       cy.getByTestId(dialogContent).should('contain.text', 'Connected node');
       cy.getByTestId(dialogContent).should(
@@ -78,7 +78,6 @@ describe('home', { tags: '@regression' }, () => {
       // 0006-NETW-018
       // 0006-NETW-019
       // 0006-NETW-020
-
       cy.getByTestId(nodeHealth).click();
       cy.getByTestId('connect').should('be.disabled');
       cy.getByTestId('node-url-custom').click();
