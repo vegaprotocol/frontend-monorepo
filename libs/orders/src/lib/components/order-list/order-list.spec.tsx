@@ -226,8 +226,8 @@ describe('OrderListTable', () => {
       const amendCell = getAmendCell();
       const typeCell = screen.getAllByRole('gridcell')[2];
       expect(typeCell).toHaveTextContent('Mid - 10.0 Peg limit');
-      expect(amendCell.queryByTestId('edit')).not.toBeInTheDocument();
-      expect(amendCell.queryByTestId('cancel')).not.toBeInTheDocument();
+      expect(amendCell.queryByTestId('edit')).toBeInTheDocument();
+      expect(amendCell.queryByTestId('cancel')).toBeInTheDocument();
     });
 
     it.each([
