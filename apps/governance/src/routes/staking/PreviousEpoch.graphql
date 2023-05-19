@@ -5,12 +5,22 @@ query PreviousEpoch($epochId: ID) {
       edges {
         node {
           id
+          stakedTotal
           rewardScore {
             rawValidatorScore
             performanceScore
+            multisigScore
+            validatorScore
+            normalisedScore
+            validatorStatus
           }
           rankingScore {
+            status
+            previousStatus
+            rankingScore
             stakeScore
+            performanceScore
+            votingPower
           }
         }
       }
