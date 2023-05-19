@@ -1,5 +1,6 @@
+import orderBy from 'lodash/orderBy';
 import { isFuture } from 'date-fns';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading, SubHeading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
@@ -30,6 +31,25 @@ interface SortedProtocolUpgradeProposalsProps {
   closed: ProtocolUpgradeProposalFieldsFragment[];
 }
 
+export const orderByDate = (arr: ProposalFieldsFragment[]) =>
+  orderBy(
+    arr,
+    [
+      (p) => new Date(p?.terms?.closingDatetime).getTime(),
+      (p) => new Date(p?.datetime).getTime(),
+    ],
+    ['asc', 'asc']
+  );
+
+export const orderByUpgradeBlockHeight = (
+  arr: ProtocolUpgradeProposalFieldsFragment[]
+) =>
+  orderBy(
+    arr,
+    [(p) => p?.upgradeBlockHeight, (p) => p.vegaReleaseTag],
+    ['desc', 'desc']
+  );
+
 export const ProposalsList = ({
   proposals,
   protocolUpgradeProposals,
@@ -37,35 +57,55 @@ export const ProposalsList = ({
 }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
-  const sortedProposals = proposals.reduce(
-    (acc: SortedProposalsProps, proposal) => {
-      if (isFuture(new Date(proposal?.terms.closingDatetime))) {
-        acc.open.push(proposal);
-      } else {
-        acc.closed.push(proposal);
-      }
-      return acc;
-    },
-    {
-      open: [],
-      closed: [],
-    }
-  );
 
-  const sortedProtocolUpgradeProposals = protocolUpgradeProposals.reduce(
-    (acc: SortedProtocolUpgradeProposalsProps, proposal) => {
-      if (Number(proposal?.upgradeBlockHeight) > Number(lastBlockHeight)) {
-        acc.open.push(proposal);
-      } else {
-        acc.closed.push(proposal);
+  const sortedProposals: SortedProposalsProps = useMemo(() => {
+    const initialSorting = proposals.reduce(
+      (acc: SortedProposalsProps, proposal) => {
+        if (isFuture(new Date(proposal?.terms.closingDatetime))) {
+          acc.open.push(proposal);
+        } else {
+          acc.closed.push(proposal);
+        }
+        return acc;
+      },
+      {
+        open: [],
+        closed: [],
       }
-      return acc;
-    },
-    {
-      open: [],
-      closed: [],
-    }
-  );
+    );
+    return {
+      open:
+        initialSorting.open.length > 0
+          ? orderByDate(initialSorting.open as ProposalFieldsFragment[])
+          : [],
+      closed:
+        initialSorting.closed.length > 0
+          ? (initialSorting.closed as ProposalFieldsFragment[]).reverse()
+          : [],
+    };
+  }, [proposals]);
+
+  const sortedProtocolUpgradeProposals: SortedProtocolUpgradeProposalsProps =
+    useMemo(() => {
+      const initialSorting = protocolUpgradeProposals.reduce(
+        (acc: SortedProtocolUpgradeProposalsProps, proposal) => {
+          if (Number(proposal?.upgradeBlockHeight) > Number(lastBlockHeight)) {
+            acc.open.push(proposal);
+          } else {
+            acc.closed.push(proposal);
+          }
+          return acc;
+        },
+        {
+          open: [],
+          closed: [],
+        }
+      );
+      return {
+        open: orderByUpgradeBlockHeight(initialSorting.open),
+        closed: orderByUpgradeBlockHeight(initialSorting.closed).reverse(),
+      };
+    }, [protocolUpgradeProposals, lastBlockHeight]);
 
   const filterPredicate = (
     p: ProposalFieldsFragment | ProposalQuery['proposal']

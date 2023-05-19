@@ -6,61 +6,32 @@ import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
 import { useProposalsQuery } from './__generated__/Proposals';
 import { getNodes } from '@vegaprotocol/utils';
-import flow from 'lodash/flow';
 import {
   ProposalState,
   ProtocolUpgradeProposalStatus,
 } from '@vegaprotocol/types';
 import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
 import type { ProposalFieldsFragment } from './__generated__/Proposals';
-import orderBy from 'lodash/orderBy';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 
-const orderByDate = (arr: ProposalFieldsFragment[]) =>
-  orderBy(
-    arr,
-    [
-      (p) => new Date(p?.terms?.closingDatetime).getTime(),
-      (p) => new Date(p?.datetime).getTime(),
-    ],
-    ['asc', 'asc']
+export function getNotRejectedProposals(
+  data?: NodeConnection<NodeEdge<ProposalFieldsFragment>> | null
+): ProposalFieldsFragment[] {
+  return getNodes<ProposalFieldsFragment>(data, (p) =>
+    p ? p.state !== ProposalState.STATE_REJECTED : false
   );
-
-const orderByUpgradeBlockHeight = (
-  arr: ProtocolUpgradeProposalFieldsFragment[]
-) =>
-  orderBy(
-    arr,
-    [(p) => p?.upgradeBlockHeight, (p) => p.vegaReleaseTag],
-    ['desc', 'desc']
-  );
-
-export function getNotRejectedProposals<T extends ProposalFieldsFragment>(
-  data?: NodeConnection<NodeEdge<T>> | null
-): T[] {
-  return flow([
-    (data) =>
-      getNodes<ProposalFieldsFragment>(data, (p) =>
-        p ? p.state !== ProposalState.STATE_REJECTED : false
-      ),
-    orderByDate,
-  ])(data);
 }
 
-export function getNotRejectedProtocolUpgradeProposals<
-  T extends ProtocolUpgradeProposalFieldsFragment
->(data?: NodeConnection<NodeEdge<T>> | null): T[] {
-  return flow([
-    (data) =>
-      getNodes<ProtocolUpgradeProposalFieldsFragment>(data, (p) =>
-        p
-          ? p.status !==
-            ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED
-          : false
-      ),
-    orderByUpgradeBlockHeight,
-  ])(data);
+export function getNotRejectedProtocolUpgradeProposals(
+  data?: NodeConnection<NodeEdge<ProtocolUpgradeProposalFieldsFragment>> | null
+): ProtocolUpgradeProposalFieldsFragment[] {
+  return getNodes<ProtocolUpgradeProposalFieldsFragment>(data, (p) =>
+    p
+      ? p.status !==
+        ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED
+      : false
+  );
 }
 
 export const ProposalsContainer = () => {
@@ -82,17 +53,14 @@ export const ProposalsContainer = () => {
   });
 
   const proposals = useMemo(
-    () =>
-      getNotRejectedProposals<ProposalFieldsFragment>(
-        data?.proposalsConnection
-      ),
+    () => getNotRejectedProposals(data?.proposalsConnection),
     [data]
   );
 
   const protocolUpgradeProposals = useMemo(
     () =>
       protocolUpgradesData
-        ? getNotRejectedProtocolUpgradeProposals<ProtocolUpgradeProposalFieldsFragment>(
+        ? getNotRejectedProtocolUpgradeProposals(
             protocolUpgradesData.protocolUpgradeProposals
           )
         : [],
