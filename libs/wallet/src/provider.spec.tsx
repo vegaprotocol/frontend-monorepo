@@ -151,7 +151,15 @@ describe('VegaWalletProvider', () => {
     jest
       .spyOn(Environment, 'useEnvironment')
       .mockReturnValue({ VEGA_ENV: 'MAINNET' });
-    jest.spyOn(ReactHelpers, 'useLocalStorage').mockImplementation(() => ['']);
+    jest.spyOn(ReactHelpers, 'useLocalStorage').mockImplementation(() => [
+      '',
+      () => {
+        /**/
+      },
+      () => {
+        /**/
+      },
+    ]);
     jest
       .spyOn(viewConnector, 'connect')
       .mockImplementation(() => Promise.resolve(mockPubKeys));
