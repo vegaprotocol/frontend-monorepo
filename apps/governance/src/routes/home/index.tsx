@@ -209,7 +209,10 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     [proposalsData]
   );
 
-  const sortedProposals = useMemo(() => orderByDate(proposals), [proposals]);
+  const sortedProposals = useMemo(
+    () => orderByDate(proposals).reverse(),
+    [proposals]
+  );
 
   const protocolUpgradeProposals = useMemo(
     () =>
