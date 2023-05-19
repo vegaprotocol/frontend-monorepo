@@ -224,6 +224,10 @@ const redirects = [
     path: '/vesting',
     element: <Navigate to={Routes.REDEEM} replace />,
   },
+  {
+    path: Routes.PROTOCOL_UPGRADES,
+    element: <Navigate to={Routes.PROPOSALS} replace />,
+  },
 ];
 
 const routerConfig = [
@@ -264,12 +268,12 @@ const routerConfig = [
       },
       { path: 'proposals', element: <LazyProposalsList /> },
       { path: ':proposalId', element: <LazyProposal /> },
-      {
-        path: 'protocol-upgrade/:proposalReleaseTag',
-        element: <LazyProtocolUpgradeProposal />,
-      },
       { path: 'rejected', element: <LazyRejectedProposalsList /> },
     ],
+  },
+  {
+    path: `${Routes.PROTOCOL_UPGRADES}/:proposalReleaseTag`,
+    element: <LazyProtocolUpgradeProposal />,
   },
   {
     path: Routes.VALIDATORS,
