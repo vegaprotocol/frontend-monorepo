@@ -3,11 +3,13 @@ import { MockedProvider } from '@apollo/react-testing';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { RadioGroup } from '@vegaprotocol/ui-toolkit';
 import type {
-  BlockTimeSubscription,
-  StatisticsQuery,
-} from '../../utils/__generated__/Node';
-import { BlockTimeDocument } from '../../utils/__generated__/Node';
-import { StatisticsDocument } from '../../utils/__generated__/Node';
+  NodeCheckTimeUpdateSubscription,
+  NodeCheckQuery,
+} from '../../utils/__generated__/NodeCheck';
+import {
+  NodeCheckDocument,
+  NodeCheckTimeUpdateDocument,
+} from '../../utils/__generated__/NodeCheck';
 import type { RowDataProps } from './row-data';
 import { POLL_INTERVAL } from './row-data';
 import { BLOCK_THRESHOLD, RowData } from './row-data';
@@ -19,9 +21,9 @@ jest.mock('@vegaprotocol/apollo-client', () => ({
   useHeaderStore: jest.fn().mockReturnValue({}),
 }));
 
-const statsQueryMock: MockedResponse<StatisticsQuery> = {
+const statsQueryMock: MockedResponse<NodeCheckQuery> = {
   request: {
-    query: StatisticsDocument,
+    query: NodeCheckDocument,
   },
   result: {
     data: {
@@ -34,9 +36,9 @@ const statsQueryMock: MockedResponse<StatisticsQuery> = {
   },
 };
 
-const subMock: MockedResponse<BlockTimeSubscription> = {
+const subMock: MockedResponse<NodeCheckTimeUpdateSubscription> = {
   request: {
-    query: BlockTimeDocument,
+    query: NodeCheckTimeUpdateDocument,
   },
   result: {
     data: {
@@ -71,8 +73,8 @@ const mockHeaders = (
 
 const renderComponent = (
   props: RowDataProps,
-  queryMock: MockedResponse<StatisticsQuery>,
-  subMock: MockedResponse<BlockTimeSubscription>
+  queryMock: MockedResponse<NodeCheckQuery>,
+  subMock: MockedResponse<NodeCheckTimeUpdateSubscription>
 ) => {
   return (
     <MockedProvider mocks={[queryMock, subMock, subMock, subMock]}>
@@ -127,16 +129,16 @@ describe('RowData', () => {
   it('radio button still enabled if query fails', async () => {
     mockHeaders(props.url, {});
 
-    const failedQueryMock: MockedResponse<StatisticsQuery> = {
+    const failedQueryMock: MockedResponse<NodeCheckQuery> = {
       request: {
-        query: StatisticsDocument,
+        query: NodeCheckDocument,
       },
       error: new Error('failed'),
     };
 
-    const failedSubMock: MockedResponse<BlockTimeSubscription> = {
+    const failedSubMock: MockedResponse<NodeCheckTimeUpdateSubscription> = {
       request: {
-        query: BlockTimeDocument,
+        query: NodeCheckTimeUpdateDocument,
       },
       error: new Error('failed'),
     };
@@ -244,10 +246,10 @@ describe('RowData', () => {
     jest.useFakeTimers();
     const createStatsQueryMock = (
       blockHeight: string
-    ): MockedResponse<StatisticsQuery> => {
+    ): MockedResponse<NodeCheckQuery> => {
       return {
         request: {
-          query: StatisticsDocument,
+          query: NodeCheckDocument,
         },
         result: {
           data: {
@@ -261,10 +263,10 @@ describe('RowData', () => {
       };
     };
 
-    const createFailedStatsQueryMock = (): MockedResponse<StatisticsQuery> => {
+    const createFailedStatsQueryMock = (): MockedResponse<NodeCheckQuery> => {
       return {
         request: {
-          query: StatisticsDocument,
+          query: NodeCheckDocument,
         },
         result: {
           data: undefined,

@@ -2,8 +2,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { useNodeHealth } from './use-node-health';
 import type { MockedResponse } from '@apollo/react-testing';
 import { MockedProvider } from '@apollo/react-testing';
-import type { StatisticsQuery } from '../utils/__generated__/Node';
-import { StatisticsDocument } from '../utils/__generated__/Node';
+import type { NodeCheckQuery } from '../utils/__generated__/NodeCheck';
+import { NodeCheckDocument } from '../utils/__generated__/NodeCheck';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 
@@ -16,10 +16,10 @@ jest.mock('@vegaprotocol/apollo-client');
 
 const createStatsMock = (
   blockHeight: number
-): MockedResponse<StatisticsQuery> => {
+): MockedResponse<NodeCheckQuery> => {
   return {
     request: {
-      query: StatisticsDocument,
+      query: NodeCheckDocument,
     },
     result: {
       data: {
@@ -34,7 +34,7 @@ const createStatsMock = (
 };
 
 function setup(
-  mock: MockedResponse<StatisticsQuery>,
+  mock: MockedResponse<NodeCheckQuery>,
   headers:
     | {
         blockHeight: number;
@@ -93,9 +93,9 @@ describe('useNodeHealth', () => {
   );
 
   it('block diff is null if query fails indicating non operational', async () => {
-    const failedQuery: MockedResponse<StatisticsQuery> = {
+    const failedQuery: MockedResponse<NodeCheckQuery> = {
       request: {
-        query: StatisticsDocument,
+        query: NodeCheckDocument,
       },
       result: {
         // @ts-ignore failed query with no result
