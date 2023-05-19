@@ -133,19 +133,11 @@ const generateUpdateMarketProposal = (
             dataSourceSpecForSettlementData: {
               sourceType: {
                 __typename: 'DataSourceDefinitionInternal',
-                sourceType: {
-                  __typename: 'DataSourceSpecConfigurationTime',
-                  conditions: [],
-                },
               },
             },
             dataSourceSpecForTradingTermination: {
               sourceType: {
                 __typename: 'DataSourceDefinitionInternal',
-                sourceType: {
-                  __typename: 'DataSourceSpecConfigurationTime',
-                  conditions: [],
-                },
               },
             },
             __typename:

@@ -105,12 +105,10 @@ export const MarketInfoAccordion = ({
         content: <InsurancePoolInfoPanel market={market} account={a} />,
       })),
   ];
-  const settlementData =
-    market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
-      .data;
-  const terminationData =
-    market.tradableInstrument.instrument.product
-      .dataSourceSpecForTradingTermination.data;
+  const settlementData = market.tradableInstrument.instrument.product
+    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
+  const terminationData = market.tradableInstrument.instrument.product
+    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {

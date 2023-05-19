@@ -82,20 +82,12 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
             __typename: 'DataSourceDefinition',
             sourceType: {
               __typename: 'DataSourceDefinitionInternal',
-              sourceType: {
-                __typename: 'DataSourceSpecConfigurationTime',
-                conditions: [],
-              },
             },
           },
           dataSourceSpecForTradingTermination: {
             __typename: 'DataSourceDefinition',
             sourceType: {
               __typename: 'DataSourceDefinitionInternal',
-              sourceType: {
-                __typename: 'DataSourceSpecConfigurationTime',
-                conditions: [],
-              },
             },
           },
         },

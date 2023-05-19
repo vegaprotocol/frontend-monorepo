@@ -37,7 +37,7 @@ export const useColumnDefs = () => {
         colId: 'market',
         headerName: t('Market'),
         field: 'terms.change.instrument.code',
-        width: 150,
+        minWidth: 150,
         cellStyle: { lineHeight: '14px' },
         cellRenderer: ({
           data,
