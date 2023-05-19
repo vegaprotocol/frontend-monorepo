@@ -48,11 +48,13 @@ export const Footer = () => {
           </Link>
         </div>
 
-        <div className="flex pl-2 content-center">
-          <ExternalLink href={ENV.addresses.feedback}>
-            {showFullFeedbackLabel ? t('Share your feedback') : t('Feedback')}
-          </ExternalLink>
-        </div>
+        {ENV.addresses.feedback ? (
+          <div className="flex pl-2 content-center">
+            <ExternalLink href={ENV.addresses.feedback}>
+              {showFullFeedbackLabel ? t('Share your feedback') : t('Feedback')}
+            </ExternalLink>
+          </div>
+        ) : null}
       </div>
     </footer>
   );
@@ -62,9 +64,5 @@ const NodeUrl = ({ url }: { url: string }) => {
   // get base url from api url, api sub domain
   const urlObj = new URL(url);
   const nodeUrl = urlObj.origin.replace(/^[^.]+\./g, '');
-  return (
-    <Link href={'https://' + nodeUrl} target="_blank">
-      {nodeUrl}
-    </Link>
-  );
+  return <span className="cursor-default">{nodeUrl}</span>;
 };
