@@ -64,26 +64,44 @@ export const createMarketFragment = (
           },
           dataSourceSpecForTradingTermination: {
             __typename: 'DataSourceSpec',
-            id: 'oracleId',
+            id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
             data: {
               __typename: 'DataSourceDefinition',
               sourceType: {
                 __typename: 'DataSourceDefinitionExternal',
                 sourceType: {
                   __typename: 'DataSourceSpecConfiguration',
+                  signers: [
+                    {
+                      __typename: 'Signer',
+                      signer: {
+                        __typename: 'PubKey',
+                        key: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                      },
+                    },
+                  ],
                 },
               },
             },
           },
           dataSourceSpecForSettlementData: {
             __typename: 'DataSourceSpec',
-            id: 'oracleId',
+            id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
             data: {
               __typename: 'DataSourceDefinition',
               sourceType: {
                 __typename: 'DataSourceDefinitionExternal',
                 sourceType: {
                   __typename: 'DataSourceSpecConfiguration',
+                  signers: [
+                    {
+                      __typename: 'Signer',
+                      signer: {
+                        __typename: 'PubKey',
+                        key: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                      },
+                    },
+                  ],
                 },
               },
             },

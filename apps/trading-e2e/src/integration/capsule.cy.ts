@@ -194,6 +194,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
   });
 
   it('shows node health', function () {
+    // 0006-NETW-010
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
     cy.getByTestId('node-health')

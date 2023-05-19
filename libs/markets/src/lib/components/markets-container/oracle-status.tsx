@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
+import { Icon } from '@vegaprotocol/ui-toolkit';
+import type { IconName } from '@blueprintjs/icons';
 import { getMatchingOracleProvider, useOracleProofs } from '../../hooks';
 import type { Market } from '../../markets-provider';
+import { getVerifiedStatusIcon } from '../oracle-basic-profile';
 
 export const OracleStatus = ({
   dataSourceSpecForSettlementData,
@@ -23,22 +25,15 @@ export const OracleStatus = ({
         dataSourceSpecForTradingTermination.data,
         providers
       );
-      if (
-        (settlementDataProvider &&
-          settlementDataProvider.oracle.status !== 'GOOD') ||
-        (tradingTerminationDataProvider &&
-          tradingTerminationDataProvider.oracle.status !== 'GOOD')
-      ) {
-        return (
-          <span
-            className="ml-1"
-            role="img"
-            aria-label={t('oracle status not healthy')}
-          >
-            ⛔
-          </span>
-        );
+      let maliciousOracleProvider = null;
+      if (settlementDataProvider?.oracle.status !== 'GOOD') {
+        maliciousOracleProvider = settlementDataProvider;
+      } else if (tradingTerminationDataProvider?.oracle.status !== 'GOOD') {
+        maliciousOracleProvider = tradingTerminationDataProvider;
       }
+      if (!maliciousOracleProvider) return null;
+      const { icon } = getVerifiedStatusIcon(maliciousOracleProvider);
+      return <Icon size={3} name={icon as IconName} className="ml-1" />;
     }
     return null;
   }, [

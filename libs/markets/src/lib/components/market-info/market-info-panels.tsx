@@ -5,7 +5,7 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
 import { totalFeesPercentage } from '../../market-utils';
-import { Dialog, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -25,12 +25,9 @@ import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '../../oracle-schema';
-import {
-  OracleBasicProfile,
-  OracleProfileTitle,
-  OracleFullProfile,
-} from '../../components';
-import { useOracleProofs, useOracleMarkets } from '../../hooks';
+import { OracleBasicProfile } from '../../components/oracle-basic-profile';
+import { useOracleProofs } from '../../hooks';
+import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 type PanelProps = Pick<
@@ -610,34 +607,6 @@ const NoOracleProof = ({
         type === 'settlementData' ? 'settlement data' : 'termination'
       )}
     </p>
-  );
-};
-
-export const OracleDialog = ({
-  provider,
-  dataSourceSpecId,
-  open,
-  onChange,
-}: {
-  dataSourceSpecId: string;
-  provider: Provider;
-  open: boolean;
-  onChange?: (isOpen: boolean) => void;
-}) => {
-  const oracleMarkets = useOracleMarkets(provider);
-  return (
-    <Dialog
-      title={<OracleProfileTitle provider={provider} />}
-      aria-labelledby="oracle-proof-dialog"
-      open={open}
-      onChange={onChange}
-    >
-      <OracleFullProfile
-        provider={provider}
-        dataSourceSpecId={dataSourceSpecId}
-        markets={oracleMarkets}
-      />
-    </Dialog>
   );
 };
 
