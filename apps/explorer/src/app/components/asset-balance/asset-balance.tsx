@@ -28,6 +28,7 @@ const AssetBalance = ({
 
   return (
     <div className="inline-block">
+      <div className="ignore"></div>
       <span>{label}</span>{' '}
       {showAssetLink && asset?.id ? (
         <AssetLink showAssetSymbol={showAssetSymbol} assetId={assetId} />
