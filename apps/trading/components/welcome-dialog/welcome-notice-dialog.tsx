@@ -57,16 +57,14 @@ export const WelcomeNoticeDialog = () => {
             {t('Read about the mainnet launch')}
           </ExternalLink>
         </li>
-        {isMainnet && (
-          <li>
-            <TelemetryApproval
-              helpText={t(
-                'Help identify bugs and improve the service by sharing anonymous usage data. You can change this in your settings at any time.'
-              )}
-            />
-          </li>
-        )}
       </ul>
+      {isMainnet && (
+        <TelemetryApproval
+          helpText={t(
+            'Help identify bugs and improve the service by sharing anonymous usage data. You can change this in your settings at any time.'
+          )}
+        />
+      )}
       <ProposedMarkets />
     </>
   );
