@@ -28,7 +28,6 @@ import {
   ProtocolUpgradeCountdown,
   ProtocolUpgradeCountdownMode,
 } from '@vegaprotocol/proposals';
-import { useCallback } from 'react';
 
 export const Navbar = ({
   theme = 'system',
