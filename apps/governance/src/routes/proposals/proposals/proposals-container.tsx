@@ -17,7 +17,7 @@ import orderBy from 'lodash/orderBy';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 
-const orderByDate = (arr: ProposalFieldsFragment[]) =>
+export const orderByDateAsc = (arr: ProposalFieldsFragment[]) =>
   orderBy(
     arr,
     [
@@ -25,6 +25,16 @@ const orderByDate = (arr: ProposalFieldsFragment[]) =>
       (p) => new Date(p?.datetime).getTime(),
     ],
     ['asc', 'asc']
+  );
+
+export const orderByDateDesc = (arr: ProposalFieldsFragment[]) =>
+  orderBy(
+    arr,
+    [
+      (p) => new Date(p?.terms?.closingDatetime).getTime(),
+      (p) => new Date(p?.datetime).getTime(),
+    ],
+    ['desc', 'desc']
   );
 
 const orderByUpgradeBlockHeight = (
@@ -39,13 +49,9 @@ const orderByUpgradeBlockHeight = (
 export function getNotRejectedProposals<T extends ProposalFieldsFragment>(
   data?: NodeConnection<NodeEdge<T>> | null
 ): T[] {
-  return flow([
-    (data) =>
-      getNodes<ProposalFieldsFragment>(data, (p) =>
-        p ? p.state !== ProposalState.STATE_REJECTED : false
-      ),
-    orderByDate,
-  ])(data);
+  return getNodes(data, (p) =>
+    p ? p.state !== ProposalState.STATE_REJECTED : false
+  );
 }
 
 export function getNotRejectedProtocolUpgradeProposals<

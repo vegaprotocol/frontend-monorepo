@@ -13,7 +13,7 @@ export const ProposalContainer = () => {
   const {
     state: { loading: restLoading, error: restError, data: restData },
   } = useFetch(`${ENV.rest}governance?proposalId=${params.proposalId}`);
-  console.log(restLoading, restError, restData);
+
   const { data, loading, error, refetch } = useProposalQuery({
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
@@ -27,7 +27,11 @@ export const ProposalContainer = () => {
   }, [refetch]);
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading || !!restLoading}
+      error={error || restError}
+      data={data}
+    >
       {data?.proposal ? (
         <Proposal proposal={data.proposal} restData={restData} />
       ) : (

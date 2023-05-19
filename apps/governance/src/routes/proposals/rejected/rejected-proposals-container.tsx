@@ -16,11 +16,10 @@ const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
     arr,
     [
-      (p) => new Date(p?.terms?.enactmentDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
-      (p) => new Date(p?.terms?.closingDatetime).getTime(),
+      (p) => new Date(p?.terms?.closingDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
       (p) => p.id,
     ],
-    ['desc', 'desc', 'desc']
+    ['desc', 'desc']
   );
 
 export function getRejectedProposals<T extends ProposalFieldsFragment>(

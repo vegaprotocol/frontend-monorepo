@@ -5,12 +5,12 @@ import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 
 import type { PartialDeep } from 'type-fest';
-import type { ProposalQuery } from '../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
 
 export function generateProposal(
-  override: PartialDeep<ProposalQuery['proposal']> = {}
-): ProposalQuery['proposal'] {
-  const defaultProposal: ProposalQuery['proposal'] = {
+  override: PartialDeep<ProposalFieldsFragment> = {}
+): ProposalFieldsFragment {
+  const defaultProposal: ProposalFieldsFragment = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
     rationale: {
@@ -57,15 +57,16 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<
-    ProposalQuery['proposal'],
-    PartialDeep<ProposalQuery['proposal']>
-  >(defaultProposal, override, (objValue, srcValue) => {
-    if (!isArray(objValue)) {
-      return;
+  return mergeWith<ProposalFieldsFragment, PartialDeep<ProposalFieldsFragment>>(
+    defaultProposal,
+    override,
+    (objValue, srcValue) => {
+      if (!isArray(objValue)) {
+        return;
+      }
+      return srcValue;
     }
-    return srcValue;
-  });
+  );
 }
 
 type Vote = Pick<Schema.Vote, '__typename' | 'value' | 'party' | 'datetime'>;

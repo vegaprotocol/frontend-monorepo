@@ -9,20 +9,23 @@ import Routes from '../../../routes';
 import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { DocsLinks, ExternalLinks } from '@vegaprotocol/environment';
+import {
+  orderByDateAsc,
+  orderByDateDesc,
+} from '../../proposals/proposals-container';
 
 interface ProposalsListProps {
-  proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
+  proposals: Array<ProposalFieldsFragment>;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
   lastBlockHeight?: string;
 }
 
 interface SortedProposalsProps {
-  open: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
-  closed: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
+  open: Array<ProposalFieldsFragment>;
+  closed: Array<ProposalFieldsFragment>;
 }
 
 interface SortedProtocolUpgradeProposalsProps {
@@ -52,6 +55,11 @@ export const ProposalsList = ({
     }
   );
 
+  const orderedProposals = {
+    open: orderByDateAsc(sortedProposals?.open),
+    closed: orderByDateDesc(sortedProposals.closed),
+  };
+
   const sortedProtocolUpgradeProposals = protocolUpgradeProposals.reduce(
     (acc: SortedProtocolUpgradeProposalsProps, proposal) => {
       if (Number(proposal?.upgradeBlockHeight) > Number(lastBlockHeight)) {
@@ -67,9 +75,7 @@ export const ProposalsList = ({
     }
   );
 
-  const filterPredicate = (
-    p: ProposalFieldsFragment | ProposalQuery['proposal']
-  ) =>
+  const filterPredicate = (p: ProposalFieldsFragment) =>
     p?.id?.includes(filterString) ||
     p?.party?.id?.toString().includes(filterString);
 
@@ -111,7 +117,7 @@ export const ProposalsList = ({
       )}
       <section className="-mx-4 p-4 mb-8 bg-vega-dark-100">
         <SubHeading title={t('openProposals')} />
-        {sortedProposals.open.length > 0 ||
+        {orderedProposals.open.length > 0 ||
         sortedProtocolUpgradeProposals.open.length > 0 ? (
           <ul data-testid="open-proposals">
             {sortedProtocolUpgradeProposals.open.map((proposal) => (
@@ -120,7 +126,7 @@ export const ProposalsList = ({
                 proposal={proposal}
               />
             ))}
-            {sortedProposals.open.filter(filterPredicate).map((proposal) => (
+            {orderedProposals.open.filter(filterPredicate).map((proposal) => (
               <ProposalsListItem key={proposal?.id} proposal={proposal} />
             ))}
           </ul>
@@ -132,7 +138,7 @@ export const ProposalsList = ({
       </section>
       <section>
         <SubHeading title={t('closedProposals')} />
-        {sortedProposals.closed.length > 0 ||
+        {orderedProposals.closed.length > 0 ||
         sortedProtocolUpgradeProposals.closed.length > 0 ? (
           <ul data-testid="closed-proposals">
             {sortedProtocolUpgradeProposals.closed.map((proposal) => (
@@ -142,7 +148,7 @@ export const ProposalsList = ({
               />
             ))}
 
-            {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
+            {orderedProposals.closed.filter(filterPredicate).map((proposal) => (
               <ProposalsListItem key={proposal?.id} proposal={proposal} />
             ))}
           </ul>
