@@ -10,7 +10,7 @@ export const RiskMessage = () => {
   return (
     <>
       <div className="bg-vega-light-100 dark:bg-vega-dark-100 p-6 mb-6">
-        <ul className="list-disc ml-4">
+        <ul className="list-[square] ml-4">
           <li>
             {t(
               'You may encounter bugs, loss of functionality or loss of assets using the App.'

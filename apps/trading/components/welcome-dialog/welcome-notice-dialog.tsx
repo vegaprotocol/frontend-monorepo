@@ -21,30 +21,30 @@ export const WelcomeNoticeDialog = () => {
     <>
       <h1
         data-testid="welcome-notice-title"
-        className="mb-6 p-4 text-center text-2xl"
+        className="text-2xl uppercase mb-6 text-center font-alpha calt"
       >
         {t('Welcome to Console')}
       </h1>
-      <p className="leading-6 mb-7">
+      <p className="leading-6 mb-4">
         {t(
           'There are no markets to trade on right now. Trading on Vega is now live, but markets need to pass a governance vote before they can be traded on. In the meantime:'
         )}
       </p>
-      <ul className="list-[square] pl-7">
+      <ul className="list-[square] pl-4 mb-4">
         {isMainnet && (
-          <li>
+          <li className="mb-1">
             <ExternalLink target="_blank" href={consoleFairgroundLink()}>
               {t('Try out Console')}
             </ExternalLink>
             {t(' on Fairground, our Testnet')}
           </li>
         )}
-        <li>
+        <li className="mb-1">
           <ExternalLink target="_blank" href={tokenLink(TOKEN_PROPOSALS)}>
             {t('View and vote for proposed markets')}
           </ExternalLink>
         </li>
-        <li>
+        <li className="mb-1">
           <ExternalLink
             target="_blank"
             href={tokenLink(TOKEN_NEW_MARKET_PROPOSAL)}
@@ -52,7 +52,7 @@ export const WelcomeNoticeDialog = () => {
             {t('Propose a market')}
           </ExternalLink>
         </li>
-        <li>
+        <li className="mb-1">
           <ExternalLink target="_blank" href={ExternalLinks.BLOG}>
             {t('Read about the mainnet launch')}
           </ExternalLink>
