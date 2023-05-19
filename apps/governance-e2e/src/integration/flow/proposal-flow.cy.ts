@@ -3,6 +3,7 @@ import {
   createRawProposal,
   createTenDigitUnixTimeStampForSpecifiedDays,
   enterRawProposalBody,
+  enterUniqueFreeFormProposalBody,
   generateFreeFormProposalTitle,
   getProposalFromTitle,
   getProposalInformationFromTable,

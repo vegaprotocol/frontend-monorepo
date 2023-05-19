@@ -97,46 +97,46 @@ export function submitUniqueRawProposal(proposalFields: {
   });
 }
 
-// export function enterUniqueFreeFormProposalBody(
-//   timestamp: string,
-//   proposalTitle: string
-// ) {
-//   cy.get(newProposalTitle).type(proposalTitle);
-//   cy.get(newProposalDescription).type(
-//     'this is a e2e freeform proposal description'
-//   );
-//   cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-//   cy.getByTestId('proposal-submit').should('be.visible').click();
-// }
+export function enterUniqueFreeFormProposalBody(
+  timestamp: string,
+  proposalTitle: string
+) {
+  cy.get(newProposalTitle).type(proposalTitle);
+  cy.get(newProposalDescription).type(
+    'this is a e2e freeform proposal description'
+  );
+  cy.get(proposalVoteDeadline).clear().click().type(timestamp);
+  cy.getByTestId('proposal-submit').should('be.visible').click();
+}
 
 export function getProposalFromTitle(proposalTitle: string) {
   return cy.contains(proposalTitle).parentsUntil(proposalListItem).last();
 }
 
-// export function getSubmittedProposalFromProposalList(proposalTitle: string) {
-//   getProposalIdFromList(proposalTitle);
-//   cy.get('@proposalIdText').then((proposalId) => {
-//     cy.get(`#${proposalId}`).as('submittedProposal');
-//   });
-//   return cy.get('@submittedProposal');
-// }
+export function getSubmittedProposalFromProposalList(proposalTitle: string) {
+  getProposalIdFromList(proposalTitle);
+  cy.get('@proposalIdText').then((proposalId) => {
+    cy.get(`#${proposalId}`).as('submittedProposal');
+  });
+  return cy.get('@submittedProposal');
+}
 
-// export function getProposalIdFromList(proposalTitle: string) {
-//   cy.contains(proposalTitle)
-//     .parentsUntil(proposalListItem)
-//     .last()
-//     .within(() => {
-//       cy.get(proposalDetails)
-//         .invoke('text')
-//         .then((proposalIdText) => {
-//           let newProposalId;
-//           if (proposalIdText.includes('Freeform proposal')) {
-//             newProposalId = proposalIdText.replace('Freeform proposal: ', '');
-//           }
-//           cy.wrap(newProposalId).as('proposalIdText');
-//         });
-//     });
-// }
+export function getProposalIdFromList(proposalTitle: string) {
+  cy.contains(proposalTitle)
+    .parentsUntil(proposalListItem)
+    .last()
+    .within(() => {
+      cy.get(proposalDetails)
+        .invoke('text')
+        .then((proposalIdText) => {
+          let newProposalId;
+          if (proposalIdText.includes('Freeform proposal')) {
+            newProposalId = proposalIdText.replace('Freeform proposal: ', '');
+          }
+          cy.wrap(newProposalId).as('proposalIdText');
+        });
+    });
+}
 
 export function getProposalInformationFromTable(heading: string) {
   return cy.get(proposalInformationTableRows).contains(heading).siblings();
@@ -213,14 +213,14 @@ export function generateFreeFormProposalTitle() {
   return randomNum + ': Freeform e2e proposal';
 }
 
-// export function createFreeformProposal(proposalTitle: string) {
-//   goToMakeNewProposal(governanceProposalType.FREEFORM);
-//   enterUniqueFreeFormProposalBody('50', proposalTitle);
-//   waitForProposalSubmitted();
-//   waitForProposalSync();
-//   cy.getByTestId('proposal-title').invoke('text').as('proposalTitle');
-//   navigateTo(navigation.proposals);
-// }
+export function createFreeformProposal(proposalTitle: string) {
+  goToMakeNewProposal(governanceProposalType.FREEFORM);
+  enterUniqueFreeFormProposalBody('50', proposalTitle);
+  waitForProposalSubmitted();
+  waitForProposalSync();
+  cy.getByTestId('proposal-title').invoke('text').as('proposalTitle');
+  navigateTo(navigation.proposals);
+}
 
 export enum governanceProposalType {
   NETWORK_PARAMETER = 'Network parameter',
