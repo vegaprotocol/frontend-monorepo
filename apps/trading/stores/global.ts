@@ -6,8 +6,6 @@ interface GlobalStore {
   marketId: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
   shouldDisplayWelcomeDialog: boolean;
-  shouldDisplayDisclaimerDialog: boolean;
-  shouldDisplayMainnetRiskDialog: boolean;
 }
 
 interface PageTitleStore {
@@ -18,8 +16,6 @@ interface PageTitleStore {
 export const useGlobalStore = create<GlobalStore>()((set) => ({
   marketId: LocalStorage.getItem('marketId') || null,
   shouldDisplayWelcomeDialog: false,
-  shouldDisplayDisclaimerDialog: false,
-  shouldDisplayMainnetRiskDialog: false,
   update: (newState) => {
     set(
       produce((state: GlobalStore) => {
