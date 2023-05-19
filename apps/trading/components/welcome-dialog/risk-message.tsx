@@ -1,18 +1,22 @@
 import { t } from '@vegaprotocol/i18n';
-import { ExternalLink, Icon } from '@vegaprotocol/ui-toolkit';
+import {
+  ExternalLink,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { Links, Routes } from '../../pages/client-router';
 
 export const RiskMessage = () => {
   return (
     <>
-      <div className="bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 p-6 mb-6">
-        <ul className="list-disc ml-6 text-lg">
-          <li>
+      <div className="bg-vega-light-100 dark:bg-vega-dark-100 p-6 mb-6">
+        <ul className="list-disc ml-4">
+          <li className="mb-1">
             {t(
               'No party hosts or operates this IFPS website or offers any financial advice.'
             )}
           </li>
-          <li>
+          <li className="mb-1">
             {t(
               'You may encounter bugs, loss of functionality or loss of assets.'
             )}
@@ -30,12 +34,11 @@ export const RiskMessage = () => {
           href={`/#/${Links[Routes.DISCLAIMER]()}`}
           className="underline"
         >
-          <span className="flex items-center gap-2">
+          <span className="flex items-center gap-1">
             <span>{t('Vega Console Disclaimer')}</span>
-            <Icon name="arrow-top-right" size={3} />
+            <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
           </span>
         </ExternalLink>
-        .
       </p>
     </>
   );
