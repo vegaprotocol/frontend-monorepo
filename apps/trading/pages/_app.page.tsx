@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   useEagerConnect as useVegaEagerConnect,
   useVegaTransactionManager,

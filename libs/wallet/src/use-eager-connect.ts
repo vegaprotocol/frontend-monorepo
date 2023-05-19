@@ -42,7 +42,7 @@ export function useEagerConnect(Connectors: {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, Connectors]);
+  }, [connect, Connectors, acknowledgeNeeded]);
 
   return connecting;
 }

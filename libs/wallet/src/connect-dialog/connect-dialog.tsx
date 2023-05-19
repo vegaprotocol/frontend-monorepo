@@ -119,7 +119,6 @@ export const VegaConnectDialog = ({
         connectors={connectors}
         closeDialog={closeVegaWalletDialog}
         appChainId={data.statistics.chainId}
-        /*appChainId="vega-fairground-202305051805"*/
         riskMessage={riskMessage}
       />
     );
