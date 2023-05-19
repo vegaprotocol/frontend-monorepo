@@ -133,11 +133,9 @@ export const OrderListManager = ({
 
   const cancelAll = useCallback(() => {
     create({
-      orderCancellation: {
-        marketId,
-      },
+      orderCancellation: {},
     });
-  }, [create, marketId]);
+  }, [create]);
 
   return (
     <>
