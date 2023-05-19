@@ -13,16 +13,6 @@ fragment NewMarketFields on NewMarket {
       quoteName
       dataSourceSpecForSettlementData {
         sourceType {
-          ... on DataSourceDefinitionInternal {
-            sourceType {
-              ... on DataSourceSpecConfigurationTime {
-                conditions {
-                  operator
-                  value
-                }
-              }
-            }
-          }
           ... on DataSourceDefinitionExternal {
             sourceType {
               ... on DataSourceSpecConfiguration {
@@ -53,16 +43,6 @@ fragment NewMarketFields on NewMarket {
       }
       dataSourceSpecForTradingTermination {
         sourceType {
-          ... on DataSourceDefinitionInternal {
-            sourceType {
-              ... on DataSourceSpecConfigurationTime {
-                conditions {
-                  operator
-                  value
-                }
-              }
-            }
-          }
           ... on DataSourceDefinitionExternal {
             sourceType {
               ... on DataSourceSpecConfiguration {
@@ -145,16 +125,6 @@ fragment UpdateMarketFields on UpdateMarket {
         quoteName
         dataSourceSpecForSettlementData {
           sourceType {
-            ... on DataSourceDefinitionInternal {
-              sourceType {
-                ... on DataSourceSpecConfigurationTime {
-                  conditions {
-                    operator
-                    value
-                  }
-                }
-              }
-            }
             ... on DataSourceDefinitionExternal {
               sourceType {
                 ... on DataSourceSpecConfiguration {
@@ -185,16 +155,6 @@ fragment UpdateMarketFields on UpdateMarket {
         }
         dataSourceSpecForTradingTermination {
           sourceType {
-            ... on DataSourceDefinitionInternal {
-              sourceType {
-                ... on DataSourceSpecConfigurationTime {
-                  conditions {
-                    operator
-                    value
-                  }
-                }
-              }
-            }
             ... on DataSourceDefinitionExternal {
               sourceType {
                 ... on DataSourceSpecConfiguration {
