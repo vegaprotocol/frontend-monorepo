@@ -8,7 +8,6 @@ import { activeMarketsProvider } from '@vegaprotocol/markets';
 import * as constants from '../constants';
 import { RiskNoticeDialog } from './risk-notice-dialog';
 import { WelcomeNoticeDialog } from './welcome-notice-dialog';
-import { WelcomeLandingDialog } from './welcome-landing-dialog';
 import { useGlobalStore } from '../../stores';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Networks } from '@vegaprotocol/environment';
@@ -51,9 +50,6 @@ export const WelcomeDialog = () => {
     size = 'medium';
   } else if (isWelcomeDialogNeeded && data?.length === 0) {
     dialogContent = <WelcomeNoticeDialog />;
-    onClose = onCloseDialog;
-  } else if (isWelcomeDialogNeeded && (data?.length || 0) > 0) {
-    dialogContent = <WelcomeLandingDialog onClose={onCloseDialog} />;
     onClose = onCloseDialog;
   } else {
     dialogContent = null as React.ReactNode;
