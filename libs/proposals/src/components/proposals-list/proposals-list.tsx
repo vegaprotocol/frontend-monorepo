@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
-import { proposalsDataProvider } from '../../lib/proposals-data-provider';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
+import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
@@ -21,13 +21,15 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
 export const ProposalsList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [dataCount, setDataCount] = useState(0);
-  const { data, loading, error, reload } = useDataProvider({
-    dataProvider: proposalsDataProvider,
+  const { data, loading, error, refetch } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
     },
+    errorPolicy: 'all', // currently there are some proposals failing due to proposals existing without settlement asset ids
   });
-  const filteredData = getNewMarketProposals(data || []);
+  const filteredData = getNewMarketProposals(
+    removePaginationWrapper(data?.proposalsConnection?.edges)
+  );
   const { columnDefs, defaultColDef } = useColumnDefs();
   useEffect(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
@@ -36,11 +38,10 @@ export const ProposalsList = () => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <AgGrid
         ref={gridRef}
         className="w-full h-full"
-        domLayout="autoHeight"
         columnDefs={columnDefs}
         rowData={filteredData}
         defaultColDef={defaultColDef}
@@ -48,6 +49,8 @@ export const ProposalsList = () => {
         suppressNoRowsOverlay
         onFilterChanged={onFilterChanged}
         storeKey="proposedMarkets"
+        getRowId={({ data }) => data.id}
+        style={{ width: '100%', height: '100%' }}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
@@ -56,7 +59,7 @@ export const ProposalsList = () => {
           data={filteredData}
           noDataMessage={t('No markets')}
           noDataCondition={() => !dataCount}
-          reload={reload}
+          reload={refetch}
         />
       </div>
     </div>

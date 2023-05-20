@@ -5,57 +5,74 @@ import {
   waitFor,
   getAllByRole,
 } from '@testing-library/react';
+import merge from 'lodash/merge';
+import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { ProposalsList } from './proposals-list';
-import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider';
 import * as Types from '@vegaprotocol/types';
-
-const votesMock = {
-  yes: {
-    totalTokens: '5000',
-  },
-  no: {
-    totalTokens: '2000',
-  },
-};
-let marketsProposalMock: ProposalListFieldsFragment[] | null = [
-  {
-    id: 'id-1',
-    state: Types.ProposalState.STATE_OPEN,
-    votes: { ...votesMock },
-  },
-  {
-    id: 'id-2',
-    state: Types.ProposalState.STATE_PASSED,
-    votes: { ...votesMock },
-  },
-  {
-    id: 'id-3',
-    state: Types.ProposalState.STATE_WAITING_FOR_NODE_VOTE,
-    votes: { ...votesMock },
-  },
-] as ProposalListFieldsFragment[];
-
-const useDataProvider = () => {
-  return {
-    data: marketsProposalMock,
-    loading: false,
-    error: false,
-  };
-};
-jest.mock('@vegaprotocol/data-provider', () => ({
-  ...jest.requireActual('@vegaprotocol/data-provider'),
-  useDataProvider: jest.fn(() => useDataProvider()),
-}));
+import { createProposalListFieldsFragment } from '../../lib/proposals-data-provider/proposals.mock';
+import type { ProposalsListQuery } from '../../lib';
+import { ProposalsListDocument } from '../../lib';
+import type { PartialDeep } from 'type-fest';
 
 describe('ProposalsList', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  const createProposalsMock = (override?: PartialDeep<ProposalsListQuery>) => {
+    const defaultProposalEdges = [
+      {
+        __typename: 'ProposalEdge' as const,
+        node: createProposalListFieldsFragment({
+          id: 'id-1',
+          state: Types.ProposalState.STATE_OPEN,
+        }),
+      },
+      {
+        __typename: 'ProposalEdge' as const,
+        node: createProposalListFieldsFragment({
+          id: 'id-2',
+          state: Types.ProposalState.STATE_PASSED,
+        }),
+      },
+      {
+        __typename: 'ProposalEdge' as const,
+        node: createProposalListFieldsFragment({
+          id: 'id-3',
+          state: Types.ProposalState.STATE_WAITING_FOR_NODE_VOTE,
+        }),
+      },
+    ];
+    const data = merge(
+      {
+        proposalsConnection: {
+          __typename: 'ProposalsConnection' as const,
+          edges: defaultProposalEdges,
+        },
+      },
+      override
+    );
+
+    const mock: MockedResponse<ProposalsListQuery> = {
+      request: {
+        query: ProposalsListDocument,
+        variables: {
+          proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+        },
+      },
+      result: {
+        data,
+      },
+    };
+
+    return mock;
+  };
 
   it('should be properly rendered', async () => {
+    const mock = createProposalsMock();
     await act(() => {
-      render(<ProposalsList />, { wrapper: MockedProvider });
+      render(
+        <MockedProvider mocks={[mock]}>
+          <ProposalsList />
+        </MockedProvider>
+      );
     });
     const container = document.querySelector('.ag-center-cols-container');
     await waitFor(() => {
@@ -65,15 +82,25 @@ describe('ProposalsList', () => {
   });
 
   it('some of states should be filtered out', async () => {
-    marketsProposalMock = [
-      {
-        ...(marketsProposalMock as ProposalListFieldsFragment[])[0],
-        state: Types.ProposalState.STATE_ENACTED,
+    const mock = createProposalsMock({
+      proposalsConnection: {
+        edges: [
+          {
+            __typename: 'ProposalEdge',
+            node: createProposalListFieldsFragment({
+              id: 'id-1',
+              state: Types.ProposalState.STATE_ENACTED,
+            }),
+          },
+        ],
       },
-      ...(marketsProposalMock as ProposalListFieldsFragment[]).slice(1),
-    ];
+    });
     await act(() => {
-      render(<ProposalsList />, { wrapper: MockedProvider });
+      render(
+        <MockedProvider mocks={[mock]}>
+          <ProposalsList />
+        </MockedProvider>
+      );
     });
     const container = document.querySelector('.ag-center-cols-container');
     await waitFor(() => {
@@ -83,9 +110,12 @@ describe('ProposalsList', () => {
   });
 
   it('empty response should causes no data message display', async () => {
-    marketsProposalMock = null;
     await act(() => {
-      render(<ProposalsList />, { wrapper: MockedProvider });
+      render(
+        <MockedProvider>
+          <ProposalsList />
+        </MockedProvider>
+      );
     });
     const container = document.querySelector('.ag-center-cols-container');
     await waitFor(() => {
