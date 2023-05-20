@@ -29,7 +29,7 @@ export const MarketSelectorItem = ({
 }) => {
   const wrapperClasses = classNames(
     'block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4',
-    'min-h-[110px]',
+    'min-h-[120px]',
     {
       'ring-1 ring-vega-light-300 dark:ring-vega-dark-300':
         currentMarketId === market.id,
@@ -85,7 +85,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   const volume =
     vol && vol !== '0'
       ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
-      : '0';
+      : '0.00';
 
   return (
     <>
@@ -106,40 +106,20 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           </p>
         )}
       </div>
-      <div className="flex items-end">
-        <div className="w-3/4">
-          <div
-            className="text-ellipsis whitespace-nowrap overflow-hidden"
-            data-testid="market-item-price"
-            title={`${price} ${instrument.product.settlementAsset.symbol}`}
-          >
-            <span className="text-sm mr-1">{price}</span>
-            <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
-              {instrument.product.settlementAsset.symbol}
-            </span>
-          </div>
-        </div>
-        <div className="w-1/4 text-right">
-          {market.candles && (
-            <PriceChange candles={market.candles.map((c) => c.close)} />
-          )}
-        </div>
-      </div>
-      <div className="flex items-end justify-between">
-        <div className="w-1/2">
-          <div
-            className="text-ellipsis whitespace-nowrap overflow-hidden"
-            data-testid="market-item-price"
-            title={`${volume} ${t('Volume')}`}
-          >
-            <span className="text-sm mr-1">{volume}</span>
-            <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
-              24h vol
-            </span>
-          </div>
-        </div>
+      <DataRow value={volume} label={t('24h vol')} />
+      <DataRow
+        value={price}
+        label={instrument.product.settlementAsset.symbol}
+      />
+      <div className="relative">
+        {market.candles && (
+          <PriceChange candles={market.candles.map((c) => c.close)} />
+        )}
 
-        <div className="w-1/2 max-w-[120px]">
+        <div
+          // absolute so height is not larger than price change value
+          className="absolute right-0 bottom-0  w-[120px]"
+        >
           {market.candles && (
             <Sparkline
               width={120}
@@ -150,6 +130,21 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         </div>
       </div>
     </>
+  );
+};
+
+const DataRow = ({ value, label }: { value: string; label: string }) => {
+  return (
+    <div
+      className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight"
+      data-testid="market-item-price"
+      title={`${value} ${label}`}
+    >
+      <span className="text-sm mr-1">{value}</span>
+      <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
+        {label}
+      </span>
+    </div>
   );
 };
 
