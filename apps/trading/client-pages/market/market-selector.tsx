@@ -255,7 +255,7 @@ const List = ({
     <FixedSizeList
       className="virtualized-list"
       itemCount={data.length}
-      itemSize={130}
+      itemSize={120}
       width={width}
       height={height}
     >
