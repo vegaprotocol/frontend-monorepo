@@ -189,11 +189,11 @@ export const NavigationContent = ({
         className={classNames(
           'navigation-content',
           'absolute z-20 top-12 w-max',
-          'p-2 mt-1',
+          'p-6 mt-1 min-w-[290px]',
           'text-vega-light-300 dark:text-vega-dark-300',
-
           'border rounded border-vega-light-200 dark:border-vega-dark-200',
-          'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
+          'bg-vega-light-100 dark:bg-vega-dark-100',
+          'text-vega-light-300 dark:text-vega-light-300',
           {
             'bg-white dark:bg-black': theme === 'system' || theme === 'yellow',
             'bg-white': theme === 'light',
@@ -348,7 +348,7 @@ export const Navigation = ({
         <div
           className={classNames(
             'navbar',
-            'flex gap-4 h-12 items-center font-alpha text-lg calt',
+            'flex gap-4 h-12 items-center font-alpha text-lg',
             {
               'text-vega-light-300 dark:text-vega-dark-300': theme === 'system',
               'text-vega-light-300': theme === 'light',
