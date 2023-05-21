@@ -192,12 +192,12 @@ export const NavigationContent = ({
           'p-6 mt-1 min-w-[290px]',
           'text-vega-light-300 dark:text-vega-dark-300',
           'border rounded border-vega-light-200 dark:border-vega-dark-200',
-          'bg-vega-light-100 dark:bg-vega-dark-100',
           'text-vega-light-300 dark:text-vega-light-300',
           {
-            'bg-white dark:bg-black': theme === 'system' || theme === 'yellow',
-            'bg-white': theme === 'light',
-            'bg-black': theme === 'dark',
+            'bg-vega-light-100 dark:bg-vega-dark-100':
+              theme === 'system' || theme === 'yellow',
+            'bg-vega-light-100': theme === 'light',
+            'bg-vega-dark-100': theme === 'dark',
           }
         )}
       >
