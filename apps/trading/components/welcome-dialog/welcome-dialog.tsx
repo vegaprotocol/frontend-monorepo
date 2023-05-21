@@ -42,6 +42,7 @@ export const WelcomeDialog = () => {
       shouldDisplayWelcomeDialog: isRiskDialogNeeded,
     });
   }, [update, isRiskDialogNeeded]);
+
   if (isRiskDialogNeeded) {
     dialogContent = (
       <RiskNoticeDialog onClose={onCloseDialog} network={VEGA_ENV} />
