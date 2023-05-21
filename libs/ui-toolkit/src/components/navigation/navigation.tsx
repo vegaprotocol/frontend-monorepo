@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { useRef } from 'react';
 import { VegaLogo } from '../vega-logo';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import { Icon } from '../icon';
+import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import { Drawer } from '../drawer';
 import { NavLink } from 'react-router-dom';
 import type {
@@ -152,8 +152,8 @@ export const NavigationTrigger = ({
       {...props}
     >
       <span>{children}</span>
-      <span className="rotate-90 group-data-open/drawer:hidden">
-        <Icon name="arrow-right" size={3} />
+      <span className="flex items-center group-data-open/drawer:hidden">
+        <VegaIcon name={VegaIconNames.ARROW_DOWN} />
       </span>
       <div
         aria-hidden="true"
