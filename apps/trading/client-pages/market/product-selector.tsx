@@ -2,8 +2,8 @@ import classNames from 'classnames';
 
 // Make sure these match the available __typename properties on product
 export const Product = {
-  Spot: 'Spot',
   Future: 'Future',
+  Spot: 'Spot',
   Perpetual: 'Perpetual',
 } as const;
 
@@ -12,8 +12,8 @@ export type ProductType = keyof typeof Product;
 const ProductTypeMapping: {
   [key in ProductType]: string;
 } = {
-  [Product.Spot]: 'Spot',
   [Product.Future]: 'Futures',
+  [Product.Spot]: 'Spot',
   [Product.Perpetual]: 'Perpetuals',
 };
 
