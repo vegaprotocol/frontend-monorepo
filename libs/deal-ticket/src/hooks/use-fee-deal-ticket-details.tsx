@@ -88,6 +88,7 @@ export const getFeeDetailsValues = ({
 }: FeeDetails) => {
   const liquidationEstimate = positionEstimate?.liquidation;
   const marginEstimate = positionEstimate?.margin;
+  const { decimalPlaces: marketDecimalPlaces } = market;
   const totalBalance =
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
   const assetDecimals =
@@ -259,7 +260,7 @@ export const getFeeDetailsValues = ({
         ? liquidationEstimateBestCase
         : liquidationEstimateWorstCase
       ).toString(),
-      assetDecimals
+      marketDecimalPlaces
     );
   }
 
