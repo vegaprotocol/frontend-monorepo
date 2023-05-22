@@ -7,6 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   ExternalLink,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
@@ -109,12 +111,12 @@ export const NetworkSwitcher = ({
         <DropdownMenuTrigger
           data-testid="network-switcher"
           ref={menuRef}
-          className={classNames(
-            'flex justify-between items-center text-sm text-vega-dark-600 dark:text-vega-light-600 py-1 px-2 rounded border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500 hover:bg-vega-light-500',
-            className
-          )}
+          className={className}
         >
-          <span className="mr-2"> {envTriggerMapping[current]}</span>
+          <span className="flex justify-between items-center gap-2">
+            <span>{envTriggerMapping[current]}</span>
+            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+          </span>
         </DropdownMenuTrigger>
       }
     >

@@ -17,6 +17,7 @@ import { IconTrendUp } from './svg-icons/icon-trend-up';
 import { IconCross } from './svg-icons/icon-cross';
 import { IconKebab } from './svg-icons/icon-kebab';
 import { IconArrowDown } from './svg-icons/icon-arrow-down';
+import { IconChevronDown } from './svg-icons/icon-chevron-down';
 
 export enum VegaIconNames {
   BREAKDOWN = 'breakdown',
@@ -35,6 +36,7 @@ export enum VegaIconNames {
   ARROW_RIGHT = 'arrow-right',
   ARROW_DOWN = 'arrow-down',
   CHEVRON_UP = 'chevron-up',
+  CHEVRON_DOWN = 'chevron-down',
   TREND_UP = 'trend-up',
   CROSS = 'cross',
   KEBAB = 'kebab',
@@ -60,6 +62,7 @@ export const VegaIconNameMap: Record<
   'arrow-right': IconArrowRight,
   'arrow-down': IconArrowDown,
   'chevron-up': IconChevronUp,
+  'chevron-down': IconChevronDown,
   'trend-up': IconTrendUp,
   cross: IconCross,
   kebab: IconKebab,
