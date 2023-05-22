@@ -21,6 +21,7 @@ export const ProposalHeader = ({
 
   let details: ReactNode;
   let proposalType = '';
+  let fallbackTitle = '';
 
   const title = proposal?.rationale.title.trim();
 
@@ -29,6 +30,7 @@ export const ProposalHeader = ({
   switch (change?.__typename) {
     case 'NewMarket': {
       proposalType = 'NewMarket';
+      fallbackTitle = t('NewMarketProposal');
       details = (
         <>
           <span>
@@ -50,6 +52,7 @@ export const ProposalHeader = ({
     }
     case 'UpdateMarket': {
       proposalType = 'UpdateMarket';
+      fallbackTitle = t('UpdateMarketProposal');
       details = (
         <>
           <span>{t('Market change')}:</span>{' '}
@@ -60,6 +63,7 @@ export const ProposalHeader = ({
     }
     case 'NewAsset': {
       proposalType = 'NewAsset';
+      fallbackTitle = t('NewAssetProposal');
       details = (
         <>
           <span>{t('Symbol')}:</span> <Lozenge>{change.symbol}.</Lozenge>{' '}
@@ -81,6 +85,7 @@ export const ProposalHeader = ({
     }
     case 'UpdateNetworkParameter': {
       proposalType = 'NetworkParameter';
+      fallbackTitle = t('NetworkParameterProposal');
       details = (
         <>
           <span>{t('Change')}:</span>{' '}
@@ -95,11 +100,13 @@ export const ProposalHeader = ({
     }
     case 'NewFreeform': {
       proposalType = 'Freeform';
+      fallbackTitle = t('FreeformProposal');
       details = <span />;
       break;
     }
     case 'UpdateAsset': {
       proposalType = 'UpdateAsset';
+      fallbackTitle = t('UpdateAssetProposal');
       details = (
         <>
           <span>{t('AssetID')}:</span>{' '}
@@ -115,10 +122,14 @@ export const ProposalHeader = ({
       <div data-testid="proposal-title">
         {isListItem ? (
           <header>
-            <SubHeading title={titleContent || t('Unknown proposal')} />
+            <SubHeading
+              title={titleContent || fallbackTitle || t('Unknown proposal')}
+            />
           </header>
         ) : (
-          <Heading title={titleContent || t('Unknown proposal')} />
+          <Heading
+            title={titleContent || fallbackTitle || t('Unknown proposal')}
+          />
         )}
       </div>
 

@@ -124,7 +124,7 @@ describe('Proposal header', () => {
       })
     );
     expect(screen.getByTestId('proposal-title')).toHaveTextContent(
-      'Unknown proposal'
+      'New asset proposal'
     );
     expect(screen.getByTestId('proposal-type')).toHaveTextContent('New asset');
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(

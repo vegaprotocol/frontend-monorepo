@@ -143,7 +143,7 @@ export const marketInfoQuery = (
                         __typename: 'Signer',
                         signer: {
                           __typename: 'PubKey',
-                          key: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
+                          key: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
                         },
                       },
                     ],
@@ -164,7 +164,7 @@ export const marketInfoQuery = (
                         __typename: 'Signer',
                         signer: {
                           __typename: 'PubKey',
-                          key: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
+                          key: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
                         },
                       },
                     ],

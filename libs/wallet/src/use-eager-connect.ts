@@ -7,13 +7,13 @@ export function useEagerConnect(Connectors: {
   [connector: string]: VegaConnector;
 }) {
   const [connecting, setConnecting] = useState(true);
-  const { connect } = useVegaWallet();
+  const { connect, acknowledgeNeeded } = useVegaWallet();
 
   useEffect(() => {
     const attemptConnect = async () => {
       const cfg = getConfig();
-      // No stored config, or config was malformed
-      if (!cfg || !cfg.connector) {
+      // No stored config, or config was malformed or no risk accepted
+      if (!cfg || !cfg.connector || acknowledgeNeeded) {
         setConnecting(false);
         return;
       }
@@ -42,7 +42,7 @@ export function useEagerConnect(Connectors: {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, Connectors]);
+  }, [connect, Connectors, acknowledgeNeeded]);
 
   return connecting;
 }

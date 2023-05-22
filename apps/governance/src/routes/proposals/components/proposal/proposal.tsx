@@ -24,9 +24,11 @@ export enum ProposalType {
 }
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  restData: any;
 }
 
-export const Proposal = ({ proposal }: ProposalProps) => {
+export const Proposal = ({ proposal, restData }: ProposalProps) => {
   const { params, loading, error } = useNetworkParams([
     NetworkParams.governance_proposal_market_minVoterBalance,
     NetworkParams.governance_proposal_updateMarket_minVoterBalance,
@@ -99,12 +101,15 @@ export const Proposal = ({ proposal }: ProposalProps) => {
           <ProposalDescription description={proposal.rationale.description} />
         </div>
 
-        <div className="mb-4">
-          <ProposalTerms data={proposal.terms} />
-        </div>
+        {proposal.terms.change.__typename !== 'NewMarket' &&
+          proposal.terms.change.__typename !== 'UpdateMarket' && (
+            <div className="mb-4">
+              <ProposalTerms data={proposal.terms} />
+            </div>
+          )}
 
         <div className="mb-6">
-          <ProposalJson proposal={proposal} />
+          <ProposalJson proposal={restData?.data?.proposal} />
         </div>
 
         <div className="mb-10">

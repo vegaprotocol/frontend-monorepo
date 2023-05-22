@@ -1,10 +1,10 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useOracleProofs } from './use-oracle-proofs';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketInfoProvider } from '../components/market-info/market-info-data-provider';
+import { useMarket } from '../markets-provider';
+
 import { useMemo } from 'react';
 import type { Provider } from '../oracle-schema';
-import type { DataSourceSpecFragment } from '../__generated__/OracleMarketsSpec';
+import type { DataSourceSpecFragment } from '../__generated__';
 
 export const getMatchingOracleProvider = (
   dataSourceSpec: DataSourceSpecFragment,
@@ -41,23 +41,30 @@ export const useMarketOracle = (
   dataSourceType:
     | 'dataSourceSpecForSettlementData'
     | 'dataSourceSpecForTradingTermination' = 'dataSourceSpecForSettlementData'
-) => {
+): {
+  data?: {
+    provider: NonNullable<ReturnType<typeof getMatchingOracleProvider>>;
+    dataSourceSpecId: string;
+  };
+  loading?: boolean;
+} => {
   const { ORACLE_PROOFS_URL } = useEnvironment();
-  const { data: marketInfo } = useDataProvider({
-    dataProvider: marketInfoProvider,
-    variables: { marketId },
-  });
-  const { data: providers } = useOracleProofs(ORACLE_PROOFS_URL);
+  const { data: market, loading: marketLoading } = useMarket(marketId);
+  const { data: providers, loading: providersLoading } =
+    useOracleProofs(ORACLE_PROOFS_URL);
   return useMemo(() => {
-    if (!providers || !marketInfo) {
-      return undefined;
+    if (marketLoading || providersLoading) {
+      return { loading: true };
+    }
+    if (!providers || !market) {
+      return { data: undefined };
     }
     const dataSourceSpec =
-      marketInfo.tradableInstrument.instrument.product[dataSourceType];
+      market.tradableInstrument.instrument.product[dataSourceType];
     const provider = getMatchingOracleProvider(dataSourceSpec.data, providers);
     if (provider) {
-      return { provider, dataSourceSpecId: dataSourceSpec.id };
+      return { data: { provider, dataSourceSpecId: dataSourceSpec.id } };
     }
-    return undefined;
-  }, [marketInfo, dataSourceType, providers]);
+    return { data: undefined };
+  }, [market, dataSourceType, providers, marketLoading, providersLoading]);
 };

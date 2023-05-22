@@ -9,6 +9,7 @@ import {
   getTotalPenalties,
   getStakePercentage,
 } from './shared';
+import * as Schema from '@vegaprotocol/types';
 
 describe('getLastEpochScoreAndPerformance', () => {
   const mockPreviousEpochData = {
@@ -19,24 +20,48 @@ describe('getLastEpochScoreAndPerformance', () => {
           {
             node: {
               id: '0x123',
+              stakedTotal: '',
               rewardScore: {
                 rawValidatorScore: '0.25',
                 performanceScore: '0.75',
+                multisigScore: '',
+                validatorScore: '',
+                normalisedScore: '',
+                validatorStatus:
+                  Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
               },
               rankingScore: {
                 stakeScore: '0.25',
+                performanceScore: '0.75',
+                status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+                previousStatus:
+                  Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+                rankingScore: '',
+                votingPower: '',
               },
             },
           },
           {
             node: {
               id: '0x234',
+              stakedTotal: '',
               rewardScore: {
                 rawValidatorScore: '0.35',
                 performanceScore: '0.85',
+                multisigScore: '',
+                validatorScore: '',
+                normalisedScore: '',
+                validatorStatus:
+                  Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
               },
               rankingScore: {
                 stakeScore: '0.25',
+                performanceScore: '0.85',
+                status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+                previousStatus:
+                  Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+                rankingScore: '',
+                votingPower: '',
               },
             },
           },

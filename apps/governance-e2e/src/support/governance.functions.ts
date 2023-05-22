@@ -1,8 +1,12 @@
 import { format } from 'date-fns';
-import { closeDialog, navigateTo, navigation } from './common.functions';
+import {
+  closeDialog,
+  navigateTo,
+  navigation,
+  waitForSpinner,
+} from './common.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from './staking.functions';
 
-const newProposalButton = '[data-testid="new-proposal-link"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
@@ -46,6 +50,53 @@ export function enterRawProposalBody(timestamp: number) {
   });
 }
 
+export function submitUniqueRawProposal(proposalFields: {
+  proposalBody?: string;
+  proposalTitle?: string;
+  proposalDescription?: string;
+  closingTimestamp?: number;
+  enactmentTimestamp?: number;
+  submit?: boolean;
+}) {
+  goToMakeNewProposal(governanceProposalType.RAW);
+  let proposalBodyPath = '/proposals/raw.json';
+  if (proposalFields.proposalBody) {
+    proposalBodyPath = proposalFields.proposalBody;
+  }
+  cy.fixture(proposalBodyPath).then((rawProposal) => {
+    if (proposalFields.proposalTitle) {
+      rawProposal.rationale.title = proposalFields.proposalTitle;
+      cy.wrap(proposalFields.proposalTitle).as('proposalTitle');
+    }
+    if (proposalFields.proposalDescription) {
+      rawProposal.rationale.description = proposalFields.proposalDescription;
+    }
+    if (proposalFields.closingTimestamp) {
+      rawProposal.terms.closingTimestamp = proposalFields.closingTimestamp;
+    } else {
+      const minTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      rawProposal.terms.closingTimestamp = minTimeStamp;
+    }
+    if (proposalFields.enactmentTimestamp) {
+      rawProposal.terms.enactmentTimestamp = proposalFields.enactmentTimestamp;
+    }
+
+    const proposalPayload = JSON.stringify(rawProposal);
+    cy.get(rawProposalData).type(proposalPayload, {
+      parseSpecialCharSequences: false,
+      delay: 2,
+    });
+
+    if (proposalFields.submit !== false) {
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wrap(rawProposal).as('rawProposal');
+      waitForProposalSubmitted();
+      waitForProposalSync();
+      navigateTo(navigation.proposals);
+    }
+  });
+}
+
 export function enterUniqueFreeFormProposalBody(
   timestamp: string,
   proposalTitle: string
@@ -56,6 +107,10 @@ export function enterUniqueFreeFormProposalBody(
   );
   cy.get(proposalVoteDeadline).clear().click().type(timestamp);
   cy.getByTestId('proposal-submit').should('be.visible').click();
+}
+
+export function getProposalFromTitle(proposalTitle: string) {
+  return cy.contains(proposalTitle).parentsUntil(proposalListItem).last();
 }
 
 export function getSubmittedProposalFromProposalList(proposalTitle: string) {
@@ -120,13 +175,17 @@ export function waitForProposalSync() {
   });
 }
 
-export function goToMakeNewProposal(proposalType: string) {
-  navigateTo(navigation.proposals);
-  cy.get(newProposalButton).should('be.visible').click();
+export function goToMakeNewProposal(proposalType: governanceProposalType) {
+  cy.visit('/proposals/propose');
+  waitForSpinner();
   cy.url().should('include', '/proposals/propose');
   cy.get(navigation.pageSpinner, { timeout: 20000 }).should('not.exist');
-  cy.get('li').should('contain.text', proposalType).and('be.visible');
-  cy.get('li').contains(proposalType).click();
+  if (proposalType == governanceProposalType.RAW) {
+    cy.get('[href="/proposals/propose/raw"]').click();
+  } else {
+    cy.get('li').should('contain.text', proposalType).and('be.visible');
+    cy.get('li').contains(proposalType).click();
+  }
 }
 
 export function waitForProposalSubmitted() {
@@ -163,11 +222,12 @@ export function createFreeformProposal(proposalTitle: string) {
   navigateTo(navigation.proposals);
 }
 
-export const governanceProposalType = {
-  NETWORK_PARAMETER: 'Network parameter',
-  NEW_MARKET: 'New market',
-  UPDATE_MARKET: 'Update market',
-  NEW_ASSET: 'New asset',
-  FREEFORM: 'Freeform',
-  RAW: 'raw proposal',
-};
+export enum governanceProposalType {
+  NETWORK_PARAMETER = 'Network parameter',
+  NEW_MARKET = 'New market',
+  UPDATE_MARKET = 'Update market',
+  NEW_ASSET = 'New asset',
+  UPDATE_ASSET = 'Update asset',
+  FREEFORM = 'Freeform',
+  RAW = 'raw proposal',
+}

@@ -1,19 +1,21 @@
 import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
+import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useOracleSpecBindingData } from '@vegaprotocol/markets';
+import { PropertyKeyType } from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 export interface SettlementPriceCellProps {
   oracleSpecId: string | undefined;
-  decimalPlaces: number;
   settlementDataSpecBinding: string | undefined;
+  filter: DataSourceFilterFragment | undefined;
 }
 
 export const SettlementPriceCell = ({
   oracleSpecId,
-  decimalPlaces,
   settlementDataSpecBinding,
+  filter,
 }: SettlementPriceCellProps) => {
   const linkCreator = useLinks(DApp.Explorer);
   const { property, loading } = useOracleSpecBindingData(
@@ -25,15 +27,32 @@ export const SettlementPriceCell = ({
     return <span>-</span>;
   }
 
+  const renderText = () => {
+    if (!property || !filter) {
+      return t('Unknown');
+    }
+
+    if (
+      filter.key.type === PropertyKeyType.TYPE_INTEGER &&
+      filter.key.numberDecimalPlaces !== null &&
+      filter.key.numberDecimalPlaces !== undefined
+    ) {
+      return addDecimalsFormatNumber(
+        property.value,
+        filter.key.numberDecimalPlaces
+      );
+    }
+
+    return property.value;
+  };
+
   return (
     <Link
       href={linkCreator(EXPLORER_ORACLE.replace(':id', oracleSpecId))}
       className="underline font-mono"
       target="_blank"
     >
-      {property
-        ? addDecimalsFormatNumber(property.value, decimalPlaces)
-        : t('-')}
+      {renderText()}
     </Link>
   );
 };

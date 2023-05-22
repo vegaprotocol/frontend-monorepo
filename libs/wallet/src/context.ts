@@ -34,6 +34,9 @@ export interface VegaWalletContextShape {
 
   /** Fetch public keys */
   fetchPubKeys?: () => Promise<PubKey[] | null>;
+
+  /** Acknowledge disclaimer */
+  acknowledgeNeeded?: boolean;
 }
 
 export const VegaWalletContext = createContext<

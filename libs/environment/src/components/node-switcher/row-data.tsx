@@ -6,9 +6,9 @@ import { Radio } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';
 import {
-  useBlockTimeSubscription,
-  useStatisticsQuery,
-} from '../../utils/__generated__/Node';
+  useNodeCheckQuery,
+  useNodeCheckTimeUpdateSubscription,
+} from '../../utils/__generated__/NodeCheck';
 import { LayoutCell } from './layout-cell';
 
 export const POLL_INTERVAL = 1000;
@@ -30,13 +30,14 @@ export const RowData = ({
   const [subFailed, setSubFailed] = useState(false);
   const [time, setTime] = useState<number>();
   // no use of data here as we need the data nodes reference to block height
-  const { data, error, loading, startPolling, stopPolling } =
-    useStatisticsQuery({
+  const { data, error, loading, startPolling, stopPolling } = useNodeCheckQuery(
+    {
       pollInterval: POLL_INTERVAL,
       // fix for pollInterval
       // https://github.com/apollographql/apollo-client/issues/9819
       ssr: false,
-    });
+    }
+  );
   const headerStore = useHeaderStore();
   const headers = headerStore[url];
 
@@ -44,7 +45,7 @@ export const RowData = ({
     data: subData,
     error: subError,
     loading: subLoading,
-  } = useBlockTimeSubscription();
+  } = useNodeCheckTimeUpdateSubscription();
 
   useEffect(() => {
     const timeout = setTimeout(() => {

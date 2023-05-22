@@ -27,6 +27,10 @@ import type { ProposalFieldsFragment } from '../proposals/proposals/__generated_
 import type { NodesFragmentFragment } from '../staking/home/__generated__/Nodes';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
+import {
+  orderByDate,
+  orderByUpgradeBlockHeight,
+} from '../proposals/components/proposals-list/proposals-list';
 
 const nodesToShow = 6;
 
@@ -200,17 +204,20 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
   const proposals = useMemo(
     () =>
       proposalsData
-        ? getNotRejectedProposals<ProposalFieldsFragment>(
-            proposalsData.proposalsConnection
-          )
+        ? getNotRejectedProposals(proposalsData.proposalsConnection)
         : [],
     [proposalsData]
+  );
+
+  const sortedProposals = useMemo(
+    () => orderByDate(proposals).reverse(),
+    [proposals]
   );
 
   const protocolUpgradeProposals = useMemo(
     () =>
       protocolUpgradesData
-        ? getNotRejectedProtocolUpgradeProposals<ProtocolUpgradeProposalFieldsFragment>(
+        ? getNotRejectedProtocolUpgradeProposals(
             protocolUpgradesData.protocolUpgradeProposals
           ).filter(
             (p) =>
@@ -221,15 +228,20 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     [protocolUpgradesData]
   );
 
+  const sortedProtocolUpgradeProposals = useMemo(
+    () => orderByUpgradeBlockHeight(protocolUpgradeProposals),
+    [protocolUpgradeProposals]
+  );
+
   const totalProposalsDesired = 4;
-  const protocolUpgradeProposalsToShow = protocolUpgradeProposals.slice(
+  const protocolUpgradeProposalsToShow = sortedProtocolUpgradeProposals.slice(
     0,
     totalProposalsDesired
   );
   const proposalsToShow =
     protocolUpgradeProposalsToShow.length === totalProposalsDesired
       ? []
-      : proposals.slice(
+      : sortedProposals.slice(
           0,
           totalProposalsDesired - protocolUpgradeProposalsToShow.length
         );

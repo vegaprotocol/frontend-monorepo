@@ -31,27 +31,6 @@ fragment OracleMarketSpecFields on Market {
   }
 }
 
-fragment DataSourceSpec on DataSourceDefinition {
-  sourceType {
-    ... on DataSourceDefinitionExternal {
-      sourceType {
-        ... on DataSourceSpecConfiguration {
-          signers {
-            signer {
-              ... on PubKey {
-                key
-              }
-              ... on ETHAddress {
-                address
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
 query OracleMarketsSpec {
   marketsConnection {
     edges {

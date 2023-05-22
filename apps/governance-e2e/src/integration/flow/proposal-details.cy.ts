@@ -7,17 +7,12 @@ import {
 import {
   createRawProposal,
   createTenDigitUnixTimeStampForSpecifiedDays,
-  enterUniqueFreeFormProposalBody,
   generateFreeFormProposalTitle,
   getDateFormatForSpecifiedDays,
-  getProposalIdFromList,
+  getProposalFromTitle,
   getProposalInformationFromTable,
-  getSubmittedProposalFromProposalList,
-  goToMakeNewProposal,
-  governanceProposalType,
+  submitUniqueRawProposal,
   voteForProposal,
-  waitForProposalSubmitted,
-  waitForProposalSync,
 } from '../../../../governance-e2e/src/support/governance.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../../../governance-e2e/src/support/staking.functions';
 import { ethereumWalletConnect } from '../../../../governance-e2e/src/support/wallet-eth.functions';
@@ -38,6 +33,8 @@ const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
 const openProposals = '[data-testid="open-proposals"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
+const voteBreakdownToggle = 'vote-breakdown-toggle';
+const proposalTermsToggle = 'proposal-terms-toggle';
 
 describe(
   'Governance flow for proposal details',
@@ -62,23 +59,25 @@ describe(
 
     // 3001-VOTE-050 3001-VOTE-054 3001-VOTE-055 3002-PROP-019
     it('Newly created raw proposal details - shows proposal title and full description', function () {
+      const proposalDescription =
+        'I propose that everyone evaluate the following IPFS document and vote Yes if they agree. bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si';
+
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getProposalIdFromList(rawProposal.rationale.title);
-        cy.get('@proposalIdText').then((proposalId) => {
-          cy.get(openProposals).within(() => {
-            cy.get(`#${proposalId}`).within(() => {
-              cy.get(viewProposalButton).should('be.visible').click();
-            });
+        cy.get(openProposals).within(() => {
+          getProposalFromTitle(rawProposal.rationale.title).within(() => {
+            cy.get(viewProposalButton).should('be.visible').click();
           });
         });
-        cy.get(proposalDetailsTitle)
-          .should('contain', rawProposal.rationale.title)
-          .and('be.visible');
+        cy.get(proposalDetailsTitle).should(
+          'contain.text',
+          rawProposal.rationale.title
+        );
         cy.get(proposalDetailsDescription)
-          .should('contain', rawProposal.rationale.description)
-          .and('be.visible');
+          .find('p')
+          .should('have.text', proposalDescription);
       });
+      cy.getByTestId(proposalTermsToggle).click();
       // 3001-VOTE-052
       cy.get('code.language-json')
         .should('exist')
@@ -89,33 +88,36 @@ describe(
 
     // 3001-VOTE-043
     it('Newly created freeform proposal details - shows proposed and closing dates', function () {
-      const closingVoteHrs = '72';
       const proposalTitle = generateFreeFormProposalTitle();
       const proposalTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      // const currentDate = new Date(createTenDigitUnixTimeStampForSpecifiedDays(0) * 1000)
+      // const proposedDate = new Date(currentDate.getTime() + 60000)
 
-      goToMakeNewProposal(governanceProposalType.FREEFORM);
-      enterUniqueFreeFormProposalBody(closingVoteHrs, proposalTitle);
-      waitForProposalSubmitted();
-      waitForProposalSync();
+      submitUniqueRawProposal({
+        proposalTitle: proposalTitle,
+        closingTimestamp: proposalTimeStamp,
+      });
       navigateTo(navigation.proposals);
-      getSubmittedProposalFromProposalList(proposalTitle).within(() =>
+      getProposalFromTitle(proposalTitle).within(() =>
         cy.get(viewProposalButton).click()
       );
       cy.wrap(
         formatDateWithLocalTimezone(new Date(proposalTimeStamp * 1000))
       ).then((closingDate) => {
-        getProposalInformationFromTable('Closes on')
-          .contains(closingDate)
-          .should('be.visible');
+        getProposalInformationFromTable('Closes on').should(
+          'have.text',
+          closingDate
+        );
       });
       cy.wrap(
         formatDateWithLocalTimezone(
           new Date(createTenDigitUnixTimeStampForSpecifiedDays(0) * 1000)
         )
       ).then((proposalDate) => {
-        getProposalInformationFromTable('Proposed on')
-          .contains(proposalDate)
-          .should('be.visible');
+        getProposalInformationFromTable('Proposed on').should(
+          'have.text',
+          proposalDate
+        );
       });
     });
 
@@ -125,13 +127,14 @@ describe(
       // 3001-VOTE-067
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getSubmittedProposalFromProposalList(
-          rawProposal.rationale.title
-        ).within(() => cy.get(viewProposalButton).click());
+        getProposalFromTitle(rawProposal.rationale.title).within(() =>
+          cy.get(viewProposalButton).click()
+        );
       });
       cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
         'be.visible'
       );
+      cy.getByTestId(voteBreakdownToggle).click();
       getProposalInformationFromTable('Expected to pass')
         .contains('👎')
         .should('be.visible');
@@ -151,9 +154,9 @@ describe(
     it('Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated', function () {
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getSubmittedProposalFromProposalList(
-          rawProposal.rationale.title
-        ).within(() => cy.get(viewProposalButton).click());
+        getProposalFromTitle(rawProposal.rationale.title).within(() =>
+          cy.get(viewProposalButton).click()
+        );
       });
       // 3001-VOTE-080
       cy.getByTestId('vote-buttons').contains('against').should('be.visible');
@@ -179,6 +182,7 @@ describe(
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('0.00')
         .and('be.visible');
+      cy.getByTestId(voteBreakdownToggle).click();
       getProposalInformationFromTable('Tokens for proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
@@ -220,14 +224,15 @@ describe(
       vegaWalletSetSpecifiedApprovalAmount('1000');
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getSubmittedProposalFromProposalList(
-          rawProposal.rationale.title
-        ).within(() => cy.get(viewProposalButton).click());
+        getProposalFromTitle(rawProposal.rationale.title).within(() =>
+          cy.get(viewProposalButton).click()
+        );
       });
       voteForProposal('for');
       // 3001-VOTE-079
       cy.contains('You voted: For').should('be.visible');
       cy.get(proposalVoteProgressForTokens).contains('1').and('be.visible');
+      cy.getByTestId(voteBreakdownToggle).click();
       getProposalInformationFromTable('Total Supply')
         .invoke('text')
         .then((totalSupply) => {
@@ -235,14 +240,15 @@ describe(
             (Number(totalSupply.replace(/,/g, '')) * 0.001) /
             100
           ).toFixed(2);
+          ethereumWalletConnect();
           ensureSpecifiedUnstakedTokensAreAssociated(
             tokensRequiredToAchieveResult
           );
           navigateTo(navigation.proposals);
           cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-            getSubmittedProposalFromProposalList(
-              rawProposal.rationale.title
-            ).within(() => cy.get(viewProposalButton).click());
+            getProposalFromTitle(rawProposal.rationale.title).within(() =>
+              cy.get(viewProposalButton).click()
+            );
           });
           cy.get(proposalVoteProgressForPercentage)
             .contains('100.00%')
@@ -259,6 +265,7 @@ describe(
           cy.get(proposalVoteProgressAgainstTokens)
             .contains('0.00')
             .and('be.visible');
+          cy.getByTestId(voteBreakdownToggle).click();
           getProposalInformationFromTable('Total tokens voted percentage')
             .should('have.text', '0.00%')
             .and('be.visible');

@@ -20,12 +20,10 @@ import isEqual from 'lodash/isEqual';
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
 
-  const settlementData =
-    market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
-      .data;
-  const terminationData =
-    market.tradableInstrument.instrument.product
-      .dataSourceSpecForTradingTermination.data;
+  const settlementData = market.tradableInstrument.instrument.product
+    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
+  const terminationData = market.tradableInstrument.instrument.product
+    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {

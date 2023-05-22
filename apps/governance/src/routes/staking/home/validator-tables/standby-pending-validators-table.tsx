@@ -5,15 +5,14 @@ import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
+  calculatesPerformancePenalty,
+  calculateOverallPenalty,
+  calculateOverstakedPenalty,
   getFormattedPerformanceScore,
   getLastEpochScoreAndPerformance,
-  getOverstakingPenalty,
-  getPerformancePenalty,
-  getTotalPenalties,
 } from '../../shared';
 import {
   defaultColDef,
-  StakeNeededForPromotionRenderer,
   stakedTotalPercentage,
   ValidatorFields,
   ValidatorRenderer,
@@ -28,6 +27,7 @@ import type { ValidatorsTableProps } from './shared';
 import {
   formatNumber,
   formatNumberPercentage,
+  removePaginationWrapper,
   toBigNum,
 } from '@vegaprotocol/utils';
 
@@ -51,6 +51,10 @@ export const StandbyPendingValidatorsTable = ({
   const navigate = useNavigate();
 
   const gridRef = useRef<AgGridReact | null>(null);
+
+  const allNodesInPreviousEpoch = removePaginationWrapper(
+    previousEpochData?.epoch.validatorsConnection?.edges
+  );
 
   let nodes = useMemo(() => {
     if (!data) return [];
@@ -77,18 +81,15 @@ export const StandbyPendingValidatorsTable = ({
           stakedByDelegates,
           stakedByOperator,
           stakedTotal,
-          rankingScore: { stakeScore },
+          rankingScore: { stakeScore, performanceScore },
           pendingStake,
           stakedTotalRanking,
           stakedByUser,
           pendingUserStake,
           userStakeShare,
         }) => {
-          const {
-            rawValidatorScore: previousEpochValidatorScore,
-            performanceScore: previousEpochPerformanceScore,
-            stakeScore: previousEpochStakeScore,
-          } = getLastEpochScoreAndPerformance(previousEpochData, id);
+          const { performanceScore: previousEpochPerformanceScore } =
+            getLastEpochScoreAndPerformance(previousEpochData, id);
 
           let individualStakeNeededForPromotion,
             individualStakeNeededForPromotionDescription;
@@ -144,21 +145,19 @@ export const StandbyPendingValidatorsTable = ({
               toBigNum(stakedByOperator, decimals),
               2
             ),
-            [ValidatorFields.PERFORMANCE_SCORE]: getFormattedPerformanceScore(
-              previousEpochPerformanceScore
-            ).toString(),
-            [ValidatorFields.PERFORMANCE_PENALTY]: getPerformancePenalty(
-              previousEpochPerformanceScore
+            [ValidatorFields.PERFORMANCE_SCORE]:
+              getFormattedPerformanceScore(performanceScore).toString(),
+            [ValidatorFields.PERFORMANCE_PENALTY]: formatNumberPercentage(
+              calculatesPerformancePenalty(performanceScore),
+              2
             ),
-            [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
-              previousEpochValidatorScore,
-              previousEpochStakeScore
+            [ValidatorFields.OVERSTAKING_PENALTY]: formatNumberPercentage(
+              calculateOverstakedPenalty(id, allNodesInPreviousEpoch),
+              2
             ),
-            [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
-              previousEpochValidatorScore,
-              previousEpochPerformanceScore,
-              stakedTotal,
-              totalStake
+            [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
+              calculateOverallPenalty(id, allNodesInPreviousEpoch),
+              2
             ),
             [ValidatorFields.PENDING_STAKE]: pendingStake,
             [ValidatorFields.STAKED_BY_USER]: stakedByUser
@@ -172,13 +171,13 @@ export const StandbyPendingValidatorsTable = ({
         }
       );
   }, [
+    allNodesInPreviousEpoch,
     data,
     decimals,
     previousEpochData,
     stakeNeededForPromotion,
     stakeNeededForPromotionDescription,
     t,
-    totalStake,
   ]);
 
   if (validatorsView === 'myStake') {
@@ -226,21 +225,21 @@ export const StandbyPendingValidatorsTable = ({
           cellRenderer: StakeShareRenderer,
           width: 100,
         },
-        {
-          field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
-          headerName: t(ValidatorFields.STAKE_NEEDED_FOR_PROMOTION).toString(),
-          headerTooltip: t(stakeNeededForPromotionDescription, {
-            prefix: t('The'),
-          }),
-          cellRenderer: StakeNeededForPromotionRenderer,
-          width: 210,
-        },
+        // {
+        //   field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
+        //   headerName: t(ValidatorFields.STAKE_NEEDED_FOR_PROMOTION).toString(),
+        //   headerTooltip: t(stakeNeededForPromotionDescription, {
+        //     prefix: t('The'),
+        //   }),
+        //   cellRenderer: StakeNeededForPromotionRenderer,
+        //   width: 210,
+        // },
         {
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
           headerTooltip: t('TotalPenaltiesDescription').toString(),
           cellRenderer: TotalPenaltiesRenderer,
-          width: 120,
+          width: 120 + 210,
         },
       ],
       []

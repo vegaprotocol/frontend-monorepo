@@ -9,6 +9,7 @@ import {
 import {
   enterUniqueFreeFormProposalBody,
   goToMakeNewProposal,
+  governanceProposalType,
 } from '../../support/governance.functions';
 import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
@@ -50,7 +51,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
     navigateTo(navigation.proposals);
-    goToMakeNewProposal('Freeform');
+    goToMakeNewProposal(governanceProposalType.FREEFORM);
     enterUniqueFreeFormProposalBody('50', 'pub key proposal test');
     cy.getByTestId('dialog-content')
       .first()

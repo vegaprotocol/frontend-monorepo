@@ -8,4 +8,4 @@ export * from './hooks';
 export * from './types';
 
 // Utils
-export * from './utils/__generated__/Node';
+export * from './utils/__generated__/NodeCheck';

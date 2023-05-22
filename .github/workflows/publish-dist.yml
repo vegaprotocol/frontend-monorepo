@@ -62,17 +62,19 @@ jobs:
       - name: Define variables
         run: |
           envName=''
+          domain="vega.rocks"
           if [[ "${{ github.event_name }}" = "push" ]]; then
-            domain="vega.rocks"
             if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
               envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
-              if [[ "${{ github.ref }}" =~ .*mainnet.* ]]; then
-                domain="vega.community"
-              fi
             elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
               envName="stagnet1"
             elif [[ "${{ matrix.app}}" = "trading" ]] && [[ ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }} = "true" ]]; then
               envName="mainnet"
+            elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
+              envName="mainnet"
+            fi
+            if [[ "${envName}" = "mainnet" ]]; then
+              domain="vega.xyz"
             fi
             bucketName="${{ matrix.app }}.${envName}.${domain}"
             echo BUCKET_NAME=${bucketName} >> $GITHUB_ENV
@@ -169,12 +171,6 @@ jobs:
         with:
           labels: ${{ matrix.app }}-preview
           number: ${{ github.event.number }}
-
-      - name: Add ipfs hash to release
-        uses: softprops/action-gh-release@v1
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
-        with:
-          files: ${{ matrix.app }}-ipfs-hash
 
       - name: Trigger fleek deployment
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
