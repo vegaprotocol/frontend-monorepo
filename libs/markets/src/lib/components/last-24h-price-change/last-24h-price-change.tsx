@@ -8,7 +8,6 @@ import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
 import { marketCandlesProvider } from '../../market-candles-provider';
 import type { MarketCandlesFieldsFragment } from '../../__generated__/market-candles';
-import { ca } from 'date-fns/locale';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
@@ -55,8 +54,6 @@ export const Last24hPriceChange = ({
     fiveDaysCandles.length > 0 &&
     (!oneDayCandles || oneDayCandles?.length === 0)
   ) {
-    console.log('data', data);
-    console.log('priceCandles', oneDayCandles);
     return (
       <Tooltip
         description={
