@@ -1,3 +1,4 @@
+import { localLoggerFactory } from '@vegaprotocol/utils';
 import { useCallback, useEffect, useState } from 'react';
 import z from 'zod';
 
@@ -56,10 +57,12 @@ export type ReleasesState = {
   data: ReleaseInfo[] | null;
   error: Error | null | undefined;
 };
-
-export const fetchReleases = async (feed: ReleasesFeed) => {
+export const fetchReleases = async (
+  feed: ReleasesFeed,
+  cache: RequestCache = 'default'
+) => {
   const response = await fetch(String(feed), {
-    cache: 'force-cache',
+    cache,
   });
 
   if (response.ok) {
@@ -71,17 +74,18 @@ export const fetchReleases = async (feed: ReleasesFeed) => {
   return [];
 };
 
-export const useReleases = (feed: ReleasesFeed) => {
+export const useReleases = (feed: ReleasesFeed, cache?: RequestCache) => {
   const [state, setState] = useState<ReleasesState>({
     loading: true,
     data: null,
     error: null,
   });
+  const logger = localLoggerFactory({ application: 'github' });
 
   const fetchData = useCallback(() => {
     let mounted = true;
 
-    fetchReleases(feed)
+    fetchReleases(feed, cache)
       .then((releases) => {
         if (mounted) {
           setState({
@@ -101,12 +105,13 @@ export const useReleases = (feed: ReleasesFeed) => {
             error: err,
           });
         }
+        logger.error('get releases from GitHub API', err);
       });
 
     return () => {
       mounted = false;
     };
-  }, [feed]);
+  }, [cache, feed, logger]);
 
   useEffect(() => {
     fetchData();

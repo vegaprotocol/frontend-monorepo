@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   ReleasesFeed,
   useEnvironment,
   useReleases,
+  Networks,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -16,11 +17,24 @@ import {
 
 const CANONICAL_URL = 'https://vega.trading';
 
-export const UpgradeBanner = () => {
+type UpgradeBannerProps = {
+  showVersionChange: boolean;
+};
+export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
   const [visible, setVisible] = useState(true);
   const { data } = useReleases(ReleasesFeed.FrontEnd);
-  const { APP_VERSION } = useEnvironment();
-  const latest = data?.[0];
+  const { APP_VERSION, VEGA_ENV } = useEnvironment();
+  /**
+   * Filtering out the release candidates.
+   */
+  const latest = useMemo(() => {
+    const valid =
+      VEGA_ENV === Networks.MAINNET
+        ? data?.filter((r) => !/-rc$/i.test(r.tagName))
+        : data;
+
+    return valid && valid.length > 0 ? valid[0] : undefined;
+  }, [VEGA_ENV, data]);
 
   if (!visible || !latest || latest.tagName === APP_VERSION) return null;
 
@@ -30,7 +44,9 @@ export const UpgradeBanner = () => {
         {APP_VERSION}
       </span>{' '}
       <VegaIcon size={14} name={VegaIconNames.ARROW_RIGHT} />{' '}
-      <span className="text-vega-yellow-500">{latest.tagName}</span>
+      <span className="text-vega-yellow-500">
+        <ExternalLink href={latest.htmlUrl}>{latest.tagName}</ExternalLink>
+      </span>
     </span>
   );
 
@@ -42,7 +58,8 @@ export const UpgradeBanner = () => {
       }}
     >
       <div className="uppercase ">
-        {t('Upgrade to the latest version of Console')} {versionChange}
+        {t('Upgrade to the latest version of Console')}{' '}
+        {showVersionChange && versionChange}
       </div>
       <div data-testid="bookmark-message">
         {t('Bookmark')}{' '}

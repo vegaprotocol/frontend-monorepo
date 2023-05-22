@@ -99,7 +99,7 @@ function AppBody({ Component }: AppProps) {
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
           />
           <ViewingBanner />
-          <UpgradeBanner />
+          <UpgradeBanner showVersionChange={true} />
         </div>
         <main data-testid={location.pathname}>
           <Component />
