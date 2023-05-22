@@ -44,7 +44,7 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
         {APP_VERSION}
       </span>{' '}
       <VegaIcon size={14} name={VegaIconNames.ARROW_RIGHT} />{' '}
-      <span className="text-vega-yellow-500">
+      <span className="text-vega-orange-500 dark:text-vega-yellow-500">
         <ExternalLink href={latest.htmlUrl}>{latest.tagName}</ExternalLink>
       </span>
     </span>
