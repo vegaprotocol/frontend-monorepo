@@ -482,7 +482,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
         testOrderCancellation(order);
       });
   });
-  it('must be able to cancel all orders on a market', () => {
+  it('must be able to cancel all orders on all markets', () => {
     // 7003-MORD-009
     // 7003-MORD-010
     // 7003-MORD-011
@@ -496,9 +496,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       .should('have.text', 'Cancel all')
       .then(($btn) => {
         cy.wrap($btn).click({ force: true });
-        const order: OrderCancellation = {
-          marketId: 'market-0',
-        };
+        const order: OrderCancellation = {};
         testOrderCancellation(order);
       });
   });

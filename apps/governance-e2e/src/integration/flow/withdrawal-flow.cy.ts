@@ -47,11 +47,8 @@ context(
   function () {
     before('visit withdrawals and connect vega wallet', function () {
       cy.visit('/');
-      // When running tests locally, will fail if run without restarting capsule
-      cy.updateCapsuleMultiSig().then(() => {
-        ethereumWalletConnect();
-        depositAsset(usdcEthAddress, '1000', 5);
-      });
+      ethereumWalletConnect();
+      depositAsset(usdcEthAddress, '1000', 5);
     });
 
     beforeEach('Navigate to withdrawal page', function () {

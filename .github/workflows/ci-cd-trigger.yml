@@ -98,36 +98,37 @@ jobs:
       # See affected apps
       - name: See affected apps
         run: |
+          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
+          branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
+
           echo ">>>> debug"
           echo "NX_BASE: ${{ env.NX_BASE }}"
           echo "NX_HEAD: ${{ env.NX_HEAD }}"
+          echo "Affected: ${affected}"
+          echo "Branch slug: ${branch_slug}"
           echo ">>>> eof debug"
 
-          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
-
-          branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           projects_e2e=""
           preview_governance="not deployed"
           preview_trading="not deployed"
           preview_explorer="not deployed"
+          if [[ $affected == *"governance"* ]]; then
+            projects_e2e+='"governance-e2e" '
+            preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
+          fi
+          if [[ $affected == *"trading"* ]]; then
+            projects_e2e+='"trading-e2e" '
+            preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
+          fi
+          if [[ $affected == *"explorer"* ]]; then
+            projects_e2e+='"explorer-e2e" '
+            preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
+          fi
           if [[ -z "$projects_e2e" ]]; then
             projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '
             preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
-          else
-            if [[ $affected == *"governance"* ]]; then
-              projects_e2e+='"governance-e2e" '
-              preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
-            fi
-            if [[ $affected == *"trading"* ]]; then
-              projects_e2e+='"trading-e2e" '
-              preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
-            fi
-            if [[ $affected == *"explorer"* ]]; then
-              projects_e2e+='"explorer-e2e" '
-              preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
-            fi
           fi
           projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]

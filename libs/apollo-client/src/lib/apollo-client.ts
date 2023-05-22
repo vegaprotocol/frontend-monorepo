@@ -115,7 +115,19 @@ export function createClient({
       )
     : httpLink;
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
+  const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+    // if any of these queries error don't capture any errors, its
+    // likely the user is connecting to a dodgy node, NodeGuard gets
+    // called on startup, NodeCheck and NodeCheckTimeUpdate are called
+    // by the NodeSwitcher component and the useNodeHealth hook
+    if (
+      ['NodeGuard', 'NodeCheck', 'NodeCheckTimeUpdate'].includes(
+        operation.operationName
+      )
+    ) {
+      return;
+    }
+
     if (graphQLErrors) {
       graphQLErrors.forEach((e) => {
         if (e.extensions && e.extensions['type'] !== NOT_FOUND) {

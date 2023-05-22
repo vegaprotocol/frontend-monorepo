@@ -28,11 +28,16 @@ interface TxProposalProps {
  * @returns boolean True if a signature bundle is required. Used to fetch a signature bundle
  */
 export function proposalRequiresSignatureBundle(proposal?: Proposal): boolean {
+  const proposalsThatRequireBundles = ['newAsset', 'updateAsset'];
+
   if (!proposal?.terms) {
     return false;
   }
-  return !!['newAsset', 'updateAsset'].filter((requiredIfExists) =>
-    has(proposal.terms, requiredIfExists)
+
+  return (
+    proposalsThatRequireBundles.filter((requiredIfExists) =>
+      has(proposal.terms, requiredIfExists)
+    ).length > 0
   );
 }
 
@@ -81,6 +86,7 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
 
   const tx = proposal.terms?.newAsset || proposal.terms?.updateAsset;
 
+  // This component is not rendered if no bundle is required
   const SignatureBundleComponent = proposal.terms?.newAsset
     ? ProposalSignatureBundleNewAsset
     : ProposalSignatureBundleUpdateAsset;

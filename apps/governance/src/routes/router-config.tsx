@@ -207,6 +207,13 @@ const LazyWithdrawals = React.lazy(
     )
 );
 
+const LazyDisclaimer = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-disclaimer", webpackPrefetch: true */ './disclaimer'
+    )
+);
+
 const redirects = [
   {
     path: Routes.VALIDATORS,
@@ -223,6 +230,10 @@ const redirects = [
   {
     path: '/vesting',
     element: <Navigate to={Routes.REDEEM} replace />,
+  },
+  {
+    path: Routes.PROTOCOL_UPGRADES,
+    element: <Navigate to={Routes.PROPOSALS} replace />,
   },
 ];
 
@@ -264,12 +275,12 @@ const routerConfig = [
       },
       { path: 'proposals', element: <LazyProposalsList /> },
       { path: ':proposalId', element: <LazyProposal /> },
-      {
-        path: 'protocol-upgrade/:proposalReleaseTag',
-        element: <LazyProtocolUpgradeProposal />,
-      },
       { path: 'rejected', element: <LazyRejectedProposalsList /> },
     ],
+  },
+  {
+    path: `${Routes.PROTOCOL_UPGRADES}/:proposalReleaseTag`,
+    element: <LazyProtocolUpgradeProposal />,
   },
   {
     path: Routes.VALIDATORS,
@@ -344,6 +355,10 @@ const routerConfig = [
   {
     path: Routes.CONTRACTS,
     element: <LazyContracts name="Contracts" />,
+  },
+  {
+    path: Routes.DISCLAIMER,
+    element: <LazyDisclaimer name="Disclaimer" />,
   },
   {
     path: '*',

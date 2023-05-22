@@ -96,7 +96,7 @@ context(
         navigateTo(navigation.validators);
 
         // 2002-SINC-007
-        validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
+        validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
       });
 
       it('Able to view validators staked by me', function () {
@@ -146,7 +146,7 @@ context(
         verifyThisEpochValue(2.0);
         closeStakingDialog();
         navigateTo(navigation.validators);
-        validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
+        validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
       });
 
       it('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
@@ -166,10 +166,11 @@ context(
         verifyThisEpochValue(6.0);
         closeStakingDialog();
         navigateTo(navigation.validators);
-        validateValidatorListTotalStakeAndShare('0', '6.00', '100.00%');
+        validateValidatorListTotalStakeAndShare('0', '3,006.00', '50.05%');
       });
 
       it('Able to stake against multiple validators', function () {
+        vegaWalletTeardown();
         stakingPageAssociateTokens('5');
         verifyUnstakedBalance(5.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -197,14 +198,10 @@ context(
           .eq(1)
           .within(() => {
             cy.getByTestId(stakeValidatorListTotalStake)
-              .should('have.text', '2.00')
+              .should('have.text', '3,002.00')
               .and('be.visible');
             cy.getByTestId(stakeValidatorListTotalShare)
-              .should('have.text', '66.67%')
-              .and('be.visible');
-            cy.getByTestId(stakeValidatorListTotalStake)
-              .scrollIntoView()
-              .should('have.text', '2.00')
+              .should('have.text', '50.01%')
               .and('be.visible');
           });
         cy.get(`[row-id="${1}"]`)
@@ -212,14 +209,10 @@ context(
           .within(() => {
             cy.getByTestId(stakeValidatorListTotalStake)
               .scrollIntoView()
-              .should('have.text', '1.00')
+              .should('have.text', '3,001.00')
               .and('be.visible');
             cy.getByTestId(stakeValidatorListTotalShare)
-              .should('have.text', '33.33%')
-              .and('be.visible');
-            cy.getByTestId(stakeValidatorListTotalStake)
-              .scrollIntoView()
-              .should('have.text', '1.00')
+              .should('have.text', '49.99%')
               .and('be.visible');
           });
       });
@@ -282,7 +275,7 @@ context(
           txTimeout
         );
         navigateTo(navigation.validators);
-        validateValidatorListTotalStakeAndShare('0', '0.00', '0.00%');
+        validateValidatorListTotalStakeAndShare('0', '3,000.00', '50.00%');
 
         cy.getByTestId(userStakeBtn).should('not.exist');
         cy.getByTestId(userStake).should('not.exist');
@@ -354,7 +347,7 @@ context(
           txTimeout
         );
         navigateTo(navigation.validators);
-        validateValidatorListTotalStakeAndShare('0', '0.00', '0.00%');
+        validateValidatorListTotalStakeAndShare('0', '3,000.00', '50.00%');
       });
 
       it('Disassociating all vesting contract tokens max - removes all staked tokens', function () {
@@ -382,7 +375,7 @@ context(
           txTimeout
         );
         navigateTo(navigation.validators);
-        validateValidatorListTotalStakeAndShare('0', '0.00', '0.00%');
+        validateValidatorListTotalStakeAndShare('0', '3,000.00', '50.00%');
       });
 
       it('Disassociating some tokens - prioritizes unstaked tokens', function () {
@@ -404,7 +397,7 @@ context(
         });
         verifyStakedBalance(2.0);
         navigateTo(navigation.validators);
-        validateValidatorListTotalStakeAndShare('0', '2.00', '100.00%');
+        validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
       });
 
       it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {

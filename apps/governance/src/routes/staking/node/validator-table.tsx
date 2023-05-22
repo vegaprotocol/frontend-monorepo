@@ -1,11 +1,15 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useEnvironment,
   DocsLinks,
   ExternalLinks,
 } from '@vegaprotocol/environment';
-import { toBigNum } from '@vegaprotocol/utils';
+import {
+  formatNumberPercentage,
+  removePaginationWrapper,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   Link as UTLink,
@@ -24,11 +28,11 @@ import { SubHeading } from '../../../components/heading';
 import {
   getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
-  getOverstakingPenalty,
-  getPerformancePenalty,
-  getTotalPenalties,
   getUnnormalisedVotingPower,
   getStakePercentage,
+  calculatesPerformancePenalty,
+  calculateOverstakedPenalty,
+  calculateOverallPenalty,
 } from '../shared';
 import type { ReactNode } from 'react';
 import type { StakingNodeFieldsFragment } from '../__generated__/Staking';
@@ -78,17 +82,27 @@ export const ValidatorTable = ({
 
   const stakedOnNode = toBigNum(node.stakedTotal, decimals);
 
-  const { rawValidatorScore, performanceScore, stakeScore } =
-    getLastEpochScoreAndPerformance(previousEpochData, node.id);
+  const { rawValidatorScore } = getLastEpochScoreAndPerformance(
+    previousEpochData,
+    node.id
+  );
 
   const stakePercentage = getStakePercentage(total, stakedOnNode);
 
-  const totalPenaltiesAmount = getTotalPenalties(
-    rawValidatorScore,
-    performanceScore,
-    stakedOnNode.toString(),
-    total.toString()
-  );
+  const penalties = useMemo(() => {
+    const allNodesInPreviousEpoch = removePaginationWrapper(
+      previousEpochData?.epoch.validatorsConnection?.edges
+    );
+    return {
+      // current epoch
+      performance: calculatesPerformancePenalty(
+        node.rankingScore.performanceScore
+      ),
+      // previous epoch
+      overstaked: calculateOverstakedPenalty(node.id, allNodesInPreviousEpoch),
+      overall: calculateOverallPenalty(node.id, allNodesInPreviousEpoch),
+    };
+  }, [node, previousEpochData?.epoch.validatorsConnection?.edges]);
 
   return (
     <>
@@ -242,7 +256,7 @@ export const ValidatorTable = ({
 
               <Tooltip description={t('OverstakedPenaltyDescription')}>
                 <span data-testid="overstaking-penalty">
-                  {getOverstakingPenalty(rawValidatorScore, stakeScore)}
+                  {formatNumberPercentage(penalties.overstaked, 2)}
                 </span>
               </Tooltip>
             </KeyValueTableRow>
@@ -251,7 +265,7 @@ export const ValidatorTable = ({
 
               <Tooltip description={t('PerformancePenaltyDescription')}>
                 <span data-testid="performance-penalty">
-                  {getPerformancePenalty(performanceScore)}
+                  {formatNumberPercentage(penalties.performance, 2)}
                 </span>
               </Tooltip>
             </KeyValueTableRow>
@@ -260,7 +274,7 @@ export const ValidatorTable = ({
                 <strong>{t('TOTAL PENALTIES')}</strong>
               </span>
               <span data-testid="total-penalties">
-                <strong>{totalPenaltiesAmount}</strong>
+                <strong>{formatNumberPercentage(penalties.overall, 2)}</strong>
               </span>
             </KeyValueTableRow>
           </KeyValueTable>

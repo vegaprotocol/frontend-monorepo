@@ -1,7 +1,7 @@
 import { mockConnectWallet } from '@vegaprotocol/cypress';
 
 describe('Navbar', { tags: '@smoke' }, () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearAllLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
@@ -46,6 +46,18 @@ describe('Navbar', { tags: '@smoke' }, () => {
             expect(element.text()).to.eq(text);
           });
       });
+    });
+
+    it('Disclaimer should be presented after choosing from menu', () => {
+      cy.get('nav')
+        .find('ul li:contains(Resources)')
+        .contains('Resources')
+        .click();
+      cy.getByTestId('Disclaimer').eq(0).click();
+      cy.location('hash').should('equal', '#/disclaimer');
+      cy.get('p').contains(
+        'Vega is a decentralised peer-to-peer protocol that can be used to trade derivatives with cryptoassets.'
+      );
     });
   });
 

@@ -1,11 +1,11 @@
 import {
-  StatisticsDocument,
-  BlockTimeDocument,
-} from '../../utils/__generated__/Node';
+  NodeCheckDocument,
+  NodeCheckTimeUpdateDocument,
+} from '../../utils/__generated__/NodeCheck';
 import type {
-  StatisticsQuery,
-  BlockTimeSubscription,
-} from '../../utils/__generated__/Node';
+  NodeCheckQuery,
+  NodeCheckTimeUpdateSubscription,
+} from '../../utils/__generated__/NodeCheck';
 import { Networks } from '../../types';
 import type { RequestHandlerResponse } from 'mock-apollo-client';
 import { createMockClient } from 'mock-apollo-client';
@@ -21,7 +21,7 @@ type MockClientProps = {
   busEvents?: MockRequestConfig;
 };
 
-export const getMockBusEventsResult = (): BlockTimeSubscription => ({
+export const getMockBusEventsResult = (): NodeCheckTimeUpdateSubscription => ({
   busEvents: [
     {
       __typename: 'BusEvent',
@@ -32,19 +32,21 @@ export const getMockBusEventsResult = (): BlockTimeSubscription => ({
 
 export const getMockStatisticsResult = (
   env: Networks = Networks.TESTNET
-): StatisticsQuery => ({
+): NodeCheckQuery => ({
   statistics: {
     __typename: 'Statistics',
     chainId: `${env.toLowerCase()}-0123`,
     blockHeight: '11',
+    vegaTime: new Date().toISOString(),
   },
 });
 
-export const getMockQueryResult = (env: Networks): StatisticsQuery => ({
+export const getMockQueryResult = (env: Networks): NodeCheckQuery => ({
   statistics: {
     __typename: 'Statistics',
     chainId: `${env.toLowerCase()}-0123`,
     blockHeight: '11',
+    vegaTime: new Date().toISOString(),
   },
 });
 
@@ -72,11 +74,11 @@ export default function ({
   const mockClient = createMockClient();
 
   mockClient.setRequestHandler(
-    StatisticsDocument,
+    NodeCheckDocument,
     getHandler(statistics, getMockStatisticsResult(network))
   );
   mockClient.setRequestHandler(
-    BlockTimeDocument,
+    NodeCheckTimeUpdateDocument,
     getHandler(busEvents, getMockBusEventsResult())
   );
 

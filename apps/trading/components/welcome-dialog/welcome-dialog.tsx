@@ -30,17 +30,24 @@ export const WelcomeDialog = () => {
   const shouldDisplayWelcomeDialog = useGlobalStore(
     (store) => store.shouldDisplayWelcomeDialog
   );
-  const isRiskDialogNeeded = riskAccepted !== 'true' && !('Cypress' in window);
-  const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
-  const onCloseDialog = useCallback(() => {
-    update({ shouldDisplayWelcomeDialog: isRiskDialogNeeded });
-  }, [update, isRiskDialogNeeded]);
 
+  const isRiskDialogNeeded =
+    riskAccepted !== 'true' &&
+    VEGA_ENV !== Networks.MAINNET &&
+    !('Cypress' in window);
+
+  const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
+
+  const onCloseDialog = useCallback(() => {
+    update({
+      shouldDisplayWelcomeDialog: isRiskDialogNeeded,
+    });
+  }, [update, isRiskDialogNeeded]);
   if (isRiskDialogNeeded) {
     dialogContent = (
       <RiskNoticeDialog onClose={onCloseDialog} network={VEGA_ENV} />
     );
-    title = VEGA_ENV === Networks.MAINNET ? t('WARNING') : t('Vega Console');
+    title = t('Vega Console');
     size = 'medium';
   } else if (isWelcomeDialogNeeded && data?.length === 0) {
     dialogContent = <WelcomeNoticeDialog />;

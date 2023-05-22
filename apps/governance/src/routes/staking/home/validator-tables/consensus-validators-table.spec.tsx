@@ -79,36 +79,72 @@ const MOCK_PREVIOUS_EPOCH: PreviousEpochQuery = {
         {
           node: {
             id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
+            stakedTotal: '14182454495731682635157',
             rewardScore: {
               rawValidatorScore: '0.25',
               performanceScore: '0.9998677767864936',
+              multisigScore: '',
+              validatorScore: '',
+              normalisedScore: '',
+              validatorStatus:
+                Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
             },
             rankingScore: {
               stakeScore: '0.2499583402766206',
+              performanceScore: '0.9998677767864936',
+              status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+              previousStatus:
+                Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+              rankingScore: '',
+              votingPower: '',
             },
           },
         },
         {
           node: {
             id: '966438c6bffac737cfb08173ffcb3f393c4692b099ad80cb45a82e2dc0a8cf99',
+            stakedTotal: '9618711883996159534058',
             rewardScore: {
               rawValidatorScore: '0.3',
               performanceScore: '1',
+              multisigScore: '',
+              validatorScore: '0.31067',
+              normalisedScore: '',
+              validatorStatus:
+                Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
             },
             rankingScore: {
               stakeScore: '0.25',
+              performanceScore: '0.9998677767864936',
+              status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+              previousStatus:
+                Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+              rankingScore: '',
+              votingPower: '',
             },
           },
         },
         {
           node: {
             id: '12c81b738e8051152e1afe44376ec37bca9216466e6d44cdd772194bad0ada81',
+            stakedTotal: '4041343338923442976709',
             rewardScore: {
               rawValidatorScore: '0.35',
               performanceScore: '0.999629748500531',
+              multisigScore: '',
+              validatorScore: '',
+              normalisedScore: '',
+              validatorStatus:
+                Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
             },
             rankingScore: {
               stakeScore: '0.2312',
+              performanceScore: '0.9998677767864936',
+              status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+              previousStatus:
+                Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+              rankingScore: '',
+              votingPower: '',
             },
           },
         },

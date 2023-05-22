@@ -30,6 +30,7 @@ import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
 import { ViewConnectorForm } from './view-connector-form';
 import { useChainIdQuery } from './__generated__/ChainId';
+import { useVegaWallet } from '../use-vega-wallet';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
@@ -38,6 +39,7 @@ type WalletType = 'jsonRpc' | 'hosted' | 'view';
 export interface VegaConnectDialogProps {
   connectors: Connectors;
   onChangeOpen?: (open: boolean) => void;
+  riskMessage?: React.ReactNode;
 }
 
 export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
@@ -60,25 +62,30 @@ export interface VegaWalletDialogStore {
 export const VegaConnectDialog = ({
   connectors,
   onChangeOpen,
+  riskMessage,
 }: VegaConnectDialogProps) => {
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
     (store) => store.vegaWalletDialogOpen
   );
-  const updateVegaWalletDialog = useVegaWalletDialogStore((store) =>
-    onChangeOpen
-      ? (open: boolean) => {
-          store.updateVegaWalletDialog(open);
-          onChangeOpen(open);
-        }
-      : store.updateVegaWalletDialog
+  const updateVegaWalletDialog = useVegaWalletDialogStore(
+    (store) => (open: boolean) => {
+      store.updateVegaWalletDialog(open);
+      onChangeOpen?.(open);
+    }
   );
-  const closeVegaWalletDialog = useVegaWalletDialogStore((store) =>
-    onChangeOpen
-      ? () => {
-          store.closeVegaWalletDialog();
-          onChangeOpen(false);
-        }
-      : store.closeVegaWalletDialog
+  const closeVegaWalletDialog = useVegaWalletDialogStore((store) => () => {
+    store.closeVegaWalletDialog();
+    onChangeOpen?.(false);
+  });
+  const { disconnect, acknowledgeNeeded } = useVegaWallet();
+  const onVegaWalletDialogChange = useCallback(
+    (open: boolean) => {
+      updateVegaWalletDialog(open);
+      if (!open && acknowledgeNeeded) {
+        disconnect();
+      }
+    },
+    [updateVegaWalletDialog, acknowledgeNeeded, disconnect]
   );
 
   const { data, error, loading } = useChainIdQuery();
@@ -112,6 +119,7 @@ export const VegaConnectDialog = ({
         connectors={connectors}
         closeDialog={closeVegaWalletDialog}
         appChainId={data.statistics.chainId}
+        riskMessage={riskMessage}
       />
     );
   };
@@ -120,7 +128,7 @@ export const VegaConnectDialog = ({
     <Dialog
       open={vegaWalletDialogOpen}
       size="small"
-      onChange={updateVegaWalletDialog}
+      onChange={onVegaWalletDialogChange}
     >
       {renderContent()}
     </Dialog>
@@ -131,16 +139,17 @@ const ConnectDialogContainer = ({
   connectors,
   closeDialog,
   appChainId,
+  riskMessage,
 }: {
   connectors: Connectors;
   closeDialog: () => void;
   appChainId: string;
+  riskMessage?: React.ReactNode;
 }) => {
   const { VEGA_WALLET_URL, VEGA_ENV, HOSTED_WALLET_URL } = useEnvironment();
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
   const [walletType, setWalletType] = useState<WalletType>();
-
   const reset = useCallback(() => {
     setSelectedConnector(undefined);
     setWalletType(undefined);
@@ -189,6 +198,7 @@ const ConnectDialogContainer = ({
       onConnect={closeDialog}
       appChainId={appChainId}
       reset={reset}
+      riskMessage={riskMessage}
     />
   ) : (
     <ConnectorList
@@ -255,6 +265,7 @@ const SelectedForm = ({
   jsonRpcState,
   reset,
   onConnect,
+  riskMessage,
 }: {
   type: WalletType;
   connector: VegaConnector;
@@ -265,6 +276,7 @@ const SelectedForm = ({
   };
   reset: () => void;
   onConnect: () => void;
+  riskMessage?: React.ReactNode;
 }) => {
   if (connector instanceof RestConnector) {
     return (
@@ -317,6 +329,7 @@ const SelectedForm = ({
             onConnect={onConnect}
             appChainId={appChainId}
             reset={reset}
+            riskMessage={riskMessage}
           />
         </ConnectDialogContent>
         <ConnectDialogFooter />

@@ -36,9 +36,8 @@ export const Navbar = ({
 }) => {
   const { GITHUB_FEEDBACK_URL } = useEnvironment();
   const tokenLink = useLinks(DApp.Token);
-  const { marketId } = useGlobalStore((store) => ({
-    marketId: store.marketId,
-  }));
+  const marketId = useGlobalStore((store) => store.marketId);
+
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
@@ -106,6 +105,14 @@ export const Navbar = ({
                   <NavExternalLink href={GITHUB_FEEDBACK_URL}>
                     {t('Give Feedback')}
                   </NavExternalLink>
+                </NavigationItem>
+                <NavigationItem>
+                  <NavigationLink
+                    data-testid="Disclaimer"
+                    to={Links[Routes.DISCLAIMER]()}
+                  >
+                    {t('Disclaimer')}
+                  </NavigationLink>
                 </NavigationItem>
               </NavigationList>
             </NavigationContent>

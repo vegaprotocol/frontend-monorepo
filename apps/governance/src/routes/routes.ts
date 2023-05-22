@@ -5,6 +5,7 @@ const Routes = {
   REWARDS: '/rewards',
   PROPOSALS: '/proposals',
   PROPOSALS_REJECTED: '/proposals/rejected',
+  PROTOCOL_UPGRADES: '/protocol-upgrades',
   NOT_PERMITTED: '/not-permitted',
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
@@ -14,6 +15,7 @@ const Routes = {
   SUPPLY: '/token/tranches',
   ASSOCIATE: '/token/associate',
   DISASSOCIATE: '/token/disassociate',
+  DISCLAIMER: '/disclaimer',
 };
 
 export default Routes;

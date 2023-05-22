@@ -12,13 +12,16 @@ import {
 } from '@vegaprotocol/web3';
 import { WelcomeDialog } from '../components/welcome-dialog';
 import { TransferDialog } from '@vegaprotocol/accounts';
+import { RiskMessage } from '../components/welcome-dialog';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
-
   return (
     <>
-      <VegaConnectDialog connectors={Connectors} />
+      <VegaConnectDialog
+        connectors={Connectors}
+        riskMessage={<RiskMessage />}
+      />
       <AssetDetailsDialog
         assetId={id}
         trigger={trigger || null}

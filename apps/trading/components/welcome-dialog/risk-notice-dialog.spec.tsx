@@ -47,25 +47,4 @@ describe('Risk notice dialog', () => {
       expect(mockOnClose).toHaveBeenCalled();
     }
   );
-
-  it('displays a risk message for mainnet', () => {
-    const introText = 'Regulation may apply to use of this app';
-    const network = Networks.MAINNET;
-
-    // @ts-ignore ignore mock implementation
-    useEnvironment.mockImplementation(() => ({
-      ...mockEnvDefinitions,
-      VEGA_ENV: network,
-    }));
-
-    render(<RiskNoticeDialog onClose={mockOnClose} network={network} />);
-
-    expect(screen.getByText(introText)).toBeInTheDocument();
-
-    const button = screen.getByRole('button', {
-      name: 'I understand, Continue',
-    });
-    fireEvent.click(button);
-    expect(mockOnClose).toHaveBeenCalled();
-  });
 });

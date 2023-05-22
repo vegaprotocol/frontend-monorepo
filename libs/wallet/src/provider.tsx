@@ -9,8 +9,10 @@ import type {
   VegaConnector,
 } from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
-import { WALLET_KEY } from './storage';
+import { WALLET_KEY, WALLET_RISK_ACCEPTED_KEY } from './storage';
 import { ViewConnector } from './connectors';
+import { useEnvironment, Networks } from '@vegaprotocol/environment';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 
 interface VegaWalletProviderProps {
   children: ReactNode;
@@ -108,6 +110,11 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     return connector.current.sendTx(pubkey, transaction);
   }, []);
 
+  const { VEGA_ENV } = useEnvironment();
+  const [riskAcceptedValue] = useLocalStorage(WALLET_RISK_ACCEPTED_KEY);
+  const acknowledgeNeeded =
+    VEGA_ENV === Networks.MAINNET && riskAcceptedValue !== 'true';
+
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
       isReadOnly,
@@ -118,6 +125,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       disconnect,
       sendTx,
       fetchPubKeys,
+      acknowledgeNeeded,
     };
   }, [
     isReadOnly,
@@ -128,6 +136,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     disconnect,
     sendTx,
     fetchPubKeys,
+    acknowledgeNeeded,
   ]);
 
   return (

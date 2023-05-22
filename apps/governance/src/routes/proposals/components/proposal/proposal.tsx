@@ -101,9 +101,12 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
           <ProposalDescription description={proposal.rationale.description} />
         </div>
 
-        <div className="mb-4">
-          <ProposalTerms data={proposal.terms} />
-        </div>
+        {proposal.terms.change.__typename !== 'NewMarket' &&
+          proposal.terms.change.__typename !== 'UpdateMarket' && (
+            <div className="mb-4">
+              <ProposalTerms data={proposal.terms} />
+            </div>
+          )}
 
         <div className="mb-6">
           <ProposalJson proposal={restData?.data?.proposal} />

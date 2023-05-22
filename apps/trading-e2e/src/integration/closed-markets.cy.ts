@@ -1,5 +1,10 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
+import type { DataSourceDefinition } from '@vegaprotocol/types';
+import {
+  MarketState,
+  MarketStateMapping,
+  PropertyKeyType,
+} from '@vegaprotocol/types';
 import { addDays, subDays } from 'date-fns';
 import {
   chainIdQuery,
@@ -20,6 +25,25 @@ import {
 } from '@vegaprotocol/utils';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
+  const settlementDataProperty = 'settlement-data-property';
+  const settlementDataPropertyKey = {
+    __typename: 'PropertyKey' as const,
+    name: settlementDataProperty,
+    type: PropertyKeyType.TYPE_INTEGER,
+    numberDecimalPlaces: 2,
+  };
+  const settlementDataSourceData: DataSourceDefinition = {
+    sourceType: {
+      sourceType: {
+        filters: [
+          {
+            __typename: 'Filter',
+            key: settlementDataPropertyKey,
+          },
+        ],
+      },
+    },
+  };
   const rowSelector =
     '[data-testid="tab-closed-markets"] .ag-center-cols-container .ag-row';
 
@@ -37,11 +61,15 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     tradableInstrument: {
       instrument: {
         product: {
+          dataSourceSpecBinding: {
+            settlementDataProperty,
+          },
           dataSourceSpecForTradingTermination: {
             id: 'market-1-trading-termination-oracle-id',
           },
           dataSourceSpecForSettlementData: {
             id: 'market-1-settlement-data-oracle-id',
+            data: settlementDataSourceData,
           },
           settlementAsset,
         },
@@ -63,6 +91,15 @@ describe('Closed markets', { tags: '@smoke' }, () => {
             `settlement-expiry-date:${addDays(new Date(), 4).toISOString()}`,
           ],
         },
+        product: {
+          dataSourceSpecBinding: {
+            settlementDataProperty,
+          },
+          dataSourceSpecForSettlementData: {
+            id: 'market-1-settlement-data-oracle-id',
+            data: settlementDataSourceData,
+          },
+        },
       },
     },
   });
@@ -80,6 +117,15 @@ describe('Closed markets', { tags: '@smoke' }, () => {
           tags: [
             `settlement-expiry-date:${subDays(new Date(), 2).toISOString()}`,
           ],
+        },
+        product: {
+          dataSourceSpecBinding: {
+            settlementDataProperty,
+          },
+          dataSourceSpecForSettlementData: {
+            id: 'market-1-settlement-data-oracle-id',
+            data: settlementDataSourceData,
+          },
         },
       },
     },
@@ -301,7 +347,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
         addDecimalsFormatNumber(
           // @ts-ignore cannot deep un-partial
           specDataConnection.externalData.data.data[0].value,
-          settledMarket.decimalPlaces
+          settlementDataPropertyKey.numberDecimalPlaces
         )
       );
 
