@@ -53,7 +53,7 @@ export const OracleDetails = ({
             <OracleLink id={id} />
           </TableCell>
         </TableRow>
-        <OracleDetailsType type={sourceType.__typename} />
+        <OracleDetailsType sourceType={sourceType} />
         <OracleSigners sourceType={sourceType} />
         <OracleMarkets id={id} />
         <TableRow modifier="bordered">
