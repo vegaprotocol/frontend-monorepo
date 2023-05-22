@@ -36,6 +36,8 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
     return valid && valid.length > 0 ? valid[0] : undefined;
   }, [VEGA_ENV, data]);
 
+  if (!APP_VERSION) return null;
+
   if (!visible || !latest || latest.tagName === APP_VERSION) return null;
 
   const versionChange = (
@@ -65,7 +67,7 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
         {t('Bookmark')}{' '}
         <ExternalLink href={CANONICAL_URL}>{t('vega.trading')}</ExternalLink>
         <CopyWithTooltip text={CANONICAL_URL}>
-          <button title={t('Copy %s', CANONICAL_URL)} className="text-white">
+          <button title={t('Copy %s', CANONICAL_URL)}>
             <span className="sr-only">{t('Copy %s', CANONICAL_URL)}</span>
             <VegaIcon size={14} name={VegaIconNames.COPY} />
           </button>
