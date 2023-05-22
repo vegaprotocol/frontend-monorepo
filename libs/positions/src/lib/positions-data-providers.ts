@@ -14,7 +14,7 @@ import type {
   MarketMaybeWithData,
   MarketDataQueryVariables,
 } from '@vegaprotocol/markets';
-import { marketsWithDataProvider } from '@vegaprotocol/markets';
+import { allMarketsWithDataProvider } from '@vegaprotocol/markets';
 import type {
   PositionsQuery,
   PositionFieldsFragment,
@@ -308,7 +308,8 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
   [
     positionsDataProvider,
     accountsDataProvider,
-    (callback, client) => marketsWithDataProvider(callback, client, undefined),
+    (callback, client) =>
+      allMarketsWithDataProvider(callback, client, undefined),
     marginsDataProvider,
   ],
   ([positions, accounts, marketsData, margins], variables) => {
