@@ -53,7 +53,7 @@ export const useVegaReleases = (
     return () => {
       mounted = false;
     };
-  }, [includeDevReleases, setState]);
+  }, [cache, includeDevReleases]);
 
   useEffect(() => {
     fetchData();
