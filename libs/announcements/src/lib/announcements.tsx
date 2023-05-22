@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import type { AppNameType, Announcement } from './schema';
 import { useAnnouncement } from './hooks/use-announcement';
 import {
-  Icon,
   AnnouncementBanner as Banner,
   ExternalLink,
   VegaIcon,
