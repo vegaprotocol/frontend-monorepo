@@ -13,7 +13,6 @@ import {
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
-import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),

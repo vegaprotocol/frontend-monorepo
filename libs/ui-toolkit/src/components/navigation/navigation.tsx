@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { useRef } from 'react';
 import { VegaLogo } from '../vega-logo';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import { Icon, VegaIcon, VegaIconNames } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 import { Drawer } from '../drawer';
 import { NavLink } from 'react-router-dom';
 import type {

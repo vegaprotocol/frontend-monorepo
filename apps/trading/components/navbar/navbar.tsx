@@ -16,7 +16,6 @@ import {
   NavigationItem,
   NavigationLink,
   ExternalLink,
-  Icon,
   NavigationBreakpoint,
   NavigationTrigger,
   NavigationContent,
