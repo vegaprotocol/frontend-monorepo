@@ -277,6 +277,7 @@ const MainGrid = memo(
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
+              priority={LayoutPriority.High}
               minSize={200}
               preferredSize={sizesMiddle[1] || '50%'}
             >

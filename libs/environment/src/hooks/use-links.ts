@@ -28,21 +28,24 @@ const EmptyLinks: DAppLinks = {
 const ExplorerLinks = {
   ...EmptyLinks,
   [Networks.TESTNET]: 'https://explorer.fairground.wtf',
-  [Networks.VALIDATOR_TESTNET]: 'https://validator-testnet.explorer.vega.xyz',
+  [Networks.VALIDATOR_TESTNET]:
+    'https://explorer.validators-testnet.vega.rocks',
   [Networks.MAINNET]: 'https://explorer.vega.xyz',
 };
 
 const ConsoleLinks = {
   ...EmptyLinks,
-  [Networks.STAGNET1]: 'https://stagnet1.console.vega.xyz',
+  [Networks.STAGNET1]: 'https://trading.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://console.fairground.wtf',
+  [Networks.MAINNET]: 'https://vega.trading',
 };
 
 const TokenLinks = {
   ...EmptyLinks,
   [Networks.DEVNET]: 'https://dev.governance.vega.xyz',
   [Networks.TESTNET]: 'https://governance.fairground.wtf',
-  [Networks.VALIDATOR_TESTNET]: 'https://validator-testnet.governance.vega.xyz',
+  [Networks.VALIDATOR_TESTNET]:
+    'https://governance.validators-testnet.vega.rocks',
   [Networks.MAINNET]: 'https://governance.vega.xyz',
 };
 
@@ -72,10 +75,12 @@ export const DocsLinks = VEGA_DOCS_URL
   : undefined;
 
 export const useLinks = (dapp: DApp, network?: Net) => {
-  const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL } = useEnvironment();
+  const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL, VEGA_CONSOLE_URL } =
+    useEnvironment();
   const fallback = {
     [DApp.Explorer]: VEGA_EXPLORER_URL,
     [DApp.Token]: VEGA_TOKEN_URL,
+    [DApp.Console]: VEGA_CONSOLE_URL,
   };
 
   let net = network || VEGA_ENV;
