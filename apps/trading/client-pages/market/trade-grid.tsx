@@ -245,7 +245,7 @@ const MainGrid = memo(
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
-    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top-1' });
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
       id: 'middle',
     });
@@ -259,27 +259,7 @@ const MainGrid = memo(
             onChange={handleOnMiddleLayoutChange}
           >
             <ResizableGridPanel
-              priority={LayoutPriority.High}
-              minSize={200}
-              preferredSize={sizesMiddle[0] || '50%'}
-            >
-              <TradeGridChild>
-                <Tabs storageKey="console-trade-grid-main-left">
-                  <Tab id="chart" name={t('Chart')}>
-                    <TradingViews.candles.component marketId={marketId} />
-                  </Tab>
-                  <Tab id="depth" name={t('Depth')}>
-                    <TradingViews.depth.component marketId={marketId} />
-                  </Tab>
-                  <Tab id="liquidity" name={t('Liquidity')}>
-                    <TradingViews.liquidity.component marketId={marketId} />
-                  </Tab>
-                </Tabs>
-              </TradeGridChild>
-            </ResizableGridPanel>
-            <ResizableGridPanel
-              priority={LayoutPriority.Low}
-              preferredSize={sizesMiddle[1] || 330}
+              preferredSize={sizesMiddle[0] || 330}
               minSize={300}
             >
               <TradeGridChild>
@@ -297,7 +277,24 @@ const MainGrid = memo(
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
-              priority={LayoutPriority.Low}
+              minSize={200}
+              preferredSize={sizesMiddle[1] || '50%'}
+            >
+              <TradeGridChild>
+                <Tabs storageKey="console-trade-grid-main-left">
+                  <Tab id="chart" name={t('Chart')}>
+                    <TradingViews.candles.component marketId={marketId} />
+                  </Tab>
+                  <Tab id="depth" name={t('Depth')}>
+                    <TradingViews.depth.component marketId={marketId} />
+                  </Tab>
+                  <Tab id="liquidity" name={t('Liquidity')}>
+                    <TradingViews.liquidity.component marketId={marketId} />
+                  </Tab>
+                </Tabs>
+              </TradeGridChild>
+            </ResizableGridPanel>
+            <ResizableGridPanel
               preferredSize={sizesMiddle[2] || 430}
               minSize={200}
             >
