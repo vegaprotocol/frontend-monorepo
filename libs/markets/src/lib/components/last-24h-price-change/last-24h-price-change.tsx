@@ -57,9 +57,9 @@ export const Last24hPriceChange = ({
     return (
       <Tooltip
         description={
-          <span>
+          <span className="justify-start">
             {t(
-              '24 hour change is unavailable at this time. The price change in the last 120 hours is'
+              '24 hour change is unavailable at this time. The price change in the last 120 hours is:'
             )}{' '}
             <PriceChangeCell
               candles={fiveDaysCandles.map((c) => c.close) || []}

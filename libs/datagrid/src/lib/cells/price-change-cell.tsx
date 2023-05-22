@@ -25,7 +25,7 @@ export const PriceChangeCell = memo(
           ref={ref}
           className={`${signedNumberCssClass(
             change
-          )} flex items-center gap-2 justify-end font-mono text-ui-small`}
+          )} flex items-center gap-2 font-mono text-ui-small`}
         >
           <Arrow value={change} />
           <span data-testid="price-change-percentage">
