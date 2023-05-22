@@ -175,6 +175,10 @@ describe('Closed', () => {
         __typename: 'Market',
         id: marketId,
       },
+      party: {
+        __typename: 'Party',
+        id: pubKey,
+      },
     };
   };
   const position = createPosition();
@@ -182,18 +186,14 @@ describe('Closed', () => {
     request: {
       query: PositionsDocument,
       variables: {
-        partyId: pubKey,
+        partyIds: [pubKey],
       },
     },
     result: {
       data: {
-        party: {
-          __typename: 'Party',
-          id: pubKey,
-          positionsConnection: {
-            __typename: 'PositionConnection',
-            edges: [{ __typename: 'PositionEdge', node: position }],
-          },
+        positions: {
+          __typename: 'PositionConnection',
+          edges: [{ __typename: 'PositionEdge', node: position }],
         },
       },
     },

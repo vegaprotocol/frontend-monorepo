@@ -8,6 +8,7 @@ import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 
 const singleRow: Position = {
+  partyId: 'partyId',
   assetId: 'asset-id',
   assetSymbol: 'BTC',
   averageEntryPrice: '133',

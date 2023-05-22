@@ -14,7 +14,7 @@ export const useOpenVolume = (
   useDataProvider({
     dataProvider: openVolumeDataProvider,
     update,
-    variables: { partyId: partyId || '', marketId },
+    variables: { partyIds: partyId ? [partyId] : [], marketId },
     skip: !partyId,
   });
   return openVolume;
