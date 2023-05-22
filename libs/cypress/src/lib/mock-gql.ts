@@ -41,6 +41,7 @@ export const aliasGQLQuery = (
   headers?: Record<string, string>
 ) => {
   if (hasOperationName(req, operationName)) {
+    console.log(operationName, req);
     req.alias = operationName;
     if (data !== undefined || errors !== undefined) {
       req.reply({

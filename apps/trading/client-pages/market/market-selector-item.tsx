@@ -118,7 +118,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
 
         <div
           // absolute so height is not larger than price change value
-          className="absolute right-0 bottom-0  w-[120px]"
+          className="absolute right-0 bottom-0 w-[120px]"
         >
           {market.candles && (
             <Sparkline
@@ -137,10 +137,11 @@ const DataRow = ({ value, label }: { value: string; label: string }) => {
   return (
     <div
       className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight"
-      data-testid="market-item-price"
-      title={`${value} ${label}`}
+      data-testid="market-selector-data-row"
     >
-      <span className="text-sm mr-1">{value}</span>
+      <span title={label} className="text-sm mr-1">
+        {value}
+      </span>
       <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
         {label}
       </span>

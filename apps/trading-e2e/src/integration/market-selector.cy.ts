@@ -38,28 +38,28 @@ describe('markets selector', { tags: '@smoke' }, () => {
     // TODO: load data from mocks in. Using alias and wrap intermittently fails
     const data = [
       {
-        code: 'AAPL.MF21',
-        name: 'Apple Monthly (30 Jun 2022)',
-        markPrice: '46,126.90058',
+        code: 'SOLUSD',
+        markPrice: '84.41XYZalpha',
         change: '+200.00%',
-      },
-      {
-        code: 'BTCUSD.MF21',
-        name: 'ACTIVE MARKET',
-        markPrice: '46,126.90058',
-        change: '+200.00%',
+        vol: '324h vol',
       },
       {
         code: 'ETHBTC.QM21',
-        name: 'ETHBTC Quarterly (30 Jun 2022)',
-        markPrice: '46,126.90058',
+        markPrice: '46,126.90058tBTC',
         change: '+200.00%',
+        vol: '324h vol',
       },
       {
-        code: 'SOLUSD',
-        name: 'SUSPENDED MARKET',
-        markPrice: '84.41',
+        code: 'BTCUSD.MF21',
+        markPrice: '46,126.90058tDAI',
         change: '+200.00%',
+        vol: '324h vol',
+      },
+      {
+        code: 'AAPL.MF21',
+        markPrice: '46,126.90058tUSDC',
+        change: '+200.00%',
+        vol: '324h vol',
       },
     ];
     cy.getByTestId(list)
@@ -68,12 +68,13 @@ describe('markets selector', { tags: '@smoke' }, () => {
         const market = data[i];
         // 6001-MARK-021
         expect(item.find('h3').text()).equals(market.code);
-        // 6001-MARK-022
-        expect(item.find('h4').text()).equals(market.name);
+        expect(
+          item.find('[data-testid="market-selector-data-row"]').eq(0).text()
+        ).contains(market.vol);
         // 6001-MARK-024
-        expect(item.find('[data-testid="market-item-price"]').text()).equals(
-          market.markPrice
-        );
+        expect(
+          item.find('[data-testid="market-selector-data-row"]').eq(1).text()
+        ).contains(market.markPrice);
         // 6001-MARK-023
         expect(item.find('[data-testid="market-item-change"]').text()).equals(
           market.change
@@ -96,8 +97,8 @@ describe('markets selector', { tags: '@smoke' }, () => {
     // 6001-MARK-29
     cy.getByTestId(searchInput).clear().type('btc');
     cy.getByTestId(list).find('a').should('have.length', 2);
-    cy.getByTestId(list).find('a').eq(0).contains('BTCUSD.MF21');
-    cy.getByTestId(list).find('a').eq(1).contains('ETHBTC.QM21');
+    cy.getByTestId(list).find('a').eq(1).contains('BTCUSD.MF21');
+    cy.getByTestId(list).find('a').eq(0).contains('ETHBTC.QM21');
 
     cy.getByTestId(searchInput).clear();
     cy.getByTestId(list).find('a').should('have.length', 4);
