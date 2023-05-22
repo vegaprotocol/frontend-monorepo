@@ -7,10 +7,11 @@ import { ToastPosition, useToastsConfiguration, useToasts } from './use-toasts';
 import { useCallback } from 'react';
 import { Intent } from '../../utils/intent';
 
-const testToast = {
+const TEST_TOAST = {
   id: 'test-toast',
   intent: Intent.Primary,
   content: <>{t('This is an example of a toast notification')}</>,
+  onClose: () => useToasts.getState().remove('test-toast'),
 };
 
 export const ToastPositionSetter = () => {
@@ -20,7 +21,7 @@ export const ToastPositionSetter = () => {
   const handleChange = useCallback(
     (position: ToastPosition) => {
       setPostion(position);
-      setToast(testToast);
+      setToast(TEST_TOAST);
     },
     [setToast, setPostion]
   );
