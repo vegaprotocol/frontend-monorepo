@@ -28,17 +28,6 @@ import {
 } from './__generated__/Positions';
 import type { PositionStatus } from '@vegaprotocol/types';
 
-interface PositionRejoined {
-  realisedPNL: string;
-  openVolume: string;
-  unrealisedPNL: string;
-  averageEntryPrice: string;
-  updatedAt?: string | null;
-  market: MarketMaybeWithData | null;
-  lossSocializationAmount: string | null;
-  status: PositionStatus;
-}
-
 export interface Position {
   assetId: string;
   assetSymbol: string;
@@ -73,22 +62,21 @@ export const getMetrics = (
   const metrics: Position[] = [];
   data.forEach((position) => {
     const market = position.market;
+    if (!market) {
+      return;
+    }
     const marketData = market?.data;
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    if (!market) {
-      return;
-    }
-    const generalAccount =
-      marginAccount &&
-      accounts?.find(
-        (account) =>
-          account.asset.id === marginAccount.asset.id &&
-          account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
-      );
-    const { decimals } =
+    const { decimals, id: assetId } =
       market.tradableInstrument.instrument.product.settlementAsset;
+    const generalAccount = accounts?.find(
+      (account) =>
+        account.asset.id === assetId &&
+        account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
+    );
+
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
       market;
     const openVolume = toBigNum(position.openVolume, positionDecimalPlaces);
