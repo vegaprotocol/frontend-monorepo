@@ -50,10 +50,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
       cy.wrap(markets[0]).as('market');
     });
     cy.visit('/#/portfolio');
-  });
-
-  beforeEach(() => {
-    cy.setVegaWallet();
+    cy.connectVegaWallet();
   });
 
   it('can deposit', function () {
@@ -172,7 +169,6 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
       'contain.text',
       'Error occurredcannot estimate gas'
     );
-    cy.getByTestId(toastCloseBtn).click({ multiple: true });
     cy.getByTestId(completeWithdrawalBtn).should(
       'contain.text',
       'Complete withdrawal'
@@ -376,10 +372,14 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       'contain.text',
       'Transaction confirmed'
     );
-    cy.getByTestId(toastContent, txTimeout).should(
-      'contain.text',
-      'Funds unlockedYour funds have been unlocked for withdrawalView in block explorerWithdraw 1.00 tBTCComplete withdrawal'
-    );
+    cy.getByTestId(toastContent, txTimeout)
+      .should('contain.text', 'Funds unlocked')
+      .and('contain.text', 'Your funds have been unlocked for withdrawal.')
+      .and(
+        'contain.text',
+        'View in block explorerYou can save your withdrawal details for extra security.'
+      )
+      .and('contain.text', 'Withdraw 1.00 tBTCComplete withdrawal');
 
     cy.get('.ag-center-cols-container')
       .find('[col-id="status"]')
@@ -407,7 +407,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       });
 
     cy.getByTestId('withdraw-dialog-button').click({ force: true });
-    cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '7.999');
+    cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '5.999');
   });
 
   it('approved amount is less than deposit', function () {

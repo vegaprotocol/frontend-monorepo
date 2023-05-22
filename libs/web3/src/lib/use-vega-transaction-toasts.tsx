@@ -465,6 +465,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
       <a
         href="#"
         className="inline underline underline-offset-4 cursor-pointer text-inherit break-words"
+        data-testid="toast-withdrawal-details"
         onClick={(e) => {
           e.preventDefault();
           if (tx.withdrawal?.id) {
