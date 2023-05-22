@@ -245,9 +245,9 @@ const MainGrid = memo(
     pinnedAsset?: PinnedAsset;
   }) => {
     const navigate = useNavigate();
-    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top-1' });
+    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
-      id: 'middle',
+      id: 'middle-1',
     });
 
     return (
