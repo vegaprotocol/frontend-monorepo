@@ -53,12 +53,13 @@ const MobileWalletButton = ({
       setDrawerOpen(!drawerOpen);
     }
   }, [drawerOpen, fetchPubKeys, isConnected, openVegaWalletDialog]);
+  console.log(drawerOpen, isYellow);
 
   const iconClass = drawerOpen
     ? 'hidden'
     : isYellow
     ? 'fill-black'
-    : 'fill-black dark:fill-white';
+    : 'fill-white';
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
   const walletButton = (
