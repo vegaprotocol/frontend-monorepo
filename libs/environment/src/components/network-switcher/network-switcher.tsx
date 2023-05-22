@@ -13,6 +13,7 @@ import {
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
+import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
@@ -110,7 +111,10 @@ export const NetworkSwitcher = ({
         <DropdownMenuTrigger
           data-testid="network-switcher"
           ref={menuRef}
-          className={className}
+          className={classNames(
+            'flex justify-between items-center text-sm text-vega-dark-600 dark:text-vega-light-600 py-1 px-2 rounded border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500 hover:bg-vega-light-500',
+            className
+          )}
         >
           <span className="flex justify-between items-center gap-2">
             <span>{envTriggerMapping[current]}</span>

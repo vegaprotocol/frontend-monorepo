@@ -86,7 +86,7 @@ export const AnnouncementBanner = ({
         )}
       </div>
       <button
-        className="absolute right-0 top-0 p-4 w-10 h-full flex items-center justify-center"
+        className="absolute right-0 top-0 p-4 w-10 h-full flex items-center justify-center text-white"
         data-testid="app-announcement-close"
         onClick={() => setVisible(false)}
       >

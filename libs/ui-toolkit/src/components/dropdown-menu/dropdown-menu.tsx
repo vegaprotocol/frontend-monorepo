@@ -44,18 +44,17 @@ export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   DropdownMenuPrimitive.DropdownMenuTriggerProps
 >(({ className, children, ...props }, forwardedRef) => {
-  const triggerClasses = classNames(
+  const defaultClasses = [
     'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
     'border-vega-light-200 dark:border-vega-dark-200',
     'hover:border-vega-light-300 dark:hover:border-vega-dark-300',
-    className
-  );
+  ].join(' ');
 
   return (
     <DropdownMenuPrimitive.Trigger
       asChild={true}
       ref={forwardedRef}
-      className={triggerClasses}
+      className={className || defaultClasses}
       {...props}
     >
       <button>{children}</button>
