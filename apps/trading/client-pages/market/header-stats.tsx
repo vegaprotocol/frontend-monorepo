@@ -56,13 +56,7 @@ export const HeaderStats = ({ market }: HeaderStatsProps) => {
               decimalPlaces={market?.decimalPlaces}
             />
           </HeaderStat>
-          <HeaderStat
-            heading={t('Volume (24h)')}
-            testId="market-volume"
-            description={t(
-              'The total number of contracts traded in the last 24 hours.'
-            )}
-          >
+          <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
             <Last24hVolume
               marketId={market?.id}
               positionDecimalPlaces={market?.positionDecimalPlaces}
