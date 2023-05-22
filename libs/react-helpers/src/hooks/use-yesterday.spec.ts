@@ -1,5 +1,5 @@
 import { act } from 'react-dom/test-utils';
-import { now, useYesterday } from './use-yesterday';
+import { createAgo, now } from './use-yesterday';
 import { renderHook } from '@testing-library/react';
 
 describe('now', () => {
@@ -25,33 +25,41 @@ describe('now', () => {
   );
 });
 
-describe('useYesterday', () => {
-  beforeAll(() => {
-    jest.useFakeTimers().setSystemTime(new Date('1970-01-05T14:36:20.100Z'));
+describe('createAgo', () => {
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(new Date('1970-01-30T14:36:20.100Z'));
   });
   afterAll(() => {
     jest.useRealTimers();
   });
-  it('returns yesterday timestamp rounded by 5 minutes', () => {
-    const { result, rerender } = renderHook(() => useYesterday());
-    expect(result.current).toEqual(
-      new Date('1970-01-04T14:35:00.000Z').getTime()
+  it.each([
+    ['yesterday', 24 * 60 * 60 * 1000, '1970-01-29T14:35:00.000Z'],
+    ['2 days ago', 2 * 24 * 60 * 60 * 1000, '1970-01-28T14:35:00.000Z'],
+    ['5 days ago', 5 * 24 * 60 * 60 * 1000, '1970-01-25T14:35:00.000Z'],
+    ['20 days ago', 20 * 24 * 60 * 60 * 1000, '1970-01-10T14:35:00.000Z'],
+  ])('returns %s timestamp rounded by 5 minutes', (_, ago, expectedTime) => {
+    const { result, rerender } = renderHook(() =>
+      createAgo(ago)(5 * 60 * 1000)
     );
+    expect(result.current).toEqual(new Date(expectedTime).getTime());
     rerender();
     rerender();
     rerender();
-    expect(result.current).toEqual(
-      new Date('1970-01-04T14:35:00.000Z').getTime()
-    );
+    expect(result.current).toEqual(new Date(expectedTime).getTime());
   });
-  it('updates yesterday timestamp after 5 minutes', () => {
-    const { result, rerender } = renderHook(() => useYesterday());
+  it.each([
+    ['yesterday', 24 * 60 * 60 * 1000, '1970-01-29T14:40:00.000Z'],
+    ['2 days ago', 2 * 24 * 60 * 60 * 1000, '1970-01-28T14:40:00.000Z'],
+    ['5 days ago', 5 * 24 * 60 * 60 * 1000, '1970-01-25T14:40:00.000Z'],
+    ['20 days ago', 20 * 24 * 60 * 60 * 1000, '1970-01-10T14:40:00.000Z'],
+  ])('updates %s timestamp after 5 minutes', (_, ago, expectedTime) => {
+    const { result, rerender } = renderHook(() =>
+      createAgo(ago)(5 * 60 * 1000)
+    );
     act(() => {
       jest.advanceTimersByTime(5 * 60 * 1000);
       rerender();
     });
-    expect(result.current).toEqual(
-      new Date('1970-01-04T14:40:00.000Z').getTime()
-    );
+    expect(result.current).toEqual(new Date(expectedTime).getTime());
   });
 });
