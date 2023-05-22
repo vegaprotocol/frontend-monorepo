@@ -184,7 +184,9 @@ interface DataProviderParams<
   additionalContext?: Record<string, unknown>;
   errorPolicyGuard?: (graphqlErrors: GraphQLErrors) => boolean;
   getQueryVariables?: (variables: Variables) => QueryVariables;
-  getSubscriptionVariables?: (variables: Variables) => SubscriptionVariables;
+  getSubscriptionVariables?: (
+    variables: Variables
+  ) => SubscriptionVariables | SubscriptionVariables[];
 }
 
 /**
@@ -240,7 +242,7 @@ function makeDataProviderInternal<
   let loading = true;
   let loaded = false;
   let client: ApolloClient<object>;
-  let subscription: Subscription | undefined;
+  let subscription: Subscription[] | undefined;
   let pageInfo: PageInfo | null = null;
   let totalCount: number | undefined;
 
@@ -353,6 +355,33 @@ function makeDataProviderInternal<
     }
   };
 
+  const subscriptionSubscribe = () => {
+    if (!subscriptionQuery || !getDelta || !update) {
+      return;
+    }
+    const subscriptionVariables = getSubscriptionVariables
+      ? getSubscriptionVariables(variables)
+      : variables;
+    subscription = ([] as (OperationVariables | undefined)[])
+      .concat(subscriptionVariables)
+      .map((variables) =>
+        client
+          .subscribe<SubscriptionData>({
+            query: subscriptionQuery,
+            variables,
+            fetchPolicy,
+          })
+          .subscribe(onNext, onError)
+      );
+  };
+
+  const subscriptionUnsubscribe = () => {
+    if (subscription) {
+      subscription.forEach((subscription) => subscription.unsubscribe());
+    }
+    subscription = undefined;
+  };
+
   const initialFetch = async (isUpdate = false) => {
     if (!client) {
       return;
@@ -402,10 +431,7 @@ function makeDataProviderInternal<
       }
       // if error will occur data provider stops subscription
       error = e as Error;
-      if (subscription) {
-        subscription.unsubscribe();
-      }
-      subscription = undefined;
+      subscriptionUnsubscribe();
     } finally {
       loading = false;
       notifyAll({ isUpdate });
@@ -449,10 +475,7 @@ function makeDataProviderInternal<
 
   const onError = (e: Error) => {
     error = e;
-    if (subscription) {
-      subscription.unsubscribe();
-      subscription = undefined;
-    }
+    subscriptionUnsubscribe();
     notifyAll();
   };
 
@@ -470,15 +493,7 @@ function makeDataProviderInternal<
       return;
     }
     if (subscriptionQuery && getDelta && update) {
-      subscription = client
-        .subscribe<SubscriptionData>({
-          query: subscriptionQuery,
-          variables: getSubscriptionVariables
-            ? getSubscriptionVariables(variables)
-            : variables,
-          fetchPolicy,
-        })
-        .subscribe(onNext, onError);
+      subscriptionSubscribe();
     }
     await initialFetch();
   };
@@ -487,8 +502,7 @@ function makeDataProviderInternal<
     if (!subscription) {
       return;
     }
-    subscription.unsubscribe();
-    subscription = undefined;
+    subscriptionUnsubscribe();
     data = null;
     error = undefined;
     loading = false;

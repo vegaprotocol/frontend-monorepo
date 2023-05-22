@@ -155,7 +155,8 @@ export const update = (
   return produce(data || [], (draft) => {
     deltas.forEach((delta) => {
       const index = draft.findIndex(
-        (node) => node.market.id === delta.marketId
+        (node) =>
+          node.market.id === delta.marketId && node.party.id === delta.partyId
       );
       if (index !== -1) {
         const currNode = draft[index];
@@ -188,11 +189,8 @@ export const update = (
 
 const getSubscriptionVariables = (
   variables: PositionsQueryVariables
-): PositionsSubscriptionSubscriptionVariables => ({
-  partyId: Array.isArray(variables.partyIds)
-    ? variables.partyIds[0]
-    : variables.partyIds,
-});
+): PositionsSubscriptionSubscriptionVariables[] =>
+  ([] as string[]).concat(variables.partyIds).map((partyId) => ({ partyId }));
 
 const positionsDataProvider = makeDataProvider<
   PositionsQuery,
@@ -266,11 +264,11 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
   [
     positionsDataProvider,
     (callback, client, variables) =>
-      accountsDataProvider(
-        callback,
-        client,
-        getSubscriptionVariables(variables)
-      ),
+      accountsDataProvider(callback, client, {
+        partyId: Array.isArray(variables.partyIds)
+          ? variables.partyIds[0]
+          : variables.partyIds,
+      }),
     (callback, client) =>
       allMarketsWithDataProvider(callback, client, undefined),
   ],

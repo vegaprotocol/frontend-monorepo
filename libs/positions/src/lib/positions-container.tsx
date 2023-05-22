@@ -24,13 +24,18 @@ export const PositionsContainer = ({
     );
   }
 
+  const partyIds = [pubKey];
+  if (allKeys && pubKeys) {
+    partyIds.push(
+      ...pubKeys
+        .map(({ publicKey }) => publicKey)
+        .filter((publicKey) => publicKey !== pubKey)
+    );
+  }
+
   return (
     <PositionsManager
-      partyIds={
-        allKeys && pubKeys
-          ? pubKeys?.map(({ publicKey }) => publicKey)
-          : [pubKey]
-      }
+      partyIds={partyIds}
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
       noBottomPlaceholder={noBottomPlaceholder}
