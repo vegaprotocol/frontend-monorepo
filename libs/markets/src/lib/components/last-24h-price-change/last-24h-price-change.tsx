@@ -57,17 +57,15 @@ export const Last24hPriceChange = ({
     return (
       <Tooltip
         description={
-          <div>
-            <span className="flex flex-col">
-              {t(
-                '24 hour change is unavailable at this time. The price change in the last 120 hours is'
-              )}{' '}
-              <PriceChangeCell
-                candles={fiveDaysCandles.map((c) => c.close) || []}
-                decimalPlaces={decimalPlaces}
-              />
-            </span>
-          </div>
+          <span>
+            {t(
+              '24 hour change is unavailable at this time. The price change in the last 120 hours is'
+            )}{' '}
+            <PriceChangeCell
+              candles={fiveDaysCandles.map((c) => c.close) || []}
+              decimalPlaces={decimalPlaces}
+            />
+          </span>
         }
       >
         <span ref={ref}>{t('Unknown')} </span>
