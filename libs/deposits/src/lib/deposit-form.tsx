@@ -332,7 +332,7 @@ export const DepositForm = ({
                   }
 
                   let lifetimeLimit = new BigNumber(Infinity);
-                  if (balances.max.isGreaterThan(0)) {
+                  if (balances.max.isGreaterThan(0) && !balances.exempt) {
                     lifetimeLimit = balances.max.minus(balances.deposited);
                   }
 
