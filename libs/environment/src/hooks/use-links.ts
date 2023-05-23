@@ -71,6 +71,7 @@ export const DocsLinks = VEGA_DOCS_URL
       LOSS_SOCIALIZATION: `${VEGA_DOCS_URL}/concepts/trading-on-vega/market-protections#loss-socialisation`,
       POSITION_RESOLUTION: `${VEGA_DOCS_URL}/concepts/trading-on-vega/market-protections#position-resolution`,
       LIQUIDITY: `${VEGA_DOCS_URL}/concepts/liquidity/provision`,
+      WITHDRAWAL_LIMITS: `${VEGA_DOCS_URL}/concepts/assets/deposits-withdrawals#withdrawal-limits`,
     }
   : undefined;
 
