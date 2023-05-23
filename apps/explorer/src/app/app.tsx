@@ -13,6 +13,7 @@ import { DEFAULT_CACHE_CONFIG } from '@vegaprotocol/apollo-client';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/router-config';
 import { t } from '@vegaprotocol/i18n';
+import { Suspense } from 'react';
 
 const splashLoading = (
   <Splash>
@@ -32,7 +33,9 @@ function App() {
           skeleton={<div>{t('Loading')}</div>}
           failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
         >
-          <RouterProvider router={router} fallbackElement={splashLoading} />
+          <Suspense fallback={splashLoading}>
+            <RouterProvider router={router} fallbackElement={splashLoading} />
+          </Suspense>
         </NodeGuard>
         <NodeSwitcherDialog
           open={nodeSwitcherOpen}
