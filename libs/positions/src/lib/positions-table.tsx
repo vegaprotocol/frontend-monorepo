@@ -216,6 +216,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         <AgGridColumn
           headerName={t('Settlement asset')}
+          field="assetSymbol"
           colId="asset"
           minWidth={100}
           cellRenderer={({ data }: VegaICellRendererParams<Position>) => {

@@ -1,4 +1,3 @@
-const selectMarketOverlay = 'select-market-list';
 const marketInfoBtn = 'Info';
 const marketInfoSubtitle = 'accordion-title';
 const marketSummaryBlock = 'header-summary';
@@ -13,45 +12,6 @@ const priceChangeValue = 'price-change';
 const itemHeader = 'item-header';
 const itemValue = 'item-value';
 const marketListContent = 'popover-content';
-
-describe(
-  'Console - market list - live env',
-  { tags: '@live', testIsolation: true },
-  () => {
-    beforeEach(() => {
-      cy.visit('/');
-    });
-
-    it('shows the market list page', () => {
-      cy.get('main', { timeout: 20000 });
-
-      // Overlay should be shown
-      cy.getByTestId(selectMarketOverlay).should('exist');
-      cy.contains('Select a market to get started').should('be.visible');
-
-      // I expect the market overlay table to contain at least one row
-      cy.getByTestId(selectMarketOverlay)
-        .get('table tr')
-        .should('have.length.greaterThan', 1);
-
-      // each market shown in overlay table contains content under the last price and change fields
-      cy.getByTestId(selectMarketOverlay)
-        .get('table tr')
-        .getByTestId('price')
-        .should('not.be.empty');
-    });
-
-    it('redirects to a default market', () => {
-      cy.getByTestId('dialog-close').click();
-      cy.getByTestId(selectMarketOverlay).should('not.exist');
-
-      // the choose market overlay is no longer showing
-      cy.contains('Select a market to get started').should('not.exist');
-      cy.contains('Loading...').should('not.exist');
-      cy.getByTestId('popover-trigger').should('not.be.empty');
-    });
-  }
-);
 
 describe(
   'Console - market info - live env',

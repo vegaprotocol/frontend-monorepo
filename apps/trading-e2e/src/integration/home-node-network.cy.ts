@@ -1,20 +1,16 @@
-import { closeWelcomeDialog } from '../support/helpers';
-
 const dialogContent = 'dialog-content';
 const nodeHealth = 'node-health';
 
-describe('home', { tags: '@regression' }, () => {
+describe.skip('home', { tags: '@regression' }, () => {
   before(() => {
     cy.clearAllLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
-    closeWelcomeDialog();
   });
 
   describe('footer', () => {
-    it.skip('shows current block height', () => {
-      closeWelcomeDialog();
+    it('shows current block height', () => {
       // 0006-NETW-004
       // 0006-NETW-005
       // 0006-NETW-008

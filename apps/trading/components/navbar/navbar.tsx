@@ -16,10 +16,11 @@ import {
   NavigationItem,
   NavigationLink,
   ExternalLink,
-  Icon,
   NavigationBreakpoint,
   NavigationTrigger,
   NavigationContent,
+  VegaIconNames,
+  VegaIcon,
 } from '@vegaprotocol/ui-toolkit';
 
 import { Links, Routes } from '../../pages/client-router';
@@ -146,7 +147,7 @@ const NavExternalLink = ({
     <ExternalLink href={href}>
       <span className="flex items-center gap-2">
         <span>{children}</span>
-        <Icon name="arrow-top-right" size={3} />
+        <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
       </span>
     </ExternalLink>
   );

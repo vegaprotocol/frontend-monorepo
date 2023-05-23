@@ -40135,3 +40135,1514 @@ export const GITHUB_VEGA_DEV_RELEASES_DATA = [
     body: null,
   },
 ];
+
+export const GITHUB_VEGA_FRONTEND_RELEASES_DATA = [
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/103733866',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/103733866/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/103733866/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.8-core-0.71.4',
+    id: 103733866,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GLtpq',
+    tag_name: 'v0.20.8-core-0.71.4',
+    target_commitish: 'develop',
+    name: 'v0.20.8-core-0.71.4',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-21T17:21:24Z',
+    published_at: '2023-05-21T17:24:31Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.8-core-0.71.4',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.8-core-0.71.4',
+    body: "## What's Changed\r\n* feat(ci): fix release body by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3822\r\n* feat(web3): withdrawal details by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3701\r\n* feat(governance): use rest to expose proposal data by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3827\r\n* feat(trading): do not show oracle banner when data is loading by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3821\r\n* feat(ci): support mainnet branching strategy by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3832\r\n* test(trading): e2e test for select network and nodes - 0006-NETW by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3828\r\n* fix(explorer): fix footer links by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3825\r\n* feat(governance): change url of upgrade proposals by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3841\r\n* fix(explorer): prevent render of signature component on some proposals by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3840\r\n* fix(markets): remove queries for internal data sources by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3829\r\n* test(governance): 3790 proposal tests refactor by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3838\r\n* feat(governance): proposals-sort-order by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3848\r\n* feat(environment): avoid logging node check queries by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3830\r\n* feat(governance): hide proposal details on market proposals by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3845\r\n* fix(orders): cancel all and pegged orders amendable by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3843\r\n* fix(governance): penalties calculation by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3850\r\n* feat(governance): avoid showing untitled proposals by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3851\r\n* test(trading): skip failing node tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3854\r\n* fix(governance): homepage proposals ordering fixed by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3856\r\n* fix(trading): settlement price of closed markets by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3831\r\n* chore(governance,trading): update mainnet envs with new ethereum provider url by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3857\r\n* feat(trading,governance): improve flow of risk disclaimer presentation by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3772\r\n* fix(trading): fix proposals not showing by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3859\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.20.6-core-0.71.4-3...v0.20.8-core-0.71.4",
+    mentions_count: 11,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/103457477',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/103457477/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/103457477/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.6-core-0.71.4-3',
+    id: 103457477,
+    author: {
+      login: 'mkjmdski',
+      id: 14093153,
+      node_id: 'MDQ6VXNlcjE0MDkzMTUz',
+      avatar_url: 'https://avatars.githubusercontent.com/u/14093153?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mkjmdski',
+      html_url: 'https://github.com/mkjmdski',
+      followers_url: 'https://api.github.com/users/mkjmdski/followers',
+      following_url:
+        'https://api.github.com/users/mkjmdski/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mkjmdski/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mkjmdski/starred{/owner}{/repo}',
+      subscriptions_url: 'https://api.github.com/users/mkjmdski/subscriptions',
+      organizations_url: 'https://api.github.com/users/mkjmdski/orgs',
+      repos_url: 'https://api.github.com/users/mkjmdski/repos',
+      events_url: 'https://api.github.com/users/mkjmdski/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mkjmdski/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GKqLF',
+    tag_name: 'v0.20.6-core-0.71.4-3',
+    target_commitish: 'develop',
+    name: '',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-18T13:12:12Z',
+    published_at: '2023-05-18T13:13:10Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.6-core-0.71.4-3',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.6-core-0.71.4-3',
+    body: 'Release to test process of deploying and rolling back on IPFS\r\nRelease to test process of deploying and rolling back on IPFS\r\n\r\n---\r\n\r\n# Deployments\r\n* https://explorer.vega.xyz\r\n* https://governance.vega.xyz\r\n\r\n# IPFS releases\r\nTye IPFS hash of this release of the Trading app is:\r\n\r\nCIDv0: QmWjf5upWhe7euiZXHYZjtS7tpLNbJMt1TDBLj7B1BSRW9\r\nCIDv1: bafybeid4yjdxgrvceib4xbvuglcspkpd4evhaggkx2na7mvvg5vnjbyqai\r\n\r\nYou can always access the latest IPFS release by visiting [vega.trading](https://vega.trading).\r\n\r\nYou can also access Trading directly from an IPFS gateway.\r\nBEWARE: The Trading interface uses [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) to remember your settings, such as which tokens you have imported. You should always use an IPFS gateway that enforces [origin separation](https://ipfs.github.io/public-gateway-checker/).\r\n\r\nYour settings are not remembered across different URLs.\r\n\r\nIPFS gateways:\r\n\r\nhttps://bafybeid4yjdxgrvceib4xbvuglcspkpd4evhaggkx2na7mvvg5vnjbyqai.ipfs.dweb.link/\r\nhttps://bafybeid4yjdxgrvceib4xbvuglcspkpd4evhaggkx2na7mvvg5vnjbyqai.ipfs.cf-ipfs.com/\r\nipfs://QmWjf5upWhe7euiZXHYZjtS7tpLNbJMt1TDBLj7B1BSRW9/\r\n\r\n',
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/103336462',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/103336462/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/103336462/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.6-core-0.71.4',
+    id: 103336462,
+    author: {
+      login: 'github-actions[bot]',
+      id: 41898282,
+      node_id: 'MDM6Qm90NDE4OTgyODI=',
+      avatar_url: 'https://avatars.githubusercontent.com/in/15368?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/github-actions%5Bbot%5D',
+      html_url: 'https://github.com/apps/github-actions',
+      followers_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/followers',
+      following_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}',
+      gists_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/subscriptions',
+      organizations_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/orgs',
+      repos_url: 'https://api.github.com/users/github-actions%5Bbot%5D/repos',
+      events_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/received_events',
+      type: 'Bot',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GKMoO',
+    tag_name: 'v0.20.6-core-0.71.4',
+    target_commitish: 'develop',
+    name: 'v0.20.6-core-0.71.4',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-17T14:50:02Z',
+    published_at: '2023-05-17T14:58:05Z',
+    assets: [
+      {
+        url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/assets/108595507',
+        id: 108595507,
+        node_id: 'RA_kwDOGzbyRs4GeQkz',
+        name: 'trading-ipfs-hash',
+        label: '',
+        uploader: {
+          login: 'github-actions[bot]',
+          id: 41898282,
+          node_id: 'MDM6Qm90NDE4OTgyODI=',
+          avatar_url: 'https://avatars.githubusercontent.com/in/15368?v=4',
+          gravatar_id: '',
+          url: 'https://api.github.com/users/github-actions%5Bbot%5D',
+          html_url: 'https://github.com/apps/github-actions',
+          followers_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/followers',
+          following_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}',
+          gists_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}',
+          starred_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}',
+          subscriptions_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/subscriptions',
+          organizations_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/orgs',
+          repos_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/repos',
+          events_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}',
+          received_events_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/received_events',
+          type: 'Bot',
+          site_admin: false,
+        },
+        content_type: 'application/octet-stream',
+        state: 'uploaded',
+        size: 47,
+        download_count: 2,
+        created_at: '2023-05-17T14:58:05Z',
+        updated_at: '2023-05-17T14:58:05Z',
+        browser_download_url:
+          'https://github.com/vegaprotocol/frontend-monorepo/releases/download/v0.20.6-core-0.71.4/trading-ipfs-hash',
+      },
+    ],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.6-core-0.71.4',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.6-core-0.71.4',
+    body: "## What's Changed\r\n* fix(trading): match link as active more strictly by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3754\r\n* fix(governance): check value of telemetry local storage entry by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3762\r\n* feat(trading): add oracle dialog trigger to oracle banner, display status reas… by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3727\r\n* fix(governance): useWeb3ConnectStore instead of app state for eth connect d… by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3750\r\n* fix(smart-contracts,deposits): add different abi for tether by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3775\r\n* fix(governance): reward aggregation for validator types by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3773\r\n* feat(trading): oracle banner check termination and settlement data oracles by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3707\r\n* feat(trading): sidebar market list by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3776\r\n* feat(trading): sidebar market list adjustments by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3792\r\n* chore(trading): suppress sentry logs when eth fails by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3726\r\n* test(trading): pegged orders e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3787\r\n* feat(governance): proposal terms in table, full proposal json, description … by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3793\r\n* chore(trading): refactor docs links resolver by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3782\r\n* fix(governance): point to correct data for displayed LP rewards by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3800\r\n* feat(ci): update DNS for mainnet console when new version is released by @daniel1302 in https://github.com/vegaprotocol/frontend-monorepo/pull/3783\r\n* feat(governance): validator tables refocused on stake by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3780\r\n* fix(governance): avoid unknown pubkey causing validator page error by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3755\r\n* fix(ui-toolkit): add keys to healthbar segments by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3797\r\n* fix(governance): ensure no negative overstaked penalty by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3794\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.20.5-core-0.71.4-8...v0.20.6-core-0.71.4",
+    mentions_count: 8,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102808134',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102808134/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/102808134/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.5-core-0.71.4-8',
+    id: 102808134,
+    author: {
+      login: 'github-actions[bot]',
+      id: 41898282,
+      node_id: 'MDM6Qm90NDE4OTgyODI=',
+      avatar_url: 'https://avatars.githubusercontent.com/in/15368?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/github-actions%5Bbot%5D',
+      html_url: 'https://github.com/apps/github-actions',
+      followers_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/followers',
+      following_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}',
+      gists_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/subscriptions',
+      organizations_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/orgs',
+      repos_url: 'https://api.github.com/users/github-actions%5Bbot%5D/repos',
+      events_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/github-actions%5Bbot%5D/received_events',
+      type: 'Bot',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GILpG',
+    tag_name: 'v0.20.5-core-0.71.4-8',
+    target_commitish: 'develop',
+    name: 'v0.20.5-core-0.71.4-8',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-12T15:40:52Z',
+    published_at: '2023-05-12T15:48:47Z',
+    assets: [
+      {
+        url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/assets/107895829',
+        id: 107895829,
+        node_id: 'RA_kwDOGzbyRs4GblwV',
+        name: 'trading-ipfs-hash',
+        label: '',
+        uploader: {
+          login: 'github-actions[bot]',
+          id: 41898282,
+          node_id: 'MDM6Qm90NDE4OTgyODI=',
+          avatar_url: 'https://avatars.githubusercontent.com/in/15368?v=4',
+          gravatar_id: '',
+          url: 'https://api.github.com/users/github-actions%5Bbot%5D',
+          html_url: 'https://github.com/apps/github-actions',
+          followers_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/followers',
+          following_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}',
+          gists_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}',
+          starred_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}',
+          subscriptions_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/subscriptions',
+          organizations_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/orgs',
+          repos_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/repos',
+          events_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}',
+          received_events_url:
+            'https://api.github.com/users/github-actions%5Bbot%5D/received_events',
+          type: 'Bot',
+          site_admin: false,
+        },
+        content_type: 'application/octet-stream',
+        state: 'uploaded',
+        size: 47,
+        download_count: 4,
+        created_at: '2023-05-12T16:12:45Z',
+        updated_at: '2023-05-12T16:12:46Z',
+        browser_download_url:
+          'https://github.com/vegaprotocol/frontend-monorepo/releases/download/v0.20.5-core-0.71.4-8/trading-ipfs-hash',
+      },
+    ],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.5-core-0.71.4-8',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.5-core-0.71.4-8',
+    body: '',
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102408501',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102408501/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/102408501/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.5-core-0.71.4',
+    id: 102408501,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GGqE1',
+    tag_name: 'v0.20.5-core-0.71.4',
+    target_commitish: 'develop',
+    name: 'v0.20.5-core-0.71.4',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-09T21:10:34Z',
+    published_at: '2023-05-09T21:11:41Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.5-core-0.71.4',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.5-core-0.71.4',
+    body: "## What's Changed\r\n* fix(governance, console, explorer): show vega node in list, cache bust by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3676\r\n* fix(explorer): add envs back to env by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3677\r\n* feat(explorer,governance): always allow selecting a node, add node guard by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3678\r\n* chore(environment,trading): fix unit tests for footer and node switcher by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3682\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.20.4-core-0.71.4-test-ipfs...v0.20.5-core-0.71.4",
+    mentions_count: 3,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102368982',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102368982/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/102368982/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.4-core-0.71.4',
+    id: 102368982,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GGgbW',
+    tag_name: 'v0.20.4-core-0.71.4',
+    target_commitish: 'develop',
+    name: 'v0.20.4-core-0.71.4',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-09T15:34:59Z',
+    published_at: '2023-05-09T15:37:56Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.4-core-0.71.4',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.4-core-0.71.4',
+    body: "## What's Changed\r\n* feat(governance): opt in/out telemetry by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3638\r\n* chore(explorer,trading,governance): new data node & explorer service urls by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3653\r\n* feat(governance): token references to governance by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3657\r\n* feat(governance): hide make proposal journey and link to docs instead by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3658\r\n* fix(governance): consensus table works without previous epoch by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3663\r\n* fix(governance): total supply displayed by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3666\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.20.3-core-0.71.4...v0.20.4-core-0.71.4",
+    mentions_count: 2,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102326605',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102326605/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/102326605/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.3-core-0.71.4',
+    id: 102326605,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GGWFN',
+    tag_name: 'v0.20.3-core-0.71.4',
+    target_commitish: 'develop',
+    name: 'v0.20.3-core-0.71.4',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-09T10:19:21Z',
+    published_at: '2023-05-09T10:20:01Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.3-core-0.71.4',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.3-core-0.71.4',
+    body: "## What's Changed\r\n* feat(trading): persist table column sizes by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3595\r\n* fix(datagrid): remove default balham borders by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3642\r\n* fix(explorer): set explorer url env var in explorer by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3622\r\n* test(governance): e2e test to include withdrawal toasts by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3624\r\n* chore(react-helpers): remove ag-grid deps by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3628\r\n* feat(trading): update fills queries, fix empty fills list issue by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3636\r\n* fix(explorer): improve party page loading by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3274\r\n* fix(trading): wrong hover effect on datagrid by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3647\r\n* fix(explorer): use data provider import by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3648\r\n* fix(trading): proposal toasts timeout by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3645\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.20.2-core-0.71.4...v0.20.3-core-0.71.4",
+    mentions_count: 7,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102289613',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/102289613/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/102289613/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.2-core-0.71.4',
+    id: 102289613,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GGNDN',
+    tag_name: 'v0.20.2-core-0.71.4',
+    target_commitish: 'develop',
+    name: 'v0.20.2-core-0.71.4',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-09T03:48:04Z',
+    published_at: '2023-05-09T03:49:36Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.2-core-0.71.4',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.2-core-0.71.4',
+    body: "## What's Changed\r\n* feat(trading): persistent pane sizes by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3537\r\n* fix(datagrid): prevent unmount of aggrid on theme change by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3588\r\n* feat(oracles): oracle basic profile by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3544\r\n* feat(governance): add local time zone abbreviation data to proposal form by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3577\r\n* test(governance): e2e tests updated to cypress 12 by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3582\r\n* test(trading): handle unspecified side in fills table - e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3594\r\n* fix(governance): add custom styles for validators table by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3597\r\n* feat(trading): asset balances inside asset selector (deposit, withdraw form) by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3590\r\n* feat(trading): protocol upgrade notification by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3517\r\n* feat(trading): divide order tab into open, closed, rejected and all by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3541\r\n* fix(governance,trading): validator testnet link for governance app by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3599\r\n* feat(ci): define max lenght of a branch by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3607\r\n* feat(ci): deploy develop to stagnet1 by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3609\r\n* chore(explorer,trading,governance): remove stagnet3 by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3608\r\n* fix(liquidity): rows duplicated wrong ag-grid row ID by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3614\r\n* fix(liquidity):  use LP order ID as ag-grid row ID by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3615\r\n* feat(oracles): oracle full profile by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3545\r\n* fix(trading): asset balance being rendered when disconnected from eth… by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3618\r\n* fix(governance): added toasts for withdrawals by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3621\r\n* feat(governance): render markdown in proposal view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3632\r\n* fix(explorer): number formatting for updateasset proposals by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3630\r\n* chore(utils,react-helpers,data-provider): remove apollo deps from ui-toolkit by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3626\r\n* feat(governance): proposal details page improvements by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3611\r\n* test(trading): update of capsule and live tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3635\r\n* fix(explorer): network params fixture lookup for updateAsset proposals by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3633\r\n* chore(utils): remove ethers deps from ui-toolkit by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3627\r\n* chore(governance): assert proposal dates by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3610\r\n* chore(trading): make limit default order type by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3619\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.20.1-core-0.71.2...v0.20.2-core-0.71.4",
+    mentions_count: 10,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/101642117',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/101642117/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/101642117/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.20.1-core-0.71.2',
+    id: 101642117,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4GDu-F',
+    tag_name: 'v0.20.1-core-0.71.2',
+    target_commitish: 'develop',
+    name: 'v0.20.1-core-0.71.2',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-05-02T21:04:08Z',
+    published_at: '2023-05-02T21:06:01Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.20.1-core-0.71.2',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.20.1-core-0.71.2',
+    body: "## What's Changed\r\n* feat(governance,trading,explorer): split steps by logic by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3387\r\n* feat(withdraws): improve ux surrounding withdraw balances thresholds and delays by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3402\r\n* fix(orders): update order toast intent and title  by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3424\r\n* fix(governance): failing nightly tests by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3351\r\n* fix(explorer): tweak footer to show more detail on smaller screens by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3418\r\n* chore(assets): make query for asset list lighter by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3425\r\n* fix(trading): fix order toast intent on amendments by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3433\r\n* feat(governance): toggles design review tweaks by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3431\r\n* feat(governance,trading,explorer): pipelines improvements by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3422\r\n* feat(ci): fix regressions detected after merging to develop by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3442\r\n* chore(trading): maintain always up to date active orders list by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3430\r\n* feat(governance): full width Governance and Explorer header by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3453\r\n* feat(trading): add liquidity provision link to orders table by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3432\r\n* fix(trading): update cached Order objects by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3450\r\n* feat(governance): paginate rewards by @notbot00 in https://github.com/vegaprotocol/frontend-monorepo/pull/3391\r\n* feat(environment): github releases by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3426\r\n* chore(ui-toolkit): bump ui toolkit to 0.10.0 by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3458\r\n* fix(governance): fix flaky tests due to wallet teardown by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3460\r\n* feat(governance): protocol upgrade proposals list and details by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3363\r\n* chore(react-helpers): ugprade react-helpers to 0.2.0 and ui-toolkit to 0.11.0 by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3469\r\n* feat(governance): associate form associate link by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3468\r\n* fix(trading): refactor market info accordion to avoid remount on candle reload by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3447\r\n* chore(ci): bump typescript by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3444\r\n* fix(wallet): fetch new keys without re-connecting the wallet by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3467\r\n* chore(web3): wallet connect v2 by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3324\r\n* test(governance): e2e tests for rewards pagination by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3473\r\n* fix(governance): withdrawals bug by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3443\r\n* test(governance): e2e network upgrade proposal tests by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3477\r\n* test(trading): mocha reporter for e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3465\r\n* fix(trading): amend market list settlement asset column getter by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3487\r\n* chore(ui-toolkit,react-helpers,utils,tailwindcss-config): add more build targets by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3518\r\n* chore(ui-toolkit): leftover dependencies by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3485\r\n* chore(react-helpers): make log level customisable by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3474\r\n* feat(trading): add negative oracle status banner by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3486\r\n* fix(ui-toolkit): box size being wrong for multiline check boxes by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3527\r\n* test(trading): separated artifacts for logs and html report by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3519\r\n* test(trading): tests for ac - 7005-FILL-fills by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3529\r\n* fix(governance): scroll to top on route change by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3481\r\n* fix(governance): validator tables - user staking fixes by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3533\r\n* chore(static): remove unusable mainnet data nodes by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3003\r\n* fix(ci): urls in comments by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3539\r\n* feat(governance): ensure the data node urls in the monorepo are valid by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3549\r\n* fix(fills): handle side_unspecified added for the aggresor by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3550\r\n* feat(trading): make Sentry only after opt in by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3448\r\n* feat(trading): settings page quick adjust a css by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3558\r\n* feat(trading): add oracle banner e2e tests by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3524\r\n* feat(ledger): add link for download ledger entries to .csv by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3454\r\n* feat(trading): data grid dropdown menu in collateral table and vega icons by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3472\r\n* test(ci): capsule update v0.71.1 by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3559\r\n* fix(governance): use default jsonrpc connector when the provider from useWe… by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3563\r\n* test(trading): 7001-COLL-collateral - e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3561\r\n* feat(explorer): add epoch to block explorer homepage by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3536\r\n* fix(explorer): fix asset links and deterministic order details by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3567\r\n* feat(governance): default font Alpha by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3543\r\n* test(trading): ac for 6501-ASSE-assets - e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3570\r\n* feat(governance): update market proposal only available for enacted markets by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3542\r\n* feat(governance): eth chain should not inhibit usage by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3568\r\n* feat(trading,market-list): closed markets datagrid by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3429\r\n* feat(trading): add generic welcome message for non mainnet networks by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3584\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.19.7-core-0.70.2...v0.20.1-core-0.71.2",
+    mentions_count: 13,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/99042127',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/99042127/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/99042127/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.7-core-0.70.2',
+    id: 99042127,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4F50NP',
+    tag_name: 'v0.19.7-core-0.70.2',
+    target_commitish: 'develop',
+    name: 'v0.19.7-core-0.70.2',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-04-12T04:00:56Z',
+    published_at: '2023-04-12T04:01:47Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.7-core-0.70.2',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.7-core-0.70.2',
+    body: "## What's Changed\r\n* chore(trading): fix bad grammar on approval notification by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3354\r\n* chore(deposits): persistence of deposit form state by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3348\r\n* fix(governance): fix incorrect validator penalties by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3381\r\n* fix(trading): fix docs resources by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3382\r\n* chore(trading): add filters to the proposals table by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3375\r\n* feat(trading): include fees in transfer amount by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3345\r\n* fix(trading): add liquidity provision docs by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3403\r\n* fix(trading): order tx toasts title and intent should be set by status by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3368\r\n* test(trading): tests for post and reduce functionality by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3400\r\n* chore(trading): update approval amount to be max uint256 by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3395\r\n* fix(market-depth): make market data up to date, use fixed number of decimals in cumulative vol by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3361\r\n* chore(candles-chart): upgrade pennant to v1.8.1 by @johnwalley in https://github.com/vegaprotocol/frontend-monorepo/pull/3399\r\n* chore(deposits): impove UX on deposit dialog by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3401\r\n* chore(trading): prevent node poll if query fails by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3411\r\n* chore(deal-ticket): remove not used code by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3406\r\n* fix(trading): make light theme sell volume bar match candle color by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3405\r\n* fix(trading): welcome dialog with markets list click on market close window by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3404\r\n* test(trading): increase coverage for the remaining ACs by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3412\r\n* fix(trading): fix formatting on clicking on orderbook cell after decimal resolution update by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3409\r\n* fix(deposits): deposit dialog doesn't respect given assetId by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3414\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.19.6-core-0.70.2...v0.19.7-core-0.70.2",
+    mentions_count: 7,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/99041834',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/99041834/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/99041834/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.6-core-0.70.2',
+    id: 99041834,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4F50Iq',
+    tag_name: 'v0.19.6-core-0.70.2',
+    target_commitish: 'develop',
+    name: 'v0.19.6-core-0.70.2',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-04-04T18:43:15Z',
+    published_at: '2023-04-12T03:59:29Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.6-core-0.70.2',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.6-core-0.70.2',
+    body: "## What's Changed\r\n* fix(smart-contracts): add increased gas limit estimation by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3371\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.19.5-core-0.70.2...v0.19.6-core-0.70.2",
+    mentions_count: 1,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/98070913',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/98070913/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/98070913/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.5-core-0.70.2',
+    id: 98070913,
+    author: {
+      login: 'notbot00',
+      id: 105208209,
+      node_id: 'U_kgDOBkVZkQ',
+      avatar_url: 'https://avatars.githubusercontent.com/u/105208209?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/notbot00',
+      html_url: 'https://github.com/notbot00',
+      followers_url: 'https://api.github.com/users/notbot00/followers',
+      following_url:
+        'https://api.github.com/users/notbot00/following{/other_user}',
+      gists_url: 'https://api.github.com/users/notbot00/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/notbot00/starred{/owner}{/repo}',
+      subscriptions_url: 'https://api.github.com/users/notbot00/subscriptions',
+      organizations_url: 'https://api.github.com/users/notbot00/orgs',
+      repos_url: 'https://api.github.com/users/notbot00/repos',
+      events_url: 'https://api.github.com/users/notbot00/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/notbot00/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4F2HGB',
+    tag_name: 'v0.19.5-core-0.70.2',
+    target_commitish: 'develop',
+    name: 'v0.19.5-core-0.70.2',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-04-04T15:11:48Z',
+    published_at: '2023-04-04T17:06:19Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.5-core-0.70.2',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.5-core-0.70.2',
+    body: "## What's Changed\r\n* build(explorer): update validator testnet be url by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3357\r\n* fix(governance): add missing announcement config url by @notbot00 in https://github.com/vegaprotocol/frontend-monorepo/pull/3367\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.19.4-core-0.70.2...v0.19.5-core-0.70.2",
+    mentions_count: 2,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97999276',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97999276/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/97999276/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.4-core-0.70.2',
+    id: 97999276,
+    author: {
+      login: 'bglownia',
+      id: 1754247,
+      node_id: 'MDQ6VXNlcjE3NTQyNDc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/1754247?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/bglownia',
+      html_url: 'https://github.com/bglownia',
+      followers_url: 'https://api.github.com/users/bglownia/followers',
+      following_url:
+        'https://api.github.com/users/bglownia/following{/other_user}',
+      gists_url: 'https://api.github.com/users/bglownia/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/bglownia/starred{/owner}{/repo}',
+      subscriptions_url: 'https://api.github.com/users/bglownia/subscriptions',
+      organizations_url: 'https://api.github.com/users/bglownia/orgs',
+      repos_url: 'https://api.github.com/users/bglownia/repos',
+      events_url: 'https://api.github.com/users/bglownia/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/bglownia/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4F11ms',
+    tag_name: 'v0.19.4-core-0.70.2',
+    target_commitish: 'develop',
+    name: 'v0.19.4-core-0.70.2',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-04-03T22:21:34Z',
+    published_at: '2023-04-04T07:59:32Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.4-core-0.70.2',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.4-core-0.70.2',
+    body: '## What\'s Changed\r\n* chore(governance): additional acs added for governance proposals by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3322\r\n* feat(oracles,trading): 3224 add oracle links to market info by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3297\r\n* fix(trading): stabilize the liquidity provision table by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3320\r\n* chore(trading): liquidity provision, change query for set flag live on true by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3335\r\n* chore(trading): add "holding CMD + click" external link by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3273\r\n* feat(utils): make release script by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3290\r\n* feat(trading): add post only and reduce only orders by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3311\r\n* test(governance): add e2e tests for banner and footer links by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3340\r\n* chore(trading): add metaKey detection - clean up some unit tests by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3337\r\n* chore(trading): liquidity table DRY by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3346\r\n* feat(deal-ticket): show total margin available for an order, and where it will come from by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3318\r\n* feat(trading,governance,explorer): dist on s3 by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3332\r\n* test(trading): renders  correctly liquidity in trading tab by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3343\r\n* fix(trading): order stopped intent toasts by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3347\r\n* chore(governance,explorer,multisig-signer): delete rest of sandbox/mirror env files by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3310\r\n* chore(governance): add hardcoded token vesting contract address by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3352\r\n* fix(orders): restore filter by marketId by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3342\r\n* chore(trading): remove not used close position code and liquidity subscription by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3350\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.19.3-core-0.70.1...v0.19.4-core-0.70.2',
+    mentions_count: 8,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97462154',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97462154/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/97462154/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.3-core-0.70.1',
+    id: 97462154,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FzyeK',
+    tag_name: 'v0.19.3-core-0.70.1',
+    target_commitish: 'develop',
+    name: 'v0.19.3-core-0.70.1',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-30T11:03:18Z',
+    published_at: '2023-03-30T11:08:19Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.3-core-0.70.1',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.3-core-0.70.1',
+    body: "## What's Changed\r\n* feat(announcements): announcements by @notbot00 in https://github.com/vegaprotocol/frontend-monorepo/pull/3252\r\n* test(trading): update live e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3307\r\n* feat(market-depth): always show the same number of decimal places in order book by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3317\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.19.2-core-0.70.1...v0.19.3-core-0.70.1",
+    mentions_count: 3,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97307300',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97307300/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/97307300/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.2-core-0.70.1',
+    id: 97307300,
+    author: {
+      login: 'macqbat',
+      id: 338931,
+      node_id: 'MDQ6VXNlcjMzODkzMQ==',
+      avatar_url: 'https://avatars.githubusercontent.com/u/338931?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/macqbat',
+      html_url: 'https://github.com/macqbat',
+      followers_url: 'https://api.github.com/users/macqbat/followers',
+      following_url:
+        'https://api.github.com/users/macqbat/following{/other_user}',
+      gists_url: 'https://api.github.com/users/macqbat/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/macqbat/starred{/owner}{/repo}',
+      subscriptions_url: 'https://api.github.com/users/macqbat/subscriptions',
+      organizations_url: 'https://api.github.com/users/macqbat/orgs',
+      repos_url: 'https://api.github.com/users/macqbat/repos',
+      events_url: 'https://api.github.com/users/macqbat/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/macqbat/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FzMqk',
+    tag_name: 'v0.19.2-core-0.70.1',
+    target_commitish: 'develop',
+    name: 'v0.19.2-core-0.70.1',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-29T11:25:32Z',
+    published_at: '2023-03-29T11:29:52Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.2-core-0.70.1',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.2-core-0.70.1',
+    body: "## What's Changed\r\n* fix(trading): throttle deal ticket submit by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3282\r\n* chore(ci): update name of release issue template by @pennyandrews in https://github.com/vegaprotocol/frontend-monorepo/pull/3279\r\n* chore(ui-toolkit): version 0.9.0 - includes healthbar in ui-toolkit by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3287\r\n* fix(governance): order proposals list by closing date by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3276\r\n* feat(governance): see user stake on validators table by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3250\r\n* chore(react-helpers): react-helpers v0.1.0 by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3289\r\n* test(governance): my stake e2e tests by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3295\r\n* feat(trading): persist state of chart intervals studies and overlays by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3261\r\n* fix(governance): paginate rewards as well as delegations data by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3288\r\n* fix(trading): volumes formatting by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3293\r\n* chore(wallet,positions): use reduceOnly and IOC order for close position tx by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3263\r\n* chore(trading): remove files of envs to kill by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3303\r\n* chore(cypress): fix error seen in CI for staking test by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3304\r\n* chore(orders): update orders filters by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3277\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.19.1-core-0.69.0...v0.19.2-core-0.70.1",
+    mentions_count: 8,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97043195',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/97043195/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/97043195/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.1-core-0.69.0',
+    id: 97043195,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FyML7',
+    tag_name: 'v0.19.1-core-0.69.0',
+    target_commitish: 'develop',
+    name: 'v0.19.1-core-0.69.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-27T15:24:44Z',
+    published_at: '2023-03-27T15:25:45Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.1-core-0.69.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.1-core-0.69.0',
+    body: "## What's Changed\r\n* feat(orders): use default filters in orders list by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3143\r\n* fix(trading): hide transfer button in view as mode by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3189\r\n* chore(environment): fetch networks configuration from repo by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3145\r\n* test(governance): e2e rewards  by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3190\r\n* fix(utils): missing flags by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3194\r\n* chore(explorer): market info shared panels by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3192\r\n* chore(environment): etherscan link by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3193\r\n* feat(explorer): try again for tx details by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3195\r\n* chore(trading): display latency in block height progressing as warn or error by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3169\r\n* chore(trading): make loading masks in tabs consistent along the app by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3155\r\n* test(trading): fixed settlement asset displayed test by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3209\r\n* chore(explorer,governance): update be endpoints by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3183\r\n* chore(governance): include slippage factor to proposals by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3204\r\n* test(trading): increase coverage for 0004-ewal by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3210\r\n* chore(trading): split bottom panel into two parts by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3205\r\n* chore(trading): remove red background from trades table by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3214\r\n* chore(static): update domains in network conf files by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3219\r\n* chore(explorer): move banner up by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3237\r\n* chore(governance): update announcement banner text by @notbot00 in https://github.com/vegaprotocol/frontend-monorepo/pull/3234\r\n* feat(ui-toolkit): button icons by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3233\r\n* feat(trading): store current tab selection by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3148\r\n* chore(trading): 2764 link to mainnet incident reports by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3235\r\n* fix(market-depth): fix depth chart data upate, use market depth as mid price source by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3242\r\n* fix(trading): auction triggers liquidity API change in develop for core 0.69.0 by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3197\r\n* chore(ui-toolkit): rework intent colours by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3202\r\n* fix(ui-toolkit): anchor button should be same size as button by default by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3172\r\n* refactor(ui-toolkit): move healthbar to ui-toolkit by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3121\r\n* feat(trading): pin collateral row by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3218\r\n* test(governance): governance tests refactor by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3059\r\n* feat(trading): add resources dropdown to console nav by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3249\r\n* fix(trading): use unique keys in LocalStoragePersistTabs by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3255\r\n* chore(orders): remove infinite scroll from order table by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3247\r\n* test(trading): 0003-WTXN submit vega transaction e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3246\r\n* feat(explorer): build docker image on pull request + refactor dockerfile for ipfs by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3245\r\n* feat(explorer): breadcrumbs, home page, error page by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3254\r\n* feat(governance): lp vote now reflected on proposal cards by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3256\r\n* feat(explorer,trading,governance): use nx to know which apps needs building by @mkjmdski in https://github.com/vegaprotocol/frontend-monorepo/pull/3267\r\n* fix(trading): change etherscan link label on toast by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3262\r\n* chore(ci): add release issue template by @pennyandrews in https://github.com/vegaprotocol/frontend-monorepo/pull/3272\r\n* fix(trading): handle lack of approval in trading deposit flow by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3278\r\n* feat(trading): use mini scroll in deal ticket, market info for and landing dialog by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3269\r\n* chore(trading): dont show faucet button until connected by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3251\r\n* fix(positions): make positions table smoothly updated (again) by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3266\r\n* test(trading): fixed capsule tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3281\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.10-core-0.68.2...v0.19.1-core-0.69.0",
+    mentions_count: 13,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/95705108',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/95705108/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/95705108/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.19.0-core-0.69.0',
+    id: 95705108,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FtFgU',
+    tag_name: 'v0.19.0-core-0.69.0',
+    target_commitish: 'develop',
+    name: 'v0.19.0-core-0.69.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-15T13:53:50Z',
+    published_at: '2023-03-15T13:54:40Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.19.0-core-0.69.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.19.0-core-0.69.0',
+    body: "## What's Changed\r\n* feat(orders): use default filters in orders list by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3143\r\n* fix(trading): hide transfer button in view as mode by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3189\r\n* chore(environment): fetch networks configuration from repo by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3145\r\n* test(governance): e2e rewards  by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3190\r\n* fix(utils): missing flags by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3194\r\n* chore(explorer): market info shared panels by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3192\r\n* chore(environment): etherscan link by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3193\r\n* feat(explorer): try again for tx details by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3195\r\n* fix(trading): auction triggers liquidity API change in 0.69.0 (testnet and stagnet1 only) by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3187\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.10-core-0.68.2...v0.19.0-core-0.69.0",
+    mentions_count: 5,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/95524231',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/95524231/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/95524231/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.10-core-0.68.2',
+    id: 95524231,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FsZWH',
+    tag_name: 'v0.18.10-core-0.68.2',
+    target_commitish: 'develop',
+    name: 'v0.18.10-core-0.68.2',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-14T10:10:12Z',
+    published_at: '2023-03-14T10:10:36Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.10-core-0.68.2',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.10-core-0.68.2',
+    body: "## What's Changed\r\n* fix(trading): dropdown fix from testnet and validator-testnet by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3185\r\n* chore(trading): mainnet sim 3 live banners by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3184\r\n* fix(governance): ensure validators tables sorting on develop by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3176\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.9-core-0.68.2...v0.18.10-core-0.68.2",
+    mentions_count: 2,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/95473001',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/95473001/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/95473001/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.9-core-0.68.2',
+    id: 95473001,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FsM1p',
+    tag_name: 'v0.18.9-core-0.68.2',
+    target_commitish: 'develop',
+    name: 'v0.18.9-core-0.68.2',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-13T23:44:39Z',
+    published_at: '2023-03-14T00:06:01Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.9-core-0.68.2',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.9-core-0.68.2',
+    body: "## What's Changed\r\n* fix(market-depth): orderbook row height calculation by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3068\r\n* feat(positions): positions losses and maintenance warnings by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2985\r\n* fix(trading): fills table fees display by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3071\r\n* test(trading): revert nonparallel tests option by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3098\r\n* feat(deposits): deposit flow by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3062\r\n* test(governance): tranche service by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3099\r\n* fix(orders): orders table flickering by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3105\r\n* fix(trading): add loss socialisation docs links by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3109\r\n* fix(trading): order store connection to deal ticket by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3100\r\n* chore(trading): 2825 buttons floating over table rows by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3084\r\n* feat(trading): calculate required margin base on open volume, active … by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/2957\r\n* test(trading): increase coverage for 0002 wcon by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3137\r\n* chore(trading): tweaks and improvements of floating bottom buttons by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3138\r\n* feat(deal-ticket): simplify summary validation by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3144\r\n* feat(explorer): improve display of multi cancellations by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3151\r\n* fix(trading,explorer,governance): consistent zustand usage by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3133\r\n* fix(trading):  deal ticket expiry not wiped out after changing TIF from GTT by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3149\r\n* test(governance): new and update market proposal forms by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3131\r\n* test(trading): skip send report to artifact  if tests are passed by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3154\r\n* chore(deposits): update faucet feedback i18n by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3132\r\n* feat(ui-toolkit): navigation by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/3069\r\n* feat(explorer,trading,governance): update mainnet sims banner by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3156\r\n* fix(explorer,trading): asset details should show quantum in asset dps by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3158\r\n* fix(explorer): format els as percentage in network param view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3157\r\n* feat(explorer): show signers in proposal multisig bundles by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3122\r\n* fix(explorer): neaten validators mobile view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3160\r\n* fix(trading): deal ticket validation on zero account balance and margin warnings by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3177\r\n* feat(trading): clarify collateral and breakdown tables by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3113\r\n* fix(trading): remove liquidation from positions & format price bounds with market dp by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3173\r\n* chore(trading): move banner above nav by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3161\r\n* fix(trading): ledger entries table formatting by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3180\r\n* fix(trading): add missing block explorer link for complete transfer by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3181\r\n* chore(trading,explorer,governance): update validator testnet nodes by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3182\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.8-core-0.68.0...v0.18.9-core-0.68.2",
+    mentions_count: 8,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94553530',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94553530/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/94553530/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.8-core-0.68.0',
+    id: 94553530,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FosW6',
+    tag_name: 'v0.18.8-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.8-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-05T14:15:51Z',
+    published_at: '2023-03-05T14:17:14Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.8-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.8-core-0.68.0',
+    body: "## What's Changed\r\n* chore(orders): fix order table rows flickering on filter change by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/3088\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.7-core-0.68.0...v0.18.8-core-0.68.0",
+    mentions_count: 1,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94553214',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94553214/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/94553214/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.7-core-0.68.0',
+    id: 94553214,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FosR-',
+    tag_name: 'v0.18.7-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.7-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-05T14:06:45Z',
+    published_at: '2023-03-05T14:07:46Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.7-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.7-core-0.68.0',
+    body: "## What's Changed\r\n* feat(governance): remove graph from tranches page by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3049\r\n* feat(governance): final wallet not connected views by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3037\r\n* chore(trading): catch ethereum errors and capture to sentry by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3064\r\n* test(trading): tests parallel by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3075\r\n* fix(explorer): update vega_networks for all explorer envs by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3078\r\n* fix(trading): add a timeout to show subscriptions as failed by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3073\r\n* chore(smart-contracts): remove redundant ascii to hex in favour of ethers hexlify by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3066\r\n* feat(explorer): proposal transaction view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3060\r\n* fix(trading): update order on market trade header (#3082) by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3087\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.6-core-0.68.0...v0.18.7-core-0.68.0",
+    mentions_count: 6,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94228537',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94228537/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/94228537/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.6-core-0.68.0',
+    id: 94228537,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FndA5',
+    tag_name: 'v0.18.6-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.6-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-02T12:24:11Z',
+    published_at: '2023-03-02T12:24:35Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.6-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.6-core-0.68.0',
+    body: "## What's Changed\r\n* chore(trading): tweaking catching no market data error by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3044\r\n* chore(react-helpers): improve error catching in useResizeObserver by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3058\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.5-core-0.68.0...v0.18.6-core-0.68.0",
+    mentions_count: 1,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94127056',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/94127056/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/94127056/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.5-core-0.68.0',
+    id: 94127056,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FnEPQ',
+    tag_name: 'v0.18.5-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.5-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-03-01T18:26:45Z',
+    published_at: '2023-03-01T18:28:10Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.5-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.5-core-0.68.0',
+    body: '## What\'s Changed\r\n* test(trading): added rerun mechanism for cypress  tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2977\r\n* fix(trading): fees breakdown layout and condense tabs by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2976\r\n* chore(trading): make markets in dropdown unique by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2979\r\n* chore(trading): filtering and sorting for ledger entries by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2944\r\n* chore(ui-toolkit): add pseudo random instead Math.random by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2997\r\n* chore(trading): grid cell fixes by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2986\r\n* feat(token): 1823 tranches service by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/2742\r\n* fix(token): mainnet tranches by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/3001\r\n* chore(trading): fix formatting for volume cells in book by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3006\r\n* chore(trading): update tooltip text for 24h volume by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3005\r\n* fix(tailwindcss-config): fix calt for firefox, make calt opt in when using font-alpha by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3007\r\n* feat(trading): show block height by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3010\r\n* feat(explorer): validators page by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2982\r\n* chore(ui-toolkit): loader no rerender version only by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3011\r\n* Revert "chore(ui-toolkit): loader no rerender version only" by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3014\r\n* fix(trading): condense deal ticket & market info price range snags by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3012\r\n* fix(ui-toolkit): remove calt from nav and toasts by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3020\r\n* fix(governance): some fixes and tweaks for the rewards tables by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3009\r\n* chore(ci): bump ui-toolkit version to 0.7.0  by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/2961\r\n* fix(governance): vote state update fix by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3023\r\n* chore(trading): loader component css animation only, preloader tweaks by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3027\r\n* test(trading): fixed capsule tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/3031\r\n* chore(token): add validator testnet env by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/2808\r\n* fix(accounts): show breakdown in view as user mode by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3021\r\n* chore(ci): update validator testnet config endpoint by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3033\r\n* chore(datagrid,utils,react-helpers): rename token app, add utils, datagrid, i18n by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3022\r\n* chore(trading,explorer,governance): remove unused deps by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3019\r\n* fix(environment): console not finding node by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3040\r\n* chore(trading): add handle wrong chainId in withdrawal by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/3015\r\n* fix(ci): fix environment variable setting validator testnet api endpoint by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3035\r\n* chore(governance): update test run files by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/3051\r\n* fix(explorer): fix inconsistent wss urls for tm by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3053\r\n* fix(explorer): add size in market component for remaining order size by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3046\r\n* chore(trading): delete unused styles by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3038\r\n* chore(explorer): remove commented out query by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/3045\r\n* fix(trading): deal ticket limit price input and margin warning by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3050\r\n* feat(governance): new env file for multisig on validator-testnet by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/3056\r\n* chore(ci): add utils and i18n libs as options for publish to npm workflow by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/3055\r\n* fix(trading): edit order strikethrough by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/3057\r\n* fix(trading): env vars for validator testnet by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/3061\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.3-core-0.68.0...v0.18.5-core-0.68.0',
+    mentions_count: 10,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/93429467',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/93429467/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/93429467/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.3-core-0.68.0',
+    id: 93429467,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FkZ7b',
+    tag_name: 'v0.18.3-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.3-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-02-23T11:31:28Z',
+    published_at: '2023-02-23T11:57:35Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.3-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.3-core-0.68.0',
+    body: "## What's Changed\r\n* feat(trading,deposits): disable deposit address by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2926\r\n* test(trading): improved a dropdown verification test by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2969\r\n* fix(explorer): incorrect destination in market link components by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2968\r\n* chore(trading): add market dropdown to account history by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2971\r\n* fix(trading): update step on market dp by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2972\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.2-core-0.68.0...v0.18.3-core-0.68.0",
+    mentions_count: 5,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/93329688',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/93329688/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/93329688/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.2-core-0.68.0',
+    id: 93329688,
+    author: {
+      login: 'MadalinaRaicu',
+      id: 16125548,
+      node_id: 'MDQ6VXNlcjE2MTI1NTQ4',
+      avatar_url: 'https://avatars.githubusercontent.com/u/16125548?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/MadalinaRaicu',
+      html_url: 'https://github.com/MadalinaRaicu',
+      followers_url: 'https://api.github.com/users/MadalinaRaicu/followers',
+      following_url:
+        'https://api.github.com/users/MadalinaRaicu/following{/other_user}',
+      gists_url: 'https://api.github.com/users/MadalinaRaicu/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/MadalinaRaicu/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/MadalinaRaicu/subscriptions',
+      organizations_url: 'https://api.github.com/users/MadalinaRaicu/orgs',
+      repos_url: 'https://api.github.com/users/MadalinaRaicu/repos',
+      events_url: 'https://api.github.com/users/MadalinaRaicu/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/MadalinaRaicu/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FkBkY',
+    tag_name: 'v0.18.2-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.2-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-02-22T17:27:38Z',
+    published_at: '2023-02-22T17:29:57Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.2-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.2-core-0.68.0',
+    body: "## What's Changed\r\n* test(trading): node version update for live workflow by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2954\r\n* fix(market-depth): fix order book priceInCenter calculation and scroll to price by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/2901\r\n* test(trading): deposit flow from collateral window e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2959\r\n* feat(ci): publish monorepo libs to npm by @ciaran- in https://github.com/vegaprotocol/frontend-monorepo/pull/2951\r\n* feat(governance): tooltips for the validator details page by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2960\r\n* feat(governance): no delay on tooltip for validators table column headers by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2963\r\n* feat(explorer): add transfers tx view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2902\r\n* feat(trading): quote unit and settlement asset relation, liquidity price range, explain why market is in monitoring auction liquidity when liquidity supplied is sufficient by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2953\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.1-core-0.68.0...v0.18.2-core-0.68.0",
+    mentions_count: 6,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/93276029',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/93276029/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/93276029/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.1-core-0.68.0',
+    id: 93276029,
+    author: {
+      login: 'dexturr',
+      id: 26136207,
+      node_id: 'MDQ6VXNlcjI2MTM2MjA3',
+      avatar_url: 'https://avatars.githubusercontent.com/u/26136207?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/dexturr',
+      html_url: 'https://github.com/dexturr',
+      followers_url: 'https://api.github.com/users/dexturr/followers',
+      following_url:
+        'https://api.github.com/users/dexturr/following{/other_user}',
+      gists_url: 'https://api.github.com/users/dexturr/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/dexturr/starred{/owner}{/repo}',
+      subscriptions_url: 'https://api.github.com/users/dexturr/subscriptions',
+      organizations_url: 'https://api.github.com/users/dexturr/orgs',
+      repos_url: 'https://api.github.com/users/dexturr/repos',
+      events_url: 'https://api.github.com/users/dexturr/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/dexturr/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4Fj0d9',
+    tag_name: 'v0.18.1-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.1-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-02-21T00:57:25Z',
+    published_at: '2023-02-22T10:48:45Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.1-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.1-core-0.68.0',
+    body: '## What\'s Changed\r\n* feat(trading): deposit flow deal ticket by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2874\r\n* test(governance): refactor proposal enactment tests by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2897\r\n* chore(ci): print logs files in cypress pr workflow by @daniel1302 in https://github.com/vegaprotocol/frontend-monorepo/pull/2906\r\n* feat(explorer): markets and market details pages by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2914\r\n* feat(trading): datanode block header for env and node switcher by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2905\r\n* chore(trading): handle timeout and offline errors by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2918\r\n* test(trading): added waiting for market by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2927\r\n* feat(trading): deposit to trade collateral tab pinned row by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2921\r\n* test(trading): fixed dropdown issue in markets tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2930\r\n* test(governance): check proposals on homepage by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2908\r\n* fix(governance): navigation token drop down behaviour by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2931\r\n* feat(governance): ranking score for all validator types by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2929\r\n* fix(governance): overstaked penalty shown as NaN by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2932\r\n* fix(trading): re-use input errors instead of notification component by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2924\r\n* test(governance): proposal flow refactor by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2933\r\n* chore(explorer): change asset dialog to details page by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2941\r\n* feat(governance,ui-toolkit): individual rewards table by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2928\r\n* feat(explorer): add feedback link to footer by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2943\r\n* feat(explorer): new proposals index page by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2925\r\n* feat(wallet): tighten up the flow for "view as vega user" by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2934\r\n* feat(trading): do not pin row of existing account as it will become duplicated by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2942\r\n* chore(token): governance missing details by @dexturr in https://github.com/vegaprotocol/frontend-monorepo/pull/2938\r\n* fix(ui-toolkit): set size properly for checkbox icon by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2903\r\n* chore(trading,governance): remove busEvent for proposals by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2946\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.18.0-core-0.68.0...v0.18.1-core-0.68.0',
+    mentions_count: 10,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/92254347',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/92254347/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/92254347/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.18.0-core-0.68.0',
+    id: 92254347,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4Ff7CL',
+    tag_name: 'v0.18.0-core-0.68.0',
+    target_commitish: 'develop',
+    name: 'v0.18.0-core-0.68.0',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-02-13T18:04:19Z',
+    published_at: '2023-02-13T18:06:33Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.18.0-core-0.68.0',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.18.0-core-0.68.0',
+    body: "## What's Changed\r\n* chore(trading): add validator testnet env file by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2852\r\n* fix(governance): empty div disrupts other page elements by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2855\r\n* feat(governance): visual tweaks to main nav by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2839\r\n* fix(trading):  when order is rejected change tx toast intent by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2851\r\n* chore(trading): increase withdraw ac test coverage by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2853\r\n* chore(trading): notification component redesign by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2845\r\n* fix(explorer): type generation broken in an oracle refactor by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2859\r\n* feat(governance): remove some performance info from validator mouseover by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2865\r\n* feat(trading): key to key transfers by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2784\r\n* chore(trading): new toasts designs by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2779\r\n* chore(trading): remove unnecessary sentry capture from asyncrenderer component by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2869\r\n* fix(trading): inform the user his connection to wallet is lost by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2863\r\n* feat(explorer): change party to pubkey by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2868\r\n* feat(explorer): add issuesignatures tx view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2867\r\n* fix(explorer): use position decimal places to format size in order by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2861\r\n* feat(governance): replace proposal and vote busEvents with subscriptions by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2862\r\n* feat(ci): archive logs in cypres pr run by @daniel1302 in https://github.com/vegaprotocol/frontend-monorepo/pull/2879\r\n* chore(trading): key to key transfers e2e tests by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2878\r\n* chore(react-helpers): add generic data provider unit test by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/2776\r\n* test(token): e2e tests for validator tooltips by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2883\r\n* chore(trading): handle positions with market data gql errors by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2884\r\n* chore(trading): live update deal ticket market data by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/2570\r\n* feat(explorer): state variable proposal tx by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2837\r\n* feat(explorer): asset details by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2882\r\n* feat(explorer): add vega key and eth key rotate views by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2891\r\n* feat(explorer): add node announce tx view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2888\r\n* fix(explorer): use position decimal places to format size in order summary for batch orders by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2892\r\n* feat(governance): epoch total rewards tables by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2889\r\n* chore(trading): fixed copy prompt alert for chrome by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2899\r\n* chore(trading): positions and collateral tab remove infinitive scroll by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2898\r\n* test(governance): update home tests by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2900\r\n* chore(governance): update announcement banner by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2894\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.17.5-core-0.67.3...v0.18.0-core-0.68.0",
+    mentions_count: 10,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/91339304',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/91339304/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/91339304/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.17.5-core-0.67.3',
+    id: 91339304,
+    author: {
+      login: 'mattrussell36',
+      id: 6803987,
+      node_id: 'MDQ6VXNlcjY4MDM5ODc=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6803987?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/mattrussell36',
+      html_url: 'https://github.com/mattrussell36',
+      followers_url: 'https://api.github.com/users/mattrussell36/followers',
+      following_url:
+        'https://api.github.com/users/mattrussell36/following{/other_user}',
+      gists_url: 'https://api.github.com/users/mattrussell36/gists{/gist_id}',
+      starred_url:
+        'https://api.github.com/users/mattrussell36/starred{/owner}{/repo}',
+      subscriptions_url:
+        'https://api.github.com/users/mattrussell36/subscriptions',
+      organizations_url: 'https://api.github.com/users/mattrussell36/orgs',
+      repos_url: 'https://api.github.com/users/mattrussell36/repos',
+      events_url: 'https://api.github.com/users/mattrussell36/events{/privacy}',
+      received_events_url:
+        'https://api.github.com/users/mattrussell36/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4Fcboo',
+    tag_name: 'v0.17.5-core-0.67.3',
+    target_commitish: 'develop',
+    name: 'v0.17.5-core-0.67.3',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-02-04T02:41:36Z',
+    published_at: '2023-02-04T02:43:43Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.17.5-core-0.67.3',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.17.5-core-0.67.3',
+    body: "## What's Changed\r\n* test(2704): proposals with market by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2775\r\n* fix(explorer): tx viewer dropdown did not correctly represent state by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2780\r\n* fix(explorer): correct calculation for whether party txs list has more txs by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2774\r\n* chore: capsule tests refactor and increase deposit ac by @daro-maj in https://github.com/vegaprotocol/frontend-monorepo/pull/2773\r\n* chore(ci): add nx scope linting for pr title by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2781\r\n* fix(trading): asset option on mobile got overflown by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2782\r\n* test(ci): fix tags in cypress workflow by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2788\r\n* chore(ui-toolkit): new colour palette by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2783\r\n* fix(trading): consolidate view as user mode by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2778\r\n* feat(ui-toolkit): announcement banner to highlight mainnet sims by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2800\r\n* chore(trading): add sub statuses of opening auction trading mode by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2797\r\n* feat(governance): body can scroll again after clicking 'back to staking' by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2785\r\n* fix(trading): market data and auction time not updating by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2813\r\n* chore(trading): remove noise form the test logs by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2801\r\n* feat(governance): pending balances: add event listeners by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2541\r\n* feat(ui-toolkit): mainnet sims announcement banner by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2806\r\n* fix(trading): fix symbol on order estimates by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2827\r\n* chore(trading): no data message in charts by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2816\r\n* chore(trading): add alpha font to trading by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2833\r\n* feat(trading): 2803 console announcement banner by @sam-keen in https://github.com/vegaprotocol/frontend-monorepo/pull/2830\r\n* fix(ui-toolkit): dark and light shades mismatch by @asiaznik in https://github.com/vegaprotocol/frontend-monorepo/pull/2841\r\n* fix(trading): remove price flash cell from PNL by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2829\r\n* fix(trading): update async renderer on error by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2842\r\n* feat(explorer): add protocol upgrade view by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2802\r\n* test(token): pending balances by @jtsang586 in https://github.com/vegaprotocol/frontend-monorepo/pull/2843\r\n* chore(trading): update order subs to not use busevents by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2849\r\n\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.17.3-core-0.67.3...v0.17.5-core-0.67.3",
+    mentions_count: 8,
+  },
+  {
+    url: 'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/90713116',
+    assets_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/releases/90713116/assets',
+    upload_url:
+      'https://uploads.github.com/repos/vegaprotocol/frontend-monorepo/releases/90713116/assets{?name,label}',
+    html_url:
+      'https://github.com/vegaprotocol/frontend-monorepo/releases/tag/v0.17.3-core-0.67.3',
+    id: 90713116,
+    author: {
+      login: 'edd',
+      id: 6678,
+      node_id: 'MDQ6VXNlcjY2Nzg=',
+      avatar_url: 'https://avatars.githubusercontent.com/u/6678?v=4',
+      gravatar_id: '',
+      url: 'https://api.github.com/users/edd',
+      html_url: 'https://github.com/edd',
+      followers_url: 'https://api.github.com/users/edd/followers',
+      following_url: 'https://api.github.com/users/edd/following{/other_user}',
+      gists_url: 'https://api.github.com/users/edd/gists{/gist_id}',
+      starred_url: 'https://api.github.com/users/edd/starred{/owner}{/repo}',
+      subscriptions_url: 'https://api.github.com/users/edd/subscriptions',
+      organizations_url: 'https://api.github.com/users/edd/orgs',
+      repos_url: 'https://api.github.com/users/edd/repos',
+      events_url: 'https://api.github.com/users/edd/events{/privacy}',
+      received_events_url: 'https://api.github.com/users/edd/received_events',
+      type: 'User',
+      site_admin: false,
+    },
+    node_id: 'RE_kwDOGzbyRs4FaCwc',
+    tag_name: 'v0.17.3-core-0.67.3',
+    target_commitish: 'develop',
+    name: 'v0.17.3-core-0.67.3',
+    draft: false,
+    prerelease: false,
+    created_at: '2023-01-28T02:49:00Z',
+    published_at: '2023-01-30T16:43:40Z',
+    assets: [],
+    tarball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/tarball/v0.17.3-core-0.67.3',
+    zipball_url:
+      'https://api.github.com/repos/vegaprotocol/frontend-monorepo/zipball/v0.17.3-core-0.67.3',
+    body: "## What's Changed\r\n### Console\r\n* feat: fix positions and margins providers update by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/2753\r\n* feat(#1791): block height check by @mattrussell36 in https://github.com/vegaprotocol/frontend-monorepo/pull/2701\r\n* chore(2351): improve handling wallet errors by @macqbat in https://github.com/vegaprotocol/frontend-monorepo/pull/2729\r\n* fix: don't show `my markets` if there are no markets & reset deal ticket price validation before setting price  by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2763\r\n* fix: hide close button if openVolume is zero by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/2768\r\n* fix: trades grid colors by @MadalinaRaicu in https://github.com/vegaprotocol/frontend-monorepo/pull/2766\r\n* chore: handle not found errors as correct response by @bglownia in https://github.com/vegaprotocol/frontend-monorepo/pull/2759\r\n\r\n### Explorer\r\n* feat(explorer): add long text component for hashes and tx viewer by @edd in https://github.com/vegaprotocol/frontend-monorepo/pull/2765\r\n\r\n**Full Changelog**: https://github.com/vegaprotocol/frontend-monorepo/compare/v0.17.2-core-0.67.3...v0.17.3-core-0.67.3",
+    mentions_count: 5,
+  },
+];

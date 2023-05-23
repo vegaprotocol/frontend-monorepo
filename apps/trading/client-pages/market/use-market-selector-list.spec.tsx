@@ -315,39 +315,47 @@ describe('useMarketSelectorList', () => {
     ]);
   });
 
-  it('sorts albphabetically', () => {
+  it('sorts by state and volume by default', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
-        tradableInstrument: {
-          instrument: {
-            code: 'd',
+        state: MarketState.STATE_PENDING,
+        // @ts-ignore candles not on fragment
+        candles: [
+          {
+            volume: '200',
           },
-        },
+        ],
       }),
       createMarketFragment({
         id: 'market-1',
-        tradableInstrument: {
-          instrument: {
-            code: 'b',
+        state: MarketState.STATE_ACTIVE,
+        // @ts-ignore candles not on fragment
+        candles: [
+          {
+            volume: '200',
           },
-        },
+        ],
       }),
       createMarketFragment({
         id: 'market-2',
-        tradableInstrument: {
-          instrument: {
-            code: 'a',
+        state: MarketState.STATE_ACTIVE,
+        // @ts-ignore candles not on fragment
+        candles: [
+          {
+            volume: '100',
           },
-        },
+        ],
       }),
       createMarketFragment({
+        state: MarketState.STATE_PENDING,
         id: 'market-3',
-        tradableInstrument: {
-          instrument: {
-            code: 'c',
+        // @ts-ignore candles not on fragment
+        candles: [
+          {
+            volume: '100',
           },
-        },
+        ],
       }),
     ];
 
@@ -364,10 +372,10 @@ describe('useMarketSelectorList', () => {
       assets: [],
     });
     expect(result.current.markets).toEqual([
-      markets[2],
       markets[1],
-      markets[3],
+      markets[2],
       markets[0],
+      markets[3],
     ]);
   });
 

@@ -22,7 +22,19 @@ describe('MarketSelectorItem', () => {
     id: 'market-0',
     decimalPlaces: 2,
     // @ts-ignore fragment doesn't contain candles
-    candles: [{ close: '5' }, { close: '10' }],
+    candles: [
+      { close: '5', volume: '50' },
+      { close: '10', volume: '50' },
+    ],
+    tradableInstrument: {
+      instrument: {
+        product: {
+          settlementAsset: {
+            symbol: 'SYM',
+          },
+        },
+      },
+    },
   });
   const marketData: MarketDataUpdateFieldsFragment = {
     __typename: 'ObservableMarketData',
@@ -83,6 +95,9 @@ describe('MarketSelectorItem', () => {
   };
 
   it('renders market information', async () => {
+    const symbol =
+      market.tradableInstrument.instrument.product.settlementAsset.symbol;
+
     renderJsx();
 
     const link = screen.getByRole('link');
@@ -91,7 +106,8 @@ describe('MarketSelectorItem', () => {
 
     expect(link).toHaveClass('ring-1');
 
-    expect(screen.getByTestId('market-item-price')).toHaveTextContent('-');
+    expect(screen.getByTitle('24h vol')).toHaveTextContent('100');
+    expect(screen.getByTitle(symbol)).toHaveTextContent('-');
 
     // candles are loaded immediately
     expect(screen.getByTestId('market-item-change')).toHaveTextContent(
@@ -99,7 +115,7 @@ describe('MarketSelectorItem', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('market-item-price')).toHaveTextContent(
+      expect(screen.getByTitle(symbol)).toHaveTextContent(
         addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
       );
     });
