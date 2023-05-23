@@ -304,7 +304,7 @@ export const DealTicket = ({
                       : order.postOnly,
                   expiresAt: undefined,
                 });
-                clearErrors('expiresAt');
+                clearErrors(['expiresAt', 'price']);
               }}
               market={market}
               marketData={marketData}
