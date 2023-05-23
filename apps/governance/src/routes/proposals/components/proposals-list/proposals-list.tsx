@@ -35,7 +35,11 @@ export const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
     arr,
     [
-      (p) => new Date(p?.terms?.closingDatetime).getTime(),
+      (p) =>
+        p?.terms?.enactmentDatetime
+          ? new Date(p?.terms?.enactmentDatetime).getTime()
+          : // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered
+            new Date(p?.terms?.closingDatetime || 0).getTime(),
       (p) => new Date(p?.datetime).getTime(),
     ],
     ['asc', 'asc']

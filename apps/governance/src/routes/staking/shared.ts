@@ -71,14 +71,6 @@ export const calculateOverstakedPenalty = (nodeId: string, nodes: Node[]) => {
       new BigNumber(node.rewardScore?.rawValidatorScore || 0).dividedBy(tts)
     )
     .times(100);
-  console.log(
-    nodeId,
-    new BigNumber(node.rewardScore?.rawValidatorScore || 0).toString(),
-    tts.toString(),
-    new BigNumber(node.rewardScore?.rawValidatorScore || 0)
-      .dividedBy(tts)
-      .toString()
-  );
   return penalty.isLessThan(0) ? new BigNumber(0) : penalty;
 };
 

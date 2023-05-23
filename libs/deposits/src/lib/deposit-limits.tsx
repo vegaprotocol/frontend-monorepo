@@ -18,6 +18,7 @@ interface DepositLimitsProps {
   asset: Asset;
   balance?: BigNumber;
   allowance?: BigNumber;
+  exempt?: boolean;
 }
 
 export const DepositLimits = ({
@@ -26,6 +27,7 @@ export const DepositLimits = ({
   asset,
   balance,
   allowance,
+  exempt,
 }: DepositLimitsProps) => {
   const limits = [
     {
@@ -68,11 +70,13 @@ export const DepositLimits = ({
         </Tooltip>
       ),
       rawValue: max.minus(deposited),
-      value: (
+      value: !exempt ? (
         <CompactNumber
           number={max.minus(deposited)}
           decimals={asset.decimals}
         />
+      ) : (
+        <div data-testid="exempt">{t('Exempt')}</div>
       ),
     },
     {

@@ -34,7 +34,10 @@ export const useWithdrawAsset = (
           ? new BigNumber(addDecimal(account.balance, asset.decimals))
           : new BigNumber(0);
       const min = asset
-        ? new BigNumber(addDecimal('1', asset.decimals))
+        ? BigNumber.max(
+            new BigNumber(addDecimal('1', asset.decimals)),
+            new BigNumber(addDecimal(asset.quantum, asset.decimals))
+          )
         : new BigNumber(0);
       // Query collateral bridge for threshold for selected asset
       // and subsequent delay if withdrawal amount is larger than it

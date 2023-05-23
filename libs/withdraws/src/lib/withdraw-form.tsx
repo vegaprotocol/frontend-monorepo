@@ -34,6 +34,7 @@ import {
   useWeb3Disconnect,
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
+import { DocsLinks } from '@vegaprotocol/environment';
 
 interface FormFields {
   asset: string;
@@ -83,12 +84,13 @@ const WithdrawDelayNotification = ({
               formatNumber(threshold, decimals),
               ...replacements,
             ]),
-        <ExternalLink
-          className="ml-1"
-          href="https://docs.vega.xyz/testnet/concepts/deposits-withdrawals#withdrawal-limits"
-        >
-          {t('Read more')}
-        </ExternalLink>,
+        DocsLinks?.WITHDRAWAL_LIMITS ? (
+          <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
+            {t('Read more')}
+          </ExternalLink>
+        ) : (
+          ''
+        ),
       ]}
     />
   );
