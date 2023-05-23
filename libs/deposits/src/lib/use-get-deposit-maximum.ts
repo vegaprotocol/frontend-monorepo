@@ -28,3 +28,25 @@ export const useGetDepositMaximum = (
 
   return getDepositMaximum;
 };
+
+export const useIsExemptDepositor = (
+  contract: CollateralBridge | null,
+  address: string | undefined
+) => {
+  const isExemptDepositor = useCallback(async () => {
+    if (!contract || !address) {
+      return false;
+    }
+    const logger = localLoggerFactory({ application: 'deposits' });
+    try {
+      logger.info('is exempted depositor', { address });
+      const res = await contract.is_exempt_depositor(address);
+      return res;
+    } catch (err) {
+      logger.error('is exempted depositor', err);
+      return false;
+    }
+  }, [contract, address]);
+
+  return isExemptDepositor;
+};
