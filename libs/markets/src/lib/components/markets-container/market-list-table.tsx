@@ -68,6 +68,7 @@ export const MarketListTable = forwardRef<
         sortable: true,
         filter: true,
         filterParams: { buttons: ['reset'] },
+        minWidth: 100,
       }}
       suppressCellFocus
       components={{ PriceFlashCell, MarketName }}

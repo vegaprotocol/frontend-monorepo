@@ -6,6 +6,7 @@ import type {
 } from 'ag-grid-community';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useColumnSizes } from './use-column-sizes';
+import * as reactHelpers from '@vegaprotocol/react-helpers';
 
 const mockApis = {
   api: {
@@ -49,6 +50,9 @@ describe('UseColumnSizes hook', () => {
   });
 
   it('onGridSizeChanged should call setSize', async () => {
+    jest
+      .spyOn(reactHelpers, 'useScreenDimensions')
+      .mockReturnValue({ screenSize: 'xxl' });
     const { result } = renderHook(() =>
       useColumnSizes({ storeKey, props: {} })
     );
@@ -95,6 +99,7 @@ describe('UseColumnSizes hook', () => {
 
   it('onGridReady should call setSizes', async () => {
     const props = { onGridReady: jest.fn() };
+
     const { result } = renderHook(() => useColumnSizes({ storeKey, props }));
     const obTest = { cool: 1, ...mockApis };
     await act(() => {
