@@ -35,6 +35,7 @@ const longPosition: Position = {
   totalBalance: '45353',
   unrealisedPNL: '45',
   updatedAt: '2022-07-27T15:02:58.400Z',
+  partyId: 'partyId',
 };
 
 const shortPosition: Position = {
@@ -58,6 +59,7 @@ const shortPosition: Position = {
   totalBalance: '3856',
   unrealisedPNL: '0',
   updatedAt: '2022-07-26T14:01:34.800Z',
+  partyId: 'partyId',
 };
 
 Primary.args = {

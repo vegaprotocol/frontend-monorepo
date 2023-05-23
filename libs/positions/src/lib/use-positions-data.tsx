@@ -9,8 +9,14 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { GetRowsParams } from '@vegaprotocol/datagrid';
 import isEqual from 'lodash/isEqual';
 
-export const getRowId = ({ data }: { data: Position }) =>
-  `${data.partyId}-${data.marketId}`;
+export const getRowId = ({
+  data,
+}: {
+  data: Position & { isLastPlaceholder?: boolean; id?: string };
+}) =>
+  data.isLastPlaceholder && data.id
+    ? data.id
+    : `${data.partyId}-${data.marketId}`;
 
 export const usePositionsData = (
   partyIds: string[],

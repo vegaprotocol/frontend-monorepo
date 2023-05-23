@@ -154,7 +154,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           {...props}
           style={{ width: '100%', height: '100%' }}
           overlayNoRowsTemplate={t('No accounts')}
-          getRowId={({ data }: { data: AccountFields }) => data.asset.id}
+          getRowId={({
+            data,
+          }: {
+            data: AccountFields & { isLastPlaceholder?: boolean; id?: string };
+          }) => (data.isLastPlaceholder && data.id ? data.id : data.asset.id)}
           ref={ref}
           tooltipShowDelay={500}
           rowData={props.rowData?.filter(

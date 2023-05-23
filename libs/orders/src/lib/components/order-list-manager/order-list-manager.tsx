@@ -87,7 +87,7 @@ export const OrderListManager = ({
   const {
     onFilterChanged: bottomPlaceholderOnFilterChanged,
     ...bottomPlaceholderProps
-  } = useBottomPlaceholder<Order>({
+  } = useBottomPlaceholder({
     gridRef,
     disabled: !enforceBottomPlaceholder && !isReadOnly && !hasAmendableOrder,
   });

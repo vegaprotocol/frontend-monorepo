@@ -69,8 +69,11 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    const { decimals, id: assetId } =
-      market.tradableInstrument.instrument.product.settlementAsset;
+    const {
+      decimals,
+      id: assetId,
+      symbol: assetSymbol,
+    } = market.tradableInstrument.instrument.product.settlementAsset;
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === assetId &&
@@ -105,11 +108,9 @@ export const getMetrics = (
         ? new BigNumber(0)
         : notional.dividedBy(totalBalance)
       : undefined;
-
     metrics.push({
-      assetId: market.tradableInstrument.instrument.product.settlementAsset.id,
-      assetSymbol:
-        market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      assetId,
+      assetSymbol,
       averageEntryPrice: position.averageEntryPrice,
       currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
       decimals,

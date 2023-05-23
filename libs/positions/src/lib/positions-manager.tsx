@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { Position } from './positions-data-providers';
 import { usePositionsData } from './use-positions-data';
 import { PositionsTable } from './positions-table';
 import type { AgGridReact } from 'ag-grid-react';
@@ -8,6 +7,7 @@ import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -24,6 +24,7 @@ export const PositionsManager = ({
   noBottomPlaceholder,
   storeKey,
 }: PositionsManagerProps) => {
+  const { pubKeys, pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, reload } = usePositionsData(partyIds, gridRef);
   const [dataCount, setDataCount] = useState(data?.length ?? 0);
@@ -58,23 +59,19 @@ export const PositionsManager = ({
       },
     });
 
-  const setId = useCallback((data: Position, id: string) => {
-    return {
-      ...data,
-      marketId: id,
-    };
-  }, []);
-  const bottomPlaceholderProps = useBottomPlaceholder<Position>({
+  const bottomPlaceholderProps = useBottomPlaceholder({
     gridRef,
-    setId,
     disabled: noBottomPlaceholder,
   });
   const updateRowCount = useCallback(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);
+
   return (
     <div className="h-full relative">
       <PositionsTable
+        pubKey={pubKey}
+        pubKeys={pubKeys}
         rowData={error ? [] : data}
         ref={gridRef}
         onMarketClick={onMarketClick}

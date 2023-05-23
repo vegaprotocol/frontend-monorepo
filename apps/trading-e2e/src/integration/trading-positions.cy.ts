@@ -1,6 +1,7 @@
 import { checkSorting } from '@vegaprotocol/cypress';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketsDataQuery } from '@vegaprotocol/mock';
+import { positionsQuery } from '@vegaprotocol/mock';
 
 beforeEach(() => {
   cy.mockTradingPage();
@@ -16,9 +17,27 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
   });
 
   it('renders positions on portfolio page', () => {
+    cy.mockGQL((req) => {
+      const positions = positionsQuery();
+      if (positions.positions?.edges) {
+        positions.positions.edges.push(
+          ...positions.positions.edges.map((edge) => ({
+            ...edge,
+            node: {
+              ...edge.node,
+              party: {
+                ...edge.node.party,
+                id: 'vega-1',
+              },
+            },
+          }))
+        );
+      }
+      aliasGQLQuery(req, 'Positions', positions);
+    });
     cy.visit('/#/portfolio');
     cy.getByTestId('Positions').click();
-    validatePositionsDisplayed();
+    validatePositionsDisplayed(true);
   });
   describe('renders position among some graphql errors', () => {
     it('rows should be displayed despite errors', () => {
@@ -56,7 +75,9 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
       cy.getByTestId('tab-positions')
         .first()
         .within(() => {
-          cy.get('[row-id="market-2"]')
+          cy.get(
+            '[row-id="02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65-market-2"]'
+          )
             .eq(1)
             .within(() => {
               emptyCells.forEach((cell) => {
@@ -103,9 +124,11 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
       const marketsSortedDefault = [
         'ACTIVE MARKET',
         'Apple Monthly (30 Jun 2022)',
+        'SUSPENDED MARKET',
       ];
       const marketsSortedAsc = ['ACTIVE MARKET', 'Apple Monthly (30 Jun 2022)'];
       const marketsSortedDesc = [
+        'SUSPENDED MARKET',
         'Apple Monthly (30 Jun 2022)',
         'ACTIVE MARKET',
       ];
@@ -119,9 +142,13 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
     });
     it('sorting by notional', () => {
       cy.visit('/#/markets/market-0');
-      const marketsSortedDefault = ['276,761.40348', '46,126.90058'];
-      const marketsSortedAsc = ['46,126.90058', '276,761.40348'];
-      const marketsSortedDesc = ['276,761.40348', '46,126.90058'];
+      const marketsSortedDefault = [
+        '276,761.40348',
+        '46,126.90058',
+        '1,688.20',
+      ];
+      const marketsSortedAsc = ['1,688.20', '46,126.90058', '276,761.40348'];
+      const marketsSortedDesc = ['276,761.40348', '46,126.90058', '1,688.20'];
       cy.getByTestId('Positions').click();
       checkSorting(
         'notional',
@@ -132,9 +159,9 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
     });
     it('sorting by unrealisedPNL', () => {
       cy.visit('/#/markets/market-0');
-      const marketsSortedDefault = ['8.95', '-0.22519'];
-      const marketsSortedAsc = ['-0.22519', '8.95'];
-      const marketsSortedDesc = ['8.95', '-0.22519'];
+      const marketsSortedDefault = ['8.95', '-0.22519', '8.95'];
+      const marketsSortedAsc = ['-0.22519', '8.95', '8.95'];
+      const marketsSortedDesc = ['8.95', '8.95', '-0.22519'];
       cy.getByTestId('Positions').click();
       checkSorting(
         'unrealisedPNL',
@@ -145,7 +172,7 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
     });
   });
 
-  function validatePositionsDisplayed() {
+  function validatePositionsDisplayed(multiKey = false) {
     cy.getByTestId('tab-positions').should('be.visible');
     cy.getByTestId('tab-positions').within(() => {
       cy.get('[col-id="marketName"]')
@@ -165,10 +192,11 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
 
-      cy.get('[col-id="currentLeverage"]').should('contain.text', '2.846.1');
-
-      cy.get('[col-id="marginAccountBalance"]') // margin allocated
-        .should('contain.text', '0.01');
+      if (!multiKey) {
+        cy.get('[col-id="currentLeverage"]').should('contain.text', '2.846.1');
+        cy.get('[col-id="marginAccountBalance"]') // margin allocated
+          .should('contain.text', '0.01');
+      }
 
       cy.get('[col-id="unrealisedPNL"]').each(($unrealisedPnl) => {
         cy.wrap($unrealisedPnl).invoke('text').should('not.be.empty');
@@ -184,6 +212,6 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
       cy.get('.ag-popup').should('contain.text', 'Mark price x open volume');
     });
 
-    cy.getByTestId('close-position').should('be.visible').and('have.length', 2);
+    cy.getByTestId('close-position').should('be.visible').and('have.length', 3);
   }
 });

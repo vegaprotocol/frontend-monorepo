@@ -42,6 +42,7 @@ import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionTableActions } from './position-actions-dropdown';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -50,6 +51,8 @@ interface Props extends TypedDataAgGrid<Position> {
   isReadOnly: boolean;
   storeKey?: string;
   multipleKeys?: boolean;
+  pubKeys?: VegaWalletContextShape['pubKeys'];
+  pubKey?: VegaWalletContextShape['pubKey'];
 }
 
 export interface AmountCellProps {
@@ -84,7 +87,18 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
-  ({ onClose, onMarketClick, multipleKeys, ...props }, ref) => {
+  (
+    {
+      onClose,
+      onMarketClick,
+      multipleKeys,
+      isReadOnly,
+      pubKeys,
+      pubKey,
+      ...props
+    },
+    ref
+  ) => {
     const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
     return (
       <AgGrid
@@ -112,6 +126,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           <AgGridColumn
             headerName={t('Vega key')}
             field="partyId"
+            valueGetter={({
+              data,
+            }: VegaValueGetterParams<Position, 'partyId'>) =>
+              (data?.partyId &&
+                pubKeys &&
+                pubKeys.find((key) => key.publicKey === data.partyId)?.name) ||
+              data?.partyId
+            }
             minWidth={190}
           />
         ) : null}
@@ -399,13 +421,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           minWidth={150}
         />
-        {onClose && !props.isReadOnly ? (
+        {onClose && !isReadOnly ? (
           <AgGridColumn
             {...COL_DEFS.actions}
             cellRenderer={({ data }: VegaICellRendererParams<Position>) => {
               return (
                 <div className="flex gap-2 items-center justify-end">
-                  {data?.openVolume && data?.openVolume !== '0' ? (
+                  {data?.openVolume &&
+                  data?.openVolume !== '0' &&
+                  data.partyId === pubKey ? (
                     <ButtonLink
                       data-testid="close-position"
                       onClick={() => data && onClose(data)}

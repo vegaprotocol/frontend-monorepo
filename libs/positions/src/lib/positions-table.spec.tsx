@@ -173,6 +173,7 @@ it('displays close button', async () => {
     render(
       <PositionsTable
         rowData={singleRowData}
+        pubKey={singleRowData[0].partyId}
         onClose={() => {
           return;
         }}

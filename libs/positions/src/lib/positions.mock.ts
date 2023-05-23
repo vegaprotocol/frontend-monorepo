@@ -56,7 +56,7 @@ const positionFields: PositionFieldsFragment[] = [
       __typename: 'Market',
     },
     party: {
-      id: 'vega-0',
+      id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
       __typename: 'Party',
     },
     lossSocializationAmount: '0',
@@ -74,7 +74,7 @@ const positionFields: PositionFieldsFragment[] = [
       __typename: 'Market',
     },
     party: {
-      id: 'vega-0',
+      id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
       __typename: 'Party',
     },
     lossSocializationAmount: '0',
@@ -92,7 +92,7 @@ const positionFields: PositionFieldsFragment[] = [
       __typename: 'Market',
     },
     party: {
-      id: 'vega-0',
+      id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
       __typename: 'Party',
     },
     lossSocializationAmount: '0',
