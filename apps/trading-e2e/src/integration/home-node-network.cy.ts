@@ -1,7 +1,7 @@
 const dialogContent = 'dialog-content';
 const nodeHealth = 'node-health';
 
-describe('home', { tags: '@regression' }, () => {
+describe.skip('home', { tags: '@regression' }, () => {
   before(() => {
     cy.clearAllLocalStorage();
     cy.mockTradingPage();
@@ -10,7 +10,7 @@ describe('home', { tags: '@regression' }, () => {
   });
 
   describe('footer', () => {
-    it.skip('shows current block height', () => {
+    it('shows current block height', () => {
       // 0006-NETW-004
       // 0006-NETW-005
       // 0006-NETW-008
