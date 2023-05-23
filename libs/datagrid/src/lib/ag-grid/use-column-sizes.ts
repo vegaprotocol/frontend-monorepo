@@ -98,11 +98,8 @@ export const useColumnSizes = ({
   const largeScreen = ['xl', 'xxl', 'xxxl'].includes(screenSize);
   const setSizes = useCallback(
     (apiEvent: GridReadyEvent | GridSizeChangedEvent) => {
-      if (
-        (!storeKey || !Object.keys(sizes).length || !widthRef.current) &&
-        largeScreen
-      ) {
-        apiEvent?.api.sizeColumnsToFit();
+      if (!storeKey || !Object.keys(sizes).length || !widthRef.current) {
+        largeScreen && apiEvent?.api.sizeColumnsToFit();
       } else {
         const recalculatedSizes = recalculateSizes(sizes);
         const newSizes = Object.entries(recalculatedSizes).map(
