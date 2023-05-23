@@ -30,7 +30,7 @@ export const Home = () => {
           replace: true,
         });
       } else {
-        navigate(Links[Routes.MARKET]());
+        navigate(Links[Routes.MARKETS]());
       }
     }
   }, [marketId, data, navigate, update]);

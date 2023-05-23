@@ -140,8 +140,8 @@ describe('home', { tags: '@regression' }, () => {
       cy.wait('@MarketsData');
     });
 
-    it('redirects to a the empty market page and displays welcome notice', () => {
-      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets`);
+    it('redirects to market/all and displays welcome notice', () => {
+      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/all`);
       cy.getByTestId('welcome-notice-title').should(
         'contain.text',
         'Welcome to Console'
