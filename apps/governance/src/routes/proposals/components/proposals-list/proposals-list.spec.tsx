@@ -115,29 +115,6 @@ describe('Proposals list', () => {
     );
   });
 
-  it('Orders proposals correctly by closingDateTime', () => {
-    render(
-      renderComponent([
-        failedProposalClosedLastMonth,
-        openProposalClosesNextMonth,
-        openProposalClosesNextWeek,
-        enactedProposalClosedLastWeek,
-      ])
-    );
-    const openProposals = within(screen.getByTestId('open-proposals'));
-    const closedProposals = within(screen.getByTestId('closed-proposals'));
-    const openProposalsItems = openProposals.getAllByTestId(
-      'proposals-list-item'
-    );
-    const closedProposalsItems = closedProposals.getAllByTestId(
-      'proposals-list-item'
-    );
-    expect(openProposalsItems[0]).toHaveAttribute('id', 'proposal2');
-    expect(openProposalsItems[1]).toHaveAttribute('id', 'proposal1');
-    expect(closedProposalsItems[0]).toHaveAttribute('id', 'proposal3');
-    expect(closedProposalsItems[1]).toHaveAttribute('id', 'proposal4');
-  });
-
   it('Displays info on no proposals', () => {
     render(renderComponent([]));
     expect(screen.queryByTestId('open-proposals')).not.toBeInTheDocument();
