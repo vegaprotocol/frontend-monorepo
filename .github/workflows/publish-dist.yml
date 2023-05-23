@@ -59,29 +59,39 @@ jobs:
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
 
       # https://docs.github.com/en/actions/learn-github-actions/contexts
-      - name: Define variables
+      - name: Define dist variables
+        if: ${{ github.event_name == 'push' }}
         run: |
           envName=''
           domain="vega.rocks"
-          if [[ "${{ github.event_name }}" = "push" ]]; then
-            if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
-              envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
-            elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
-              envName="stagnet1"
-            elif [[ "${{ matrix.app}}" = "trading" ]] && [[ ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }} = "true" ]]; then
-              envName="mainnet"
-            elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
-              envName="mainnet"
-            fi
-            if [[ "${envName}" = "mainnet" ]]; then
-              domain="vega.xyz"
-            fi
-            if [[ "${envName}" = "testnet" ]]; then
-              domain="fairground.wtf"
-            fi
-            bucketName="${{ matrix.app }}.${envName}.${domain}"
-            echo BUCKET_NAME=${bucketName} >> $GITHUB_ENV
+          bucketName=''
+
+          if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
+            envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+          elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
+            envName="stagnet1"
+          elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
+            envName="mainnet"
+          elif [[ "${{ matrix.app}}" = "trading" ]] && [[ "${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}" = "true" ]]; then
+            envName="mainnet"
           fi
+
+          if [[ "${envName}" = "mainnet" ]]; then
+            domain="vega.xyz"
+            bucketName="${{ matrix.app }}.${domain}"
+          elif [[ "${envName}" = "testnet" ]]; then
+            domain="fairground.wtf"
+            bucketName="${{ matrix.app }}.${domain}"
+          fi
+
+          if [[ -z "${bucketName}" ]]; then
+            bucketName="${{ matrix.app }}.${envName}.${domain}"
+          fi
+
+          echo "bucket name: ${bucketName}"
+          echo "env name: ${envName}"
+
+          echo BUCKET_NAME=${bucketName} >> $GITHUB_ENV
           echo ENV_NAME=${envName} >> $GITHUB_ENV
 
       - name: Build local dist
@@ -158,7 +168,7 @@ jobs:
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
         uses: jakejarvis/s3-sync-action@master
-        if: ${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') && ( matrix.app != 'trading' || (matrix.app == 'trading' && !endsWith(github.ref, 'main') ) ) }}
         with:
           args: --acl private --follow-symlinks --delete
         env:
