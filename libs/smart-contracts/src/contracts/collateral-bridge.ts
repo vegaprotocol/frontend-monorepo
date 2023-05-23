@@ -35,6 +35,9 @@ export class CollateralBridge {
   get_deposit_maximum(assetSource: string): Promise<BigNumber> {
     return this.contract.get_asset_deposit_lifetime_limit(assetSource);
   }
+  is_exempt_depositor(address: string): Promise<boolean> {
+    return this.contract.is_exempt_depositor(address);
+  }
   get_multisig_control_address() {
     return this.contract.get_multisig_control_address();
   }
