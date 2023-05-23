@@ -315,6 +315,7 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
       getRowId={({ data }) => data.id}
       defaultColDef={{
         resizable: true,
+        minWidth: 100,
       }}
       overlayNoRowsTemplate="No data"
       storeKey="closedMarkets"
