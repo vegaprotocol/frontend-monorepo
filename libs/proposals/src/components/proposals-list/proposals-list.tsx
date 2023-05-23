@@ -8,7 +8,6 @@ import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import {GridReadyEvent} from "ag-grid-community";
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
@@ -34,7 +33,7 @@ export const ProposalsList = () => {
   const { columnDefs, defaultColDef } = useColumnDefs();
   const handleDataCount = useCallback(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [])
+  }, []);
   useEffect(() => {
     handleDataCount();
   }, [filteredData, handleDataCount]);
