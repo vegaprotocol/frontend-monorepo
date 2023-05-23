@@ -8,6 +8,7 @@ import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import {GridReadyEvent} from "ag-grid-community";
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
@@ -31,12 +32,13 @@ export const ProposalsList = () => {
     removePaginationWrapper(data?.proposalsConnection?.edges)
   );
   const { columnDefs, defaultColDef } = useColumnDefs();
+  const handleDataCount = useCallback(() => {
+    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
+  }, [])
   useEffect(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [filteredData]);
-  const onFilterChanged = useCallback(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, []);
+    handleDataCount();
+  }, [filteredData, handleDataCount]);
+
   return (
     <div className="relative h-full">
       <AgGrid
@@ -47,10 +49,11 @@ export const ProposalsList = () => {
         defaultColDef={defaultColDef}
         suppressLoadingOverlay
         suppressNoRowsOverlay
-        onFilterChanged={onFilterChanged}
+        onFilterChanged={handleDataCount}
         storeKey="proposedMarkets"
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
+        onGridReady={handleDataCount}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer
