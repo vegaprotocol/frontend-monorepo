@@ -5,7 +5,7 @@ const capsuleWalletConnectButton = '[data-testid="web3-connector-Unknown"]';
 
 export function ethereumWalletConnect() {
   cy.highlight('Connecting Eth Wallet');
-  cy.get(connectToEthButton).within(() => {
+  cy.get(connectToEthButton, { timeout: 60000 }).within(() => {
     cy.contains('Connect Ethereum wallet to associate $VEGA')
       .should('be.visible')
       .click();

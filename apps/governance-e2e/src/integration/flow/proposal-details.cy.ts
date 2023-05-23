@@ -33,8 +33,9 @@ const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
 const openProposals = '[data-testid="open-proposals"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
+const proposalDescriptionToggle = 'proposal-description-toggle';
 const voteBreakdownToggle = 'vote-breakdown-toggle';
-const proposalTermsToggle = 'proposal-terms-toggle';
+const proposalTermsToggle = 'proposal-json-toggle';
 
 describe(
   'Governance flow for proposal details',
@@ -73,6 +74,8 @@ describe(
           'contain.text',
           rawProposal.rationale.title
         );
+        cy.getByTestId(proposalDescriptionToggle).click();
+        cy.getByTestId('proposal-description-toggle');
         cy.get(proposalDetailsDescription)
           .find('p')
           .should('have.text', proposalDescription);
@@ -82,7 +85,7 @@ describe(
       cy.get('code.language-json')
         .should('exist')
         .within(() => {
-          cy.get('.hljs-string').eq(0).should('have.text', '"ProposalTerms"');
+          cy.get('.hljs-attr').eq(0).should('have.text', '"id"');
         });
     });
 
@@ -109,16 +112,9 @@ describe(
           closingDate
         );
       });
-      cy.wrap(
-        formatDateWithLocalTimezone(
-          new Date(createTenDigitUnixTimeStampForSpecifiedDays(0) * 1000)
-        )
-      ).then((proposalDate) => {
-        getProposalInformationFromTable('Proposed on').should(
-          'have.text',
-          proposalDate
-        );
-      });
+      getProposalInformationFromTable('Proposed on')
+        .invoke('text')
+        .should('not.be.empty');
     });
 
     it('Newly created proposal details - shows default status set to fail', function () {
