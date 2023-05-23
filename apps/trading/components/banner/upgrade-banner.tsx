@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { gt, prerelease } from 'semver';
 import {
   ReleasesFeed,
   useEnvironment,
@@ -15,7 +16,10 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 
-const CANONICAL_URL = 'https://vega.trading';
+// v0.20.12-core-0.71.4 -> v0.20.12
+// we need to strip the "core" suffix in order to determine whether a release
+// is a pre-release (candidate); example: v.0.21.0-beta.1-core-0.71.4
+const parseTagName = (tagName: string) => tagName.replace(/-core-[\d.]+$/i, '');
 
 type UpgradeBannerProps = {
   showVersionChange: boolean;
@@ -23,22 +27,24 @@ type UpgradeBannerProps = {
 export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
   const [visible, setVisible] = useState(true);
   const { data } = useReleases(ReleasesFeed.FrontEnd);
-  const { APP_VERSION, VEGA_ENV } = useEnvironment();
-  /**
-   * Filtering out the release candidates.
-   */
-  const latest = useMemo(() => {
+  const { APP_VERSION, VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
+
+  const CANONICAL_URL = VEGA_NETWORKS[VEGA_ENV] || 'https://vega.trading';
+
+  const newest = useMemo(() => {
+    if (!APP_VERSION || !data) return undefined;
+    const newer = data.filter((r) => gt(r.tagName, APP_VERSION));
     const valid =
+      // filter pre-releases on mainnet
       VEGA_ENV === Networks.MAINNET
-        ? data?.filter((r) => !/-rc$/i.test(r.tagName))
-        : data;
+        ? newer?.filter((r) => !prerelease(parseTagName(r.tagName)))
+        : newer;
+    return valid.sort((a, b) => (gt(a.tagName, b.tagName) ? -1 : 1))[0];
+  }, [APP_VERSION, VEGA_ENV, data]);
 
-    return valid && valid.length > 0 ? valid[0] : undefined;
-  }, [VEGA_ENV, data]);
-
-  if (!APP_VERSION) return null;
-
-  if (!visible || !latest || latest.tagName === APP_VERSION) return null;
+  if (!visible || !newest) {
+    return null;
+  }
 
   const versionChange = (
     <span>
@@ -47,7 +53,7 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
       </span>{' '}
       <VegaIcon size={14} name={VegaIconNames.ARROW_RIGHT} />{' '}
       <span className="text-vega-orange-500 dark:text-vega-yellow-500">
-        <ExternalLink href={latest.htmlUrl}>{latest.tagName}</ExternalLink>
+        <ExternalLink href={newest.htmlUrl}>{newest.tagName}</ExternalLink>
       </span>
     </span>
   );
