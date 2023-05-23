@@ -9,8 +9,3 @@ export const selectAsset = (assetIndex: number) => {
   // eslint-disable-next-line
   cy.wait(100);
 };
-
-export const closeWelcomeDialog = () => {
-  cy.getByTestId('select-market-list').should('exist');
-  cy.getByTestId('dialog-close').click();
-};

@@ -29,6 +29,7 @@ import { AssetLink, MarketLink } from '../components/links';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { remove0x } from '@vegaprotocol/utils';
 import { PartyAccountsByAsset } from './parties/id/accounts';
+import { Disclaimer } from './pages/disclaimer';
 
 export type Navigable = {
   path: string;
@@ -334,6 +335,17 @@ export const routerConfig: Route[] = [
             },
           },
         ],
+      },
+      {
+        path: Routes.DISCLAIMER,
+        element: <Disclaimer />,
+        handle: {
+          name: t('Disclaimer'),
+          text: t('Disclaimer'),
+          breadcrumb: () => (
+            <Link to={Routes.DISCLAIMER}>{t('Disclaimer')}</Link>
+          ),
+        },
       },
       ...partiesRoutes,
       ...assetsRoutes,

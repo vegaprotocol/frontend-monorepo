@@ -130,6 +130,13 @@ export const closedMarketsWithDataProvider = makeDerivedDataProvider<
   addData(parts[0] as Market[], parts[1] as MarketData[])
 );
 
+export const allMarketsWithDataProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsProvider, marketsDataProvider], (parts) =>
+  addData(parts[0] as Market[], parts[1] as MarketData[])
+);
+
 export type MarketMaybeWithDataAndCandles = MarketMaybeWithData &
   MarketMaybeWithCandles;
 

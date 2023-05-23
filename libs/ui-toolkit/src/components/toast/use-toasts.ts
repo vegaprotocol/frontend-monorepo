@@ -109,12 +109,12 @@ export enum ToastPosition {
   BottomCenter,
 }
 
-type ToastConfiguration = {
+type ToastsConfiguration = {
   position: ToastPosition;
   setPosition: (position: ToastPosition) => void;
 };
 
-export const useToastsConfiguration = create<ToastConfiguration>()(
+export const useToastsConfiguration = create<ToastsConfiguration>()(
   persist(
     immer((set) => ({
       position: ToastPosition.BottomRight,

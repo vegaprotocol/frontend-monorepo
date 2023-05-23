@@ -5,6 +5,9 @@ import { ProtocolUpgradeProposalDetailInfo } from '../components/protocol-upgrad
 import { getNormalisedVotingPower } from '../../staking/shared';
 import type { NodesFragmentFragment } from '../../staking/home/__generated__/Nodes';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { useVegaRelease } from '@vegaprotocol/environment';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { useTranslation } from 'react-i18next';
 
 export interface ProtocolUpgradeProposalProps {
   proposal: ProtocolUpgradeProposalFieldsFragment;
@@ -42,6 +45,9 @@ export const ProtocolUpgradeProposal = ({
   lastBlockHeight,
   consensusValidators,
 }: ProtocolUpgradeProposalProps) => {
+  const { t } = useTranslation();
+  const releaseInfo = useVegaRelease(proposal.vegaReleaseTag);
+
   const consensusApprovals = useMemo(
     () => getConsensusApprovals(consensusValidators || [], proposal),
     [consensusValidators, proposal]
@@ -77,6 +83,14 @@ export const ProtocolUpgradeProposal = ({
           }
           totalConsensusValidators={consensusValidators.length}
         />
+      )}
+
+      {releaseInfo && releaseInfo.htmlUrl && (
+        <div className="mb-10">
+          <ExternalLink href={releaseInfo.htmlUrl}>
+            {t('Explore release on GitHub')}
+          </ExternalLink>
+        </div>
       )}
     </section>
   );

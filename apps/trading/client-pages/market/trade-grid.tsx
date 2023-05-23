@@ -339,24 +339,31 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <div className="border-b border-r border-default">
-        <div className="flex gap-2 justify-between items-center px-4 py-2">
+        <div className="h-full flex gap-2 justify-between items-end px-4 pt-1 pb-3">
           <HeaderTitle
             primaryContent={market?.tradableInstrument.instrument.code}
             secondaryContent={market?.tradableInstrument.instrument.name}
           />
           <button
             onClick={() => setSidebarOpen((x) => !x)}
-            className="p-2"
+            className="flex flex-col items-center text-xs w-12"
             data-testid="sidebar-toggle"
           >
-            <span
-              className={classNames('block', {
-                'rotate-90 translate-x-1': !sidebarOpen,
-                '-rotate-90 -translate-x-1': sidebarOpen,
-              })}
-            >
-              <VegaIcon name={VegaIconNames.CHEVRON_UP} />
-            </span>
+            {sidebarOpen ? (
+              <>
+                <VegaIcon name={VegaIconNames.CHEVRON_UP} />
+                <span className="text-vega-light-300 dark:text-vega-dark-300">
+                  {t('Close')}
+                </span>
+              </>
+            ) : (
+              <>
+                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+                <span className="text-vega-light-300 dark:text-vega-dark-300">
+                  {t('Markets')}
+                </span>
+              </>
+            )}
           </button>
         </div>
       </div>
