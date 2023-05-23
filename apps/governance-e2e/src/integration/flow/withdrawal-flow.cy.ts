@@ -180,7 +180,6 @@ context(
             'Withdraw 110.00 tUSDC'
           );
           cy.getByTestId(toastClose).click();
-          git;
         });
       cy.get(tableTxHash)
         .eq(1)
