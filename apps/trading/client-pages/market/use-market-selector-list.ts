@@ -1,10 +1,17 @@
 import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
 import { MarketState } from '@vegaprotocol/types';
-import { useMarketList } from '@vegaprotocol/markets';
+import { calcCandleVolume, useMarketList } from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from './market-selector';
 import { Sort } from './sort-dropdown';
+
+// Used for sort order and filter
+const MARKET_TEMPLATE = [
+  MarketState.STATE_ACTIVE,
+  MarketState.STATE_SUSPENDED,
+  MarketState.STATE_PENDING,
+];
 
 export const useMarketSelectorList = ({
   product,
@@ -46,7 +53,19 @@ export const useMarketSelectorList = ({
       });
 
     if (sort === Sort.None) {
-      return orderBy(markets, ['tradableInstrument.instrument.code'], ['asc']);
+      // Sort by market state primarilly and AtoZ secondarilly
+      return orderBy(
+        markets,
+        [
+          (m) => MARKET_TEMPLATE.indexOf(m.state),
+          (m) => {
+            if (!m.candles?.length) return 0;
+            const vol = calcCandleVolume(m.candles);
+            return Number(vol || 0);
+          },
+        ],
+        ['asc', 'desc']
+      );
     }
 
     if (sort === Sort.Gained || sort === Sort.Lost) {
@@ -78,9 +97,5 @@ export const useMarketSelectorList = ({
 };
 
 export const isMarketActive = (state: MarketState) => {
-  return [
-    MarketState.STATE_ACTIVE,
-    MarketState.STATE_SUSPENDED,
-    MarketState.STATE_PENDING,
-  ].includes(state);
+  return MARKET_TEMPLATE.includes(state);
 };
