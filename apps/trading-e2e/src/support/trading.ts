@@ -85,7 +85,7 @@ const mockTradingPage = (
   trigger?: Schema.AuctionTrigger
 ) => {
   aliasGQLQuery(req, 'ChainId', chainIdQuery());
-  aliasGQLQuery(req, 'Statistics', statisticsQuery());
+  aliasGQLQuery(req, 'NodeCheck', statisticsQuery());
   aliasGQLQuery(req, 'NodeGuard', nodeGuardQuery());
   aliasGQLQuery(
     req,
