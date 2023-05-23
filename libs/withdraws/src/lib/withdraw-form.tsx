@@ -84,9 +84,13 @@ const WithdrawDelayNotification = ({
               formatNumber(threshold, decimals),
               ...replacements,
             ]),
-        <ExternalLink className="ml-1" href={DocsLinks?.WITHDRAWAL_LIMITS}>
-          {t('Read more')}
-        </ExternalLink>,
+        DocsLinks?.WITHDRAWAL_LIMITS ? (
+          <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
+            {t('Read more')}
+          </ExternalLink>
+        ) : (
+          ''
+        ),
       ]}
     />
   );
