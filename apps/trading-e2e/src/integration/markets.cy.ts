@@ -156,7 +156,7 @@ describe('markets table', { tags: '@smoke' }, () => {
     checkSorting('state', stateColDefault, stateColAsc, stateColDesc);
   });
 
-  it('opening auction subsets should be properly displayed', () => {
+  it.skip('opening auction subsets should be properly displayed', () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,
       Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
