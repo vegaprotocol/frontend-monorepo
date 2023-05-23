@@ -76,6 +76,9 @@ jobs:
             if [[ "${envName}" = "mainnet" ]]; then
               domain="vega.xyz"
             fi
+            if [[ "${envName}" = "testnet" ]]; then
+              domain="fairground.wtf"
+            fi
             bucketName="${{ matrix.app }}.${envName}.${domain}"
             echo BUCKET_NAME=${bucketName} >> $GITHUB_ENV
           fi
