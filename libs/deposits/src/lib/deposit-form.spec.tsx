@@ -58,6 +58,7 @@ beforeEach(() => {
     max: new BigNumber(20),
     allowance: new BigNumber(30),
     deposited: new BigNumber(10),
+    exempt: false,
   };
   props = {
     assets: [asset],
@@ -287,6 +288,7 @@ describe('Deposit form', () => {
           balance,
           max,
           deposited,
+          exempt: false,
         }}
         selectedAsset={asset}
       />
