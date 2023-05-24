@@ -128,6 +128,7 @@ context(
         .first()
         .find('[data-testid="view-proposal-btn"]')
         .click();
+      cy.url().should('contain', '/protocol-upgrades/v1');
       cy.getByTestId('protocol-upgrade-proposal').within(() => {
         cy.get('h1').should('have.text', 'Vega Release v1');
         cy.getByTestId('protocol-upgrade-block-height').should(
