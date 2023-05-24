@@ -224,4 +224,37 @@ describe('Orderbook', () => {
     expect(onResolutionChange.mock.calls[0][0]).toBe(10);
     expect(onClickSpy).toBeCalledWith('122.99');
   });
+
+  it('should have three or four columns', async () => {
+    window.innerHeight = 11 * rowHeight;
+    const { rerender } = render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        fillGaps
+        {...generateMockData({
+          ...params,
+          overlap: 0,
+        })}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => {
+      expect(screen.queryByText('Bid / Ask vol')).toBeInTheDocument();
+    });
+    rerender(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        fillGaps
+        {...generateMockData(params)}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => {
+      expect(screen.getByText('Bid vol')).toBeInTheDocument();
+      expect(screen.getByText('Ask vol')).toBeInTheDocument();
+    });
+    await expect(screen.queryByText('Bid / Ask vol')).not.toBeInTheDocument();
+  });
 });
