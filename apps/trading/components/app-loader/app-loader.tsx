@@ -95,5 +95,10 @@ const cacheConfig: InMemoryCacheConfig = {
     Fees: {
       keyFields: false,
     },
+    // Don't cache order update as this subscription result gets merged into the main order cache
+    // We don't need to write these to the cache at all
+    OrderUpdate: {
+      keyFields: false,
+    },
   },
 };
