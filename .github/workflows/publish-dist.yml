@@ -237,7 +237,7 @@ jobs:
           echo $pr_url
           # once auto merge get's enabled on documentation repo let's do follow up
           sleep 5
-          gh pr merge "${pr_url}" --auto --delete-branch --squash --admin
+          gh pr merge "${pr_url}" --delete-branch --squash --admin
 
           # # Generate console URL
           # new_console_url_type=ipfs
