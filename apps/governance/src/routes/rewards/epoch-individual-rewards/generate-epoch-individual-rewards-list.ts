@@ -9,6 +9,7 @@ export interface EpochIndividualReward {
   rewards: {
     asset: string;
     totalAmount: string;
+    decimals: number;
     rewardTypes: {
       [key in AccountType]?: {
         amount: string;
@@ -53,6 +54,7 @@ export const generateEpochIndividualRewardsList = ({
   const epochIndividualRewards = rewards.reduce((acc, reward) => {
     const epochId = reward.epoch.id;
     const assetName = reward.asset.name;
+    const assetDecimals = reward.asset.decimals;
     const rewardType = reward.rewardType;
     const amount = reward.amount;
     const percentageOfTotal = reward.percentageOfTotal;
@@ -73,6 +75,7 @@ export const generateEpochIndividualRewardsList = ({
     if (!asset) {
       asset = {
         asset: assetName,
+        decimals: assetDecimals,
         totalAmount: '0',
         rewardTypes: Object.fromEntries(emptyRowAccountTypes),
       };
