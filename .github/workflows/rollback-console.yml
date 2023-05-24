@@ -61,7 +61,8 @@ jobs:
           which ipfs
           new_hash=$(cat ipfs-hash)
           new_cid=$(ipfs cid format -v 1 -b base32 $new_hash)
-
+          git config --global user.email "vega-ci-bot@vega.xyz"
+          git config --global user.name "vega-ci-bot"
           echo $new_hash > ipfs-redirect/cidv0.txt
           echo $new_cid > ipfs-redirect/cidv1.txt
 
@@ -69,16 +70,12 @@ jobs:
             cd ipfs-redirect
 
             git status
-            cat .git/config
-            git config --global user.email "vega-ci-bot@vega.xyz"
-            git config --global user.name "vega-ci-bot"
-
-            branch_name="update-hash-${{ github.ref }}"
+            branch_name="rollback-to-$new_hash"
             git checkout -b "$branch_name"
-            commit_msg="Automated hash update from ${{ github.ref }}"
+            commit_msg="hash rollback to $new_hash"
             git add cidv0.txt cidv1.txt
             git commit -m "$commit_msg"
-            git push -u origin "$branch_name"
+            git push -u origin "$branch_name" --force-with-lease
             pr_url="$(gh pr create --title "${commit_msg}" --body 'automated pull request to update CIDs')"
             echo $pr_url
             # once auto merge get's enabled on documentation repo let's do follow up
