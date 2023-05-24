@@ -59,7 +59,7 @@ const cacheConfig: InMemoryCacheConfig = {
       keyFields: false,
     },
     TradableInstrument: {
-      keyFields: ['instrument'],
+      keyFields: false,
     },
     Product: {
       keyFields: ['settlementAsset', ['id']],
