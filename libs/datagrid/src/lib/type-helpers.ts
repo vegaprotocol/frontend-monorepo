@@ -4,17 +4,18 @@ import type {
   ValueFormatterParams,
   ValueGetterParams,
 } from 'ag-grid-community';
-import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
+import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';
 
 type Field = string | readonly string[];
 
 type RowHelper<TObj, TRow, TField extends Field> = Omit<
   TObj,
-  'data' | 'value'
+  'data' | 'value' | 'node'
 > & {
   data?: TRow;
   value?: Get<TRow, TField>;
+  node: Omit<RowNode, 'data'> & { data?: TRow };
 };
 
 export type VegaValueFormatterParams<TRow, TField extends Field> = RowHelper<

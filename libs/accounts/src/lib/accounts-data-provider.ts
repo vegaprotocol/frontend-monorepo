@@ -212,3 +212,18 @@ export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
   [accountsDataProvider],
   (parts) => parts[0] && getAccountData(parts[0] as Account[])
 );
+
+export const aggregatedAccountDataProvider = makeDerivedDataProvider<
+  AccountFields,
+  never,
+  AccountsQueryVariables & { assetId: string }
+>(
+  [
+    (callback, client, { partyId }) =>
+      aggregatedAccountsDataProvider(callback, client, { partyId }),
+  ],
+  (parts, { assetId }) =>
+    (parts[0] as AccountFields[]).find(
+      (account) => account.asset.id === assetId
+    ) || null
+);
