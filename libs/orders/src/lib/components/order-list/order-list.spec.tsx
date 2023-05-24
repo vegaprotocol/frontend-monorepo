@@ -25,8 +25,8 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
 
 const defaultProps: OrderListTableProps = {
   rowData: [],
-  setEditOrder: jest.fn(),
-  cancel: jest.fn(),
+  onEdit: jest.fn(),
+  onCancel: jest.fn(),
   isReadOnly: false,
 };
 
@@ -154,8 +154,8 @@ describe('OrderListTable', () => {
         render(
           generateJsx({
             rowData: [order],
-            setEditOrder: mockEdit,
-            cancel: mockCancel,
+            onEdit: mockEdit,
+            onCancel: mockCancel,
           })
         );
       });
@@ -179,8 +179,8 @@ describe('OrderListTable', () => {
         render(
           generateJsx({
             rowData: [order],
-            setEditOrder: mockEdit,
-            cancel: mockCancel,
+            onEdit: mockEdit,
+            onCancel: mockCancel,
             isReadOnly: true,
           })
         );

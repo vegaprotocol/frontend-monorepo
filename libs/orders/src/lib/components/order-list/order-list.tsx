@@ -32,8 +32,8 @@ import { Filter } from '../order-list-manager';
 
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
   marketId?: string;
-  cancel: (order: Order) => void;
-  setEditOrder: (order: Order) => void;
+  onCancel: (order: Order) => void;
+  onEdit: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   filter?: Filter;
@@ -46,14 +46,7 @@ export const OrderListTable = memo<
 >(
   forwardRef<AgGridReact, OrderListTableProps>(
     (
-      {
-        cancel,
-        setEditOrder,
-        onMarketClick,
-        onOrderTypeClick,
-        filter,
-        ...props
-      },
+      { onCancel, onEdit, onMarketClick, onOrderTypeClick, filter, ...props },
       ref
     ) => {
       const showAllActions =
@@ -275,15 +268,11 @@ export const OrderListTable = memo<
           />
           <AgGridColumn
             colId="amend"
-            field="id"
             {...COL_DEFS.actions}
             minWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
             maxWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
-            cellRenderer={({
-              data,
-              value,
-            }: VegaICellRendererParams<Order, 'id'>) => {
-              if (!value || !data) return null;
+            cellRenderer={({ data }: { data?: Order }) => {
+              if (!data) return null;
 
               return (
                 <div className="flex gap-2 items-center justify-end">
@@ -291,19 +280,19 @@ export const OrderListTable = memo<
                     <>
                       <ButtonLink
                         data-testid="edit"
-                        onClick={() => setEditOrder(data)}
+                        onClick={() => onEdit(data)}
                       >
                         {t('Edit')}
                       </ButtonLink>
                       <ButtonLink
                         data-testid="cancel"
-                        onClick={() => cancel(data)}
+                        onClick={() => onCancel(data)}
                       >
                         {t('Cancel')}
                       </ButtonLink>
                     </>
                   )}
-                  <OrderActionsDropdown id={value} />
+                  <OrderActionsDropdown id={data?.id} />
                 </div>
               );
             }}
