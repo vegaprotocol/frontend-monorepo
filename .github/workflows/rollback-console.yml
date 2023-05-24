@@ -52,6 +52,8 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Update vega.trading DNS to redirect to the new console
+        env:
+          GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
         run: |
           curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
           tar -xzf kubo.tgz
