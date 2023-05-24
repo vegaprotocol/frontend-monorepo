@@ -46,18 +46,6 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
     return null;
   }
 
-  const versionChange = (
-    <span>
-      <span className="line-through text-vega-light-300 dark:text-vega-dark-300">
-        {APP_VERSION}
-      </span>{' '}
-      <VegaIcon size={14} name={VegaIconNames.ARROW_RIGHT} />{' '}
-      <span className="text-vega-orange-500 dark:text-vega-yellow-500">
-        <ExternalLink href={newest.htmlUrl}>{newest.tagName}</ExternalLink>
-      </span>
-    </span>
-  );
-
   return (
     <NotificationBanner
       intent={Intent.Warning}
@@ -65,13 +53,24 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
         setVisible(false);
       }}
     >
-      <div className="uppercase ">
-        {t('Upgrade to the latest version of Console')}{' '}
-        {showVersionChange && versionChange}
+      <div className="uppercase mb-1">
+        <ExternalLink href={CANONICAL_URL}>
+          {t('Upgrade to the latest version of Console')}
+        </ExternalLink>
       </div>
       <div data-testid="bookmark-message">
-        {t('Bookmark')}{' '}
-        <ExternalLink href={CANONICAL_URL}>{t('vega.trading')}</ExternalLink>
+        <a
+          className="underline"
+          href={newest.htmlUrl}
+          rel="noreferrer nofollow noopener"
+          target="_blank"
+        >
+          {t("View what's changed")}
+        </a>{' '}
+        {t(' or bookmark')}{' '}
+        <a className="underline" href={CANONICAL_URL}>
+          {t('vega.trading')}
+        </a>{' '}
         <CopyWithTooltip text={CANONICAL_URL}>
           <button title={t('Copy %s', CANONICAL_URL)}>
             <span className="sr-only">{t('Copy %s', CANONICAL_URL)}</span>
