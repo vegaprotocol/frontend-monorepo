@@ -1,5 +1,12 @@
 import colors from 'tailwindcss/colors';
-import { useEffect, useRef, useState, useCallback, Fragment } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  Fragment,
+  useMemo,
+} from 'react';
 import classNames from 'classnames';
 import {
   addDecimalsFixedFormatNumber,
@@ -11,7 +18,7 @@ import {
   useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
-import { OrderbookRow } from './orderbook-row';
+import { OrderbookRow, OrderbookContinuousRow } from './orderbook-row';
 import { createRow } from './orderbook-data';
 import { Checkbox, Icon, Splash, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
@@ -472,39 +479,75 @@ export const Orderbook = ({
   );
   useResizeObserver(gridElement.current, gridResizeHandler);
   useResizeObserver(rootElement.current, rootElementResizeHandler);
-
-  const tableBody =
-    data && data.length !== 0 ? (
-      <div className="grid grid-cols-4 gap-1 text-right auto-rows-[17px]">
-        {data.map((data, i) => (
-          <OrderbookRow
-            key={data.price}
-            price={(BigInt(data.price) / BigInt(resolution)).toString()}
-            onClick={onClick}
-            decimalPlaces={decimalPlaces - Math.log10(resolution)}
-            positionDecimalPlaces={positionDecimalPlaces}
-            bid={data.bid}
-            relativeBid={data.relativeBid}
-            cumulativeBid={data.cumulativeVol.bid}
-            cumulativeRelativeBid={data.cumulativeVol.relativeBid}
-            ask={data.ask}
-            relativeAsk={data.relativeAsk}
-            cumulativeAsk={data.cumulativeVol.ask}
-            cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
-            indicativeVolume={
-              marketTradingMode !==
-                Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS &&
-              indicativePrice === data.price
-                ? indicativeVolume
-                : undefined
-            }
-          />
-        ))}
+  const isContinuousMode =
+    marketTradingMode === Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS;
+  const tableHeader = useMemo(() => {
+    return (
+      <div
+        className={classNames(
+          'absolute top-0 grid auto-rows-[17px] gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-default w-full',
+          isContinuousMode ? 'grid-cols-3' : 'grid-cols-4'
+        )}
+        ref={headerElement}
+      >
+        {isContinuousMode ? (
+          <div>{t('Bid / Ask vol')}</div>
+        ) : (
+          <>
+            <div>{t('Bid vol')}</div>
+            <div>{t('Ask vol')}</div>
+          </>
+        )}
+        <div>{t('Price')}</div>
+        <div className="pr-1 whitespace-nowrap overflow-hidden text-ellipsis">
+          {t('Cumulative vol')}
+        </div>
       </div>
-    ) : null;
+    );
+  }, [isContinuousMode]);
+
+  const OrderBookRowComponent = isContinuousMode
+    ? OrderbookContinuousRow
+    : OrderbookRow;
+
+  const tableBody = data?.length ? (
+    <div
+      className={classNames(
+        'grid grid-cols-4 gap-1 text-right auto-rows-[17px]',
+        isContinuousMode ? 'grid-cols-3' : 'grid-cols-4'
+      )}
+    >
+      {data.map((data, i) => (
+        <OrderBookRowComponent
+          key={data.price}
+          price={(BigInt(data.price) / BigInt(resolution)).toString()}
+          onClick={onClick}
+          decimalPlaces={decimalPlaces - Math.log10(resolution)}
+          positionDecimalPlaces={positionDecimalPlaces}
+          bid={data.bid}
+          relativeBid={data.relativeBid}
+          cumulativeBid={data.cumulativeVol.bid}
+          cumulativeRelativeBid={data.cumulativeVol.relativeBid}
+          ask={data.ask}
+          relativeAsk={data.relativeAsk}
+          cumulativeAsk={data.cumulativeVol.ask}
+          cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
+          indicativeVolume={
+            marketTradingMode !==
+              Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS &&
+            indicativePrice === data.price
+              ? indicativeVolume
+              : undefined
+          }
+        />
+      ))}
+    </div>
+  ) : null;
 
   const c = theme === 'dark' ? colors.neutral[600] : colors.neutral[300];
-  const gradientStyles = `linear-gradient(${c},${c}) 24.6% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 50% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 75.2% 0/1px 100% no-repeat`;
+  const gradientStyles = isContinuousMode
+    ? `linear-gradient(${c},${c}) 33.4% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 66.7% 0/1px 100% no-repeat`
+    : `linear-gradient(${c},${c}) 25% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 50% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 75% 0/1px 100% no-repeat`;
 
   const resolutions = new Array(decimalPlaces + 1)
     .fill(null)
@@ -531,21 +574,11 @@ export const Orderbook = ({
   /* eslint-disable jsx-a11y/no-static-element-interactions */
   return (
     <div
-      className="h-full relative pl-2 text-xs"
+      className="h-full relative pl-1 text-xs"
       ref={rootElement}
       onDoubleClick={() => setDebug(!debug)}
     >
-      <div
-        className="absolute top-0 grid grid-cols-4 auto-rows-[17px] gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-default w-full"
-        ref={headerElement}
-      >
-        <div>{t('Bid vol')}</div>
-        <div>{t('Ask vol')}</div>
-        <div>{t('Price')}</div>
-        <div className="pr-1 whitespace-nowrap overflow-hidden text-ellipsis">
-          {t('Cumulative vol')}
-        </div>
-      </div>
+      {tableHeader}
       <TinyScroll
         className="h-full overflow-auto relative"
         onScroll={onScroll}
