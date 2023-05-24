@@ -233,7 +233,7 @@ jobs:
           git add cidv0.txt cidv1.txt
           git commit -m "$commit_msg"
           git push -u origin "$branch_name"
-          pr_url="$(gh pr create --title "${commit_msg}")"
+          pr_url="$(gh pr create --title "${commit_msg}" --body 'automated pull request to update CIDs')"
           echo $pr_url
           # once auto merge get's enabled on documentation repo let's do follow up
           sleep 5
