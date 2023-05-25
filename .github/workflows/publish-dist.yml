@@ -209,7 +209,7 @@ jobs:
           fetch-depth: '0'
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
-      - name: Update vega.trading DNS to redirect to the new console
+      - name: Update console.vega.xyz DNS to redirect to the new console
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
@@ -258,9 +258,9 @@ jobs:
           # # Update record in DNSimple
           # # docs: https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord
           # dnsimple_account_id=84895
-          # dnsimple_zone_name=vega.trading
+          # dnsimple_zone_name=console.vega.xyz
           # dnsimple_record_id=44409591
-          # # see: https://dnsimple.com/a/84895/domains/vega.trading/records/44409591/edit
+          # # see: https://dnsimple.com/a/84895/domains/console.vega.xyz/records/44409591/edit
 
           # curl  -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
           #       -H 'Accept: application/json' \
