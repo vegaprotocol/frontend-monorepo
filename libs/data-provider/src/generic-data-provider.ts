@@ -444,7 +444,7 @@ function makeDataProviderInternal<
       return;
     }
     // hard reset on demand or when there is no apollo subscription yet
-    if (forceReset || !subscription) {
+    if (forceReset /* || !subscription*/) {
       reset();
       initialize();
     } else {
