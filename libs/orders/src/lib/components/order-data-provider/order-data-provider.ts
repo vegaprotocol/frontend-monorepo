@@ -4,7 +4,6 @@ import uniqBy from 'lodash/uniqBy';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
-  defaultAppend as append,
 } from '@vegaprotocol/data-provider';
 import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/markets';
@@ -93,26 +92,8 @@ const getDelta = (
   if (!subscriptionData.orders) {
     return [];
   }
-  subscriptionData.orders.forEach((order) => {
-    client.cache.modify({
-      id: client.cache.identify({
-        __typename: 'Order',
-        id: order.id,
-      }),
-      fields: {
-        price: () => order.price,
-        size: () => order.size,
-        remaining: () => order.remaining,
-        updatedAt: () => order.updatedAt,
-        status: () => order.status,
-      },
-    });
-  });
   return subscriptionData.orders;
 };
-
-const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
-  responseData.party?.ordersConnection?.pageInfo || null;
 
 export const update = (
   data: ReturnType<typeof getData> | null,
@@ -123,6 +104,7 @@ export const update = (
   if (!data) {
     return data;
   }
+  console.log('update orders');
   // A single update can contain the same order with multiple updates, so we need to find
   // the latest version of the order and only update using that
   const incoming = orderBy(
