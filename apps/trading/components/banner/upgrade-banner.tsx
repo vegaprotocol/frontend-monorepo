@@ -29,7 +29,7 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
   const { data } = useReleases(ReleasesFeed.FrontEnd);
   const { APP_VERSION, VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
 
-  const CANONICAL_URL = VEGA_NETWORKS[VEGA_ENV] || 'https://vega.trading';
+  const CANONICAL_URL = VEGA_NETWORKS[VEGA_ENV] || 'https://console.vega.xyz';
 
   const newest = useMemo(() => {
     if (!APP_VERSION || !data) return undefined;

@@ -37,7 +37,7 @@ const ConsoleLinks = {
   ...EmptyLinks,
   [Networks.STAGNET1]: 'https://trading.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://console.fairground.wtf',
-  [Networks.MAINNET]: 'https://vega.trading',
+  [Networks.MAINNET]: 'https://console.vega.xyz',
 };
 
 const TokenLinks = {
