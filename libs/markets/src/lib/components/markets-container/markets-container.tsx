@@ -35,7 +35,6 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
     dataProvider,
     variables: undefined,
     update,
-    skipUpdates: false,
   });
 
   useEffect(() => {

@@ -443,8 +443,8 @@ function makeDataProviderInternal<
     if (loading) {
       return;
     }
-    // hard reset on demand or when there is no apollo subscription yet
-    if (forceReset /* || !subscription*/) {
+    // hard reset on demand
+    if (forceReset) {
       reset();
       initialize();
     } else {
