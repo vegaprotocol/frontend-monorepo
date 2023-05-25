@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useMemo, useCallback } from 'react';
 import {
   addDecimalsFormatNumber,
   isNumeric,
@@ -10,15 +10,26 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { COL_DEFS } from '@vegaprotocol/datagrid';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  ButtonLink,
+  Button,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { AgGridColumn } from 'ag-grid-react';
-import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
+import type {
+  IDatasource,
+  IGetRowsParams,
+  RowNode,
+  RowHeightParams,
+} from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
+import { CenteredGridCellWrapper } from '@vegaprotocol/datagrid';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
@@ -100,24 +111,42 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
     },
     ref
   ) => {
-    const pinnedAssetId = props.pinnedAsset?.id;
     const pinnedAsset = useMemo(() => {
+      if (!props.pinnedAsset) {
+        return;
+      }
       const currentPinnedAssetRow = rowData?.find(
-        (row) => row.asset.id === pinnedAssetId
+        (row) => row.asset.id === props.pinnedAsset?.id
       );
       if (!currentPinnedAssetRow) {
-        if (props.pinnedAsset) {
-          return {
-            asset: props.pinnedAsset,
-            available: '0',
-            used: '0',
-            total: '0',
-            balance: '0',
-          };
-        }
+        return {
+          asset: props.pinnedAsset,
+          available: '0',
+          used: '0',
+          total: '0',
+          balance: '0',
+        };
       }
       return currentPinnedAssetRow;
-    }, [pinnedAssetId, props.pinnedAsset, rowData]);
+    }, [props.pinnedAsset, rowData]);
+
+    const { getRowHeight } = props;
+
+    const getPinnedAssetRowHeight = useCallback(
+      (params: RowHeightParams) => {
+        if (
+          params.node.rowPinned &&
+          params.data.asset.id === props.pinnedAsset?.id &&
+          new BigNumber(params.data.total).isLessThanOrEqualTo(0)
+        ) {
+          return 32;
+        }
+        return getRowHeight ? getRowHeight(params) : undefined;
+      },
+      [props.pinnedAsset?.id, getRowHeight]
+    );
+
+    const showDepositButton = pinnedAsset?.balance === '0';
 
     return (
       <AgGrid
@@ -131,13 +160,16 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         }) => (data.isLastPlaceholder && data.id ? data.id : data.asset.id)}
         ref={ref}
         tooltipShowDelay={500}
-        rowData={rowData?.filter((data) => data.asset.id !== pinnedAssetId)}
+        rowData={rowData?.filter(
+          (data) => data.asset.id !== props.pinnedAsset?.id
+        )}
         defaultColDef={{
           resizable: true,
           tooltipComponent: TooltipCellComponent,
           sortable: true,
           comparator: accountValuesComparator,
         }}
+        getRowHeight={getPinnedAssetRowHeight}
         pinnedTopRowData={pinnedAsset ? [pinnedAsset] : undefined}
       >
         <AgGridColumn
@@ -245,16 +277,34 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           colId="accounts-actions"
           field="asset.id"
           {...COL_DEFS.actions}
+          minWidth={showDepositButton ? 130 : COL_DEFS.actions.minWidth}
+          maxWidth={showDepositButton ? 130 : COL_DEFS.actions.maxWidth}
           cellRenderer={({
             value: assetId,
             node,
           }: VegaICellRendererParams<AccountFields, 'asset.id'>) => {
             if (!assetId) return null;
+            if (node.rowPinned && node.data?.balance === '0') {
+              return (
+                <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
+                  <Button
+                    size="xs"
+                    variant="primary"
+                    data-testid="deposit"
+                    onClick={() => {
+                      onClickDeposit && onClickDeposit(assetId);
+                    }}
+                  >
+                    <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
+                  </Button>
+                </CenteredGridCellWrapper>
+              );
+            }
             return props.isReadOnly ? null : (
               <AccountsActionsDropdown
                 assetId={assetId}
                 assetContractAddress={
-                  node.data.asset.source?.__typename === 'ERC20'
+                  node.data?.asset.source?.__typename === 'ERC20'
                     ? node.data.asset.source.contractAddress
                     : undefined
                 }

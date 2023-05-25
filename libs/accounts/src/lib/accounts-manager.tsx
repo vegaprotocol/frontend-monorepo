@@ -75,25 +75,45 @@ export const AccountManager = ({
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
+      if (!data || !gridRef.current?.api) {
+        return false;
+      }
+      const pinnedAssetRowData =
+        pinnedAsset && data.find((d) => d.asset.id === pinnedAsset.id);
+
+      if (pinnedAssetRowData) {
+        const pinnedTopRow = gridRef.current.api.getPinnedTopRow(0);
+        if (
+          pinnedTopRow?.data?.balance === '0' &&
+          pinnedAssetRowData.balance !== '0'
+        ) {
+          return false;
+        }
+        if (!isEqual(pinnedTopRow?.data, pinnedAssetRowData)) {
+          gridRef.current.api.setPinnedTopRowData([pinnedAssetRowData]);
+        }
+      }
       const update: AccountFields[] = [];
       const add: AccountFields[] = [];
-      data?.forEach((d) => {
-        const rowNode = gridRef.current?.api?.getRowNode(d.asset.id);
-        if (rowNode) {
-          if (!isEqual(rowNode.data, d)) {
-            update.push(d);
+      data
+        ?.filter((d) => d.asset.id !== pinnedAsset?.id)
+        .forEach((d) => {
+          const rowNode = gridRef.current?.api?.getRowNode(d.asset.id);
+          if (rowNode) {
+            if (!isEqual(rowNode.data, d)) {
+              update.push(d);
+            }
+          } else {
+            add.push(d);
           }
-        } else {
-          add.push(d);
-        }
-      });
+        });
       gridRef.current?.api?.applyTransaction({
         update,
         add,
       });
       return true;
     },
-    [gridRef]
+    [gridRef, pinnedAsset]
   );
   const { data, loading, error, reload } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
