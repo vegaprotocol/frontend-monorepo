@@ -27,7 +27,7 @@ const GithubReleaseSchema = z.object({
 
 const GithubReleasesSchema = z.array(GithubReleaseSchema);
 
-type ReleaseInfo = {
+export type ReleaseInfo = {
   id: number;
   name: string;
   tagName: string;
