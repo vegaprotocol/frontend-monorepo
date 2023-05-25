@@ -7,7 +7,6 @@ import {
 import {
   clickOnValidatorFromList,
   closeStakingDialog,
-  stakingPageAssociateTokens,
   stakingValidatorPageAddStake,
   waitForBeginningOfEpoch,
 } from '../../support/staking.functions';
@@ -33,16 +32,15 @@ context('rewards - flow', { tags: '@slow' }, function () {
     depositAsset(vegaAssetAddress, '1000', 18);
     ethereumWalletConnect();
     cy.connectVegaWallet();
+    vegaWalletTeardown();
+    cy.associateTokensToVegaWallet('6000');
     cy.VegaWalletTopUpRewardsPool(30, 200);
     navigateTo(navigation.validators);
-    vegaWalletTeardown();
-    stakingPageAssociateTokens('6000');
     cy.get(vegaWalletUnstakedBalance, txTimeout).should(
       'contain',
       '6,000.0',
       txTimeout
     );
-    cy.get('button').contains('Select a validator to nominate').click();
     clickOnValidatorFromList(0);
     stakingValidatorPageAddStake('3000');
     closeStakingDialog();

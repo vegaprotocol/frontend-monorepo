@@ -221,7 +221,7 @@ export function ensureSpecifiedUnstakedTokensAreAssociated(
 }
 
 export function closeStakingDialog() {
-  cy.getByTestId('dialog-title').should(
+  cy.getByTestId('dialog-title', txTimeout).should(
     'contain.text',
     'At the beginning of the next epoch'
   );
