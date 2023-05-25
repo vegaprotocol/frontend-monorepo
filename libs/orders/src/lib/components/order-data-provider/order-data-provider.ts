@@ -132,6 +132,7 @@ export const update = (
     ),
     'createdAt'
   );
+
   return produce(data, (draft) => {
     // Add or update incoming orders
     incoming.forEach((node) => {
@@ -186,15 +187,9 @@ const ordersProvider = makeDataProvider<
   update,
   getData,
   getDelta,
-  pagination: {
-    getPageInfo,
-    append,
-    first: 1000,
-  },
   additionalContext: { isEnlargedTimeout: true },
+  fetchPolicy: 'no-cache',
 });
-
-const allOrderMaxCount = 50000;
 
 export const allOrdersProvider = makeDerivedDataProvider<
   ReturnType<typeof getData>,
@@ -203,19 +198,12 @@ export const allOrdersProvider = makeDerivedDataProvider<
 >(
   [
     (callback, client, variables) =>
-      ordersProvider(callback, client, { partyId: variables.partyId }),
+      ordersProvider(callback, client, {
+        partyId: variables.partyId,
+      }),
   ],
   (partsData, variables, prevData, parts, subscriptions) => {
     const orders = partsData[0] as ReturnType<typeof getData>;
-    // load next pages until allOrderMaxCount reached
-    if (
-      !parts[0].isUpdate &&
-      subscriptions &&
-      subscriptions[0].load &&
-      orders?.length < allOrderMaxCount
-    ) {
-      subscriptions[0].load();
-    }
     return variables.marketId
       ? orders.filter((edge) => variables.marketId === edge.node.market.id)
       : orders;
