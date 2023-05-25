@@ -26,7 +26,7 @@ export const MarketMarkPrice = ({
     {
       dataProvider: marketDataProvider,
       variables: { marketId: marketId || '' },
-      skip: !inView,
+      skip: !inView || !marketId,
     },
     THROTTLE_UPDATE_TIME
   );
