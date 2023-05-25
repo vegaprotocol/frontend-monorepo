@@ -104,7 +104,7 @@ export const OracleFullProfile = ({
         <div className="mb-2">{message}</div>
         <div className="mb-2">
           <ReactMarkdown
-            className="react-markdown-container"
+            className="react-markdown-container [word-break:break-word]"
             skipHtml={true}
             disallowedElements={['img']}
             linkTarget="_blank"
