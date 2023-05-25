@@ -1,6 +1,5 @@
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { useAppState } from '../../../contexts/app-state/app-state-context';
 import {
   rowGridItemStyles,
   RewardsTable,
@@ -13,7 +12,8 @@ interface EpochIndividualRewardsGridProps {
 }
 
 interface RewardItemProps {
-  value: string;
+  amount: string;
+  decimals: number;
   percentageOfTotal?: string;
   dataTestId: string;
   last?: boolean;
@@ -21,15 +21,14 @@ interface RewardItemProps {
 
 const DisplayReward = ({
   reward,
+  decimals,
   percentageOfTotal,
 }: {
   reward: string;
+  decimals: number;
   percentageOfTotal?: string;
 }) => {
   const { t } = useTranslation();
-  const {
-    appState: { decimals },
-  } = useAppState();
 
   if (Number(reward) === 0) {
     return <span className="text-vega-dark-300">-</span>;
@@ -64,7 +63,8 @@ const DisplayReward = ({
 };
 
 const RewardItem = ({
-  value,
+  amount,
+  decimals,
   percentageOfTotal,
   dataTestId,
   last,
@@ -72,7 +72,11 @@ const RewardItem = ({
   <div data-testid={dataTestId} className={rowGridItemStyles(last)}>
     <div className="h-full w-5 absolute right-0 top-0 bg-gradient-to-r from-transparent to-black pointer-events-none" />
     <div className="overflow-auto p-5">
-      <DisplayReward reward={value} percentageOfTotal={percentageOfTotal} />
+      <DisplayReward
+        reward={amount}
+        decimals={decimals}
+        percentageOfTotal={percentageOfTotal}
+      />
     </div>
     <div className="h-full w-5 absolute left-0 top-0 bg-gradient-to-l from-transparent to-black pointer-events-none" />
   </div>
@@ -86,7 +90,7 @@ export const EpochIndividualRewardsTable = ({
       dataTestId="epoch-individual-rewards-table"
       epoch={Number(data.epoch)}
     >
-      {data.rewards.map(({ asset, rewardTypes, totalAmount }, i) => (
+      {data.rewards.map(({ asset, rewardTypes, totalAmount, decimals }, i) => (
         <div className="contents" key={i}>
           <div
             data-testid="individual-rewards-asset"
@@ -98,13 +102,19 @@ export const EpochIndividualRewardsTable = ({
             ([key, { amount, percentageOfTotal }]) => (
               <RewardItem
                 key={key}
-                value={amount}
+                amount={amount}
+                decimals={decimals}
                 percentageOfTotal={percentageOfTotal}
                 dataTestId={key}
               />
             )
           )}
-          <RewardItem dataTestId="total" value={totalAmount} last={true} />
+          <RewardItem
+            dataTestId="total"
+            amount={totalAmount}
+            decimals={decimals}
+            last={true}
+          />
         </div>
       ))}
     </RewardsTable>

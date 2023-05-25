@@ -22,6 +22,7 @@ export type AggregatedEpochRewardSummary = {
   name: EpochSummaryWithNamedReward['name'];
   rewards: Map<RewardType, RewardItem>;
   totalAmount: string;
+  decimals: number;
 };
 
 export type EpochTotalSummary = {
@@ -91,6 +92,7 @@ export const generateEpochTotalRewardsList = ({
         assetId: reward.assetId,
         name: matchingAsset?.name || '',
         rewards: rewards || new Map(emptyRowAccountTypes),
+        decimals: matchingAsset?.decimals || 0,
         totalAmount: (
           Number(reward.amount) + Number(assetWithRewards?.totalAmount || 0)
         ).toString(),

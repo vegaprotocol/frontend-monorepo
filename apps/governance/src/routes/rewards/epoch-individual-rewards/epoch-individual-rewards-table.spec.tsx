@@ -8,6 +8,7 @@ const mockData = {
     {
       asset: 'tDAI',
       totalAmount: '5',
+      decimals: 6,
       rewardTypes: {
         ACCOUNT_TYPE_GLOBAL_REWARD: {
           amount: '0',

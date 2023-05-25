@@ -52,6 +52,7 @@ const assetRewards: Map<
 assetRewards.set(assetId, {
   assetId,
   name: 'tDAI TEST',
+  decimals: 6,
   rewards,
   totalAmount: '295',
 });

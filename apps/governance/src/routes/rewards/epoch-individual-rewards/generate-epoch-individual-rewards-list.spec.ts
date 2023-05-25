@@ -8,7 +8,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '100',
     percentageOfTotal: '0.1',
     receivedAt: new Date(),
-    asset: { id: 'usd', symbol: 'USD', name: 'USD' },
+    asset: { id: 'usd', symbol: 'USD', name: 'USD', decimals: 6 },
     party: { id: 'blah' },
     epoch: { id: '1' },
   };
@@ -18,7 +18,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '50',
     percentageOfTotal: '0.05',
     receivedAt: new Date(),
-    asset: { id: 'eur', symbol: 'EUR', name: 'EUR' },
+    asset: { id: 'eur', symbol: 'EUR', name: 'EUR', decimals: 5 },
     party: { id: 'blah' },
     epoch: { id: '2' },
   };
@@ -28,7 +28,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '200',
     percentageOfTotal: '0.2',
     receivedAt: new Date(),
-    asset: { id: 'gbp', symbol: 'GBP', name: 'GBP' },
+    asset: { id: 'gbp', symbol: 'GBP', name: 'GBP', decimals: 7 },
     party: { id: 'blah' },
     epoch: { id: '2' },
   };
@@ -38,7 +38,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '100',
     percentageOfTotal: '0.1',
     receivedAt: new Date(),
-    asset: { id: 'usd', symbol: 'USD', name: 'USD' },
+    asset: { id: 'usd', symbol: 'USD', name: 'USD', decimals: 6 },
     party: { id: 'blah' },
     epoch: { id: '1' },
   };
@@ -48,7 +48,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '150',
     percentageOfTotal: '0.15',
     receivedAt: new Date(),
-    asset: { id: 'usd', symbol: 'USD', name: 'USD' },
+    asset: { id: 'usd', symbol: 'USD', name: 'USD', decimals: 6 },
     party: { id: 'blah' },
     epoch: { id: '3' },
   };
@@ -58,7 +58,7 @@ describe('generateEpochIndividualRewardsList', () => {
     amount: '50',
     percentageOfTotal: '0.05',
     receivedAt: new Date(),
-    asset: { id: 'eur', symbol: 'EUR', name: 'EUR' },
+    asset: { id: 'eur', symbol: 'EUR', name: 'EUR', decimals: 5 },
     party: { id: 'blah' },
     epoch: { id: '2' },
   };
@@ -99,6 +99,7 @@ describe('generateEpochIndividualRewardsList', () => {
       rewards: [
         {
           asset: 'USD',
+          decimals: 6,
           totalAmount: '100',
           rewardTypes: {
             [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
@@ -167,6 +168,7 @@ describe('generateEpochIndividualRewardsList', () => {
           {
             asset: 'GBP',
             totalAmount: '200',
+            decimals: 7,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
@@ -197,6 +199,7 @@ describe('generateEpochIndividualRewardsList', () => {
           {
             asset: 'EUR',
             totalAmount: '50',
+            decimals: 5,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
@@ -232,6 +235,7 @@ describe('generateEpochIndividualRewardsList', () => {
           {
             asset: 'USD',
             totalAmount: '200',
+            decimals: 6,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
@@ -279,6 +283,7 @@ describe('generateEpochIndividualRewardsList', () => {
         rewards: [
           {
             asset: 'USD',
+            decimals: 6,
             totalAmount: '150',
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
@@ -315,6 +320,7 @@ describe('generateEpochIndividualRewardsList', () => {
           {
             asset: 'GBP',
             totalAmount: '200',
+            decimals: 7,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
@@ -345,6 +351,7 @@ describe('generateEpochIndividualRewardsList', () => {
           {
             asset: 'EUR',
             totalAmount: '50',
+            decimals: 5,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
@@ -390,6 +397,7 @@ describe('generateEpochIndividualRewardsList', () => {
           {
             asset: 'USD',
             totalAmount: '200',
+            decimals: 6,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',

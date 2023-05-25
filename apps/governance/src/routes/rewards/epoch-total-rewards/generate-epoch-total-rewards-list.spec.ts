@@ -56,12 +56,14 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               id: '1',
               name: 'Asset 1',
+              decimals: 18,
             },
           },
           {
             node: {
               id: '2',
               name: 'Asset 2',
+              decimals: 6,
             },
           },
         ],
@@ -101,6 +103,7 @@ describe('generateEpochAssetRewardsList', () => {
           {
             node: {
               epoch: 1,
+              decimals: 18,
               assetId: '1',
               rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
               amount: '123',
@@ -128,6 +131,7 @@ describe('generateEpochAssetRewardsList', () => {
                 '1',
                 {
                   assetId: '1',
+                  decimals: 0,
                   name: '',
                   rewards: new Map([
                     [
@@ -196,12 +200,14 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               id: '1',
               name: 'Asset 1',
+              decimals: 18,
             },
           },
           {
             node: {
               id: '2',
               name: 'Asset 2',
+              decimals: 6,
             },
           },
         ],
@@ -212,6 +218,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 1,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
               amount: '123',
             },
@@ -220,6 +227,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 1,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
               amount: '100',
             },
@@ -228,6 +236,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 2,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
               amount: '5',
             },
@@ -254,6 +263,7 @@ describe('generateEpochAssetRewardsList', () => {
                 '1',
                 {
                   assetId: '1',
+                  decimals: 18,
                   name: 'Asset 1',
                   rewards: new Map([
                     [
@@ -319,6 +329,7 @@ describe('generateEpochAssetRewardsList', () => {
                 '1',
                 {
                   assetId: '1',
+                  decimals: 18,
                   name: 'Asset 1',
                   rewards: new Map([
                     [
@@ -387,12 +398,14 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               id: '1',
               name: 'Asset 1',
+              decimals: 18,
             },
           },
           {
             node: {
               id: '2',
               name: 'Asset 2',
+              decimals: 6,
             },
           },
         ],
@@ -403,6 +416,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 1,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
               amount: '123',
             },
@@ -411,6 +425,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 1,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
               amount: '100',
             },
@@ -419,6 +434,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 2,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
               amount: '6',
             },
@@ -427,6 +443,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 2,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
               amount: '27',
             },
@@ -435,6 +452,7 @@ describe('generateEpochAssetRewardsList', () => {
             node: {
               epoch: 3,
               assetId: '1',
+              decimals: 18,
               rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
               amount: '15',
             },
@@ -467,6 +485,7 @@ describe('generateEpochAssetRewardsList', () => {
                 {
                   assetId: '1',
                   name: 'Asset 1',
+                  decimals: 18,
                   rewards: new Map([
                     [
                       AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
@@ -531,6 +550,7 @@ describe('generateEpochAssetRewardsList', () => {
                 '1',
                 {
                   assetId: '1',
+                  decimals: 18,
                   name: 'Asset 1',
                   rewards: new Map([
                     [
@@ -608,6 +628,7 @@ describe('generateEpochAssetRewardsList', () => {
                 '1',
                 {
                   assetId: '1',
+                  decimals: 18,
                   name: 'Asset 1',
                   rewards: new Map([
                     [
