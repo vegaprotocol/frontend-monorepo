@@ -9,16 +9,16 @@ fragment PositionFields on Position {
   market {
     id
   }
+  party {
+    id
+  }
 }
 
-query Positions($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    positionsConnection {
-      edges {
-        node {
-          ...PositionFields
-        }
+query Positions($partyIds: [ID!]!) {
+  positions(filter: { partyIds: $partyIds }) {
+    edges {
+      node {
+        ...PositionFields
       }
     }
   }
@@ -34,6 +34,7 @@ subscription PositionsSubscription($partyId: ID!) {
     marketId
     lossSocializationAmount
     positionStatus
+    partyId
   }
 }
 

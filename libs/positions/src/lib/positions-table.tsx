@@ -42,6 +42,7 @@ import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionTableActions } from './position-actions-dropdown';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -49,6 +50,9 @@ interface Props extends TypedDataAgGrid<Position> {
   style?: CSSProperties;
   isReadOnly: boolean;
   storeKey?: string;
+  multipleKeys?: boolean;
+  pubKeys?: VegaWalletContextShape['pubKeys'];
+  pubKey?: VegaWalletContextShape['pubKey'];
 }
 
 export interface AmountCellProps {
@@ -83,7 +87,18 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
-  ({ onClose, onMarketClick, ...props }, ref) => {
+  (
+    {
+      onClose,
+      onMarketClick,
+      multipleKeys,
+      isReadOnly,
+      pubKeys,
+      pubKey,
+      ...props
+    },
+    ref
+  ) => {
     const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
     return (
       <AgGrid
@@ -107,6 +122,21 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         }}
         {...props}
       >
+        {multipleKeys ? (
+          <AgGridColumn
+            headerName={t('Vega key')}
+            field="partyId"
+            valueGetter={({
+              data,
+            }: VegaValueGetterParams<Position, 'partyId'>) =>
+              (data?.partyId &&
+                pubKeys &&
+                pubKeys.find((key) => key.publicKey === data.partyId)?.name) ||
+              data?.partyId
+            }
+            minWidth={190}
+          />
+        ) : null}
         <AgGridColumn
           headerName={t('Market')}
           field="marketName"
@@ -267,55 +297,61 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           minWidth={100}
         />
-        <AgGridColumn
-          headerName={t('Leverage')}
-          field="currentLeverage"
-          type="rightAligned"
-          filter="agNumberColumnFilter"
-          cellRendererSelector={(): CellRendererSelectorResult => {
-            return {
-              component: PriceFlashCell,
-            };
-          }}
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
-            value === undefined ? undefined : formatNumber(value.toString(), 1)
-          }
-          minWidth={100}
-        />
-        <AgGridColumn
-          headerName={t('Margin allocated')}
-          field="marginAccountBalance"
-          type="rightAligned"
-          filter="agNumberColumnFilter"
-          cellRendererSelector={(): CellRendererSelectorResult => {
-            return {
-              component: PriceFlashCell,
-            };
-          }}
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'marginAccountBalance'>) => {
-            return !data
-              ? undefined
-              : toBigNum(data.marginAccountBalance, data.decimals).toNumber();
-          }}
-          valueFormatter={({
-            data,
-          }: VegaValueFormatterParams<Position, 'marginAccountBalance'>):
-            | string
-            | undefined => {
-            if (!data) {
-              return undefined;
+        {multipleKeys ? null : (
+          <AgGridColumn
+            headerName={t('Leverage')}
+            field="currentLeverage"
+            type="rightAligned"
+            filter="agNumberColumnFilter"
+            cellRendererSelector={(): CellRendererSelectorResult => {
+              return {
+                component: PriceFlashCell,
+              };
+            }}
+            valueFormatter={({
+              value,
+            }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
+              value === undefined
+                ? undefined
+                : formatNumber(value.toString(), 1)
             }
-            return addDecimalsFormatNumber(
-              data.marginAccountBalance,
-              data.decimals
-            );
-          }}
-          minWidth={100}
-        />
+            minWidth={100}
+          />
+        )}
+        {multipleKeys ? null : (
+          <AgGridColumn
+            headerName={t('Margin allocated')}
+            field="marginAccountBalance"
+            type="rightAligned"
+            filter="agNumberColumnFilter"
+            cellRendererSelector={(): CellRendererSelectorResult => {
+              return {
+                component: PriceFlashCell,
+              };
+            }}
+            valueGetter={({
+              data,
+            }: VegaValueGetterParams<Position, 'marginAccountBalance'>) => {
+              return !data
+                ? undefined
+                : toBigNum(data.marginAccountBalance, data.decimals).toNumber();
+            }}
+            valueFormatter={({
+              data,
+            }: VegaValueFormatterParams<Position, 'marginAccountBalance'>):
+              | string
+              | undefined => {
+              if (!data) {
+                return undefined;
+              }
+              return addDecimalsFormatNumber(
+                data.marginAccountBalance,
+                data.decimals
+              );
+            }}
+            minWidth={100}
+          />
+        )}
         <AgGridColumn
           headerName={t('Realised PNL')}
           field="realisedPNL"
@@ -385,13 +421,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           minWidth={150}
         />
-        {onClose && !props.isReadOnly ? (
+        {onClose && !isReadOnly ? (
           <AgGridColumn
             {...COL_DEFS.actions}
             cellRenderer={({ data }: VegaICellRendererParams<Position>) => {
               return (
                 <div className="flex gap-2 items-center justify-end">
-                  {data?.openVolume && data?.openVolume !== '0' ? (
+                  {data?.openVolume &&
+                  data?.openVolume !== '0' &&
+                  data.partyId === pubKey ? (
                     <ButtonLink
                       data-testid="close-position"
                       onClick={() => data && onClose(data)}

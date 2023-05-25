@@ -5,7 +5,6 @@ import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { useFillsList } from './use-fills-list';
-import type { Trade } from './fills-data-provider';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 
 interface FillsManagerProps {
@@ -65,7 +64,7 @@ export const FillsManager = ({
   }, []);
 
   const { isFullWidthRow, fullWidthCellRenderer, rowClassRules, getRowHeight } =
-    useBottomPlaceholder<Trade>({
+    useBottomPlaceholder({
       gridRef,
     });
 

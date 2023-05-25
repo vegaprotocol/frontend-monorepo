@@ -3,21 +3,21 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type PositionFieldsFragment = { __typename?: 'Position', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, positionStatus: Types.PositionStatus, lossSocializationAmount: string, market: { __typename?: 'Market', id: string } };
+export type PositionFieldsFragment = { __typename?: 'Position', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, positionStatus: Types.PositionStatus, lossSocializationAmount: string, market: { __typename?: 'Market', id: string }, party: { __typename?: 'Party', id: string } };
 
 export type PositionsQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
+  partyIds: Array<Types.Scalars['ID']> | Types.Scalars['ID'];
 }>;
 
 
-export type PositionsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, positionsConnection?: { __typename?: 'PositionConnection', edges?: Array<{ __typename?: 'PositionEdge', node: { __typename?: 'Position', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, positionStatus: Types.PositionStatus, lossSocializationAmount: string, market: { __typename?: 'Market', id: string } } }> | null } | null } | null };
+export type PositionsQuery = { __typename?: 'Query', positions?: { __typename?: 'PositionConnection', edges?: Array<{ __typename?: 'PositionEdge', node: { __typename?: 'Position', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, positionStatus: Types.PositionStatus, lossSocializationAmount: string, market: { __typename?: 'Market', id: string }, party: { __typename?: 'Party', id: string } } }> | null } | null };
 
 export type PositionsSubscriptionSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type PositionsSubscriptionSubscription = { __typename?: 'Subscription', positions: Array<{ __typename?: 'PositionUpdate', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, marketId: string, lossSocializationAmount: string, positionStatus: Types.PositionStatus }> };
+export type PositionsSubscriptionSubscription = { __typename?: 'Subscription', positions: Array<{ __typename?: 'PositionUpdate', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: any | null, marketId: string, lossSocializationAmount: string, positionStatus: Types.PositionStatus, partyId: string }> };
 
 export type MarginFieldsFragment = { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, asset: { __typename?: 'Asset', id: string }, market: { __typename?: 'Market', id: string } };
 
@@ -57,6 +57,9 @@ export const PositionFieldsFragmentDoc = gql`
   market {
     id
   }
+  party {
+    id
+  }
 }
     `;
 export const MarginFieldsFragmentDoc = gql`
@@ -74,14 +77,11 @@ export const MarginFieldsFragmentDoc = gql`
 }
     `;
 export const PositionsDocument = gql`
-    query Positions($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    positionsConnection {
-      edges {
-        node {
-          ...PositionFields
-        }
+    query Positions($partyIds: [ID!]!) {
+  positions(filter: {partyIds: $partyIds}) {
+    edges {
+      node {
+        ...PositionFields
       }
     }
   }
@@ -100,7 +100,7 @@ export const PositionsDocument = gql`
  * @example
  * const { data, loading, error } = usePositionsQuery({
  *   variables: {
- *      partyId: // value for 'partyId'
+ *      partyIds: // value for 'partyIds'
  *   },
  * });
  */
@@ -126,6 +126,7 @@ export const PositionsSubscriptionDocument = gql`
     marketId
     lossSocializationAmount
     positionStatus
+    partyId
   }
 }
     `;

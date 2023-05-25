@@ -1,10 +1,9 @@
-import { useRef, useMemo, memo, useCallback } from 'react';
+import { useRef, useMemo, memo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
@@ -36,16 +35,8 @@ export const AccountManager = ({
     dataProvider: aggregatedAccountsDataProvider,
     variables,
   });
-  const setId = useCallback(
-    (data: AccountFields, id: string) => ({
-      ...data,
-      asset: { ...data.asset, id },
-    }),
-    []
-  );
-  const bottomPlaceholderProps = useBottomPlaceholder<AccountFields>({
+  const bottomPlaceholderProps = useBottomPlaceholder({
     gridRef,
-    setId,
     disabled: noBottomPlaceholder,
   });
 

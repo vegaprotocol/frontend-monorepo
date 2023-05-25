@@ -187,7 +187,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
         name: 'Apple Monthly (30 Jun 2022)',
         product: {
           settlementAsset: {
-            id: 'asset-2',
+            id: 'asset-id',
             name: '',
             symbol: 'tUSDC',
             decimals: 5,

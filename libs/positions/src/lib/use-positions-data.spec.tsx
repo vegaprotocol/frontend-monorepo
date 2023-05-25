@@ -59,7 +59,7 @@ describe('usePositionData Hook', () => {
     .mockImplementation((id: string) =>
       mockData.find((position) => position.marketId === id)
     );
-  const partyId = 'partyId';
+  const partyIds = ['partyId'];
   const anUpdatedOne = {
     marketId: 'market-1',
     openVolume: '1',
@@ -75,14 +75,14 @@ describe('usePositionData Hook', () => {
   };
 
   it('should return proper data', async () => {
-    const { result } = renderHook(() => usePositionsData(partyId, gridRef), {
+    const { result } = renderHook(() => usePositionsData(partyIds, gridRef), {
       wrapper: MockedProvider,
     });
     expect(result.current.data?.length ?? 0).toEqual(5);
   });
 
   it('should call mockRefreshInfiniteCache', async () => {
-    renderHook(() => usePositionsData(partyId, gridRef), {
+    renderHook(() => usePositionsData(partyIds, gridRef), {
       wrapper: MockedProvider,
     });
     await waitFor(() => {
@@ -99,7 +99,7 @@ describe('usePositionData Hook', () => {
       data: mockData,
       loading: false,
     };
-    const { result } = renderHook(() => usePositionsData(partyId, gridRef), {
+    const { result } = renderHook(() => usePositionsData(partyIds, gridRef), {
       wrapper: MockedProvider,
     });
     expect(result.current.data).toEqual([]);

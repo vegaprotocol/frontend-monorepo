@@ -12,16 +12,12 @@ export const positionsQuery = (
   override?: PartialDeep<PositionsQuery>
 ): PositionsQuery => {
   const defaultResult: PositionsQuery = {
-    party: {
-      __typename: 'Party',
-      id: 'vega-0', // VEGA PUBLIC KEY
-      positionsConnection: {
-        __typename: 'PositionConnection',
-        edges: positionFields.map((node) => ({
-          __typename: 'PositionEdge',
-          node,
-        })),
-      },
+    positions: {
+      __typename: 'PositionConnection',
+      edges: positionFields.map((node) => ({
+        __typename: 'PositionEdge',
+        node,
+      })),
     },
   };
 
@@ -59,6 +55,10 @@ const positionFields: PositionFieldsFragment[] = [
       id: 'market-0',
       __typename: 'Market',
     },
+    party: {
+      id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
+      __typename: 'Party',
+    },
     lossSocializationAmount: '0',
     positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
   },
@@ -73,6 +73,10 @@ const positionFields: PositionFieldsFragment[] = [
       id: 'market-1',
       __typename: 'Market',
     },
+    party: {
+      id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
+      __typename: 'Party',
+    },
     lossSocializationAmount: '0',
     positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
   },
@@ -86,6 +90,10 @@ const positionFields: PositionFieldsFragment[] = [
     market: {
       id: 'market-2',
       __typename: 'Market',
+    },
+    party: {
+      id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
+      __typename: 'Party',
     },
     lossSocializationAmount: '0',
     positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,

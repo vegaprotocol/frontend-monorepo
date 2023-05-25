@@ -54,6 +54,7 @@ export const Portfolio = () => {
                     onMarketClick={onMarketClick}
                     noBottomPlaceholder
                     storeKey="portfolioPositions"
+                    allKeys
                   />
                 </VegaWalletContainer>
               </Tab>

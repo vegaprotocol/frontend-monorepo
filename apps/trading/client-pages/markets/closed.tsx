@@ -64,7 +64,7 @@ export const Closed = () => {
   });
   const { data: positionData } = usePositionsQuery({
     variables: {
-      partyId: pubKey || '',
+      partyIds: pubKey ? [pubKey] : [],
     },
     skip: !pubKey,
   });
@@ -72,11 +72,9 @@ export const Closed = () => {
   // find a position for each market and add the realised pnl to
   // a normalized object
   const rowData = compact(marketData).map((market) => {
-    const position = positionData?.party?.positionsConnection?.edges?.find(
-      (edge) => {
-        return edge.node.market.id === market.id;
-      }
-    );
+    const position = positionData?.positions?.edges?.find((edge) => {
+      return edge.node.market.id === market.id;
+    });
 
     const instrument = market.tradableInstrument.instrument;
 

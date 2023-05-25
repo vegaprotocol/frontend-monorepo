@@ -8,29 +8,27 @@ import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 
 const singleRow: Position = {
-  marketName: 'ETH/BTC (31 july 2022)',
-  averageEntryPrice: '133',
-  capitalUtilisation: 11,
-  currentLeverage: 1.1,
-  marketDecimalPlaces: 1,
-  positionDecimalPlaces: 0,
-  decimals: 2,
-  totalBalance: '123456',
-  assetSymbol: 'BTC',
+  partyId: 'partyId',
   assetId: 'asset-id',
-  lowMarginLevel: false,
+  assetSymbol: 'BTC',
+  averageEntryPrice: '133',
+  currentLeverage: 1.1,
+  decimals: 2,
+  lossSocializationAmount: '0',
+  marginAccountBalance: '12345600',
+  marketDecimalPlaces: 1,
   marketId: 'string',
+  marketName: 'ETH/BTC (31 july 2022)',
   marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '123',
   notional: '12300',
   openVolume: '100',
+  positionDecimalPlaces: 0,
   realisedPNL: '123',
-  unrealisedPNL: '456',
-  searchPrice: '0',
-  updatedAt: '2022-07-27T15:02:58.400Z',
-  marginAccountBalance: '12345600',
   status: PositionStatus.POSITION_STATUS_UNSPECIFIED,
-  lossSocializationAmount: '0',
+  totalBalance: '123456',
+  unrealisedPNL: '456',
+  updatedAt: '2022-07-27T15:02:58.400Z',
 };
 
 const singleRowData = [singleRow];
@@ -175,6 +173,7 @@ it('displays close button', async () => {
     render(
       <PositionsTable
         rowData={singleRowData}
+        pubKey={singleRowData[0].partyId}
         onClose={() => {
           return;
         }}

@@ -9,15 +9,22 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { GetRowsParams } from '@vegaprotocol/datagrid';
 import isEqual from 'lodash/isEqual';
 
-export const getRowId = ({ data }: { data: Position }) => data.marketId;
+export const getRowId = ({
+  data,
+}: {
+  data: Position & { isLastPlaceholder?: boolean; id?: string };
+}) =>
+  data.isLastPlaceholder && data.id
+    ? data.id
+    : `${data.partyId}-${data.marketId}`;
 
 export const usePositionsData = (
-  partyId: string,
+  partyIds: string[],
   gridRef: RefObject<AgGridReact>
 ) => {
   const variables = useMemo<PositionsQueryVariables>(
-    () => ({ partyId }),
-    [partyId]
+    () => ({ partyIds }),
+    [partyIds]
   );
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
@@ -28,14 +35,16 @@ export const usePositionsData = (
 
       const update: Position[] = [];
       const add: Position[] = [];
-      data?.forEach((d) => {
-        const rowNode = gridRef.current?.api?.getRowNode(d.marketId);
+      data?.forEach((row) => {
+        const rowNode = gridRef.current?.api?.getRowNode(
+          getRowId({ data: row })
+        );
         if (rowNode) {
-          if (!isEqual(rowNode.data, d)) {
-            update.push(d);
+          if (!isEqual(rowNode.data, row)) {
+            update.push(row);
           }
         } else {
-          add.push(d);
+          add.push(row);
         }
       });
       gridRef.current?.api?.applyTransaction({
