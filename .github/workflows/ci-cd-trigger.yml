@@ -171,6 +171,7 @@ jobs:
       - publish-dist
       - lint-test-build
     if: ${{ github.event_name == 'pull_request' }}
+    timeout-minutes: 60
     name: '(CD) comment preview links'
     steps:
       - name: Find Comment
@@ -179,6 +180,29 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: Previews
+
+      - name: Wait for deployments
+        run: |
+          # https://stackoverflow.com/questions/3183444/check-for-valid-link-url
+          regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
+          if [[ "${{ needs.lint-test-build.outputs.preview_governance }}" =~ $regex ]]; then
+            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_governance }}"; do
+              echo "waiting for governance preview"
+              sleep 5
+            done
+          fi
+          if [[ "${{ needs.lint-test-build.outputs.preview_explorer }}" =~ $regex ]]; then
+            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_explorer }}"; do
+              echo "waiting for explorer preview"
+              sleep 5
+            done
+          fi
+          if [[ "${{ needs.lint-test-build.outputs.preview_trading }}" =~ $regex ]]; then
+            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_trading }}"; do
+              echo "waiting for trading preview"
+              sleep 5
+            done
+          fi
 
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v3
