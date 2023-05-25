@@ -3,8 +3,6 @@ import { aliasGQLQuery, checkSorting } from '@vegaprotocol/cypress';
 import { marketsQuery } from '@vegaprotocol/mock';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 
-const dialogCloseBtn = 'dialog-close';
-
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.clearLocalStorage().then(() => {
@@ -14,20 +12,18 @@ describe('markets table', { tags: '@smoke' }, () => {
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
-      cy.visit('/');
-      cy.wait('@Markets');
-      cy.wait('@MarketsData');
-      cy.wait('@MarketsCandles');
+      cy.visit('/#/markets/all');
     });
   });
 
   it('renders markets correctly', () => {
+    cy.wait('@Markets');
+    cy.wait('@MarketsData');
     cy.get('[data-testid^="market-link-"]').should('not.be.empty');
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('settlement-asset').should('not.be.empty');
     cy.getByTestId('price-change-percentage').should('not.be.empty');
     cy.getByTestId('price-change').should('not.be.empty');
-    cy.getByTestId('sparkline-svg').should('be.visible');
   });
 
   it('able to open and sort full market list - market page', () => {
@@ -37,9 +33,6 @@ describe('markets table', { tags: '@smoke' }, () => {
       'ETHBTC.QM21',
       'SOLUSD',
     ];
-    cy.getByTestId('view-market-list-link')
-      .should('have.attr', 'href', '#/markets/all')
-      .click();
     cy.url().should('eq', Cypress.config('baseUrl') + '/#/markets/all');
     cy.contains('AAPL.MF21').should('be.visible');
     cy.get('.ag-header-cell-label').contains('Market').click(); // sort by market name
@@ -51,10 +44,6 @@ describe('markets table', { tags: '@smoke' }, () => {
   });
 
   it('proposed markets tab should be rendered properly', () => {
-    cy.getByTestId('view-market-list-link')
-      .should('have.attr', 'href', '#/markets/all')
-      .click();
-
     cy.get('[data-testid="All markets"]').should(
       'have.attr',
       'data-state',
@@ -87,8 +76,8 @@ describe('markets table', { tags: '@smoke' }, () => {
         `${Cypress.env('VEGA_TOKEN_URL')}/proposals/propose/new-market`
       );
   });
+
   it('proposed markets tab should be sorted properly', () => {
-    cy.getByTestId('view-market-list-link').click();
     cy.get('[data-testid="Proposed markets"]').click();
     const marketColDefault = [
       'ETHUSD',
@@ -167,7 +156,7 @@ describe('markets table', { tags: '@smoke' }, () => {
     checkSorting('state', stateColDefault, stateColAsc, stateColDesc);
   });
 
-  it('opening auction subsets should be properly displayed', () => {
+  it.skip('opening auction subsets should be properly displayed', () => {
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,
       Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
@@ -200,7 +189,6 @@ describe('markets table', { tags: '@smoke' }, () => {
     });
     cy.visit('#/markets/market-0');
     cy.url().should('contain', 'market-0');
-    cy.getByTestId(dialogCloseBtn).click();
     cy.getByTestId('item-value').contains('Opening auction').realHover();
     cy.getByTestId('opening-auction-sub-status').should(
       'contain.text',

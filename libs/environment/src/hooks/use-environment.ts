@@ -296,6 +296,7 @@ function compileEnvVars() {
     GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
     ANNOUNCEMENTS_CONFIG_URL: process.env['NX_ANNOUNCEMENTS_CONFIG_URL'],
     VEGA_INCIDENT_URL: process.env['NX_VEGA_INCIDENT_URL'],
+    APP_VERSION: process.env['NX_APP_VERSION'],
   };
 
   return env;

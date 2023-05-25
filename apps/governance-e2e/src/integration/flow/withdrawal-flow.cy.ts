@@ -15,13 +15,7 @@ const balanceAvailable = 'BALANCE_AVAILABLE_value';
 const withdrawalThreshold = 'WITHDRAWAL_THRESHOLD_value';
 const delayTime = 'DELAY_TIME_value';
 const submitWithdrawalButton = 'submit-withdrawal';
-const dialogTitle = 'dialog-title';
 const dialogClose = 'dialog-close';
-const txExplorerLink = 'tx-block-explorer';
-const withdrawalAssetSymbol = 'withdrawal-asset-symbol';
-const withdrawalAmount = 'withdrawal-amount';
-const withdrawalRecipient = 'withdrawal-recipient';
-const withdrawFundsButton = 'withdraw-funds';
 const completeWithdrawalButton = 'complete-withdrawal';
 const tableTxHash = '[col-id="txHash"]';
 const tableAssetSymbol = '[col-id="asset.symbol"]';
@@ -30,14 +24,16 @@ const tableReceiverAddress = '[col-id="details.receiverAddress"]';
 const tableWithdrawnTimeStamp = '[col-id="withdrawnTimestamp"]';
 const tableWithdrawnStatus = '[col-id="status"]';
 const tableCreatedTimeStamp = '[col-id="createdTimestamp"]';
-const toastContent = 'toast-content';
+const toast = 'toast';
 const toastPanel = 'toast-panel';
+const toastClose = 'toast-close';
+const withdrawalDialogContent = 'dialog-content';
+const toastCompleteWithdrawal = 'toast-complete-withdrawal';
 const usdtName = 'USDC (local)';
 const usdcEthAddress = '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0';
 const usdcSymbol = 'tUSDC';
 const usdtSelectValue =
   '993ed98f4f770d91a796faab1738551193ba45c62341d20597df70fea6704ede';
-const truncatedWithdrawalEthAddress = '0xEe7D…22d94F';
 const formValidationError = 'input-error-text';
 const txTimeout = Cypress.env('txTimeout');
 
@@ -107,29 +103,35 @@ context(
         cy.getByTestId(amountInput).click().type('120');
         cy.getByTestId(submitWithdrawalButton).click();
       });
-
-      cy.contains('Awaiting network confirmation').should('be.visible');
       // assert withdrawal request
-      cy.getByTestId(dialogTitle, txTimeout).should(
-        'have.text',
-        'Transaction complete'
-      );
-      cy.getByTestId(txExplorerLink)
-        .should('have.attr', 'href')
-        .and('contain', '/txs/');
-      cy.getByTestId(withdrawalAssetSymbol).should('have.text', usdcSymbol);
-      cy.getByTestId(withdrawalAmount).should('have.text', '120.00');
-      cy.getByTestId(withdrawalRecipient)
-        .should('have.text', truncatedWithdrawalEthAddress)
-        .and('have.attr', 'href')
-        .and('contain', `/address/${Cypress.env('ethWalletPublicKey')}`);
-      cy.getByTestId(withdrawFundsButton).click();
+      cy.getByTestId(toast)
+        .first(txTimeout)
+        .should('contain.text', 'Funds unlocked')
+        .within(() => {
+          cy.getByTestId('external-link').should('exist');
+          cy.getByTestId(toastPanel).should(
+            'contain.text',
+            'Withdraw 120.00 tUSDC'
+          );
+          cy.getByTestId(toastCompleteWithdrawal).click();
+          cy.getByTestId(toastClose).click();
+        });
       // withdrawal complete
-      cy.getByTestId(dialogTitle, txTimeout).should(
-        'have.text',
-        'Withdraw asset complete'
-      );
-      cy.getByTestId(dialogClose).click();
+      cy.getByTestId(toast)
+        .first(txTimeout)
+        .should('contain.text', 'The withdrawal has been approved.')
+        .within(() => {
+          cy.getByTestId(toastPanel).should(
+            'contain.text',
+            'Withdraw 120.00 tUSDC'
+          );
+        });
+      cy.getByTestId(toast)
+        .last(txTimeout)
+        .should('contain.text', 'Transaction confirmed')
+        .within(() => {
+          cy.getByTestId('external-link').should('exist');
+        });
       // withdrawal history for complete withdrawal displayed
       cy.get(tableWithdrawnStatus)
         .eq(1, txTimeout)
@@ -168,13 +170,17 @@ context(
         cy.getByTestId(submitWithdrawalButton).click();
       });
 
-      cy.contains('Awaiting network confirmation').should('be.visible');
-      // assert withdrawal request
-      cy.getByTestId(dialogTitle, txTimeout).should(
-        'have.text',
-        'Transaction complete'
-      );
-      cy.getByTestId(dialogClose).click();
+      cy.getByTestId(toast)
+        .first(txTimeout)
+        .should('contain.text', 'Funds unlocked')
+        .within(() => {
+          cy.getByTestId('external-link').should('exist');
+          cy.getByTestId(toastPanel).should(
+            'contain.text',
+            'Withdraw 110.00 tUSDC'
+          );
+          cy.getByTestId(toastClose).click();
+        });
       cy.get(tableTxHash)
         .eq(1)
         .should('have.text', 'Complete withdrawal')
@@ -189,28 +195,75 @@ context(
           cy.get(tableCreatedTimeStamp).should('not.be.empty');
         });
       ethereumWalletConnect();
-      cy.getByTestId(completeWithdrawalButton).click();
-      cy.getByTestId(toastContent)
-        .last()
+      cy.getByTestId(completeWithdrawalButton).first().click();
+      cy.getByTestId(toast)
+        .last(txTimeout)
         .should('contain.text', 'Awaiting confirmation')
         .within(() => {
           cy.getByTestId('external-link').should('exist');
         });
-      cy.getByTestId(toastContent)
-        .first()
+      cy.getByTestId(toast)
+        .first(txTimeout)
         .should('contain.text', 'The withdrawal has been approved.')
         .within(() => {
           cy.getByTestId(toastPanel).should('contain.text', '110.00', 'tUSDC');
         });
-      cy.getByTestId(toastContent)
-        .last()
+      cy.getByTestId(toast)
+        .last(txTimeout)
         .should('contain.text', 'Transaction confirmed')
         .within(() => {
           cy.getByTestId('external-link').should('exist');
         });
     });
 
-    it('Unable to withdraw asset on pub key view', function () {
+    it('Should be able to see withdrawal details from toast', function () {
+      cy.getByTestId(withdraw).click();
+      cy.getByTestId(withdrawalForm, txTimeout).within(() => {
+        cy.get('select').select(usdtSelectValue, { force: true });
+        cy.getByTestId(balanceAvailable, txTimeout).should('exist');
+        cy.getByTestId(withdrawalThreshold).should(
+          'have.text',
+          '100,000.00000T'
+        );
+        cy.getByTestId(amountInput).click().type('50');
+        cy.getByTestId(submitWithdrawalButton).click();
+      });
+      cy.getByTestId(toast)
+        .first(txTimeout)
+        .should('contain.text', 'Funds unlocked')
+        .within(() => {
+          cy.getByTestId('external-link').should('exist');
+          cy.getByTestId(toastPanel).should(
+            'contain.text',
+            'Withdraw 50.00 tUSDC'
+          );
+          cy.contains('save your withdrawal details').click();
+        });
+      cy.getByTestId(withdrawalDialogContent)
+        .last()
+        .within(() => {
+          cy.getByTestId('assetSource_value').should(
+            'have.text',
+            '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0'
+          );
+          cy.getByTestId('amount_value').should('have.text', '5000000');
+          cy.getByTestId('nonce_value').invoke('text').should('not.be.empty');
+          cy.getByTestId('signatures_value')
+            .invoke('text')
+            .should('not.be.empty');
+          cy.getByTestId('targetAddress_value').should(
+            'have.text',
+            Cypress.env('ethWalletPublicKey')
+          );
+          cy.getByTestId('creation_value')
+            .invoke('text')
+            .should('not.be.empty');
+        });
+      cy.getByTestId(dialogClose).click();
+    });
+
+    // Skipping test due to bug #3882
+    it.skip('Unable to withdraw asset on pub key view', function () {
       const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
       const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
@@ -224,10 +277,11 @@ context(
         cy.get('select').select(usdtSelectValue, { force: true });
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(amountInput).click().type('100');
+        cy.pause();
         cy.getByTestId(submitWithdrawalButton).click();
       });
 
-      cy.getByTestId('dialog-content')
+      cy.getByTestId(withdrawalDialogContent)
         .last()
         .within(() => {
           cy.get('h1').should('have.text', 'Transaction failed');

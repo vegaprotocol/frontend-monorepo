@@ -31,7 +31,7 @@ import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
-import { AnnouncementBanner } from '../components/banner';
+import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
 import { ENV } from '../lib/config';
@@ -99,6 +99,7 @@ function AppBody({ Component }: AppProps) {
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
           />
           <ViewingBanner />
+          <UpgradeBanner showVersionChange={true} />
         </div>
         <main data-testid={location.pathname}>
           <Component />

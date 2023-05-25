@@ -10,4 +10,5 @@ export const Routes = {
   MARKETS: 'markets',
   ORACLES: 'oracles',
   NETWORK_PARAMETERS: 'network-parameters',
+  DISCLAIMER: 'disclaimer',
 };

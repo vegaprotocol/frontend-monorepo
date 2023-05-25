@@ -9,7 +9,7 @@ import { useGlobalStore } from '../../stores';
 export const Home = () => {
   const navigate = useNavigate();
   // The default market selected in the platform behind the overlay
-  // should be the oldest market that is currently trading in     us mode(i.e. not in auction).
+  // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithDataProvider,
     variables: undefined,
@@ -30,7 +30,7 @@ export const Home = () => {
           replace: true,
         });
       } else {
-        navigate(Links[Routes.MARKET]());
+        navigate(Links[Routes.MARKETS]());
       }
     }
   }, [marketId, data, navigate, update]);

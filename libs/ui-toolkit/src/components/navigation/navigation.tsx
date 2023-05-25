@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { useRef } from 'react';
 import { VegaLogo } from '../vega-logo';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import { Icon } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 import { Drawer } from '../drawer';
 import { NavLink } from 'react-router-dom';
 import type {
@@ -152,8 +152,8 @@ export const NavigationTrigger = ({
       {...props}
     >
       <span>{children}</span>
-      <span className="rotate-90 group-data-open/drawer:hidden">
-        <Icon name="arrow-right" size={3} />
+      <span className="flex items-center group-data-open/drawer:hidden">
+        <VegaIcon name={VegaIconNames.ARROW_DOWN} />
       </span>
       <div
         aria-hidden="true"
@@ -189,15 +189,15 @@ export const NavigationContent = ({
         className={classNames(
           'navigation-content',
           'absolute z-20 top-12 w-max',
-          'p-2 mt-1',
+          'p-6 mt-1 min-w-[290px]',
           'text-vega-light-300 dark:text-vega-dark-300',
-
           'border rounded border-vega-light-200 dark:border-vega-dark-200',
-          'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
+          'text-vega-light-300 dark:text-vega-light-300',
           {
-            'bg-white dark:bg-black': theme === 'system' || theme === 'yellow',
-            'bg-white': theme === 'light',
-            'bg-black': theme === 'dark',
+            'bg-vega-light-100 dark:bg-vega-dark-100':
+              theme === 'system' || theme === 'yellow',
+            'bg-vega-light-100': theme === 'light',
+            'bg-vega-dark-100': theme === 'dark',
           }
         )}
       >
@@ -348,7 +348,7 @@ export const Navigation = ({
         <div
           className={classNames(
             'navbar',
-            'flex gap-4 h-12 items-center font-alpha text-lg calt',
+            'flex gap-4 h-12 items-center font-alpha text-lg',
             {
               'text-vega-light-300 dark:text-vega-dark-300': theme === 'system',
               'text-vega-light-300': theme === 'light',

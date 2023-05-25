@@ -84,15 +84,17 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
       <AgGridColumn
         colId="asset"
         headerName={t('Settlement asset')}
-        field="tradableInstrument.instrument.product.settlementAsset"
+        field="tradableInstrument.instrument.product.settlementAsset.symbol"
         hide={window.innerWidth <= BREAKPOINT_MD}
         cellRenderer={({
-          value,
+          data,
         }: VegaICellRendererParams<
           MarketFieldsFragment,
-          'tradableInstrument.instrument.product.settlementAsset'
-        >) =>
-          value ? (
+          'tradableInstrument.instrument.product.settlementAsset.symbol'
+        >) => {
+          const value =
+            data?.tradableInstrument.instrument.product.settlementAsset;
+          return value ? (
             <ButtonLink
               onClick={(e) => {
                 openAssetDetailsDialog(value.id, e.target as HTMLElement);
@@ -102,8 +104,8 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
             </ButtonLink>
           ) : (
             ''
-          )
-        }
+          );
+        }}
       />
       <AgGridColumn
         flex={2}

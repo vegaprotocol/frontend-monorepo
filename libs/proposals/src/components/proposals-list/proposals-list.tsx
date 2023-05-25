@@ -31,12 +31,13 @@ export const ProposalsList = () => {
     removePaginationWrapper(data?.proposalsConnection?.edges)
   );
   const { columnDefs, defaultColDef } = useColumnDefs();
-  useEffect(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [filteredData]);
-  const onFilterChanged = useCallback(() => {
+  const handleDataCount = useCallback(() => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);
+  useEffect(() => {
+    handleDataCount();
+  }, [filteredData, handleDataCount]);
+
   return (
     <div className="relative h-full">
       <AgGrid
@@ -47,10 +48,11 @@ export const ProposalsList = () => {
         defaultColDef={defaultColDef}
         suppressLoadingOverlay
         suppressNoRowsOverlay
-        onFilterChanged={onFilterChanged}
+        onFilterChanged={handleDataCount}
         storeKey="proposedMarkets"
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
+        onGridReady={handleDataCount}
       />
       <div className="pointer-events-none absolute inset-0">
         <AsyncRenderer

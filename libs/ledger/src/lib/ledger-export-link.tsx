@@ -52,7 +52,7 @@ export const LedgerExportLink = ({
     );
   }, [assetId, assets]);
 
-  if (!protohost) {
+  if (!protohost || !entries || entries.length === 0) {
     return null;
   }
   return (

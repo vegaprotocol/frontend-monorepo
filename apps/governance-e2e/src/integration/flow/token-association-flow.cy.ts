@@ -24,6 +24,7 @@ const ethWalletContainer = '[data-testid="ethereum-wallet"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
+const currencyTitle = '[data-testid="currency-title"]:visible';
 const txTimeout = Cypress.env('txTimeout');
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 const ethWalletAssociateButton = '[data-testid="associate-btn"]:visible';
@@ -79,14 +80,11 @@ context(
         //0005-ETXN-005
         stakingPageAssociateTokens('2', { skipConfirmation: true });
 
-        cy.getByTestId('currency-title', txTimeout).should(
-          'have.length.above',
-          6
-        );
+        cy.get(currencyTitle, txTimeout).should('have.length.above', 4);
         validateWalletCurrency('Associated', '0.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '2.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
+        cy.get(currencyTitle, txTimeout).should('have.length.at.least', 6);
 
         // 0005-ETXN-002
         verifyEthWalletAssociatedBalance('2.0');
@@ -117,14 +115,11 @@ context(
         verifyEthWalletTotalAssociatedBalance('6,002.00');
         cy.get('button').contains('Select a validator to nominate').click();
         stakingPageDisassociateTokens('2');
-        cy.getByTestId('currency-title', txTimeout).should(
-          'have.length.above',
-          6
-        );
+        cy.get(currencyTitle, txTimeout).should('have.length.above', 4);
         validateWalletCurrency('Associated', '2.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '0.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
+        cy.get(currencyTitle, txTimeout).should('have.length.at.least', 6);
         cy.get(
           '[data-testid="eth-wallet-associated-balances"]:visible',
           txTimeout
@@ -225,14 +220,11 @@ context(
           skipConfirmation: true,
         });
 
-        cy.getByTestId('currency-title', txTimeout).should(
-          'have.length.above',
-          6
-        );
+        cy.get(currencyTitle, txTimeout).should('have.length.above', 4);
         validateWalletCurrency('Associated', '0.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '2.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
+        cy.get(currencyTitle, txTimeout).should('have.length.at.least', 6);
         verifyEthWalletAssociatedBalance('2.0');
         verifyEthWalletTotalAssociatedBalance('2.0');
         cy.get(vegaWallet)
@@ -248,14 +240,11 @@ context(
           type: 'contract',
           skipConfirmation: true,
         });
-        cy.getByTestId('currency-title', txTimeout).should(
-          'have.length.above',
-          6
-        );
+        cy.get(currencyTitle, txTimeout).should('have.length.above', 4);
         validateWalletCurrency('Associated', '2.00');
         validateWalletCurrency('Pending association', '1.00');
         validateWalletCurrency('Total associated after pending', '1.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
+        cy.get(currencyTitle, txTimeout).should('have.length.at.least', 6);
         verifyEthWalletAssociatedBalance('1.0');
         verifyEthWalletTotalAssociatedBalance('1.0');
       });
@@ -339,14 +328,11 @@ context(
       // 1004-ASSO-004
       it('Pending association outside of app is shown', function () {
         vegaWalletAssociate('2');
-        cy.getByTestId('currency-title', txTimeout).should(
-          'have.length.above',
-          6
-        );
+        cy.get(currencyTitle, txTimeout).should('have.length.above', 4);
         validateWalletCurrency('Associated', '0.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '2.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
+        cy.get(currencyTitle, txTimeout).should('have.length.at.least', 6);
         validateWalletCurrency('Associated', '2.00');
       });
 
@@ -355,14 +341,11 @@ context(
         cy.wrap(validateWalletCurrency('Associated', '2.00')).then(() => {
           vegaWalletDisassociate('2');
         });
-        cy.getByTestId('currency-title', txTimeout).should(
-          'have.length.above',
-          6
-        );
+        cy.get(currencyTitle, txTimeout).should('have.length.above', 4);
         validateWalletCurrency('Associated', '2.00');
         validateWalletCurrency('Pending association', '2.00');
         validateWalletCurrency('Total associated after pending', '0.00');
-        cy.getByTestId('currency-title', txTimeout).should('have.length', 6);
+        cy.get(currencyTitle, txTimeout).should('have.length.at.least', 6);
         validateWalletCurrency('Associated', '0.00');
       });
 

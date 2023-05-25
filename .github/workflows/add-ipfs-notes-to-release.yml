@@ -48,7 +48,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           id: ${{ github.event.release.id }}
           body: |
-            ---
+
+            ___
 
             # Deployments
             * https://explorer.vega.xyz

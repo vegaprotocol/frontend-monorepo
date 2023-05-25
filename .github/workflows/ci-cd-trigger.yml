@@ -5,6 +5,7 @@ on:
     branches:
       - release/*
       - develop
+      - main
     tags:
       - v*
   pull_request:

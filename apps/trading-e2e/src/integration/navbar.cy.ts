@@ -8,9 +8,6 @@ describe('Navbar', { tags: '@smoke' }, () => {
     cy.visit('/');
     cy.wait('@Markets');
     cy.wait('@MarketsData');
-    cy.wait('@MarketsCandles');
-    // close welcome dialog
-    cy.getByTestId('dialog-close').click();
   });
 
   const pages = [

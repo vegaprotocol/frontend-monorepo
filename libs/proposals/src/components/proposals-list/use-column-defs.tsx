@@ -156,6 +156,7 @@ export const useColumnDefs = () => {
       resizable: true,
       filter: true,
       filterParams: { buttons: ['reset'] },
+      minWidth: 100,
     };
   }, []);
 

@@ -31,7 +31,6 @@ context('rewards - flow', { tags: '@slow' }, function () {
     cy.visit('/');
     waitForSpinner();
     depositAsset(vegaAssetAddress, '1000', 18);
-    cy.validatorsSelfDelegate();
     ethereumWalletConnect();
     cy.connectVegaWallet();
     cy.VegaWalletTopUpRewardsPool(30, 200);

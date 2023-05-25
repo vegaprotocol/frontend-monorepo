@@ -8,6 +8,7 @@ import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 const STORAGE_KEY = 'vega_columns_sizes_store';
 
@@ -93,11 +94,12 @@ export const useColumnSizes = ({
     },
     [valueSetter, storeKey, parentOnColumnResized]
   );
-
+  const { screenSize } = useScreenDimensions();
+  const largeScreen = ['xl', 'xxl', 'xxxl'].includes(screenSize);
   const setSizes = useCallback(
     (apiEvent: GridReadyEvent | GridSizeChangedEvent) => {
       if (!storeKey || !Object.keys(sizes).length || !widthRef.current) {
-        apiEvent?.api.sizeColumnsToFit();
+        largeScreen && apiEvent?.api.sizeColumnsToFit();
       } else {
         const recalculatedSizes = recalculateSizes(sizes);
         const newSizes = Object.entries(recalculatedSizes).map(
@@ -109,7 +111,7 @@ export const useColumnSizes = ({
         apiEvent.columnApi.setColumnWidths(newSizes);
       }
     },
-    [storeKey, recalculateSizes, sizes]
+    [storeKey, recalculateSizes, sizes, largeScreen]
   );
 
   const onGridReady = useCallback(

@@ -7,8 +7,14 @@ import {
   priceChangePercentage,
 } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { calcCandleVolume } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
+import {
+  MarketTradingMode,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/i18n';
 
 export const MarketSelectorItem = ({
   market,
@@ -38,13 +44,6 @@ export const MarketSelectorItem = ({
           onSelect && onSelect(market.id);
         }}
       >
-        <h3>{market.tradableInstrument.instrument.code}</h3>
-        <h4
-          title={market.tradableInstrument.instrument.name}
-          className="text-sm text-vega-light-300 dark:text-vega-dark-300 text-ellipsis whitespace-nowrap overflow-hidden"
-        >
-          {market.tradableInstrument.instrument.name}
-        </h4>
         <MarketData market={market} />
       </Link>
     </div>
@@ -68,30 +67,84 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     ? addDecimalsFormatNumber(market.data.markPrice, market.decimalPlaces)
     : '-';
 
+  const marketTradingMode = marketData
+    ? marketData.marketTradingMode
+    : market.tradingMode;
+
+  const mode = [
+    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+  ].includes(marketTradingMode)
+    ? MarketTradingModeMapping[marketTradingMode]
+    : '';
+
+  const instrument = market.tradableInstrument.instrument;
+
+  const vol = market.candles ? calcCandleVolume(market.candles) : '0';
+  const volume =
+    vol && vol !== '0'
+      ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
+      : '0.00';
+
   return (
-    <div className="flex flex-nowrap justify-between items-center mt-1">
-      <div className="w-1/2">
-        <div
-          className="text-ellipsis whitespace-nowrap overflow-hidden"
-          data-testid="market-item-price"
+    <>
+      <div className="flex items-end gap-1 mb-1">
+        <h3
+          className={classNames(
+            'overflow-hidden text-ellipsis whitespace-nowrap',
+            {
+              'w-1/2': mode, // make space for showing the trading mode
+            }
+          )}
         >
-          {price}
-        </div>
+          {market.tradableInstrument.instrument.code}
+        </h3>
+        {mode && (
+          <p className="w-1/2 text-xs text-right text-vega-orange-500 dark:text-vega-orange-550">
+            {mode}
+          </p>
+        )}
+      </div>
+      <DataRow value={volume} label={t('24h vol')} />
+      <DataRow
+        value={price}
+        label={instrument.product.settlementAsset.symbol}
+      />
+      <div className="relative">
         {market.candles && (
           <PriceChange candles={market.candles.map((c) => c.close)} />
         )}
+
+        <div
+          // absolute so height is not larger than price change value
+          className="absolute right-0 bottom-0 w-[120px]"
+        >
+          {market.candles && (
+            <Sparkline
+              width={120}
+              height={20}
+              data={market.candles.filter(Boolean).map((c) => Number(c.close))}
+            />
+          )}
+        </div>
       </div>
-      <div className="w-1/2 max-w-[120px]">
-        {market.candles ? (
-          <Sparkline
-            width={120}
-            height={20}
-            data={market.candles.filter(Boolean).map((c) => Number(c.close))}
-          />
-        ) : (
-          '-'
-        )}
-      </div>
+    </>
+  );
+};
+
+const DataRow = ({ value, label }: { value: string; label: string }) => {
+  return (
+    <div
+      className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight"
+      data-testid="market-selector-data-row"
+    >
+      <span title={label} className="text-sm mr-1">
+        {value}
+      </span>
+      <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
+        {label}
+      </span>
     </div>
   );
 };

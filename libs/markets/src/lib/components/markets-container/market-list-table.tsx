@@ -68,6 +68,7 @@ export const MarketListTable = forwardRef<
         sortable: true,
         filter: true,
         filterParams: { buttons: ['reset'] },
+        minWidth: 100,
       }}
       suppressCellFocus
       components={{ PriceFlashCell, MarketName }}
@@ -203,13 +204,15 @@ export const MarketListTable = forwardRef<
       />
       <AgGridColumn
         headerName={t('Settlement asset')}
-        field="tradableInstrument.instrument.product.settlementAsset"
+        field="tradableInstrument.instrument.product.settlementAsset.symbol"
         cellRenderer={({
-          value,
+          data,
         }: VegaICellRendererParams<
           MarketMaybeWithData,
-          'tradableInstrument.instrument.product.settlementAsset'
+          'tradableInstrument.instrument.product.settlementAsset.symbol'
         >) => {
+          const value =
+            data?.tradableInstrument.instrument.product.settlementAsset;
           return value ? (
             <ButtonLink
               onClick={(e) => {
