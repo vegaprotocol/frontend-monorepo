@@ -39,7 +39,7 @@ describe('NodeUrl', () => {
 
     render(<NodeUrl url={node} />);
 
-    expect(screen.getByText(node)).toBeInTheDocument();
+    expect(screen.getByText('api.n99.somenetwork.vega.xyz')).toBeInTheDocument();
   });
 });
 
