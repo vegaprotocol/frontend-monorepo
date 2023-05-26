@@ -51,7 +51,7 @@ jobs:
           fetch-depth: '0'
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
-      - name: Update vega.trading DNS to redirect to the new console
+      - name: Update console.vega.xyz DNS to redirect to the new console
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
         run: |
