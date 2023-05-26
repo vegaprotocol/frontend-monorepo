@@ -22,11 +22,14 @@ So that
 
 ## Tasks
 
-- [ ] Explore and sketch
+- [ ] UX (if needed)
+- [ ] Design (if needed)
 - [ ] Team and stakeholder review
-- [ ] Visual Design
-- [ ] Team review
-- [ ] Etc.
+- [ ] Specs reviewed and created or adjusted
+- [ ] Implementation
+- [ ] Testing (unit and/or e2e)
+- [ ] Code review
+- [ ] QA review
 
 ## Sketch
 
