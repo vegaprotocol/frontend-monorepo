@@ -81,42 +81,31 @@ export const OrderListManager = ({
     if (filter === Filter.Open) {
       return { partyId, filter: { liveOnly: true } };
     }
-
-    if (filter === Filter.Closed) {
-      return {
-        partyId,
-        filter: {
-          status: FilterStatusValue[Filter.Closed],
-        },
-        pagination: {
-          first: 5000,
-        },
-      };
-    }
-
-    if (filter === Filter.Rejected) {
-      return {
-        partyId,
-        filter: {
-          status: FilterStatusValue[Filter.Rejected],
-        },
-        pagination: {
-          first: 5000,
-        },
-      };
-    }
-
-    return {
+    const variables: OrdersQueryVariables = {
       partyId,
       pagination: {
         first: 5000,
       },
     };
+    if (filter === Filter.Closed || filter === Filter.Rejected) {
+      variables.filter = {
+        status: FilterStatusValue[filter],
+      };
+    }
+
+    return variables;
   }, [filter, partyId]);
 
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables,
+    update: ({ data }) => {
+      if (data && gridRef.current?.api) {
+        gridRef.current.api.setRowData(data);
+        return true;
+      }
+      return true;
+    },
   });
 
   const {
@@ -157,13 +146,18 @@ export const OrderListManager = ({
     (event: FilterChangedEvent) => {
       const rowCount = gridRef.current?.api?.getModel().getRowCount();
       setHasData((rowCount ?? 0) > 0);
-      bottomPlaceholderOnFilterChanged?.();
+      bottomPlaceholderOnFilterChanged?.(event);
     },
     [bottomPlaceholderOnFilterChanged]
   );
 
+  const onRowDataChanged = useCallback(() => {
+    const rowCount = gridRef.current?.api?.getModel().getRowCount();
+    setHasData((rowCount ?? 0) > 0);
+  }, []);
+
   useEffect(() => {
-    setHasData((gridRef.current?.api?.getModel().getRowCount() ?? 0) > 0);
+    setHasData(Boolean(data?.length));
   }, [data]);
 
   const cancelAll = useCallback(() => {
@@ -185,6 +179,7 @@ export const OrderListManager = ({
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
           onFilterChanged={onFilterChanged}
+          onRowDataChanged={onRowDataChanged}
           isReadOnly={isReadOnly}
           blockLoadDebounceMillis={100}
           storeKey={storeKey}
