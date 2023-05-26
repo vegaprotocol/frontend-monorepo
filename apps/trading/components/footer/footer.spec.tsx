@@ -39,7 +39,9 @@ describe('NodeUrl', () => {
 
     render(<NodeUrl url={node} />);
 
-    expect(screen.getByText('api.n99.somenetwork.vega.xyz')).toBeInTheDocument();
+    expect(
+      screen.getByText('api.n99.somenetwork.vega.xyz')
+    ).toBeInTheDocument();
   });
 });
 
