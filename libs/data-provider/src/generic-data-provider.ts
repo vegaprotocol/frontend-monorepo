@@ -443,8 +443,8 @@ function makeDataProviderInternal<
     if (loading) {
       return;
     }
-    // hard reset on demand
-    if (forceReset) {
+    // hard reset on demand or when error occurs
+    if (forceReset || error) {
       reset();
       initialize();
     } else {
