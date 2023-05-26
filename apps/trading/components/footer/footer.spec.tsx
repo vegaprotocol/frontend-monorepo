@@ -36,11 +36,10 @@ describe('NodeHealth', () => {
 describe('NodeUrl', () => {
   it('renders correct part of node url', () => {
     const node = 'https://api.n99.somenetwork.vega.xyz';
-    const expectedText = node.split('.').slice(1).join('.');
 
     render(<NodeUrl url={node} />);
 
-    expect(screen.getByText(expectedText)).toBeInTheDocument();
+    expect(screen.getByText(node)).toBeInTheDocument();
   });
 });
 
