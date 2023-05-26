@@ -66,7 +66,7 @@ interface NodeUrlProps {
 
 export const NodeUrl = ({ url }: NodeUrlProps) => {
   const urlObj = new URL(url);
-  const nodeUrl = urlObj.origin;
+  const nodeUrl = urlObj.hostname;
   return <span title={t('Connected node')}>{nodeUrl}</span>;
 };
 
