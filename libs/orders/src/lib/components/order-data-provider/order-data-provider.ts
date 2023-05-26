@@ -104,7 +104,6 @@ export const update = (
   if (!data) {
     return data;
   }
-  console.log('update orders');
   // A single update can contain the same order with multiple updates, so we need to find
   // the latest version of the order and only update using that
   const incoming = orderBy(

@@ -1,6 +1,6 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
@@ -16,7 +16,7 @@ import {
 } from '@vegaprotocol/wallet';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import type { Order } from '../order-data-provider';
+import type { Order, OrdersQueryVariables } from '../order-data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 
 export enum Filter {
@@ -76,12 +76,47 @@ export const OrderListManager = ({
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
+
+  const variables = useMemo<OrdersQueryVariables>(() => {
+    if (filter === Filter.Open) {
+      return { partyId, filter: { liveOnly: true } };
+    }
+
+    if (filter === Filter.Closed) {
+      return {
+        partyId,
+        filter: {
+          status: FilterStatusValue[Filter.Closed],
+        },
+        pagination: {
+          first: 5000,
+        },
+      };
+    }
+
+    if (filter === Filter.Rejected) {
+      return {
+        partyId,
+        filter: {
+          status: FilterStatusValue[Filter.Rejected],
+        },
+        pagination: {
+          first: 5000,
+        },
+      };
+    }
+
+    return {
+      partyId,
+      pagination: {
+        first: 5000,
+      },
+    };
+  }, [filter, partyId]);
+
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
-    variables:
-      filter === Filter.Open
-        ? { partyId, filter: { liveOnly: true } }
-        : { partyId },
+    variables,
   });
 
   const {
