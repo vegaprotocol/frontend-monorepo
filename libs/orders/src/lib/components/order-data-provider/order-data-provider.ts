@@ -117,9 +117,9 @@ export const update = (
   return produce(data, (draft) => {
     // Add or update incoming orders
     incoming.forEach((node) => {
-      const index = draft.findIndex((edge) => edge.node.id === node.id);
+      const index = data.findIndex((edge) => edge.node.id === node.id);
       const newer =
-        draft.length === 0 || node.createdAt >= draft[0].node.createdAt;
+        data.length === 0 || node.createdAt >= data[0].node.createdAt;
       const doesFilterPass = !variables || orderMatchFilters(node, variables);
       if (index !== -1) {
         if (doesFilterPass) {
@@ -171,25 +171,6 @@ const ordersProvider = makeDataProvider<
   additionalContext: { isEnlargedTimeout: true },
   fetchPolicy: 'no-cache',
 });
-
-export const allOrdersProvider = makeDerivedDataProvider<
-  ReturnType<typeof getData>,
-  never,
-  { partyId: string; marketId?: string }
->(
-  [
-    (callback, client, variables) =>
-      ordersProvider(callback, client, {
-        partyId: variables.partyId,
-      }),
-  ],
-  (partsData, variables, prevData, parts, subscriptions) => {
-    const orders = partsData[0] as ReturnType<typeof getData>;
-    return variables.marketId
-      ? orders.filter((edge) => variables.marketId === edge.node.market.id)
-      : orders;
-  }
-);
 
 export const activeOrdersProvider = makeDerivedDataProvider<
   ReturnType<typeof getData>,
