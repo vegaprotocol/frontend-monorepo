@@ -22,8 +22,8 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
     setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
   }, []);
   const update = useCallback(
-    ({ data }: { data: MarketMaybeWithData[] }) => {
-      gridRef.current?.api?.setRowData(data);
+    ({ data }: { data: MarketMaybeWithData[] | null }) => {
+      data && gridRef.current?.api?.setRowData(data);
       dataRef.current = data;
       handleDataCount();
       return true;
