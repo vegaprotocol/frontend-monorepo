@@ -93,24 +93,11 @@ export const AccountManager = ({
           gridRef.current.api.setPinnedTopRowData([pinnedAssetRowData]);
         }
       }
-      const update: AccountFields[] = [];
-      const add: AccountFields[] = [];
-      data
-        ?.filter((d) => d.asset.id !== pinnedAsset?.id)
-        .forEach((d) => {
-          const rowNode = gridRef.current?.api?.getRowNode(d.asset.id);
-          if (rowNode) {
-            if (!isEqual(rowNode.data, d)) {
-              update.push(d);
-            }
-          } else {
-            add.push(d);
-          }
-        });
-      gridRef.current?.api?.applyTransaction({
-        update,
-        add,
-      });
+      gridRef.current.api.setRowData(
+        pinnedAssetRowData
+          ? data?.filter((d) => d !== pinnedAssetRowData)
+          : data
+      );
       return true;
     },
     [gridRef, pinnedAsset]
