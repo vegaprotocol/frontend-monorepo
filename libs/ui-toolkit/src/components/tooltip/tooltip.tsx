@@ -42,7 +42,9 @@ export const Tooltip = ({
               alignOffset={8}
               className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm text-black dark:text-white break-word"
             >
-              <div className="relative z-0">{description}</div>
+              <div className="relative z-0" data-testid="tooltip-content">
+                {description}
+              </div>
             </Content>
           </Portal>
         )}
