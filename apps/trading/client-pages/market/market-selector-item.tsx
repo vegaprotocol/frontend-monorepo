@@ -7,6 +7,7 @@ import {
   priceChangePercentage,
 } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { isCandleLessThan24hOld } from '@vegaprotocol/markets';
 import { calcCandleVolume } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
@@ -15,6 +16,7 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
+import { useYesterday } from '@vegaprotocol/react-helpers';
 
 export const MarketSelectorItem = ({
   market,
@@ -80,8 +82,13 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     : '';
 
   const instrument = market.tradableInstrument.instrument;
+  const yesterday = useYesterday();
 
-  const vol = market.candles ? calcCandleVolume(market.candles) : '0';
+  const oneDayCandles = market.candles?.filter((c) =>
+    isCandleLessThan24hOld(c, yesterday)
+  );
+
+  const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
   const volume =
     vol && vol !== '0'
       ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
@@ -112,19 +119,19 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         label={instrument.product.settlementAsset.symbol}
       />
       <div className="relative">
-        {market.candles && (
-          <PriceChange candles={market.candles.map((c) => c.close)} />
+        {oneDayCandles && (
+          <PriceChange candles={oneDayCandles.map((c) => c.close)} />
         )}
 
         <div
           // absolute so height is not larger than price change value
           className="absolute right-0 bottom-0 w-[120px]"
         >
-          {market.candles && (
+          {oneDayCandles && (
             <Sparkline
               width={120}
               height={20}
-              data={market.candles.filter(Boolean).map((c) => Number(c.close))}
+              data={oneDayCandles.filter(Boolean).map((c) => Number(c.close))}
             />
           )}
         </div>

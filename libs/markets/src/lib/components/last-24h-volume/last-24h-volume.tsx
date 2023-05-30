@@ -79,6 +79,7 @@ export const Last24hVolume = ({
   const candleVolume = oneDayCandles
     ? calcCandleVolume(oneDayCandles)
     : initialValue;
+
   return (
     <Tooltip
       description={t(

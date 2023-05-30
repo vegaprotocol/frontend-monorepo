@@ -89,9 +89,9 @@ export const isCandleLessThan24hOld = (
   candle: MarketCandlesFieldsFragment | undefined,
   yesterday: number
 ) => {
-  if (!candle?.open) {
+  if (!candle?.periodStart) {
     return false;
   }
-  const candleDate = new Date(candle.close);
+  const candleDate = new Date(candle.periodStart);
   return candleDate > new Date(yesterday);
 };
