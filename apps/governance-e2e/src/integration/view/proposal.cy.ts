@@ -32,6 +32,14 @@ context(
       verifyPageHeader('Proposals');
     });
 
+    // 3002-PROP-023 3004-PMAC-002 3005-PASN-002 3006-PASC-002 3007-PNEC-002 3008-PFRO-003
+    it('should have button for link to more information on proposals', function () {
+      const proposalsUrl = 'https://docs.vega.xyz/mainnet/tutorials/proposals';
+      cy.getByTestId('new-proposal-link')
+        .find('a')
+        .should('have.attr', 'href', proposalsUrl);
+    });
+
     it('should be able to see a working link for - find out more about Vega governance', function () {
       // 3001-VOTE-001
       cy.get(proposalDocumentationLink)
@@ -54,17 +62,8 @@ context(
         });
     });
 
-    it.skip('should be able to see button for - new proposal', function () {
-      // 3001-VOTE-002
-      cy.get(newProposalLink)
-        .should('be.visible')
-        .and('have.text', 'New proposal')
-        .and('have.attr', 'href')
-        .and('equal', '/proposals/propose');
-    });
-
-    it.skip('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
-      goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
+    it('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
+      goToMakeNewProposal(governanceProposalType.RAW);
       cy.get(connectToVegaWalletButton)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet');

@@ -6,12 +6,17 @@ import {
   waitForSpinner,
 } from '../../support/common.functions';
 import {
+  getDownloadedProposalJsonPath,
+  submitUniqueRawProposal,
+} from '../../support/governance.functions';
+import {
   getProposalInformationFromTable,
   goToMakeNewProposal,
   governanceProposalType,
   voteForProposal,
   waitForProposalSubmitted,
 } from '../../support/governance.functions';
+import { getDownloadedProposalJson } from '../../support/proposal.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
@@ -58,7 +63,7 @@ const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
 // 3001-VOTE-007
-context.skip(
+context(
   'Governance flow - form validations for different governance proposals',
   { tags: '@slow' },
   function () {
@@ -79,23 +84,23 @@ context.skip(
       navigateTo(navigation.proposals);
     });
 
-    it('Able to submit valid update network parameter proposal', function () {
-      goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
-      // 3002-PROP-006
-      cy.get(newProposalTitle).type('Test update network parameter proposal');
-      // 3002-PROP-007
-      cy.get(newProposalDescription).type('E2E test for proposals');
+    // it.only('Able to download valid json update network parameter proposal', function () {
+    //   goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
+    //   // 3002-PROP-006
+    //   cy.get(newProposalTitle).type('Test update network parameter proposal');
+    //   // 3002-PROP-007
+    //   cy.get(newProposalDescription).type('E2E test for proposals');
 
-      cy.get(proposalParameterSelect).find('option').should('have.length', 117);
-      cy.get(proposalParameterSelect).select(
-        // 3007-PNEC-002
-        'governance_proposal_asset_minEnact'
-      );
-      cy.get(currentParameterValue).should('have.value', '2s');
-      cy.get(newProposedParameterValue).type('5s'); // 3007-PNEC-003
-      cy.get(newProposalSubmitButton).should('be.visible').click();
-      waitForProposalSubmitted();
-    });
+    //   cy.get(proposalParameterSelect).find('option').should('have.length', 117);
+    //   cy.get(proposalParameterSelect).select(
+    //     // 3007-PNEC-002
+    //     'governance_proposal_asset_minEnact'
+    //   );
+    //   cy.get(currentParameterValue).should('have.value', '2s');
+    //   cy.get(newProposedParameterValue).type('5s'); // 3007-PNEC-003
+    //   cy.get(proposalDownloadBtn).should('be.visible').click();
+
+    // });
 
     it('Unable to submit network parameter with missing/invalid fields', function () {
       navigateTo(navigation.proposals);
@@ -122,56 +127,78 @@ context.skip(
       );
     });
 
-    it('Able to download network param proposal json', function () {
-      const downloadFolder = './cypress/downloads/';
+    // 3007-PNEC-001 3007-PNEC-003
+    it.only('Able to download and submit network param proposal', function () {
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
-      cy.log('Download proposal file');
-      cy.get(proposalDownloadBtn)
-        .should('be.visible')
-        .click()
-        .then(() => {
-          const filename =
-            downloadFolder +
-            'vega-network-param-proposal-' +
-            getFormattedTime() +
-            '.json';
-          cy.readFile(filename, proposalTimeout)
-            .its('terms.updateNetworkParameter')
-            .should('exist');
-        });
-
+      // 3007-PNE-021
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/network-parameter-proposal');
+      // 3007-PNEC-006
+      cy.get(newProposalTitle)
+        .siblings()
+        .should('contain.text', '(100 characters or less)');
+      // 3007-PNEC-004 3007-PNEC-005
+      cy.get(newProposalTitle).type('Test update network parameter proposal');
+      // 3007-PNEC-009
+      cy.get(newProposalDescription)
+        .siblings()
+        .should('contain.text', '(20,000 characters or less)');
+      // 3007-PNEC-007 3007-PNEC-008
       cy.get(newProposalDescription).type('E2E test for downloading proposals');
+      // 3007-PNEC-010
       cy.get(proposalParameterSelect).select(
         'governance_proposal_asset_minClose'
       );
+      // 3007-PNEC-011
       cy.get(newProposedParameterValue).type('10s');
-
+      // 3007-PNEC-012
+      cy.get(proposalVoteDeadline).clear().type('2');
+      // 3007-PNEC-013 3007-PNEC-014
+      cy.getByTestId('voting-date').invoke('text').should('not.be.empty');
+      // 3007-PNEC-015
+      cy.get(maxEnactDeadline).click();
+      // 3007-PNEC-016
+      cy.getByTestId('enactment-date').invoke('text').should('not.be.empty');
+      // 3007-PNEC-017
+      cy.getByTestId('enactment-date')
+        .parentsUntil('[data-testid="form-group"]')
+        .should(
+          'have.text',
+          'Time till enactment (must be equal to or after vote close)'
+        );
+      cy.pause();
+      // 3007-PNE-018
       cy.log('Download updated proposal file');
       cy.get(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
-          const filename =
-            downloadFolder +
-            'vega-network-param-proposal-' +
-            getFormattedTime() +
-            '.json';
-          cy.get(proposalDownloadBtn).should('be.visible').click();
-          cy.readFile(filename, proposalTimeout).then((jsonFile) => {
-            cy.wrap(jsonFile)
-              .its('rationale.description')
-              .should('eq', 'E2E test for downloading proposals');
-            cy.wrap(jsonFile)
-              .its('terms.updateNetworkParameter.changes.key')
-              .should('eq', 'governance.proposal.asset.minClose');
-            cy.wrap(jsonFile)
-              .its('terms.updateNetworkParameter.changes.value')
-              .should('eq', '10s');
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-network-param-proposal-')
+          ).then((filePath) => {
+            cy.readFile(String(filePath), { timeout: 14000 }).then(
+              (jsonFile) => {
+                cy.wrap(jsonFile)
+                  .its('rationale.description')
+                  .should('eq', 'E2E test for downloading proposals');
+                cy.wrap(jsonFile)
+                  .its('terms.updateNetworkParameter.changes.key')
+                  .should('eq', 'governance.proposal.asset.minClose');
+                cy.wrap(jsonFile)
+                  .its('terms.updateNetworkParameter.changes.value')
+                  .should('eq', '10s');
+              }
+            );
+            // 3007-PNE-019
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath });
           });
         });
     });
 
-    it('Unable to submit network parameter proposal with vote deadline above enactment deadline', function () {
+    it.skip('Unable to submit network parameter proposal with vote deadline above enactment deadline', function () {
       navigateTo(navigation.proposals);
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
       cy.get(newProposalTitle).type('Test update network parameter proposal');

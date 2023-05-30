@@ -106,8 +106,7 @@ context(
         .and('have.text', 'There are no enacted or rejected proposals');
     });
 
-    // 3002-PROP-002
-    // 3002-PROP-003
+    // 3002-PROP-002 3002-PROP-003 3001-VOTE-012 3007-PNE-020
     it('Proposal form - shows how many vega tokens are required to make a proposal', function () {
       // 3002-PROP-005
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
@@ -278,6 +277,19 @@ context(
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should('have.text', errorMsg);
       closeDialog();
+    });
+
+    // 3007-PNE-022 3007-PNE-023
+    it('Unable to submit proposal without valid json', function () {
+      goToMakeNewProposal(governanceProposalType.RAW);
+      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId('input-error-text').should('have.text', 'Required');
+      cy.get(rawProposalData).type('Not a valid json string');
+      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId('input-error-text').should(
+        'have.text',
+        'Must be valid JSON'
+      );
     });
 
     // 1005-PROP-009
