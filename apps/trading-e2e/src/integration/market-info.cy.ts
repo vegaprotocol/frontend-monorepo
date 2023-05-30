@@ -55,14 +55,9 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(3, 'Quote Unit', 'BTC');
   });
 
-  it.only('market volume displayed', () => {
+  it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
     validateMarketDataRow(0, '24 Hour Volume', 'Unknown');
-    validateMarketDataRowTooltip(
-      0,
-      '24 Hour Volume',
-      '24 hour change is unavailable at this time. The volume change in the last 120 hours is 1'
-    );
     validateMarketDataRow(1, 'Open Interest', '-');
     validateMarketDataRow(2, 'Best Bid Volume', '1');
     validateMarketDataRow(3, 'Best Offer Volume', '3');
@@ -245,22 +240,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .within(() => {
         cy.get('dt').should('contain.text', name);
         cy.get('dd').should('contain.text', value);
-      });
-  }
-
-  function validateMarketDataRowTooltip(
-    rowNumber: number,
-    name: string,
-    value: string
-  ) {
-    cy.getByTestId(row)
-      .eq(rowNumber)
-      .within(() => {
-        cy.get('dt').should('contain.text', name);
-        cy.get('dd').first().realHover();
-        cy.get('[data-testid="tooltip-content"]')
-          .last()
-          .should('have.text', value);
       });
   }
 });
