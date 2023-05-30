@@ -88,7 +88,10 @@ export const useListenForPendingEthEvents = (
   );
 
   useEffect(() => {
+    if (!account) return;
+
     let cancelled = false;
+
     resetPendingTxs();
     getExistingTransactions().then((events) => {
       if (!cancelled) {
@@ -106,5 +109,6 @@ export const useListenForPendingEthEvents = (
     numberOfConfirmations,
     resetPendingTxs,
     waitForExistingTransactions,
+    account,
   ]);
 };
