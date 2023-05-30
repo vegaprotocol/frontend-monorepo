@@ -1,14 +1,10 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import {
-  addDecimalsFormatNumber,
-  formatNumber,
-  priceChangePercentage,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/markets';
 import { isCandleLessThan24hOld } from '@vegaprotocol/markets';
-import { calcCandleVolume } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import {
@@ -88,12 +84,6 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     isCandleLessThan24hOld(c, yesterday)
   );
 
-  const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
-  const volume =
-    vol && vol !== '0'
-      ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
-      : '0.00';
-
   return (
     <>
       <div className="flex items-end gap-1 mb-1">
@@ -113,15 +103,24 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           </p>
         )}
       </div>
-      <DataRow value={volume} label={t('24h vol')} />
+      <DataRow
+        value={
+          <Last24hVolume
+            marketId={market?.id}
+            positionDecimalPlaces={market?.positionDecimalPlaces}
+          />
+        }
+        label={t('24h vol')}
+      />
       <DataRow
         value={price}
         label={instrument.product.settlementAsset.symbol}
       />
-      <div className="relative">
-        {oneDayCandles && (
-          <PriceChange candles={oneDayCandles.map((c) => c.close)} />
-        )}
+      <div className="relative text-xs p-1">
+        <Last24hPriceChange
+          marketId={market?.id}
+          decimalPlaces={market?.decimalPlaces}
+        />
 
         <div
           // absolute so height is not larger than price change value
@@ -140,7 +139,13 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   );
 };
 
-const DataRow = ({ value, label }: { value: string; label: string }) => {
+const DataRow = ({
+  value,
+  label,
+}: {
+  value: string | ReactNode;
+  label: string;
+}) => {
   return (
     <div
       className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight"
@@ -152,24 +157,6 @@ const DataRow = ({ value, label }: { value: string; label: string }) => {
       <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
         {label}
       </span>
-    </div>
-  );
-};
-
-const PriceChange = ({ candles }: { candles: string[] }) => {
-  const priceChange = candles ? priceChangePercentage(candles) : undefined;
-  const priceChangeClasses = classNames('text-xs', {
-    'text-vega-pink': priceChange && priceChange < 0,
-    'text-vega-green': priceChange && priceChange > 0,
-  });
-  let prefix = '';
-  if (priceChange && priceChange > 0) {
-    prefix = '+';
-  }
-  const formattedChange = formatNumber(Number(priceChange), 2);
-  return (
-    <div className={priceChangeClasses} data-testid="market-item-change">
-      {priceChange ? `${prefix}${formattedChange}%` : '-'}
     </div>
   );
 };
