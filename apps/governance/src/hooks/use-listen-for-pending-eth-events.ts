@@ -11,14 +11,14 @@ export const useListenForPendingEthEvents = (
   removePendingTx: (event: Event) => void,
   resetPendingTxs: () => void
 ) => {
-  const { provider } = useWeb3React();
+  const { provider, account } = useWeb3React();
 
   /**
    * Add listener for the ethereum events on the contract passed in for the filter passed in.
    * Push the event into the store and wait for the correct number of confirmations before removing it.
    */
   useEffect(() => {
-    if (!contract || !filter) {
+    if (!account || !contract || !filter) {
       return;
     }
 
@@ -40,7 +40,14 @@ export const useListenForPendingEthEvents = (
     return () => {
       contract.off(filter, listener);
     };
-  }, [addPendingTxs, contract, filter, numberOfConfirmations, removePendingTx]);
+  }, [
+    addPendingTxs,
+    contract,
+    filter,
+    numberOfConfirmations,
+    removePendingTx,
+    account,
+  ]);
 
   /**
    * Get all transactions that exist on the blockchain but have yet to reach the number of confirmations
