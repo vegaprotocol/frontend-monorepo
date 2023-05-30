@@ -21,6 +21,7 @@
     "ledger": "libs/ledger",
     "liquidity": "libs/liquidity",
     "liquidity-provision-dashboard": "apps/liquidity-provision-dashboard",
+    "logger": "libs/logger",
     "market-depth": "libs/market-depth",
     "markets": "libs/markets",
     "multisig-signer": "apps/multisig-signer",
