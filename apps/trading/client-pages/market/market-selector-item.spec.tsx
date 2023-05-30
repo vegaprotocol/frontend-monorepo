@@ -18,13 +18,15 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 describe('MarketSelectorItem', () => {
+  const yesterday = new Date();
+  yesterday.setHours(yesterday.getHours() - 20);
   const market = createMarketFragment({
     id: 'market-0',
     decimalPlaces: 2,
     // @ts-ignore fragment doesn't contain candles
     candles: [
-      { close: '5', volume: '50' },
-      { close: '10', volume: '50' },
+      { close: '5', volume: '50', periodStart: yesterday.toISOString() },
+      { close: '10', volume: '50', periodStart: yesterday.toISOString() },
     ],
     tradableInstrument: {
       instrument: {
