@@ -65,9 +65,8 @@ interface NodeUrlProps {
 }
 
 export const NodeUrl = ({ url }: NodeUrlProps) => {
-  // get base url from api url, api sub domain
   const urlObj = new URL(url);
-  const nodeUrl = urlObj.origin.replace(/^[^.]+\./g, '');
+  const nodeUrl = urlObj.hostname;
   return <span title={t('Connected node')}>{nodeUrl}</span>;
 };
 
