@@ -13,7 +13,7 @@ import { createClient as createWSClient } from 'graphql-ws';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
-import { localLoggerFactory } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useHeaderStore } from './header-store';
 
 const isBrowser = typeof window !== 'undefined';

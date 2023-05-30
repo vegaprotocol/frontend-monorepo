@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import { SentryInit, SentryClose } from '@vegaprotocol/utils';
+import { SentryInit, SentryClose } from '@vegaprotocol/logger';
 import { STORAGE_KEY, useTelemetryApproval } from './use-telemetry-approval';
 
 const mockSetValue = jest.fn();
