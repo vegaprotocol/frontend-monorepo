@@ -85,6 +85,25 @@ export const MarketInfoAccordion = ({
     market.accountsConnection?.edges
   );
 
+  const settlementData = market.tradableInstrument.instrument.product
+    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
+  const terminationData = market.tradableInstrument.instrument.product
+    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
+
+  const getSigners = (data: DataSourceDefinition) => {
+    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
+      const signers = data.sourceType.sourceType.signers || [];
+
+      return signers.map(({ signer }, i) => {
+        return (
+          (signer.__typename === 'ETHAddress' && signer.address) ||
+          (signer.__typename === 'PubKey' && signer.key)
+        );
+      });
+    }
+    return [];
+  };
+
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -105,24 +124,7 @@ export const MarketInfoAccordion = ({
         content: <InsurancePoolInfoPanel market={market} account={a} />,
       })),
   ];
-  const settlementData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
-  const terminationData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
 
-  const getSigners = (data: DataSourceDefinition) => {
-    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers = data.sourceType.sourceType.signers || [];
-
-      return signers.map(({ signer }, i) => {
-        return (
-          (signer.__typename === 'ETHAddress' && signer.address) ||
-          (signer.__typename === 'PubKey' && signer.key)
-        );
-      });
-    }
-    return [];
-  };
   const oraclePanels = isEqual(
     getSigners(settlementData),
     getSigners(terminationData)

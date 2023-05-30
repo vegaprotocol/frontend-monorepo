@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
+import { PriceMonitoringBoundsInfoPanel } from '@vegaprotocol/markets';
 import {
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
@@ -39,133 +40,75 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
     return [];
   };
 
-  const oraclePanels = isEqual(
+  const showTwoOracles = isEqual(
     getSigners(settlementData),
     getSigners(terminationData)
-  )
-    ? [
-        {
-          title: t('Settlement Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="settlementData"
-            />
-          ),
-        },
-        {
-          title: t('Termination Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="termination"
-            />
-          ),
-        },
-      ]
-    : [
-        {
-          title: t('Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="settlementData"
-            />
-          ),
-        },
-      ];
-
-  const panels = [
-    {
-      title: t('Key details'),
-      content: <KeyDetailsInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Instrument'),
-      content: <InstrumentInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Settlement asset'),
-      content: <SettlementAssetInfoPanel market={market} noBorder={false} />,
-    },
-    {
-      title: t('Metadata'),
-      content: <MetadataInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Risk model'),
-      content: <RiskModelInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Risk parameters'),
-      content: <RiskParametersInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Risk factors'),
-      content: <RiskFactorsInfoPanel noBorder={false} market={market} />,
-    },
-    ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-      (trigger, i) => ({
-        title: t(`Price monitoring trigger ${i + 1}`),
-        content: <MarketInfoTable noBorder={false} data={trigger} />,
-      })
-    ),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <>
-          <MarketInfoTable
-            noBorder={false}
-            data={{
-              maxValidPrice: trigger.maxValidPrice,
-              minValidPrice: trigger.minValidPrice,
-            }}
-            decimalPlaces={market.decimalPlaces}
-          />
-          <MarketInfoTable
-            noBorder={false}
-            data={{ referencePrice: trigger.referencePrice }}
-            decimalPlaces={
-              market.tradableInstrument.instrument.product.settlementAsset
-                .decimals
-            }
-          />
-        </>
-      ),
-    })),
-    {
-      title: t('Liquidity monitoring parameters'),
-      content: (
-        <LiquidityMonitoringParametersInfoPanel
-          noBorder={false}
-          market={market}
-        />
-      ),
-    },
-    {
-      title: t('Liquidity'),
-      content: <LiquidityInfoPanel market={market} noBorder={false} />,
-    },
-    {
-      title: t('Liquidity price range'),
-      content: (
-        <LiquidityPriceRangeInfoPanel market={market} noBorder={false} />
-      ),
-    },
-    ...oraclePanels,
-  ];
+  );
 
   return (
-    <>
-      {panels.map((p) => (
-        <div key={p.title} className="mb-3">
-          <h2 className="font-alpha calt text-xl">{p.title}</h2>
-          {p.content}
-        </div>
+    <div>
+      <KeyDetailsInfoPanel noBorder={false} showTitle={true} market={market} />
+      <InstrumentInfoPanel noBorder={false} showTitle={true} market={market} />
+      <SettlementAssetInfoPanel
+        noBorder={false}
+        showTitle={true}
+        market={market}
+      />
+      <MetadataInfoPanel noBorder={false} showTitle={true} market={market} />
+      <RiskModelInfoPanel noBorder={false} showTitle={true} market={market} />
+      <RiskParametersInfoPanel
+        noBorder={false}
+        showTitle={true}
+        market={market}
+      />
+      <RiskFactorsInfoPanel noBorder={false} showTitle={true} market={market} />
+      {(market.data?.priceMonitoringBounds || []).map((trigger, i) => (
+        <PriceMonitoringBoundsInfoPanel
+          noBorder={false}
+          showTitle={true}
+          market={market}
+          triggerIndex={i + 1}
+        />
       ))}
-    </>
+      {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
+        (trigger, i) => (
+          <MarketInfoTable noBorder={false} data={trigger} key={i} />
+        )
+      )}
+      <LiquidityMonitoringParametersInfoPanel
+        noBorder={false}
+        showTitle={true}
+        market={market}
+      />
+      <LiquidityInfoPanel market={market} noBorder={false} showTitle={true} />
+      <LiquidityPriceRangeInfoPanel
+        market={market}
+        noBorder={false}
+        showTitle={true}
+      />
+      {showTwoOracles ? (
+        <>
+          <OracleInfoPanel
+            noBorder={false}
+            showTitle={true}
+            market={market}
+            type="settlementData"
+          />
+          <OracleInfoPanel
+            noBorder={false}
+            showTitle={true}
+            market={market}
+            type="termination"
+          />
+        </>
+      ) : (
+        <OracleInfoPanel
+          noBorder={false}
+          showTitle={true}
+          market={market}
+          type="settlementData"
+        />
+      )}
+    </div>
   );
 };
