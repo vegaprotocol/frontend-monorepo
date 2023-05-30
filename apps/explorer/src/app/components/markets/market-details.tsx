@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import { PriceMonitoringBoundsInfoPanel } from '@vegaprotocol/markets';
 import {
@@ -61,7 +60,11 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
         showTitle={true}
         market={market}
       />
-      <RiskFactorsInfoPanel noBorder={false} showTitle={true} market={market} />
+      <RiskFactorsInfoPanel
+        noBorder={false}
+        showTitle={true}
+        market={{ riskFactors: market.riskFactors }}
+      />
       {(market.data?.priceMonitoringBounds || []).map((trigger, i) => (
         <PriceMonitoringBoundsInfoPanel
           noBorder={false}

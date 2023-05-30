@@ -191,7 +191,9 @@ export const MarketInfoAccordion = ({
     },
     {
       title: t('Risk factors'),
-      content: <RiskFactorsInfoPanel market={market} />,
+      content: (
+        <RiskFactorsInfoPanel market={{ riskFactors: market.riskFactors }} />
+      ),
     },
     ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
       (_, triggerIndex) => ({

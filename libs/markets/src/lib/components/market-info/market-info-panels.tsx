@@ -20,7 +20,11 @@ import type {
 } from './market-info-data-provider';
 import { Last24hVolume } from '../last-24h-volume';
 import BigNumber from 'bignumber.js';
-import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
+import type {
+  DataSourceDefinition,
+  MarketTradingMode,
+  SignerKind,
+} from '@vegaprotocol/types';
 import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -38,6 +42,8 @@ type PanelProps = Pick<
 type MarketInfoProps = {
   market: MarketInfo;
 };
+
+type TradableInstrument = Get<MarketInfo, 'tradableInstrument'>;
 
 export const CurrentFeesInfoPanel = ({
   market,
@@ -178,7 +184,15 @@ export const InsurancePoolInfoPanel = ({
 export const KeyDetailsInfoPanel = ({
   market,
   showTitle = false,
-}: MarketInfoProps & PanelProps) => {
+}: {
+  market: {
+    id: string;
+    tradingMode?: MarketTradingMode;
+    decimalPlaces: number;
+    positionDecimalPlaces: number;
+    tradableInstrument: TradableInstrument;
+  };
+} & PanelProps) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
   return (
@@ -205,7 +219,11 @@ export const InstrumentInfoPanel = ({
   market,
   showTitle = false,
   ...props
-}: MarketInfoProps & PanelProps) => (
+}: {
+  market: {
+    tradableInstrument: TradableInstrument;
+  };
+} & PanelProps) => (
   <div>
     {showTitle && (
       <h2 className="font-alpha calt text-xl mt-4">{t('Instrument')}</h2>
@@ -226,7 +244,13 @@ export const SettlementAssetInfoPanel = ({
   market,
   noBorder = true,
   showTitle = false,
-}: MarketInfoProps & PanelProps) => {
+}: {
+  market: {
+    tradableInstrument: TradableInstrument;
+  };
+  noBorder?: boolean;
+  showTitle?: boolean;
+}) => {
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   const quoteUnit =
@@ -266,7 +290,11 @@ export const MetadataInfoPanel = ({
   market,
   showTitle = false,
   ...props
-}: MarketInfoProps & PanelProps) => (
+}: {
+  market: {
+    tradableInstrument: TradableInstrument;
+  };
+} & PanelProps) => (
   <div>
     {showTitle && (
       <h2 className="font-alpha calt text-xl mt-4">{t('Metadata')}</h2>
@@ -292,7 +320,11 @@ export const RiskModelInfoPanel = ({
   market,
   showTitle = false,
   ...props
-}: MarketInfoProps & PanelProps) => {
+}: {
+  market: {
+    tradableInstrument: TradableInstrument;
+  };
+} & PanelProps) => {
   if (market.tradableInstrument.riskModel.__typename !== 'LogNormalRiskModel') {
     return null;
   }
@@ -315,7 +347,11 @@ export const RiskParametersInfoPanel = ({
   market,
   showTitle = false,
   ...props
-}: MarketInfoProps & PanelProps) => {
+}: {
+  market: {
+    tradableInstrument: TradableInstrument;
+  };
+} & PanelProps) => {
   if (market.tradableInstrument.riskModel.__typename === 'LogNormalRiskModel') {
     const { r, sigma, mu } = market.tradableInstrument.riskModel.params;
     return <MarketInfoTable data={{ r, sigma, mu }} unformatted {...props} />;
@@ -345,7 +381,11 @@ export const RiskFactorsInfoPanel = ({
   market,
   showTitle = false,
   ...props
-}: MarketInfoProps & PanelProps) => {
+}: {
+  market: {
+    riskFactors: Get<MarketInfo, 'riskFactors'>;
+  };
+} & PanelProps) => {
   if (!market.riskFactors) {
     return null;
   }
@@ -367,8 +407,14 @@ export const PriceMonitoringBoundsInfoPanel = ({
   ...props
 }: {
   triggerIndex: number;
-} & MarketInfoProps &
-  PanelProps) => {
+} & {
+  market: {
+    id: string;
+    priceMonitoringSettings: Get<MarketInfo, 'priceMonitoringSettings'>;
+    tradableInstrument: TradableInstrument;
+    decimalPlaces: number;
+  };
+} & PanelProps) => {
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -431,7 +477,14 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   market,
   showTitle = false,
   ...props
-}: MarketInfoProps & PanelProps) => (
+}: {
+  market: {
+    liquidityMonitoringParameters: Get<
+      MarketInfo,
+      'liquidityMonitoringParameters'
+    >;
+  };
+} & PanelProps) => (
   <div>
     {showTitle && (
       <h2 className="font-alpha calt text-xl mt-4">
@@ -456,7 +509,12 @@ export const LiquidityInfoPanel = ({
   market,
   showTitle = false,
   ...props
-}: MarketInfoProps & PanelProps) => {
+}: {
+  market: {
+    id: string;
+    tradableInstrument: TradableInstrument;
+  };
+} & PanelProps) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
   const assetSymbol =
@@ -487,7 +545,14 @@ export const LiquidityInfoPanel = ({
 export const LiquidityPriceRangeInfoPanel = ({
   market,
   showTitle = false,
-}: MarketInfoProps & PanelProps) => {
+}: {
+  market: {
+    id: string;
+    lpPriceRange: string;
+    tradableInstrument: TradableInstrument;
+    decimalPlaces: number;
+  };
+} & PanelProps) => {
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
   const liquidityPriceRange = formatNumberPercentage(
@@ -545,8 +610,12 @@ export const OracleInfoPanel = ({
   market,
   type,
   showTitle = false,
-}: MarketInfoProps &
-  PanelProps & { type: 'settlementData' | 'termination' }) => {
+}: {
+  market: {
+    id: string;
+    tradableInstrument: TradableInstrument;
+  };
+} & PanelProps & { type: 'settlementData' | 'termination' }) => {
   const product = market.tradableInstrument.instrument.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
