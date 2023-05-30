@@ -9,7 +9,7 @@ import {
   useGetWithdrawThreshold,
 } from '@vegaprotocol/web3';
 import { useWithdrawStore } from './withdraw-store';
-import { useNetworkParams } from '@vegaprotocol/network-parameters';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
 
 export const useWithdrawAsset = (
   assets: Asset[],
@@ -19,19 +19,17 @@ export const useWithdrawAsset = (
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
-  const { params } = useNetworkParams([
-    'spam_protection_minimumWithdrawalQuantumMultiple',
-  ]);
+  const { param } = useNetworkParam(
+    'spam_protection_minimumWithdrawalQuantumMultiple'
+  );
 
   const minimumWithdrawalQuantumMultiple = useMemo(() => {
-    const factor = new BigNumber(
-      params.spam_protection_minimumWithdrawalQuantumMultiple
-    );
+    const factor = new BigNumber(param || '');
     if (factor.isNaN()) {
       return new BigNumber(1);
     }
     return factor;
-  }, [params.spam_protection_minimumWithdrawalQuantumMultiple]);
+  }, [param]);
 
   // Every time an asset is selected we need to find the corresponding
   // account, balance, min viable amount and delay threshold
