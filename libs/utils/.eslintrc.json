@@ -7,15 +7,21 @@
       "rules": {
         "no-restricted-imports": [
           "error",
-          "@apollo/client",
-          "@vegaprotocol/data-provider",
-          "ag-grid-react",
-          "ag-grid-community",
-          "graphql",
-          "graphql-tag",
-          "graphql-ws",
-          "ethers",
-          "@ethersproject"
+          {
+            "paths": [
+              "error",
+              "@apollo/client",
+              "@vegaprotocol/data-provider",
+              "ag-grid-react",
+              "ag-grid-community",
+              "graphql",
+              "graphql-tag",
+              "graphql-ws",
+              "ethers",
+              "@ethersproject"
+            ],
+            "patterns": ["@sentry/*"]
+          }
         ]
       }
     },
