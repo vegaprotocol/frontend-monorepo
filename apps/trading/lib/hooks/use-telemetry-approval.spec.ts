@@ -5,7 +5,7 @@ import { STORAGE_KEY, useTelemetryApproval } from './use-telemetry-approval';
 
 const mockSetValue = jest.fn();
 const mockRemoveValue = jest.fn();
-jest.mock('@vegaprotocol/utils');
+jest.mock('@vegaprotocol/logger');
 jest.mock('@vegaprotocol/react-helpers', () => ({
   ...jest.requireActual('@vegaprotocol/react-helpers'),
   useLocalStorage: jest
