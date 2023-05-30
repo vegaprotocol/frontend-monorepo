@@ -2,13 +2,14 @@ import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import {
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
 } from '@vegaprotocol/web3';
 import { useWithdrawStore } from './withdraw-store';
+import { useNetworkParams } from '@vegaprotocol/network-parameters';
 
 export const useWithdrawAsset = (
   assets: Asset[],
@@ -18,6 +19,19 @@ export const useWithdrawAsset = (
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
+  const { params } = useNetworkParams([
+    'spam_protection_minimumWithdrawalQuantumMultiple',
+  ]);
+
+  const minimumWithdrawalQuantumMultiple = useMemo(() => {
+    const factor = new BigNumber(
+      params.spam_protection_minimumWithdrawalQuantumMultiple
+    );
+    if (factor.isNaN()) {
+      return new BigNumber(1);
+    }
+    return factor;
+  }, [params.spam_protection_minimumWithdrawalQuantumMultiple]);
 
   // Every time an asset is selected we need to find the corresponding
   // account, balance, min viable amount and delay threshold
@@ -36,7 +50,9 @@ export const useWithdrawAsset = (
       const min = asset
         ? BigNumber.max(
             new BigNumber(addDecimal('1', asset.decimals)),
-            new BigNumber(addDecimal(asset.quantum, asset.decimals))
+            new BigNumber(addDecimal(asset.quantum, asset.decimals)).times(
+              minimumWithdrawalQuantumMultiple
+            )
           )
         : new BigNumber(0);
       // Query collateral bridge for threshold for selected asset
@@ -55,7 +71,14 @@ export const useWithdrawAsset = (
 
       update({ asset, balance, min, threshold, delay });
     },
-    [accounts, assets, update, getThreshold, getDelay]
+    [
+      assets,
+      accounts,
+      minimumWithdrawalQuantumMultiple,
+      update,
+      getThreshold,
+      getDelay,
+    ]
   );
 
   useEffect(() => {
