@@ -23,6 +23,12 @@ import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ConnectToSeeRewards } from '../connect-to-see-rewards';
 import { EpochTotalRewards } from '../epoch-total-rewards/epoch-total-rewards';
+import { usePreviousEpochQuery } from '../../staking/__generated__/PreviousEpoch';
+import {
+  getMultisigStatus,
+  MultisigStatus,
+} from '../../../lib/get-multisig-status';
+import { MultisigIncorrectNotice } from '../../../components/multisig-incorrect-notice';
 
 type RewardsView = 'total' | 'individual';
 
@@ -40,6 +46,17 @@ export const RewardsPage = () => {
   } = useEpochQuery();
 
   useRefreshAfterEpoch(epochData?.epoch.timestamps.expiry, refetch);
+
+  const { data: previousEpochData } = usePreviousEpochQuery({
+    variables: {
+      epochId: (Number(epochData?.epoch.id) - 1).toString(),
+    },
+    skip: !epochData?.epoch.id,
+  });
+
+  const multisigStatus = previousEpochData
+    ? getMultisigStatus(previousEpochData)
+    : undefined;
 
   const {
     params,
@@ -78,14 +95,21 @@ export const RewardsPage = () => {
             )}
           </p>
 
-          {payoutDuration ? (
+          {multisigStatus &&
+          (multisigStatus === MultisigStatus.nodeNeedsRemoving ||
+            multisigStatus === MultisigStatus.nodeNeedsAdding ||
+            multisigStatus === MultisigStatus.noNodes) ? (
+            <MultisigIncorrectNotice />
+          ) : null}
+
+          {!multisigStatus && payoutDuration ? (
             <div className="my-8">
               <Callout
                 title={t('rewardsCallout', {
                   duration: formatDistance(new Date(0), payoutDuration),
                 })}
                 headingLevel={3}
-                intent={Intent.Warning}
+                intent={Intent.Primary}
               >
                 <p className="mb-0">{t('rewardsCalloutDetail')}</p>
               </Callout>

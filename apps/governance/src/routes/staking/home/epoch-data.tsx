@@ -7,6 +7,11 @@ import { ValidatorTables } from './validator-tables';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ENV } from '../../../config';
+import {
+  getMultisigStatus,
+  MultisigStatus,
+} from '../../../lib/get-multisig-status';
+import { MultisigIncorrectNotice } from '../../../components/multisig-incorrect-notice';
 
 export const EpochData = () => {
   // errorPolicy due to vegaprotocol/vega issue 5898
@@ -46,12 +51,23 @@ export const EpochData = () => {
     userStakingRefetch();
   });
 
+  const multisigStatus = previousEpochData
+    ? getMultisigStatus(previousEpochData)
+    : undefined;
+
   return (
     <AsyncRenderer
       loading={nodesLoading || userStakingLoading}
       error={nodesError || userStakingError}
       data={nodesData}
     >
+      {multisigStatus &&
+      (multisigStatus === MultisigStatus.nodeNeedsRemoving ||
+        multisigStatus === MultisigStatus.nodeNeedsAdding ||
+        multisigStatus === MultisigStatus.noNodes) ? (
+        <MultisigIncorrectNotice />
+      ) : null}
+
       {nodesData?.epoch &&
         nodesData.epoch.timestamps.start &&
         nodesData?.epoch.timestamps.expiry && (
