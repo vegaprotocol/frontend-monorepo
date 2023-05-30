@@ -34,4 +34,17 @@ describe('Vote TX icon', () => {
     const no = render(<VoteIcon vote={false} />);
     expect(no.getByRole('img')).toHaveAttribute('aria-label', 'delete icon');
   });
+
+  it('useVoteColour prop can be used to override coloured background', () => {
+    const no = render(<VoteIcon vote={false} />);
+    expect(no.container.children[0]).toHaveClass('bg-vega-pink-550');
+
+    const monochromeNo = render(
+      <VoteIcon vote={false} useVoteColour={false} />
+    );
+    expect(monochromeNo.container.children[0]).not.toHaveClass(
+      'bg-vega-pink-550'
+    );
+    expect(monochromeNo.container.children[0]).toHaveClass('bg-vega-dark-200');
+  });
 });

@@ -8,6 +8,8 @@ export interface VoteIconProps {
   yesText?: string;
   // Defaults to 'Against', but can be any text
   noText?: string;
+  // If set to false the background will not be coloured
+  useVoteColour?: boolean;
 }
 
 /**
@@ -18,14 +20,27 @@ export interface VoteIconProps {
  */
 export function VoteIcon({
   vote,
+  useVoteColour = true,
   yesText = 'For',
   noText = 'Against',
 }: VoteIconProps) {
   const label = vote ? yesText : noText;
-  const bg = vote ? 'bg-vega-green-550' : 'bg-vega-pink-550';
   const icon: IconName = vote ? 'tick-circle' : 'delete';
-  const fill = vote ? 'vega-green-300' : 'vega-pink-300';
-  const text = vote ? 'vega-green-200' : 'vega-pink-200';
+  const bg = useVoteColour
+    ? vote
+      ? 'bg-vega-green-550'
+      : 'bg-vega-pink-550'
+    : 'bg-vega-dark-200';
+  const fill = useVoteColour
+    ? vote
+      ? 'vega-green-300'
+      : 'vega-pink-300'
+    : 'white';
+  const text = useVoteColour
+    ? vote
+      ? 'vega-green-200'
+      : 'vega-pink-200'
+    : 'white';
 
   return (
     <div

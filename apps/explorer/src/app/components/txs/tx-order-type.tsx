@@ -160,6 +160,7 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
         vote={command?.voteSubmission?.value === 'VALUE_YES'}
         yesText="Proposal vote"
         noText="Proposal vote"
+        useVoteColour={false}
       />
     );
   }
