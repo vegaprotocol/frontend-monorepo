@@ -1,6 +1,6 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
@@ -16,7 +16,7 @@ import {
 } from '@vegaprotocol/wallet';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import type { Order, OrdersQueryVariables } from '../order-data-provider';
+import type { Order } from '../order-data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 
 export enum Filter {
@@ -76,25 +76,10 @@ export const OrderListManager = ({
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
-
-  const variables = useMemo<OrdersQueryVariables>(() => {
-    if (filter === Filter.Open) {
-      return { partyId, filter: { liveOnly: true } };
-    }
-    const variables: OrdersQueryVariables = {
-      partyId,
-      pagination: {
-        first: 5000,
-      },
-    };
-    if (filter === Filter.Closed || filter === Filter.Rejected) {
-      variables.filter = {
-        status: FilterStatusValue[filter],
-      };
-    }
-
-    return variables;
-  }, [filter, partyId]);
+  const variables =
+    filter === Filter.Open
+      ? { partyId, filter: { liveOnly: true } }
+      : { partyId };
 
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
@@ -146,7 +131,7 @@ export const OrderListManager = ({
     (event: FilterChangedEvent) => {
       const rowCount = gridRef.current?.api?.getModel().getRowCount();
       setHasData((rowCount ?? 0) > 0);
-      bottomPlaceholderOnFilterChanged?.(event);
+      bottomPlaceholderOnFilterChanged?.();
     },
     [bottomPlaceholderOnFilterChanged]
   );
@@ -181,7 +166,6 @@ export const OrderListManager = ({
           onFilterChanged={onFilterChanged}
           onRowDataChanged={onRowDataChanged}
           isReadOnly={isReadOnly}
-          blockLoadDebounceMillis={100}
           storeKey={storeKey}
           suppressLoadingOverlay
           suppressNoRowsOverlay

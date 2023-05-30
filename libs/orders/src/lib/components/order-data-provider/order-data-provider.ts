@@ -4,10 +4,11 @@ import uniqBy from 'lodash/uniqBy';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  defaultAppend as append,
 } from '@vegaprotocol/data-provider';
-import type { Edge } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/markets';
 import { marketsProvider } from '@vegaprotocol/markets';
+import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 import type {
   OrderFieldsFragment,
@@ -156,7 +157,10 @@ export const update = (
   });
 };
 
-const ordersProvider = makeDataProvider<
+const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
+  responseData.party?.ordersConnection?.pageInfo || null;
+
+export const ordersProvider = makeDataProvider<
   OrdersQuery,
   ReturnType<typeof getData>,
   OrdersUpdateSubscription,
@@ -168,6 +172,12 @@ const ordersProvider = makeDataProvider<
   update,
   getData,
   getDelta,
+  pagination: {
+    getPageInfo,
+    append,
+    first: 5000,
+  },
+  resetDelay: 1000,
   additionalContext: { isEnlargedTimeout: true },
   fetchPolicy: 'no-cache',
 });
