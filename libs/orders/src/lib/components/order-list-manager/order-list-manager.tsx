@@ -76,12 +76,21 @@ export const OrderListManager = ({
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
+  const variables =
+    filter === Filter.Open
+      ? { partyId, filter: { liveOnly: true } }
+      : { partyId };
+
   const { data, error, loading, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
-    variables:
-      filter === Filter.Open
-        ? { partyId, filter: { liveOnly: true } }
-        : { partyId },
+    variables,
+    update: ({ data }) => {
+      if (data && gridRef.current?.api) {
+        gridRef.current.api.setRowData(data);
+        return true;
+      }
+      return true;
+    },
   });
 
   const {
@@ -127,8 +136,13 @@ export const OrderListManager = ({
     [bottomPlaceholderOnFilterChanged]
   );
 
+  const onRowDataChanged = useCallback(() => {
+    const rowCount = gridRef.current?.api?.getModel().getRowCount();
+    setHasData((rowCount ?? 0) > 0);
+  }, []);
+
   useEffect(() => {
-    setHasData((gridRef.current?.api?.getModel().getRowCount() ?? 0) > 0);
+    setHasData(Boolean(data?.length));
   }, [data]);
 
   const cancelAll = useCallback(() => {
@@ -150,8 +164,8 @@ export const OrderListManager = ({
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
           onFilterChanged={onFilterChanged}
+          onRowDataChanged={onRowDataChanged}
           isReadOnly={isReadOnly}
-          blockLoadDebounceMillis={100}
           storeKey={storeKey}
           suppressLoadingOverlay
           suppressNoRowsOverlay

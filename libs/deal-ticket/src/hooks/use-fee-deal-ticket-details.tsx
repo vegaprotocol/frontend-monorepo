@@ -34,6 +34,7 @@ export const useEstimateFees = (
       type: order.type,
     },
     skip: !pubKey || !order?.size || !order?.price,
+    fetchPolicy: 'no-cache',
   });
   return data?.estimateFees;
 };
