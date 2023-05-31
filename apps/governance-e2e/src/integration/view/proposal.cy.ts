@@ -11,7 +11,6 @@ import {
 import { mockNetworkUpgradeProposal } from '../../support/proposal.functions';
 
 const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
-const newProposalLink = '[data-testid="new-proposal-link"]';
 const governanceDocsUrl = 'https://vega.xyz/governance';
 const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 
@@ -30,6 +29,14 @@ context(
 
     it('should have GOVERNANCE header visible', function () {
       verifyPageHeader('Proposals');
+    });
+
+    // 3002-PROP-023 3004-PMAC-002 3005-PASN-002 3006-PASC-002 3007-PNEC-002 3008-PFRO-003
+    it('should have button for link to more information on proposals', function () {
+      const proposalsUrl = 'https://docs.vega.xyz/mainnet/tutorials/proposals';
+      cy.getByTestId('new-proposal-link')
+        .find('a')
+        .should('have.attr', 'href', proposalsUrl);
     });
 
     it('should be able to see a working link for - find out more about Vega governance', function () {
@@ -54,17 +61,62 @@ context(
         });
     });
 
-    it.skip('should be able to see button for - new proposal', function () {
-      // 3001-VOTE-002
-      cy.get(newProposalLink)
-        .should('be.visible')
-        .and('have.text', 'New proposal')
-        .and('have.attr', 'href')
-        .and('equal', '/proposals/propose');
+    // 3007-PNE-021
+    it('should have documentation links for network parameter proposal', function () {
+      goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/network-parameter-proposal');
     });
 
-    it.skip('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
-      goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
+    // 3003-PMAN-002 3003-PMAN-005
+    it('should have documentation links for new market proposal', function () {
+      goToMakeNewProposal(governanceProposalType.NEW_MARKET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/new-market-proposal');
+    });
+
+    // 3004-PMAC-005
+    it('should have documentation links for update market proposal', function () {
+      goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/update-market-proposal');
+    });
+
+    // 3005-PASN-002 005-PASN-005
+    it('should have documentation links for new asset proposal', function () {
+      goToMakeNewProposal(governanceProposalType.NEW_ASSET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/new-asset-proposal');
+    });
+
+    // 3006-PASC-002 3006-PASC-005
+    it('should have documentation links for update asset proposal', function () {
+      goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/update-asset-proposal');
+    });
+
+    // 3008-PFRO-003 3008-PFRO-017
+    it('should have documentation links for freeform proposal', function () {
+      goToMakeNewProposal(governanceProposalType.FREEFORM);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/freeform-proposal');
+    });
+
+    it('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
+      goToMakeNewProposal(governanceProposalType.RAW);
       cy.get(connectToVegaWalletButton)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet');

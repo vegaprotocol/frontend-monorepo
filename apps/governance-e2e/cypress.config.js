@@ -26,6 +26,7 @@ module.exports = defineConfig({
     viewportWidth: 1440,
     viewportHeight: 900,
     numTestsKeptInMemory: 5,
+    downloadsFolder: 'cypress/downloads',
     testIsolation: false,
   },
   env: {

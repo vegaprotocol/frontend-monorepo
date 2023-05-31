@@ -11,7 +11,6 @@ import {
   governanceProposalType,
   submitUniqueRawProposal,
   voteForProposal,
-  waitForProposalSubmitted,
   waitForProposalSync,
 } from '../../support/governance.functions';
 
@@ -46,11 +45,7 @@ const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const rawProposalData = '[data-testid="proposal-data"]';
-const minVoteButton = '[data-testid="min-vote"]';
-const maxVoteButton = '[data-testid="max-vote"]';
 const voteButtons = '[data-testid="vote-buttons"]';
-const votingDate = '[data-testid="voting-date"]';
-const voteTwoMinExtraNote = '[data-testid="voting-2-mins-extra"]';
 const rejectProposalsLink = '[href="/proposals/rejected"]';
 const feedbackError = '[data-testid="Error"]';
 const noOpenProposals = '[data-testid="no-open-proposals"]';
@@ -106,8 +101,7 @@ context(
         .and('have.text', 'There are no enacted or rejected proposals');
     });
 
-    // 3002-PROP-002
-    // 3002-PROP-003
+    // 3002-PROP-002 3002-PROP-003 3001-VOTE-012 3007-PNE-020 3004-PMAC-004 3005-PASN-004 3008-PFRO-016 3003-PMAN-004
     it('Proposal form - shows how many vega tokens are required to make a proposal', function () {
       // 3002-PROP-005
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
@@ -116,23 +110,14 @@ context(
       ).should('be.visible');
     });
 
-    // Skipping as currently unable to propose using forms other than raw
-    // 3002-PROP-011
-    it.skip('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
-      goToMakeNewProposal(governanceProposalType.FREEFORM);
-      cy.get(minVoteButton).should('be.visible'); // 3002-PROP-008
-      cy.get(maxVoteButton).should('be.visible');
-      cy.get(votingDate).should('not.be.empty');
-      cy.get(voteTwoMinExtraNote).should(
-        'contain.text',
-        'we add 2 minutes of extra time'
-      );
-      enterUniqueFreeFormProposalBody('50', generateFreeFormProposalTitle());
-      // 3002-PROP-012
-      // 3002-PROP-016
-      waitForProposalSubmitted();
+    // 3002-PROP-011 3008-PFRO-005
+    it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
+      ensureSpecifiedUnstakedTokensAreAssociated('1');
+      verifyUnstakedBalance(1);
+      createRawProposal();
     });
 
+    // 3008-PFRO-002 3008-PFRO-004
     it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
       ensureSpecifiedUnstakedTokensAreAssociated('2');
       verifyUnstakedBalance(2);
@@ -148,10 +133,6 @@ context(
     it.skip('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
       enterUniqueFreeFormProposalBody('0.1', generateFreeFormProposalTitle());
-
-      cy.contains('Awaiting network confirmation', epochTimeout).should(
-        'not.exist'
-      );
       cy.get('input:invalid')
         .invoke('prop', 'validationMessage')
         .should('equal', 'Value must be greater than or equal to 1.');
@@ -278,6 +259,20 @@ context(
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should('have.text', errorMsg);
       closeDialog();
+    });
+
+    // 3007-PNE-022 3007-PNE-023 3004-PMAC-006 3004-PMAC-007 3005-PASN-006 3005-PASN-007
+    // 3006-PASC-006 3006-PASC-007 3008-PFRO-018 3008-PFRO-019 3003-PMAN-006 3003-PMAN-007
+    it('Unable to submit proposal without valid json', function () {
+      goToMakeNewProposal(governanceProposalType.RAW);
+      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId('input-error-text').should('have.text', 'Required');
+      cy.get(rawProposalData).type('Not a valid json string');
+      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId('input-error-text').should(
+        'have.text',
+        'Must be valid JSON'
+      );
     });
 
     // 1005-PROP-009
