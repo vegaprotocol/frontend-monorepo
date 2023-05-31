@@ -37,10 +37,12 @@ type OrderbookMarketData = Pick<
   | 'indicativePrice'
   | 'indicativeVolume'
   | 'marketTradingMode'
+  | 'markPrice'
 >;
 
 export type OrderbookData = Partial<OrderbookMarketData> & {
-  rows: OrderbookRowData[] | null;
+  asks: OrderbookRowData[] | null;
+  bids: OrderbookRowData[] | null;
   midPrice?: string;
 };
 
@@ -78,6 +80,29 @@ const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
 // round instead of ceil so we will not show 0 if value if different than 0
 const toPercentValue = (value?: number) => Math.ceil((value ?? 0) * 100);
 
+const updateRelativeDataByType = (
+  data: OrderbookRowData[],
+  dataType: VolumeType
+) => {
+  if (dataType === VolumeType.ask) {
+    const { ask: maxAsk, cumulativeVol } = getMaxVolumes(data);
+    data.forEach((data, i) => {
+      data.relativeAsk = toPercentValue(data.ask / maxAsk);
+      data.cumulativeVol.relativeAsk = toPercentValue(
+        data.cumulativeVol.ask / cumulativeVol
+      );
+    });
+  } else {
+    const { bid: maxBid, cumulativeVol } = getMaxVolumes(data);
+    data.forEach((data, i) => {
+      data.relativeBid = toPercentValue(data.bid / maxBid);
+      data.cumulativeVol.relativeBid = toPercentValue(
+        data.cumulativeVol.bid / cumulativeVol
+      );
+    });
+  }
+};
+
 /**
  * @summary Updates relativeAsk, relativeBid, cumulativeVol.relativeAsk, cumulativeVol.relativeBid
  */
@@ -94,6 +119,26 @@ const updateRelativeData = (data: OrderbookRowData[]) => {
       data.cumulativeVol.bid / cumulativeVol
     );
   });
+};
+
+const updateCumulativeVolumeByType = (
+  data: OrderbookRowData[],
+  dataType: VolumeType
+) => {
+  if (data.length > 1) {
+    const maxIndex = data.length - 1;
+    if (dataType === VolumeType.bid) {
+      for (let i = 0; i <= maxIndex; i++) {
+        data[i].cumulativeVol.bid =
+          data[i].bid + (i !== 0 ? data[i - 1].cumulativeVol.bid : 0);
+      }
+    } else {
+      for (let i = maxIndex; i >= 0; i--) {
+        data[i].cumulativeVol.ask =
+          data[i].ask + (i !== maxIndex ? data[i + 1].cumulativeVol.ask : 0);
+      }
+    }
+  }
 };
 
 const updateCumulativeVolume = (data: OrderbookRowData[]) => {
@@ -140,6 +185,56 @@ const mapRawData =
   (dataType: VolumeType.ask | VolumeType.bid) =>
   (data: PriceLevelFieldsFragment): PartialOrderbookRowData =>
     createPartialRow(data.price, Number(data.volume), dataType);
+
+export const compactLeveledRows = (
+  directedData: PriceLevelFieldsFragment[] | null | undefined,
+  dataType: VolumeType,
+  resolution: number
+) => {
+  // map raw sell data to OrderbookData
+  const mappedOrderbookData = [
+    ...(directedData ?? []),
+  ].map<PartialOrderbookRowData>(mapRawData(dataType));
+  // group by price level
+  const groupedByLevel = groupBy<PartialOrderbookRowData>(
+    mappedOrderbookData,
+    (row) => getPriceLevel(row.price, resolution)
+  );
+  const orderbookData: OrderbookRowData[] = [];
+  Object.keys(groupedByLevel).forEach((price) => {
+    const row = extendRow(
+      groupedByLevel[price].pop() as PartialOrderbookRowData
+    );
+    row.price = price;
+    let subRow: PartialOrderbookRowData | undefined =
+      groupedByLevel[price].pop();
+    while (subRow) {
+      row.ask += subRow.ask;
+      row.bid += subRow.bid;
+      if (subRow.ask) {
+        row.askByLevel[subRow.price] = subRow.ask;
+      }
+      if (subRow.bid) {
+        row.bidByLevel[subRow.price] = subRow.bid;
+      }
+      subRow = groupedByLevel[price].pop();
+    }
+    orderbookData.push(row);
+  });
+  orderbookData.sort((a, b) => {
+    if (a === b) {
+      return 0;
+    }
+    if (BigInt(a.price) > BigInt(b.price)) {
+      return -1;
+    }
+    return 1;
+  });
+
+  updateCumulativeVolumeByType(orderbookData, dataType);
+  updateRelativeDataByType(orderbookData, dataType);
+  return orderbookData;
+};
 
 /**
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
@@ -192,20 +287,6 @@ export const compactRows = (
     }
     return 1;
   });
-  // count cumulative volumes
-  if (orderbookData.length > 1) {
-    const maxIndex = orderbookData.length - 1;
-    for (let i = 0; i <= maxIndex; i++) {
-      orderbookData[i].cumulativeVol.bid =
-        orderbookData[i].bid +
-        (i !== 0 ? orderbookData[i - 1].cumulativeVol.bid : 0);
-    }
-    for (let i = maxIndex; i >= 0; i--) {
-      orderbookData[i].cumulativeVol.ask =
-        orderbookData[i].ask +
-        (i !== maxIndex ? orderbookData[i + 1].cumulativeVol.ask : 0);
-    }
-  }
   updateCumulativeVolume(orderbookData);
   // count relative volumes
   updateRelativeData(orderbookData);
@@ -249,15 +330,6 @@ const partiallyUpdateCompactedRows = (
   }
 };
 
-/**
- * Updates OrderbookData[] with new data received from subscription - mutates input
- *
- * @param rows
- * @param sell
- * @param buy
- * @param resolution
- * @returns void
- */
 export const updateCompactedRows = (
   rows: Readonly<OrderbookRowData[]>,
   sell: Readonly<PriceLevelFieldsFragment[]> | null,
@@ -283,6 +355,41 @@ export const updateCompactedRows = (
   }
   // count relative volumes
   updateRelativeData(data);
+  return data;
+};
+
+/**
+ * Updates OrderbookData[] with new data received from subscription - mutates input
+ *
+ * @param rows
+ * @param sell
+ * @param buy
+ * @param resolution
+ * @returns void
+ */
+export const updateCompactedRowsByType = (
+  oldData: Readonly<OrderbookRowData[]>,
+  newData: Readonly<PriceLevelFieldsFragment[]> | null,
+  resolution: number,
+  dataType: VolumeType
+) => {
+  const data = cloneDeep(oldData as OrderbookRowData[]);
+  uniqBy(reverse(newData || []), 'price')?.forEach((delta) => {
+    partiallyUpdateCompactedRows(dataType, data, delta, resolution);
+  });
+
+  updateCumulativeVolumeByType(data, dataType);
+  let index = 0;
+  // remove levels that do not have any volume
+  while (index < data.length) {
+    if (!data[index].ask && !data[index].bid) {
+      data.splice(index, 1);
+    } else {
+      index += 1;
+    }
+  }
+  // count relative volumes
+  updateRelativeDataByType(data, dataType);
   return data;
 };
 

@@ -3,22 +3,23 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
 import type { MarketData } from '@vegaprotocol/markets';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
-  MarketDepthUpdateSubscription,
   MarketDepthQuery,
   MarketDepthQueryVariables,
+  MarketDepthUpdateSubscription,
+  PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
-import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
+import type { OrderbookData } from './orderbook-data';
 import {
-  compactRows,
-  updateCompactedRows,
+  compactLeveledRows,
   getMidPrice,
   getPriceLevel,
+  updateCompactedRowsByType,
+  VolumeType,
 } from './orderbook-data';
-import type { OrderbookData } from './orderbook-data';
 import { useOrderStore } from '@vegaprotocol/orders';
 
 interface OrderbookManagerProps {
@@ -30,9 +31,10 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const variables = { marketId };
   const resolutionRef = useRef(resolution);
   const [orderbookData, setOrderbookData] = useState<OrderbookData>({
-    rows: null,
+    asks: null,
+    bids: null,
   });
-  const dataRef = useRef<OrderbookData>({ rows: null });
+  const dataRef = useRef<OrderbookData>({ asks: null, bids: null });
   const marketDataRef = useRef<MarketData | null>(null);
   const rawDataRef = useRef<MarketDepthQuery['market'] | null>(null);
   const deltaRef = useRef<{
@@ -57,15 +59,22 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
           rawDataRef.current?.depth.buy,
           resolution
         ),
-        rows:
-          deltaRef.current.buy.length || deltaRef.current.sell.length
-            ? updateCompactedRows(
-                dataRef.current.rows ?? [],
-                deltaRef.current.sell,
-                deltaRef.current.buy,
-                resolutionRef.current
-              )
-            : dataRef.current.rows,
+        asks: deltaRef.current.buy.length
+          ? updateCompactedRowsByType(
+              dataRef.current.asks ?? [],
+              deltaRef.current.sell,
+              resolutionRef.current,
+              VolumeType.ask
+            )
+          : dataRef.current.asks,
+        bids: deltaRef.current.sell.length
+          ? updateCompactedRowsByType(
+              dataRef.current.bids ?? [],
+              deltaRef.current.buy,
+              resolutionRef.current,
+              VolumeType.bid
+            )
+          : dataRef.current.bids,
       };
       deltaRef.current.buy = [];
       deltaRef.current.sell = [];
@@ -86,7 +95,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'] | null;
       data: NonNullable<MarketDepthQuery['market']> | null | undefined;
     }) => {
-      if (!dataRef.current.rows) {
+      if (!dataRef.current.asks && !dataRef.current.bids) {
         return false;
       }
       for (const delta of deltas || []) {
@@ -99,9 +108,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         if (delta.buy) {
           deltaRef.current.buy.push(...delta.buy);
         }
-        rawDataRef.current = rawData;
-        updateOrderbookData.current();
       }
+      rawDataRef.current = rawData;
+      updateOrderbookData.current();
       return true;
     },
     [marketId, updateOrderbookData]
@@ -153,7 +162,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   useEffect(() => {
     const throttleRunner = updateOrderbookData.current;
     if (!data) {
-      dataRef.current = { rows: null };
+      dataRef.current = { rows: null, bids: null, asks: null };
       setOrderbookData(dataRef.current);
       return;
     }
@@ -163,7 +172,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         marketDataRef.current?.indicativePrice &&
         getPriceLevel(marketDataRef.current.indicativePrice, resolution),
       midPrice: getMidPrice(data.depth.sell, data.depth.buy, resolution),
-      rows: compactRows(data.depth.sell, data.depth.buy, resolution),
+      bids: compactLeveledRows(data.depth.buy, VolumeType.bid, resolution),
+      asks: compactLeveledRows(data.depth.sell, VolumeType.ask, resolution),
     };
     rawDataRef.current = data;
     setOrderbookData(dataRef.current);
