@@ -20,13 +20,15 @@ interface Props {
   inViewRoot?: RefObject<Element>;
 }
 
-export const Last24hPriceChange = ({
+export const useCandles = ({
   marketId,
-  decimalPlaces,
+  inView,
   initialValue,
-  inViewRoot,
-}: Props) => {
-  const [ref, inView] = useInView({ root: inViewRoot?.current });
+}: {
+  marketId?: string;
+  inView?: boolean;
+  initialValue?: string[] | undefined;
+}) => {
   const fiveDaysAgo = useFiveDaysAgo();
   const yesterday = useYesterday();
   const { data, error } = useThrottledDataProvider({
@@ -48,7 +50,21 @@ export const Last24hPriceChange = ({
     candles
       ?.map((candle) => candle?.close)
       .filter((c): c is CandleClose => c !== null) || initialValue;
+  return { oneDayCandles, error, fiveDaysCandles };
+};
 
+export const Last24hPriceChange = ({
+  marketId,
+  decimalPlaces,
+  initialValue,
+  inViewRoot,
+}: Props) => {
+  const [ref, inView] = useInView({ root: inViewRoot?.current });
+  const { oneDayCandles, error, fiveDaysCandles } = useCandles({
+    marketId,
+    inView,
+    initialValue,
+  });
   if (
     fiveDaysCandles &&
     fiveDaysCandles.length > 0 &&
@@ -68,7 +84,7 @@ export const Last24hPriceChange = ({
           </span>
         }
       >
-        <span ref={ref}>{t('Unknown')} </span>
+        <span ref={ref}>-</span>
       </Tooltip>
     );
   }

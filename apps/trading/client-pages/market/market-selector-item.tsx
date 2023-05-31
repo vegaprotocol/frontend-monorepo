@@ -1,10 +1,14 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  priceChangePercentage,
+} from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { useCandles } from '@vegaprotocol/markets';
 import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/markets';
-import { isCandleLessThan24hOld } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import {
@@ -12,7 +16,6 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
-import { useYesterday } from '@vegaprotocol/react-helpers';
 
 export const MarketSelectorItem = ({
   market,
@@ -78,11 +81,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     : '';
 
   const instrument = market.tradableInstrument.instrument;
-  const yesterday = useYesterday();
-
-  const oneDayCandles = market.candles?.filter((c) =>
-    isCandleLessThan24hOld(c, yesterday)
-  );
+  const { oneDayCandles } = useCandles({ marketId: market.id });
 
   return (
     <>
@@ -121,6 +120,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           marketId={market?.id}
           decimalPlaces={market?.decimalPlaces}
         />
+        {oneDayCandles && <PriceChange candles={oneDayCandles} />}
 
         <div
           // absolute so height is not larger than price change value
@@ -130,7 +130,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
             <Sparkline
               width={120}
               height={20}
-              data={oneDayCandles.filter(Boolean).map((c) => Number(c.close))}
+              data={oneDayCandles.filter(Boolean).map((c) => Number(c))}
             />
           )}
         </div>
@@ -157,6 +157,24 @@ const DataRow = ({
       <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
         {label}
       </span>
+    </div>
+  );
+};
+
+const PriceChange = ({ candles }: { candles: string[] }) => {
+  const priceChange = candles ? priceChangePercentage(candles) : undefined;
+  const priceChangeClasses = classNames('text-xs', {
+    'text-vega-pink': priceChange && priceChange < 0,
+    'text-vega-green': priceChange && priceChange > 0,
+  });
+  let prefix = '';
+  if (priceChange && priceChange > 0) {
+    prefix = '+';
+  }
+  const formattedChange = formatNumber(Number(priceChange), 2);
+  return (
+    <div className={priceChangeClasses} data-testid="market-item-change">
+      {priceChange ? `${prefix}${formattedChange}%` : '-'}
     </div>
   );
 };
