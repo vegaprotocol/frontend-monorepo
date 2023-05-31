@@ -11,7 +11,6 @@ import {
 import { mockNetworkUpgradeProposal } from '../../support/proposal.functions';
 
 const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
-const newProposalLink = '[data-testid="new-proposal-link"]';
 const governanceDocsUrl = 'https://vega.xyz/governance';
 const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 
