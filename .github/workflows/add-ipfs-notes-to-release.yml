@@ -56,7 +56,7 @@ jobs:
             * https://governance.vega.xyz
 
             # IPFS releases
-            Tye IPFS hash of this release of the Trading app is:
+            The IPFS hash of this release of the Trading app is:
 
             CIDv0: ${{ env.IPFS_V0 }}
             CIDv1: ${{ env.IPFS_V1 }}
