@@ -1,4 +1,3 @@
-import produce from 'immer';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
 import {
@@ -80,6 +79,28 @@ const orderMatchFilters = (
   return true;
 };
 
+const mapOrderUpdateToOrder = (
+  orderUpdate: OrderUpdateFieldsFragment
+): OrderFieldsFragment => {
+  const { marketId, liquidityProvisionId, ...order } = orderUpdate;
+  // If there is a liquidity provision id add the object to the resulting order
+  const liquidityProvision: OrderFieldsFragment['liquidityProvision'] | null =
+    liquidityProvisionId
+      ? {
+          __typename: 'LiquidityProvision',
+        }
+      : null;
+  return {
+    ...order,
+    liquidityProvision: liquidityProvision,
+    market: {
+      __typename: 'Market',
+      id: marketId,
+    },
+    __typename: 'Order',
+  };
+};
+
 const getData = (
   responseData: OrdersQuery | null
 ): Edge<OrderFieldsFragment>[] =>
@@ -115,46 +136,30 @@ export const update = (
     'createdAt'
   );
 
-  return produce(data, (draft) => {
-    // Add or update incoming orders
-    incoming.forEach((node) => {
-      const index = data.findIndex((edge) => edge.node.id === node.id);
-      const newer =
-        data.length === 0 || node.createdAt >= data[0].node.createdAt;
-      const doesFilterPass = !variables || orderMatchFilters(node, variables);
-      if (index !== -1) {
-        if (doesFilterPass) {
-          Object.assign(draft[index].node, node);
-        } else {
-          draft.splice(index, 1);
-        }
-      } else if (newer && doesFilterPass) {
-        const { marketId, liquidityProvisionId, ...order } = node;
-
-        // If there is a liquidity provision id add the object to the resulting order
-        const liquidityProvision:
-          | OrderFieldsFragment['liquidityProvision']
-          | null = liquidityProvisionId
-          ? {
-              __typename: 'LiquidityProvision',
-            }
-          : null;
-
-        draft.unshift({
-          node: {
-            ...order,
-            liquidityProvision: liquidityProvision,
-            market: {
-              __typename: 'Market',
-              id: marketId,
-            },
-            __typename: 'Order',
-          },
-          cursor: '',
-        });
+  const updatedData = [...data];
+  incoming.forEach((orderUpdate) => {
+    const index = data.findIndex((edge) => edge.node.id === orderUpdate.id);
+    const newer =
+      data.length === 0 || orderUpdate.createdAt >= data[0].node.createdAt;
+    const doesFilterPass =
+      !variables || orderMatchFilters(orderUpdate, variables);
+    if (index !== -1) {
+      if (doesFilterPass) {
+        updatedData[index] = {
+          ...updatedData[index],
+          node: mapOrderUpdateToOrder(orderUpdate),
+        };
+      } else {
+        updatedData.splice(index, 1);
       }
-    });
+    } else if (newer && doesFilterPass) {
+      updatedData.unshift({
+        node: mapOrderUpdateToOrder(orderUpdate),
+        cursor: '',
+      });
+    }
   });
+  return updatedData;
 };
 
 const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
