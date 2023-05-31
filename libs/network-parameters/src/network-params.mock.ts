@@ -1,6 +1,7 @@
 import merge from 'lodash/merge';
 import type {
   NetworkParamQuery,
+  NetworkParamQueryVariables,
   NetworkParamsQuery,
 } from './__generated__/NetworkParams';
 import type { PartialDeep } from 'type-fest';
@@ -20,12 +21,12 @@ export const networkParamsQuery = (
 };
 
 export const networkParamQuery = (
-  override?: PartialDeep<NetworkParamQuery>
+  variables: NetworkParamQueryVariables
 ): NetworkParamQuery => {
-  const defaultResult: NetworkParamQuery = {
-    networkParameter: networkParams[0],
+  const param = networkParams.find((p) => p.key === variables.key);
+  return {
+    networkParameter: param || null,
   };
-  return merge(defaultResult, override);
 };
 
 const networkParams = [
