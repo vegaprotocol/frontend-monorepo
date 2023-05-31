@@ -109,7 +109,7 @@ export function enterUniqueFreeFormProposalBody(
     'this is a e2e freeform proposal description'
   );
   cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-  cy.getByTestId('proposal-submit').should('be.visible').click();
+  cy.getByTestId('proposal-download-json').should('be.visible').click();
 }
 
 export function getProposalFromTitle(proposalTitle: string) {

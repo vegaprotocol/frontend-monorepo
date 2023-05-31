@@ -62,6 +62,60 @@ context(
         });
     });
 
+    // 3007-PNE-021
+    it('should have documentation links for network parameter proposal', function () {
+      goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/network-parameter-proposal');
+    });
+
+    // 3003-PMAN-002 3003-PMAN-005
+    it('should have documentation links for new market proposal', function () {
+      goToMakeNewProposal(governanceProposalType.NEW_MARKET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/new-market-proposal');
+    });
+
+    // 3004-PMAC-005
+    it('should have documentation links for update market proposal', function () {
+      goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/update-market-proposal');
+    });
+
+    // 3005-PASN-002 005-PASN-005
+    it('should have documentation links for new asset proposal', function () {
+      goToMakeNewProposal(governanceProposalType.NEW_ASSET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/new-asset-proposal');
+    });
+
+    // 3006-PASC-002 3006-PASC-005
+    it('should have documentation links for update asset proposal', function () {
+      goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/update-asset-proposal');
+    });
+
+    // 3008-PFRO-003 3008-PFRO-017
+    it('should have documentation links for freeform proposal', function () {
+      goToMakeNewProposal(governanceProposalType.FREEFORM);
+      cy.getByTestId('proposal-docs-link')
+        .find('a')
+        .should('have.attr', 'href')
+        .and('contain', '/tutorials/proposals/freeform-proposal');
+    });
+
     it('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
       goToMakeNewProposal(governanceProposalType.RAW);
       cy.get(connectToVegaWalletButton)
