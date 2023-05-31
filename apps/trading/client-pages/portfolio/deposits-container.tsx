@@ -26,8 +26,6 @@ export const DepositsContainer = () => {
       <div className="h-full relative">
         <DepositsTable
           rowData={data || []}
-          suppressLoadingOverlay
-          suppressNoRowsOverlay
           ref={gridRef}
           {...bottomPlaceholderProps}
           noRowsOverlayComponent={() => (
