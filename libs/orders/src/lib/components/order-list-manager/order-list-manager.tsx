@@ -1,13 +1,15 @@
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
+import {
+  useBottomPlaceholder,
+  GridNowRowsOverlay,
+} from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import {
@@ -72,7 +74,6 @@ export const OrderListManager = ({
   storeKey,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [hasData, setHasData] = useState(false);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
@@ -81,7 +82,7 @@ export const OrderListManager = ({
       ? { partyId, filter: { liveOnly: true } }
       : { partyId };
 
-  const { data, error, loading, reload } = useDataProvider({
+  const { data, error, reload } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables,
     update: ({ data }) => {
@@ -129,27 +130,17 @@ export const OrderListManager = ({
 
   const onFilterChanged = useCallback(
     (event: FilterChangedEvent) => {
-      const rowCount = gridRef.current?.api?.getModel().getRowCount();
-      setHasData((rowCount ?? 0) > 0);
       bottomPlaceholderOnFilterChanged?.();
     },
     [bottomPlaceholderOnFilterChanged]
   );
-
-  const onRowDataChanged = useCallback(() => {
-    const rowCount = gridRef.current?.api?.getModel().getRowCount();
-    setHasData((rowCount ?? 0) > 0);
-  }, []);
-
-  useEffect(() => {
-    setHasData(Boolean(data?.length));
-  }, [data]);
 
   const cancelAll = useCallback(() => {
     create({
       orderCancellation: {},
     });
   }, [create]);
+  console.log(error);
 
   return (
     <>
@@ -164,24 +155,14 @@ export const OrderListManager = ({
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
           onFilterChanged={onFilterChanged}
-          onRowDataChanged={onRowDataChanged}
           isReadOnly={isReadOnly}
           storeKey={storeKey}
-          suppressLoadingOverlay
-          suppressNoRowsOverlay
           suppressAutoSize
+          noRowsOverlayComponent={() => {
+            return <GridNowRowsOverlay error={error} reload={reload} />;
+          }}
           {...bottomPlaceholderProps}
         />
-        <div className="pointer-events-none absolute inset-0">
-          <AsyncRenderer
-            loading={loading}
-            error={error}
-            data={data}
-            noDataMessage={t('No orders')}
-            noDataCondition={(data) => !hasData}
-            reload={reload}
-          />
-        </div>
       </div>
       {!isReadOnly && hasAmendableOrder && (
         <CancelAllOrdersButton onClick={cancelAll} />

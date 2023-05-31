@@ -1,6 +1,7 @@
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/i18n';
 import { useColumnSizes } from './use-column-sizes';
 import classNames from 'classnames';
 
@@ -23,6 +24,8 @@ export const AgGridThemed = ({
     rowHeight: 22,
     headerHeight: 22,
     enableCellTextSelection: true,
+    overlayLoadingTemplate: t('Loading...'),
+    overlayNoRowsTemplate: t('No data'),
   };
 
   const wrapperClasses = classNames('vega-ag-grid', {
