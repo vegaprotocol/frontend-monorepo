@@ -160,6 +160,7 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Candles', candlesQuery());
   aliasGQLQuery(req, 'Withdrawals', withdrawalsQuery());
   aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
+  aliasGQLQuery(req, 'NetworkParam', networkParamQuery());
   aliasGQLQuery(req, 'EstimateFees', estimateFeesQuery());
   aliasGQLQuery(req, 'EstimatePosition', estimatePositionQuery());
   aliasGQLQuery(req, 'ProposalsList', proposalListQuery());

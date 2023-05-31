@@ -36,6 +36,16 @@ const networkParams = [
   },
   {
     __typename: 'NetworkParameter' as const,
+    key: 'transfer.fee.factor',
+    value: '0.01',
+  },
+  {
+    __typename: 'NetworkParameter' as const,
+    key: 'spam.protection.minimumWithdrawalQuantumMultiple',
+    value: '10',
+  },
+  {
+    __typename: 'NetworkParameter' as const,
     key: 'blockchains.ethereumConfig',
     value: JSON.stringify({
       network_id: '3',
