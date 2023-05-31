@@ -7,8 +7,8 @@ import {
   priceChangePercentage,
 } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { calcCandleVolume } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
-import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import {
@@ -81,7 +81,13 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     : '';
 
   const instrument = market.tradableInstrument.instrument;
-  const { oneDayCandles } = useCandles({ marketId: market.id });
+  const { oneDayCandles } = useCandles({ marketId: market.id, inView: true });
+
+  const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
+  const volume =
+    vol && vol !== '0'
+      ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
+      : '0.00';
 
   return (
     <>
@@ -102,25 +108,15 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           </p>
         )}
       </div>
-      <DataRow
-        value={
-          <Last24hVolume
-            marketId={market?.id}
-            positionDecimalPlaces={market?.positionDecimalPlaces}
-          />
-        }
-        label={t('24h vol')}
-      />
+      <DataRow value={volume} label={t('24h vol')} />
       <DataRow
         value={price}
         label={instrument.product.settlementAsset.symbol}
       />
       <div className="relative text-xs p-1">
-        <Last24hPriceChange
-          marketId={market?.id}
-          decimalPlaces={market?.decimalPlaces}
-        />
-        {oneDayCandles && <PriceChange candles={oneDayCandles} />}
+        {oneDayCandles && (
+          <PriceChange candles={oneDayCandles.map((c) => c.close)} />
+        )}
 
         <div
           // absolute so height is not larger than price change value
@@ -130,7 +126,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
             <Sparkline
               width={120}
               height={20}
-              data={oneDayCandles.filter(Boolean).map((c) => Number(c))}
+              data={oneDayCandles.map((c) => Number(c.close))}
             />
           )}
         </div>
