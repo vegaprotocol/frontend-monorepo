@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/react';
 import debounce from 'lodash/debounce';
 import { useEffect, useMemo } from 'react';
 
@@ -31,11 +30,7 @@ export function useMutationObserver(
 
   useEffect(() => {
     if (!observer || !target) return;
-    try {
-      observer.observe(target, options.config);
-    } catch (err) {
-      captureException(err);
-    }
+    observer.observe(target, options.config);
     return () => observer?.disconnect();
   }, [observer, options.config, target]);
 }
