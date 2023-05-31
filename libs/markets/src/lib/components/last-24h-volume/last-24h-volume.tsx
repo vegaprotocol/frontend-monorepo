@@ -1,14 +1,10 @@
 import type { RefObject } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { marketCandlesProvider } from '../../market-candles-provider';
 import { calcCandleVolume } from '../../market-utils';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
-import { useFiveDaysAgo, useYesterday } from '@vegaprotocol/react-helpers';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
-import * as Schema from '@vegaprotocol/types';
-import { isCandleLessThan24hOld } from '../last-24h-price-change';
 import { t } from '@vegaprotocol/i18n';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { useCandles } from '../../hooks';
 
 interface Props {
   marketId?: string;
@@ -25,25 +21,11 @@ export const Last24hVolume = ({
   inViewRoot,
   initialValue,
 }: Props) => {
-  const yesterday = useYesterday();
-  const fiveDaysAgo = useFiveDaysAgo();
   const [ref, inView] = useInView({ root: inViewRoot?.current });
-
-  const { data } = useThrottledDataProvider({
-    dataProvider: marketCandlesProvider,
-    variables: {
-      marketId: marketId || '',
-      interval: Schema.Interval.INTERVAL_I1H,
-      since: new Date(fiveDaysAgo).toISOString(),
-    },
-    skip: !(inView && marketId),
+  const { oneDayCandles, fiveDaysCandles } = useCandles({
+    marketId,
+    inView,
   });
-
-  const fiveDaysCandles = data?.filter((candle) => Boolean(candle));
-
-  const oneDayCandles = fiveDaysCandles?.filter((candle) =>
-    isCandleLessThan24hOld(candle, yesterday)
-  );
 
   if (
     fiveDaysCandles &&
