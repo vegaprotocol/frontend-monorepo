@@ -4,6 +4,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
+import { GridNowRowsOverlay } from '@vegaprotocol/datagrid';
 import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
@@ -27,7 +28,6 @@ import type { ColDef } from 'ag-grid-community';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -55,7 +55,6 @@ export const Closed = () => {
   const { pubKey } = useVegaWallet();
   const {
     data: marketData,
-    loading,
     error,
     reload,
   } = useDataProvider({
@@ -117,21 +116,20 @@ export const Closed = () => {
   });
   return (
     <div className="h-full relative">
-      <ClosedMarketsDataGrid rowData={rowData} />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={marketData}
-          noDataMessage={t('No markets')}
-          reload={reload}
-        />
-      </div>
+      <ClosedMarketsDataGrid rowData={rowData} error={error} reload={reload} />
     </div>
   );
 };
 
-const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
+const ClosedMarketsDataGrid = ({
+  rowData,
+  error,
+  reload,
+}: {
+  rowData: Row[];
+  error: Error | undefined;
+  reload: () => void;
+}) => {
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   const colDefs = useMemo(() => {
     const cols: ColDef[] = [
@@ -315,7 +313,13 @@ const ClosedMarketsDataGrid = ({ rowData }: { rowData: Row[] }) => {
         resizable: true,
         minWidth: 100,
       }}
-      overlayNoRowsTemplate="No data"
+      noRowsOverlayComponent={() => (
+        <GridNowRowsOverlay
+          message={t('No markets')}
+          error={error}
+          reload={reload}
+        />
+      )}
       storeKey="closedMarkets"
     />
   );

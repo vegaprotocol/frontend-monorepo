@@ -1,35 +1,32 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
-export const GridNowRowsOverlay = ({
-  error,
-  reload,
-}: {
+type GridNoRowsOverlayProps = {
+  message?: string;
   error: Error | undefined;
   reload?: () => void;
-}) => {
-  console.log(error);
+};
+
+export const GridNowRowsOverlay = ({
+  message,
+  error,
+  reload,
+}: GridNoRowsOverlayProps) => {
   if (!error) {
-    return <p>{t('No data')}</p>;
+    return <p>{message ? message : t('No data')}</p>;
   }
 
   return <GridErrorOverlay error={error} reload={reload} />;
 };
 
-export const GridErrorOverlay = ({
-  error,
-  reload,
-}: {
-  error: Error | undefined;
-  reload?: () => void;
-}) => {
+export const GridErrorOverlay = ({ error, reload }: GridNoRowsOverlayProps) => {
   if (!error) {
     return <p>{t("Something wen't wrong")}</p>;
   }
 
   return (
     <div>
-      <p>Error</p>
+      <p>{error.message}</p>
       {reload && error.message === 'Timeout exceeded' && (
         <Button
           size="sm"
