@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { useRef } from 'react';
+import {
+  AgGridLazy as AgGrid,
+  GridNowRowsOverlay,
+} from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import type { AgGridReact } from 'ag-grid-react';
@@ -20,8 +22,7 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
 
 export const ProposalsList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [dataCount, setDataCount] = useState(0);
-  const { data, loading, error, refetch } = useProposalsListQuery({
+  const { data, error, refetch } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
     },
@@ -31,12 +32,6 @@ export const ProposalsList = () => {
     removePaginationWrapper(data?.proposalsConnection?.edges)
   );
   const { columnDefs, defaultColDef } = useColumnDefs();
-  const handleDataCount = useCallback(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, []);
-  useEffect(() => {
-    handleDataCount();
-  }, [filteredData, handleDataCount]);
 
   return (
     <div className="relative h-full">
@@ -46,24 +41,17 @@ export const ProposalsList = () => {
         columnDefs={columnDefs}
         rowData={filteredData}
         defaultColDef={defaultColDef}
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
-        onFilterChanged={handleDataCount}
         storeKey="proposedMarkets"
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
-        onGridReady={handleDataCount}
+        noRowsOverlayComponent={() => (
+          <GridNowRowsOverlay
+            error={error}
+            message={t('No markets')}
+            reload={refetch}
+          />
+        )}
       />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={filteredData}
-          noDataMessage={t('No markets')}
-          noDataCondition={() => !dataCount}
-          reload={refetch}
-        />
-      </div>
     </div>
   );
 };
