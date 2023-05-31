@@ -50,3 +50,5 @@ cypress.env.json
 
 #cypress
 /apps/**/cypress/reports/
+/apps/**/cypress/downloads/
+/apps/**/fixtures/wallet/node**
