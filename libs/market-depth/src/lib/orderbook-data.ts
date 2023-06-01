@@ -445,6 +445,7 @@ export const generateMockData = ({
   numberOfSellRows,
   numberOfBuyRows,
   midPrice,
+  markPrice,
   overlap,
   bestStaticBidPrice,
   bestStaticOfferPrice,
@@ -479,6 +480,7 @@ export const generateMockData = ({
     indicativeVolume: indicativeVolume?.toString(),
     marketTradingMode,
     midPrice: ((bestStaticBidPrice + bestStaticOfferPrice) / 2).toString(),
+    markPrice,
     bestStaticBidPrice: bestStaticBidPrice.toString(),
     bestStaticOfferPrice: bestStaticOfferPrice.toString(),
     indicativePrice: indicativePrice

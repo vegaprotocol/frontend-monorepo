@@ -166,6 +166,7 @@ export const Orderbook = ({
                   decimalPlaces,
                   2
                 )}
+                testId={`middle-mark-price-${markPrice}`}
               />
             </div>
             {tableBodyDown}
