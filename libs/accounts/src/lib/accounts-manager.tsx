@@ -2,7 +2,7 @@ import { useRef, memo, useCallback, useState, useEffect } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
-  GridNowRowsOverlay,
+  DataGridNoRowsOverlay,
   useBottomPlaceholder,
 } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -111,7 +111,7 @@ export const AccountManager = ({
         storeKey={storeKey}
         {...bottomPlaceholderProps}
         noRowsOverlayComponent={() => (
-          <GridNowRowsOverlay
+          <DataGridNoRowsOverlay
             error={error}
             message={t('No accounts')}
             reload={reload}

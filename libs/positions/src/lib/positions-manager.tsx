@@ -6,7 +6,7 @@ import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import {
-  GridNowRowsOverlay,
+  DataGridNoRowsOverlay,
   useBottomPlaceholder,
 } from '@vegaprotocol/datagrid';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -79,7 +79,7 @@ export const PositionsManager = ({
         storeKey={storeKey}
         multipleKeys={partyIds.length > 1}
         noRowsOverlayComponent={() => (
-          <GridNowRowsOverlay
+          <DataGridNoRowsOverlay
             error={error}
             message={t('No positions')}
             reload={reload}

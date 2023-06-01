@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import {
   AgGridLazy as AgGrid,
-  GridNowRowsOverlay,
+  DataGridNoRowsOverlay,
 } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
@@ -45,7 +45,7 @@ export const ProposalsList = () => {
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
         noRowsOverlayComponent={() => (
-          <GridNowRowsOverlay
+          <DataGridNoRowsOverlay
             error={error}
             message={t('No markets')}
             reload={refetch}

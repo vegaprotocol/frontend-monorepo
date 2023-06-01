@@ -4,7 +4,7 @@ import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
 import { useFillsList } from './use-fills-list';
 import {
-  GridNowRowsOverlay,
+  DataGridNoRowsOverlay,
   useBottomPlaceholder,
 } from '@vegaprotocol/datagrid';
 
@@ -44,7 +44,7 @@ export const FillsManager = ({
         storeKey={storeKey}
         {...bottomPlaceholderProps}
         noRowsOverlayComponent={() => (
-          <GridNowRowsOverlay
+          <DataGridNoRowsOverlay
             error={error}
             message={t('No fills')}
             reload={reload}

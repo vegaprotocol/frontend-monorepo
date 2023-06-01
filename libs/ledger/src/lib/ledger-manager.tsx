@@ -8,7 +8,7 @@ import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
 import type * as Types from '@vegaprotocol/types';
 import { LedgerExportLink } from './ledger-export-link';
-import { GridNowRowsOverlay } from '@vegaprotocol/datagrid';
+import { DataGridNoRowsOverlay } from '@vegaprotocol/datagrid';
 
 export interface Filter {
   vegaTime?: {
@@ -48,7 +48,7 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
         rowData={extractedData}
         onFilterChanged={onFilterChanged}
         noRowsOverlayComponent={() => (
-          <GridNowRowsOverlay
+          <DataGridNoRowsOverlay
             error={error}
             message={t('No entries')}
             reload={reload}

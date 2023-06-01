@@ -8,7 +8,7 @@ import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
 import {
   useBottomPlaceholder,
-  GridNowRowsOverlay,
+  DataGridNoRowsOverlay,
 } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
@@ -159,7 +159,7 @@ export const OrderListManager = ({
           storeKey={storeKey}
           suppressAutoSize
           noRowsOverlayComponent={() => {
-            return <GridNowRowsOverlay error={error} reload={reload} />;
+            return <DataGridNoRowsOverlay error={error} reload={reload} />;
           }}
           {...bottomPlaceholderProps}
         />

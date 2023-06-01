@@ -1,17 +1,17 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
-type GridNoRowsOverlayProps = {
+type DataGridNoRowsOverlayProps = {
   message?: string;
   error: Error | undefined;
   reload?: () => void;
 };
 
-export const GridNowRowsOverlay = ({
+export const DataGridNoRowsOverlay = ({
   message,
   error,
   reload,
-}: GridNoRowsOverlayProps) => {
+}: DataGridNoRowsOverlayProps) => {
   if (!error) {
     return <p>{message ? message : t('No data')}</p>;
   }
@@ -19,7 +19,10 @@ export const GridNowRowsOverlay = ({
   return <GridErrorOverlay error={error} reload={reload} />;
 };
 
-export const GridErrorOverlay = ({ error, reload }: GridNoRowsOverlayProps) => {
+export const GridErrorOverlay = ({
+  error,
+  reload,
+}: DataGridNoRowsOverlayProps) => {
   if (!error) {
     return <p>{t("Something wen't wrong")}</p>;
   }

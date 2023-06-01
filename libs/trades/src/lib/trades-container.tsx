@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import { useOrderStore } from '@vegaprotocol/orders';
-import { GridNowRowsOverlay } from '@vegaprotocol/datagrid';
+import { DataGridNoRowsOverlay } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 
 interface TradesContainerProps {
@@ -32,7 +32,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
         }
       }}
       noRowsOverlayComponent={() => (
-        <GridNowRowsOverlay
+        <DataGridNoRowsOverlay
           error={error}
           message={t('No trades')}
           reload={reload}
