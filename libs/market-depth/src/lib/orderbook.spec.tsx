@@ -18,7 +18,7 @@ describe('Orderbook', () => {
   };
   const onResolutionChange = jest.fn();
   const decimalPlaces = 3;
-  xit('should scroll to mid price on init', async () => {
+  it('should scroll to mid price on init', async () => {
     window.innerHeight = 11 * rowHeight;
     render(
       <Orderbook
@@ -32,7 +32,7 @@ describe('Orderbook', () => {
     expect(screen.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
   });
 
-  xit('should keep mid price row in the middle', async () => {
+  it('should keep mid price row in the middle', async () => {
     window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
@@ -59,7 +59,7 @@ describe('Orderbook', () => {
     expect(result.getByTestId('scroll').scrollTop).toBe(90 * rowHeight);
   });
 
-  xit('should scroll to mid price when it will change', async () => {
+  it('should scroll to mid price when it will change', async () => {
     window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
