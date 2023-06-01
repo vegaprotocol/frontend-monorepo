@@ -17,6 +17,19 @@ import {
 } from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
+jest.mock('@vegaprotocol/markets', () => ({
+  ...jest.requireActual('@vegaprotocol/markets'),
+  useCandles: jest.fn(() => {
+    const yesterday = new Date();
+    return {
+      oneDayCandles: [
+        { close: '5', volume: '50', periodStart: yesterday.toISOString() },
+        { close: '10', volume: '50', periodStart: yesterday.toISOString() },
+      ],
+    };
+  }),
+}));
+
 describe('MarketSelectorItem', () => {
   const yesterday = new Date();
   yesterday.setHours(yesterday.getHours() - 20);
