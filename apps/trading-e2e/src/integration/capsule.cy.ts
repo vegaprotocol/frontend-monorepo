@@ -114,6 +114,8 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   });
 
   it('can key to key transfers', function () {
+    // 1003-TRAN-023
+    // 1003-TRAN-006
     cy.get('main[data-testid="/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
