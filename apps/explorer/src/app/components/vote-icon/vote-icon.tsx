@@ -12,6 +12,30 @@ export interface VoteIconProps {
   useVoteColour?: boolean;
 }
 
+function getBgColour(useVoteColour: boolean, vote: boolean) {
+  if (useVoteColour === false) {
+    return 'bg-vega-dark-200';
+  }
+
+  return vote ? 'bg-vega-green-550' : 'bg-vega-pink-550';
+}
+
+function getFillColour(useVoteColour: boolean, vote: boolean) {
+  if (useVoteColour === false) {
+    return 'white';
+  }
+
+  return vote ? 'vega-green-300' : 'vega-pink-300';
+}
+
+function getTextColour(useVoteColour: boolean, vote: boolean) {
+  if (useVoteColour === false) {
+    return 'white';
+  }
+
+  return vote ? 'vega-green-200' : 'vega-pink-200';
+}
+
 /**
  * Displays a lozenge with an icon representing the way a user voted for a proposal.
  * The yes and no text can be overridden
@@ -26,21 +50,9 @@ export function VoteIcon({
 }: VoteIconProps) {
   const label = vote ? yesText : noText;
   const icon: IconName = vote ? 'tick-circle' : 'delete';
-  const bg = useVoteColour
-    ? vote
-      ? 'bg-vega-green-550'
-      : 'bg-vega-pink-550'
-    : 'bg-vega-dark-200';
-  const fill = useVoteColour
-    ? vote
-      ? 'vega-green-300'
-      : 'vega-pink-300'
-    : 'white';
-  const text = useVoteColour
-    ? vote
-      ? 'vega-green-200'
-      : 'vega-pink-200'
-    : 'white';
+  const bg = getBgColour(useVoteColour, vote);
+  const fill = getFillColour(useVoteColour, vote);
+  const text = getTextColour(useVoteColour, vote);
 
   return (
     <div
