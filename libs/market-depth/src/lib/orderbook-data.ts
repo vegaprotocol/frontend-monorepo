@@ -466,13 +466,15 @@ export const generateMockData = ({
     volume: (i + 2).toString(),
     numberOfOrders: '',
   }));
-  const rows = compactRows(sell, buy, resolution);
+  const asks = compactLeveledRows(sell, VolumeType.ask, resolution);
+  const bids = compactLeveledRows(buy, VolumeType.bid, resolution);
   const marketTradingMode =
     overlap > 0
       ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
       : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS;
   return {
-    rows,
+    asks,
+    bids,
     resolution,
     indicativeVolume: indicativeVolume?.toString(),
     marketTradingMode,

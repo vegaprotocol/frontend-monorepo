@@ -6,6 +6,7 @@ interface NumericCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
   testId?: string;
+  className?: string;
 }
 
 /**

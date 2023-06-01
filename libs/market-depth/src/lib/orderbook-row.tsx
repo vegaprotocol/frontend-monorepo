@@ -20,29 +20,31 @@ interface OrderbookRowProps {
   type: VolumeType;
 }
 
-const RelativityBar = ({
-  type,
-  relativeAsk,
-  relativeBid,
-}: Pick<OrderbookRowProps, 'type, relativeAsk, relativeBid'>) => {
-  const askBar = relativeAsk ? (
+const CumulationBar = ({
+  cumulativeRelativeAsk,
+  cumulativeRelativeBid,
+}: Pick<
+  OrderbookRowProps,
+  'cumulativeRelativeAsk' | 'cumulativeRelativeBid'
+>) => {
+  const askBar = cumulativeRelativeAsk ? (
     <div
       data-testid="ask-bar"
       className="absolute left-0 top-0 bg-vega-pink/20 dark:bg-vega-pink/30 transition-all"
       style={{
-        height: relativeBid && relativeAsk ? '50%' : '100%',
-        width: `${relativeAsk}%`,
+        height: cumulativeRelativeBid && cumulativeRelativeAsk ? '50%' : '100%',
+        width: `${cumulativeRelativeAsk}%`,
       }}
     />
   ) : null;
-  const bidBar = relativeBid ? (
+  const bidBar = cumulativeRelativeBid ? (
     <div
       data-testid="bid-bar"
       className="absolute top-0 left-0 bg-vega-green/20 dark:bg-vega-green/50 transition-all"
       style={{
-        height: relativeBid && relativeAsk ? '50%' : '100%',
-        top: relativeBid && relativeAsk ? '50%' : '0',
-        width: `${relativeBid}%`,
+        height: cumulativeRelativeBid && cumulativeRelativeAsk ? '50%' : '100%',
+        top: cumulativeRelativeBid && cumulativeRelativeAsk ? '50%' : '0',
+        width: `${cumulativeRelativeBid}%`,
       }}
     />
   ) : null;
@@ -135,10 +137,9 @@ export const OrderbookContinuousRow = React.memo(
     const value = bid || ask;
     return (
       <div className="relative w-full">
-        <RelativityBar
-          type={type}
-          relativeAsk={cumulativeRelativeAsk}
-          relativeBid={cumulativeRelativeBid}
+        <CumulationBar
+          cumulativeRelativeAsk={cumulativeRelativeAsk}
+          cumulativeRelativeBid={cumulativeRelativeBid}
         />
         <div className="grid gap-1 text-right auto-rows-[17px] grid-cols-3 w-full grid-rows-1">
           <PriceCell
