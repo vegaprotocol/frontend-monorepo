@@ -64,24 +64,24 @@ export function submitUniqueRawProposal(proposalFields: {
     proposalBodyPath = proposalFields.proposalBody;
   }
   cy.readFile(proposalBodyPath).then((rawProposal) => {
-    if (!proposalFields.proposalBody) {
-      if (proposalFields.proposalTitle) {
-        rawProposal.rationale.title = proposalFields.proposalTitle;
-        cy.wrap(proposalFields.proposalTitle).as('proposalTitle');
-      }
-      if (proposalFields.proposalDescription) {
-        rawProposal.rationale.description = proposalFields.proposalDescription;
-      }
-      if (proposalFields.closingTimestamp) {
-        rawProposal.terms.closingTimestamp = proposalFields.closingTimestamp;
-      } else {
-        const minTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
-        rawProposal.terms.closingTimestamp = minTimeStamp;
-      }
-      if (proposalFields.enactmentTimestamp) {
-        rawProposal.terms.enactmentTimestamp =
-          proposalFields.enactmentTimestamp;
-      }
+    if (proposalFields.proposalTitle) {
+      rawProposal.rationale.title = proposalFields.proposalTitle;
+      cy.wrap(proposalFields.proposalTitle).as('proposalTitle');
+    }
+    if (proposalFields.proposalDescription) {
+      rawProposal.rationale.description = proposalFields.proposalDescription;
+    }
+    if (proposalFields.closingTimestamp) {
+      rawProposal.terms.closingTimestamp = proposalFields.closingTimestamp;
+    } else if (
+      !proposalFields.closingTimestamp &&
+      !proposalFields.proposalBody
+    ) {
+      const minTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      rawProposal.terms.closingTimestamp = minTimeStamp;
+    }
+    if (proposalFields.enactmentTimestamp) {
+      rawProposal.terms.enactmentTimestamp = proposalFields.enactmentTimestamp;
     }
 
     const proposalPayload = JSON.stringify(rawProposal);
