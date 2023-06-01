@@ -113,6 +113,6 @@ describe('AccountManager', () => {
         />
       );
     });
-    expect(await screen.findByTestId('datagrid-loading')).toBeInTheDocument();
+    expect(await screen.findByText('Loading...')).toBeInTheDocument();
   });
 });
