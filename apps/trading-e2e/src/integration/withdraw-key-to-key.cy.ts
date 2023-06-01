@@ -50,13 +50,12 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.mockVegaWalletTransaction();
   });
 
-  it('transfer fees tooltips', function () {
+  it('transfer fees tooltips', () => {
     // 1003-TRAN-015
     // 1003-TRAN-016
     // 1003-TRAN-017
     // 1003-TRAN-018
     // 1003-TRAN-019
-
     cy.getByTestId(transferForm);
     cy.contains('Enter manually').click();
 
@@ -96,7 +95,7 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
       .should('not.be.empty');
   });
 
-  it('transfer fees', function () {
+  it('transfer fees', () => {
     // 1003-TRAN-020
     // 1003-TRAN-021
     // 1003-TRAN-022
@@ -162,7 +161,7 @@ describe(
         .should('match', /[\w.]{6}…[\w.]{6}/);
     });
 
-    it('invalid vega key validation', function () {
+    it('invalid vega key validation', () => {
       //1003-TRAN-013
       //1003-TRAN-004
       cy.getByTestId(transferForm).should('be.visible');
@@ -225,7 +224,7 @@ describe('withdraw actions', { tags: '@smoke', testIsolation: true }, () => {
     cy.mockVegaWalletTransaction();
   });
 
-  it('key to key transfers by select key', function () {
+  it('key to key transfers by select key', () => {
     // 1003-TRAN-001
     // 1003-TRAN-006
     // 1003-TRAN-007
@@ -265,7 +264,7 @@ describe('withdraw actions', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId(toastCloseBtn).click();
   });
 
-  it('key to key transfers by enter manual key', function () {
+  it('key to key transfers by enter manual key', () => {
     //1003-TRAN-005
     cy.getByTestId(transferForm).should('be.visible');
     cy.contains('Enter manually').click();
