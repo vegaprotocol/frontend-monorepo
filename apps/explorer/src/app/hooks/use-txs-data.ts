@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type {
   BlockExplorerTransactionResult,
@@ -64,6 +64,14 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
       }));
     }
   }, [setTxsState, data]);
+
+  useMemo(() => {
+    setTxsState((prev) => ({
+      txsData: [],
+      hasMoreTxs: true,
+      lastCursor: '',
+    }));
+  }, [filters]);
 
   const loadTxs = useCallback(() => {
     return refetch({

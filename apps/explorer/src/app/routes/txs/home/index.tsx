@@ -4,7 +4,22 @@ import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+  FormGroup,
+  Icon,
+  Lozenge,
+  Radio,
+  RadioGroup,
+  Select,
+} from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect, useState } from 'react';
 
 const BE_TXS_PER_REQUEST = 20;
@@ -37,48 +52,83 @@ const FilterOptions = [
   'Batch Market Instructions',
 ];
 
+export function getFilterLabel(filters: Set<string>) {
+  if (!filters || filters.size !== 1) {
+    return <span>Filter by type...</span>;
+  }
+
+  return (
+    <span>
+      Filtered by: <Lozenge>{Array.from(filters)[0]}</Lozenge>
+    </span>
+  );
+}
+
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
 
-  const [filter, setFilter] = useState('');
-
-  const onChange = useCallback((e: any) => {
-    const v = e.target.value;
-    setFilter(v);
-  }, []);
+  const [filters, setFilters] = useState(new Set(FilterOptions));
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <section className="md:p-2 lg:p-4 xl:p-6">
       <RouteTitle>{t('Transactions')}</RouteTitle>
-      <FormGroup label="Filter by..." labelFor="uniqueid">
-        <Select id="uniqueid" onChange={onChange}>
-          <option value="">All transactions</option>
+      <DropdownMenu
+        open={dropdownOpen}
+        trigger={
+          <DropdownMenuTrigger
+            onClick={() => {
+              setDropdownOpen(!dropdownOpen);
+            }}
+          >
+            {getFilterLabel(filters)}
+          </DropdownMenuTrigger>
+        }
+      >
+        <DropdownMenuContent
+          onPointerDownOutside={() => setDropdownOpen(false)}
+        >
           {FilterOptions.map((f) => (
-            <option value={f}>{f}</option>
+            <DropdownMenuCheckboxItem
+              key={f}
+              checked={filters.has(f)}
+              onCheckedChange={(checked) => {
+                // NOTE: These act like radio buttons until the API supports multiple filters
+                setFilters(new Set([f]));
+              }}
+              id={`radio-${f}`}
+            >
+              {f}
+              <DropdownMenuItemIndicator>
+                <Icon name="tick-circle" />
+              </DropdownMenuItemIndicator>
+            </DropdownMenuCheckboxItem>
           ))}
-        </Select>
-
-        <TxsListFiltered filter={filter} />
-      </FormGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <TxsListFiltered filters={[...filters]} />
     </section>
   );
 };
 
 export interface TxsListFilteredProps {
-  filter: string;
+  filters: string[];
 }
 
-export const TxsListFiltered = ({ filter }: TxsListFilteredProps) => {
+export const TxsListFiltered = ({ filters }: TxsListFilteredProps) => {
+  const f =
+    filters && filters.length === 1 ? `filters[cmd.type]=${filters[0]}` : '';
   const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
     useTxsData({
       limit: BE_TXS_PER_REQUEST,
-      filters: filter ? `filters[cmd.type]=${filter}` : undefined,
+      filters: f,
     });
 
   return (
-    <div data-filter={filter}>
+    <>
       <BlocksRefetch refetch={refreshTxs} />
       <TxsInfiniteList
+        filters={f}
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
         txs={txsData}
@@ -86,6 +136,6 @@ export const TxsListFiltered = ({ filter }: TxsListFilteredProps) => {
         error={error}
         className="mb-28"
       />
-    </div>
+    </>
   );
 };

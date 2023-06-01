@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { t } from '@vegaprotocol/i18n';
@@ -9,6 +9,7 @@ import EmptyList from '../empty-list/empty-list';
 import { Loader } from '@vegaprotocol/ui-toolkit';
 
 interface TxsInfiniteListProps {
+  filters: string;
   hasMoreTxs: boolean;
   areTxsLoading: boolean | undefined;
   txs: BlockExplorerTransactionResult[] | undefined;
@@ -60,6 +61,7 @@ const Item = ({ index, style, isLoading, error }: ItemProps) => {
 };
 
 export const TxsInfiniteList = ({
+  filters,
   hasMoreTxs,
   areTxsLoading,
   txs,
@@ -69,6 +71,19 @@ export const TxsInfiniteList = ({
 }: TxsInfiniteListProps) => {
   const { screenSize } = useScreenDimensions();
   const isStacked = ['xs', 'sm'].includes(screenSize);
+  const infiniteLoaderRef = useRef<InfiniteLoader>(null);
+  const hasMountedRef = useRef(false);
+
+  useEffect(() => {
+    // We only need to reset cached items when "sortOrder" changes.
+    // This effect will run on mount too; there's no need to reset in that case.
+    if (hasMountedRef.current) {
+      if (infiniteLoaderRef.current) {
+        infiniteLoaderRef.current.resetloadMoreItemsCache(true);
+      }
+    }
+    hasMountedRef.current = true;
+  }, [filters]);
 
   if (!txs) {
     if (!areTxsLoading) {
@@ -110,6 +125,7 @@ export const TxsInfiniteList = ({
           isItemLoaded={isItemLoaded}
           itemCount={itemCount}
           loadMoreItems={loadMoreItems}
+          ref={infiniteLoaderRef}
         >
           {({ onItemsRendered, ref }) => (
             <List
