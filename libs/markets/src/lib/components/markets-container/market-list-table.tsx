@@ -126,9 +126,7 @@ export const MarketListTable = forwardRef<
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({
-          data,
-        }: VegaValueGetterParams<MarketMaybeWithData, 'data.bestBidPrice'>) => {
+        valueGetter={({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
           return data?.data?.bestBidPrice === undefined
             ? undefined
             : toBigNum(data?.data?.bestBidPrice, data.decimalPlaces).toNumber();
@@ -153,12 +151,7 @@ export const MarketListTable = forwardRef<
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({
-          data,
-        }: VegaValueGetterParams<
-          MarketMaybeWithData,
-          'data.bestOfferPrice'
-        >) => {
+        valueGetter={({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
           return data?.data?.bestOfferPrice === undefined
             ? undefined
             : toBigNum(
@@ -186,16 +179,17 @@ export const MarketListTable = forwardRef<
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({
-          data,
-        }: VegaValueGetterParams<MarketMaybeWithData, 'data.markPrice'>) => {
+        valueGetter={({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
           return data?.data?.markPrice === undefined
             ? undefined
             : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();
         }}
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) =>
+        }: VegaValueFormatterParams<
+          MarketMaybeWithData,
+          'data.bestOfferPrice'
+        >) =>
           data?.data?.bestOfferPrice === undefined
             ? undefined
             : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)

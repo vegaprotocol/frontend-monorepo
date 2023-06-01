@@ -23,11 +23,9 @@ export type VegaValueFormatterParams<TRow, TField extends Field> = RowHelper<
   TField
 >;
 
-export type VegaValueGetterParams<TRow, TField extends Field> = RowHelper<
-  ValueGetterParams,
-  TRow,
-  TField
->;
+export type VegaValueGetterParams<TRow> = Omit<ValueGetterParams, 'data'> & {
+  data?: TRow;
+};
 
 export type VegaICellRendererParams<
   TRow,

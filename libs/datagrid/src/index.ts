@@ -12,7 +12,6 @@ export * from './lib/cells/price-flash-cell';
 export * from './lib/cells/vol-cell';
 export * from './lib/cells/centered-grid-cell';
 export * from './lib/cells/market-name-cell';
-export * from './lib/cells/order-type-cell';
 export * from './lib/cells/size';
 
 export * from './lib/filters/date-range-filter';

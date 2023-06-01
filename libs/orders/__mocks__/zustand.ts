@@ -16,6 +16,6 @@ export const create =
   };
 
 // Reset all stores after each test run
-beforeEach(() => {
+afterEach(() => {
   act(() => storeResetFns.forEach((resetFn) => resetFn()));
 });

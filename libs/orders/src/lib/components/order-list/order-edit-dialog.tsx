@@ -18,6 +18,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
+import { useMarketsMap } from '@vegaprotocol/markets';
 
 interface OrderEditDialogProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export const OrderEditDialog = ({
   order,
   onSubmit,
 }: OrderEditDialogProps) => {
+  const market = useMarketsMap((state) => state.get)(order.market.id);
   const headerClassName = 'text-lg font-bold text-black dark:text-white';
   const {
     register,
@@ -44,13 +46,13 @@ export const OrderEditDialog = ({
     handleSubmit,
   } = useForm<FormFields>({
     defaultValues: {
-      limitPrice: addDecimal(order.price, order.market?.decimalPlaces ?? 0),
-      size: addDecimal(order.size, order.market?.positionDecimalPlaces ?? 0),
+      limitPrice: addDecimal(order.price, market?.decimalPlaces ?? 0),
+      size: addDecimal(order.size, market?.positionDecimalPlaces ?? 0),
     },
   });
 
-  const step = toDecimal(order.market?.decimalPlaces ?? 0);
-  const stepSize = toDecimal(order.market?.positionDecimalPlaces ?? 0);
+  const step = toDecimal(market?.decimalPlaces ?? 0);
+  const stepSize = toDecimal(market?.positionDecimalPlaces ?? 0);
 
   return (
     <Dialog
@@ -60,17 +62,17 @@ export const OrderEditDialog = ({
       icon={<Icon name="edit" />}
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        {order.market && (
+        {market && (
           <div className="md:col-span-2">
             <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
+            <p>{t(`${market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
         {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
           <div className="md:col-span-1">
             <p className={headerClassName}>{t(`Price`)}</p>
             <p>
-              {addDecimalsFormatNumber(order.price, order.market.decimalPlaces)}
+              {addDecimalsFormatNumber(order.price, market?.decimalPlaces ?? 0)}
             </p>
           </div>
         )}
@@ -81,7 +83,7 @@ export const OrderEditDialog = ({
               <Size
                 value={order.size}
                 side={order.side}
-                positionDecimalPlaces={order.market.positionDecimalPlaces}
+                positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
               />
             )}
           </p>

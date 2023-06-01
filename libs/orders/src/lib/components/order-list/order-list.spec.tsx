@@ -23,6 +23,17 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
   }),
 }));
 
+jest.mock('@vegaprotocol/markets', () => ({
+  ...jest.requireActual('@vegaprotocol/markets'),
+  useMarketsMap: () => () => ({
+    decimalPlaces: 1,
+    positionDecimalPlaces: 2,
+  }),
+  useMarketNamesMap: () => ({
+    'market-id': 'XYZ',
+  }),
+}));
+
 const defaultProps: OrderListTableProps = {
   rowData: [],
   onEdit: jest.fn(),
@@ -81,7 +92,7 @@ describe('OrderListTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues: string[] = [
-      marketOrder.market?.tradableInstrument.instrument.code || '',
+      'XYZ',
       '+0.10',
       Schema.OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
       Schema.OrderStatusMapping[marketOrder.status],
@@ -104,7 +115,7 @@ describe('OrderListTable', () => {
     const cells = screen.getAllByRole('gridcell');
 
     const expectedValues: string[] = [
-      limitOrder.market?.tradableInstrument.instrument.code || '',
+      'XYZ',
       '+0.10',
       Schema.OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
       Schema.OrderStatusMapping[limitOrder.status],

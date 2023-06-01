@@ -8,6 +8,7 @@ import * as Schema from '@vegaprotocol/types';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
+import { useMarketNamesMap, useMarketsMap } from '@vegaprotocol/markets';
 import type { ForwardedRef } from 'react';
 import { memo, forwardRef } from 'react';
 import {
@@ -17,13 +18,14 @@ import {
   negativeClassNames,
   positiveClassNames,
   MarketNameCell,
-  OrderTypeCell,
   COL_DEFS,
 } from '@vegaprotocol/datagrid';
+import { OrderTypeCell } from './order-type-cell';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
+  VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
@@ -49,6 +51,8 @@ export const OrderListTable = memo<
       { onCancel, onEdit, onMarketClick, onOrderTypeClick, filter, ...props },
       ref
     ) => {
+      const marketNamesMap = useMarketNamesMap((state) => state.data);
+      const getMarket = useMarketsMap((state) => state.get);
       const showAllActions = props.isReadOnly
         ? false
         : filter === undefined || filter === Filter.Open
@@ -73,7 +77,10 @@ export const OrderListTable = memo<
         >
           <AgGridColumn
             headerName={t('Market')}
-            field="market.tradableInstrument.instrument.code"
+            field="market.id"
+            valueGetter={({ data }: VegaValueGetterParams<Order>) => {
+              return data?.market?.id ? marketNamesMap[data.market.id] : '';
+            }}
             cellRenderer="MarketNameCell"
             cellRendererParams={{ idPath: 'market.id', onMarketClick }}
             minWidth={150}
@@ -108,7 +115,7 @@ export const OrderListTable = memo<
                 prefix +
                 addDecimalsFormatNumber(
                   value,
-                  data.market.positionDecimalPlaces
+                  getMarket(data.market.id)?.positionDecimalPlaces ?? 0
                 )
               );
             }}
@@ -174,7 +181,7 @@ export const OrderListTable = memo<
               if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
                 return '-';
               }
-              const dps = data.market.positionDecimalPlaces;
+              const dps = getMarket(data.market.id)?.positionDecimalPlaces ?? 0;
               const size = new BigNumber(data.size);
               const remaining = new BigNumber(value);
               const fills = size.minus(remaining);
@@ -203,7 +210,10 @@ export const OrderListTable = memo<
               ) {
                 return '-';
               }
-              return addDecimalsFormatNumber(value, data.market.decimalPlaces);
+              return addDecimalsFormatNumber(
+                value,
+                getMarket(data.market.id)?.decimalPlaces ?? 0
+              );
             }}
             minWidth={100}
           />

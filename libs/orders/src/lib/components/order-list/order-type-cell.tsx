@@ -4,25 +4,22 @@ import { useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-
+import { useMarketsMap } from '@vegaprotocol/markets';
+import type { Order } from '../order-data-provider';
 interface OrderTypeCellProps {
-  value?: Schema.OrderType;
-  data?: Schema.Order;
+  data?: Order;
   onClick?: (marketId: string, metaKey?: boolean) => void;
 }
 
-export const OrderTypeCell = ({
-  value,
-  data: order,
-  onClick,
-}: OrderTypeCellProps) => {
-  const id = order ? order.market.id : '';
+export const OrderTypeCell = ({ data: order, onClick }: OrderTypeCellProps) => {
+  const marketId = order?.market.id ?? '';
+  const market = useMarketsMap((state) => state.get)(marketId);
 
   const label = useMemo(() => {
     if (!order) {
-      return undefined;
+      return '';
     }
-    if (!value) return '-';
+    if (!order.type) return '-';
     if (order?.peggedOrder) {
       const reference =
         Schema.PeggedReferenceMapping[order.peggedOrder?.reference];
@@ -30,25 +27,25 @@ export const OrderTypeCell = ({
       const side = order.side === Schema.Side.SIDE_BUY ? '-' : '+';
       const offset = addDecimalsFormatNumber(
         order.peggedOrder?.offset,
-        order.market.decimalPlaces
+        market?.decimalPlaces ?? 0
       );
       return t('%s %s %s Peg limit', [reference, side, offset]);
     }
     if (order?.liquidityProvision) {
       return t('Liquidity provision');
     }
-    return Schema.OrderTypeMapping[value];
-  }, [order, value]);
+    return Schema.OrderTypeMapping[order.type];
+  }, [order, market]);
 
   const handleOnClick = useCallback(
     (ev: MouseEvent<HTMLButtonElement>) => {
       ev.preventDefault();
       ev.stopPropagation();
       if (onClick) {
-        onClick(id, ev.metaKey || ev.ctrlKey);
+        onClick(marketId, ev.metaKey || ev.ctrlKey);
       }
     },
-    [id, onClick]
+    [marketId, onClick]
   );
   if (!order) return null;
   return order?.liquidityProvision ? (

@@ -5,8 +5,6 @@ import {
   makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
-import { marketsProvider } from '@vegaprotocol/markets';
 import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 import type {
@@ -19,8 +17,7 @@ import type {
 import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
 import type { ApolloClient } from '@apollo/client';
 
-export type Order = Omit<OrderFieldsFragment, 'market'> & {
-  market?: Market;
+export type Order = OrderFieldsFragment & {
   isLastPlaceholder?: boolean;
 };
 export type OrderEdge = Edge<Order>;
@@ -211,24 +208,6 @@ export const activeOrdersProvider = makeDerivedDataProvider<
       ? orders.filter((edge) => variables.marketId === edge.node.market.id)
       : orders;
   }
-);
-
-export const ordersWithMarketProvider = makeDerivedDataProvider<
-  (Order | null)[],
-  Order[],
-  OrdersQueryVariables
->(
-  [
-    ordersProvider,
-    (callback, client) => marketsProvider(callback, client, undefined),
-  ],
-  (partsData): Order[] =>
-    ((partsData[0] as ReturnType<typeof getData>) || []).map((edge) => ({
-      ...edge.node,
-      market: (partsData[1] as Market[]).find(
-        (market) => market.id === edge.node.market.id
-      ),
-    }))
 );
 
 export const hasActiveOrderProvider = makeDerivedDataProvider<

@@ -37,6 +37,7 @@ import { Navbar } from '../components/navbar';
 import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { MarketsData } from '@vegaprotocol/markets';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
 import {
   ProtocolUpgradeCountdownMode,
@@ -111,6 +112,7 @@ function AppBody({ Component }: AppProps) {
       <InitializeHandlers />
       <MaybeConnectEagerly />
       <PartyData />
+      <MarketsData />
     </div>
   );
 }

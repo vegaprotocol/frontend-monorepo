@@ -17,7 +17,7 @@ const Template: Story = (args) => {
   return (
     <div style={{ height: 1000 }}>
       <OrderListTable
-        rowData={args.data}
+        rowData={args['data']}
         onCancel={cancel}
         onEdit={() => {
           return;
@@ -46,7 +46,7 @@ const Template2: Story = (args) => {
     <>
       <div style={{ height: 1000 }}>
         <OrderListTable
-          rowData={args.data}
+          rowData={args['data']}
           onCancel={cancel}
           onEdit={setEditOrder}
           isReadOnly={false}

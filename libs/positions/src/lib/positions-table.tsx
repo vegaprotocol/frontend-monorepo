@@ -126,9 +126,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           <AgGridColumn
             headerName={t('Vega key')}
             field="partyId"
-            valueGetter={({
-              data,
-            }: VegaValueGetterParams<Position, 'partyId'>) =>
+            valueGetter={({ data }: VegaValueGetterParams<Position>) =>
               (data?.partyId &&
                 pubKeys &&
                 pubKeys.find((key) => key.publicKey === data.partyId)?.name) ||
@@ -151,9 +149,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
           cellClass="font-mono text-right"
           filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'notional'>) => {
+          valueGetter={({ data }: VegaValueGetterParams<Position>) => {
             return !data?.notional
               ? undefined
               : toBigNum(data.notional, data.marketDecimalPlaces).toNumber();
@@ -177,9 +173,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           cellClass="font-mono text-right"
           cellClassRules={signedNumberCssClassRules}
           filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'openVolume'>) => {
+          valueGetter={({ data }: VegaValueGetterParams<Position>) => {
             return data?.openVolume === undefined
               ? undefined
               : toBigNum(
@@ -214,9 +208,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             };
           }}
           filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'markPrice'>) => {
+          valueGetter={({ data }: VegaValueGetterParams<Position>) => {
             return !data ||
               !data.markPrice ||
               data.marketTradingMode ===
@@ -272,9 +264,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             };
           }}
           filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'averageEntryPrice'>) => {
+          valueGetter={({ data }: VegaValueGetterParams<Position>) => {
             return data?.markPrice === undefined || !data
               ? undefined
               : toBigNum(
@@ -329,9 +319,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 component: PriceFlashCell,
               };
             }}
-            valueGetter={({
-              data,
-            }: VegaValueGetterParams<Position, 'marginAccountBalance'>) => {
+            valueGetter={({ data }: VegaValueGetterParams<Position>) => {
               return !data
                 ? undefined
                 : toBigNum(data.marginAccountBalance, data.decimals).toNumber();
@@ -359,9 +347,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           cellClassRules={signedNumberCssClassRules}
           cellClass="font-mono text-right"
           filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'realisedPNL'>) => {
+          valueGetter={({ data }: VegaValueGetterParams<Position>) => {
             return !data
               ? undefined
               : toBigNum(data.realisedPNL, data.decimals).toNumber();
@@ -386,9 +372,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           cellClassRules={signedNumberCssClassRules}
           cellClass="font-mono text-right"
           filter="agNumberColumnFilter"
-          valueGetter={({
-            data,
-          }: VegaValueGetterParams<Position, 'unrealisedPNL'>) => {
+          valueGetter={({ data }: VegaValueGetterParams<Position>) => {
             return !data
               ? undefined
               : toBigNum(data.unrealisedPNL, data.decimals).toNumber();

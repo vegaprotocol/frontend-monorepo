@@ -4,12 +4,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
-
+import { useMarketsMap } from '@vegaprotocol/markets';
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
+import { ordersProvider } from '../order-data-provider/order-data-provider';
 import {
   normalizeOrderAmendment,
   useVegaTransactionStore,
@@ -76,17 +76,18 @@ export const OrderListManager = ({
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
+  const getMarket = useMarketsMap((state) => state.get);
   const variables =
     filter === Filter.Open
       ? { partyId, filter: { liveOnly: true } }
       : { partyId };
 
   const { data, error, loading, reload } = useDataProvider({
-    dataProvider: ordersWithMarketProvider,
+    dataProvider: ordersProvider,
     variables,
     update: ({ data }) => {
       if (data && gridRef.current?.api) {
-        gridRef.current.api.setRowData(data);
+        gridRef.current.api.setRowData(data?.map((edge) => edge.node));
         return true;
       }
       return true;
@@ -155,7 +156,7 @@ export const OrderListManager = ({
     <>
       <div className="h-full relative">
         <OrderListTable
-          rowData={data as Order[]}
+          rowData={data?.map((edge) => edge.node) as Order[]}
           ref={gridRef}
           filter={filter}
           onGridReady={onGridReady}
@@ -194,12 +195,13 @@ export const OrderListManager = ({
           }}
           order={editOrder}
           onSubmit={(fields) => {
-            if (!editOrder.market) {
+            const market = getMarket(editOrder.market.id);
+            if (!market) {
               return;
             }
             const orderAmendment = normalizeOrderAmendment(
               editOrder,
-              editOrder.market,
+              market,
               fields.limitPrice,
               fields.size
             );
