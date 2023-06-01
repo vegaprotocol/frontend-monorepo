@@ -8,7 +8,7 @@ describe('Orderbook', () => {
     numberOfBuyRows: 100,
     step: 1,
     midPrice: 122900,
-    markPrice: 122900,
+    markPrice: '122900',
     bestStaticBidPrice: 122905,
     bestStaticOfferPrice: 122895,
     decimalPlaces: 3,

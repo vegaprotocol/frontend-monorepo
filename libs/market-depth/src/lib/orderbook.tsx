@@ -41,8 +41,6 @@ export const Orderbook = ({
   const footerElement = useRef<HTMLDivElement>(null);
   const resolutionRef = useRef(resolution);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-  // show price levels with no orders, can lead to enormous number of rows
-  const [debug, setDebug] = useState(false);
 
   const limit = Math.floor((viewportHeight - 60) / 2 / rowHeight);
   const askRows = asks?.slice(0, Math.max(0, limit)) ?? [];
@@ -148,7 +146,6 @@ export const Orderbook = ({
     <div
       className="h-full pl-1 text-xs w-full grid grid-rows-[1fr_min-content] grid-cols-1"
       ref={rootElement}
-      onDoubleClick={() => setDebug(!debug)}
     >
       <div
         className="text-right w-full overflow-hidden"

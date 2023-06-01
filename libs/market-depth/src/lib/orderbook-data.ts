@@ -434,6 +434,7 @@ export interface MockDataGeneratorParams {
   numberOfBuyRows: number;
   overlap: number;
   midPrice: number;
+  markPrice?: string;
   bestStaticBidPrice: number;
   bestStaticOfferPrice: number;
   indicativePrice?: number;
