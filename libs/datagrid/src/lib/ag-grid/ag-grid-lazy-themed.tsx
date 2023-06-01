@@ -24,8 +24,12 @@ export const AgGridThemed = ({
     rowHeight: 22,
     headerHeight: 22,
     enableCellTextSelection: true,
-    overlayLoadingTemplate: t('Loading...'),
-    overlayNoRowsTemplate: t('No data'),
+    loadingOverlayComponent: () => (
+      <span data-testid="datagrid-loading">{t('Loading...')}</span>
+    ),
+    noRowsOverlayComponent: () => (
+      <span data-testid="datagrid-no-data">{t('No data')}</span>
+    ),
   };
 
   const wrapperClasses = classNames('vega-ag-grid', {

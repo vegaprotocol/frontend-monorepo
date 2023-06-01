@@ -140,7 +140,6 @@ export const OrderListManager = ({
       orderCancellation: {},
     });
   }, [create]);
-  console.log(error);
 
   return (
     <>
@@ -159,7 +158,13 @@ export const OrderListManager = ({
           storeKey={storeKey}
           suppressAutoSize
           noRowsOverlayComponent={() => {
-            return <DataGridNoRowsOverlay error={error} reload={reload} />;
+            return (
+              <DataGridNoRowsOverlay
+                error={error}
+                reload={reload}
+                message={t('No orders')}
+              />
+            );
           }}
           {...bottomPlaceholderProps}
         />

@@ -97,7 +97,7 @@ describe('AccountManager', () => {
     });
   });
 
-  it('splash loading should be displayed', async () => {
+  it('loading should be displayed', async () => {
     mockedUseDataProvider.mockImplementation((args) => {
       return {
         loading: true,
@@ -113,15 +113,6 @@ describe('AccountManager', () => {
         />
       );
     });
-    await waitFor(() => {
-      expect(
-        screen.getByText(
-          (content, element) =>
-            Boolean(
-              element?.className.endsWith('flex items-center justify-center')
-            ) && content.startsWith('Loading')
-        )
-      ).toBeInTheDocument();
-    });
+    expect(await screen.findByTestId('datagrid-loading')).toBeInTheDocument();
   });
 });
