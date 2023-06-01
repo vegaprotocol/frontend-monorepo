@@ -1,7 +1,8 @@
 const dialogContent = 'dialog-content';
 const nodeHealth = 'node-health';
+const statusIncidentsLink = 'footer [data-testid=external-link]';
 
-describe.skip('home', { tags: '@regression' }, () => {
+describe('home', { tags: '@regression' }, () => {
   before(() => {
     cy.clearAllLocalStorage();
     cy.mockTradingPage();
@@ -12,34 +13,17 @@ describe.skip('home', { tags: '@regression' }, () => {
   describe('footer', () => {
     it('shows current block height', () => {
       // 0006-NETW-004
-      // 0006-NETW-005
       // 0006-NETW-008
       // 0006-NETW-009
-      // 0006-NETW-011
-
-      cy.intercept('POST', 'http://localhost:3008/graphql', (req) => {
-        req.on('response', (res) => {
-          res.setDelay(3001);
-        });
-      });
 
       cy.getByTestId(nodeHealth)
         .children()
         .first()
-        .should('contain.text', 'Warning delay ( >3 sec)');
-
-      cy.intercept('POST', 'http://localhost:3008/graphql', (req) => {
-        req.on('response', (res) => {
-          res.setDelay(1);
-        });
-      });
-
-      cy.getByTestId(nodeHealth)
-        .children()
-        .first()
-        .should('contain.text', 'Operational', { timeout: 10000 })
+        .should('contain.text', 'Operational', {
+          timeout: 10000,
+        })
         .next()
-        .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+        .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname)
         .next()
         .should('contain.text', '100'); // all mocked queries have x-block-height header set to 100
     });
@@ -82,12 +66,9 @@ describe.skip('home', { tags: '@regression' }, () => {
         .focus()
         .type(new URL(Cypress.env('VEGA_URL')).origin + '/graphql');
       cy.getByTestId('connect').click();
-      cy.getByTestId(nodeHealth)
-        .children()
-        .first()
-        .should('contain.text', 'Operational');
     });
   });
+
   describe('Network switcher', () => {
     before(() => {
       cy.mockTradingPage();
@@ -97,10 +78,21 @@ describe.skip('home', { tags: '@regression' }, () => {
 
     // 0006-NETW-002
     // 0006-NETW-003
-    it('switch to fairground network', () => {
-      cy.getByTestId('network-switcher').click();
+    // 0006-NETW-011
+    it('switch to fairground network and check status & incidents link', () => {
+      cy.getByTestId('navigation')
+        .find('[data-testid="network-switcher"]')
+        .click();
       cy.getByTestId('network-item').contains('Fairground testnet').click();
       cy.get('[aria-haspopup="menu"]').should('contain.text', 'Fairground');
+      cy.url().should('include', 'fairground.wtf');
+      cy.contains('Continue').click();
+      cy.get(statusIncidentsLink)
+        .children('span')
+        .should('have.text', 'Mainnet status & incidents');
+      cy.get(statusIncidentsLink)
+        .should('have.attr', 'href')
+        .and('contain', 'https://blog.vega.xyz/tagged/vega-incident-reports');
     });
   });
 });

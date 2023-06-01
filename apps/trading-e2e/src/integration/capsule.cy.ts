@@ -199,7 +199,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       .first()
       .should('contain.text', 'Operational')
       .next()
-      .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname)
       .next()
       .then(($el) => {
         const blockHeight = parseInt($el.text());
