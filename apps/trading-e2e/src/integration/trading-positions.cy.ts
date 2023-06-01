@@ -105,9 +105,7 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
         aliasGQLQuery(req, 'MarketsData', overrides, errors);
       });
       cy.visit('/#/markets/market-0');
-      cy.getByTestId('datagrid-overlay-error').contains(
-        'Something went wrong:'
-      );
+      cy.get('[data-testid="tab-positions"]').contains('no market data');
     });
   });
 
