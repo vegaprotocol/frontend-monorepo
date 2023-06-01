@@ -8,6 +8,32 @@ export interface VoteIconProps {
   yesText?: string;
   // Defaults to 'Against', but can be any text
   noText?: string;
+  // If set to false the background will not be coloured
+  useVoteColour?: boolean;
+}
+
+function getBgColour(useVoteColour: boolean, vote: boolean) {
+  if (useVoteColour === false) {
+    return 'bg-vega-dark-200';
+  }
+
+  return vote ? 'bg-vega-green-550' : 'bg-vega-pink-550';
+}
+
+function getFillColour(useVoteColour: boolean, vote: boolean) {
+  if (useVoteColour === false) {
+    return 'white';
+  }
+
+  return vote ? 'vega-green-300' : 'vega-pink-300';
+}
+
+function getTextColour(useVoteColour: boolean, vote: boolean) {
+  if (useVoteColour === false) {
+    return 'white';
+  }
+
+  return vote ? 'vega-green-200' : 'vega-pink-200';
 }
 
 /**
@@ -18,14 +44,15 @@ export interface VoteIconProps {
  */
 export function VoteIcon({
   vote,
+  useVoteColour = true,
   yesText = 'For',
   noText = 'Against',
 }: VoteIconProps) {
   const label = vote ? yesText : noText;
-  const bg = vote ? 'bg-vega-green-550' : 'bg-vega-pink-550';
   const icon: IconName = vote ? 'tick-circle' : 'delete';
-  const fill = vote ? 'vega-green-300' : 'vega-pink-300';
-  const text = vote ? 'vega-green-200' : 'vega-pink-200';
+  const bg = getBgColour(useVoteColour, vote);
+  const fill = getFillColour(useVoteColour, vote);
+  const text = getTextColour(useVoteColour, vote);
 
   return (
     <div
