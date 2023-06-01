@@ -19,6 +19,7 @@ describe('accounts', { tags: '@smoke' }, () => {
     // 7001-COLL-005
     // 7001-COLL-006
     // 7001-COLL-007
+    // 1003-TRAN-001
 
     const tradingAccountRowId = '[row-id="t-0"]';
     cy.getByTestId('Collateral').click();
@@ -62,6 +63,7 @@ describe('accounts', { tags: '@smoke' }, () => {
       .click();
     cy.getByTestId('deposit').should('be.visible');
     cy.getByTestId('withdraw').should('be.visible');
+    cy.getByTestId('transfer').should('be.visible');
     cy.getByTestId('breakdown').should('be.visible');
     cy.getByTestId('Collateral').click({ force: true });
   });

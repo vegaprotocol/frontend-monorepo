@@ -114,6 +114,8 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   });
 
   it('can key to key transfers', function () {
+    // 1003-TRAN-023
+    // 1003-TRAN-006
     cy.get('main[data-testid="/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
@@ -199,7 +201,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       .first()
       .should('contain.text', 'Operational')
       .next()
-      .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname)
       .next()
       .then(($el) => {
         const blockHeight = parseInt($el.text());
