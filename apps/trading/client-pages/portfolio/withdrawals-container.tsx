@@ -8,7 +8,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { GridNowRowsOverlay } from '@vegaprotocol/datagrid';
+import { DataGridNoRowsOverlay } from '@vegaprotocol/datagrid';
 
 export const WithdrawalsContainer = () => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -26,7 +26,7 @@ export const WithdrawalsContainer = () => {
           data-testid="withdrawals-history"
           rowData={data}
           noRowsOverlayComponent={() => (
-            <GridNowRowsOverlay
+            <DataGridNoRowsOverlay
               error={error}
               message={t('No withdrawals')}
               reload={reload}

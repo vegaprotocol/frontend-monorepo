@@ -3,7 +3,7 @@ import { useDepositDialog, DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
 import {
-  GridNowRowsOverlay,
+  DataGridNoRowsOverlay,
   useBottomPlaceholder,
 } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -29,7 +29,7 @@ export const DepositsContainer = () => {
           ref={gridRef}
           {...bottomPlaceholderProps}
           noRowsOverlayComponent={() => (
-            <GridNowRowsOverlay
+            <DataGridNoRowsOverlay
               error={error}
               message={t('No deposits')}
               reload={reload}

@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import { t } from '@vegaprotocol/i18n';
@@ -34,11 +35,13 @@ export const FillsManager = ({
     gridRef,
   });
 
+  const fills = compact(data).map((e) => e.node);
+
   return (
     <div className="h-full relative">
       <FillsTable
         ref={gridRef}
-        rowData={data}
+        rowData={fills}
         partyId={partyId}
         onMarketClick={onMarketClick}
         storeKey={storeKey}
