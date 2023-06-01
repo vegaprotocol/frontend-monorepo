@@ -54,7 +54,7 @@ export const Last24hVolume = ({
           </div>
         }
       >
-        <span ref={ref}>{'-'} </span>
+        <span ref={ref}>-</span>
       </Tooltip>
     );
   }
