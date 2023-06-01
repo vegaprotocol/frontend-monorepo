@@ -25,8 +25,7 @@ export const PositionsManager = ({
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, reload } = usePositionsData(partyIds, gridRef);
-  console.log(error);
+  const { data, error } = usePositionsData(partyIds, gridRef);
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
     marketId,
@@ -62,8 +61,6 @@ export const PositionsManager = ({
     gridRef,
     disabled: noBottomPlaceholder,
   });
-
-  console.log(error);
 
   return (
     <div className="h-full relative">
