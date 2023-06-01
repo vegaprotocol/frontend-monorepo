@@ -1,4 +1,4 @@
-import { useFiveDaysAgo } from '@vegaprotocol/react-helpers';
+import { useYesterday } from '@vegaprotocol/react-helpers';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -154,13 +154,13 @@ export const marketListProvider = makeDerivedDataProvider<
 );
 
 export const useMarketList = () => {
-  const fiveDaysAgo = useFiveDaysAgo();
+  const yesterday = useYesterday();
   const variables = useMemo(() => {
     return {
-      since: new Date(fiveDaysAgo).toISOString(),
+      since: new Date(yesterday).toISOString(),
       interval: Schema.Interval.INTERVAL_I1H,
     };
-  }, [fiveDaysAgo]);
+  }, [yesterday]);
   const { data, loading, error, reload } = useDataProvider({
     dataProvider: marketListProvider,
     variables,
