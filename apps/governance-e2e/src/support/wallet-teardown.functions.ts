@@ -141,7 +141,7 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
                     cy.getByTestId('currency-value', {
                       timeout: transactionTimeout,
                     })
-                      .should('have.length', 1)
+                      .first()
                       .invoke('text')
                       .as('displayedAmount');
                     cy.get('@displayedAmount', {

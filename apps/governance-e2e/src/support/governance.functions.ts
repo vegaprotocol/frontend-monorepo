@@ -59,7 +59,7 @@ export function submitUniqueRawProposal(proposalFields: {
   submit?: boolean;
 }) {
   goToMakeNewProposal(governanceProposalType.RAW);
-  let proposalBodyPath = '/proposals/raw.json';
+  let proposalBodyPath = 'src/fixtures/proposals/raw.json';
   if (proposalFields.proposalBody) {
     proposalBodyPath = proposalFields.proposalBody;
   }
