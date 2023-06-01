@@ -162,7 +162,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   useEffect(() => {
     const throttleRunner = updateOrderbookData.current;
     if (!data) {
-      dataRef.current = { rows: null, bids: null, asks: null };
+      dataRef.current = { bids: null, asks: null };
       setOrderbookData(dataRef.current);
       return;
     }

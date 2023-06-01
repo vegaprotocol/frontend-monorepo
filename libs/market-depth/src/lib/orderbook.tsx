@@ -4,10 +4,7 @@ import {
   formatNumberFixed,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  useResizeObserver,
-  useThemeSwitcher,
-} from '@vegaprotocol/react-helpers';
+import { useResizeObserver } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { OrderbookContinuousRow } from './orderbook-row';
 import type { OrderbookData } from './orderbook-data';
@@ -39,7 +36,6 @@ export const Orderbook = ({
   asks,
   bids,
 }: OrderbookProps) => {
-  const { theme } = useThemeSwitcher();
   const rootElement = useRef<HTMLDivElement>(null);
   const gridElement = useRef<HTMLDivElement>(null);
   const footerElement = useRef<HTMLDivElement>(null);
@@ -58,20 +54,6 @@ export const Orderbook = ({
     }
   }, [resolution]);
 
-  // handles resizing of the Allotment.Pane (x-axis)
-  // adjusts the header and footer width
-  const gridResizeHandler: ResizeObserverCallback = useCallback(
-    (entries) => {
-      if (!footerElement.current || entries.length === 0) {
-        return;
-      }
-      const {
-        contentRect: { width },
-      } = entries[0];
-      footerElement.current.style.width = `${width}px`;
-    },
-    [footerElement]
-  );
   // handles resizing of the Allotment.Pane (y-axis)
   // adjusts the scroll height
   const rootElementResizeHandler: ResizeObserverCallback = useCallback(
@@ -83,7 +65,6 @@ export const Orderbook = ({
     },
     [setViewportHeight, rootElement]
   );
-  useResizeObserver(gridElement.current, gridResizeHandler);
   useResizeObserver(rootElement.current, rootElementResizeHandler);
 
   const tableBodyUp = askRows?.length ? (
@@ -156,7 +137,9 @@ export const Orderbook = ({
     </div>
   ) : null;
 
-  const resolutions = new Array(decimalPlaces + 1)
+  const resolutions = new Array(
+    Math.max(markPrice?.toString().length, decimalPlaces + 1)
+  )
     .fill(null)
     .map((v, i) => Math.pow(10, i));
 
@@ -195,10 +178,10 @@ export const Orderbook = ({
       </div>
 
       <div
-        className="relative bottom-0 grid grid-cols-4 gap-2 border-t border-default mt-2 z-10 bg-white dark:bg-black w-full"
+        className="relative bottom-0 grid grid-cols-4 grid-rows-1 gap-2 border-t border-default mt-2 z-10 bg-white dark:bg-black w-full"
         ref={footerElement}
       >
-        <div className="col-start-3">
+        <div className="col-start-1">
           <select
             onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}
             value={resolution}
@@ -207,7 +190,12 @@ export const Orderbook = ({
           >
             {resolutions.map((r) => (
               <option key={r} value={r}>
-                {formatNumberFixed(0, decimalPlaces - Math.log10(r))}
+                {formatNumberFixed(
+                  Math.log10(r) - decimalPlaces > 0
+                    ? Math.pow(10, Math.log10(r) - decimalPlaces)
+                    : 0,
+                  decimalPlaces - Math.log10(r)
+                )}
               </option>
             ))}
           </select>

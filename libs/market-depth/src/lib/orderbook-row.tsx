@@ -20,65 +20,6 @@ interface OrderbookRowProps {
   type: VolumeType;
 }
 
-export const OrderbookRow = React.memo(
-  ({
-    ask,
-    bid,
-    cumulativeAsk,
-    cumulativeBid,
-    cumulativeRelativeAsk,
-    cumulativeRelativeBid,
-    decimalPlaces,
-    positionDecimalPlaces,
-    indicativeVolume,
-    price,
-    relativeAsk,
-    relativeBid,
-    onClick,
-  }: OrderbookRowProps) => {
-    return (
-      <>
-        <VolCell
-          testId={`bid-vol-${price}`}
-          value={bid}
-          valueFormatted={addDecimalsFixedFormatNumber(
-            bid,
-            positionDecimalPlaces
-          )}
-          relativeValue={relativeBid}
-          type="bid"
-        />
-        <VolCell
-          testId={`ask-vol-${price}`}
-          value={ask}
-          valueFormatted={addDecimalsFixedFormatNumber(
-            ask,
-            positionDecimalPlaces
-          )}
-          relativeValue={relativeAsk}
-          type="ask"
-        />
-        <PriceCell
-          testId={`price-${price}`}
-          value={BigInt(price)}
-          onClick={() => onClick && onClick(addDecimal(price, decimalPlaces))}
-          valueFormatted={addDecimalsFixedFormatNumber(price, decimalPlaces)}
-        />
-        <CumulativeVol
-          testId={`cumulative-vol-${price}`}
-          positionDecimalPlaces={positionDecimalPlaces}
-          bid={cumulativeBid}
-          ask={cumulativeAsk}
-          relativeAsk={cumulativeRelativeAsk}
-          relativeBid={cumulativeRelativeBid}
-          indicativeVolume={indicativeVolume}
-        />
-      </>
-    );
-  }
-);
-OrderbookRow.displayName = 'OrderbookRow';
-
 const RelativityBar = ({
   type,
   relativeAsk,
@@ -87,7 +28,7 @@ const RelativityBar = ({
   const askBar = relativeAsk ? (
     <div
       data-testid="ask-bar"
-      className="absolute left-0 top-0 opacity-40 dark:opacity-100 bg-vega-pink/60 transition-all"
+      className="absolute left-0 top-0 bg-vega-pink/20 dark:bg-vega-pink/30 transition-all"
       style={{
         height: relativeBid && relativeAsk ? '50%' : '100%',
         width: `${relativeAsk}%`,
@@ -97,7 +38,7 @@ const RelativityBar = ({
   const bidBar = relativeBid ? (
     <div
       data-testid="bid-bar"
-      className="absolute top-0 left-0 bg-vega-green/60 transition-all"
+      className="absolute top-0 left-0 bg-vega-green/20 dark:bg-vega-green/50 transition-all"
       style={{
         height: relativeBid && relativeAsk ? '50%' : '100%',
         top: relativeBid && relativeAsk ? '50%' : '0',
@@ -188,8 +129,6 @@ export const OrderbookContinuousRow = React.memo(
     positionDecimalPlaces,
     indicativeVolume,
     price,
-    relativeAsk,
-    relativeBid,
     onClick,
     type,
   }: OrderbookRowProps) => {
@@ -207,15 +146,19 @@ export const OrderbookContinuousRow = React.memo(
             value={BigInt(price)}
             onClick={() => onClick && onClick(addDecimal(price, decimalPlaces))}
             valueFormatted={addDecimalsFixedFormatNumber(price, decimalPlaces)}
+            className={
+              type === VolumeType.ask
+                ? '!text-vega-pink dark:text-vega-pink'
+                : 'text-vega-green-550 dark:text-vega-green'
+            }
           />
-          <VolCell
+          <NumericCell
             testId={`bid-ask-vol-${price}`}
             value={value}
             valueFormatted={addDecimalsFixedFormatNumber(
               value,
               positionDecimalPlaces
             )}
-            type={type === VolumeType.ask ? 'ask' : 'bid'}
           />
           <CumulativeVol
             testId={`cumulative-vol-${price}`}

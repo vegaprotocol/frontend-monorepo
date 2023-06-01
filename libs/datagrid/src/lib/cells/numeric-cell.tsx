@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import classNames from 'classnames';
 import { getDecimalSeparator, isNumeric } from '@vegaprotocol/utils';
 
 interface NumericCellProps {
@@ -12,7 +13,7 @@ interface NumericCellProps {
  * use, right aligned, monospace and decimals deemphasised
  */
 export const NumericCell = forwardRef<HTMLSpanElement, NumericCellProps>(
-  ({ value, valueFormatted, testId }, ref) => {
+  ({ value, valueFormatted, testId, className }, ref) => {
     if (!isNumeric(value)) {
       return (
         <span ref={ref} data-testid={testId}>
@@ -29,7 +30,10 @@ export const NumericCell = forwardRef<HTMLSpanElement, NumericCellProps>(
     return (
       <span
         ref={ref}
-        className="font-mono relative text-black dark:text-white whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir"
+        className={classNames(
+          'font-mono relative text-black dark:text-white whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir',
+          className
+        )}
         data-testid={testId}
         title={valueFormatted}
       >
