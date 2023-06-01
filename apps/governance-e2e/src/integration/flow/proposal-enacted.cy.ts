@@ -14,6 +14,7 @@ import {
   createUpdateNetworkProposalTxBody,
   createFreeFormProposalTxBody,
 } from '../../support/proposal.functions';
+import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
 
@@ -43,6 +44,7 @@ context(
       waitForSpinner();
       cy.connectVegaWallet();
       ethereumWalletConnect();
+      ensureSpecifiedUnstakedTokensAreAssociated('1');
       navigateTo(navigation.proposals);
     });
 
