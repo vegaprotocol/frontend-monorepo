@@ -1,4 +1,3 @@
-import type { ComponentProps } from 'react';
 import { useState } from 'react';
 import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
@@ -34,10 +33,7 @@ import { useOracleProofs } from '../../hooks';
 import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
-type PanelProps = Pick<
-  ComponentProps<typeof MarketInfoTable>,
-  'children' | 'noBorder'
-> & { showTitle?: boolean };
+type PanelProps = { children?: React.ReactNode };
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -47,13 +43,11 @@ type TradableInstrument = Get<MarketInfo, 'tradableInstrument'>;
 
 export const CurrentFeesInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: MarketInfoProps & PanelProps) => (
   <div>
-    {showTitle && (
-      <h2 className="font-alpha calt text-xl mt-4">{t('Current fees')}</h2>
-    )}
+    {children}
     <MarketInfoTable
       data={{
         makerFee: market.fees.factors.makerFee,
@@ -74,7 +68,7 @@ export const CurrentFeesInfoPanel = ({
 
 export const MarketPriceInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: MarketInfoProps & PanelProps) => {
   const assetSymbol =
@@ -87,9 +81,7 @@ export const MarketPriceInfoPanel = ({
   });
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Market price')}</h2>
-      )}
+      {children}
       <MarketInfoTable
         data={{
           markPrice: data?.markPrice,
@@ -112,7 +104,7 @@ export const MarketPriceInfoPanel = ({
 
 export const MarketVolumeInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: MarketInfoProps & PanelProps) => {
   const { data } = useDataProvider({
@@ -125,9 +117,7 @@ export const MarketVolumeInfoPanel = ({
 
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Market volume')}</h2>
-      )}
+      {children}
       <MarketInfoTable
         data={{
           '24hourVolume': (
@@ -152,7 +142,7 @@ export const MarketVolumeInfoPanel = ({
 export const InsurancePoolInfoPanel = ({
   market,
   account,
-  showTitle = false,
+  children,
   ...props
 }: {
   account: NonNullable<
@@ -164,9 +154,7 @@ export const InsurancePoolInfoPanel = ({
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Insurance pool')}</h2>
-      )}
+      {children}
       <MarketInfoTable
         data={{
           balance: account.balance,
@@ -183,7 +171,7 @@ export const InsurancePoolInfoPanel = ({
 
 export const KeyDetailsInfoPanel = ({
   market,
-  showTitle = false,
+  children,
 }: {
   market: {
     id: string;
@@ -197,9 +185,7 @@ export const KeyDetailsInfoPanel = ({
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Key details')}</h2>
-      )}
+      {children}
       <MarketInfoTable
         data={{
           name: market.tradableInstrument.instrument.name,
@@ -217,7 +203,7 @@ export const KeyDetailsInfoPanel = ({
 
 export const InstrumentInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: {
   market: {
@@ -225,9 +211,7 @@ export const InstrumentInfoPanel = ({
   };
 } & PanelProps) => (
   <div>
-    {showTitle && (
-      <h2 className="font-alpha calt text-xl mt-4">{t('Instrument')}</h2>
-    )}
+    {children}
     <MarketInfoTable
       data={{
         marketName: market.tradableInstrument.instrument.name,
@@ -242,15 +226,12 @@ export const InstrumentInfoPanel = ({
 
 export const SettlementAssetInfoPanel = ({
   market,
-  noBorder = true,
-  showTitle = false,
+  children,
 }: {
   market: {
     tradableInstrument: TradableInstrument;
   };
-  noBorder?: boolean;
-  showTitle?: boolean;
-}) => {
+} & PanelProps) => {
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   const quoteUnit =
@@ -262,15 +243,11 @@ export const SettlementAssetInfoPanel = ({
   const { data: asset } = useAssetDataProvider(assetId ?? '');
   return asset ? (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">
-          {t('Settlement asset')}
-        </h2>
-      )}
+      {children}
       <AssetDetailsTable
         asset={asset}
         inline={true}
-        noBorder={noBorder}
+        noBorder={true}
         dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
         ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
       />
@@ -288,7 +265,7 @@ export const SettlementAssetInfoPanel = ({
 
 export const MetadataInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: {
   market: {
@@ -296,9 +273,7 @@ export const MetadataInfoPanel = ({
   };
 } & PanelProps) => (
   <div>
-    {showTitle && (
-      <h2 className="font-alpha calt text-xl mt-4">{t('Metadata')}</h2>
-    )}
+    {children}
     <MarketInfoTable
       data={{
         expiryDate: getMarketExpiryDateFormatted(
@@ -318,7 +293,7 @@ export const MetadataInfoPanel = ({
 
 export const RiskModelInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: {
   market: {
@@ -331,9 +306,7 @@ export const RiskModelInfoPanel = ({
   const { tau, riskAversionParameter } = market.tradableInstrument.riskModel;
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Risk model')}</h2>
-      )}
+      {children}
       <MarketInfoTable
         data={{ tau, riskAversionParameter }}
         unformatted
@@ -345,7 +318,7 @@ export const RiskModelInfoPanel = ({
 
 export const RiskParametersInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: {
   market: {
@@ -361,11 +334,7 @@ export const RiskParametersInfoPanel = ({
       market.tradableInstrument.riskModel.params;
     return (
       <div>
-        {showTitle && (
-          <h2 className="font-alpha calt text-xl mt-4">
-            {t('Risk parameters')}
-          </h2>
-        )}
+        {children}
         <MarketInfoTable
           data={{ factorLong, factorShort }}
           unformatted
@@ -379,7 +348,7 @@ export const RiskParametersInfoPanel = ({
 
 export const RiskFactorsInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: {
   market: {
@@ -392,9 +361,7 @@ export const RiskFactorsInfoPanel = ({
   const { short, long } = market.riskFactors;
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Risk factors')}</h2>
-      )}
+      {children}
       <MarketInfoTable data={{ short, long }} unformatted {...props} />
     </div>
   );
@@ -403,7 +370,7 @@ export const RiskFactorsInfoPanel = ({
 export const PriceMonitoringBoundsInfoPanel = ({
   market,
   triggerIndex,
-  showTitle = false,
+  children,
   ...props
 }: {
   triggerIndex: number;
@@ -432,11 +399,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
   }
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">
-          {t('Price monitoring bounds %s', [triggerIndex.toString()])}
-        </h2>
-      )}
+      {children}
       <div className="text-xs">
         <div className="grid grid-cols-2 text-xs mb-4">
           <p className="col-span-1">
@@ -475,7 +438,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
 
 export const LiquidityMonitoringParametersInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: {
   market: {
@@ -486,11 +449,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   };
 } & PanelProps) => (
   <div>
-    {showTitle && (
-      <h2 className="font-alpha calt text-xl mt-4">
-        {t('Liquidity monitoring parameters')}
-      </h2>
-    )}
+    {children}
     <MarketInfoTable
       data={{
         triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
@@ -507,7 +466,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 
 export const LiquidityInfoPanel = ({
   market,
-  showTitle = false,
+  children,
   ...props
 }: {
   market: {
@@ -525,9 +484,7 @@ export const LiquidityInfoPanel = ({
   });
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Liquidity')}</h2>
-      )}
+      {children}
       <MarketInfoTable
         data={{
           targetStake: data?.targetStake,
@@ -544,7 +501,7 @@ export const LiquidityInfoPanel = ({
 
 export const LiquidityPriceRangeInfoPanel = ({
   market,
-  showTitle = false,
+  children,
 }: {
   market: {
     id: string;
@@ -564,11 +521,7 @@ export const LiquidityPriceRangeInfoPanel = ({
   });
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">
-          {t('Liquidity price range')}
-        </h2>
-      )}
+      {children}
       <p className="text-xs mb-4">
         {`For liquidity orders to count towards a commitment, they must be
             within the liquidity monitoring bounds.`}
@@ -609,7 +562,7 @@ export const LiquidityPriceRangeInfoPanel = ({
 export const OracleInfoPanel = ({
   market,
   type,
-  showTitle = false,
+  children,
 }: {
   market: {
     id: string;
@@ -633,10 +586,8 @@ export const OracleInfoPanel = ({
 
   return (
     <div>
-      {showTitle && (
-        <h2 className="font-alpha calt text-xl mt-4">{t('Oracle')}</h2>
-      )}
-      <div className="flex flex-col gap-4">
+      {children}
+      <div className="flex flex-col">
         <DataSourceProof
           data-testid="oracle-proof-links"
           data={dataSourceSpec}
@@ -761,7 +712,7 @@ const OracleLink = ({
   }
 
   return (
-    <div>
+    <div className="mt-2">
       {signerProviders.map((provider) => (
         <OracleProfile
           key={dataSourceSpecId}

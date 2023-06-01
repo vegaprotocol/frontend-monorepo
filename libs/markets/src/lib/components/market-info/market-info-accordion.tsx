@@ -132,35 +132,17 @@ export const MarketInfoAccordion = ({
     ? [
         {
           title: t('Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="settlementData"
-            />
-          ),
+          content: <OracleInfoPanel market={market} type="settlementData" />,
         },
       ]
     : [
         {
           title: t('Settlement Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="settlementData"
-            />
-          ),
+          content: <OracleInfoPanel market={market} type="settlementData" />,
         },
         {
           title: t('Termination Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="termination"
-            />
-          ),
+          content: <OracleInfoPanel market={market} type="termination" />,
         },
       ];
   const marketSpecPanels = [
