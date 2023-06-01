@@ -80,8 +80,18 @@ describe(
           .find('p')
           .should('have.text', proposalDescription);
       });
+      // 3001-VOTE-008
+      getProposalInformationFromTable('ID')
+        .invoke('text')
+        .should('not.be.empty')
+        .and('have.length', 64);
+      // 3001-VOTE-009
+      getProposalInformationFromTable('Proposed by')
+        .invoke('text')
+        .should('not.be.empty')
+        .and('have.length', 64);
       cy.getByTestId(proposalTermsToggle).click();
-      // 3001-VOTE-052
+      // 3001-VOTE-052 3001-VOTE-010
       cy.get('code.language-json')
         .should('exist')
         .within(() => {

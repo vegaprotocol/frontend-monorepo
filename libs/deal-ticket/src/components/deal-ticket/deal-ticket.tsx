@@ -170,6 +170,7 @@ export const DealTicket = ({
         marginAccountBalance || generalAccountBalance ? balance : undefined,
     },
     skip: !normalizedOrder,
+    fetchPolicy: 'no-cache',
   });
 
   const assetSymbol =

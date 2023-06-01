@@ -235,6 +235,7 @@ function makeDataProviderInternal<
   // subscription is started before initial query, all deltas that will arrive before initial query response are put on queue
   const updateQueue: Delta[] = [];
 
+  let initialized = false;
   let resetTimer: ReturnType<typeof setTimeout>;
   let variables: Variables;
   let data: Data | null = null;
@@ -480,12 +481,10 @@ function makeDataProviderInternal<
   };
 
   const initialize = async () => {
-    if (subscription) {
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-      }
+    if (initialized) {
       return;
     }
+    initialized = true;
     loading = true;
     error = undefined;
     notifyAll();
@@ -499,15 +498,12 @@ function makeDataProviderInternal<
   };
 
   const reset = () => {
-    if (!subscription) {
-      return;
-    }
     subscriptionUnsubscribe();
+    initialized = false;
     data = null;
     error = undefined;
     loading = false;
     loaded = false;
-    notifyAll();
   };
 
   // remove callback from list, and unsubscribe if there is no more callbacks registered
@@ -524,13 +520,14 @@ function makeDataProviderInternal<
 
   return (callback, c, v) => {
     callbacks.push(callback);
-    if (callbacks.length === 1) {
+    if (!initialized) {
       client = c;
       if (v) {
         variables = v;
       }
       initialize();
     } else {
+      clearTimeout(resetTimer);
       notify(callback);
     }
     return {

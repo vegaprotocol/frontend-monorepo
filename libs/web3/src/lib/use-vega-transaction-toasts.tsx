@@ -174,6 +174,7 @@ const EditOrderDetails = ({
 }) => {
   const { data: orderById } = useOrderByIdQuery({
     variables: { orderId: data.orderId },
+    fetchPolicy: 'no-cache',
   });
   const { data: markets } = useMarketList();
 

@@ -49,8 +49,11 @@ export const OrderListTable = memo<
       { onCancel, onEdit, onMarketClick, onOrderTypeClick, filter, ...props },
       ref
     ) => {
-      const showAllActions =
-        filter === undefined || filter === Filter.Open ? true : false;
+      const showAllActions = props.isReadOnly
+        ? false
+        : filter === undefined || filter === Filter.Open
+        ? true
+        : false;
 
       return (
         <AgGrid

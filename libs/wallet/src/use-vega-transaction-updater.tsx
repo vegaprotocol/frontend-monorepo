@@ -25,6 +25,7 @@ export const useVegaTransactionUpdater = () => {
   useOrderTxUpdateSubscription({
     variables,
     skip,
+    fetchPolicy: 'no-cache',
     onData: ({ data: result }) =>
       result.data?.orders?.forEach((order) => {
         updateOrder(order);
@@ -34,6 +35,7 @@ export const useVegaTransactionUpdater = () => {
   useWithdrawalBusEventSubscription({
     variables,
     skip,
+    fetchPolicy: 'no-cache',
     onData: ({ data: result }) =>
       result.data?.busEvents?.forEach((event) => {
         if (event.event.__typename === 'Withdrawal') {
@@ -48,6 +50,7 @@ export const useVegaTransactionUpdater = () => {
   useTransactionEventSubscription({
     variables,
     skip,
+    fetchPolicy: 'no-cache',
     onData: ({ data: result }) =>
       result.data?.busEvents?.forEach((event) => {
         if (event.event.__typename === 'TransactionResult') {
