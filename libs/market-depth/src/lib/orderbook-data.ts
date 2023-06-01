@@ -186,7 +186,7 @@ const mapRawData =
   (data: PriceLevelFieldsFragment): PartialOrderbookRowData =>
     createPartialRow(data.price, Number(data.volume), dataType);
 
-export const compactLeveledRows = (
+export const compactTypedRows = (
   directedData: PriceLevelFieldsFragment[] | null | undefined,
   dataType: VolumeType,
   resolution: number
@@ -233,63 +233,6 @@ export const compactLeveledRows = (
 
   updateCumulativeVolumeByType(orderbookData, dataType);
   updateRelativeDataByType(orderbookData, dataType);
-  return orderbookData;
-};
-
-/**
- * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
- */
-export const compactRows = (
-  sell: PriceLevelFieldsFragment[] | null | undefined,
-  buy: PriceLevelFieldsFragment[] | null | undefined,
-  resolution: number
-) => {
-  // map raw sell data to OrderbookData
-  const askOrderbookData = [...(sell ?? [])].map<PartialOrderbookRowData>(
-    mapRawData(VolumeType.ask)
-  );
-  // map raw buy data to OrderbookData
-  const bidOrderbookData = [...(buy ?? [])].map<PartialOrderbookRowData>(
-    mapRawData(VolumeType.bid)
-  );
-  // group by price level
-  const groupedByLevel = groupBy<PartialOrderbookRowData>(
-    [...askOrderbookData, ...bidOrderbookData],
-    (row) => getPriceLevel(row.price, resolution)
-  );
-  const orderbookData: OrderbookRowData[] = [];
-  Object.keys(groupedByLevel).forEach((price) => {
-    const row = extendRow(
-      groupedByLevel[price].pop() as PartialOrderbookRowData
-    );
-    row.price = price;
-    let subRow: PartialOrderbookRowData | undefined =
-      groupedByLevel[price].pop();
-    while (subRow) {
-      row.ask += subRow.ask;
-      row.bid += subRow.bid;
-      if (subRow.ask) {
-        row.askByLevel[subRow.price] = subRow.ask;
-      }
-      if (subRow.bid) {
-        row.bidByLevel[subRow.price] = subRow.bid;
-      }
-      subRow = groupedByLevel[price].pop();
-    }
-    orderbookData.push(row);
-  });
-  orderbookData.sort((a, b) => {
-    if (a === b) {
-      return 0;
-    }
-    if (BigInt(a.price) > BigInt(b.price)) {
-      return -1;
-    }
-    return 1;
-  });
-  updateCumulativeVolume(orderbookData);
-  // count relative volumes
-  updateRelativeData(orderbookData);
   return orderbookData;
 };
 
@@ -468,8 +411,8 @@ export const generateMockData = ({
     volume: (i + 2).toString(),
     numberOfOrders: '',
   }));
-  const asks = compactLeveledRows(sell, VolumeType.ask, resolution);
-  const bids = compactLeveledRows(buy, VolumeType.bid, resolution);
+  const asks = compactTypedRows(sell, VolumeType.ask, resolution);
+  const bids = compactTypedRows(buy, VolumeType.bid, resolution);
   const marketTradingMode =
     overlap > 0
       ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION

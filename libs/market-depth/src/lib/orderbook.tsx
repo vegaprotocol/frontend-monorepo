@@ -6,7 +6,7 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { useResizeObserver } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
-import { OrderbookContinuousRow } from './orderbook-row';
+import { OrderbookRow } from './orderbook-row';
 import type { OrderbookData } from './orderbook-data';
 import { VolumeType } from './orderbook-data';
 import { Splash } from '@vegaprotocol/ui-toolkit';
@@ -37,8 +37,6 @@ export const Orderbook = ({
   bids,
 }: OrderbookProps) => {
   const rootElement = useRef<HTMLDivElement>(null);
-  const gridElement = useRef<HTMLDivElement>(null);
-  const footerElement = useRef<HTMLDivElement>(null);
   const resolutionRef = useRef(resolution);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
@@ -72,7 +70,7 @@ export const Orderbook = ({
     >
       <div className="grid auto-rows-[17px] gap-1">
         {askRows.map((data, i) => (
-          <OrderbookContinuousRow
+          <OrderbookRow
             key={data.price}
             price={(BigInt(data.price) / BigInt(resolution)).toString()}
             onClick={onClick}
@@ -107,7 +105,7 @@ export const Orderbook = ({
     >
       <div className="grid auto-rows-[17px] gap-1">
         {bidRows.map((data, i) => (
-          <OrderbookContinuousRow
+          <OrderbookRow
             key={data.price}
             price={(BigInt(data.price) / BigInt(resolution)).toString()}
             onClick={onClick}
@@ -150,7 +148,6 @@ export const Orderbook = ({
       <div
         className="text-right w-full overflow-hidden"
         data-testid="orderbook-grid-element"
-        ref={gridElement}
       >
         {tableBodyUp || tableBodyDown ? (
           <>
@@ -175,10 +172,7 @@ export const Orderbook = ({
         )}
       </div>
 
-      <div
-        className="relative bottom-0 grid grid-cols-4 grid-rows-1 gap-2 border-t border-default mt-2 z-10 bg-white dark:bg-black w-full"
-        ref={footerElement}
-      >
+      <div className="relative bottom-0 grid grid-cols-4 grid-rows-1 gap-2 border-t border-default mt-2 z-10 bg-white dark:bg-black w-full">
         <div className="col-start-1">
           <select
             onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}

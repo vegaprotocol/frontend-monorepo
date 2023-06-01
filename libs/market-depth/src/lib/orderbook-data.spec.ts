@@ -1,12 +1,13 @@
-import {
-  compactRows,
-  updateLevels,
-  updateCompactedRows,
-} from './orderbook-data';
 import type { OrderbookRowData } from './orderbook-data';
+import {
+  compactTypedRows,
+  updateCompactedRows,
+  updateLevels,
+  VolumeType,
+} from './orderbook-data';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
-describe('compactRows', () => {
+describe('compactTypedRows', () => {
   const numberOfRows = 100;
   const middle = 1000;
   const sell: PriceLevelFieldsFragment[] = new Array(numberOfRows)
@@ -26,33 +27,34 @@ describe('compactRows', () => {
       numberOfOrders: (numberOfRows - i).toString(),
     }));
   it('groups data by price and resolution', () => {
-    expect(compactRows(sell, buy, 1).length).toEqual(200);
-    expect(compactRows(sell, buy, 5).length).toEqual(41);
-    expect(compactRows(sell, buy, 10).length).toEqual(21);
+    expect(compactTypedRows(sell, VolumeType.ask, 1).length).toEqual(100);
+    expect(compactTypedRows(buy, VolumeType.bid, 1).length).toEqual(100);
+    expect(compactTypedRows(sell, VolumeType.ask, 5).length).toEqual(21);
+    expect(compactTypedRows(buy, VolumeType.bid, 5).length).toEqual(21);
+    expect(compactTypedRows(sell, VolumeType.ask, 10).length).toEqual(11);
+    expect(compactTypedRows(buy, VolumeType.bid, 10).length).toEqual(11);
   });
   it('counts cumulative vol', () => {
-    const orderbookRows = compactRows(sell, buy, 10);
-    expect(orderbookRows[0].cumulativeVol.ask).toEqual(4950);
-    expect(orderbookRows[0].cumulativeVol.bid).toEqual(0);
-    expect(orderbookRows[10].cumulativeVol.ask).toEqual(390);
-    expect(orderbookRows[10].cumulativeVol.bid).toEqual(579);
-    expect(orderbookRows[orderbookRows.length - 1].cumulativeVol.bid).toEqual(
-      4950
-    );
-    expect(orderbookRows[orderbookRows.length - 1].cumulativeVol.ask).toEqual(
-      0
-    );
+    const asks = compactTypedRows(sell, VolumeType.ask, 10);
+    const bids = compactTypedRows(buy, VolumeType.bid, 10);
+    expect(asks[0].cumulativeVol.ask).toEqual(4950);
+    expect(bids[0].cumulativeVol.bid).toEqual(579);
+    expect(asks[10].cumulativeVol.ask).toEqual(390);
+    expect(bids[10].cumulativeVol.bid).toEqual(4950);
+    expect(bids[bids.length - 1].cumulativeVol.bid).toEqual(4950);
+    expect(asks[asks.length - 1].cumulativeVol.ask).toEqual(390);
   });
   it('stores volume by level', () => {
-    const orderbookRows = compactRows(sell, buy, 10);
-    expect(orderbookRows[0].askByLevel).toEqual({
+    const asks = compactTypedRows(sell, VolumeType.ask, 10);
+    const bids = compactTypedRows(buy, VolumeType.bid, 10);
+    expect(asks[0].askByLevel).toEqual({
       '1095': 5,
       '1096': 4,
       '1097': 3,
       '1098': 2,
       '1099': 1,
     });
-    expect(orderbookRows[orderbookRows.length - 1].bidByLevel).toEqual({
+    expect(bids[bids.length - 1].bidByLevel).toEqual({
       '902': 1,
       '903': 2,
       '904': 3,
@@ -60,17 +62,18 @@ describe('compactRows', () => {
   });
 
   it('updates relative data', () => {
-    const orderbookRows = compactRows(sell, buy, 10);
-    expect(orderbookRows[0].cumulativeVol.relativeAsk).toEqual(100);
-    expect(orderbookRows[0].cumulativeVol.relativeBid).toEqual(0);
-    expect(orderbookRows[0].relativeAsk).toEqual(2);
-    expect(orderbookRows[0].relativeBid).toEqual(0);
-    expect(orderbookRows[10].cumulativeVol.relativeAsk).toEqual(8);
-    expect(orderbookRows[10].cumulativeVol.relativeBid).toEqual(12);
-    expect(orderbookRows[10].relativeAsk).toEqual(44);
-    expect(orderbookRows[10].relativeBid).toEqual(64);
-    expect(orderbookRows[orderbookRows.length - 1].relativeAsk).toEqual(0);
-    expect(orderbookRows[orderbookRows.length - 1].relativeBid).toEqual(1);
+    const asks = compactTypedRows(sell, VolumeType.ask, 10);
+    const bids = compactTypedRows(buy, VolumeType.bid, 10);
+    expect(asks[0].cumulativeVol.relativeAsk).toEqual(100);
+    expect(bids[0].cumulativeVol.relativeBid).toEqual(12);
+    expect(asks[0].relativeAsk).toEqual(2);
+    expect(bids[0].relativeBid).toEqual(66);
+    expect(asks[10].cumulativeVol.relativeAsk).toEqual(8);
+    expect(bids[10].cumulativeVol.relativeBid).toEqual(100);
+    expect(asks[10].relativeAsk).toEqual(44);
+    expect(bids[10].relativeBid).toEqual(1);
+    expect(asks[asks.length - 1].relativeAsk).toEqual(44);
+    expect(bids[bids.length - 1].relativeBid).toEqual(1);
   });
 });
 

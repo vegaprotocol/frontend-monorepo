@@ -119,7 +119,7 @@ const CumulativeVol = memo(
 );
 CumulativeVol.displayName = 'OrderBookCumulativeVol';
 
-export const OrderbookContinuousRow = React.memo(
+export const OrderbookRow = React.memo(
   ({
     ask,
     bid,
@@ -173,4 +173,4 @@ export const OrderbookContinuousRow = React.memo(
     );
   }
 );
-OrderbookContinuousRow.displayName = 'OrderbookContinuousRow';
+OrderbookRow.displayName = 'OrderbookRow';

@@ -14,7 +14,7 @@ import type {
 } from './__generated__/MarketDepth';
 import type { OrderbookData } from './orderbook-data';
 import {
-  compactLeveledRows,
+  compactTypedRows,
   getMidPrice,
   getPriceLevel,
   updateCompactedRowsByType,
@@ -172,8 +172,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         marketDataRef.current?.indicativePrice &&
         getPriceLevel(marketDataRef.current.indicativePrice, resolution),
       midPrice: getMidPrice(data.depth.sell, data.depth.buy, resolution),
-      bids: compactLeveledRows(data.depth.buy, VolumeType.bid, resolution),
-      asks: compactLeveledRows(data.depth.sell, VolumeType.ask, resolution),
+      bids: compactTypedRows(data.depth.buy, VolumeType.bid, resolution),
+      asks: compactTypedRows(data.depth.sell, VolumeType.ask, resolution),
     };
     rawDataRef.current = data;
     setOrderbookData(dataRef.current);
