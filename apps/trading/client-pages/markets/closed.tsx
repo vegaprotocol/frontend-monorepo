@@ -4,7 +4,6 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { DataGridNoRowsOverlay } from '@vegaprotocol/datagrid';
 import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
@@ -313,13 +312,7 @@ const ClosedMarketsDataGrid = ({
         resizable: true,
         minWidth: 100,
       }}
-      noRowsOverlayComponent={() => (
-        <DataGridNoRowsOverlay
-          message={t('No markets')}
-          error={error}
-          reload={reload}
-        />
-      )}
+      overlayNoRowsTemplate={error ? error.message : t('No markets')}
       storeKey="closedMarkets"
     />
   );

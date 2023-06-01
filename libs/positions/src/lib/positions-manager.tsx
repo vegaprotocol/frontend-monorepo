@@ -5,10 +5,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
-import {
-  DataGridNoRowsOverlay,
-  useBottomPlaceholder,
-} from '@vegaprotocol/datagrid';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface PositionsManagerProps {
@@ -29,6 +26,7 @@ export const PositionsManager = ({
   const { pubKeys, pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, reload } = usePositionsData(partyIds, gridRef);
+  console.log(error);
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
     marketId,
@@ -65,6 +63,8 @@ export const PositionsManager = ({
     disabled: noBottomPlaceholder,
   });
 
+  console.log(error);
+
   return (
     <div className="h-full relative">
       <PositionsTable
@@ -78,13 +78,7 @@ export const PositionsManager = ({
         {...bottomPlaceholderProps}
         storeKey={storeKey}
         multipleKeys={partyIds.length > 1}
-        noRowsOverlayComponent={() => (
-          <DataGridNoRowsOverlay
-            error={error}
-            message={t('No positions')}
-            reload={reload}
-          />
-        )}
+        overlayNoRowsTemplate={error ? error.message : t('No positions')}
       />
     </div>
   );

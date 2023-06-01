@@ -4,10 +4,7 @@ import { useRef } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
 import { useFillsList } from './use-fills-list';
-import {
-  DataGridNoRowsOverlay,
-  useBottomPlaceholder,
-} from '@vegaprotocol/datagrid';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 
 interface FillsManagerProps {
   partyId: string;
@@ -24,7 +21,7 @@ export const FillsManager = ({
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
-  const { data, error, reload } = useFillsList({
+  const { data, error } = useFillsList({
     partyId,
     marketId,
     gridRef,
@@ -46,13 +43,7 @@ export const FillsManager = ({
         onMarketClick={onMarketClick}
         storeKey={storeKey}
         {...bottomPlaceholderProps}
-        noRowsOverlayComponent={() => (
-          <DataGridNoRowsOverlay
-            error={error}
-            message={t('No fills')}
-            reload={reload}
-          />
-        )}
+        overlayNoRowsTemplate={error ? error.message : t('No fills')}
       />
     </div>
   );

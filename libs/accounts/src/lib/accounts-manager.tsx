@@ -1,10 +1,7 @@
 import { useRef, memo, useCallback, useState, useEffect } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  DataGridNoRowsOverlay,
-  useBottomPlaceholder,
-} from '@vegaprotocol/datagrid';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { AgGridReact } from 'ag-grid-react';
 import type { RowDataUpdatedEvent } from 'ag-grid-community';
@@ -74,7 +71,7 @@ export const AccountManager = ({
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const { data, error, reload } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables: { partyId },
     update,
@@ -110,13 +107,7 @@ export const AccountManager = ({
         pinnedAsset={pinnedAsset}
         storeKey={storeKey}
         {...bottomPlaceholderProps}
-        noRowsOverlayComponent={() => (
-          <DataGridNoRowsOverlay
-            error={error}
-            message={t('No accounts')}
-            reload={reload}
-          />
-        )}
+        overlayNoRowsTemplate={error ? error.message : t('No accounts')}
       />
     </div>
   );

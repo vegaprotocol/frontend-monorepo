@@ -1,8 +1,5 @@
 import { useRef } from 'react';
-import {
-  AgGridLazy as AgGrid,
-  DataGridNoRowsOverlay,
-} from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import type { AgGridReact } from 'ag-grid-react';
@@ -22,7 +19,7 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
 
 export const ProposalsList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, refetch } = useProposalsListQuery({
+  const { data, error } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
     },
@@ -44,13 +41,7 @@ export const ProposalsList = () => {
         storeKey="proposedMarkets"
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
-        noRowsOverlayComponent={() => (
-          <DataGridNoRowsOverlay
-            error={error}
-            message={t('No markets')}
-            reload={refetch}
-          />
-        )}
+        overlayNoRowsTemplate={error ? error.message : t('No markets')}
       />
     </div>
   );

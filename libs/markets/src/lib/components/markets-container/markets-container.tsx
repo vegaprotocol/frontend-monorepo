@@ -7,7 +7,6 @@ import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
 import type { MarketMaybeWithData } from '../../markets-provider';
-import { DataGridNoRowsOverlay } from '@vegaprotocol/datagrid';
 
 const POLLING_TIME = 2000;
 interface MarketsContainerProps {
@@ -58,13 +57,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           );
         }}
         onMarketClick={onSelect}
-        noRowsOverlayComponent={() => (
-          <DataGridNoRowsOverlay
-            error={error}
-            message={t('No markets')}
-            reload={reload}
-          />
-        )}
+        overlayNoRowsTemplate={error ? error.message : t('No markets')}
       />
     </div>
   );

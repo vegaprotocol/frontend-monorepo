@@ -6,10 +6,7 @@ import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
-import {
-  useBottomPlaceholder,
-  DataGridNoRowsOverlay,
-} from '@vegaprotocol/datagrid';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import {
@@ -82,7 +79,7 @@ export const OrderListManager = ({
       ? { partyId, filter: { liveOnly: true } }
       : { partyId };
 
-  const { data, error, reload } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables,
     update: ({ data }) => {
@@ -157,15 +154,7 @@ export const OrderListManager = ({
           isReadOnly={isReadOnly}
           storeKey={storeKey}
           suppressAutoSize
-          noRowsOverlayComponent={() => {
-            return (
-              <DataGridNoRowsOverlay
-                error={error}
-                reload={reload}
-                message={t('No orders')}
-              />
-            );
-          }}
+          overlayNoRowsTemplate={error ? error.message : t('No orders')}
           {...bottomPlaceholderProps}
         />
       </div>

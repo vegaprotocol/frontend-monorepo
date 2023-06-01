@@ -98,21 +98,14 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
           },
         },
       ];
-      const marketData = marketsDataQuery();
-      const edges = marketData.marketsConnection?.edges.map((market) => {
-        const replace =
-          market.node.data?.market.id === 'market-2' ? null : market.node.data;
-        return { ...market, node: { ...market.node, data: replace } };
-      });
       const overrides = {
-        ...marketData,
-        marketsConnection: { ...marketData.marketsConnection, edges },
+        marketsConnection: { edges: [] },
       };
       cy.mockGQL((req) => {
         aliasGQLQuery(req, 'MarketsData', overrides, errors);
       });
       cy.visit('/#/markets/market-0');
-      cy.get('.pointer-events-none.absolute.inset-0').contains(
+      cy.getByTestId('datagrid-overlay-error').contains(
         'Something went wrong:'
       );
     });

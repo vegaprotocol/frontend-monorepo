@@ -36,7 +36,6 @@ import { Links, Routes } from '../../pages/client-router';
 
 import { useMarket, useStaticMarketData } from '@vegaprotocol/markets';
 import { DocsLinks } from '@vegaprotocol/environment';
-import { DataGridNoRowsOverlay } from '@vegaprotocol/datagrid';
 
 const enum LiquidityTabs {
   Active = 'active',
@@ -100,7 +99,7 @@ export const LiquidityContainer = ({
         symbol={symbol}
         assetDecimalPlaces={assetDecimalPlaces}
         stakeToCcyVolume={stakeToCcyVolume}
-        noRowsOverlayComponent={() => <DataGridNoRowsOverlay error={error} />}
+        overlayNoRowsTemplate={error ? error.message : t('No data')}
       />
     </div>
   );

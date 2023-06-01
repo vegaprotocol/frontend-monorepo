@@ -2,10 +2,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { useDepositDialog, DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
-import {
-  DataGridNoRowsOverlay,
-  useBottomPlaceholder,
-} from '@vegaprotocol/datagrid';
+import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useRef } from 'react';
@@ -14,7 +11,7 @@ import type { AgGridReact } from 'ag-grid-react';
 export const DepositsContainer = () => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { pubKey, isReadOnly } = useVegaWallet();
-  const { data, error, reload } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: depositsProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
@@ -28,13 +25,7 @@ export const DepositsContainer = () => {
           rowData={data || []}
           ref={gridRef}
           {...bottomPlaceholderProps}
-          noRowsOverlayComponent={() => (
-            <DataGridNoRowsOverlay
-              error={error}
-              message={t('No deposits')}
-              reload={reload}
-            />
-          )}
+          overlayNoRowsTemplate={error ? error.message : t('No deposits')}
         />
       </div>
       {!isReadOnly && (

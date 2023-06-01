@@ -5,7 +5,6 @@ import { useRef } from 'react';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import { useOrderStore } from '@vegaprotocol/orders';
-import { DataGridNoRowsOverlay } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 
 interface TradesContainerProps {
@@ -16,7 +15,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const updateOrder = useOrderStore((store) => store.update);
 
-  const { data, error, reload } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: tradesWithMarketProvider,
     variables: { marketId },
   });
@@ -31,13 +30,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
           updateOrder(marketId, { price });
         }
       }}
-      noRowsOverlayComponent={() => (
-        <DataGridNoRowsOverlay
-          error={error}
-          message={t('No trades')}
-          reload={reload}
-        />
-      )}
+      overlayNoRowsTemplate={error ? error.message : t('No trades')}
     />
   );
 };
