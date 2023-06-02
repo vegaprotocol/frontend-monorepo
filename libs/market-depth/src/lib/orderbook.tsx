@@ -73,14 +73,9 @@ export const Orderbook = ({
             onClick={onClick}
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             positionDecimalPlaces={positionDecimalPlaces}
-            bid={data.bid}
-            relativeBid={data.relativeBid}
-            cumulativeBid={data.cumulativeVol.bid}
-            cumulativeRelativeBid={data.cumulativeVol.relativeBid}
-            ask={data.ask}
-            relativeAsk={data.relativeAsk}
-            cumulativeAsk={data.cumulativeVol.ask}
-            cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
+            value={data.ask}
+            cumulativeValue={data.cumulativeVol.ask}
+            cumulativeRelativeValue={data.cumulativeVol.relativeAsk}
             type={VolumeType.ask}
           />
         ))}
@@ -101,14 +96,9 @@ export const Orderbook = ({
             onClick={onClick}
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             positionDecimalPlaces={positionDecimalPlaces}
-            bid={data.bid}
-            relativeBid={data.relativeBid}
-            cumulativeBid={data.cumulativeVol.bid}
-            cumulativeRelativeBid={data.cumulativeVol.relativeBid}
-            ask={data.ask}
-            relativeAsk={data.relativeAsk}
-            cumulativeAsk={data.cumulativeVol.ask}
-            cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
+            value={data.bid}
+            cumulativeValue={data.cumulativeVol.bid}
+            cumulativeRelativeValue={data.cumulativeVol.relativeBid}
             type={VolumeType.bid}
           />
         ))}

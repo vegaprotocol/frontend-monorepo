@@ -20,10 +20,8 @@ export interface OrderbookRowData {
   price: string;
   bid: number;
   bidByLevel: Record<string, number>;
-  relativeBid?: number;
   ask: number;
   askByLevel: Record<string, number>;
-  relativeAsk?: number;
   cumulativeVol: CumulativeVol;
 }
 
@@ -63,8 +61,6 @@ export const getMidPrice = (
     : undefined;
 
 const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
-  bid: Math.max(...orderbookData.map((data) => data.bid)),
-  ask: Math.max(...orderbookData.map((data) => data.ask)),
   cumulativeVol: Math.max(
     orderbookData[0]?.cumulativeVol.ask,
     orderbookData[orderbookData.length - 1]?.cumulativeVol.bid
@@ -78,41 +74,20 @@ const updateRelativeDataByType = (
   data: OrderbookRowData[],
   dataType: VolumeType
 ) => {
+  const { cumulativeVol } = getMaxVolumes(data);
   if (dataType === VolumeType.ask) {
-    const { ask: maxAsk, cumulativeVol } = getMaxVolumes(data);
     data.forEach((data, i) => {
-      data.relativeAsk = toPercentValue(data.ask / maxAsk);
       data.cumulativeVol.relativeAsk = toPercentValue(
         data.cumulativeVol.ask / cumulativeVol
       );
     });
   } else {
-    const { bid: maxBid, cumulativeVol } = getMaxVolumes(data);
     data.forEach((data, i) => {
-      data.relativeBid = toPercentValue(data.bid / maxBid);
       data.cumulativeVol.relativeBid = toPercentValue(
         data.cumulativeVol.bid / cumulativeVol
       );
     });
   }
-};
-
-/**
- * @summary Updates relativeAsk, relativeBid, cumulativeVol.relativeAsk, cumulativeVol.relativeBid
- */
-const updateRelativeData = (data: OrderbookRowData[]) => {
-  const { bid, ask, cumulativeVol } = getMaxVolumes(data);
-  const maxBidAsk = Math.max(bid, ask);
-  data.forEach((data, i) => {
-    data.relativeAsk = toPercentValue(data.ask / maxBidAsk);
-    data.relativeBid = toPercentValue(data.bid / maxBidAsk);
-    data.cumulativeVol.relativeAsk = toPercentValue(
-      data.cumulativeVol.ask / cumulativeVol
-    );
-    data.cumulativeVol.relativeBid = toPercentValue(
-      data.cumulativeVol.bid / cumulativeVol
-    );
-  });
 };
 
 const updateCumulativeVolumeByType = (
@@ -131,20 +106,6 @@ const updateCumulativeVolumeByType = (
         data[i].cumulativeVol.ask =
           data[i].ask + (i !== maxIndex ? data[i + 1].cumulativeVol.ask : 0);
       }
-    }
-  }
-};
-
-const updateCumulativeVolume = (data: OrderbookRowData[]) => {
-  if (data.length > 1) {
-    const maxIndex = data.length - 1;
-    for (let i = 0; i <= maxIndex; i++) {
-      data[i].cumulativeVol.bid =
-        data[i].bid + (i !== 0 ? data[i - 1].cumulativeVol.bid : 0);
-    }
-    for (let i = maxIndex; i >= 0; i--) {
-      data[i].cumulativeVol.ask =
-        data[i].ask + (i !== maxIndex ? data[i + 1].cumulativeVol.ask : 0);
     }
   }
 };
@@ -267,41 +228,13 @@ const partiallyUpdateCompactedRows = (
   }
 };
 
-export const updateCompactedRows = (
-  rows: Readonly<OrderbookRowData[]>,
-  sell: Readonly<PriceLevelFieldsFragment[]> | null,
-  buy: Readonly<PriceLevelFieldsFragment[]> | null,
-  resolution: number
-) => {
-  const data = cloneDeep(rows as OrderbookRowData[]);
-  uniqBy(reverse(sell || []), 'price')?.forEach((delta) => {
-    partiallyUpdateCompactedRows(VolumeType.ask, data, delta, resolution);
-  });
-  uniqBy(reverse(buy || []), 'price')?.forEach((delta) => {
-    partiallyUpdateCompactedRows(VolumeType.bid, data, delta, resolution);
-  });
-  updateCumulativeVolume(data);
-  let index = 0;
-  // remove levels that do not have any volume
-  while (index < data.length) {
-    if (!data[index].ask && !data[index].bid) {
-      data.splice(index, 1);
-    } else {
-      index += 1;
-    }
-  }
-  // count relative volumes
-  updateRelativeData(data);
-  return data;
-};
-
 /**
  * Updates OrderbookData[] with new data received from subscription - mutates input
  *
- * @param rows
- * @param sell
- * @param buy
+ * @param oldData sell | buy
+ * @param newData delta sell | buy
  * @param resolution
+ * @param dataType VolumeType
  * @returns void
  */
 export const updateCompactedRowsByType = (

@@ -2,89 +2,62 @@ import React, { memo } from 'react';
 import { addDecimal, addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell, PriceCell } from '@vegaprotocol/datagrid';
 import { VolumeType } from './orderbook-data';
+import classNames from 'classnames';
 
 interface OrderbookRowProps {
-  ask: number;
-  bid: number;
-  cumulativeAsk?: number;
-  cumulativeBid?: number;
-  cumulativeRelativeAsk?: number;
-  cumulativeRelativeBid?: number;
+  value: number;
+  cumulativeValue?: number;
+  cumulativeRelativeValue?: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
   price: string;
-  relativeAsk?: number;
-  relativeBid?: number;
   onClick?: (price: string) => void;
   type: VolumeType;
 }
 
 const CumulationBar = ({
-  cumulativeRelativeAsk,
-  cumulativeRelativeBid,
-}: Pick<
-  OrderbookRowProps,
-  'cumulativeRelativeAsk' | 'cumulativeRelativeBid'
->) => {
-  const askBar = cumulativeRelativeAsk ? (
-    <div
-      data-testid="ask-bar"
-      className="absolute left-0 top-0 bg-vega-pink/20 dark:bg-vega-pink/30 transition-all"
-      style={{
-        height: cumulativeRelativeBid && cumulativeRelativeAsk ? '50%' : '100%',
-        width: `${cumulativeRelativeAsk}%`,
-      }}
-    />
-  ) : null;
-  const bidBar = cumulativeRelativeBid ? (
-    <div
-      data-testid="bid-bar"
-      className="absolute top-0 left-0 bg-vega-green/20 dark:bg-vega-green/50 transition-all"
-      style={{
-        height: cumulativeRelativeBid && cumulativeRelativeAsk ? '50%' : '100%',
-        top: cumulativeRelativeBid && cumulativeRelativeAsk ? '50%' : '0',
-        width: `${cumulativeRelativeBid}%`,
-      }}
-    />
-  ) : null;
+  cumulativeValue,
+  type,
+}: {
+  cumulativeValue: number;
+  type: VolumeType;
+}) => {
   return (
-    <>
-      {askBar}
-      {bidBar}
-    </>
+    <div
+      data-testid={`${VolumeType.bid === type ? 'bid' : 'ask'}-bar`}
+      className={classNames(
+        'absolute top-0 left-0  h-full transition-all',
+        type === VolumeType.bid
+          ? 'bg-vega-green/20 dark:bg-vega-green/50'
+          : 'bg-vega-pink/20 dark:bg-vega-pink/30'
+      )}
+      style={{
+        width: `${cumulativeValue}%`,
+      }}
+    />
   );
 };
 
 const CumulativeVol = memo(
   ({
-    ask,
-    bid,
     testId,
     positionDecimalPlaces,
+    cumulativeValue,
   }: {
     ask?: number;
     bid?: number;
+    cumulativeValue?: number;
     testId?: string;
     className?: string;
     positionDecimalPlaces: number;
   }) => {
     const volume = (
       <span>
-        {ask ? (
+        {cumulativeValue ? (
           <NumericCell
-            value={ask}
+            value={cumulativeValue}
             valueFormatted={addDecimalsFixedFormatNumber(
-              ask,
-              positionDecimalPlaces ?? 0
-            )}
-          />
-        ) : null}
-        {ask && bid ? '/' : null}
-        {bid ? (
-          <NumericCell
-            value={ask}
-            valueFormatted={addDecimalsFixedFormatNumber(
-              bid,
+              cumulativeValue,
               positionDecimalPlaces ?? 0
             )}
           />
@@ -106,26 +79,19 @@ CumulativeVol.displayName = 'OrderBookCumulativeVol';
 
 export const OrderbookRow = React.memo(
   ({
-    ask,
-    bid,
-    cumulativeAsk,
-    cumulativeBid,
-    cumulativeRelativeAsk,
-    cumulativeRelativeBid,
+    value,
+    cumulativeValue,
+    cumulativeRelativeValue,
     decimalPlaces,
     positionDecimalPlaces,
     price,
     onClick,
     type,
   }: OrderbookRowProps) => {
-    const value = type === VolumeType.bid ? bid : ask;
     const txtId = type === VolumeType.bid ? 'bid' : 'ask';
     return (
       <div className="relative w-full">
-        <CumulationBar
-          cumulativeRelativeAsk={cumulativeRelativeAsk}
-          cumulativeRelativeBid={cumulativeRelativeBid}
-        />
+        <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
         <div className="grid gap-1 text-right auto-rows-[17px] grid-cols-3">
           <PriceCell
             testId={`price-${price}`}
@@ -149,8 +115,7 @@ export const OrderbookRow = React.memo(
           <CumulativeVol
             testId={`cumulative-vol-${price}`}
             positionDecimalPlaces={positionDecimalPlaces}
-            bid={cumulativeBid}
-            ask={cumulativeAsk}
+            cumulativeValue={cumulativeValue}
           />
         </div>
       </div>
