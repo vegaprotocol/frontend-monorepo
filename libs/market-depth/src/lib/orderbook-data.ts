@@ -9,22 +9,18 @@ export enum VolumeType {
   ask,
 }
 export interface CumulativeVol {
-  bid: number;
-  relativeBid?: number;
-  ask: number;
-  relativeAsk?: number;
+  value: number;
+  relativeValue?: number;
 }
 
 export interface OrderbookRowData {
   price: string;
-  bid: number;
-  bidByLevel: Record<string, number>;
-  ask: number;
-  askByLevel: Record<string, number>;
+  value: number;
+  valuesByLevel: Record<string, number>;
   cumulativeVol: CumulativeVol;
 }
 
-type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'ask' | 'bid'>;
+type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'value'>;
 
 export type OrderbookData = {
   asks: OrderbookRowData[] | null;
@@ -43,32 +39,21 @@ export const getPriceLevel = (price: string | bigint, resolution: number) => {
 
 const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
   cumulativeVol: Math.max(
-    orderbookData[0]?.cumulativeVol.ask,
-    orderbookData[orderbookData.length - 1]?.cumulativeVol.bid
+    orderbookData[0]?.cumulativeVol.value,
+    orderbookData[orderbookData.length - 1]?.cumulativeVol.value
   ),
 });
 
 // round instead of ceil so we will not show 0 if value if different than 0
 const toPercentValue = (value?: number) => Math.ceil((value ?? 0) * 100);
 
-const updateRelativeDataByType = (
-  data: OrderbookRowData[],
-  dataType: VolumeType
-) => {
+const updateRelativeData = (data: OrderbookRowData[]) => {
   const { cumulativeVol } = getMaxVolumes(data);
-  if (dataType === VolumeType.ask) {
-    data.forEach((data, i) => {
-      data.cumulativeVol.relativeAsk = toPercentValue(
-        data.cumulativeVol.ask / cumulativeVol
-      );
-    });
-  } else {
-    data.forEach((data, i) => {
-      data.cumulativeVol.relativeBid = toPercentValue(
-        data.cumulativeVol.bid / cumulativeVol
-      );
-    });
-  }
+  data.forEach((data, i) => {
+    data.cumulativeVol.relativeValue = toPercentValue(
+      data.cumulativeVol.value / cumulativeVol
+    );
+  });
 };
 
 const updateCumulativeVolumeByType = (
@@ -79,13 +64,14 @@ const updateCumulativeVolumeByType = (
     const maxIndex = data.length - 1;
     if (dataType === VolumeType.bid) {
       for (let i = 0; i <= maxIndex; i++) {
-        data[i].cumulativeVol.bid =
-          data[i].bid + (i !== 0 ? data[i - 1].cumulativeVol.bid : 0);
+        data[i].cumulativeVol.value =
+          data[i].value + (i !== 0 ? data[i - 1].cumulativeVol.value : 0);
       }
     } else {
       for (let i = maxIndex; i >= 0; i--) {
-        data[i].cumulativeVol.ask =
-          data[i].ask + (i !== maxIndex ? data[i + 1].cumulativeVol.ask : 0);
+        data[i].cumulativeVol.value =
+          data[i].value +
+          (i !== maxIndex ? data[i + 1].cumulativeVol.value : 0);
       }
     }
   }
@@ -93,34 +79,22 @@ const updateCumulativeVolumeByType = (
 
 export const createPartialRow = (
   price: string,
-  volume = 0,
-  dataType?: VolumeType
+  volume = 0
 ): PartialOrderbookRowData => ({
   price,
-  ask: dataType === VolumeType.ask ? volume : 0,
-  bid: dataType === VolumeType.bid ? volume : 0,
+  value: volume,
 });
 
 export const extendRow = (row: PartialOrderbookRowData): OrderbookRowData =>
   Object.assign(row, {
     cumulativeVol: {
-      ask: 0,
-      bid: 0,
+      value: 0,
     },
-    askByLevel: row.ask ? { [row.price]: row.ask } : {},
-    bidByLevel: row.bid ? { [row.price]: row.bid } : {},
+    valuesByLevel: { [row.price]: row.value },
   });
 
-export const createRow = (
-  price: string,
-  volume = 0,
-  dataType?: VolumeType
-): OrderbookRowData => extendRow(createPartialRow(price, volume, dataType));
-
-const mapRawData =
-  (dataType: VolumeType.ask | VolumeType.bid) =>
-  (data: PriceLevelFieldsFragment): PartialOrderbookRowData =>
-    createPartialRow(data.price, Number(data.volume), dataType);
+export const createRow = (price: string, volume = 0): OrderbookRowData =>
+  extendRow(createPartialRow(price, volume));
 
 export const compactTypedRows = (
   directedData: PriceLevelFieldsFragment[] | null | undefined,
@@ -130,8 +104,10 @@ export const compactTypedRows = (
   // map raw sell data to OrderbookData
   const mappedOrderbookData = [
     ...(directedData || []).filter((item) => item.volume !== '0'),
-  ].map<PartialOrderbookRowData>(mapRawData(dataType));
-  // group by price level
+  ].map<PartialOrderbookRowData>((data) =>
+    createPartialRow(data.price, Number(data.volume))
+  );
+
   const groupedByLevel = groupBy<PartialOrderbookRowData>(
     mappedOrderbookData,
     (row) => getPriceLevel(row.price, resolution)
@@ -145,14 +121,8 @@ export const compactTypedRows = (
     let subRow: PartialOrderbookRowData | undefined =
       groupedByLevel[price].pop();
     while (subRow) {
-      row.ask += subRow.ask;
-      row.bid += subRow.bid;
-      if (subRow.ask) {
-        row.askByLevel[subRow.price] = subRow.ask;
-      }
-      if (subRow.bid) {
-        row.bidByLevel[subRow.price] = subRow.bid;
-      }
+      row.value += subRow.value;
+      row.valuesByLevel[subRow.price] = subRow.value;
       subRow = groupedByLevel[price].pop();
     }
     orderbookData.push(row);
@@ -168,7 +138,7 @@ export const compactTypedRows = (
   });
 
   updateCumulativeVolumeByType(orderbookData, dataType);
-  updateRelativeDataByType(orderbookData, dataType);
+  updateRelativeData(orderbookData);
   return orderbookData;
 };
 
@@ -190,16 +160,13 @@ const partiallyUpdateCompactedRows = (
   const { price } = delta;
   const volume = Number(delta.volume);
   const priceLevel = getPriceLevel(price, resolution);
-  const isAskDataType = dataType === VolumeType.ask;
-  const volKey = isAskDataType ? 'ask' : 'bid';
-  const volByLevelKey = isAskDataType ? 'askByLevel' : 'bidByLevel';
   let index = data.findIndex((row) => row.price === priceLevel);
   if (index !== -1) {
-    data[index][volKey] =
-      data[index][volKey] - (data[index][volByLevelKey][price] || 0) + volume;
-    data[index][volByLevelKey][price] = volume;
+    data[index].value =
+      data[index].value - (data[index].valuesByLevel[price] || 0) + volume;
+    data[index].valuesByLevel[price] = volume;
   } else {
-    const newData: OrderbookRowData = createRow(priceLevel, volume, dataType);
+    const newData: OrderbookRowData = createRow(priceLevel, volume);
     index = data.findIndex((row) => BigInt(row.price) < BigInt(priceLevel));
     if (index !== -1) {
       data.splice(index, 0, newData);
@@ -233,14 +200,14 @@ export const updateCompactedRowsByType = (
   let index = 0;
   // remove levels that do not have any volume
   while (index < data.length) {
-    if (!data[index].ask && !data[index].bid) {
+    if (!data[index].value) {
       data.splice(index, 1);
     } else {
       index += 1;
     }
   }
   // count relative volumes
-  updateRelativeDataByType(data, dataType);
+  updateRelativeData(data);
   return data;
 };
 

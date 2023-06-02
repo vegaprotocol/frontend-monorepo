@@ -40,7 +40,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     buy: [],
   });
   const updateOrderbookData = useRef(
-    throttle(() => {
+    throttle((resolution: number) => {
       dataRef.current = {
         asks: deltaRef.current.buy.length
           ? updateCompactedRowsByType(
@@ -75,7 +75,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       delta: deltas,
     }: {
       delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'] | null;
-      // data: NonNullable<MarketDepthQuery['market']> | null | undefined;
     }) => {
       if (!dataRef.current.asks && !dataRef.current.bids) {
         return false;
@@ -91,10 +90,10 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
           deltaRef.current.buy.push(...delta.buy);
         }
       }
-      updateOrderbookData.current();
+      updateOrderbookData.current(resolution);
       return true;
     },
-    [marketId, updateOrderbookData]
+    [marketId, updateOrderbookData, resolution]
   );
 
   const { data, error, loading, flush, reload } = useDataProvider<
@@ -161,6 +160,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     (resolution: number) => {
       setResolution(resolution);
       flush();
+      setOrderbookData(dataRef.current);
+      updateOrderbookData.current(resolution);
     },
     [setResolution, flush]
   );
