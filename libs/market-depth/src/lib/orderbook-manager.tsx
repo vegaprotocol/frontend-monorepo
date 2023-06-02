@@ -26,14 +26,12 @@ interface OrderbookManagerProps {
 
 export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const [resolution, setResolution] = useState(1);
-  const [markPrice, setMarkPrice] = useState('');
   const variables = { marketId };
   const [orderbookData, setOrderbookData] = useState<OrderbookData>({
     asks: null,
     bids: null,
   });
   const dataRef = useRef<OrderbookData>({ asks: null, bids: null });
-  const marketDataRef = useRef<MarketData | null>(null);
   const deltaRef = useRef<{
     sell: PriceLevelFieldsFragment[];
     buy: PriceLevelFieldsFragment[];
@@ -137,9 +135,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     variables,
   });
 
-  if (!marketDataRef.current && marketData) {
-    marketDataRef.current = marketData;
-  }
+  const [markPrice, setMarkPrice] = useState(marketData?.markPrice || '');
 
   useEffect(() => {
     const throttleRunner = updateOrderbookData.current;
@@ -168,6 +164,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     },
     [setResolution, flush]
   );
+
+
+
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
@@ -186,7 +185,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
             updateOrder(marketId, { price });
           }
         }}
-        markPrice={markPrice || marketData?.marketData}
+        markPrice={markPrice}
       />
     </AsyncRenderer>
   );

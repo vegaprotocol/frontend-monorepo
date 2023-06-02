@@ -17,6 +17,7 @@ interface OrderbookProps extends OrderbookData {
   resolution: number;
   onResolutionChange: (resolution: number) => void;
   onClick?: (price: string) => void;
+  markPrice?: string;
 }
 
 // 17px of row height plus 4px gap
