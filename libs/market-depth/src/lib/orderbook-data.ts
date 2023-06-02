@@ -32,12 +32,7 @@ type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'ask' | 'bid'>;
 
 type OrderbookMarketData = Pick<
   MarketData,
-  | 'bestStaticBidPrice'
-  | 'bestStaticOfferPrice'
-  | 'indicativePrice'
-  | 'indicativeVolume'
-  | 'marketTradingMode'
-  | 'markPrice'
+  'bestStaticBidPrice' | 'bestStaticOfferPrice' | 'markPrice'
 >;
 
 export type OrderbookData = Partial<OrderbookMarketData> & {
@@ -125,7 +120,7 @@ const updateCumulativeVolumeByType = (
   data: OrderbookRowData[],
   dataType: VolumeType
 ) => {
-  if (data.length > 1) {
+  if (data.length) {
     const maxIndex = data.length - 1;
     if (dataType === VolumeType.bid) {
       for (let i = 0; i <= maxIndex; i++) {

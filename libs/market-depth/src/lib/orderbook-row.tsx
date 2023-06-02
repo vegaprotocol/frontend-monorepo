@@ -12,7 +12,6 @@ interface OrderbookRowProps {
   cumulativeRelativeBid?: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
-  indicativeVolume?: string;
   price: string;
   relativeAsk?: number;
   relativeBid?: number;
@@ -60,30 +59,16 @@ const CumulativeVol = memo(
   ({
     ask,
     bid,
-    indicativeVolume,
     testId,
     positionDecimalPlaces,
   }: {
     ask?: number;
     bid?: number;
-    indicativeVolume?: string;
     testId?: string;
     className?: string;
     positionDecimalPlaces: number;
   }) => {
-    const volume = indicativeVolume ? (
-      <span>
-        (
-        <NumericCell
-          value={Number(indicativeVolume)}
-          valueFormatted={addDecimalsFixedFormatNumber(
-            indicativeVolume,
-            positionDecimalPlaces ?? 0
-          )}
-        />
-        )
-      </span>
-    ) : (
+    const volume = (
       <span>
         {ask ? (
           <NumericCell
@@ -129,7 +114,6 @@ export const OrderbookRow = React.memo(
     cumulativeRelativeBid,
     decimalPlaces,
     positionDecimalPlaces,
-    indicativeVolume,
     price,
     onClick,
     type,
@@ -166,7 +150,6 @@ export const OrderbookRow = React.memo(
             positionDecimalPlaces={positionDecimalPlaces}
             bid={cumulativeBid}
             ask={cumulativeAsk}
-            indicativeVolume={indicativeVolume}
           />
         </div>
       </div>

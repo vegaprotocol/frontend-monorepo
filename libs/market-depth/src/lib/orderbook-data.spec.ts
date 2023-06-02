@@ -134,7 +134,7 @@ describe('updateLevels', () => {
   });
 });
 
-describe('updateCompactedRows', () => {
+describe('updateCompactedRowsByType', () => {
   const orderbookRows: OrderbookRowData[] = [
     {
       price: '120',

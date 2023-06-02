@@ -5,7 +5,6 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useResizeObserver } from '@vegaprotocol/react-helpers';
-import * as Schema from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookData } from './orderbook-data';
 import { VolumeType } from './orderbook-data';
@@ -21,12 +20,9 @@ interface OrderbookProps extends OrderbookData {
 }
 
 // 17px of row height plus 4px gap
-export const rowHeight = 21;
+export const rowHeight = 20.5;
 
 export const Orderbook = ({
-  marketTradingMode,
-  indicativeVolume,
-  indicativePrice,
   decimalPlaces,
   positionDecimalPlaces,
   resolution,
@@ -41,7 +37,8 @@ export const Orderbook = ({
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
   const limit = Math.floor((viewportHeight - 60) / 2 / rowHeight);
-  const askRows = asks?.slice(0, Math.max(0, limit)) ?? [];
+  const askRows =
+    asks?.slice(Math.min(asks?.length || 0, asks?.length - limit)) ?? [];
   const bidRows = bids?.slice(0, Math.max(0, limit)) ?? [];
 
   useEffect(() => {
@@ -63,7 +60,7 @@ export const Orderbook = ({
   );
   useResizeObserver(rootElement.current, rootElementResizeHandler);
 
-  const tableBodyUp = askRows?.length ? (
+  const tableBodyUp = (
     <div
       className="text-right w-full flex flex-col justify-end"
       style={{ height: 'calc(50% - 20px)' }}
@@ -84,21 +81,14 @@ export const Orderbook = ({
             relativeAsk={data.relativeAsk}
             cumulativeAsk={data.cumulativeVol.ask}
             cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
-            indicativeVolume={
-              marketTradingMode !==
-                Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS &&
-              indicativePrice === data.price
-                ? indicativeVolume
-                : undefined
-            }
             type={VolumeType.ask}
           />
         ))}
       </div>
     </div>
-  ) : null;
+  );
 
-  const tableBodyDown = bidRows?.length ? (
+  const tableBodyDown = (
     <div
       className="text-right w-full flex flex-col justify-start"
       style={{ height: 'calc(50% - 20px)' }}
@@ -119,19 +109,12 @@ export const Orderbook = ({
             relativeAsk={data.relativeAsk}
             cumulativeAsk={data.cumulativeVol.ask}
             cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
-            indicativeVolume={
-              marketTradingMode !==
-                Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS &&
-              indicativePrice === data.price
-                ? indicativeVolume
-                : undefined
-            }
             type={VolumeType.bid}
           />
         ))}
       </div>
     </div>
-  ) : null;
+  );
 
   const resolutions = new Array(
     Math.max(markPrice?.toString().length, decimalPlaces + 1)
@@ -157,8 +140,7 @@ export const Orderbook = ({
                 value={Number(markPrice)}
                 valueFormatted={addDecimalsFormatNumber(
                   markPrice,
-                  decimalPlaces,
-                  2
+                  decimalPlaces
                 )}
                 testId={`middle-mark-price-${markPrice}`}
               />
@@ -172,7 +154,7 @@ export const Orderbook = ({
         )}
       </div>
 
-      <div className="relative bottom-0 grid grid-cols-4 grid-rows-1 gap-2 border-t border-default mt-2 z-10 bg-white dark:bg-black w-full">
+      <div className="relative bottom-0 grid grid-cols-4 grid-rows-1 gap-2 border-t border-default z-10 bg-white dark:bg-black w-full">
         <div className="col-start-1">
           <select
             onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}
