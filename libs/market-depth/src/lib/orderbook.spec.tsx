@@ -12,9 +12,7 @@ describe('Orderbook', () => {
     bestStaticBidPrice: 122905,
     bestStaticOfferPrice: 122895,
     decimalPlaces: 3,
-    overlap: 10,
-    indicativePrice: 122900,
-    indicativeVolume: 11,
+    overlap: 0,
     resolution: 1,
   };
   const onResolutionChange = jest.fn();
@@ -49,11 +47,11 @@ describe('Orderbook', () => {
       />
     );
     expect(
-      await screen.findByTestId(`bid-ask-vol-${params.midPrice}`)
+      await screen.findByTestId(`bid-vol-${params.midPrice}`)
     ).toBeInTheDocument();
     // Before resolution change the price is 122.934
-    await fireEvent.click(await screen.getByTestId('price-122993'));
-    expect(onClickSpy).toBeCalledWith('122.993');
+    await fireEvent.click(await screen.getByTestId('price-122901'));
+    expect(onClickSpy).toBeCalledWith('122.901');
     const resolutionSelect = screen.getByTestId(
       'resolution'
     ) as HTMLSelectElement;
@@ -70,9 +68,8 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await fireEvent.click(await screen.getByTestId('price-12299'));
-    // After resolution change the price is 122.99
+    await fireEvent.click(await screen.getByTestId('price-12294'));
     expect(onResolutionChange.mock.calls[0][0]).toBe(10);
-    expect(onClickSpy).toBeCalledWith('122.99');
+    expect(onClickSpy).toBeCalledWith('122.94');
   });
 });

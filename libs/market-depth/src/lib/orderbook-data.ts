@@ -2,7 +2,6 @@ import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
 import reverse from 'lodash/reverse';
 import cloneDeep from 'lodash/cloneDeep';
-import * as Schema from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/markets';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
@@ -375,8 +374,6 @@ export interface MockDataGeneratorParams {
   markPrice?: string;
   bestStaticBidPrice: number;
   bestStaticOfferPrice: number;
-  indicativePrice?: number;
-  indicativeVolume?: number;
   resolution: number;
 }
 
@@ -388,8 +385,6 @@ export const generateMockData = ({
   overlap,
   bestStaticBidPrice,
   bestStaticOfferPrice,
-  indicativePrice,
-  indicativeVolume,
   resolution,
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
@@ -408,22 +403,13 @@ export const generateMockData = ({
   }));
   const asks = compactTypedRows(sell, VolumeType.ask, resolution);
   const bids = compactTypedRows(buy, VolumeType.bid, resolution);
-  const marketTradingMode =
-    overlap > 0
-      ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-      : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS;
   return {
     asks,
     bids,
     resolution,
-    indicativeVolume: indicativeVolume?.toString(),
-    marketTradingMode,
     midPrice: ((bestStaticBidPrice + bestStaticOfferPrice) / 2).toString(),
     markPrice,
     bestStaticBidPrice: bestStaticBidPrice.toString(),
     bestStaticOfferPrice: bestStaticOfferPrice.toString(),
-    indicativePrice: indicativePrice
-      ? getPriceLevel(indicativePrice.toString(), resolution)
-      : undefined,
   };
 };

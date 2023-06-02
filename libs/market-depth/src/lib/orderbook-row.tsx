@@ -118,7 +118,8 @@ export const OrderbookRow = React.memo(
     onClick,
     type,
   }: OrderbookRowProps) => {
-    const value = bid || ask;
+    const value = type === VolumeType.bid ? bid : ask;
+    const txtId = type === VolumeType.bid ? 'bid' : 'ask';
     return (
       <div className="relative w-full">
         <CumulationBar
@@ -138,7 +139,7 @@ export const OrderbookRow = React.memo(
             }
           />
           <NumericCell
-            testId={`bid-ask-vol-${price}`}
+            testId={`${txtId}-vol-${price}`}
             value={value}
             valueFormatted={addDecimalsFixedFormatNumber(
               value,
