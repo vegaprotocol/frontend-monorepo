@@ -115,17 +115,9 @@ export function dissociateFromSecondWalletKey() {
     });
   cy.get('@associatedPubKey').then((associatedPubKey) => {
     if (associatedPubKey == secondWalletKey) {
-      cy.getByTestId('vega-account-truncated')
-        .invoke('text')
-        .then((connectedPubKey) => {
-          if (connectedPubKey == secondWalletKey) {
-            stakingPageDisassociateAllTokens();
-          } else {
-            cy.get('[data-testid="manage-vega-wallet"]:visible').click();
-            cy.get('[data-testid="select-keypair-button"]').eq(0).click();
-            stakingPageDisassociateAllTokens();
-          }
-        });
+      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
+      cy.get('[data-testid="select-keypair-button"]').eq(0).click();
+      stakingPageDisassociateAllTokens();
     }
   });
 }

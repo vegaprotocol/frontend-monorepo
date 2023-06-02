@@ -537,7 +537,10 @@ context(
         });
     });
 
-    after('Dissasociate from second wallet key if present', function () {
+    after('Disassociate from second wallet key if present', function () {
+      cy.reload();
+      waitForSpinner();
+      ethereumWalletConnect();
       dissociateFromSecondWalletKey();
     });
 
