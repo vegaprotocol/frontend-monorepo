@@ -36,6 +36,7 @@ context('rewards - flow', { tags: '@slow' }, function () {
     cy.connectVegaWallet();
     vegaWalletTeardown();
     cy.associateTokensToVegaWallet('6000');
+    cy.getByTestId('currency-title').should('contain.text', 'Collateral');
     cy.VegaWalletTopUpRewardsPool(rewardsStartEpoch, rewardsEndEpoch);
     navigateTo(navigation.validators);
     cy.get(vegaWalletUnstakedBalance, txTimeout).should(

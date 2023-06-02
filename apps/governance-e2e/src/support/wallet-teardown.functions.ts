@@ -81,11 +81,10 @@ export async function vegaWalletTeardown() {
       cy.get(vegaWalletContainer).within(() => {
         cy.get(associatedAmountInWallet, {
           timeout: transactionTimeout,
-        })
-          .should('have.length', 1, { timeout: transactionTimeout })
-          .contains('0.00', {
-            timeout: transactionTimeout,
-          });
+        }).should('have.length', 1);
+        cy.get(associatedAmountInWallet).contains('0.00', {
+          timeout: transactionTimeout,
+        });
       });
     });
 }
