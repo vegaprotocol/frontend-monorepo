@@ -2,6 +2,21 @@ import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { generateMockData } from './orderbook-data';
 import { Orderbook } from './orderbook';
 
+function mockOffsetSize(width: number, height: number) {
+  Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
+    configurable: true,
+    value: () => ({ height, width }),
+  });
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    configurable: true,
+    value: height,
+  });
+  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+    configurable: true,
+    value: width,
+  });
+}
+
 describe('Orderbook', () => {
   const params = {
     numberOfSellRows: 100,
@@ -17,6 +32,10 @@ describe('Orderbook', () => {
   };
   const onResolutionChange = jest.fn();
   const decimalPlaces = 3;
+
+  beforeEach(() => {
+    mockOffsetSize(800, 768);
+  });
   it('markPrice should be in the middle', async () => {
     render(
       <Orderbook
@@ -35,7 +54,6 @@ describe('Orderbook', () => {
   });
 
   it('should format correctly the numbers on resolution change', async () => {
-    window.innerHeight = 768;
     const onClickSpy = jest.fn();
     const result = render(
       <Orderbook

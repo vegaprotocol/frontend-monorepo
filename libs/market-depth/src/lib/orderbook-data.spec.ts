@@ -31,24 +31,24 @@ describe('compactTypedRows', () => {
   it('counts cumulative vol', () => {
     const asks = compactTypedRows(sell, VolumeType.ask, 10);
     const bids = compactTypedRows(buy, VolumeType.bid, 10);
-    expect(asks[0].cumulativeVol.ask).toEqual(4950);
-    expect(bids[0].cumulativeVol.bid).toEqual(579);
-    expect(asks[10].cumulativeVol.ask).toEqual(390);
-    expect(bids[10].cumulativeVol.bid).toEqual(4950);
-    expect(bids[bids.length - 1].cumulativeVol.bid).toEqual(4950);
-    expect(asks[asks.length - 1].cumulativeVol.ask).toEqual(390);
+    expect(asks[0].cumulativeVol.value).toEqual(4950);
+    expect(bids[0].cumulativeVol.value).toEqual(579);
+    expect(asks[10].cumulativeVol.value).toEqual(390);
+    expect(bids[10].cumulativeVol.value).toEqual(4950);
+    expect(bids[bids.length - 1].cumulativeVol.value).toEqual(4950);
+    expect(asks[asks.length - 1].cumulativeVol.value).toEqual(390);
   });
   it('stores volume by level', () => {
     const asks = compactTypedRows(sell, VolumeType.ask, 10);
     const bids = compactTypedRows(buy, VolumeType.bid, 10);
-    expect(asks[0].askByLevel).toEqual({
+    expect(asks[0].valuesByLevel).toEqual({
       '1095': 5,
       '1096': 4,
       '1097': 3,
       '1098': 2,
       '1099': 1,
     });
-    expect(bids[bids.length - 1].bidByLevel).toEqual({
+    expect(bids[bids.length - 1].valuesByLevel).toEqual({
       '902': 1,
       '903': 2,
       '904': 3,
@@ -58,10 +58,10 @@ describe('compactTypedRows', () => {
   it('updates relative data', () => {
     const asks = compactTypedRows(sell, VolumeType.ask, 10);
     const bids = compactTypedRows(buy, VolumeType.bid, 10);
-    expect(asks[0].cumulativeVol.relativeAsk).toEqual(100);
-    expect(bids[0].cumulativeVol.relativeBid).toEqual(12);
-    expect(asks[10].cumulativeVol.relativeAsk).toEqual(8);
-    expect(bids[10].cumulativeVol.relativeBid).toEqual(100);
+    expect(asks[0].cumulativeVol.relativeValue).toEqual(100);
+    expect(bids[0].cumulativeVol.relativeValue).toEqual(12);
+    expect(asks[10].cumulativeVol.relativeValue).toEqual(8);
+    expect(bids[10].cumulativeVol.relativeValue).toEqual(100);
   });
 });
 
