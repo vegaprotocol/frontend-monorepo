@@ -165,8 +165,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     [setResolution, flush]
   );
 
-
-
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
