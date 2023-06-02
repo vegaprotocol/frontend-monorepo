@@ -36,7 +36,7 @@ const OrderbookTable = ({
   decimalPlaces: number;
   positionDecimalPlaces: number;
   type: VolumeType;
-  onClick: () => void;
+  onClick?: (price: string) => void;
 }) => {
   return (
     <div
@@ -75,8 +75,6 @@ export const Orderbook = ({
   asks,
   bids,
 }: OrderbookProps) => {
-  // console.log('asks', asks)
-  // console.log('bids', bids)
   const resolutions = new Array(
     Math.max(markPrice?.toString().length, decimalPlaces + 1)
   )
