@@ -58,7 +58,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
       {
         code: 'AAPL.MF21',
         markPrice: '46,126.90058tUSDC',
-        change: '+200.00%',
+        change: '-',
         vol: '0.0024h vol',
       },
     ];

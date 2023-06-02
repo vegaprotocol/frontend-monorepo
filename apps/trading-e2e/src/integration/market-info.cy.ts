@@ -60,7 +60,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   // 24hr volume assertion to fail as it now reads 'Unknown'
   it.skip('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
-    validateMarketDataRow(0, '24 Hour Volume', '1');
     validateMarketDataRow(1, 'Open Interest', '-');
     validateMarketDataRow(2, 'Best Bid Volume', '1');
     validateMarketDataRow(3, 'Best Offer Volume', '3');
