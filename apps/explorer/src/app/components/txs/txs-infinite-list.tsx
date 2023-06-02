@@ -98,6 +98,8 @@ export const TxsInfiniteList = ({
     }
   }
 
+  console.dir(txs);
+
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasMoreTxs ? txs.length + 1 : txs.length;
 

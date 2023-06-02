@@ -10,39 +10,77 @@ import {
   DropdownMenuContent,
   DropdownMenuItemIndicator,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   Icon,
+  DropdownMenuSubContent,
 } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 
 const BE_TXS_PER_REQUEST = 20;
 
-const FilterOptions = [
+type FilterOption =
+  | 'Transfer Funds'
+  | 'Submit Order'
+  | 'Chain Event'
+  | 'Withdraw'
+  | 'Proposal'
+  | 'Vote on Proposal'
+  | 'Liquidity Provision Order'
+  | 'Amend LiquidityProvision Order'
+  | 'Submit Oracle Data'
+  | 'Amend Order'
+  | 'Register new Node'
+  | 'Cancel Order'
+  | 'Batch Market Instructions'
+  | 'Node Vote'
+  | 'Node Signature'
+  | 'Cancel LiquidityProvision Order'
+  | 'Delegate'
+  | 'Undelegate'
+  | 'Key Rotate Submission'
+  | 'State Variable Proposal'
+  | 'Cancel Transfer Funds'
+  | 'Validator Heartbeat'
+  | 'Ethereum Key Rotate Submission'
+  | 'Protocol Upgrade'
+  | 'Issue Signatures';
+
+const PrimaryFilterOptions: FilterOption[] = [
+  'Transfer Funds',
   'Submit Order',
-  'Cancel Order',
-  'Amend Order',
+  'Chain Event',
   'Withdraw',
   'Proposal',
   'Vote on Proposal',
-  'Register new Node',
-  'Node Vote',
-  'Node Signature',
   'Liquidity Provision Order',
-  'Cancel LiquidityProvision Order',
-  'Amend LiquidityProvision Order',
-  'Chain Event',
   'Submit Oracle Data',
+  'Batch Market Instructions',
   'Delegate',
   'Undelegate',
+  'Amend LiquidityProvision Order',
+  'Amend Order',
+  'Cancel LiquidityProvision Order',
+  'Cancel Order',
+  'Cancel Transfer Funds',
+];
+
+const SecondaryFilterOptions: FilterOption[] = [
+  'Register new Node',
   'Key Rotate Submission',
   'State Variable Proposal',
-  'Transfer Funds',
-  'Cancel Transfer Funds',
   'Validator Heartbeat',
   'Ethereum Key Rotate Submission',
   'Protocol Upgrade',
   'Issue Signatures',
-  'Batch Market Instructions',
+  'Node Signature',
+  'Node Vote',
+];
+
+const AllFilterOptions: FilterOption[] = [
+  ...PrimaryFilterOptions,
+  ...SecondaryFilterOptions,
 ];
 
 export function getFilterLabel(filters: Set<string>) {
@@ -69,8 +107,7 @@ export const TxsList = () => {
 };
 
 export const TxsListFiltered = () => {
-  const [filters, setFilters] = useState(new Set(FilterOptions));
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [filters, setFilters] = useState(new Set(AllFilterOptions));
 
   const f =
     filters && filters.size === 1
@@ -89,25 +126,16 @@ export const TxsListFiltered = () => {
 
         <DropdownMenu
           modal={false}
-          open={dropdownOpen}
           trigger={
-            <DropdownMenuTrigger
-              onClick={() => {
-                setDropdownOpen(!dropdownOpen);
-              }}
-            >
-              {getFilterLabel(filters)}
-            </DropdownMenuTrigger>
+            <DropdownMenuTrigger>{getFilterLabel(filters)}</DropdownMenuTrigger>
           }
         >
-          <DropdownMenuContent
-            onPointerDownOutside={() => setDropdownOpen(false)}
-          >
+          <DropdownMenuContent>
             {filters.size > 1 ? null : (
               <>
                 <DropdownMenuCheckboxItem
                   onCheckedChange={(checked) =>
-                    setFilters(new Set(FilterOptions))
+                    setFilters(new Set(AllFilterOptions))
                   }
                 >
                   Clear filters <Icon name="cross" />
@@ -115,7 +143,7 @@ export const TxsListFiltered = () => {
                 <DropdownMenuSeparator />
               </>
             )}
-            {FilterOptions.map((f) => (
+            {PrimaryFilterOptions.map((f) => (
               <DropdownMenuCheckboxItem
                 key={f}
                 checked={filters.has(f)}
@@ -131,6 +159,30 @@ export const TxsListFiltered = () => {
                 </DropdownMenuItemIndicator>
               </DropdownMenuCheckboxItem>
             ))}
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                More Tools
+                <Icon name="chevron-right" />
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {SecondaryFilterOptions.map((f) => (
+                  <DropdownMenuCheckboxItem
+                    key={f}
+                    checked={filters.has(f)}
+                    onCheckedChange={(checked) => {
+                      // NOTE: These act like radio buttons until the API supports multiple filters
+                      setFilters(new Set([f]));
+                    }}
+                    id={`radio-${f}`}
+                  >
+                    {f}
+                    <DropdownMenuItemIndicator>
+                      <Icon name="tick-circle" className="inline" />
+                    </DropdownMenuItemIndicator>
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
           </DropdownMenuContent>
         </DropdownMenu>
       </menu>
