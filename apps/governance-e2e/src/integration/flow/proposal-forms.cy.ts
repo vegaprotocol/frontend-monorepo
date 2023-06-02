@@ -15,7 +15,11 @@ import {
   governanceProposalType,
   voteForProposal,
 } from '../../support/governance.functions';
-import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
+import {
+  ensureSpecifiedUnstakedTokensAreAssociated,
+  stakingPageAssociateTokens,
+  stakingPageDisassociateAllTokens,
+} from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
   vegaWalletSetSpecifiedApprovalAmount,
@@ -247,7 +251,10 @@ context(
 
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
-    it('Unable to submit update market proposal without equity-like share in the market', function () {
+    it.only('Unable to submit update market proposal without equity-like share in the market', function () {
+      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
+      cy.get('[data-testid="select-keypair-button"]').eq(0).click(); // switch to second wallet pub key
+      stakingPageAssociateTokens('1');
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
       cy.get(newProposalTitle).type('Test update market proposal - rejected');
       cy.get(newProposalDescription).type('E2E test for proposals');
@@ -269,7 +276,11 @@ context(
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
       validateDialogContentMsg('PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE');
-      ensureSpecifiedUnstakedTokensAreAssociated('1');
+      closeDialog();
+      ethereumWalletConnect();
+      stakingPageDisassociateAllTokens();
+      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
+      cy.get('[data-testid="select-keypair-button"]').eq(0).click();
     });
 
     // 3002-PROP-020
