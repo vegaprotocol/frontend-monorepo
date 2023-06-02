@@ -5,12 +5,13 @@ export const ErrorCodes = new Map([
   [51, 'Transaction failed validation'],
   [60, 'Transaction could not be decoded'],
   [70, 'Error'],
+  [71, 'Partial success/error'],
   [80, 'Unknown command'],
   [89, 'Rejected as spam'],
   [0, 'Success'],
 ]);
 
-export const successCodes = new Set([0]);
+export const successCodes = new Set([0, 71]);
 
 interface ChainResponseCodeProps {
   code: number;
@@ -29,11 +30,12 @@ export const ChainResponseCode = ({
   error,
 }: ChainResponseCodeProps) => {
   const isSuccess = successCodes.has(code);
-
+  const successColour =
+    code === 71 ? 'fill-vega-orange' : 'fill-vega-green-600';
   const icon = isSuccess ? (
-    <Icon name="tick-circle" className="fill-vega-green-550" />
+    <Icon name="tick-circle" className={successColour} />
   ) : (
-    <Icon name="cross" className="fill-vega-pink-550" />
+    <Icon name="cross" className="fill-vega-pink-600" />
   );
   const label = ErrorCodes.get(code) || 'Unknown response code';
 
