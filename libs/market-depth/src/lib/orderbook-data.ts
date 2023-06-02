@@ -35,7 +35,6 @@ type OrderbookMarketData = Pick<
 export type OrderbookData = Partial<OrderbookMarketData> & {
   asks: OrderbookRowData[] | null;
   bids: OrderbookRowData[] | null;
-  midPrice?: string;
 };
 
 export const getPriceLevel = (price: string | bigint, resolution: number) => {
@@ -47,18 +46,6 @@ export const getPriceLevel = (price: string | bigint, resolution: number) => {
   }
   return priceLevel.toString();
 };
-
-export const getMidPrice = (
-  sell: PriceLevelFieldsFragment[] | null | undefined,
-  buy: PriceLevelFieldsFragment[] | null | undefined,
-  resolution: number
-) =>
-  buy?.length && sell?.length
-    ? getPriceLevel(
-        (BigInt(buy[0].price) + BigInt(sell[0].price)) / BigInt(2),
-        resolution
-      )
-    : undefined;
 
 const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
   cumulativeVol: Math.max(
@@ -148,7 +135,7 @@ export const compactTypedRows = (
 ) => {
   // map raw sell data to OrderbookData
   const mappedOrderbookData = [
-    ...(directedData ?? []),
+    ...(directedData || []).filter((item) => item.volume !== '0'),
   ].map<PartialOrderbookRowData>(mapRawData(dataType));
   // group by price level
   const groupedByLevel = groupBy<PartialOrderbookRowData>(
@@ -244,7 +231,10 @@ export const updateCompactedRowsByType = (
   dataType: VolumeType
 ) => {
   const data = cloneDeep(oldData as OrderbookRowData[]);
-  uniqBy(reverse(newData || []), 'price')?.forEach((delta) => {
+  uniqBy(
+    reverse((newData || []).filter((item) => item.volume !== '0')),
+    'price'
+  )?.forEach((delta) => {
     partiallyUpdateCompactedRows(dataType, data, delta, resolution);
   });
 

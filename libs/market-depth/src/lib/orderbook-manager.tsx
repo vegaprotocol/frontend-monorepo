@@ -15,7 +15,6 @@ import type {
 import type { OrderbookData } from './orderbook-data';
 import {
   compactTypedRows,
-  getMidPrice,
   updateCompactedRowsByType,
   VolumeType,
 } from './orderbook-data';
@@ -47,11 +46,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     throttle(() => {
       dataRef.current = {
         ...marketDataRef.current,
-        midPrice: getMidPrice(
-          rawDataRef.current?.depth.sell,
-          rawDataRef.current?.depth.buy,
-          resolution
-        ),
         asks: deltaRef.current.buy.length
           ? updateCompactedRowsByType(
               dataRef.current.asks ?? [],
@@ -161,7 +155,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     }
     dataRef.current = {
       ...marketDataRef.current,
-      midPrice: getMidPrice(data.depth.sell, data.depth.buy, resolution),
       bids: compactTypedRows(data.depth.buy, VolumeType.bid, resolution),
       asks: compactTypedRows(data.depth.sell, VolumeType.ask, resolution),
     };

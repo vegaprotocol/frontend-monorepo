@@ -16,10 +16,10 @@ interface OrderbookRowProps {
 }
 
 const CumulationBar = ({
-  cumulativeValue,
+  cumulativeValue = 0,
   type,
 }: {
-  cumulativeValue: number;
+  cumulativeValue?: number;
   type: VolumeType;
 }) => {
   return (
