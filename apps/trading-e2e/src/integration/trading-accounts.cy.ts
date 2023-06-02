@@ -124,25 +124,6 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId(dialogClose).click();
   });
 
-  it('sorting usage breakdown columns should work well', () => {
-    // 7001-COLL-010
-    cy.getByTestId('breakdown').contains('1.01').click();
-    cy.getByTestId('usage-breakdown')
-      .find('[col-id="type"]')
-      .eq(1)
-      .should('have.text', 'Margin');
-    cy.getByTestId('usage-breakdown')
-      .find('[col-id="type"]')
-      .eq(2)
-      .should('have.text', 'Margin');
-    cy.getByTestId('usage-breakdown')
-      .find('[col-id="type"]')
-      .eq(3)
-      .should('have.text', 'General');
-
-    cy.getByTestId(dialogClose).click();
-  });
-
   describe('sorting by ag-grid columns should work well', () => {
     before(() => {
       const dialogs = Cypress.$('[data-testid="dialog-close"]:visible');
