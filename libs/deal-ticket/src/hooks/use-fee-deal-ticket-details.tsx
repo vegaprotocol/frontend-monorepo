@@ -53,19 +53,22 @@ export interface FeeDetails {
 const emptyValue = '-';
 const formatValue = (
   value: string | number | null | undefined,
-  formatDecimals: number
+  formatDecimals: number,
+  quantum?: string
 ): string => {
+  const numberDp = Math.max(0, Math.log10(100 / Number(quantum) || 0));
   return isNumeric(value)
-    ? addDecimalsFormatNumber(value, formatDecimals)
+    ? addDecimalsFormatNumber(value, formatDecimals, numberDp)
     : emptyValue;
 };
 const formatRange = (
   min: string | number | null | undefined,
   max: string | number | null | undefined,
-  formatDecimals: number
+  formatDecimals: number,
+  quantum?: string
 ) => {
-  const minFormatted = formatValue(min, formatDecimals);
-  const maxFormatted = formatValue(max, formatDecimals);
+  const minFormatted = formatValue(min, formatDecimals, quantum);
+  const maxFormatted = formatValue(max, formatDecimals, quantum);
   if (minFormatted !== maxFormatted) {
     return `${minFormatted} - ${maxFormatted}`;
   }
@@ -92,6 +95,8 @@ export const getFeeDetailsValues = ({
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
+  const quantum =
+    market.tradableInstrument.instrument.product.settlementAsset.quantum;
   const details: {
     label: string;
     value?: string | null;
@@ -101,7 +106,7 @@ export const getFeeDetailsValues = ({
   }[] = [
     {
       label: t('Notional'),
-      value: formatValue(notionalSize, assetDecimals),
+      value: formatValue(notionalSize, assetDecimals, quantum),
       symbol: assetSymbol,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol),
     },
@@ -109,7 +114,7 @@ export const getFeeDetailsValues = ({
       label: t('Fees'),
       value:
         feeEstimate?.totalFeeAmount &&
-        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`,
+        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`,
       labelDescription: (
         <>
           <span>
@@ -156,7 +161,8 @@ export const getFeeDetailsValues = ({
     value: formatRange(
       marginRequiredBestCase,
       marginRequiredWorstCase,
-      assetDecimals
+      assetDecimals,
+      quantum
     ),
     symbol: assetSymbol,
     labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
@@ -171,12 +177,12 @@ export const getFeeDetailsValues = ({
   details.push({
     indent: true,
     label: t('Total margin available'),
-    value: formatValue(totalMarginAvailable, assetDecimals),
+    value: formatValue(totalMarginAvailable, assetDecimals, quantum),
     symbol: assetSymbol,
     labelDescription: TOTAL_MARGIN_AVAILABLE(
-      formatValue(generalAccountBalance, assetDecimals),
-      formatValue(marginAccountBalance, assetDecimals),
-      formatValue(currentMaintenanceMargin, assetDecimals),
+      formatValue(generalAccountBalance, assetDecimals, quantum),
+      formatValue(marginAccountBalance, assetDecimals, quantum),
+      formatValue(currentMaintenanceMargin, assetDecimals, quantum),
       assetSymbol
     ),
   });
@@ -200,7 +206,8 @@ export const getFeeDetailsValues = ({
         deductionFromCollateralWorstCase > 0
           ? deductionFromCollateralWorstCase.toString()
           : '0',
-        assetDecimals
+        assetDecimals,
+        quantum
       ),
       symbol: assetSymbol,
       labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
@@ -211,7 +218,8 @@ export const getFeeDetailsValues = ({
       value: formatRange(
         marginEstimate?.bestCase.initialLevel,
         marginEstimate?.worstCase.initialLevel,
-        assetDecimals
+        assetDecimals,
+        quantum
       ),
       symbol: assetSymbol,
       labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
@@ -219,7 +227,7 @@ export const getFeeDetailsValues = ({
   }
   details.push({
     label: t('Current margin allocation'),
-    value: formatValue(marginAccountBalance, assetDecimals),
+    value: formatValue(marginAccountBalance, assetDecimals, quantum),
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
   });
