@@ -40,19 +40,19 @@ describe('markets selector', { tags: '@smoke' }, () => {
       {
         code: 'SOLUSD',
         markPrice: '84.41XYZalpha',
-        change: '+200.00%',
+        change: '-',
         vol: '0.0024h vol',
       },
       {
         code: 'ETHBTC.QM21',
         markPrice: '46,126.90058tBTC',
-        change: '+200.00%',
+        change: '-',
         vol: '0.0024h vol',
       },
       {
         code: 'BTCUSD.MF21',
         markPrice: '46,126.90058tDAI',
-        change: '+200.00%',
+        change: '-',
         vol: '0.0024h vol',
       },
       {
