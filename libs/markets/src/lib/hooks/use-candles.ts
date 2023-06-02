@@ -4,13 +4,7 @@ import type { MarketCandlesFieldsFragment } from '../__generated__';
 import { marketCandlesProvider } from '../market-candles-provider';
 import { Interval } from '@vegaprotocol/types';
 
-export const useCandles = ({
-  marketId,
-  inView,
-}: {
-  marketId?: string;
-  inView?: boolean;
-}) => {
+export const useCandles = ({ marketId }: { marketId?: string }) => {
   const fiveDaysAgo = useFiveDaysAgo();
   const yesterday = useYesterday();
   const { data, error } = useThrottledDataProvider({
@@ -20,7 +14,7 @@ export const useCandles = ({
       interval: Interval.INTERVAL_I1H,
       since: new Date(fiveDaysAgo).toISOString(),
     },
-    skip: !marketId || !inView,
+    skip: !marketId,
   });
 
   const fiveDaysCandles = data?.filter(Boolean);

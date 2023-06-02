@@ -81,7 +81,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     : '';
 
   const instrument = market.tradableInstrument.instrument;
-  const { oneDayCandles } = useCandles({ marketId: market.id, inView: true });
+  const { oneDayCandles } = useCandles({ marketId: market.id });
 
   const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
   const volume =

@@ -1,5 +1,4 @@
 import type { RefObject } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { isNumeric } from '@vegaprotocol/utils';
 import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
@@ -19,12 +18,9 @@ export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   initialValue,
-  inViewRoot,
 }: Props) => {
-  const [ref, inView] = useInView({ root: inViewRoot?.current });
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
     marketId,
-    inView,
   });
   if (
     fiveDaysCandles &&
@@ -45,19 +41,18 @@ export const Last24hPriceChange = ({
           </span>
         }
       >
-        <span ref={ref}>-</span>
+        <span>-</span>
       </Tooltip>
     );
   }
 
   if (error || !isNumeric(decimalPlaces)) {
-    return <span ref={ref}>-</span>;
+    return <span>-</span>;
   }
   return (
     <PriceChangeCell
       candles={oneDayCandles?.map((c) => c.close) || initialValue || []}
       decimalPlaces={decimalPlaces}
-      ref={ref}
     />
   );
 };

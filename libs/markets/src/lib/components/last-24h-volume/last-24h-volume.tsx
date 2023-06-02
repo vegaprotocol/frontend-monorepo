@@ -1,5 +1,4 @@
 import type { RefObject } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { calcCandleVolume } from '../../market-utils';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -18,13 +17,10 @@ export const Last24hVolume = ({
   marketId,
   positionDecimalPlaces,
   formatDecimals,
-  inViewRoot,
   initialValue,
 }: Props) => {
-  const [ref, inView] = useInView({ root: inViewRoot?.current });
   const { oneDayCandles, fiveDaysCandles } = useCandles({
     marketId,
-    inView,
   });
 
   if (
@@ -54,7 +50,7 @@ export const Last24hVolume = ({
           </div>
         }
       >
-        <span ref={ref}>-</span>
+        <span>-</span>
       </Tooltip>
     );
   }
@@ -68,7 +64,7 @@ export const Last24hVolume = ({
         'The total number of contracts traded in the last 24 hours.'
       )}
     >
-      <span ref={ref}>
+      <span>
         {candleVolume && isNumeric(positionDecimalPlaces)
           ? addDecimalsFormatNumber(
               candleVolume,
