@@ -126,7 +126,7 @@ export const OrderbookRow = React.memo(
           cumulativeRelativeAsk={cumulativeRelativeAsk}
           cumulativeRelativeBid={cumulativeRelativeBid}
         />
-        <div className="grid gap-1 text-right auto-rows-[17px] grid-cols-3 w-full grid-rows-1">
+        <div className="grid gap-1 text-right auto-rows-[17px] grid-cols-3">
           <PriceCell
             testId={`price-${price}`}
             value={BigInt(price)}
