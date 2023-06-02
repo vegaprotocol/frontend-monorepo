@@ -12,6 +12,7 @@ import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { VegaConnector } from '../connectors';
+import { InjectedConnector } from '../connectors';
 import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
@@ -31,10 +32,12 @@ import { useJsonRpcConnect } from '../use-json-rpc-connect';
 import { ViewConnectorForm } from './view-connector-form';
 import { useChainIdQuery } from './__generated__/ChainId';
 import { useVegaWallet } from '../use-vega-wallet';
+import { useInjectedConnector } from '../use-injected-connector';
+import { InjectedConnectorForm } from './injected-connector-form';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'jsonRpc' | 'hosted' | 'view';
+type WalletType = 'injected' | 'jsonRpc' | 'hosted' | 'view';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -162,6 +165,8 @@ const ConnectDialogContainer = ({
   }, [closeDialog]);
 
   const { connect, ...jsonRpcState } = useJsonRpcConnect(delayedOnConnect);
+  const { connect: injectedConnect, ...injectedState } =
+    useInjectedConnector(delayedOnConnect);
 
   const handleSelect = (type: WalletType, isHosted = false) => {
     let connector;
@@ -187,6 +192,8 @@ const ConnectDialogContainer = ({
     // for rest because we need to show an authentication form
     if (connector instanceof JsonRpcConnector) {
       connect(connector, appChainId);
+    } else if (connector instanceof InjectedConnector) {
+      injectedConnect(connector, appChainId);
     }
   };
 
@@ -195,6 +202,7 @@ const ConnectDialogContainer = ({
       type={walletType}
       connector={selectedConnector}
       jsonRpcState={jsonRpcState}
+      injectedState={injectedState}
       onConnect={closeDialog}
       appChainId={appChainId}
       reset={reset}
@@ -229,8 +237,15 @@ const ConnectorList = ({
         <ul data-testid="connectors-list" className="mb-6">
           <li className="mb-4 last:mb-0">
             <ConnectionOption
+              type="injected"
+              text={t('Injected connector')}
+              onClick={() => onSelect('injected')}
+            />
+          </li>
+          <li className="mb-4 last:mb-0">
+            <ConnectionOption
               type="jsonRpc"
-              text={t('Connect Vega wallet')}
+              text={t('JSON rpc connector')}
               onClick={() => onSelect('jsonRpc')}
             />
           </li>
@@ -263,6 +278,7 @@ const SelectedForm = ({
   connector,
   appChainId,
   jsonRpcState,
+  injectedState,
   reset,
   onConnect,
   riskMessage,
@@ -274,10 +290,34 @@ const SelectedForm = ({
     status: Status;
     error: WalletClientError | null;
   };
+  injectedState: {
+    status: Status;
+    error: Error | null;
+  };
   reset: () => void;
   onConnect: () => void;
   riskMessage?: React.ReactNode;
 }) => {
+  console.log(connector);
+  if (connector instanceof InjectedConnector) {
+    return (
+      <>
+        <ConnectDialogContent>
+          <InjectedConnectorForm
+            // connector={connector}
+            status={injectedState.status}
+            error={injectedState.error}
+            onConnect={onConnect}
+            appChainId={appChainId}
+            reset={reset}
+            riskMessage={riskMessage}
+          />
+        </ConnectDialogContent>
+        <ConnectDialogFooter />
+      </>
+    );
+  }
+
   if (connector instanceof RestConnector) {
     return (
       <>
