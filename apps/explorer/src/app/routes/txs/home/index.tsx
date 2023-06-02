@@ -5,22 +5,15 @@ import { TxsInfiniteList } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItemIndicator,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  FormGroup,
   Icon,
-  Lozenge,
-  Radio,
-  RadioGroup,
-  Select,
 } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const BE_TXS_PER_REQUEST = 20;
 
@@ -54,12 +47,12 @@ const FilterOptions = [
 
 export function getFilterLabel(filters: Set<string>) {
   if (!filters || filters.size !== 1) {
-    return <span>Filter by type...</span>;
+    return <span>Filter</span>;
   }
 
   return (
     <span>
-      Filtered by: <Lozenge>{Array.from(filters)[0]}</Lozenge>
+      Filters: <code>{Array.from(filters)[0]}</code>
     </span>
   );
 }
@@ -67,57 +60,22 @@ export function getFilterLabel(filters: Set<string>) {
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
 
-  const [filters, setFilters] = useState(new Set(FilterOptions));
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   return (
-    <section className="md:p-2 lg:p-4 xl:p-6">
+    <section className="md:p-2 lg:p-4 xl:p-6 relative">
       <RouteTitle>{t('Transactions')}</RouteTitle>
-      <DropdownMenu
-        open={dropdownOpen}
-        trigger={
-          <DropdownMenuTrigger
-            onClick={() => {
-              setDropdownOpen(!dropdownOpen);
-            }}
-          >
-            {getFilterLabel(filters)}
-          </DropdownMenuTrigger>
-        }
-      >
-        <DropdownMenuContent
-          onPointerDownOutside={() => setDropdownOpen(false)}
-        >
-          {FilterOptions.map((f) => (
-            <DropdownMenuCheckboxItem
-              key={f}
-              checked={filters.has(f)}
-              onCheckedChange={(checked) => {
-                // NOTE: These act like radio buttons until the API supports multiple filters
-                setFilters(new Set([f]));
-              }}
-              id={`radio-${f}`}
-            >
-              {f}
-              <DropdownMenuItemIndicator>
-                <Icon name="tick-circle" />
-              </DropdownMenuItemIndicator>
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <TxsListFiltered filters={[...filters]} />
+      <TxsListFiltered />
     </section>
   );
 };
 
-export interface TxsListFilteredProps {
-  filters: string[];
-}
+export const TxsListFiltered = () => {
+  const [filters, setFilters] = useState(new Set(FilterOptions));
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-export const TxsListFiltered = ({ filters }: TxsListFilteredProps) => {
   const f =
-    filters && filters.length === 1 ? `filters[cmd.type]=${filters[0]}` : '';
+    filters && filters.size === 1
+      ? `filters[cmd.type]=${Array.from(filters)[0]}`
+      : '';
   const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
     useTxsData({
       limit: BE_TXS_PER_REQUEST,
@@ -126,7 +84,56 @@ export const TxsListFiltered = ({ filters }: TxsListFilteredProps) => {
 
   return (
     <>
-      <BlocksRefetch refetch={refreshTxs} />
+      <menu className="mb-2">
+        <BlocksRefetch refetch={refreshTxs} />
+
+        <DropdownMenu
+          modal={false}
+          open={dropdownOpen}
+          trigger={
+            <DropdownMenuTrigger
+              onClick={() => {
+                setDropdownOpen(!dropdownOpen);
+              }}
+            >
+              {getFilterLabel(filters)}
+            </DropdownMenuTrigger>
+          }
+        >
+          <DropdownMenuContent
+            onPointerDownOutside={() => setDropdownOpen(false)}
+          >
+            {filters.size > 1 ? null : (
+              <>
+                <DropdownMenuCheckboxItem
+                  onCheckedChange={(checked) =>
+                    setFilters(new Set(FilterOptions))
+                  }
+                >
+                  Clear filters <Icon name="cross" />
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
+            {FilterOptions.map((f) => (
+              <DropdownMenuCheckboxItem
+                key={f}
+                checked={filters.has(f)}
+                onCheckedChange={(checked) => {
+                  // NOTE: These act like radio buttons until the API supports multiple filters
+                  setFilters(new Set([f]));
+                }}
+                id={`radio-${f}`}
+              >
+                {f}
+                <DropdownMenuItemIndicator>
+                  <Icon name="tick-circle" />
+                </DropdownMenuItemIndicator>
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </menu>
       <TxsInfiniteList
         filters={f}
         hasMoreTxs={hasMoreTxs}
