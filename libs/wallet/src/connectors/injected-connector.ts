@@ -1,3 +1,4 @@
+import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 
 declare global {
@@ -21,6 +22,11 @@ declare global {
 export class InjectedConnector implements VegaConnector {
   description = 'Connects using the Vega wallet browser extension';
 
+  constructor() {
+    const cfg = getConfig();
+    console.log(cfg);
+  }
+
   async getChainId() {
     return window.vega.getChainId();
   }
@@ -33,20 +39,26 @@ export class InjectedConnector implements VegaConnector {
 
   async connect() {
     const res = await window.vega.listKeys();
+    setConfig({
+      connector: 'injected',
+      token: null, // no token required for injected
+      url: null, // no url for injected
+    });
     return res.keys;
   }
 
-  // TODO: test this
   disconnect() {
+    clearConfig();
     return window.vega.disconnectWallet();
   }
 
-  // @ts-ignore TODO: test this
+  // TODO: this aint working
   async sendTx(pubKey: string, transaction: Transaction) {
+    console.log(pubKey, transaction);
     const result = await window.vega.sendTransaction({
-      publicKey: 'foo',
+      publicKey: pubKey,
       transaction,
-      sendingMode: 'TYPE_SYNC',
+      sendingMode: 'TYPE_SYNC' as const,
     });
     console.log(result);
     // TODO: update me

@@ -10,10 +10,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, toBigNum } from '@vegaprotocol/utils';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
-import {
-  AppStateActionType,
-  useAppState,
-} from '../../../../contexts/app-state/app-state-context';
+import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import { DATE_FORMAT_LONG } from '../../../../lib/date-formats';
 import { VoteState } from './use-user-vote';
@@ -73,7 +70,6 @@ export const VoteButtons = ({
   dialog: Dialog,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
-  const { appDispatch } = useAppState();
   const { pubKey } = useVegaWallet();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
@@ -98,10 +94,6 @@ export const VoteButtons = ({
         <div data-testid="connect-wallet">
           <ButtonLink
             onClick={() => {
-              appDispatch({
-                type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
-                isOpen: true,
-              });
               openVegaWalletDialog();
             }}
           >
@@ -142,7 +134,6 @@ export const VoteButtons = ({
     minVoterBalance,
     spamProtectionMinTokens,
     t,
-    appDispatch,
     openVegaWalletDialog,
   ]);
 
