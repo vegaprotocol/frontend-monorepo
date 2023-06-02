@@ -1,10 +1,7 @@
 import * as Schema from '@vegaprotocol/types';
-import { aliasGQLQuery, checkSorting } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketsQuery } from '@vegaprotocol/mock';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
-
-const rowSelector =
-  '[data-testid="tab-all-markets"] .ag-center-cols-container .ag-row';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
