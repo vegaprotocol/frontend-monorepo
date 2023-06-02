@@ -1,4 +1,3 @@
-import type { RefObject } from 'react';
 import { calcCandleVolume } from '../../market-utils';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -9,7 +8,6 @@ interface Props {
   marketId?: string;
   positionDecimalPlaces?: number;
   formatDecimals?: number;
-  inViewRoot?: RefObject<Element>;
   initialValue?: string;
 }
 

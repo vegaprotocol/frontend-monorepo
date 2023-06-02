@@ -1,4 +1,3 @@
-import type { RefObject } from 'react';
 import { isNumeric } from '@vegaprotocol/utils';
 import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
@@ -11,7 +10,6 @@ interface Props {
   initialValue?: string[];
   isHeader?: boolean;
   noUpdate?: boolean;
-  inViewRoot?: RefObject<Element>;
 }
 
 export const Last24hPriceChange = ({
