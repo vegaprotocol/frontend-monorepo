@@ -2,14 +2,9 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import {
-  AppStateActionType,
-  useAppState,
-} from '../../contexts/app-state/app-state-context';
 import { SubHeading } from '../../components/heading';
 
 export const ConnectToSeeRewards = () => {
-  const { appDispatch } = useAppState();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
@@ -26,10 +21,6 @@ export const ConnectToSeeRewards = () => {
       <Button
         data-testid="connect-to-vega-wallet-btn"
         onClick={() => {
-          appDispatch({
-            type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
-            isOpen: true,
-          });
           openVegaWalletDialog();
         }}
       >

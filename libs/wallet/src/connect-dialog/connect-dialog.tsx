@@ -64,7 +64,6 @@ export interface VegaWalletDialogStore {
 
 export const VegaConnectDialog = ({
   connectors,
-  onChangeOpen,
   riskMessage,
 }: VegaConnectDialogProps) => {
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
@@ -73,12 +72,10 @@ export const VegaConnectDialog = ({
   const updateVegaWalletDialog = useVegaWalletDialogStore(
     (store) => (open: boolean) => {
       store.updateVegaWalletDialog(open);
-      onChangeOpen?.(open);
     }
   );
   const closeVegaWalletDialog = useVegaWalletDialogStore((store) => () => {
     store.closeVegaWalletDialog();
-    onChangeOpen?.(false);
   });
   const { disconnect, acknowledgeNeeded } = useVegaWallet();
   const onVegaWalletDialogChange = useCallback(
@@ -235,17 +232,19 @@ const ConnectorList = ({
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
         <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
         <ul data-testid="connectors-list" className="mb-6">
-          <li className="mb-4 last:mb-0">
-            <ConnectionOption
-              type="injected"
-              text={t('Injected connector')}
-              onClick={() => onSelect('injected')}
-            />
-          </li>
+          {'vega' in window && (
+            <li className="mb-4 last:mb-0">
+              <ConnectionOption
+                type="injected"
+                text={t('Web wallet (experimental)')}
+                onClick={() => onSelect('injected')}
+              />
+            </li>
+          )}
           <li className="mb-4 last:mb-0">
             <ConnectionOption
               type="jsonRpc"
-              text={t('JSON rpc connector')}
+              text={t('Desktop/CLI wallet')}
               onClick={() => onSelect('jsonRpc')}
             />
           </li>
@@ -262,7 +261,7 @@ const ConnectorList = ({
             <div className="my-4 text-center text-vega-dark-400">{t('OR')}</div>
             <ConnectionOption
               type="view"
-              text={t('View as vega user')}
+              text={t('View public key')}
               onClick={() => onSelect('view')}
             />
           </li>
@@ -304,7 +303,6 @@ const SelectedForm = ({
       <>
         <ConnectDialogContent>
           <InjectedConnectorForm
-            // connector={connector}
             status={injectedState.status}
             error={injectedState.error}
             onConnect={onConnect}
