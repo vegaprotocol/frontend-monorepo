@@ -54,8 +54,6 @@ Auction.args = {
   bestStaticOfferPrice: 122895,
   decimalPlaces: 3,
   overlap: 10,
-  indicativePrice: 122900,
-  indicativeVolume: 11,
 };
 
 export const Empty = Template.bind({});
@@ -66,6 +64,4 @@ Empty.args = {
   bestStaticOfferPrice: 0,
   decimalPlaces: 3,
   overlap: 0,
-  indicativePrice: 0,
-  indicativeVolume: 0,
 };

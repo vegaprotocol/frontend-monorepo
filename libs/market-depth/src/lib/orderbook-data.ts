@@ -231,10 +231,7 @@ export const updateCompactedRowsByType = (
   dataType: VolumeType
 ) => {
   const data = cloneDeep(oldData as OrderbookRowData[]);
-  uniqBy(
-    reverse((newData || []).filter((item) => item.volume !== '0')),
-    'price'
-  )?.forEach((delta) => {
+  uniqBy(reverse(newData || []), 'price')?.forEach((delta) => {
     partiallyUpdateCompactedRows(dataType, data, delta, resolution);
   });
 
