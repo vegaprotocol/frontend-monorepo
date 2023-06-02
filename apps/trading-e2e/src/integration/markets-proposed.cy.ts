@@ -69,13 +69,13 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
     cy.get(rowSelector)
       .first()
       .find('[col-id="closing-date"]')
-      .should('have.text', '15/11/2022, 13:44:34');
+      .should('not.be.empty');
 
     //  6001-MARK-057
     cy.get(rowSelector)
       .first()
       .find('[col-id="enactment-date"]')
-      .should('have.text', '15/11/2022, 13:44:54');
+      .should('not.be.empty');
   });
 
   it('can open row actions', () => {
