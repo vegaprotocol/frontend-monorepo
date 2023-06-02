@@ -160,7 +160,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     (resolution: number) => {
       setResolution(resolution);
       flush();
-      setOrderbookData(dataRef.current);
       updateOrderbookData.current(resolution);
     },
     [setResolution, flush]
