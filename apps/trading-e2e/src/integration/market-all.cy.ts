@@ -16,7 +16,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
     });
   });
 
-  it('can see table headerss', () => {
+  it('can see table headers', () => {
     cy.wait('@Markets');
     cy.wait('@MarketsData');
     const headers = [
