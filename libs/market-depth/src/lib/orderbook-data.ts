@@ -2,7 +2,6 @@ import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
 import reverse from 'lodash/reverse';
 import cloneDeep from 'lodash/cloneDeep';
-import type { MarketData } from '@vegaprotocol/markets';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
 export enum VolumeType {
@@ -27,12 +26,7 @@ export interface OrderbookRowData {
 
 type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'ask' | 'bid'>;
 
-type OrderbookMarketData = Pick<
-  MarketData,
-  'bestStaticBidPrice' | 'bestStaticOfferPrice' | 'markPrice'
->;
-
-export type OrderbookData = Partial<OrderbookMarketData> & {
+export type OrderbookData = {
   asks: OrderbookRowData[] | null;
   bids: OrderbookRowData[] | null;
 };

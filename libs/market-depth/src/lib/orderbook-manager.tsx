@@ -26,15 +26,14 @@ interface OrderbookManagerProps {
 
 export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const [resolution, setResolution] = useState(1);
+  const [markPrice, setMarkPrice] = useState('');
   const variables = { marketId };
-  const resolutionRef = useRef(resolution);
   const [orderbookData, setOrderbookData] = useState<OrderbookData>({
     asks: null,
     bids: null,
   });
   const dataRef = useRef<OrderbookData>({ asks: null, bids: null });
   const marketDataRef = useRef<MarketData | null>(null);
-  const rawDataRef = useRef<MarketDepthQuery['market'] | null>(null);
   const deltaRef = useRef<{
     sell: PriceLevelFieldsFragment[];
     buy: PriceLevelFieldsFragment[];
@@ -45,12 +44,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const updateOrderbookData = useRef(
     throttle(() => {
       dataRef.current = {
-        ...marketDataRef.current,
         asks: deltaRef.current.buy.length
           ? updateCompactedRowsByType(
               dataRef.current.asks ?? [],
               deltaRef.current.sell,
-              resolutionRef.current,
+              resolution,
               VolumeType.ask
             )
           : dataRef.current.asks,
@@ -58,7 +56,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
           ? updateCompactedRowsByType(
               dataRef.current.bids ?? [],
               deltaRef.current.buy,
-              resolutionRef.current,
+              resolution,
               VolumeType.bid
             )
           : dataRef.current.bids,
@@ -77,10 +75,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const update = useCallback(
     ({
       delta: deltas,
-      data: rawData,
     }: {
       delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'] | null;
-      data: NonNullable<MarketDepthQuery['market']> | null | undefined;
+      // data: NonNullable<MarketDepthQuery['market']> | null | undefined;
     }) => {
       if (!dataRef.current.asks && !dataRef.current.bids) {
         return false;
@@ -96,7 +93,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
           deltaRef.current.buy.push(...delta.buy);
         }
       }
-      rawDataRef.current = rawData;
       updateOrderbookData.current();
       return true;
     },
@@ -125,8 +121,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
 
   const marketDataUpdate = useCallback(
     ({ data }: { data: MarketData | null }) => {
-      marketDataRef.current = data;
-      updateOrderbookData.current();
+      setMarkPrice(data?.markPrice || '');
       return true;
     },
     []
@@ -154,11 +149,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       return;
     }
     dataRef.current = {
-      ...marketDataRef.current,
       bids: compactTypedRows(data.depth.buy, VolumeType.bid, resolution),
       asks: compactTypedRows(data.depth.sell, VolumeType.ask, resolution),
     };
-    rawDataRef.current = data;
     setOrderbookData(dataRef.current);
 
     return () => {
@@ -166,13 +159,15 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     };
   }, [data, resolution]);
 
-  useEffect(() => {
-    resolutionRef.current = resolution;
-    flush();
-  }, [resolution, flush]);
-
   const updateOrder = useOrderStore((store) => store.update);
 
+  const handleResolutionChange = useCallback(
+    (resolution: number) => {
+      setResolution(resolution);
+      flush();
+    },
+    [setResolution, flush]
+  );
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
@@ -185,12 +180,13 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         decimalPlaces={market?.decimalPlaces ?? 0}
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
-        onResolutionChange={(resolution: number) => setResolution(resolution)}
+        onResolutionChange={handleResolutionChange}
         onClick={(price: string) => {
           if (price) {
             updateOrder(marketId, { price });
           }
         }}
+        markPrice={markPrice || marketData?.marketData}
       />
     </AsyncRenderer>
   );

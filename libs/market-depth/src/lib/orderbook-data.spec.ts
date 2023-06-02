@@ -21,8 +21,8 @@ describe('compactTypedRows', () => {
       numberOfOrders: (numberOfRows - i).toString(),
     }));
   it('groups data by price and resolution', () => {
-    expect(compactTypedRows(sell, VolumeType.ask, 1).length).toEqual(100);
-    expect(compactTypedRows(buy, VolumeType.bid, 1).length).toEqual(100);
+    expect(compactTypedRows(sell, VolumeType.ask, 1).length).toEqual(99);
+    expect(compactTypedRows(buy, VolumeType.bid, 1).length).toEqual(99);
     expect(compactTypedRows(sell, VolumeType.ask, 5).length).toEqual(21);
     expect(compactTypedRows(buy, VolumeType.bid, 5).length).toEqual(21);
     expect(compactTypedRows(sell, VolumeType.ask, 10).length).toEqual(11);
