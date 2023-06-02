@@ -1,5 +1,6 @@
 import {
   closeDialog,
+  dissociateFromSecondWalletKey,
   navigateTo,
   navigation,
   turnTelemetryOff,
@@ -251,7 +252,7 @@ context(
 
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
-    it.only('Unable to submit update market proposal without equity-like share in the market', function () {
+    it('Unable to submit update market proposal without equity-like share in the market', function () {
       cy.get('[data-testid="manage-vega-wallet"]:visible').click();
       cy.get('[data-testid="select-keypair-button"]').eq(0).click(); // switch to second wallet pub key
       stakingPageAssociateTokens('1');
@@ -534,6 +535,10 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath });
           });
         });
+    });
+
+    after('Dissasociate from second wallet key if present', function () {
+      dissociateFromSecondWalletKey();
     });
 
     function validateDialogContentMsg(expectedMsg: string) {

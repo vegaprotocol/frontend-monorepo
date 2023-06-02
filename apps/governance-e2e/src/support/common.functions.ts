@@ -1,3 +1,5 @@
+import { stakingPageDisassociateAllTokens } from './staking.functions';
+
 const tokenDropDown = 'state-trigger';
 const txTimeout = Cypress.env('txTimeout');
 
@@ -96,4 +98,34 @@ export function turnTelemetryOff() {
   cy.window().then((win) =>
     win.localStorage.setItem('vega_telemetry_on', 'false')
   );
+}
+
+export function dissociateFromSecondWalletKey() {
+  const secondWalletKey = Cypress.env('vegaWalletPublicKey2Short');
+  cy.getByTestId('vega-in-wallet')
+    .first()
+    .within(() => {
+      cy.getByTestId('eth-wallet-associated-balances')
+        .last()
+        .within(() => {
+          cy.getByTestId('associated-key')
+            .invoke('text')
+            .as('associatedPubKey');
+        });
+    });
+  cy.get('@associatedPubKey').then((associatedPubKey) => {
+    if (associatedPubKey == secondWalletKey) {
+      cy.getByTestId('vega-account-truncated')
+        .invoke('text')
+        .then((connectedPubKey) => {
+          if (connectedPubKey == secondWalletKey) {
+            stakingPageDisassociateAllTokens();
+          } else {
+            cy.get('[data-testid="manage-vega-wallet"]:visible').click();
+            cy.get('[data-testid="select-keypair-button"]').eq(0).click();
+            stakingPageDisassociateAllTokens();
+          }
+        });
+    }
+  });
 }
