@@ -206,22 +206,22 @@ const ConnectorList = ({
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
         <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
         <ul data-testid="connectors-list" className="mb-6">
+          <li className="mb-4 last:mb-0">
+            <ConnectionOption
+              type="jsonRpc"
+              text={t('Connect Vega Wallet')}
+              onClick={() => onSelect('jsonRpc')}
+            />
+          </li>
           {'vega' in window && (
             <li className="mb-4 last:mb-0">
               <ConnectionOption
                 type="injected"
-                text={t('Web wallet (experimental)')}
+                text={t('Connect Web Wallet (experimental)')}
                 onClick={() => onSelect('injected')}
               />
             </li>
           )}
-          <li className="mb-4 last:mb-0">
-            <ConnectionOption
-              type="jsonRpc"
-              text={t('Desktop/CLI wallet')}
-              onClick={() => onSelect('jsonRpc')}
-            />
-          </li>
           {!isMainnet && (
             <li className="mb-4 last:mb-0">
               <ConnectionOption
@@ -232,7 +232,7 @@ const ConnectorList = ({
             </li>
           )}
           <li className="mb-4 last:mb-0">
-            <div className="my-4 text-center text-vega-dark-400">{t('OR')}</div>
+            <div className="my-4 text-center">{t('OR')}</div>
             <ConnectionOption
               type="view"
               text={t('View public key')}
@@ -298,7 +298,7 @@ const SelectedForm = ({
             className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
             data-testid="back-button"
           >
-            <Icon name={'chevron-left'} ariaLabel="back" size={4} />
+            <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />
           </button>
           <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
           <div className="mb-2">
@@ -398,9 +398,7 @@ const CustomUrlInput = ({
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return urlInputExpanded ? (
     <>
-      <p className="mb-2 text-neutral-600 dark:text-neutral-400">
-        {t('Custom wallet location')}
-      </p>
+      <p className="mb-2">{t('Custom wallet location')}</p>
       <FormGroup
         labelFor="wallet-url"
         label={t('Custom wallet location')}
@@ -412,12 +410,10 @@ const CustomUrlInput = ({
           name="wallet-url"
         />
       </FormGroup>
-      <p className="mb-2 text-neutral-600 dark:text-neutral-400">
-        {t('Choose wallet app to connect')}
-      </p>
+      <p className="mb-2">{t('Choose wallet app to connect')}</p>
     </>
   ) : (
-    <p className="mb-6 text-neutral-600 dark:text-neutral-400">
+    <p className="mb-6">
       {t(
         'Choose wallet app to connect, or to change port or server URL enter a '
       )}
