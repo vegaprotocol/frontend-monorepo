@@ -74,11 +74,11 @@ export const DropdownMenuContent = forwardRef<
   React.ComponentProps<typeof DropdownMenuPrimitive.Content>
 >(({ className, ...contentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Content
-    {...contentProps}
     ref={forwardedRef}
+    sideOffset={10}
     className="min-w-[290px] bg-vega-light-100 dark:bg-vega-dark-100 p-2 rounded z-20 text-black dark:text-white border border-vega-light-200 dark:border-vega-dark-200"
     align="start"
-    sideOffset={10}
+    {...contentProps}
   />
 ));
 
