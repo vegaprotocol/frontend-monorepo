@@ -22,11 +22,6 @@ declare global {
 export class InjectedConnector implements VegaConnector {
   description = 'Connects using the Vega wallet browser extension';
 
-  constructor() {
-    const cfg = getConfig();
-    console.log(cfg);
-  }
-
   async getChainId() {
     return window.vega.getChainId();
   }

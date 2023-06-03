@@ -3,9 +3,7 @@ import {
   Button,
   Dialog,
   FormGroup,
-  Icon,
   Input,
-  Link,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -18,11 +16,7 @@ import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
-import {
-  Networks,
-  useEnvironment,
-  ExternalLinks,
-} from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import {
   ConnectDialogContent,
   ConnectDialogFooter,
@@ -38,7 +32,7 @@ import { InjectedConnectorForm } from './injected-connector-form';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'injected' | 'jsonRpc' | 'hosted' | 'view';
+export type WalletType = 'injected' | 'jsonRpc' | 'hosted' | 'view';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -168,24 +162,30 @@ const ConnectDialogContainer = ({
     }
   };
 
-  return selectedConnector !== undefined && walletType !== undefined ? (
-    <SelectedForm
-      type={walletType}
-      connector={selectedConnector}
-      jsonRpcState={jsonRpcState}
-      injectedState={injectedState}
-      onConnect={closeDialog}
-      appChainId={appChainId}
-      reset={reset}
-      riskMessage={riskMessage}
-    />
-  ) : (
-    <ConnectorList
-      walletUrl={walletUrl}
-      setWalletUrl={setWalletUrl}
-      onSelect={handleSelect}
-      isMainnet={VEGA_ENV === Networks.MAINNET}
-    />
+  return (
+    <>
+      <ConnectDialogContent>
+        {selectedConnector !== undefined && walletType !== undefined ? (
+          <SelectedForm
+            connector={selectedConnector}
+            jsonRpcState={jsonRpcState}
+            injectedState={injectedState}
+            onConnect={closeDialog}
+            appChainId={appChainId}
+            reset={reset}
+            riskMessage={riskMessage}
+          />
+        ) : (
+          <ConnectorList
+            walletUrl={walletUrl}
+            setWalletUrl={setWalletUrl}
+            onSelect={handleSelect}
+            isMainnet={VEGA_ENV === Networks.MAINNET}
+          />
+        )}
+      </ConnectDialogContent>
+      <ConnectDialogFooter type={walletType} />
+    </>
   );
 };
 
@@ -202,52 +202,48 @@ const ConnectorList = ({
 }) => {
   return (
     <>
-      <ConnectDialogContent>
-        <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-        <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
-        <ul data-testid="connectors-list" className="mb-6">
+      <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
+      <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
+      <ul data-testid="connectors-list" className="mb-6">
+        <li className="mb-4 last:mb-0">
+          <ConnectionOption
+            type="jsonRpc"
+            text={t('Connect Vega Wallet')}
+            onClick={() => onSelect('jsonRpc')}
+          />
+        </li>
+        {'vega' in window && (
           <li className="mb-4 last:mb-0">
             <ConnectionOption
-              type="jsonRpc"
-              text={t('Connect Vega Wallet')}
-              onClick={() => onSelect('jsonRpc')}
+              type="injected"
+              text={t('Connect Web Wallet')}
+              onClick={() => onSelect('injected')}
             />
           </li>
-          {'vega' in window && (
-            <li className="mb-4 last:mb-0">
-              <ConnectionOption
-                type="injected"
-                text={t('Connect Web Wallet')}
-                onClick={() => onSelect('injected')}
-              />
-            </li>
-          )}
-          {!isMainnet && (
-            <li className="mb-4 last:mb-0">
-              <ConnectionOption
-                type="hosted"
-                text={t('Hosted Fairground wallet')}
-                onClick={() => onSelect('hosted', true)}
-              />
-            </li>
-          )}
+        )}
+        {!isMainnet && (
           <li className="mb-4 last:mb-0">
-            <div className="my-4 text-center">{t('OR')}</div>
             <ConnectionOption
-              type="view"
-              text={t('View public key')}
-              onClick={() => onSelect('view')}
+              type="hosted"
+              text={t('Hosted Fairground wallet')}
+              onClick={() => onSelect('hosted', true)}
             />
           </li>
-        </ul>
-      </ConnectDialogContent>
-      <ConnectDialogFooter />
+        )}
+        <li className="mb-4 last:mb-0">
+          <div className="my-4 text-center">{t('OR')}</div>
+          <ConnectionOption
+            type="view"
+            text={t('View public key')}
+            onClick={() => onSelect('view')}
+          />
+        </li>
+      </ul>
     </>
   );
 };
 
 const SelectedForm = ({
-  type,
   connector,
   appChainId,
   jsonRpcState,
@@ -256,7 +252,6 @@ const SelectedForm = ({
   onConnect,
   riskMessage,
 }: {
-  type: WalletType;
   connector: VegaConnector;
   appChainId: string;
   jsonRpcState: {
@@ -273,93 +268,56 @@ const SelectedForm = ({
 }) => {
   if (connector instanceof InjectedConnector) {
     return (
-      <>
-        <ConnectDialogContent>
-          <InjectedConnectorForm
-            status={injectedState.status}
-            error={injectedState.error}
-            onConnect={onConnect}
-            appChainId={appChainId}
-            reset={reset}
-            riskMessage={riskMessage}
-          />
-        </ConnectDialogContent>
-        <ConnectDialogFooter />
-      </>
+      <InjectedConnectorForm
+        status={injectedState.status}
+        error={injectedState.error}
+        onConnect={onConnect}
+        appChainId={appChainId}
+        reset={reset}
+        riskMessage={riskMessage}
+      />
     );
   }
 
   if (connector instanceof RestConnector) {
     return (
       <>
-        <ConnectDialogContent>
-          <button
-            onClick={reset}
-            className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
-            data-testid="back-button"
-          >
-            <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />
-          </button>
-          <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-          <div className="mb-2">
-            <RestConnectorForm connector={connector} onConnect={onConnect} />
-          </div>
-        </ConnectDialogContent>
-        {type === 'hosted' ? (
-          <ConnectDialogFooter>
-            <p className="text-center">
-              {t('For demo purposes get a ')}
-              <Link
-                href={ExternalLinks.VEGA_WALLET_HOSTED_URL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {t('hosted wallet')}
-              </Link>
-              {t(', or for the real experience create a wallet in the ')}
-              <Link href={ExternalLinks.VEGA_WALLET_URL}>
-                {t('Vega wallet app')}
-              </Link>
-            </p>
-          </ConnectDialogFooter>
-        ) : (
-          <ConnectDialogFooter />
-        )}
+        <button
+          onClick={reset}
+          className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
+          data-testid="back-button"
+        >
+          <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />
+        </button>
+        <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
+        <div className="mb-2">
+          <RestConnectorForm connector={connector} onConnect={onConnect} />
+        </div>
       </>
     );
   }
 
   if (connector instanceof JsonRpcConnector) {
     return (
-      <>
-        <ConnectDialogContent>
-          <JsonRpcConnectorForm
-            connector={connector}
-            status={jsonRpcState.status}
-            error={jsonRpcState.error}
-            onConnect={onConnect}
-            appChainId={appChainId}
-            reset={reset}
-            riskMessage={riskMessage}
-          />
-        </ConnectDialogContent>
-        <ConnectDialogFooter />
-      </>
+      <JsonRpcConnectorForm
+        connector={connector}
+        status={jsonRpcState.status}
+        error={jsonRpcState.error}
+        onConnect={onConnect}
+        appChainId={appChainId}
+        reset={reset}
+        riskMessage={riskMessage}
+      />
     );
   }
 
   if (connector instanceof ViewConnector) {
     return (
-      <>
-        <ConnectDialogContent>
-          <ViewConnectorForm
-            connector={connector}
-            onConnect={onConnect}
-            reset={reset}
-          />
-        </ConnectDialogContent>
-        <ConnectDialogFooter />
-      </>
+      <ViewConnectorForm
+        connector={connector}
+        onConnect={onConnect}
+        reset={reset}
+      />
     );
   }
 

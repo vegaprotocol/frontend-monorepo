@@ -3,6 +3,7 @@ import { t } from '@vegaprotocol/i18n';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import type { WalletType } from './connect-dialog';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
@@ -19,7 +20,7 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
   return <div className="mb-6">{children}</div>;
 };
 
-export const ConnectDialogFooter = ({ children }: { children?: ReactNode }) => {
+export const ConnectDialogFooter = ({ type }: { type?: WalletType }) => {
   const wrapperClasses = classNames(
     'flex justify-center gap-4',
     'px-4 md:px-8 pt-4 md:pt-6',
@@ -28,8 +29,21 @@ export const ConnectDialogFooter = ({ children }: { children?: ReactNode }) => {
   );
   return (
     <footer className={wrapperClasses}>
-      {children ? (
-        children
+      {type === 'hosted' ? (
+        <p className="text-center">
+          {t('For demo purposes get a ')}
+          <Link
+            href={ExternalLinks.VEGA_WALLET_HOSTED_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t('hosted wallet')}
+          </Link>
+          {t(', or for the real experience create a wallet in the ')}
+          <Link href={ExternalLinks.VEGA_WALLET_URL}>
+            {t('Vega wallet app')}
+          </Link>
+        </p>
       ) : (
         <>
           <Link href={ExternalLinks.VEGA_WALLET_URL}>
