@@ -22,7 +22,7 @@ export const InjectedConnectorForm = ({
   const { disconnect } = useVegaWallet();
 
   if (status === Status.Idle) {
-    return <div>idle</div>;
+    return null;
   }
 
   if (status === Status.Error) {
