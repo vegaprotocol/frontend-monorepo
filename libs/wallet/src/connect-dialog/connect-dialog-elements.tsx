@@ -1,6 +1,7 @@
 import { DocsLinks, ExternalLinks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { Link } from '@vegaprotocol/ui-toolkit';
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
@@ -19,8 +20,14 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
 };
 
 export const ConnectDialogFooter = ({ children }: { children?: ReactNode }) => {
+  const wrapperClasses = classNames(
+    'flex justify-center gap-4',
+    'px-4 md:px-8 pt-4 md:pt-6',
+    'border-t border-vega-light-200 dark:border-vega-dark-200',
+    'text-vega-light-400 dark:text-vega-dark-400'
+  );
   return (
-    <footer className="flex justify-center gap-4 px-4 md:px-8 pt-4 md:pt-6 -mx-4 md:-mx-8 border-t border-vega-light-200 dark:border-vega-dark-200">
+    <footer className={wrapperClasses}>
       {children ? (
         children
       ) : (

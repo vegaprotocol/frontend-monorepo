@@ -217,7 +217,7 @@ const ConnectorList = ({
             <li className="mb-4 last:mb-0">
               <ConnectionOption
                 type="injected"
-                text={t('Connect Web Wallet (experimental)')}
+                text={t('Connect Web Wallet')}
                 onClick={() => onSelect('injected')}
               />
             </li>
@@ -383,7 +383,7 @@ const ConnectionOption = ({
       variant={['hosted', 'view'].includes(type) ? 'default' : 'primary'}
       data-testid={`connector-${type}`}
     >
-      <span className="-mx-6 flex text-left justify-between items-center">
+      <span className="-mx-10 flex text-left justify-between items-center">
         {text}
         <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
       </span>

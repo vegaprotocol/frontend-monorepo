@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classNames from 'classnames';
 import { truncateByChars } from '@vegaprotocol/utils';
@@ -12,9 +12,10 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  Icon,
   Drawer,
   DropdownMenuSeparator,
+  VegaIconNames,
+  VegaIcon,
 } from '@vegaprotocol/ui-toolkit';
 import type { PubKey } from '@vegaprotocol/wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
@@ -256,7 +257,9 @@ const KeypairItem = ({ pk }: { pk: PubKey }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <span className="sr-only">{t('Copy')}</span>
-              <Icon name="duplicate" className="mr-2" />
+              <span className="mr-2">
+                <VegaIcon name={VegaIconNames.COPY} />
+              </span>
             </button>
           </CopyToClipboard>
           {copied && (
@@ -278,34 +281,17 @@ const KeypairListItem = ({
   isActive: boolean;
   onSelectItem: (pk: string) => void;
 }) => {
-  const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line
-    let timeout: any;
-
-    if (copied) {
-      timeout = setTimeout(() => {
-        setCopied(false);
-      }, 800);
-    }
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [copied]);
+  const [copied, setCopied] = useCopyTimeout();
 
   return (
-    <div
-      className="flex flex-col w-full ml-4 mr-2 mb-4"
-      data-testid={`key-${pk.publicKey}-mobile`}
-    >
-      <span className="mr-2">
+    <div className="ml-4 mr-2 mb-4" data-testid={`key-${pk.publicKey}-mobile`}>
+      <div className="flex items-center gap-2">
         <button onClick={() => onSelectItem(pk.publicKey)}>
           <span className="uppercase">{pk.name}</span>
         </button>
-        {isActive && <Icon name="tick" className="ml-2" />}
-      </span>
-      <span className="text-neutral-500 dark:text-neutral-400">
+        {isActive && <VegaIcon name={VegaIconNames.TICK} />}
+      </div>
+      <div className="flex items-center gap-2">
         {truncateByChars(pk.publicKey)}{' '}
         <CopyToClipboard text={pk.publicKey} onCopy={() => setCopied(true)}>
           <button
@@ -313,13 +299,13 @@ const KeypairListItem = ({
             onClick={(e) => e.stopPropagation()}
           >
             <span className="sr-only">{t('Copy')}</span>
-            <Icon name="duplicate" className="mr-2" />
+            <VegaIcon name={VegaIconNames.COPY} />
           </button>
         </CopyToClipboard>
         {copied && (
           <span className="text-xs text-neutral-500">{t('Copied')}</span>
         )}
-      </span>
+      </div>
     </div>
   );
 };

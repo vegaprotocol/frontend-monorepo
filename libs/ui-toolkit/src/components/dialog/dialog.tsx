@@ -45,7 +45,7 @@ export function Dialog({
     'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),
     {
-      'w-[620px]': size === 'small',
+      'w-[420px]': size === 'small',
       'w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
@@ -77,7 +77,7 @@ export function Dialog({
                 className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
                 data-testid="dialog-close"
               >
-                <VegaIcon name={VegaIconNames.CROSS} />
+                <VegaIcon name={VegaIconNames.CROSS} size={24} />
               </DialogPrimitives.Close>
             )}
             <div className="flex gap-4 max-w-full">

@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
-import { Icon } from '../icon';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { t } from '@vegaprotocol/i18n';
@@ -140,7 +139,7 @@ export const DropdownMenuItemIndicator = forwardRef<
     ref={forwardedRef}
     className="flex-end"
   >
-    <Icon name="tick" />
+    <VegaIcon name={VegaIconNames.TICK} />
   </DropdownMenuPrimitive.ItemIndicator>
 ));
 
