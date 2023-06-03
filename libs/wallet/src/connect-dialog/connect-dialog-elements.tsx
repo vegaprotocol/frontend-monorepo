@@ -20,7 +20,7 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
 
 export const ConnectDialogFooter = ({ children }: { children?: ReactNode }) => {
   return (
-    <footer className="flex justify-center gap-4 px-4 md:px-8 pt-4 md:pt-6 -mx-4 md:-mx-8 border-t border-neutral-500 text-neutral-500 dark:text-neutral-400">
+    <footer className="flex justify-center gap-4 px-4 md:px-8 pt-4 md:pt-6 -mx-4 md:-mx-8 border-t border-vega-light-200 dark:border-vega-dark-200">
       {children ? (
         children
       ) : (
