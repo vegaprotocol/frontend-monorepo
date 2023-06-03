@@ -45,7 +45,7 @@ export function Dialog({
     'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),
     {
-      'w-[420px]': size === 'small',
+      'w-[520px]': size === 'small',
       'w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
