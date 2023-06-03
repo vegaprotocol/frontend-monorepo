@@ -6,7 +6,8 @@ import {
   Icon,
   Input,
   Link,
-  Loader,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
@@ -41,7 +42,6 @@ type WalletType = 'injected' | 'jsonRpc' | 'hosted' | 'view';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
-  onChangeOpen?: (open: boolean) => void;
   riskMessage?: React.ReactNode;
 }
 
@@ -66,6 +66,7 @@ export const VegaConnectDialog = ({
   connectors,
   riskMessage,
 }: VegaConnectDialogProps) => {
+  const { disconnect, acknowledgeNeeded } = useVegaWallet();
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
     (store) => store.vegaWalletDialogOpen
   );
@@ -74,10 +75,7 @@ export const VegaConnectDialog = ({
       store.updateVegaWalletDialog(open);
     }
   );
-  const closeVegaWalletDialog = useVegaWalletDialogStore((store) => () => {
-    store.closeVegaWalletDialog();
-  });
-  const { disconnect, acknowledgeNeeded } = useVegaWallet();
+
   const onVegaWalletDialogChange = useCallback(
     (open: boolean) => {
       updateVegaWalletDialog(open);
@@ -88,41 +86,9 @@ export const VegaConnectDialog = ({
     [updateVegaWalletDialog, acknowledgeNeeded, disconnect]
   );
 
-  const { data, error, loading } = useChainIdQuery();
-
-  const renderContent = () => {
-    if (error) {
-      return (
-        <ConnectDialogContent>
-          <ConnectDialogTitle>
-            {t('Could not retrieve chain id')}
-          </ConnectDialogTitle>
-          <ConnectDialogFooter />
-        </ConnectDialogContent>
-      );
-    }
-
-    if (loading || !data) {
-      return (
-        <ConnectDialogContent>
-          <ConnectDialogTitle>{t('Fetching chain ID')}</ConnectDialogTitle>
-          <div className="flex justify-center items-center my-6">
-            <Loader />
-          </div>
-          <ConnectDialogFooter />
-        </ConnectDialogContent>
-      );
-    }
-
-    return (
-      <ConnectDialogContainer
-        connectors={connectors}
-        closeDialog={closeVegaWalletDialog}
-        appChainId={data.statistics.chainId}
-        riskMessage={riskMessage}
-      />
-    );
-  };
+  // Ensure we have a chain Id so we can compare with wallet chain id.
+  // This value will already be in the cache, if it failed the app wont render
+  const { data } = useChainIdQuery();
 
   return (
     <Dialog
@@ -130,26 +96,34 @@ export const VegaConnectDialog = ({
       size="small"
       onChange={onVegaWalletDialogChange}
     >
-      {renderContent()}
+      {data && (
+        <ConnectDialogContainer
+          connectors={connectors}
+          appChainId={data.statistics.chainId}
+          riskMessage={riskMessage}
+        />
+      )}
     </Dialog>
   );
 };
 
 const ConnectDialogContainer = ({
   connectors,
-  closeDialog,
   appChainId,
   riskMessage,
 }: {
   connectors: Connectors;
-  closeDialog: () => void;
   appChainId: string;
   riskMessage?: React.ReactNode;
 }) => {
   const { VEGA_WALLET_URL, VEGA_ENV, HOSTED_WALLET_URL } = useEnvironment();
+  const closeDialog = useVegaWalletDialogStore(
+    (store) => store.closeVegaWalletDialog
+  );
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
   const [walletType, setWalletType] = useState<WalletType>();
+
   const reset = useCallback(() => {
     setSelectedConnector(undefined);
     setWalletType(undefined);
@@ -297,7 +271,6 @@ const SelectedForm = ({
   onConnect: () => void;
   riskMessage?: React.ReactNode;
 }) => {
-  console.log(connector);
   if (connector instanceof InjectedConnector) {
     return (
       <>
@@ -409,7 +382,7 @@ const ConnectionOption = ({
     >
       <span className="-mx-6 flex text-left justify-between items-center">
         {text}
-        <Icon name="chevron-right" />
+        <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
       </span>
     </Button>
   );
