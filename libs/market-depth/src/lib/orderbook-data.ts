@@ -102,15 +102,14 @@ export const compactTypedRows = (
   resolution: number
 ) => {
   // map raw sell data to OrderbookData
-  const mappedOrderbookData = [
-    ...(directedData || []).filter((item) => item.volume !== '0'),
-  ].map<PartialOrderbookRowData>((data) =>
-    createPartialRow(data.price, Number(data.volume))
-  );
+  const mappedData = (directedData || [])
+    .filter((item) => item.volume !== '0')
+    .map<PartialOrderbookRowData>((data) =>
+      createPartialRow(data.price, Number(data.volume))
+    );
 
-  const groupedByLevel = groupBy<PartialOrderbookRowData>(
-    mappedOrderbookData,
-    (row) => getPriceLevel(row.price, resolution)
+  const groupedByLevel = groupBy<PartialOrderbookRowData>(mappedData, (row) =>
+    getPriceLevel(row.price, resolution)
   );
   const orderbookData: OrderbookRowData[] = [];
   Object.keys(groupedByLevel).forEach((price) => {
@@ -162,9 +161,14 @@ const partiallyUpdateCompactedRows = (
   const priceLevel = getPriceLevel(price, resolution);
   let index = data.findIndex((row) => row.price === priceLevel);
   if (index !== -1) {
-    data[index].value =
-      data[index].value - (data[index].valuesByLevel[price] || 0) + volume;
     data[index].valuesByLevel[price] = volume;
+    data[index].value = Object.entries(data[index].valuesByLevel).reduce(
+      (sum, values) => {
+        sum += values[1];
+        return sum;
+      },
+      0
+    );
   } else {
     const newData: OrderbookRowData = createRow(priceLevel, volume);
     index = data.findIndex((row) => BigInt(row.price) < BigInt(priceLevel));

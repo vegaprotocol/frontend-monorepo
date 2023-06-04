@@ -87,7 +87,9 @@ export const Orderbook = ({
       {({ width, height }) => {
         const limit = Math.floor((height - 60) / 2 / rowHeight);
         const askRows =
-          asks?.slice(Math.min(asks?.length || 0, asks?.length - limit)) ?? [];
+          asks?.slice(
+            Math.max(0, Math.min(asks?.length || 0, asks?.length - limit))
+          ) ?? [];
         const bidRows = bids?.slice(0, Math.max(0, limit)) ?? [];
         return (
           <div
