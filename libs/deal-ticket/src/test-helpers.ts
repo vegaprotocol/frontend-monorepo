@@ -32,6 +32,7 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
             symbol: 'tDAI',
             name: 'tDAI',
             decimals: 5,
+            quantum: '1',
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {
