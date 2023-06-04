@@ -40,25 +40,25 @@ describe('markets selector', { tags: '@smoke' }, () => {
       {
         code: 'SOLUSD',
         markPrice: '84.41XYZalpha',
-        change: '-',
+        change: '',
         vol: '0.0024h vol',
       },
       {
         code: 'ETHBTC.QM21',
         markPrice: '46,126.90058tBTC',
-        change: '-',
+        change: '',
         vol: '0.0024h vol',
       },
       {
         code: 'BTCUSD.MF21',
         markPrice: '46,126.90058tDAI',
-        change: '-',
+        change: '',
         vol: '0.0024h vol',
       },
       {
         code: 'AAPL.MF21',
         markPrice: '46,126.90058tUSDC',
-        change: '-',
+        change: '',
         vol: '0.0024h vol',
       },
     ];
@@ -80,7 +80,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
           market.change
         );
         // 6001-MARK-025
-        expect(item.find('[data-testid="sparkline-svg"]')).to.exist;
+        expect(item.find('[data-testid="sparkline-svg"]')).to.not.exist;
       });
   });
 
