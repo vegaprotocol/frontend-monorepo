@@ -153,6 +153,7 @@ describe('WithdrawFormContainer', () => {
                   name: 'asset-id',
                   symbol: 'tUSDC',
                   decimals: 5,
+                  quantum: '1',
                 },
                 dataSourceSpecForTradingTermination: {
                   __typename: 'DataSourceSpec',

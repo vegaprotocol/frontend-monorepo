@@ -75,6 +75,7 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
               name: 'assset-id',
               symbol: 'SYM',
               decimals: 18,
+              quantum: '1',
             },
             quoteName: '',
             dataSourceSpecForTradingTermination: {
