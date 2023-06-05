@@ -1,11 +1,12 @@
-import { assetsProvider } from '@vegaprotocol/assets';
-import { marketsProvider } from '@vegaprotocol/markets';
+import { assetsMapProvider } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { marketsMapProvider } from '@vegaprotocol/markets';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
+import type { Market } from '@vegaprotocol/markets';
 import produce from 'immer';
 
 import {
@@ -20,7 +21,6 @@ import type {
   AccountEventsSubscription,
   AccountsQueryVariables,
 } from './__generated__/Accounts';
-import type { Market } from '@vegaprotocol/markets';
 import type { Asset } from '@vegaprotocol/assets';
 
 const AccountType = Schema.AccountType;
@@ -45,9 +45,9 @@ export const getId = (
     ? `${account.type}-${account.asset.id}-${account.market?.id || 'null'}`
     : `${account.type}-${account.assetId}-${account.marketId || 'null'}`;
 
-export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
-  market?: Market | null;
+export type Account = Omit<AccountFieldsFragment, 'asset' | 'market'> & {
   asset: Asset;
+  market?: Market | null;
 };
 
 const update = (
@@ -170,31 +170,22 @@ export const accountsDataProvider = makeDerivedDataProvider<
 >(
   [
     accountsOnlyDataProvider,
-    (callback, client) => marketsProvider(callback, client, undefined),
-    (callback, client) => assetsProvider(callback, client, undefined),
+    (callback, client) => marketsMapProvider(callback, client, undefined),
+    (callback, client) => assetsMapProvider(callback, client, undefined),
   ],
   ([accounts, markets, assets]): Account[] | null => {
     return accounts
       ? accounts
           .map((account: AccountFieldsFragment) => {
-            const market = markets.find(
-              (market: Market) => market.id === account.market?.id
-            );
-            const asset = assets.find(
-              (asset: Asset) => asset.id === account.asset?.id
-            );
+            const asset = (assets as Record<string, Asset>)[account.asset.id];
+            const market =
+              account.market?.id &&
+              (markets as Record<string, Asset>)[account.market?.id];
             if (asset) {
               return {
                 ...account,
-                partyId: account.party?.id,
-                asset: {
-                  ...asset,
-                },
-                market: market
-                  ? {
-                      ...market,
-                    }
-                  : null,
+                asset,
+                market,
               };
             }
             return null;
@@ -211,4 +202,19 @@ export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
 >(
   [accountsDataProvider],
   (parts) => parts[0] && getAccountData(parts[0] as Account[])
+);
+
+export const aggregatedAccountDataProvider = makeDerivedDataProvider<
+  AccountFields,
+  never,
+  AccountsQueryVariables & { assetId: string }
+>(
+  [
+    (callback, client, { partyId }) =>
+      aggregatedAccountsDataProvider(callback, client, { partyId }),
+  ],
+  (parts, { assetId }) =>
+    (parts[0] as AccountFields[]).find(
+      (account) => account.asset.id === assetId
+    ) || null
 );

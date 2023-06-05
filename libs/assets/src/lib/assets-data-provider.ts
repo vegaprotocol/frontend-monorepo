@@ -31,6 +31,29 @@ export const assetsProvider = makeDataProvider<
   getData,
 });
 
+export const assetsMapProvider = makeDerivedDataProvider<
+  Record<string, Asset>,
+  never,
+  undefined
+>(
+  [(callback, client) => assetsProvider(callback, client, undefined)],
+  ([assets]) => {
+    return ((assets as ReturnType<typeof getData>) || []).reduce(
+      (assets, asset) => {
+        assets[asset.id] = asset;
+        return assets;
+      },
+      {} as Record<string, Asset>
+    );
+  }
+);
+
+export const useAssetsMapProvider = () =>
+  useDataProvider({
+    dataProvider: assetsMapProvider,
+    variables: undefined,
+  });
+
 export const enabledAssetsProvider = makeDerivedDataProvider<
   ReturnType<typeof getData>,
   never
