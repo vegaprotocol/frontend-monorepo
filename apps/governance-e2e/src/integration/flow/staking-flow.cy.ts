@@ -402,6 +402,13 @@ context(
       });
 
       it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
+        cy.clearLocalStorage();
+        turnTelemetryOff();
+        cy.reload();
+        waitForSpinner();
+        cy.connectVegaWallet();
+        ethereumWalletConnect();
+
         // 2001-STKE-004
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);

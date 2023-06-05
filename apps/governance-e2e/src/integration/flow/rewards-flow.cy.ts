@@ -31,18 +31,19 @@ context('rewards - flow', { tags: '@slow' }, function () {
     turnTelemetryOff();
     cy.visit('/');
     waitForSpinner();
-    depositAsset(vegaAssetAddress, '1000', 18);
     ethereumWalletConnect();
     cy.connectVegaWallet();
+    depositAsset(vegaAssetAddress, '1000', 18);
+    cy.getByTestId('currency-title').should('contain.text', 'Collateral');
     vegaWalletTeardown();
     cy.associateTokensToVegaWallet('6000');
-    cy.getByTestId('currency-title').should('contain.text', 'Collateral');
     cy.VegaWalletTopUpRewardsPool(rewardsStartEpoch, rewardsEndEpoch);
     cy.get(vegaWalletUnstakedBalance, txTimeout).should(
       'contain',
       '6,000.0',
       txTimeout
     );
+    navigateTo(navigation.validators);
     clickOnValidatorFromList(0);
     stakingValidatorPageAddStake('3000');
     closeStakingDialog();
