@@ -1,4 +1,7 @@
-import { getMultisigStatus, MultisigStatus } from './get-multisig-status';
+import {
+  getMultisigStatusInfo,
+  MultisigStatus,
+} from './get-multisig-status-info';
 import type { PreviousEpochQuery } from '../routes/staking/__generated__/PreviousEpoch';
 
 const createNode = (id: string, multisigScore: string) => ({
@@ -11,14 +14,17 @@ const createNode = (id: string, multisigScore: string) => ({
 
 describe('getMultisigStatus', () => {
   it('should return MultisigStatus.noNodes when no nodes are present', () => {
-    const result = getMultisigStatus({
+    const result = getMultisigStatusInfo({
       epoch: { id: '1', validatorsConnection: { edges: [] } },
     } as PreviousEpochQuery);
-    expect(result).toEqual(MultisigStatus.noNodes);
+    expect(result).toEqual({
+      multisigStatus: MultisigStatus.noNodes,
+      showMultisigStatusError: true,
+    });
   });
 
   it('should return MultisigStatus.correct when all nodes have multisigScore of 1', () => {
-    const result = getMultisigStatus({
+    const result = getMultisigStatusInfo({
       epoch: {
         id: '1',
         validatorsConnection: {
@@ -26,11 +32,14 @@ describe('getMultisigStatus', () => {
         },
       },
     } as PreviousEpochQuery);
-    expect(result).toEqual(MultisigStatus.correct);
+    expect(result).toEqual({
+      multisigStatus: MultisigStatus.correct,
+      showMultisigStatusError: false,
+    });
   });
 
   it('should return MultisigStatus.nodeNeedsRemoving when all nodes have multisigScore of 0', () => {
-    const result = getMultisigStatus({
+    const result = getMultisigStatusInfo({
       epoch: {
         id: '1',
         validatorsConnection: {
@@ -38,11 +47,14 @@ describe('getMultisigStatus', () => {
         },
       },
     } as PreviousEpochQuery);
-    expect(result).toEqual(MultisigStatus.nodeNeedsRemoving);
+    expect(result).toEqual({
+      multisigStatus: MultisigStatus.nodeNeedsRemoving,
+      showMultisigStatusError: true,
+    });
   });
 
   it('should return MultisigStatus.nodeNeedsAdding when some nodes have multisigScore of 0 and others have 1', () => {
-    const result = getMultisigStatus({
+    const result = getMultisigStatusInfo({
       epoch: {
         id: '1',
         validatorsConnection: {
@@ -50,6 +62,9 @@ describe('getMultisigStatus', () => {
         },
       },
     } as PreviousEpochQuery);
-    expect(result).toEqual(MultisigStatus.nodeNeedsAdding);
+    expect(result).toEqual({
+      multisigStatus: MultisigStatus.nodeNeedsAdding,
+      showMultisigStatusError: true,
+    });
   });
 });

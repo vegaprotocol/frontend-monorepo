@@ -24,10 +24,7 @@ import { DocsLinks } from '@vegaprotocol/environment';
 import { ConnectToSeeRewards } from '../connect-to-see-rewards';
 import { EpochTotalRewards } from '../epoch-total-rewards/epoch-total-rewards';
 import { usePreviousEpochQuery } from '../../staking/__generated__/PreviousEpoch';
-import {
-  getMultisigStatus,
-  MultisigStatus,
-} from '../../../lib/get-multisig-status';
+import { getMultisigStatusInfo } from '../../../lib/get-multisig-status-info';
 import { MultisigIncorrectNotice } from '../../../components/multisig-incorrect-notice';
 
 type RewardsView = 'total' | 'individual';
@@ -55,7 +52,7 @@ export const RewardsPage = () => {
   });
 
   const multisigStatus = previousEpochData
-    ? getMultisigStatus(previousEpochData)
+    ? getMultisigStatusInfo(previousEpochData)
     : undefined;
 
   const {
@@ -63,6 +60,8 @@ export const RewardsPage = () => {
     loading: paramsLoading,
     error: paramsError,
   } = useNetworkParams([NetworkParams.reward_staking_delegation_payoutDelay]);
+
+  console.log('params', params);
 
   const payoutDuration = useMemo(() => {
     if (!params) {
@@ -95,14 +94,11 @@ export const RewardsPage = () => {
             )}
           </p>
 
-          {multisigStatus &&
-          (multisigStatus === MultisigStatus.nodeNeedsRemoving ||
-            multisigStatus === MultisigStatus.nodeNeedsAdding ||
-            multisigStatus === MultisigStatus.noNodes) ? (
+          {multisigStatus?.showMultisigStatusError ? (
             <MultisigIncorrectNotice />
           ) : null}
 
-          {!multisigStatus && payoutDuration ? (
+          {!multisigStatus?.showMultisigStatusError && payoutDuration ? (
             <div className="my-8">
               <Callout
                 title={t('rewardsCallout', {

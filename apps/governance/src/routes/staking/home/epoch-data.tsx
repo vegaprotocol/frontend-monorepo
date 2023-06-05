@@ -7,10 +7,7 @@ import { ValidatorTables } from './validator-tables';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ENV } from '../../../config';
-import {
-  getMultisigStatus,
-  MultisigStatus,
-} from '../../../lib/get-multisig-status';
+import { getMultisigStatusInfo } from '../../../lib/get-multisig-status-info';
 import { MultisigIncorrectNotice } from '../../../components/multisig-incorrect-notice';
 
 export const EpochData = () => {
@@ -52,7 +49,7 @@ export const EpochData = () => {
   });
 
   const multisigStatus = previousEpochData
-    ? getMultisigStatus(previousEpochData)
+    ? getMultisigStatusInfo(previousEpochData)
     : undefined;
 
   return (
@@ -61,10 +58,7 @@ export const EpochData = () => {
       error={nodesError || userStakingError}
       data={nodesData}
     >
-      {multisigStatus &&
-      (multisigStatus === MultisigStatus.nodeNeedsRemoving ||
-        multisigStatus === MultisigStatus.nodeNeedsAdding ||
-        multisigStatus === MultisigStatus.noNodes) ? (
+      {multisigStatus?.showMultisigStatusError ? (
         <MultisigIncorrectNotice />
       ) : null}
 

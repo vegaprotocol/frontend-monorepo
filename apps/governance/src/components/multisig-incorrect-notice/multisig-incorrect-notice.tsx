@@ -27,6 +27,7 @@ export const MultisigIncorrectNotice = () => {
             title={contract.address}
             href={`${ETHERSCAN_URL}/address/${contract.address}`}
             target="_blank"
+            data-testid="multisig-contract-link"
           >
             {t('multisigContractLink')}
           </Link>{' '}
@@ -34,7 +35,11 @@ export const MultisigIncorrectNotice = () => {
         </div>
 
         <div className="mt-2">
-          <Link href={DocsLinks?.VALIDATOR_SCORES_REWARDS} target="_blank">
+          <Link
+            href={DocsLinks?.VALIDATOR_SCORES_REWARDS}
+            target="_blank"
+            data-testid="multisig-validators-learn-more"
+          >
             {t('learnMore')}
           </Link>
         </div>
