@@ -19,8 +19,6 @@ export interface OrderbookRowData {
   cumulativeVol: CumulativeVol;
 }
 
-type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'value'>;
-
 export const getPriceLevel = (price: string | bigint, resolution: number) => {
   const p = BigInt(price);
   const r = BigInt(resolution);
