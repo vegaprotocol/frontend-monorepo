@@ -185,7 +185,6 @@ export interface MockDataGeneratorParams {
   markPrice?: string;
   bestStaticBidPrice: number;
   bestStaticOfferPrice: number;
-  resolution: number;
 }
 
 export const generateMockData = ({
