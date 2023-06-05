@@ -90,6 +90,17 @@ export const formatNumberFixed = (
   return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
 };
 
+export const addDecimalsFormatNumberQuantum = (
+  rawValue: string | number,
+  decimalPlaces: number,
+  quantum: number | string
+) =>
+  addDecimalsFormatNumber(
+    rawValue,
+    decimalPlaces,
+    Math.max(0, Math.log10(100 / Number(quantum) || 0))
+  );
+
 export const addDecimalsFormatNumber = (
   rawValue: string | number,
   decimalPlaces: number,

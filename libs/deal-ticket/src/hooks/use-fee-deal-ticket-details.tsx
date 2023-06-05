@@ -1,5 +1,9 @@
 import { FeesBreakdown } from '@vegaprotocol/markets';
-import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  addDecimalsFormatNumberQuantum,
+  isNumeric,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Market } from '@vegaprotocol/markets';
@@ -51,16 +55,17 @@ export interface FeeDetails {
 }
 
 const emptyValue = '-';
+
 const formatValue = (
   value: string | number | null | undefined,
   formatDecimals: number,
   quantum?: string
 ): string => {
-  const numberDp = Math.max(0, Math.log10(100 / Number(quantum) || 0));
-  return isNumeric(value)
-    ? addDecimalsFormatNumber(value, formatDecimals, numberDp)
-    : emptyValue;
+  if (!isNumeric(value)) return emptyValue;
+  if (!quantum) return addDecimalsFormatNumber(value, formatDecimals);
+  return addDecimalsFormatNumberQuantum(value, formatDecimals, quantum);
 };
+
 const formatRange = (
   min: string | number | null | undefined,
   max: string | number | null | undefined,
