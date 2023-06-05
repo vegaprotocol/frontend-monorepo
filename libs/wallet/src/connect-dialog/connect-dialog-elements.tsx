@@ -3,7 +3,8 @@ import { t } from '@vegaprotocol/i18n';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import type { WalletType } from './connect-dialog';
+import type { VegaConnector } from '../connectors';
+import { RestConnector } from '../connectors';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
@@ -20,16 +21,21 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
   return <div>{children}</div>;
 };
 
-export const ConnectDialogFooter = ({ type }: { type?: WalletType }) => {
+export const ConnectDialogFooter = ({
+  connector,
+}: {
+  connector: VegaConnector | undefined;
+}) => {
   const wrapperClasses = classNames(
     'flex justify-center gap-4',
     'px-4 md:px-8 pt-4 md:pt-6',
     'border-t border-vega-light-200 dark:border-vega-dark-200',
     'text-vega-light-400 dark:text-vega-dark-400'
   );
+  const isHostedWalletSelected = connector instanceof RestConnector;
   return (
     <footer className={wrapperClasses}>
-      {type === 'hosted' ? (
+      {isHostedWalletSelected ? (
         <p className="text-center">
           {t('For demo purposes get a ')}
           <Link
