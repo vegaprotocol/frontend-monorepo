@@ -32,9 +32,8 @@ export const useInjectedConnector = (onConnect: () => void) => {
         }
 
         setStatus(Status.Connecting);
-        await connector.connectWallet();
-
-        await connect(connector);
+        await connector.connectWallet(); // authorize wallet
+        await connect(connector); // connect with keys
 
         if (acknowledgeNeeded) {
           setStatus(Status.AcknowledgeNeeded);
@@ -43,7 +42,6 @@ export const useInjectedConnector = (onConnect: () => void) => {
           onConnect();
         }
       } catch (err) {
-        console.log(err);
         if (err instanceof Error) {
           setError(err);
         } else {

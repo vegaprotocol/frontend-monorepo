@@ -112,9 +112,8 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
   const { VEGA_ENV } = useEnvironment();
   const [riskAcceptedValue] = useLocalStorage(WALLET_RISK_ACCEPTED_KEY);
-  // const acknowledgeNeeded =
-  //   VEGA_ENV === Networks.MAINNET && riskAcceptedValue !== 'true';
-  const acknowledgeNeeded = riskAcceptedValue !== 'true';
+  const acknowledgeNeeded =
+    VEGA_ENV === Networks.MAINNET && riskAcceptedValue !== 'true';
 
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {

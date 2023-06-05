@@ -139,7 +139,7 @@ const Error = ({
       );
     } else if (error.message === 'window.vega not found') {
       title = t('No wallet detected');
-      text = t('Vega browser extension not found');
+      text = t('Vega browser extension not installed');
     }
   }
 
