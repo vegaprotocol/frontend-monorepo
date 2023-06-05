@@ -22,6 +22,7 @@ interface OrderbookProps extends OrderbookData {
 
 // 17px of row height plus 3.5px gap
 export const rowHeight = 20.5;
+const MID_PRICE_HEIGHT = 40;
 
 const OrderbookTable = ({
   rows,
@@ -44,7 +45,7 @@ const OrderbookTable = ({
         'text-right w-full flex flex-col',
         type === VolumeType.ask ? 'justify-end' : 'justify-start'
       )}
-      style={{ height: 'calc(50% - 20px)' }}
+      style={{ height: `calc(50% - ${MID_PRICE_HEIGHT / 2}px)` }}
     >
       <div className="grid auto-rows-[17px] gap-1">
         {rows.map((data, i) => (
@@ -110,7 +111,9 @@ export const Orderbook = ({
                     positionDecimalPlaces={positionDecimalPlaces}
                     onClick={onClick}
                   />
-                  <div className="flex flex-shrink h-[40px] items-center justify-center text-lg">
+                  <div
+                    className={`flex flex-shrink h-[${MID_PRICE_HEIGHT}px] items-center justify-center text-lg`}
+                  >
                     <PriceCell
                       value={Number(markPrice)}
                       valueFormatted={addDecimalsFormatNumber(
