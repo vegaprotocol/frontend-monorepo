@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import classNames from 'classnames';
-import { Icon } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 
 export interface AccordionItemProps {
   title: React.ReactNode;
@@ -73,12 +73,12 @@ export const AccordionItem = ({
 
 export const AccordionChevron = ({ active }: { active: boolean }) => {
   return (
-    <Icon
-      name="chevron-down"
+    <span
       className={classNames('transition ease-in-out duration-300', {
         'transform rotate-180': active,
       })}
-      aria-hidden
-    />
+    >
+      <VegaIcon name={VegaIconNames.CHEVRON_DOWN} aria-hidden />
+    </span>
   );
 };
