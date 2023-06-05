@@ -14,7 +14,14 @@ declare global {
         publicKey: string;
         transaction: Transaction;
         sendingMode: 'TYPE_SYNC';
-      }) => Promise<void>;
+      }) => Promise<{
+        code: number;
+        data: string;
+        height: string;
+        log: string;
+        success: boolean;
+        txHash: string;
+      }>;
     };
   }
 }
@@ -47,21 +54,19 @@ export class InjectedConnector implements VegaConnector {
     return window.vega.disconnectWallet();
   }
 
-  // TODO: this aint working
   async sendTx(pubKey: string, transaction: Transaction) {
-    console.log(pubKey, transaction);
     const result = await window.vega.sendTransaction({
       publicKey: pubKey,
       transaction,
       sendingMode: 'TYPE_SYNC' as const,
     });
     console.log(result);
-    // TODO: update me
+    // TODO: test this when updated to actually return values
     return {
-      transactionHash: '',
-      signature: '',
-      receivedAt: '',
-      sentAt: '',
+      transactionHash: result.txHash,
+      receivedAt: new Date().toISOString(),
+      sentAt: new Date().toISOString(),
+      signature: result.data,
     };
   }
 }

@@ -32,11 +32,18 @@ import { InjectedConnectorForm } from './injected-connector-form';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-export type WalletType = 'injected' | 'jsonRpc' | 'hosted' | 'view';
+export type WalletType = 'injected' | 'jsonRpc' | 'rest' | 'view';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
   riskMessage?: React.ReactNode;
+}
+
+export interface VegaWalletDialogStore {
+  vegaWalletDialogOpen: boolean;
+  updateVegaWalletDialog: (open: boolean) => void;
+  openVegaWalletDialog: () => void;
+  closeVegaWalletDialog: () => void;
 }
 
 export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
@@ -48,13 +55,6 @@ export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
     closeVegaWalletDialog: () => set({ vegaWalletDialogOpen: false }),
   })
 );
-
-export interface VegaWalletDialogStore {
-  vegaWalletDialogOpen: boolean;
-  updateVegaWalletDialog: (open: boolean) => void;
-  openVegaWalletDialog: () => void;
-  closeVegaWalletDialog: () => void;
-}
 
 export const VegaConnectDialog = ({
   connectors,
@@ -116,11 +116,10 @@ const ConnectDialogContainer = ({
   );
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
-  const [walletType, setWalletType] = useState<WalletType>();
+  // const [walletType, setWalletType] = useState<WalletType>();
 
   const reset = useCallback(() => {
     setSelectedConnector(undefined);
-    setWalletType(undefined);
   }, []);
 
   const delayedOnConnect = useCallback(() => {
@@ -129,34 +128,30 @@ const ConnectDialogContainer = ({
     }, CLOSE_DELAY);
   }, [closeDialog]);
 
-  const { connect, ...jsonRpcState } = useJsonRpcConnect(delayedOnConnect);
+  const { connect: jsonRpcConnect, ...jsonRpcState } =
+    useJsonRpcConnect(delayedOnConnect);
   const { connect: injectedConnect, ...injectedState } =
     useInjectedConnector(delayedOnConnect);
 
-  const handleSelect = (type: WalletType, isHosted = false) => {
-    let connector;
+  const handleSelect = (type: WalletType) => {
+    const connector = connectors[type];
 
-    if (isHosted) {
-      // If the user has selected hosted wallet ensure that we are connecting to https://vega-hosted-wallet.on.fleek.co/
-      // otherwise use the default walletUrl or what has been put in the input
-      connector = connectors['rest'];
-      connector.url = HOSTED_WALLET_URL || walletUrl;
-    } else {
-      connector = connectors[type];
-      connector.url = walletUrl;
-    }
+    // If type is rest user has selected the hosted wallet option. So here
+    // we ensure that we are connecting to https://vega-hosted-wallet.on.fleek.co/
+    // otherwise use walletUrl which defaults to the localhost:1789
+    connector.url = type === 'rest' ? HOSTED_WALLET_URL : walletUrl;
 
     if (!connector) {
+      // we should never get here unless connectors are not configured correctly
       throw new Error(`Connector type: ${type} not configured`);
     }
 
     setSelectedConnector(connector);
-    setWalletType(type);
 
     // Immediately connect on selection if jsonRpc is selected, we can't do this
     // for rest because we need to show an authentication form
     if (connector instanceof JsonRpcConnector) {
-      connect(connector, appChainId);
+      jsonRpcConnect(connector, appChainId);
     } else if (connector instanceof InjectedConnector) {
       injectedConnect(connector, appChainId);
     }
@@ -165,7 +160,7 @@ const ConnectDialogContainer = ({
   return (
     <>
       <ConnectDialogContent>
-        {selectedConnector !== undefined && walletType !== undefined ? (
+        {selectedConnector !== undefined ? (
           <SelectedForm
             connector={selectedConnector}
             jsonRpcState={jsonRpcState}
@@ -184,7 +179,7 @@ const ConnectDialogContainer = ({
           />
         )}
       </ConnectDialogContent>
-      <ConnectDialogFooter type={walletType} />
+      <ConnectDialogFooter connector={selectedConnector} />
     </>
   );
 };
@@ -195,7 +190,7 @@ const ConnectorList = ({
   setWalletUrl,
   isMainnet,
 }: {
-  onSelect: (type: WalletType, isHosted?: boolean) => void;
+  onSelect: (type: WalletType) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
   isMainnet: boolean;
@@ -224,9 +219,9 @@ const ConnectorList = ({
         {!isMainnet && (
           <li className="mb-4 last:mb-0">
             <ConnectionOption
-              type="hosted"
+              type="rest"
               text={t('Hosted Fairground wallet')}
-              onClick={() => onSelect('hosted', true)}
+              onClick={() => onSelect('rest')}
             />
           </li>
         )}
@@ -338,7 +333,7 @@ const ConnectionOption = ({
       onClick={onClick}
       size="lg"
       fill={true}
-      variant={['hosted', 'view'].includes(type) ? 'default' : 'primary'}
+      variant={['rest', 'view'].includes(type) ? 'default' : 'primary'}
       data-testid={`connector-${type}`}
     >
       <span className="-mx-10 flex text-left justify-between items-center">
