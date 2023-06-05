@@ -109,6 +109,7 @@ context(
         cy.getByTestId(userStake, epochTimeout)
           .first()
           .should('have.text', '2.00');
+        waitForBeginningOfEpoch();
         cy.getByTestId('total-stake').first().realHover();
         cy.getByTestId('staked-by-user-tooltip')
           .first()

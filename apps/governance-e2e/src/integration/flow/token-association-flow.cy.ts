@@ -208,7 +208,6 @@ context(
         // 1004-ASSO-022
         stakingPageAssociateTokens('21', { type: 'wallet' });
         cy.get('button').contains('Select a validator to nominate').click();
-        waitForSpinner();
         stakingPageAssociateTokens('37', { type: 'contract' });
         cy.get(vestingContractSection)
           .first()

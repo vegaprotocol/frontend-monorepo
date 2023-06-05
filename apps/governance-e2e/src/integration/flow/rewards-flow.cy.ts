@@ -20,10 +20,10 @@ const vegaAssetAddress = '0x67175Da1D5e966e40D11c4B2519392B2058373de';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const rewardsTable = 'epoch-total-rewards-table';
-const rewardsStartEpoch = 300; // Use 30 running locally
-const rewardsEndEpoch = 450; // Change to 200 running locally
+const rewardsStartEpoch = 330; // Use 30 running locally
+const rewardsEndEpoch = 500; // Change to 200 running locally
 const txTimeout = Cypress.env('txTimeout');
-const rewardsTimeOut = { timeout: 60000 };
+const rewardsTimeOut = { timeout: 5 * 60 * 1000 };
 
 context('rewards - flow', { tags: '@slow' }, function () {
   before('set up environment to allow rewards', function () {
@@ -37,8 +37,6 @@ context('rewards - flow', { tags: '@slow' }, function () {
     vegaWalletTeardown();
     cy.associateTokensToVegaWallet('6000');
     cy.getByTestId('currency-title').should('contain.text', 'Collateral');
-    navigateTo(navigation.validators);
-    waitForBeginningOfEpoch();
     cy.VegaWalletTopUpRewardsPool(rewardsStartEpoch, rewardsEndEpoch);
     cy.get(vegaWalletUnstakedBalance, txTimeout).should(
       'contain',
