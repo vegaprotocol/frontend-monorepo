@@ -4,11 +4,8 @@ import { useVegaWallet } from './use-vega-wallet';
 
 export enum Status {
   Idle = 'Idle',
-  CheckingVersion = 'CheckingVersion',
   GettingChainId = 'GettingChainId',
   Connecting = 'Connecting',
-  GettingPerms = 'GettingPerms',
-  ListingKeys = 'ListingKeys',
   Connected = 'Connected',
   Error = 'Error',
   AcknowledgeNeeded = 'AcknowledgeNeeded',
@@ -42,13 +39,16 @@ export const useInjectedConnector = (onConnect: () => void) => {
         if (acknowledgeNeeded) {
           setStatus(Status.AcknowledgeNeeded);
         } else {
-          console.log('here');
           setStatus(Status.Connected);
           onConnect();
         }
       } catch (err) {
-        // @ts-ignore TODO: error typing needs handling
-        setError(err);
+        console.log(err);
+        if (err instanceof Error) {
+          setError(err);
+        } else {
+          setError(new Error('injected connection failed'));
+        }
         setStatus(Status.Error);
       }
     },

@@ -10,7 +10,6 @@ export enum Status {
   GettingChainId = 'GettingChainId',
   Connecting = 'Connecting',
   GettingPerms = 'GettingPerms',
-  ListingKeys = 'ListingKeys',
   Connected = 'Connected',
   Error = 'Error',
   AcknowledgeNeeded = 'AcknowledgeNeeded',

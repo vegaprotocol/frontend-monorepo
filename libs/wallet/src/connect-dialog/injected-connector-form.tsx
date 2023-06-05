@@ -2,7 +2,13 @@ import { t } from '@vegaprotocol/i18n';
 import { Status } from '../use-injected-connector';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import type { ReactNode } from 'react';
-import { Button, Diamond, Loader, Tick } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  ButtonLink,
+  Diamond,
+  Loader,
+  Tick,
+} from '@vegaprotocol/ui-toolkit';
 import { setAcknowledged } from '../storage';
 import { useVegaWallet } from '../use-vega-wallet';
 
@@ -10,6 +16,9 @@ export const InjectedConnectorForm = ({
   status,
   onConnect,
   riskMessage,
+  appChainId,
+  reset,
+  error,
 }: {
   // connector: JsonRpcConnector;
   appChainId: string;
@@ -26,7 +35,7 @@ export const InjectedConnectorForm = ({
   }
 
   if (status === Status.Error) {
-    return <div>Injected connection failed</div>;
+    return <Error error={error} appChainId={appChainId} onTryAgain={reset} />;
   }
 
   if (status === Status.GettingChainId) {
@@ -101,5 +110,44 @@ export const InjectedConnectorForm = ({
 const Center = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex justify-center items-center my-6">{children}</div>
+  );
+};
+
+const Error = ({
+  error,
+  appChainId,
+  onTryAgain,
+}: {
+  error: Error | null;
+  appChainId: string;
+  onTryAgain: () => void;
+}) => {
+  let title = t('Something went wrong');
+  let text: ReactNode | undefined = t('An unknown error occurred');
+  const tryAgain: ReactNode | null = (
+    <p className="text-center">
+      <ButtonLink onClick={onTryAgain}>{t('Try again')}</ButtonLink>
+    </p>
+  );
+
+  if (error) {
+    if (error.message === 'Invalid chain') {
+      title = t('Wrong network');
+      text = t(
+        'To complete your wallet connection, set your wallet network in your app to "%s".',
+        appChainId
+      );
+    } else if (error.message === 'window.vega not found') {
+      title = t('No wallet detected');
+      text = t('Vega browser extension not found');
+    }
+  }
+
+  return (
+    <>
+      <ConnectDialogTitle>{title}</ConnectDialogTitle>
+      <p className="text-center mb-2 first-letter:uppercase">{text}</p>
+      {tryAgain}
+    </>
   );
 };
