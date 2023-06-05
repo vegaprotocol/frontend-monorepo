@@ -41,6 +41,29 @@ export const marketsProvider = makeDataProvider<
   fetchPolicy: 'cache-first',
 });
 
+export const marketsMapProvider = makeDerivedDataProvider<
+  Record<string, Market>,
+  never,
+  undefined
+>(
+  [(callback, client) => marketsProvider(callback, client, undefined)],
+  ([markets]) => {
+    return ((markets as ReturnType<typeof getData>) || []).reduce(
+      (markets, market) => {
+        markets[market.id] = market;
+        return markets;
+      },
+      {} as Record<string, Market>
+    );
+  }
+);
+
+export const useMarketsMapProvider = () =>
+  useDataProvider({
+    dataProvider: marketsMapProvider,
+    variables: undefined,
+  });
+
 export const marketProvider = makeDerivedDataProvider<
   Market,
   never,

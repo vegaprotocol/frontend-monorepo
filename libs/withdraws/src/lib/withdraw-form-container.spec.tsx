@@ -27,7 +27,7 @@ describe('WithdrawFormContainer', () => {
   const account1: Account = {
     type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '200099689',
-    market: null,
+    market: undefined,
     asset: {
       id: 'assetId-1',
       name: 'tBTC TEST',
