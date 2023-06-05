@@ -2,27 +2,29 @@ import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 
 declare global {
+  interface Vega {
+    getChainId: () => Promise<{ chainID: string }>;
+    connectWallet: (params: { hostname: string }) => Promise<null>;
+    disconnectWallet: () => Promise<void>;
+    listKeys: () => Promise<{
+      keys: Array<{ name: string; publicKey: string }>;
+    }>;
+    sendTransaction: (params: {
+      publicKey: string;
+      transaction: Transaction;
+      sendingMode: 'TYPE_SYNC';
+    }) => Promise<{
+      code: number;
+      data: string;
+      height: string;
+      log: string;
+      success: boolean;
+      txHash: string;
+    }>;
+  }
+
   interface Window {
-    vega: {
-      getChainId: () => Promise<{ chainID: string }>;
-      connectWallet: (params: { hostname: string }) => Promise<null>;
-      disconnectWallet: () => Promise<void>;
-      listKeys: () => Promise<{
-        keys: Array<{ name: string; publicKey: string }>;
-      }>;
-      sendTransaction: (params: {
-        publicKey: string;
-        transaction: Transaction;
-        sendingMode: 'TYPE_SYNC';
-      }) => Promise<{
-        code: number;
-        data: string;
-        height: string;
-        log: string;
-        success: boolean;
-        txHash: string;
-      }>;
-    };
+    vega: Vega;
   }
 }
 

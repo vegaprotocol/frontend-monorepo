@@ -117,7 +117,6 @@ const ConnectDialogContainer = ({
   );
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
-  // const [walletType, setWalletType] = useState<WalletType>();
 
   const reset = useCallback(() => {
     setSelectedConnector(undefined);
@@ -204,19 +203,19 @@ const ConnectorList = ({
         <li className="mb-4 last:mb-0">
           <ConnectionOption
             type="jsonRpc"
-            text={t('Connect Vega Wallet')}
+            text={t('Connect Vega wallet')}
             onClick={() => onSelect('jsonRpc')}
           />
         </li>
-        {/* {'vega' in window && ( */}
-        <li className="mb-4 last:mb-0">
-          <ConnectionOption
-            type="injected"
-            text={t('Connect Web Wallet')}
-            onClick={() => onSelect('injected')}
-          />
-        </li>
-        {/* )} */}
+        {'vega' in window && (
+          <li className="mb-4 last:mb-0">
+            <ConnectionOption
+              type="injected"
+              text={t('Connect Web wallet')}
+              onClick={() => onSelect('injected')}
+            />
+          </li>
+        )}
         {!isMainnet && (
           <li className="mb-4 last:mb-0">
             <ConnectionOption
@@ -230,7 +229,7 @@ const ConnectorList = ({
           <div className="my-4 text-center">{t('OR')}</div>
           <ConnectionOption
             type="view"
-            text={t('View public key')}
+            text={t('View as vega user')}
             onClick={() => onSelect('view')}
           />
         </li>
