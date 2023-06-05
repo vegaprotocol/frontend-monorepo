@@ -22,7 +22,8 @@ import {
   ConnectDialogFooter,
   ConnectDialogTitle,
 } from './connect-dialog-elements';
-import type { Status } from '../use-json-rpc-connect';
+import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
+import type { Status as InjectedStatus } from '../use-injected-connector';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
 import { ViewConnectorForm } from './view-connector-form';
 import { useChainIdQuery } from './__generated__/ChainId';
@@ -207,15 +208,15 @@ const ConnectorList = ({
             onClick={() => onSelect('jsonRpc')}
           />
         </li>
-        {'vega' in window && (
-          <li className="mb-4 last:mb-0">
-            <ConnectionOption
-              type="injected"
-              text={t('Connect Web Wallet')}
-              onClick={() => onSelect('injected')}
-            />
-          </li>
-        )}
+        {/* {'vega' in window && ( */}
+        <li className="mb-4 last:mb-0">
+          <ConnectionOption
+            type="injected"
+            text={t('Connect Web Wallet')}
+            onClick={() => onSelect('injected')}
+          />
+        </li>
+        {/* )} */}
         {!isMainnet && (
           <li className="mb-4 last:mb-0">
             <ConnectionOption
@@ -250,11 +251,11 @@ const SelectedForm = ({
   connector: VegaConnector;
   appChainId: string;
   jsonRpcState: {
-    status: Status;
+    status: JsonRpcStatus;
     error: WalletClientError | null;
   };
   injectedState: {
-    status: Status;
+    status: InjectedStatus;
     error: Error | null;
   };
   reset: () => void;
