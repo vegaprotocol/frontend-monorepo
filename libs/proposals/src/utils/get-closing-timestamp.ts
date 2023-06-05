@@ -1,7 +1,7 @@
 import { addHours, getTime } from 'date-fns';
 import { addTwoMinutes, subtractTwoSeconds } from './deadline-helpers';
 
-// If the vote deadline is at its minimum, then we add 2 extra minutes to the
+// If the vote deadline is at its minimum, then 2 extra minutes are added to the
 // closing timestamp to ensure that there's time to confirm in the wallet.
 
 // If it's at its maximum, remove a couple of seconds to ensure rounding errors
