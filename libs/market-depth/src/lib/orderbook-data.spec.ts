@@ -1,7 +1,7 @@
-import { compactTypedRows, updateLevels, VolumeType } from './orderbook-data';
+import { compactRows, updateLevels, VolumeType } from './orderbook-data';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
-describe('compactTypedRows', () => {
+describe('compactRows', () => {
   const numberOfRows = 100;
   const middle = 1000;
   const sell: PriceLevelFieldsFragment[] = new Array(numberOfRows)
@@ -21,16 +21,16 @@ describe('compactTypedRows', () => {
       numberOfOrders: (numberOfRows - i).toString(),
     }));
   it('groups data by price and resolution', () => {
-    expect(compactTypedRows(sell, VolumeType.ask, 1).length).toEqual(99);
-    expect(compactTypedRows(buy, VolumeType.bid, 1).length).toEqual(99);
-    expect(compactTypedRows(sell, VolumeType.ask, 5).length).toEqual(21);
-    expect(compactTypedRows(buy, VolumeType.bid, 5).length).toEqual(21);
-    expect(compactTypedRows(sell, VolumeType.ask, 10).length).toEqual(11);
-    expect(compactTypedRows(buy, VolumeType.bid, 10).length).toEqual(11);
+    expect(compactRows(sell, VolumeType.ask, 1).length).toEqual(100);
+    expect(compactRows(buy, VolumeType.bid, 1).length).toEqual(100);
+    expect(compactRows(sell, VolumeType.ask, 5).length).toEqual(21);
+    expect(compactRows(buy, VolumeType.bid, 5).length).toEqual(21);
+    expect(compactRows(sell, VolumeType.ask, 10).length).toEqual(11);
+    expect(compactRows(buy, VolumeType.bid, 10).length).toEqual(11);
   });
   it('counts cumulative vol', () => {
-    const asks = compactTypedRows(sell, VolumeType.ask, 10);
-    const bids = compactTypedRows(buy, VolumeType.bid, 10);
+    const asks = compactRows(sell, VolumeType.ask, 10);
+    const bids = compactRows(buy, VolumeType.bid, 10);
     expect(asks[0].cumulativeVol.value).toEqual(4950);
     expect(bids[0].cumulativeVol.value).toEqual(579);
     expect(asks[10].cumulativeVol.value).toEqual(390);
@@ -38,26 +38,10 @@ describe('compactTypedRows', () => {
     expect(bids[bids.length - 1].cumulativeVol.value).toEqual(4950);
     expect(asks[asks.length - 1].cumulativeVol.value).toEqual(390);
   });
-  it('stores volume by level', () => {
-    const asks = compactTypedRows(sell, VolumeType.ask, 10);
-    const bids = compactTypedRows(buy, VolumeType.bid, 10);
-    expect(asks[0].valuesByLevel).toEqual({
-      '1095': 5,
-      '1096': 4,
-      '1097': 3,
-      '1098': 2,
-      '1099': 1,
-    });
-    expect(bids[bids.length - 1].valuesByLevel).toEqual({
-      '902': 1,
-      '903': 2,
-      '904': 3,
-    });
-  });
 
   it('updates relative data', () => {
-    const asks = compactTypedRows(sell, VolumeType.ask, 10);
-    const bids = compactTypedRows(buy, VolumeType.bid, 10);
+    const asks = compactRows(sell, VolumeType.ask, 10);
+    const bids = compactRows(buy, VolumeType.bid, 10);
     expect(asks[0].cumulativeVol.relativeValue).toEqual(100);
     expect(bids[0].cumulativeVol.relativeValue).toEqual(12);
     expect(asks[10].cumulativeVol.relativeValue).toEqual(8);

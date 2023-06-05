@@ -1,6 +1,7 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import { generateMockData } from './orderbook-data';
+import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook } from './orderbook';
+import * as orderbookData from './orderbook-data';
 
 function mockOffsetSize(width: number, height: number) {
   Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
@@ -30,7 +31,6 @@ describe('Orderbook', () => {
     overlap: 0,
     resolution: 1,
   };
-  const onResolutionChange = jest.fn();
   const decimalPlaces = 3;
 
   beforeEach(() => {
@@ -42,7 +42,6 @@ describe('Orderbook', () => {
         decimalPlaces={decimalPlaces}
         positionDecimalPlaces={0}
         {...generateMockData(params)}
-        onResolutionChange={onResolutionChange}
       />
     );
     await waitFor(() =>
@@ -55,13 +54,14 @@ describe('Orderbook', () => {
 
   it('should format correctly the numbers on resolution change', async () => {
     const onClickSpy = jest.fn();
-    const result = render(
+    jest.spyOn(orderbookData, 'compactRows');
+    const mockedData = generateMockData(params);
+    render(
       <Orderbook
         decimalPlaces={decimalPlaces}
         positionDecimalPlaces={0}
         onClick={onClickSpy}
-        {...generateMockData(params)}
-        onResolutionChange={onResolutionChange}
+        {...mockedData}
       />
     );
     expect(
@@ -74,20 +74,17 @@ describe('Orderbook', () => {
       'resolution'
     ) as HTMLSelectElement;
     await fireEvent.change(resolutionSelect, { target: { value: '10' } });
-    await result.rerender(
-      <Orderbook
-        decimalPlaces={decimalPlaces}
-        positionDecimalPlaces={0}
-        onClick={onClickSpy}
-        {...generateMockData({
-          ...params,
-          resolution: 10,
-        })}
-        onResolutionChange={onResolutionChange}
-      />
+    expect(orderbookData.compactRows).toHaveBeenCalledWith(
+      mockedData.bids,
+      VolumeType.bid,
+      10
+    );
+    expect(orderbookData.compactRows).toHaveBeenCalledWith(
+      mockedData.asks,
+      VolumeType.ask,
+      10
     );
     await fireEvent.click(await screen.getByTestId('price-12294'));
-    expect(onResolutionChange.mock.calls[0][0]).toBe(10);
     expect(onClickSpy).toBeCalledWith('122.94');
   });
 });

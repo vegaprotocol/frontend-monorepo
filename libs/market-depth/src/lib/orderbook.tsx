@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
 import {
   addDecimalsFormatNumber,
@@ -5,19 +6,21 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { OrderbookRow } from './orderbook-row';
-import type { OrderbookData, OrderbookRowData } from './orderbook-data';
-import { VolumeType } from './orderbook-data';
+import type { OrderbookRowData } from './orderbook-data';
+import { compactRows, VolumeType } from './orderbook-data';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import classNames from 'classnames';
+import { useState } from 'react';
+import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
-interface OrderbookProps extends OrderbookData {
+interface OrderbookProps {
   decimalPlaces: number;
   positionDecimalPlaces: number;
-  resolution: number;
-  onResolutionChange: (resolution: number) => void;
   onClick?: (price: string) => void;
   markPrice?: string;
+  bids: PriceLevelFieldsFragment[];
+  asks: PriceLevelFieldsFragment[];
 }
 
 // 17px of row height plus 3.5px gap
@@ -69,18 +72,25 @@ const OrderbookTable = ({
 export const Orderbook = ({
   decimalPlaces,
   positionDecimalPlaces,
-  resolution,
-  onResolutionChange,
   onClick,
   markPrice = '',
   asks,
   bids,
 }: OrderbookProps) => {
+  const [resolution, setResolution] = useState(1);
   const resolutions = new Array(
     Math.max(markPrice?.toString().length, decimalPlaces + 1)
   )
     .fill(null)
     .map((v, i) => Math.pow(10, i));
+
+  const groupedAsks = useMemo(() => {
+    return compactRows(asks, VolumeType.ask, resolution);
+  }, [asks, resolution]);
+
+  const groupedBids = useMemo(() => {
+    return compactRows(bids, VolumeType.bid, resolution);
+  }, [bids, resolution]);
 
   /* eslint-disable jsx-a11y/no-static-element-interactions */
   return (
@@ -88,10 +98,13 @@ export const Orderbook = ({
       {({ width, height }) => {
         const limit = Math.floor((height - 60) / 2 / rowHeight);
         const askRows =
-          asks?.slice(
-            Math.max(0, Math.min(asks?.length || 0, asks?.length - limit))
+          groupedAsks?.slice(
+            Math.max(
+              0,
+              Math.min(groupedAsks?.length || 0, groupedAsks?.length - limit)
+            )
           ) ?? [];
-        const bidRows = bids?.slice(0, Math.max(0, limit)) ?? [];
+        const bidRows = groupedBids?.slice(0, Math.max(0, limit)) ?? [];
         return (
           <div
             className="h-full w-full pl-1 text-xs grid grid-rows-[1fr_min-content] grid-cols-1"
@@ -142,9 +155,9 @@ export const Orderbook = ({
             <div className="relative bottom-0 grid grid-cols-4 grid-rows-1 gap-2 border-t border-default z-10 bg-white dark:bg-black w-full">
               <div className="col-start-1">
                 <select
-                  onChange={(e) =>
-                    onResolutionChange(Number(e.currentTarget.value))
-                  }
+                  onChange={(e) => {
+                    setResolution(Number(e.currentTarget.value));
+                  }}
                   value={resolution}
                   className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right w-full h-full"
                   data-testid="resolution"
