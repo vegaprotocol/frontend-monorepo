@@ -5,6 +5,7 @@ const txTimeout = Cypress.env('txTimeout');
 
 export enum navigation {
   section = 'nav',
+  home = '[href="/"]',
   vesting = '[href="/token/redeem"]',
   validators = '[href="/validators"]',
   rewards = '[href="/rewards"]',
@@ -20,6 +21,7 @@ export function convertTokenValueToNumber(subject: string) {
 }
 
 const topLevelRoutes = [
+  navigation.home,
   navigation.proposals,
   navigation.validators,
   navigation.rewards,

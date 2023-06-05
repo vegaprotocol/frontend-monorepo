@@ -380,6 +380,7 @@ context(
       });
 
       it('Disassociating some tokens - prioritizes unstaked tokens', function () {
+        vegaWalletSetSpecifiedApprovalAmount('1000');
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -402,13 +403,6 @@ context(
       });
 
       it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
-        cy.clearLocalStorage();
-        turnTelemetryOff();
-        cy.reload();
-        waitForSpinner();
-        cy.connectVegaWallet();
-        ethereumWalletConnect();
-
         // 2001-STKE-004
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
@@ -493,6 +487,7 @@ context(
       });
 
       afterEach('Teardown Wallet', function () {
+        navigateTo(navigation.home);
         vegaWalletTeardown();
       });
 

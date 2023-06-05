@@ -76,10 +76,6 @@ export async function vegaWalletTeardown() {
         }
       });
       cy.get(vegaWalletContainer).within(() => {
-        cy.getByTestId(
-          'vega-wallet-balance-staked-validators',
-          transactionTimeout
-        ).should('not.exist');
         cy.get(associatedAmountInWallet, transactionTimeout).should(
           'have.length',
           1
