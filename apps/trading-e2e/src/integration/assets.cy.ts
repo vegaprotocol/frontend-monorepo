@@ -118,20 +118,6 @@ const testTooltip = (index: number, testId: string, tooltip: string) => {
 };
 
 describe('assets', { tags: '@smoke', testIsolation: true }, () => {
-  // 6501-ASSE-001
-  // 6501-ASSE-002
-  // 6501-ASSE-003
-  // 6501-ASSE-004
-  // 6501-ASSE-005
-  // 6501-ASSE-006
-  // 6501-ASSE-007
-  // 6501-ASSE-008
-  // 6501-ASSE-009
-  // 6501-ASSE-010
-  // 6501-ASSE-011
-  // 6501-ASSE-012
-  // 6501-ASSE-013
-  // 6501-ASSE-014
   it('asset details', () => {
     visitPortfolioAndClickAsset('tBTC');
 
@@ -141,9 +127,21 @@ describe('assets', { tags: '@smoke', testIsolation: true }, () => {
       }
       const { label, value, labelTooltip, valueToolTip } =
         labelValueToolTipPairs[index];
+      // 6501-ASSE-001
+      // 6501-ASSE-002
+      // 6501-ASSE-003
+      // 6501-ASSE-004
+      // 6501-ASSE-005
+      // 6501-ASSE-006
+      // 6501-ASSE-007
+      // 6501-ASSE-008
+      // 6501-ASSE-009
+      // 6501-ASSE-010
+      // 6501-ASSE-011
       cy.getByTestId(`${index}_label`).should('have.text', label);
       cy.getByTestId(`${index}_value`).should('have.text', value);
 
+      // 6501-ASSE-012
       if (indicesWithLabelTooltips.includes(index)) {
         if (labelTooltip) {
           testTooltip(index, 'label', labelTooltip);
@@ -155,20 +153,22 @@ describe('assets', { tags: '@smoke', testIsolation: true }, () => {
         }
       }
     });
+    // 6501-ASSE-013
     cy.getByTestId(dialogCloseX).click();
     cy.document().then((doc) => {
       expect(doc.querySelector(assetDetailsDialog)).to.not.exist;
     });
   });
+
   it('ERC20 Contract address', () => {
-    // 6501-ASSE-013
-    // 6501-ASSE-014
     visitPortfolioAndClickAsset('tBTC');
     cy.getByTestId(contractAddress).within(() => {
+      // 6501-ASSE-014
       cy.getByTestId('external-link')
         .should('have.attr', 'target', '_blank')
         .should('have.text', '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4');
     });
+    // 6501-ASSE-013
     cy.getByTestId(dialogCloseBtn).click();
     cy.document().then((doc) => {
       expect(doc.querySelector(assetDetailsDialog)).to.not.exist;
