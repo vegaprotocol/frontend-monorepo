@@ -136,7 +136,7 @@ jobs:
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
-          if [[ $affected =~ *"mutlisig-signer"* ]]; then
+          if [[ $affected =~ *"multisig-signer"* ]]; then
             # tools are only applicable to check previews or deploy from develop to mainnet
             if [[ "${{ github.event_name }}" = "pull_request" ]] || [[ "${{ github.ref_name }}" = "develop" ]]; then
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
