@@ -135,7 +135,6 @@ jobs:
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
-          projects_e2e=${projects_e2e%?}
           projects=$(echo $projects_e2e | sed 's|-e2e||g')
           if echo "$affected" | grep -q multisig-signer; then
             echo "Tools are affected"
@@ -150,7 +149,9 @@ jobs:
               projects+='"multisig-signer" '
             fi
           fi
+          projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]
+          projects=${projects%?}
           projects=[${projects// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$projects >> $GITHUB_ENV
