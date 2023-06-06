@@ -18,14 +18,13 @@ interface OrderbookProps {
   decimalPlaces: number;
   positionDecimalPlaces: number;
   onClick?: (price: string) => void;
-  markPrice?: string;
+  midPrice?: string;
   bids: PriceLevelFieldsFragment[];
   asks: PriceLevelFieldsFragment[];
 }
 
 // 17px of row height plus 3px gap
 export const rowHeight = 20;
-const MID_PRICE_HEIGHT = 40;
 
 const OrderbookTable = ({
   rows,
@@ -72,13 +71,13 @@ export const Orderbook = ({
   decimalPlaces,
   positionDecimalPlaces,
   onClick,
-  markPrice = '',
+  midPrice,
   asks,
   bids,
 }: OrderbookProps) => {
   const [resolution, setResolution] = useState(1);
   const resolutions = new Array(
-    Math.max(markPrice?.toString().length, decimalPlaces + 1)
+    Math.max(midPrice?.toString().length ?? 0, decimalPlaces + 1)
   )
     .fill(null)
     .map((v, i) => Math.pow(10, i));
@@ -126,16 +125,18 @@ export const Orderbook = ({
                       onClick={onClick}
                     />
                     <div
-                      className={`flex flex-shrink h-[${MID_PRICE_HEIGHT}px] items-center justify-center text-lg`}
+                      className={`flex flex-shrink items-center justify-center text-lg`}
                     >
-                      <PriceCell
-                        value={Number(markPrice)}
-                        valueFormatted={addDecimalsFormatNumber(
-                          markPrice,
-                          decimalPlaces
-                        )}
-                        testId={`middle-mark-price-${markPrice}`}
-                      />
+                      {midPrice && (
+                        <PriceCell
+                          value={Number(midPrice)}
+                          valueFormatted={addDecimalsFormatNumber(
+                            midPrice,
+                            decimalPlaces
+                          )}
+                          testId={`middle-mark-price-${midPrice}`}
+                        />
+                      )}
                     </div>
                     <OrderbookTable
                       rows={bidRows}
@@ -156,7 +157,7 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="relative bottom-0 grid grid-cols-4 grid-rows-1 gap-2 border-t border-default z-10 bg-white dark:bg-black w-full">
+      <div className="relative bottom-0 grid grid-cols-2 grid-rows-1 gap-2 border-t border-default z-10 bg-white dark:bg-black w-full">
         <div className="col-start-1">
           <select
             onChange={(e) => {

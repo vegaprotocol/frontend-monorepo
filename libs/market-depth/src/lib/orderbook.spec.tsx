@@ -23,8 +23,7 @@ describe('Orderbook', () => {
     numberOfSellRows: 100,
     numberOfBuyRows: 100,
     step: 1,
-    midPrice: 122900,
-    markPrice: '122900',
+    midPrice: '122900',
     bestStaticBidPrice: 122905,
     bestStaticOfferPrice: 122895,
     decimalPlaces: 3,
@@ -45,10 +44,10 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() =>
-      screen.getByTestId(`middle-mark-price-${params.markPrice}`)
+      screen.getByTestId(`middle-mark-price-${params.midPrice}`)
     );
     expect(
-      screen.getByTestId(`middle-mark-price-${params.markPrice}`)
+      screen.getByTestId(`middle-mark-price-${params.midPrice}`)
     ).toHaveTextContent('122.90');
   });
 
@@ -65,7 +64,7 @@ describe('Orderbook', () => {
       />
     );
     expect(
-      await screen.findByTestId(`bid-vol-${params.midPrice}`)
+      await screen.findByTestId(`middle-mark-price-${params.midPrice}`)
     ).toBeInTheDocument();
     // Before resolution change the price is 122.934
     await fireEvent.click(await screen.getByTestId('price-122901'));

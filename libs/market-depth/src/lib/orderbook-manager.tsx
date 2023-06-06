@@ -2,7 +2,6 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
-import type { MarketData } from '@vegaprotocol/markets';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
 import { useCallback, useEffect, useState } from 'react';
 import type {
@@ -30,7 +29,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     bids: [],
   });
 
-  const initialDataSort = useCallback((data?: MarketDepthQuery['market']) => {
+  const initData = useCallback((data?: MarketDepthQuery['market']) => {
     const bids = (data?.depth.buy || []).filter((item) => item.volume !== '0');
     const asks = (data?.depth.sell || []).filter((item) => item.volume !== '0');
     return { asks, bids };
@@ -41,7 +40,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       deltaBuy: PriceLevelFieldsFragment[],
       data: MarketDepthQuery['market']
     ) => {
-      const orderbookData = initialDataSort(data);
+      const orderbookData = initData(data);
       const asks = fillSubscriptionData(
         orderbookData.asks,
         deltaSell,
@@ -54,7 +53,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       );
       setOrderBookData({ asks, bids });
     },
-    [initialDataSort]
+    [initData]
   );
 
   const update = useCallback(
@@ -104,30 +103,19 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     variables,
   });
 
-  const marketDataUpdate = useCallback(
-    ({ data }: { data: MarketData | null }) => {
-      setMarkPrice(data?.markPrice || '');
-      return true;
-    },
-    []
-  );
-
   const {
     data: marketData,
     error: marketDataError,
     loading: marketDataLoading,
   } = useDataProvider({
     dataProvider: marketDataProvider,
-    update: marketDataUpdate,
     variables,
   });
 
-  const [markPrice, setMarkPrice] = useState(marketData?.markPrice || '');
-
   useEffect(() => {
-    const sorted = initialDataSort(data);
-    setOrderBookData(sorted);
-  }, [initialDataSort, data]);
+    const initialData = initData(data);
+    setOrderBookData(initialData);
+  }, [initData, data]);
 
   const updateOrder = useOrderStore((store) => store.update);
 
@@ -147,7 +135,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
             updateOrder(marketId, { price });
           }
         }}
-        markPrice={markPrice}
+        midPrice={marketData?.midPrice}
       />
     </AsyncRenderer>
   );

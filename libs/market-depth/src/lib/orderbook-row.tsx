@@ -90,9 +90,9 @@ export const OrderbookRow = React.memo(
   }: OrderbookRowProps) => {
     const txtId = type === VolumeType.bid ? 'bid' : 'ask';
     return (
-      <div className="relative w-full">
+      <div className="relative">
         <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
-        <div className="grid gap-1 text-right auto-rows-[17px] grid-cols-3">
+        <div className="grid gap-1 text-right grid-cols-3">
           <PriceCell
             testId={`price-${price}`}
             value={BigInt(price)}
