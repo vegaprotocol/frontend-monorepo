@@ -101,6 +101,7 @@ context(
         verifyEthWalletAssociatedBalance('2.0');
         verifyEthWalletTotalAssociatedBalance('6,002.00');
         cy.get('button').contains('Select a validator to nominate').click();
+        cy.getByTestId('epoch-countdown').should('be.visible');
         stakingPageDisassociateTokens('2');
         validateWalletCurrency('Associated', '2.00');
         validateWalletCurrency('Pending association', '2.00');
@@ -131,6 +132,7 @@ context(
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
         });
         cy.get('button').contains('Select a validator to nominate').click();
+        cy.getByTestId('epoch-countdown').should('be.visible');
         stakingPageDisassociateTokens('1');
         verifyEthWalletAssociatedBalance('1.0');
         cy.get(vegaWallet).within(() => {
@@ -147,6 +149,7 @@ context(
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
         });
         cy.get('button').contains('Select a validator to nominate').click();
+        cy.getByTestId('epoch-countdown').should('be.visible');
         cy.get(ethWalletDissociateButton).click();
         cy.get(disassociationWarning).should('contain', warningText);
         stakingPageDisassociateAllTokens();
@@ -208,6 +211,7 @@ context(
         // 1004-ASSO-022
         stakingPageAssociateTokens('21', { type: 'wallet' });
         cy.get('button').contains('Select a validator to nominate').click();
+        cy.getByTestId('epoch-countdown').should('be.visible');
         stakingPageAssociateTokens('37', { type: 'contract' });
         cy.get(vestingContractSection)
           .first()
