@@ -102,45 +102,6 @@ export const compactRows = (
   return orderbookData;
 };
 
-const updateRowsData = (
-  dataType: VolumeType,
-  data: PriceLevelFieldsFragment[],
-  delta: PriceLevelFieldsFragment
-) => {
-  const { price, volume, numberOfOrders } = delta;
-  let index = data.findIndex((row) => row.price === price);
-  if (index !== -1) {
-    if (volume === '0') {
-      data.splice(index, 1);
-    } else {
-      data[index].volume = volume;
-    }
-  } else if (volume !== '0') {
-    const newData = { price, volume, numberOfOrders };
-    index = data.findIndex((row) => BigInt(row.price) < BigInt(price));
-    if (index !== -1) {
-      data.splice(index, 0, newData);
-    } else {
-      data.push(newData);
-    }
-  }
-};
-
-export const fillSubscriptionData = (
-  oldData: PriceLevelFieldsFragment[],
-  newData: PriceLevelFieldsFragment[],
-  dataType: VolumeType
-) => {
-  if (newData.length) {
-    const data = cloneDeep(oldData as PriceLevelFieldsFragment[]);
-    uniqBy(reverse(newData || []), 'price')?.forEach((delta) => {
-      updateRowsData(dataType, data, delta);
-    });
-    return data;
-  }
-  return oldData;
-};
-
 /**
  * Updates raw data with new data received from subscription - mutates input
  * @param levels

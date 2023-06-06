@@ -3,14 +3,12 @@ import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
-import { useCallback, useEffect, useState } from 'react';
 import type {
   MarketDepthQuery,
   MarketDepthQueryVariables,
   MarketDepthUpdateSubscription,
   PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
-import { VolumeType, fillSubscriptionData } from './orderbook-data';
 import { useOrderStore } from '@vegaprotocol/orders';
 
 export type OrderbookData = {
@@ -24,64 +22,6 @@ interface OrderbookManagerProps {
 
 export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const variables = { marketId };
-  const [orderbookData, setOrderBookData] = useState<OrderbookData>({
-    asks: [],
-    bids: [],
-  });
-
-  const initData = useCallback((data?: MarketDepthQuery['market']) => {
-    const bids = (data?.depth.buy || []).filter((item) => item.volume !== '0');
-    const asks = (data?.depth.sell || []).filter((item) => item.volume !== '0');
-    return { asks, bids };
-  }, []);
-  const updateOrderbookData = useCallback(
-    (
-      deltaSell: PriceLevelFieldsFragment[],
-      deltaBuy: PriceLevelFieldsFragment[],
-      data: MarketDepthQuery['market']
-    ) => {
-      const orderbookData = initData(data);
-      const asks = fillSubscriptionData(
-        orderbookData.asks,
-        deltaSell,
-        VolumeType.ask
-      );
-      const bids = fillSubscriptionData(
-        orderbookData.bids,
-        deltaBuy,
-        VolumeType.bid
-      );
-      setOrderBookData({ asks, bids });
-    },
-    [initData]
-  );
-
-  const update = useCallback(
-    ({
-      delta: deltas,
-      data,
-    }: {
-      delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'] | null;
-      data?: MarketDepthQuery['market'];
-    }) => {
-      const deltaSell = [];
-      const deltaBuy = [];
-      for (const delta of deltas || []) {
-        if (delta.marketId !== marketId) {
-          continue;
-        }
-        if (delta.sell) {
-          deltaSell.push(...delta.sell);
-        }
-        if (delta.buy) {
-          deltaBuy.push(...delta.buy);
-        }
-      }
-      updateOrderbookData(deltaSell, deltaBuy, data);
-      return true;
-    },
-    [marketId, updateOrderbookData]
-  );
 
   const { data, error, loading, reload } = useDataProvider<
     MarketDepthQuery['market'] | undefined,
@@ -89,7 +29,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     MarketDepthQueryVariables
   >({
     dataProvider: marketDepthProvider,
-    update,
     variables,
   });
 
@@ -112,11 +51,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     variables,
   });
 
-  useEffect(() => {
-    const initialData = initData(data);
-    setOrderBookData(initialData);
-  }, [initData, data]);
-
   const updateOrder = useOrderStore((store) => store.update);
 
   return (
@@ -127,7 +61,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       reload={reload}
     >
       <Orderbook
-        {...orderbookData}
+        bids={data?.depth.buy ?? []}
+        asks={data?.depth.sell ?? []}
         decimalPlaces={market?.decimalPlaces ?? 0}
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         onClick={(price: string) => {

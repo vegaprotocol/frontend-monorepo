@@ -96,18 +96,12 @@ export const Orderbook = ({
       <div>
         <ReactVirtualizedAutoSizer disableWidth>
           {({ height }) => {
-            const limit = Math.floor((height - 60) / 2 / rowHeight);
-            const askRows =
-              groupedAsks?.slice(
-                Math.max(
-                  0,
-                  Math.min(
-                    groupedAsks?.length || 0,
-                    groupedAsks?.length - limit
-                  )
-                )
-              ) ?? [];
-            const bidRows = groupedBids?.slice(0, Math.max(0, limit)) ?? [];
+            const limit = Math.max(
+              1,
+              Math.floor((height - 60) / 2 / rowHeight)
+            );
+            const askRows = groupedAsks?.slice(limit * -1) ?? [];
+            const bidRows = groupedBids?.slice(0, limit) ?? [];
             return (
               <div
                 className="text-right w-full overflow-hidden grid grid-rows-[1fr_min-content_1fr]"
