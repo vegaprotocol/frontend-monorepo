@@ -6,7 +6,7 @@ import {
   useEthereumTransaction,
 } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
-import { localLoggerFactory } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
   Erc20ApprovalQuery,
