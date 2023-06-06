@@ -28,8 +28,15 @@ describe('number utils', () => {
     { v: new BigNumber(123000), d: 5, o: '1.23', q: 0.1 },
     { v: new BigNumber(123000), d: 3, o: '123.00', q: 0.1 },
     { v: new BigNumber(123000), d: 1, o: '12,300.00', q: 0.1 },
-    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
     { v: new BigNumber(123001000), d: 2, o: '1,230,010.00', q: 0.1 },
+    { v: new BigNumber(123001), d: 2, o: '1,230', q: 100 },
+    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
+    {
+      v: BigNumber('123456789123456789'),
+      d: 10,
+      o: '12,345,678.9123457',
+      q: '0.00003846',
+    },
   ])(
     'formats with addDecimalsFormatNumberQuantum given number correctly',
     ({ v, d, o, q }) => {

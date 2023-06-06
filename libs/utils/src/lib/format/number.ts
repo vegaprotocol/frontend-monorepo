@@ -94,12 +94,13 @@ export const addDecimalsFormatNumberQuantum = (
   rawValue: string | number,
   decimalPlaces: number,
   quantum: number | string
-) =>
-  addDecimalsFormatNumber(
-    rawValue,
-    decimalPlaces,
-    Math.max(0, Math.log10(100 / Number(quantum) || 0))
-  );
+) => {
+  if (isNaN(Number(quantum))) {
+    return addDecimalsFormatNumber(rawValue, decimalPlaces);
+  }
+  const numberDP = Math.max(0, Math.log10(100 / Number(quantum)));
+  return addDecimalsFormatNumber(rawValue, decimalPlaces, Math.ceil(numberDP));
+};
 
 export const addDecimalsFormatNumber = (
   rawValue: string | number,
