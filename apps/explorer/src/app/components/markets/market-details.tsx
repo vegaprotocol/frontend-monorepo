@@ -49,28 +49,20 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
 
   return (
     <div>
-      <KeyDetailsInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Key details')}</h2>
-      </KeyDetailsInfoPanel>
-      <InstrumentInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Instrument')}</h2>
-      </InstrumentInfoPanel>
-      <SettlementAssetInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Settlement asset')}</h2>
-      </SettlementAssetInfoPanel>
-      <MetadataInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Metadata')}</h2>
-      </MetadataInfoPanel>
-      <RiskModelInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Risk model')}</h2>
-      </RiskModelInfoPanel>
-      <RiskParametersInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Risk parameters')}</h2>
-      </RiskParametersInfoPanel>
-      <RiskFactorsInfoPanel market={{ riskFactors: market.riskFactors }}>
-        <h2 className={headerClassName}>{t('Risk factors')}</h2>
-      </RiskFactorsInfoPanel>
-
+      <h2 className={headerClassName}>{t('Key details')}</h2>
+      <KeyDetailsInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Instrument')}</h2>
+      <InstrumentInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Settlement asset')}</h2>
+      <SettlementAssetInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Metadata')}</h2>
+      <MetadataInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Risk model')}</h2>
+      <RiskModelInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Risk parameters')}</h2>
+      <RiskParametersInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Risk factors')}</h2>
+      <RiskFactorsInfoPanel market={market} />
       {(market.data?.priceMonitoringBounds || []).map((trigger, i) => (
         <>
           <h2 className={headerClassName}>
@@ -92,28 +84,24 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
           </>
         )
       )}
-      <LiquidityMonitoringParametersInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Liquidity monitoring')}</h2>
-      </LiquidityMonitoringParametersInfoPanel>
-      <LiquidityInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Liquidity')}</h2>
-      </LiquidityInfoPanel>
-      <LiquidityPriceRangeInfoPanel market={market}>
-        <h2 className={headerClassName}>{t('Liquidity price range')}</h2>
-      </LiquidityPriceRangeInfoPanel>
+      <h2 className={headerClassName}>{t('Liquidity monitoring')}</h2>
+      <LiquidityMonitoringParametersInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Liquidity')}</h2>
+      <LiquidityInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Liquidity price range')}</h2>
+      <LiquidityPriceRangeInfoPanel market={market} />
       {showTwoOracles ? (
         <>
-          <OracleInfoPanel market={market} type="settlementData">
-            <h2 className={headerClassName}>{t('Settlement oracle')}</h2>
-          </OracleInfoPanel>
-          <OracleInfoPanel market={market} type="termination">
-            <h2 className={headerClassName}>{t('Termination oracle')}</h2>
-          </OracleInfoPanel>
+          <h2 className={headerClassName}>{t('Settlement oracle')}</h2>
+          <OracleInfoPanel market={market} type="settlementData" />
+          <h2 className={headerClassName}>{t('Termination oracle')}</h2>
+          <OracleInfoPanel market={market} type="termination" />
         </>
       ) : (
-        <OracleInfoPanel market={market} type="settlementData">
+        <>
           <h2 className={headerClassName}>{t('Oracle')}</h2>
-        </OracleInfoPanel>
+          <OracleInfoPanel market={market} type="settlementData" />
+        </>
       )}
     </div>
   );

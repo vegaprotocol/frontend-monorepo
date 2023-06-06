@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
@@ -33,21 +34,13 @@ import { useOracleProofs } from '../../hooks';
 import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
-type PanelProps = { children?: React.ReactNode };
-
 type MarketInfoProps = {
   market: MarketInfo;
+  children?: ReactNode;
 };
 
-type TradableInstrument = Get<MarketInfo, 'tradableInstrument'>;
-
-export const CurrentFeesInfoPanel = ({
-  market,
-  children,
-  ...props
-}: MarketInfoProps & PanelProps) => (
-  <div>
-    {children}
+export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => (
+  <>
     <MarketInfoTable
       data={{
         makerFee: market.fees.factors.makerFee,
@@ -56,21 +49,16 @@ export const CurrentFeesInfoPanel = ({
         totalFees: totalFeesPercentage(market.fees.factors),
       }}
       asPercentage={true}
-      {...props}
     />
     <p className="text-xs">
       {t(
         'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
       )}
     </p>
-  </div>
+  </>
 );
 
-export const MarketPriceInfoPanel = ({
-  market,
-  children,
-  ...props
-}: MarketInfoProps & PanelProps) => {
+export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   const quoteUnit =
@@ -80,8 +68,7 @@ export const MarketPriceInfoPanel = ({
     variables: { marketId: market.id },
   });
   return (
-    <div>
-      {children}
+    <>
       <MarketInfoTable
         data={{
           markPrice: data?.markPrice,
@@ -90,23 +77,18 @@ export const MarketPriceInfoPanel = ({
           quoteUnit: market.tradableInstrument.instrument.product.quoteName,
         }}
         decimalPlaces={market.decimalPlaces}
-        {...props}
       />
-      <p className="text-xs mt-4">
+      <p className="text-xs mt-2">
         {t(
           'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
           [assetSymbol, quoteUnit]
         )}
       </p>
-    </div>
+    </>
   );
 };
 
-export const MarketVolumeInfoPanel = ({
-  market,
-  children,
-  ...props
-}: MarketInfoProps & PanelProps) => {
+export const MarketVolumeInfoPanel = ({ market }: MarketInfoProps) => {
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -116,122 +98,78 @@ export const MarketVolumeInfoPanel = ({
     value && value !== '0' ? value : '-';
 
   return (
-    <div>
-      {children}
-      <MarketInfoTable
-        data={{
-          '24hourVolume': (
-            <Last24hVolume
-              marketId={market.id}
-              positionDecimalPlaces={market.positionDecimalPlaces}
-            />
-          ),
-          openInterest: dash(data?.openInterest),
-          bestBidVolume: dash(data?.bestBidVolume),
-          bestOfferVolume: dash(data?.bestOfferVolume),
-          bestStaticBidVolume: dash(data?.bestStaticBidVolume),
-          bestStaticOfferVolume: dash(data?.bestStaticOfferVolume),
-        }}
-        decimalPlaces={market.positionDecimalPlaces}
-        {...props}
-      />
-    </div>
+    <MarketInfoTable
+      data={{
+        '24hourVolume': (
+          <Last24hVolume
+            marketId={market.id}
+            positionDecimalPlaces={market.positionDecimalPlaces}
+          />
+        ),
+        openInterest: dash(data?.openInterest),
+        bestBidVolume: dash(data?.bestBidVolume),
+        bestOfferVolume: dash(data?.bestOfferVolume),
+        bestStaticBidVolume: dash(data?.bestStaticBidVolume),
+        bestStaticOfferVolume: dash(data?.bestStaticOfferVolume),
+      }}
+      decimalPlaces={market.positionDecimalPlaces}
+    />
   );
 };
 
 export const InsurancePoolInfoPanel = ({
   market,
   account,
-  children,
-  ...props
 }: {
   account: NonNullable<
     Get<MarketInfoWithData, 'accountsConnection.edges[0].node'>
   >;
-} & MarketInfoProps &
-  PanelProps) => {
+} & MarketInfoProps) => {
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   return (
-    <div>
-      {children}
-      <MarketInfoTable
-        data={{
-          balance: account.balance,
-        }}
-        assetSymbol={assetSymbol}
-        decimalPlaces={
-          market.tradableInstrument.instrument.product.settlementAsset.decimals
-        }
-        {...props}
-      />
-    </div>
+    <MarketInfoTable
+      data={{
+        balance: account.balance,
+      }}
+      assetSymbol={assetSymbol}
+      decimalPlaces={
+        market.tradableInstrument.instrument.product.settlementAsset.decimals
+      }
+    />
   );
 };
 
-export const KeyDetailsInfoPanel = ({
-  market,
-  children,
-}: {
-  market: {
-    id: string;
-    tradingMode?: MarketTradingMode;
-    decimalPlaces: number;
-    positionDecimalPlaces: number;
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps) => {
+export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
   return (
-    <div>
-      {children}
-      <MarketInfoTable
-        data={{
-          name: market.tradableInstrument.instrument.name,
-          marketID: market.id,
-          tradingMode:
-            market.tradingMode && MarketTradingModeMapping[market.tradingMode],
-          marketDecimalPlaces: market.decimalPlaces,
-          positionDecimalPlaces: market.positionDecimalPlaces,
-          settlementAssetDecimalPlaces: assetDecimals,
-        }}
-      />
-    </div>
+    <MarketInfoTable
+      data={{
+        name: market.tradableInstrument.instrument.name,
+        marketID: market.id,
+        tradingMode:
+          market.tradingMode && MarketTradingModeMapping[market.tradingMode],
+        marketDecimalPlaces: market.decimalPlaces,
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        settlementAssetDecimalPlaces: assetDecimals,
+      }}
+    />
   );
 };
 
-export const InstrumentInfoPanel = ({
-  market,
-  children,
-  ...props
-}: {
-  market: {
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps) => (
-  <div>
-    {children}
-    <MarketInfoTable
-      data={{
-        marketName: market.tradableInstrument.instrument.name,
-        code: market.tradableInstrument.instrument.code,
-        productType: market.tradableInstrument.instrument.product.__typename,
-        quoteName: market.tradableInstrument.instrument.product.quoteName,
-      }}
-      {...props}
-    />
-  </div>
+export const InstrumentInfoPanel = ({ market }: MarketInfoProps) => (
+  <MarketInfoTable
+    data={{
+      marketName: market.tradableInstrument.instrument.name,
+      code: market.tradableInstrument.instrument.code,
+      productType: market.tradableInstrument.instrument.product.__typename,
+      quoteName: market.tradableInstrument.instrument.product.quoteName,
+    }}
+  />
 );
 
-export const SettlementAssetInfoPanel = ({
-  market,
-  children,
-}: {
-  market: {
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps) => {
+export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const assetSymbol =
     market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
   const quoteUnit =
@@ -242,8 +180,7 @@ export const SettlementAssetInfoPanel = ({
   );
   const { data: asset } = useAssetDataProvider(assetId ?? '');
   return asset ? (
-    <div>
-      {children}
+    <>
       <AssetDetailsTable
         asset={asset}
         inline={true}
@@ -257,131 +194,63 @@ export const SettlementAssetInfoPanel = ({
           [assetSymbol, quoteUnit]
         )}
       </p>
-    </div>
+    </>
   ) : (
     <Splash>{t('No data')}</Splash>
   );
 };
 
-export const MetadataInfoPanel = ({
-  market,
-  children,
-  ...props
-}: {
-  market: {
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps) => (
-  <div>
-    {children}
-    <MarketInfoTable
-      data={{
-        expiryDate: getMarketExpiryDateFormatted(
-          market.tradableInstrument.instrument.metadata.tags
-        ),
-        ...market.tradableInstrument.instrument.metadata.tags
-          ?.map((tag) => {
-            const [key, value] = tag.split(':');
-            return { [key]: value };
-          })
-          .reduce((acc, curr) => ({ ...acc, ...curr }), {}),
-      }}
-      {...props}
-    />
-  </div>
+export const MetadataInfoPanel = ({ market }: MarketInfoProps) => (
+  <MarketInfoTable
+    data={{
+      expiryDate: getMarketExpiryDateFormatted(
+        market.tradableInstrument.instrument.metadata.tags
+      ),
+      ...market.tradableInstrument.instrument.metadata.tags
+        ?.map((tag) => {
+          const [key, value] = tag.split(':');
+          return { [key]: value };
+        })
+        .reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+    }}
+  />
 );
 
-export const RiskModelInfoPanel = ({
-  market,
-  children,
-  ...props
-}: {
-  market: {
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps) => {
+export const RiskModelInfoPanel = ({ market }: MarketInfoProps) => {
   if (market.tradableInstrument.riskModel.__typename !== 'LogNormalRiskModel') {
     return null;
   }
   const { tau, riskAversionParameter } = market.tradableInstrument.riskModel;
-  return (
-    <div>
-      {children}
-      <MarketInfoTable
-        data={{ tau, riskAversionParameter }}
-        unformatted
-        {...props}
-      />
-    </div>
-  );
+  return <MarketInfoTable data={{ tau, riskAversionParameter }} unformatted />;
 };
 
-export const RiskParametersInfoPanel = ({
-  market,
-  children,
-  ...props
-}: {
-  market: {
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps) => {
+export const RiskParametersInfoPanel = ({ market }: MarketInfoProps) => {
   if (market.tradableInstrument.riskModel.__typename === 'LogNormalRiskModel') {
     const { r, sigma, mu } = market.tradableInstrument.riskModel.params;
-    return <MarketInfoTable data={{ r, sigma, mu }} unformatted {...props} />;
+    return <MarketInfoTable data={{ r, sigma, mu }} unformatted />;
   }
   if (market.tradableInstrument.riskModel.__typename === 'SimpleRiskModel') {
     const { factorLong, factorShort } =
       market.tradableInstrument.riskModel.params;
-    return (
-      <div>
-        {children}
-        <MarketInfoTable
-          data={{ factorLong, factorShort }}
-          unformatted
-          {...props}
-        />
-      </div>
-    );
+    return <MarketInfoTable data={{ factorLong, factorShort }} unformatted />;
   }
   return null;
 };
 
-export const RiskFactorsInfoPanel = ({
-  market,
-  children,
-  ...props
-}: {
-  market: {
-    riskFactors: Get<MarketInfo, 'riskFactors'>;
-  };
-} & PanelProps) => {
+export const RiskFactorsInfoPanel = ({ market }: MarketInfoProps) => {
   if (!market.riskFactors) {
     return null;
   }
   const { short, long } = market.riskFactors;
-  return (
-    <div>
-      {children}
-      <MarketInfoTable data={{ short, long }} unformatted {...props} />
-    </div>
-  );
+  return <MarketInfoTable data={{ short, long }} unformatted />;
 };
 
 export const PriceMonitoringBoundsInfoPanel = ({
   market,
   triggerIndex,
-  children,
-  ...props
-}: {
+}: MarketInfoProps & {
   triggerIndex: number;
-} & {
-  market: {
-    id: string;
-    priceMonitoringSettings: Get<MarketInfo, 'priceMonitoringSettings'>;
-    tradableInstrument: TradableInstrument;
-    decimalPlaces: number;
-  };
-} & PanelProps) => {
+}) => {
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -398,82 +267,54 @@ export const PriceMonitoringBoundsInfoPanel = ({
     return null;
   }
   return (
-    <div>
-      {children}
-      <div className="text-xs">
-        <div className="grid grid-cols-2 text-xs mb-4">
-          <p className="col-span-1">
-            {t('%s probability price bounds', [
-              formatNumberPercentage(
-                new BigNumber(trigger.probability).times(100)
-              ),
-            ])}
-          </p>
-          <p className="col-span-1 text-right">
-            {t('Within %s seconds', [formatNumber(trigger.horizonSecs)])}
-          </p>
-        </div>
-        <div className="pl-2 pb-0 text-xs border-l-2">
-          {bounds && (
-            <MarketInfoTable
-              data={{
-                highestPrice: bounds.maxValidPrice,
-                lowestPrice: bounds.minValidPrice,
-              }}
-              decimalPlaces={market.decimalPlaces}
-              assetSymbol={quoteUnit}
-              {...props}
-            />
-          )}
-        </div>
-        <p className="mt-4">
-          {t('Results in %s seconds auction if breached', [
-            trigger.auctionExtensionSecs.toString(),
+    <>
+      <div className="grid grid-cols-2 text-sm mb-2">
+        <p className="col-span-1">
+          {t('%s probability price bounds', [
+            formatNumberPercentage(
+              new BigNumber(trigger.probability).times(100)
+            ),
           ])}
         </p>
+        <p className="col-span-1 text-right">
+          {t('Within %s seconds', [formatNumber(trigger.horizonSecs)])}
+        </p>
       </div>
-    </div>
+      {bounds && (
+        <MarketInfoTable
+          data={{
+            highestPrice: bounds.maxValidPrice,
+            lowestPrice: bounds.minValidPrice,
+          }}
+          decimalPlaces={market.decimalPlaces}
+          assetSymbol={quoteUnit}
+        />
+      )}
+      <p className="text-xs mt-2">
+        {t('Results in %s seconds auction if breached', [
+          trigger.auctionExtensionSecs.toString(),
+        ])}
+      </p>
+    </>
   );
 };
 
 export const LiquidityMonitoringParametersInfoPanel = ({
   market,
-  children,
-  ...props
-}: {
-  market: {
-    liquidityMonitoringParameters: Get<
-      MarketInfo,
-      'liquidityMonitoringParameters'
-    >;
-  };
-} & PanelProps) => (
-  <div>
-    {children}
-    <MarketInfoTable
-      data={{
-        triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
-        timeWindow:
-          market.liquidityMonitoringParameters.targetStakeParameters.timeWindow,
-        scalingFactor:
-          market.liquidityMonitoringParameters.targetStakeParameters
-            .scalingFactor,
-      }}
-      {...props}
-    />
-  </div>
+}: MarketInfoProps) => (
+  <MarketInfoTable
+    data={{
+      triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
+      timeWindow:
+        market.liquidityMonitoringParameters.targetStakeParameters.timeWindow,
+      scalingFactor:
+        market.liquidityMonitoringParameters.targetStakeParameters
+          .scalingFactor,
+    }}
+  />
 );
 
-export const LiquidityInfoPanel = ({
-  market,
-  children,
-  ...props
-}: {
-  market: {
-    id: string;
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps) => {
+export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
   const assetSymbol =
@@ -483,8 +324,7 @@ export const LiquidityInfoPanel = ({
     variables: { marketId: market.id },
   });
   return (
-    <div>
-      {children}
+    <>
       <MarketInfoTable
         data={{
           targetStake: data?.targetStake,
@@ -493,23 +333,13 @@ export const LiquidityInfoPanel = ({
         }}
         decimalPlaces={assetDecimals}
         assetSymbol={assetSymbol}
-        {...props}
       />
-    </div>
+      {children}
+    </>
   );
 };
 
-export const LiquidityPriceRangeInfoPanel = ({
-  market,
-  children,
-}: {
-  market: {
-    id: string;
-    lpPriceRange: string;
-    tradableInstrument: TradableInstrument;
-    decimalPlaces: number;
-  };
-} & PanelProps) => {
+export const LiquidityPriceRangeInfoPanel = ({ market }: MarketInfoProps) => {
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
   const liquidityPriceRange = formatNumberPercentage(
@@ -520,55 +350,46 @@ export const LiquidityPriceRangeInfoPanel = ({
     variables: { marketId: market.id },
   });
   return (
-    <div>
-      {children}
-      <p className="text-xs mb-4">
+    <>
+      <p className="text-sm mb-2">
         {`For liquidity orders to count towards a commitment, they must be
             within the liquidity monitoring bounds.`}
       </p>
-      <p className="text-xs mb-4">
+      <p className="text-sm mb-2">
         {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
             price.`}
       </p>
-      <div className="pl-2 pb-0 text-xs border-l-2">
-        <MarketInfoTable
-          data={{
-            liquidityPriceRange: `${liquidityPriceRange} of mid price`,
-            lowestPrice:
-              data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .minus(market.lpPriceRange)
-                  .times(data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${quoteUnit}`,
-            highestPrice:
-              data?.midPrice &&
-              `${addDecimalsFormatNumber(
-                new BigNumber(1)
-                  .plus(market.lpPriceRange)
-                  .times(data.midPrice)
-                  .toString(),
-                market.decimalPlaces
-              )} ${quoteUnit}`,
-          }}
-        />
-      </div>
-    </div>
+      <MarketInfoTable
+        data={{
+          liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+          lowestPrice:
+            data?.midPrice &&
+            `${addDecimalsFormatNumber(
+              new BigNumber(1)
+                .minus(market.lpPriceRange)
+                .times(data.midPrice)
+                .toString(),
+              market.decimalPlaces
+            )} ${quoteUnit}`,
+          highestPrice:
+            data?.midPrice &&
+            `${addDecimalsFormatNumber(
+              new BigNumber(1)
+                .plus(market.lpPriceRange)
+                .times(data.midPrice)
+                .toString(),
+              market.decimalPlaces
+            )} ${quoteUnit}`,
+        }}
+      />
+    </>
   );
 };
 
 export const OracleInfoPanel = ({
   market,
   type,
-  children,
-}: {
-  market: {
-    id: string;
-    tradableInstrument: TradableInstrument;
-  };
-} & PanelProps & { type: 'settlementData' | 'termination' }) => {
+}: MarketInfoProps & { type: 'settlementData' | 'termination' }) => {
   const product = market.tradableInstrument.instrument.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
@@ -585,29 +406,26 @@ export const OracleInfoPanel = ({
   ) as DataSourceDefinition;
 
   return (
-    <div>
-      {children}
-      <div className="flex flex-col">
-        <DataSourceProof
-          data-testid="oracle-proof-links"
-          data={dataSourceSpec}
-          providers={data}
-          type={type}
-          dataSourceSpecId={dataSourceSpecId}
-        />
-        <ExternalLink
-          data-testid="oracle-spec-links"
-          href={`${VEGA_EXPLORER_URL}/oracles/${
-            type === 'settlementData'
-              ? product.dataSourceSpecForSettlementData.id
-              : product.dataSourceSpecForTradingTermination.id
-          }`}
-        >
-          {type === 'settlementData'
-            ? t('View settlement data specification')
-            : t('View termination specification')}
-        </ExternalLink>
-      </div>
+    <div className="flex flex-col gap-2">
+      <DataSourceProof
+        data-testid="oracle-proof-links"
+        data={dataSourceSpec}
+        providers={data}
+        type={type}
+        dataSourceSpecId={dataSourceSpecId}
+      />
+      <ExternalLink
+        data-testid="oracle-spec-links"
+        href={`${VEGA_EXPLORER_URL}/oracles/${
+          type === 'settlementData'
+            ? product.dataSourceSpecForSettlementData.id
+            : product.dataSourceSpecForTradingTermination.id
+        }`}
+      >
+        {type === 'settlementData'
+          ? t('View settlement data specification')
+          : t('View termination specification')}
+      </ExternalLink>
     </div>
   );
 };

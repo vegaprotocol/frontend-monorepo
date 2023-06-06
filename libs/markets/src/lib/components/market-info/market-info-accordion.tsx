@@ -10,6 +10,7 @@ import {
   Link as UILink,
   Splash,
   TinyScroll,
+  AccordionItem,
 } from '@vegaprotocol/ui-toolkit';
 import { generatePath, Link } from 'react-router-dom';
 
@@ -104,170 +105,186 @@ export const MarketInfoAccordion = ({
     return [];
   };
 
-  const marketDataPanels = [
-    {
-      title: t('Current fees'),
-      content: <CurrentFeesInfoPanel market={market} />,
-    },
-    {
-      title: t('Market price'),
-      content: <MarketPriceInfoPanel market={market} />,
-    },
-    {
-      title: t('Market volume'),
-      content: <MarketVolumeInfoPanel market={market} />,
-    },
-    ...marketAccounts
-      .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
-      .map((a) => ({
-        title: t(`Insurance pool`),
-        content: <InsurancePoolInfoPanel market={market} account={a} />,
-      })),
-  ];
-
-  const oraclePanels = isEqual(
-    getSigners(settlementData),
-    getSigners(terminationData)
-  )
-    ? [
-        {
-          title: t('Oracle'),
-          content: <OracleInfoPanel market={market} type="settlementData" />,
-        },
-      ]
-    : [
-        {
-          title: t('Settlement Oracle'),
-          content: <OracleInfoPanel market={market} type="settlementData" />,
-        },
-        {
-          title: t('Termination Oracle'),
-          content: <OracleInfoPanel market={market} type="termination" />,
-        },
-      ];
-  const marketSpecPanels = [
-    {
-      title: t('Key details'),
-      content: <KeyDetailsInfoPanel market={market} />,
-    },
-    {
-      title: t('Instrument'),
-      content: <InstrumentInfoPanel market={market} />,
-    },
-    ...oraclePanels,
-    {
-      title: t('Settlement asset'),
-      content: <SettlementAssetInfoPanel market={market} />,
-    },
-    {
-      title: t('Metadata'),
-      content: <MetadataInfoPanel market={market} />,
-    },
-    {
-      title: t('Risk model'),
-      content: <RiskModelInfoPanel market={market} />,
-    },
-    {
-      title: t('Risk parameters'),
-      content: <RiskParametersInfoPanel market={market} />,
-    },
-    {
-      title: t('Risk factors'),
-      content: (
-        <RiskFactorsInfoPanel market={{ riskFactors: market.riskFactors }} />
-      ),
-    },
-    ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-      (_, triggerIndex) => ({
-        title: t(`Price monitoring bounds ${triggerIndex + 1}`),
-        content: (
-          <PriceMonitoringBoundsInfoPanel
-            market={market}
-            triggerIndex={triggerIndex}
-          />
-        ),
-      })
-    ),
-    {
-      title: t('Liquidity monitoring parameters'),
-      content: <LiquidityMonitoringParametersInfoPanel market={market} />,
-    },
-    {
-      title: t('Liquidity'),
-      content: (
-        <LiquidityInfoPanel market={market}>
-          <Link
-            to={`/liquidity/${market.id}`}
-            onClick={(ev) => onSelect?.(market.id, ev.metaKey || ev.ctrlKey)}
-            data-testid="view-liquidity-link"
-          >
-            <UILink>{t('View liquidity provision table')}</UILink>
-          </Link>
-        </LiquidityInfoPanel>
-      ),
-    },
-    {
-      title: t('Liquidity price range'),
-      content: <LiquidityPriceRangeInfoPanel market={market} />,
-    },
-  ];
-
-  const marketGovPanels = [
-    {
-      title: t('Proposal'),
-      content: (
-        <div className="">
-          {VEGA_TOKEN_URL && (
-            <ExternalLink
-              className="mb-2 w-full"
-              href={generatePath(TokenStaticLinks.PROPOSAL_PAGE, {
-                tokenUrl: VEGA_TOKEN_URL,
-                proposalId: market.proposal?.id || '',
-              })}
-              title={
-                market.proposal?.rationale.title ||
-                market.proposal?.rationale.description ||
-                ''
-              }
-            >
-              {t('View governance proposal')}
-            </ExternalLink>
-          )}
-          {VEGA_TOKEN_URL && (
-            <ExternalLink
-              className="w-full"
-              href={generatePath(TokenStaticLinks.UPDATE_PROPOSAL_PAGE, {
-                tokenUrl: VEGA_TOKEN_URL,
-              })}
-              title={
-                market.proposal?.rationale.title ||
-                market.proposal?.rationale.description ||
-                ''
-              }
-            >
-              {t('Propose a change to market')}
-            </ExternalLink>
-          )}
-        </div>
-      ),
-    },
-  ];
-
   return (
     <div className="p-4">
       <div className="mb-8">
         <h3 className={headerClassName}>{t('Market data')}</h3>
-        <Accordion panels={marketDataPanels} />
+        <Accordion>
+          <AccordionItem
+            itemId="current-fees"
+            title={t('Current fees')}
+            content={<CurrentFeesInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="market-price"
+            title={t('Market price')}
+            content={<MarketPriceInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="market-volume"
+            title={t('Market volume')}
+            content={<MarketVolumeInfoPanel market={market} />}
+          />
+          {marketAccounts
+            .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
+            .map((a) => (
+              <AccordionItem
+                itemId={`${a.type}:${a.asset.id}`}
+                title={t('Insurance pool')}
+                content={<InsurancePoolInfoPanel market={market} account={a} />}
+              />
+            ))}
+        </Accordion>
       </div>
       <div className="mb-8">
         <MarketProposalNotification marketId={market.id} />
         <h3 className={headerClassName}>{t('Market specification')}</h3>
-        <Accordion panels={marketSpecPanels} />
+        <Accordion>
+          <AccordionItem
+            itemId="key-details"
+            title={t('Key details')}
+            content={<KeyDetailsInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="instrument"
+            title={t('Instrument')}
+            content={<InstrumentInfoPanel market={market} />}
+          />
+          {isEqual(getSigners(settlementData), getSigners(terminationData)) ? (
+            <AccordionItem
+              itemId="oracles"
+              title={t('Oracle')}
+              content={
+                <OracleInfoPanel market={market} type="settlementData" />
+              }
+            />
+          ) : (
+            <>
+              <AccordionItem
+                itemId="settlement-oracle"
+                title={t('Settlement Oracle')}
+                content={
+                  <OracleInfoPanel market={market} type="settlementData" />
+                }
+              />
+
+              <AccordionItem
+                itemId="termination-oracle"
+                title={t('Termination Oracle')}
+                content={<OracleInfoPanel market={market} type="termination" />}
+              />
+            </>
+          )}
+          <AccordionItem
+            itemId="settlement-asset"
+            title={t('Settlement asset')}
+            content={<SettlementAssetInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="metadata"
+            title={t('Metadata')}
+            content={<MetadataInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="risk-model"
+            title={t('Risk model')}
+            content={<RiskModelInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="risk-parameters"
+            title={t('Risk parameters')}
+            content={<RiskParametersInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="risk-factors"
+            title={t('Risk factors')}
+            content={<RiskFactorsInfoPanel market={market} />}
+          />
+          {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
+            (_, triggerIndex) => (
+              <AccordionItem
+                itemId={`trigger-${triggerIndex}`}
+                title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
+                content={
+                  <PriceMonitoringBoundsInfoPanel
+                    market={market}
+                    triggerIndex={triggerIndex}
+                  />
+                }
+              />
+            )
+          )}
+          <AccordionItem
+            itemId="liqudity-monitoring-parameters"
+            title={t('Liquidity monitoring parameters')}
+            content={<LiquidityMonitoringParametersInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="liquidity"
+            title={t('Liquidity')}
+            content={
+              <LiquidityInfoPanel market={market}>
+                <div className="mt-2">
+                  <Link
+                    to={`/liquidity/${market.id}`}
+                    onClick={(ev) =>
+                      onSelect?.(market.id, ev.metaKey || ev.ctrlKey)
+                    }
+                    data-testid="view-liquidity-link"
+                  >
+                    <UILink>{t('View liquidity provision table')}</UILink>
+                  </Link>
+                </div>
+              </LiquidityInfoPanel>
+            }
+          />
+          <AccordionItem
+            itemId="liquidity-price-range"
+            title={t('Liquidity price range')}
+            content={<LiquidityPriceRangeInfoPanel market={market} />}
+          />
+        </Accordion>
       </div>
-      {VEGA_TOKEN_URL && marketGovPanels && market.proposal?.id && (
+      {VEGA_TOKEN_URL && market.proposal?.id && (
         <div>
           <h3 className={headerClassName}>{t('Market governance')}</h3>
-          <Accordion panels={marketGovPanels} />
+          <Accordion>
+            <AccordionItem
+              itemId="proposal"
+              title={t('Proposal')}
+              content={
+                <>
+                  <ExternalLink
+                    className="mb-2 w-full"
+                    href={generatePath(TokenStaticLinks.PROPOSAL_PAGE, {
+                      tokenUrl: VEGA_TOKEN_URL,
+                      proposalId: market.proposal?.id || '',
+                    })}
+                    title={
+                      market.proposal?.rationale.title ||
+                      market.proposal?.rationale.description ||
+                      ''
+                    }
+                  >
+                    {t('View governance proposal')}
+                  </ExternalLink>
+                  <ExternalLink
+                    className="w-full"
+                    href={generatePath(TokenStaticLinks.UPDATE_PROPOSAL_PAGE, {
+                      tokenUrl: VEGA_TOKEN_URL,
+                    })}
+                    title={
+                      market.proposal?.rationale.title ||
+                      market.proposal?.rationale.description ||
+                      ''
+                    }
+                  >
+                    {t('Propose a change to market')}
+                  </ExternalLink>
+                </>
+              }
+            />
+          </Accordion>
         </div>
       )}
     </div>

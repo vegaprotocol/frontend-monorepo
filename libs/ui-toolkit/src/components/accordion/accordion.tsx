@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import classNames from 'classnames';
 import { VegaIcon, VegaIconNames } from '../icon';
@@ -10,7 +9,6 @@ export interface AccordionItemProps {
 
 export interface AccordionPanelProps extends AccordionItemProps {
   itemId: string;
-  active: boolean;
 }
 
 export interface AccordionProps {
@@ -19,23 +17,8 @@ export interface AccordionProps {
 }
 
 export const Accordion = ({ panels, children }: AccordionProps) => {
-  const [values, setValues] = useState<string[]>([]);
-
   return (
-    <AccordionPrimitive.Root
-      type="multiple"
-      value={values}
-      onValueChange={setValues}
-    >
-      {panels?.map(({ title, content }, i) => (
-        <AccordionItem
-          key={`item-${i + 1}`}
-          itemId={`item-${i + 1}`}
-          title={title}
-          content={content}
-          active={values.includes(`item-${i + 1}`)}
-        />
-      ))}
+    <AccordionPrimitive.Root type="multiple">
       {children}
     </AccordionPrimitive.Root>
   );
@@ -45,11 +28,11 @@ export const AccordionItem = ({
   title,
   content,
   itemId,
-  active,
 }: AccordionPanelProps) => {
   const triggerClassNames = classNames(
     'w-full py-2',
-    'flex items-center justify-between border-b border-neutral-500 text-sm'
+    'flex items-center justify-between border-b border-vega-light-200 dark:border-vega-dark-200 text-sm',
+    'group'
   );
   return (
     <AccordionPrimitive.Item value={itemId}>
@@ -59,24 +42,26 @@ export const AccordionItem = ({
           className={triggerClassNames}
         >
           <span data-testid="accordion-title">{title}</span>
-          <AccordionChevron active={active} aria-hidden />
+          <AccordionChevron aria-hidden />
         </AccordionPrimitive.Trigger>
       </AccordionPrimitive.Header>
-      <AccordionPrimitive.Content data-testid="accordion-content-ref">
-        <div className="py-4 text-sm" data-testid="accordion-content">
-          {content}
-        </div>
+      <AccordionPrimitive.Content
+        className="py-3 text-sm"
+        data-testid="accordion-content"
+      >
+        {content}
       </AccordionPrimitive.Content>
     </AccordionPrimitive.Item>
   );
 };
 
-export const AccordionChevron = ({ active }: { active: boolean }) => {
+export const AccordionChevron = () => {
   return (
     <span
-      className={classNames('transition ease-in-out duration-300', {
-        'transform rotate-180': active,
-      })}
+      className={classNames(
+        'transform transition ease-in-out duration-300',
+        'group-data-[state=open]:rotate-180'
+      )}
     >
       <VegaIcon name={VegaIconNames.CHEVRON_DOWN} aria-hidden />
     </span>
