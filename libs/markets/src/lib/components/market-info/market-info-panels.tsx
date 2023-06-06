@@ -20,11 +20,7 @@ import type {
 } from './market-info-data-provider';
 import { Last24hVolume } from '../last-24h-volume';
 import BigNumber from 'bignumber.js';
-import type {
-  DataSourceDefinition,
-  MarketTradingMode,
-  SignerKind,
-} from '@vegaprotocol/types';
+import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
 import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
