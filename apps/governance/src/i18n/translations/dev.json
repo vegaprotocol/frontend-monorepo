@@ -116,7 +116,7 @@
   "Showing tranches with <{{trancheMinimum}} VEGA, click to hide these tranches": "Showing tranches with ≤{{trancheMinimum}} $VEGA, click to hide these tranches",
   "Not showing tranches with <{{trancheMinimum}} VEGA, click to show all tranches": "Not showing tranches with ≤{{trancheMinimum}} $VEGA, click to show all tranches",
   "the holder": "the holder",
-  "We couldn't seem to load your data.": "We couldn't seem to load your data.",
+  "Your data couldn't be loaded": "Your data couldn't be loaded",
   "Vesting VEGA": "Vesting VEGA",
   "All the tokens in this tranche are locked and can not be redeemed yet.": "All the tokens in this tranche are locked and can not be redeemed yet.",
   "Redeem unlocked VEGA from tranche {{id}}": "Redeem unlocked $VEGA from tranche {{id}}",
@@ -728,7 +728,7 @@
   "ThisWillSetEnactmentDeadlineTo": "This will set the enactment date to",
   "ThisWillSetValidationDeadlineTo": "This will set the validation deadline to",
   "Hours": "hours",
-  "ThisWillAdd2MinutesToAllowTimeToConfirmInWallet": "Note: we add 2 minutes of extra time when you choose the minimum value. This gives you time to confirm the proposal in your wallet.",
+  "ThisWillAdd2MinutesToAllowTimeToConfirmInWallet": "Note: 2 minutes of extra time are added when you choose the minimum value. This gives you time to confirm the proposal in your wallet.",
   "ProposalWillFailIfEnactmentIsEarlierThanVotingDeadline": "Proposal will fail if enactment is earlier than the voting deadline",
   "SelectAMarketToChange": "Select a market to change",
   "MarketName": "Market name",
@@ -821,5 +821,8 @@
   "disclaimer2": "The Vega Governance App is free, public and open source software.  Software upgrades may contain bugs or security vulnerabilities that might result in loss of functionality.",
   "disclaimer3": "The Vega Governance App uses data obtained from nodes on the Vega Blockchain. The developers of the Vega Governance App do not operate or run the Vega Blockchain or any other blockchain.",
   "disclaimer4": "The Vega Governance App is provided “as is”.  The developers of the Vega Governance App make no representations or warranties of any kind, whether express or implied, statutory or otherwise regarding the Vega Governance App.  They disclaim all warranties of merchantability, quality, fitness for purpose.  They disclaim all warranties that the Vega Governance App is free of harmful components or errors.",
-  "disclaimer5": "No developer of the Vega Governance App accepts any responsibility for, or liability to users in connection with their use of the Vega Governance App."
+  "disclaimer5": "No developer of the Vega Governance App accepts any responsibility for, or liability to users in connection with their use of the Vega Governance App.",
+  "multisigContractLink": "Ethereum Multisig Contract",
+  "multisigContractIncorrect": "is incorrectly configured. Validator and delegator rewards will be penalised until this is resolved.",
+  "learnMore": "Learn more"
 }
