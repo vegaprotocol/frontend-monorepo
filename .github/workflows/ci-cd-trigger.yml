@@ -137,21 +137,22 @@ jobs:
           fi
           projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]
-          echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
-          echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
+          projects=$(echo $projects_e2e | sed 's|-e2e||g')
           if echo "$affected" | grep -q multisig-signer; then
             echo "Tools are affected"
             # tools are only applicable to check previews or deploy from develop to mainnet
             if [[ "${{ github.event_name }}" = "pull_request" ]]; then
               echo "Deploying tools on preview"
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
-              PROJECTS+='"multisig-signer" '
+              projects+='"multisig-signer" '
             fi
             if [[ "${{ github.ref }}" =~ .*develop$ ]]; then
               echo "Deploying tools on s3"
-              PROJECTS+='"multisig-signer" '
+              projects+='"multisig-signer" '
             fi
           fi
+          echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
+          echo PROJECTS=$projects >> $GITHUB_ENV
           echo PREVIEW_GOVERNANCE=$preview_governance >> $GITHUB_ENV
           echo PREVIEW_TRADING=$preview_trading >> $GITHUB_ENV
           echo PREVIEW_EXPLORER=$preview_explorer >> $GITHUB_ENV
@@ -168,7 +169,7 @@ jobs:
   cypress:
     needs: lint-test-build
     name: '(CI) cypress'
-    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
