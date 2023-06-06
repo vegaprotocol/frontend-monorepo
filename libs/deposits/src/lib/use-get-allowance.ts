@@ -4,7 +4,8 @@ import { useCallback } from 'react';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
+import { addDecimal } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 
 export const useGetAllowance = (
   contract: Token | null,

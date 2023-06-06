@@ -5,7 +5,7 @@ import { addDecimal } from '@vegaprotocol/utils';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { t } from '@vegaprotocol/i18n';
-import { localLoggerFactory } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 

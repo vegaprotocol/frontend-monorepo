@@ -1,5 +1,6 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
+import { addDecimal } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';

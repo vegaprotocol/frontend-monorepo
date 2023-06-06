@@ -1,4 +1,4 @@
-import { localLoggerFactory } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useCallback, useEffect, useState } from 'react';
 import z from 'zod';
 

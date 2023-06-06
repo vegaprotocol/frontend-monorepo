@@ -1,6 +1,6 @@
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useCallback } from 'react';
-import { SentryInit, SentryClose } from '@vegaprotocol/utils';
+import { SentryInit, SentryClose } from '@vegaprotocol/logger';
 import { ENV } from '../config';
 export const STORAGE_KEY = 'vega_telemetry_approval';
 

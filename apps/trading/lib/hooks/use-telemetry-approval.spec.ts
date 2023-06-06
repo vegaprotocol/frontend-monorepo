@@ -1,11 +1,11 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import { SentryInit, SentryClose } from '@vegaprotocol/utils';
+import { SentryInit, SentryClose } from '@vegaprotocol/logger';
 import { STORAGE_KEY, useTelemetryApproval } from './use-telemetry-approval';
 
 const mockSetValue = jest.fn();
 const mockRemoveValue = jest.fn();
-jest.mock('@vegaprotocol/utils');
+jest.mock('@vegaprotocol/logger');
 jest.mock('@vegaprotocol/react-helpers', () => ({
   ...jest.requireActual('@vegaprotocol/react-helpers'),
   useLocalStorage: jest
