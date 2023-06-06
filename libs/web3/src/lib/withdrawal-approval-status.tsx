@@ -1,5 +1,9 @@
 import { t } from '@vegaprotocol/i18n';
-import { getDateTimeFormat, truncateByChars } from '@vegaprotocol/utils';
+import {
+  getDateTimeFormat,
+  resolveNetworkName,
+  truncateByChars,
+} from '@vegaprotocol/utils';
 import type { EthWithdrawalApprovalState } from './use-ethereum-withdraw-approvals-store';
 import {
   ApprovalStatus,
@@ -51,11 +55,10 @@ export const VerificationStatus = ({
     ) : (
       <>
         <p>{t('Your Ethereum wallet is connected to the wrong network.')}</p>
-        <p>
-          {t(
-            'Go to your Ethereum wallet and connect to the network (chain_id: %s)',
-            [config?.chain_id || ' ']
-          )}
+        <p className="mt-2">
+          {t('Go to your Ethereum wallet and connect to the network %s', [
+            resolveNetworkName(config?.chain_id),
+          ])}
         </p>
       </>
     );

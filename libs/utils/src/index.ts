@@ -13,3 +13,4 @@ export * from './lib/remove-0x';
 export * from './lib/remove-pagination-wrapper';
 export * from './lib/time';
 export * from './lib/validate';
+export * from './lib/resolve-network-name';

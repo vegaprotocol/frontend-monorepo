@@ -1,7 +1,7 @@
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
-import { Button, ToastHeading } from '@vegaprotocol/ui-toolkit';
+import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
@@ -90,21 +90,34 @@ export const useEthereumWithdrawApprovalsToasts = () => {
   ]);
 
   const fromWithdrawalApproval = useCallback(
-    (tx: EthWithdrawalApprovalState): Toast => ({
-      id: `withdrawal-${tx.id}`,
-      intent: intentMap[tx.status],
-      onClose: () => {
-        if ([ApprovalStatus.Error, ApprovalStatus.Ready].includes(tx.status)) {
-          deleteTx(tx.id);
-        } else {
-          dismissTx(tx.id);
-        }
-        remove(`withdrawal-${tx.id}`);
-      },
-      loader: tx.status === ApprovalStatus.Pending,
-      content: <EthWithdrawalApprovalToastContent tx={tx} />,
-      closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
-    }),
+    (tx: EthWithdrawalApprovalState): Toast => {
+      const loader =
+        tx.status === ApprovalStatus.Pending &&
+        !(
+          tx.failureReason &&
+          [
+            WithdrawalFailure.WrongConnection,
+            WithdrawalFailure.NoConnection,
+          ].includes(tx.failureReason)
+        );
+      return {
+        id: `withdrawal-${tx.id}`,
+        intent: intentMap[tx.status],
+        onClose: () => {
+          if (
+            [ApprovalStatus.Error, ApprovalStatus.Ready].includes(tx.status)
+          ) {
+            deleteTx(tx.id);
+          } else {
+            dismissTx(tx.id);
+          }
+          remove(`withdrawal-${tx.id}`);
+        },
+        loader,
+        content: <EthWithdrawalApprovalToastContent tx={tx} />,
+        closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
+      };
+    },
     [deleteTx, dismissTx, remove]
   );
 
