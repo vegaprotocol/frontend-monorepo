@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
+import { addDecimal } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
 export const useGetDepositMaximum = (
