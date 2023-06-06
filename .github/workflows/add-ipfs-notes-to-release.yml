@@ -56,12 +56,12 @@ jobs:
             * https://governance.vega.xyz
 
             # IPFS releases
-            Tye IPFS hash of this release of the Trading app is:
+            The IPFS hash of this release of the Trading app is:
 
             CIDv0: ${{ env.IPFS_V0 }}
             CIDv1: ${{ env.IPFS_V1 }}
 
-            You can always access the latest IPFS release by visiting [vega.trading](https://console.vega.xyz).
+            You can always access the latest IPFS release by visiting [console.vega.xyz](https://console.vega.xyz).
 
             You can also access Trading directly from an IPFS gateway.
             BEWARE: The Trading interface uses [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) to remember your settings, such as which tokens you have imported. You should always use an IPFS gateway that enforces [origin separation](https://ipfs.github.io/public-gateway-checker/).

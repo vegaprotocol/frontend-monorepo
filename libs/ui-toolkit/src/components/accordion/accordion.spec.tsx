@@ -1,15 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { Accordion } from './accordion';
+import { Accordion, AccordionItem } from './accordion';
 
 describe('Accordion', () => {
   it('should render successfully', () => {
     render(
-      <Accordion
-        panels={[
-          { title: 'Lorem ipsum title', content: 'Lorem ipsum content' },
-        ]}
-      />
+      <Accordion>
+        <AccordionItem
+          itemId="1"
+          title="Lorem ipsum title"
+          content="Lorem ipsum content"
+        />
+      </Accordion>
     );
     expect(screen.queryByTestId('accordion-title')).toHaveTextContent(
       'Lorem ipsum title'
@@ -18,11 +20,13 @@ describe('Accordion', () => {
 
   it('should toggle and open expansion panel', () => {
     render(
-      <Accordion
-        panels={[
-          { title: 'Lorem ipsum title', content: 'Lorem ipsum content' },
-        ]}
-      />
+      <Accordion>
+        <AccordionItem
+          itemId="1"
+          title="Lorem ipsum title"
+          content="Lorem ipsum content"
+        />
+      </Accordion>
     );
     fireEvent.click(screen.getByTestId('accordion-toggle'));
     expect(screen.queryByTestId('accordion-title')).toHaveTextContent(

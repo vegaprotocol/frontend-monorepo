@@ -69,7 +69,7 @@ export const UpgradeBanner = ({ showVersionChange }: UpgradeBannerProps) => {
         </a>{' '}
         {t(' or bookmark')}{' '}
         <a className="underline" href={CANONICAL_URL}>
-          {t('vega.trading')}
+          {t('console.vega.xyz')}
         </a>{' '}
         <CopyWithTooltip text={CANONICAL_URL}>
           <button title={t('Copy %s', CANONICAL_URL)}>

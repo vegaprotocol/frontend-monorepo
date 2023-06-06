@@ -8,7 +8,8 @@ import {
   useIsExemptDepositor,
 } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
-import { isAssetTypeERC20, localLoggerFactory } from '@vegaprotocol/utils';
+import { isAssetTypeERC20 } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 import { useWeb3React } from '@web3-react/core';

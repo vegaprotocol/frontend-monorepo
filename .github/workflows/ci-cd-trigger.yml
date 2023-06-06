@@ -113,15 +113,19 @@ jobs:
           preview_governance="not deployed"
           preview_trading="not deployed"
           preview_explorer="not deployed"
-          if [[ $affected == *"governance"* ]]; then
+          preview_tools="not deployed"
+          if echo "$affected" | grep -q governance; then
+            echo "Governance is affected"
             projects_e2e+='"governance-e2e" '
             preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
           fi
-          if [[ $affected == *"trading"* ]]; then
+          if echo "$affected" | grep -q trading; then
+            echo "Trading is affected"
             projects_e2e+='"trading-e2e" '
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
           fi
-          if [[ $affected == *"explorer"* ]]; then
+          if echo "$affected" | grep -q explorer; then
+            echo "Explorer is affected"
             projects_e2e+='"explorer-e2e" '
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
@@ -131,13 +135,30 @@ jobs:
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
+          projects="$(echo $projects_e2e | sed 's|-e2e||g')"
+          if echo "$affected" | grep -q multisig-signer; then
+            echo "Tools are affected"
+            # tools are only applicable to check previews or deploy from develop to mainnet
+            if [[ "${{ github.event_name }}" = "pull_request" ]]; then
+              echo "Deploying tools on preview"
+              preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
+              projects+=' "multisig-signer" '
+            fi
+            if [[ "${{ github.ref }}" =~ .*develop$ ]]; then
+              echo "Deploying tools on s3"
+              projects+=' "multisig-signer" '
+            fi
+          fi
           projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]
+          projects=${projects%?}
+          projects=[${projects// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
-          echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
+          echo PROJECTS=$projects >> $GITHUB_ENV
           echo PREVIEW_GOVERNANCE=$preview_governance >> $GITHUB_ENV
           echo PREVIEW_TRADING=$preview_trading >> $GITHUB_ENV
           echo PREVIEW_EXPLORER=$preview_explorer >> $GITHUB_ENV
+          echo PREVIEW_TOOLS=$preview_tools >> $GITHUB_ENV
 
     outputs:
       projects: ${{ env.PROJECTS }}
@@ -145,11 +166,12 @@ jobs:
       preview_governance: ${{ env.PREVIEW_GOVERNANCE }}
       preview_trading: ${{ env.PREVIEW_TRADING }}
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
+      preview_tools: ${{ env.PREVIEW_TOOLS }}
 
   cypress:
     needs: lint-test-build
     name: '(CI) cypress'
-    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
@@ -203,6 +225,12 @@ jobs:
               sleep 5
             done
           fi
+          if [[ "${{ needs.lint-test-build.outputs.preview_tools }}" =~ $regex ]]; then
+            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_tools }}"; do
+              echo "waiting for tools preview"
+              sleep 5
+            done
+          fi
 
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v3
@@ -214,6 +242,7 @@ jobs:
             * governance: ${{ needs.lint-test-build.outputs.preview_governance }}
             * explorer: ${{ needs.lint-test-build.outputs.preview_explorer  }}
             * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
+            * tools: ${{ needs.lint-test-build.outputs.preview_tools }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:

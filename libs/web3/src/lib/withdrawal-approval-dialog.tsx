@@ -114,7 +114,7 @@ const WithdrawalApprovalDialogContent = ({
     } else {
       return (
         <div className="py-4 flex flex-col">
-          <div className="self-end mb-1">
+          <div className="self-end mb-1" data-testid="copy-button">
             <CopyWithTooltip text={JSON.stringify(details, undefined, 2)}>
               <Button
                 className="flex gap-1 items-center no-underline"

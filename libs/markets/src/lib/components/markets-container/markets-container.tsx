@@ -1,39 +1,40 @@
 import type { MouseEvent } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
+import type { CellClickedEvent } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { CellClickedEvent } from 'ag-grid-community';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
 import type { MarketMaybeWithData } from '../../markets-provider';
 
+const POLLING_TIME = 2000;
 interface MarketsContainerProps {
   onSelect: (marketId: string, metaKey?: boolean) => void;
 }
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [dataCount, setDataCount] = useState(0);
-  const { data, error, loading, reload } = useDataProvider({
+
+  const { data, error, reload } = useDataProvider({
     dataProvider,
-    skipUpdates: true,
     variables: undefined,
   });
+
   useEffect(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [data]);
-  const onFilterChanged = useCallback(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, []);
+    const interval = setInterval(() => {
+      reload();
+    }, POLLING_TIME);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [reload]);
+
   return (
     <div className="h-full relative">
       <MarketListTable
         ref={gridRef}
         rowData={data}
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
         onCellClicked={(cellEvent: CellClickedEvent) => {
           const { data, column, event } = cellEvent;
           // prevent navigating to the market page if any of the below cells are clicked
@@ -44,6 +45,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
               'id',
               'tradableInstrument.instrument.code',
               'tradableInstrument.instrument.product.settlementAsset',
+              'tradableInstrument.instrument.product.settlementAsset.symbol',
             ].includes(colId)
           ) {
             return;
@@ -55,18 +57,8 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           );
         }}
         onMarketClick={onSelect}
-        onFilterChanged={onFilterChanged}
+        overlayNoRowsTemplate={error ? error.message : t('No markets')}
       />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={data}
-          noDataMessage={t('No markets')}
-          noDataCondition={() => !dataCount}
-          reload={reload}
-        />
-      </div>
     </div>
   );
 };

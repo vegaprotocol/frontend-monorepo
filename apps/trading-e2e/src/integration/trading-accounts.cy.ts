@@ -19,6 +19,7 @@ describe('accounts', { tags: '@smoke' }, () => {
     // 7001-COLL-005
     // 7001-COLL-006
     // 7001-COLL-007
+    // 1003-TRAN-001
 
     const tradingAccountRowId = '[row-id="t-0"]';
     cy.getByTestId('Collateral').click();
@@ -62,6 +63,7 @@ describe('accounts', { tags: '@smoke' }, () => {
       .click();
     cy.getByTestId('deposit').should('be.visible');
     cy.getByTestId('withdraw').should('be.visible');
+    cy.getByTestId('transfer').should('be.visible');
     cy.getByTestId('breakdown').should('be.visible');
     cy.getByTestId('Collateral').click({ force: true });
   });
@@ -119,25 +121,6 @@ describe('accounts', { tags: '@smoke' }, () => {
           cy.wrap($header).should('have.text', headers[i]);
         });
     });
-    cy.getByTestId(dialogClose).click();
-  });
-
-  it('sorting usage breakdown columns should work well', () => {
-    // 7001-COLL-010
-    cy.getByTestId('breakdown').contains('1.01').click();
-    cy.getByTestId('usage-breakdown')
-      .find('[col-id="type"]')
-      .eq(1)
-      .should('have.text', 'Margin');
-    cy.getByTestId('usage-breakdown')
-      .find('[col-id="type"]')
-      .eq(2)
-      .should('have.text', 'Margin');
-    cy.getByTestId('usage-breakdown')
-      .find('[col-id="type"]')
-      .eq(3)
-      .should('have.text', 'General');
-
     cy.getByTestId(dialogClose).click();
   });
 

@@ -2,7 +2,7 @@ import { formatNumberPercentage } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
-import type { Market, Candle } from '../';
+import type { Market, Candle, MarketMaybeWithData } from '../';
 const { MarketState, MarketTradingMode } = Schema;
 
 export const totalFees = (fees: Market['fees']['factors']) => {
@@ -19,7 +19,7 @@ export const totalFeesPercentage = (fees: Market['fees']['factors']) => {
   return total ? formatNumberPercentage(total) : undefined;
 };
 
-export const filterAndSortMarkets = (markets: Market[]) => {
+export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
   const tradingModesOrdering = [
     MarketTradingMode.TRADING_MODE_CONTINUOUS,
     MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -28,27 +28,30 @@ export const filterAndSortMarkets = (markets: Market[]) => {
     MarketTradingMode.TRADING_MODE_NO_TRADING,
   ];
   const orderedMarkets = orderBy(
-    markets?.filter(
-      (m) =>
-        m.state !== MarketState.STATE_REJECTED &&
-        m.tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
-    ) || [],
+    markets?.filter((m) => {
+      const state = m.data?.marketState || m.state;
+      const tradingMode = m.data?.marketTradingMode || m.tradingMode;
+      return (
+        state !== MarketState.STATE_REJECTED &&
+        tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
+      );
+    }) || [],
     ['marketTimestamps.open', 'id'],
     ['asc', 'asc']
   );
   return orderedMarkets.sort(
     (a, b) =>
-      tradingModesOrdering.indexOf(a.tradingMode) -
-      tradingModesOrdering.indexOf(b.tradingMode)
+      tradingModesOrdering.indexOf(a.data?.marketTradingMode || a.tradingMode) -
+      tradingModesOrdering.indexOf(b.data?.marketTradingMode || b.tradingMode)
   );
 };
 
-export const filterAndSortClosedMarkets = (markets: Market[]) => {
+export const filterAndSortClosedMarkets = (markets: MarketMaybeWithData[]) => {
   return markets.filter((m) => {
     return [
       MarketState.STATE_SETTLED,
       MarketState.STATE_TRADING_TERMINATED,
-    ].includes(m.state);
+    ].includes(m.data?.marketState || m.state);
   });
 };
 

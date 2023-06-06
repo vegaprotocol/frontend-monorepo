@@ -59,11 +59,11 @@ export function submitUniqueRawProposal(proposalFields: {
   submit?: boolean;
 }) {
   goToMakeNewProposal(governanceProposalType.RAW);
-  let proposalBodyPath = '/proposals/raw.json';
+  let proposalBodyPath = 'src/fixtures/proposals/raw.json';
   if (proposalFields.proposalBody) {
     proposalBodyPath = proposalFields.proposalBody;
   }
-  cy.fixture(proposalBodyPath).then((rawProposal) => {
+  cy.readFile(proposalBodyPath).then((rawProposal) => {
     if (proposalFields.proposalTitle) {
       rawProposal.rationale.title = proposalFields.proposalTitle;
       cy.wrap(proposalFields.proposalTitle).as('proposalTitle');
@@ -73,7 +73,10 @@ export function submitUniqueRawProposal(proposalFields: {
     }
     if (proposalFields.closingTimestamp) {
       rawProposal.terms.closingTimestamp = proposalFields.closingTimestamp;
-    } else {
+    } else if (
+      !proposalFields.closingTimestamp &&
+      !proposalFields.proposalBody
+    ) {
       const minTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
       rawProposal.terms.closingTimestamp = minTimeStamp;
     }
@@ -106,7 +109,7 @@ export function enterUniqueFreeFormProposalBody(
     'this is a e2e freeform proposal description'
   );
   cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-  cy.getByTestId('proposal-submit').should('be.visible').click();
+  cy.getByTestId('proposal-download-json').should('be.visible').click();
 }
 
 export function getProposalFromTitle(proposalTitle: string) {
@@ -188,6 +191,7 @@ export function goToMakeNewProposal(proposalType: governanceProposalType) {
   }
 }
 
+// 3001-VOTE-013 3001-VOTE-014
 export function waitForProposalSubmitted() {
   cy.contains('Awaiting network confirmation', epochTimeout).should(
     'be.visible'
@@ -220,6 +224,23 @@ export function createFreeformProposal(proposalTitle: string) {
   waitForProposalSync();
   cy.getByTestId('proposal-title').invoke('text').as('proposalTitle');
   navigateTo(navigation.proposals);
+}
+
+export function getDownloadedProposalJsonPath(proposalType: string) {
+  const downloadPath = './cypress/downloads/';
+  const filepath = downloadPath + proposalType + getFormattedTime() + '.json';
+  return filepath;
+}
+
+function getFormattedTime() {
+  const now = new Date();
+  const day = now.getDate().toString().padStart(2, '0');
+  const month = now.toLocaleString('en-US', { month: 'short' });
+  const year = now.getFullYear().toString();
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+
+  return `${day}-${month}-${year}-${hours}-${minutes}`;
 }
 
 export enum governanceProposalType {

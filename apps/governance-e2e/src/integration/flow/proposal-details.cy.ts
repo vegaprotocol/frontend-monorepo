@@ -80,8 +80,18 @@ describe(
           .find('p')
           .should('have.text', proposalDescription);
       });
+      // 3001-VOTE-008
+      getProposalInformationFromTable('ID')
+        .invoke('text')
+        .should('not.be.empty')
+        .and('have.length', 64);
+      // 3001-VOTE-009
+      getProposalInformationFromTable('Proposed by')
+        .invoke('text')
+        .should('not.be.empty')
+        .and('have.length', 64);
       cy.getByTestId(proposalTermsToggle).click();
-      // 3001-VOTE-052
+      // 3001-VOTE-052 3001-VOTE-010
       cy.get('code.language-json')
         .should('exist')
         .within(() => {
@@ -93,8 +103,6 @@ describe(
     it('Newly created freeform proposal details - shows proposed and closing dates', function () {
       const proposalTitle = generateFreeFormProposalTitle();
       const proposalTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
-      // const currentDate = new Date(createTenDigitUnixTimeStampForSpecifiedDays(0) * 1000)
-      // const proposedDate = new Date(currentDate.getTime() + 60000)
 
       submitUniqueRawProposal({
         proposalTitle: proposalTitle,

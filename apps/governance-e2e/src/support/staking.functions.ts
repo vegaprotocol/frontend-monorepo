@@ -236,8 +236,8 @@ export function validateWalletCurrency(
   currencyTitle: string,
   expectedAmount: string
 ) {
-  cy.get("[data-testid='currency-title']")
-    .contains(currencyTitle)
+  cy.get("[data-testid='currency-title']", txTimeout)
+    .contains(currencyTitle, txTimeout)
     .parent()
     .parent()
     .within(() => {

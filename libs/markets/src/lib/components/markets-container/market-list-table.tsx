@@ -93,15 +93,14 @@ export const MarketListTable = forwardRef<
           data,
         }: VegaValueFormatterParams<MarketMaybeWithData, 'data'>) => {
           if (!data?.data) return undefined;
-          const { trigger } = data.data;
-          const { tradingMode } = data;
-          return tradingMode ===
+          const { trigger, marketTradingMode } = data.data;
+          return marketTradingMode ===
             MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
             trigger &&
             trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-            ? `${Schema.MarketTradingModeMapping[tradingMode]}
+            ? `${Schema.MarketTradingModeMapping[marketTradingMode]}
             - ${Schema.AuctionTriggerMapping[trigger]}`
-            : Schema.MarketTradingModeMapping[tradingMode];
+            : Schema.MarketTradingModeMapping[marketTradingMode];
         }}
         filter={SetFilter}
         filterParams={{
@@ -228,6 +227,7 @@ export const MarketListTable = forwardRef<
       />
       <AgGridColumn
         colId="market-actions"
+        field="id"
         {...COL_DEFS.actions}
         cellRenderer={({
           data,

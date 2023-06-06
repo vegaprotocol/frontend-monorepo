@@ -25,6 +25,21 @@ const hasOperationName = (
   );
 };
 
+/**
+ * Extracts variables from the intercepted GQL request.
+ * @returns Intercepted variables or empty object
+ */
+const extractVariables = (req: CyHttpMessages.IncomingHttpRequest): object => {
+  const { body } = req;
+  return (
+    (typeof body === 'object' &&
+      body !== null &&
+      'variables' in body &&
+      body.variables) ||
+    {}
+  );
+};
+
 export function addMockGQLCommand() {
   Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {
     cy.intercept('POST', Cypress.env('VEGA_URL'), handler).as('GQL');
@@ -36,16 +51,25 @@ export const aliasGQLQuery = (
   req: CyHttpMessages.IncomingHttpRequest,
   operationName: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data?: any,
+  dataOrDataGetter?: any | ((variables: Record<string, any>) => any),
   errors?: Partial<GraphQLError>[],
   headers?: Record<string, string>
 ) => {
   if (hasOperationName(req, operationName)) {
     req.alias = operationName;
+
+    let data = dataOrDataGetter;
+    if (typeof dataOrDataGetter === 'function') {
+      const variables = extractVariables(req);
+      data = dataOrDataGetter(variables);
+    }
     if (data !== undefined || errors !== undefined) {
       req.reply({
         statusCode: 200,
-        body: { ...(data && { data }), ...(errors && { errors }) },
+        body: {
+          ...(data && { data }),
+          ...(errors && { errors }),
+        },
         headers: {
           ...req.headers,
           // basic default block height header response

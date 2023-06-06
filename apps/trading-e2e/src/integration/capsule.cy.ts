@@ -41,6 +41,7 @@ const submitTransferBtn = '[type="submit"]';
 const transferForm = 'transfer-form';
 const depositSubmit = 'deposit-submit';
 const approveSubmit = 'approve-submit';
+const dialogContent = 'dialog-content';
 
 // Because the tests are run on a live network to optimize time, the tests are interdependent and must be run in the given order.
 describe('capsule - without MultiSign', { tags: '@slow' }, () => {
@@ -113,6 +114,8 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   });
 
   it('can key to key transfers', function () {
+    // 1003-TRAN-023
+    // 1003-TRAN-006
     cy.get('main[data-testid="/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
@@ -198,7 +201,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       .first()
       .should('contain.text', 'Operational')
       .next()
-      .should('contain.text', new URL(Cypress.env('VEGA_URL')).origin)
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname)
       .next()
       .then(($el) => {
         const blockHeight = parseInt($el.text());
@@ -342,6 +345,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1002-WITH-019
     // 1002-WITH-020
     // 1002-WITH-021
+    const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
 
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
@@ -380,6 +384,31 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
         'View in block explorerYou can save your withdrawal details for extra security.'
       )
       .and('contain.text', 'Withdraw 1.00 tBTCComplete withdrawal');
+    cy.getByTestId('toast-withdrawal-details').click();
+    cy.getByTestId(dialogContent)
+      .last()
+      .within(() => {
+        cy.getByTestId('dialog-title').should(
+          'contain.text',
+          'Save withdrawal details'
+        );
+        cy.getByTestId('copy-button').should('be.visible');
+        cy.getByTestId('assetSource_value').should(
+          'have.text',
+          '0xb63D135B0a6854EEb765d69ca36210cC70BECAE0'
+        );
+        cy.getByTestId('amount_value').should('have.text', '100000');
+        cy.getByTestId('nonce_value').invoke('text').should('not.be.empty');
+        cy.getByTestId('signatures_value')
+          .invoke('text')
+          .should('not.be.empty');
+        cy.getByTestId('targetAddress_value').should(
+          'have.text',
+          ethWalletAddress
+        );
+        cy.getByTestId('creation_value').invoke('text').should('not.be.empty');
+      });
+    cy.getByTestId('close-withdrawal-approval-dialog').click();
 
     cy.get('.ag-center-cols-container')
       .find('[col-id="status"]')

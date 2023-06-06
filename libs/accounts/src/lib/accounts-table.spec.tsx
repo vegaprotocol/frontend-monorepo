@@ -10,13 +10,6 @@ const singleRow = {
   balance: '125600000',
   market: {
     __typename: 'Market',
-    tradableInstrument: {
-      __typename: 'TradableInstrument',
-      instrument: {
-        __typename: 'Instrument',
-        name: 'BTCUSD Monthly (30 Jun 2022)',
-      },
-    },
     id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
   },
   asset: {
@@ -136,13 +129,6 @@ describe('AccountsTable', () => {
             market: {
               __typename: 'Market',
               id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
-              tradableInstrument: {
-                __typename: 'TradableInstrument',
-                instrument: {
-                  __typename: 'Instrument',
-                  name: 'BTCUSD Monthly (30 Jun 2022)',
-                },
-              },
             },
             type: 'ACCOUNT_TYPE_MARGIN',
             used: '125600000',

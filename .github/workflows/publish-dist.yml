@@ -70,6 +70,10 @@ jobs:
             envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
           elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
             envName="stagnet1"
+            if [[ "${{ matrix.app }}" = "multisig-signer" ]]; then
+              envName="mainnet"
+              bucketName="tools.vega.xyz"
+            fi
           elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
             envName="mainnet"
           elif [[ "${{ matrix.app}}" = "trading" ]] && [[ "${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}" = "true" ]]; then
@@ -78,10 +82,14 @@ jobs:
 
           if [[ "${envName}" = "mainnet" ]]; then
             domain="vega.xyz"
-            bucketName="${{ matrix.app }}.${domain}"
+            if [[ -z "${bucketName}" ]]; then
+              bucketName="${{ matrix.app }}.${domain}"
+            fi
           elif [[ "${envName}" = "testnet" ]]; then
             domain="fairground.wtf"
-            bucketName="${{ matrix.app }}.${domain}"
+            if [[ -z "${bucketName}" ]]; then
+              bucketName="${{ matrix.app }}.${domain}"
+            fi
           fi
 
           if [[ -z "${bucketName}" ]]; then
@@ -209,7 +217,7 @@ jobs:
           fetch-depth: '0'
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
-      - name: Update vega.trading DNS to redirect to the new console
+      - name: Update console.vega.xyz DNS to redirect to the new console
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
@@ -258,9 +266,9 @@ jobs:
           # # Update record in DNSimple
           # # docs: https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord
           # dnsimple_account_id=84895
-          # dnsimple_zone_name=vega.trading
+          # dnsimple_zone_name=console.vega.xyz
           # dnsimple_record_id=44409591
-          # # see: https://dnsimple.com/a/84895/domains/vega.trading/records/44409591/edit
+          # # see: https://dnsimple.com/a/84895/domains/console.vega.xyz/records/44409591/edit
 
           # curl  -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
           #       -H 'Accept: application/json' \

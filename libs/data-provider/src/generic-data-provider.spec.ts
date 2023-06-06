@@ -11,6 +11,8 @@ import type {
   UpdateCallback,
   Update,
   PageInfo,
+  Reload,
+  Load,
 } from './generic-data-provider';
 import type {
   ApolloClient,
@@ -600,6 +602,17 @@ describe('data provider', () => {
 });
 
 describe('derived data provider', () => {
+  let subscription: {
+    unsubscribe: () => void;
+    reload: Reload;
+    flush: () => void;
+    load?: Load<CombinedData>;
+  };
+  afterEach(() => {
+    if (subscription) {
+      subscription.unsubscribe();
+    }
+  });
   it('memoize instance and unsubscribe if no subscribers', () => {
     clientSubscribeSubscribe.mockClear();
     clientSubscribeUnsubscribe.mockClear();
@@ -628,7 +641,7 @@ describe('derived data provider', () => {
       ReturnType<UpdateCallback<CombinedData, CombinedData>>,
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
-    const subscription = derivedSubscribe(callback, client, variables);
+    subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     expect(callback.mock.calls.length).toBe(0);
@@ -642,7 +655,6 @@ describe('derived data provider', () => {
     expect(callback.mock.calls.length).toBe(1);
     expect(callback.mock.calls[0][0].data).toBe(data);
     expect(callback.mock.calls[0][0].loading).toBe(false);
-    subscription.unsubscribe();
   });
 
   it('callback with error if any dependency has error, reloads all dependencies on reload', async () => {
@@ -655,7 +667,7 @@ describe('derived data provider', () => {
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
     expect(callback.mock.calls.length).toBe(0);
-    const subscription = derivedSubscribe(callback, client, variables);
+    subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     expect(callback.mock.calls.length).toBe(0);
@@ -678,7 +690,6 @@ describe('derived data provider', () => {
     expect(callback.mock.calls[2][0].data).toStrictEqual(data);
     expect(callback.mock.calls[2][0].loading).toBe(false);
     expect(callback.mock.calls[2][0].error).toBeUndefined();
-    subscription.unsubscribe();
   });
 
   it('pass isUpdate on any dependency isUpdate, uses result of combineDelta as delta in next callback', async () => {
@@ -690,7 +701,7 @@ describe('derived data provider', () => {
       ReturnType<UpdateCallback<CombinedData, CombinedData>>,
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
-    const subscription = derivedSubscribe(callback, client, variables);
+    subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     await resolveQuery({ data: part1 });
@@ -711,7 +722,6 @@ describe('derived data provider', () => {
     expect(callback).toBeCalledTimes(2);
     expect(callback.mock.calls[1][0].isUpdate).toBe(true);
     expect(callback.mock.calls[1][0].delta).toBe(combinedDelta);
-    subscription.unsubscribe();
   });
 
   it('pass isInsert on any dependency isInsert, uses result of combineInsertionData as insertionData in next callback', async () => {
@@ -722,7 +732,7 @@ describe('derived data provider', () => {
       ReturnType<UpdateCallback<CombinedData, CombinedData>>,
       Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
-    const subscription = derivedSubscribe(callback, client, variables);
+    subscription = derivedSubscribe(callback, client, variables);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     await resolveQuery({
@@ -758,6 +768,5 @@ describe('derived data provider', () => {
     expect(callback).toBeCalledTimes(2);
     expect(callback.mock.calls[1][0].isInsert).toBe(true);
     expect(callback.mock.calls[1][0].insertionData).toBe(combinedInsertionData);
-    subscription.unsubscribe();
   });
 });

@@ -1,6 +1,6 @@
 import { useBridgeContract } from './use-bridge-contract';
 import { useCallback } from 'react';
-import { localLoggerFactory } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 
 /**
  * Gets the delay in seconds thats required if the withdrawal amount is

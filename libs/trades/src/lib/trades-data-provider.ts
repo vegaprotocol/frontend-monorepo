@@ -2,8 +2,6 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
-  paginatedCombineDelta as combineDelta,
-  paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/data-provider';
 import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/markets';
@@ -18,7 +16,7 @@ import { TradesDocument, TradesUpdateDocument } from './__generated__/Trades';
 import orderBy from 'lodash/orderBy';
 import produce from 'immer';
 
-export const MAX_TRADES = 50;
+export const MAX_TRADES = 500;
 
 const getData = (
   responseData: TradesQuery | null
@@ -34,32 +32,25 @@ const update = (
   data: ReturnType<typeof getData> | null,
   delta: ReturnType<typeof getDelta>
 ) => {
+  if (!data) return data;
   return produce(data, (draft) => {
+    // for each incoming trade add it to the beginning and remove oldest trade
     orderBy(delta, 'createdAt', 'desc').forEach((node) => {
-      if (!draft) {
-        return;
-      }
-      const index = draft.findIndex((edge) => edge?.node.id === node.id);
-      if (index !== -1) {
-        if (draft?.[index]?.node) {
-          Object.assign(draft[index]?.node as TradeFieldsFragment, node);
-        }
-      } else {
-        const firstNode = draft[0]?.node;
-        if (firstNode && node.createdAt >= firstNode.createdAt) {
-          const { marketId, ...nodeData } = node;
-          draft.unshift({
-            node: {
-              ...nodeData,
-              __typename: 'Trade',
-              market: {
-                __typename: 'Market',
-                id: marketId,
-              },
-            },
-            cursor: '',
-          });
-        }
+      const { marketId, ...nodeData } = node;
+      draft.unshift({
+        node: {
+          ...nodeData,
+          __typename: 'Trade',
+          market: {
+            __typename: 'Market',
+            id: marketId,
+          },
+        },
+        cursor: '',
+      });
+
+      if (draft.length > MAX_TRADES) {
+        draft.pop();
       }
     });
   });
@@ -86,7 +77,7 @@ export const tradesProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    first: 100,
+    first: MAX_TRADES,
   },
 });
 
@@ -117,7 +108,5 @@ export const tradesWithMarketProvider = makeDerivedDataProvider<
         node,
       };
     });
-  },
-  combineDelta<Trade, ReturnType<typeof getDelta>['0']>,
-  combineInsertionData<Trade>
+  }
 );

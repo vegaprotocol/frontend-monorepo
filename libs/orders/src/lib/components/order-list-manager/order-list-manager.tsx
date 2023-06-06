@@ -1,6 +1,5 @@
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
@@ -72,16 +71,24 @@ export const OrderListManager = ({
   storeKey,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [hasData, setHasData] = useState(false);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
-  const { data, error, loading, reload } = useDataProvider({
+  const variables =
+    filter === Filter.Open
+      ? { partyId, filter: { liveOnly: true } }
+      : { partyId };
+
+  const { data, error } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
-    variables:
-      filter === Filter.Open
-        ? { partyId, filter: { liveOnly: true } }
-        : { partyId },
+    variables,
+    update: ({ data }) => {
+      if (data && gridRef.current?.api) {
+        gridRef.current.api.setRowData(data);
+        return true;
+      }
+      return true;
+    },
   });
 
   const {
@@ -120,16 +127,10 @@ export const OrderListManager = ({
 
   const onFilterChanged = useCallback(
     (event: FilterChangedEvent) => {
-      const rowCount = gridRef.current?.api?.getModel().getRowCount();
-      setHasData((rowCount ?? 0) > 0);
       bottomPlaceholderOnFilterChanged?.();
     },
     [bottomPlaceholderOnFilterChanged]
   );
-
-  useEffect(() => {
-    setHasData((gridRef.current?.api?.getModel().getRowCount() ?? 0) > 0);
-  }, [data]);
 
   const cancelAll = useCallback(() => {
     create({
@@ -151,23 +152,11 @@ export const OrderListManager = ({
           onOrderTypeClick={onOrderTypeClick}
           onFilterChanged={onFilterChanged}
           isReadOnly={isReadOnly}
-          blockLoadDebounceMillis={100}
           storeKey={storeKey}
-          suppressLoadingOverlay
-          suppressNoRowsOverlay
           suppressAutoSize
+          overlayNoRowsTemplate={error ? error.message : t('No orders')}
           {...bottomPlaceholderProps}
         />
-        <div className="pointer-events-none absolute inset-0">
-          <AsyncRenderer
-            loading={loading}
-            error={error}
-            data={data}
-            noDataMessage={t('No orders')}
-            noDataCondition={(data) => !hasData}
-            reload={reload}
-          />
-        </div>
       </div>
       {!isReadOnly && hasAmendableOrder && (
         <CancelAllOrdersButton onClick={cancelAll} />
