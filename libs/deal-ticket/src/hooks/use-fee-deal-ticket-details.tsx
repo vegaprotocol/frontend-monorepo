@@ -56,7 +56,7 @@ export interface FeeDetails {
 
 const emptyValue = '-';
 
-const formatValue = (
+export const formatValue = (
   value: string | number | null | undefined,
   formatDecimals: number,
   quantum?: string
@@ -66,7 +66,7 @@ const formatValue = (
   return addDecimalsFormatNumberQuantum(value, formatDecimals, quantum);
 };
 
-const formatRange = (
+export const formatRange = (
   min: string | number | null | undefined,
   max: string | number | null | undefined,
   formatDecimals: number,
