@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
 import type { FinalizedVote } from '@vegaprotocol/proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { VoteEventFieldsFragment } from '../../../../../../../libs/proposals/src/lib/voting-hooks/__generated__/VoteSubsciption';
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -45,15 +46,16 @@ export function useUserVote(
   );
 
   useEffect(() => {
-    if (finalizedVote?.vote.value) {
+    if (finalizedVote?.vote.value && finalizedVote.pubKey === pubKey) {
       setUserVote(finalizedVote);
-    } else if (data?.party?.votesConnection?.edges) {
+    } else if (data?.party?.votesConnection?.edges && pubKey) {
       // This sets the vote (if any) when the user first loads the page
-      setUserVote(
-        removePaginationWrapper(data?.party?.votesConnection?.edges).find(
+      setUserVote({
+        ...(removePaginationWrapper(data?.party?.votesConnection?.edges).find(
           ({ proposalId: pId }) => proposalId === pId
-        )
-      );
+        ) as VoteEventFieldsFragment),
+        pubKey,
+      });
     }
   }, [
     finalizedVote?.vote.value,
