@@ -23,8 +23,8 @@ interface OrderbookProps {
   asks: PriceLevelFieldsFragment[];
 }
 
-// 17px of row height plus 3px gap
-export const rowHeight = 20;
+// 17px of row height
+export const rowHeight = 17;
 
 const OrderbookTable = ({
   rows,
@@ -48,7 +48,7 @@ const OrderbookTable = ({
         type === VolumeType.ask ? 'justify-end' : 'justify-start'
       )}
     >
-      <div className="grid auto-rows-[17px] gap-1">
+      <div className="grid auto-rows-[17px]">
         {rows.map((data, i) => (
           <OrderbookRow
             key={data.price}
@@ -98,7 +98,7 @@ export const Orderbook = ({
           {({ height }) => {
             const limit = Math.max(
               1,
-              Math.floor((height - 60) / 2 / rowHeight)
+              Math.floor((height - 30) / 2 / rowHeight)
             );
             const askRows = groupedAsks?.slice(limit * -1) ?? [];
             const bidRows = groupedBids?.slice(0, limit) ?? [];
