@@ -70,7 +70,7 @@ jobs:
             envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
           elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
             envName="stagnet1"
-            if [[ "${matrix.app}" = "multisig-signer" ]]; then
+            if [[ "${{ matrix.app }}" = "multisig-signer" ]]; then
               envName="mainnet"
               bucketName="tools.vega.xyz"
             fi
