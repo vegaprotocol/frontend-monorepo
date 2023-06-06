@@ -14,6 +14,13 @@ export enum ApprovalStatus {
   Error = 'Error',
   Ready = 'Ready',
 }
+
+export enum WithdrawalFailure {
+  InvalidAsset,
+  NoConnection,
+  WrongConnection,
+}
+
 export interface EthWithdrawalApprovalState {
   id: number;
   createdAt: Date;
@@ -24,6 +31,7 @@ export interface EthWithdrawalApprovalState {
   dialogOpen?: boolean;
   withdrawal: WithdrawalBusEventFieldsFragment;
   approval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
+  failureReason: WithdrawalFailure;
 }
 export interface EthWithdrawApprovalStore {
   transactions: (EthWithdrawalApprovalState | undefined)[];
@@ -42,6 +50,7 @@ export interface EthWithdrawApprovalStore {
         | 'threshold'
         | 'completeTimestamp'
         | 'dialogOpen'
+        | 'failureReason'
       >
     >
   ) => void;
@@ -86,6 +95,7 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>()(
           | 'threshold'
           | 'completeTimestamp'
           | 'dialogOpen'
+          | 'failureReason'
         >
       >
     ) =>
