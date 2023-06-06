@@ -11,14 +11,12 @@ import {
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { updateGridData } from '@vegaprotocol/datagrid';
 import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
-  AsyncRenderer,
   Tab,
   Tabs,
   Link as UiToolkitLink,
@@ -26,14 +24,13 @@ import {
   ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import { Header, HeaderStat, HeaderTitle } from '../../components/header';
 
 import type { AgGridReact } from 'ag-grid-react';
-import type { IGetRowsParams } from 'ag-grid-community';
 
-import type { LiquidityProvisionData, Filter } from '@vegaprotocol/liquidity';
+import type { Filter } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 
@@ -74,21 +71,12 @@ export const LiquidityContainer = ({
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data: market } = useMarket(marketId);
-  const dataRef = useRef<LiquidityProvisionData[] | null>(null);
 
   // To be removed when liquidityProvision subscriptions are working
   useReloadLiquidityData(marketId);
 
-  const update = useCallback(
-    ({ data }: { data: LiquidityProvisionData[] | null }) => {
-      return updateGridData(dataRef, data, gridRef);
-    },
-    [gridRef]
-  );
-
-  const { data, loading, error } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
-    update,
     variables: { marketId: marketId || '', filter },
     skip: !marketId,
   });
@@ -103,36 +91,16 @@ export const LiquidityContainer = ({
   ]);
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
 
-  const getRows = useCallback(
-    async ({ successCallback, startRow, endRow }: IGetRowsParams) => {
-      const rowsThisBlock = dataRef.current
-        ? dataRef.current.slice(startRow, endRow)
-        : [];
-      const lastRow = dataRef.current ? dataRef.current.length : 0;
-      successCallback(rowsThisBlock, lastRow);
-    },
-    []
-  );
-
   return (
     <div className="h-full relative">
       <LiquidityTable
         ref={gridRef}
-        datasource={{ getRows }}
-        rowModelType="infinite"
+        rowData={data}
         symbol={symbol}
         assetDecimalPlaces={assetDecimalPlaces}
         stakeToCcyVolume={stakeToCcyVolume}
+        overlayNoRowsTemplate={error ? error.message : t('No data')}
       />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={data}
-          noDataMessage={t('No liquidity provisions')}
-          noDataCondition={(data) => !data?.length}
-        />
-      </div>
     </div>
   );
 };

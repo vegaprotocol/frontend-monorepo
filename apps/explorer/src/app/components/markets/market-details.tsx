@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
+import { PriceMonitoringBoundsInfoPanel } from '@vegaprotocol/markets';
 import {
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
@@ -39,133 +40,69 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
     return [];
   };
 
-  const oraclePanels = isEqual(
+  const showTwoOracles = isEqual(
     getSigners(settlementData),
     getSigners(terminationData)
-  )
-    ? [
-        {
-          title: t('Settlement Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="settlementData"
-            />
-          ),
-        },
-        {
-          title: t('Termination Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="termination"
-            />
-          ),
-        },
-      ]
-    : [
-        {
-          title: t('Oracle'),
-          content: (
-            <OracleInfoPanel
-              noBorder={false}
-              market={market}
-              type="settlementData"
-            />
-          ),
-        },
-      ];
+  );
 
-  const panels = [
-    {
-      title: t('Key details'),
-      content: <KeyDetailsInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Instrument'),
-      content: <InstrumentInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Settlement asset'),
-      content: <SettlementAssetInfoPanel market={market} noBorder={false} />,
-    },
-    {
-      title: t('Metadata'),
-      content: <MetadataInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Risk model'),
-      content: <RiskModelInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Risk parameters'),
-      content: <RiskParametersInfoPanel noBorder={false} market={market} />,
-    },
-    {
-      title: t('Risk factors'),
-      content: <RiskFactorsInfoPanel noBorder={false} market={market} />,
-    },
-    ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-      (trigger, i) => ({
-        title: t(`Price monitoring trigger ${i + 1}`),
-        content: <MarketInfoTable noBorder={false} data={trigger} />,
-      })
-    ),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <>
-          <MarketInfoTable
-            noBorder={false}
-            data={{
-              maxValidPrice: trigger.maxValidPrice,
-              minValidPrice: trigger.minValidPrice,
-            }}
-            decimalPlaces={market.decimalPlaces}
-          />
-          <MarketInfoTable
-            noBorder={false}
-            data={{ referencePrice: trigger.referencePrice }}
-            decimalPlaces={
-              market.tradableInstrument.instrument.product.settlementAsset
-                .decimals
-            }
-          />
-        </>
-      ),
-    })),
-    {
-      title: t('Liquidity monitoring parameters'),
-      content: (
-        <LiquidityMonitoringParametersInfoPanel
-          noBorder={false}
-          market={market}
-        />
-      ),
-    },
-    {
-      title: t('Liquidity'),
-      content: <LiquidityInfoPanel market={market} noBorder={false} />,
-    },
-    {
-      title: t('Liquidity price range'),
-      content: (
-        <LiquidityPriceRangeInfoPanel market={market} noBorder={false} />
-      ),
-    },
-    ...oraclePanels,
-  ];
+  const headerClassName = 'font-alpha calt text-xl mt-4 border-b-2 pb-2';
 
   return (
-    <>
-      {panels.map((p) => (
-        <div key={p.title} className="mb-3">
-          <h2 className="font-alpha calt text-xl">{p.title}</h2>
-          {p.content}
-        </div>
+    <div>
+      <h2 className={headerClassName}>{t('Key details')}</h2>
+      <KeyDetailsInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Instrument')}</h2>
+      <InstrumentInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Settlement asset')}</h2>
+      <SettlementAssetInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Metadata')}</h2>
+      <MetadataInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Risk model')}</h2>
+      <RiskModelInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Risk parameters')}</h2>
+      <RiskParametersInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Risk factors')}</h2>
+      <RiskFactorsInfoPanel market={market} />
+      {(market.data?.priceMonitoringBounds || []).map((trigger, i) => (
+        <>
+          <h2 className={headerClassName}>
+            {t('Price monitoring bounds %s', [(i + 1).toString()])}
+          </h2>
+          <PriceMonitoringBoundsInfoPanel
+            market={market}
+            triggerIndex={i + 1}
+          />
+        </>
       ))}
-    </>
+      {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
+        (trigger, i) => (
+          <>
+            <h2 className={headerClassName}>
+              {t('Price monitoring settings %s', [(i + 1).toString()])}
+            </h2>
+            <MarketInfoTable data={trigger} key={i} />
+          </>
+        )
+      )}
+      <h2 className={headerClassName}>{t('Liquidity monitoring')}</h2>
+      <LiquidityMonitoringParametersInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Liquidity')}</h2>
+      <LiquidityInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Liquidity price range')}</h2>
+      <LiquidityPriceRangeInfoPanel market={market} />
+      {showTwoOracles ? (
+        <>
+          <h2 className={headerClassName}>{t('Settlement oracle')}</h2>
+          <OracleInfoPanel market={market} type="settlementData" />
+          <h2 className={headerClassName}>{t('Termination oracle')}</h2>
+          <OracleInfoPanel market={market} type="termination" />
+        </>
+      ) : (
+        <>
+          <h2 className={headerClassName}>{t('Oracle')}</h2>
+          <OracleInfoPanel market={market} type="settlementData" />
+        </>
+      )}
+    </div>
   );
 };

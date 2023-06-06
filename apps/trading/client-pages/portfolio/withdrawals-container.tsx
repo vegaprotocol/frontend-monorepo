@@ -1,4 +1,4 @@
-import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import {
   withdrawalProvider,
   useWithdrawalDialog,
@@ -11,7 +11,7 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 
 export const WithdrawalsContainer = () => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const { data, loading, error, reload } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: withdrawalProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
@@ -24,19 +24,8 @@ export const WithdrawalsContainer = () => {
         <WithdrawalsTable
           data-testid="withdrawals-history"
           rowData={data}
-          suppressLoadingOverlay
-          suppressNoRowsOverlay
+          overlayNoRowsTemplate={error ? error.message : t('No withdrawals')}
         />
-        <div className="pointer-events-none absolute inset-0">
-          <AsyncRenderer
-            data={data}
-            loading={loading}
-            error={error}
-            noDataCondition={(data) => !(data && data.length)}
-            noDataMessage={t('No withdrawals')}
-            reload={reload}
-          />
-        </div>
       </div>
       {!isReadOnly && (
         <div className="h-auto flex justify-end px-[11px] py-2 bottom-0 right-3 absolute dark:bg-black/75 bg-white/75 rounded">

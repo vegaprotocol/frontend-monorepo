@@ -55,10 +55,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(3, 'Quote Unit', 'BTC');
   });
 
-  // TODO: fix this test
-  // New volume check logic, added by https://github.com/vegaprotocol/frontend-monorepo/pull/3870 has caused the
-  // 24hr volume assertion to fail as it now reads 'Unknown'
-  it.skip('market volume displayed', () => {
+  it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
     validateMarketDataRow(1, 'Open Interest', '-');
     validateMarketDataRow(2, 'Best Bid Volume', '1');

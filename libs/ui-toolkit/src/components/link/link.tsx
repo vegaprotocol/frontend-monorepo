@@ -43,8 +43,8 @@ Link.displayName = 'Link';
 export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
   <Link
     className={classNames(
-      className,
-      'inline-flex gap-1 items-baseline underline-offset-4'
+      'inline-flex items-center gap-1 underline-offset-4',
+      className
     )}
     target="_blank"
     data-testid="external-link"

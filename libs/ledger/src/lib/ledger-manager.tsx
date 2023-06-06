@@ -1,11 +1,9 @@
 import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
-import type { AggregatedLedgerEntriesNode } from './ledger-entries-data-provider';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
 import { LedgerTable } from './ledger-table';
 import type * as Types from '@vegaprotocol/types';
@@ -27,9 +25,8 @@ const defaultFilter = {
 export const LedgerManager = ({ partyId }: { partyId: string }) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
-  const [dataCount, setDataCount] = useState(0);
 
-  const { data, error, loading, reload } = useLedgerEntriesDataProvider({
+  const { data, error } = useLedgerEntriesDataProvider({
     partyId,
     filter,
     gridRef,
@@ -39,16 +36,9 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
     const updatedFilter = { ...defaultFilter, ...event.api.getFilterModel() };
     setFilter(updatedFilter);
   }, []);
-  const extractNodesDecorator = useCallback(
-    (data: AggregatedLedgerEntriesNode[] | null, loading: boolean) =>
-      data && !loading ? data.map((item) => item.node) : null,
-    []
-  );
 
-  const extractedData = extractNodesDecorator(data, loading);
-  useEffect(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, [extractedData]);
+  // allow passing undefined to grid so that loading state is shown
+  const extractedData = data?.map((item) => item.node);
 
   return (
     <div className="h-full relative">
@@ -56,20 +46,11 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
         ref={gridRef}
         rowData={extractedData}
         onFilterChanged={onFilterChanged}
+        overlayNoRowsTemplate={error ? error.message : t('No entries')}
       />
       {extractedData && (
         <LedgerExportLink entries={extractedData} partyId={partyId} />
       )}
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={data}
-          noDataMessage={t('No entries')}
-          noDataCondition={() => !dataCount}
-          reload={reload}
-        />
-      </div>
     </div>
   );
 };
