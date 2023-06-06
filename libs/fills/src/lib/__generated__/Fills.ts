@@ -15,6 +15,8 @@ export type FillsQueryVariables = Types.Exact<{
 
 export type FillsQuery = { __typename?: 'Query', trades?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
 
+export type FillUpdateFieldsFragment = { __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: any, type: Types.TradeType, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } };
+
 export type FillsEventSubscriptionVariables = Types.Exact<{
   filter: Types.TradesSubscriptionFilter;
 }>;
@@ -60,6 +62,31 @@ export const FillEdgeFragmentDoc = gql`
   cursor
 }
     ${FillFieldsFragmentDoc}`;
+export const FillUpdateFieldsFragmentDoc = gql`
+    fragment FillUpdateFields on TradeUpdate {
+  id
+  marketId
+  buyOrder
+  sellOrder
+  buyerId
+  sellerId
+  aggressor
+  price
+  size
+  createdAt
+  type
+  buyerFee {
+    makerFee
+    infrastructureFee
+    liquidityFee
+  }
+  sellerFee {
+    makerFee
+    infrastructureFee
+    liquidityFee
+  }
+}
+    `;
 export const FillsDocument = gql`
     query Fills($filter: TradesFilter, $pagination: Pagination) {
   trades(filter: $filter, pagination: $pagination) {
@@ -107,30 +134,10 @@ export type FillsQueryResult = Apollo.QueryResult<FillsQuery, FillsQueryVariable
 export const FillsEventDocument = gql`
     subscription FillsEvent($filter: TradesSubscriptionFilter!) {
   tradesStream(filter: $filter) {
-    id
-    marketId
-    buyOrder
-    sellOrder
-    buyerId
-    sellerId
-    aggressor
-    price
-    size
-    createdAt
-    type
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
+    ...FillUpdateFields
   }
 }
-    `;
+    ${FillUpdateFieldsFragmentDoc}`;
 
 /**
  * __useFillsEventSubscription__

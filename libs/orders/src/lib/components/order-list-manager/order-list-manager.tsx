@@ -87,7 +87,7 @@ export const OrderListManager = ({
         gridRef.current.api.setRowData(data);
         return true;
       }
-      return true;
+      return false;
     },
   });
 

@@ -1,74 +1,34 @@
-import produce from 'immer';
 import orderBy from 'lodash/orderBy';
-import {} from '@vegaprotocol/utils';
-import type { PageInfo, Edge } from '@vegaprotocol/data-provider';
+import type { PageInfo, Cursor } from '@vegaprotocol/data-provider';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
-  paginatedCombineDelta as combineDelta,
-  paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/markets';
-import { marketsProvider } from '@vegaprotocol/markets';
+import { marketsMapProvider } from '@vegaprotocol/markets';
 import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 import type {
   FillsQuery,
   FillsQueryVariables,
   FillFieldsFragment,
-  FillEdgeFragment,
   FillsEventSubscription,
+  FillUpdateFieldsFragment,
+  FillsEventSubscriptionVariables,
 } from './__generated__/Fills';
-
-const update = (
-  data: FillEdgeFragment[] | null,
-  delta: FillsEventSubscription['tradesStream']
-) => {
-  return produce(data, (draft) => {
-    orderBy(delta, 'createdAt').forEach((node) => {
-      if (draft === null) {
-        return;
-      }
-      const index = draft.findIndex((edge) => edge?.node.id === node.id);
-      if (index !== -1) {
-        if (draft[index]?.node) {
-          Object.assign(draft[index]?.node as FillFieldsFragment, node);
-        }
-      } else {
-        const firstNode = draft[0]?.node;
-        if (
-          (firstNode && node.createdAt >= firstNode.createdAt) ||
-          !firstNode
-        ) {
-          const { buyerId, sellerId, marketId, ...trade } = node;
-          draft.unshift({
-            node: {
-              ...trade,
-              __typename: 'Trade',
-              market: {
-                __typename: 'Market',
-                id: marketId,
-              },
-              buyer: { id: buyerId, __typename: 'Party' },
-              seller: { id: buyerId, __typename: 'Party' },
-            },
-            cursor: '',
-            __typename: 'TradeEdge',
-          });
-        }
-      }
-    });
-  });
-};
 
 export type Trade = Omit<FillFieldsFragment, 'market'> & {
   market?: Market;
   isLastPlaceholder?: boolean;
 };
-export type TradeEdge = Edge<Trade>;
 
-const getData = (responseData: FillsQuery | null): FillEdgeFragment[] =>
-  responseData?.trades?.edges || [];
+const getData = (
+  responseData: FillsQuery | null
+): (FillFieldsFragment & Cursor)[] =>
+  responseData?.trades?.edges.map<FillFieldsFragment & Cursor>((edge) => ({
+    ...edge.node,
+    cursor: edge.cursor,
+  })) || [];
 
 const getPageInfo = (responseData: FillsQuery | null): PageInfo | null =>
   responseData?.trades?.pageInfo || null;
@@ -76,16 +36,65 @@ const getPageInfo = (responseData: FillsQuery | null): PageInfo | null =>
 const getDelta = (subscriptionData: FillsEventSubscription) =>
   subscriptionData.tradesStream || [];
 
+const mapFillUpdateToFill = (
+  fillUpdate: FillUpdateFieldsFragment
+): FillFieldsFragment => {
+  const { buyerId, sellerId, marketId, ...fill } = fillUpdate;
+  return {
+    ...fill,
+    __typename: 'Trade',
+    market: {
+      __typename: 'Market',
+      id: marketId,
+    },
+    buyer: { id: buyerId, __typename: 'Party' },
+    seller: { id: buyerId, __typename: 'Party' },
+  };
+};
+
+const mapFillUpdateToFillWithMarket =
+  (markets: Record<string, Market>) =>
+  (fillUpdate: FillUpdateFieldsFragment): Trade => {
+    const { market, ...fill } = mapFillUpdateToFill(fillUpdate);
+    return {
+      ...fill,
+      market: markets[market.id],
+    };
+  };
+
+const update = <T extends Omit<FillFieldsFragment, 'market'> & Cursor>(
+  data: T[] | null,
+  delta: ReturnType<typeof getDelta>,
+  variables: FillsQueryVariables,
+  mapDeltaToData: (delta: FillUpdateFieldsFragment) => T
+): T[] => {
+  const updatedData = data ? [...data] : ([] as T[]);
+  orderBy(delta, 'createdAt', 'desc').forEach((fillUpdate) => {
+    const index = data?.findIndex((fill) => fill.id === fillUpdate.id) ?? -1;
+    if (index !== -1) {
+      updatedData[index] = {
+        ...updatedData[index],
+        ...mapDeltaToData(fillUpdate),
+      };
+    } else if (!data?.length || fillUpdate.createdAt >= data[0].createdAt) {
+      updatedData.unshift(mapDeltaToData(fillUpdate));
+    }
+  });
+  return updatedData;
+};
+
 export const fillsProvider = makeDataProvider<
   Parameters<typeof getData>['0'],
   ReturnType<typeof getData>,
   Parameters<typeof getDelta>['0'],
   ReturnType<typeof getDelta>,
-  FillsQueryVariables
+  FillsQueryVariables,
+  FillsEventSubscriptionVariables
 >({
   query: FillsDocument,
   subscriptionQuery: FillsEventDocument,
-  update,
+  update: (data, delta, reload, variables) =>
+    update(data, delta, variables, mapFillUpdateToFill),
   getData,
   getDelta,
   pagination: {
@@ -93,30 +102,41 @@ export const fillsProvider = makeDataProvider<
     append,
     first: 100,
   },
+  getSubscriptionVariables: ({ filter }) => {
+    const variables: FillsEventSubscriptionVariables = { filter: {} };
+    if (filter) {
+      variables.filter = {
+        partyIds: filter.partyIds,
+        marketIds: filter.marketIds,
+      };
+    }
+    return variables;
+  },
 });
 
 export const fillsWithMarketProvider = makeDerivedDataProvider<
-  (TradeEdge | null)[],
   Trade[],
+  never,
   FillsQueryVariables
 >(
   [
     fillsProvider,
-    (callback, client) => marketsProvider(callback, client, undefined),
+    (callback, client) => marketsMapProvider(callback, client, undefined),
   ],
-  (partsData): (TradeEdge | null)[] =>
-    (partsData[0] as ReturnType<typeof getData>)?.map(
-      (edge) =>
-        edge && {
-          cursor: edge.cursor,
-          node: {
-            ...edge.node,
-            market: (partsData[1] as Market[]).find(
-              (market) => market.id === edge.node.market.id
-            ),
-          },
-        }
-    ) || null,
-  combineDelta<Trade, ReturnType<typeof getDelta>['0']>,
-  combineInsertionData<Trade>
+  (partsData, variables, prevData, parts): Trade[] | null => {
+    if (prevData && parts[0].isUpdate) {
+      return update(
+        prevData,
+        parts[0].delta as ReturnType<typeof getDelta>,
+        variables,
+        mapFillUpdateToFillWithMarket(partsData[1] as Record<string, Market>)
+      );
+    }
+    return ((partsData[0] as ReturnType<typeof getData>) || []).map(
+      (trade) => ({
+        ...trade,
+        market: (partsData[1] as Record<string, Market>)[trade.market.id],
+      })
+    );
+  }
 );

@@ -48,28 +48,32 @@ query Fills($filter: TradesFilter, $pagination: Pagination) {
   }
 }
 
+fragment FillUpdateFields on TradeUpdate {
+  id
+  marketId
+  buyOrder
+  sellOrder
+  buyerId
+  sellerId
+  aggressor
+  price
+  size
+  createdAt
+  type
+  buyerFee {
+    makerFee
+    infrastructureFee
+    liquidityFee
+  }
+  sellerFee {
+    makerFee
+    infrastructureFee
+    liquidityFee
+  }
+}
+
 subscription FillsEvent($filter: TradesSubscriptionFilter!) {
   tradesStream(filter: $filter) {
-    id
-    marketId
-    buyOrder
-    sellOrder
-    buyerId
-    sellerId
-    aggressor
-    price
-    size
-    createdAt
-    type
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
+    ...FillUpdateFields
   }
 }

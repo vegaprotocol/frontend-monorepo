@@ -12,23 +12,13 @@ export interface useDataProviderParams<
   Variables extends OperationVariables | undefined = undefined
 > {
   dataProvider: Subscribe<Data, Delta, Variables>;
-  update?: ({
-    delta,
-    data,
-    totalCount,
-  }: {
-    delta?: Delta;
-    data: Data | null;
-    totalCount?: number;
-  }) => boolean;
+  update?: ({ delta, data }: { delta?: Delta; data: Data | null }) => boolean;
   insert?: ({
     insertionData,
     data,
-    totalCount,
   }: {
     insertionData?: Data | null;
     data: Data | null;
-    totalCount?: number;
   }) => boolean;
   variables: Variables;
   skipUpdates?: boolean;
@@ -56,7 +46,6 @@ export const useDataProvider = <
 }: useDataProviderParams<Data, Delta, Variables>) => {
   const client = useApolloClient();
   const [data, setData] = useState<Data | null>(null);
-  const [totalCount, setTotalCount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(!skip);
   const [error, setError] = useState<Error | undefined>(undefined);
   const flushRef = useRef<(() => void) | undefined>(undefined);
@@ -101,7 +90,6 @@ export const useDataProvider = <
       error,
       loading,
       insertionData,
-      totalCount,
       isInsert,
       isUpdate,
       loaded,
@@ -116,19 +104,18 @@ export const useDataProvider = <
         (skipUpdatesRef.current ||
           (!skipUpdatesRef.current &&
             updateRef.current &&
-            updateRef.current({ delta, data, totalCount })))
+            updateRef.current({ delta, data })))
       ) {
         return;
       }
       if (
         isInsert &&
         insertRef.current &&
-        insertRef.current({ insertionData, data, totalCount })
+        insertRef.current({ insertionData, data })
       ) {
         return;
       }
     }
-    setTotalCount(totalCount);
     setData(data);
     if (!loading && !isUpdate && updateRef.current) {
       updateRef.current({ data });
@@ -150,7 +137,6 @@ export const useDataProvider = <
   useEffect(() => {
     setData(null);
     setError(undefined);
-    setTotalCount(undefined);
     if (updateRef.current) {
       updateRef.current({ data: null });
     }
@@ -184,7 +170,6 @@ export const useDataProvider = <
     flush,
     reload,
     load,
-    totalCount,
   };
 };
 

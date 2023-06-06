@@ -32,7 +32,6 @@ describe('OrderListManager', () => {
       flush: jest.fn(),
       reload: jest.fn(),
       load: jest.fn(),
-      totalCount: undefined,
     });
     await act(async () => {
       render(generateJsx());

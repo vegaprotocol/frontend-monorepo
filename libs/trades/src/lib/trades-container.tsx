@@ -1,4 +1,3 @@
-import compact from 'lodash/compact';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
@@ -19,12 +18,11 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     dataProvider: tradesWithMarketProvider,
     variables: { marketId },
   });
-  const trades = compact(data).map((d) => d.node);
 
   return (
     <TradesTable
       ref={gridRef}
-      rowData={trades}
+      rowData={data}
       onClick={(price?: string) => {
         if (price) {
           updateOrder(marketId, { price });
