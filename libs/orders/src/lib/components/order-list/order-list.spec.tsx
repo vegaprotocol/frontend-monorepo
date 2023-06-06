@@ -44,15 +44,6 @@ const generateJsx = (
 };
 
 describe('OrderListTable', () => {
-  it('should show no orders message', async () => {
-    await act(async () => {
-      render(generateJsx({ rowData: [] }));
-    });
-    expect(() => screen.getByText('No orders')).toThrow(
-      'Unable to find an element'
-    );
-  });
-
   it('should render correct columns', async () => {
     await act(async () => {
       render(generateJsx({ rowData: [marketOrder, limitOrder] }));

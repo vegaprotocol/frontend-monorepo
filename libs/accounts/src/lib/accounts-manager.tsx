@@ -1,11 +1,9 @@
-import { useRef, memo, useCallback, useState, useEffect } from 'react';
+import { useRef, memo, useCallback, useState } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import type { RowDataUpdatedEvent } from 'ag-grid-community';
 import type { AccountFields } from './accounts-data-provider';
 import {
   aggregatedAccountsDataProvider,
@@ -71,7 +69,6 @@ export const AccountManager = ({
   storeKey,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const [hasData, setHasData] = useState(Boolean(pinnedAsset));
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
@@ -102,7 +99,7 @@ export const AccountManager = ({
     },
     [gridRef, pinnedAsset]
   );
-  const { data, loading, error, reload } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables: { partyId },
     update,
@@ -112,45 +109,21 @@ export const AccountManager = ({
     disabled: noBottomPlaceholder,
   });
 
-  useEffect(
-    () => setHasData(Boolean(pinnedAsset || data?.length)),
-    [data, pinnedAsset]
-  );
-
-  const onRowDataUpdated = useCallback(
-    (event: RowDataUpdatedEvent) => {
-      setHasData(Boolean(pinnedAsset || event.api?.getModel().getRowCount()));
-    },
-    [pinnedAsset]
-  );
-
   return (
     <div className="relative h-full">
       <AccountTable
         ref={gridRef}
-        rowData={error ? [] : data}
+        rowData={data}
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         onClickBreakdown={setBreakdownAssetId}
-        onRowDataUpdated={onRowDataUpdated}
         isReadOnly={isReadOnly}
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
         pinnedAsset={pinnedAsset}
         storeKey={storeKey}
         {...bottomPlaceholderProps}
+        overlayNoRowsTemplate={error ? error.message : t('No accounts')}
       />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          data={data}
-          noDataCondition={() => !hasData}
-          error={error}
-          loading={loading}
-          noDataMessage={pinnedAsset ? ' ' : t('No accounts')}
-          reload={reload}
-        />
-      </div>
       <Dialog
         size="medium"
         open={Boolean(breakdownAssetId)}

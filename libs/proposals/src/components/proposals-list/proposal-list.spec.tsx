@@ -110,17 +110,29 @@ describe('ProposalsList', () => {
   });
 
   it('empty response should causes no data message display', async () => {
+    const mock: MockedResponse<ProposalsListQuery> = {
+      request: {
+        query: ProposalsListDocument,
+        variables: {
+          proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+        },
+      },
+      result: {
+        data: {
+          proposalsConnection: {
+            __typename: 'ProposalsConnection',
+            edges: [],
+          },
+        },
+      },
+    };
     await act(() => {
       render(
-        <MockedProvider>
+        <MockedProvider mocks={[mock]}>
           <ProposalsList />
         </MockedProvider>
       );
     });
-    const container = document.querySelector('.ag-center-cols-container');
-    await waitFor(() => {
-      expect(container).toBeInTheDocument();
-    });
-    expect(screen.getByText('No markets')).toBeInTheDocument();
+    expect(await screen.findByText('No markets')).toBeInTheDocument();
   });
 });

@@ -210,10 +210,13 @@ const positionDataProvider = makeDerivedDataProvider<
         partyIds: variables.partyIds,
       }),
   ],
-  (data, variables) =>
-    (data[0] as PositionFieldsFragment[] | null)?.find(
-      (p) => p.market.id === variables?.marketId
-    ) || null
+  (data, variables) => {
+    return (
+      (data[0] as PositionFieldsFragment[] | null)?.find(
+        (p) => p.market.id === variables?.marketId
+      ) || null
+    );
+  }
 );
 
 export const openVolumeDataProvider = makeDerivedDataProvider<

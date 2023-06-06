@@ -1,5 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { useRef } from 'react';
 import { usePositionsData } from './use-positions-data';
 import { PositionsTable } from './positions-table';
 import type { AgGridReact } from 'ag-grid-react';
@@ -26,8 +25,7 @@ export const PositionsManager = ({
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading, reload } = usePositionsData(partyIds, gridRef);
-  const [dataCount, setDataCount] = useState(data?.length ?? 0);
+  const { data, error } = usePositionsData(partyIds, gridRef);
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = ({
     marketId,
@@ -63,9 +61,6 @@ export const PositionsManager = ({
     gridRef,
     disabled: noBottomPlaceholder,
   });
-  const updateRowCount = useCallback(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, []);
 
   return (
     <div className="h-full relative">
@@ -76,25 +71,12 @@ export const PositionsManager = ({
         ref={gridRef}
         onMarketClick={onMarketClick}
         onClose={onClose}
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
         isReadOnly={isReadOnly}
-        onFilterChanged={updateRowCount}
-        onRowDataUpdated={updateRowCount}
         {...bottomPlaceholderProps}
         storeKey={storeKey}
         multipleKeys={partyIds.length > 1}
+        overlayNoRowsTemplate={error ? error.message : t('No positions')}
       />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={data}
-          noDataMessage={t('No positions')}
-          noDataCondition={(data) => !dataCount}
-          reload={reload}
-        />
-      </div>
     </div>
   );
 };
