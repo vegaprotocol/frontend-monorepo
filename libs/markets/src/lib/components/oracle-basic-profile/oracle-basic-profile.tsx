@@ -112,31 +112,27 @@ export const OracleBasicProfile = ({
           <Icon size={3} name={icon as IconName} />
         </span>
       </span>
-      <p className="dark:text-vega-light-300 text-vega-dark-300">{message}</p>
-      <p
-        data-testid="signed-proofs"
-        className="dark:text-vega-light-300 text-vega-dark-300"
-      >
-        {oracleMarkets &&
-          t('Involved in %s %s', [
+      <p className="text-sm dark:text-vega-light-300 text-vega-dark-300 mb-2">
+        {message}
+      </p>
+      {oracleMarkets && (
+        <p
+          data-testid="signed-proofs"
+          className="text-sm dark:text-vega-light-300 text-vega-dark-300 mb-2"
+        >
+          {t('Involved in %s %s', [
             oracleMarkets.length.toString(),
             oracleMarkets.length !== 1 ? t('markets') : t('market'),
           ])}
-      </p>
+        </p>
+      )}
       {links.length > 0 && (
-        <div className="flex flex-row gap-1">
+        <div className="flex flex-row gap-3">
           {links.map((link) => (
-            <ExternalLink
-              key={link.url}
-              href={link.url}
-              data-testid={link.url}
-              className="flex align-items-bottom underline text-sm"
-            >
-              <span className="pt-1 pr-1">
+            <ExternalLink key={link.url} href={link.url} data-testid={link.url}>
+              <span className="flex gap-1 items-center">
                 <VegaIcon name={getLinkIcon(link.type)} />
-              </span>
-              <span className="underline capitalize">
-                {link.type}
+                <span className="capitalize underline">{link.type}</span>
                 <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
               </span>
             </ExternalLink>

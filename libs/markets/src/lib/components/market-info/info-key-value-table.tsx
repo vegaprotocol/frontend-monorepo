@@ -34,7 +34,7 @@ const Row = ({
   assetSymbol = '',
   noBorder = true,
 }: RowProps) => {
-  const className = 'text-black dark:text-white text-sm !px-0';
+  const className = 'text-sm';
 
   const getFormattedValue = (value: ReactNode) => {
     if (typeof value !== 'string' && typeof value !== 'number') return value;
