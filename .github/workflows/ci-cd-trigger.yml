@@ -135,18 +135,18 @@ jobs:
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
-          projects=$(echo $projects_e2e | sed 's|-e2e||g')
+          projects="$(echo $projects_e2e | sed 's|-e2e||g')"
           if echo "$affected" | grep -q multisig-signer; then
             echo "Tools are affected"
             # tools are only applicable to check previews or deploy from develop to mainnet
             if [[ "${{ github.event_name }}" = "pull_request" ]]; then
               echo "Deploying tools on preview"
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
-              projects+='"multisig-signer" '
+              projects+=' "multisig-signer" '
             fi
             if [[ "${{ github.ref }}" =~ .*develop$ ]]; then
               echo "Deploying tools on s3"
-              projects+='"multisig-signer" '
+              projects+=' "multisig-signer" '
             fi
           fi
           projects_e2e=${projects_e2e%?}
