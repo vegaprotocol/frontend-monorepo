@@ -1,7 +1,4 @@
 import groupBy from 'lodash/groupBy';
-import uniqBy from 'lodash/uniqBy';
-import reverse from 'lodash/reverse';
-import cloneDeep from 'lodash/cloneDeep';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
 export enum VolumeType {
