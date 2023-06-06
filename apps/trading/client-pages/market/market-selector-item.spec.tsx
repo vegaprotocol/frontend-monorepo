@@ -6,29 +6,21 @@ import { MemoryRouter } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type {
+  MarketCandlesQuery,
+  MarketCandlesQueryVariables,
   MarketDataUpdateFieldsFragment,
   MarketDataUpdateSubscription,
 } from '@vegaprotocol/markets';
+import { MarketCandlesDocument } from '@vegaprotocol/markets';
 import { MarketDataUpdateDocument } from '@vegaprotocol/markets';
 import {
   AuctionTrigger,
+  Interval,
   MarketState,
   MarketTradingMode,
 } from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-
-jest.mock('@vegaprotocol/markets', () => ({
-  ...jest.requireActual('@vegaprotocol/markets'),
-  useCandles: jest.fn(() => {
-    const yesterday = new Date();
-    return {
-      oneDayCandles: [
-        { close: '5', volume: '50', periodStart: yesterday.toISOString() },
-        { close: '10', volume: '50', periodStart: yesterday.toISOString() },
-      ],
-    };
-  }),
-}));
+import { subDays } from 'date-fns';
 
 describe('MarketSelectorItem', () => {
   const yesterday = new Date();
@@ -51,6 +43,7 @@ describe('MarketSelectorItem', () => {
       },
     },
   });
+
   const marketData: MarketDataUpdateFieldsFragment = {
     __typename: 'ObservableMarketData',
     marketId: market.id,
@@ -78,26 +71,32 @@ describe('MarketSelectorItem', () => {
     trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
     priceMonitoringBounds: null,
   };
-  const mock: MockedResponse<MarketDataUpdateSubscription> = {
-    request: {
-      query: MarketDataUpdateDocument,
-      variables: {
-        marketId: market.id,
-      },
+
+  const candles = [
+    {
+      open: '5',
+      close: '5',
+      high: '5',
+      low: '5',
+      volume: '50',
+      periodStart: yesterday.toISOString(),
     },
-    result: {
-      data: {
-        marketsData: [marketData],
-      },
+    {
+      open: '10',
+      close: '10',
+      high: '10',
+      low: '10',
+      volume: '50',
+      periodStart: yesterday.toISOString(),
     },
-  };
+  ];
 
   const mockOnSelect = jest.fn();
 
-  const renderJsx = () => {
+  const renderJsx = (mocks: MockedResponse[]) => {
     return render(
       <MemoryRouter>
-        <MockedProvider mocks={[mock]}>
+        <MockedProvider mocks={mocks}>
           <MarketSelectorItem
             market={market}
             currentMarketId={market.id}
@@ -109,11 +108,66 @@ describe('MarketSelectorItem', () => {
     );
   };
 
+  let dateSpy: jest.SpyInstance;
+  const ts = 1685577600000; // 2023-06-01
+
+  beforeAll(() => {
+    dateSpy = jest.spyOn(Date, 'now').mockImplementation(() => ts);
+  });
+
+  afterAll(() => {
+    dateSpy.mockRestore();
+  });
+
   it('renders market information', async () => {
     const symbol =
       market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
-    renderJsx();
+    const mock: MockedResponse<MarketDataUpdateSubscription> = {
+      request: {
+        query: MarketDataUpdateDocument,
+        variables: {
+          marketId: market.id,
+        },
+      },
+      result: {
+        data: {
+          marketsData: [marketData],
+        },
+      },
+    };
+
+    const since = subDays(Date.now(), 5).toISOString();
+    const variables: MarketCandlesQueryVariables = {
+      marketId: market.id,
+      interval: Interval.INTERVAL_I1H,
+      since,
+    };
+    const mockCandles: MockedResponse<MarketCandlesQuery> = {
+      request: {
+        query: MarketCandlesDocument,
+        variables,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            edges: [
+              {
+                node: {
+                  candlesConnection: {
+                    edges: candles.map((c) => ({
+                      node: c,
+                    })),
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    renderJsx([mock, mockCandles]);
 
     const link = screen.getByRole('link');
     // link renders and is styled
@@ -121,17 +175,16 @@ describe('MarketSelectorItem', () => {
 
     expect(link).toHaveClass('ring-1');
 
-    expect(screen.getByTitle('24h vol')).toHaveTextContent('100');
+    expect(screen.getByTitle('24h vol')).toHaveTextContent('0.00');
     expect(screen.getByTitle(symbol)).toHaveTextContent('-');
 
-    // candles are loaded immediately
-    expect(screen.getByTestId('market-item-change')).toHaveTextContent(
-      '+100.00%'
-    );
-
     await waitFor(() => {
+      expect(screen.getByTitle('24h vol')).toHaveTextContent('100');
       expect(screen.getByTitle(symbol)).toHaveTextContent(
         addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
+      );
+      expect(screen.getByTestId('market-item-change')).toHaveTextContent(
+        '+100.00%'
       );
     });
 
