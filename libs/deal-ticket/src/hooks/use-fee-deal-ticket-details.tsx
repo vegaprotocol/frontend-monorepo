@@ -105,19 +105,24 @@ export const getFeeDetailsValues = ({
   const details: {
     label: string;
     value?: string | null;
+    formattedValue?: string | null;
     symbol: string;
     indent?: boolean;
     labelDescription?: React.ReactNode;
   }[] = [
     {
       label: t('Notional'),
-      value: formatValue(notionalSize, assetDecimals, quantum),
+      value: formatValue(notionalSize, assetDecimals),
+      formattedValue: formatValue(notionalSize, assetDecimals, quantum),
       symbol: assetSymbol,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol),
     },
     {
       label: t('Fees'),
       value:
+        feeEstimate?.totalFeeAmount &&
+        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`,
+      formattedValue:
         feeEstimate?.totalFeeAmount &&
         `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`,
       labelDescription: (
@@ -163,11 +168,16 @@ export const getFeeDetailsValues = ({
   }
   details.push({
     label: t('Margin required'),
-    value: formatRange(
+    formattedValue: formatRange(
       marginRequiredBestCase,
       marginRequiredWorstCase,
       assetDecimals,
       quantum
+    ),
+    value: formatRange(
+      marginRequiredBestCase,
+      marginRequiredWorstCase,
+      assetDecimals
     ),
     symbol: assetSymbol,
     labelDescription: MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol),
@@ -182,7 +192,8 @@ export const getFeeDetailsValues = ({
   details.push({
     indent: true,
     label: t('Total margin available'),
-    value: formatValue(totalMarginAvailable, assetDecimals, quantum),
+    formattedValue: formatValue(totalMarginAvailable, assetDecimals, quantum),
+    value: formatValue(totalMarginAvailable, assetDecimals),
     symbol: assetSymbol,
     labelDescription: TOTAL_MARGIN_AVAILABLE(
       formatValue(generalAccountBalance, assetDecimals, quantum),
@@ -211,6 +222,15 @@ export const getFeeDetailsValues = ({
         deductionFromCollateralWorstCase > 0
           ? deductionFromCollateralWorstCase.toString()
           : '0',
+        assetDecimals
+      ),
+      formattedValue: formatRange(
+        deductionFromCollateralBestCase > 0
+          ? deductionFromCollateralBestCase.toString()
+          : '0',
+        deductionFromCollateralWorstCase > 0
+          ? deductionFromCollateralWorstCase.toString()
+          : '0',
         assetDecimals,
         quantum
       ),
@@ -223,6 +243,11 @@ export const getFeeDetailsValues = ({
       value: formatRange(
         marginEstimate?.bestCase.initialLevel,
         marginEstimate?.worstCase.initialLevel,
+        assetDecimals
+      ),
+      formattedValue: formatRange(
+        marginEstimate?.bestCase.initialLevel,
+        marginEstimate?.worstCase.initialLevel,
         assetDecimals,
         quantum
       ),
@@ -232,12 +257,14 @@ export const getFeeDetailsValues = ({
   }
   details.push({
     label: t('Current margin allocation'),
-    value: formatValue(marginAccountBalance, assetDecimals, quantum),
+    value: formatValue(marginAccountBalance, assetDecimals),
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
+    formattedValue: formatValue(marginAccountBalance, assetDecimals, quantum),
   });
 
   let liquidationPriceEstimate = emptyValue;
+  let liquidationPriceEstimateFormatted;
 
   if (liquidationEstimate) {
     const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
@@ -274,11 +301,24 @@ export const getFeeDetailsValues = ({
       ).toString(),
       assetDecimals
     );
+    liquidationPriceEstimateFormatted = formatRange(
+      (liquidationEstimateBestCase < liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      (liquidationEstimateBestCase > liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      assetDecimals,
+      quantum
+    );
   }
 
   details.push({
     label: t('Liquidation price estimate'),
     value: liquidationPriceEstimate,
+    formattedValue: liquidationPriceEstimateFormatted,
     symbol: assetSymbol,
     labelDescription: LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
   });
