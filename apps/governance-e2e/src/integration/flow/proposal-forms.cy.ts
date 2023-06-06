@@ -202,6 +202,9 @@ context(
 
     // 3003-PMAN-001
     it('Able to submit valid new market proposal', function () {
+      // Wait needed for test to pass in CI because of report name discrepancy when time passes
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(5000);
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalTitle).type('Test new market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
@@ -253,9 +256,6 @@ context(
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
     it('Unable to submit update market proposal without equity-like share in the market', function () {
-      // Wait needed for test to pass in CI because of report name discrepancy when time passes
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(5000);
       cy.get('[data-testid="manage-vega-wallet"]:visible').click();
       cy.get('[data-testid="select-keypair-button"]').eq(0).click(); // switch to second wallet pub key
       stakingPageAssociateTokens('1');
