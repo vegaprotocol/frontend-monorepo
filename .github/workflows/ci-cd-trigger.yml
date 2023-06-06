@@ -114,15 +114,18 @@ jobs:
           preview_trading="not deployed"
           preview_explorer="not deployed"
           preview_tools="not deployed"
-          if [[ $affected =~ *"governance"* ]]; then
+          if echo "$affected" | grep -q governance; then
+            echo "Governance is affected"
             projects_e2e+='"governance-e2e" '
             preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
           fi
-          if [[ $affected =~ *"trading"* ]]; then
+          if echo "$affected" | grep -q trading; then
+            echo "Trading is affected"
             projects_e2e+='"trading-e2e" '
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
           fi
-          if [[ $affected =~ *"explorer"* ]]; then
+          if echo "$affected" | grep -q explorer; then
+            echo "Explorer is affected"
             projects_e2e+='"explorer-e2e" '
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
@@ -136,7 +139,8 @@ jobs:
           projects_e2e=[${projects_e2e// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$(echo $projects_e2e | sed 's|-e2e||g') >> $GITHUB_ENV
-          if [[ $affected =~ *"multisig-signer"* ]]; then
+          if echo "$affected" | grep -q multisig-signer; then
+            echo "Tools are affected"
             # tools are only applicable to check previews or deploy from develop to mainnet
             if [[ "${{ github.event_name }}" = "pull_request" ]] || [[ "${{ github.ref_name }}" = "develop" ]]; then
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
