@@ -142,8 +142,13 @@ jobs:
           if echo "$affected" | grep -q multisig-signer; then
             echo "Tools are affected"
             # tools are only applicable to check previews or deploy from develop to mainnet
-            if [[ "${{ github.event_name }}" = "pull_request" ]] || [[ "${{ github.ref_name }}" = "develop" ]]; then
+            if [[ "${{ github.event_name }}" = "pull_request" ]]; then
+              echo "Deploying tools on preview"
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
+              PROJECTS+='"multisig-signer" '
+            fi
+            if [[ "${{ github.ref }}" =~ .*develop$ ]]; then
+              echo "Deploying tools on s3"
               PROJECTS+='"multisig-signer" '
             fi
           fi
