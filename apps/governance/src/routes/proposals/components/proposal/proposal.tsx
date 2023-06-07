@@ -3,13 +3,13 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { AsyncRenderer, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalJson } from '../proposal-json';
-import { ProposalTerms } from '../proposal-terms';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
 import { ListAsset } from '../list-asset';
@@ -101,12 +101,13 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
           <ProposalDescription description={proposal.rationale.description} />
         </div>
 
-        {proposal.terms.change.__typename !== 'NewMarket' &&
-          proposal.terms.change.__typename !== 'UpdateMarket' && (
-            <div className="mb-4">
-              <ProposalTerms data={proposal.terms} />
-            </div>
-          )}
+        {proposal.terms.change.__typename === 'UpdateMarket' && (
+          <div className="-mt-4 -mx-4 mb-4">
+            <MarketInfoAccordionContainer
+              marketId={proposal.terms.change.marketId}
+            />
+          </div>
+        )}
 
         <div className="mb-6">
           <ProposalJson proposal={restData?.data?.proposal} />
