@@ -50,8 +50,7 @@ export const WithdrawalApprovalDialog = ({
         <p>
           {t(
             `If the network is reset or has an outage, records of your withdrawal
-          may be lost. We recommend you save these details in a safe place so 
-          you can still complete your withdrawal.`
+          may be lost. It is recommended that you save these details in a safe place so you can still complete your withdrawal.`
           )}
         </p>
         {withdrawalId ? (

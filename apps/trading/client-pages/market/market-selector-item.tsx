@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import {
@@ -8,6 +8,7 @@ import {
 } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { calcCandleVolume } from '@vegaprotocol/markets';
+import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import {
@@ -80,8 +81,9 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     : '';
 
   const instrument = market.tradableInstrument.instrument;
+  const { oneDayCandles } = useCandles({ marketId: market.id });
 
-  const vol = market.candles ? calcCandleVolume(market.candles) : '0';
+  const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
   const volume =
     vol && vol !== '0'
       ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
@@ -111,20 +113,20 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         value={price}
         label={instrument.product.settlementAsset.symbol}
       />
-      <div className="relative">
-        {market.candles && (
-          <PriceChange candles={market.candles.map((c) => c.close)} />
+      <div className="relative text-xs p-1">
+        {oneDayCandles && (
+          <PriceChange candles={oneDayCandles.map((c) => c.close)} />
         )}
 
         <div
           // absolute so height is not larger than price change value
           className="absolute right-0 bottom-0 w-[120px]"
         >
-          {market.candles && (
+          {oneDayCandles && (
             <Sparkline
               width={120}
               height={20}
-              data={market.candles.filter(Boolean).map((c) => Number(c.close))}
+              data={oneDayCandles.map((c) => Number(c.close))}
             />
           )}
         </div>
@@ -133,7 +135,13 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   );
 };
 
-const DataRow = ({ value, label }: { value: string; label: string }) => {
+const DataRow = ({
+  value,
+  label,
+}: {
+  value: string | ReactNode;
+  label: string;
+}) => {
   return (
     <div
       className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight"

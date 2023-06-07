@@ -82,10 +82,14 @@ jobs:
 
           if [[ "${envName}" = "mainnet" ]]; then
             domain="vega.xyz"
-            bucketName="${{ matrix.app }}.${domain}"
+            if [[ -z "${bucketName}" ]]; then
+              bucketName="${{ matrix.app }}.${domain}"
+            fi
           elif [[ "${envName}" = "testnet" ]]; then
             domain="fairground.wtf"
-            bucketName="${{ matrix.app }}.${domain}"
+            if [[ -z "${bucketName}" ]]; then
+              bucketName="${{ matrix.app }}.${domain}"
+            fi
           fi
 
           if [[ -z "${bucketName}" ]]; then
