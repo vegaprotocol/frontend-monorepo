@@ -107,7 +107,7 @@ export const Orderbook = ({
             const bidRows = groupedBids?.slice(0, limit) ?? [];
             return (
               <div
-                className={`overflow-hidden grid grid-rows-[1fr_${midHeight}px_1fr]`}
+                className={`overflow-hidden grid grid-rows-[1fr_30px_1fr]`}
                 data-testid="orderbook-grid-element"
                 style={{ height: height + 'px' }}
               >
