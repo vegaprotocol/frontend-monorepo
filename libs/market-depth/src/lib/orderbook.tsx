@@ -123,7 +123,10 @@ export const Orderbook = ({
                     />
                     <div className="flex items-center justify-center text-lg">
                       {midPrice && (
-                        <span className="font-mono">
+                        <span
+                          className="font-mono"
+                          data-testid={`middle-mark-price-${midPrice}`}
+                        >
                           {addDecimalsFormatNumber(midPrice, decimalPlaces)}
                         </span>
                       )}
