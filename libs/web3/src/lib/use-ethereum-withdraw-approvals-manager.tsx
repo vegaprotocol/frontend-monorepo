@@ -60,21 +60,23 @@ export const useEthWithdrawApprovalsManager = () => {
       });
       return;
     }
-    if (chainId?.toString() !== config?.chain_id) {
-      const status = ApprovalStatus.Pending;
-      const message = chainId
-        ? t(`Change network`)
-        : t(`Connect wallet to withdraw`);
-      const failureReason = chainId
-        ? WithdrawalFailure.WrongConnection
-        : WithdrawalFailure.NoConnection;
+    if (!chainId) {
       update(transaction.id, {
-        status,
-        message,
-        failureReason,
+        status: ApprovalStatus.Pending,
+        message: t(`Connect wallet to withdraw`),
+        failureReason: WithdrawalFailure.NoConnection,
       });
       return;
     }
+    if (chainId?.toString() !== config?.chain_id) {
+      update(transaction.id, {
+        status: ApprovalStatus.Pending,
+        message: t(`Change network`),
+        failureReason: WithdrawalFailure.WrongConnection,
+      });
+      return;
+    }
+
     update(transaction.id, {
       status: ApprovalStatus.Pending,
       message: t('Verifying withdrawal approval'),
