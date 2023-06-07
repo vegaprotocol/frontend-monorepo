@@ -1,5 +1,9 @@
 import { FeesBreakdown } from '@vegaprotocol/markets';
-import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  addDecimalsFormatNumberQuantum,
+  isNumeric,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Market } from '@vegaprotocol/markets';
@@ -52,21 +56,25 @@ export interface FeeDetails {
 }
 
 const emptyValue = '-';
-const formatValue = (
+
+export const formatValue = (
   value: string | number | null | undefined,
-  formatDecimals: number
+  formatDecimals: number,
+  quantum?: string
 ): string => {
-  return isNumeric(value)
-    ? addDecimalsFormatNumber(value, formatDecimals)
-    : emptyValue;
+  if (!isNumeric(value)) return emptyValue;
+  if (!quantum) return addDecimalsFormatNumber(value, formatDecimals);
+  return addDecimalsFormatNumberQuantum(value, formatDecimals, quantum);
 };
-const formatRange = (
+
+export const formatRange = (
   min: string | number | null | undefined,
   max: string | number | null | undefined,
-  formatDecimals: number
+  formatDecimals: number,
+  quantum?: string
 ) => {
-  const minFormatted = formatValue(min, formatDecimals);
-  const maxFormatted = formatValue(max, formatDecimals);
+  const minFormatted = formatValue(min, formatDecimals, quantum);
+  const maxFormatted = formatValue(max, formatDecimals, quantum);
   if (minFormatted !== maxFormatted) {
     return `${minFormatted} - ${maxFormatted}`;
   }
@@ -93,9 +101,12 @@ export const getFeeDetailsValues = ({
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
+  const quantum =
+    market.tradableInstrument.instrument.product.settlementAsset.quantum;
   const details: {
     label: string;
     value?: string | null;
+    formattedValue?: string | null;
     symbol: string;
     indent?: boolean;
     labelDescription?: React.ReactNode;
@@ -103,6 +114,7 @@ export const getFeeDetailsValues = ({
     {
       label: t('Notional'),
       value: formatValue(notionalSize, assetDecimals),
+      formattedValue: formatValue(notionalSize, assetDecimals, quantum),
       symbol: assetSymbol,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol),
     },
@@ -111,6 +123,9 @@ export const getFeeDetailsValues = ({
       value:
         feeEstimate?.totalFeeAmount &&
         `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`,
+      formattedValue:
+        feeEstimate?.totalFeeAmount &&
+        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`,
       labelDescription: (
         <>
           <span>
@@ -154,6 +169,12 @@ export const getFeeDetailsValues = ({
   }
   details.push({
     label: t('Margin required'),
+    formattedValue: formatRange(
+      marginRequiredBestCase,
+      marginRequiredWorstCase,
+      assetDecimals,
+      quantum
+    ),
     value: formatRange(
       marginRequiredBestCase,
       marginRequiredWorstCase,
@@ -172,12 +193,13 @@ export const getFeeDetailsValues = ({
   details.push({
     indent: true,
     label: t('Total margin available'),
+    formattedValue: formatValue(totalMarginAvailable, assetDecimals, quantum),
     value: formatValue(totalMarginAvailable, assetDecimals),
     symbol: assetSymbol,
     labelDescription: TOTAL_MARGIN_AVAILABLE(
-      formatValue(generalAccountBalance, assetDecimals),
-      formatValue(marginAccountBalance, assetDecimals),
-      formatValue(currentMaintenanceMargin, assetDecimals),
+      formatValue(generalAccountBalance, assetDecimals, quantum),
+      formatValue(marginAccountBalance, assetDecimals, quantum),
+      formatValue(currentMaintenanceMargin, assetDecimals, quantum),
       assetSymbol
     ),
   });
@@ -203,6 +225,16 @@ export const getFeeDetailsValues = ({
           : '0',
         assetDecimals
       ),
+      formattedValue: formatRange(
+        deductionFromCollateralBestCase > 0
+          ? deductionFromCollateralBestCase.toString()
+          : '0',
+        deductionFromCollateralWorstCase > 0
+          ? deductionFromCollateralWorstCase.toString()
+          : '0',
+        assetDecimals,
+        quantum
+      ),
       symbol: assetSymbol,
       labelDescription: DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol),
     });
@@ -214,6 +246,12 @@ export const getFeeDetailsValues = ({
         marginEstimate?.worstCase.initialLevel,
         assetDecimals
       ),
+      formattedValue: formatRange(
+        marginEstimate?.bestCase.initialLevel,
+        marginEstimate?.worstCase.initialLevel,
+        assetDecimals,
+        quantum
+      ),
       symbol: assetSymbol,
       labelDescription: EST_TOTAL_MARGIN_TOOLTIP_TEXT,
     });
@@ -223,9 +261,11 @@ export const getFeeDetailsValues = ({
     value: formatValue(marginAccountBalance, assetDecimals),
     symbol: assetSymbol,
     labelDescription: MARGIN_ACCOUNT_TOOLTIP_TEXT,
+    formattedValue: formatValue(marginAccountBalance, assetDecimals, quantum),
   });
 
   let liquidationPriceEstimate = emptyValue;
+  let liquidationPriceEstimateFormatted;
 
   if (liquidationEstimate) {
     const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
@@ -262,11 +302,24 @@ export const getFeeDetailsValues = ({
       ).toString(),
       assetDecimals
     );
+    liquidationPriceEstimateFormatted = formatRange(
+      (liquidationEstimateBestCase < liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      (liquidationEstimateBestCase > liquidationEstimateWorstCase
+        ? liquidationEstimateBestCase
+        : liquidationEstimateWorstCase
+      ).toString(),
+      assetDecimals,
+      quantum
+    );
   }
 
   details.push({
     label: t('Liquidation price estimate'),
     value: liquidationPriceEstimate,
+    formattedValue: liquidationPriceEstimateFormatted,
     symbol: assetSymbol,
     labelDescription: LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
   });

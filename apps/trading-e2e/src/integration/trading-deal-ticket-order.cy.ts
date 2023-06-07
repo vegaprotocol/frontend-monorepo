@@ -100,9 +100,8 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
         .within(() => {
           cy.get('[data-state="closed"]').should(
             'have.text',
-            'Total margin available'
+            'Total margin available100,000.01 tDAI'
           );
-          cy.get('.text-neutral-500').should('have.text', '100,000.01 tDAI');
         });
     });
   });

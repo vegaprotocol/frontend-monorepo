@@ -90,6 +90,18 @@ export const formatNumberFixed = (
   return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
 };
 
+export const addDecimalsFormatNumberQuantum = (
+  rawValue: string | number,
+  decimalPlaces: number,
+  quantum: number | string
+) => {
+  if (isNaN(Number(quantum))) {
+    return addDecimalsFormatNumber(rawValue, decimalPlaces);
+  }
+  const numberDP = Math.max(0, Math.log10(100 / Number(quantum)));
+  return addDecimalsFormatNumber(rawValue, decimalPlaces, Math.ceil(numberDP));
+};
+
 export const addDecimalsFormatNumber = (
   rawValue: string | number,
   decimalPlaces: number,

@@ -2,14 +2,12 @@ import type { Story, Meta } from '@storybook/react';
 import { generateMockData } from './orderbook-data';
 import type { MockDataGeneratorParams } from './orderbook-data';
 import { Orderbook } from './orderbook';
-import { useState } from 'react';
 
 type Props = Omit<MockDataGeneratorParams, 'resolution'> & {
   decimalPlaces: number;
 };
 
 const OrderbookMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
-  const [resolution, setResolution] = useState(1);
   return (
     <div className="absolute inset-0 dark:bg-black dark:text-neutral-200 bg-white text-neutral-800">
       <div
@@ -18,9 +16,8 @@ const OrderbookMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
       >
         <Orderbook
           positionDecimalPlaces={0}
-          onResolutionChange={setResolution}
           decimalPlaces={decimalPlaces}
-          {...generateMockData({ ...props, resolution })}
+          {...generateMockData({ ...props })}
         />
       </div>
     </div>
@@ -54,8 +51,6 @@ Auction.args = {
   bestStaticOfferPrice: 122895,
   decimalPlaces: 3,
   overlap: 10,
-  indicativePrice: 122900,
-  indicativeVolume: 11,
 };
 
 export const Empty = Template.bind({});
@@ -66,6 +61,4 @@ Empty.args = {
   bestStaticOfferPrice: 0,
   decimalPlaces: 3,
   overlap: 0,
-  indicativePrice: 0,
-  indicativeVolume: 0,
 };
