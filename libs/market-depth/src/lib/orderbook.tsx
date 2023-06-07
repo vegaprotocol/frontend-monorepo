@@ -13,18 +13,10 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
-interface OrderbookProps {
-  decimalPlaces: number;
-  positionDecimalPlaces: number;
-  onClick?: (price: string) => void;
-  midPrice?: string;
-  bids: PriceLevelFieldsFragment[];
-  asks: PriceLevelFieldsFragment[];
-}
-
 // Sets row height, will be used to calculate number of rows that can be
 // displayed each side of the book without overflow
 export const rowHeight = 17;
+const rowGap = 1;
 const midHeight = 30;
 
 const OrderbookTable = ({
@@ -54,7 +46,7 @@ const OrderbookTable = ({
     >
       <div
         className="grid"
-        style={{ gridAutoRows: rowHeight }} // use style as tailwind won't compile the dynamically set height
+        style={{ gridAutoRows: rowHeight, gap: rowGap }} // use style as tailwind won't compile the dynamically set height
       >
         {rows.map((data) => (
           <OrderbookRow
@@ -74,6 +66,16 @@ const OrderbookTable = ({
   );
 };
 
+interface OrderbookProps {
+  decimalPlaces: number;
+  positionDecimalPlaces: number;
+  onClick?: (price: string) => void;
+  midPrice?: string;
+  bids: PriceLevelFieldsFragment[];
+  asks: PriceLevelFieldsFragment[];
+  assetSymbol: string | undefined;
+}
+
 export const Orderbook = ({
   decimalPlaces,
   positionDecimalPlaces,
@@ -81,6 +83,7 @@ export const Orderbook = ({
   midPrice,
   asks,
   bids,
+  assetSymbol,
 }: OrderbookProps) => {
   const [resolution, setResolution] = useState(1);
   const resolutions = new Array(
@@ -104,7 +107,7 @@ export const Orderbook = ({
           {({ height }) => {
             const limit = Math.max(
               1,
-              Math.floor((height - midHeight) / 2 / rowHeight)
+              Math.floor((height - midHeight) / 2 / (rowHeight + rowGap))
             );
             const askRows = groupedAsks?.slice(limit * -1) ?? [];
             const bidRows = groupedBids?.slice(0, limit) ?? [];
@@ -127,14 +130,17 @@ export const Orderbook = ({
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
                     />
-                    <div className="flex items-center justify-center text-lg">
+                    <div className="flex items-center justify-center gap-2">
                       {midPrice && (
-                        <span
-                          className="font-mono"
-                          data-testid={`middle-mark-price-${midPrice}`}
-                        >
-                          {addDecimalsFormatNumber(midPrice, decimalPlaces)}
-                        </span>
+                        <>
+                          <span
+                            className="font-mono text-lg"
+                            data-testid={`middle-mark-price-${midPrice}`}
+                          >
+                            {addDecimalsFormatNumber(midPrice, decimalPlaces)}
+                          </span>
+                          <span className="text-base">{assetSymbol}</span>
+                        </>
                       )}
                     </div>
                     <OrderbookTable

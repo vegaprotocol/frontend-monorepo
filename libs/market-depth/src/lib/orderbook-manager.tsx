@@ -65,6 +65,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         asks={data?.depth.sell ?? []}
         decimalPlaces={market?.decimalPlaces ?? 0}
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
+        assetSymbol={
+          market?.tradableInstrument.instrument.product.settlementAsset.symbol
+        }
         onClick={(price: string) => {
           if (price) {
             updateOrder(marketId, { price });
