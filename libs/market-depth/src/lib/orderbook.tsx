@@ -52,7 +52,10 @@ const OrderbookTable = ({
         )
       }
     >
-      <div className={`grid auto-rows-[${rowHeight}px]`}>
+      <div
+        className="grid"
+        style={{ gridAutoRows: rowHeight }} // use style as tailwind won't compile the dynamically set height
+      >
         {rows.map((data) => (
           <OrderbookRow
             key={data.price}
@@ -111,7 +114,7 @@ export const Orderbook = ({
                 data-testid="orderbook-grid-element"
                 style={{
                   height: height + 'px',
-                  gridTemplateRows: `1fr ${midHeight}px 1fr`,
+                  gridTemplateRows: `1fr ${midHeight}px 1fr`, // cannot use tailwind here as tailwind will not parse a class string with interpolation
                 }}
               >
                 {askRows.length || bidRows.length ? (
