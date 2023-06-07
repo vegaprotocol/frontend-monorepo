@@ -41,6 +41,7 @@ describe('Orderbook', () => {
         decimalPlaces={decimalPlaces}
         positionDecimalPlaces={0}
         {...generateMockData(params)}
+        assetSymbol="USD"
       />
     );
     await waitFor(() =>
@@ -61,6 +62,7 @@ describe('Orderbook', () => {
         positionDecimalPlaces={0}
         onClick={onClickSpy}
         {...mockedData}
+        assetSymbol="USD"
       />
     );
     expect(
