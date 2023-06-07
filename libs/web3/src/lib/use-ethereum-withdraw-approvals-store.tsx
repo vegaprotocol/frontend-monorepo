@@ -31,7 +31,7 @@ export interface EthWithdrawalApprovalState {
   dialogOpen?: boolean;
   withdrawal: WithdrawalBusEventFieldsFragment;
   approval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
-  failureReason: WithdrawalFailure;
+  failureReason?: WithdrawalFailure;
 }
 export interface EthWithdrawApprovalStore {
   transactions: (EthWithdrawalApprovalState | undefined)[];

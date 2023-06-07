@@ -5,7 +5,10 @@ import type { ReactNode } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import waitForNextTick from 'flush-promises';
 import * as Schema from '@vegaprotocol/types';
-import { ApprovalStatus } from './use-ethereum-withdraw-approvals-store';
+import {
+  ApprovalStatus,
+  WithdrawalFailure,
+} from './use-ethereum-withdraw-approvals-store';
 import BigNumber from 'bignumber.js';
 import type {
   EthWithdrawApprovalStore,
@@ -314,9 +317,29 @@ describe('useEthWithdrawApprovalsManager', () => {
       update,
     });
     render();
-    expect(update.mock.calls[0][1].status).toEqual(ApprovalStatus.Error);
+    expect(update.mock.calls[0][1].status).toEqual(ApprovalStatus.Pending);
+    expect(update.mock.calls[0][1].message).toEqual('Change network');
+    expect(update.mock.calls[0][1].failureReason).toEqual(
+      WithdrawalFailure.WrongConnection
+    );
+    mockChainId = 111111;
+  });
+
+  it('detect no chainId', () => {
+    mockChainId = undefined;
+    const transaction = createWithdrawTransaction();
+    mockEthTransactionStoreState.mockReturnValue({ create });
+    mockEthWithdrawApprovalsStoreState.mockReturnValue({
+      transactions: [transaction],
+      update,
+    });
+    render();
+    expect(update.mock.calls[0][1].status).toEqual(ApprovalStatus.Pending);
     expect(update.mock.calls[0][1].message).toEqual(
-      'You are on the wrong network'
+      'Connect wallet to withdraw'
+    );
+    expect(update.mock.calls[0][1].failureReason).toEqual(
+      WithdrawalFailure.NoConnection
     );
     mockChainId = 111111;
   });
