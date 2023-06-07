@@ -18,6 +18,7 @@ const OrderbookMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
           positionDecimalPlaces={0}
           decimalPlaces={decimalPlaces}
           {...generateMockData({ ...props })}
+          assetSymbol="USD"
         />
       </div>
     </div>
