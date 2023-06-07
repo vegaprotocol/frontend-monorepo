@@ -26,7 +26,7 @@ const CumulationBar = ({
     <div
       data-testid={`${VolumeType.bid === type ? 'bid' : 'ask'}-bar`}
       className={classNames(
-        'absolute top-0 left-0  h-full transition-all',
+        'absolute top-0 left-0 h-full transition-all',
         type === VolumeType.bid
           ? 'bg-vega-green/20 dark:bg-vega-green/50'
           : 'bg-vega-pink/20 dark:bg-vega-pink/30'
@@ -51,25 +51,18 @@ const CumulativeVol = memo(
     className?: string;
     positionDecimalPlaces: number;
   }) => {
-    const volume = (
-      <span>
-        {cumulativeValue ? (
-          <NumericCell
-            value={cumulativeValue}
-            valueFormatted={addDecimalsFixedFormatNumber(
-              cumulativeValue,
-              positionDecimalPlaces ?? 0
-            )}
-          />
-        ) : null}
-      </span>
-    );
+    const volume = cumulativeValue ? (
+      <NumericCell
+        value={cumulativeValue}
+        valueFormatted={addDecimalsFixedFormatNumber(
+          cumulativeValue,
+          positionDecimalPlaces ?? 0
+        )}
+      />
+    ) : null;
 
     return (
-      <div
-        className="relative font-mono pr-1"
-        data-testid={testId || 'cumulative-vol'}
-      >
+      <div className="pr-1" data-testid={testId}>
         {volume}
       </div>
     );

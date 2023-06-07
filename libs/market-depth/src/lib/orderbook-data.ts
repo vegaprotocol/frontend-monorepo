@@ -85,6 +85,7 @@ export const compactRows = (
     }
     orderbookData.push({ price, value, cumulativeVol: { value: 0 } });
   });
+
   orderbookData.sort((a, b) => {
     if (a === b) {
       return 0;

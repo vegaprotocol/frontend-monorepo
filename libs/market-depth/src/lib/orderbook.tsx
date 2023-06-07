@@ -9,7 +9,6 @@ import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { PriceCell } from '@vegaprotocol/datagrid';
 import classNames from 'classnames';
 import { useState } from 'react';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
@@ -23,8 +22,10 @@ interface OrderbookProps {
   asks: PriceLevelFieldsFragment[];
 }
 
-// 17px of row height
+// Sets row height, will be used to calculate number of rows that can be
+// displayed each side of the book without overflow
 export const rowHeight = 17;
+const midHeight = 30;
 
 const OrderbookTable = ({
   rows,
@@ -43,13 +44,16 @@ const OrderbookTable = ({
 }) => {
   return (
     <div
-      className={classNames(
-        'text-right w-full flex flex-col',
-        type === VolumeType.ask ? 'justify-end' : 'justify-start'
-      )}
+      className={
+        // position the ask side to the bottow of the top section and the bid side to the top of the bottom section
+        classNames(
+          'flex flex-col',
+          type === VolumeType.ask ? 'justify-end' : 'justify-start'
+        )
+      }
     >
-      <div className="grid auto-rows-[17px]">
-        {rows.map((data, i) => (
+      <div className={`grid auto-rows-[${rowHeight}px]`}>
+        {rows.map((data) => (
           <OrderbookRow
             key={data.price}
             price={(BigInt(data.price) / BigInt(resolution)).toString()}
@@ -90,21 +94,20 @@ export const Orderbook = ({
     return compactRows(bids, VolumeType.bid, resolution);
   }, [bids, resolution]);
 
-  /* eslint-disable jsx-a11y/no-static-element-interactions */
   return (
-    <div className="h-full w-full pl-1 text-xs grid grid-rows-[1fr_min-content] grid-cols-1 overflow-hidden">
+    <div className="h-full pl-1 text-xs grid grid-rows-[1fr_min-content]">
       <div>
         <ReactVirtualizedAutoSizer disableWidth>
           {({ height }) => {
             const limit = Math.max(
               1,
-              Math.floor((height - 30) / 2 / rowHeight)
+              Math.floor((height - midHeight) / 2 / rowHeight)
             );
             const askRows = groupedAsks?.slice(limit * -1) ?? [];
             const bidRows = groupedBids?.slice(0, limit) ?? [];
             return (
               <div
-                className="text-right w-full overflow-hidden grid grid-rows-[1fr_min-content_1fr]"
+                className={`overflow-hidden grid grid-rows-[1fr_${midHeight}px_1fr]`}
                 data-testid="orderbook-grid-element"
                 style={{ height: height + 'px' }}
               >
@@ -118,18 +121,11 @@ export const Orderbook = ({
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
                     />
-                    <div
-                      className={`flex flex-shrink items-center justify-center text-lg`}
-                    >
+                    <div className="flex items-center justify-center text-lg">
                       {midPrice && (
-                        <PriceCell
-                          value={Number(midPrice)}
-                          valueFormatted={addDecimalsFormatNumber(
-                            midPrice,
-                            decimalPlaces
-                          )}
-                          testId={`middle-mark-price-${midPrice}`}
-                        />
+                        <span className="font-mono">
+                          {addDecimalsFormatNumber(midPrice, decimalPlaces)}
+                        </span>
                       )}
                     </div>
                     <OrderbookTable
@@ -151,32 +147,29 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="relative bottom-0 grid grid-cols-2 grid-rows-1 gap-2 border-t border-default z-10 bg-white dark:bg-black w-full">
-        <div className="col-start-1">
-          <select
-            onChange={(e) => {
-              setResolution(Number(e.currentTarget.value));
-            }}
-            value={resolution}
-            className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right w-full h-full"
-            data-testid="resolution"
-          >
-            {resolutions.map((r) => (
-              <option key={r} value={r}>
-                {formatNumberFixed(
-                  Math.log10(r) - decimalPlaces > 0
-                    ? Math.pow(10, Math.log10(r) - decimalPlaces)
-                    : 0,
-                  decimalPlaces - Math.log10(r)
-                )}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="border-t border-default">
+        <select
+          onChange={(e) => {
+            setResolution(Number(e.currentTarget.value));
+          }}
+          value={resolution}
+          className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right"
+          data-testid="resolution"
+        >
+          {resolutions.map((r) => (
+            <option key={r} value={r}>
+              {formatNumberFixed(
+                Math.log10(r) - decimalPlaces > 0
+                  ? Math.pow(10, Math.log10(r) - decimalPlaces)
+                  : 0,
+                decimalPlaces - Math.log10(r)
+              )}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );
-  /* eslint-enable jsx-a11y/no-static-element-interactions */
 };
 
 export default Orderbook;
