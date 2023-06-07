@@ -24,7 +24,7 @@ import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 
 const mockWeb3Provider = jest.fn();
 
-let mockChainId = 111111;
+let mockChainId: number | undefined = 111111;
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({
     provider: mockWeb3Provider(),
