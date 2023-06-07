@@ -53,7 +53,7 @@ export const useMarketSelectorList = ({
       });
 
     if (sort === Sort.None) {
-      // Sort by market state primarilly and AtoZ secondarilly
+      // Sort by market state primarily and AtoZ secondarily
       return orderBy(
         markets,
         [
