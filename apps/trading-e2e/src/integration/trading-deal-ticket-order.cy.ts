@@ -77,6 +77,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
     it('must warn if order size input has too many digits after the decimal place', function () {
       // 7002-SORD-016
       cy.getByTestId(orderSizeField).clear().type('1.234');
+      // 7002-SORD-060
       cy.getByTestId(placeOrderBtn).should('be.enabled');
       cy.getByTestId('dealticket-error-message-size-market').should(
         'have.text',

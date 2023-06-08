@@ -34,6 +34,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
 
   it('should show warning for market order', function () {
     cy.getByTestId(toggleMarket).click();
+    // 7002-SORD-060
     cy.getByTestId(placeOrderBtn).should('be.enabled');
     cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId('dealticket-error-message-type').should(
