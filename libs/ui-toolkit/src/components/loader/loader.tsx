@@ -25,7 +25,7 @@ export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
   });
   const wrapperClasses =
     size === 'small' ? 'w-[15px] h-[15px]' : 'w-[50px] h-[50px]';
-  const items = size === 'small' ? 9 : 16;
+  const items = size === 'small' ? 9 : 25;
 
   const generate = useMemo(() => pseudoRandom(1), []);
 
