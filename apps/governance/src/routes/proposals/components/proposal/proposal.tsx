@@ -3,16 +3,17 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { AsyncRenderer, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
-import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalJson } from '../proposal-json';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
 import { ListAsset } from '../list-asset';
+import { ProposalMarketData } from '../proposal-market-data';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import type { MarketInfoWithData } from '@vegaprotocol/markets';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -24,11 +25,16 @@ export enum ProposalType {
 }
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  newMarketData?: MarketInfoWithData | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
 }
 
-export const Proposal = ({ proposal, restData }: ProposalProps) => {
+export const Proposal = ({
+  proposal,
+  restData,
+  newMarketData,
+}: ProposalProps) => {
   const { params, loading, error } = useNetworkParams([
     NetworkParams.governance_proposal_market_minVoterBalance,
     NetworkParams.governance_proposal_updateMarket_minVoterBalance,
@@ -101,11 +107,9 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
           <ProposalDescription description={proposal.rationale.description} />
         </div>
 
-        {proposal.terms.change.__typename === 'UpdateMarket' && (
-          <div className="-mt-4 -mx-4 mb-4">
-            <MarketInfoAccordionContainer
-              marketId={proposal.terms.change.marketId}
-            />
+        {newMarketData && (
+          <div className="mb-4">
+            <ProposalMarketData marketData={newMarketData} />
           </div>
         )}
 
