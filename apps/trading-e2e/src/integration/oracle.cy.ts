@@ -5,10 +5,6 @@ const oracleBannerDialogTrigger = 'oracle-banner-dialog-trigger';
 const oracleFullProfile = 'oracle-full-profile';
 
 describe('oracle information', { tags: '@smoke' }, () => {
-  beforeEach(() => {
-    cy.mockTradingPage();
-  });
-
   before(() => {
     cy.mockTradingPage(
       MarketState.STATE_ACTIVE,
@@ -19,7 +15,6 @@ describe('oracle information', { tags: '@smoke' }, () => {
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
-    cy.wait('@MarketInfo');
   });
 
   it('show oracle banner', () => {
