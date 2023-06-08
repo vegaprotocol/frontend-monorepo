@@ -154,7 +154,9 @@ describe('Network switcher', () => {
 
     [Networks.MAINNET, Networks.TESTNET, Networks.DEVNET].forEach((network) => {
       expect(
-        screen.getByRole('link', { name: envNameMapping[network] })
+        screen.getByRole('link', {
+          name: new RegExp(`^${envNameMapping[network]}`),
+        })
       ).toHaveAttribute('href', VEGA_NETWORKS[network]);
       expect(
         screen.getByText(envDescriptionMapping[network])
@@ -188,7 +190,7 @@ describe('Network switcher', () => {
     const label = screen.getByText(`(${t('current')})`);
 
     expect(label).toBeInTheDocument();
-    expect(label.parentNode?.firstElementChild).toHaveTextContent(
+    expect(label.parentNode?.parentNode?.firstElementChild).toHaveTextContent(
       envNameMapping[selectedNetwork]
     );
   });
@@ -217,7 +219,7 @@ describe('Network switcher', () => {
     const label = screen.getByText('(not available)');
 
     expect(label).toBeInTheDocument();
-    expect(label.parentNode?.firstElementChild).toHaveTextContent(
+    expect(label.parentNode?.parentNode?.firstElementChild).toHaveTextContent(
       envNameMapping[Networks.MAINNET]
     );
   });
