@@ -563,7 +563,7 @@ const SummaryMessage = memo(
               text: t('Connect wallet'),
               action: openVegaWalletDialog,
               dataTestId: 'order-connect-wallet',
-              size: 'md',
+              size: 'sm',
             }}
           />
         </div>
