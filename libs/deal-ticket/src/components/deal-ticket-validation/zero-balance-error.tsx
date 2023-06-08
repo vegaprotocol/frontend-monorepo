@@ -21,10 +21,14 @@ export const ZeroBalanceError = ({
       testId="dealticket-error-message-zero-balance"
       message={
         <>
-          You need {asset.symbol} in your wallet to trade in this market.{' '}
+          {t(
+            'You need %s in your wallet to trade in this market. ',
+            asset.symbol
+          )}
           {onClickCollateral && (
             <>
-              See all your <Link onClick={onClickCollateral}>collateral</Link>.
+              {t('See all your')}{' '}
+              <Link onClick={onClickCollateral}>collateral</Link>.
             </>
           )}
         </>
