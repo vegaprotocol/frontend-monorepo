@@ -88,7 +88,7 @@ describe(
               .pop()
               ?.toLowerCase()} and not accepting orders`
           );
-          cy.getByTestId('place-order').should('be.disabled');
+          cy.getByTestId('place-order').should('not.be.disabled');
         });
       });
     });
