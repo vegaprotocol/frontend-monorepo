@@ -23,7 +23,7 @@ describe(
       });
 
       it('should show an error if your balance is zero', () => {
-        cy.getByTestId('place-order').should('not.be.disabled');
+        cy.getByTestId('place-order').should('be.enabled');
         // 7002-SORD-003
         cy.getByTestId('dealticket-error-message-zero-balance').should(
           'have.text',

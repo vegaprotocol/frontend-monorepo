@@ -34,7 +34,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
 
   it('should show warning for market order', function () {
     cy.getByTestId(toggleMarket).click();
-    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).should('be.enabled');
     cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId('dealticket-error-message-type').should(
       'have.text',
@@ -46,7 +46,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.getByTestId(toggleLimit).click();
     cy.getByTestId(orderPriceField).clear().type('0.1');
     cy.getByTestId(orderSizeField).clear().type('1');
-    cy.getByTestId(placeOrderBtn).should('not.be.enabled');
+    cy.getByTestId(placeOrderBtn).should('be.enabled');
     cy.getByTestId('dealticket-warning-auction').should(
       'have.text',
       'Any orders placed now will not trade until the auction ends'
@@ -58,7 +58,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.getByTestId(orderTIFDropDown).select(
       TIFlist.filter((item) => item.code === 'FOK')[0].value
     );
-    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).should('be.enabled');
     cy.getByTestId('dealticket-error-message-tif').should(
       'have.text',
       'This market is in auction until it reaches sufficient liquidity. Until the auction ends, you can only place GFA, GTT, or GTC limit orders'
