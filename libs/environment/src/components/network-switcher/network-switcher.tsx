@@ -134,8 +134,9 @@ export const NetworkSwitcher = ({
                 key={key}
                 data-testid="network-item"
                 disabled={!VEGA_NETWORKS[key]}
+                className="p-0"
               >
-                <a href={VEGA_NETWORKS[key]}>
+                <a href={VEGA_NETWORKS[key]} className="w-full h-full p-2">
                   {envNameMapping[key]}
                   <NetworkLabel
                     isCurrent={current === key}
@@ -159,22 +160,28 @@ export const NetworkSwitcher = ({
         {isAdvancedView && (
           <>
             {advancedNetworkKeys.map((key) => (
-              <DropdownMenuItem key={key} data-testid="network-item-advanced">
-                <div className="w-full flex justify-between gap-2">
-                  <div>
-                    <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
-                    <NetworkLabel
-                      isCurrent={current === key}
-                      isAvailable={!!VEGA_NETWORKS[key]}
-                    />
+              <DropdownMenuItem
+                key={key}
+                data-testid="network-item-advanced"
+                className="p-0"
+              >
+                <Link href={VEGA_NETWORKS[key]} className="w-full p-2">
+                  <div className="w-full flex justify-between gap-2">
+                    <div>
+                      {envNameMapping[key]}
+                      <NetworkLabel
+                        isCurrent={current === key}
+                        isAvailable={!!VEGA_NETWORKS[key]}
+                      />
+                    </div>
+                    <span
+                      className="hidden md:inline"
+                      data-testid="network-item-description"
+                    >
+                      {envDescriptionMapping[key]}
+                    </span>
                   </div>
-                  <span
-                    className="hidden md:inline"
-                    data-testid="network-item-description"
-                  >
-                    {envDescriptionMapping[key]}
-                  </span>
-                </div>
+                </Link>
               </DropdownMenuItem>
             ))}
           </>
