@@ -1,18 +1,25 @@
 import * as Schema from '@vegaprotocol/types';
 
-const marketSummaryBlock = 'header-summary';
-const marketExpiry = 'market-expiry';
-const marketPrice = 'market-price';
-const marketChange = 'market-change';
-const marketVolume = 'market-volume';
-const marketMode = 'market-trading-mode';
-const marketState = 'market-state';
-const marketSettlement = 'market-settlement-asset';
-const liquiditySupplied = 'liquidity-supplied';
-const percentageValue = 'price-change-percentage';
-const priceChangeValue = 'price-change';
+const expirtyTooltip = 'expiry-tooltip';
+const externalLink = 'external-link';
 const itemHeader = 'item-header';
 const itemValue = 'item-value';
+const link = 'link';
+const liquidityLink = 'view-liquidity-link';
+const liquiditySupplied = 'liquidity-supplied';
+const liquiditySuppliedTooltip = 'liquidity-supplied-tooltip';
+const marketChange = 'market-change';
+const marketExpiry = 'market-expiry';
+const marketMode = 'market-trading-mode';
+const marketName = 'header-title';
+const marketPrice = 'market-price';
+const marketSettlement = 'market-settlement-asset';
+const marketState = 'market-state';
+const marketSummaryBlock = 'header-summary';
+const marketVolume = 'market-volume';
+const percentageValue = 'price-change-percentage';
+const priceChangeValue = 'price-change';
+const tradingModeTooltip = 'trading-mode-tooltip';
 
 describe('Market trading page', () => {
   before(() => {
@@ -33,7 +40,7 @@ describe('Market trading page', () => {
     // 7002-SORD-002
     it('must display market name', () => {
       // 6002-MDET-001
-      cy.getByTestId('header-title').should('not.be.empty');
+      cy.getByTestId(marketName).should('not.be.empty');
     });
 
     it('must see market expiry', () => {
@@ -130,14 +137,14 @@ describe('Market trading page', () => {
             .realHover();
         });
       });
-      cy.getByTestId('expiry-tooltip')
+      cy.getByTestId(expirtyTooltip)
         .eq(0)
         .should(
           'contain.text',
           'This market expires when triggered by its oracle, not on a set date.'
         )
         .within(() => {
-          cy.getByTestId('link')
+          cy.getByTestId(link)
             .should('have.attr', 'href')
             .and('include', Cypress.env('EXPLORER_URL'));
         });
@@ -163,15 +170,14 @@ describe('Market trading page', () => {
             .realHover();
         });
       });
-
-      cy.getByTestId('trading-mode-tooltip')
+      cy.getByTestId(tradingModeTooltip)
         .should(
           'contain.text',
           'This market is in auction until it reaches sufficient liquidity.'
         )
         .eq(0)
         .within(() => {
-          cy.getByTestId('external-link')
+          cy.getByTestId(externalLink)
             .should('have.attr', 'href')
             .and('include', Cypress.env('TRADING_MODE_LINK'));
 
@@ -190,17 +196,16 @@ describe('Market trading page', () => {
           cy.getByTestId(itemValue).realHover();
         });
       });
-
-      cy.getByTestId('liquidity-supplied-tooltip')
+      cy.getByTestId(liquiditySuppliedTooltip)
         .should('contain.text', 'Supplied stake')
         .and('contain.text', 'Target stake')
         .first()
         .within(() => {
-          cy.getByTestId('view-liquidity-link').should(
+          cy.getByTestId(liquidityLink).should(
             'have.text',
             'View liquidity provision table'
           );
-          cy.getByTestId('external-link').should(
+          cy.getByTestId(externalLink).should(
             'have.text',
             'Learn about providing liquidity'
           );

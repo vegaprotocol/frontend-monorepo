@@ -1,7 +1,7 @@
 import { MarketState } from '@vegaprotocol/types';
 
-const oracleBannerStatus = 'oracle-banner-status';
 const oracleBannerDialogTrigger = 'oracle-banner-dialog-trigger';
+const oracleBannerStatus = 'oracle-banner-status';
 const oracleFullProfile = 'oracle-full-profile';
 
 describe('oracle information', { tags: '@smoke' }, () => {

@@ -1,12 +1,18 @@
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { MarketState } from '@vegaprotocol/types';
 
-const marketInfoBtn = 'Info';
-const row = 'key-value-table-row';
-const marketTitle = 'accordion-title';
-const externalLink = 'external-link';
 const accordionContent = 'accordion-content';
+const blockExplorerLink = 'block-explorer-link';
+const dialogClose = 'dialog-close';
+const dialogContent = 'dialog-content';
+const externalLink = 'external-link';
+const githubLink = 'github-link';
+const liquidityLink = 'view-liquidity-link';
+const marketInfoBtn = 'Info';
+const marketTitle = 'accordion-title';
 const providerName = 'provider-name';
+const row = 'key-value-table-row';
+const verifiedProofs = 'verified-proofs';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -91,17 +97,16 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .and('contain', 'Another oracle');
 
     cy.getByTestId(providerName).should('be.visible').click();
-
-    cy.getByTestId('dialog-content')
+    cy.getByTestId(dialogContent)
       .eq(1)
       .within(() => {
-        cy.getByTestId('block-explorer-link').contains('Block explorer');
-        cy.getByTestId('github-link').contains('Oracle repository');
+        cy.getByTestId(blockExplorerLink).contains('Block explorer');
+        cy.getByTestId(githubLink).contains('Oracle repository');
       });
-    cy.getByTestId('dialog-close').click();
+    cy.getByTestId(dialogClose).click();
 
     cy.getByTestId(accordionContent)
-      .getByTestId('verified-proofs')
+      .getByTestId(verifiedProofs)
       .and('contain', '1');
   });
 
@@ -191,8 +196,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(0, 'Target Stake', '10.00 tBTC');
     validateMarketDataRow(1, 'Supplied Stake', '0.01 tBTC');
     validateMarketDataRow(2, 'Market Value Proxy', '20.00 tBTC');
-
-    cy.getByTestId('view-liquidity-link').should(
+    cy.getByTestId(liquidityLink).should(
       'have.text',
       'View liquidity provision table'
     );
