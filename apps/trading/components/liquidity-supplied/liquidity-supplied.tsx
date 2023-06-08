@@ -99,7 +99,7 @@ export const MarketLiquiditySupplied = ({
       AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
 
   const description = marketId ? (
-    <section>
+    <section data-testid="liquidity-supplied-tooltip">
       <KeyValueTable>
         <KeyValueTableRow>
           <span>{t('Supplied stake')}</span>
