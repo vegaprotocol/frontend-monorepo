@@ -8,6 +8,7 @@ const marketVolume = 'market-volume';
 const marketMode = 'market-trading-mode';
 const marketState = 'market-state';
 const marketSettlement = 'market-settlement-asset';
+const liquiditySupplied = 'liquidity-supplied';
 const percentageValue = 'price-change-percentage';
 const priceChangeValue = 'price-change';
 const itemHeader = 'item-header';
@@ -31,10 +32,12 @@ describe('Market trading page', () => {
     // 7002-SORD-001
     // 7002-SORD-002
     it('must display market name', () => {
+      // 6002-MDET-001
       cy.getByTestId('header-title').should('not.be.empty');
     });
 
     it('must see market expiry', () => {
+      // 6002-MDET-002
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketExpiry).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Expiry');
@@ -44,6 +47,7 @@ describe('Market trading page', () => {
     });
 
     it('must see market price', () => {
+      // 6002-MDET-003
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketPrice).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Price');
@@ -53,6 +57,7 @@ describe('Market trading page', () => {
     });
 
     it('must see market change', () => {
+      // 6002-MDET-004
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketChange).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Change (24h)');
@@ -63,6 +68,7 @@ describe('Market trading page', () => {
     });
 
     it('must see market volume', () => {
+      // 6002-MDET-005
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketVolume).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Volume (24h)');
@@ -72,16 +78,21 @@ describe('Market trading page', () => {
     });
 
     it('must see market mode', () => {
+      // 6002-MDET-006
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketMode).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
-          cy.getByTestId(itemValue).should('not.be.empty');
+          cy.getByTestId(itemValue).should(
+            'have.text',
+            'Monitoring auction - liquidity (target not met)'
+          );
         });
       });
     });
 
-    it('must see market state', () => {
-      //7002-SORD-061
+    it('must see market status', () => {
+      // 6002-MDET-007
+      // 7002-SORD-061
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketState).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Status');
@@ -91,6 +102,7 @@ describe('Market trading page', () => {
     });
 
     it('must see market settlement', () => {
+      // 6002-MDET-008
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketSettlement).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Settlement asset');
@@ -98,15 +110,12 @@ describe('Market trading page', () => {
         });
       });
     });
-
-    it('must see market mode', () => {
+    it('must see market liquidity supplied', () => {
+      // 6002-MDET-009
       cy.getByTestId(marketSummaryBlock).within(() => {
-        cy.getByTestId(marketMode).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
-          cy.getByTestId(itemValue).should(
-            'have.text',
-            'Monitoring auction - liquidity (target not met)'
-          );
+        cy.getByTestId(liquiditySupplied).within(() => {
+          cy.getByTestId(itemHeader).should('have.text', 'Liquidity supplied');
+          cy.getByTestId(itemValue).should('not.be.empty');
         });
       });
     });
@@ -172,6 +181,29 @@ describe('Market trading page', () => {
               .should('have.text', auctionToolTipLabels[i]);
             cy.getByTestId(toolTipValue).eq(i).should('not.be.empty');
           }
+        });
+    });
+
+    it('should see liquidity supplied tooltip', () => {
+      cy.getByTestId(marketSummaryBlock).within(() => {
+        cy.getByTestId(liquiditySupplied).within(() => {
+          cy.getByTestId(itemValue).realHover();
+        });
+      });
+
+      cy.getByTestId('liquidity-supplied-tooltip')
+        .should('contain.text', 'Supplied stake')
+        .and('contain.text', 'Target stake')
+        .first()
+        .within(() => {
+          cy.getByTestId('view-liquidity-link').should(
+            'have.text',
+            'View liquidity provision table'
+          );
+          cy.getByTestId('external-link').should(
+            'have.text',
+            'Learn about providing liquidity'
+          );
         });
     });
   });
