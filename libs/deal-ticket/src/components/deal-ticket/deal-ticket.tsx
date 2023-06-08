@@ -217,6 +217,8 @@ export const DealTicket = ({
       });
       return;
     }
+
+    // No error found above clear the error in case it was active on a previous render
     clearErrors('summary');
   }, [
     marketState,
@@ -480,7 +482,6 @@ export const DealTicket = ({
           onClickCollateral={onClickCollateral}
         />
         <DealTicketButton
-          disabled={Object.keys(errors).length >= 1 || isReadOnly}
           variant={
             order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'
           }
