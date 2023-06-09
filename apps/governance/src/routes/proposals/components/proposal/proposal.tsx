@@ -89,49 +89,58 @@ export const Proposal = ({
       <section data-testid="proposal">
         <ProposalHeader proposal={proposal} isListItem={false} />
 
-        <div className="my-10">
-          <ProposalChangeTable proposal={proposal} />
-        </div>
-
-        {proposal.terms.change.__typename === 'NewAsset' &&
-        proposal.terms.change.source.__typename === 'ERC20' &&
-        proposal.id ? (
-          <ListAsset
-            assetId={proposal.id}
-            withdrawalThreshold={proposal.terms.change.source.withdrawThreshold}
-            lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
-          />
-        ) : null}
-
-        <div className="mb-4">
-          <ProposalDescription description={proposal.rationale.description} />
-        </div>
-
-        {newMarketData && (
-          <div className="mb-4">
-            <ProposalMarketData marketData={newMarketData} />
+        <div id="details">
+          <div className="my-10">
+            <ProposalChangeTable proposal={proposal} />
           </div>
-        )}
 
-        <div className="mb-6">
-          <ProposalJson proposal={restData?.data?.proposal} />
+          {proposal.terms.change.__typename === 'NewAsset' &&
+          proposal.terms.change.source.__typename === 'ERC20' &&
+          proposal.id ? (
+            <ListAsset
+              assetId={proposal.id}
+              withdrawalThreshold={
+                proposal.terms.change.source.withdrawThreshold
+              }
+              lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
+            />
+          ) : null}
+
+          <div className="mb-4">
+            <ProposalDescription description={proposal.rationale.description} />
+          </div>
+
+          {newMarketData && (
+            <div className="mb-4">
+              <ProposalMarketData marketData={newMarketData} />
+            </div>
+          )}
+
+          <div className="mb-6">
+            <ProposalJson proposal={restData?.data?.proposal} />
+          </div>
         </div>
 
-        <div className="mb-10">
-          <RoundedWrapper paddingBottom={true}>
-            <VoteDetails
+        <div id="voting">
+          <div className="mb-10">
+            <RoundedWrapper paddingBottom={true}>
+              <VoteDetails
+                proposal={proposal}
+                proposalType={proposalType}
+                minVoterBalance={minVoterBalance}
+                spamProtectionMinTokens={
+                  params?.spam_protection_voting_min_tokens
+                }
+              />
+            </RoundedWrapper>
+          </div>
+
+          <div className="mb-4">
+            <ProposalVotesTable
               proposal={proposal}
               proposalType={proposalType}
-              minVoterBalance={minVoterBalance}
-              spamProtectionMinTokens={
-                params?.spam_protection_voting_min_tokens
-              }
             />
-          </RoundedWrapper>
-        </div>
-
-        <div className="mb-4">
-          <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
+          </div>
         </div>
       </section>
     </AsyncRenderer>

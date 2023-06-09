@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { useState } from 'react';
 import { create } from 'zustand';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +9,7 @@ import {
   SyntaxHighlighter,
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
+import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 
 type MarketDataDialogState = {
@@ -32,9 +32,6 @@ export const ProposalMarketData = ({
   const { t } = useTranslation();
   const { isOpen, open, close } = useMarketDataDialogStore();
   const [showDetails, setShowDetails] = useState(false);
-  const showDetailsIconClasses = classnames('mb-4', {
-    'rotate-180': showDetails,
-  });
 
   if (!marketData) {
     return null;
@@ -48,7 +45,7 @@ export const ProposalMarketData = ({
       >
         <div className="flex items-center gap-3">
           <SubHeading title={t('marketDetails')} />
-          <div className={showDetailsIconClasses}>
+          <div className={collapsibleToggleStyles(showDetails)}>
             <Icon name="chevron-down" size={8} />
           </div>
         </div>
