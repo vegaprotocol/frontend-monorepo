@@ -88,7 +88,8 @@ describe(
               .pop()
               ?.toLowerCase()} and not accepting orders`
           );
-          cy.getByTestId('place-order').should('be.disabled');
+          // 7002-SORD-060
+          cy.getByTestId('place-order').should('be.enabled');
         });
       });
     });
