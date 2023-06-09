@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { t } from '@vegaprotocol/i18n';
 import { useEnvironment } from '../../hooks/use-environment';
@@ -50,20 +50,19 @@ describe('Network switcher', () => {
 
     await userEvent.click(screen.getByRole('button'));
 
-    const menuitems = screen.getAllByRole('menuitem');
-
-    expect(menuitems[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(menuitems[1]).toHaveTextContent(envNameMapping[Networks.TESTNET]);
-    expect(menuitems[0]).not.toHaveTextContent(t('current'));
-    expect(menuitems[1]).not.toHaveTextContent(t('current'));
-    expect(menuitems[0]).not.toHaveTextContent(t('not available'));
-    expect(menuitems[1]).not.toHaveTextContent(t('not available'));
-    expect(menuitems[2]).toHaveTextContent(t('Advanced'));
-
     const links = screen.getAllByRole('link');
 
-    expect(links[0]).toHaveAttribute('href', mainnetUrl);
-    expect(links[1]).toHaveAttribute('href', testnetUrl);
+    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
+    expect(links[1]).toHaveTextContent(envNameMapping[Networks.TESTNET]);
+    expect(links[0]).not.toHaveTextContent(t('current'));
+    expect(links[1]).not.toHaveTextContent(t('current'));
+    expect(links[0]).not.toHaveTextContent(t('not available'));
+    expect(links[1]).not.toHaveTextContent(t('not available'));
+    expect(links[2]).toHaveTextContent(t('Propose a network parameter change'));
+
+    const menuitems = screen.getAllByRole('menuitem');
+
+    expect(menuitems[0]).toHaveTextContent('Advanced');
   });
 
   it('displays the correct selected network on the default dropdown view', async () => {
@@ -82,10 +81,10 @@ describe('Network switcher', () => {
 
     await userEvent.click(screen.getByRole('button'));
 
-    const menuitems = screen.getAllByRole('menuitem');
+    const links = screen.getAllByRole('link');
 
-    expect(menuitems[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(menuitems[0]).toHaveTextContent(t('current'));
+    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
+    expect(links[0]).toHaveTextContent(t('current'));
   });
 
   it('displays the correct selected network on the default dropdown view when it does not have an associated url', async () => {
@@ -103,10 +102,10 @@ describe('Network switcher', () => {
 
     await userEvent.click(screen.getByRole('button'));
 
-    const menuitems = screen.getAllByRole('menuitem');
+    const links = screen.getAllByRole('link');
 
-    expect(menuitems[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(menuitems[0]).toHaveTextContent(t('current'));
+    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
+    expect(links[0]).toHaveTextContent(t('current'));
   });
 
   it('displays the correct state for a network without url on the default dropdown view', async () => {
@@ -123,14 +122,22 @@ describe('Network switcher', () => {
     render(<NetworkSwitcher />);
 
     await userEvent.click(screen.getByRole('button'));
+    const links = screen.getAllByRole('link');
 
-    const menuitems = screen.getAllByRole('menuitem');
-
-    expect(menuitems[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(menuitems[0]).toHaveTextContent(t('not available'));
+    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
+    expect(links[0]).toHaveTextContent(t('not available'));
   });
 
   it('displays the advanced view in the correct state', async () => {
+    const { location } = window;
+    const setHrefSpy = jest.fn();
+    // @ts-ignore can't set location as optional
+    delete window.location;
+    window.location = {} as Location;
+    Object.defineProperty(window.location, 'href', {
+      set: setHrefSpy,
+    });
+
     const VEGA_NETWORKS: Record<Networks, string | undefined> = {
       [Networks.CUSTOM]: undefined,
       [Networks.MAINNET]: 'https://main.net',
@@ -147,21 +154,43 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    await userEvent.click(screen.getByRole('button'));
-    await userEvent.click(
-      screen.getByRole('menuitem', { name: t('Advanced') })
-    );
+    for (const network of [
+      Networks.MAINNET,
+      Networks.TESTNET,
+      Networks.DEVNET,
+    ]) {
+      await act(() => {
+        userEvent.click(screen.getByTestId('network-switcher'));
+      });
+      await waitFor(() => {
+        screen.getByRole('menuitem', { name: t('Advanced') });
+      });
+      await act(() => {
+        userEvent.click(screen.getByRole('menuitem', { name: t('Advanced') }));
+      });
+      await waitFor(() => {
+        expect(
+          screen.getByText(envDescriptionMapping[network])
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('link', {
+            name: new RegExp(`^${envNameMapping[network]}`),
+          })
+        ).toBeInTheDocument();
+      });
+      await act(() => {
+        screen
+          .getByRole('link', {
+            name: new RegExp(`^${envNameMapping[network]}`),
+          })
+          .click();
+      });
+      await waitFor(() => {
+        expect(setHrefSpy).toHaveBeenCalledWith(VEGA_NETWORKS[network]);
+      });
+    }
 
-    [Networks.MAINNET, Networks.TESTNET, Networks.DEVNET].forEach((network) => {
-      expect(
-        screen.getByRole('link', {
-          name: new RegExp(`^${envNameMapping[network]}`),
-        })
-      ).toHaveAttribute('href', VEGA_NETWORKS[network]);
-      expect(
-        screen.getByText(envDescriptionMapping[network])
-      ).toBeInTheDocument();
-    });
+    window.location = location;
   });
 
   it('labels the selected network in the advanced view', async () => {
