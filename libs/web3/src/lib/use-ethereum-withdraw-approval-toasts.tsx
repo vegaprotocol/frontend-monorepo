@@ -9,7 +9,10 @@ import { Intent } from '@vegaprotocol/ui-toolkit';
 import { useCallback } from 'react';
 import compact from 'lodash/compact';
 import type { EthWithdrawalApprovalState } from './use-ethereum-withdraw-approvals-store';
-import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
+import {
+  useEthWithdrawApprovalsStore,
+  WithdrawalFailure,
+} from './use-ethereum-withdraw-approvals-store';
 import { ApprovalStatus } from './use-ethereum-withdraw-approvals-store';
 import { VerificationStatus } from './withdrawal-approval-status';
 
@@ -26,12 +29,23 @@ const EthWithdrawalApprovalToastContent = ({
 }: {
   tx: EthWithdrawalApprovalState;
 }) => {
+  const isConnectionFailure =
+    tx.failureReason &&
+    [
+      WithdrawalFailure.WrongConnection,
+      WithdrawalFailure.NoConnection,
+    ].includes(tx.failureReason);
+
   let title = '';
   if (tx.status === ApprovalStatus.Error) {
     title = t('Error occurred');
   }
   if (tx.status === ApprovalStatus.Pending) {
-    title = t('Pending approval');
+    if (tx.failureReason && isConnectionFailure) {
+      title = tx.message || t('Withdraw failure');
+    } else {
+      title = t('Pending approval');
+    }
   }
   if (tx.status === ApprovalStatus.Delayed) {
     title = t('Delayed');
@@ -39,11 +53,12 @@ const EthWithdrawalApprovalToastContent = ({
   if (tx.status === ApprovalStatus.Ready) {
     title = t('Approved');
   }
+
   const num = formatNumber(
     toBigNum(tx.withdrawal.amount, tx.withdrawal.asset.decimals),
     tx.withdrawal.asset.decimals
   );
-  const details = (
+  const details = isConnectionFailure ? null : (
     <Panel>
       <strong>
         {t('Withdraw')} {num} {tx.withdrawal.asset.symbol}
@@ -61,7 +76,8 @@ const EthWithdrawalApprovalToastContent = ({
 };
 
 const isFinal = (tx: EthWithdrawalApprovalState) =>
-  [ApprovalStatus.Ready, ApprovalStatus.Error].includes(tx.status);
+  [ApprovalStatus.Ready, ApprovalStatus.Error].includes(tx.status) &&
+  !tx.failureReason;
 
 export const useEthereumWithdrawApprovalsToasts = () => {
   const [setToast, remove] = useToasts((state) => [
@@ -74,21 +90,34 @@ export const useEthereumWithdrawApprovalsToasts = () => {
   ]);
 
   const fromWithdrawalApproval = useCallback(
-    (tx: EthWithdrawalApprovalState): Toast => ({
-      id: `withdrawal-${tx.id}`,
-      intent: intentMap[tx.status],
-      onClose: () => {
-        if ([ApprovalStatus.Error, ApprovalStatus.Ready].includes(tx.status)) {
-          deleteTx(tx.id);
-        } else {
-          dismissTx(tx.id);
-        }
-        remove(`withdrawal-${tx.id}`);
-      },
-      loader: tx.status === ApprovalStatus.Pending,
-      content: <EthWithdrawalApprovalToastContent tx={tx} />,
-      closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
-    }),
+    (tx: EthWithdrawalApprovalState): Toast => {
+      const loader =
+        tx.status === ApprovalStatus.Pending &&
+        !(
+          tx.failureReason &&
+          [
+            WithdrawalFailure.WrongConnection,
+            WithdrawalFailure.NoConnection,
+          ].includes(tx.failureReason)
+        );
+      return {
+        id: `withdrawal-${tx.id}`,
+        intent: intentMap[tx.status],
+        onClose: () => {
+          if (
+            [ApprovalStatus.Error, ApprovalStatus.Ready].includes(tx.status)
+          ) {
+            deleteTx(tx.id);
+          } else {
+            dismissTx(tx.id);
+          }
+          remove(`withdrawal-${tx.id}`);
+        },
+        loader,
+        content: <EthWithdrawalApprovalToastContent tx={tx} />,
+        closeAfter: isFinal(tx) ? CLOSE_AFTER : undefined,
+      };
+    },
     [deleteTx, dismissTx, remove]
   );
 
