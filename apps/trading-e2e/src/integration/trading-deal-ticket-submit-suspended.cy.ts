@@ -34,9 +34,9 @@ describe('suspended market validation', { tags: '@regression' }, () => {
 
   it('should show warning for market order', function () {
     cy.getByTestId(toggleMarket).click();
-    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    // 7002-SORD-060
+    cy.getByTestId(placeOrderBtn).should('be.enabled');
     cy.getByTestId(placeOrderBtn).click();
-    cy.getByTestId(placeOrderBtn).should('be.disabled');
     cy.getByTestId('dealticket-error-message-type').should(
       'have.text',
       'This market is in auction until it reaches sufficient liquidity. Only limit orders are permitted when market is in auction'
@@ -59,7 +59,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.getByTestId(orderTIFDropDown).select(
       TIFlist.filter((item) => item.code === 'FOK')[0].value
     );
-    cy.getByTestId(placeOrderBtn).should('be.disabled');
+    cy.getByTestId(placeOrderBtn).should('be.enabled');
     cy.getByTestId('dealticket-error-message-tif').should(
       'have.text',
       'This market is in auction until it reaches sufficient liquidity. Until the auction ends, you can only place GFA, GTT, or GTC limit orders'

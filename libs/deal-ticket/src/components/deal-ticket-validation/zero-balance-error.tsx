@@ -21,10 +21,14 @@ export const ZeroBalanceError = ({
       testId="dealticket-error-message-zero-balance"
       message={
         <>
-          You need {asset.symbol} in your wallet to trade in this market.
+          {t(
+            'You need %s in your wallet to trade in this market. ',
+            asset.symbol
+          )}
           {onClickCollateral && (
             <>
-              See all your <Link onClick={onClickCollateral}>collateral</Link>.
+              {t('See all your')}{' '}
+              <Link onClick={onClickCollateral}>collateral</Link>.
             </>
           )}
         </>
@@ -33,7 +37,7 @@ export const ZeroBalanceError = ({
         text: t(`Make a deposit`),
         action: () => openDepositDialog(asset.id),
         dataTestId: 'deal-ticket-deposit-dialog-button',
-        size: 'md',
+        size: 'sm',
       }}
     />
   );

@@ -42,6 +42,9 @@ describe('DealTicket', () => {
   it('should display ticket defaults', () => {
     const { container } = render(generateJsx());
 
+    // place order button should always be enabled
+    expect(screen.getByTestId('place-order')).toBeEnabled();
+
     // Assert defaults are used
     expect(
       screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`)

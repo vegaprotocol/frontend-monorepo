@@ -23,13 +23,14 @@ describe(
       });
 
       it('should show an error if your balance is zero', () => {
-        cy.getByTestId('place-order').should('be.disabled');
+        // 7002-SORD-060
+        cy.getByTestId('place-order').should('be.enabled');
         // 7002-SORD-003
         cy.getByTestId('dealticket-error-message-zero-balance').should(
           'have.text',
           'You need ' +
             'tDAI' +
-            ' in your wallet to trade in this market.See all your collateral.Make a deposit'
+            ' in your wallet to trade in this market. See all your collateral.Make a deposit'
         );
         cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
       });
