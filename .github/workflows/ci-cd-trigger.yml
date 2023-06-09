@@ -151,7 +151,6 @@ jobs:
           fi
           projects_e2e=${projects_e2e%?}
           projects_e2e=[${projects_e2e// /,}]
-          projects=${projects%?}
           projects=[${projects// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$projects >> $GITHUB_ENV
