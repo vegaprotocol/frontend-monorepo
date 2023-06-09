@@ -115,7 +115,6 @@ const positionFields: PositionFieldsFragment[] = [
       id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
       __typename: 'Party',
     },
-    
   },
 ];
 
