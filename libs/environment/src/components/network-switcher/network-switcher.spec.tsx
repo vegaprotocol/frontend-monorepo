@@ -1,4 +1,4 @@
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { t } from '@vegaprotocol/i18n';
 import { useEnvironment } from '../../hooks/use-environment';
@@ -13,6 +13,24 @@ import { Networks } from '../../';
 jest.mock('../../hooks/use-environment');
 
 describe('Network switcher', () => {
+  const { location } = window;
+  let hrefSetSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    hrefSetSpy = jest.fn();
+    // @ts-ignore can't set location as optional
+    delete window.location;
+    window.location = {} as Location;
+    Object.defineProperty(window.location, 'href', {
+      // @ts-ignore set cannot take SpyInstance
+      set: hrefSetSpy,
+    });
+  });
+
+  afterEach(() => {
+    window.location = location;
+  });
+
   it.each`
     network             | label
     ${Networks.CUSTOM}  | ${envTriggerMapping[Networks.CUSTOM]}
@@ -49,8 +67,7 @@ describe('Network switcher', () => {
     render(<NetworkSwitcher />);
 
     await userEvent.click(screen.getByRole('button'));
-
-    const links = screen.getAllByRole('link');
+    let links = screen.getAllByRole('link');
 
     expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
     expect(links[1]).toHaveTextContent(envNameMapping[Networks.TESTNET]);
@@ -63,6 +80,16 @@ describe('Network switcher', () => {
     const menuitems = screen.getAllByRole('menuitem');
 
     expect(menuitems[0]).toHaveTextContent('Advanced');
+
+    await userEvent.click(links[0]);
+    expect(hrefSetSpy).toHaveBeenCalledWith(mainnetUrl);
+
+    // re open dropdown as clicking an item will close it
+    await userEvent.click(screen.getByRole('button'));
+    links = screen.getAllByRole('link');
+
+    await userEvent.click(links[1]);
+    expect(hrefSetSpy).toHaveBeenCalledWith(testnetUrl);
   });
 
   it('displays the correct selected network on the default dropdown view', async () => {
@@ -128,72 +155,53 @@ describe('Network switcher', () => {
     expect(links[0]).toHaveTextContent(t('not available'));
   });
 
-  it('displays the advanced view in the correct state', async () => {
-    const { location } = window;
-    const setHrefSpy = jest.fn();
-    // @ts-ignore can't set location as optional
-    delete window.location;
-    window.location = {} as Location;
-    Object.defineProperty(window.location, 'href', {
-      set: setHrefSpy,
-    });
+  it.each([Networks.MAINNET, Networks.TESTNET, Networks.DEVNET])(
+    'displays the advanced view in the correct state',
+    async (network) => {
+      const VEGA_NETWORKS: Record<Networks, string | undefined> = {
+        [Networks.CUSTOM]: undefined,
+        [Networks.MAINNET]: 'https://main.net',
+        [Networks.TESTNET]: 'https://test.net',
+        [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
+        [Networks.DEVNET]: 'https://dev.net',
+        [Networks.STAGNET1]: 'https://stag1.net',
+      };
+      // @ts-ignore Typescript doesn't know about this module being mocked
+      useEnvironment.mockImplementation(() => ({
+        VEGA_ENV: Networks.DEVNET,
+        VEGA_NETWORKS,
+      }));
 
-    const VEGA_NETWORKS: Record<Networks, string | undefined> = {
-      [Networks.CUSTOM]: undefined,
-      [Networks.MAINNET]: 'https://main.net',
-      [Networks.TESTNET]: 'https://test.net',
-      [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
-      [Networks.DEVNET]: 'https://dev.net',
-      [Networks.STAGNET1]: 'https://stag1.net',
-    };
-    // @ts-ignore Typescript doesn't know about this module being mocked
-    useEnvironment.mockImplementation(() => ({
-      VEGA_ENV: Networks.DEVNET,
-      VEGA_NETWORKS,
-    }));
-
-    await act(() => {
       render(<NetworkSwitcher />);
-    });
 
-    for (const network of [
-      Networks.MAINNET,
-      Networks.TESTNET,
-      Networks.DEVNET,
-    ]) {
-      await act(() => {
-        userEvent.click(screen.getByTestId('network-switcher'));
-      });
-      await waitFor(() => {
-        screen.getByRole('menuitem', { name: t('Advanced') });
-      });
-      await act(() => {
-        userEvent.click(screen.getByRole('menuitem', { name: t('Advanced') }));
-      });
-      await waitFor(() => {
-        expect(
-          screen.getByText(envDescriptionMapping[network])
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('link', {
-            name: new RegExp(`^${envNameMapping[network]}`),
-          })
-        ).toBeInTheDocument();
-      });
-      await act(() => {
-        screen
-          .getByRole('link', {
-            name: new RegExp(`^${envNameMapping[network]}`),
-          })
-          .click();
-      });
-      await waitFor(() => {
-        expect(setHrefSpy).toHaveBeenCalledWith(VEGA_NETWORKS[network]);
-      });
+      await userEvent.click(screen.getByTestId('network-switcher'));
+
+      expect(
+        await screen.findByRole('menuitem', { name: t('Advanced') })
+      ).toBeInTheDocument();
+
+      await userEvent.click(
+        screen.getByRole('menuitem', { name: t('Advanced') })
+      );
+
+      expect(
+        await screen.findByText(envDescriptionMapping[network])
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', {
+          name: new RegExp(`^${envNameMapping[network]}`),
+        })
+      ).toBeInTheDocument();
+
+      await userEvent.click(
+        screen.getByRole('link', {
+          name: new RegExp(`^${envNameMapping[network]}`),
+        })
+      );
+
+      expect(hrefSetSpy).toHaveBeenCalledWith(VEGA_NETWORKS[network]);
     }
-
-    window.location = location;
-  });
+  );
 
   it('labels the selected network in the advanced view', async () => {
     const selectedNetwork = Networks.DEVNET;

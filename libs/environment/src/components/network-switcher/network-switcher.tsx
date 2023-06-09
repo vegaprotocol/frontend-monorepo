@@ -98,7 +98,6 @@ export const NetworkSwitcher = ({
     },
     [setOpen, setAdvancedView]
   );
-  const menuRef = useRef<HTMLButtonElement | null>(null);
 
   const current = currentNetwork || VEGA_ENV;
 
@@ -109,7 +108,6 @@ export const NetworkSwitcher = ({
       trigger={
         <DropdownMenuTrigger
           data-testid="network-switcher"
-          ref={menuRef}
           className={classNames(
             'flex justify-between items-center text-sm text-vega-dark-600 dark:text-vega-light-600 py-1 px-2 rounded border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500 hover:bg-vega-light-500',
             className
@@ -122,10 +120,7 @@ export const NetworkSwitcher = ({
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent
-        align="start"
-        style={{ minWidth: `${menuRef.current?.offsetWidth || 290}px` }}
-      >
+      <DropdownMenuContent align="start">
         {!isAdvancedView && (
           <>
             {standardNetworkKeys.map((key) => (
