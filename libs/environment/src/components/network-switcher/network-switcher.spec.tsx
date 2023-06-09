@@ -152,7 +152,9 @@ describe('Network switcher', () => {
       VEGA_NETWORKS,
     }));
 
-    render(<NetworkSwitcher />);
+    await act(() => {
+      render(<NetworkSwitcher />);
+    });
 
     for (const network of [
       Networks.MAINNET,
