@@ -63,7 +63,7 @@ export const ProposalMarketData = ({
       )}
 
       <Dialog
-        title={t('Withdraw')}
+        title={marketData.tradableInstrument.instrument.code}
         open={isOpen}
         onChange={(isOpen) => (isOpen ? open() : close())}
         size="medium"
