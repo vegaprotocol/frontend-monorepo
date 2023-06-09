@@ -1,4 +1,4 @@
-@for $i from 0 through 16 {
+@for $i from 0 through 25 {
   .loader-item:nth-child(#{$i}) {
     @if $i % 2 == 0 {
       animation-delay: #{$i * 50 * random(5)}ms;
