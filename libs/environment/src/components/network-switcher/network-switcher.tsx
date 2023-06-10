@@ -1,7 +1,6 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import {
-  Link,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -99,7 +98,6 @@ export const NetworkSwitcher = ({
     },
     [setOpen, setAdvancedView]
   );
-  const menuRef = useRef<HTMLButtonElement | null>(null);
 
   const current = currentNetwork || VEGA_ENV;
 
@@ -110,7 +108,6 @@ export const NetworkSwitcher = ({
       trigger={
         <DropdownMenuTrigger
           data-testid="network-switcher"
-          ref={menuRef}
           className={classNames(
             'flex justify-between items-center text-sm text-vega-dark-600 dark:text-vega-light-600 py-1 px-2 rounded border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500 hover:bg-vega-light-500',
             className
@@ -123,10 +120,7 @@ export const NetworkSwitcher = ({
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent
-        align="start"
-        style={{ minWidth: `${menuRef.current?.offsetWidth || 290}px` }}
-      >
+      <DropdownMenuContent align="start">
         {!isAdvancedView && (
           <>
             {standardNetworkKeys.map((key) => (
@@ -134,14 +128,16 @@ export const NetworkSwitcher = ({
                 key={key}
                 data-testid="network-item"
                 disabled={!VEGA_NETWORKS[key]}
+                role="link"
+                onClick={() =>
+                  (window.location.href = VEGA_NETWORKS[key] || '')
+                }
               >
-                <a href={VEGA_NETWORKS[key]}>
-                  {envNameMapping[key]}
-                  <NetworkLabel
-                    isCurrent={current === key}
-                    isAvailable={!!VEGA_NETWORKS[key]}
-                  />
-                </a>
+                {envNameMapping[key]}
+                <NetworkLabel
+                  isCurrent={current === key}
+                  isAvailable={!!VEGA_NETWORKS[key]}
+                />
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem
@@ -159,10 +155,17 @@ export const NetworkSwitcher = ({
         {isAdvancedView && (
           <>
             {advancedNetworkKeys.map((key) => (
-              <DropdownMenuItem key={key} data-testid="network-item-advanced">
+              <DropdownMenuItem
+                key={key}
+                data-testid="network-item-advanced"
+                role="link"
+                onClick={() =>
+                  (window.location.href = VEGA_NETWORKS[key] || '')
+                }
+              >
                 <div className="w-full flex justify-between gap-2">
                   <div>
-                    <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
+                    {envNameMapping[key]}
                     <NetworkLabel
                       isCurrent={current === key}
                       isAvailable={!!VEGA_NETWORKS[key]}
