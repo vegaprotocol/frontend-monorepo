@@ -1,23 +1,23 @@
-import { update } from './order-data-provider';
+import {
+  update,
+  mapOrderUpdateToOrder,
+  filterOrderUpdates,
+} from './order-data-provider';
 import type { OrderUpdateFieldsFragment, OrderFieldsFragment } from '../';
-import type { Edge } from '@vegaprotocol/data-provider';
 
 describe('order data provider', () => {
   it('puts incoming data in proper place', () => {
     const data = [
       {
-        node: {
-          id: '2',
-          createdAt: new Date('2022-01-29').toISOString(),
-        },
+        id: '2',
+        createdAt: new Date('2022-01-29').toISOString(),
       },
+
       {
-        node: {
-          id: '1',
-          createdAt: new Date('2022-01-28').toISOString(),
-        },
+        id: '1',
+        createdAt: new Date('2022-01-28').toISOString(),
       },
-    ] as Edge<OrderFieldsFragment>[];
+    ] as OrderFieldsFragment[];
 
     const delta = [
       // this one should be dropped because id don't exits and it's older than newest
@@ -52,39 +52,41 @@ describe('order data provider', () => {
         createdAt: new Date('2022-02-05').toISOString(),
       },
     ] as OrderUpdateFieldsFragment[];
-    const updatedData = update(data, delta, () => null, { partyId: '0x123' });
+    const updatedData = update(
+      data,
+      filterOrderUpdates(delta),
+      { partyId: '0x123' },
+      mapOrderUpdateToOrder
+    );
+    expect(updatedData?.findIndex((node) => node.id === delta[0].id)).toEqual(
+      -1
+    );
+    expect(updatedData && updatedData[3].id).toEqual(delta[2].id);
+    expect(updatedData && updatedData[3].updatedAt).toEqual(delta[2].updatedAt);
+    expect(updatedData && updatedData[0].id).toEqual(delta[5].id);
+    expect(updatedData && updatedData[1].id).toEqual(delta[3].id);
+    expect(updatedData && updatedData[2].id).toEqual(delta[4].id);
+    expect(updatedData && updatedData[2].updatedAt).toEqual(delta[4].updatedAt);
     expect(
-      updatedData?.findIndex((edge) => edge.node.id === delta[0].id)
-    ).toEqual(-1);
-    expect(updatedData && updatedData[3].node.id).toEqual(delta[2].id);
-    expect(updatedData && updatedData[3].node.updatedAt).toEqual(
-      delta[2].updatedAt
-    );
-    expect(updatedData && updatedData[0].node.id).toEqual(delta[5].id);
-    expect(updatedData && updatedData[1].node.id).toEqual(delta[3].id);
-    expect(updatedData && updatedData[2].node.id).toEqual(delta[4].id);
-    expect(updatedData && updatedData[2].node.updatedAt).toEqual(
-      delta[4].updatedAt
-    );
-    expect(update([], delta, () => null, { partyId: '0x123' })?.length).toEqual(
-      5
-    );
+      update(
+        [],
+        filterOrderUpdates(delta),
+        { partyId: '0x123' },
+        mapOrderUpdateToOrder
+      )?.length
+    ).toEqual(5);
   });
   it('add only data matching date range filter', () => {
     const data = [
       {
-        node: {
-          id: '1',
-          createdAt: new Date('2022-01-29').toISOString(),
-        },
+        id: '1',
+        createdAt: new Date('2022-01-29').toISOString(),
       },
       {
-        node: {
-          id: '2',
-          createdAt: new Date('2022-01-30').toISOString(),
-        },
+        id: '2',
+        createdAt: new Date('2022-01-30').toISOString(),
       },
-    ] as Edge<OrderFieldsFragment>[];
+    ] as OrderFieldsFragment[];
 
     const delta = [
       // this one should be ignored because it does not match date range
@@ -105,22 +107,23 @@ describe('order data provider', () => {
       },
     ] as OrderUpdateFieldsFragment[];
 
-    const updatedData = update(data, delta, () => null, {
-      partyId: '0x123',
-      filter: {
-        dateRange: { end: new Date('2022-02-01').toISOString() },
+    const updatedData = update(
+      data,
+      filterOrderUpdates(delta),
+      {
+        partyId: '0x123',
+        filter: {
+          dateRange: { end: new Date('2022-02-01').toISOString() },
+        },
       },
-    });
-    expect(
-      updatedData?.findIndex((edge) => edge.node.id === delta[0].id)
-    ).toEqual(-1);
-    expect(updatedData && updatedData[0].node.id).toEqual(delta[2].id);
-    expect(updatedData && updatedData[0].node.updatedAt).toEqual(
-      delta[2].updatedAt
+      mapOrderUpdateToOrder
     );
-    expect(updatedData && updatedData[2].node.id).toEqual(delta[1].id);
-    expect(updatedData && updatedData[2].node.updatedAt).toEqual(
-      delta[1].updatedAt
+    expect(updatedData?.findIndex((node) => node.id === delta[0].id)).toEqual(
+      -1
     );
+    expect(updatedData && updatedData[0].id).toEqual(delta[2].id);
+    expect(updatedData && updatedData[0].updatedAt).toEqual(delta[2].updatedAt);
+    expect(updatedData && updatedData[2].id).toEqual(delta[1].id);
+    expect(updatedData && updatedData[2].updatedAt).toEqual(delta[1].updatedAt);
   });
 });

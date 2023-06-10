@@ -1,10 +1,11 @@
-import compact from 'lodash/compact';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
-import { useFillsList } from './use-fills-list';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import type * as Schema from '@vegaprotocol/types';
+import { fillsWithMarketProvider } from './fills-data-provider';
 
 interface FillsManagerProps {
   partyId: string;
@@ -20,31 +21,36 @@ export const FillsManager = ({
   storeKey,
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const scrolledToTop = useRef(true);
-  const { data, error } = useFillsList({
-    partyId,
-    marketId,
-    gridRef,
-    scrolledToTop,
+  const filter: Schema.TradesFilter | Schema.TradesSubscriptionFilter = {
+    partyIds: [partyId],
+  };
+  if (marketId) {
+    filter.marketIds = [marketId];
+  }
+  const { data, error } = useDataProvider({
+    dataProvider: fillsWithMarketProvider,
+    update: ({ data }) => {
+      if (data?.length && gridRef.current?.api) {
+        gridRef.current?.api.setRowData(data);
+        return true;
+      }
+      return false;
+    },
+    variables: { filter },
   });
-
   const bottomPlaceholderProps = useBottomPlaceholder({
     gridRef,
   });
 
-  const fills = compact(data).map((e) => e.node);
-
   return (
-    <div className="h-full relative">
-      <FillsTable
-        ref={gridRef}
-        rowData={fills}
-        partyId={partyId}
-        onMarketClick={onMarketClick}
-        storeKey={storeKey}
-        {...bottomPlaceholderProps}
-        overlayNoRowsTemplate={error ? error.message : t('No fills')}
-      />
-    </div>
+    <FillsTable
+      ref={gridRef}
+      rowData={data}
+      partyId={partyId}
+      onMarketClick={onMarketClick}
+      storeKey={storeKey}
+      {...bottomPlaceholderProps}
+      overlayNoRowsTemplate={error ? error.message : t('No fills')}
+    />
   );
 };

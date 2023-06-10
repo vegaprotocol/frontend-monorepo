@@ -11,14 +11,16 @@ export type TradesQueryVariables = Types.Exact<{
 }>;
 
 
-export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, market: { __typename?: 'Market', id: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
+export type TradesQuery = { __typename?: 'Query', trades?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, market: { __typename?: 'Market', id: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
+
+export type TradeUpdateFieldsFragment = { __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side };
 
 export type TradesUpdateSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type TradesUpdateSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side }> | null };
+export type TradesUpdateSubscription = { __typename?: 'Subscription', tradesStream?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side }> | null };
 
 export const TradeFieldsFragmentDoc = gql`
     fragment TradeFields on Trade {
@@ -32,23 +34,30 @@ export const TradeFieldsFragmentDoc = gql`
   }
 }
     `;
+export const TradeUpdateFieldsFragmentDoc = gql`
+    fragment TradeUpdateFields on TradeUpdate {
+  id
+  price
+  size
+  createdAt
+  marketId
+  aggressor
+}
+    `;
 export const TradesDocument = gql`
     query Trades($marketId: ID!, $pagination: Pagination) {
-  market(id: $marketId) {
-    id
-    tradesConnection(pagination: $pagination) {
-      edges {
-        node {
-          ...TradeFields
-        }
-        cursor
+  trades(filter: {marketIds: [$marketId]}, pagination: $pagination) {
+    edges {
+      node {
+        ...TradeFields
       }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
+      cursor
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }
@@ -84,16 +93,11 @@ export type TradesLazyQueryHookResult = ReturnType<typeof useTradesLazyQuery>;
 export type TradesQueryResult = Apollo.QueryResult<TradesQuery, TradesQueryVariables>;
 export const TradesUpdateDocument = gql`
     subscription TradesUpdate($marketId: ID!) {
-  trades(marketId: $marketId) {
-    id
-    price
-    size
-    createdAt
-    marketId
-    aggressor
+  tradesStream(filter: {marketIds: [$marketId]}) {
+    ...TradeUpdateFields
   }
 }
-    `;
+    ${TradeUpdateFieldsFragmentDoc}`;
 
 /**
  * __useTradesUpdateSubscription__
