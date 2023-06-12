@@ -149,6 +149,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             'Currently allocated to a market as margin or bond. Check the breakdown for details.'
           ),
           tooltipValueGetter: ({ value, data }) => {
+            if (!value || !data) return null;
             return addDecimalsFormatNumber(value, data.asset.decimals);
           },
           onCellClicked: ({ data }) => {
@@ -197,6 +198,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             'Deposited on the network, but not allocated to a market. Free to use for placing orders or providing liquidity.'
           ),
           tooltipValueGetter: ({ value, data }) => {
+            if (!value || !data) return null;
             return addDecimalsFormatNumber(value, data.asset.decimals);
           },
           cellClass: ({ data }) => {
@@ -224,6 +226,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             'The total amount of each asset on this key. Includes used and available collateral.'
           ),
           tooltipValueGetter: ({ value, data }) => {
+            if (!value || !data) return null;
             return addDecimalsFormatNumber(value, data.asset.decimals);
           },
           valueFormatter: ({

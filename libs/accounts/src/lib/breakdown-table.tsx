@@ -9,16 +9,12 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import { AccountTypeMapping } from '@vegaprotocol/types';
 import type {
-  ValueProps,
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import {
-  ProgressBarCell,
-  progressBarCellRendererSelector,
-} from '@vegaprotocol/datagrid';
+import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import { AgGridLazy as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
-import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
+import type { ColDef } from 'ag-grid-community';
 import { accountValuesComparator } from './accounts-table';
 
 interface BreakdownTableProps extends AgGridReactProps {
