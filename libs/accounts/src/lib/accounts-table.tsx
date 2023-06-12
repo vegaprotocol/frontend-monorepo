@@ -169,7 +169,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
 
             return data.breakdown ? (
               <>
-                <span>{valueFormatted}</span>
+                <span className="underline">{valueFormatted}</span>
                 <span
                   className={classNames(
                     colorClass(percentageUsed),
@@ -181,7 +181,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               </>
             ) : (
               <>
-                <span>{valueFormatted}</span>
+                <span className="underline">{valueFormatted}</span>
                 <span className="ml-2 inline-block w-14 text-vega-light-200 dark:text-vega-dark-200">
                   {t('0.00%')}'
                 </span>
