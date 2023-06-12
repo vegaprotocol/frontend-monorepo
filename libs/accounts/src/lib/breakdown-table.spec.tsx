@@ -4,7 +4,13 @@ import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 
-jest.mock('./margin-health-chart');
+const marginHealthChartTestId = 'margin-health-chart';
+
+jest.mock('./margin-health-chart', () => ({
+  MarginHealthChart: () => {
+    return <div data-testid={marginHealthChartTestId}></div>;
+  },
+}));
 
 const singleRow = {
   __typename: 'AccountBalance',
@@ -60,6 +66,24 @@ describe('BreakdownTable', () => {
     cells.slice(0, -1).forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });
+    expect(screen.getByTestId(marginHealthChartTestId)).toBeInTheDocument();
+  });
+
+  it('displays margin health chart only for margin account', async () => {
+    await act(async () => {
+      render(
+        <BreakdownTable
+          data={[
+            {
+              ...singleRow,
+              type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
+              market: null,
+            },
+          ]}
+        />
+      );
+    });
+    expect(screen.queryByTestId(marginHealthChartTestId)).toBeNull();
   });
 
   it('should get correct account data', () => {

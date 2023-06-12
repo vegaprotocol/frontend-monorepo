@@ -125,7 +125,7 @@ export const MarginHealthChart = ({
   }
 
   return (
-    <div>
+    <div data-testid="margin-health-chart">
       {addDecimalsFormatNumber(
         (BigInt(marginAccountBalance) - BigInt(maintenanceLevel)).toString(),
         decimals
