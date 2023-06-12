@@ -1,7 +1,6 @@
 import { useRef, memo, useCallback, useState } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { AgGridReact } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
@@ -65,48 +64,14 @@ export const AccountManager = ({
   partyId,
   isReadOnly,
   pinnedAsset,
-  noBottomPlaceholder,
   storeKey,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
-  const update = useCallback(
-    ({ data }: { data: AccountFields[] | null }) => {
-      if (!data || !gridRef.current?.api) {
-        return false;
-      }
-      const pinnedAssetRowData =
-        pinnedAsset && data.find((d) => d.asset.id === pinnedAsset.id);
 
-      if (pinnedAssetRowData) {
-        const pinnedTopRow = gridRef.current.api.getPinnedTopRow(0);
-        if (
-          pinnedTopRow?.data?.balance === '0' &&
-          pinnedAssetRowData.balance !== '0'
-        ) {
-          return false;
-        }
-        if (!isEqual(pinnedTopRow?.data, pinnedAssetRowData)) {
-          gridRef.current.api.setPinnedTopRowData([pinnedAssetRowData]);
-        }
-      }
-      gridRef.current.api.setRowData(
-        pinnedAssetRowData
-          ? data?.filter((d) => d !== pinnedAssetRowData)
-          : data
-      );
-      return true;
-    },
-    [gridRef, pinnedAsset]
-  );
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables: { partyId },
-    update,
-  });
-  const bottomPlaceholderProps = useBottomPlaceholder({
-    gridRef,
-    disabled: noBottomPlaceholder,
   });
 
   return (
@@ -121,7 +86,6 @@ export const AccountManager = ({
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
         storeKey={storeKey}
-        {...bottomPlaceholderProps}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
       />
       <Dialog

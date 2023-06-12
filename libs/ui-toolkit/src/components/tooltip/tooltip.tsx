@@ -9,6 +9,8 @@ import {
 } from '@radix-ui/react-tooltip';
 import type { ITooltipParams } from 'ag-grid-community';
 
+const tooltipContentClasses =
+  'max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-2 py-1 z-20 rounded text-xs break-word';
 export interface TooltipProps {
   children: React.ReactElement;
   description?: string | ReactNode;
@@ -40,7 +42,7 @@ export const Tooltip = ({
               align={align}
               side={side}
               alignOffset={8}
-              className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm text-black dark:text-white break-word"
+              className={tooltipContentClasses}
             >
               <div className="relative z-0" data-testid="tooltip-content">
                 {description}
@@ -55,9 +57,5 @@ export const Tooltip = ({
   );
 
 export const TooltipCellComponent = (props: ITooltipParams) => {
-  return (
-    <p className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white">
-      {props.value}
-    </p>
-  );
+  return <p className={tooltipContentClasses}>{props.value}</p>;
 };
