@@ -1,12 +1,13 @@
 import { captureMessage } from '@sentry/minimal';
-
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
-import type { FinalizedVote } from '@vegaprotocol/proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { VoteEventFieldsFragment } from '../../../../../../../libs/proposals/src/lib/voting-hooks/__generated__/VoteSubsciption';
+import type {
+  FinalizedVote,
+  VoteEventFieldsFragment,
+} from '@vegaprotocol/proposals';
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -62,6 +63,7 @@ export function useUserVote(
     data?.party?.votesConnection?.edges,
     finalizedVote,
     proposalId,
+    pubKey,
   ]);
 
   // If user vote changes update the vote state
