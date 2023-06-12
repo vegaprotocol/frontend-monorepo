@@ -17,8 +17,9 @@ import {
   DropdownMenuSubContent,
 } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
+import classNames from 'classnames';
 
-const BE_TXS_PER_REQUEST = 20;
+const BE_TXS_PER_REQUEST = 15;
 
 type FilterOption =
   | 'Transfer Funds'
@@ -82,6 +83,15 @@ const AllFilterOptions: FilterOption[] = [
   ...PrimaryFilterOptions,
   ...SecondaryFilterOptions,
 ];
+
+const itemClass = classNames(
+  'relative flex gap-2 items-center rounded-sm p-2 text-sm',
+  'cursor-default',
+  'hover:bg-white dark:hover:bg-vega-dark-200',
+  'focus:bg-white dark:focus:bg-vega-dark-200',
+  'select-none',
+  'whitespace-nowrap'
+);
 
 export function getFilterLabel(filters: Set<string>) {
   if (!filters || filters.size !== 1) {
@@ -160,8 +170,8 @@ export const TxsListFiltered = () => {
               </DropdownMenuCheckboxItem>
             ))}
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                More Tools
+              <DropdownMenuSubTrigger className={itemClass}>
+                More Types
                 <Icon name="chevron-right" />
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
