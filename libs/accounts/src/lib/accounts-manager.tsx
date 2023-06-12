@@ -63,6 +63,41 @@ const AccountBreakdown = ({
   );
 };
 
+export const AccountBreakdownDialog = memo(
+  ({
+    assetId,
+    partyId,
+    onClose,
+    onMarketClick,
+  }: {
+    assetId?: string;
+    partyId: string;
+    onClose: () => void;
+    onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  }) => {
+    console.log('render');
+    return (
+      <Dialog
+        size="medium"
+        open={Boolean(assetId)}
+        onChange={(isOpen) => {
+          if (!isOpen) {
+            onClose();
+          }
+        }}
+      >
+        {assetId && (
+          <AccountBreakdown
+            assetId={assetId}
+            partyId={partyId}
+            onMarketClick={onMarketClick}
+          />
+        )}
+      </Dialog>
+    );
+  }
+);
+
 interface AccountManagerProps {
   partyId: string;
   onClickAsset: (assetId: string) => void;
@@ -152,23 +187,12 @@ export const AccountManager = ({
         {...bottomPlaceholderProps}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
       />
-      <Dialog
-        size="medium"
-        open={Boolean(breakdownAssetId)}
-        onChange={(isOpen) => {
-          if (!isOpen) {
-            setBreakdownAssetId(undefined);
-          }
-        }}
-      >
-        {breakdownAssetId && (
-          <AccountBreakdown
-            assetId={breakdownAssetId}
-            partyId={partyId}
-            onMarketClick={onMarketClick ? onMarketClickInternal : undefined}
-          />
-        )}
-      </Dialog>
+      <AccountBreakdownDialog
+        assetId={breakdownAssetId}
+        partyId={partyId}
+        onClose={useCallback(() => setBreakdownAssetId(undefined), [])}
+        onMarketClick={onMarketClick ? onMarketClickInternal : undefined}
+      />
     </div>
   );
 };

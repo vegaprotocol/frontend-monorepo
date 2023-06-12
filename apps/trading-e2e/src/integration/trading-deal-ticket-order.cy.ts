@@ -96,15 +96,29 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
 
     it('must have total margin available', () => {
       // 7001-COLL-011
-      cy.getByTestId('tab-ticket')
-        .find('.text-xs')
-        .eq(5)
-        .within(() => {
-          cy.get('[data-state="closed"]').should(
-            'have.text',
-            'Total margin available100,000.01 tDAI'
-          );
-        });
+      cy.getByTestId('deal-ticket-fee-total-margin-available').within(() => {
+        cy.get('[data-state="closed"]').should(
+          'have.text',
+          'Total margin available100,000.01 tDAI'
+        );
+      });
+    });
+
+    it('must have current margin allocation', () => {
+      cy.getByTestId('deal-ticket-fee-current-margin-allocation').within(() => {
+        cy.get('[data-state="closed"]:first').should(
+          'have.text',
+          'Current margin allocation'
+        );
+      });
+    });
+
+    it('should open usage breakdown dialog when clicked on current margin allocation', () => {
+      cy.getByTestId('deal-ticket-fee-current-margin-allocation').within(() => {
+        cy.get('button').click();
+      });
+      cy.getByTestId('usage-breakdown').should('exist');
+      cy.getByTestId('dialog-close').click();
     });
   });
 });

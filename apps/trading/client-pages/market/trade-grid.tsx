@@ -251,6 +251,7 @@ const MainGrid = memo(
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
       id: 'middle-1',
     });
+    const onMarketClick = useMarketClickHandler(true);
 
     return (
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
@@ -269,6 +270,7 @@ const MainGrid = memo(
                   <Tab id="ticket" name={t('Ticket')}>
                     <TradingViews.ticket.component
                       marketId={marketId}
+                      onMarketClick={onMarketClick}
                       onClickCollateral={() => navigate('/portfolio')}
                     />
                   </Tab>

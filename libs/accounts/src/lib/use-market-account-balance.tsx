@@ -7,16 +7,20 @@ import { getMarketAccount } from './get-market-account';
 
 export const useMarketAccountBalance = (marketId: string) => {
   const { pubKey } = useVegaWallet();
-  const [accountBalance, setAccountBalance] = useState<string>('');
-  const [accountDecimals, setAccountDecimals] = useState<number | null>(null);
+  const [accountBalance, setAccountBalance] = useState<string | undefined>(
+    undefined
+  );
+  const [accountDecimals, setAccountDecimals] = useState<number | undefined>(
+    undefined
+  );
   const update = useCallback(
     ({ data }: { data: Account[] | null }) => {
       const account = getMarketAccount({ accounts: data, marketId });
       if (account?.balance) {
-        setAccountBalance(account?.balance || '');
+        setAccountBalance(account?.balance);
       }
       if (account?.asset.decimals) {
-        setAccountDecimals(account?.asset.decimals || null);
+        setAccountDecimals(account?.asset.decimals);
       }
       return true;
     },
@@ -32,8 +36,8 @@ export const useMarketAccountBalance = (marketId: string) => {
 
   return useMemo(
     () => ({
-      accountBalance: pubKey ? accountBalance : '',
-      accountDecimals: pubKey ? accountDecimals : null,
+      accountBalance: pubKey ? accountBalance : undefined,
+      accountDecimals: pubKey ? accountDecimals : undefined,
     }),
     [accountBalance, accountDecimals, pubKey]
   );

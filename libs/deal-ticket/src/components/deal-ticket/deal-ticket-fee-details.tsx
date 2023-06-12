@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import classnames from 'classnames';
 import type { ReactNode } from 'react';
@@ -8,6 +9,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import type { EstimateFeesQuery } from '../../hooks/__generated__/EstimateOrder';
+import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
 import {
   addDecimalsFormatNumber,
@@ -62,6 +64,7 @@ export interface DealTicketFeeDetailPros {
   indent?: boolean | undefined;
   labelDescription?: ReactNode;
   formattedValue?: string;
+  onClick?: () => void;
 }
 
 export const DealTicketFeeDetail = ({
@@ -70,35 +73,46 @@ export const DealTicketFeeDetail = ({
   labelDescription,
   symbol,
   indent,
+  onClick,
   formattedValue,
-}: DealTicketFeeDetailPros) => (
-  <div
-    data-testid={
-      'deal-ticket-fee-' + label.toLocaleLowerCase().replace(/\s/g, '-')
-    }
-    key={typeof label === 'string' ? label : 'value-dropdown'}
-    className={classnames(
-      'text-xs mt-2 flex justify-between items-center gap-4 flex-wrap',
-      { 'ml-2': indent }
-    )}
-  >
-    <div>
+}: DealTicketFeeDetailPros) => {
+  const displayValue = `${formattedValue ?? '-'} ${symbol || ''}`;
+  const valueElement = onClick ? (
+    <button
+      onClick={onClick}
+      className="text-neutral-500 dark:text-neutral-300"
+    >
+      {displayValue}
+    </button>
+  ) : (
+    <div className="text-neutral-500 dark:text-neutral-300">{displayValue}</div>
+  );
+  return (
+    <div
+      data-testid={
+        'deal-ticket-fee-' + label.toLocaleLowerCase().replace(/\s/g, '-')
+      }
+      key={typeof label === 'string' ? label : 'value-dropdown'}
+      className={classnames(
+        'text-xs mt-2 flex justify-between items-center gap-4 flex-wrap',
+        { 'ml-2': indent }
+      )}
+    >
       <Tooltip description={labelDescription}>
         <div>{label}</div>
       </Tooltip>
+      <Tooltip description={`${value ?? '-'} ${symbol || ''}`}>
+        {valueElement}
+      </Tooltip>
     </div>
-    <Tooltip description={`${value ?? '-'} ${symbol || ''}`}>
-      <div className="text-neutral-500 dark:text-neutral-300">{`${
-        formattedValue ?? '-'
-      } ${symbol || ''}`}</div>
-    </Tooltip>
-  </div>
-);
+  );
+};
 
 export interface DealTicketFeeDetailsProps {
   generalAccountBalance?: string;
   marginAccountBalance?: string;
   market: Market;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   assetSymbol: string;
   notionalSize: string | null;
   feeEstimate: EstimateFeesQuery['estimateFees'] | undefined;
@@ -111,23 +125,24 @@ export const DealTicketFeeDetails = ({
   assetSymbol,
   feeEstimate,
   market,
+  onMarketClick,
   notionalSize,
   positionEstimate,
 }: DealTicketFeeDetailsProps) => {
-  const { pubKey } = useVegaWallet();
+  const [breakdownDialog, setBreakdownDialog] = useState(false);
+  const { pubKey: partyId } = useVegaWallet();
   const { data: currentMargins } = useDataProvider({
     dataProvider: marketMarginDataProvider,
-    variables: { marketId: market.id, partyId: pubKey || '' },
-    skip: !pubKey,
+    variables: { marketId: market.id, partyId: partyId || '' },
+    skip: !partyId,
   });
   const liquidationEstimate = positionEstimate?.liquidation;
   const marginEstimate = positionEstimate?.margin;
   const totalBalance =
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
-  const assetDecimals =
-    market.tradableInstrument.instrument.product.settlementAsset.decimals;
-  const quantum =
-    market.tradableInstrument.instrument.product.settlementAsset.quantum;
+  const { settlementAsset: asset } =
+    market.tradableInstrument.instrument.product;
+  const { decimals: assetDecimals, quantum } = asset;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
   if (marginEstimate) {
@@ -198,7 +213,6 @@ export const DealTicketFeeDetails = ({
     );
     projectedMargin = (
       <DealTicketFeeDetail
-        indent
         label={t('Projected margin')}
         value={formatRange(
           marginEstimate?.bestCase.initialLevel,
@@ -269,6 +283,11 @@ export const DealTicketFeeDetails = ({
     );
   }
 
+  const onAccountBreakdownDialogClose = useCallback(
+    () => setBreakdownDialog(false),
+    []
+  );
+
   return (
     <div>
       <DealTicketFeeDetail
@@ -323,6 +342,7 @@ export const DealTicketFeeDetails = ({
       />
       <DealTicketFeeDetail
         label={t('Total margin available')}
+        indent
         value={formatValue(totalMarginAvailable, assetDecimals)}
         formattedValue={formatValue(
           totalMarginAvailable,
@@ -338,9 +358,12 @@ export const DealTicketFeeDetails = ({
         )}
       />
       {deductionFromCollateral}
-      {projectedMargin}
       <DealTicketFeeDetail
         label={t('Current margin allocation')}
+        indent
+        onClick={
+          generalAccountBalance ? () => setBreakdownDialog(true) : undefined
+        }
         value={formatValue(marginAccountBalance, assetDecimals)}
         symbol={assetSymbol}
         labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
@@ -350,6 +373,7 @@ export const DealTicketFeeDetails = ({
           quantum
         )}
       />
+      {projectedMargin}
       <DealTicketFeeDetail
         label={t('Liquidation price estimate')}
         value={liquidationPriceEstimate}
@@ -357,6 +381,14 @@ export const DealTicketFeeDetails = ({
         symbol={assetSymbol}
         labelDescription={LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}
       />
+      {partyId && (
+        <AccountBreakdownDialog
+          assetId={breakdownDialog ? asset.id : undefined}
+          partyId={partyId}
+          onMarketClick={onMarketClick}
+          onClose={onAccountBreakdownDialogClose}
+        />
+      )}
     </div>
   );
 };

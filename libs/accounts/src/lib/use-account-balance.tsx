@@ -7,8 +7,12 @@ import { getSettlementAccount } from './get-settlement-account';
 
 export const useAccountBalance = (assetId?: string) => {
   const { pubKey } = useVegaWallet();
-  const [accountBalance, setAccountBalance] = useState<string>('');
-  const [accountDecimals, setAccountDecimals] = useState<number | null>(null);
+  const [accountBalance, setAccountBalance] = useState<string | undefined>(
+    undefined
+  );
+  const [accountDecimals, setAccountDecimals] = useState<number | undefined>(
+    undefined
+  );
   const variables = useMemo(() => {
     return { partyId: pubKey || '' };
   }, [pubKey]);
@@ -17,8 +21,8 @@ export const useAccountBalance = (assetId?: string) => {
       const account = assetId
         ? getSettlementAccount({ accounts: data, assetId })
         : undefined;
-      setAccountBalance(account?.balance || '');
-      setAccountDecimals(account?.asset.decimals || null);
+      setAccountBalance(account?.balance);
+      setAccountDecimals(account?.asset.decimals);
       return true;
     },
     [assetId]
@@ -33,8 +37,8 @@ export const useAccountBalance = (assetId?: string) => {
 
   return useMemo(
     () => ({
-      accountBalance: pubKey ? accountBalance : '',
-      accountDecimals: pubKey ? accountDecimals : null,
+      accountBalance: pubKey ? accountBalance : undefined,
+      accountDecimals: pubKey ? accountDecimals : undefined,
     }),
     [accountBalance, accountDecimals, pubKey]
   );

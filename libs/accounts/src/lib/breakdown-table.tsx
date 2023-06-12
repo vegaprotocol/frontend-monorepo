@@ -1,7 +1,6 @@
 import { forwardRef } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { Intent } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
@@ -34,7 +33,6 @@ export const progressBarValueFormatter = ({
     low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),
     high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals),
     value: range ? Number((min * BigInt(100)) / range) : 0,
-    intent: Intent.Warning,
   };
 };
 

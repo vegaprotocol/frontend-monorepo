@@ -20,7 +20,7 @@ const TooltipContentRow = ({
   href?: string;
 }) => (
   <>
-    <div className="float-left clear-left">
+    <div className="float-left clear-left" key="label">
       {href ? (
         <ExternalLink href={href} target="_blank">
           {label}
@@ -29,7 +29,7 @@ const TooltipContentRow = ({
         label
       )}
     </div>
-    <div className="float-right">
+    <div className="float-right" key="value">
       {addDecimalsFormatNumber(value, decimals)}
     </div>
   </>
@@ -63,8 +63,8 @@ export const MarginHealthChart = ({
   const initialLevel = Number(data.initialLevel);
   const maintenanceLevel = Number(data.maintenanceLevel);
   const searchLevel = Number(data.searchLevel);
-  const marginAccountBalance = Number(rawMarginAccountBalance);
-  const generalAccountBalance = Number(rawGeneralAccountBalance);
+  const marginAccountBalance = Number(rawMarginAccountBalance || '0');
+  const generalAccountBalance = Number(rawGeneralAccountBalance || '0');
   const max = Math.max(
     marginAccountBalance + generalAccountBalance,
     collateralReleaseLevel
@@ -78,24 +78,28 @@ export const MarginHealthChart = ({
 
   const tooltipContent = [
     <TooltipContentRow
+      key={'maintenance'}
       label={t('maintenance level')}
       href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-maintenance"
       value={data.maintenanceLevel}
       decimals={decimals}
     />,
     <TooltipContentRow
+      key={'search'}
       label={t('search level')}
       href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-searching-for-collateral"
       value={data.searchLevel}
       decimals={decimals}
     />,
     <TooltipContentRow
+      key={'initial'}
       label={t('initial level')}
       href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-initial"
       value={data.initialLevel}
       decimals={decimals}
     />,
     <TooltipContentRow
+      key={'release'}
       label={t('release level')}
       href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-releasing-collateral"
       value={data.collateralReleaseLevel}
@@ -103,11 +107,12 @@ export const MarginHealthChart = ({
     />,
   ];
 
-  if (rawGeneralAccountBalance) {
+  if (rawMarginAccountBalance) {
     const balance = (
       <TooltipContentRow
+        key={'balance'}
         label={t('balance')}
-        value={rawGeneralAccountBalance}
+        value={rawMarginAccountBalance}
         decimals={decimals}
       />
     );

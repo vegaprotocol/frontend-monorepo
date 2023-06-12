@@ -58,12 +58,14 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
 }
 
 export const DealTicket = ({
   market,
+  onMarketClick,
   marketData,
   submit,
   onClickCollateral,
@@ -98,7 +100,7 @@ export const DealTicket = ({
   const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
 
   const balance = (
-    BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
+    BigInt(marginAccountBalance || '0') + BigInt(generalAccountBalance || '0')
   ).toString();
 
   const { marketState, marketTradingMode } = marketData;
@@ -192,7 +194,8 @@ export const DealTicket = ({
       return;
     }
 
-    const hasNoBalance = !BigInt(generalAccountBalance);
+    const hasNoBalance =
+      !generalAccountBalance || !BigInt(generalAccountBalance);
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
@@ -479,6 +482,7 @@ export const DealTicket = ({
           }
         />
         <DealTicketFeeDetails
+          onMarketClick={onMarketClick}
           feeEstimate={feeEstimate}
           notionalSize={notionalSize}
           assetSymbol={assetSymbol}
