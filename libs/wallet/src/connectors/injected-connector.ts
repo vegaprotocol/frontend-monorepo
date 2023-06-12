@@ -1,4 +1,4 @@
-import { clearConfig, getConfig, setConfig } from '../storage';
+import { clearConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 
 declare global {
@@ -57,18 +57,22 @@ export class InjectedConnector implements VegaConnector {
   }
 
   async sendTx(pubKey: string, transaction: Transaction) {
-    const result = await window.vega.sendTransaction({
-      publicKey: pubKey,
-      transaction,
-      sendingMode: 'TYPE_SYNC' as const,
-    });
-    console.log(result);
-    // TODO: test this when updated to actually return values
-    return {
-      transactionHash: result.txHash,
-      receivedAt: new Date().toISOString(),
-      sentAt: new Date().toISOString(),
-      signature: result.data,
-    };
+    try {
+      const result = await window.vega.sendTransaction({
+        publicKey: pubKey,
+        transaction,
+        sendingMode: 'TYPE_SYNC' as const,
+      });
+      console.log(result);
+      // TODO: test this when updated to actually return values
+      return {
+        transactionHash: result.txHash,
+        receivedAt: new Date().toISOString(),
+        sentAt: new Date().toISOString(),
+        signature: result.data,
+      };
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
