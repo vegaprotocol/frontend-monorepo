@@ -45,6 +45,13 @@
       "options": {
         "command": "yarn tsc --project ./libs/wallet/tsconfig.spec.json"
       }
+    },
+    "generate": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/wallet/src/__generated__ $WALLET_TRANSACTIONS_SOURCE --proto_path=$WALLET_TRANSACTIONS_ROOT --ts_proto_opt=onlyTypes=true"
+      }
     }
   }
 }
