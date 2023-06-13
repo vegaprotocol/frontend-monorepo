@@ -22,61 +22,61 @@ import classNames from 'classnames';
 const BE_TXS_PER_REQUEST = 15;
 
 type FilterOption =
-  | 'Transfer Funds'
-  | 'Submit Order'
-  | 'Chain Event'
-  | 'Withdraw'
-  | 'Proposal'
-  | 'Vote on Proposal'
-  | 'Liquidity Provision Order'
   | 'Amend LiquidityProvision Order'
-  | 'Submit Oracle Data'
   | 'Amend Order'
-  | 'Register new Node'
-  | 'Cancel Order'
   | 'Batch Market Instructions'
-  | 'Node Vote'
-  | 'Node Signature'
   | 'Cancel LiquidityProvision Order'
-  | 'Delegate'
-  | 'Undelegate'
-  | 'Key Rotate Submission'
-  | 'State Variable Proposal'
+  | 'Cancel Order'
   | 'Cancel Transfer Funds'
-  | 'Validator Heartbeat'
+  | 'Chain Event'
+  | 'Delegate'
   | 'Ethereum Key Rotate Submission'
+  | 'Issue Signatures'
+  | 'Key Rotate Submission'
+  | 'Liquidity Provision Order'
+  | 'Node Signature'
+  | 'Node Vote'
+  | 'Proposal'
   | 'Protocol Upgrade'
-  | 'Issue Signatures';
+  | 'Register new Node'
+  | 'State Variable Proposal'
+  | 'Submit Oracle Data'
+  | 'Submit Order'
+  | 'Transfer Funds'
+  | 'Undelegate'
+  | 'Validator Heartbeat'
+  | 'Vote on Proposal'
+  | 'Withdraw';
 
 const PrimaryFilterOptions: FilterOption[] = [
-  'Transfer Funds',
-  'Submit Order',
-  'Chain Event',
-  'Withdraw',
-  'Proposal',
-  'Vote on Proposal',
-  'Liquidity Provision Order',
-  'Submit Oracle Data',
-  'Batch Market Instructions',
-  'Delegate',
-  'Undelegate',
   'Amend LiquidityProvision Order',
   'Amend Order',
+  'Batch Market Instructions',
   'Cancel LiquidityProvision Order',
   'Cancel Order',
   'Cancel Transfer Funds',
+  'Delegate',
+  'Liquidity Provision Order',
+  'Proposal',
+  'Submit Oracle Data',
+  'Submit Order',
+  'Transfer Funds',
+  'Undelegate',
+  'Vote on Proposal',
+  'Withdraw',
 ];
 
 const SecondaryFilterOptions: FilterOption[] = [
-  'Register new Node',
-  'Key Rotate Submission',
-  'State Variable Proposal',
-  'Validator Heartbeat',
+  'Chain Event',
   'Ethereum Key Rotate Submission',
-  'Protocol Upgrade',
   'Issue Signatures',
+  'Key Rotate Submission',
   'Node Signature',
   'Node Vote',
+  'Protocol Upgrade',
+  'Register new Node',
+  'State Variable Proposal',
+  'Validator Heartbeat',
 ];
 
 const AllFilterOptions: FilterOption[] = [
