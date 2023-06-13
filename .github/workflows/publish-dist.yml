@@ -74,7 +74,7 @@ jobs:
               envName="mainnet"
               bucketName="tools.vega.xyz"
             fi
-            if [[ "${{ matrix.app }}" = "multisig-signer" ]]; then
+            if [[ "${{ matrix.app }}" = "static" ]]; then
               envName="mainnet"
               bucketName="static.vega.xyz"
             fi
