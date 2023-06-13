@@ -145,12 +145,6 @@ jobs:
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
               projects+=' "multisig-signer" '
             fi
-            if echo "$affected" | grep -q static; then
-              echo "Static affected"
-              echo "Deploying static on preview"
-              preview_tools=$(printf "https://%s.%s.vega.rocks" "static" "$branch_slug")
-              projects+=' "static" '
-            fi
           elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
             if echo "$affected" | grep -q multisig-signer; then
               echo "Tools are affected"
@@ -174,7 +168,6 @@ jobs:
           echo PREVIEW_TRADING=$preview_trading >> $GITHUB_ENV
           echo PREVIEW_EXPLORER=$preview_explorer >> $GITHUB_ENV
           echo PREVIEW_TOOLS=$preview_tools >> $GITHUB_ENV
-          echo PREVIEW_STATIC=$preview_static >> $GITHUB_ENV
 
     outputs:
       projects: ${{ env.PROJECTS }}
@@ -183,7 +176,6 @@ jobs:
       preview_trading: ${{ env.PREVIEW_TRADING }}
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
       preview_tools: ${{ env.PREVIEW_TOOLS }}
-      preview_static: ${{ env.PREVIEW_STATIC }}
 
   cypress:
     needs: lint-test-build
@@ -248,12 +240,6 @@ jobs:
               sleep 5
             done
           fi
-          if [[ "${{ needs.lint-test-build.outputs.preview_static }}" =~ $regex ]]; then
-            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_static }}"; do
-              echo "waiting for tools preview"
-              sleep 5
-            done
-          fi
 
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v3
@@ -266,7 +252,6 @@ jobs:
             * explorer: ${{ needs.lint-test-build.outputs.preview_explorer  }}
             * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
             * tools: ${{ needs.lint-test-build.outputs.preview_tools }}
-            * static: ${{ needs.lint-test-build.outputs.preview_static }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:
