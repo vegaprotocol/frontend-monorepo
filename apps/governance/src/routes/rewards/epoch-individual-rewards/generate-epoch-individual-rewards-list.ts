@@ -31,6 +31,7 @@ const emptyRowAccountTypes = accountTypes.map((type) => [
 
 export const generateEpochIndividualRewardsList = ({
   rewards,
+  rewardsSummaries,
   epochId,
   page = 1,
   size = 10,

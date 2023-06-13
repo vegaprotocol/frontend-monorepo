@@ -48,10 +48,17 @@ export const EpochIndividualRewards = ({
     return removePaginationWrapper(data.party.rewardsConnection.edges);
   }, [data]);
 
+  const rewardsSummaries = useMemo(() => {
+    if (!data?.epochRewardSummaries) return [];
+
+    return removePaginationWrapper(data.epochRewardSummaries.edges);
+  }, [data]);
+
   const epochIndividualRewardSummaries = useMemo(() => {
     if (!data?.party) return [];
     return generateEpochIndividualRewardsList({
       rewards,
+      rewardsSummaries,
       epochId,
       page,
       size: EPOCHS_PAGE_SIZE,

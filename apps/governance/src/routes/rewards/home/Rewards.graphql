@@ -50,6 +50,19 @@ query Rewards(
       }
     }
   }
+  epochRewardSummaries(
+      filter: {
+        fromEpoch: $fromEpoch
+        toEpoch: $toEpoch
+        }
+        pagination: $rewardsPagination
+      ) {
+          edges {
+            node {
+              ...EpochRewardSummaryFields
+            }
+          }
+        }
 }
 
 fragment EpochRewardSummaryFields on EpochRewardSummary {
