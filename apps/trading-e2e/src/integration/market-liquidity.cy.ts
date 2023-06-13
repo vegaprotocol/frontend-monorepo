@@ -85,10 +85,10 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
       .find('[col-id="commitmentAmount_1"]')
       .should('have.text', '4,000.00');
 
-    cy.contains('Active').scrollIntoView();
     cy.get(rowSelector)
       .first()
       .find('[col-id="balance"]')
+      .scrollIntoView()
       .should('have.text', '4,000.00');
 
     cy.get(rowSelector)
