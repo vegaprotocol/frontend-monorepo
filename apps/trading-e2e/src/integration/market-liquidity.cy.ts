@@ -49,7 +49,7 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
     });
   });
 
-  it.only('renders liquidity table correctly', () => {
+  it('renders liquidity table correctly', () => {
     // 5002-LIQP-002
     cy.get(rowSelector)
       .first()
