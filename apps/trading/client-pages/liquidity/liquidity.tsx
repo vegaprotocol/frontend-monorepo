@@ -150,6 +150,7 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
       <HeaderStat
         heading={t('Target stake')}
         description={tooltipMapping['targetStake']}
+        testId="target-stake"
       >
         <div>
           {targetStake
@@ -163,6 +164,7 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
       <HeaderStat
         heading={t('Supplied stake')}
         description={tooltipMapping['suppliedStake']}
+        testId="supplied-stake"
       >
         <div>
           {suppliedStake
@@ -178,10 +180,10 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
 
         {formatNumberPercentage(percentage, 2)}
       </HeaderStat>
-      <HeaderStat heading={t('Market ID')}>
+      <HeaderStat heading={t('Market ID')} testId="liquidity-market-id">
         <div className="break-word">{marketId}</div>
       </HeaderStat>
-      <HeaderStat heading={t('Learn more')}>
+      <HeaderStat heading={t('Learn more')} testId="liquidity-learn-more">
         {DocsLinks ? (
           <ExternalLink href={DocsLinks.LIQUIDITY}>
             {t('Providing liquidity')}
