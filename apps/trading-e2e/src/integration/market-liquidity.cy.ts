@@ -33,7 +33,8 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
     );
-    cy.visit('/');
+    cy.visit('/#/markets/market-0');
+    cy.wait('@MarketData');
     cy.wait('@LiquidityProvisions');
     cy.getByTestId(liquidityTab).click();
   });
@@ -118,7 +119,7 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
   });
 });
 
-describe('liquidity table view - summary', { tags: '@smoke' }, () => {
+describe('liquidity table view', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockSubscription();
     cy.mockTradingPage(
@@ -202,137 +203,127 @@ describe('liquidity table view - summary', { tags: '@smoke' }, () => {
       });
     });
   });
-});
 
-describe('liquidity table view', { tags: '@smoke' }, () => {
-  before(() => {
-    cy.mockSubscription();
-    cy.mockTradingPage(
-      Schema.MarketState.STATE_ACTIVE,
-      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
-    );
-    cy.visit('/#/liquidity/market-0');
-  });
-
-  it('can see table headers', () => {
-    cy.getByTestId('tab-active').within(($headers) => {
-      cy.wrap($headers)
-        .get('.ag-header-cell-text')
-        .each(($header, i) => {
-          cy.wrap($header).should('have.text', headers[i]);
-        });
+  describe('liquidity table view', { tags: '@smoke' }, () => {
+    it('can see table headers', () => {
+      cy.getByTestId('tab-active').within(($headers) => {
+        cy.wrap($headers)
+          .get('.ag-header-cell-text')
+          .each(($header, i) => {
+            cy.wrap($header).should('have.text', headers[i]);
+          });
+      });
     });
-  });
 
-  it('renders liquidity active table correctly', () => {
-    // 5002-LIQP-011
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="party.id"]')
-      .should(
-        'have.text',
-        '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f'
-      );
+    it('renders liquidity active table correctly', () => {
+      // 5002-LIQP-011
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="party.id"]')
+        .should(
+          'have.text',
+          '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f'
+        );
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="commitmentAmount"]')
-      .should('have.text', '4,000.00');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="commitmentAmount"]')
+        .should('have.text', '4,000.00');
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="equityLikeShare"]')
-      .should('have.text', '100.00%');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="equityLikeShare"]')
+        .should('have.text', '100.00%');
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="fee"]')
-      .should('have.text', '0.09%');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="fee"]')
+        .should('have.text', '0.09%');
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="averageEntryValuation"]')
-      .should('have.text', '685,852.93692');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="averageEntryValuation"]')
+        .should('have.text', '685,852.93692');
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="commitmentAmount_1"]')
-      .should('have.text', '4,000.00');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="commitmentAmount_1"]')
+        .should('have.text', '4,000.00');
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="balance"]')
-      .should('have.text', '4,000.00');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="balance"]')
+        .should('have.text', '4,000.00');
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="status"]')
-      .should('have.text', 'Active');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="status"]')
+        .should('have.text', 'Active');
 
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="createdAt"] button')
-      .should('not.be.empty');
-    cy.get(rowSelectorLiquidityActive)
-      .first()
-      .find('[col-id="updatedAt"] button')
-      .should('not.be.empty');
-  });
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="createdAt"] button')
+        .should('not.be.empty');
+      cy.get(rowSelectorLiquidityActive)
+        .first()
+        .find('[col-id="updatedAt"] button')
+        .should('not.be.empty');
+    });
 
-  it('renders liquidity inactive table correctly', () => {
-    //// 5002-LIQP-012
-    cy.getByTestId('Inactive').click();
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="party.id"]')
-      .should(
-        'have.text',
-        'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f'
-      );
+    it('renders liquidity inactive table correctly', () => {
+      //// 5002-LIQP-012
+      cy.getByTestId('Inactive').click();
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="party.id"]')
+        .should(
+          'have.text',
+          'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f'
+        );
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="commitmentAmount"]')
-      .should('have.text', '4,000.00');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="commitmentAmount"]')
+        .should('have.text', '4,000.00');
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="equityLikeShare"]')
-      .should('have.text', '100.00%');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="equityLikeShare"]')
+        .should('have.text', '100.00%');
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="fee"]')
-      .should('have.text', '0.40%');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="fee"]')
+        .should('have.text', '0.40%');
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="averageEntryValuation"]')
-      .should('have.text', '685,852.93692');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="averageEntryValuation"]')
+        .should('have.text', '685,852.93692');
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="commitmentAmount_1"]')
-      .should('have.text', '4,000.00');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="commitmentAmount_1"]')
+        .should('have.text', '4,000.00');
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="balance"]')
-      .should('have.text', '2,000.00');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="balance"]')
+        .should('have.text', '2,000.00');
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="status"]')
-      .should('have.text', 'Pending');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="status"]')
+        .should('have.text', 'Pending');
 
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="createdAt"] button')
-      .should('not.be.empty');
-    cy.get(rowSelectorLiquidityInactive)
-      .first()
-      .find('[col-id="updatedAt"] button')
-      .should('not.be.empty');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="createdAt"] button')
+        .should('not.be.empty');
+      cy.get(rowSelectorLiquidityInactive)
+        .first()
+        .find('[col-id="updatedAt"] button')
+        .should('not.be.empty');
+    });
   });
 });
