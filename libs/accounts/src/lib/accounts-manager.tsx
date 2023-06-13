@@ -1,16 +1,14 @@
-import { useRef, memo, useCallback, useState } from 'react';
+import { useRef, memo, useState } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { AgGridReact } from 'ag-grid-react';
-import type { AccountFields } from './accounts-data-provider';
 import {
   aggregatedAccountsDataProvider,
   aggregatedAccountDataProvider,
 } from './accounts-data-provider';
 import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
-import isEqual from 'lodash/isEqual';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
 
