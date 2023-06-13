@@ -9,5 +9,5 @@ export * from './get-settlement-account';
 export * from './use-market-account-balance';
 export * from './transfer-dialog';
 export * from './__generated__/Margins';
-export * from './margin-health-chart';
+export { MarginHealthChart } from './margin-health-chart';
 export * from './margin-data-provider';

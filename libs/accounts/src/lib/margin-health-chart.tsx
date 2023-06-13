@@ -8,7 +8,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useAccountBalance } from './use-account-balance';
 import { useMarketAccountBalance } from './use-market-account-balance';
 
-const TooltipContentRow = ({
+const MarginHealthChartTooltipRow = ({
   label,
   value,
   decimals,
@@ -20,7 +20,11 @@ const TooltipContentRow = ({
   href?: string;
 }) => (
   <>
-    <div className="float-left clear-left" key="label">
+    <div
+      className="float-left clear-left"
+      key="label"
+      data-testid="margin-health-tooltip-label"
+    >
       {href ? (
         <ExternalLink href={href} target="_blank">
           {label}
@@ -29,11 +33,87 @@ const TooltipContentRow = ({
         label
       )}
     </div>
-    <div className="float-right" key="value">
+    <div
+      className="float-right"
+      key="value"
+      data-testid="margin-health-tooltip-value"
+    >
       {addDecimalsFormatNumber(value, decimals)}
     </div>
   </>
 );
+
+export const MarginHealthChartTooltip = ({
+  maintenanceLevel,
+  searchLevel,
+  initialLevel,
+  collateralReleaseLevel,
+  decimals,
+  marginAccountBalance,
+}: {
+  maintenanceLevel: string;
+  searchLevel: string;
+  initialLevel: string;
+  collateralReleaseLevel: string;
+  decimals: number;
+  marginAccountBalance?: string;
+}) => {
+  const tooltipContent = [
+    <MarginHealthChartTooltipRow
+      key={'maintenance'}
+      label={t('maintenance level')}
+      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-maintenance"
+      value={maintenanceLevel}
+      decimals={decimals}
+    />,
+    <MarginHealthChartTooltipRow
+      key={'search'}
+      label={t('search level')}
+      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-searching-for-collateral"
+      value={searchLevel}
+      decimals={decimals}
+    />,
+    <MarginHealthChartTooltipRow
+      key={'initial'}
+      label={t('initial level')}
+      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-initial"
+      value={initialLevel}
+      decimals={decimals}
+    />,
+    <MarginHealthChartTooltipRow
+      key={'release'}
+      label={t('release level')}
+      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-releasing-collateral"
+      value={collateralReleaseLevel}
+      decimals={decimals}
+    />,
+  ];
+
+  if (marginAccountBalance) {
+    const balance = (
+      <MarginHealthChartTooltipRow
+        key={'balance'}
+        label={t('balance')}
+        value={marginAccountBalance}
+        decimals={decimals}
+      />
+    );
+    if (BigInt(marginAccountBalance) < BigInt(searchLevel)) {
+      tooltipContent.splice(1, 0, balance);
+    } else if (BigInt(marginAccountBalance) < BigInt(initialLevel)) {
+      tooltipContent.splice(2, 0, balance);
+    } else if (BigInt(marginAccountBalance) < BigInt(collateralReleaseLevel)) {
+      tooltipContent.splice(3, 0, balance);
+    } else {
+      tooltipContent.push(balance);
+    }
+  }
+  return (
+    <div className="overflow-hidden" data-testid="margin-health-tooltip">
+      {tooltipContent}
+    </div>
+  );
+};
 
 export const MarginHealthChart = ({
   marketId,
@@ -76,58 +156,16 @@ export const MarginHealthChart = ({
   const green = (collateralReleaseLevel - initialLevel) / max + yellow;
   const balanceMarker = marginAccountBalance / max;
 
-  const tooltipContent = [
-    <TooltipContentRow
-      key={'maintenance'}
-      label={t('maintenance level')}
-      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-maintenance"
-      value={data.maintenanceLevel}
+  const tooltip = (
+    <MarginHealthChartTooltip
+      maintenanceLevel={data.maintenanceLevel}
+      searchLevel={data.searchLevel}
+      initialLevel={data.initialLevel}
+      collateralReleaseLevel={data.collateralReleaseLevel}
+      marginAccountBalance={rawMarginAccountBalance}
       decimals={decimals}
-    />,
-    <TooltipContentRow
-      key={'search'}
-      label={t('search level')}
-      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-searching-for-collateral"
-      value={data.searchLevel}
-      decimals={decimals}
-    />,
-    <TooltipContentRow
-      key={'initial'}
-      label={t('initial level')}
-      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-initial"
-      value={data.initialLevel}
-      decimals={decimals}
-    />,
-    <TooltipContentRow
-      key={'release'}
-      label={t('release level')}
-      href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-releasing-collateral"
-      value={data.collateralReleaseLevel}
-      decimals={decimals}
-    />,
-  ];
-
-  if (rawMarginAccountBalance) {
-    const balance = (
-      <TooltipContentRow
-        key={'balance'}
-        label={t('balance')}
-        value={rawMarginAccountBalance}
-        decimals={decimals}
-      />
-    );
-    if (BigInt(rawMarginAccountBalance) < BigInt(data.searchLevel)) {
-      tooltipContent.splice(1, 0, balance);
-    } else if (BigInt(rawMarginAccountBalance) < BigInt(data.initialLevel)) {
-      tooltipContent.splice(2, 0, balance);
-    } else if (
-      BigInt(rawMarginAccountBalance) < BigInt(data.collateralReleaseLevel)
-    ) {
-      tooltipContent.splice(3, 0, balance);
-    } else {
-      tooltipContent.push(balance);
-    }
-  }
+    />
+  );
 
   return (
     <div data-testid="margin-health-chart">
@@ -139,10 +177,9 @@ export const MarginHealthChart = ({
       <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-maintenance">
         {t('maintenance level')}
       </ExternalLink>
-      <Tooltip
-        description={<div className="overflow-hidden">{tooltipContent}</div>}
-      >
+      <Tooltip description={tooltip}>
         <div
+          data-testid="margin-health-chart-track"
           className="relative bg-vega-green-650"
           style={{
             height: '6px',
@@ -151,6 +188,7 @@ export const MarginHealthChart = ({
           }}
         >
           <div
+            data-testid="margin-health-chart-red"
             className="bg-vega-pink-550"
             style={{
               height: '100%',
@@ -158,6 +196,7 @@ export const MarginHealthChart = ({
             }}
           ></div>
           <div
+            data-testid="margin-health-chart-orange"
             className="bg-vega-orange"
             style={{
               height: '100%',
@@ -165,6 +204,7 @@ export const MarginHealthChart = ({
             }}
           ></div>
           <div
+            data-testid="margin-health-chart-yellow"
             className="bg-vega-yellow"
             style={{
               height: '100%',
@@ -172,6 +212,7 @@ export const MarginHealthChart = ({
             }}
           ></div>
           <div
+            data-testid="margin-health-chart-green"
             className="bg-vega-green-600"
             style={{
               height: '100%',
@@ -180,6 +221,7 @@ export const MarginHealthChart = ({
           ></div>
           {balanceMarker > 0 && balanceMarker < 100 && (
             <div
+              data-testid="margin-health-chart-balance"
               className="absolute bg-vega-blue"
               style={{
                 height: '8px',
