@@ -34,27 +34,22 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="used"]')
-      .should('have.text', '1.010.00%');
+      .should('have.text', '50.00' + '33.33%');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="available"]')
-      .should('have.text', '100,000.00');
+      .should('have.text', '100.00');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="total"]')
-      .should('have.text', '100,001.01');
+      .should('have.text', '150.00');
 
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="accounts-actions"]')
       .should('have.text', '');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="total"]')
-      .should('have.text', '100,001.01');
 
     cy.getByTestId('tab-accounts')
       .get('[col-id="accounts-actions"]')
@@ -101,7 +96,7 @@ describe('accounts', { tags: '@smoke' }, () => {
       'Liquidity provision fee reward account balance',
       'Market proposer reward account balance',
     ];
-    cy.getByTestId('asset').contains('tEURO').click();
+    cy.get('[col-id="asset.symbol"]').contains('tEURO').click();
     cy.get('[data-testid$="_label"]').should('have.length', 16);
     cy.get('[data-testid$="_label"]').each((element, index) => {
       cy.wrap(element).should('have.text', titles[index]);
@@ -112,7 +107,7 @@ describe('accounts', { tags: '@smoke' }, () => {
 
   it('should open usage breakdown dialog when clicked on used', () => {
     // 7001-COLL-009
-    cy.getByTestId('breakdown').contains('1.01').click();
+    cy.get('[col-id="used"]').contains('50.00').click();
     const headers = ['Market', 'Account type', 'Balance'];
     cy.getByTestId('usage-breakdown').within(($headers) => {
       cy.wrap($headers)
@@ -135,9 +130,9 @@ describe('accounts', { tags: '@smoke' }, () => {
     });
     it('sorting by asset', () => {
       cy.getByTestId('Collateral').click();
-      const marketsSortedDefault = ['tBTC', 'tEURO', 'tDAI', 'tBTC'];
-      const marketsSortedAsc = ['tBTC', 'tBTC', 'tDAI', 'tEURO'];
-      const marketsSortedDesc = ['tEURO', 'tDAI', 'tBTC', 'tBTC'];
+      const marketsSortedDefault = ['tBTC', 'tEURO', 'tDAI', 'tUSDC', 'tBTC'];
+      const marketsSortedAsc = ['tBTC', 'tBTC', 'tDAI', 'tEURO', 'tUSDC'];
+      const marketsSortedDesc = Array.from(marketsSortedAsc).reverse();
       checkSorting(
         'asset.symbol',
         marketsSortedDefault,
@@ -149,23 +144,21 @@ describe('accounts', { tags: '@smoke' }, () => {
     it('sorting by total', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
-        '1,000.00002',
-        '1,000.01',
-        '1,000.00',
-        '1,000.00001',
+        '1,666.67',
+        '4,000.00',
+        '30.00',
+        '5',
+        '1,555.56',
       ];
       const marketsSortedAsc = [
-        '1,000.00',
-        '1,000.00001',
-        '1,000.00002',
-        '1,000.01',
+        '5',
+        '30.00',
+        '1,555.56',
+        '1,666.67',
+        '4,000.00',
       ];
-      const marketsSortedDesc = [
-        '1,000.01',
-        '1,000.00002',
-        '1,000.00001',
-        '1,000.00',
-      ];
+      const marketsSortedDesc = Array.from(marketsSortedAsc).reverse();
+
       checkSorting(
         'total',
         marketsSortedDefault,
@@ -176,24 +169,24 @@ describe('accounts', { tags: '@smoke' }, () => {
 
     it('sorting by used', () => {
       cy.getByTestId('Collateral').click();
+      // concat actual value with percentage value
+      // as cypress will pick up the entire cell contes
+      // textContent
       const marketsSortedDefault = [
-        '0.000.00%',
-        '0.010.00%',
-        '0.000.00%',
-        '0.000.00%',
+        '0.00' + '0.00%',
+        '2,000.00' + '50.00%',
+        '0.00' + '0.00%',
+        '1' + '20.00%',
+        '0.00' + '0.00%',
       ];
       const marketsSortedAsc = [
-        '0.000.00%',
-        '0.000.00%',
-        '0.000.00%',
-        '0.010.00%',
+        '0.00' + '0.00%',
+        '0.00' + '0.00%',
+        '0.00' + '0.00%',
+        '1' + '20.00%',
+        '2,000.00' + '50.00%',
       ];
-      const marketsSortedDesc = [
-        '0.010.00%',
-        '0.000.00%',
-        '0.000.00%',
-        '0.000.00%',
-      ];
+      const marketsSortedDesc = Array.from(marketsSortedAsc).reverse();
       checkSorting(
         'used',
         marketsSortedDefault,
@@ -205,23 +198,20 @@ describe('accounts', { tags: '@smoke' }, () => {
     it('sorting by total', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
-        '1,000.00002',
-        '1,000.01',
-        '1,000.00',
-        '1,000.00001',
+        '1,666.67',
+        '4,000.00',
+        '30.00',
+        '5',
+        '1,555.56',
       ];
       const marketsSortedAsc = [
-        '1,000.00',
-        '1,000.00001',
-        '1,000.00002',
-        '1,000.01',
+        '5',
+        '30.00',
+        '1,555.56',
+        '1,666.67',
+        '4,000.00',
       ];
-      const marketsSortedDesc = [
-        '1,000.01',
-        '1,000.00002',
-        '1,000.00001',
-        '1,000.00',
-      ];
+      const marketsSortedDesc = Array.from(marketsSortedAsc).reverse();
 
       checkSorting(
         'total',

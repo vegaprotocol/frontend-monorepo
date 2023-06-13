@@ -32,9 +32,10 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
+    balance: '200000000',
     market: null,
     asset: {
+      // tEURO
       __typename: 'Asset',
       id: 'asset-id',
     },
@@ -42,8 +43,9 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
+    balance: '3000000',
     asset: {
+      // tDAI
       __typename: 'Asset',
       id: 'asset-id-2',
     },
@@ -51,12 +53,13 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-    balance: '1000',
+    balance: '200000000',
     market: {
       __typename: 'Market',
       id: 'market-2',
     },
     asset: {
+      // tEURO
       __typename: 'Asset',
       id: 'asset-id',
     },
@@ -64,12 +67,13 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-    balance: '1000',
+    balance: '3000000',
     market: {
       __typename: 'Market',
       id: 'market-0',
     },
     asset: {
+      // AST0
       __typename: 'Asset',
       id: 'asset-0',
     },
@@ -77,12 +81,13 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-    balance: '100000',
+    balance: '2000000',
     market: {
       __typename: 'Market',
       id: 'market-3',
     },
     asset: {
+      // AST0
       __typename: 'Asset',
       id: 'asset-0',
     },
@@ -90,9 +95,10 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '10000000000',
+    balance: '10000000',
     market: null,
     asset: {
+      // AST0
       __typename: 'Asset',
       id: 'asset-0',
     },
@@ -101,9 +107,10 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000001',
+    balance: '155555555',
     market: null,
     asset: {
+      // tBTC (sepolia)
       __typename: 'Asset',
       id: 'cee709223217281d7893b650850ae8ee8a18b7539b5658f9b4cc24de95dd18ad',
     },
@@ -111,11 +118,34 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000002',
+    balance: '166666666',
     market: null,
     asset: {
+      // tBTC (test)
       __typename: 'Asset',
       id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+    },
+  },
+  {
+    __typename: 'AccountBalance',
+    type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+    balance: '4000000',
+    market: null,
+    asset: {
+      // tUSDC (quantum is 1000000)
+      __typename: 'Asset',
+      id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
+    },
+  },
+  {
+    __typename: 'AccountBalance',
+    type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
+    balance: '1000000',
+    market: null,
+    asset: {
+      // tUSDC (quantum is 1000000)
+      __typename: 'Asset',
+      id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
     },
   },
 ];
