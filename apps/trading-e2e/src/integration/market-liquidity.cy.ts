@@ -35,8 +35,8 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
     );
     cy.visit('/#/markets/market-0');
     cy.wait('@MarketData');
-    cy.wait('@LiquidityProvisions');
     cy.getByTestId(liquidityTab).click();
+    cy.wait('@LiquidityProvisions');
   });
 
   it('can see table headers', () => {
