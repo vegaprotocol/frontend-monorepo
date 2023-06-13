@@ -114,7 +114,6 @@ jobs:
           preview_trading="not deployed"
           preview_explorer="not deployed"
           preview_tools="not deployed"
-          preview_static="not deployed"
           if echo "$affected" | grep -q governance; then
             echo "Governance is affected"
             projects_e2e+='"governance-e2e" '
