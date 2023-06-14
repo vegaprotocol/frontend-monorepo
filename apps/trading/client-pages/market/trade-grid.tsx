@@ -296,7 +296,7 @@ const MainGrid = memo(
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
-              preferredSize={sizesMiddle[2] || 430}
+              preferredSize={sizesMiddle[2] || 300}
               minSize={200}
             >
               <TradeGridChild>

@@ -58,6 +58,7 @@ fragment MarketFields on Market {
             symbol
             name
             decimals
+            quantum
           }
           quoteName
           dataSourceSpecForTradingTermination {

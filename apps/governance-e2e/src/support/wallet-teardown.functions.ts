@@ -19,7 +19,7 @@ const ethStakingBridgeContractAddress = Cypress.env(
 );
 const ethProviderUrl = Cypress.env('ethProviderUrl');
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
-const transactionTimeout = 100000;
+const transactionTimeout = { timeout: 100000, log: false };
 const Erc20BridgeAddress = '0x9708FF7510D4A7B9541e1699d15b53Ecb1AFDc54';
 
 const provider = new ethers.providers.JsonRpcProvider({ url: ethProviderUrl });
@@ -43,10 +43,7 @@ export async function depositAsset(
   const faucet = new Token(assetEthAddress, signer);
   cy.wrap(
     faucet.approve(Erc20BridgeAddress, amount + '0'.repeat(decimalPlaces + 1)),
-    {
-      timeout: transactionTimeout,
-      log: false,
-    }
+    transactionTimeout
   ).then(() => {
     const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
     cy.wrap(
@@ -55,7 +52,7 @@ export async function depositAsset(
         amount + '0'.repeat(decimalPlaces),
         '0x' + vegaWalletPubKey
       ),
-      { timeout: transactionTimeout, log: false }
+      transactionTimeout
     );
   });
 }
@@ -79,13 +76,13 @@ export async function vegaWalletTeardown() {
         }
       });
       cy.get(vegaWalletContainer).within(() => {
-        cy.get(associatedAmountInWallet, {
-          timeout: transactionTimeout,
-        })
-          .should('have.length', 1, { timeout: transactionTimeout })
-          .contains('0.00', {
-            timeout: transactionTimeout,
-          });
+        cy.get(associatedAmountInWallet, transactionTimeout).should(
+          'have.length',
+          1
+        );
+        cy.get(associatedAmountInWallet)
+          .first(transactionTimeout)
+          .should('have.text', '0.00');
       });
     });
 }
@@ -109,7 +106,7 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
   cy.highlight('Tearing down staking tokens from vega wallet if present');
   cy.wrap(
     stakingBridgeContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
-    { timeout: transactionTimeout }
+    transactionTimeout
   ).then((stakeBalance) => {
     if (Number(stakeBalance) != 0) {
       cy.get(vegaWalletContainer).within(() => {
@@ -122,31 +119,25 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
                 String(stakeBalance),
                 vegaWalletPubKey
               ),
-              { timeout: transactionTimeout }
+              transactionTimeout
             );
             cy.wrap(
               vestingContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
-              {
-                timeout: transactionTimeout,
-                log: false,
-              }
+              transactionTimeout
             ).then((vestingAmount) => {
               if (Number(vestingAmount) != 0) {
-                cy.contains('Associated', {
-                  timeout: transactionTimeout,
-                })
+                cy.contains('Associated', transactionTimeout)
                   .parent()
                   .parent()
                   .within(() => {
-                    cy.getByTestId('currency-value', {
-                      timeout: transactionTimeout,
-                    })
-                      .should('have.length', 1)
+                    cy.getByTestId('currency-value', transactionTimeout)
+                      .first()
                       .invoke('text')
                       .as('displayedAmount');
-                    cy.get('@displayedAmount', {
-                      timeout: transactionTimeout,
-                    }).should('not.eq', $associatedAmount);
+                    cy.get('@displayedAmount', transactionTimeout).should(
+                      'not.eq',
+                      $associatedAmount
+                    );
                   });
               }
             });
@@ -158,14 +149,14 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
 
 async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
   cy.highlight('Tearing down vesting tokens from vega wallet if present');
-  cy.wrap(vestingContract.stake_balance(ethWalletPubKey, vegaWalletPubKey), {
-    timeout: transactionTimeout,
-    log: false,
-  }).then((vestingAmount) => {
+  cy.wrap(
+    vestingContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
+    transactionTimeout
+  ).then((vestingAmount) => {
     if (Number(vestingAmount) != 0) {
       cy.wrap(
         vestingContract.remove_stake(String(vestingAmount), vegaWalletPubKey),
-        { timeout: transactionTimeout }
+        transactionTimeout
       );
     }
   });

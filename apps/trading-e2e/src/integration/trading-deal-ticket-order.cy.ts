@@ -77,7 +77,8 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
     it('must warn if order size input has too many digits after the decimal place', function () {
       // 7002-SORD-016
       cy.getByTestId(orderSizeField).clear().type('1.234');
-      cy.getByTestId(placeOrderBtn).should('be.disabled');
+      // 7002-SORD-060
+      cy.getByTestId(placeOrderBtn).should('be.enabled');
       cy.getByTestId('dealticket-error-message-size-market').should(
         'have.text',
         'Size must be whole numbers for this market'
@@ -86,12 +87,13 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
 
     it('must warn if order size is set to 0', function () {
       cy.getByTestId(orderSizeField).clear().type('0');
-      cy.getByTestId(placeOrderBtn).should('be.disabled');
+      cy.getByTestId(placeOrderBtn).should('be.enabled');
       cy.getByTestId('dealticket-error-message-size-market').should(
         'have.text',
         'Size cannot be lower than 1'
       );
     });
+
     it('must have total margin available', () => {
       // 7001-COLL-011
       cy.getByTestId('tab-ticket')
@@ -100,9 +102,8 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
         .within(() => {
           cy.get('[data-state="closed"]').should(
             'have.text',
-            'Total margin available'
+            'Total margin available100,000.01 tDAI'
           );
-          cy.get('.text-neutral-500').should('have.text', '100,000.01 tDAI');
         });
     });
   });

@@ -1,11 +1,11 @@
 import { useApolloClient } from '@apollo/client';
 import BigNumber from 'bignumber.js';
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { addDecimal } from '@vegaprotocol/utils';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { t } from '@vegaprotocol/i18n';
-import { localLoggerFactory } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
@@ -21,8 +21,9 @@ import { WithdrawalApprovalDocument } from '@vegaprotocol/wallet';
 
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
 import {
-  useEthWithdrawApprovalsStore,
   ApprovalStatus,
+  useEthWithdrawApprovalsStore,
+  WithdrawalFailure,
 } from './use-ethereum-withdraw-approvals-store';
 
 export const useEthWithdrawApprovalsManager = () => {
@@ -55,16 +56,27 @@ export const useEthWithdrawApprovalsManager = () => {
         message: t(
           `Invalid asset source: ${withdrawal.asset.source.__typename}`
         ),
+        failureReason: WithdrawalFailure.InvalidAsset,
+      });
+      return;
+    }
+    if (!chainId) {
+      update(transaction.id, {
+        status: ApprovalStatus.Pending,
+        message: t(`Connect wallet to withdraw`),
+        failureReason: WithdrawalFailure.NoConnection,
       });
       return;
     }
     if (chainId?.toString() !== config?.chain_id) {
       update(transaction.id, {
-        status: ApprovalStatus.Error,
-        message: t(`You are on the wrong network`),
+        status: ApprovalStatus.Pending,
+        message: t(`Change network`),
+        failureReason: WithdrawalFailure.WrongConnection,
       });
       return;
     }
+
     update(transaction.id, {
       status: ApprovalStatus.Pending,
       message: t('Verifying withdrawal approval'),

@@ -15,6 +15,18 @@ jest.mock('@vegaprotocol/data-provider', () => ({
 }));
 jest.mock('@web3-react/core');
 jest.mock('@vegaprotocol/accounts');
+jest.mock('@vegaprotocol/network-parameters', () => {
+  const impl = jest.requireActual('@vegaprotocol/network-parameters');
+  return {
+    ...impl,
+    useNetworkParam: jest.fn((param) => {
+      if (param === 'spam_protection_minimumWithdrawalQuantumMultiple') {
+        return { param: '10.00', loading: false, error: undefined };
+      }
+      return impl.useNetworkParam(param);
+    }),
+  };
+});
 
 describe('WithdrawFormContainer', () => {
   const props = {
@@ -99,7 +111,7 @@ describe('WithdrawFormContainer', () => {
       accountDecimals: null,
     });
   });
-  afterEach(() => {
+  afterAll(() => {
     jest.resetAllMocks();
   });
   it('should be properly rendered', async () => {
@@ -153,6 +165,7 @@ describe('WithdrawFormContainer', () => {
                   name: 'asset-id',
                   symbol: 'tUSDC',
                   decimals: 5,
+                  quantum: '1',
                 },
                 dataSourceSpecForTradingTermination: {
                   __typename: 'DataSourceSpec',

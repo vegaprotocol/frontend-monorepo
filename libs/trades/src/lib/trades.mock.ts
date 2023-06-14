@@ -11,24 +11,20 @@ export const tradesQuery = (
   override?: PartialDeep<TradesQuery>
 ): TradesQuery => {
   const defaultResult: TradesQuery = {
-    market: {
-      id: 'market-0',
-      tradesConnection: {
-        __typename: 'TradeConnection',
-        edges: trades.map((node, i) => ({
-          __typename: 'TradeEdge',
-          node,
-          cursor: (i + 1).toString(),
-        })),
-        pageInfo: {
-          __typename: 'PageInfo',
-          startCursor: '0',
-          endCursor: trades.length.toString(),
-          hasNextPage: false,
-          hasPreviousPage: false,
-        },
+    trades: {
+      __typename: 'TradeConnection',
+      edges: trades.map((node, i) => ({
+        __typename: 'TradeEdge',
+        node,
+        cursor: (i + 1).toString(),
+      })),
+      pageInfo: {
+        __typename: 'PageInfo',
+        startCursor: '0',
+        endCursor: trades.length.toString(),
+        hasNextPage: false,
+        hasPreviousPage: false,
       },
-      __typename: 'Market',
     },
   };
 
@@ -40,7 +36,7 @@ export const tradesUpdateSubscription = (
 ): TradesUpdateSubscription => {
   const defaultResult: TradesUpdateSubscription = {
     __typename: 'Subscription',
-    trades: [
+    tradesStream: [
       {
         __typename: 'TradeUpdate',
         id: '1234567890',

@@ -103,8 +103,6 @@ describe(
     it('Newly created freeform proposal details - shows proposed and closing dates', function () {
       const proposalTitle = generateFreeFormProposalTitle();
       const proposalTimeStamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
-      // const currentDate = new Date(createTenDigitUnixTimeStampForSpecifiedDays(0) * 1000)
-      // const proposedDate = new Date(currentDate.getTime() + 60000)
 
       submitUniqueRawProposal({
         proposalTitle: proposalTitle,

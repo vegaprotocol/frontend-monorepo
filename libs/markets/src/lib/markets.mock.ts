@@ -60,6 +60,7 @@ export const createMarketFragment = (
             symbol: 'tDAI',
             name: 'tDAI',
             decimals: 5,
+            quantum: '1',
             __typename: 'Asset',
           },
           dataSourceSpecForTradingTermination: {

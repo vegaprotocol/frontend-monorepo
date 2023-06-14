@@ -3,7 +3,8 @@ import { ethers } from 'ethers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
+import { addDecimal } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useWeb3React } from '@web3-react/core';
 
 export const useGetDepositedAmount = (asset: Asset | undefined) => {

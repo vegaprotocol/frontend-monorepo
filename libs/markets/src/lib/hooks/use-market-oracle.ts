@@ -9,32 +9,30 @@ import type { DataSourceSpecFragment } from '../__generated__';
 export const getMatchingOracleProvider = (
   dataSourceSpec: DataSourceSpecFragment,
   providers: Provider[]
-) =>
-  providers.find((provider) =>
-    provider.proofs.some((proof) => {
-      if (
-        proof.type === 'eth_address' &&
-        dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal'
-      ) {
-        return dataSourceSpec.sourceType.sourceType.signers?.some(
-          (signer) =>
-            signer.signer.__typename === 'ETHAddress' &&
-            signer.signer.address === proof.eth_address
-        );
-      }
-      if (
-        proof.type === 'public_key' &&
-        dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal'
-      ) {
-        return dataSourceSpec.sourceType.sourceType.signers?.some(
-          (signer) =>
-            signer.signer.__typename === 'PubKey' &&
-            signer.signer.key === proof.public_key
-        );
-      }
-      return false;
-    })
-  );
+) => {
+  return providers.find((provider) => {
+    let oracleSignature: string;
+    const oracle = provider.oracle;
+    if ('public_key' in oracle && oracle.public_key) {
+      oracleSignature = oracle.public_key;
+    } else if ('eth_address' in oracle && oracle.eth_address) {
+      oracleSignature = oracle.eth_address;
+    }
+
+    if (
+      dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal'
+    ) {
+      return dataSourceSpec.sourceType.sourceType.signers?.some(
+        (signer) =>
+          (signer.signer.__typename === 'ETHAddress' &&
+            signer.signer.address === oracleSignature) ||
+          (signer.signer.__typename === 'PubKey' &&
+            signer.signer.key === oracleSignature)
+      );
+    }
+    return false;
+  });
+};
 
 export const useMarketOracle = (
   marketId: string,

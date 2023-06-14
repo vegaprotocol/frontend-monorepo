@@ -146,7 +146,7 @@ describe('Proposal form vote, validation and enactment deadline', () => {
   it('should show the correct datetimes', () => {
     renderComponent();
     // Should be adding 2 mins to the vote deadline as the minimum is set by
-    // default, and we add 2 mins for wallet confirmation
+    // default, and 2 mins are added for wallet confirmation
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
       '2022-01-01T01:02:00.000Z'
     );

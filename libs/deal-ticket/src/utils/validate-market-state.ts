@@ -1,14 +1,14 @@
 import { t } from '@vegaprotocol/i18n';
-import * as Schema from '@vegaprotocol/types';
+import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 
-export const validateMarketState = (state: Schema.MarketState) => {
+export const validateMarketState = (state: MarketState) => {
   if (
     [
-      Schema.MarketState.STATE_SETTLED,
-      Schema.MarketState.STATE_REJECTED,
-      Schema.MarketState.STATE_TRADING_TERMINATED,
-      Schema.MarketState.STATE_CANCELLED,
-      Schema.MarketState.STATE_CLOSED,
+      MarketState.STATE_SETTLED,
+      MarketState.STATE_REJECTED,
+      MarketState.STATE_TRADING_TERMINATED,
+      MarketState.STATE_CANCELLED,
+      MarketState.STATE_CLOSED,
     ].includes(state)
   ) {
     return t(
@@ -16,7 +16,7 @@ export const validateMarketState = (state: Schema.MarketState) => {
     );
   }
 
-  if (state === Schema.MarketState.STATE_PROPOSED) {
+  if (state === MarketState.STATE_PROPOSED) {
     return t(
       `This market is ${marketTranslations(
         state
@@ -27,11 +27,11 @@ export const validateMarketState = (state: Schema.MarketState) => {
   return true;
 };
 
-const marketTranslations = (marketState: Schema.MarketState) => {
+const marketTranslations = (marketState: MarketState) => {
   switch (marketState) {
-    case Schema.MarketState.STATE_TRADING_TERMINATED:
+    case MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
-      return t(Schema.MarketStateMapping[marketState]).toLowerCase();
+      return t(MarketStateMapping[marketState]).toLowerCase();
   }
 };

@@ -6,11 +6,15 @@ export interface IPriceCellProps {
   valueFormatted: string;
   testId?: string;
   onClick?: (price?: string | number) => void;
+  className?: string;
 }
 
 export const PriceCell = memo(
   forwardRef<HTMLSpanElement, IPriceCellProps>(
-    ({ value, valueFormatted, testId, onClick }: IPriceCellProps, ref) => {
+    (
+      { value, valueFormatted, testId, onClick, className }: IPriceCellProps,
+      ref
+    ) => {
       if (!isNumeric(value)) {
         return (
           <span data-testid="price" ref={ref}>
@@ -27,6 +31,7 @@ export const PriceCell = memo(
             value={value}
             valueFormatted={valueFormatted}
             testId={testId || 'price'}
+            className={className}
           />
         </button>
       ) : (

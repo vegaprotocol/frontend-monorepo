@@ -1,9 +1,8 @@
 import type { MouseEvent } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { CellClickedEvent } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
@@ -16,25 +15,10 @@ interface MarketsContainerProps {
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<MarketMaybeWithData[] | null>(null);
-  const [dataCount, setDataCount] = useState(1);
-  const handleDataCount = useCallback(() => {
-    setDataCount(gridRef.current?.api?.getModel().getRowCount() ?? 0);
-  }, []);
-  const update = useCallback(
-    ({ data }: { data: MarketMaybeWithData[] | null }) => {
-      data && gridRef.current?.api?.setRowData(data);
-      dataRef.current = data;
-      handleDataCount();
-      return true;
-    },
-    [handleDataCount]
-  );
 
-  const { error, loading, reload } = useDataProvider({
+  const { data, error, reload } = useDataProvider({
     dataProvider,
     variables: undefined,
-    update,
   });
 
   useEffect(() => {
@@ -46,17 +30,11 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
     };
   }, [reload]);
 
-  const handleOnGridReady = useCallback(() => {
-    dataRef?.current && update({ data: dataRef.current });
-    handleDataCount();
-  }, [handleDataCount, update]);
-
   return (
     <div className="h-full relative">
       <MarketListTable
         ref={gridRef}
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
+        rowData={data}
         onCellClicked={(cellEvent: CellClickedEvent) => {
           const { data, column, event } = cellEvent;
           // prevent navigating to the market page if any of the below cells are clicked
@@ -79,19 +57,8 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           );
         }}
         onMarketClick={onSelect}
-        onFilterChanged={handleDataCount}
-        onGridReady={handleOnGridReady}
+        overlayNoRowsTemplate={error ? error.message : t('No markets')}
       />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={dataRef?.current || []}
-          noDataMessage={t('No markets')}
-          noDataCondition={() => !dataCount}
-          reload={reload}
-        />
-      </div>
     </div>
   );
 };

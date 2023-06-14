@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import { addDecimal, localLoggerFactory } from '@vegaprotocol/utils';
+import { addDecimal } from '@vegaprotocol/utils';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 import { t } from '@vegaprotocol/i18n';
 import {
   ApprovalStatus,

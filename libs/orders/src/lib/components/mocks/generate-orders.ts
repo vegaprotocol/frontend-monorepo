@@ -47,6 +47,7 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
               decimals: 1,
               symbol: 'XYZ',
               name: 'XYZ',
+              quantum: '1',
             },
             dataSourceSpecForTradingTermination: {
               __typename: 'DataSourceSpec',

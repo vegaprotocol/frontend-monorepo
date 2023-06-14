@@ -31,6 +31,7 @@
       "@vegaprotocol/i18n": ["libs/i18n/src/index.ts"],
       "@vegaprotocol/ledger": ["libs/ledger/src/index.ts"],
       "@vegaprotocol/liquidity": ["libs/liquidity/src/index.ts"],
+      "@vegaprotocol/logger": ["libs/logger/src/index.ts"],
       "@vegaprotocol/market-depth": ["libs/market-depth/src/index.ts"],
       "@vegaprotocol/markets": ["libs/markets/src/index.ts"],
       "@vegaprotocol/mock": ["libs/cypress/mock.ts"],

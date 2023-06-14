@@ -86,11 +86,12 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   });
 
   it('Newly created proposals list - shows title and portion of summary', function () {
-    const proposalPath = '/proposals/new-market-raw.json';
-    const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+    const proposalPath = 'src/fixtures/proposals/new-market-raw.json';
+    const proposalTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
     submitUniqueRawProposal({
       proposalBody: proposalPath,
-      enactmentTimestamp: enactmentTimestamp,
+      enactmentTimestamp: proposalTimestamp,
+      closingTimestamp: proposalTimestamp,
     }); // 3001-VOTE-052
     // 3001-VOTE-008
     // 3001-VOTE-034

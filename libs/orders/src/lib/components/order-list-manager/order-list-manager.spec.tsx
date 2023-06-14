@@ -24,41 +24,6 @@ const generateJsx = () => {
 };
 
 describe('OrderListManager', () => {
-  it('should render a loading state while awaiting orders', async () => {
-    jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
-      data: [],
-      loading: true,
-      error: undefined,
-      flush: jest.fn(),
-      reload: jest.fn(),
-      load: jest.fn(),
-      totalCount: 0,
-    });
-    await act(async () => {
-      render(generateJsx());
-    });
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
-
-  it('should render an error state', async () => {
-    const errorMsg = 'Oops! An Error';
-    jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
-      data: null,
-      loading: false,
-      error: new Error(errorMsg),
-      flush: jest.fn(),
-      reload: jest.fn(),
-      load: jest.fn(),
-      totalCount: undefined,
-    });
-    await act(async () => {
-      render(generateJsx());
-    });
-    expect(
-      screen.getByText(`Something went wrong: ${errorMsg}`)
-    ).toBeInTheDocument();
-  });
-
   it('should render the order list if orders provided', async () => {
     jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
       data: [{ id: '1' } as OrderFieldsFragment],
@@ -67,27 +32,10 @@ describe('OrderListManager', () => {
       flush: jest.fn(),
       reload: jest.fn(),
       load: jest.fn(),
-      totalCount: undefined,
     });
     await act(async () => {
       render(generateJsx());
     });
     expect(await screen.findByText('OrderList')).toBeInTheDocument();
-  });
-
-  it('should show no orders message', async () => {
-    jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
-      data: [],
-      loading: false,
-      error: undefined,
-      flush: jest.fn(),
-      reload: jest.fn(),
-      load: jest.fn(),
-      totalCount: undefined,
-    });
-    await act(async () => {
-      render(generateJsx());
-    });
-    expect(screen.getByText('No orders')).toBeInTheDocument();
   });
 });

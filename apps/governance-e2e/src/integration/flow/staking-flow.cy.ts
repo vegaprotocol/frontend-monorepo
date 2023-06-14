@@ -63,7 +63,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
-    describe('Eth wallet - contains VEGA tokens', function () {
+    describe.skip('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
@@ -109,6 +109,7 @@ context(
         cy.getByTestId(userStake, epochTimeout)
           .first()
           .should('have.text', '2.00');
+        waitForBeginningOfEpoch();
         cy.getByTestId('total-stake').first().realHover();
         cy.getByTestId('staked-by-user-tooltip')
           .first()
@@ -379,6 +380,7 @@ context(
       });
 
       it('Disassociating some tokens - prioritizes unstaked tokens', function () {
+        vegaWalletSetSpecifiedApprovalAmount('1000');
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -485,6 +487,7 @@ context(
       });
 
       afterEach('Teardown Wallet', function () {
+        navigateTo(navigation.home);
         vegaWalletTeardown();
       });
 

@@ -1,11 +1,11 @@
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useRef } from 'react';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { useRef } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
-import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
-import { useFillsList } from './use-fills-list';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import type * as Schema from '@vegaprotocol/types';
+import { fillsWithMarketProvider } from './fills-data-provider';
 
 interface FillsManagerProps {
   partyId: string;
@@ -21,81 +21,36 @@ export const FillsManager = ({
   storeKey,
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const scrolledToTop = useRef(true);
-  const {
-    data,
-    error,
-    loading,
-    addNewRows,
-    getRows,
-    reload,
-    makeBottomPlaceholders,
-  } = useFillsList({
-    partyId,
-    marketId,
+  const filter: Schema.TradesFilter | Schema.TradesSubscriptionFilter = {
+    partyIds: [partyId],
+  };
+  if (marketId) {
+    filter.marketIds = [marketId];
+  }
+  const { data, error } = useDataProvider({
+    dataProvider: fillsWithMarketProvider,
+    update: ({ data }) => {
+      if (data?.length && gridRef.current?.api) {
+        gridRef.current?.api.setRowData(data);
+        return true;
+      }
+      return false;
+    },
+    variables: { filter },
+  });
+  const bottomPlaceholderProps = useBottomPlaceholder({
     gridRef,
-    scrolledToTop,
   });
 
-  const checkBottomPlaceholder = useCallback(() => {
-    const rowCont = gridRef.current?.api?.getModel().getRowCount() ?? 0;
-    const lastRowIndex = gridRef.current?.api?.getLastDisplayedRow();
-    if (lastRowIndex && rowCont - 1 === lastRowIndex) {
-      const lastrow = gridRef.current?.api.getDisplayedRowAtIndex(lastRowIndex);
-      lastrow?.setRowHeight(50);
-      makeBottomPlaceholders(lastrow?.data);
-      gridRef.current?.api.onRowHeightChanged();
-      gridRef.current?.api.refreshInfiniteCache();
-    }
-  }, [makeBottomPlaceholders]);
-
-  const onBodyScrollEnd = useCallback(
-    (event: BodyScrollEndEvent) => {
-      if (event.top === 0) {
-        addNewRows();
-      }
-      checkBottomPlaceholder();
-    },
-    [addNewRows, checkBottomPlaceholder]
-  );
-
-  const onBodyScroll = useCallback((event: BodyScrollEvent) => {
-    scrolledToTop.current = event.top <= 0;
-  }, []);
-
-  const { isFullWidthRow, fullWidthCellRenderer, rowClassRules, getRowHeight } =
-    useBottomPlaceholder({
-      gridRef,
-    });
-
   return (
-    <div className="h-full relative">
-      <FillsTable
-        ref={gridRef}
-        partyId={partyId}
-        rowModelType="infinite"
-        datasource={{ getRows }}
-        onBodyScrollEnd={onBodyScrollEnd}
-        onBodyScroll={onBodyScroll}
-        onMarketClick={onMarketClick}
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
-        isFullWidthRow={isFullWidthRow}
-        fullWidthCellRenderer={fullWidthCellRenderer}
-        rowClassRules={rowClassRules}
-        getRowHeight={getRowHeight}
-        storeKey={storeKey}
-      />
-      <div className="pointer-events-none absolute inset-0">
-        <AsyncRenderer
-          loading={loading}
-          error={error}
-          data={data}
-          noDataMessage={t('No fills')}
-          noDataCondition={(data) => !(data && data.length)}
-          reload={reload}
-        />
-      </div>
-    </div>
+    <FillsTable
+      ref={gridRef}
+      rowData={data}
+      partyId={partyId}
+      onMarketClick={onMarketClick}
+      storeKey={storeKey}
+      {...bottomPlaceholderProps}
+      overlayNoRowsTemplate={error ? error.message : t('No fills')}
+    />
   );
 };

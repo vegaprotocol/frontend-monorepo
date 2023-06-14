@@ -1,15 +1,8 @@
-import type { RefObject } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { isNumeric } from '@vegaprotocol/utils';
-import { useFiveDaysAgo, useYesterday } from '@vegaprotocol/react-helpers';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { PriceChangeCell } from '@vegaprotocol/datagrid';
-import * as Schema from '@vegaprotocol/types';
-import type { CandleClose } from '@vegaprotocol/types';
-import { marketCandlesProvider } from '../../market-candles-provider';
-import type { MarketCandlesFieldsFragment } from '../../__generated__/market-candles';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
+import { useCandles } from '../../hooks/use-candles';
 
 interface Props {
   marketId?: string;
@@ -17,38 +10,16 @@ interface Props {
   initialValue?: string[];
   isHeader?: boolean;
   noUpdate?: boolean;
-  inViewRoot?: RefObject<Element>;
 }
 
 export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   initialValue,
-  inViewRoot,
 }: Props) => {
-  const [ref, inView] = useInView({ root: inViewRoot?.current });
-  const fiveDaysAgo = useFiveDaysAgo();
-  const yesterday = useYesterday();
-  const { data, error } = useThrottledDataProvider({
-    dataProvider: marketCandlesProvider,
-    variables: {
-      marketId: marketId || '',
-      interval: Schema.Interval.INTERVAL_I1H,
-      since: new Date(fiveDaysAgo).toISOString(),
-    },
-    skip: !marketId || !inView,
+  const { oneDayCandles, error, fiveDaysCandles } = useCandles({
+    marketId,
   });
-
-  const fiveDaysCandles = data?.filter((candle) => Boolean(candle));
-
-  const candles = fiveDaysCandles?.filter((candle) =>
-    isCandleLessThan24hOld(candle, yesterday)
-  );
-  const oneDayCandles =
-    candles
-      ?.map((candle) => candle?.close)
-      .filter((c): c is CandleClose => c !== null) || initialValue;
-
   if (
     fiveDaysCandles &&
     fiveDaysCandles.length > 0 &&
@@ -68,30 +39,18 @@ export const Last24hPriceChange = ({
           </span>
         }
       >
-        <span ref={ref}>{t('Unknown')} </span>
+        <span>-</span>
       </Tooltip>
     );
   }
 
   if (error || !isNumeric(decimalPlaces)) {
-    return <span ref={ref}>-</span>;
+    return <span>-</span>;
   }
   return (
     <PriceChangeCell
-      candles={oneDayCandles || []}
+      candles={oneDayCandles?.map((c) => c.close) || initialValue || []}
       decimalPlaces={decimalPlaces}
-      ref={ref}
     />
   );
-};
-
-export const isCandleLessThan24hOld = (
-  candle: MarketCandlesFieldsFragment | undefined,
-  yesterday: number
-) => {
-  if (!candle?.open) {
-    return false;
-  }
-  const candleDate = new Date(candle.close);
-  return candleDate > new Date(yesterday);
 };

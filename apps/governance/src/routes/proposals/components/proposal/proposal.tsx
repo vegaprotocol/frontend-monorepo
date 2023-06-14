@@ -102,7 +102,8 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
         </div>
 
         {proposal.terms.change.__typename !== 'NewMarket' &&
-          proposal.terms.change.__typename !== 'UpdateMarket' && (
+          proposal.terms.change.__typename !== 'UpdateMarket' &&
+          proposal.terms.change.__typename !== 'NewFreeform' && (
             <div className="mb-4">
               <ProposalTerms data={proposal.terms} />
             </div>

@@ -1,5 +1,6 @@
 import {
   closeDialog,
+  dissociateFromSecondWalletKey,
   navigateTo,
   navigation,
   turnTelemetryOff,
@@ -15,7 +16,11 @@ import {
   governanceProposalType,
   voteForProposal,
 } from '../../support/governance.functions';
-import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
+import {
+  ensureSpecifiedUnstakedTokensAreAssociated,
+  stakingPageAssociateTokens,
+  stakingPageDisassociateAllTokens,
+} from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
   vegaWalletSetSpecifiedApprovalAmount,
@@ -100,9 +105,9 @@ context(
             goToMakeNewProposal(governanceProposalType.RAW);
             submitUniqueRawProposal({ proposalBody: filePath, submit: false });
           });
-          cy.get(newProposalSubmitButton).click();
-          validateDialogContentMsg('PROPOSAL_ERROR_CLOSE_TIME_TOO_SOON');
         });
+      cy.get(newProposalSubmitButton).click();
+      validateDialogContentMsg('PROPOSAL_ERROR_CLOSE_TIME_TOO_SOON');
     });
 
     // 3007-PNEC-001 3007-PNEC-003
@@ -182,13 +187,17 @@ context(
         'have.text',
         'Proposal will fail if enactment is earlier than the voting deadline'
       );
-      cy.get(proposalDownloadBtn).click();
-      cy.wrap(
-        getDownloadedProposalJsonPath('vega-network-param-proposal-')
-      ).then((filePath) => {
-        goToMakeNewProposal(governanceProposalType.RAW);
-        submitUniqueRawProposal({ proposalBody: filePath, submit: false });
-      });
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-network-param-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath, submit: false });
+          });
+        });
       cy.get(newProposalSubmitButton).click();
       validateFeedBackMsg(
         'Invalid params: proposal_submission.terms.closing_timestamp (cannot be after enactment time)'
@@ -207,13 +216,17 @@ context(
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(getDownloadedProposalJsonPath('vega-new-market-proposal-')).then(
-        (filePath) => {
-          goToMakeNewProposal(governanceProposalType.RAW);
-          submitUniqueRawProposal({ proposalBody: filePath }); // 3003-PMAN-003
-        }
-      );
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-new-market-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath }); // 3003-PMAN-003
+          });
+        });
     });
 
     it('Unable to submit new market proposal with missing/invalid fields', function () {
@@ -233,13 +246,17 @@ context(
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(getDownloadedProposalJsonPath('vega-new-market-proposal-')).then(
-        (filePath) => {
-          goToMakeNewProposal(governanceProposalType.RAW);
-          submitUniqueRawProposal({ proposalBody: filePath, submit: false });
-        }
-      );
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-new-market-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath, submit: false });
+          });
+        });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       validateFeedBackMsg(errorMsg);
@@ -248,6 +265,9 @@ context(
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
     it('Unable to submit update market proposal without equity-like share in the market', function () {
+      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
+      cy.get('[data-testid="select-keypair-button"]').eq(0).click(); // switch to second wallet pub key
+      stakingPageAssociateTokens('1');
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
       cy.get(newProposalTitle).type('Test update market proposal - rejected');
       cy.get(newProposalDescription).type('E2E test for proposals');
@@ -259,17 +279,25 @@ context(
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(
-        getDownloadedProposalJsonPath('vega-update-market-proposal-')
-      ).then((filePath) => {
-        goToMakeNewProposal(governanceProposalType.RAW);
-        submitUniqueRawProposal({ proposalBody: filePath, submit: false });
-      });
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-update-market-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath, submit: false });
+          });
+        });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
       validateDialogContentMsg('PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE');
-      ensureSpecifiedUnstakedTokensAreAssociated('1');
+      closeDialog();
+      ethereumWalletConnect();
+      stakingPageDisassociateAllTokens();
+      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
+      cy.get('[data-testid="select-keypair-button"]').eq(0).click();
     });
 
     // 3002-PROP-020
@@ -291,13 +319,17 @@ context(
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(
-        getDownloadedProposalJsonPath('vega-update-market-proposal-')
-      ).then((filePath) => {
-        goToMakeNewProposal(governanceProposalType.RAW);
-        submitUniqueRawProposal({ proposalBody: filePath, submit: false });
-      });
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-update-market-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath, submit: false });
+          });
+        });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       validateFeedBackMsg(
@@ -335,13 +367,17 @@ context(
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(
-        getDownloadedProposalJsonPath('vega-update-market-proposal-')
-      ).then((filePath) => {
-        goToMakeNewProposal(governanceProposalType.RAW);
-        submitUniqueRawProposal({ proposalBody: filePath });
-      });
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-update-market-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath });
+          });
+        });
       navigateTo(navigation.proposals);
       cy.get('@EnactedMarketId').then((marketId) => {
         cy.contains(String(marketId).slice(0, 6))
@@ -390,14 +426,17 @@ context(
       cy.get(minVoteDeadline).click();
       cy.get(minValidationDeadline).click();
       cy.get(minEnactDeadline).click();
-
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(getDownloadedProposalJsonPath('vega-new-asset-proposal-')).then(
-        (filePath) => {
-          goToMakeNewProposal(governanceProposalType.RAW);
-          submitUniqueRawProposal({ proposalBody: filePath, submit: false }); // 3005-PASN-003
-        }
-      );
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-new-asset-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath, submit: false }); // 3005-PASN-003
+          });
+        });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       closeDialog();
       cy.get(newProposalSubmitButton).should('be.visible').click();
@@ -433,13 +472,17 @@ context(
       enterUpdateAssetProposalDetails();
       cy.get(minVoteDeadline).click();
       cy.get(minEnactDeadline).click();
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(
-        getDownloadedProposalJsonPath('vega-update-asset-proposal-')
-      ).then((filePath) => {
-        goToMakeNewProposal(governanceProposalType.RAW);
-        submitUniqueRawProposal({ proposalBody: filePath });
-      });
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-update-asset-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath });
+          });
+        });
       navigateTo(navigation.proposals);
       cy.get(openProposals).within(() => {
         cy.get(proposalType)
@@ -471,13 +514,17 @@ context(
       enterUpdateAssetProposalDetails();
       cy.get(maxVoteDeadline).click();
       cy.get(maxEnactDeadline).click();
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.wrap(
-        getDownloadedProposalJsonPath('vega-update-asset-proposal-')
-      ).then((filePath) => {
-        goToMakeNewProposal(governanceProposalType.RAW);
-        submitUniqueRawProposal({ proposalBody: filePath });
-      });
+      cy.get(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-update-asset-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath });
+          });
+        });
     });
 
     it('Unable to submit edit asset proposal with missing/invalid fields', function () {
@@ -523,6 +570,13 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath });
           });
         });
+    });
+
+    after('Disassociate from second wallet key if present', function () {
+      cy.reload();
+      waitForSpinner();
+      ethereumWalletConnect();
+      dissociateFromSecondWalletKey();
     });
 
     function validateDialogContentMsg(expectedMsg: string) {

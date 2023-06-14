@@ -1,6 +1,5 @@
 import debounce from 'lodash/debounce';
 import { useCallback, useEffect, useMemo } from 'react';
-import { localLoggerFactory } from '@vegaprotocol/utils';
 
 type ResizeObserverConfiguration = {
   debounceTime: number;
@@ -35,11 +34,7 @@ export function useResizeObserver(
 
   useEffect(() => {
     if (!observer || !target) return;
-    try {
-      observer.observe(target, options.config);
-    } catch (err) {
-      localLoggerFactory({ application: 'react-helpers' }).debug(err as Error);
-    }
+    observer.observe(target, options.config);
     return () => observer?.disconnect();
   }, [observer, options.config, target]);
 }
