@@ -25,3 +25,4 @@ export * from './lib/cells/grid-progress-bar';
 
 export * from './lib/ag-grid-update';
 export * from './lib/use-bottom-placeholder';
+export * from './lib/use-datagrid-store';

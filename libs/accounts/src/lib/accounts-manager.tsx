@@ -11,6 +11,10 @@ import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
+import { create } from 'zustand';
+import { persist, subscribeWithSelector } from 'zustand/middleware';
+import type { ColumnState } from 'ag-grid-community';
+import { useDataGridStore } from '@vegaprotocol/datagrid';
 
 const AccountBreakdown = ({
   assetId,
@@ -115,6 +119,13 @@ export const AccountManager = ({
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
+  const [gridStore, update] = useAccountStore((store) => [
+    store.gridStore,
+    store.update,
+  ]);
+  const gridStoreCallbacks = useDataGridStore(gridStore, (colState) => {
+    update(colState);
+  });
 
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
@@ -143,6 +154,7 @@ export const AccountManager = ({
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
+        {...gridStoreCallbacks}
       />
       <AccountBreakdownDialog
         assetId={breakdownAssetId}
@@ -155,3 +167,29 @@ export const AccountManager = ({
 };
 
 export default memo(AccountManager);
+
+type Store = {
+  filterModel?: { [key: string]: any };
+  columnState?: ColumnState[];
+};
+const useAccountStore = create<{
+  gridStore: Store;
+  update: (gridStore: Store) => void;
+}>()(
+  persist(
+    subscribeWithSelector((set) => ({
+      gridStore: {},
+      update: (newStore) => {
+        set((curr) => ({
+          gridStore: {
+            ...curr.gridStore,
+            ...newStore,
+          },
+        }));
+      },
+    })),
+    {
+      name: 'vega_accounts_store',
+    }
+  )
+);

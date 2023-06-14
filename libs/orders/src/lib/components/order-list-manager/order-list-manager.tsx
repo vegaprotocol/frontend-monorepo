@@ -2,11 +2,11 @@ import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
+import type { GridReadyEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
+import type { useDataGridStore } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import {
@@ -42,8 +42,8 @@ export interface OrderListManagerProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
-  enforceBottomPlaceholder?: boolean;
   filter?: Filter;
+  gridProps?: ReturnType<typeof useDataGridStore>;
 }
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
@@ -65,8 +65,8 @@ export const OrderListManager = ({
   onMarketClick,
   onOrderTypeClick,
   isReadOnly,
-  enforceBottomPlaceholder,
   filter,
+  gridProps,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
@@ -87,14 +87,6 @@ export const OrderListManager = ({
       }
       return false;
     },
-  });
-
-  const {
-    onFilterChanged: bottomPlaceholderOnFilterChanged,
-    ...bottomPlaceholderProps
-  } = useBottomPlaceholder({
-    gridRef,
-    disabled: !enforceBottomPlaceholder && !isReadOnly && !hasAmendableOrder,
   });
 
   const cancel = useCallback(
@@ -123,13 +115,6 @@ export const OrderListManager = ({
     [filter]
   );
 
-  const onFilterChanged = useCallback(
-    (event: FilterChangedEvent) => {
-      bottomPlaceholderOnFilterChanged?.();
-    },
-    [bottomPlaceholderOnFilterChanged]
-  );
-
   const cancelAll = useCallback(() => {
     create({
       orderCancellation: {},
@@ -148,11 +133,10 @@ export const OrderListManager = ({
           onEdit={setEditOrder}
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
-          onFilterChanged={onFilterChanged}
           isReadOnly={isReadOnly}
           suppressAutoSize
           overlayNoRowsTemplate={error ? error.message : t('No orders')}
-          {...bottomPlaceholderProps}
+          {...gridProps}
         />
       </div>
       {!isReadOnly && hasAmendableOrder && (

@@ -13,6 +13,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { AccountsContainer } from '../../components/accounts-container';
 import { NO_MARKET } from './constants';
 import { LiquidityContainer } from '../liquidity/liquidity';
+import { OrdersContainer } from '../../components/orders-container';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -83,7 +84,7 @@ export const TradingViews = {
   },
   orders: {
     label: 'All',
-    component: OrderListContainer,
+    component: OrdersContainer,
   },
   collateral: { label: 'Collateral', component: AccountsContainer },
   fills: { label: 'Fills', component: FillsContainer },
