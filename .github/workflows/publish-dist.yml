@@ -78,6 +78,10 @@ jobs:
               envName="mainnet"
               bucketName="static.vega.xyz"
             fi
+            if [[ "${{ matrix.app }}" = "ui-toolkit" ]]; then
+              envName="mainnet"
+              bucketName="ui.vega.rocks"
+            fi
           elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
             envName="mainnet"
           elif [[ "${{ matrix.app}}" = "trading" ]] && [[ "${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}" = "true" ]]; then
@@ -118,6 +122,9 @@ jobs:
           if [ "${{ matrix.app }}" = "trading" ]; then
             yarn nx export trading $flags || (yarn install && yarn nx export trading $flags)
             DIST_LOCATION=dist/apps/trading/exported
+          elif [ "${{ matrix.app }}" = "ui-toolkit" ]; then
+            NODE_ENV=production yarn nx run ui-toolkit:build-storybook
+            DIST_LOCATION=dist/storybook/ui-toolkit
           else
             yarn nx build ${{ matrix.app }} $flags || (yarn install && yarn nx build ${{ matrix.app }} $flags)
             DIST_LOCATION=dist/apps/${{ matrix.app }}
