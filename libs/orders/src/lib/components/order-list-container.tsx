@@ -10,7 +10,6 @@ export interface OrderListContainerProps {
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   enforceBottomPlaceholder?: boolean;
   filter?: Filter;
-  storeKey?: string;
 }
 
 export const OrderListContainer = ({
@@ -19,7 +18,6 @@ export const OrderListContainer = ({
   onOrderTypeClick,
   enforceBottomPlaceholder,
   filter,
-  storeKey,
 }: OrderListContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
 
@@ -36,7 +34,6 @@ export const OrderListContainer = ({
       onOrderTypeClick={onOrderTypeClick}
       isReadOnly={isReadOnly}
       enforceBottomPlaceholder={enforceBottomPlaceholder}
-      storeKey={storeKey}
     />
   );
 };

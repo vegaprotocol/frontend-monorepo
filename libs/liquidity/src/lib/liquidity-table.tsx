@@ -197,7 +197,6 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           tooltipComponent: TooltipCellComponent,
           sortable: true,
         }}
-        storeKey="liquidityProvisionTable"
         {...props}
         columnDefs={colDefs}
       />

@@ -102,7 +102,6 @@ interface AccountManagerProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  storeKey?: string;
 }
 
 export const AccountManager = ({
@@ -112,7 +111,6 @@ export const AccountManager = ({
   partyId,
   isReadOnly,
   pinnedAsset,
-  storeKey,
   onMarketClick,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
@@ -144,7 +142,6 @@ export const AccountManager = ({
         onClickBreakdown={setBreakdownAssetId}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
-        storeKey={storeKey}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
       />
       <AccountBreakdownDialog

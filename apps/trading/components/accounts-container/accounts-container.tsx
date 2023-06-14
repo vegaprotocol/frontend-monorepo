@@ -12,12 +12,10 @@ import { useDepositDialog } from '@vegaprotocol/deposits';
 export const AccountsContainer = ({
   pinnedAsset,
   hideButtons,
-  storeKey,
   onMarketClick,
 }: {
   pinnedAsset?: PinnedAsset;
   hideButtons?: boolean;
-  storeKey?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -51,7 +49,6 @@ export const AccountsContainer = ({
         onMarketClick={onMarketClick}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
-        storeKey={storeKey}
       />
       {!isReadOnly && !hideButtons && (
         <div className="flex gap-2 justify-end p-2 px-[11px] absolute lg:fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">

@@ -15,7 +15,6 @@ interface PositionsManagerProps {
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
   noBottomPlaceholder?: boolean;
-  storeKey?: string;
 }
 
 export const PositionsManager = ({
@@ -23,7 +22,6 @@ export const PositionsManager = ({
   onMarketClick,
   isReadOnly,
   noBottomPlaceholder,
-  storeKey,
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
@@ -74,7 +72,6 @@ export const PositionsManager = ({
         onMarketClick={onMarketClick}
         onClose={onClose}
         isReadOnly={isReadOnly}
-        storeKey={storeKey}
         multipleKeys={partyIds.length > 1}
         overlayNoRowsTemplate={error ? error.message : t('No positions')}
       />

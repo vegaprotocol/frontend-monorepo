@@ -11,14 +11,12 @@ interface FillsManagerProps {
   partyId: string;
   marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  storeKey?: string;
 }
 
 export const FillsManager = ({
   partyId,
   marketId,
   onMarketClick,
-  storeKey,
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const filter: Schema.TradesFilter | Schema.TradesSubscriptionFilter = {
@@ -48,7 +46,6 @@ export const FillsManager = ({
       rowData={data}
       partyId={partyId}
       onMarketClick={onMarketClick}
-      storeKey={storeKey}
       {...bottomPlaceholderProps}
       overlayNoRowsTemplate={error ? error.message : t('No fills')}
     />

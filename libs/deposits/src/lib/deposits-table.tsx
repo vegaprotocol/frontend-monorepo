@@ -27,7 +27,6 @@ export const DepositsTable = forwardRef<
       defaultColDef={{ resizable: true }}
       style={{ width: '100%', height: '100%' }}
       suppressCellFocus={true}
-      storeKey="depositTable"
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />
