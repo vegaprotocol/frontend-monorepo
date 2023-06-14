@@ -1,6 +1,9 @@
 import { BigNumber } from '../../../lib/bignumber';
 import { RowAccountTypes } from '../shared-rewards-table-assets/shared-rewards-table-assets';
-import type { RewardFieldsFragment } from '../home/__generated__/Rewards';
+import type {
+  EpochRewardSummaryFieldsFragment,
+  RewardFieldsFragment,
+} from '../home/__generated__/Rewards';
 import type { AccountType } from '@vegaprotocol/types';
 import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 
@@ -31,13 +34,14 @@ const emptyRowAccountTypes = accountTypes.map((type) => [
 
 export const generateEpochIndividualRewardsList = ({
   rewards,
-  rewardsSummaries,
   epochId,
+  epochRewardSummaries,
   page = 1,
   size = 10,
 }: {
   rewards: RewardFieldsFragment[];
   epochId: number;
+  epochRewardSummaries: EpochRewardSummaryFieldsFragment[];
   page?: number;
   size?: number;
 }) => {
@@ -55,6 +59,7 @@ export const generateEpochIndividualRewardsList = ({
   const epochIndividualRewards = rewards.reduce((acc, reward) => {
     const epochId = reward.epoch.id;
     const assetName = reward.asset.name;
+    const assetId = reward.asset.id;
     const assetDecimals = reward.asset.decimals;
     const rewardType = reward.rewardType;
     const amount = reward.amount;
@@ -70,6 +75,14 @@ export const generateEpochIndividualRewardsList = ({
     }
 
     const epoch = acc.get(epochId);
+
+    // matchingTotalReward is the total awarded for all users for the reward type in the epoch of the asset
+    const matchingTotalRewardAmount = epochRewardSummaries.find(
+      (summary) =>
+        summary.epoch === Number(epochId) &&
+        summary.assetId === assetId &&
+        summary.rewardType === rewardType
+    )?.amount;
 
     let asset = epoch?.rewards.find((r) => r.asset === assetName);
 
@@ -87,22 +100,24 @@ export const generateEpochIndividualRewardsList = ({
       asset.rewardTypes[rewardType] = { amount, percentageOfTotal };
     } else {
       const previousAmount = asset.rewardTypes[rewardType]?.amount;
-      const previousPercentageOfTotal =
-        asset.rewardTypes[rewardType]?.percentageOfTotal;
+      const newAmount = previousAmount
+        ? new BigNumber(previousAmount).plus(amount).toString()
+        : amount;
 
       asset.rewardTypes[rewardType] = {
-        amount: previousAmount
-          ? new BigNumber(previousAmount).plus(amount).toString()
-          : amount,
-        percentageOfTotal: previousPercentageOfTotal
-          ? new BigNumber(previousPercentageOfTotal)
-              .plus(percentageOfTotal)
+        amount: newAmount,
+        percentageOfTotal: matchingTotalRewardAmount
+          ? new BigNumber(newAmount)
+              .dividedBy(matchingTotalRewardAmount)
+              .multipliedBy(100)
               .toString()
-          : percentageOfTotal,
+          : // this should never be reached, if there's an individual reward there should
+            // always be a reward total from the api too, but set it as a fallback just in case
+            percentageOfTotal,
       };
     }
 
-    // totalAmount is the sum of all rewardTypes amounts
+    // totalAmount is the sum of all individual rewardTypes amounts
     asset.totalAmount = Object.values(asset.rewardTypes).reduce(
       (sum, rewardType) => {
         return new BigNumber(sum).plus(rewardType.amount).toString();

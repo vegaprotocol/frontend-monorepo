@@ -48,7 +48,7 @@ export const EpochIndividualRewards = ({
     return removePaginationWrapper(data.party.rewardsConnection.edges);
   }, [data]);
 
-  const rewardsSummaries = useMemo(() => {
+  const epochRewardSummaries = useMemo(() => {
     if (!data?.epochRewardSummaries) return [];
 
     return removePaginationWrapper(data.epochRewardSummaries.edges);
@@ -58,12 +58,12 @@ export const EpochIndividualRewards = ({
     if (!data?.party) return [];
     return generateEpochIndividualRewardsList({
       rewards,
-      rewardsSummaries,
       epochId,
+      epochRewardSummaries,
       page,
       size: EPOCHS_PAGE_SIZE,
     });
-  }, [data?.party, epochId, page, rewards]);
+  }, [data?.party, epochId, epochRewardSummaries, page, rewards]);
 
   const refetchData = useCallback(
     async (toPage?: number) => {
