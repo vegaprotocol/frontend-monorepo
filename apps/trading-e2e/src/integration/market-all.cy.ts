@@ -1,7 +1,10 @@
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import type { MarketsQuery } from '@vegaprotocol/markets';
 import * as Schema from '@vegaprotocol/types';
 
 const rowSelector =
   '[data-testid="tab-all-markets"] .ag-center-cols-container .ag-row';
+const colInstrumentCode = '[col-id="tradableInstrument.instrument.code"]';
 
 describe('markets all table', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -60,7 +63,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
     // 6001-MARK-035
     cy.get(rowSelector)
       .first()
-      .find('[col-id="tradableInstrument.instrument.code"]')
+      .find(colInstrumentCode)
       .should('have.text', 'SOLUSD');
 
     //  6001-MARK-036
@@ -155,6 +158,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
   });
 
   it('able to open and sort full market list - market page', () => {
+    // 6001-MARK-064
     const ExpectedSortedMarkets = [
       'AAPL.MF21',
       'BTCUSD.MF21',
@@ -167,8 +171,38 @@ describe('markets all table', { tags: '@smoke' }, () => {
     cy.get('.ag-header-cell-label').contains('Market').click(); // sort by market name
     for (let i = 0; i < ExpectedSortedMarkets.length; i++) {
       cy.get(`[row-index=${i}]`)
-        .find('[col-id="tradableInstrument.instrument.code"]')
+        .find(colInstrumentCode)
         .should('have.text', ExpectedSortedMarkets[i]);
     }
+  });
+
+  it.only('can drag and drop columns', () => {
+    // 6001-MARK-065
+    cy.get('.ag-overlay-loading-wrapper').should('not.be.visible');
+    cy.get(colInstrumentCode)
+      .realMouseDown()
+      .realMouseMove(700, 15)
+      .realMouseUp();
+    cy.get(colInstrumentCode).should(($element) => {
+      const attributeValue = $element.attr('aria-colindex');
+      expect(attributeValue).not.to.equal('1');
+    });
+  });
+});
+
+describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
+  before(() => {
+    cy.mockTradingPage();
+    const markets: MarketsQuery = {};
+    cy.mockGQL((req) => {
+      aliasGQLQuery(req, 'Markets', markets);
+    });
+    cy.mockSubscription();
+    cy.visit('/#/markets/all');
+  });
+
+  it('can see no markets message', () => {
+    // 6001-MARK-048
+    cy.getByTestId('tab-all-markets').should('contain.text', 'No markets');
   });
 });

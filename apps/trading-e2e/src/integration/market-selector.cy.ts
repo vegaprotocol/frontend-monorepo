@@ -25,6 +25,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
     cy.wait('@MarketsCandles');
   });
 
+  // 6001-MARK-066
   it('can toggle the sidebar', () => {
     cy.getByTestId('market-selector').should('be.visible');
     cy.getByTestId('sidebar-toggle').click();
@@ -84,7 +85,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
       });
   });
 
-  // 6001-MARK-27
+  // 6001-MARK-027
   it('can use the filter options', () => {
     // product type
     cy.getByTestId('product-Spot').click();
@@ -94,7 +95,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
     cy.getByTestId('product-Future').click();
     cy.getByTestId(list).find('a').should('have.length', 4);
 
-    // 6001-MARK-29
+    // 6001-MARK-029
     cy.getByTestId(searchInput).clear().type('btc');
     cy.getByTestId(list).find('a').should('have.length', 2);
     cy.getByTestId(list).find('a').eq(1).contains('BTCUSD.MF21');
