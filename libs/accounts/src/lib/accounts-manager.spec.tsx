@@ -7,12 +7,20 @@ import {
 } from '@testing-library/react';
 import * as helpers from '@vegaprotocol/data-provider';
 import { AccountManager } from './accounts-manager';
+import type { useDataGridStore } from '@vegaprotocol/datagrid';
 
 const mockedUseDataProvider = jest.fn();
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn(() => mockedUseDataProvider()),
 }));
+
+const gridProps = {
+  onGridReady: jest.fn(),
+  onColumnResized: jest.fn(),
+  onFilterChanged: jest.fn(),
+  onSortChanged: jest.fn(),
+} as unknown as ReturnType<typeof useDataGridStore>;
 
 describe('AccountManager', () => {
   describe('when rerender', () => {
@@ -43,6 +51,7 @@ describe('AccountManager', () => {
           partyId="partyOne"
           onClickAsset={jest.fn}
           isReadOnly={false}
+          gridProps={gridProps}
         />
       );
       expect(
@@ -55,6 +64,7 @@ describe('AccountManager', () => {
             partyId="partyTwo"
             onClickAsset={jest.fn}
             isReadOnly={false}
+            gridProps={gridProps}
           />
         );
       });
@@ -72,6 +82,7 @@ describe('AccountManager', () => {
             partyId="partyOne"
             onClickAsset={jest.fn}
             isReadOnly={false}
+            gridProps={gridProps}
           />
         );
         rerenderer = rerender;
@@ -85,6 +96,7 @@ describe('AccountManager', () => {
             partyId="partyOne"
             onClickAsset={jest.fn}
             isReadOnly={false}
+            gridProps={gridProps}
           />
         );
       });
@@ -110,6 +122,7 @@ describe('AccountManager', () => {
           partyId="partyOne"
           onClickAsset={jest.fn}
           isReadOnly={false}
+          gridProps={gridProps}
         />
       );
     });
