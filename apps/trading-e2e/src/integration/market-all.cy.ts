@@ -176,7 +176,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
     }
   });
 
-  it.only('can drag and drop columns', () => {
+  it('can drag and drop columns', () => {
     // 6001-MARK-065
     cy.get('.ag-overlay-loading-wrapper').should('not.be.visible');
     cy.get(colInstrumentCode)

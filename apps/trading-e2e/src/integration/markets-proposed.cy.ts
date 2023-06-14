@@ -195,7 +195,7 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
     checkSorting('state', stateColDefault, stateColAsc, stateColDesc);
   });
 
-  it.only('can drag and drop columns', () => {
+  it('can drag and drop columns', () => {
     // 6001-MARK-063
     cy.get(colMarketId).realMouseDown().realMouseMove(700, 15).realMouseUp();
     cy.get(colMarketId).should(($element) => {

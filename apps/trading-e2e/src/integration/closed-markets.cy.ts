@@ -459,7 +459,7 @@ describe('no closed markets', { tags: '@smoke', testIsolation: true }, () => {
     cy.get('[data-testid="Closed markets"]').click();
   });
 
-  it.only('can see no markets message', () => {
+  it('can see no markets message', () => {
     // 6001-MARK-034
     cy.getByTestId('tab-closed-markets').should('contain.text', 'No markets');
   });
