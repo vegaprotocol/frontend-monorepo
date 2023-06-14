@@ -152,12 +152,12 @@ jobs:
               projects+=' "multisig-signer" '
             fi
             if echo "$affected" | grep -q static; then
-              echo "Static are affected"
+              echo "static is affected"
               echo "Deploying static on s3"
               projects+=' "static" '
             fi
             if echo "$affected" | grep -q ui-toolkit; then
-              echo "ui-toolkit are affected"
+              echo "ui-toolkit is affected"
               echo "Deploying ui-toolkit on s3"
               projects+=' "ui-toolkit" '
             fi
