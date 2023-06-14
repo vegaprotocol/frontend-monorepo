@@ -47,12 +47,11 @@ export const WithdrawalsTable = (
     (store) => store.create
   );
 
-  const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
-      defaultColDef={{ resizable: true }}
-      style={{ width: '100%', height: '100%' }}
+      defaultColDef={{ flex: 1 }}
+      style={{ width: '100%', height: 'calc(100% - 50px)' }}
       components={{
         RecipientCell,
         StatusCell,
@@ -61,7 +60,6 @@ export const WithdrawalsTable = (
       }}
       suppressCellFocus
       ref={gridRef}
-      {...bottomPlaceholderProps}
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />

@@ -55,7 +55,6 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
       ref={ref}
       defaultColDef={{
         flex: 1,
-        resizable: true,
       }}
       {...props}
     >

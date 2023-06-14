@@ -1,33 +1,44 @@
 import { useDataGridStore } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
-import type { Filter } from '@vegaprotocol/orders';
+import { Filter } from '@vegaprotocol/orders';
 import { OrderListManager } from '@vegaprotocol/orders';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { ColumnState } from 'ag-grid-community';
+import {
+  useMarketClickHandler,
+  useMarketLiquidityClickHandler,
+} from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 
-export interface OrderListContainerProps {
+export interface OrderContainerProps {
   marketId?: string;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   filter?: Filter;
 }
 
-export const OrdersContainer = ({
-  marketId,
-  onMarketClick,
-  onOrderTypeClick,
-  filter,
-}: OrderListContainerProps) => {
+export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const [gridStore, update] = useOrderListStore((store) => [
-    store.gridStore,
-    store.update,
-  ]);
+  const onMarketClick = useMarketClickHandler(true);
+  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
+  const [gridStore, update] = useOrderListStore((store) => {
+    switch (filter) {
+      case Filter.Open: {
+        return [store.open, store.update];
+      }
+      case Filter.Closed: {
+        return [store.closed, store.update];
+      }
+      case Filter.Rejected: {
+        return [store.rejected, store.update];
+      }
+      default: {
+        return [store.all, store.update];
+      }
+    }
+  });
   const gridStoreCallbacks = useDataGridStore(gridStore, (colState) => {
-    update(colState);
+    update(filter, colState);
   });
 
   if (!pubKey) {
@@ -48,24 +59,63 @@ export const OrdersContainer = ({
 };
 
 type Store = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filterModel?: { [key: string]: any };
   columnState?: ColumnState[];
 };
 
 const useOrderListStore = create<{
-  gridStore: Store;
-  update: (gridStore: Store) => void;
+  open: Store;
+  closed: Store;
+  rejected: Store;
+  all: Store;
+  update: (filter: Filter | undefined, gridStore: Store) => void;
 }>()(
   persist(
-    subscribeWithSelector((set) => ({
-      gridStore: {},
-      update: (newStore) => {
-        set((curr) => ({
-          gridStore: {
-            ...curr.gridStore,
-            ...newStore,
-          },
-        }));
+    subscribeWithSelector((set, get) => ({
+      open: {},
+      closed: {},
+      rejected: {},
+      all: {},
+      update: (filter, newStore) => {
+        switch (filter) {
+          case Filter.Open: {
+            set((curr) => ({
+              open: {
+                ...curr.open,
+                ...newStore,
+              },
+            }));
+            return;
+          }
+          case Filter.Closed: {
+            set((curr) => ({
+              closed: {
+                ...curr.closed,
+                ...newStore,
+              },
+            }));
+            return;
+          }
+          case Filter.Rejected: {
+            set((curr) => ({
+              rejected: {
+                ...curr.rejected,
+                ...newStore,
+              },
+            }));
+            return;
+          }
+          case undefined: {
+            set((curr) => ({
+              all: {
+                ...curr.all,
+                ...newStore,
+              },
+            }));
+            return;
+          }
+        }
       },
     })),
     {

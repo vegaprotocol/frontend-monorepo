@@ -1,10 +1,9 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { OrderListContainer, Filter } from '@vegaprotocol/orders';
-import type { OrderListContainerProps } from '@vegaprotocol/orders';
-import { FillsContainer } from '@vegaprotocol/fills';
-import { PositionsContainer } from '@vegaprotocol/positions';
+import { Filter } from '@vegaprotocol/orders';
+import { FillsContainer } from '../../components/fills-container';
+import { PositionsContainer } from '../../components/positions-container';
 import { TradesContainer } from '@vegaprotocol/trades';
 import type { ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
@@ -12,7 +11,8 @@ import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { AccountsContainer } from '../../components/accounts-container';
 import { NO_MARKET } from './constants';
-import { LiquidityContainer } from '../liquidity/liquidity';
+import { LiquidityContainer } from '../../components/liquidity-container';
+import type { OrderContainerProps } from '../../components/orders-container';
 import { OrdersContainer } from '../../components/orders-container';
 
 type MarketDependantView =
@@ -66,20 +66,20 @@ export const TradingViews = {
   positions: { label: 'Positions', component: PositionsContainer },
   activeOrders: {
     label: 'Active',
-    component: (props: OrderListContainerProps) => (
-      <OrderListContainer {...props} filter={Filter.Open} />
+    component: (props: OrderContainerProps) => (
+      <OrdersContainer {...props} filter={Filter.Open} />
     ),
   },
   closedOrders: {
     label: 'Closed',
-    component: (props: OrderListContainerProps) => (
-      <OrderListContainer {...props} filter={Filter.Closed} />
+    component: (props: OrderContainerProps) => (
+      <OrdersContainer {...props} filter={Filter.Closed} />
     ),
   },
   rejectedOrders: {
     label: 'Rejected',
-    component: (props: OrderListContainerProps) => (
-      <OrderListContainer {...props} filter={Filter.Rejected} />
+    component: (props: OrderContainerProps) => (
+      <OrdersContainer {...props} filter={Filter.Rejected} />
     ),
   },
   orders: {

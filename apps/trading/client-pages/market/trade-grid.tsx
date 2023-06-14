@@ -19,10 +19,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  useMarketClickHandler,
-  useMarketLiquidityClickHandler,
-} from '../../lib/hooks/use-market-click-handler';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { HeaderTitle } from '../../components/header';
 import {
@@ -49,7 +46,6 @@ const MarketBottomPanel = memo(
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'bottom' });
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
-    const onOrderTypeClick = useMarketLiquidityClickHandler();
 
     return 'xxxl' === screenSize ? (
       <ResizableGrid
@@ -69,9 +65,6 @@ const MarketBottomPanel = memo(
                   <TradingViews.orders.component
                     marketId={marketId}
                     filter={Filter.Open}
-                    onMarketClick={onMarketClick}
-                    onOrderTypeClick={onOrderTypeClick}
-                    enforceBottomPlaceholder
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -80,9 +73,6 @@ const MarketBottomPanel = memo(
                   <TradingViews.orders.component
                     marketId={marketId}
                     filter={Filter.Closed}
-                    onMarketClick={onMarketClick}
-                    onOrderTypeClick={onOrderTypeClick}
-                    enforceBottomPlaceholder
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -91,20 +81,12 @@ const MarketBottomPanel = memo(
                   <TradingViews.orders.component
                     marketId={marketId}
                     filter={Filter.Rejected}
-                    onMarketClick={onMarketClick}
-                    onOrderTypeClick={onOrderTypeClick}
-                    enforceBottomPlaceholder
                   />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('All')}>
                 <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    onMarketClick={onMarketClick}
-                    onOrderTypeClick={onOrderTypeClick}
-                    enforceBottomPlaceholder
-                  />
+                  <TradingViews.orders.component marketId={marketId} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
@@ -129,7 +111,6 @@ const MarketBottomPanel = memo(
                 <VegaWalletContainer>
                   <TradingViews.positions.component
                     onMarketClick={onMarketClick}
-                    noBottomPlaceholder
                   />
                 </VegaWalletContainer>
               </Tab>
@@ -159,9 +140,6 @@ const MarketBottomPanel = memo(
               <TradingViews.orders.component
                 marketId={marketId}
                 filter={Filter.Open}
-                onMarketClick={onMarketClick}
-                onOrderTypeClick={onOrderTypeClick}
-                enforceBottomPlaceholder
               />
             </VegaWalletContainer>
           </Tab>
@@ -170,9 +148,6 @@ const MarketBottomPanel = memo(
               <TradingViews.orders.component
                 marketId={marketId}
                 filter={Filter.Closed}
-                onMarketClick={onMarketClick}
-                onOrderTypeClick={onOrderTypeClick}
-                enforceBottomPlaceholder
               />
             </VegaWalletContainer>
           </Tab>
@@ -181,20 +156,12 @@ const MarketBottomPanel = memo(
               <TradingViews.orders.component
                 marketId={marketId}
                 filter={Filter.Rejected}
-                onMarketClick={onMarketClick}
-                onOrderTypeClick={onOrderTypeClick}
-                enforceBottomPlaceholder
               />
             </VegaWalletContainer>
           </Tab>
           <Tab id="orders" name={t('All')}>
             <VegaWalletContainer>
-              <TradingViews.orders.component
-                marketId={marketId}
-                onMarketClick={onMarketClick}
-                onOrderTypeClick={onOrderTypeClick}
-                enforceBottomPlaceholder
-              />
+              <TradingViews.orders.component marketId={marketId} />
             </VegaWalletContainer>
           </Tab>
           <Tab id="fills" name={t('Fills')}>

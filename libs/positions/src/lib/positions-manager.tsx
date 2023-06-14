@@ -8,20 +8,21 @@ import {
   positionsMetricsProvider,
   positionsMarketsProvider,
 } from './positions-data-providers';
+import type { useDataGridStore } from '@vegaprotocol/datagrid';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface PositionsManagerProps {
   partyIds: string[];
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
-  noBottomPlaceholder?: boolean;
+  gridProps: ReturnType<typeof useDataGridStore>;
 }
 
 export const PositionsManager = ({
   partyIds,
   onMarketClick,
   isReadOnly,
-  noBottomPlaceholder,
+  gridProps,
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
@@ -74,6 +75,7 @@ export const PositionsManager = ({
         isReadOnly={isReadOnly}
         multipleKeys={partyIds.length > 1}
         overlayNoRowsTemplate={error ? error.message : t('No positions')}
+        {...gridProps}
       />
     </div>
   );

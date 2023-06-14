@@ -10,6 +10,7 @@ import { LedgerTable } from './ledger-table';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type * as Types from '@vegaprotocol/types';
 import { LedgerExportLink } from './ledger-export-link';
+import type { useDataGridStore } from '@vegaprotocol/datagrid';
 
 export interface Filter {
   vegaTime?: {
@@ -24,7 +25,13 @@ const defaultFilter = {
   },
 };
 
-export const LedgerManager = ({ partyId }: { partyId: string }) => {
+export const LedgerManager = ({
+  partyId,
+  gridProps,
+}: {
+  partyId: string;
+  gridProps: ReturnType<typeof useDataGridStore>;
+}) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
@@ -33,7 +40,7 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
       partyId,
       dateRange: filter?.vegaTime?.value,
       pagination: {
-        first: 5000,
+        first: 10,
       },
     }),
     [partyId, filter?.vegaTime?.value]
@@ -45,18 +52,23 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
     skip: !variables.partyId,
   });
 
-  const onFilterChanged = useCallback((event: FilterChangedEvent) => {
-    const updatedFilter = { ...defaultFilter, ...event.api.getFilterModel() };
-    setFilter(updatedFilter);
-  }, []);
+  const onFilterChanged = useCallback(
+    (event: FilterChangedEvent) => {
+      const updatedFilter = { ...defaultFilter, ...event.api.getFilterModel() };
+      setFilter(updatedFilter);
+      gridProps.onFilterChanged(event);
+    },
+    [gridProps]
+  );
 
   return (
     <div className="h-full relative">
       <LedgerTable
         ref={gridRef}
         rowData={data}
-        onFilterChanged={onFilterChanged}
         overlayNoRowsTemplate={error ? error.message : t('No entries')}
+        {...gridProps}
+        onFilterChanged={onFilterChanged}
       />
       {data && <LedgerExportLink entries={data} partyId={partyId} />}
     </div>

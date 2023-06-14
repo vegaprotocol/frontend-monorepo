@@ -61,8 +61,6 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
             buttons: ['reset'],
           },
         }}
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
         {...props}
       >
         <AgGridColumn
