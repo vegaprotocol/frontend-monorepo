@@ -11,6 +11,15 @@ const rowSelectorLiquidityInactive =
 const marketSummaryBlock = 'header-summary';
 const itemValue = 'item-value';
 const itemHeader = 'item-header';
+const colCommitmentAmount = '[col-id="commitmentAmount"]';
+const colAverageEntryValuation = '[col-id="averageEntryValuation"]';
+const colEquityLikeShare = '[col-id="equityLikeShare"]';
+const colFee = '[col-id="fee"]';
+const colCommitmentAmount_1 = '[col-id="commitmentAmount_1"]';
+const colBalance = '[col-id="balance"]';
+const colStatus = '[col-id="status"]';
+const colCreatedAt = '[col-id="createdAt"] button';
+const colUpdatedAt = '[col-id="updatedAt"] button';
 
 const headers = [
   'Party',
@@ -62,48 +71,36 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
 
     cy.get(rowSelector)
       .first()
-      .find('[col-id="commitmentAmount"]')
+      .find(colCommitmentAmount)
       .should('have.text', '4,000.00');
 
     cy.get(rowSelector)
       .first()
-      .find('[col-id="equityLikeShare"]')
+      .find(colEquityLikeShare)
       .should('have.text', '100.00%');
 
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="fee"]')
-      .should('have.text', '0.09%');
+    cy.get(rowSelector).first().find(colFee).should('have.text', '0.09%');
 
     cy.get(rowSelector)
       .first()
-      .find('[col-id="averageEntryValuation"]')
+      .find(colAverageEntryValuation)
       .should('have.text', '685,852.93692');
 
     cy.get(rowSelector)
       .first()
-      .find('[col-id="commitmentAmount_1"]')
+      .find(colCommitmentAmount_1)
       .should('have.text', '4,000.00');
 
     cy.get(rowSelector)
       .first()
-      .find('[col-id="balance"]')
+      .find(colBalance)
       .scrollIntoView()
       .should('have.text', '4,000.00');
 
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="status"]')
-      .should('have.text', 'Active');
+    cy.get(rowSelector).first().find(colStatus).should('have.text', 'Active');
 
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="createdAt"] button')
-      .should('not.be.empty');
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="updatedAt"] button')
-      .should('not.be.empty');
+    cy.get(rowSelector).first().find(colCreatedAt).should('not.be.empty');
+    cy.get(rowSelector).first().find(colUpdatedAt).should('not.be.empty');
   });
   // #4079
   it.skip('liquidity status column should be sorted properly', () => {
@@ -228,46 +225,46 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="commitmentAmount"]')
+        .find(colCommitmentAmount)
         .should('have.text', '4,000.00');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="equityLikeShare"]')
+        .find(colEquityLikeShare)
         .should('have.text', '100.00%');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="fee"]')
+        .find(colFee)
         .should('have.text', '0.09%');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="averageEntryValuation"]')
+        .find(colAverageEntryValuation)
         .should('have.text', '685,852.93692');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="commitmentAmount_1"]')
+        .find(colCommitmentAmount_1)
         .should('have.text', '4,000.00');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="balance"]')
+        .find(colBalance)
         .should('have.text', '4,000.00');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="status"]')
+        .find(colStatus)
         .should('have.text', 'Active');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="createdAt"] button')
+        .find(colCreatedAt)
         .should('not.be.empty');
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="updatedAt"] button')
+        .find(colUpdatedAt)
         .should('not.be.empty');
     });
 
@@ -284,46 +281,46 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="commitmentAmount"]')
+        .find(colCommitmentAmount)
         .should('have.text', '4,000.00');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="equityLikeShare"]')
+        .find(colEquityLikeShare)
         .should('have.text', '100.00%');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="fee"]')
+        .find(colFee)
         .should('have.text', '0.40%');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="averageEntryValuation"]')
+        .find(colAverageEntryValuation)
         .should('have.text', '685,852.93692');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="commitmentAmount_1"]')
+        .find(colCommitmentAmount_1)
         .should('have.text', '4,000.00');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="balance"]')
+        .find(colBalance)
         .should('have.text', '2,000.00');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="status"]')
+        .find(colStatus)
         .should('have.text', 'Pending');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="createdAt"] button')
+        .find(colCreatedAt)
         .should('not.be.empty');
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="updatedAt"] button')
+        .find(colUpdatedAt)
         .should('not.be.empty');
     });
   });
