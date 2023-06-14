@@ -450,3 +450,17 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .should('have.text', 'View on Explorer');
   });
 });
+
+describe('no closed markets', { tags: '@smoke', testIsolation: true }, () => {
+  before(() => {
+    cy.mockTradingPage();
+    cy.mockSubscription();
+    cy.visit('/#/markets/all');
+    cy.get('[data-testid="Closed markets"]').click();
+  });
+
+  it('can see no markets message', () => {
+    // 6001-MARK-034
+    cy.getByTestId('tab-closed-markets').should('contain.text', 'No markets');
+  });
+});

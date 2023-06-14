@@ -38,7 +38,6 @@ type Data = Item[];
 type QueryData = {
   data: Data;
   pageInfo?: PageInfo;
-  totalCount?: number;
 };
 
 type CombinedData = {
@@ -115,7 +114,6 @@ const paginatedSubscribe = makeDataProvider<
     first,
     append: defaultAppend,
     getPageInfo: (r) => r?.pageInfo ?? null,
-    getTotalCount: (r) => r?.totalCount,
   },
 });
 
@@ -373,32 +371,10 @@ describe('data provider', () => {
     subscription.unsubscribe();
   });
 
-  it('fills data with nulls if pagination is enabled', async () => {
-    const totalCount = 1000;
-    const data: Item[] = new Array(first).fill(null).map((v, i) => ({
-      cursor: i.toString(),
-      node: {
-        id: i.toString(),
-      },
-    }));
-    const subscription = paginatedSubscribe(callback, client, variables);
-    await resolveQuery({
-      data,
-      totalCount,
-      pageInfo: {
-        hasNextPage: true,
-      },
-    });
-    expect(callback.mock.calls[1][0].data?.length).toBe(totalCount);
-    subscription.unsubscribe();
-  });
-
-  it('loads requested data blocks and inserts data with total count', async () => {
-    const totalCount = 1000;
+  it('loads requested data blocks', async () => {
     const subscription = paginatedSubscribe(callback, client, variables);
     await resolveQuery({
       data: generateData(),
-      totalCount,
       pageInfo: {
         hasNextPage: true,
         endCursor: '100',
@@ -407,168 +383,25 @@ describe('data provider', () => {
 
     // load next page
     subscription.load && subscription.load();
-    let lastQueryArgs =
+    const lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
-    expect(lastQueryArgs?.variables?.pagination).toEqual({
+    expect(lastQueryArgs?.variables?.['pagination']).toEqual({
       after: '100',
       first,
     });
     await resolveQuery({
       data: generateData(100),
       pageInfo: {
-        hasNextPage: true,
+        hasNextPage: false,
         endCursor: '200',
       },
     });
-
-    // load page with skip
-    subscription.load && subscription.load(500, 600);
-    lastQueryArgs =
-      clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
-    expect(lastQueryArgs?.variables?.pagination).toEqual({
-      after: '200',
-      first,
-      skip: 300,
-    });
-    await resolveQuery({
-      data: generateData(500),
-      pageInfo: {
-        hasNextPage: true,
-        endCursor: '600',
-      },
-    });
-
-    // load in the gap
-    subscription.load && subscription.load(400, 500);
-    lastQueryArgs =
-      clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
-    expect(lastQueryArgs?.variables?.pagination).toEqual({
-      after: '200',
-      first,
-      skip: 200,
-    });
-    await resolveQuery({
-      data: generateData(400),
-      pageInfo: {
-        hasNextPage: true,
-        endCursor: '500',
-      },
-    });
-
-    // load page after last block
-    subscription.load && subscription.load(700, 800);
-    lastQueryArgs =
-      clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
-    expect(lastQueryArgs?.variables?.pagination).toEqual({
-      after: '600',
-      first,
-      skip: 100,
-    });
-    await resolveQuery({
-      data: generateData(700),
-      pageInfo: {
-        hasNextPage: true,
-        endCursor: '800',
-      },
-    });
-
-    // load last page shorter than expected
-    subscription.load && subscription.load(950, 1050);
-    lastQueryArgs =
-      clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
-    expect(lastQueryArgs?.variables?.pagination).toEqual({
-      after: '800',
-      first,
-      skip: 150,
-    });
-    await resolveQuery({
-      data: generateData(950, 20),
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: '970',
-      },
-    });
-    let lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
-    expect(lastCallbackArgs[0].totalCount).toBe(970);
 
     // load next page when pageInfo.hasNextPage === false
     const clientQueryCallsLength = clientQuery.mock.calls.length;
     subscription.load && subscription.load();
     expect(clientQuery.mock.calls.length).toBe(clientQueryCallsLength);
 
-    // load last page longer than expected
-    subscription.load && subscription.load(960, 1000);
-    lastQueryArgs =
-      clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
-    expect(lastQueryArgs?.variables?.pagination).toEqual({
-      after: '960',
-      first,
-    });
-    await resolveQuery({
-      data: generateData(960, 40),
-      pageInfo: {
-        hasNextPage: true,
-        endCursor: '1000',
-      },
-    });
-    lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
-    expect(lastCallbackArgs[0].totalCount).toBe(1000);
-
-    subscription.unsubscribe();
-  });
-
-  it('loads requested data blocks and inserts data without totalCount', async () => {
-    const totalCount = undefined;
-    const subscription = paginatedSubscribe(callback, client, variables);
-    await resolveQuery({
-      data: generateData(),
-      totalCount,
-      pageInfo: {
-        hasNextPage: true,
-        endCursor: '100',
-      },
-    });
-    let lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
-    expect(lastCallbackArgs[0].totalCount).toBe(undefined);
-
-    // load next page
-    subscription.load && subscription.load();
-    await resolveQuery({
-      data: generateData(100),
-      pageInfo: {
-        hasNextPage: true,
-        endCursor: '200',
-      },
-    });
-    lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
-    expect(lastCallbackArgs[0].totalCount).toBe(undefined);
-
-    // load last page
-    subscription.load && subscription.load();
-    await resolveQuery({
-      data: generateData(200, 50),
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: '250',
-      },
-    });
-    lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
-    expect(lastCallbackArgs[0].totalCount).toBe(250);
-    subscription.unsubscribe();
-  });
-
-  it('sets total count when first page has no next page', async () => {
-    const subscription = paginatedSubscribe(callback, client, variables);
-    await resolveQuery({
-      data: generateData(),
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: '100',
-      },
-    });
-    const lastCallbackArgs =
-      callback.mock.calls[callback.mock.calls.length - 1];
-    expect(lastCallbackArgs[0].totalCount).toBe(100);
     subscription.unsubscribe();
   });
 
@@ -752,7 +585,7 @@ describe('derived data provider', () => {
     subscription.load && subscription.load();
     const lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
-    expect(lastQueryArgs?.variables?.pagination).toEqual({
+    expect(lastQueryArgs?.variables?.['pagination']).toEqual({
       after: '100',
       first,
     });

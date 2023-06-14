@@ -1,16 +1,16 @@
-import { checkSorting } from '@vegaprotocol/cypress';
+import { aliasGQLQuery, checkSorting } from '@vegaprotocol/cypress';
+import type { ProposalsListQuery } from '@vegaprotocol/proposals';
 
 const rowSelector =
   '[data-testid="tab-proposed-markets"] .ag-center-cols-container .ag-row';
+const colMarketId = '[col-id="market"]';
 
 describe('markets proposed table', { tags: '@smoke' }, () => {
-  beforeEach(() => {
-    cy.clearLocalStorage().then(() => {
-      cy.mockTradingPage();
-      cy.mockSubscription();
-      cy.visit('/#/markets/all');
-      cy.get('[data-testid="Proposed markets"]').click();
-    });
+  before(() => {
+    cy.mockTradingPage();
+    cy.mockSubscription();
+    cy.visit('/#/markets/all');
+    cy.get('[data-testid="Proposed markets"]').click();
   });
 
   it('can see table headers', () => {
@@ -35,10 +35,7 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
 
   it('renders markets correctly', () => {
     // 6001-MARK-049
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="market"]')
-      .should('have.text', 'ETHUSD');
+    cy.get(rowSelector).first().find(colMarketId).should('have.text', 'ETHUSD');
 
     //  6001-MARK-050
     cy.get(rowSelector)
@@ -119,6 +116,7 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
       );
   });
   it('proposed markets tab should be sorted properly', () => {
+    // 6001-MARK-062
     cy.get('[data-testid="Proposed markets"]').click({ force: true });
     const marketColDefault = [
       'ETHUSD',
@@ -195,5 +193,32 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
       'Open',
     ];
     checkSorting('state', stateColDefault, stateColAsc, stateColDesc);
+  });
+
+  it('can drag and drop columns', () => {
+    // 6001-MARK-063
+    cy.get(colMarketId).realMouseDown().realMouseMove(700, 15).realMouseUp();
+    cy.get(colMarketId).should(($element) => {
+      const attributeValue = $element.attr('aria-colindex');
+      expect(attributeValue).not.to.equal('1');
+    });
+  });
+});
+
+describe('no markets proposed', { tags: '@smoke', testIsolation: true }, () => {
+  before(() => {
+    cy.mockTradingPage();
+    const proposal: ProposalsListQuery = {};
+    cy.mockGQL((req) => {
+      aliasGQLQuery(req, 'ProposalsList', proposal);
+    });
+    cy.mockSubscription();
+    cy.visit('/#/markets/all');
+    cy.get('[data-testid="Proposed markets"]').click();
+  });
+
+  it('can see no markets message', () => {
+    // 6001-MARK-061
+    cy.getByTestId('tab-proposed-markets').should('contain.text', 'No markets');
   });
 });

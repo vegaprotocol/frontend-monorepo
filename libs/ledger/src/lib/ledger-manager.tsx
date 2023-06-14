@@ -2,10 +2,12 @@ import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
 import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useMemo } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
-import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
+import { ledgerEntriesProvider } from './ledger-entries-data-provider';
+import type { LedgerEntriesQueryVariables } from './__generated__/LedgerEntries';
 import { LedgerTable } from './ledger-table';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import type * as Types from '@vegaprotocol/types';
 import { LedgerExportLink } from './ledger-export-link';
 
@@ -26,10 +28,21 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
-  const { data, error } = useLedgerEntriesDataProvider({
-    partyId,
-    filter,
-    gridRef,
+  const variables = useMemo<LedgerEntriesQueryVariables>(
+    () => ({
+      partyId,
+      dateRange: filter?.vegaTime?.value,
+      pagination: {
+        first: 5000,
+      },
+    }),
+    [partyId, filter?.vegaTime?.value]
+  );
+
+  const { data, error } = useDataProvider({
+    dataProvider: ledgerEntriesProvider,
+    variables,
+    skip: !variables.partyId,
   });
 
   const onFilterChanged = useCallback((event: FilterChangedEvent) => {
@@ -37,20 +50,15 @@ export const LedgerManager = ({ partyId }: { partyId: string }) => {
     setFilter(updatedFilter);
   }, []);
 
-  // allow passing undefined to grid so that loading state is shown
-  const extractedData = data?.map((item) => item.node);
-
   return (
     <div className="h-full relative">
       <LedgerTable
         ref={gridRef}
-        rowData={extractedData}
+        rowData={data}
         onFilterChanged={onFilterChanged}
         overlayNoRowsTemplate={error ? error.message : t('No entries')}
       />
-      {extractedData && (
-        <LedgerExportLink entries={extractedData} partyId={partyId} />
-      )}
+      {data && <LedgerExportLink entries={data} partyId={partyId} />}
     </div>
   );
 };

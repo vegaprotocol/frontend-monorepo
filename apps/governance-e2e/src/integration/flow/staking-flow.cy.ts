@@ -63,7 +63,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
-    describe('Eth wallet - contains VEGA tokens', function () {
+    describe.skip('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {

@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
-import { AsyncRenderer, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Icon, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
@@ -10,6 +12,7 @@ import { ProposalJson } from '../proposal-json';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
 import { ListAsset } from '../list-asset';
+import Routes from '../../../routes';
 import { ProposalMarketData } from '../proposal-market-data';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
@@ -35,6 +38,7 @@ export const Proposal = ({
   restData,
   newMarketData,
 }: ProposalProps) => {
+  const { t } = useTranslation();
   const { params, loading, error } = useNetworkParams([
     NetworkParams.governance_proposal_market_minVoterBalance,
     NetworkParams.governance_proposal_updateMarket_minVoterBalance,
@@ -87,6 +91,15 @@ export const Proposal = ({
   return (
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
+        <div
+          className="flex items-center gap-1"
+          data-testid="all-proposals-link"
+        >
+          <Icon name={'chevron-left'} />
+          <Link className="underline" to={Routes.PROPOSALS}>
+            {t('AllProposals')}
+          </Link>
+        </div>
         <ProposalHeader proposal={proposal} isListItem={false} />
 
         <div id="details">

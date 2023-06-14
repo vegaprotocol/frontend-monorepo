@@ -146,7 +146,7 @@ export const DealTicket = ({
   });
   const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
   const orders = activeOrders
-    ? activeOrders.map<OrderInfo>(({ node: order }) => ({
+    ? activeOrders.map<OrderInfo>((order) => ({
         isMarketOrder: order.type === OrderType.TYPE_MARKET,
         price: order.price,
         remaining: order.remaining,
@@ -217,6 +217,8 @@ export const DealTicket = ({
       });
       return;
     }
+
+    // No error found above clear the error in case it was active on a previous render
     clearErrors('summary');
   }, [
     marketState,
@@ -480,7 +482,6 @@ export const DealTicket = ({
           onClickCollateral={onClickCollateral}
         />
         <DealTicketButton
-          disabled={Object.keys(errors).length >= 1 || isReadOnly}
           variant={
             order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'
           }
@@ -562,7 +563,7 @@ const SummaryMessage = memo(
               text: t('Connect wallet'),
               action: openVegaWalletDialog,
               dataTestId: 'order-connect-wallet',
-              size: 'md',
+              size: 'sm',
             }}
           />
         </div>

@@ -16,7 +16,7 @@ export const OrderTypeCell = ({
   data: order,
   onClick,
 }: OrderTypeCellProps) => {
-  const id = order ? order.market.id : '';
+  const id = order?.market?.id ?? '';
 
   const label = useMemo(() => {
     if (!order) {

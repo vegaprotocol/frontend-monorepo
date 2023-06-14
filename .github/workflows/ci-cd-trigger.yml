@@ -135,22 +135,37 @@ jobs:
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
-          projects_e2e=${projects_e2e%?}
-          projects_e2e=[${projects_e2e// /,}]
-          projects=$(echo $projects_e2e | sed 's|-e2e||g')
-          if echo "$affected" | grep -q multisig-signer; then
-            echo "Tools are affected"
-            # tools are only applicable to check previews or deploy from develop to mainnet
-            if [[ "${{ github.event_name }}" = "pull_request" ]]; then
+          projects="$(echo $projects_e2e | sed 's|-e2e||g')"
+          if [[ "${{ github.event_name }}" = "pull_request" ]]; then
+            if echo "$affected" | grep -q multisig-signer; then
+              echo "Tools are affected"
+              # tools are only applicable to check previews or deploy from develop to mainnet
               echo "Deploying tools on preview"
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
-              projects+='"multisig-signer" '
+              projects+=' "multisig-signer" '
             fi
-            if [[ "${{ github.ref }}" =~ .*develop$ ]]; then
+          elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
+            if echo "$affected" | grep -q multisig-signer; then
+              echo "Tools are affected"
+              # tools are only applicable to check previews or deploy from develop to mainnet
               echo "Deploying tools on s3"
-              projects+='"multisig-signer" '
+              projects+=' "multisig-signer" '
+            fi
+            if echo "$affected" | grep -q static; then
+              echo "static is affected"
+              echo "Deploying static on s3"
+              projects+=' "static" '
+            fi
+            if echo "$affected" | grep -q ui-toolkit; then
+              echo "ui-toolkit is affected"
+              echo "Deploying ui-toolkit on s3"
+              projects+=' "ui-toolkit" '
             fi
           fi
+
+          projects_e2e=${projects_e2e%?}
+          projects_e2e=[${projects_e2e// /,}]
+          projects=[${projects// /,}]
           echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
           echo PROJECTS=$projects >> $GITHUB_ENV
           echo PREVIEW_GOVERNANCE=$preview_governance >> $GITHUB_ENV

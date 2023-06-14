@@ -84,7 +84,7 @@ describe('useMarketOracle', () => {
             type: 'eth_address',
           },
         ],
-        oracle: {},
+        oracle: { eth_address: 'eth_address' },
       } as Provider,
       {
         proofs: [
@@ -93,7 +93,7 @@ describe('useMarketOracle', () => {
             type: 'eth_address',
           },
         ],
-        oracle: {},
+        oracle: { eth_address: address },
       } as Provider,
     ];
     mockOracleProofs.mockReturnValueOnce({
@@ -113,7 +113,9 @@ describe('useMarketOracle', () => {
             type: 'public_key',
           },
         ],
-        oracle: {},
+        oracle: {
+          public_key: 'public_key',
+        },
       } as Provider,
       {
         proofs: [
@@ -122,7 +124,9 @@ describe('useMarketOracle', () => {
             type: 'public_key',
           },
         ],
-        oracle: {},
+        oracle: {
+          public_key: key,
+        },
       } as Provider,
     ];
     mockOracleProofs.mockReturnValueOnce({

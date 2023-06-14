@@ -1,6 +1,7 @@
 import { useRef } from 'react';
-import type { LocalLogger, LoggerConf } from '@vegaprotocol/utils';
-import { localLoggerFactory, SentryInit } from '@vegaprotocol/utils';
+import type { LocalLogger, LoggerConf } from '../lib/local-logger';
+import { localLoggerFactory } from '../lib/local-logger';
+import { SentryInit } from '../lib/sentry-utils';
 
 export interface LoggerProps extends LoggerConf {
   dsn?: string;

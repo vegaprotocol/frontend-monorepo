@@ -11,12 +11,9 @@ import {
   LiquidityProviderFeeShareDocument,
   LiquidityProvisionsDocument,
   LiquidityProvisionsUpdateDocument,
-  MarketLpDocument,
 } from './__generated__/MarketLiquidity';
 
 import type {
-  MarketLpQuery,
-  MarketLpQueryVariables,
   LiquidityProviderFeeShareFieldsFragment,
   LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareQueryVariables,
@@ -78,19 +75,6 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   },
 });
 
-export const marketLiquidityDataProvider = makeDataProvider<
-  MarketLpQuery,
-  MarketLpQuery,
-  never,
-  never,
-  MarketLpQueryVariables
->({
-  query: MarketLpDocument,
-  getData: (responseData: MarketLpQuery | null) => {
-    return responseData;
-  },
-});
-
 export const liquidityFeeShareDataProvider = makeDataProvider<
   LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareFieldsFragment[],
@@ -109,15 +93,11 @@ export type Filter = { partyId?: string; active?: boolean };
 export const lpAggregatedDataProvider = makeDerivedDataProvider<
   LiquidityProvisionData[],
   never,
-  MarketLpQueryVariables & { filter?: Filter }
+  LiquidityProvisionsQueryVariables & { filter?: Filter }
 >(
   [
     (callback, client, variables) =>
       liquidityProvisionsDataProvider(callback, client, {
-        marketId: variables.marketId,
-      }),
-    (callback, client, variables) =>
-      marketLiquidityDataProvider(callback, client, {
         marketId: variables.marketId,
       }),
     (callback, client, variables) =>
@@ -126,12 +106,11 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider<
       }),
   ],
   (
-    [liquidityProvisions, marketLiquidity, liquidityFeeShare],
+    [liquidityProvisions, liquidityFeeShare],
     { filter }
   ): LiquidityProvisionData[] => {
     return getLiquidityProvision(
       liquidityProvisions,
-      marketLiquidity,
       liquidityFeeShare,
       filter
     );
@@ -162,7 +141,6 @@ export const matchFilter = (
 
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
-  marketLiquidity: MarketLpQuery,
   liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[],
   filter?: Filter
 ): LiquidityProvisionData[] => {
@@ -183,7 +161,6 @@ export const getLiquidityProvision = (
       return true;
     })
     .map((lp) => {
-      const market = marketLiquidity?.market;
       const feeShare = liquidityFeeShare.find(
         (f) => f.party.id === lp.party.id
       );
@@ -205,9 +182,6 @@ export const getLiquidityProvision = (
         ...lp,
         averageEntryValuation: feeShare?.averageEntryValuation,
         equityLikeShare: feeShare?.equityLikeShare,
-        assetDecimalPlaces:
-          market?.tradableInstrument.instrument.product.settlementAsset
-            .decimals,
         balance,
       };
     });
