@@ -32,7 +32,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '200000000',
+    balance: '100000000',
     market: null,
     asset: {
       // tEURO
@@ -43,7 +43,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '3000000',
+    balance: '100000000',
     asset: {
       // tDAI
       __typename: 'Asset',
@@ -53,7 +53,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-    balance: '200000000',
+    balance: '1000',
     market: {
       __typename: 'Market',
       id: 'market-2',
@@ -67,7 +67,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-    balance: '3000000',
+    balance: '1000',
     market: {
       __typename: 'Market',
       id: 'market-0',
@@ -81,7 +81,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-    balance: '2000000',
+    balance: '100000',
     market: {
       __typename: 'Market',
       id: 'market-3',
@@ -107,7 +107,7 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '155555555',
+    balance: '100000001',
     market: null,
     asset: {
       // tBTC (sepolia)
@@ -118,34 +118,12 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '166666666',
+    balance: '100000002',
     market: null,
     asset: {
       // tBTC (test)
       __typename: 'Asset',
       id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-    },
-  },
-  {
-    __typename: 'AccountBalance',
-    type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '4000000',
-    market: null,
-    asset: {
-      // tUSDC (quantum is 1000000)
-      __typename: 'Asset',
-      id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
-    },
-  },
-  {
-    __typename: 'AccountBalance',
-    type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
-    balance: '1000000',
-    market: null,
-    asset: {
-      // tUSDC (quantum is 1000000)
-      __typename: 'Asset',
-      id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
     },
   },
 ];

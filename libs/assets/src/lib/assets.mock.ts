@@ -98,7 +98,7 @@ const assetFields: AssetListFieldsFragment[] = [
     id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
     symbol: 'tUSDC',
     name: 'Sepolia tUSDC',
-    decimals: 6,
+    decimals: 5,
     status: Types.AssetStatus.STATUS_ENABLED,
     source: {
       contractAddress: '0x444b9aDA947130Fc320a144cd22bC1641e5c9d81',
@@ -106,6 +106,6 @@ const assetFields: AssetListFieldsFragment[] = [
       withdrawThreshold: '50',
       __typename: 'ERC20',
     },
-    quantum: '1000000',
+    quantum: '1',
   },
 ];
