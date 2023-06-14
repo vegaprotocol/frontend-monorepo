@@ -107,7 +107,7 @@ export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
       <div className="flex items-center gap-1">
         <Icon name={'chevron-left'} />
         <Link className="underline" to={Routes.VALIDATORS}>
-          {t('All validators')}
+          {t('AllValidators')}
         </Link>
       </div>
       <Heading
