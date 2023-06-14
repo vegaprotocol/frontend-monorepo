@@ -58,18 +58,15 @@ query Rewards(
     }
   }
   epochRewardSummaries(
-      filter: {
-        fromEpoch: $fromEpoch
-        toEpoch: $toEpoch
-        }
-        pagination: $rewardsPagination
-      ) {
-          edges {
-            node {
-              ...EpochRewardSummaryFields
-            }
-          }
-        }
+    filter: { fromEpoch: $fromEpoch, toEpoch: $toEpoch }
+    pagination: $rewardsPagination
+  ) {
+    edges {
+      node {
+        ...EpochRewardSummaryFields
+      }
+    }
+  }
 }
 
 query EpochAssetsRewards(
