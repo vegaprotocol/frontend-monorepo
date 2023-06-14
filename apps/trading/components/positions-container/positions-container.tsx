@@ -1,9 +1,9 @@
 import { useDataGridStore } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
+import { PositionsManager } from '@vegaprotocol/positions';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { ColumnState } from 'ag-grid-community';
-import { PositionsManager } from '@vegaprotocol/positions-manager';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 
