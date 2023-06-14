@@ -596,7 +596,7 @@
   "noPercentage": "No percentage",
   "proposalJson": "Full proposal JSON",
   "proposalDetails": "Proposal details",
-  "marketDetails": "Market details",
+  "marketSpecification": "Market specification",
   "viewMarketJson": "View market JSON",
   "proposalDescription": "Description",
   "currentlySetTo": "Currently expected to ",
