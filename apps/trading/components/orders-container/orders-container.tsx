@@ -46,10 +46,12 @@ export const OrdersContainer = ({
     />
   );
 };
+
 type Store = {
   filterModel?: { [key: string]: any };
   columnState?: ColumnState[];
 };
+
 const useOrderListStore = create<{
   gridStore: Store;
   update: (gridStore: Store) => void;
