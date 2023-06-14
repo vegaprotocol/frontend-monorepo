@@ -251,7 +251,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             node,
           }: VegaICellRendererParams<AccountFields, 'asset.id'>) => {
             if (!assetId) return null;
-            if (node.rowPinned && node.data?.balance === '0') {
+            if (node.rowPinned && node.data?.total === '0') {
               return (
                 <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
                   <Button
