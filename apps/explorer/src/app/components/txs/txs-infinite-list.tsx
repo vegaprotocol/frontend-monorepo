@@ -9,7 +9,6 @@ import EmptyList from '../empty-list/empty-list';
 import { Loader } from '@vegaprotocol/ui-toolkit';
 
 interface TxsInfiniteListProps {
-  filters: string;
   hasMoreTxs: boolean;
   areTxsLoading: boolean | undefined;
   txs: BlockExplorerTransactionResult[] | undefined;
@@ -61,7 +60,6 @@ const Item = ({ index, style, isLoading, error }: ItemProps) => {
 };
 
 export const TxsInfiniteList = ({
-  filters,
   hasMoreTxs,
   areTxsLoading,
   txs,
@@ -75,15 +73,13 @@ export const TxsInfiniteList = ({
   const hasMountedRef = useRef(false);
 
   useEffect(() => {
-    // We only need to reset cached items when "sortOrder" changes.
-    // This effect will run on mount too; there's no need to reset in that case.
     if (hasMountedRef.current) {
       if (infiniteLoaderRef.current) {
         infiniteLoaderRef.current.resetloadMoreItemsCache(true);
       }
     }
     hasMountedRef.current = true;
-  }, [filters]);
+  }, [loadMoreTxs]);
 
   if (!txs) {
     if (!areTxsLoading) {
@@ -97,8 +93,6 @@ export const TxsInfiniteList = ({
       return <Loader />;
     }
   }
-
-  console.dir(txs);
 
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasMoreTxs ? txs.length + 1 : txs.length;

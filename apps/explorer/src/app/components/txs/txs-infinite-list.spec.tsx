@@ -40,7 +40,6 @@ describe('Txs infinite list', () => {
   it('should display a "no items" message when no items provided', () => {
     render(
       <TxsInfiniteList
-        filters=""
         txs={undefined}
         areTxsLoading={false}
         hasMoreTxs={false}
@@ -58,7 +57,6 @@ describe('Txs infinite list', () => {
     const txs = generateTxs(1);
     render(
       <TxsInfiniteList
-        filters=""
         txs={txs}
         areTxsLoading={false}
         hasMoreTxs={false}
@@ -76,7 +74,6 @@ describe('Txs infinite list', () => {
     render(
       <MemoryRouter>
         <TxsInfiniteList
-          filters=""
           txs={txs}
           areTxsLoading={false}
           hasMoreTxs={false}
@@ -102,7 +99,6 @@ describe('Txs infinite list', () => {
     render(
       <MemoryRouter>
         <TxsInfiniteList
-          filters=""
           txs={txs}
           areTxsLoading={false}
           hasMoreTxs={true}
@@ -122,7 +118,6 @@ describe('Txs infinite list', () => {
     render(
       <MemoryRouter>
         <TxsInfiniteList
-          filters=""
           txs={txs}
           areTxsLoading={false}
           hasMoreTxs={false}
@@ -142,7 +137,6 @@ describe('Txs infinite list', () => {
     render(
       <MemoryRouter>
         <TxsInfiniteList
-          filters=""
           txs={txs}
           areTxsLoading={false}
           hasMoreTxs={true}

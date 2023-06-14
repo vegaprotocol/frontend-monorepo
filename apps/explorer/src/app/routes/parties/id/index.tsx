@@ -83,7 +83,6 @@ const Party = () => {
       <SubHeading>{t('Transactions')}</SubHeading>
       {!error && txsData ? (
         <TxsInfiniteList
-          filters={'all'}
           hasMoreTxs={hasMoreTxs}
           areTxsLoading={loading}
           txs={txsData}
