@@ -12,6 +12,8 @@ import {
   OrderType,
   Side,
 } from '@vegaprotocol/types';
+import type { OrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
+import type { WithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -19,7 +21,9 @@ jest.mock('./utils', () => ({
 }));
 
 describe('useVegaTransactionStore', () => {
-  const orderCancellation: OrderCancellationBody = { orderCancellation: {} };
+  const orderCancellation: OrderCancellationBody = {
+    orderCancellation: {} as OrderCancellation,
+  };
   const withdrawSubmission: WithdrawSubmissionBody = {
     withdrawSubmission: {
       amount: 'amount',
@@ -29,7 +33,7 @@ describe('useVegaTransactionStore', () => {
           receiverAddress: 'receiverAddress',
         },
       },
-    },
+    } as unknown as WithdrawSubmission,
   };
 
   const orderAmendment: OrderAmendmentBody = {

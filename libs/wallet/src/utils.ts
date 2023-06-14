@@ -4,12 +4,10 @@ import { OrderTimeInForce, OrderType, AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
-import type {
-  OrderAmendment,
-  OrderSubmission,
-  Transaction,
-  Transfer,
-} from './connectors';
+import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
+import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
+import type { OrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
+import type { Transaction } from './connectors';
 import type { Exact } from 'type-fest';
 
 /**

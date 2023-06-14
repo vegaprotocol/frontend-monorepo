@@ -1,17 +1,16 @@
 import { WalletClientError } from '@vegaprotocol/wallet-client';
-import type {
-  OrderSubmission,
-  LiquidityProvisionSubmission as LiquidityProvisionBody,
-  DelegateSubmission,
-  UndelegateSubmission,
-  OrderCancellation,
-  OrderAmendment,
-  VoteSubmission,
-  WithdrawSubmission,
-  ProposalSubmission,
-  BatchMarketInstructions,
-  Transfer,
-} from '@vegaprotocol/protos/dist/vega/commands/v1';
+
+import type { LiquidityProvisionSubmission as LiquidityProvisionBody } from '@vegaprotocol/protos/dist/vega/commands/v1/LiquidityProvisionSubmission';
+import type { DelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/DelegateSubmission';
+import type { UndelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/UndelegateSubmission';
+import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
+import type { OrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
+import type { OrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
+import type { VoteSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/VoteSubmission';
+import type { WithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
+import type { ProposalSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/ProposalSubmission';
+import type { BatchMarketInstructions } from '@vegaprotocol/protos/dist/vega/commands/v1/BatchMarketInstructions';
+import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
 
 export interface LiquidityProvisionSubmission {
   liquidityProvisionSubmission: LiquidityProvisionBody;
