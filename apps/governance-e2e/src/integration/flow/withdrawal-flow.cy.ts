@@ -92,71 +92,75 @@ context(
       });
     });
 
-    it('Able to withdraw asset: -eth wallet connected -withdraw funds button', function () {
-      // fill in withdrawal form
-      cy.getByTestId(withdraw).should('be.visible').click();
-      cy.getByTestId(withdrawalForm, txTimeout).within(() => {
-        cy.getByTestId('select-asset').click();
-        cy.get('select')
-          .select(usdtSelectValue, { force: true })
-          .should('have.value', usdtSelectValue);
-        cy.getByTestId(balanceAvailable, txTimeout).should('exist');
-        cy.getByTestId(withdrawalThreshold).should(
-          'have.text',
-          '100,000.00000T'
-        );
-        cy.getByTestId(delayTime).should('have.text', 'None');
-        cy.getByTestId(amountInput).click().type('120');
-        cy.getByTestId(submitWithdrawalButton).click();
-      });
-      // assert withdrawal request
-      cy.getByTestId(toast)
-        .first(txTimeout)
-        .should('contain.text', 'Funds unlocked')
-        .within(() => {
-          cy.getByTestId('external-link').should('exist');
-          cy.getByTestId(toastPanel).should(
-            'contain.text',
-            'Withdraw 120.00 tUSDC'
+    it(
+      'Able to withdraw asset: -eth wallet connected -withdraw funds button',
+      { tags: '@smoke' },
+      function () {
+        // fill in withdrawal form
+        cy.getByTestId(withdraw).should('be.visible').click();
+        cy.getByTestId(withdrawalForm, txTimeout).within(() => {
+          cy.getByTestId('select-asset').click();
+          cy.get('select')
+            .select(usdtSelectValue, { force: true })
+            .should('have.value', usdtSelectValue);
+          cy.getByTestId(balanceAvailable, txTimeout).should('exist');
+          cy.getByTestId(withdrawalThreshold).should(
+            'have.text',
+            '100,000.00000T'
           );
-          cy.getByTestId(toastCompleteWithdrawal).click();
-          cy.getByTestId(toastClose).click();
+          cy.getByTestId(delayTime).should('have.text', 'None');
+          cy.getByTestId(amountInput).click().type('120');
+          cy.getByTestId(submitWithdrawalButton).click();
         });
-      // withdrawal complete
-      cy.getByTestId(toast)
-        .first(txTimeout)
-        .should('contain.text', 'The withdrawal has been approved.')
-        .within(() => {
-          cy.getByTestId(toastPanel).should(
-            'contain.text',
-            'Withdraw 120.00 tUSDC'
-          );
-        });
-      cy.getByTestId(toast)
-        .last(txTimeout)
-        .should('contain.text', 'Transaction confirmed')
-        .within(() => {
-          cy.getByTestId('external-link').should('exist');
-        });
-      // withdrawal history for complete withdrawal displayed
-      cy.get(tableWithdrawnStatus)
-        .eq(1, txTimeout)
-        .should('have.text', 'Completed')
-        .parent()
-        .within(() => {
-          cy.get(tableAssetSymbol).should('have.text', usdcSymbol);
-          cy.get(tableAmount).should('have.text', '120.00');
-          cy.get(tableReceiverAddress)
-            .find('a')
-            .should('have.attr', 'href')
-            .and('contain', 'https://sepolia.etherscan.io/address/');
-          cy.get(tableWithdrawnTimeStamp).should('not.be.empty');
-          cy.get(tableTxHash)
-            .find('a')
-            .should('have.attr', 'href')
-            .and('contain', 'https://sepolia.etherscan.io/tx/');
-        });
-    });
+        // assert withdrawal request
+        cy.getByTestId(toast)
+          .first(txTimeout)
+          .should('contain.text', 'Funds unlocked')
+          .within(() => {
+            cy.getByTestId('external-link').should('exist');
+            cy.getByTestId(toastPanel).should(
+              'contain.text',
+              'Withdraw 120.00 tUSDC'
+            );
+            cy.getByTestId(toastCompleteWithdrawal).click();
+            cy.getByTestId(toastClose).click();
+          });
+        // withdrawal complete
+        cy.getByTestId(toast)
+          .first(txTimeout)
+          .should('contain.text', 'The withdrawal has been approved.')
+          .within(() => {
+            cy.getByTestId(toastPanel).should(
+              'contain.text',
+              'Withdraw 120.00 tUSDC'
+            );
+          });
+        cy.getByTestId(toast)
+          .last(txTimeout)
+          .should('contain.text', 'Transaction confirmed')
+          .within(() => {
+            cy.getByTestId('external-link').should('exist');
+          });
+        // withdrawal history for complete withdrawal displayed
+        cy.get(tableWithdrawnStatus)
+          .eq(1, txTimeout)
+          .should('have.text', 'Completed')
+          .parent()
+          .within(() => {
+            cy.get(tableAssetSymbol).should('have.text', usdcSymbol);
+            cy.get(tableAmount).should('have.text', '120.00');
+            cy.get(tableReceiverAddress)
+              .find('a')
+              .should('have.attr', 'href')
+              .and('contain', 'https://sepolia.etherscan.io/address/');
+            cy.get(tableWithdrawnTimeStamp).should('not.be.empty');
+            cy.get(tableTxHash)
+              .find('a')
+              .should('have.attr', 'href')
+              .and('contain', 'https://sepolia.etherscan.io/tx/');
+          });
+      }
+    );
 
     it('Able to withdraw asset: -eth wallet not connected', function () {
       const ethWalletAddress = Cypress.env('ethWalletPublicKey');
