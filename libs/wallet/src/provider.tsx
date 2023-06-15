@@ -106,11 +106,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     if (!connector.current) {
       throw new Error('No connector');
     }
-    try {
-      return connector.current.sendTx(pubkey, transaction);
-    } catch (err) {
-      console.log(err);
-    }
+    return connector.current.sendTx(pubkey, transaction);
   }, []);
 
   const { VEGA_ENV } = useEnvironment();
