@@ -53,5 +53,5 @@ export const LiquidationPrice = ({
       value = formattedBestCase;
     }
   }
-  return <span>{value}</span>;
+  return <span data-testid="liquidation-price">{value}</span>;
 };
