@@ -7,6 +7,12 @@ import * as Schema from '@vegaprotocol/types';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 
+jest.mock('./liquidation-price', () => ({
+  LiquidationPrice: () => (
+    <span data-testid="liquidation-price">liquidation price</span>
+  ),
+}));
+
 const singleRow: Position = {
   partyId: 'partyId',
   assetId: 'asset-id',
@@ -48,7 +54,7 @@ it('render correct columns', async () => {
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(11);
+  expect(headers).toHaveLength(12);
   expect(
     headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
   ).toEqual([
@@ -56,6 +62,7 @@ it('render correct columns', async () => {
     'Notional',
     'Open volume',
     'Mark price',
+    'Liquidation price',
     'Settlement asset',
     'Entry price',
     'Leverage',
@@ -143,12 +150,20 @@ it('displays mark price', async () => {
   expect(cells[3].textContent).toEqual('-');
 });
 
+it('displays liquidation price', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
+  });
+  const cells = screen.getAllByRole('gridcell');
+  expect(cells[4].textContent).toEqual('liquidation price');
+});
+
 it('displays leverage', async () => {
   await act(async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[6].textContent).toEqual('1.1');
+  expect(cells[7].textContent).toEqual('1.1');
 });
 
 it('displays allocated margin', async () => {
@@ -156,7 +171,7 @@ it('displays allocated margin', async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  const cell = cells[7];
+  const cell = cells[8];
   expect(cell.textContent).toEqual('123,456.00');
 });
 
@@ -165,7 +180,7 @@ it('displays realised and unrealised PNL', async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[9].textContent).toEqual('4.56');
+  expect(cells[10].textContent).toEqual('4.56');
 });
 
 it('displays close button', async () => {
@@ -182,7 +197,7 @@ it('displays close button', async () => {
     );
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[11].textContent).toEqual('Close');
+  expect(cells[12].textContent).toEqual('Close');
 });
 
 it('do not display close button if openVolume is zero', async () => {
@@ -198,7 +213,7 @@ it('do not display close button if openVolume is zero', async () => {
     );
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[11].textContent).toEqual('');
+  expect(cells[12].textContent).toEqual('');
 });
 
 describe('PNLCell', () => {
