@@ -84,7 +84,7 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
     cy.get(rowSelector)
       .first()
       .find(colAverageEntryValuation)
-      .should('have.text', '685,852.93');
+      .should('have.text', '685,852.94');
 
     cy.get(rowSelector)
       .first()
@@ -240,7 +240,7 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
       cy.get(rowSelectorLiquidityActive)
         .first()
         .find(colAverageEntryValuation)
-        .should('have.text', '685,852.93');
+        .should('have.text', '685,852.94');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
@@ -296,7 +296,7 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
       cy.get(rowSelectorLiquidityInactive)
         .first()
         .find(colAverageEntryValuation)
-        .should('have.text', '685,852.93');
+        .should('have.text', '685,852.94');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()

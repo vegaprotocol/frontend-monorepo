@@ -31,11 +31,18 @@ describe('number utils', () => {
     { v: new BigNumber(123001000), d: 2, o: '1,230,010.00', q: 0.1 },
     { v: new BigNumber(123001), d: 2, o: '1,230', q: 100 },
     { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
+    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 1 },
     {
       v: BigNumber('123456789123456789'),
       d: 10,
       o: '12,345,678.9123457',
       q: '0.00003846',
+    },
+    {
+      v: BigNumber('123456789123456789'),
+      d: 10,
+      o: '12,345,678.91',
+      q: '1',
     },
   ])(
     'formats with addDecimalsFormatNumberQuantum given number correctly',
