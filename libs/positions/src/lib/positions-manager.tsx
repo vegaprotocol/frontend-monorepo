@@ -8,14 +8,14 @@ import {
   positionsMetricsProvider,
   positionsMarketsProvider,
 } from './positions-data-providers';
-import type { useDataGridStore } from '@vegaprotocol/datagrid';
+import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface PositionsManagerProps {
   partyIds: string[];
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
-  gridProps: ReturnType<typeof useDataGridStore>;
+  gridProps: ReturnType<typeof useDataGridEvents>;
 }
 
 export const PositionsManager = ({

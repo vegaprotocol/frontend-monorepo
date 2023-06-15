@@ -11,7 +11,7 @@ import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
-import type { useDataGridStore } from '@vegaprotocol/datagrid';
+import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 
 const AccountBreakdown = ({
   assetId,
@@ -103,7 +103,7 @@ interface AccountManagerProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  gridProps: ReturnType<typeof useDataGridStore>;
+  gridProps: ReturnType<typeof useDataGridEvents>;
 }
 
 export const AccountManager = ({

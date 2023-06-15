@@ -10,7 +10,7 @@ import { LedgerTable } from './ledger-table';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type * as Types from '@vegaprotocol/types';
 import { LedgerExportLink } from './ledger-export-link';
-import type { useDataGridStore } from '@vegaprotocol/datagrid';
+import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 
 export interface Filter {
   vegaTime?: {
@@ -30,7 +30,7 @@ export const LedgerManager = ({
   gridProps,
 }: {
   partyId: string;
-  gridProps: ReturnType<typeof useDataGridStore>;
+  gridProps: ReturnType<typeof useDataGridEvents>;
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);

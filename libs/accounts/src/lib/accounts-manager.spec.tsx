@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react';
 import * as helpers from '@vegaprotocol/data-provider';
 import { AccountManager } from './accounts-manager';
-import type { useDataGridStore } from '@vegaprotocol/datagrid';
+import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 
 const mockedUseDataProvider = jest.fn();
 jest.mock('@vegaprotocol/data-provider', () => ({
@@ -20,7 +20,7 @@ const gridProps = {
   onColumnResized: jest.fn(),
   onFilterChanged: jest.fn(),
   onSortChanged: jest.fn(),
-} as unknown as ReturnType<typeof useDataGridStore>;
+} as unknown as ReturnType<typeof useDataGridEvents>;
 
 describe('AccountManager', () => {
   describe('when rerender', () => {

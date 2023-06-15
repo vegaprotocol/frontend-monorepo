@@ -1,4 +1,4 @@
-import { useDataGridStore } from '@vegaprotocol/datagrid';
+import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import { PositionsManager } from '@vegaprotocol/positions';
 import { Splash } from '@vegaprotocol/ui-toolkit';
@@ -20,7 +20,7 @@ export const PositionsContainer = ({
     store.gridStore,
     store.update,
   ]);
-  const gridStoreCallbacks = useDataGridStore(gridStore, (colState) => {
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(colState);
   });
 

@@ -1,5 +1,5 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useDataGridStore } from '@vegaprotocol/datagrid';
+import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import {
   lpAggregatedDataProvider,
@@ -32,7 +32,7 @@ export const LiquidityContainer = ({
     store.update,
   ]);
 
-  const gridStoreCallbacks = useDataGridStore(gridStore, (colState) => {
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(colState);
   });
   const { data: market } = useMarket(marketId);

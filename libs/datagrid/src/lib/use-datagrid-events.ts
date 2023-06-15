@@ -6,16 +6,17 @@ import type {
   GridColumnsChangedEvent,
   SortChangedEvent,
 } from 'ag-grid-community';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 
 type State = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filterModel?: { [key: string]: any };
   columnState?: ColumnState[];
 };
 
 type Event = ColumnResizedEvent | FilterChangedEvent | SortChangedEvent;
 
-export const useDataGridStore = (
+export const useDataGridEvents = (
   state: State,
   callback: (data: State) => void
 ) => {

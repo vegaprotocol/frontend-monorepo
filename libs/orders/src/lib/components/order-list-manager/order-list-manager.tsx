@@ -6,7 +6,7 @@ import type { GridReadyEvent } from 'ag-grid-community';
 
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
-import type { useDataGridStore } from '@vegaprotocol/datagrid';
+import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import {
@@ -43,7 +43,7 @@ export interface OrderListManagerProps {
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   filter?: Filter;
-  gridProps?: ReturnType<typeof useDataGridStore>;
+  gridProps?: ReturnType<typeof useDataGridEvents>;
 }
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (

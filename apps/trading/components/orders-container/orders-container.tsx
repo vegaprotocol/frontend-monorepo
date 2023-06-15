@@ -1,4 +1,4 @@
-import { useDataGridStore } from '@vegaprotocol/datagrid';
+import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import { Filter } from '@vegaprotocol/orders';
 import { OrderListManager } from '@vegaprotocol/orders';
@@ -37,7 +37,7 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
       }
     }
   });
-  const gridStoreCallbacks = useDataGridStore(gridStore, (colState) => {
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(filter, colState);
   });
 

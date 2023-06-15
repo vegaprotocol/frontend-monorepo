@@ -5,7 +5,7 @@ import { FillsManager } from '@vegaprotocol/fills';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import type { ColumnState } from 'ag-grid-community';
-import { useDataGridStore } from '@vegaprotocol/datagrid';
+import { useDataGridEvents } from '@vegaprotocol/datagrid';
 
 export const FillsContainer = ({
   marketId,
@@ -21,7 +21,7 @@ export const FillsContainer = ({
     store.update,
   ]);
 
-  const gridStoreCallbacks = useDataGridStore(gridStore, (colState) => {
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(colState);
   });
 

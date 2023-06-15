@@ -1,4 +1,4 @@
-import { useDataGridStore } from '@vegaprotocol/datagrid';
+import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import { LedgerManager } from '@vegaprotocol/ledger';
 import { Splash } from '@vegaprotocol/ui-toolkit';
@@ -15,7 +15,7 @@ export const LedgerContainer = () => {
     store.update,
   ]);
 
-  const gridStoreCallbacks = useDataGridStore(gridStore, (colState) => {
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(colState);
   });
 
