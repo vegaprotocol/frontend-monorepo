@@ -151,7 +151,11 @@ export const MarketSelector = ({
       </div>
       <div className="px-4 py-2">
         <span className="inline-block border-b border-black dark:border-white">
-          <Link to={'/markets/all'} className="flex items-center gap-x-2">
+          <Link
+            to={'/markets/all'}
+            data-testid="all-markets-link"
+            className="flex items-center gap-x-2"
+          >
             {t('All markets')}
             <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
           </Link>

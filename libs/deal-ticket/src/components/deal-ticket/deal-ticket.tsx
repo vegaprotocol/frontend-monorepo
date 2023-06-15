@@ -146,7 +146,7 @@ export const DealTicket = ({
   });
   const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
   const orders = activeOrders
-    ? activeOrders.map<OrderInfo>(({ node: order }) => ({
+    ? activeOrders.map<OrderInfo>((order) => ({
         isMarketOrder: order.type === OrderType.TYPE_MARKET,
         price: order.price,
         remaining: order.remaining,

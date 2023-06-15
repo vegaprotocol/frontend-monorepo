@@ -144,7 +144,6 @@ const MarketBottomPanel = memo(
                   <TradingViews.collateral.component
                     pinnedAsset={pinnedAsset}
                     onMarketClick={onMarketClick}
-                    noBottomPlaceholder
                     hideButtons
                     storeKey="marketCollateral"
                   />

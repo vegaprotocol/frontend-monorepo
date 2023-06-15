@@ -69,7 +69,10 @@ context(
     it('Unable to submit withdrawal with invalid fields', function () {
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(withdrawalForm, txTimeout).within(() => {
-        cy.get('select').select(usdtSelectValue, { force: true });
+        cy.getByTestId('select-asset').click();
+        cy.get('select')
+          .select(usdtSelectValue, { force: true })
+          .should('have.value', usdtSelectValue);
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(submitWithdrawalButton).click();
         cy.getByTestId(formValidationError).should('have.length', 1);
@@ -93,7 +96,10 @@ context(
       // fill in withdrawal form
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(withdrawalForm, txTimeout).within(() => {
-        cy.get('select').select(usdtSelectValue, { force: true });
+        cy.getByTestId('select-asset').click();
+        cy.get('select')
+          .select(usdtSelectValue, { force: true })
+          .should('have.value', usdtSelectValue);
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(withdrawalThreshold).should(
           'have.text',
@@ -159,7 +165,10 @@ context(
       // fill in withdrawal form
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(withdrawalForm, txTimeout).within(() => {
-        cy.get('select').select(usdtSelectValue, { force: true });
+        cy.getByTestId('select-asset').click();
+        cy.get('select')
+          .select(usdtSelectValue, { force: true })
+          .should('have.value', usdtSelectValue);
         cy.getByTestId(ethAddressInput).should('be.empty');
         cy.getByTestId(amountInput).click().type('110');
         cy.getByTestId(submitWithdrawalButton).click();
@@ -219,7 +228,10 @@ context(
     it('Should be able to see withdrawal details from toast', function () {
       cy.getByTestId(withdraw).click();
       cy.getByTestId(withdrawalForm, txTimeout).within(() => {
-        cy.get('select').select(usdtSelectValue, { force: true });
+        cy.getByTestId('select-asset').click();
+        cy.get('select')
+          .select(usdtSelectValue, { force: true })
+          .should('have.value', usdtSelectValue);
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(withdrawalThreshold).should(
           'have.text',
@@ -274,7 +286,10 @@ context(
       cy.connectPublicKey(vegaWalletPubKey);
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(withdrawalForm, txTimeout).within(() => {
-        cy.get('select').select(usdtSelectValue, { force: true });
+        cy.getByTestId('select-asset').click();
+        cy.get('select')
+          .select(usdtSelectValue, { force: true })
+          .should('have.value', usdtSelectValue);
         cy.getByTestId(balanceAvailable, txTimeout).should('exist');
         cy.getByTestId(amountInput).click().type('100');
         cy.pause();

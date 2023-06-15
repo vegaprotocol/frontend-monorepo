@@ -2,7 +2,7 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
-import { AsyncRenderer, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Icon, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
@@ -13,6 +13,10 @@ import { ProposalTerms } from '../proposal-terms';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
 import { ListAsset } from '../list-asset';
+import { Link } from 'react-router-dom';
+import Routes from '../../../routes';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -29,6 +33,7 @@ export interface ProposalProps {
 }
 
 export const Proposal = ({ proposal, restData }: ProposalProps) => {
+  const { t } = useTranslation();
   const { params, loading, error } = useNetworkParams([
     NetworkParams.governance_proposal_market_minVoterBalance,
     NetworkParams.governance_proposal_updateMarket_minVoterBalance,
@@ -81,6 +86,15 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
   return (
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
+        <div
+          className="flex items-center gap-1"
+          data-testid="all-proposals-link"
+        >
+          <Icon name={'chevron-left'} />
+          <Link className="underline" to={Routes.PROPOSALS}>
+            {t('AllProposals')}
+          </Link>
+        </div>
         <ProposalHeader proposal={proposal} isListItem={false} />
 
         <div className="my-10">
@@ -102,7 +116,8 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
         </div>
 
         {proposal.terms.change.__typename !== 'NewMarket' &&
-          proposal.terms.change.__typename !== 'UpdateMarket' && (
+          proposal.terms.change.__typename !== 'UpdateMarket' &&
+          proposal.terms.change.__typename !== 'NewFreeform' && (
             <div className="mb-4">
               <ProposalTerms data={proposal.terms} />
             </div>

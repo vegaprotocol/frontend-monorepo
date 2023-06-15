@@ -74,6 +74,14 @@ jobs:
               envName="mainnet"
               bucketName="tools.vega.xyz"
             fi
+            if [[ "${{ matrix.app }}" = "static" ]]; then
+              envName="mainnet"
+              bucketName="static.vega.xyz"
+            fi
+            if [[ "${{ matrix.app }}" = "ui-toolkit" ]]; then
+              envName="mainnet"
+              bucketName="ui.vega.rocks"
+            fi
           elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
             envName="mainnet"
           elif [[ "${{ matrix.app}}" = "trading" ]] && [[ "${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}" = "true" ]]; then
@@ -114,6 +122,9 @@ jobs:
           if [ "${{ matrix.app }}" = "trading" ]; then
             yarn nx export trading $flags || (yarn install && yarn nx export trading $flags)
             DIST_LOCATION=dist/apps/trading/exported
+          elif [ "${{ matrix.app }}" = "ui-toolkit" ]; then
+            NODE_ENV=production yarn nx run ui-toolkit:build-storybook
+            DIST_LOCATION=dist/storybook/ui-toolkit
           else
             yarn nx build ${{ matrix.app }} $flags || (yarn install && yarn nx build ${{ matrix.app }} $flags)
             DIST_LOCATION=dist/apps/${{ matrix.app }}
@@ -148,6 +159,8 @@ jobs:
 
       - name: Publish dist as docker image (ghcr)
         uses: docker/build-push-action@v3
+        continue-on-error: true
+        id: ghcr-push
         if: ${{ github.event_name == 'pull_request' || (matrix.app == 'trading' && github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') ) }}
         with:
           context: .
@@ -161,7 +174,36 @@ jobs:
 
       - name: Publish dist as docker image (docker hub)
         uses: docker/build-push-action@v3
+        continue-on-error: true
+        id: dockerhub-push
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        with:
+          context: .
+          file: docker/node-outside-docker.Dockerfile
+          push: true
+          build-args: |
+            APP=${{ matrix.app }}
+            ENV_NAME=${{ env.ENV_NAME }}
+          tags: |
+            vegaprotocol/${{ matrix.app }}:${{ github.ref_name }}
+            vegaprotocol/${{ matrix.app }}:mainnet
+
+      - name: Publish dist as docker image (ghcr - retry)
+        uses: docker/build-push-action@v3
+        if: ${{ steps.ghcr-push.outcome == 'failure' }}
+        with:
+          context: .
+          file: docker/node-outside-docker.Dockerfile
+          push: true
+          build-args: |
+            APP=${{ matrix.app }}
+            ENV_NAME=${{ env.ENV_NAME }}
+          tags: |
+            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Publish dist as docker image (docker hub - retry)
+        uses: docker/build-push-action@v3
+        if: ${{ steps.dockerhub-push.outcome == 'failure' }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile

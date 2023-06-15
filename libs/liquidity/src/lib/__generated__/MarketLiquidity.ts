@@ -3,13 +3,6 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketLpQueryVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-}>;
-
-
-export type MarketLpQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } } }, data?: { __typename?: 'MarketData', marketTradingMode: Types.MarketTradingMode, suppliedStake?: string | null, openInterest: string, targetStake?: string | null, trigger: Types.AuctionTrigger, marketValueProxy: string, market: { __typename?: 'Market', id: string } } | null } | null };
-
 export type LiquidityProvisionFieldsFragment = { __typename?: 'LiquidityProvision', createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } };
 
 export type LiquidityProvisionsQueryVariables = Types.Exact<{
@@ -65,69 +58,6 @@ export const LiquidityProviderFeeShareFieldsFragmentDoc = gql`
   averageEntryValuation
 }
     `;
-export const MarketLpDocument = gql`
-    query MarketLp($marketId: ID!) {
-  market(id: $marketId) {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-    tradableInstrument {
-      instrument {
-        code
-        name
-        product {
-          ... on Future {
-            settlementAsset {
-              id
-              symbol
-              decimals
-            }
-          }
-        }
-      }
-    }
-    data {
-      market {
-        id
-      }
-      marketTradingMode
-      suppliedStake
-      openInterest
-      targetStake
-      trigger
-      marketValueProxy
-    }
-  }
-}
-    `;
-
-/**
- * __useMarketLpQuery__
- *
- * To run a query within a React component, call `useMarketLpQuery` and pass it any options that fit your needs.
- * When your component renders, `useMarketLpQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMarketLpQuery({
- *   variables: {
- *      marketId: // value for 'marketId'
- *   },
- * });
- */
-export function useMarketLpQuery(baseOptions: Apollo.QueryHookOptions<MarketLpQuery, MarketLpQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MarketLpQuery, MarketLpQueryVariables>(MarketLpDocument, options);
-      }
-export function useMarketLpLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketLpQuery, MarketLpQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MarketLpQuery, MarketLpQueryVariables>(MarketLpDocument, options);
-        }
-export type MarketLpQueryHookResult = ReturnType<typeof useMarketLpQuery>;
-export type MarketLpLazyQueryHookResult = ReturnType<typeof useMarketLpLazyQuery>;
-export type MarketLpQueryResult = Apollo.QueryResult<MarketLpQuery, MarketLpQueryVariables>;
 export const LiquidityProvisionsDocument = gql`
     query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {

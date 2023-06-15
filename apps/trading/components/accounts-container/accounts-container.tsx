@@ -12,13 +12,11 @@ import { useDepositDialog } from '@vegaprotocol/deposits';
 export const AccountsContainer = ({
   pinnedAsset,
   hideButtons,
-  noBottomPlaceholder,
   storeKey,
   onMarketClick,
 }: {
   pinnedAsset?: PinnedAsset;
   hideButtons?: boolean;
-  noBottomPlaceholder?: boolean;
   storeKey?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
@@ -53,7 +51,6 @@ export const AccountsContainer = ({
         onMarketClick={onMarketClick}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
-        noBottomPlaceholder={noBottomPlaceholder}
         storeKey={storeKey}
       />
       {!isReadOnly && !hideButtons && (

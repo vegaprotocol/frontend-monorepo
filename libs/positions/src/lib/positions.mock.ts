@@ -50,7 +50,7 @@ const positionFields: PositionFieldsFragment[] = [
   {
     __typename: 'Position',
     realisedPNL: '230000',
-    openVolume: '6',
+    openVolume: '-6',
     unrealisedPNL: '895000',
     averageEntryPrice: '1129935',
     updatedAt: '2022-07-28T15:09:34.441143Z',
@@ -85,7 +85,7 @@ const positionFields: PositionFieldsFragment[] = [
   },
   {
     __typename: 'Position',
-    realisedPNL: '230000',
+    realisedPNL: '-230000',
     openVolume: '1',
     unrealisedPNL: '-22519',
     averageEntryPrice: '84400088',
@@ -100,6 +100,24 @@ const positionFields: PositionFieldsFragment[] = [
     },
     lossSocializationAmount: '0',
     positionStatus: PositionStatus.POSITION_STATUS_UNSPECIFIED,
+  },
+  {
+    __typename: 'Position',
+    realisedPNL: '-303295252',
+    openVolume: '0',
+    unrealisedPNL: '0',
+    averageEntryPrice: '6126312',
+    updatedAt: '2022-07-28T14:53:54.725477Z',
+    positionStatus: PositionStatus.POSITION_STATUS_CLOSED_OUT,
+    lossSocializationAmount: '261',
+    market: {
+      id: 'market-3',
+      __typename: 'Market',
+    },
+    party: {
+      id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
+      __typename: 'Party',
+    },
   },
 ];
 

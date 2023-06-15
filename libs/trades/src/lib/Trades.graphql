@@ -10,32 +10,33 @@ fragment TradeFields on Trade {
 }
 
 query Trades($marketId: ID!, $pagination: Pagination) {
-  market(id: $marketId) {
-    id
-    tradesConnection(pagination: $pagination) {
-      edges {
-        node {
-          ...TradeFields
-        }
-        cursor
+  trades(filter: { marketIds: [$marketId] }, pagination: $pagination) {
+    edges {
+      node {
+        ...TradeFields
       }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
+      cursor
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }
 
+fragment TradeUpdateFields on TradeUpdate {
+  id
+  price
+  size
+  createdAt
+  marketId
+  aggressor
+}
+
 subscription TradesUpdate($marketId: ID!) {
-  trades(marketId: $marketId) {
-    id
-    price
-    size
-    createdAt
-    marketId
-    aggressor
+  tradesStream(filter: { marketIds: [$marketId] }) {
+    ...TradeUpdateFields
   }
 }

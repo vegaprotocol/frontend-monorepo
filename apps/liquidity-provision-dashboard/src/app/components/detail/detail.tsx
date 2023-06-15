@@ -7,31 +7,30 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import {
   getFeeLevels,
   sumLiquidityCommitted,
-  marketLiquidityDataProvider,
   lpAggregatedDataProvider,
 } from '@vegaprotocol/liquidity';
-import type { MarketLpQuery } from '@vegaprotocol/liquidity';
+import { marketWithDataProvider } from '@vegaprotocol/markets';
+import type { MarketWithData } from '@vegaprotocol/markets';
 
 import { Market } from './market';
 import { Header } from './header';
 import { LPProvidersGrid } from './providers';
 
-const formatMarket = (data: MarketLpQuery) => {
+const formatMarket = (market: MarketWithData) => {
   return {
-    name: data?.market?.tradableInstrument.instrument.name,
+    name: market?.tradableInstrument.instrument.name,
     symbol:
-      data?.market?.tradableInstrument.instrument.product.settlementAsset
-        .symbol,
+      market?.tradableInstrument.instrument.product.settlementAsset.symbol,
     settlementAsset:
-      data?.market?.tradableInstrument.instrument.product.settlementAsset,
-    targetStake: data?.market?.data?.targetStake,
-    tradingMode: data?.market?.data?.marketTradingMode,
-    trigger: data?.market?.data?.trigger,
+      market?.tradableInstrument.instrument.product.settlementAsset,
+    targetStake: market?.data?.targetStake,
+    tradingMode: market?.data?.marketTradingMode,
+    trigger: market?.data?.trigger,
   };
 };
 
 export const lpDataProvider = makeDerivedDataProvider(
-  [marketLiquidityDataProvider, lpAggregatedDataProvider],
+  [marketWithDataProvider, lpAggregatedDataProvider],
   ([market, lpAggregatedData]) => ({
     market: { ...formatMarket(market) },
     liquidityProviders: lpAggregatedData || [],

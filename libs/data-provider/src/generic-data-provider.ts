@@ -27,7 +27,6 @@ export interface UpdateCallback<Data, Delta> {
       loading: boolean;
       loaded: boolean;
       pageInfo: PageInfo | null;
-      totalCount?: number;
     }
   ): void;
 }
@@ -40,9 +39,7 @@ export interface Reload {
   (forceReset?: boolean): void;
 }
 
-type Pagination = Schema.Pagination & {
-  skip?: number;
-};
+type Pagination = Schema.Pagination;
 
 export interface PageInfo {
   startCursor?: string;
@@ -83,12 +80,8 @@ export interface Append<Data> {
     data: Data | null,
     insertionData: Data | null,
     insertionPageInfo: PageInfo | null,
-    pagination?: Pagination,
-    totalCount?: number
-  ): {
-    data: Data | null;
-    totalCount?: number;
-  };
+    pagination?: Pagination
+  ): Data | null;
 }
 
 interface GetData<QueryData, Data, Variables> {
@@ -97,10 +90,6 @@ interface GetData<QueryData, Data, Variables> {
 
 interface GetPageInfo<QueryData> {
   (queryData: QueryData): PageInfo | null;
-}
-
-interface GetTotalCount<QueryData> {
-  (queryData: QueryData): number | undefined;
 }
 
 interface GetDelta<SubscriptionData, Delta, Variables> {
@@ -119,44 +108,32 @@ export interface Edge<T extends Node> extends Cursor {
   node: T;
 }
 
-export function defaultAppend<Data>(
-  data: Data | null,
-  insertionData: Data | null,
+export function defaultAppend<T extends Cursor>(
+  data: T[] | null,
+  insertionData: T[] | null,
   insertionPageInfo: PageInfo | null,
-  pagination?: Pagination,
-  totalCount?: number
+  pagination?: Pagination
 ) {
   if (data && insertionData && insertionPageInfo) {
     if (!(data instanceof Array) || !(insertionData instanceof Array)) {
       throw new Error(
-        'data needs to be instance of Edge[] when using pagination'
+        'data needs to be instance of Array[] when using pagination'
       );
     }
     if (pagination?.after) {
+      if (data[data.length - 1].cursor === pagination?.after) {
+        return [...data, ...insertionData];
+      }
       const cursors = data.map((item) => item && item.cursor);
       const startIndex = cursors.lastIndexOf(pagination.after);
       if (startIndex !== -1) {
-        const start = startIndex + 1 + (pagination.skip ?? 0);
-        const end = start + insertionData.length;
-        let updatedData = [
-          ...data.slice(0, start),
-          ...insertionData,
-          ...data.slice(end),
-        ];
-        if (!insertionPageInfo.hasNextPage && end !== (totalCount ?? 0)) {
-          // adjust totalCount if last page is shorter or longer than expected
-          totalCount = end;
-          updatedData = updatedData.slice(0, end);
-        }
-        return {
-          data: updatedData,
-          // increase totalCount if last page is longer than expected
-          totalCount: totalCount && Math.max(updatedData.length, totalCount),
-        };
+        const start = startIndex + 1;
+        const updatedData = [...data.slice(0, start), ...insertionData];
+        return updatedData;
       }
     }
   }
-  return { data, totalCount };
+  return data;
 }
 
 interface DataProviderParams<
@@ -175,7 +152,6 @@ interface DataProviderParams<
   getDelta?: GetDelta<SubscriptionData, Delta, Variables>;
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
-    getTotalCount?: GetTotalCount<QueryData>;
     append: Append<Data>;
     first: number;
   };
@@ -245,7 +221,6 @@ function makeDataProviderInternal<
   let client: ApolloClient<object>;
   let subscription: Subscription[] | undefined;
   let pageInfo: PageInfo | null = null;
-  let totalCount: number | undefined;
 
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (
@@ -258,7 +233,6 @@ function makeDataProviderInternal<
       loading,
       loaded,
       pageInfo,
-      totalCount,
       ...updateData,
     });
   };
@@ -301,59 +275,41 @@ function makeDataProviderInternal<
         }
       });
 
-  const load = async (start?: number) => {
+  const load = async () => {
     if (!pagination) {
       return Promise.reject();
     }
+    if (!pageInfo?.hasNextPage) {
+      return null;
+    }
     const paginationVariables: Pagination = {
       first: pagination.first,
-      after: pageInfo?.endCursor,
     };
-    if (start !== undefined && data instanceof Array) {
-      if (!start) {
-        paginationVariables.after = undefined;
-      } else if (data && data[start - 1]) {
-        paginationVariables.after = (data[start - 1] as Cursor).cursor;
-      } else {
-        let skip = 1;
-        while (!data[start - 1 - skip] && skip <= start) {
-          skip += 1;
-        }
-        paginationVariables.skip = skip;
-        if (skip === start) {
-          paginationVariables.after = undefined;
-        } else {
-          paginationVariables.after = (data[start - 1 - skip] as Cursor).cursor;
-        }
+    if (data) {
+      const endCursor = (data as Cursor[])[(data as Cursor[]).length - 1]
+        .cursor;
+      if (endCursor) {
+        paginationVariables.after = endCursor;
       }
-    } else if (!pageInfo?.hasNextPage) {
-      return null;
     }
 
     const res = await call(paginationVariables);
 
     const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
-    ({ data, totalCount } = pagination.append(
+    data = pagination.append(
       data,
       insertionData,
       insertionPageInfo,
-      paginationVariables,
-      totalCount
-    ));
+      paginationVariables
+    );
     pageInfo = insertionPageInfo;
-    totalCount =
-      (pagination.getTotalCount && pagination.getTotalCount(res.data)) ??
-      totalCount;
     notifyAll({ insertionData, isInsert: true });
     return insertionData;
   };
 
   const setData = (updatedData: Data | null) => {
     data = updatedData;
-    if (totalCount !== undefined && data instanceof Array) {
-      totalCount = data.length;
-    }
   };
 
   const subscriptionSubscribe = () => {
@@ -400,16 +356,6 @@ function makeDataProviderInternal<
           );
         }
         pageInfo = pagination.getPageInfo(res.data);
-        if (pageInfo && !pageInfo.hasNextPage) {
-          totalCount = data.length;
-        } else {
-          totalCount =
-            pagination.getTotalCount && pagination.getTotalCount(res.data);
-        }
-
-        if (data && totalCount && data.length < totalCount) {
-          data.push(...new Array(totalCount - data.length).fill(null));
-        }
       }
       // if there was some updates received from subscription during initial query loading apply them on just received data
       if (update && data && updateQueue && updateQueue.length > 0) {
@@ -417,9 +363,6 @@ function makeDataProviderInternal<
           const delta = updateQueue.shift();
           if (delta) {
             setData(update(data, delta, reload, variables));
-            if (totalCount !== undefined && data instanceof Array) {
-              totalCount = data.length;
-            }
           }
         }
       }
@@ -590,7 +533,7 @@ const memoize = <
  * @param update Update<Data, Delta> function that will be executed on each onNext, it should update data base on delta, it can reload data provider
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
- * @param pagination pagination related functions { getPageInfo, getTotalCount, append, first }
+ * @param pagination pagination related functions { getPageInfo, append, first }
  * @returns Subscribe<Data, Delta> subscribe function
  * @example
  * const marketMidPriceProvider = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({

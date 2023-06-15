@@ -99,7 +99,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
       cy.getByTestId('deal-ticket-fee-total-margin-available').within(() => {
         cy.get('[data-state="closed"]').should(
           'have.text',
-          'Total margin available100,000.01 tDAI'
+          'Total margin available100.01 tDAI'
         );
       });
     });

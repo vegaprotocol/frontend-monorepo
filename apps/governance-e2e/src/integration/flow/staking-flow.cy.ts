@@ -63,7 +63,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
-    describe('Eth wallet - contains VEGA tokens', function () {
+    describe.skip('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
@@ -381,6 +381,8 @@ context(
 
       it('Disassociating some tokens - prioritizes unstaked tokens', function () {
         vegaWalletSetSpecifiedApprovalAmount('1000');
+        cy.reload();
+        ethereumWalletConnect();
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();

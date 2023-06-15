@@ -15,7 +15,7 @@ export const EmptyCell = () => '';
 export const ProgressBarCell = ({ valueFormatted }: ValueProps) => {
   return valueFormatted ? (
     <>
-      <div className="flex justify-between leading-tight font-mono">
+      <div className="text-right leading-tight font-mono">
         <div>
           {valueFormatted.low} ({valueFormatted.value}%)
         </div>
