@@ -11,7 +11,6 @@ import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 
 const AccountBreakdown = ({
   assetId,
@@ -52,7 +51,6 @@ interface AccountManagerProps {
   onClickDeposit?: (assetId?: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  noBottomPlaceholder?: boolean;
   storeKey?: string;
 }
 
@@ -63,7 +61,6 @@ export const AccountManager = ({
   partyId,
   isReadOnly,
   pinnedAsset,
-  noBottomPlaceholder,
   storeKey,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
@@ -72,11 +69,6 @@ export const AccountManager = ({
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables: { partyId },
-  });
-
-  const bottomPlaceholderProps = useBottomPlaceholder({
-    gridRef,
-    disabled: noBottomPlaceholder,
   });
 
   return (
@@ -91,7 +83,6 @@ export const AccountManager = ({
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
         storeKey={storeKey}
-        {...bottomPlaceholderProps}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
       />
       <Dialog
