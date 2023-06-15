@@ -1,5 +1,5 @@
 // #region consts
-const asset = 'asset';
+const assetColId = '[col-id="asset.symbol"]';
 const assetDetailsDialog = 'dialog-content';
 const assetRow = 'key-value-table-row';
 const contractAddress = '7_value';
@@ -108,7 +108,7 @@ beforeEach(() => {
 
 const visitPortfolioAndClickAsset = (assetName: string) => {
   cy.visit('/#/portfolio');
-  cy.getByTestId(asset).contains(assetName).click();
+  cy.get(assetColId).contains(assetName).click();
 };
 
 const testTooltip = (index: number, testId: string, tooltip: string) => {

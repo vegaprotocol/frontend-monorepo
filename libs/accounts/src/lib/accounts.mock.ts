@@ -35,6 +35,7 @@ export const accountFields: AccountFieldsFragment[] = [
     balance: '100000000',
     market: null,
     asset: {
+      // tEURO
       __typename: 'Asset',
       id: 'asset-id',
     },
@@ -44,6 +45,7 @@ export const accountFields: AccountFieldsFragment[] = [
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '100000000',
     asset: {
+      // tDAI
       __typename: 'Asset',
       id: 'asset-id-2',
     },
@@ -57,6 +59,7 @@ export const accountFields: AccountFieldsFragment[] = [
       id: 'market-2',
     },
     asset: {
+      // tEURO
       __typename: 'Asset',
       id: 'asset-id',
     },
@@ -70,6 +73,7 @@ export const accountFields: AccountFieldsFragment[] = [
       id: 'market-0',
     },
     asset: {
+      // AST0
       __typename: 'Asset',
       id: 'asset-0',
     },
@@ -83,6 +87,7 @@ export const accountFields: AccountFieldsFragment[] = [
       id: 'market-3',
     },
     asset: {
+      // AST0
       __typename: 'Asset',
       id: 'asset-0',
     },
@@ -90,9 +95,10 @@ export const accountFields: AccountFieldsFragment[] = [
   {
     __typename: 'AccountBalance',
     type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '10000000000',
+    balance: '10000000',
     market: null,
     asset: {
+      // AST0
       __typename: 'Asset',
       id: 'asset-0',
     },
@@ -104,6 +110,7 @@ export const accountFields: AccountFieldsFragment[] = [
     balance: '100000001',
     market: null,
     asset: {
+      // tBTC (sepolia)
       __typename: 'Asset',
       id: 'cee709223217281d7893b650850ae8ee8a18b7539b5658f9b4cc24de95dd18ad',
     },
@@ -114,6 +121,7 @@ export const accountFields: AccountFieldsFragment[] = [
     balance: '100000002',
     market: null,
     asset: {
+      // tBTC (test)
       __typename: 'Asset',
       id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
     },

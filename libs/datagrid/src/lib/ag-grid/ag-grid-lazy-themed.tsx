@@ -26,6 +26,7 @@ export const AgGridThemed = ({
     enableCellTextSelection: true,
     overlayLoadingTemplate: t('Loading...'),
     overlayNoRowsTemplate: t('No data'),
+    suppressCellFocus: true,
   };
 
   const wrapperClasses = classNames('vega-ag-grid', {
