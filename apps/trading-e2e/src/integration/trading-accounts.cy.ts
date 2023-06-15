@@ -129,6 +129,7 @@ describe('accounts', { tags: '@smoke' }, () => {
         });
       }
     });
+    // 7001-COLL-010
     it('sorting by asset', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = ['tBTC', 'tEURO', 'tDAI', 'tBTC'];
