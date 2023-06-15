@@ -77,7 +77,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         hide={window.innerWidth <= BREAKPOINT_MD}
         valueGetter={({
           data,
-        }: VegaValueGetterParams<MarketFieldsFragment, 'state'>) => {
+        }: VegaValueGetterParams<MarketFieldsFragment>) => {
           return data?.state ? MarketStateMapping[data?.state] : '-';
         }}
       />
