@@ -50,12 +50,7 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
 const cacheConfig: InMemoryCacheConfig = {
   typePolicies: {
     Statistics: {
-      merge: (existing, incoming) => {
-        return {
-          ...existing,
-          ...incoming,
-        };
-      },
+      merge: true,
     },
     Account: {
       keyFields: false,
