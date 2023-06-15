@@ -50,7 +50,7 @@ export const WithdrawalsTable = (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
       defaultColDef={{ flex: 1 }}
-      style={{ width: '100%', height: 'calc(100% - 50px)' }}
+      style={{ width: '100%', height: '100%' }}
       components={{
         RecipientCell,
         StatusCell,
