@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
+import type { Transaction } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
@@ -22,7 +23,7 @@ export const CreateWithdrawalDialog = () => {
     >
       <WithdrawFormContainer
         assetId={assetId}
-        partyId={pubKey ? pubKey : undefined}
+        partyId={pubKey || undefined}
         submit={({ amount, asset, receiverAddress }) => {
           createTransaction({
             withdrawSubmission: {
@@ -34,7 +35,7 @@ export const CreateWithdrawalDialog = () => {
                 },
               },
             },
-          });
+          } as Transaction);
           close();
         }}
       />

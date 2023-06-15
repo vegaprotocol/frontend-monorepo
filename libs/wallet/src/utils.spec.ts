@@ -1,9 +1,9 @@
+import type { DealTicketOrderSubmission } from './utils';
 import {
   determineId,
   normalizeOrderAmendment,
   normalizeOrderSubmission,
 } from './utils';
-import type { OrderSubmissionBody } from './connectors/vega-connector';
 import * as Schema from '@vegaprotocol/types';
 describe('determineId', () => {
   it('produces a known result for an ID', () => {
@@ -20,7 +20,7 @@ describe('normalizeOrderSubmission', () => {
   it('sets and formats price only for limit orders', () => {
     expect(
       normalizeOrderSubmission(
-        { price: '100' } as unknown as OrderSubmissionBody['orderSubmission'],
+        { price: '100' } as unknown as DealTicketOrderSubmission,
         2,
         1
       ).price
@@ -30,7 +30,7 @@ describe('normalizeOrderSubmission', () => {
         {
           price: '100',
           type: Schema.OrderType.TYPE_LIMIT,
-        } as unknown as OrderSubmissionBody['orderSubmission'],
+        } as unknown as DealTicketOrderSubmission,
         2,
         1
       ).price
@@ -42,7 +42,7 @@ describe('normalizeOrderSubmission', () => {
       normalizeOrderSubmission(
         {
           expiresAt: '2022-01-01T00:00:00.000Z',
-        } as OrderSubmissionBody['orderSubmission'],
+        } as DealTicketOrderSubmission,
         2,
         1
       ).expiresAt
@@ -52,7 +52,7 @@ describe('normalizeOrderSubmission', () => {
         {
           expiresAt: '2022-01-01T00:00:00.000Z',
           timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
-        } as OrderSubmissionBody['orderSubmission'],
+        } as DealTicketOrderSubmission,
         2,
         1
       ).expiresAt
@@ -64,7 +64,7 @@ describe('normalizeOrderSubmission', () => {
       normalizeOrderSubmission(
         {
           size: '100',
-        } as OrderSubmissionBody['orderSubmission'],
+        } as DealTicketOrderSubmission,
         2,
         1
       ).size

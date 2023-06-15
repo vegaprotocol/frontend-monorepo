@@ -9,7 +9,9 @@ import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order'
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
+import type { Transaction } from '@vegaprotocol/wallet';
 import {
+  convertDealTicketToOrderAmendment,
   normalizeOrderAmendment,
   useVegaTransactionStore,
 } from '@vegaprotocol/wallet';
@@ -135,7 +137,7 @@ export const OrderListManager = ({
   const cancelAll = useCallback(() => {
     create({
       orderCancellation: {},
-    });
+    } as Transaction);
   }, [create]);
 
   return (
@@ -190,7 +192,13 @@ export const OrderListManager = ({
               side: editOrder.side,
               marketId: editOrder.market.id,
             };
-            create({ orderAmendment }, originalOrder);
+            create(
+              {
+                orderAmendment:
+                  convertDealTicketToOrderAmendment(orderAmendment),
+              },
+              originalOrder
+            );
             setEditOrder(null);
           }}
         />

@@ -9,7 +9,7 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import type { OrderSubmission } from '@vegaprotocol/wallet';
+import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
 import {
   normalizeOrderSubmission,
   useVegaWallet,
@@ -56,11 +56,12 @@ import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 import { marketMarginDataProvider } from '@vegaprotocol/positions';
+import type { DealTicketOrderSubmission } from './deal-ticket-container';
 
 export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
-  submit: (order: OrderSubmission) => void;
+  submit: (order: DealTicketOrderSubmission) => void;
   onClickCollateral?: () => void;
 }
 

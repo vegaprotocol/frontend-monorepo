@@ -2,11 +2,12 @@ import { useRef } from 'react';
 import { usePositionsData } from './use-positions-data';
 import { PositionsTable } from './positions-table';
 import type { AgGridReact } from 'ag-grid-react';
-import * as Schema from '@vegaprotocol/types';
+import type { Transaction } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -45,17 +46,17 @@ export const PositionsManager = ({
         submissions: [
           {
             marketId: marketId,
-            type: Schema.OrderType.TYPE_MARKET as const,
-            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC as const,
+            type: vegaProtos.Order.Type.TYPE_MARKET,
+            timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_IOC,
             side: openVolume.startsWith('-')
-              ? Schema.Side.SIDE_BUY
-              : Schema.Side.SIDE_SELL,
-            size: openVolume.replace('-', ''),
+              ? vegaProtos.Side.SIDE_BUY
+              : vegaProtos.Side.SIDE_SELL,
+            size: BigInt(openVolume.replace('-', '')),
             reduceOnly: true,
           },
         ],
       },
-    });
+    } as Transaction);
 
   const bottomPlaceholderProps = useBottomPlaceholder({
     gridRef,

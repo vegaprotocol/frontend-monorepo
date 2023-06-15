@@ -71,6 +71,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
         order,
       };
       set({ transactions: transactions.concat(transaction) });
+      console.log('set', transaction);
       return transaction.id;
     },
     update: (index: number, update: Partial<VegaStoredTxState>) => {
@@ -131,30 +132,34 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
       set(
         produce((state: VegaTransactionStore) => {
           const transaction = state.transactions.find((transaction) => {
-            if (!transaction || transaction.status !== VegaTxStatus.Pending) {
+            if (
+              !transaction ||
+              transaction.status !== VegaTxStatus.Pending ||
+              !transaction?.body
+            ) {
               return false;
             }
             if (
-              isOrderSubmissionTransaction(transaction?.body) &&
+              isOrderSubmissionTransaction(transaction.body) &&
               transaction.signature &&
               order.id === determineId(transaction.signature)
             ) {
               return true;
             }
             if (
-              isOrderCancellationTransaction(transaction?.body) &&
+              isOrderCancellationTransaction(transaction.body) &&
               order.id === transaction.body.orderCancellation.orderId
             ) {
               return true;
             }
             if (
-              isOrderAmendmentTransaction(transaction?.body) &&
+              isOrderAmendmentTransaction(transaction.body) &&
               order.id === transaction.body.orderAmendment.orderId
             ) {
               return true;
             }
             if (
-              isBatchMarketInstructionsTransaction(transaction?.body) &&
+              isBatchMarketInstructionsTransaction(transaction.body) &&
               transaction.signature &&
               order.id === determineId(transaction.signature)
             ) {

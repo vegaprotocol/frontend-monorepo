@@ -5,6 +5,12 @@ import { ClientErrors } from './connectors';
 import { VegaTxStatus, orderErrorResolve } from './use-vega-transaction';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(BigInt.prototype as any).toJSON = function () {
+  // put it temporary here, sorry :-(
+  return this.toString();
+};
+
 export const useVegaTransactionManager = () => {
   const { sendTx, pubKey, disconnect } = useVegaWallet();
   const processed = useRef<Set<number>>(new Set());
@@ -39,6 +45,7 @@ export const useVegaTransactionManager = () => {
       })
       .catch((err) => {
         const error = orderErrorResolve(err);
+        console.log('error', error, err.toString());
         if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
           disconnect();
         }

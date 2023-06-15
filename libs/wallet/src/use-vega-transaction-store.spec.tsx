@@ -2,7 +2,6 @@ import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './use-vega-transaction';
 import type { VegaStoredTxState } from './use-vega-transaction-store';
 import type {
-  OrderAmendmentBody,
   OrderCancellationBody,
   WithdrawSubmissionBody,
 } from './connectors/vega-connector';
@@ -14,6 +13,8 @@ import {
 } from '@vegaprotocol/types';
 import type { OrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
 import type { WithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
+import type { DealTicketOrderAmendment } from './utils';
+import { convertDealTicketToOrderAmendment } from './utils';
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -36,17 +37,14 @@ describe('useVegaTransactionStore', () => {
     } as unknown as WithdrawSubmission,
   };
 
-  const orderAmendment: OrderAmendmentBody = {
-    orderAmendment: {
-      orderId:
-        '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64',
-      marketId:
-        '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
-      price: '1122',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-      sizeDelta: 0,
-    },
-  };
+  const orderAmendment = {
+    orderId: '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64',
+    marketId:
+      '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
+    price: '1122',
+    timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+    sizeDelta: 0,
+  } as DealTicketOrderAmendment;
 
   const originalOrder = {
     type: OrderType.TYPE_LIMIT,
@@ -103,9 +101,24 @@ describe('useVegaTransactionStore', () => {
   });
 
   it('updates an order with order amendment', () => {
-    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
-    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
-    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
+    useVegaTransactionStore
+      .getState()
+      .create(
+        { orderAmendment: convertDealTicketToOrderAmendment(orderAmendment) },
+        originalOrder
+      );
+    useVegaTransactionStore
+      .getState()
+      .create(
+        { orderAmendment: convertDealTicketToOrderAmendment(orderAmendment) },
+        originalOrder
+      );
+    useVegaTransactionStore
+      .getState()
+      .create(
+        { orderAmendment: convertDealTicketToOrderAmendment(orderAmendment) },
+        originalOrder
+      );
     const transaction = useVegaTransactionStore.getState().transactions[1];
     useVegaTransactionStore
       .getState()

@@ -2,8 +2,9 @@ import { useCallback, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useVoteEvent } from './use-vote-event';
-import type { VoteValue } from '@vegaprotocol/types';
+import { VoteValue } from '@vegaprotocol/types';
 import type { VoteEventFieldsFragment } from './__generated__/VoteSubsciption';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 export type FinalizedVote = VoteEventFieldsFragment;
 
@@ -26,7 +27,10 @@ export const useVoteSubmit = () => {
       try {
         const res = await send(pubKey, {
           voteSubmission: {
-            value: voteValue,
+            value:
+              voteValue === VoteValue.VALUE_NO
+                ? vegaProtos.Vote.Value.VALUE_NO
+                : vegaProtos.Vote.Value.VALUE_YES,
             proposalId,
           },
         });

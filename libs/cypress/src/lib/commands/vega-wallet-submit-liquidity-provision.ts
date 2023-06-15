@@ -1,4 +1,4 @@
-import { PeggedReference } from '@vegaprotocol/types';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 import type { LiquidityProvisionSubmission } from '@vegaprotocol/wallet';
 import { createWalletClient, sendVegaTx } from '../capsule/wallet-client';
 
@@ -32,30 +32,31 @@ export const addVegaWalletSubmitLiquidityProvision = () => {
             {
               offset: '10',
               proportion: '1',
-              reference: PeggedReference.PEGGED_REFERENCE_MID,
+              reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
             {
               offset: '12',
               proportion: '2',
-              reference: PeggedReference.PEGGED_REFERENCE_MID,
+              reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
           ],
           sells: [
             {
               offset: '10',
               proportion: '2',
-              reference: PeggedReference.PEGGED_REFERENCE_MID,
+              reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
             {
               offset: '12',
               proportion: '2',
-              reference: PeggedReference.PEGGED_REFERENCE_MID,
+              reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
           ],
+          reference: '',
         },
         pubKey: vegaPubKey,
         propagate: true,
-      };
+      } as LiquidityProvisionSubmission;
 
       createWalletClient(vegaWalletUrl, token);
 

@@ -1,7 +1,10 @@
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import {
+  convertDealTicketToOrderSubmission,
+  useVegaTransactionStore,
+} from '@vegaprotocol/wallet';
 import { useMarket, marketDataProvider } from '@vegaprotocol/markets';
 import { DealTicket } from './deal-ticket';
 
@@ -45,7 +48,12 @@ export const DealTicketContainer = ({
         <DealTicket
           market={market}
           marketData={marketData}
-          submit={(orderSubmission) => create({ orderSubmission })}
+          submit={(dealTicketOrder) =>
+            create({
+              orderSubmission:
+                convertDealTicketToOrderSubmission(dealTicketOrder),
+            })
+          }
           onClickCollateral={onClickCollateral}
         />
       ) : (

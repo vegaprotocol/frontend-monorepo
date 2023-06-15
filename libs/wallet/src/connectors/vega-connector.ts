@@ -1,5 +1,4 @@
 import { WalletClientError } from '@vegaprotocol/wallet-client';
-
 import type { LiquidityProvisionSubmission as LiquidityProvisionBody } from '@vegaprotocol/protos/dist/vega/commands/v1/LiquidityProvisionSubmission';
 import type { DelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/DelegateSubmission';
 import type { UndelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/UndelegateSubmission';
