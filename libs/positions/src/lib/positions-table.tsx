@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { forwardRef, useMemo } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import type { CellRendererSelectorResult, ColDef } from 'ag-grid-community';
+import type { ColDef } from 'ag-grid-community';
 import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
@@ -42,6 +42,7 @@ import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionTableActions } from './position-actions-dropdown';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { LiquidationPrice } from './liquidation-price';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -203,11 +204,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               headerName: t('Mark price'),
               field: 'markPrice',
               type: 'rightAligned',
-              cellRendererSelector: (): CellRendererSelectorResult => {
-                return {
-                  component: PriceFlashCell,
-                };
-              },
+              cellRenderer: PriceFlashCell,
               filter: 'agNumberColumnFilter',
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return !data ||
@@ -241,6 +238,22 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               minWidth: 100,
             },
             {
+              headerName: t('Liquidation price'),
+              colId: 'liquidationPrice',
+              type: 'rightAligned',
+              cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
+                if (!data) return null;
+                return (
+                  <LiquidationPrice
+                    marketId={data.marketId}
+                    openVolume={data.openVolume}
+                    collateralAvailable={data.totalBalance}
+                    decimals={data.decimals}
+                  />
+                );
+              },
+            },
+            {
               headerName: t('Settlement asset'),
               field: 'assetSymbol',
               colId: 'asset',
@@ -265,11 +278,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               headerName: t('Entry price'),
               field: 'averageEntryPrice',
               type: 'rightAligned',
-              cellRendererSelector: (): CellRendererSelectorResult => {
-                return {
-                  component: PriceFlashCell,
-                };
-              },
+              cellRenderer: PriceFlashCell,
               filter: 'agNumberColumnFilter',
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return data?.markPrice === undefined || !data
@@ -302,11 +311,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                   field: 'currentLeverage',
                   type: 'rightAligned',
                   filter: 'agNumberColumnFilter',
-                  cellRendererSelector: (): CellRendererSelectorResult => {
-                    return {
-                      component: PriceFlashCell,
-                    };
-                  },
+                  cellRenderer: PriceFlashCell,
                   valueFormatter: ({
                     value,
                   }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
@@ -322,11 +327,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                   field: 'marginAccountBalance',
                   type: 'rightAligned',
                   filter: 'agNumberColumnFilter',
-                  cellRendererSelector: (): CellRendererSelectorResult => {
-                    return {
-                      component: PriceFlashCell,
-                    };
-                  },
+                  cellRenderer: PriceFlashCell,
                   valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                     return !data
                       ? undefined
