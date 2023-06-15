@@ -8,11 +8,12 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-  Icon,
   DropdownMenuSubContent,
+  Icon,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
 import type { Dispatch, SetStateAction } from 'react';
+import { FilterLabel } from './tx-filter-label';
 
 // All possible transaction types. Should be generated.
 export type FilterOption =
@@ -80,28 +81,6 @@ export const AllFilterOptions: FilterOption[] = [
   ...SecondaryFilterOptions,
 ];
 
-export function getFilterLabel(filters: Set<string>) {
-  if (!filters || filters.size !== 1) {
-    return <span>{t('Filter')}</span>;
-  }
-
-  return (
-    <span>
-      {t('Filters')}: <code>{Array.from(filters)[0]}</code>
-    </span>
-  );
-}
-
-// Effectively a copy & paste of the Vega DropdownMenuItem styles
-const itemClass = classNames(
-  'relative flex gap-2 items-center rounded-sm p-2 text-sm',
-  'cursor-default',
-  'hover:bg-white dark:hover:bg-vega-dark-200',
-  'focus:bg-white dark:focus:bg-vega-dark-200',
-  'select-none',
-  'whitespace-nowrap'
-);
-
 export interface TxFilterProps {
   filters: Set<FilterOption>;
   setFilters: Dispatch<SetStateAction<Set<FilterOption>>>;
@@ -121,7 +100,11 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
     <DropdownMenu
       modal={false}
       trigger={
-        <DropdownMenuTrigger>{getFilterLabel(filters)}</DropdownMenuTrigger>
+        <DropdownMenuTrigger className="ml-2">
+          <Button size="xs">
+            <FilterLabel filters={filters} />
+          </Button>
+        </DropdownMenuTrigger>
       }
     >
       <DropdownMenuContent>
@@ -152,7 +135,7 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
           </DropdownMenuCheckboxItem>
         ))}
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger className={itemClass}>
+          <DropdownMenuSubTrigger>
             {t('More Types')}
             <Icon name="chevron-right" />
           </DropdownMenuSubTrigger>

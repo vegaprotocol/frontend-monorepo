@@ -189,8 +189,12 @@ export const DropdownMenuSubContent = forwardRef<
 export const DropdownMenuSubTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
   React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger>
->(({ ...subTriggerProps }, forwardedRef) => (
-  <DropdownMenuPrimitive.SubTrigger ref={forwardedRef} {...subTriggerProps} />
+>(({ className, ...subTriggerProps }, forwardedRef) => (
+  <DropdownMenuPrimitive.SubTrigger
+    className={classNames(className, itemClass)}
+    ref={forwardedRef}
+    {...subTriggerProps}
+  />
 ));
 
 /**
