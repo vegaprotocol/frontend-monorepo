@@ -33,7 +33,7 @@ export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
   // Hacky fix for param as array
   let urlAsString = url.toString();
   if (filters) {
-    urlAsString += '&' + filters;
+    urlAsString += '&' + filters.replace(' ', '%20');
   }
 
   return urlAsString;
@@ -64,6 +64,14 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
       }));
     }
   }, [setTxsState, data]);
+
+  useEffect(() => {
+    setTxsState((prev) => ({
+      txsData: [],
+      hasMoreTxs: true,
+      lastCursor: '',
+    }));
+  }, [filters]);
 
   const loadTxs = useCallback(() => {
     return refetch({

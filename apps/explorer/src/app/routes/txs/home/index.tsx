@@ -5,17 +5,43 @@ import { TxsInfiniteList } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
-const BE_TXS_PER_REQUEST = 20;
+import { useState } from 'react';
+import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
+
+const BE_TXS_PER_REQUEST = 15;
 
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
 
-  const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
-    useTxsData({ limit: BE_TXS_PER_REQUEST });
   return (
-    <section className="md:p-2 lg:p-4 xl:p-6">
+    <section className="md:p-2 lg:p-4 xl:p-6 relative">
       <RouteTitle>{t('Transactions')}</RouteTitle>
-      <BlocksRefetch refetch={refreshTxs} />
+      <TxsListFiltered />
+    </section>
+  );
+};
+
+export const TxsListFiltered = () => {
+  const [filters, setFilters] = useState(new Set(AllFilterOptions));
+
+  const f =
+    filters && filters.size === 1
+      ? `filters[cmd.type]=${Array.from(filters)[0]}`
+      : '';
+
+  const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
+    useTxsData({
+      limit: BE_TXS_PER_REQUEST,
+      filters: f,
+    });
+
+  return (
+    <>
+      <menu className="mb-2">
+        <BlocksRefetch refetch={refreshTxs} />
+        <TxsFilter filters={filters} setFilters={setFilters} />
+      </menu>
+
       <TxsInfiniteList
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
@@ -24,6 +50,6 @@ export const TxsList = () => {
         error={error}
         className="mb-28"
       />
-    </section>
+    </>
   );
 };
