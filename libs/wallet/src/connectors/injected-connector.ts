@@ -14,12 +14,25 @@ declare global {
       transaction: Transaction;
       sendingMode: 'TYPE_SYNC';
     }) => Promise<{
-      code: number;
-      data: string;
-      height: string;
-      log: string;
-      success: boolean;
-      txHash: string;
+      receivedAt: string;
+      sentAt: string;
+      transaction: {
+        from: {
+          pubKey: string;
+        };
+        inputData: string;
+        pow: {
+          tid: string;
+          nonce: string;
+        };
+        signature: {
+          algo: string;
+          value: string;
+          version: number;
+        };
+        version: number;
+      };
+      transactionHash: string;
     }>;
   }
 
@@ -57,22 +70,16 @@ export class InjectedConnector implements VegaConnector {
   }
 
   async sendTx(pubKey: string, transaction: Transaction) {
-    try {
-      const result = await window.vega.sendTransaction({
-        publicKey: pubKey,
-        transaction,
-        sendingMode: 'TYPE_SYNC' as const,
-      });
-      console.log(result);
-      // TODO: test this when updated to actually return values
-      return {
-        transactionHash: result.txHash,
-        receivedAt: new Date().toISOString(),
-        sentAt: new Date().toISOString(),
-        signature: result.data,
-      };
-    } catch (err) {
-      console.log(err);
-    }
+    const result = await window.vega.sendTransaction({
+      publicKey: pubKey,
+      transaction,
+      sendingMode: 'TYPE_SYNC' as const,
+    });
+    return {
+      transactionHash: result.transactionHash,
+      receivedAt: result.receivedAt,
+      sentAt: result.sentAt,
+      signature: result.transaction.signature.value,
+    };
   }
 }
