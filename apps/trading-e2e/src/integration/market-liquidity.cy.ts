@@ -102,8 +102,7 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
     cy.get(rowSelector).first().find(colCreatedAt).should('not.be.empty');
     cy.get(rowSelector).first().find(colUpdatedAt).should('not.be.empty');
   });
-  // #4079
-  it.skip('liquidity status column should be sorted properly', () => {
+  it('liquidity status column should be sorted properly', () => {
     // 5002-LIQP-003
     const liquidityColDefault = ['Active', 'Pending'];
     const liquidityColAsc = ['Active', 'Pending'];
