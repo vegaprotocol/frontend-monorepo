@@ -28,3 +28,4 @@ export * from '../trades/src/lib/trades.mock';
 export * from '../withdraws/src/lib/withdrawal.mock';
 export * from '../proposals/src/lib/protocol-upgrade-proposals/protocol-statistics-proposals.mock';
 export * from '../proposals/src/lib/protocol-upgrade-proposals/block-statistics.mock';
+export * from '../liquidity/src/lib/liquidity.mock';

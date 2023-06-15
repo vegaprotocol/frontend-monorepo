@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
@@ -41,19 +42,35 @@ jest.mock('../list-asset', () => ({
   ListAsset: () => <div data-testid="proposal-list-asset"></div>,
 }));
 
+const renderComponent = (proposal: ProposalQuery['proposal']) => {
+  render(
+    <MemoryRouter>
+      <Proposal
+        restData={{}}
+        proposal={proposal as ProposalQuery['proposal']}
+      />
+    </MemoryRouter>
+  );
+};
+
 it('Renders with data-testid', async () => {
   const proposal = generateProposal();
-  render(
-    <Proposal restData={{}} proposal={proposal as ProposalQuery['proposal']} />
-  );
+  renderComponent(proposal);
+
   expect(await screen.findByTestId('proposal')).toBeInTheDocument();
+});
+
+it('Renders with a link back to "all proposals"', async () => {
+  const proposal = generateProposal();
+  renderComponent(proposal);
+
+  expect(await screen.findByTestId('all-proposals-link')).toBeInTheDocument();
 });
 
 it('renders each section', async () => {
   const proposal = generateProposal();
-  render(
-    <Proposal restData={{}} proposal={proposal as ProposalQuery['proposal']} />
-  );
+  renderComponent(proposal);
+
   expect(await screen.findByTestId('proposal-header')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-change-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-json')).toBeInTheDocument();
@@ -80,8 +97,7 @@ it('renders whitelist section if proposal is new asset and source is erc20', asy
       },
     },
   });
-  render(
-    <Proposal restData={{}} proposal={proposal as ProposalQuery['proposal']} />
-  );
+  renderComponent(proposal);
+
   expect(screen.getByTestId('proposal-list-asset')).toBeInTheDocument();
 });

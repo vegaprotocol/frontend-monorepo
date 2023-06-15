@@ -1,39 +1,3 @@
-# MarketLp
-
-query MarketLp($marketId: ID!) {
-  market(id: $marketId) {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-    tradableInstrument {
-      instrument {
-        code
-        name
-        product {
-          ... on Future {
-            settlementAsset {
-              id
-              symbol
-              decimals
-            }
-          }
-        }
-      }
-    }
-    data {
-      market {
-        id
-      }
-      marketTradingMode
-      suppliedStake
-      openInterest
-      targetStake
-      trigger
-      marketValueProxy
-    }
-  }
-}
-
 # Liquidity Provisions
 
 fragment LiquidityProvisionFields on LiquidityProvision {

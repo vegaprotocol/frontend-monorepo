@@ -824,5 +824,7 @@
   "disclaimer5": "No developer of the Vega Governance App accepts any responsibility for, or liability to users in connection with their use of the Vega Governance App.",
   "multisigContractLink": "Ethereum Multisig Contract",
   "multisigContractIncorrect": "is incorrectly configured. Validator and delegator rewards will be penalised until this is resolved.",
-  "learnMore": "Learn more"
+  "learnMore": "Learn more",
+  "AllValidators": "All validators",
+  "AllProposals": "All proposals"
 }

@@ -5,9 +5,14 @@ import { useOracleMarketsSpecQuery } from '../__generated__/OracleMarketsSpec';
 export const useOracleMarkets = (
   provider: Provider
 ): OracleMarketSpecFieldsFragment[] | undefined => {
-  const signedProofs = provider.proofs.filter(
-    (proof) => proof.format === 'signed_message' && proof.available === true
-  );
+  let oracleSignature: string;
+  const oracle = provider.oracle;
+  if ('public_key' in oracle && oracle.public_key) {
+    oracleSignature = oracle.public_key;
+  }
+  if ('eth_address' in oracle && oracle.eth_address) {
+    oracleSignature = oracle.eth_address;
+  }
 
   const { data: markets } = useOracleMarketsSpecQuery();
 
@@ -20,30 +25,16 @@ export const useOracleMarkets = (
         return false;
       }
       const signers = sourceType?.sourceType.signers;
-
       const signerKeys = signers?.filter(Boolean).map((signer) => {
         if (signer.signer.__typename === 'ETHAddress') {
           return signer.signer.address;
         }
-
         if (signer.signer.__typename === 'PubKey') {
           return signer.signer.key;
         }
-
         return undefined;
       });
-
-      const signedProofsKeys = signedProofs.map((proof) => {
-        if ('public_key' in proof && proof.public_key) {
-          return proof.public_key;
-        }
-        if ('eth_address' in proof && proof.eth_address) {
-          return proof.eth_address;
-        }
-        return undefined;
-      });
-
-      const key = signedProofsKeys.find((key) => signerKeys?.includes(key));
+      const key = signerKeys?.find((key) => key === oracleSignature);
       return !!key;
     });
   return oracleMarkets;
