@@ -381,6 +381,8 @@ context(
 
       it('Disassociating some tokens - prioritizes unstaked tokens', function () {
         vegaWalletSetSpecifiedApprovalAmount('1000');
+        cy.reload();
+        ethereumWalletConnect();
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
