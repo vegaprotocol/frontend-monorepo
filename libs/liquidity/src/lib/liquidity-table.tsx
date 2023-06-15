@@ -58,7 +58,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         return `${addDecimalsFormatNumberQuantum(
           value,
           assetDecimalPlaces ?? 0,
-          quantum ?? 0
+          quantum ?? 1
         )}`;
       };
 
@@ -80,7 +80,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         return `${addDecimalsFormatNumberQuantum(
           newValue,
           assetDecimalPlaces ?? 0,
-          quantum ?? 0
+          quantum ?? 1
         )}`;
       };
 
