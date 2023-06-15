@@ -136,7 +136,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           field: 'commitmentAmount',
           type: 'rightAligned',
           headerTooltip: t(
-            `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_siskas network parameter to convert into units of liquidity volume. The obligation can be met by a combination of LP orders and limit orders on the order book.`
+            `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_volume network parameter to convert into units of liquidity volume. The obligation can be met by a combination of LP orders and limit orders on the order book.`
           ),
           valueFormatter: stakeToCcyVolumeQuantumFormatter,
           tooltipValueGetter: stakeToCcyVolumeFormatter,
