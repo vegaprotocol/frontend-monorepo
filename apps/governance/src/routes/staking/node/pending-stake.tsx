@@ -7,6 +7,7 @@ import type { BigNumber } from '../../../lib/bignumber';
 import type { UndelegateSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { removeDecimal } from '@vegaprotocol/utils';
+import { vega as VegaProtos } from '@vegaprotocol/protos';
 
 interface PendingStakeProps {
   pendingAmount: BigNumber;
@@ -38,7 +39,7 @@ export const PendingStake = ({
         undelegateSubmission: {
           nodeId,
           amount: removeDecimal(pendingAmount.toString(), appState.decimals),
-          method: 'METHOD_NOW',
+          method: VegaProtos.commands.v1.UndelegateSubmission.Method.METHOD_NOW,
         },
       };
       await sendTx(pubKey, command);

@@ -18,7 +18,7 @@ import {
   Tooltip,
   Checkbox,
 } from '@vegaprotocol/ui-toolkit';
-import type { Transfer } from '@vegaprotocol/wallet';
+import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';

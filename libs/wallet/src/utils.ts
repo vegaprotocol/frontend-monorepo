@@ -127,6 +127,13 @@ const SideMap: Readonly<Record<Schema.Side, Side>> = {
   [Schema.Side.SIDE_UNSPECIFIED]: vegaProtos.Side.SIDE_UNSPECIFIED,
 };
 
+export const SideRevertMap: Record<Side, Schema.Side> = Object.entries(
+  SideMap
+).reduce((agg, item) => {
+  agg[item[1]] = item[0] as Schema.Side;
+  return agg;
+}, {} as Record<Side, Schema.Side>);
+
 const TimeInForceMap: Readonly<Record<Schema.OrderTimeInForce, TimeInForce>> = {
   [Schema.OrderTimeInForce.TIME_IN_FORCE_FOK]:
     vegaProtos.Order.TimeInForce.TIME_IN_FORCE_FOK,

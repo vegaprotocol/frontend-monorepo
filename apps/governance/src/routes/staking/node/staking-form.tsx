@@ -4,6 +4,7 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ENV } from '../../../config';
+import { vega as VegaProtos } from '@vegaprotocol/protos';
 import { usePartyDelegationsLazyQuery } from './__generated__/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
@@ -128,8 +129,9 @@ export const StakingForm = ({
         amount: removeDecimal(amount, appState.decimals),
         method:
           removeType === RemoveType.Now
-            ? 'METHOD_NOW'
-            : 'METHOD_AT_END_OF_EPOCH',
+            ? VegaProtos.commands.v1.UndelegateSubmission.Method.METHOD_NOW
+            : VegaProtos.commands.v1.UndelegateSubmission.Method
+                .METHOD_AT_END_OF_EPOCH,
       },
     };
     try {

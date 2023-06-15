@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import first from 'lodash/first';
 import compact from 'lodash/compact';
+import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
+import type { OrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
 import type {
   BatchMarketInstructionSubmissionBody,
-  OrderAmendment,
   OrderTxUpdateFieldsFragment,
   OrderCancellationBody,
-  OrderSubmission,
   VegaStoredTxState,
   WithdrawalBusEventFieldsFragment,
 } from '@vegaprotocol/wallet';
@@ -22,6 +22,7 @@ import {
   isWithdrawTransaction,
   useVegaTransactionStore,
   VegaTxStatus,
+  SideRevertMap,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
@@ -134,8 +135,8 @@ const SubmitOrderDetails = ({
   if (!market) return null;
 
   const price = order ? order.price : data.price;
-  const size = order ? order.size : data.size;
-  const side = order ? order.side : data.side;
+  const size = order ? order.size : String(data.size);
+  const side = order ? order.side : SideRevertMap[data.side];
 
   return (
     <Panel>
@@ -201,8 +202,8 @@ const EditOrderDetails = ({
   const edited = (
     <SizeAtPrice
       side={originalOrder.side}
-      size={String(Number(originalOrder.size) + (data.sizeDelta || 0))}
-      price={data.price}
+      size={String(Number(originalOrder.size) + Number(data.sizeDelta || 0))}
+      price={String(data.price)}
       meta={{
         positionDecimalPlaces: market.positionDecimalPlaces,
         decimalPlaces: market.decimalPlaces,

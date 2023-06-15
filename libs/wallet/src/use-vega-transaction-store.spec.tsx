@@ -12,7 +12,7 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import type { OrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
-import type { WithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
+import type { WithdrawSubmission } from './connectors/vega-connector';
 import type { DealTicketOrderAmendment } from './utils';
 import { convertDealTicketToOrderAmendment } from './utils';
 

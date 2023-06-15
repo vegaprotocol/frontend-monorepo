@@ -72,11 +72,13 @@ export const ProposeFreeform = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        newFreeform: {},
-        closingTimestamp: getClosingTimestamp(
-          fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum,
-          isVoteDeadlineAtMaximum
+        change: { newFreeform: {} },
+        closingTimestamp: BigInt(
+          getClosingTimestamp(
+            fields.proposalVoteDeadline,
+            isVoteDeadlineAtMinimum,
+            isVoteDeadlineAtMaximum
+          )
         ),
       },
     };

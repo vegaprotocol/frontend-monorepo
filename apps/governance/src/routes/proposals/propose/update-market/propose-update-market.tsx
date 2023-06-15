@@ -134,21 +134,27 @@ export const ProposeUpdateMarket = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        updateMarket: {
-          marketId: fields.proposalMarketId,
-          changes: fields.proposalTerms
-            ? { ...JSON.parse(fields.proposalTerms) }
-            : {},
+        change: {
+          updateMarket: {
+            marketId: fields.proposalMarketId,
+            changes: fields.proposalTerms
+              ? { ...JSON.parse(fields.proposalTerms) }
+              : {},
+          },
         },
-        closingTimestamp: getClosingTimestamp(
-          fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum,
-          isVoteDeadlineAtMaximum
+        closingTimestamp: BigInt(
+          getClosingTimestamp(
+            fields.proposalVoteDeadline,
+            isVoteDeadlineAtMinimum,
+            isVoteDeadlineAtMaximum
+          )
         ),
-        enactmentTimestamp: getEnactmentTimestamp(
-          fields.proposalEnactmentDeadline,
-          isEnactmentDeadlineAtMinimum,
-          isEnactmentDeadlineAtMaximum
+        enactmentTimestamp: BigInt(
+          getEnactmentTimestamp(
+            fields.proposalEnactmentDeadline,
+            isEnactmentDeadlineAtMinimum,
+            isEnactmentDeadlineAtMaximum
+          )
         ),
       },
     };

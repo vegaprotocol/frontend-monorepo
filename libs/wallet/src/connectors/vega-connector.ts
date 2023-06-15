@@ -6,10 +6,27 @@ import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1
 import type { OrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
 import type { OrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
 import type { VoteSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/VoteSubmission';
-import type { WithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
-import type { ProposalSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/ProposalSubmission';
+import type { WithdrawSubmission as OriginalWithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
+import type { ProposalSubmission as OriginalProposalSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/ProposalSubmission';
 import type { BatchMarketInstructions } from '@vegaprotocol/protos/dist/vega/commands/v1/BatchMarketInstructions';
 import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
+import type { ProposalTerms } from '@vegaprotocol/protos/dist/vega/ProposalTerms';
+import type { WithdrawExt } from '@vegaprotocol/protos/dist/vega/WithdrawExt';
+
+// generated type doesn't match in many places with current implementation. It has to be overwrite here
+// and re-exported for saving consistency.
+export type ProposalSubmission = Omit<
+  OriginalProposalSubmission,
+  'reference' | 'terms'
+> & {
+  reference?: string;
+  terms: Omit<ProposalTerms, 'enactmentTimestamp' | 'validationTimestamp'> & {
+    enactmentTimestamp?: bigint;
+    validationTimestamp?: bigint;
+  };
+};
+export type WithdrawSubmission = Omit<OriginalWithdrawSubmission, 'ext'> &
+  WithdrawExt;
 
 export interface LiquidityProvisionSubmission {
   liquidityProvisionSubmission: LiquidityProvisionBody;
