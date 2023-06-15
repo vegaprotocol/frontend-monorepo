@@ -68,6 +68,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
       .each((item, i) => {
         const market = data[i];
         // 6001-MARK-021
+        // 6001-MARK-022
         expect(item.find('h3').text()).equals(market.code);
         expect(
           item.find('[data-testid="market-selector-data-row"]').eq(0).text()
@@ -85,8 +86,19 @@ describe('markets selector', { tags: '@smoke' }, () => {
       });
   });
 
-  // 6001-MARK-027
+  it('can see all markets link', () => {
+    // 6001-MARK-026
+    cy.getByTestId('market-selector').within(() => {
+      cy.getByTestId('all-markets-link')
+        .should('be.visible')
+        .and('have.text', 'All markets')
+        .and('have.attr', 'href')
+        .and('contain', '#/markets/all');
+    });
+  });
+
   it('can use the filter options', () => {
+    // 6001-MARK-027
     // product type
     cy.getByTestId('product-Spot').click();
     cy.getByTestId(list).contains('Spot markets coming soon.');
@@ -103,5 +115,30 @@ describe('markets selector', { tags: '@smoke' }, () => {
 
     cy.getByTestId(searchInput).clear();
     cy.getByTestId(list).find('a').should('have.length', 4);
+  });
+
+  it('can sort by by top gaining and top losing market', () => {
+    // 6001-MARK-030
+    // 6001-MARK-031
+    // 6001-MARK-032
+    // 6001-MARK-033
+    cy.getByTestId(' sort-trigger').click();
+    cy.getByTestId('sort-item-Gained')
+      .contains('Top gaining')
+      .should('be.visible');
+    cy.getByTestId('sort-item-Lost')
+      .contains('Top losing')
+      .should('be.visible');
+    cy.getByTestId('sort-item-New')
+      .contains('New markets')
+      .should('be.visible');
+  });
+
+  it('can filter by settlement asset', () => {
+    // 6001-MARK-028
+    cy.getByTestId('asset-trigger').click();
+    cy.getByTestId('asset-id-asset-3').contains('tBTC').click();
+    cy.getByTestId(list).find('a').should('have.length', 1);
+    cy.getByTestId(list).find('a').eq(0).contains('ETHBTC.QM21');
   });
 });
