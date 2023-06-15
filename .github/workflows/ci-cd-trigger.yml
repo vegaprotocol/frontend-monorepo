@@ -6,8 +6,6 @@ on:
       - release/*
       - develop
       - main
-    tags:
-      - v*
   pull_request:
     types:
       - opened

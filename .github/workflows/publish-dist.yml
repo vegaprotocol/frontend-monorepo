@@ -31,6 +31,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to the Container registry (ghcr)
+        if: ${{ github.event_name == 'pull_request' }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -39,7 +40,7 @@ jobs:
 
       - name: Log in to the Container registry (docker hub)
         uses: docker/login-action@v2
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
         with:
           # registry: registry.hub.docker.com
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -84,8 +85,6 @@ jobs:
             fi
           elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
             envName="mainnet"
-          elif [[ "${{ matrix.app}}" = "trading" ]] && [[ "${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}" = "true" ]]; then
-            envName="mainnet"
           fi
 
           if [[ "${envName}" = "mainnet" ]]; then
@@ -114,9 +113,7 @@ jobs:
         run: |
           flags=""
           if [[ ! -z "${{ env.ENV_NAME }}" ]]; then
-            if [[ "${{ env.ENV_NAME }}" != "ops-vega" ]]; then
-              flags="--env=${{ env.ENV_NAME }}"
-            fi
+            flags="--env=${{ env.ENV_NAME }}"
           fi
 
           if [ "${{ matrix.app }}" = "trading" ]; then
@@ -161,7 +158,7 @@ jobs:
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: ghcr-push
-        if: ${{ github.event_name == 'pull_request' || (matrix.app == 'trading' && github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') ) }}
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -176,7 +173,7 @@ jobs:
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: dockerhub-push
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -185,7 +182,7 @@ jobs:
             APP=${{ matrix.app }}
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
-            vegaprotocol/${{ matrix.app }}:${{ github.ref_name }}
+            vegaprotocol/${{ matrix.app }}:${{ github.sha }}
             vegaprotocol/${{ matrix.app }}:mainnet
 
       - name: Publish dist as docker image (ghcr - retry)
@@ -212,13 +209,14 @@ jobs:
             APP=${{ matrix.app }}
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
-            vegaprotocol/${{ matrix.app }}:${{ github.ref_name }}
+            vegaprotocol/${{ matrix.app }}:${{ github.sha }}
             vegaprotocol/${{ matrix.app }}:mainnet
 
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
         uses: jakejarvis/s3-sync-action@master
-        if: ${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v') && ( matrix.app != 'trading' || (matrix.app == 'trading' && !endsWith(github.ref, 'main') ) ) }}
+        # s3 releases are not happening for trading on mainnet - it's IPFS
+        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !endsWith(github.ref, 'main') ) ) }}
         with:
           args: --acl private --follow-symlinks --delete
         env:
@@ -236,7 +234,8 @@ jobs:
           number: ${{ github.event.number }}
 
       - name: Trigger fleek deployment
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        # release to ipfs happens only on mainnet (represented by main branch) for trading
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
         run: |
           # display info about app
           curl -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
@@ -251,7 +250,7 @@ jobs:
             https://api.fleek.co/graphql
 
       - name: Check out ipfs-redirect
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
         uses: actions/checkout@v3
         with:
           repository: 'vegaprotocol/ipfs-redirect'
@@ -260,7 +259,7 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Update console.vega.xyz DNS to redirect to the new console
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
         run: |
@@ -296,27 +295,3 @@ jobs:
             sleep 5
             gh pr merge "${pr_url}" --delete-branch --squash --admin
           )
-
-          # # Generate console URL
-          # new_console_url_type=ipfs
-          # # new_console_url_type=ipns
-          # new_console_url_domain=cf-ipfs.com
-          # # new_console_url_domain=dweb.link
-          # new_console_url="https://${new_cid}.${new_console_url_type}.${new_console_url_domain}/"
-          # echo "new_console_url=${new_console_url}"
-
-          # # Update record in DNSimple
-          # # docs: https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord
-          # dnsimple_account_id=84895
-          # dnsimple_zone_name=console.vega.xyz
-          # dnsimple_record_id=44409591
-          # # see: https://dnsimple.com/a/84895/domains/console.vega.xyz/records/44409591/edit
-
-          # curl  -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
-          #       -H 'Accept: application/json' \
-          #       -H 'Content-Type: application/json' \
-          #       -X PATCH \
-          #       -d "{
-          #             \"content\": \"${new_console_url}\"
-          #       }" \
-          #       https://api.dnsimple.com/v2/${dnsimple_account_id}/zones/${dnsimple_zone_name}/records/${dnsimple_record_id}
