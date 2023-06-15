@@ -55,6 +55,10 @@ context(
       navigateTo(navigation.withdraw);
       cy.connectVegaWallet();
       ethereumWalletConnect();
+      cy.getByTestId('currency-title', txTimeout).should(
+        'contain.text',
+        usdtName
+      );
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
