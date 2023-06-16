@@ -99,6 +99,7 @@ export const tradesProvider = makeDataProvider<
     append,
     first: MAX_TRADES,
   },
+  fetchPolicy: 'no-cache',
   getSubscriptionVariables: ({ marketId }) => ({ marketId }),
 });
 
