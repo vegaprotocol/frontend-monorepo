@@ -32,7 +32,7 @@ if (ref.contains('release/')) {
   envName = 'mainnet';
 }
 
-// mainnet apps do not contain
+// mainnet / fairground apps do not contain environment name in the DNS
 if (envName == 'mainnet') {
   domain = 'vega.xyz';
   if (!bucketName) {
