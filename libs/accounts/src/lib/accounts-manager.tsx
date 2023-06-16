@@ -1,4 +1,4 @@
-import { useRef, memo, useState } from 'react';
+import { useRef, memo, useState, useCallback } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -15,14 +15,25 @@ import BreakdownTable from './breakdown-table';
 const AccountBreakdown = ({
   assetId,
   partyId,
+  onMarketClick,
 }: {
   assetId: string;
   partyId: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
+  const gridRef = useRef<AgGridReact>(null);
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId, assetId },
+    update: ({ data }) => {
+      if (gridRef.current?.api && data?.breakdown) {
+        gridRef.current?.api.setRowData(data?.breakdown);
+        return true;
+      }
+      return false;
+    },
   });
+
   return (
     <div
       className="h-[35vh] w-full m-auto flex flex-col"
@@ -39,16 +50,57 @@ const AccountBreakdown = ({
           ])}
         </p>
       )}
-      <BreakdownTable data={data?.breakdown || null} domLayout="autoHeight" />
+      <BreakdownTable
+        ref={gridRef}
+        data={data?.breakdown || null}
+        domLayout="autoHeight"
+        onMarketClick={onMarketClick}
+      />
     </div>
   );
 };
+
+export const AccountBreakdownDialog = memo(
+  ({
+    assetId,
+    partyId,
+    onClose,
+    onMarketClick,
+  }: {
+    assetId?: string;
+    partyId: string;
+    onClose: () => void;
+    onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  }) => {
+    console.log('render');
+    return (
+      <Dialog
+        size="medium"
+        open={Boolean(assetId)}
+        onChange={(isOpen) => {
+          if (!isOpen) {
+            onClose();
+          }
+        }}
+      >
+        {assetId && (
+          <AccountBreakdown
+            assetId={assetId}
+            partyId={partyId}
+            onMarketClick={onMarketClick}
+          />
+        )}
+      </Dialog>
+    );
+  }
+);
 
 interface AccountManagerProps {
   partyId: string;
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
   storeKey?: string;
@@ -62,6 +114,7 @@ export const AccountManager = ({
   isReadOnly,
   pinnedAsset,
   storeKey,
+  onMarketClick,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
@@ -70,6 +123,16 @@ export const AccountManager = ({
     dataProvider: aggregatedAccountsDataProvider,
     variables: { partyId },
   });
+
+  const onMarketClickInternal = useCallback(
+    (...args: Parameters<NonNullable<typeof onMarketClick>>) => {
+      setBreakdownAssetId(undefined);
+      if (onMarketClick) {
+        onMarketClick(...args);
+      }
+    },
+    [onMarketClick]
+  );
 
   return (
     <div className="relative h-full">
@@ -85,19 +148,12 @@ export const AccountManager = ({
         storeKey={storeKey}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
       />
-      <Dialog
-        size="medium"
-        open={Boolean(breakdownAssetId)}
-        onChange={(isOpen) => {
-          if (!isOpen) {
-            setBreakdownAssetId(undefined);
-          }
-        }}
-      >
-        {breakdownAssetId && (
-          <AccountBreakdown assetId={breakdownAssetId} partyId={partyId} />
-        )}
-      </Dialog>
+      <AccountBreakdownDialog
+        assetId={breakdownAssetId}
+        partyId={partyId}
+        onClose={useCallback(() => setBreakdownAssetId(undefined), [])}
+        onMarketClick={onMarketClick ? onMarketClickInternal : undefined}
+      />
     </div>
   );
 };

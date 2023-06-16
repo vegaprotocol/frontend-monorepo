@@ -23,7 +23,6 @@ export const useAccountBalance = (assetId?: string) => {
     },
     [assetId]
   );
-
   useDataProvider({
     dataProvider: accountsDataProvider,
     variables,
