@@ -15,7 +15,6 @@ export const MarketNameCell = ({
   data,
   idPath,
   onMarketClick,
-  defaultValue = null,
 }: MarketNameCellProps) => {
   const id = data ? get(data, idPath ?? 'id', 'all') : '';
   const handleOnClick = useCallback(
@@ -28,8 +27,7 @@ export const MarketNameCell = ({
     },
     [id, onMarketClick]
   );
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (!value || !data) return <>{defaultValue}</>;
+  if (!value || !data) return null;
   return onMarketClick ? (
     <button onClick={handleOnClick} tabIndex={0}>
       {value}

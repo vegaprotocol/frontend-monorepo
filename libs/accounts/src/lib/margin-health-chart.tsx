@@ -143,8 +143,8 @@ export const MarginHealthChart = ({
   const initialLevel = Number(data.initialLevel);
   const maintenanceLevel = Number(data.maintenanceLevel);
   const searchLevel = Number(data.searchLevel);
-  const marginAccountBalance = Number(rawMarginAccountBalance || '0');
-  const generalAccountBalance = Number(rawGeneralAccountBalance || '0');
+  const marginAccountBalance = Number(rawMarginAccountBalance);
+  const generalAccountBalance = Number(rawGeneralAccountBalance);
   const max = Math.max(
     marginAccountBalance + generalAccountBalance,
     collateralReleaseLevel

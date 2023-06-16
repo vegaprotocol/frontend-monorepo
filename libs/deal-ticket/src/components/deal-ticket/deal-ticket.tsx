@@ -100,7 +100,7 @@ export const DealTicket = ({
   const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
 
   const balance = (
-    BigInt(marginAccountBalance || '0') + BigInt(generalAccountBalance || '0')
+    BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
   ).toString();
 
   const { marketState, marketTradingMode } = marketData;
