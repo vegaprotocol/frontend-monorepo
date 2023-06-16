@@ -8,7 +8,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import type { DealTicketOrderSubmission } from '@vegaprotocol/wallet';
 import {
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
@@ -22,9 +22,7 @@ import {
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 
-export const useEstimateFees = (
-  order?: OrderSubmissionBody['orderSubmission']
-) => {
+export const useEstimateFees = (order?: DealTicketOrderSubmission) => {
   const { pubKey } = useVegaWallet();
 
   const { data } = useEstimateFeesQuery({

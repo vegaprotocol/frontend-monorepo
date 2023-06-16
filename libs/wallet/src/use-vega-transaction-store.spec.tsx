@@ -1,18 +1,18 @@
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './use-vega-transaction';
 import type { VegaStoredTxState } from './use-vega-transaction-store';
-import type {
-  OrderCancellationBody,
-  WithdrawSubmissionBody,
-} from './connectors/vega-connector';
 import {
   OrderStatus,
   OrderTimeInForce,
   OrderType,
   Side,
 } from '@vegaprotocol/types';
-import type { OrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
-import type { WithdrawSubmission } from './connectors/vega-connector';
+import type {
+  WithdrawSubmission,
+  OrderCancellation,
+  OrderCancellationBody,
+  WithdrawSubmissionBody,
+} from './connectors/vega-connector';
 import type { DealTicketOrderAmendment } from './utils';
 import { convertDealTicketToOrderAmendment } from './utils';
 

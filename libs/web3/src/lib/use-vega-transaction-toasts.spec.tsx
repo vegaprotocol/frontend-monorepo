@@ -5,7 +5,8 @@ import {
   OrderType,
   Side,
 } from '@vegaprotocol/types';
-import type { VegaStoredTxState } from '@vegaprotocol/wallet';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
+import type { Transaction, VegaStoredTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import {
   VegaTransactionDetails,
@@ -118,10 +119,10 @@ const submitOrder: VegaStoredTxState = {
   body: {
     orderSubmission: {
       marketId: 'market-1',
-      side: Side.SIDE_BUY,
-      size: '10',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-      type: OrderType.TYPE_MARKET,
+      side: vegaProtos.Side.SIDE_BUY,
+      size: BigInt(10),
+      timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_FOK,
+      type: vegaProtos.Order.Type.TYPE_MARKET,
       price: '1234',
     },
   },
@@ -151,9 +152,9 @@ const editOrder: VegaStoredTxState = {
     orderAmendment: {
       marketId: 'market-1',
       orderId: '0',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_FOK,
       price: '1000',
-      sizeDelta: 1,
+      sizeDelta: BigInt(1),
     },
   },
   status: VegaTxStatus.Default,
@@ -200,7 +201,7 @@ const cancelAll: VegaStoredTxState = {
       marketId: undefined,
       orderId: undefined,
     },
-  },
+  } as Transaction,
   status: VegaTxStatus.Default,
   error: null,
   txHash: null,
@@ -218,10 +219,10 @@ const closePosition: VegaStoredTxState = {
       submissions: [
         {
           marketId: 'market-1',
-          side: Side.SIDE_BUY,
-          size: '10',
-          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-          type: OrderType.TYPE_MARKET,
+          side: vegaProtos.Side.SIDE_BUY,
+          size: BigInt(10),
+          timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_FOK,
+          type: vegaProtos.Order.Type.TYPE_MARKET,
           price: '1234',
         },
       ],
@@ -243,10 +244,10 @@ const batch: VegaStoredTxState = {
       submissions: [
         {
           marketId: 'market-1',
-          side: Side.SIDE_BUY,
-          size: '10',
-          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-          type: OrderType.TYPE_MARKET,
+          side: vegaProtos.Side.SIDE_BUY,
+          size: BigInt(10),
+          timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_FOK,
+          type: vegaProtos.Order.Type.TYPE_MARKET,
           price: '1234',
         },
       ],

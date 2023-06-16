@@ -6,9 +6,11 @@ import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
 import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
-import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
-import type { OrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
-import type { Transaction } from './connectors';
+import type {
+  Transaction,
+  OrderSubmission,
+  OrderAmendment,
+} from './connectors';
 import type { Exact } from 'type-fest';
 import { vega as vegaProtos } from '@vegaprotocol/protos';
 import type { Side } from '@vegaprotocol/protos/dist/vega/Side';

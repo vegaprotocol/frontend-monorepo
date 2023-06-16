@@ -9,7 +9,6 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
 import {
   normalizeOrderSubmission,
   useVegaWallet,
@@ -56,7 +55,7 @@ import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 import { marketMarginDataProvider } from '@vegaprotocol/positions';
-import type { DealTicketOrderSubmission } from './deal-ticket-container';
+import type { DealTicketOrderSubmission } from '@vegaprotocol/wallet';
 
 export interface DealTicketProps {
   market: Market;
@@ -251,7 +250,7 @@ export const DealTicket = ({
   }, [order]);
 
   const onSubmit = useCallback(
-    (order: OrderSubmission) => {
+    (order: DealTicketOrderSubmission) => {
       const now = new Date().getTime();
       if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
         return;

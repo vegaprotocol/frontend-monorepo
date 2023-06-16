@@ -2,13 +2,13 @@ import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { LiquidityProvisionSubmission as LiquidityProvisionBody } from '@vegaprotocol/protos/dist/vega/commands/v1/LiquidityProvisionSubmission';
 import type { DelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/DelegateSubmission';
 import type { UndelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/UndelegateSubmission';
-import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
-import type { OrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
-import type { OrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
+import type { OrderSubmission as OriginalOrderPosition } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
+import type { OrderCancellation as OriginalOrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
+import type { OrderAmendment as OriginalOrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
 import type { VoteSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/VoteSubmission';
 import type { WithdrawSubmission as OriginalWithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
 import type { ProposalSubmission as OriginalProposalSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/ProposalSubmission';
-import type { BatchMarketInstructions } from '@vegaprotocol/protos/dist/vega/commands/v1/BatchMarketInstructions';
+import type { BatchMarketInstructions as OriginalBatchMarketInstructions } from '@vegaprotocol/protos/dist/vega/commands/v1/BatchMarketInstructions';
 import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
 import type { ProposalTerms } from '@vegaprotocol/protos/dist/vega/ProposalTerms';
 import type { WithdrawExt } from '@vegaprotocol/protos/dist/vega/WithdrawExt';
@@ -18,15 +18,61 @@ import type { WithdrawExt } from '@vegaprotocol/protos/dist/vega/WithdrawExt';
 export type ProposalSubmission = Omit<
   OriginalProposalSubmission,
   'reference' | 'terms'
-> & {
-  reference?: string;
-  terms: Omit<ProposalTerms, 'enactmentTimestamp' | 'validationTimestamp'> & {
-    enactmentTimestamp?: bigint;
-    validationTimestamp?: bigint;
+> &
+  Partial<Pick<OriginalProposalSubmission, 'reference'>> & {
+    terms: Omit<ProposalTerms, 'enactmentTimestamp' | 'validationTimestamp'> &
+      Partial<
+        Pick<ProposalTerms, 'enactmentTimestamp' | 'validationTimestamp'>
+      >;
   };
-};
 export type WithdrawSubmission = Omit<OriginalWithdrawSubmission, 'ext'> &
   WithdrawExt;
+
+export type OrderSubmission = Omit<
+  OriginalOrderPosition,
+  | 'price'
+  | 'expiresAt'
+  | 'reference'
+  | 'peggedOrder'
+  | 'postOnly'
+  | 'reduceOnly'
+> &
+  Partial<
+    Pick<
+      OriginalOrderPosition,
+      | 'price'
+      | 'expiresAt'
+      | 'reference'
+      | 'peggedOrder'
+      | 'postOnly'
+      | 'reduceOnly'
+    >
+  >;
+
+export type OrderAmendment = Omit<
+  OriginalOrderAmendment,
+  'price' | 'sizeDelta' | 'expiresAt' | 'peggedOffset' | 'peggedReference'
+> &
+  Partial<
+    Pick<
+      OriginalOrderAmendment,
+      'price' | 'sizeDelta' | 'expiresAt' | 'peggedOffset' | 'peggedReference'
+    >
+  >;
+export type OrderCancellation = Omit<
+  OriginalOrderCancellation,
+  'orderId' | 'marketId'
+> &
+  Partial<Pick<OriginalOrderCancellation, 'orderId' | 'marketId'>>;
+export type BatchMarketInstructions = Omit<
+  OriginalBatchMarketInstructions,
+  'submissions' | 'amendments' | 'cancellations'
+> &
+  Partial<
+    Pick<OriginalBatchMarketInstructions, 'amendments' | 'cancellations'>
+  > & {
+    submissions?: OrderSubmission[];
+  };
 
 export interface LiquidityProvisionSubmission {
   liquidityProvisionSubmission: LiquidityProvisionBody;

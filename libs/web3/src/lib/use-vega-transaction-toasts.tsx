@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import first from 'lodash/first';
 import compact from 'lodash/compact';
-import type { OrderSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
-import type { OrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
+import type { OrderSubmission, OrderAmendment } from '@vegaprotocol/wallet';
 import type {
   BatchMarketInstructionSubmissionBody,
   OrderTxUpdateFieldsFragment,
