@@ -81,6 +81,7 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
 
     cy.get(rowSelector).first().find(colFee).should('have.text', '0.09%');
 
+    // 5002-LIQP-013
     cy.get(rowSelector)
       .first()
       .find(colAverageEntryValuation)
@@ -165,7 +166,7 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
   });
 
   it('can see liquidity supplied', () => {
-    //// 5002-LIQP-008
+    // 5002-LIQP-008
     cy.getByTestId(marketSummaryBlock).within(() => {
       cy.getByTestId('liquidity-supplied').within(() => {
         cy.getByTestId(itemHeader).should('have.text', 'Liquidity supplied');
@@ -237,6 +238,7 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
         .find(colFee)
         .should('have.text', '0.09%');
 
+      // 5002-LIQP-013
       cy.get(rowSelectorLiquidityActive)
         .first()
         .find(colAverageEntryValuation)
@@ -268,7 +270,7 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
     });
 
     it('renders liquidity inactive table correctly', () => {
-      //// 5002-LIQP-012
+      // 5002-LIQP-012
       cy.getByTestId('Inactive').click();
       cy.get(rowSelectorLiquidityInactive)
         .first()
