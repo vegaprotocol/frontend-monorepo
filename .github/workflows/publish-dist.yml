@@ -64,52 +64,7 @@ jobs:
       # https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Define dist variables
         if: ${{ github.event_name == 'push' }}
-        run: |
-          envName=''
-          domain="vega.rocks"
-          bucketName=''
-
-          if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
-            envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
-          elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
-            envName="stagnet1"
-            if [[ "${{ matrix.app }}" = "multisig-signer" ]]; then
-              envName="mainnet"
-              bucketName="tools.vega.xyz"
-            fi
-            if [[ "${{ matrix.app }}" = "static" ]]; then
-              envName="mainnet"
-              bucketName="static.vega.xyz"
-            fi
-            if [[ "${{ matrix.app }}" = "ui-toolkit" ]]; then
-              envName="mainnet"
-              bucketName="ui.vega.rocks"
-            fi
-          elif [[ "${{ github.ref }}" =~ .*main$ ]]; then
-            envName="mainnet"
-          fi
-
-          if [[ "${envName}" = "mainnet" ]]; then
-            domain="vega.xyz"
-            if [[ -z "${bucketName}" ]]; then
-              bucketName="${{ matrix.app }}.${domain}"
-            fi
-          elif [[ "${envName}" = "testnet" ]]; then
-            domain="fairground.wtf"
-            if [[ -z "${bucketName}" ]]; then
-              bucketName="${{ matrix.app }}.${domain}"
-            fi
-          fi
-
-          if [[ -z "${bucketName}" ]]; then
-            bucketName="${{ matrix.app }}.${envName}.${domain}"
-          fi
-
-          echo "bucket name: ${bucketName}"
-          echo "env name: ${envName}"
-
-          echo BUCKET_NAME=${bucketName} >> $GITHUB_ENV
-          echo ENV_NAME=${envName} >> $GITHUB_ENV
+        run: node tools/scripts/publish-dist-set-vars.js
 
       - name: Build local dist
         run: |
