@@ -233,7 +233,6 @@ export const DealTicketFeeDetails = ({
   }
 
   let liquidationPriceEstimate = emptyValue;
-  let liquidationPriceEstimateFormatted;
 
   if (liquidationEstimate) {
     const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
