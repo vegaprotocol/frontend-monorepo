@@ -38,45 +38,6 @@ subscription PositionsSubscription($partyId: ID!) {
   }
 }
 
-fragment MarginFields on MarginLevels {
-  maintenanceLevel
-  searchLevel
-  initialLevel
-  collateralReleaseLevel
-  asset {
-    id
-  }
-  market {
-    id
-  }
-}
-
-query Margins($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    marginsConnection {
-      edges {
-        node {
-          ...MarginFields
-        }
-      }
-    }
-  }
-}
-
-subscription MarginsSubscription($partyId: ID!) {
-  margins(partyId: $partyId) {
-    marketId
-    asset
-    partyId
-    maintenanceLevel
-    searchLevel
-    initialLevel
-    collateralReleaseLevel
-    timestamp
-  }
-}
-
 query EstimatePosition(
   $marketId: ID!
   $openVolume: String!

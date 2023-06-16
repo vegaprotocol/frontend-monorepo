@@ -70,7 +70,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "npx openapi-typescript https://raw.githubusercontent.com/vegaprotocol/documentation/main/specs/v0.67.3/blockexplorer.openapi.json --output apps/explorer/src/types/explorer.d.ts --immutable-types"
+          "npx openapi-typescript https://raw.githubusercontent.com/vegaprotocol/documentation/main/specs/v0.71.4/blockexplorer.openapi.json --output apps/explorer/src/types/explorer.d.ts --immutable-types"
         ]
       }
     },

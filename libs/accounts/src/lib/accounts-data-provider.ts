@@ -94,6 +94,7 @@ export const accountsOnlyDataProvider = makeDataProvider<
   update,
   getData,
   getDelta,
+  fetchPolicy: 'no-cache',
 });
 
 export interface AccountFields extends Account {

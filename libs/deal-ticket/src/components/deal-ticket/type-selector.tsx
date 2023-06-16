@@ -83,7 +83,7 @@ export const TypeSelector = ({
         onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
       />
       {errorMessage && (
-        <InputError testId="dealticket-error-message-type">
+        <InputError testId="deal-ticket-error-message-type">
           {renderError(errorMessage as MarketModeValidationType)}
         </InputError>
       )}
