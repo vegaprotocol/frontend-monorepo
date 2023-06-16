@@ -20,6 +20,7 @@ const singleRow: Position = {
   averageEntryPrice: '133',
   currentLeverage: 1.1,
   decimals: 2,
+  quantum: '0.1',
   lossSocializationAmount: '0',
   marginAccountBalance: '12345600',
   marketDecimalPlaces: 1,

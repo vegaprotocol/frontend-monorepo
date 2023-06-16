@@ -249,6 +249,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                     openVolume={data.openVolume}
                     collateralAvailable={data.totalBalance}
                     decimals={data.decimals}
+                    quantum={data.quantum}
                   />
                 );
               },

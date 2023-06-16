@@ -1,19 +1,20 @@
 import { useEstimatePositionQuery } from './__generated__/Positions';
-
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { formatRange } from '@vegaprotocol/utils';
 
 export const LiquidationPrice = ({
   marketId,
   openVolume,
   collateralAvailable,
   decimals,
+  quantum,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
   decimals: number;
+  quantum: string;
 }) => {
-  const { data } = useEstimatePositionQuery({
+  const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
       marketId,
       openVolume,
@@ -22,6 +23,7 @@ export const LiquidationPrice = ({
     fetchPolicy: 'no-cache',
     skip: !openVolume || openVolume === '0',
   });
+  const data = currentData || previousData;
   let value = '-';
 
   if (data) {
@@ -35,23 +37,10 @@ export const LiquidationPrice = ({
         /\..*/,
         ''
       );
-    const formattedBestCase =
-      bestCase && addDecimalsFormatNumber(bestCase, decimals);
-    const formattedWorstCase =
-      worstCase && addDecimalsFormatNumber(worstCase, decimals);
-    if (
-      formattedBestCase &&
-      formattedWorstCase &&
-      formattedBestCase !== formattedWorstCase
-    ) {
-      if (BigInt(bestCase) < BigInt(worstCase)) {
-        value = `${formattedBestCase} - ${formattedWorstCase}`;
-      } else {
-        value = `${formattedWorstCase} - ${formattedBestCase}`;
-      }
-    } else if (formattedBestCase) {
-      value = formattedBestCase;
-    }
+    value =
+      bestCase && worstCase && BigInt(bestCase) < BigInt(worstCase)
+        ? formatRange(bestCase, worstCase, decimals, quantum, value)
+        : formatRange(worstCase, bestCase, decimals, quantum, value);
   }
   return <span data-testid="liquidation-price">{value}</span>;
 };
