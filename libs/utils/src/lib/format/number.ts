@@ -98,7 +98,8 @@ export const addDecimalsFormatNumberQuantum = (
   if (isNaN(Number(quantum))) {
     return addDecimalsFormatNumber(rawValue, decimalPlaces);
   }
-  const numberDP = Math.max(0, Math.log10(100 / Number(quantum)));
+  const quantumValue = addDecimal(quantum, decimalPlaces);
+  const numberDP = Math.max(0, Math.log10(100 / Number(quantumValue)));
   return addDecimalsFormatNumber(rawValue, decimalPlaces, Math.ceil(numberDP));
 };
 
