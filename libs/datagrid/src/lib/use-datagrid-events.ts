@@ -16,6 +16,8 @@ type State = {
 
 type Event = ColumnResizedEvent | FilterChangedEvent | SortChangedEvent;
 
+export const GRID_EVENT_DEBOUNCE_TIME = 300;
+
 export const useDataGridEvents = (
   state: State,
   callback: (data: State) => void
@@ -29,7 +31,7 @@ export const useDataGridEvents = (
         const columnState = columnApi.getColumnState();
         const filterModel = api.getFilterModel();
         callback({ columnState, filterModel });
-      }, 300),
+      }, GRID_EVENT_DEBOUNCE_TIME),
     [callback]
   );
 
@@ -44,6 +46,7 @@ export const useDataGridEvents = (
           applyOrder: true,
         });
       } else {
+        // ensure columns fit available space if no widths are set
         api.sizeColumnsToFit();
       }
 
