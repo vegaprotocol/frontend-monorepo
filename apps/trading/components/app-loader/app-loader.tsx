@@ -49,6 +49,9 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
 
 const cacheConfig: InMemoryCacheConfig = {
   typePolicies: {
+    Statistics: {
+      merge: true,
+    },
     Account: {
       keyFields: false,
       fields: {
@@ -80,12 +83,6 @@ const cacheConfig: InMemoryCacheConfig = {
     ERC20: {
       keyFields: ['contractAddress'],
     },
-    PositionUpdate: {
-      keyFields: false,
-    },
-    AccountUpdate: {
-      keyFields: false,
-    },
     Party: {
       keyFields: false,
     },
@@ -95,8 +92,16 @@ const cacheConfig: InMemoryCacheConfig = {
     Fees: {
       keyFields: false,
     },
-    // Don't cache order update as this subscription result gets merged into the main order cache
-    // We don't need to write these to the cache at all
+    // The folling types are cached by the data provider and not by apollo
+    PositionUpdate: {
+      keyFields: false,
+    },
+    TradeUpdate: {
+      keyFields: false,
+    },
+    AccountUpdate: {
+      keyFields: false,
+    },
     OrderUpdate: {
       keyFields: false,
     },

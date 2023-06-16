@@ -197,6 +197,7 @@ const positionsDataProvider = makeDataProvider<
   getDelta: (subscriptionData: PositionsSubscriptionSubscription) =>
     subscriptionData.positions,
   getSubscriptionVariables,
+  fetchPolicy: 'no-cache',
 });
 
 const positionDataProvider = makeDerivedDataProvider<

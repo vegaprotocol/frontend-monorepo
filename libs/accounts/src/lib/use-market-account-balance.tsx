@@ -22,7 +22,6 @@ export const useMarketAccountBalance = (marketId: string) => {
     },
     [marketId]
   );
-
   useDataProvider({
     dataProvider: accountsDataProvider,
     variables: { partyId: pubKey || '' },

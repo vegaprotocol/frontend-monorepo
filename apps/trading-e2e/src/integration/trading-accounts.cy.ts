@@ -109,7 +109,7 @@ describe('accounts', { tags: '@smoke' }, () => {
   it('should open usage breakdown dialog when clicked on used', () => {
     // 7001-COLL-009
     cy.get('[col-id="used"]').contains('1.01').click();
-    const headers = ['Market', 'Account type', 'Balance'];
+    const headers = ['Market', 'Account type', 'Balance', 'Margin health'];
     cy.getByTestId('usage-breakdown').within(($headers) => {
       cy.wrap($headers)
         .get('.ag-header-cell-text')

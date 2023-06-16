@@ -5,7 +5,10 @@ import {
   verifyPageHeader,
   verifyTabHighlighted,
 } from '../../support/common.functions';
-import { clickOnValidatorFromList } from '../../support/staking.functions';
+import {
+  clickOnValidatorFromList,
+  waitForBeginningOfEpoch,
+} from '../../support/staking.functions';
 
 const guideLink = '[data-testid="staking-guide-link"]';
 const validatorTitle = '[data-testid="validator-node-title"]';
@@ -80,6 +83,7 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator stake tooltip', function () {
+          waitForBeginningOfEpoch();
           cy.getByTestId('total-stake').first().realHover();
 
           cy.get(stakedByOperatorToolTip)
@@ -102,6 +106,7 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator normalised voting power tooltip', function () {
+          waitForBeginningOfEpoch();
           cy.getByTestId('normalised-voting-power').first().realHover();
 
           cy.get(unnormalisedVotingPowerToolTip)
@@ -122,6 +127,7 @@ context('Validators Page - verify elements on page', function () {
         });
 
         it('Should be able to see validator penalties tooltip', function () {
+          waitForBeginningOfEpoch();
           cy.getByTestId('total-penalty').realHover();
 
           cy.get(performancePenaltyToolTip)

@@ -13,10 +13,12 @@ export const AccountsContainer = ({
   pinnedAsset,
   hideButtons,
   storeKey,
+  onMarketClick,
 }: {
   pinnedAsset?: PinnedAsset;
   hideButtons?: boolean;
   storeKey?: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
@@ -46,6 +48,7 @@ export const AccountsContainer = ({
         onClickAsset={onClickAsset}
         onClickWithdraw={openWithdrawalDialog}
         onClickDeposit={openDepositDialog}
+        onMarketClick={onMarketClick}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
         storeKey={storeKey}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { t } from '@vegaprotocol/i18n';
@@ -69,6 +69,17 @@ export const TxsInfiniteList = ({
 }: TxsInfiniteListProps) => {
   const { screenSize } = useScreenDimensions();
   const isStacked = ['xs', 'sm'].includes(screenSize);
+  const infiniteLoaderRef = useRef<InfiniteLoader>(null);
+  const hasMountedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasMountedRef.current) {
+      if (infiniteLoaderRef.current) {
+        infiniteLoaderRef.current.resetloadMoreItemsCache(true);
+      }
+    }
+    hasMountedRef.current = true;
+  }, [loadMoreTxs]);
 
   if (!txs) {
     if (!areTxsLoading) {
@@ -110,6 +121,7 @@ export const TxsInfiniteList = ({
           isItemLoaded={isItemLoaded}
           itemCount={itemCount}
           loadMoreItems={loadMoreItems}
+          ref={infiniteLoaderRef}
         >
           {({ onItemsRendered, ref }) => (
             <List

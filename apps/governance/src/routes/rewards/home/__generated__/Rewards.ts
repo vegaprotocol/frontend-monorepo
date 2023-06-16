@@ -7,6 +7,8 @@ export type RewardFieldsFragment = { __typename?: 'Reward', rewardType: Types.Ac
 
 export type DelegationFieldsFragment = { __typename?: 'Delegation', amount: string, epoch: number };
 
+export type EpochRewardSummaryFieldsFragment = { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType };
+
 export type RewardsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   fromEpoch?: Types.InputMaybe<Types.Scalars['Int']>;
@@ -16,9 +18,7 @@ export type RewardsQueryVariables = Types.Exact<{
 }>;
 
 
-export type RewardsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, rewardsConnection?: { __typename?: 'RewardsConnection', edges?: Array<{ __typename?: 'RewardEdge', node: { __typename?: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } } } | null> | null } | null, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number } } | null> | null } | null } | null };
-
-export type EpochRewardSummaryFieldsFragment = { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType };
+export type RewardsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, rewardsConnection?: { __typename?: 'RewardsConnection', edges?: Array<{ __typename?: 'RewardEdge', node: { __typename?: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } } } | null> | null } | null, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number } } | null> | null } | null } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
 
 export type EpochAssetsRewardsQueryVariables = Types.Exact<{
   epochRewardSummariesFilter?: Types.InputMaybe<Types.RewardSummaryFilter>;
@@ -102,9 +102,20 @@ export const RewardsDocument = gql`
       }
     }
   }
+  epochRewardSummaries(
+    filter: {fromEpoch: $fromEpoch, toEpoch: $toEpoch}
+    pagination: $rewardsPagination
+  ) {
+    edges {
+      node {
+        ...EpochRewardSummaryFields
+      }
+    }
+  }
 }
     ${RewardFieldsFragmentDoc}
-${DelegationFieldsFragmentDoc}`;
+${DelegationFieldsFragmentDoc}
+${EpochRewardSummaryFieldsFragmentDoc}`;
 
 /**
  * __useRewardsQuery__

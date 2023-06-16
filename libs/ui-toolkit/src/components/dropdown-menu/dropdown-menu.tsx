@@ -162,6 +162,51 @@ export const DropdownMenuSeparator = forwardRef<
 ));
 
 /**
+ * Container element for submenus
+ */
+export const DropdownMenuSub = forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Sub>,
+  React.ComponentProps<typeof DropdownMenuPrimitive.Sub>
+>(({ ...subProps }) => <DropdownMenuPrimitive.Sub {...subProps} />);
+
+/**
+ * Container within a DropdownMenuSub specifically for the content
+ */
+export const DropdownMenuSubContent = forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
+  React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>
+>(({ className, ...subContentProps }, forwardedRef) => (
+  <DropdownMenuPrimitive.SubContent
+    ref={forwardedRef}
+    className={classNames('bg-vega-light-150 dark:bg-vega-dark-150', className)}
+    {...subContentProps}
+  />
+));
+
+/**
+ * Equivalent to trigger, but for triggering sub menus
+ */
+export const DropdownMenuSubTrigger = forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
+  React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger>
+>(({ className, ...subTriggerProps }, forwardedRef) => (
+  <DropdownMenuPrimitive.SubTrigger
+    className={classNames(className, itemClass)}
+    ref={forwardedRef}
+    {...subTriggerProps}
+  />
+));
+
+/**
+ * Portal to ensure menu portions are rendered outwith where they appear in the
+ * DOM.
+ */
+export const DropdownMenuPortal = forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Portal>,
+  React.ComponentProps<typeof DropdownMenuPrimitive.Portal>
+>(({ ...portalProps }) => <DropdownMenuPrimitive.Portal {...portalProps} />);
+
+/**
  * Wraps a regular DropdownMenuItem with copy to clip board functionality
  */
 export const DropdownMenuCopyItem = ({
