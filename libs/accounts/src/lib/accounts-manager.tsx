@@ -72,7 +72,6 @@ export const AccountBreakdownDialog = memo(
     onClose: () => void;
     onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   }) => {
-    console.log('render');
     return (
       <Dialog
         size="medium"

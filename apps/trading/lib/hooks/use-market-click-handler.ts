@@ -20,20 +20,8 @@ export const useMarketClickHandler = (replace = false) => {
   );
 };
 
-export const useMarketLiquidityClickHandler = (replace = false) => {
-  const navigate = useNavigate();
-  const { marketId } = useParams();
-  const { pathname } = useLocation();
-  const isLiquidityPage = pathname.match(/^\/liquidity\/(.+)/);
-  return useCallback(
-    (selectedId: string, metaKey?: boolean) => {
-      const link = Links[Routes.LIQUIDITY](selectedId);
-      if (metaKey) {
-        window.open(`/#${link}`, '_blank');
-      } else if (selectedId !== marketId || !isLiquidityPage) {
-        navigate(link, { replace });
-      }
-    },
-    [navigate, marketId, replace, isLiquidityPage]
-  );
+export const useMarketLiquidityClickHandler = () => {
+  return useCallback((selectedId: string, metaKey?: boolean) => {
+    window.open(`/#/liquidity/${selectedId}`, '_blank');
+  }, []);
 };

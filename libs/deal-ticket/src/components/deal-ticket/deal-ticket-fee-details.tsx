@@ -143,6 +143,7 @@ export const DealTicketFeeDetails = ({
   const { settlementAsset: asset } =
     market.tradableInstrument.instrument.product;
   const { decimals: assetDecimals, quantum } = asset;
+  const marketDecimals = market.decimalPlaces;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
   if (marginEstimate) {
@@ -267,19 +268,7 @@ export const DealTicketFeeDetails = ({
         ? liquidationEstimateBestCase
         : liquidationEstimateWorstCase
       ).toString(),
-      assetDecimals
-    );
-    liquidationPriceEstimateFormatted = formatRange(
-      (liquidationEstimateBestCase < liquidationEstimateWorstCase
-        ? liquidationEstimateBestCase
-        : liquidationEstimateWorstCase
-      ).toString(),
-      (liquidationEstimateBestCase > liquidationEstimateWorstCase
-        ? liquidationEstimateBestCase
-        : liquidationEstimateWorstCase
-      ).toString(),
-      assetDecimals,
-      quantum
+      marketDecimals
     );
   }
 
@@ -288,14 +277,16 @@ export const DealTicketFeeDetails = ({
     []
   );
 
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+
   return (
     <div>
       <DealTicketFeeDetail
         label={t('Notional')}
-        value={formatValue(notionalSize, assetDecimals)}
-        formattedValue={formatValue(notionalSize, assetDecimals, quantum)}
-        symbol={assetSymbol}
-        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(assetSymbol)}
+        value={formatValue(notionalSize, marketDecimals)}
+        formattedValue={formatValue(notionalSize, marketDecimals)}
+        symbol={quoteName}
+        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
       />
       <DealTicketFeeDetail
         label={t('Fees')}
@@ -377,8 +368,8 @@ export const DealTicketFeeDetails = ({
       <DealTicketFeeDetail
         label={t('Liquidation price estimate')}
         value={liquidationPriceEstimate}
-        formattedValue={liquidationPriceEstimateFormatted}
-        symbol={assetSymbol}
+        formattedValue={liquidationPriceEstimate}
+        symbol={quoteName}
         labelDescription={LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}
       />
       {partyId && (
