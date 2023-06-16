@@ -64,31 +64,38 @@ context(
         }
       );
 
-      it('Able to associate tokens - from wallet', function () {
-        //1004-ASSO-003
-        //1004-ASSO-005
-        //1004-ASSO-009
-        //1004-ASSO-030
-        //1004-ASSO-012
-        //1004-ASSO-013
-        //1004-ASSO-014
-        //1004-ASSO-015
-        //1004-ASSO-030
-        //0005-ETXN-006
-        //0005-ETXN-003
-        //0005-ETXN-005
-        stakingPageAssociateTokens('2', { skipConfirmation: true });
-        validateWalletCurrency('Associated', '0.00');
-        validateWalletCurrency('Pending association', '2.00');
-        validateWalletCurrency('Total associated after pending', '2.00');
-        // 0005-ETXN-002
-        verifyEthWalletAssociatedBalance('2.0');
-        verifyEthWalletTotalAssociatedBalance('2.0');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
-        });
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
-      });
+      it(
+        'Able to associate tokens - from wallet',
+        { tags: '@smoke' },
+        function () {
+          //1004-ASSO-003
+          //1004-ASSO-005
+          //1004-ASSO-009
+          //1004-ASSO-030
+          //1004-ASSO-012
+          //1004-ASSO-013
+          //1004-ASSO-014
+          //1004-ASSO-015
+          //1004-ASSO-030
+          //0005-ETXN-006
+          //0005-ETXN-003
+          //0005-ETXN-005
+          stakingPageAssociateTokens('2', { skipConfirmation: true });
+          validateWalletCurrency('Associated', '0.00');
+          validateWalletCurrency('Pending association', '2.00');
+          validateWalletCurrency('Total associated after pending', '2.00');
+          // 0005-ETXN-002
+          verifyEthWalletAssociatedBalance('2.0');
+          verifyEthWalletTotalAssociatedBalance('2.0');
+          cy.get(vegaWallet).within(() => {
+            cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+              'contain',
+              2.0
+            );
+          });
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
+        }
+      );
 
       it('Able to disassociate all associated tokens - manually', function () {
         // 1004-ASSO-025
