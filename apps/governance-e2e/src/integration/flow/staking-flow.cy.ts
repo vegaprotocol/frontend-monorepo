@@ -54,7 +54,7 @@ context(
   'Staking Tab - with eth and vega wallets connected',
   { tags: '@slow' },
   function () {
-    // 2001-STKE-002, 2001-STKE-032
+    // 1002-STKE-002, 1002-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
       ethereumWalletConnect();
@@ -63,7 +63,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
-    describe.skip('Eth wallet - contains VEGA tokens', function () {
+    describe('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
@@ -77,25 +77,41 @@ context(
         }
       );
 
+      // 1002-STKE-035 1002-STKE-036
+      it('Unable to stake against a validator with less than minimum and more than associated amount', function () {
+        ensureSpecifiedUnstakedTokensAreAssociated('3');
+        verifyUnstakedBalance(3.0);
+        verifyEthWalletTotalAssociatedBalance('3.0');
+        verifyEthWalletAssociatedBalance('3.0');
+        cy.get('button').contains('Select a validator to nominate').click();
+        clickOnValidatorFromList(0);
+        cy.getByTestId(stakeAddStakeRadioButton, epochTimeout).click({
+          force: true,
+        });
+        cy.getByTestId(stakeTokenAmountInputBox).type('0.001');
+        cy.getByTestId(stakeTokenSubmitButton).should('be.disabled');
+        cy.getByTestId(stakeTokenAmountInputBox).clear().type('4');
+        cy.getByTestId(stakeTokenSubmitButton).should('be.disabled');
+      });
       it('Able to stake against a validator - using vega from wallet', function () {
         ensureSpecifiedUnstakedTokensAreAssociated('3');
         verifyUnstakedBalance(3.0);
         verifyEthWalletTotalAssociatedBalance('3.0');
         verifyEthWalletAssociatedBalance('3.0');
         cy.get('button').contains('Select a validator to nominate').click();
-        // 2001-STKE-031
+        // 1002-STKE-031
         clickOnValidatorFromList(0);
-        // 2001-STKE-033, 2001-STKE-034, 2001-STKE-037
+        // 1002-STKE-033, 1002-STKE-034, 1002-STKE-037
         stakingValidatorPageAddStake('2');
         verifyUnstakedBalance(1.0);
-        // 2001-STKE-039
+        // 1002-STKE-039
         verifyStakedBalance(2.0);
-        verifyNextEpochValue(2.0); // 2001-STKE-016 2001-STKE-038
-        verifyThisEpochValue(2.0); // 2001-STKE-013
+        verifyNextEpochValue(2.0); // 1002-STKE-016 1002-STKE-038
+        verifyThisEpochValue(2.0); // 1002-STKE-013
         closeStakingDialog();
         navigateTo(navigation.validators);
 
-        // 2002-SINC-007
+        // 2002-SINC-007 1002-STKE-015 1002-STKE-017 1002-STKE-052
         validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
       });
 
@@ -218,7 +234,7 @@ context(
           });
       });
 
-      // 2001-STKE-041
+      // 1002-STKE-041 1002-STKE-053
       it(
         'Able to remove part of a stake against a validator',
         { tags: '@smoke' },
@@ -231,11 +247,11 @@ context(
           verifyUnstakedBalance(1.0);
           closeStakingDialog();
           navigateTo(navigation.validators);
-          // 2001-STKE-040
+          // 1002-STKE-040
           clickOnValidatorFromList(0);
-          // 2001-STKE-044, 2001-STKE-048
+          // 1002-STKE-044, 1002-STKE-048
           stakingValidatorPageRemoveStake('1');
-          // 2001-STKE-049
+          // 1002-STKE-049
           verifyNextEpochValue(2.0);
           verifyUnstakedBalance(2.0);
           verifyStakedBalance(2.0);
@@ -255,7 +271,7 @@ context(
         }
       );
 
-      // 2001-STKE-045
+      // 1002-STKE-045
       it('Able to remove a full stake against a validator', function () {
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
@@ -303,6 +319,7 @@ context(
           .and('be.visible');
       });
 
+      // 1002-STKE-046 1002-STKE-047
       it('Unable to remove a stake greater than staked amount next epoch for a validator', function () {
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
@@ -405,7 +422,7 @@ context(
       });
 
       it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
-        // 2001-STKE-004
+        // 1002-STKE-004
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -419,7 +436,7 @@ context(
       });
 
       it('Associating vesting contract tokens - when some already staked - auto stakes tokens to staked validator', function () {
-        // 2001-STKE-004
+        // 1002-STKE-004
         stakingPageAssociateTokens('3', { type: 'contract' });
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -433,7 +450,7 @@ context(
       });
 
       it('Associating vesting contract tokens - when wallet tokens already staked - auto stakes tokens to staked validator', function () {
-        // 2001-STKE-004
+        // 1002-STKE-004
         stakingPageAssociateTokens('3', { type: 'wallet' });
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -447,7 +464,7 @@ context(
       });
 
       it('Associating tokens - with multiple validators already staked - auto stakes to staked validators - abiding by existing stake ratio', function () {
-        // 2001-STKE-004
+        // 1002-STKE-004
         stakingPageAssociateTokens('6');
         verifyUnstakedBalance(6.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -500,7 +517,7 @@ context(
       }
 
       function verifyThisEpochValue(amount: number) {
-        cy.getByTestId('stake-this-epoch', epochTimeout) // 2001-STKE-013
+        cy.getByTestId('stake-this-epoch', epochTimeout) // 1002-STKE-013
           .contains(amount, epochTimeout)
           .should('be.visible');
       }

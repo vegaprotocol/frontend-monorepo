@@ -7,13 +7,13 @@ import {
 import {
   MarginsSubscriptionDocument,
   MarginsDocument,
-} from './__generated__/Positions';
+} from './__generated__/Margins';
 import type {
   MarginsQuery,
   MarginFieldsFragment,
   MarginsSubscriptionSubscription,
   MarginsQueryVariables,
-} from './__generated__/Positions';
+} from './__generated__/Margins';
 
 const update = (
   data: MarginFieldsFragment[] | null,

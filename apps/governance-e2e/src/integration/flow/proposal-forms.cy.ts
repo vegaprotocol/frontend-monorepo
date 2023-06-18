@@ -205,29 +205,33 @@ context(
     });
 
     // 3003-PMAN-001
-    it('Able to submit valid new market proposal', function () {
-      goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-      cy.get(newProposalTitle).type('Test new market proposal');
-      cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.fixture('/proposals/new-market').then((newMarketProposal) => {
-        const newMarketPayload = JSON.stringify(newMarketProposal);
-        cy.get(newProposalTerms).type(newMarketPayload, {
-          parseSpecialCharSequences: false,
-          delay: 2,
-        });
-      });
-      cy.get(proposalDownloadBtn)
-        .should('be.visible')
-        .click()
-        .then(() => {
-          cy.wrap(
-            getDownloadedProposalJsonPath('vega-new-market-proposal-')
-          ).then((filePath) => {
-            goToMakeNewProposal(governanceProposalType.RAW);
-            submitUniqueRawProposal({ proposalBody: filePath }); // 3003-PMAN-003
+    it(
+      'Able to submit valid new market proposal',
+      { tags: '@smoke' },
+      function () {
+        goToMakeNewProposal(governanceProposalType.NEW_MARKET);
+        cy.get(newProposalTitle).type('Test new market proposal');
+        cy.get(newProposalDescription).type('E2E test for proposals');
+        cy.fixture('/proposals/new-market').then((newMarketProposal) => {
+          const newMarketPayload = JSON.stringify(newMarketProposal);
+          cy.get(newProposalTerms).type(newMarketPayload, {
+            parseSpecialCharSequences: false,
+            delay: 2,
           });
         });
-    });
+        cy.get(proposalDownloadBtn)
+          .should('be.visible')
+          .click()
+          .then(() => {
+            cy.wrap(
+              getDownloadedProposalJsonPath('vega-new-market-proposal-')
+            ).then((filePath) => {
+              goToMakeNewProposal(governanceProposalType.RAW);
+              submitUniqueRawProposal({ proposalBody: filePath }); // 3003-PMAN-003
+            });
+          });
+      }
+    );
 
     it('Unable to submit new market proposal with missing/invalid fields', function () {
       const errorMsg =

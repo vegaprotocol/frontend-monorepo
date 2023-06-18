@@ -22,6 +22,13 @@ fragment DelegationFields on Delegation {
   epoch
 }
 
+fragment EpochRewardSummaryFields on EpochRewardSummary {
+  epoch
+  assetId
+  amount
+  rewardType
+}
+
 query Rewards(
   $partyId: ID!
   $fromEpoch: Int
@@ -50,13 +57,16 @@ query Rewards(
       }
     }
   }
-}
-
-fragment EpochRewardSummaryFields on EpochRewardSummary {
-  epoch
-  assetId
-  amount
-  rewardType
+  epochRewardSummaries(
+    filter: { fromEpoch: $fromEpoch, toEpoch: $toEpoch }
+    pagination: $rewardsPagination
+  ) {
+    edges {
+      node {
+        ...EpochRewardSummaryFields
+      }
+    }
+  }
 }
 
 query EpochAssetsRewards(

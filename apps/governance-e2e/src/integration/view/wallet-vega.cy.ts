@@ -337,6 +337,7 @@ context(
                 .parent()
                 .siblings()
                 .invoke('text')
+                .should('have.length.at.least', 4)
                 .then(parseFloat)
                 .should('be.gte', parseFloat(expectedAmount));
 

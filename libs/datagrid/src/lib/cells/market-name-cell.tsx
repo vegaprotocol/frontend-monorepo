@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { useCallback } from 'react';
 import get from 'lodash/get';
 
@@ -7,6 +7,7 @@ interface MarketNameCellProps {
   data?: { id?: string; marketId?: string; market?: { id: string } };
   idPath?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  defaultValue?: ReactNode;
 }
 
 export const MarketNameCell = ({
@@ -26,10 +27,13 @@ export const MarketNameCell = ({
     },
     [id, onMarketClick]
   );
-  if (!data) return null;
-  return (
+  if (!value || !data) return null;
+  return onMarketClick ? (
     <button onClick={handleOnClick} tabIndex={0}>
       {value}
     </button>
+  ) : (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <>{value}</>
   );
 };

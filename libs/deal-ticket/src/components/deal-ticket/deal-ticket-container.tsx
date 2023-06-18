@@ -10,11 +10,13 @@ import { DealTicket } from './deal-ticket';
 
 export interface DealTicketContainerProps {
   marketId: string;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onClickCollateral?: () => void;
 }
 
 export const DealTicketContainer = ({
   marketId,
+  onMarketClick,
   onClickCollateral,
 }: DealTicketContainerProps) => {
   const {
@@ -55,6 +57,7 @@ export const DealTicketContainer = ({
             })
           }
           onClickCollateral={onClickCollateral}
+          onMarketClick={onMarketClick}
         />
       ) : (
         <Splash>
