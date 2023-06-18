@@ -3,9 +3,7 @@ import type { DealTicketOrderSubmission } from '@vegaprotocol/wallet';
 
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 
-export const useEstimateFees = (
-  order?: DealTicketOrderSubmission
-) => {
+export const useEstimateFees = (order?: DealTicketOrderSubmission) => {
   const { pubKey } = useVegaWallet();
 
   const { data } = useEstimateFeesQuery({
