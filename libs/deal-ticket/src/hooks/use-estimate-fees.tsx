@@ -1,10 +1,10 @@
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import type { DealTicketOrderSubmission } from '@vegaprotocol/wallet';
 
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 
 export const useEstimateFees = (
-  order?: OrderSubmissionBody['orderSubmission']
+  order?: DealTicketOrderSubmission
 ) => {
   const { pubKey } = useVegaWallet();
 
