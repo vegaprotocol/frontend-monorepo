@@ -7,10 +7,13 @@ import {
 } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import { AddressField, TransferFee, TransferForm } from './transfer-form';
-import { AccountType } from '@vegaprotocol/types';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 import { formatNumber, removeDecimal } from '@vegaprotocol/utils';
 
 describe('TransferForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   const submit = () => fireEvent.submit(screen.getByTestId('transfer-form'));
   const amount = '100';
   const pubKey =
@@ -126,12 +129,14 @@ describe('TransferForm', () => {
     await waitFor(() => {
       expect(props.submitTransfer).toHaveBeenCalledTimes(1);
       expect(props.submitTransfer).toHaveBeenCalledWith({
-        fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
-        toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+        fromAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
+        toAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
         to: props.pubKeys[1],
         asset: asset.id,
         amount: removeDecimal(amount, asset.decimals),
         oneOff: {},
+        kind: null,
+        reference: '',
       });
     });
   });
@@ -203,12 +208,14 @@ describe('TransferForm', () => {
       await waitFor(() => {
         expect(props.submitTransfer).toHaveBeenCalledTimes(1);
         expect(props.submitTransfer).toHaveBeenCalledWith({
-          fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
-          toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+          fromAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
+          toAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
           to: props.pubKeys[1],
           asset: asset.id,
-          amount: removeDecimal(amount, asset.decimals),
+          amount: removeDecimal(expectedAmount, asset.decimals),
           oneOff: {},
+          kind: null,
+          reference: '',
         });
       });
     });

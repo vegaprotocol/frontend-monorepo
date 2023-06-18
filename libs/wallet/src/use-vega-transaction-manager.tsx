@@ -45,7 +45,6 @@ export const useVegaTransactionManager = () => {
       })
       .catch((err) => {
         const error = orderErrorResolve(err);
-        console.log('error', error, err.toString());
         if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
           disconnect();
         }

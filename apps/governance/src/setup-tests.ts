@@ -3,6 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import '../../../setup-test';
 import dev from './i18n/translations/dev.json';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';

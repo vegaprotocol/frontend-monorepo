@@ -7,6 +7,7 @@ import {
   OrderType,
   Side,
 } from '@vegaprotocol/types';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 import type {
   WithdrawSubmission,
   OrderCancellation,
@@ -144,8 +145,9 @@ describe('useVegaTransactionStore', () => {
         orderId:
           '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64',
         price: '1122',
-        sizeDelta: 0,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        sizeDelta: BigInt(0),
+        timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_GTC,
+        expiresAt: null,
       },
     };
     expect(

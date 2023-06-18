@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import 'jest-canvas-mock';
+import '../../setup-test';
 import ResizeObserver from 'resize-observer-polyfill';
 import { defaultFallbackInView } from 'react-intersection-observer';
 

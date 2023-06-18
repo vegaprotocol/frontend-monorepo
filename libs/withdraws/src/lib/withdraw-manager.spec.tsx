@@ -12,7 +12,7 @@ jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ account: ethereumAddress }),
 }));
 
-const withdrawAsset = {
+const mockWithdrawAsset = {
   asset,
   balance: new BigNumber(1),
   min: new BigNumber(0.0000001),
@@ -20,9 +20,9 @@ const withdrawAsset = {
   delay: 10,
   handleSelectAsset: jest.fn(),
 };
-
+const mockUseWithdrawAsset = jest.fn(() => mockWithdrawAsset);
 jest.mock('./use-withdraw-asset', () => ({
-  useWithdrawAsset: () => withdrawAsset,
+  useWithdrawAsset: () => mockWithdrawAsset,
 }));
 
 jest.mock('@vegaprotocol/accounts', () => ({
@@ -30,10 +30,11 @@ jest.mock('@vegaprotocol/accounts', () => ({
   useAccountBalance: jest.fn(() => ({ accountBalance: 0, accountDecimals: 0 })),
 }));
 
+const mockWithdrawThreshold = new BigNumber(100);
 jest.mock('@vegaprotocol/web3', () => ({
   ...jest.requireActual('@vegaprotocol/web3'),
   useGetWithdrawThreshold: () => {
-    return () => Promise.resolve(new BigNumber(100));
+    return () => Promise.resolve(mockWithdrawThreshold);
   },
   useGetWithdrawDelay: () => {
     return () => Promise.resolve(10000);
@@ -128,7 +129,7 @@ describe('WithdrawManager', () => {
   });
 
   it('shows withdraw delay notification if threshold is 0', async () => {
-    withdrawAsset.threshold = new BigNumber(0);
+    mockWithdrawAsset.threshold = new BigNumber(0);
     render(generateJsx(props));
     fireEvent.change(screen.getByLabelText('Amount'), {
       target: { value: '0.01' },

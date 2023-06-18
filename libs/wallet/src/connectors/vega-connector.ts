@@ -1,34 +1,47 @@
 import { WalletClientError } from '@vegaprotocol/wallet-client';
-import type { LiquidityProvisionSubmission as LiquidityProvisionBody } from '@vegaprotocol/protos/dist/vega/commands/v1/LiquidityProvisionSubmission';
-import type { DelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/DelegateSubmission';
-import type { UndelegateSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/UndelegateSubmission';
-import type { OrderSubmission as OriginalOrderPosition } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderSubmission';
-import type { OrderCancellation as OriginalOrderCancellation } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderCancellation';
-import type { OrderAmendment as OriginalOrderAmendment } from '@vegaprotocol/protos/dist/vega/commands/v1/OrderAmendment';
-import type { VoteSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/VoteSubmission';
-import type { WithdrawSubmission as OriginalWithdrawSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/WithdrawSubmission';
-import type { ProposalSubmission as OriginalProposalSubmission } from '@vegaprotocol/protos/dist/vega/commands/v1/ProposalSubmission';
-import type { BatchMarketInstructions as OriginalBatchMarketInstructions } from '@vegaprotocol/protos/dist/vega/commands/v1/BatchMarketInstructions';
-import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
-import type { ProposalTerms } from '@vegaprotocol/protos/dist/vega/ProposalTerms';
-import type { WithdrawExt } from '@vegaprotocol/protos/dist/vega/WithdrawExt';
+import type { SetOptional } from 'type-fest';
+import type { vega as vegaProtos } from '@vegaprotocol/protos';
+
+export type OriginalOrderPosition =
+  vegaProtos.commands.v1.OrderSubmission.OrderSubmission;
+export type OriginalOrderCancellation =
+  vegaProtos.commands.v1.OrderCancellation.OrderCancellation;
+export type LiquidityProvisionBody =
+  vegaProtos.commands.v1.LiquidityProvisionSubmission.LiquidityProvisionSubmission;
+export type DelegateSubmission =
+  vegaProtos.commands.v1.DelegateSubmission.DelegateSubmission;
+export type UndelegateSubmission =
+  vegaProtos.commands.v1.UndelegateSubmission.UndelegateSubmission;
+export type OriginalOrderAmendment =
+  vegaProtos.commands.v1.OrderAmendment.OrderAmendment;
+export type VoteSubmission =
+  vegaProtos.commands.v1.VoteSubmission.VoteSubmission;
+export type OriginalWithdrawSubmission =
+  vegaProtos.commands.v1.WithdrawSubmission.WithdrawSubmission;
+export type OriginalProposalSubmission =
+  vegaProtos.commands.v1.ProposalSubmission.ProposalSubmission;
+export type OriginalBatchMarketInstructions =
+  vegaProtos.commands.v1.BatchMarketInstructions.BatchMarketInstructions;
+export type Transfer = vegaProtos.commands.v1.Transfer.Transfer;
+
+type ProposalTerms = vegaProtos.ProposalTerms.ProposalTerms;
+type WithdrawExt = vegaProtos.WithdrawExt.WithdrawExt;
 
 // generated type doesn't match in many places with current implementation. It has to be overwrite here
 // and re-exported for saving consistency.
-export type ProposalSubmission = Omit<
+export type ProposalSubmission = SetOptional<
   OriginalProposalSubmission,
   'reference' | 'terms'
-> &
-  Partial<Pick<OriginalProposalSubmission, 'reference'>> & {
-    terms: Omit<ProposalTerms, 'enactmentTimestamp' | 'validationTimestamp'> &
-      Partial<
-        Pick<ProposalTerms, 'enactmentTimestamp' | 'validationTimestamp'>
-      >;
-  };
+> & {
+  terms: SetOptional<
+    ProposalTerms,
+    'enactmentTimestamp' | 'validationTimestamp'
+  >;
+};
 export type WithdrawSubmission = Omit<OriginalWithdrawSubmission, 'ext'> &
   WithdrawExt;
 
-export type OrderSubmission = Omit<
+export type OrderSubmission = SetOptional<
   OriginalOrderPosition,
   | 'price'
   | 'expiresAt'
@@ -36,43 +49,22 @@ export type OrderSubmission = Omit<
   | 'peggedOrder'
   | 'postOnly'
   | 'reduceOnly'
-> &
-  Partial<
-    Pick<
-      OriginalOrderPosition,
-      | 'price'
-      | 'expiresAt'
-      | 'reference'
-      | 'peggedOrder'
-      | 'postOnly'
-      | 'reduceOnly'
-    >
-  >;
+>;
 
-export type OrderAmendment = Omit<
+export type OrderAmendment = SetOptional<
   OriginalOrderAmendment,
   'price' | 'sizeDelta' | 'expiresAt' | 'peggedOffset' | 'peggedReference'
-> &
-  Partial<
-    Pick<
-      OriginalOrderAmendment,
-      'price' | 'sizeDelta' | 'expiresAt' | 'peggedOffset' | 'peggedReference'
-    >
-  >;
-export type OrderCancellation = Omit<
+>;
+export type OrderCancellation = SetOptional<
   OriginalOrderCancellation,
   'orderId' | 'marketId'
-> &
-  Partial<Pick<OriginalOrderCancellation, 'orderId' | 'marketId'>>;
-export type BatchMarketInstructions = Omit<
+>;
+export type BatchMarketInstructions = SetOptional<
   OriginalBatchMarketInstructions,
   'submissions' | 'amendments' | 'cancellations'
-> &
-  Partial<
-    Pick<OriginalBatchMarketInstructions, 'amendments' | 'cancellations'>
-  > & {
-    submissions?: OrderSubmission[];
-  };
+> & {
+  submissions?: OrderSubmission[];
+};
 
 export interface LiquidityProvisionSubmission {
   liquidityProvisionSubmission: LiquidityProvisionBody;
