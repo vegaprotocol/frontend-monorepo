@@ -6,7 +6,6 @@ import {
   truncateByChars,
   isNumeric,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
@@ -22,10 +21,10 @@ export const DepositsTable = forwardRef<
   AgGridReact,
   TypedDataAgGrid<DepositFieldsFragment>
 >((props, ref) => {
+  console.log(props);
   return (
     <AgGrid
       ref={ref}
-      overlayNoRowsTemplate={t('No deposits')}
       defaultColDef={{ resizable: true }}
       style={{ width: '100%', height: '100%' }}
       suppressCellFocus={true}
