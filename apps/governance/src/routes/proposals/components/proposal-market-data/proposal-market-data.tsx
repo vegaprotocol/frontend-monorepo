@@ -1,6 +1,5 @@
 import isEqual from 'lodash/isEqual';
 import { useState } from 'react';
-import { create } from 'zustand';
 import { useTranslation } from 'react-i18next';
 import {
   InstrumentInfoPanel,
@@ -28,6 +27,7 @@ import { SubHeading } from '../../../../components/heading';
 import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import type { DataSourceDefinition } from '@vegaprotocol/types';
+import { create } from 'zustand';
 
 type MarketDataDialogState = {
   isOpen: boolean;
@@ -35,11 +35,13 @@ type MarketDataDialogState = {
   close: () => void;
 };
 
-const useMarketDataDialogStore = create<MarketDataDialogState>((set) => ({
-  isOpen: false,
-  open: () => set({ isOpen: true }),
-  close: () => set({ isOpen: false }),
-}));
+export const useMarketDataDialogStore = create<MarketDataDialogState>(
+  (set) => ({
+    isOpen: false,
+    open: () => set({ isOpen: true }),
+    close: () => set({ isOpen: false }),
+  })
+);
 
 export const ProposalMarketData = ({
   marketData,
@@ -90,7 +92,9 @@ export const ProposalMarketData = ({
       {showDetails && (
         <>
           <div className="float-right">
-            <Button onClick={open}>{t('viewMarketJson')}</Button>
+            <Button onClick={open} data-testid="view-market-json">
+              {t('viewMarketJson')}
+            </Button>
           </div>
           <div className="mb-10">
             <Accordion>
@@ -201,6 +205,7 @@ export const ProposalMarketData = ({
         open={isOpen}
         onChange={(isOpen) => (isOpen ? open() : close())}
         size="medium"
+        dataTestId="market-json-dialog"
       >
         <CopyWithTooltip text={JSON.stringify(marketData)}>
           <button className="bg-vega-dark-100 rounded-sm py-2 px-3 mb-4 text-white">
