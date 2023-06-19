@@ -26,6 +26,7 @@ export type Toast = {
   onClose?: () => void;
   signal?: 'close';
   loader?: boolean;
+  hidden?: boolean;
 };
 
 type ToastProps = Toast & {

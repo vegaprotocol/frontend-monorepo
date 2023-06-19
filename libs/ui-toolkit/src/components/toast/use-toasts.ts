@@ -46,12 +46,16 @@ type Actions = {
    * Arbitrary removes all toasts
    */
   removeAll: () => void;
+  /**
+   * Checks if a given toasts exists in the collection
+   */
+  hasToast: (id: string) => boolean;
 };
 
 type ToastsStore = State & Actions;
 
 export const useToasts = create<ToastsStore>()(
-  immer((set) => ({
+  immer((set, get) => ({
     toasts: {},
     count: 0,
     add: (toast) =>
@@ -97,6 +101,7 @@ export const useToasts = create<ToastsStore>()(
         }
       }),
     removeAll: () => set({ toasts: {}, count: 0 }),
+    hasToast: (id) => get().toasts[id] != null,
   }))
 );
 

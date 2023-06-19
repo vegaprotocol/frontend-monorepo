@@ -13,11 +13,13 @@ import { Portal } from '@radix-ui/react-portal';
 type ToastsContainerProps = {
   toasts: Toasts;
   order: 'asc' | 'desc';
+  showHidden?: boolean;
 };
 
 export const ToastsContainer = ({
   toasts,
   order = 'asc',
+  showHidden = false,
 }: ToastsContainerProps) => {
   const ref = useRef<HTMLDivElement>();
   const closeAll = useToasts((store) => store.closeAll);
@@ -72,13 +74,15 @@ export const ToastsContainer = ({
         })}
       >
         {toasts &&
-          Object.values(toasts).map((toast) => {
-            return (
-              <li key={toast.id}>
-                <Toast {...toast} />
-              </li>
-            );
-          })}
+          Object.values(toasts)
+            .filter((t) => !t.hidden || showHidden)
+            .map((toast) => {
+              return (
+                <li key={toast.id}>
+                  <Toast {...toast} />
+                </li>
+              );
+            })}
         <Button
           title={t('Dismiss all toasts')}
           size="sm"
