@@ -68,9 +68,8 @@ export const TypeMap: Readonly<Record<Schema.OrderType, Type.Type>> = {
   [Schema.OrderType.TYPE_NETWORK]: vegaProtos.Order.Type.TYPE_NETWORK,
 };
 
-export const TypeRevertMap: Record<Type.Type, Schema.OrderType> = Object.entries(
-  TypeMap
-).reduce((agg, item) => {
-  agg[item[1]] = item[0] as Schema.OrderType;
-  return agg;
-}, {} as Record<Type.Type, Schema.OrderType>);
+export const TypeRevertMap: Record<Type.Type, Schema.OrderType> =
+  Object.entries(TypeMap).reduce((agg, item) => {
+    agg[item[1]] = item[0] as Schema.OrderType;
+    return agg;
+  }, {} as Record<Type.Type, Schema.OrderType>);

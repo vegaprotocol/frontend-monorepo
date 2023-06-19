@@ -1,6 +1,6 @@
 import { toDecimal } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import type {OrderObj} from "@vegaprotocol/orders";
+import type { OrderObj } from '@vegaprotocol/orders';
 
 export const getDefaultOrder = (market: {
   id: string;

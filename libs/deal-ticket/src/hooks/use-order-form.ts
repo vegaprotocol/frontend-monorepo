@@ -11,7 +11,7 @@ export type OrderFormFields = OrderObj & {
 
 export type DealTicketOrderSubmission = Omit<OrderObj, 'persist'> & {
   reference?: string;
-}
+};
 
 /**
  * Connects the order store to a react-hook-form instance. Any time a field
@@ -54,7 +54,9 @@ export const useOrderForm = (marketId: string) => {
     }
   }, [order, isSubmitted, getValues, setValue]);
 
-  const handleSubmitWrapper = (cb: <T>(o: Exact<DealTicketOrderSubmission, T>) => void) => {
+  const handleSubmitWrapper = (
+    cb: <T>(o: Exact<DealTicketOrderSubmission, T>) => void
+  ) => {
     return handleSubmit(() => {
       // remove the persist key from the order in the store, the wallet will reject
       // an order that contains unrecognized additional keys

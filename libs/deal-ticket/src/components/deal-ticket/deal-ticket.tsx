@@ -11,7 +11,8 @@ import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import {
-  SideMap, SideRevertMap,
+  SideMap,
+  SideRevertMap,
   TimeInForceMap,
   TypeMap,
   useVegaWallet,
@@ -52,8 +53,8 @@ import {
 } from '@vegaprotocol/accounts';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import type { OrderObj } from '@vegaprotocol/orders';
-import type {DealTicketOrderSubmission} from '../../hooks/use-order-form';
-import { useOrderForm} from '../../hooks/use-order-form';
+import type { DealTicketOrderSubmission } from '../../hooks/use-order-form';
+import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export const normalizeOrderSubmission = (

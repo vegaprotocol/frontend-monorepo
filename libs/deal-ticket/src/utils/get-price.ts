@@ -1,6 +1,6 @@
 import { isMarketInAuction } from './is-market-in-auction';
 import type { MarketData } from '@vegaprotocol/markets';
-import { vega as vegaProtos } from '@vegaprotocol/protos'
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 import type { Type } from '@vegaprotocol/protos/dist/vega/Order';
 /**
  * Get the market price based on market mode (auction or not auction)
