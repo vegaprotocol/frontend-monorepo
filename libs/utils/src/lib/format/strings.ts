@@ -7,9 +7,9 @@ export function truncateByChars(input: string, start = 6, end = 6) {
     return input;
   }
 
-  const s = input.slice(0, start);  
-  const e = end !== 0 ? input.slice(-end) : ''
-  return `${s}${ELLIPSIS}${e}`
+  const s = input.slice(0, start);
+  const e = end !== 0 ? input.slice(-end) : '';
+  return `${s}${ELLIPSIS}${e}`;
 }
 
 export function shorten(input: string, limit?: number) {

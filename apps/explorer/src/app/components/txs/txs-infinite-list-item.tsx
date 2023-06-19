@@ -43,7 +43,7 @@ export const TxsInfiniteListItem = ({
           to={`/${Routes.TX}/${toHex(hash)}`}
           text={hash}
           startChars={TRUNCATE_LENGTH}
-          endChars={TRUNCATE_LENGTH}
+          endChars={0}
         />
       </td>
       <td

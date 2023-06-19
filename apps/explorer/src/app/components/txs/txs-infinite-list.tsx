@@ -1,6 +1,4 @@
-import React, { useEffect, useRef } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import EmptyList from '../empty-list/empty-list';
@@ -36,15 +34,10 @@ const Item = ({ tx }: ItemProps) => {
 };
 
 export const TxsInfiniteList = ({
-  hasMoreTxs,
   areTxsLoading,
   txs,
-  loadMoreTxs,
   className,
 }: TxsInfiniteListProps) => {
-  const { screenSize } = useScreenDimensions();
-  const hasMountedRef = useRef(false);
-
   if (!txs) {
     if (!areTxsLoading) {
       return (

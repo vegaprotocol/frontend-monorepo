@@ -10,8 +10,8 @@ import isNumber from 'lodash/isNumber';
 export interface TxsStateProps {
   txsData: BlockExplorerTransactionResult[];
   hasMoreTxs: boolean;
-  lastCursor: string;
-  firstCursor: string;
+  cursor: string;
+  previousCursor: string;
 }
 
 export interface IUseTxsData {
@@ -40,13 +40,20 @@ export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
   return urlAsString;
 };
 
+function l(cursor: string | number, previousCursor: string | number, e = '') {
+  console.group(`Cursor update: ${e}`);
+  console.log(`Cursor: ${cursor}`);
+  console.log(`Previous cursor: ${previousCursor}`);
+  console.groupEnd();
+}
+
 export const useTxsData = ({ limit, filters }: IUseTxsData) => {
-  const [{ txsData, hasMoreTxs, lastCursor, firstCursor }, setTxsState] =
+  const [{ txsData, hasMoreTxs, cursor, previousCursor }, setTxsState] =
     useState<TxsStateProps>({
       txsData: [],
       hasMoreTxs: false,
-      lastCursor: '',
-      firstCursor: '',
+      previousCursor: '',
+      cursor: '',
     });
 
   const url = getTxsDataUrl({ limit: limit?.toString(), filters });
@@ -58,50 +65,48 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
 
   useEffect(() => {
     if (data && isNumber(data?.transactions?.length)) {
-      setTxsState((prev) => ({
-        txsData: data.transactions,
-        hasMoreTxs: data.transactions.length > 0,
-        firstCursor: prev.firstCursor,
-        lastCursor:
-          data.transactions[data.transactions.length - 1]?.cursor || '',
-      }));
+      setTxsState((prev) => {
+        const cursor =
+          data.transactions[data.transactions.length - 1]?.cursor || '';
+        const previousCursor = prev.cursor;
+        return {
+          txsData: data.transactions,
+          hasMoreTxs: data.transactions.length > 0,
+          previousCursor,
+          cursor,
+        };
+      });
     }
-  }, [setTxsState, data]);
+  }, [cursor, setTxsState, data]);
 
   useEffect(() => {
+    l('', '', 'Initial reset');
     setTxsState((prev) => ({
       txsData: [],
       hasMoreTxs: false,
-      lastCursor: '',
-      firstCursor: '',
+      cursor: '',
+      previousCursor: '',
     }));
   }, [filters, limit, refetch]);
 
   const nextPage = useCallback(() => {
     return refetch({
       limit,
-      before: lastCursor,
+      before: cursor,
     });
-  }, [lastCursor, limit, refetch]);
+  }, [cursor, limit, refetch]);
 
   const previousPage = useCallback(() => {
-    setTxsState((prev) => ({
-      txsData: prev.txsData,
-      hasMoreTxs: prev.hasMoreTxs,
-      firstCursor: prev.txsData[0].cursor,
-      lastCursor: prev.lastCursor,
-    }));
-
     return refetch({
       limit,
-      before: firstCursor,
+      before: cursor,
     });
-  }, [firstCursor, limit, refetch]);
+  }, [cursor, limit, refetch]);
 
   const refreshTxs = useCallback(async () => {
     setTxsState((prev) => ({
-      lastCursor: '',
-      firstCursor: '',
+      cursor: '',
+      previousCursor: '',
       hasMoreTxs: false,
       txsData: [],
     }));
@@ -115,8 +120,8 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
     error,
     txsData,
     hasMoreTxs,
-    firstCursor,
-    lastCursor,
+    previousCursor,
+    cursor,
     refreshTxs,
     nextPage,
     previousPage,
