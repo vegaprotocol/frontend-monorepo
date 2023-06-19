@@ -1,9 +1,14 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { DealTicketOrderSubmission } from '../components';
+import type { OrderSubmission } from '@vegaprotocol/wallet';
+import {
+  useVegaWallet,
+  SideRevertMap,
+  TimeInForceRevertMap,
+  TypeRevertMap,
+} from '@vegaprotocol/wallet';
 
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 
-export const useEstimateFees = (order?: DealTicketOrderSubmission) => {
+export const useEstimateFees = (order?: OrderSubmission) => {
   const { pubKey } = useVegaWallet();
 
   const { data } = useEstimateFeesQuery({
@@ -11,10 +16,10 @@ export const useEstimateFees = (order?: DealTicketOrderSubmission) => {
       marketId: order.marketId,
       partyId: pubKey || '',
       price: order.price,
-      size: order.size,
-      side: order.side,
-      timeInForce: order.timeInForce,
-      type: order.type,
+      size: String(order.size),
+      side: SideRevertMap[order.side],
+      timeInForce: TimeInForceRevertMap[order.timeInForce],
+      type: TypeRevertMap[order.type],
     },
     fetchPolicy: 'no-cache',
     skip: !pubKey || !order?.size || !order?.price,

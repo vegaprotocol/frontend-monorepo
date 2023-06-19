@@ -2,43 +2,9 @@ import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import {
-  useVegaTransactionStore,
-  SideMap,
-  TimeInForceMap,
-  TypeMap,
-} from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { useMarket, marketDataProvider } from '@vegaprotocol/markets';
 import { DealTicket } from './deal-ticket';
-import type * as Schema from '@vegaprotocol/types';
-
-export interface DealTicketOrderSubmission {
-  marketId: string;
-  reference?: string;
-  type: Schema.OrderType;
-  side: Schema.Side;
-  timeInForce: Schema.OrderTimeInForce;
-  size: string;
-  price?: string;
-  expiresAt?: string;
-  postOnly?: boolean;
-  reduceOnly?: boolean;
-}
-
-export const convertDealTicketToOrderSubmission = (
-  dealTicketOrder: DealTicketOrderSubmission
-) => {
-  return {
-    ...dealTicketOrder,
-    expiresAt: dealTicketOrder.expiresAt
-      ? BigInt(dealTicketOrder.expiresAt)
-      : null,
-    size: BigInt(dealTicketOrder.size),
-    side: SideMap[dealTicketOrder.side],
-    timeInForce: TimeInForceMap[dealTicketOrder.timeInForce],
-    type: TypeMap[dealTicketOrder.type],
-  } as OrderSubmission;
-};
 
 export interface DealTicketContainerProps {
   marketId: string;
@@ -82,10 +48,9 @@ export const DealTicketContainer = ({
         <DealTicket
           market={market}
           marketData={marketData}
-          submit={(dealTicketOrder) =>
+          submit={(dealTicketOrder: OrderSubmission) =>
             create({
-              orderSubmission:
-                convertDealTicketToOrderSubmission(dealTicketOrder),
+              orderSubmission: dealTicketOrder,
             })
           }
           onClickCollateral={onClickCollateral}

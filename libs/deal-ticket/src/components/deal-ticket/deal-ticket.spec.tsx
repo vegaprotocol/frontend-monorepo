@@ -3,11 +3,11 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
-import type { DealTicketOrderSubmission } from './deal-ticket-container';
 import { DealTicket, normalizeOrderSubmission } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
 import { addDecimal } from '@vegaprotocol/utils';
+import type { OrderObj } from '@vegaprotocol/orders';
 import { useOrderStore } from '@vegaprotocol/orders';
 
 jest.mock('zustand');
@@ -340,18 +340,15 @@ describe('DealTicket', () => {
   describe('normalizeOrderSubmission', () => {
     it('sets and formats price only for limit orders', () => {
       expect(
-        normalizeOrderSubmission(
-          { price: '100' } as unknown as DealTicketOrderSubmission,
-          2,
-          1
-        ).price
+        normalizeOrderSubmission({ price: '100' } as unknown as OrderObj, 2, 1)
+          .price
       ).toBeUndefined();
       expect(
         normalizeOrderSubmission(
           {
             price: '100',
             type: Schema.OrderType.TYPE_LIMIT,
-          } as unknown as DealTicketOrderSubmission,
+          } as unknown as OrderObj,
           2,
           1
         ).price
@@ -363,7 +360,7 @@ describe('DealTicket', () => {
         normalizeOrderSubmission(
           {
             expiresAt: '2022-01-01T00:00:00.000Z',
-          } as DealTicketOrderSubmission,
+          } as OrderObj,
           2,
           1
         ).expiresAt
@@ -373,11 +370,11 @@ describe('DealTicket', () => {
           {
             expiresAt: '2022-01-01T00:00:00.000Z',
             timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
-          } as DealTicketOrderSubmission,
+          } as OrderObj,
           2,
           1
         ).expiresAt
-      ).toEqual('1640995200000000000');
+      ).toEqual(BigInt('1640995200000000000'));
     });
 
     it('formats size', () => {
@@ -385,11 +382,11 @@ describe('DealTicket', () => {
         normalizeOrderSubmission(
           {
             size: '100',
-          } as DealTicketOrderSubmission,
+          } as OrderObj,
           2,
           1
         ).size
-      ).toEqual('1000');
+      ).toEqual(BigInt('1000'));
     });
   });
 });

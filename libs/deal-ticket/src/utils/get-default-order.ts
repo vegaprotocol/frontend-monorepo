@@ -1,11 +1,11 @@
 import { toDecimal } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import type { DealTicketOrderSubmission } from '../components';
+import type {OrderObj} from "@vegaprotocol/orders";
 
 export const getDefaultOrder = (market: {
   id: string;
   positionDecimalPlaces: number;
-}): DealTicketOrderSubmission => ({
+}): Partial<OrderObj> => ({
   marketId: market.id,
   type: Schema.OrderType.TYPE_MARKET,
   side: Schema.Side.SIDE_BUY,

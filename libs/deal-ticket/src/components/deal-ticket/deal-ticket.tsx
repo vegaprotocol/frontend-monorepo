@@ -9,7 +9,14 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import type { OrderSubmission } from '@vegaprotocol/wallet';
+import {
+  SideMap, SideRevertMap,
+  TimeInForceMap,
+  TypeMap,
+  useVegaWallet,
+  useVegaWalletDialogStore,
+} from '@vegaprotocol/wallet';
 import {
   Checkbox,
   ExternalLink,
@@ -19,7 +26,6 @@ import {
   Tooltip,
   TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
-
 import {
   useEstimatePositionQuery,
   useOpenVolume,
@@ -29,7 +35,6 @@ import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
 import { getDerivedPrice } from '../../utils/get-price';
 import type { OrderInfo } from '@vegaprotocol/types';
-
 import {
   validateExpiration,
   validateMarketState,
@@ -46,28 +51,28 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
-import { useOrderForm } from '../../hooks/use-order-form';
+import type { OrderObj } from '@vegaprotocol/orders';
+import type {DealTicketOrderSubmission} from '../../hooks/use-order-form';
+import { useOrderForm} from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { DealTicketOrderSubmission } from './deal-ticket-container';
 
 export const normalizeOrderSubmission = (
   order: DealTicketOrderSubmission,
   decimalPlaces: number,
   positionDecimalPlaces: number
-): DealTicketOrderSubmission => ({
+): OrderSubmission => ({
   marketId: order.marketId,
-  reference: order.reference,
-  type: order.type,
-  side: order.side,
-  timeInForce: order.timeInForce,
+  type: TypeMap[order.type],
+  side: SideMap[order.side],
+  timeInForce: TimeInForceMap[order.timeInForce],
   price:
     order.type === OrderType.TYPE_LIMIT && order.price
       ? removeDecimal(order.price, decimalPlaces)
       : undefined,
-  size: removeDecimal(order.size, positionDecimalPlaces),
+  size: BigInt(removeDecimal(order.size, positionDecimalPlaces)),
   expiresAt:
     order.expiresAt && order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
-      ? toNanoSeconds(order.expiresAt)
+      ? BigInt(toNanoSeconds(order.expiresAt))
       : undefined,
   postOnly: order.postOnly,
   reduceOnly: order.reduceOnly,
@@ -77,7 +82,7 @@ export interface DealTicketProps {
   market: Market;
   marketData: MarketData;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  submit: (order: DealTicketOrderSubmission) => void;
+  submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
 }
 
@@ -139,7 +144,7 @@ export const DealTicket = ({
     if (price && normalizedOrder?.size) {
       return removeDecimal(
         toBigNum(
-          normalizedOrder.size,
+          String(normalizedOrder.size),
           market.positionDecimalPlaces
         ).multipliedBy(toBigNum(price, market.decimalPlaces)),
         asset.decimals
@@ -173,10 +178,10 @@ export const DealTicket = ({
     : [];
   if (normalizedOrder) {
     orders.push({
-      isMarketOrder: normalizedOrder.type === OrderType.TYPE_MARKET,
+      isMarketOrder: normalizedOrder.type === TypeMap[OrderType.TYPE_MARKET],
       price: normalizedOrder.price ?? '0',
-      remaining: normalizedOrder.size,
-      side: normalizedOrder.side,
+      remaining: String(normalizedOrder.size),
+      side: SideRevertMap[normalizedOrder.side],
     });
   }
   const { data: positionEstimate } = useEstimatePositionQuery({
