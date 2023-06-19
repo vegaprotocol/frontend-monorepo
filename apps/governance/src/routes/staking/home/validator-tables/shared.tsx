@@ -344,10 +344,6 @@ export const TotalPenaltiesRenderer = ({
           <div data-testid="overstaked-penalty-tooltip">
             {t('overstakedPenalty')}: {data.overstakingPenalty}
           </div>
-          <div data-testid="total-penalty-tooltip">
-            {t('totalPenalties')}:{' '}
-            <span className="font-bold">{data.totalPenalties}</span>
-          </div>
         </>
       }
     >
