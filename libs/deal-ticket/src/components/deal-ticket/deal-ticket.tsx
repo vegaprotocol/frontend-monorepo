@@ -52,7 +52,6 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
-import type { OrderObj } from '@vegaprotocol/orders';
 import type { DealTicketOrderSubmission } from '../../hooks/use-order-form';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
