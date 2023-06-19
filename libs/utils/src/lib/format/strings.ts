@@ -6,7 +6,10 @@ export function truncateByChars(input: string, start = 6, end = 6) {
   if (input.length <= start + end + 1) {
     return input;
   }
-  return input.slice(0, start) + ELLIPSIS + input.slice(-end);
+
+  const s = input.slice(0, start);  
+  const e = end !== 0 ? input.slice(-end) : ''
+  return `${s}${ELLIPSIS}${e}`
 }
 
 export function shorten(input: string, limit?: number) {
