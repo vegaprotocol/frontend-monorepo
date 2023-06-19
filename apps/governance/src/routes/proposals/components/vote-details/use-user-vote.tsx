@@ -4,10 +4,7 @@ import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import type {
-  FinalizedVote,
-  VoteEventFieldsFragment,
-} from '@vegaprotocol/proposals';
+import type { FinalizedVote } from '@vegaprotocol/proposals';
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -50,13 +47,13 @@ export function useUserVote(
     if (finalizedVote?.vote.value && finalizedVote.pubKey === pubKey) {
       setUserVote(finalizedVote);
     } else if (data?.party?.votesConnection?.edges && pubKey) {
-      // This sets the vote (if any) when the user first loads the page
-      setUserVote({
-        ...(removePaginationWrapper(data?.party?.votesConnection?.edges).find(
-          ({ proposalId: pId }) => proposalId === pId
-        ) as VoteEventFieldsFragment),
-        pubKey,
-      });
+      const vote = removePaginationWrapper(
+        data?.party?.votesConnection?.edges
+      ).find(({ proposalId: pId }) => proposalId === pId);
+
+      if (vote) {
+        setUserVote({ ...vote, pubKey });
+      }
     }
   }, [
     finalizedVote?.vote.value,
@@ -98,6 +95,8 @@ export function useUserVote(
   return {
     voteState,
     userVote,
-    voteDatetime: userVote ? new Date(userVote.vote.datetime) : null,
+    voteDatetime: userVote?.vote?.datetime
+      ? new Date(userVote.vote.datetime)
+      : null,
   };
 }
