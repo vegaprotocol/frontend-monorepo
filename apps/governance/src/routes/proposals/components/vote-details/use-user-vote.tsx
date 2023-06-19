@@ -1,11 +1,10 @@
 import { captureMessage } from '@sentry/minimal';
-
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
-import type { FinalizedVote } from '@vegaprotocol/proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import type { FinalizedVote } from '@vegaprotocol/proposals';
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -45,21 +44,23 @@ export function useUserVote(
   );
 
   useEffect(() => {
-    if (finalizedVote?.vote.value) {
+    if (finalizedVote?.vote.value && finalizedVote.pubKey === pubKey) {
       setUserVote(finalizedVote);
-    } else if (data?.party?.votesConnection?.edges) {
-      // This sets the vote (if any) when the user first loads the page
-      setUserVote(
-        removePaginationWrapper(data?.party?.votesConnection?.edges).find(
-          ({ proposalId: pId }) => proposalId === pId
-        )
-      );
+    } else if (data?.party?.votesConnection?.edges && pubKey) {
+      const vote = removePaginationWrapper(
+        data?.party?.votesConnection?.edges
+      ).find(({ proposalId: pId }) => proposalId === pId);
+
+      if (vote) {
+        setUserVote({ ...vote, pubKey });
+      }
     }
   }, [
     finalizedVote?.vote.value,
     data?.party?.votesConnection?.edges,
     finalizedVote,
     proposalId,
+    pubKey,
   ]);
 
   // If user vote changes update the vote state
@@ -94,6 +95,8 @@ export function useUserVote(
   return {
     voteState,
     userVote,
-    voteDatetime: userVote ? new Date(userVote.vote.datetime) : null,
+    voteDatetime: userVote?.vote?.datetime
+      ? new Date(userVote.vote.datetime)
+      : null,
   };
 }
