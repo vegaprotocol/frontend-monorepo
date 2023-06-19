@@ -40,7 +40,7 @@ jobs:
 
       - name: Log in to the Container registry (docker hub)
         uses: docker/login-action@v2
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) }}
         with:
           # registry: registry.hub.docker.com
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -183,7 +183,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:mainnet
+            vegaprotocol/${{ matrix.app }}:${{ endsWith(github.ref, 'main') && 'mainnet' || endsWith(github.ref, 'release/testnet') && 'testnet' || '' }}
 
       - name: Publish dist as docker image (ghcr - retry)
         uses: docker/build-push-action@v3
@@ -210,13 +210,13 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:mainnet
+            vegaprotocol/${{ matrix.app }}:${{ endsWith(github.ref, 'main') && 'mainnet' || endsWith(github.ref, 'release/testnet') && 'testnet' || '' }}
 
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
         uses: jakejarvis/s3-sync-action@master
         # s3 releases are not happening for trading on mainnet - it's IPFS
-        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !endsWith(github.ref, 'main') ) ) }}
+        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
         with:
           args: --acl private --follow-symlinks --delete
         env:
@@ -235,18 +235,23 @@ jobs:
 
       - name: Trigger fleek deployment
         # release to ipfs happens only on mainnet (represented by main branch) for trading
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) }}
         run: |
+          if echo ${{ github.ref }} | grep -q main; then
+            fleek_id='f8f2e051-f18e-49e6-b876-0a39369dc0d8'
+          elif echo ${{ github.ref }} | grep -q release/testnet; then
+            fleek_id='79baaeca-1952-4ae7-a256-f668cfc1d68e'
+          fi
           # display info about app
           curl -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"query": "query{getSiteById(siteId:\"f8f2e051-f18e-49e6-b876-0a39369dc0d8\"){id latestDeploy{id status}}}"}' \
+            -d '{"query": "query{getSiteById(siteId:\"$fleek_id\"){id latestDeploy{id status}}}"}' \
             https://api.fleek.co/graphql
 
           # trigger new deployment as base image is always set to vegaprotocol/trading:mainnet
           curl -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"query": "mutation{triggerDeploy(siteId:\"f8f2e051-f18e-49e6-b876-0a39369dc0d8\"){id status}}"}' \
+            -d '{"query": "mutation{triggerDeploy(siteId:\"$fleek_id\"){id status}}"}' \
             https://api.fleek.co/graphql
 
       - name: Check out ipfs-redirect
