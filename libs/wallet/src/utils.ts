@@ -5,7 +5,7 @@ import type { Transaction } from './connectors';
 import { vega as vegaProtos } from '@vegaprotocol/protos';
 import type { Side } from '@vegaprotocol/protos/dist/vega/Side';
 import type { TimeInForce } from '@vegaprotocol/protos/dist/vega/Order/TimeInForce';
-import type { Type } from '@vegaprotocol/protos/dist/vega/Order';
+import type { Type as ProtoOrderType } from '@vegaprotocol/protos/dist/vega/Order';
 
 /**
  * Creates an ID in the same way that core does on the backend. This way we
@@ -62,14 +62,14 @@ export const TimeInForceRevertMap: Record<
   return agg;
 }, {} as Record<TimeInForce, Schema.OrderTimeInForce>);
 
-export const TypeMap: Readonly<Record<Schema.OrderType, Type.Type>> = {
+export const TypeMap: Readonly<Record<Schema.OrderType, ProtoOrderType.Type>> = {
   [Schema.OrderType.TYPE_LIMIT]: vegaProtos.Order.Type.TYPE_LIMIT,
   [Schema.OrderType.TYPE_MARKET]: vegaProtos.Order.Type.TYPE_MARKET,
   [Schema.OrderType.TYPE_NETWORK]: vegaProtos.Order.Type.TYPE_NETWORK,
 };
 
-export const TypeRevertMap: Record<Type.Type, Schema.OrderType> =
+export const TypeRevertMap: Record<ProtoOrderType.Type, Schema.OrderType> =
   Object.entries(TypeMap).reduce((agg, item) => {
     agg[item[1]] = item[0] as Schema.OrderType;
     return agg;
-  }, {} as Record<Type.Type, Schema.OrderType>);
+  }, {} as Record<ProtoOrderType.Type, Schema.OrderType>);

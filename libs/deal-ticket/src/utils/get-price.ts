@@ -1,7 +1,7 @@
 import { isMarketInAuction } from './is-market-in-auction';
 import type { MarketData } from '@vegaprotocol/markets';
 import { vega as vegaProtos } from '@vegaprotocol/protos';
-import type { Type } from '@vegaprotocol/protos/dist/vega/Order';
+import type { Type as OrderType } from '@vegaprotocol/protos/dist/vega/Order';
 /**
  * Get the market price based on market mode (auction or not auction)
  */
@@ -30,7 +30,7 @@ export const getMarketPrice = (marketData: MarketData) => {
  */
 export const getDerivedPrice = (
   order: {
-    type: Type.Type;
+    type: OrderType.Type;
     price?: string | undefined;
   },
   marketData: MarketData
