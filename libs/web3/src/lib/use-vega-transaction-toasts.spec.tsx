@@ -6,7 +6,11 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import { vega as vegaProtos } from '@vegaprotocol/protos';
-import type { Transaction, VegaStoredTxState } from '@vegaprotocol/wallet';
+import type {
+  Transaction,
+  VegaStoredTxState,
+  OrderSubmission,
+} from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import {
   VegaTransactionDetails,
@@ -224,10 +228,10 @@ const closePosition: VegaStoredTxState = {
           timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_FOK,
           type: vegaProtos.Order.Type.TYPE_MARKET,
           price: '1234',
-        },
+        } as OrderSubmission,
       ],
     },
-  },
+  } as Transaction,
   status: VegaTxStatus.Default,
   error: null,
   txHash: null,
@@ -252,7 +256,7 @@ const batch: VegaStoredTxState = {
         },
       ],
     },
-  },
+  } as Transaction,
   status: VegaTxStatus.Default,
   error: null,
   txHash: null,

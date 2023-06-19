@@ -6,6 +6,7 @@ import {
   deadlineToRoundedHours,
 } from '@vegaprotocol/proposals';
 import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
+import type { ProposalSubmission } from '@vegaprotocol/wallet';
 import {
   ProposalFormDescription,
   ProposalFormSubheader,
@@ -81,7 +82,7 @@ export const ProposeFreeform = () => {
           )
         ),
       },
-    };
+    } as ProposalSubmission;
   };
 
   const onSubmit = async (fields: FreeformProposalFormFields) => {
