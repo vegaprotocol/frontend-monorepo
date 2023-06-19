@@ -7,6 +7,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 import { useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 const BE_TXS_PER_REQUEST = 15;
 
@@ -29,24 +30,48 @@ export const TxsListFiltered = () => {
       ? `filters[cmd.type]=${Array.from(filters)[0]}`
       : '';
 
-  const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
-    useTxsData({
-      limit: BE_TXS_PER_REQUEST,
-      filters: f,
-    });
+  const {
+    hasMoreTxs,
+    nextPage,
+    previousPage,
+    error,
+    txsData,
+    refreshTxs,
+    loading,
+  } = useTxsData({
+    limit: BE_TXS_PER_REQUEST,
+    filters: f,
+  });
 
   return (
     <>
       <menu className="mb-2">
         <BlocksRefetch refetch={refreshTxs} />
         <TxsFilter filters={filters} setFilters={setFilters} />
+        <div className="right">
+          <Button
+            size="xs"
+            onClick={() => {
+              previousPage();
+            }}
+          >
+            Previous
+          </Button>
+          <Button
+            size="xs"
+            onClick={() => {
+              nextPage();
+            }}
+          >
+            Next
+          </Button>
+        </div>
       </menu>
-
       <TxsInfiniteList
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
         txs={txsData}
-        loadMoreTxs={loadTxs}
+        loadMoreTxs={nextPage}
         error={error}
         className="mb-28"
       />

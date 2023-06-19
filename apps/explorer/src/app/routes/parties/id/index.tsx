@@ -25,7 +25,7 @@ const Party = () => {
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
   const filters = `filters[tx.submitter]=${partyId}`;
-  const { hasMoreTxs, loadTxs, error, txsData, loading } = useTxsData({
+  const { hasMoreTxs, nextPage, error, txsData, loading } = useTxsData({
     limit: 10,
     filters,
   });
@@ -86,7 +86,7 @@ const Party = () => {
           hasMoreTxs={hasMoreTxs}
           areTxsLoading={loading}
           txs={txsData}
-          loadMoreTxs={loadTxs}
+          loadMoreTxs={nextPage}
           error={error}
           className="mb-28"
         />

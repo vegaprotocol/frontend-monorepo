@@ -1,4 +1,3 @@
-import React from 'react';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { Routes } from '../../routes/route-names';
 import { TxOrderType } from './tx-order-type';
@@ -29,11 +28,11 @@ export const TxsInfiniteListItem = ({
   }
 
   return (
-    <div
+    <tr
       data-testid="transaction-row"
-      className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10"
+      className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10 py-[2px]"
     >
-      <div
+      <td
         className="text-sm col-span-10 md:col-span-3 leading-none"
         data-testid="tx-hash"
       >
@@ -46,8 +45,8 @@ export const TxsInfiniteListItem = ({
           startChars={TRUNCATE_LENGTH}
           endChars={TRUNCATE_LENGTH}
         />
-      </div>
-      <div
+      </td>
+      <td
         className="text-sm col-span-10 md:col-span-3 leading-none"
         data-testid="pub-key"
       >
@@ -60,11 +59,11 @@ export const TxsInfiniteListItem = ({
           startChars={TRUNCATE_LENGTH}
           endChars={TRUNCATE_LENGTH}
         />
-      </div>
-      <div className="text-sm col-span-5 md:col-span-2 leading-none	flex items-center">
+      </td>
+      <td className="text-sm col-span-5 md:col-span-2 leading-none	flex items-center">
         <TxOrderType orderType={type} command={command} />
-      </div>
-      <div
+      </td>
+      <td
         className="text-sm col-span-3 md:col-span-1 leading-none flex items-center"
         data-testid="tx-block"
       >
@@ -77,8 +76,8 @@ export const TxsInfiniteListItem = ({
           startChars={TRUNCATE_LENGTH}
           endChars={TRUNCATE_LENGTH}
         />
-      </div>
-      <div
+      </td>
+      <td
         className="text-sm col-span-2 md:col-span-1 leading-none flex items-center"
         data-testid="tx-success"
       >
@@ -90,7 +89,7 @@ export const TxsInfiniteListItem = ({
         ) : (
           code
         )}
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 };
