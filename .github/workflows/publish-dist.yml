@@ -300,3 +300,39 @@ jobs:
             sleep 5
             gh pr merge "${pr_url}" --delete-branch --squash --admin
           )
+
+      - name: Update console.fairground.wtf DNS to redirect to the new console
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'testnet') }}
+        run: |
+          curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
+          tar -xzf kubo.tgz
+          export PATH="$PATH:$PWD/kubo"
+          which ipfs
+          new_hash=$(cat ${{ matrix.app }}-ipfs-hash)
+          new_cid=$(ipfs cid format -v 1 -b base32 $new_hash)
+
+          # Generate console URL
+
+          new_console_url_type=ipfs
+          # new_console_url_type=ipns
+
+          new_console_url_domain=cf-ipfs.com
+          # new_console_url_domain=dweb.link
+
+          new_console_url="https://${new_cid}.${new_console_url_type}.${new_console_url_domain}/"
+          echo "new_console_url=${new_console_url}"
+
+          # Update record in DNSimple
+          # docs: https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord
+          dnsimple_account_id=84895
+          dnsimple_zone_name=fairground.wtf
+          dnsimple_record_id=44571545
+          # see: https://dnsimple.com/a/84895/domains/fairground.wtf/records/44571545/edit
+          curl  -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
+                -H 'Accept: application/json' \
+                -H 'Content-Type: application/json' \
+                -X PATCH \
+                -d "{
+                      \"content\": \"${new_console_url}\"
+                }" \
+                https://api.dnsimple.com/v2/${dnsimple_account_id}/zones/${dnsimple_zone_name}/records/${dnsimple_record_id}
