@@ -103,7 +103,7 @@ interface AccountManagerProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  gridProps: ReturnType<typeof useDataGridEvents>;
+  gridProps?: ReturnType<typeof useDataGridEvents>;
 }
 
 export const AccountManager = ({
