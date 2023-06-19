@@ -53,10 +53,10 @@ export const tradesUpdateSubscription = (
 
 const trades: TradeFieldsFragment[] = [
   {
-    id: 'FFFFBC80005C517A10ACF481F7E6893769471098E696D0CC407F18134044CB16',
-    price: '17116898',
-    size: '24',
-    createdAt: '2022-04-06T16:19:42.692598951Z',
+    id: 'FFFFAD1BF47AA2853E5C375B6B3A62375F62D5B10807583D32EF3119CC455CD1',
+    price: '17106734',
+    size: '18',
+    createdAt: '2022-04-07T17:56:47.997938583Z',
     aggressor: Side.SIDE_BUY,
     market: {
       id: 'market-0',
@@ -77,10 +77,10 @@ const trades: TradeFieldsFragment[] = [
     __typename: 'Trade',
   },
   {
-    id: 'FFFFAD1BF47AA2853E5C375B6B3A62375F62D5B10807583D32EF3119CC455CD1',
-    price: '17106734',
-    size: '18',
-    createdAt: '2022-04-07T17:56:47.997938583Z',
+    id: 'FFFFBC80005C517A10ACF481F7E6893769471098E696D0CC407F18134044CB16',
+    price: '17116898',
+    size: '24',
+    createdAt: '2022-04-06T16:19:42.692598951Z',
     aggressor: Side.SIDE_BUY,
     market: {
       id: 'market-0',
