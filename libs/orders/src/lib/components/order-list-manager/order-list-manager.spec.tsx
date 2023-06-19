@@ -11,6 +11,7 @@ import { forwardRef } from 'react';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 // @ts-ignore OrderList is read only but we need to override with the forwardRef to
 // avoid warnings about padding refs
@@ -63,9 +64,9 @@ describe('normalizeOrderAmendment', () => {
     const orderAmendment = normalizeOrderAmendment(order, market, '1', '1');
     expect(orderAmendment.orderId).toEqual('123');
     expect(orderAmendment.marketId).toEqual('456');
-    expect(orderAmendment.expiresAt).toEqual('1640995200000000000');
+    expect(orderAmendment.expiresAt).toEqual(BigInt('1640995200000000000'));
     expect(orderAmendment.timeInForce).toEqual(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+      vegaProtos.Order.TimeInForce.TIME_IN_FORCE_GTT
     );
   });
 
@@ -84,9 +85,9 @@ describe('normalizeOrderAmendment', () => {
   });
 
   it.each([
-    ['9', 1, -10],
-    ['90', 2, 8900],
-    ['0.001', 8, 99900],
+    ['9', 1, BigInt(-10)],
+    ['90', 2, BigInt(8900)],
+    ['0.001', 8, BigInt(99900)],
   ])('sets and formats size delta', (size, positionDecimalPlaces, output) => {
     const orderAmendment = normalizeOrderAmendment(
       order,

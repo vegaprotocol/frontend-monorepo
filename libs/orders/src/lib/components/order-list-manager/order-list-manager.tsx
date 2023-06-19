@@ -3,7 +3,6 @@ import { useCallback, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
-
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
@@ -51,48 +50,27 @@ export interface OrderListManagerProps {
   storeKey?: string;
 }
 
-export interface DealTicketOrderAmendment {
-  marketId: string;
-  orderId: string;
-  reference?: string;
-  timeInForce: Schema.OrderTimeInForce;
-  sizeDelta?: number;
-  price?: string;
-  expiresAt?: string;
-}
-
 export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
   order: Pick<Order, 'id' | 'timeInForce' | 'size' | 'expiresAt'>,
   market: Pick<Schema.Market, 'id' | 'decimalPlaces' | 'positionDecimalPlaces'>,
   price: string,
   size: string
-): DealTicketOrderAmendment => ({
+): OrderAmendment => ({
   orderId: order.id,
   marketId: market.id,
   price: removeDecimal(price, market.decimalPlaces),
-  timeInForce: order.timeInForce,
-  sizeDelta: size
-    ? new BigNumber(removeDecimal(size, market.positionDecimalPlaces))
-        .minus(order.size)
-        .toNumber()
-    : 0,
+  timeInForce: TimeInForceMap[order.timeInForce],
+  sizeDelta: BigInt(
+    size
+      ? new BigNumber(removeDecimal(size, market.positionDecimalPlaces))
+          .minus(order.size)
+          .toNumber()
+      : 0
+  ),
   expiresAt: order.expiresAt
-    ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
+    ? BigInt(toNanoSeconds(order.expiresAt)) // Wallet expects timestamp in nanoseconds
     : undefined,
 });
-
-export const convertDealTicketToOrderAmendment = (
-  dealTicketOrder: DealTicketOrderAmendment
-) => {
-  return {
-    ...dealTicketOrder,
-    expiresAt: dealTicketOrder.expiresAt
-      ? BigInt(dealTicketOrder.expiresAt)
-      : null,
-    timeInForce: TimeInForceMap[dealTicketOrder.timeInForce],
-    sizeDelta: BigInt(dealTicketOrder.sizeDelta || 0),
-  } as OrderAmendment;
-};
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
   <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
@@ -239,8 +217,7 @@ export const OrderListManager = ({
             };
             create(
               {
-                orderAmendment:
-                  convertDealTicketToOrderAmendment(orderAmendment),
+                orderAmendment,
               },
               originalOrder
             );

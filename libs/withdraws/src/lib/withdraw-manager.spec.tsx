@@ -20,7 +20,7 @@ const mockWithdrawAsset = {
   delay: 10,
   handleSelectAsset: jest.fn(),
 };
-const mockUseWithdrawAsset = jest.fn(() => mockWithdrawAsset);
+
 jest.mock('./use-withdraw-asset', () => ({
   useWithdrawAsset: () => mockWithdrawAsset,
 }));
