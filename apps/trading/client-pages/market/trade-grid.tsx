@@ -49,7 +49,7 @@ const MarketBottomPanel = memo(
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'bottom' });
     const { screenSize } = useScreenDimensions();
     const onMarketClick = useMarketClickHandler(true);
-    const onOrderTypeClick = useMarketLiquidityClickHandler(true);
+    const onOrderTypeClick = useMarketLiquidityClickHandler();
 
     return 'xxxl' === screenSize ? (
       <ResizableGrid

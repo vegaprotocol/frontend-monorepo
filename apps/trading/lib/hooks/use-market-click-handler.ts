@@ -22,6 +22,6 @@ export const useMarketClickHandler = (replace = false) => {
 
 export const useMarketLiquidityClickHandler = () => {
   return useCallback((selectedId: string, metaKey?: boolean) => {
-    window.open(`/#/liquidity/${selectedId}`, '_blank');
+    window.open(`/#/liquidity/${selectedId}`, metaKey ? '_blank' : '_self');
   }, []);
 };
