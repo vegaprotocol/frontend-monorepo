@@ -1,5 +1,5 @@
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { DealTicketOrderSubmission } from '@vegaprotocol/wallet';
+import type { DealTicketOrderSubmission } from '../components';
 
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 

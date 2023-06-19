@@ -6,7 +6,7 @@ import {
   useNetworkParam,
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
+import type { Transfer } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';

@@ -7,7 +7,6 @@ import { useVegaTransactionStore } from './use-vega-transaction-store';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (BigInt.prototype as any).toJSON = function () {
-  // put it temporary here, sorry :-(
   return this.toString();
 };
 

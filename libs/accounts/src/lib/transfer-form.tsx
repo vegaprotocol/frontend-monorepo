@@ -5,6 +5,7 @@ import {
   vegaPublicKey,
   addDecimal,
   formatNumber,
+  removeDecimal,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -18,12 +19,13 @@ import {
   Tooltip,
   Checkbox,
 } from '@vegaprotocol/ui-toolkit';
-import type { Transfer } from '@vegaprotocol/protos/dist/vega/commands/v1/Transfer';
-import { normalizeTransfer } from '@vegaprotocol/wallet';
+import type { Transfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import type { Exact } from 'type-fest';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 interface FormFields {
   toAddress: string;
@@ -45,6 +47,29 @@ interface TransferFormProps {
   feeFactor: string | null;
   submitTransfer: (transfer: Transfer) => void;
 }
+
+export const normalizeTransfer = <T extends Exact<Transfer, T>>(
+  address: string,
+  amount: string,
+  asset: {
+    id: string;
+    decimals: number;
+  }
+): Transfer => {
+  return {
+    fromAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
+    to: address,
+    toAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
+    asset: asset.id,
+    amount: removeDecimal(amount, asset.decimals),
+    // oneOff or recurring required otherwise wallet will error
+    // default oneOff is immediate transfer
+    oneOff: {},
+    // to be consistent with proto types
+    kind: null,
+    reference: '',
+  };
+};
 
 export const TransferForm = ({
   pubKey,

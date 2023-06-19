@@ -3,7 +3,7 @@ import type { OrderObj } from '@vegaprotocol/orders';
 import { getDefaultOrder, useOrder } from '@vegaprotocol/orders';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import type { DealTicketOrderSubmission } from '@vegaprotocol/wallet';
+import type { DealTicketOrderSubmission } from '../components';
 import type { Exact } from 'type-fest';
 
 export type OrderFormFields = OrderObj & {

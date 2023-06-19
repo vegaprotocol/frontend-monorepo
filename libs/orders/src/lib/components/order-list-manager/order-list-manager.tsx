@@ -9,16 +9,15 @@ import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order'
 import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
-import type { Transaction } from '@vegaprotocol/wallet';
-import {
-  convertDealTicketToOrderAmendment,
-  normalizeOrderAmendment,
-  useVegaTransactionStore,
-} from '@vegaprotocol/wallet';
+import type { Transaction, OrderAmendment } from '@vegaprotocol/wallet';
+import { TimeInForceMap, useVegaTransactionStore } from '@vegaprotocol/wallet';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
-import { OrderStatus } from '@vegaprotocol/types';
+import type { Exact } from 'type-fest';
+import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
+import * as Schema from '@vegaprotocol/types';
 
 export enum Filter {
   'Open',
@@ -27,15 +26,18 @@ export enum Filter {
 }
 
 const FilterStatusValue = {
-  [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
-  [Filter.Closed]: [
-    OrderStatus.STATUS_CANCELLED,
-    OrderStatus.STATUS_EXPIRED,
-    OrderStatus.STATUS_FILLED,
-    OrderStatus.STATUS_PARTIALLY_FILLED,
-    OrderStatus.STATUS_STOPPED,
+  [Filter.Open]: [
+    Schema.OrderStatus.STATUS_ACTIVE,
+    Schema.OrderStatus.STATUS_PARKED,
   ],
-  [Filter.Rejected]: [OrderStatus.STATUS_REJECTED],
+  [Filter.Closed]: [
+    Schema.OrderStatus.STATUS_CANCELLED,
+    Schema.OrderStatus.STATUS_EXPIRED,
+    Schema.OrderStatus.STATUS_FILLED,
+    Schema.OrderStatus.STATUS_PARTIALLY_FILLED,
+    Schema.OrderStatus.STATUS_STOPPED,
+  ],
+  [Filter.Rejected]: [Schema.OrderStatus.STATUS_REJECTED],
 };
 
 export interface OrderListManagerProps {
@@ -48,6 +50,49 @@ export interface OrderListManagerProps {
   filter?: Filter;
   storeKey?: string;
 }
+
+export interface DealTicketOrderAmendment {
+  marketId: string;
+  orderId: string;
+  reference?: string;
+  timeInForce: Schema.OrderTimeInForce;
+  sizeDelta?: number;
+  price?: string;
+  expiresAt?: string;
+}
+
+export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
+  order: Pick<Order, 'id' | 'timeInForce' | 'size' | 'expiresAt'>,
+  market: Pick<Schema.Market, 'id' | 'decimalPlaces' | 'positionDecimalPlaces'>,
+  price: string,
+  size: string
+): DealTicketOrderAmendment => ({
+  orderId: order.id,
+  marketId: market.id,
+  price: removeDecimal(price, market.decimalPlaces),
+  timeInForce: order.timeInForce,
+  sizeDelta: size
+    ? new BigNumber(removeDecimal(size, market.positionDecimalPlaces))
+        .minus(order.size)
+        .toNumber()
+    : 0,
+  expiresAt: order.expiresAt
+    ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
+    : undefined,
+});
+
+export const convertDealTicketToOrderAmendment = (
+  dealTicketOrder: DealTicketOrderAmendment
+) => {
+  return {
+    ...dealTicketOrder,
+    expiresAt: dealTicketOrder.expiresAt
+      ? BigInt(dealTicketOrder.expiresAt)
+      : null,
+    timeInForce: TimeInForceMap[dealTicketOrder.timeInForce],
+    sizeDelta: BigInt(dealTicketOrder.sizeDelta || 0),
+  } as OrderAmendment;
+};
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
   <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">

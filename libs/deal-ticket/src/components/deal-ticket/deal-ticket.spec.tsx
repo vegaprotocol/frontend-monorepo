@@ -3,7 +3,8 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
-import { DealTicket } from './deal-ticket';
+import type { DealTicketOrderSubmission } from './deal-ticket-container';
+import { DealTicket, normalizeOrderSubmission } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
 import { addDecimal } from '@vegaprotocol/utils';
@@ -334,5 +335,61 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
     );
+  });
+
+  describe('normalizeOrderSubmission', () => {
+    it('sets and formats price only for limit orders', () => {
+      expect(
+        normalizeOrderSubmission(
+          { price: '100' } as unknown as DealTicketOrderSubmission,
+          2,
+          1
+        ).price
+      ).toBeUndefined();
+      expect(
+        normalizeOrderSubmission(
+          {
+            price: '100',
+            type: Schema.OrderType.TYPE_LIMIT,
+          } as unknown as DealTicketOrderSubmission,
+          2,
+          1
+        ).price
+      ).toEqual('10000');
+    });
+
+    it('sets and formats expiresAt only for time in force orders', () => {
+      expect(
+        normalizeOrderSubmission(
+          {
+            expiresAt: '2022-01-01T00:00:00.000Z',
+          } as DealTicketOrderSubmission,
+          2,
+          1
+        ).expiresAt
+      ).toBeUndefined();
+      expect(
+        normalizeOrderSubmission(
+          {
+            expiresAt: '2022-01-01T00:00:00.000Z',
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
+          } as DealTicketOrderSubmission,
+          2,
+          1
+        ).expiresAt
+      ).toEqual('1640995200000000000');
+    });
+
+    it('formats size', () => {
+      expect(
+        normalizeOrderSubmission(
+          {
+            size: '100',
+          } as DealTicketOrderSubmission,
+          2,
+          1
+        ).size
+      ).toEqual('1000');
+    });
   });
 });

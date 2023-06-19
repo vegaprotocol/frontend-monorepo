@@ -9,11 +9,7 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import {
-  normalizeOrderSubmission,
-  useVegaWallet,
-  useVegaWalletDialogStore,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import {
   Checkbox,
   ExternalLink,
@@ -28,7 +24,7 @@ import {
   useEstimatePositionQuery,
   useOpenVolume,
 } from '@vegaprotocol/positions';
-import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
+import { toBigNum, removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
 import { getDerivedPrice } from '../../utils/get-price';
@@ -49,11 +45,33 @@ import {
   useMarketAccountBalance,
   useAccountBalance,
 } from '@vegaprotocol/accounts';
-
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { DealTicketOrderSubmission } from '@vegaprotocol/wallet';
+import type { DealTicketOrderSubmission } from './deal-ticket-container';
+
+export const normalizeOrderSubmission = (
+  order: DealTicketOrderSubmission,
+  decimalPlaces: number,
+  positionDecimalPlaces: number
+): DealTicketOrderSubmission => ({
+  marketId: order.marketId,
+  reference: order.reference,
+  type: order.type,
+  side: order.side,
+  timeInForce: order.timeInForce,
+  price:
+    order.type === OrderType.TYPE_LIMIT && order.price
+      ? removeDecimal(order.price, decimalPlaces)
+      : undefined,
+  size: removeDecimal(order.size, positionDecimalPlaces),
+  expiresAt:
+    order.expiresAt && order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+      ? toNanoSeconds(order.expiresAt)
+      : undefined,
+  postOnly: order.postOnly,
+  reduceOnly: order.reduceOnly,
+});
 
 export interface DealTicketProps {
   market: Market;

@@ -154,21 +154,23 @@ describe('TransferForm', () => {
       ]);
 
       submit();
+
       expect(await screen.findAllByText('Required')).toHaveLength(3);
 
-      // Select a pubkey
-      fireEvent.change(screen.getByLabelText('Vega key'), {
-        target: { value: props.pubKeys[1] },
+      await act(() => {
+        // Select a pubkey
+        fireEvent.change(screen.getByLabelText('Vega key'), {
+          target: { value: props.pubKeys[1] },
+        });
+
+        // Select asset
+        fireEvent.change(
+          // Bypass RichSelect and target hidden native select
+          // eslint-disable-next-line
+          document.querySelector('select[name="asset"]')!,
+          { target: { value: asset.id } }
+        );
       });
-
-      // Select asset
-      fireEvent.change(
-        // Bypass RichSelect and target hidden native select
-        // eslint-disable-next-line
-        document.querySelector('select[name="asset"]')!,
-        { target: { value: asset.id } }
-      );
-
       // assert rich select as updated
       expect(await screen.findByTestId('select-asset')).toHaveTextContent(
         asset.name

@@ -22,7 +22,7 @@ export type OriginalProposalSubmission =
   vegaProtos.commands.v1.ProposalSubmission.ProposalSubmission;
 export type OriginalBatchMarketInstructions =
   vegaProtos.commands.v1.BatchMarketInstructions.BatchMarketInstructions;
-export type Transfer = vegaProtos.commands.v1.Transfer.Transfer;
+export type OriginalTransfer = vegaProtos.commands.v1.Transfer.Transfer;
 
 type ProposalTerms = vegaProtos.ProposalTerms.ProposalTerms;
 type WithdrawExt = vegaProtos.WithdrawExt.WithdrawExt;
@@ -64,6 +64,12 @@ export type BatchMarketInstructions = SetOptional<
   'submissions' | 'amendments' | 'cancellations'
 > & {
   submissions?: OrderSubmission[];
+};
+
+export type Transfer = OriginalTransfer & {
+  oneOff: {
+    deliverOn?: number; // omit for immediate
+  };
 };
 
 export interface LiquidityProvisionSubmission {
