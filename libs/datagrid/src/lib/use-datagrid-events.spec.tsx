@@ -5,7 +5,7 @@ import {
 } from './use-datagrid-events';
 import { AgGridThemed } from './ag-grid/ag-grid-lazy-themed';
 import type { MutableRefObject } from 'react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 
 const gridProps = {
@@ -36,12 +36,18 @@ function setup(...args: Parameters<typeof useDataGridEvents>) {
 }
 
 describe('useDataGridEvents', () => {
+  const originalWarn = console.warn;
+
   beforeAll(() => {
     jest.useFakeTimers();
+
+    // disabling some ag grid warnings that are caused by test setup only
+    console.warn = () => undefined;
   });
 
   afterAll(() => {
     jest.useRealTimers();
+    console.warn = originalWarn;
   });
 
   it('default state is set and callback is called on column or filter event', async () => {
