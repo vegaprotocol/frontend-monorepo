@@ -164,10 +164,9 @@ export const DropdownMenuSeparator = forwardRef<
 /**
  * Container element for submenus
  */
-export const DropdownMenuSub = forwardRef<
-  React.ElementRef<typeof DropdownMenuPrimitive.Sub>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.Sub>
->(({ ...subProps }) => <DropdownMenuPrimitive.Sub {...subProps} />);
+export const DropdownMenuSub = ({ ...subProps }) => (
+  <DropdownMenuPrimitive.Sub {...subProps} />
+);
 
 /**
  * Container within a DropdownMenuSub specifically for the content
@@ -201,10 +200,9 @@ export const DropdownMenuSubTrigger = forwardRef<
  * Portal to ensure menu portions are rendered outwith where they appear in the
  * DOM.
  */
-export const DropdownMenuPortal = forwardRef<
-  React.ElementRef<typeof DropdownMenuPrimitive.Portal>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.Portal>
->(({ ...portalProps }) => <DropdownMenuPrimitive.Portal {...portalProps} />);
+export const DropdownMenuPortal = ({ ...portalProps }) => (
+  <DropdownMenuPrimitive.Portal {...portalProps} />
+);
 
 /**
  * Wraps a regular DropdownMenuItem with copy to clip board functionality

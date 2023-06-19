@@ -180,7 +180,7 @@ describe('TransferForm', () => {
       const amountInput = screen.getByLabelText('Amount');
       const checkbox = screen.getByTestId('include-transfer-fee');
       expect(checkbox).not.toBeChecked();
-      act(() => {
+      await act(() => {
         /* fire events that update state */
         // set valid amount
         fireEvent.change(amountInput, {
@@ -202,7 +202,7 @@ describe('TransferForm', () => {
       expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(
         amount
       );
-
+      expect(props.submitTransfer).toHaveBeenCalledTimes(0);
       submit();
 
       await waitFor(() => {
@@ -233,19 +233,20 @@ describe('TransferForm', () => {
 
       submit();
       expect(await screen.findAllByText('Required')).toHaveLength(3);
+      await act(() => {
+        // Select a pubkey
+        fireEvent.change(screen.getByLabelText('Vega key'), {
+          target: { value: props.pubKeys[1] },
+        });
 
-      // Select a pubkey
-      fireEvent.change(screen.getByLabelText('Vega key'), {
-        target: { value: props.pubKeys[1] },
+        // Select asset
+        fireEvent.change(
+          // Bypass RichSelect and target hidden native select
+          // eslint-disable-next-line
+          document.querySelector('select[name="asset"]')!,
+          { target: { value: asset.id } }
+        );
       });
-
-      // Select asset
-      fireEvent.change(
-        // Bypass RichSelect and target hidden native select
-        // eslint-disable-next-line
-        document.querySelector('select[name="asset"]')!,
-        { target: { value: asset.id } }
-      );
 
       // assert rich select as updated
       expect(await screen.findByTestId('select-asset')).toHaveTextContent(
@@ -258,7 +259,7 @@ describe('TransferForm', () => {
       const amountInput = screen.getByLabelText('Amount');
       const checkbox = screen.getByTestId('include-transfer-fee');
       expect(checkbox).not.toBeChecked();
-      act(() => {
+      await act(() => {
         /* fire events that update state */
         // set valid amount
         fireEvent.change(amountInput, {
