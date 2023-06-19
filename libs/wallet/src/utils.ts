@@ -62,11 +62,12 @@ export const TimeInForceRevertMap: Record<
   return agg;
 }, {} as Record<TimeInForce, Schema.OrderTimeInForce>);
 
-export const TypeMap: Readonly<Record<Schema.OrderType, ProtoOrderType.Type>> = {
-  [Schema.OrderType.TYPE_LIMIT]: vegaProtos.Order.Type.TYPE_LIMIT,
-  [Schema.OrderType.TYPE_MARKET]: vegaProtos.Order.Type.TYPE_MARKET,
-  [Schema.OrderType.TYPE_NETWORK]: vegaProtos.Order.Type.TYPE_NETWORK,
-};
+export const TypeMap: Readonly<Record<Schema.OrderType, ProtoOrderType.Type>> =
+  {
+    [Schema.OrderType.TYPE_LIMIT]: vegaProtos.Order.Type.TYPE_LIMIT,
+    [Schema.OrderType.TYPE_MARKET]: vegaProtos.Order.Type.TYPE_MARKET,
+    [Schema.OrderType.TYPE_NETWORK]: vegaProtos.Order.Type.TYPE_NETWORK,
+  };
 
 export const TypeRevertMap: Record<ProtoOrderType.Type, Schema.OrderType> =
   Object.entries(TypeMap).reduce((agg, item) => {
