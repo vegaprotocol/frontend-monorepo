@@ -780,6 +780,7 @@
   "performancePenalty": "Performance penalty",
   "overstaked": "Overstaked",
   "overstakedPenalty": "Overstaked penalty",
+  "multisigPenalty": "Multisig penalty",
   "homeProposalsIntro": "Decisions on the Vega network are on-chain, with tokenholders creating proposals that other tokenholders vote to approve or reject. Network upgrades are proposed and approved by validators.",
   "homeProposalsButtonText": "Browse, vote, and propose",
   "homeValidatorsIntro": "Vega runs on a delegated proof of stake blockchain, where validators earn fees for validating block transactions. Tokenholders can nominate validators by staking tokens to them.",
