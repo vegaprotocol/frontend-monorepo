@@ -1,5 +1,8 @@
 import classNames from 'classnames';
-import { addDecimalsFormatNumber, formatNumberPercentage } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
 import { getIntentBackground, Intent } from '../../utils/intent';
@@ -183,7 +186,7 @@ export const HealthBar = ({
                   opacity={opacity}
                   fee={fee}
                   prevLevel={prevLevel}
-                  decimals={0}
+                  decimals={decimals}
                   intent={intent}
                   key={'healthbar-segment-' + index}
                 />
