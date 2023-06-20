@@ -5,14 +5,14 @@ export const LiquidationPrice = ({
   marketId,
   openVolume,
   collateralAvailable,
-  decimals,
-  quantum,
+  decimalPlaces,
+  formatDecimals,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
-  decimals: number;
-  quantum: string;
+  decimalPlaces: number;
+  formatDecimals: number;
 }) => {
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
@@ -39,8 +39,22 @@ export const LiquidationPrice = ({
       );
     value =
       bestCase && worstCase && BigInt(bestCase) < BigInt(worstCase)
-        ? formatRange(bestCase, worstCase, decimals, quantum, value)
-        : formatRange(worstCase, bestCase, decimals, quantum, value);
+        ? formatRange(
+            bestCase,
+            worstCase,
+            decimalPlaces,
+            undefined,
+            formatDecimals,
+            value
+          )
+        : formatRange(
+            worstCase,
+            bestCase,
+            decimalPlaces,
+            undefined,
+            formatDecimals,
+            value
+          );
   }
   return <span data-testid="liquidation-price">{value}</span>;
 };
