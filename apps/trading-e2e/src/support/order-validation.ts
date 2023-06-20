@@ -7,10 +7,12 @@ import type {
   OrderSubmissionBody,
   Transaction,
 } from '@vegaprotocol/wallet';
+import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
+import { normalizeOrderSubmission } from '@vegaprotocol/deal-ticket';
 
 export const testOrderSubmission = (
-  order: OrderSubmission,
-  expected?: Partial<OrderSubmission>
+  order: DealTicketOrderSubmission,
+  expected?: Partial<DealTicketOrderSubmission>
 ) => {
   const expectedOrder = {
     ...order,
@@ -18,7 +20,7 @@ export const testOrderSubmission = (
   };
 
   const transaction: OrderSubmissionBody = {
-    orderSubmission: expectedOrder,
+    orderSubmission: normalizeOrderSubmission(expectedOrder, 0, 0),
   };
   vegaWalletTransaction(transaction);
   verifyToast();

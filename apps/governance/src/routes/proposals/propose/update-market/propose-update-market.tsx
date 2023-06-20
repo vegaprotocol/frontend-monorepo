@@ -135,30 +135,25 @@ export const ProposeUpdateMarket = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        change: {
-          updateMarket: {
-            marketId: fields.proposalMarketId,
-            changes: fields.proposalTerms
-              ? { ...JSON.parse(fields.proposalTerms) }
-              : {},
-          },
+        updateMarket: {
+          marketId: fields.proposalMarketId,
+          changes: fields.proposalTerms
+            ? { ...JSON.parse(fields.proposalTerms) }
+            : {},
         },
-        closingTimestamp: BigInt(
-          getClosingTimestamp(
-            fields.proposalVoteDeadline,
-            isVoteDeadlineAtMinimum,
-            isVoteDeadlineAtMaximum
-          )
+
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum,
+          isVoteDeadlineAtMaximum
         ),
-        enactmentTimestamp: BigInt(
-          getEnactmentTimestamp(
-            fields.proposalEnactmentDeadline,
-            isEnactmentDeadlineAtMinimum,
-            isEnactmentDeadlineAtMaximum
-          )
+        enactmentTimestamp: getEnactmentTimestamp(
+          fields.proposalEnactmentDeadline,
+          isEnactmentDeadlineAtMinimum,
+          isEnactmentDeadlineAtMaximum
         ),
       },
-    } as ProposalSubmission;
+    };
   };
 
   const onSubmit = async (fields: UpdateMarketProposalFormFields) => {

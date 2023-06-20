@@ -1,4 +1,4 @@
-import type * as Schema from '@vegaprotocol/types';
+import type { Value as ProtoOrderTypeValue } from '@vegaprotocol/protos/dist/vega/Vote/Value';
 import { createLog } from './logging';
 import { sendVegaTx } from './wallet-client';
 
@@ -6,7 +6,7 @@ const log = createLog('vote');
 
 export async function vote(
   proposalId: string,
-  voteValue: Schema.VoteValue,
+  voteValue: ProtoOrderTypeValue,
   publicKey: string
 ) {
   log(`voting ${voteValue} on ${proposalId}`);
@@ -17,7 +17,7 @@ export async function vote(
   return voteResult.result;
 }
 
-function createVote(proposalId: string, value: Schema.VoteValue) {
+function createVote(proposalId: string, value: ProtoOrderTypeValue) {
   return {
     voteSubmission: {
       value,

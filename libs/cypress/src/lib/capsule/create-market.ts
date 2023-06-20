@@ -14,6 +14,7 @@ import { getMarkets } from './get-markets';
 import { createWalletClient } from './wallet-client';
 import { createEthereumWallet } from './ethereum-wallet';
 import { ASSET_ID_FOR_MARKET } from './contants';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 const log = createLog('create-market');
 
@@ -63,7 +64,7 @@ export async function createMarket(cfg: {
   const proposal = await waitForProposal(proposalId);
 
   // Vote on new market proposal
-  await vote(proposal.id, Schema.VoteValue.VALUE_YES, cfg.vegaPubKey);
+  await vote(proposal.id, vegaProtos.Vote.Value.VALUE_YES, cfg.vegaPubKey);
 
   // Wait for the market to be enacted and go into opening auction
   await waitForEnactment();

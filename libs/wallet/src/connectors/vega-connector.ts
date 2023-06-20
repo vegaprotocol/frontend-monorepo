@@ -1,6 +1,7 @@
 import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { SetOptional } from 'type-fest';
 import type { vega as vegaProtos } from '@vegaprotocol/protos';
+import type { RecurringTransfer } from '@vegaprotocol/protos/dist/vega/commands/v1/RecurringTransfer';
 
 export type OriginalOrderPosition =
   vegaProtos.commands.v1.OrderSubmission.OrderSubmission;
@@ -27,9 +28,217 @@ export type OriginalTransfer = vegaProtos.commands.v1.Transfer.Transfer;
 type ProposalTerms = vegaProtos.ProposalTerms.ProposalTerms;
 type WithdrawExt = vegaProtos.WithdrawExt.WithdrawExt;
 
+interface ProposalNewMarketTerms {
+  newMarket: {
+    changes: {
+      decimalPlaces: string;
+      positionDecimalPlaces: string;
+      lpPriceRange: string;
+      linearSlippageFactor: string;
+      quadraticSlippageFactor: string;
+      instrument: {
+        name: string;
+        code: string;
+        future: {
+          settlementAsset: string;
+          quoteName: string;
+          dataSourceSpecForSettlementData: DataSourceSpec;
+          dataSourceSpecForTradingTermination: DataSourceSpec;
+          dataSourceSpecBinding: DataSourceSpecBinding;
+        };
+      };
+      metadata?: string[];
+      priceMonitoringParameters?: PriceMonitoringParameters;
+      liquidityMonitoringParameters?: {
+        targetStakeParameters: {
+          timeWindow: string;
+          scalingFactor: number;
+        };
+        triggeringRatio: string;
+        auctionExtension: string;
+      };
+      logNormal: LogNormal;
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+interface ProposalUpdateMarketTerms {
+  updateMarket: {
+    marketId: string;
+    changes: {
+      linearSlippageFactor: string;
+      quadraticSlippageFactor: string;
+      instrument: {
+        code: string;
+        future: {
+          quoteName: string;
+          settlementPriceDecimals: number;
+          dataSourceSpecForSettlementPrice: DataSourceSpec;
+          dataSourceSpecForTradingTermination: DataSourceSpec;
+          dataSourceSpecBinding: DataSourceSpecBinding;
+        };
+      };
+      priceMonitoringParameters?: PriceMonitoringParameters;
+      logNormal: LogNormal;
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+interface ProposalNetworkParameterTerms {
+  updateNetworkParameter: {
+    changes: {
+      key: string;
+      value: string;
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+interface ProposalFreeformTerms {
+  newFreeform: Record<string, never>;
+  closingTimestamp: number;
+}
+
+interface ProposalNewAssetTerms {
+  newAsset: {
+    changes: {
+      name: string;
+      symbol: string;
+      decimals: string;
+      quantum: string;
+      erc20: {
+        contractAddress: string;
+        withdrawThreshold: string;
+        lifetimeLimit: string;
+      };
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+  validationTimestamp: number;
+}
+
+interface ProposalUpdateAssetTerms {
+  updateAsset: {
+    assetId: string;
+    changes: {
+      quantum: string;
+      erc20: {
+        withdrawThreshold: string;
+        lifetimeLimit: string;
+      };
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+interface DataSourceSpecBinding {
+  settlementDataProperty: string;
+  tradingTerminationProperty: string;
+}
+
+interface InternalDataSourceSpec {
+  internal: {
+    time: {
+      conditions: Condition[];
+    };
+  };
+}
+
+interface ExternalDataSourceSpec {
+  external: {
+    oracle: {
+      signers: Signer[];
+      filters: Filter[];
+    };
+  };
+}
+
+type DataSourceSpec = InternalDataSourceSpec | ExternalDataSourceSpec;
+
+type Signer =
+  | {
+      ethAddress: {
+        address: string;
+      };
+    }
+  | {
+      pubKey: {
+        key: string;
+      };
+    };
+
+interface Filter {
+  key: DefaultFilterKey | IntegerFilterKey;
+  conditions?: Condition[];
+}
+
+interface DefaultFilterKey {
+  name: string;
+  type: 'TYPE_DECIMAL' | 'TYPE_BOOLEAN' | 'TYPE_TIMESTAMP' | 'TYPE_STRING';
+}
+
+interface IntegerFilterKey {
+  name: string;
+  type: 'TYPE_INTEGER';
+  numberDecimalPlaces: string;
+}
+
+type ConditionOperator =
+  | 'OPERATOR_EQUALS'
+  | 'OPERATOR_GREATER_THAN'
+  | 'OPERATOR_GREATER_THAN_OR_EQUAL'
+  | 'OPERATOR_LESS_THAN'
+  | 'OPERATOR_LESS_THAN_OR_EQUAL';
+
+interface Condition {
+  operator: ConditionOperator;
+  value: string;
+}
+
+interface LogNormal {
+  tau: number;
+  riskAversionParameter: number;
+  params: {
+    mu: number;
+    r: number;
+    sigma: number;
+  };
+}
+
+interface PriceMonitoringParameters {
+  triggers: Trigger[];
+}
+
+interface Trigger {
+  horizon: string;
+  probability: string;
+  auctionExtension: string;
+}
+
+export interface ProposalSubmission {
+  rationale: {
+    description: string;
+    title: string;
+  };
+  terms:
+    | ProposalFreeformTerms
+    | ProposalNewMarketTerms
+    | ProposalUpdateMarketTerms
+    | ProposalNetworkParameterTerms
+    | ProposalNewAssetTerms
+    | ProposalUpdateAssetTerms;
+}
+
 // generated type doesn't match in many places with current implementation. It has to be overwrite here
 // and re-exported for saving consistency.
-export type ProposalSubmission = SetOptional<
+/*export type ProposalSubmission = SetOptional<
   OriginalProposalSubmission,
   'reference' | 'terms'
 > & {
@@ -37,7 +246,8 @@ export type ProposalSubmission = SetOptional<
     ProposalTerms,
     'enactmentTimestamp' | 'validationTimestamp'
   >;
-};
+};*/
+
 export type WithdrawSubmission = Omit<OriginalWithdrawSubmission, 'ext'> &
   WithdrawExt;
 
@@ -66,10 +276,11 @@ export type BatchMarketInstructions = SetOptional<
   submissions?: OrderSubmission[];
 };
 
-export type Transfer = OriginalTransfer & {
-  oneOff: {
+export type Transfer = SetOptional<OriginalTransfer, 'reference' | 'kind'> & {
+  oneOff?: {
     deliverOn?: number; // omit for immediate
   };
+  recurring?: SetOptional<RecurringTransfer, 'dispatchStrategy'>;
 };
 
 export interface LiquidityProvisionSubmission {

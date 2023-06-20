@@ -88,27 +88,22 @@ export const ProposeUpdateAsset = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        change: {
-          updateAsset: fields.proposalTerms
-            ? { ...JSON.parse(fields.proposalTerms) }
-            : {},
-        },
-        closingTimestamp: BigInt(
-          getClosingTimestamp(
-            fields.proposalVoteDeadline,
-            isVoteDeadlineAtMinimum,
-            isVoteDeadlineAtMaximum
-          )
+        updateAsset: fields.proposalTerms
+          ? { ...JSON.parse(fields.proposalTerms) }
+          : {},
+
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum,
+          isVoteDeadlineAtMaximum
         ),
-        enactmentTimestamp: BigInt(
-          getEnactmentTimestamp(
-            fields.proposalEnactmentDeadline,
-            isEnactmentDeadlineAtMinimum,
-            isEnactmentDeadlineAtMaximum
-          )
+        enactmentTimestamp: getEnactmentTimestamp(
+          fields.proposalEnactmentDeadline,
+          isEnactmentDeadlineAtMinimum,
+          isEnactmentDeadlineAtMaximum
         ),
       },
-    } as ProposalSubmission;
+    };
   };
 
   const onSubmit = async (fields: UpdateAssetProposalFormFields) => {

@@ -31,24 +31,24 @@ export const addVegaWalletSubmitLiquidityProvision = () => {
           buys: [
             {
               offset: '10',
-              proportion: '1',
+              proportion: 1,
               reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
             {
               offset: '12',
-              proportion: '2',
+              proportion: 2,
               reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
           ],
           sells: [
             {
               offset: '10',
-              proportion: '2',
+              proportion: 2,
               reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
             {
               offset: '12',
-              proportion: '2',
+              proportion: 2,
               reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_MID,
             },
           ],

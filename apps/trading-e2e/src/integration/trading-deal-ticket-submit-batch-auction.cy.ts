@@ -1,6 +1,7 @@
 import * as Schema from '@vegaprotocol/types';
 import { testOrderSubmission } from '../support/order-validation';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
+import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
 import { createOrder } from '../support/create-order';
 
 const displayTomorrow = () => {
@@ -31,7 +32,7 @@ describe(
 
     it('successfully places limit buy order', () => {
       cy.mockVegaWalletTransaction();
-      const order: OrderSubmission = {
+      const order: DealTicketOrderSubmission = {
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_BUY,
@@ -47,7 +48,7 @@ describe(
 
     it('successfully places limit sell order', () => {
       cy.mockVegaWalletTransaction();
-      const order: OrderSubmission = {
+      const order: DealTicketOrderSubmission = {
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
@@ -63,7 +64,7 @@ describe(
 
     it('successfully places GTT limit buy order', () => {
       cy.mockVegaWalletTransaction();
-      const order: OrderSubmission = {
+      const order: DealTicketOrderSubmission = {
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,

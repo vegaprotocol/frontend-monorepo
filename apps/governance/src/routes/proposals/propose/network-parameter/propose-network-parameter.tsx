@@ -126,27 +126,21 @@ export const ProposeNetworkParameter = () => {
         description: fields.proposalDescription,
       },
       terms: {
-        change: {
-          updateNetworkParameter: {
-            changes: {
-              key: actualNetworkParamKey,
-              value: fields.proposalNetworkParameterValue,
-            },
+        updateNetworkParameter: {
+          changes: {
+            key: actualNetworkParamKey,
+            value: fields.proposalNetworkParameterValue,
           },
         },
-        closingTimestamp: BigInt(
-          getClosingTimestamp(
-            fields.proposalVoteDeadline,
-            isVoteDeadlineAtMinimum,
-            isVoteDeadlineAtMaximum
-          )
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum,
+          isVoteDeadlineAtMaximum
         ),
-        enactmentTimestamp: BigInt(
-          getEnactmentTimestamp(
-            fields.proposalEnactmentDeadline,
-            isEnactmentDeadlineAtMinimum,
-            isEnactmentDeadlineAtMaximum
-          )
+        enactmentTimestamp: getEnactmentTimestamp(
+          fields.proposalEnactmentDeadline,
+          isEnactmentDeadlineAtMinimum,
+          isEnactmentDeadlineAtMaximum
         ),
       },
     } as ProposalSubmission;

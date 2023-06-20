@@ -1,8 +1,8 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { accountsQuery, amendGeneralAccountBalance } from '@vegaprotocol/mock';
-import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
+import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
 
 describe(
   'account validation',
@@ -83,7 +83,7 @@ describe(
       it('must see a prompt to check connected vega wallet to approve transaction', () => {
         // 0003-WTXN-002
         cy.mockVegaWalletTransaction(1000);
-        const order: OrderSubmission = {
+        const order: DealTicketOrderSubmission = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,
@@ -113,7 +113,7 @@ describe(
           });
         });
 
-        const order: OrderSubmission = {
+        const order: DealTicketOrderSubmission = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,
@@ -149,7 +149,7 @@ describe(
           });
         });
 
-        const order: OrderSubmission = {
+        const order: DealTicketOrderSubmission = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,

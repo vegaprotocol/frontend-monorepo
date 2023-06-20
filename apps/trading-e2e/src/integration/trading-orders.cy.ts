@@ -8,6 +8,7 @@ import {
   testOrderCancellation,
   testOrderAmendment,
 } from '../support/order-validation';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
 const orderSize = 'size';
@@ -453,8 +454,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           orderId: orderId,
           marketId: 'market-0',
           price: '10000000',
-          timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-          sizeDelta: 0,
+          timeInForce: vegaProtos.Order.TimeInForce.TIME_IN_FORCE_GTC,
+          sizeDelta: BigInt(0),
         };
         testOrderAmendment(order);
       });

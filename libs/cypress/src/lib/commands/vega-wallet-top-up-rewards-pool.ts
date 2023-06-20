@@ -1,5 +1,6 @@
 import { AccountType } from '@vegaprotocol/types';
 import type { TransferBody } from '@vegaprotocol/wallet';
+import { AccountType as ProtoAccountType } from '@vegaprotocol/protos/dist/vega/AccountType';
 import { createWalletClient, sendVegaTx } from '../capsule/wallet-client';
 
 declare global {
@@ -39,15 +40,15 @@ export function addVegaWalletTopUpRewardsPool() {
 
         const transactionBody: TransferBody = {
           transfer: {
-            fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
-            toAccountType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+            fromAccountType: ProtoAccountType.ACCOUNT_TYPE_GENERAL,
+            toAccountType: ProtoAccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
             to: '0000000000000000000000000000000000000000000000000000000000000000',
             asset: assetAddress,
             amount: '1000000000000000000',
             recurring: {
               factor: '1',
-              startEpoch: transferStartEpoch,
-              endEpoch: transferEndEpoch,
+              startEpoch: BigInt(transferStartEpoch),
+              endEpoch: BigInt(transferEndEpoch),
             },
           },
         };
