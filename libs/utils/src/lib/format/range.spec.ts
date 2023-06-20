@@ -1,6 +1,6 @@
-import { formatRange, formatValue } from './deal-ticket-fee-details';
+import { formatRange, formatValue } from './range';
 
-describe('formatRange, formatValue', () => {
+describe('formatValue', () => {
   it.each([
     { v: 123000, d: 5, o: '1.23' },
     { v: 123000, d: 3, o: '123.00' },
@@ -35,7 +35,8 @@ describe('formatRange, formatValue', () => {
       expect(formatValue(v.toString(), d, q)).toStrictEqual(o);
     }
   );
-
+});
+describe('formatRange', () => {
   it.each([
     {
       min: 123000,

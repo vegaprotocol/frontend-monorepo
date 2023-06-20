@@ -11,11 +11,7 @@ import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import type { EstimateFeesQuery } from '../../hooks/__generated__/EstimateOrder';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
-import {
-  addDecimalsFormatNumber,
-  isNumeric,
-  addDecimalsFormatNumberQuantum,
-} from '@vegaprotocol/utils';
+import { formatRange, formatValue } from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
@@ -31,32 +27,6 @@ import {
 
 const emptyValue = '-';
 
-export const formatValue = (
-  value: string | number | null | undefined,
-  formatDecimals: number,
-  quantum?: string
-): string => {
-  if (!isNumeric(value)) return emptyValue;
-  if (!quantum) return addDecimalsFormatNumber(value, formatDecimals);
-  return addDecimalsFormatNumberQuantum(value, formatDecimals, quantum);
-};
-
-export const formatRange = (
-  min: string | number | null | undefined,
-  max: string | number | null | undefined,
-  formatDecimals: number,
-  quantum?: string
-) => {
-  const minFormatted = formatValue(min, formatDecimals, quantum);
-  const maxFormatted = formatValue(max, formatDecimals, quantum);
-  if (minFormatted !== maxFormatted) {
-    return `${minFormatted} - ${maxFormatted}`;
-  }
-  if (minFormatted !== emptyValue) {
-    return minFormatted;
-  }
-  return maxFormatted;
-};
 export interface DealTicketFeeDetailPros {
   label: string;
   value?: string | null | undefined;
@@ -258,6 +228,9 @@ export const DealTicketFeeDetails = ({
       liquidationEstimateWorstCaseIncludingSellOrders
         ? liquidationEstimateWorstCaseIncludingBuyOrders
         : liquidationEstimateWorstCaseIncludingSellOrders;
+
+    // The estimate order query API gives us the liquidation price in formatted by asset decimals.
+    // We need to calculate it with asset decimals, but display it with market decimals precision until the API changes.
     liquidationPriceEstimate = formatRange(
       (liquidationEstimateBestCase < liquidationEstimateWorstCase
         ? liquidationEstimateBestCase
@@ -267,7 +240,9 @@ export const DealTicketFeeDetails = ({
         ? liquidationEstimateBestCase
         : liquidationEstimateWorstCase
       ).toString(),
-      marketDecimals
+      assetDecimals,
+      undefined,
+      market.decimalPlaces
     );
   }
 
