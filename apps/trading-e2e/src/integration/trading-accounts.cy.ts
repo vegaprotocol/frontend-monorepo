@@ -146,12 +146,17 @@ describe('accounts', { tags: '@smoke' }, () => {
     it('sorting by total', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
-        '1,000.00',
+        '1,000.0002',
         '1,000.01',
         '1,000.00',
         '1,000.00',
       ];
-      const marketsSortedAsc = ['1,000.00', '1,000.00', '1,000.00', '1,000.01'];
+      const marketsSortedAsc = [
+        '1,000.00',
+        '1,000.00',
+        '1,000.01',
+        '1,000.0002',
+      ];
       const marketsSortedDesc = Array.from(marketsSortedAsc).reverse();
 
       checkSorting(
