@@ -173,7 +173,7 @@ jobs:
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: dockerhub-push
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -238,21 +238,31 @@ jobs:
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) }}
         run: |
           if echo ${{ github.ref }} | grep -q main; then
-            fleek_id='f8f2e051-f18e-49e6-b876-0a39369dc0d8'
-          elif echo ${{ github.ref }} | grep -q release/testnet; then
-            fleek_id='79baaeca-1952-4ae7-a256-f668cfc1d68e'
-          fi
-          # display info about app
-          curl -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"query": "query{getSiteById(siteId:\"$fleek_id\"){id latestDeploy{id status}}}"}' \
-            https://api.fleek.co/graphql
+            # display info about app
+            curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{"query": "query{getSiteById(siteId:\"f8f2e051-f18e-49e6-b876-0a39369dc0d8\"){id latestDeploy{id status}}}"}' \
+              https://api.fleek.co/graphql
 
-          # trigger new deployment as base image is always set to vegaprotocol/trading:mainnet
-          curl -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"query": "mutation{triggerDeploy(siteId:\"$fleek_id\"){id status}}"}' \
-            https://api.fleek.co/graphql
+            # trigger new deployment as base image is always set to vegaprotocol/trading:mainnet
+            curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{"query": "mutation{triggerDeploy(siteId:\"f8f2e051-f18e-49e6-b876-0a39369dc0d8\"){id status}}"}' \
+              https://api.fleek.co/graphql
+
+          elif echo ${{ github.ref }} | grep -q release/testnet; then
+            # display info about app
+            curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{"query": "query{getSiteById(siteId:\"79baaeca-1952-4ae7-a256-f668cfc1d68e\"){id latestDeploy{id status}}}"}' \
+              https://api.fleek.co/graphql
+
+            # trigger new deployment as base image is always set to vegaprotocol/trading:mainnet
+            curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{"query": "mutation{triggerDeploy(siteId:\"79baaeca-1952-4ae7-a256-f668cfc1d68e\"){id status}}"}' \
+              https://api.fleek.co/graphql
+          fi
 
       - name: Check out ipfs-redirect
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
@@ -326,9 +336,9 @@ jobs:
           # docs: https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord
           dnsimple_account_id=84895
           dnsimple_zone_name=fairground.wtf
-          dnsimple_record_id=44571545
-          # see: https://dnsimple.com/a/84895/domains/fairground.wtf/records/44571545/edit
-          curl  -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
+          dnsimple_record_id=45300615
+          # see: https://dnsimple.com/a/84895/domains/fairground.wtf/records/45300615/edit
+          curl --fail -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
                 -H 'Accept: application/json' \
                 -H 'Content-Type: application/json' \
                 -X PATCH \
