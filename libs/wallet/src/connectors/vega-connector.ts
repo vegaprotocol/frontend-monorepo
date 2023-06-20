@@ -3,7 +3,7 @@ import type { SetOptional } from 'type-fest';
 import type { vega as vegaProtos } from '@vegaprotocol/protos';
 import type { RecurringTransfer } from '@vegaprotocol/protos/dist/vega/commands/v1/RecurringTransfer';
 
-export type OriginalOrderPosition =
+export type OriginalOrderSubmission =
   vegaProtos.commands.v1.OrderSubmission.OrderSubmission;
 export type OriginalOrderCancellation =
   vegaProtos.commands.v1.OrderCancellation.OrderCancellation;
@@ -239,7 +239,7 @@ export type WithdrawSubmission = Omit<OriginalWithdrawSubmission, 'ext'> &
   WithdrawExt;
 
 export type OrderSubmission = SetOptional<
-  OriginalOrderPosition,
+  OriginalOrderSubmission,
   | 'price'
   | 'expiresAt'
   | 'reference'
