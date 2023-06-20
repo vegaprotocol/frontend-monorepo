@@ -220,21 +220,41 @@ const EnactmentForm = ({
           <span data-testid="enactment-date" className="pl-2">
             {getDateTimeFormat().format(deadlineDates.enactment)}
           </span>
-          {deadlines.enactment === minEnactmentHours && (
-            <span
-              data-testid="enactment-2-mins-extra"
-              className="block mt-4 font-light"
-            >
-              {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
-            </span>
-          )}
-          {deadlines.enactment && deadlines.enactment < deadlines.vote && (
-            <span
-              data-testid="enactment-before-voting-deadline"
-              className="block mt-4 text-vega-pink"
-            >
-              {t('ProposalWillFailIfEnactmentIsEarlierThanVotingDeadline')}
-            </span>
+          {deadlines.enactment && (
+            <>
+              {deadlines.enactment === minEnactmentHours && (
+                <span
+                  data-testid="enactment-2-mins-extra"
+                  className="block mt-4 font-light"
+                >
+                  {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
+                </span>
+              )}
+              {deadlines.enactment < deadlines.vote && (
+                <span
+                  data-testid="enactment-before-voting-deadline"
+                  className="block mt-4 text-vega-pink"
+                >
+                  {t('ProposalWillFailIfEnactmentIsEarlierThanVotingDeadline')}
+                </span>
+              )}
+              {deadlines.enactment < minEnactmentHours && (
+                <span
+                  data-testid="enactment-less-than-min"
+                  className="block mt-4 text-vega-pink"
+                >
+                  {t('ProposalWillFailIfEnactmentIsBelowTheMinimumDeadline')}
+                </span>
+              )}
+              {deadlines.enactment > maxEnactmentHours && (
+                <span
+                  data-testid="enactment-greater-than-max"
+                  className="block mt-4 text-vega-pink"
+                >
+                  {t('ProposalWillFailIfEnactmentIsAboveTheMaximumDeadline')}
+                </span>
+              )}
+            </>
           )}
         </p>
       )}
@@ -500,13 +520,33 @@ export function ProposalFormVoteAndEnactmentDeadline({
             <span data-testid="voting-date" className="pl-2">
               {getDateTimeFormat().format(deadlineDates.vote)}
             </span>
-            {deadlines.vote === minVoteHours && (
-              <span
-                data-testid="voting-2-mins-extra"
-                className="block mt-4 font-light"
-              >
-                {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
-              </span>
+            {deadlines.vote && (
+              <>
+                {deadlines.vote === minVoteHours && (
+                  <span
+                    data-testid="voting-2-mins-extra"
+                    className="block mt-4 font-light"
+                  >
+                    {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
+                  </span>
+                )}
+                {deadlines.vote < minVoteHours && (
+                  <span
+                    data-testid="voting-less-than-min"
+                    className="block mt-4 text-vega-pink"
+                  >
+                    {t('ProposalWillFailIfVotingIsBelowTheMinimumDeadline')}
+                  </span>
+                )}
+                {deadlines.vote > maxVoteHours && (
+                  <span
+                    data-testid="voting-greater-than-max"
+                    className="block mt-4 text-vega-pink"
+                  >
+                    {t('ProposalWillFailIfVotingIsAboveTheMaximumDeadline')}
+                  </span>
+                )}
+              </>
             )}
           </p>
         )}
