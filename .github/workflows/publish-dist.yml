@@ -329,7 +329,7 @@ jobs:
           new_console_url_domain=cf-ipfs.com
           # new_console_url_domain=dweb.link
 
-          new_console_url="https://${new_cid}.${new_console_url_type}.${new_console_url_domain}/"
+          new_console_url="http://${new_cid}.${new_console_url_type}.${new_console_url_domain}/"
           echo "new_console_url=${new_console_url}"
 
           # Update record in DNSimple
