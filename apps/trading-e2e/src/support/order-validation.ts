@@ -3,7 +3,6 @@ import type {
   OrderAmendmentBody,
   OrderCancellation,
   OrderCancellationBody,
-  OrderSubmission,
   OrderSubmissionBody,
   Transaction,
 } from '@vegaprotocol/wallet';

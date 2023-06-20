@@ -1,4 +1,3 @@
-import { AccountType } from '@vegaprotocol/types';
 import type { TransferBody } from '@vegaprotocol/wallet';
 import { AccountType as ProtoAccountType } from '@vegaprotocol/protos/dist/vega/AccountType';
 import { createWalletClient, sendVegaTx } from '../capsule/wallet-client';

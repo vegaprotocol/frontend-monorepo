@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/proposals';
 import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
 import { validateJson } from '@vegaprotocol/utils';
-import type { ProposalSubmission } from '@vegaprotocol/wallet';
 import {
   NetworkParams,
   useNetworkParams,
@@ -91,7 +90,6 @@ export const ProposeUpdateAsset = () => {
         updateAsset: fields.proposalTerms
           ? { ...JSON.parse(fields.proposalTerms) }
           : {},
-
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
           isVoteDeadlineAtMinimum,

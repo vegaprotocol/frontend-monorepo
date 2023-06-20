@@ -29,7 +29,6 @@ import {
   SyntaxHighlighter,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import type { ProposalSubmission } from '@vegaprotocol/wallet';
 import { Heading } from '../../../../components/heading';
 import { ProposalUserAction } from '../../components/shared';
 import { downloadJson } from '../../../../lib/download-json';
@@ -143,7 +142,7 @@ export const ProposeNetworkParameter = () => {
           isEnactmentDeadlineAtMaximum
         ),
       },
-    } as ProposalSubmission;
+    };
   };
 
   const onSubmit = async (fields: NetworkParameterProposalFormFields) => {

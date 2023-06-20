@@ -19,13 +19,10 @@ export type VoteSubmission =
   vegaProtos.commands.v1.VoteSubmission.VoteSubmission;
 export type OriginalWithdrawSubmission =
   vegaProtos.commands.v1.WithdrawSubmission.WithdrawSubmission;
-export type OriginalProposalSubmission =
-  vegaProtos.commands.v1.ProposalSubmission.ProposalSubmission;
 export type OriginalBatchMarketInstructions =
   vegaProtos.commands.v1.BatchMarketInstructions.BatchMarketInstructions;
 export type OriginalTransfer = vegaProtos.commands.v1.Transfer.Transfer;
 
-type ProposalTerms = vegaProtos.ProposalTerms.ProposalTerms;
 type WithdrawExt = vegaProtos.WithdrawExt.WithdrawExt;
 
 interface ProposalNewMarketTerms {
@@ -238,16 +235,6 @@ export interface ProposalSubmission {
 
 // generated type doesn't match in many places with current implementation. It has to be overwrite here
 // and re-exported for saving consistency.
-/*export type ProposalSubmission = SetOptional<
-  OriginalProposalSubmission,
-  'reference' | 'terms'
-> & {
-  terms: SetOptional<
-    ProposalTerms,
-    'enactmentTimestamp' | 'validationTimestamp'
-  >;
-};*/
-
 export type WithdrawSubmission = Omit<OriginalWithdrawSubmission, 'ext'> &
   WithdrawExt;
 

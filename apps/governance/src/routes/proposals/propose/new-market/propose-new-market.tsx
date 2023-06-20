@@ -7,7 +7,6 @@ import {
   doesValueEquateToParam,
 } from '@vegaprotocol/proposals';
 import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
-import type { ProposalSubmission } from '@vegaprotocol/wallet';
 import { validateJson } from '@vegaprotocol/utils';
 import {
   NetworkParams,

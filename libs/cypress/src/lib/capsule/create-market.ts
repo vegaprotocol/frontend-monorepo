@@ -1,4 +1,3 @@
-import * as Schema from '@vegaprotocol/types';
 import { determineId } from '../utils';
 import { setGraphQLEndpoint } from './request';
 import { vote } from './vote';

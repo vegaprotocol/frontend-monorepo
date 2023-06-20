@@ -1,6 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
 import { testOrderSubmission } from '../support/order-validation';
-import type { OrderSubmission } from '@vegaprotocol/wallet';
 import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
 import { createOrder } from '../support/create-order';
 
