@@ -1,7 +1,9 @@
 import { truncateByChars } from '@vegaprotocol/utils';
 import { waitForSpinner } from '../../support/common.functions';
-import { vegaWalletTeardown } from '../../support/wallet-functions';
-import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
+import {
+  vegaWalletFaucetAssetsWithoutCheck,
+  vegaWalletTeardown,
+} from '../../support/wallet-functions';
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
