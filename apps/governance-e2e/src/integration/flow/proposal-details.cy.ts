@@ -14,9 +14,16 @@ import {
   submitUniqueRawProposal,
   voteForProposal,
 } from '../../../../governance-e2e/src/support/governance.functions';
-import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../../../governance-e2e/src/support/staking.functions';
+import {
+  ensureSpecifiedUnstakedTokensAreAssociated,
+  stakingPageAssociateTokens,
+  stakingPageDisassociateAllTokens,
+} from '../../../../governance-e2e/src/support/staking.functions';
 import { ethereumWalletConnect } from '../../../../governance-e2e/src/support/wallet-eth.functions';
-import { vegaWalletSetSpecifiedApprovalAmount } from '../../../../governance-e2e/src/support/wallet-teardown.functions';
+import {
+  switchVegaWalletPubKey,
+  vegaWalletSetSpecifiedApprovalAmount,
+} from '../../support/wallet-functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
 
@@ -44,7 +51,7 @@ describe(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       ethereumWalletConnect();
-      cy.associateTokensToVegaWallet('1');
+      // cy.associateTokensToVegaWallet('1');
     });
 
     beforeEach('visit proposals tab', function () {
@@ -296,6 +303,34 @@ describe(
             .contains(tokensRequiredToAchieveResult)
             .and('be.visible');
         });
+    });
+
+    it('Able to vote for proposal twice by switching public key', function () {
+      ensureSpecifiedUnstakedTokensAreAssociated('1');
+      createRawProposal();
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
+        getProposalFromTitle(rawProposal.rationale.title).within(() =>
+          cy.get(viewProposalButton).click()
+        );
+        voteForProposal('for');
+        cy.contains('You voted: For').should('be.visible');
+        ethereumWalletConnect();
+        switchVegaWalletPubKey();
+        stakingPageAssociateTokens('2');
+        navigateTo(navigation.proposals);
+        getProposalFromTitle(rawProposal.rationale.title).within(() =>
+          cy.get(viewProposalButton).click()
+        );
+        cy.getByTestId('you-voted').should('not.exist');
+        voteForProposal('against');
+        cy.contains('You voted: Against').should('be.visible');
+        switchVegaWalletPubKey();
+        cy.get(proposalVoteProgressForTokens).should('contain.text', '1.00');
+        // Checking vote status for different public keys is displayed correctly
+        cy.contains('You voted: For').should('be.visible');
+      });
+      switchVegaWalletPubKey();
+      stakingPageDisassociateAllTokens();
     });
   }
 );

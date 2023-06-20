@@ -1,6 +1,6 @@
 import { truncateByChars } from '@vegaprotocol/utils';
 import { waitForSpinner } from '../../support/common.functions';
-import { vegaWalletTeardown } from '../../support/wallet-teardown.functions';
+import { vegaWalletTeardown } from '../../support/wallet-functions';
 import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';

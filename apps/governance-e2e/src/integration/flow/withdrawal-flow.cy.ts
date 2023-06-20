@@ -5,7 +5,7 @@ import {
   waitForSpinner,
 } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import { depositAsset } from '../../support/wallet-teardown.functions';
+import { depositAsset } from '../../support/wallet-functions';
 
 const withdraw = 'withdraw';
 const withdrawalForm = 'withdraw-form';
