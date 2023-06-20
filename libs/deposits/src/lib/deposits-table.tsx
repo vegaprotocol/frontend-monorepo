@@ -21,7 +21,6 @@ export const DepositsTable = forwardRef<
   AgGridReact,
   TypedDataAgGrid<DepositFieldsFragment>
 >((props, ref) => {
-  console.log(props);
   return (
     <AgGrid
       ref={ref}
