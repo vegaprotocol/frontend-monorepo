@@ -202,7 +202,6 @@ export const DealTicketFeeDetails = ({
   }
 
   let liquidationPriceEstimate = emptyValue;
-  let liquidationPriceEstimateFormatted;
 
   if (liquidationEstimate) {
     const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
@@ -237,19 +236,9 @@ export const DealTicketFeeDetails = ({
         ? liquidationEstimateBestCase
         : liquidationEstimateWorstCase
       ).toString(),
-      assetDecimals
-    );
-    liquidationPriceEstimateFormatted = formatRange(
-      (liquidationEstimateBestCase < liquidationEstimateWorstCase
-        ? liquidationEstimateBestCase
-        : liquidationEstimateWorstCase
-      ).toString(),
-      (liquidationEstimateBestCase > liquidationEstimateWorstCase
-        ? liquidationEstimateBestCase
-        : liquidationEstimateWorstCase
-      ).toString(),
       assetDecimals,
-      quantum
+      undefined,
+      market.decimalPlaces
     );
   }
 
@@ -346,8 +335,7 @@ export const DealTicketFeeDetails = ({
       {projectedMargin}
       <DealTicketFeeDetail
         label={t('Liquidation price estimate')}
-        value={liquidationPriceEstimate}
-        formattedValue={liquidationPriceEstimateFormatted}
+        formattedValue={liquidationPriceEstimate}
         symbol={assetSymbol}
         labelDescription={LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}
       />

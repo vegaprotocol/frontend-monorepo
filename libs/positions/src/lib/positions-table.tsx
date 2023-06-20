@@ -248,8 +248,8 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                     marketId={data.marketId}
                     openVolume={data.openVolume}
                     collateralAvailable={data.totalBalance}
-                    decimals={data.decimals}
-                    quantum={data.quantum}
+                    decimalPlaces={data.decimals}
+                    formatDecimals={data.marketDecimalPlaces}
                   />
                 );
               },
