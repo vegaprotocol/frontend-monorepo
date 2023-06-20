@@ -6,15 +6,16 @@ import { VoteValue } from '@vegaprotocol/types';
 import type { VoteEventFieldsFragment } from './__generated__/VoteSubsciption';
 import { vega as vegaProtos } from '@vegaprotocol/protos';
 
-export type FinalizedVote = VoteEventFieldsFragment;
+export type FinalizedVote = VoteEventFieldsFragment & { pubKey: string };
 
 export const useVoteSubmit = () => {
   const { pubKey } = useVegaWallet();
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const waitForVoteEvent = useVoteEvent(transaction);
 
-  const [finalizedVote, setFinalizedVote] =
-    useState<VoteEventFieldsFragment | null>(null);
+  const [finalizedVote, setFinalizedVote] = useState<FinalizedVote | null>(
+    null
+  );
 
   const submit = useCallback(
     async (voteValue: VoteValue, proposalId: string | null) => {
@@ -37,7 +38,7 @@ export const useVoteSubmit = () => {
 
         if (res) {
           waitForVoteEvent(proposalId, pubKey, (v) => {
-            setFinalizedVote(v);
+            setFinalizedVote({ ...v, pubKey });
             setComplete();
           });
         }
