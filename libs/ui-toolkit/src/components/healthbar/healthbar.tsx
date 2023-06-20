@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, formatNumberPercentage } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
 import { getIntentBackground, Intent } from '../../utils/intent';
@@ -74,13 +74,17 @@ const Level = ({
     .multipliedBy(100)
     .toNumber();
 
+  const formattedFee = fee
+    ? formatNumberPercentage(new BigNumber(fee).times(100), 2)
+    : '-';
+
   const tooltipContent = (
     <>
       <div className="mt-1.5 inline-flex">
         <Indicator variant={intent} />
       </div>
       <span>
-        {fee}% {t('Fee')}
+        {formattedFee}% {t('Fee')}
       </span>
       <div className="flex  flex-col">
         <span>
