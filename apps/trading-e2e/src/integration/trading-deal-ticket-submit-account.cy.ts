@@ -1,6 +1,10 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { accountsQuery, amendGeneralAccountBalance } from '@vegaprotocol/mock';
+import {
+  accountsQuery,
+  amendGeneralAccountBalance,
+  amendMarginAccountBalance,
+} from '@vegaprotocol/mock';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
 
@@ -12,8 +16,9 @@ describe(
       beforeEach(() => {
         cy.setVegaWallet();
         cy.mockTradingPage();
-        const accounts = accountsQuery();
-        amendGeneralAccountBalance(accounts, 'market-0', '0');
+        let accounts = accountsQuery();
+        accounts = amendMarginAccountBalance(accounts, 'market-0', '1000');
+        accounts = amendGeneralAccountBalance(accounts, 'market-0', '0');
         cy.mockGQL((req) => {
           aliasGQLQuery(req, 'Accounts', accounts);
         });
@@ -23,6 +28,11 @@ describe(
       });
 
       it('should show an error if your balance is zero', () => {
+        const accounts = accountsQuery();
+        amendMarginAccountBalance(accounts, 'market-0', '0');
+        cy.mockGQL((req) => {
+          aliasGQLQuery(req, 'Accounts', accounts);
+        });
         // 7002-SORD-060
         cy.getByTestId('place-order').should('be.enabled');
         // 7002-SORD-003
@@ -40,8 +50,9 @@ describe(
       beforeEach(() => {
         cy.setVegaWallet();
         cy.mockTradingPage();
-        const accounts = accountsQuery();
-        amendGeneralAccountBalance(accounts, 'market-0', '1');
+        let accounts = accountsQuery();
+        accounts = amendMarginAccountBalance(accounts, 'market-0', '1000');
+        accounts = amendGeneralAccountBalance(accounts, 'market-0', '1');
         cy.mockGQL((req) => {
           aliasGQLQuery(req, 'Accounts', accounts);
         });

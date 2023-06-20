@@ -151,19 +151,53 @@ export const amendGeneralAccountBalance = (
   marketId: string,
   balance: string
 ) => {
-  if (accounts.party?.accountsConnection?.edges) {
-    const marginAccount = accounts.party.accountsConnection.edges.find(
-      (edge) => edge?.node.market?.id === marketId
-    );
-    if (marginAccount) {
-      const generalAccount = accounts.party.accountsConnection.edges.find(
-        (edge) =>
-          edge?.node.asset.id === marginAccount.node.asset.id &&
-          !edge?.node.market
-      );
-      if (generalAccount) {
-        generalAccount.node.balance = balance;
-      }
-    }
+  if (!accounts.party?.accountsConnection?.edges) {
+    return accounts;
   }
+  const marginAccount = accounts.party?.accountsConnection?.edges?.find(
+    (edge) => edge?.node.market?.id === marketId
+  );
+  if (marginAccount) {
+    const edges = accounts.party.accountsConnection.edges.map((edge) =>
+      edge?.node.asset.id === marginAccount.node.asset.id && !edge?.node.market
+        ? { ...edge, node: { ...edge.node, balance } }
+        : edge
+    );
+    return {
+      ...accounts,
+      party: {
+        ...accounts.party,
+        accountsConnection: {
+          ...accounts.party.accountsConnection,
+          edges,
+        },
+      },
+    };
+  }
+  return accounts;
+};
+
+export const amendMarginAccountBalance = (
+  accounts: AccountsQuery,
+  marketId: string,
+  balance: string
+) => {
+  if (!accounts.party?.accountsConnection?.edges) {
+    return accounts;
+  }
+  const edges = accounts.party?.accountsConnection?.edges?.map((edge) =>
+    edge?.node.market?.id === marketId
+      ? { ...edge, node: { ...edge?.node, balance } }
+      : edge
+  );
+  return {
+    ...accounts,
+    party: {
+      ...accounts.party,
+      accountsConnection: {
+        ...accounts.party.accountsConnection,
+        edges,
+      },
+    },
+  };
 };
