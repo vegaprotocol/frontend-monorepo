@@ -8,6 +8,7 @@ import {
 } from '../../support/common.functions';
 import {
   getDownloadedProposalJsonPath,
+  getProposalFromTitle,
   submitUniqueRawProposal,
 } from '../../support/governance.functions';
 import {
@@ -210,6 +211,7 @@ context(
       'Able to submit valid new market proposal',
       { tags: '@smoke' },
       function () {
+        const proposalTitle = 'Test new market proposal';
         goToMakeNewProposal(governanceProposalType.NEW_MARKET);
         cy.get(newProposalTitle).type('Test new market proposal');
         cy.get(newProposalDescription).type('E2E test for proposals');
@@ -231,6 +233,23 @@ context(
               submitUniqueRawProposal({ proposalBody: filePath }); // 3003-PMAN-003
             });
           });
+        navigateTo(navigation.proposals);
+        getProposalFromTitle(proposalTitle).within(() =>
+          cy.getByTestId('view-proposal-btn').click()
+        );
+        cy.getByTestId('proposal-market-data').within(() => {
+          cy.getByTestId('proposal-market-data-toggle').click();
+          cy.contains('Key details').click();
+          getMarketProposalDetailsFromTable('Name').should(
+            'have.text',
+            'Token test market'
+          );
+          cy.contains('Settlement asset').click();
+          // Settlement asset symbol
+          cy.getByTestId('3_value').should('have.text', 'fBTC');
+          cy.contains('Oracle').click();
+          cy.getByTestId('oracle-spec-links').should('have.attr', 'href');
+        });
       }
     );
 
@@ -604,6 +623,14 @@ context(
           delay: 2,
         });
       });
+    }
+
+    function getMarketProposalDetailsFromTable(heading: string) {
+      return cy
+        .getByTestId('key-value-table-row')
+        .contains(heading)
+        .parent()
+        .siblings();
     }
   }
 );
