@@ -11,7 +11,7 @@ import {
   goToMakeNewProposal,
   governanceProposalType,
 } from '../../support/governance.functions';
-import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
+import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-functions';
 
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey2');
 const vegaPubkeyTruncated = Cypress.env('vegaWalletPublicKey2Short');

@@ -14,7 +14,7 @@ import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
   depositAsset,
   vegaWalletTeardown,
-} from '../../support/wallet-teardown.functions';
+} from '../../support/wallet-functions';
 
 const vegaAssetAddress = '0x67175Da1D5e966e40D11c4B2519392B2058373de';
 const vegaWalletUnstakedBalance =
