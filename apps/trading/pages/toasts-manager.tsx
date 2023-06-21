@@ -12,7 +12,7 @@ export const ToastsManager = () => {
   useEthereumTransactionToasts();
   useEthereumWithdrawApprovalsToasts();
   useReadyToWithdrawalToasts({
-    withdrawalsLink: `${Routes.PORTFOLIO}#withdrawals`,
+    withdrawalsLink: `${Routes.PORTFOLIO}`,
   });
 
   const toasts = useToasts((store) => store.toasts);

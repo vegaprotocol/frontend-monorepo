@@ -28,7 +28,7 @@ type UseReadyToWithdrawalToastsOptions = {
   withdrawalsLink: string;
 };
 
-type TimestampedWithdrawals = {
+export type TimestampedWithdrawals = {
   data: WithdrawalFieldsFragment;
   timestamp: number | undefined;
 }[];
@@ -124,6 +124,7 @@ export const useReadyToWithdrawalToasts = ({
   const { delayed, ready } = useIncompleteWithdrawals();
 
   const onClose = useCallback(() => {
+    // hides toast instead of removing is so it won't be re-added on rerender
     updateToast(ON_APP_START_TOAST_ID, { hidden: true });
   }, [updateToast]);
 
@@ -166,10 +167,8 @@ export const useReadyToWithdrawalToasts = ({
               <SingleReadyToWithdrawToastContent withdrawal={withdrawal.data} />
             ),
             onClose: () => {
-              // updateToast(id, { hidden: true });
-              removeToast(id);
+              updateToast(id, { hidden: true });
             },
-            // closeAfter: CLOSE_AFTER,
           };
           if (!hasToast(id)) setToast(toast);
         }
@@ -186,6 +185,7 @@ export const useReadyToWithdrawalToasts = ({
     ready,
     removeToast,
     setToast,
+    updateToast,
     withdrawalsLink,
   ]);
 };

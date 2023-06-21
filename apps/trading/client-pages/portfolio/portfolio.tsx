@@ -23,6 +23,7 @@ import {
   ResizableGrid,
   ResizableGridPanel,
 } from '../../components/resizable-grid';
+import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -32,6 +33,8 @@ export const Portfolio = () => {
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
+
+  const { ready } = useIncompleteWithdrawals();
 
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler(true);
@@ -100,7 +103,13 @@ export const Portfolio = () => {
                   <DepositsContainer />
                 </VegaWalletContainer>
               </Tab>
-              <Tab id="withdrawals" name={t('Withdrawals')}>
+              <Tab
+                id="withdrawals"
+                name={t('Withdrawals')}
+                indicator={
+                  ready.length > 0 ? ready.length.toString() : undefined
+                }
+              >
                 <WithdrawalsContainer />
               </Tab>
             </Tabs>
