@@ -128,6 +128,7 @@ describe('accounts', { tags: '@smoke' }, () => {
           cy.wrap(btn).click();
         });
       }
+      cy.contains('Loading...').should('not.exist');
     });
     // 7001-COLL-010
     it('sorting by asset', () => {
@@ -149,11 +150,11 @@ describe('accounts', { tags: '@smoke' }, () => {
         '1,000.00002',
         '1,000.01',
         '1,000.00',
-        '1,000.00',
+        '1,000.00001',
       ];
       const marketsSortedAsc = [
         '1,000.00',
-        '1,000.00',
+        '1,000.00001',
         '1,000.00002',
         '1,000.01',
       ];
@@ -193,19 +194,24 @@ describe('accounts', { tags: '@smoke' }, () => {
       );
     });
 
-    it('sorting by total', () => {
+    it('sorting by available', () => {
       cy.getByTestId('Collateral').click();
       const marketsSortedDefault = [
+        '1,000.00002',
         '1,000.00',
-        '1,000.01',
         '1,000.00',
-        '1,000.00',
+        '1,000.00001',
       ];
-      const marketsSortedAsc = ['1,000.00', '1,000.00', '1,000.00', '1,000.01'];
+      const marketsSortedAsc = [
+        '1,000.00',
+        '1,000.00',
+        '1,000.00001',
+        '1,000.00002',
+      ];
       const marketsSortedDesc = Array.from(marketsSortedAsc).reverse();
 
       checkSorting(
-        'total',
+        'available',
         marketsSortedDefault,
         marketsSortedAsc,
         marketsSortedDesc
