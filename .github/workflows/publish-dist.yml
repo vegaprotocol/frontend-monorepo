@@ -265,7 +265,7 @@ jobs:
           fi
 
       - name: Check out ipfs-redirect
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'testnet') ) }}
         uses: actions/checkout@v3
         with:
           repository: 'vegaprotocol/ipfs-redirect'
@@ -273,11 +273,12 @@ jobs:
           fetch-depth: '0'
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
-      - name: Update console.vega.xyz DNS to redirect to the new console
+      - name: Update interstitial page to point to the new console
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'testnet') ) }}
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
         run: |
+          # set CID
           curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
           tar -xzf kubo.tgz
           export PATH="$PATH:$PWD/kubo"
@@ -285,19 +286,16 @@ jobs:
           new_hash=$(cat ${{ matrix.app }}-ipfs-hash)
           new_cid=$(ipfs cid format -v 1 -b base32 $new_hash)
 
-          ls -al ipfs-redirect
-
           (
             cd ipfs-redirect
 
+            # configure git
             git status
             cat .git/config
             git config --global user.email "vega-ci-bot@vega.xyz"
             git config --global user.name "vega-ci-bot"
 
-            branch_name="update-hash-${{ github.ref }}"
-            git checkout -b "$branch_name"
-
+            # update CID files
             if echo ${{ github.ref }} | grep -q main; then
               echo $new_hash > cidv0-mainnet.txt
               echo $new_cid > cidv1-mainnet.txt
@@ -308,12 +306,8 @@ jobs:
               git add cidv0-fairground.txt cidv1-fairground.txt
             fi
 
+            # create commit
             commit_msg="Automated hash update from ${{ github.ref }}"
             git commit -m "$commit_msg"
-            git push -u origin "$branch_name"
-            pr_url="$(gh pr create --title "${commit_msg}" --body 'automated pull request to update CIDs')"
-            echo $pr_url
-            # once auto merge get's enabled on documentation repo let's do follow up
-            sleep 5
-            gh pr merge "${pr_url}" --delete-branch --squash --admin
+            git push -u origin "main"
           )
