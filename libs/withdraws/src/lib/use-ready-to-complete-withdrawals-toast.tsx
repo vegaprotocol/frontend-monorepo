@@ -8,7 +8,7 @@ import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { Button, Intent, Panel, ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { useNavigate } from 'react-router-dom';
@@ -29,20 +29,19 @@ type UseReadyToWithdrawalToastsOptions = {
   withdrawalsLink: string;
 };
 
-export const useReadyToWithdrawalToasts = ({
-  withdrawalsLink,
-}: UseReadyToWithdrawalToastsOptions) => {
-  const [setToast, hasToast, updateToast, removeToast] = useToasts((store) => [
-    store.setToast,
-    store.hasToast,
-    store.update,
-    store.remove,
-  ]);
+type TimestampedWithdrawals = {
+  data: WithdrawalFieldsFragment;
+  timestamp: number | undefined;
+}[];
+
+export const useIncompleteWithdrawals = () => {
+  const [ready, setReady] = useState<TimestampedWithdrawals>([]);
+  const [delayed, setDelayed] = useState<TimestampedWithdrawals>([]);
+
   const [thresholds, delay] = useWithdrawDataStore((state) => [
     state.thresholds,
     state.delay,
   ]);
-
   const { pubKey, isReadOnly } = useVegaWallet();
   const { data } = useDataProvider({
     dataProvider: withdrawalProvider,
@@ -50,12 +49,20 @@ export const useReadyToWithdrawalToasts = ({
     skip: !pubKey || isReadOnly,
   });
   const getDelay = useGetWithdrawDelay(); // seconds
-  const incompleteWithdrawals = data?.filter((w) => !w.txHash);
-
-  const assets = uniqBy(
-    incompleteWithdrawals?.map((w) => w.asset),
-    (a) => addr(a)
+  const incompleteWithdrawals = useMemo(
+    () => data?.filter((w) => !w.txHash),
+    [data]
   );
+
+  const assets = useMemo(
+    () =>
+      uniqBy(
+        incompleteWithdrawals?.map((w) => w.asset),
+        (a) => addr(a)
+      ),
+    [incompleteWithdrawals]
+  );
+
   const getThreshold = useGetWithdrawThreshold();
 
   const checkWithdraws = useCallback(async () => {
@@ -68,10 +75,6 @@ export const useReadyToWithdrawalToasts = ({
     ]);
   }, [assets, getDelay, getThreshold]);
 
-  const onClose = useCallback(() => {
-    updateToast(ON_APP_START_TOAST_ID, { hidden: true });
-  }, [updateToast]);
-
   useEffect(() => {
     checkWithdraws().then((retrieved) => {
       if (!retrieved || delay.value === undefined || !incompleteWithdrawals) {
@@ -79,7 +82,7 @@ export const useReadyToWithdrawalToasts = ({
       }
       const timestamped = incompleteWithdrawals.map((w) => {
         let timestamp = undefined;
-        const threshold = thresholds[addr(w.asset)]; // { value: new BigNumber(0) };
+        const threshold = thresholds[addr(w.asset)];
         if (threshold) {
           timestamp = 0;
           if (new BigNumber(w.amount).isGreaterThan(threshold.value)) {
@@ -97,75 +100,93 @@ export const useReadyToWithdrawalToasts = ({
         (item) => item.timestamp != null && Date.now() < item.timestamp
       );
 
-      const readyToComplete = timestamped?.filter(
+      const ready = timestamped?.filter(
         (item) => item.timestamp != null && Date.now() >= item.timestamp
       );
 
-      // set on app start toast if there are withdrawals ready to complete
-      if (readyToComplete && readyToComplete.length > 0) {
-        // set only once, unless removed
-        if (!hasToast(ON_APP_START_TOAST_ID)) {
-          const appStartToast: Toast = {
-            id: ON_APP_START_TOAST_ID,
-            intent: Intent.Warning,
-            content:
-              readyToComplete.length === 1 ? (
-                <SingleReadyToWithdrawToastContent
-                  withdrawal={readyToComplete[0].data}
-                />
-              ) : (
-                <MultipleReadyToWithdrawToastContent
-                  count={readyToComplete.length}
-                  withdrawalsLink={withdrawalsLink}
-                />
-              ),
-            onClose,
-          };
-          setToast(appStartToast);
-        }
-      }
-
-      // set toast whenever a withdrawal delay is passed
-      let interval: NodeJS.Timer;
-      if (delayed && delayed.length > 0) {
-        interval = setInterval(() => {
-          const ready = delayed.filter(
-            (item) => item.timestamp && Date.now() >= item.timestamp
-          );
-          for (const withdrawal of ready) {
-            const id = `complete-withdrawal-${withdrawal.data.id}`;
-            const toast: Toast = {
-              id,
-              intent: Intent.Warning,
-              content: (
-                <SingleReadyToWithdrawToastContent
-                  withdrawal={withdrawal.data}
-                />
-              ),
-              onClose: () => {
-                // updateToast(id, { hidden: true });
-                removeToast(id);
-              },
-              // closeAfter: CLOSE_AFTER,
-            };
-            if (!hasToast(id)) setToast(toast);
-          }
-        }, CHECK_INTERVAL);
-      }
-
-      return () => {
-        clearInterval(interval);
-      };
+      setReady(ready);
+      setDelayed(delayed);
     });
+  }, [checkWithdraws, delay.value, incompleteWithdrawals, thresholds]);
+
+  return { ready, delayed };
+};
+
+export const useReadyToWithdrawalToasts = ({
+  withdrawalsLink,
+}: UseReadyToWithdrawalToastsOptions) => {
+  const [setToast, hasToast, updateToast, removeToast] = useToasts((store) => [
+    store.setToast,
+    store.hasToast,
+    store.update,
+    store.remove,
+  ]);
+
+  const { delayed, ready } = useIncompleteWithdrawals();
+
+  const onClose = useCallback(() => {
+    updateToast(ON_APP_START_TOAST_ID, { hidden: true });
+  }, [updateToast]);
+
+  useEffect(() => {
+    // set on app start toast if there are withdrawals ready to complete
+    if (ready.length > 0) {
+      // set only once, unless removed
+      if (!hasToast(ON_APP_START_TOAST_ID)) {
+        const appStartToast: Toast = {
+          id: ON_APP_START_TOAST_ID,
+          intent: Intent.Warning,
+          content:
+            ready.length === 1 ? (
+              <SingleReadyToWithdrawToastContent withdrawal={ready[0].data} />
+            ) : (
+              <MultipleReadyToWithdrawToastContent
+                count={ready.length}
+                withdrawalsLink={withdrawalsLink}
+              />
+            ),
+          onClose,
+        };
+        setToast(appStartToast);
+      }
+    }
+
+    // set toast whenever a withdrawal delay is passed
+    let interval: NodeJS.Timer;
+    if (delayed.length > 0) {
+      interval = setInterval(() => {
+        const ready = delayed.filter(
+          (item) => item.timestamp && Date.now() >= item.timestamp
+        );
+        for (const withdrawal of ready) {
+          const id = `complete-withdrawal-${withdrawal.data.id}`;
+          const toast: Toast = {
+            id,
+            intent: Intent.Warning,
+            content: (
+              <SingleReadyToWithdrawToastContent withdrawal={withdrawal.data} />
+            ),
+            onClose: () => {
+              // updateToast(id, { hidden: true });
+              removeToast(id);
+            },
+            // closeAfter: CLOSE_AFTER,
+          };
+          if (!hasToast(id)) setToast(toast);
+        }
+      }, CHECK_INTERVAL);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [
-    checkWithdraws,
-    delay,
+    delayed,
     hasToast,
-    incompleteWithdrawals,
     onClose,
+    ready,
     removeToast,
     setToast,
-    thresholds,
     withdrawalsLink,
   ]);
 };

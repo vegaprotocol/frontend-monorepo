@@ -11,13 +11,20 @@ export const useBridgeContract = (allowDefaultProvider = false) => {
   const { config } = useEthereumConfig();
   const logger = localLoggerFactory({ application: 'web3' });
 
-  let provider: typeof activeProvider | typeof defaultProvider = activeProvider;
-  let signer = activeProvider?.getSigner();
-  if (!activeProvider && allowDefaultProvider) {
-    logger.info('bridge contract will use default provider');
-    provider = defaultProvider;
-    signer = undefined;
-  }
+  const provider = useMemo(() => {
+    if (!activeProvider && allowDefaultProvider) {
+      logger.info('will use default web3 provider');
+      return defaultProvider;
+    }
+    return activeProvider;
+  }, [activeProvider, allowDefaultProvider, defaultProvider, logger]);
+
+  // this has to be memoized, otherwise it ticks like crazy
+  const signer = useMemo(() => {
+    return !activeProvider && allowDefaultProvider
+      ? undefined
+      : activeProvider?.getSigner();
+  }, [activeProvider, allowDefaultProvider]);
 
   const contract = useMemo(() => {
     if (!provider || !config) {

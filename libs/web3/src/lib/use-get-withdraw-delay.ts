@@ -23,7 +23,6 @@ export const useGetWithdrawDelay = () => {
   const logger = localLoggerFactory({ application: 'web3' });
 
   const getDelay = useCallback(async () => {
-    // return cached value if still valid
     if (delay && Date.now() - delay.ts <= MAX_AGE) {
       return delay.value;
     }
