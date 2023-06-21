@@ -6,7 +6,7 @@ import {
   amendMarginAccountBalance,
 } from '@vegaprotocol/mock';
 import { createOrder } from '../support/create-order';
-import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
+import type { OrderObj } from '@vegaprotocol/orders';
 
 describe(
   'account validation',
@@ -94,7 +94,7 @@ describe(
       it('must see a prompt to check connected vega wallet to approve transaction', () => {
         // 0003-WTXN-002
         cy.mockVegaWalletTransaction(1000);
-        const order: DealTicketOrderSubmission = {
+        const order: Omit<OrderObj, 'persist'> = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,
@@ -124,7 +124,7 @@ describe(
           });
         });
 
-        const order: DealTicketOrderSubmission = {
+        const order: Omit<OrderObj, 'persist'> = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,
@@ -160,7 +160,7 @@ describe(
           });
         });
 
-        const order: DealTicketOrderSubmission = {
+        const order: Omit<OrderObj, 'persist'> = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,

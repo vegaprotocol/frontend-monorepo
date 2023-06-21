@@ -342,7 +342,7 @@ describe('DealTicket', () => {
       expect(
         normalizeOrderSubmission({ price: '100' } as unknown as OrderObj, 2, 1)
           .price
-      ).toBeUndefined();
+      ).toEqual('');
       expect(
         normalizeOrderSubmission(
           {
@@ -364,7 +364,7 @@ describe('DealTicket', () => {
           2,
           1
         ).expiresAt
-      ).toBeUndefined();
+      ).toEqual(BigInt(0));
       expect(
         normalizeOrderSubmission(
           {

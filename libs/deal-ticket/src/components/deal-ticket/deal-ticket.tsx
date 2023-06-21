@@ -1,5 +1,5 @@
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/i18n';
 import { memo, useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
@@ -32,6 +32,7 @@ import {
   useOpenVolume,
 } from '@vegaprotocol/positions';
 import { toBigNum, removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import type { OrderObj } from '@vegaprotocol/orders';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
 import { getDerivedPrice } from '../../utils/get-price';
@@ -52,12 +53,12 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
-import type { DealTicketOrderSubmission } from '../../hooks/use-order-form';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 export const normalizeOrderSubmission = (
-  order: DealTicketOrderSubmission,
+  order: Omit<OrderObj, 'persist'>,
   decimalPlaces: number,
   positionDecimalPlaces: number
 ): OrderSubmission => ({
@@ -68,14 +69,20 @@ export const normalizeOrderSubmission = (
   price:
     order.type === OrderType.TYPE_LIMIT && order.price
       ? removeDecimal(order.price, decimalPlaces)
-      : undefined,
+      : '',
   size: BigInt(removeDecimal(order.size, positionDecimalPlaces)),
-  expiresAt:
+  expiresAt: BigInt(
     order.expiresAt && order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
-      ? BigInt(toNanoSeconds(order.expiresAt))
-      : undefined,
-  postOnly: order.postOnly,
-  reduceOnly: order.reduceOnly,
+      ? toNanoSeconds(order.expiresAt)
+      : 0
+  ),
+  postOnly: Boolean(order.postOnly),
+  reduceOnly: Boolean(order.reduceOnly),
+  peggedOrder: {
+    offset: '',
+    reference: vegaProtos.PeggedReference.PEGGED_REFERENCE_UNSPECIFIED,
+  },
+  reference: '',
 });
 
 export interface DealTicketProps {
@@ -159,9 +166,7 @@ export const DealTicket = ({
     asset.decimals,
   ]);
 
-  const feeEstimate = useEstimateFees(
-    normalizedOrder && { ...normalizedOrder, price }
-  );
+  const feeEstimate = useEstimateFees(order && { ...order, price });
   const { data: activeOrders } = useDataProvider({
     dataProvider: activeOrdersProvider,
     variables: { partyId: pubKey || '' },
@@ -269,7 +274,7 @@ export const DealTicket = ({
   }, [order]);
 
   const onSubmit = useCallback(
-    (order: DealTicketOrderSubmission) => {
+    (order: Omit<OrderObj, 'persist'>) => {
       const now = new Date().getTime();
       if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
         return;

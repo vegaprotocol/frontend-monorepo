@@ -6,12 +6,12 @@ import type {
   OrderSubmissionBody,
   Transaction,
 } from '@vegaprotocol/wallet';
-import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
 import { normalizeOrderSubmission } from '@vegaprotocol/deal-ticket';
+import type { OrderObj } from '@vegaprotocol/orders';
 
 export const testOrderSubmission = (
-  order: DealTicketOrderSubmission,
-  expected?: Partial<DealTicketOrderSubmission>
+  order: Omit<OrderObj, 'persist'>,
+  expected?: Partial<OrderObj>
 ) => {
   const expectedOrder = {
     ...order,

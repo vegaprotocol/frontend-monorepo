@@ -1,11 +1,11 @@
-import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
+import type { OrderObj } from '@vegaprotocol/orders';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
 const orderTIFDropDown = 'order-tif';
 const placeOrderBtn = 'place-order';
 
-export const createOrder = (order: DealTicketOrderSubmission): void => {
+export const createOrder = (order: Omit<OrderObj, 'persist'>): void => {
   cy.log('Placing order', order);
   const { type, side, size, price, timeInForce, expiresAt } = order;
 
