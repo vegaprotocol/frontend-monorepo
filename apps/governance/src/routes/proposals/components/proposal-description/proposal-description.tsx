@@ -1,9 +1,9 @@
 import ReactMarkdown from 'react-markdown';
-import classnames from 'classnames';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Icon, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
+import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
 
 export const ProposalDescription = ({
   description,
@@ -12,9 +12,6 @@ export const ProposalDescription = ({
 }) => {
   const { t } = useTranslation();
   const [showDescription, setShowDescription] = useState(false);
-  const showDescriptionIconClasses = classnames('mb-4', {
-    'rotate-180': showDescription,
-  });
 
   return (
     <section data-testid="proposal-description">
@@ -24,7 +21,7 @@ export const ProposalDescription = ({
       >
         <div className="flex items-center gap-3">
           <SubHeading title={t('proposalDescription')} />
-          <div className={showDescriptionIconClasses}>
+          <div className={collapsibleToggleStyles(showDescription)}>
             <Icon name="chevron-down" size={8} />
           </div>
         </div>

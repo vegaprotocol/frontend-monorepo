@@ -195,7 +195,7 @@ export const DealTicket = ({
     }
 
     const hasNoBalance =
-      !generalAccountBalance || !BigInt(generalAccountBalance);
+      !BigInt(generalAccountBalance) && !BigInt(marginAccountBalance);
     if (hasNoBalance) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
@@ -219,6 +219,7 @@ export const DealTicket = ({
     marketState,
     marketTradingMode,
     generalAccountBalance,
+    marginAccountBalance,
     pubKey,
     setError,
     clearErrors,

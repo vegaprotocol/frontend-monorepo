@@ -16,7 +16,7 @@ import {
 } from '../../support/proposal.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
+import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const closedProposals = '[data-testid="closed-proposals"]';

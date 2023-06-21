@@ -25,7 +25,7 @@ import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
   vegaWalletSetSpecifiedApprovalAmount,
   vegaWalletTeardown,
-} from '../../support/wallet-teardown.functions';
+} from '../../support/wallet-functions';
 const stakeValidatorListTotalStake = 'total-stake';
 const stakeValidatorListTotalShare = 'total-stake-share';
 const stakeValidatorListStakePercentage = 'stake-percentage';

@@ -7,6 +7,8 @@ import { ProposalNotFound } from '../components/proposal-not-found';
 import { useProposalQuery } from './__generated__/Proposal';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { ENV } from '../../../config';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
@@ -20,15 +22,36 @@ export const ProposalContainer = () => {
     skip: !params.proposalId,
   });
 
+  const {
+    data: newMarketData,
+    loading: newMarketLoading,
+    error: newMarketError,
+  } = useDataProvider({
+    dataProvider: marketInfoWithDataProvider,
+    skipUpdates: true,
+    variables: {
+      marketId: data?.proposal?.id || '',
+      skip: !data?.proposal?.id,
+    },
+  });
+
   useEffect(() => {
-    const interval = setInterval(refetch, 1000);
+    const interval = setInterval(refetch, 2000);
     return () => clearInterval(interval);
   }, [refetch]);
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading || newMarketLoading}
+      error={error || newMarketError}
+      data={newMarketData ? { newMarketData, data } : data}
+    >
       {data?.proposal ? (
-        <Proposal proposal={data.proposal} restData={restData} />
+        <Proposal
+          proposal={data.proposal}
+          restData={restData}
+          newMarketData={newMarketData}
+        />
       ) : (
         <ProposalNotFound />
       )}

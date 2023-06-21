@@ -1,5 +1,5 @@
 import { closeDialog } from './common.functions';
-import { vegaWalletTeardown } from './wallet-teardown.functions';
+import { vegaWalletTeardown } from './wallet-functions';
 
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
 const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
