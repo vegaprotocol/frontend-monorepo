@@ -34,7 +34,6 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
-import { ENV } from '../lib/config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
@@ -155,10 +154,11 @@ const PartyData = () => {
 };
 
 const MaybeConnectEagerly = () => {
+  const { VEGA_ENV, SENTRY_DSN } = useEnvironment();
   useVegaEagerConnect(Connectors);
   const [isTelemetryApproved] = useTelemetryApproval();
   useEthereumEagerConnect(
-    isTelemetryApproved ? { dsn: ENV.dsn, env: ENV.envName } : {}
+    isTelemetryApproved ? { dsn: SENTRY_DSN, env: VEGA_ENV } : {}
   );
 
   const { pubKey, connect } = useVegaWallet();
