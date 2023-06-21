@@ -18,6 +18,6 @@ export const addVegaWalletSubmitProposal = () => {
     const token = Cypress.env('VEGA_WALLET_API_TOKEN');
 
     createWalletClient(vegaWalletUrl, token);
-    submitProposal(proposalTx);
+    cy.wrap(submitProposal(proposalTx));
   });
 };
