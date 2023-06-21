@@ -34,6 +34,7 @@ export interface Position {
   averageEntryPrice: string;
   currentLeverage: number | undefined;
   decimals: number;
+  quantum: string;
   lossSocializationAmount: string;
   marginAccountBalance: string;
   marketDecimalPlaces: number;
@@ -73,6 +74,7 @@ export const getMetrics = (
       decimals,
       id: assetId,
       symbol: assetSymbol,
+      quantum,
     } = market.tradableInstrument.instrument.product.settlementAsset;
     const generalAccount = accounts?.find(
       (account) =>
@@ -114,6 +116,7 @@ export const getMetrics = (
       averageEntryPrice: position.averageEntryPrice,
       currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
       decimals,
+      quantum,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       marginAccountBalance: marginAccount?.balance ?? '0',
       marketDecimalPlaces,

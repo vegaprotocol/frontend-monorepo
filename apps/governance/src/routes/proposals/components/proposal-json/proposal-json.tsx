@@ -1,8 +1,8 @@
-import classnames from 'classnames';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Icon, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
+import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
@@ -13,9 +13,6 @@ export const ProposalJson = ({
 }) => {
   const { t } = useTranslation();
   const [showDetails, setShowDetails] = useState(false);
-  const showDetailsIconClasses = classnames('mb-4', {
-    'rotate-180': showDetails,
-  });
 
   return (
     <section data-testid="proposal-json">
@@ -25,7 +22,7 @@ export const ProposalJson = ({
       >
         <div className="flex items-center gap-3">
           <SubHeading title={t('proposalJson')} />
-          <div className={showDetailsIconClasses}>
+          <div className={collapsibleToggleStyles(showDetails)}>
             <Icon name="chevron-down" size={8} />
           </div>
         </div>

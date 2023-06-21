@@ -1,22 +1,22 @@
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { AsyncRenderer, Icon, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalJson } from '../proposal-json';
-import { ProposalTerms } from '../proposal-terms';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
 import { ListAsset } from '../list-asset';
-import { Link } from 'react-router-dom';
 import Routes from '../../../routes';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { ProposalMarketData } from '../proposal-market-data';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import type { MarketInfoWithData } from '@vegaprotocol/markets';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -28,11 +28,16 @@ export enum ProposalType {
 }
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  newMarketData?: MarketInfoWithData | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
 }
 
-export const Proposal = ({ proposal, restData }: ProposalProps) => {
+export const Proposal = ({
+  proposal,
+  restData,
+  newMarketData,
+}: ProposalProps) => {
   const { t } = useTranslation();
   const { params, loading, error } = useNetworkParams([
     NetworkParams.governance_proposal_market_minVoterBalance,
@@ -97,51 +102,58 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
         </div>
         <ProposalHeader proposal={proposal} isListItem={false} />
 
-        <div className="my-10">
-          <ProposalChangeTable proposal={proposal} />
-        </div>
+        <div id="details">
+          <div className="my-10">
+            <ProposalChangeTable proposal={proposal} />
+          </div>
 
-        {proposal.terms.change.__typename === 'NewAsset' &&
-        proposal.terms.change.source.__typename === 'ERC20' &&
-        proposal.id ? (
-          <ListAsset
-            assetId={proposal.id}
-            withdrawalThreshold={proposal.terms.change.source.withdrawThreshold}
-            lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
-          />
-        ) : null}
+          {proposal.terms.change.__typename === 'NewAsset' &&
+          proposal.terms.change.source.__typename === 'ERC20' &&
+          proposal.id ? (
+            <ListAsset
+              assetId={proposal.id}
+              withdrawalThreshold={
+                proposal.terms.change.source.withdrawThreshold
+              }
+              lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
+            />
+          ) : null}
 
-        <div className="mb-4">
-          <ProposalDescription description={proposal.rationale.description} />
-        </div>
+          <div className="mb-4">
+            <ProposalDescription description={proposal.rationale.description} />
+          </div>
 
-        {proposal.terms.change.__typename !== 'NewMarket' &&
-          proposal.terms.change.__typename !== 'UpdateMarket' &&
-          proposal.terms.change.__typename !== 'NewFreeform' && (
+          {newMarketData && (
             <div className="mb-4">
-              <ProposalTerms data={proposal.terms} />
+              <ProposalMarketData marketData={newMarketData} />
             </div>
           )}
 
-        <div className="mb-6">
-          <ProposalJson proposal={restData?.data?.proposal} />
+          <div className="mb-6">
+            <ProposalJson proposal={restData?.data?.proposal} />
+          </div>
         </div>
 
-        <div className="mb-10">
-          <RoundedWrapper paddingBottom={true}>
-            <VoteDetails
+        <div id="voting">
+          <div className="mb-10">
+            <RoundedWrapper paddingBottom={true}>
+              <VoteDetails
+                proposal={proposal}
+                proposalType={proposalType}
+                minVoterBalance={minVoterBalance}
+                spamProtectionMinTokens={
+                  params?.spam_protection_voting_min_tokens
+                }
+              />
+            </RoundedWrapper>
+          </div>
+
+          <div className="mb-4">
+            <ProposalVotesTable
               proposal={proposal}
               proposalType={proposalType}
-              minVoterBalance={minVoterBalance}
-              spamProtectionMinTokens={
-                params?.spam_protection_voting_min_tokens
-              }
             />
-          </RoundedWrapper>
-        </div>
-
-        <div className="mb-4">
-          <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
+          </div>
         </div>
       </section>
     </AsyncRenderer>

@@ -29,9 +29,6 @@ jest.mock('../proposal-change-table', () => ({
 jest.mock('../proposal-json', () => ({
   ProposalJson: () => <div data-testid="proposal-json"></div>,
 }));
-jest.mock('../proposal-terms/proposal-terms', () => ({
-  ProposalTerms: () => <div data-testid="proposal-terms"></div>,
-}));
 jest.mock('../proposal-votes-table', () => ({
   ProposalVotesTable: () => <div data-testid="proposal-votes-table"></div>,
 }));
@@ -74,7 +71,6 @@ it('renders each section', async () => {
   expect(await screen.findByTestId('proposal-header')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-change-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-json')).toBeInTheDocument();
-  expect(screen.getByTestId('proposal-terms')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-votes-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-vote-details')).toBeInTheDocument();
   expect(screen.queryByTestId('proposal-list-asset')).not.toBeInTheDocument();

@@ -346,3 +346,14 @@ jobs:
                       \"content\": \"${new_console_url}\"
                 }" \
                 https://api.dnsimple.com/v2/${dnsimple_account_id}/zones/${dnsimple_zone_name}/records/${dnsimple_record_id}
+
+          # trading.fairground.wtf
+          dnsimple_record_id=45302531
+          curl --fail -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
+                -H 'Accept: application/json' \
+                -H 'Content-Type: application/json' \
+                -X PATCH \
+                -d "{
+                      \"content\": \"${new_console_url}\"
+                }" \
+                https://api.dnsimple.com/v2/${dnsimple_account_id}/zones/${dnsimple_zone_name}/records/${dnsimple_record_id}

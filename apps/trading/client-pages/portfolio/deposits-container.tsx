@@ -22,7 +22,7 @@ export const DepositsContainer = () => {
     <div className="h-full">
       <div className="h-full relative">
         <DepositsTable
-          rowData={data || []}
+          rowData={data}
           ref={gridRef}
           {...bottomPlaceholderProps}
           overlayNoRowsTemplate={error ? error.message : t('No deposits')}

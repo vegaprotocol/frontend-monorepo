@@ -224,7 +224,47 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     expect(
       screen.getByTestId('enactment-before-voting-deadline')
     ).toHaveTextContent(
-      'Proposal will fail if enactment is earlier than the voting deadline'
+      'The proposal will fail if enactment is earlier than the voting deadline'
+    );
+  });
+
+  it('displays error text if the vote deadline is set earlier than the minimum allowed', () => {
+    renderComponent();
+    const voteDeadlineInput = screen.getByTestId('proposal-vote-deadline');
+    fireEvent.change(voteDeadlineInput, { target: { value: 0.01 } });
+    expect(screen.getByTestId('voting-less-than-min')).toHaveTextContent(
+      'The proposal will fail if voting deadline is below the minimum'
+    );
+  });
+
+  it('displays error text if the vote deadline is set later than the maximum allowed', () => {
+    renderComponent();
+    const voteDeadlineInput = screen.getByTestId('proposal-vote-deadline');
+    fireEvent.change(voteDeadlineInput, { target: { value: 100000 } });
+    expect(screen.getByTestId('voting-greater-than-max')).toHaveTextContent(
+      'The proposal will fail if voting deadline is above the maximum'
+    );
+  });
+
+  it('displays error text if the enactment deadline is set earlier than the minimum allowed', () => {
+    renderComponent();
+    const enactmentDeadlineInput = screen.getByTestId(
+      'proposal-enactment-deadline'
+    );
+    fireEvent.change(enactmentDeadlineInput, { target: { value: 0.01 } });
+    expect(screen.getByTestId('enactment-less-than-min')).toHaveTextContent(
+      'The proposal will fail if enactment deadline is below the minimum'
+    );
+  });
+
+  it('displays error text if the enactment deadline is set later than the maximum allowed', () => {
+    renderComponent();
+    const enactmentDeadlineInput = screen.getByTestId(
+      'proposal-enactment-deadline'
+    );
+    fireEvent.change(enactmentDeadlineInput, { target: { value: 100000 } });
+    expect(screen.getByTestId('enactment-greater-than-max')).toHaveTextContent(
+      'The proposal will fail if enactment deadline is above the maximum'
     );
   });
 });

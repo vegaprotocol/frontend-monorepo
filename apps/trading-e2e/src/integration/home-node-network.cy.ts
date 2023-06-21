@@ -4,7 +4,6 @@ const statusIncidentsLink = 'footer [data-testid=external-link]';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
-    cy.clearAllLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
@@ -76,7 +75,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
     });
 
-    it('can see current network and can change network', () => {
+    it('switch to fairground network and check status & incidents link', () => {
       // 0006-NETW-002
       // 0006-NETW-003
       cy.getByTestId('navigation')
