@@ -29,13 +29,20 @@ describe('number utils', () => {
     { v: new BigNumber(123000), d: 3, o: '123.00', q: 0.1 },
     { v: new BigNumber(123000), d: 1, o: '12,300.00', q: 0.1 },
     { v: new BigNumber(123001000), d: 2, o: '1,230,010.00', q: 0.1 },
-    { v: new BigNumber(123001), d: 2, o: '1,230', q: 100 },
+    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 100 },
     { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
+    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 1 },
     {
       v: BigNumber('123456789123456789'),
       d: 10,
-      o: '12,345,678.9123457',
+      o: '12,345,678.91234568',
       q: '0.00003846',
+    },
+    {
+      v: BigNumber('123456789123456789'),
+      d: 10,
+      o: '12,345,678.91234568',
+      q: '1',
     },
   ])(
     'formats with addDecimalsFormatNumberQuantum given number correctly',
@@ -70,80 +77,80 @@ describe('number utils', () => {
   ])('formats given number correctly', ({ v, d, o }) => {
     expect(formatNumberPercentage(v, d)).toStrictEqual(o);
   });
-});
 
-describe('toNumberParts', () => {
-  it.each([
-    { v: null, d: 3, o: ['0', '000'] },
-    { v: undefined, d: 3, o: ['0', '000'] },
-    { v: new BigNumber(123), d: 3, o: ['123', '00'] },
-    { v: new BigNumber(123.123), d: 3, o: ['123', '123'] },
-    { v: new BigNumber(123.123), d: 6, o: ['123', '123'] },
-    { v: new BigNumber(123.123), d: 0, o: ['123', ''] },
-    { v: new BigNumber(123), d: undefined, o: ['123', '00'] },
-    {
-      v: new BigNumber(30000),
-      d: undefined,
-      o: ['30,000', '00'],
-    },
-  ])('returns correct tuple given the different arguments', ({ v, d, o }) => {
-    expect(toNumberParts(v, d)).toStrictEqual(o);
+  describe('toNumberParts', () => {
+    it.each([
+      { v: null, d: 3, o: ['0', '000'] },
+      { v: undefined, d: 3, o: ['0', '000'] },
+      { v: new BigNumber(123), d: 3, o: ['123', '00'] },
+      { v: new BigNumber(123.123), d: 3, o: ['123', '123'] },
+      { v: new BigNumber(123.123), d: 6, o: ['123', '123'] },
+      { v: new BigNumber(123.123), d: 0, o: ['123', ''] },
+      { v: new BigNumber(123), d: undefined, o: ['123', '00'] },
+      {
+        v: new BigNumber(30000),
+        d: undefined,
+        o: ['30,000', '00'],
+      },
+    ])('returns correct tuple given the different arguments', ({ v, d, o }) => {
+      expect(toNumberParts(v, d)).toStrictEqual(o);
+    });
   });
-});
 
-describe('isNumeric', () => {
-  it.each([
-    { i: null, o: false },
-    { i: undefined, o: false },
-    { i: 1, o: true },
-    { i: '1', o: true },
-    { i: '-1', o: true },
-    { i: 0.1, o: true },
-    { i: '.1', o: true },
-    { i: '-.1', o: true },
-    { i: 123, o: true },
-    { i: -123, o: true },
-    { i: '123', o: true },
-    { i: '123.01', o: true },
-    { i: '-123.01', o: true },
-    { i: '--123.01', o: false },
-    { i: '123.', o: false },
-    { i: '123.1.1', o: false },
-    { i: BigInt(123), o: true },
-    { i: BigInt(-1), o: true },
-    { i: new BigNumber(123), o: true },
-    { i: new BigNumber(123.123), o: true },
-    { i: new BigNumber(123.123).toString(), o: true },
-    { i: new BigNumber(123), o: true },
-    { i: Infinity, o: false },
-    { i: NaN, o: false },
-  ])(
-    'returns correct results',
-    ({
-      i,
-      o,
-    }: {
-      i: number | string | undefined | null | BigNumber | bigint;
-      o: boolean;
-    }) => {
-      expect(isNumeric(i)).toStrictEqual(o);
-    }
-  );
-});
+  describe('isNumeric', () => {
+    it.each([
+      { i: null, o: false },
+      { i: undefined, o: false },
+      { i: 1, o: true },
+      { i: '1', o: true },
+      { i: '-1', o: true },
+      { i: 0.1, o: true },
+      { i: '.1', o: true },
+      { i: '-.1', o: true },
+      { i: 123, o: true },
+      { i: -123, o: true },
+      { i: '123', o: true },
+      { i: '123.01', o: true },
+      { i: '-123.01', o: true },
+      { i: '--123.01', o: false },
+      { i: '123.', o: false },
+      { i: '123.1.1', o: false },
+      { i: BigInt(123), o: true },
+      { i: BigInt(-1), o: true },
+      { i: new BigNumber(123), o: true },
+      { i: new BigNumber(123.123), o: true },
+      { i: new BigNumber(123.123).toString(), o: true },
+      { i: new BigNumber(123), o: true },
+      { i: Infinity, o: false },
+      { i: NaN, o: false },
+    ])(
+      'returns correct results',
+      ({
+        i,
+        o,
+      }: {
+        i: number | string | undefined | null | BigNumber | bigint;
+        o: boolean;
+      }) => {
+        expect(isNumeric(i)).toStrictEqual(o);
+      }
+    );
+  });
 
-describe('toDecimal', () => {
-  it.each([
-    { v: 0, o: '1' },
-    { v: 1, o: '0.1' },
-    { v: 2, o: '0.01' },
-    { v: 3, o: '0.001' },
-    { v: 4, o: '0.0001' },
-    { v: 5, o: '0.00001' },
-    { v: 6, o: '0.000001' },
-    { v: 7, o: '0.0000001' },
-    { v: 8, o: '0.00000001' },
-    { v: 9, o: '0.000000001' },
-  ])('formats with toNumber given number correctly', ({ v, o }) => {
-    expect(toDecimal(v)).toStrictEqual(o);
+  describe('toDecimal', () => {
+    it.each([
+      { v: 0, o: '1' },
+      { v: 1, o: '0.1' },
+      { v: 2, o: '0.01' },
+      { v: 3, o: '0.001' },
+      { v: 4, o: '0.0001' },
+      { v: 5, o: '0.00001' },
+      { v: 6, o: '0.000001' },
+      { v: 7, o: '0.0000001' },
+      { v: 8, o: '0.00000001' },
+      { v: 9, o: '0.000000001' },
+    ])('formats with toNumber given number correctly', ({ v, o }) => {
+      expect(toDecimal(v)).toStrictEqual(o);
+    });
   });
 });
