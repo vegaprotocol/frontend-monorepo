@@ -4,7 +4,10 @@ import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import type { Token } from '@vegaprotocol/smart-contracts';
 
-import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
+import type {
+  DepositBusEventFieldsFragment,
+  WithdrawalBusEventFieldsFragment,
+} from '@vegaprotocol/wallet';
 
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
@@ -27,6 +30,7 @@ export interface EthStoredTxState extends EthTxState {
   requiresConfirmation: boolean; // whether or not the tx needs external confirmation (IE from a subscription even)
   assetId?: string;
   deposit?: DepositBusEventFieldsFragment;
+  withdrawal?: WithdrawalBusEventFieldsFragment;
 }
 
 export interface EthTransactionStore {
@@ -37,7 +41,8 @@ export interface EthTransactionStore {
     args: string[],
     assetId?: string,
     requiredConfirmations?: number,
-    requiresConfirmation?: boolean
+    requiresConfirmation?: boolean,
+    withdrawal?: EthStoredTxState['withdrawal']
   ) => number;
   update: (
     id: EthStoredTxState['id'],
@@ -62,7 +67,8 @@ export const useEthTransactionStore = create<EthTransactionStore>()(
       args: string[] = [],
       assetId?: string,
       requiredConfirmations = 1,
-      requiresConfirmation = false
+      requiresConfirmation = false,
+      withdrawal = undefined
     ) => {
       const transactions = get().transactions;
       const now = new Date();
@@ -82,6 +88,7 @@ export const useEthTransactionStore = create<EthTransactionStore>()(
         requiredConfirmations,
         requiresConfirmation,
         assetId,
+        withdrawal,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;

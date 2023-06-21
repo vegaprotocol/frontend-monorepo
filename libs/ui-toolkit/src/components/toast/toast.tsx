@@ -18,6 +18,8 @@ export type ToastContent = JSX.Element | undefined;
 
 type ToastState = 'initial' | 'showing' | 'expired';
 
+type WithdrawalInfoMeta = { withdrawalId: string | undefined };
+
 export type Toast = {
   id: string;
   intent: Intent;
@@ -27,6 +29,8 @@ export type Toast = {
   signal?: 'close';
   loader?: boolean;
   hidden?: boolean;
+  // meta information
+  meta?: WithdrawalInfoMeta | undefined;
 };
 
 type ToastProps = Toast & {

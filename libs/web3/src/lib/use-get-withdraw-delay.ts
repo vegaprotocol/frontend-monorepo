@@ -1,32 +1,7 @@
 import { useBridgeContract } from './use-bridge-contract';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { create } from 'zustand';
-
-/**
- * Returns a function that gets the delay in seconds that's required if the
- * withdrawal amount is over the withdrawal threshold
- * (contract.get_withdraw_threshold)
- */
-export const useGetWithdrawDelay = () => {
-  const contract = useBridgeContract(true);
-  const getDelay = useCallback(async () => {
-    const logger = localLoggerFactory({ application: 'web3' });
-    if (!contract) {
-      logger.error('get withdraw delay: no bridge contract');
-      return;
-    }
-    try {
-      logger.info('get withdraw delay', { contract });
-      const res = await contract?.default_withdraw_delay();
-      return res.toNumber();
-    } catch (err) {
-      logger.error('get withdraw delay', err);
-    }
-  }, [contract]);
-
-  return getDelay;
-};
+import { useWithdrawDataStore } from './use-withdraw-data-store';
 
 /**
  * The withdraw delay is a global value set on the contract bridge which may be
@@ -36,34 +11,36 @@ export const useGetWithdrawDelay = () => {
 
 const MAX_AGE = 5 * 60 * 1000; // 5 minutes
 
-type WithdrawDelayStore = {
-  delay: number | null;
-  ts: number;
-  setDelay: (delay: number) => void;
-};
-const useWithdrawDelayStore = create<WithdrawDelayStore>()((set) => ({
-  delay: null,
-  ts: 0,
-  setDelay: (delay) => set({ delay }),
-}));
-
-export const useWithdrawDelay = () => {
-  const getDelay = useGetWithdrawDelay();
+/**
+ * Returns a function that gets the delay in seconds that's required if the
+ * withdrawal amount is over the withdrawal threshold
+ * (contract.get_withdraw_threshold)
+ */
+export const useGetWithdrawDelay = () => {
+  const delay = useWithdrawDataStore((state) => state.delay);
+  const setDelay = useWithdrawDataStore((state) => state.setDelay);
+  const contract = useBridgeContract(true);
   const logger = localLoggerFactory({ application: 'web3' });
-  const [delay, ts] = useWithdrawDelayStore((state) => [state.delay, state.ts]);
-  const setDelay = useWithdrawDelayStore((state) => state.setDelay);
 
-  useEffect(() => {
-    if (delay && Date.now() - ts <= MAX_AGE) return;
-    getDelay()
-      .then((d) => {
-        if (typeof d === 'number') {
-          logger.info(`retrieved withdraw delay: ${d} seconds`);
-          setDelay(d);
-        }
-      })
-      .catch((err) => logger.error('could not get the withdraw delay', err));
-  }, [delay, getDelay, logger, setDelay, ts]);
+  const getDelay = useCallback(async () => {
+    // return cached value if still valid
+    if (delay && Date.now() - delay.ts <= MAX_AGE) {
+      return delay.value;
+    }
+    if (!contract) {
+      logger.info('could not get withdraw delay: no bridge contract');
+      return undefined;
+    }
+    try {
+      const res = await contract?.default_withdraw_delay();
+      logger.info(`retrieved withdraw delay: ${res} seconds`);
+      setDelay(res.toNumber());
+      return res.toNumber() as number;
+    } catch (err) {
+      logger.error('could not get withdraw delay', err);
+      return undefined;
+    }
+  }, [contract, delay, logger, setDelay]);
 
-  return delay;
+  return getDelay;
 };
