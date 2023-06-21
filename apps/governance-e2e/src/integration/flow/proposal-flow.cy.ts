@@ -32,7 +32,7 @@ import {
 import {
   vegaWalletSetSpecifiedApprovalAmount,
   vegaWalletTeardown,
-} from '../../support/wallet-teardown.functions';
+} from '../../support/wallet-functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 

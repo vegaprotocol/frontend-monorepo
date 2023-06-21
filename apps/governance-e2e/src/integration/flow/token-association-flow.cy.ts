@@ -14,11 +14,12 @@ import {
 } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
+  switchVegaWalletPubKey,
   vegaWalletAssociate,
   vegaWalletDisassociate,
   vegaWalletSetSpecifiedApprovalAmount,
   vegaWalletTeardown,
-} from '../../support/wallet-teardown.functions';
+} from '../../support/wallet-functions';
 
 const ethWalletContainer = '[data-testid="ethereum-wallet"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
@@ -301,8 +302,7 @@ context(
           Cypress.env('vegaWalletPublicKey')
         );
 
-        cy.get('[data-testid="manage-vega-wallet"]:visible').click();
-        cy.get('[data-testid="select-keypair-button"]').eq(0).click();
+        switchVegaWalletPubKey();
         cy.get(connectedVegaKey).should(
           'have.text',
           Cypress.env('vegaWalletPublicKey2')

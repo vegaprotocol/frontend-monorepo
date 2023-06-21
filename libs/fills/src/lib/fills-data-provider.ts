@@ -48,7 +48,7 @@ const mapFillUpdateToFill = (
       id: marketId,
     },
     buyer: { id: buyerId, __typename: 'Party' },
-    seller: { id: buyerId, __typename: 'Party' },
+    seller: { id: sellerId, __typename: 'Party' },
   };
 };
 

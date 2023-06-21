@@ -34,7 +34,7 @@ export const Portfolio = () => {
   }, [updateTitle]);
 
   const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
+  const onOrderTypeClick = useMarketLiquidityClickHandler();
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (

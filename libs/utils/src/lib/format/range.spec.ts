@@ -1,6 +1,6 @@
-import { formatRange, formatValue } from './deal-ticket-fee-details';
+import { formatRange, formatValue } from './range';
 
-describe('formatRange, formatValue', () => {
+describe('formatValue', () => {
   it.each([
     { v: 123000, d: 5, o: '1.23' },
     { v: 123000, d: 3, o: '123.00' },
@@ -21,12 +21,12 @@ describe('formatRange, formatValue', () => {
     { v: 123000, d: 3, o: '123.00', q: '0.1' },
     { v: 123000, d: 1, o: '12,300.00', q: '0.1' },
     { v: 123001000, d: 2, o: '1,230,010.00', q: '0.1' },
-    { v: 123001, d: 2, o: '1,230', q: '100' },
+    { v: 123001, d: 2, o: '1,230.01', q: '100' },
     { v: 123001, d: 2, o: '1,230.01', q: '0.1' },
     {
       v: '123456789123456789',
       d: 10,
-      o: '12,345,678.9123457',
+      o: '12,345,678.91234568',
       q: '0.00003846',
     },
   ])(
@@ -35,9 +35,16 @@ describe('formatRange, formatValue', () => {
       expect(formatValue(v.toString(), d, q)).toStrictEqual(o);
     }
   );
-
+});
+describe('formatRange', () => {
   it.each([
-    { min: 123000, max: 12300011111, d: 5, o: '1.23 - 123,000.111', q: '0.1' },
+    {
+      min: 123000,
+      max: 12300011111,
+      d: 5,
+      o: '1.23 - 123,000.11111',
+      q: '0.1',
+    },
     {
       min: 123000,
       max: 12300011111,
@@ -56,7 +63,7 @@ describe('formatRange, formatValue', () => {
       min: 123001000,
       max: 12300011111,
       d: 2,
-      o: '1,230,010 - 123,000,111',
+      o: '1,230,010.00 - 123,000,111.11',
       q: '100',
     },
   ])(

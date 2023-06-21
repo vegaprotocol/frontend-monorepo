@@ -83,6 +83,8 @@ export const LiquidityContainer = ({
 
   const assetDecimalPlaces =
     market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
+  const quantum =
+    market?.tradableInstrument.instrument.product.settlementAsset.quantum || 0;
   const symbol =
     market?.tradableInstrument.instrument.product.settlementAsset.symbol;
 
@@ -98,6 +100,7 @@ export const LiquidityContainer = ({
         rowData={data}
         symbol={symbol}
         assetDecimalPlaces={assetDecimalPlaces}
+        quantum={quantum}
         stakeToCcyVolume={stakeToCcyVolume}
         overlayNoRowsTemplate={error ? error.message : t('No data')}
       />

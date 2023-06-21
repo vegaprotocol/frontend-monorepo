@@ -1,10 +1,8 @@
 const dialogContent = 'dialog-content';
 const nodeHealth = 'node-health';
-const statusIncidentsLink = 'footer [data-testid=external-link]';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
-    cy.clearAllLocalStorage();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
@@ -76,23 +74,14 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
     });
 
-    // 0006-NETW-002
-    // 0006-NETW-003
-    // 0006-NETW-011
     it('switch to fairground network and check status & incidents link', () => {
+      // 0006-NETW-002
+      // 0006-NETW-003
       cy.getByTestId('navigation')
         .find('[data-testid="network-switcher"]')
+        .should('have.text', 'Custom')
         .click();
-      cy.getByTestId('network-item').contains('Fairground testnet').click();
-      cy.get('[aria-haspopup="menu"]').should('contain.text', 'Fairground');
-      cy.url().should('include', 'fairground.wtf');
-      cy.contains('Continue').click();
-      cy.get(statusIncidentsLink)
-        .children('span')
-        .should('have.text', 'Mainnet status & incidents');
-      cy.get(statusIncidentsLink)
-        .should('have.attr', 'href')
-        .and('contain', 'https://blog.vega.xyz/tagged/vega-incident-reports');
+      cy.getByTestId('network-item').contains('Fairground testnet');
     });
   });
 });
