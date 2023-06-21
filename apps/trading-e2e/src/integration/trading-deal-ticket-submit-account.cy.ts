@@ -1,12 +1,10 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { accountsQuery, amendGeneralAccountBalance } from '@vegaprotocol/mock';
 import {
   accountsQuery,
   amendGeneralAccountBalance,
   amendMarginAccountBalance,
 } from '@vegaprotocol/mock';
-import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
 import type { DealTicketOrderSubmission } from '@vegaprotocol/deal-ticket';
 
