@@ -52,23 +52,25 @@ export const TxsInfiniteList = ({
   }
 
   return (
-    <table className={className} data-testid="transactions-list">
-      <thead>
-        <tr className="w-full mb-3 text-vega-dark-300 uppercase text-left">
-          <th>
-            <span className="hidden xl:inline">{t('Txn')} &nbsp;</span>
-            <span>ID</span>
-          </th>
-          <th className="text-left">{t('From')}</th>
-          <th>{t('Type')}</th>
-          <th>{t('Block')}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {txs.map((t) => (
-          <Item key={t.hash} tx={t} />
-        ))}
-      </tbody>
-    </table>
+    <div className="overflow-scroll">
+      <table className={className} data-testid="transactions-list">
+        <thead>
+          <tr className="w-full mb-3 text-vega-dark-300 uppercase text-left">
+            <th>
+              <span className="hidden xl:inline">{t('Txn')} &nbsp;</span>
+              <span>ID</span>
+            </th>
+            <th>{t('Type')}</th>
+            <th className="text-left">{t('From')}</th>
+            <th>{t('Block')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {txs.map((t) => (
+            <Item key={t.hash} tx={t} />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };

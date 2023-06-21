@@ -1,7 +1,7 @@
 import { Routes } from '../../../routes/route-names';
 import { Link } from 'react-router-dom';
 
-import type { ComponentProps } from 'react';
+import { useMemo, type ComponentProps } from 'react';
 import Hash from '../hash';
 import { t } from '@vegaprotocol/i18n';
 import { isValidPartyId } from '../../../routes/parties/id/components/party-id-error';
@@ -36,6 +36,8 @@ export type PartyLinkProps = Partial<ComponentProps<typeof Link>> & {
 
 const PartyLink = ({ id, truncate = false, ...props }: PartyLinkProps) => {
   const { data } = useExplorerNodeNamesQuery();
+  const name = useMemo(() => getNameForParty(id, data), [data, id]);
+  const useName = name !== id;
 
   // Some transactions will involve the 'network' party, which is alias for  '000...000'
   // The party page does not handle this nicely, so in this case we render the word 'Network'
@@ -57,9 +59,6 @@ const PartyLink = ({ id, truncate = false, ...props }: PartyLinkProps) => {
     );
   }
 
-  const name = getNameForParty(id, data);
-  const useName = name !== id;
-
   return (
     <span className="whitespace-nowrap">
       {useName && <Icon size={4} name="cube" className="mr-2" />}
@@ -68,7 +67,11 @@ const PartyLink = ({ id, truncate = false, ...props }: PartyLinkProps) => {
         {...props}
         to={`/${Routes.PARTIES}/${id}`}
       >
-        {useName ? name : <Hash text={truncate ? truncateMiddle(id) : id} />}
+        {useName ? (
+          name
+        ) : (
+          <Hash text={truncate ? truncateMiddle(id, 4, 4) : id} />
+        )}
       </Link>
     </span>
   );

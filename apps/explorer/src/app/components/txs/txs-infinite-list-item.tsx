@@ -7,7 +7,7 @@ import { ChainResponseCode } from './details/chain-response-code/chain-reponse.c
 import isNumber from 'lodash/isNumber';
 import { PartyLink } from '../links';
 
-const TRUNCATE_LENGTH = 10;
+const TRUNCATE_LENGTH = 7;
 
 export const TxsInfiniteListItem = ({
   hash,
@@ -33,13 +33,15 @@ export const TxsInfiniteListItem = ({
       data-testid="transaction-row"
       className="text-left items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item py-[2px]"
     >
-      <td className="text-sm leading-none font-mono" data-testid="tx-hash">
+      <td
+        className="text-sm leading-none whitepsace-nowrap font-mono"
+        data-testid="tx-hash"
+      >
         {isNumber(code) ? (
           <ChainResponseCode code={code} hideLabel={true} hideIfOk={true} />
         ) : (
           code
         )}
-
         <TruncatedLink
           to={`/${Routes.TX}/${toHex(hash)}`}
           text={hash}
@@ -47,11 +49,11 @@ export const TxsInfiniteListItem = ({
           endChars={0}
         />
       </td>
-      <td className="text-sm leading-none" data-testid="pub-key">
-        <PartyLink truncate={true} id={submitter} />
-      </td>
       <td className="text-sm leading-none">
         <TxOrderType orderType={type} command={command} />
+      </td>
+      <td className="text-sm leading-none" data-testid="pub-key">
+        <PartyLink truncate={true} id={submitter} />
       </td>
       <td className="text-sm items-center font-mono" data-testid="tx-block">
         <TruncatedLink
